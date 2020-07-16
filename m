@@ -2,226 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31B822195B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FE3221976
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgGPBRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 21:17:17 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54490 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726479AbgGPBRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:17:16 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D206E9A1729195C2524B;
-        Thu, 16 Jul 2020 09:17:13 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 16 Jul
- 2020 09:17:06 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: don't skip writeback of quota data
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-References: <20200709190545.GA3001066@google.com>
- <ae1a3e8a-6209-8d4b-7235-5c8897076501@huawei.com>
- <20200710032616.GC545837@google.com>
- <01d0db54-eee1-f6cd-76c3-ebe59a7abae4@huawei.com>
- <20200710035053.GH545837@google.com>
- <77041117-f615-e6e6-591c-b02bf99e58c2@huawei.com>
- <20200713175926.GB2910046@google.com>
- <d8645371-f1d6-f5a2-01a9-19708fe3861b@huawei.com>
- <20200715191037.GB2232118@google.com>
- <4edac8af-0ae8-65e1-e3a0-a633cf81d761@huawei.com>
- <20200716011047.GA2540332@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f3a85c13-84f9-4de1-5b43-1b32807b2229@huawei.com>
-Date:   Thu, 16 Jul 2020 09:17:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728051AbgGPB30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:29:26 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:49022 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728033AbgGPB3Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 21:29:25 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200716012921epoutp01a6c2f65424fdaf3b13eb9df5dd30de3d~iF2nUBlut0890408904epoutp01Q
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:29:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200716012921epoutp01a6c2f65424fdaf3b13eb9df5dd30de3d~iF2nUBlut0890408904epoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594862961;
+        bh=hOa/A7YiqiUgUKfubXBHWOxCskvKIPDJb68BD6K6Sdw=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=sDJkD157ZwKeUhy3Akdkhhi095mTtIZFjR0nR2RYYcGSmYkKkNVmoEpTzQCnUoQ54
+         R7EFZORZO2AvdnDAZrjhQV7vPQ7CCyZ5Y05AiANfQpLAqRcYW96KHe9LZovcvBU0gL
+         Yfy2rjcukJhR6DshEOSLjlHlT5M+k8mZycd86jSU=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200716012920epcas5p2ff4a5f48f3e6b052117db3476bd22e35~iF2m1jJaB0342103421epcas5p2K;
+        Thu, 16 Jul 2020 01:29:20 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4D.1A.09467.07DAF0F5; Thu, 16 Jul 2020 10:29:20 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200716011732epcas5p4e81ce853962d66b1a48ce24e9f63d7ed~iFsTYGCbK1630116301epcas5p4Z;
+        Thu, 16 Jul 2020 01:17:32 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200716011732epsmtrp219362f3104ebe5bcc0433d9f84bf0c9a~iFsTXS0GR2678726787epsmtrp2V;
+        Thu, 16 Jul 2020 01:17:32 +0000 (GMT)
+X-AuditID: b6c32a49-a29ff700000024fb-ba-5f0fad709991
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5D.EB.08303.CAAAF0F5; Thu, 16 Jul 2020 10:17:32 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.108.234.165]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200716011730epsmtip1bda720948ff454b86cbda2a5c209b952~iFsRNj4yc3113931139epsmtip19;
+        Thu, 16 Jul 2020 01:17:30 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Vinod Koul'" <vkoul@kernel.org>
+Cc:     <robh+dt@kernel.org>, <krzk@kernel.org>, <kwmad.kim@samsung.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kishon@ti.com>
+In-Reply-To: <20200713061737.GD34333@vkoul-mobl>
+Subject: RE: [PATCH v12 2/2] phy: samsung-ufs: add UFS PHY driver for
+ samsung SoC
+Date:   Thu, 16 Jul 2020 06:47:28 +0530
+Message-ID: <077501d65b0e$e1630100$a4290300$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20200716011047.GA2540332@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIAZudAEAONCLYZ7ErPEYM0UJKVzwJEgx3VAd4V62cCg/PmQ6h9FfEw
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsWy7bCmpm7BWv54gzM39C3mHznHanHhaQ+b
+        xfnzG9gtbm45ymKx6fE1VovLu+awWcw4v4/JonXvEXaLnXdOMDtwemxa1cnmsXlJvUffllWM
+        HsdvbGfy+LxJLoA1issmJTUnsyy1SN8ugStj+l2rgjXyFfeexDUwfpHoYuTkkBAwkZh7fwcb
+        iC0ksJtR4u4PCQj7E6PE8/aiLkYuIPszo8Sby7tYYBom3rjDDpHYxSjRd+w+E4TzhlHi9Mpp
+        rCBVbAK6EjsWt4GNFRFQldjy5AEbSBGzwDNGiTWbOhhBEpwCBhKn/l0CGyssECzxYd8CZhCb
+        Bajh1pfXYDavgKXEuaWXGSFsQYmTM5+A1TMLyEtsfzuHGeIkBYmfT5cBLeYAWuYm8fleEUSJ
+        uMTRnz3MIHslBBZySKz9f4MZpEZCwEXiz1R1iFZhiVfHt7BD2FISn9/tZYMoyZbo2WUMEa6R
+        WDrvGNTz9hIHrsxhASlhFtCUWL9LHyIsKzH11DomiK18Er2/nzBBxHkldsyDsVUlmt9dhRoj
+        LTGxu5t1AqPSLCR/zULy1ywkD8xC2LaAkWUVo2RqQXFuemqxaYFhXmq5XnFibnFpXrpecn7u
+        JkZwQtLy3MF498EHvUOMTByMhxglOJiVRHh5uHjjhXhTEiurUovy44tKc1KLDzFKc7AoifMq
+        /TgTJySQnliSmp2aWpBaBJNl4uCUamDa0F96qNXs/+fZF/ZuF5syl+kjT4Jb1eMpR64Hm0rW
+        z9aXFo5s1umXNRc/erk+XIVX+nHsM+ZllxXuiS62vrFD2j98XsSjINOkkxbbeRP8Lyy1bAvj
+        2OTP88oo8P4T0RcVYmW/xVX/v8+UL5snv3TRlLeTvaceC+Cv5Ir5Vbxs3UXPrB9hBf/8frpf
+        85+3aMf8FV5Rf0N7D78yM6w8O6Guu+jphplnV6xgl1/7W1D+oOOpWdaHfGU5Ev9HTCxKmKMf
+        1LY0yPX4Ko/FG1YXBHM6rmm402nmmHFjWsvMnh9zX2w/sCEu8oKc4Cmb68Lq+fGrJ7F08nvn
+        ee6xVJtQmWUapZ9UrKvozBi0gatzwRElluKMREMt5qLiRABgTY+wtwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LZdlhJTnfNKv54gxdbNSzmHznHanHhaQ+b
+        xfnzG9gtbm45ymKx6fE1VovLu+awWcw4v4/JonXvEXaLnXdOMDtwemxa1cnmsXlJvUffllWM
+        HsdvbGfy+LxJLoA1issmJTUnsyy1SN8ugStj+l2rgjXyFfeexDUwfpHoYuTkkBAwkZh44w47
+        iC0ksINRYs5HZ4i4tMT1jRPYIWxhiZX/ngPZXEA1rxgl7t/sYQVJsAnoSuxY3MYGYosIqEps
+        efKADaSIWeAdo8TufSfZIDoeM0pcOHIXrIpTwEDi1L9LLCC2sECgxKLZ75hAbBag7ltfXjOD
+        2LwClhLnll5mhLAFJU7OfAJUzwE0VU+ibSNYmFlAXmL72znMENcpSPx8uowVpEREwE3i870i
+        iBJxiaM/e5gnMArPQjJoFsKgWUgGzULSsYCRZRWjZGpBcW56brFhgVFearlecWJucWleul5y
+        fu4mRnBkaWntYNyz6oPeIUYmDsZDjBIczEoivDxcvPFCvCmJlVWpRfnxRaU5qcWHGKU5WJTE
+        eb/OWhgnJJCeWJKanZpakFoEk2Xi4JRqYOJ7c/On3BxlV0eej5Pnp+/7kn385FSmmQqK/Fu2
+        Kf+3l4qSN/pyb+JFwfNvdTvkecrrj/QdORWbt6R78nuF1n9xCfel8/aq8iZtCX7MfKza4R1r
+        9b+dIvzXq3/tSzvf6trWl+j6tyDWzdtmUop0obRatssdhayti8/tOXd/vlc7+58ra/eaxPKG
+        r5a3vj4/Mu366qkne1I8xMR8I29L/nz0v/swi3dlo6X7OZu/alIlPOXf5q0ql41t2CegH8T9
+        jEn45sOqVtVN35x25Oc8/LepbB1bwrOpX2uKTy5wvOi7onuzReS/U76CV4VnLasvn7to5XGZ
+        hxUN11lYd7LqrEpimaP6SdT553ZrPeO3rkosxRmJhlrMRcWJAGADDc8bAwAA
+X-CMS-MailID: 20200716011732epcas5p4e81ce853962d66b1a48ce24e9f63d7ed
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200703173144epcas5p1daa9f5c594e7f299638cc75b7425b7c8
+References: <20200703171135.77389-1-alim.akhtar@samsung.com>
+        <CGME20200703173144epcas5p1daa9f5c594e7f299638cc75b7425b7c8@epcas5p1.samsung.com>
+        <20200703171135.77389-2-alim.akhtar@samsung.com>
+        <20200713061737.GD34333@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/16 9:10, Jaegeuk Kim wrote:
-> On 07/16, Chao Yu wrote:
->> On 2020/7/16 3:10, Jaegeuk Kim wrote:
->>> On 07/14, Chao Yu wrote:
->>>> On 2020/7/14 1:59, Jaegeuk Kim wrote:
->>>>> On 07/10, Chao Yu wrote:
->>>>>> On 2020/7/10 11:50, Jaegeuk Kim wrote:
->>>>>>> On 07/10, Chao Yu wrote:
->>>>>>>> On 2020/7/10 11:26, Jaegeuk Kim wrote:
->>>>>>>>> On 07/10, Chao Yu wrote:
->>>>>>>>>> On 2020/7/10 3:05, Jaegeuk Kim wrote:
->>>>>>>>>>> On 07/09, Chao Yu wrote:
->>>>>>>>>>>> On 2020/7/9 13:30, Jaegeuk Kim wrote:
->>>>>>>>>>>>> It doesn't need to bypass flushing quota data in background.
->>>>>>>>>>>>
->>>>>>>>>>>> The condition is used to flush quota data in batch to avoid random
->>>>>>>>>>>> small-sized udpate, did you hit any problem here?
->>>>>>>>>>>
->>>>>>>>>>> I suspect this causes fault injection test being stuck by waiting for inode
->>>>>>>>>>> writeback completion. With this patch, it has been running w/o any issue so far.
->>>>>>>>>>> I keep an eye on this.
->>>>>>>>>>
->>>>>>>>>> Hmmm.. so that this patch may not fix the root cause, and it may hiding the
->>>>>>>>>> issue deeper.
->>>>>>>>>>
->>>>>>>>>> How about just keeping this patch in our private branch to let fault injection
->>>>>>>>>> test not be stuck? until we find the root cause in upstream codes.
->>>>>>>>>
->>>>>>>>> Well, I don't think this hides something. When the issue happens, I saw inodes
->>>>>>>>> being stuck due to writeback while only quota has some dirty data. At that time,
->>>>>>>>> there was no dirty data page from other inodes.
->>>>>>>>
->>>>>>>> Okay,
->>>>>>>>
->>>>>>>>>
->>>>>>>>> More specifically, I suspect __writeback_inodes_sb_nr() gives WB_SYNC_NONE and
->>>>>>>>> waits for wb_wait_for_completion().
->>>>>>>>
->>>>>>>> Did you record any callstack after the issue happened?
->>>>>>>
->>>>>>> I found this.
->>>>>>>
->>>>>>> [213389.297642]  __schedule+0x2dd/0x780^M
->>>>>>> [213389.299224]  schedule+0x55/0xc0^M
->>>>>>> [213389.300745]  wb_wait_for_completion+0x56/0x90^M
->>>>>>> [213389.302469]  ? wait_woken+0x80/0x80^M
->>>>>>> [213389.303997]  __writeback_inodes_sb_nr+0xa8/0xd0^M
->>>>>>> [213389.305760]  writeback_inodes_sb+0x4b/0x60^M
->>>>>>> [213389.307439]  sync_filesystem+0x2e/0xa0^M
->>>>>>> [213389.308999]  generic_shutdown_super+0x27/0x110^M
->>>>>>> [213389.310738]  kill_block_super+0x27/0x50^M
->>>>>>> [213389.312327]  kill_f2fs_super+0x76/0xe0 [f2fs]^M
->>>>>>> [213389.314014]  deactivate_locked_super+0x3b/0x80^M
->>>>>>> [213389.315692]  deactivate_super+0x3e/0x50^M
->>>>>>> [213389.317226]  cleanup_mnt+0x109/0x160^M
->>>>>>> [213389.318718]  __cleanup_mnt+0x12/0x20^M
->>>>>>> [213389.320177]  task_work_run+0x70/0xb0^M
->>>>>>> [213389.321609]  exit_to_usermode_loop+0x131/0x160^M
->>>>>>> [213389.323306]  do_syscall_64+0x170/0x1b0^M
->>>>>>> [213389.324762]  entry_SYSCALL_64_after_hwframe+0x44/0xa9^M
->>>>>>> [213389.326477] RIP: 0033:0x7fc4b5e6a35b^M
->>>>>>
->>>>>> Does this only happen during umount? If so, will below change help?
->>>>>>
->>>>>> 	if ((S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) &&
->>>>>> +			!is_sbi_flag_set(sbi, SBI_IS_CLOSE) &&
->>>>>> 			wbc->sync_mode == WB_SYNC_NONE &&
->>>>>> 			get_dirty_pages(inode) < nr_pages_to_skip(sbi, DATA) &&
->>>>>> 			f2fs_available_free_memory(sbi, DIRTY_DENTS))
->>>>>> 		goto skip_write;
->>>>>
->>>>> Hmm, this doesn't work. The writeback was called before put_super?
->>>>
->>>> Oops, still be confused about this issue. :(
->>>
->>> Huam, I hit the problem with the patch.
->>> I need to return back and think in other way. :(
->>
->> Still quota data was left? what about dentry?
+Hi Vinod,
+
+> -----Original Message-----
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: 13 July 2020 11:48
+> To: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: robh+dt@kernel.org; krzk@kernel.org; kwmad.kim@samsung.com;
+> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; linux-samsung-soc@vger.kernel.org; kishon@ti.com
+> Subject: Re: [PATCH v12 2/2] phy: samsung-ufs: add UFS PHY driver for
+samsung
+> SoC
 > 
-> Huh, at this time, only node and meta pages were left as dirty.
-
-I saw both meta and node's writepages() called from background will skip
-flushing dirty pages if dirty page count didn't touch the threshold.
-
-	/* collect a number of dirty node pages and write together */
-	if (wbc->sync_mode != WB_SYNC_ALL &&
-			get_pages(sbi, F2FS_DIRTY_NODES) <
-					nr_pages_to_skip(sbi, NODE))
-		goto skip_write;
-
-	/* collect a number of dirty meta pages and write together */
-	if (wbc->sync_mode != WB_SYNC_ALL &&
-			get_pages(sbi, F2FS_DIRTY_META) <
-					nr_pages_to_skip(sbi, META))
-		goto skip_write;
-
-At that time, would syncfs (type sync command via shell) help?
-
+> On 03-07-20, 22:41, Alim Akhtar wrote:
 > 
->>
->> Thanks,
->>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>> I'll try the original patch one more time.
->>>>>
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> Still I'm confused that why directory's data written could be skipped, but
->>>>>>>> quota's data couldn't, what's the difference?
->>>>>>>
->>>>>>> I suspect different blocking timing from cp_error between quota and dentry.
->>>>>>> e.g., we block dir operations right after cp_error, while quota can make
->>>>>>
->>>>>> No guarantee that there is no dirty dentry being created after
->>>>>> cp_error, right?
->>>>>>
->>>>>> e.g.
->>>>>>
->>>>>> Thread A				Thread B
->>>>>> - f2fs_create
->>>>>> - bypass f2fs_cp_error
->>>>>> 					- set cp_error
->>>>>> - create dirty dentry
->>>>>>
->>>>>> BTW, do you know what __writeback_inodes_sb_nr is waiting for?
->>>>>>
->>>>>>> dirty pages in more fine granularity.
->>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Thanks,
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> Thanks,
->>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> Thanks,
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>>>>>>>>>>>> ---
->>>>>>>>>>>>>  fs/f2fs/data.c | 2 +-
->>>>>>>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>>>>>>>
->>>>>>>>>>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>>>>>>>>>>> index 44645f4f914b6..72e8b50e588c1 100644
->>>>>>>>>>>>> --- a/fs/f2fs/data.c
->>>>>>>>>>>>> +++ b/fs/f2fs/data.c
->>>>>>>>>>>>> @@ -3148,7 +3148,7 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
->>>>>>>>>>>>>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
->>>>>>>>>>>>>  		goto skip_write;
->>>>>>>>>>>>>  
->>>>>>>>>>>>> -	if ((S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) &&
->>>>>>>>>>>>> +	if (S_ISDIR(inode->i_mode) &&
->>>>>>>>>>>>>  			wbc->sync_mode == WB_SYNC_NONE &&
->>>>>>>>>>>>>  			get_dirty_pages(inode) < nr_pages_to_skip(sbi, DATA) &&
->>>>>>>>>>>>>  			f2fs_available_free_memory(sbi, DIRTY_DENTS))
->>>>>>>>>>>>>
->>>>>>>>>>> .
->>>>>>>>>>>
->>>>>>>>> .
->>>>>>>>>
->>>>>>> .
->>>>>>>
->>>>> .
->>>>>
->>> .
->>>
-> .
+> > +static const struct samsung_ufs_phy_cfg exynos7_post_init_cfg[] = {
+> > +	END_UFS_PHY_CFG
+> > +};
 > 
+> This is dummy, why not add a check to make config optional?
+> 
+Currently this is dummy, however this might be used for the similar platform
+which do some phy tunning post init.
+Will just remove this for now for this platform, will add this check in
+driver.
+
+> > +static int samsung_ufs_phy_symbol_clk_init(struct samsung_ufs_phy
+> > +*phy) {
+> > +	int ret = 0;
+> 
+> superfluous init, am sure I flagged it before as well
+> 
+Yes, you did, but 0-DAY CI kernel test gave warning [1], so I kept this as
+it is.
+[1] https://lkml.org/lkml/2020/7/3/81
+
+> > +
+> > +	phy->tx0_symbol_clk = devm_clk_get(phy->dev, "tx0_symbol_clk");
+> > +	if (IS_ERR(phy->tx0_symbol_clk)) {
+> > +		dev_err(phy->dev, "failed to get tx0_symbol_clk clock\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	phy->rx0_symbol_clk = devm_clk_get(phy->dev, "rx0_symbol_clk");
+> > +	if (IS_ERR(phy->rx0_symbol_clk)) {
+> > +		dev_err(phy->dev, "failed to get rx0_symbol_clk clock\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	phy->rx1_symbol_clk = devm_clk_get(phy->dev, "rx1_symbol_clk");
+> > +	if (IS_ERR(phy->rx0_symbol_clk)) {
+> > +		dev_err(phy->dev, "failed to get rx1_symbol_clk clock\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(phy->tx0_symbol_clk);
+> > +	if (ret) {
+> > +		dev_err(phy->dev, "%s: tx0_symbol_clk enable failed %d\n",
+> __func__, ret);
+> > +		goto out;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(phy->rx0_symbol_clk);
+> > +	if (ret) {
+> > +		dev_err(phy->dev, "%s: rx0_symbol_clk enable failed %d\n",
+> __func__, ret);
+> > +		clk_disable_unprepare(phy->tx0_symbol_clk);
+> > +		goto out;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(phy->rx1_symbol_clk);
+> > +	if (ret) {
+> > +		dev_err(phy->dev, "%s: rx1_symbol_clk enable failed %d\n",
+> __func__, ret);
+> > +		clk_disable_unprepare(phy->tx0_symbol_clk);
+> > +		clk_disable_unprepare(phy->rx0_symbol_clk);
+> 
+> maybe it will look better if we add common rollback and jump to proper
+labels
+> 
+Sure, will change in next version.
+
+> > +static int samsung_ufs_phy_clks_init(struct samsung_ufs_phy *phy) {
+> > +	int ret;
+> > +
+> > +	phy->ref_clk = devm_clk_get(phy->dev, "ref_clk");
+> > +	if (IS_ERR(phy->ref_clk))
+> > +		dev_err(phy->dev, "failed to get ref_clk clock\n");
+> > +
+> > +	ret = clk_prepare_enable(phy->ref_clk);
+> > +	if (ret) {
+> > +		dev_err(phy->dev, "%s: ref_clk enable failed %d\n",
+__func__,
+> ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	dev_info(phy->dev, "UFS MPHY ref_clk_rate = %ld\n",
+> > +clk_get_rate(phy->ref_clk));
+> 
+> debug pls
+> 
+Sure, will change
+
+> > +static int samsung_ufs_phy_init(struct phy *phy) {
+> > +	struct samsung_ufs_phy *_phy = get_samsung_ufs_phy(phy);
+> 
+> ss_phy perhaps?
+> 
+Sure, will change 
+
+> > +	int ret;
+> > +
+> > +	_phy->lane_cnt = phy->attrs.bus_width;
+> > +	_phy->ufs_phy_state = CFG_PRE_INIT;
+> > +
+> > +	if (_phy->drvdata->has_symbol_clk) {
+> > +		ret = samsung_ufs_phy_symbol_clk_init(_phy);
+> > +		if (ret)
+> > +			dev_err(_phy->dev, "failed to set ufs phy symbol
+> clocks\n");
+> > +	}
+> > +
+> > +	ret = samsung_ufs_phy_clks_init(_phy);
+> > +	if (ret)
+> > +		dev_err(_phy->dev, "failed to set ufs phy  clocks\n");
+> > +
+> > +	samsung_ufs_phy_calibrate(phy);
+> > +
+> > +	return 0;
+> 
+> not return samsung_ufs_phy_calibrate() ?
+> --
+Will add an error path.
+
+> ~Vinod
+
