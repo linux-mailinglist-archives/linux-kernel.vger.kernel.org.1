@@ -2,142 +2,627 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C590A222863
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 18:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F32E22287B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 18:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729383AbgGPQjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 12:39:20 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:48618 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729334AbgGPQjS (ORCPT
+        id S1728993AbgGPQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 12:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgGPQk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 12:39:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594917558; x=1626453558;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=OcT87+KFhM8Fpo0DLDw7uMuG9bFsqRUrpQF9g4gDOFY=;
-  b=kKpwhl7z/k5jfMVkzuXqfseVHXuJasUhBcVSPGkdCMn3h9Rzi7Qe5D1Z
-   rhl8IY+c8SGGqLWnrYQ16anWyzkD3OsPddu+5f9qTupxyyiWl3H24FWla
-   kgjNbU8sfeIXjx5hmnZMWEWocMRIVWKf3HMNA493HEEtXstq0nAsD4P2S
-   U9aEemm/CFXS0YasMKCBSPbH0NJc7JNuz8jTAEjdoR147exz/hdRTTE8C
-   M3OuADPHqGoYRVcCnDxfqUSXLq8bV6yHb91MkzSGag/SvgJjPmcLIBzsD
-   XkWsazIxKOBy6oV6cBQpPdneTIdMP9ESunOieuQZc+GNTx/fJ4LcxHuFB
-   Q==;
-IronPort-SDR: 689afsba7GCAuecGE+bExElv38LYDx0WkMt1pTjM3EiIwSOm8A06FfZjCuSbwB8+ehQHRAYt3C
- 93S6V1iSATwlSG9pClnT6550yeW/BUEy/tQL4RRU9DkrmhN2x3mjZ94NHcKQbi+AQE4zkSIuy1
- tsgeYfnzrdwhO/pFU+rs+ItQ8HgereZEu7NpcZ/G3jYDyZfX4P7tSDeWGkpf4D3KEH1ng0Dp4n
- hO1GOt+F0+TAfK6BT8NIq4rzE/IJfW/26Y7g3DlTLqpjbfFXhcPl2mq0YNiA8qPYMGwT4GgabX
- sTc=
-X-IronPort-AV: E=Sophos;i="5.75,360,1589212800"; 
-   d="scan'208";a="146930596"
-Received: from mail-bn7nam10lp2104.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.104])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jul 2020 00:39:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sy3GrUfZ0PLXr9B6isP3faha/2qv/t5U/5JaSNT+Tq5gOm5tYADV1Q+P2TZDwJQq3xDiI7hA0EltdwGAge9XPRfFGSr8510pYrsompWj78eh8gZxpxZSGwpGv0raA2kwnHaVC25VdAxrCv6LI4NLae+V3PY1u3T77MMam0r8cIXTCrrfH/8eO6Tn9gcE51PW+ojaRPwj96IOb1aOMmSf7q68c4XSh7kiyTQunG8xF4fag1hccUn21JKB0h8F0yfKwAAPpIgwVmnr9OlrJAp5DwWCcYG6sIrZ1ecB34bVw1ieXR0s+2mypm45h8cpC5VNFGQYudoiacW1rFj6jd6ipA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcT87+KFhM8Fpo0DLDw7uMuG9bFsqRUrpQF9g4gDOFY=;
- b=gsZf0KPwbx4bEeObpxPdbXQrCOZs7YfJqeHWkrs+RlqQAMHfnh7JjP7qyk+E4tBaCmK6Erwcd9q1tjCTFtpSt6m40sF5s6K3YGugu7t7XxZtKPGn71j4pdtVBT6P4/miT5lLk/YkQWPZQ4ft9M9HvVpYtMlLxLEb2dVOnaQIPUizaZ9vadZmlAxmkf8XS/gpqNTzmc+z4XVg+qSJoE0FNDfG2JaAHU1fq7WTD6m1COaJQ0zDsa1OuezzaCdql/LhSFW7ckKxJsimBOthv3MOMhABeUsk9u9GYW4Lr1cu9OHSWn3JhvOHIJxIZNvhYqvGZ3uUtJjC4ELF4NAQD05HVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Thu, 16 Jul 2020 12:40:58 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D539DC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 09:40:57 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id g13so5369884qtv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 09:40:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcT87+KFhM8Fpo0DLDw7uMuG9bFsqRUrpQF9g4gDOFY=;
- b=lrJh82VUBKaJ12ilYBR9m3P0yU1CCdqy9Jw1ZMuMjp8Chhe0h9t+1nmBsAGVM1WHFm6lKvOLrspklu/CR3qHHjxR4QcYR7gTt/Kid7vUBWOB8bcFeu4kWiNpgz+9jNCXHErJK4zoBdGAnrX3wOzc9IdBy2Pq4GMMcIWxCHErjoY=
-Received: from BY5PR04MB6882.namprd04.prod.outlook.com (2603:10b6:a03:21b::19)
- by BYAPR04MB4711.namprd04.prod.outlook.com (2603:10b6:a03:14::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23; Thu, 16 Jul
- 2020 16:39:15 +0000
-Received: from BY5PR04MB6882.namprd04.prod.outlook.com
- ([fe80::5d51:59b1:8272:23fa]) by BY5PR04MB6882.namprd04.prod.outlook.com
- ([fe80::5d51:59b1:8272:23fa%7]) with mapi id 15.20.3174.026; Thu, 16 Jul 2020
- 16:39:15 +0000
-From:   Alistair Francis <Alistair.Francis@wdc.com>
-To:     "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        "bmeng.cn@gmail.com" <bmeng.cn@gmail.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "bin.meng@windriver.com" <bin.meng@windriver.com>
-Subject: Re: [PATCH] riscv: Add SiFive drivers to rv32_defconfig
-Thread-Topic: [PATCH] riscv: Add SiFive drivers to rv32_defconfig
-Thread-Index: AQHWWys+Ht+QHg1RAUqvDfDsT6qM+qkKZkIA
-Date:   Thu, 16 Jul 2020 16:39:15 +0000
-Message-ID: <edca7c9e9a8934fc66d09c7056e92a6aa7f0d645.camel@wdc.com>
-References: <1594874393-23620-1-git-send-email-bmeng.cn@gmail.com>
-In-Reply-To: <1594874393-23620-1-git-send-email-bmeng.cn@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.3 
-authentication-results: sifive.com; dkim=none (message not signed)
- header.d=none;sifive.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2601:646:8e00:37b2:f615:7f83:6835:448a]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3fa6677a-abe0-48f6-2025-08d829a6c72f
-x-ms-traffictypediagnostic: BYAPR04MB4711:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR04MB471105F46F1AE49B43440C4F907F0@BYAPR04MB4711.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mkz7kSjcArtS1ZgztJRgfArI8a6zLyfClAUjiR+kK/5rIRAy07O7MkkQdPxzDETfvK/ZgRa+TZqkDaNAaXI60aW/T+jO1SR5v5LTY9LsVWNuRePxjQVXypCl/YEL4n4xSL4AAaDGseo8E4qeEo59zWw+67gMTYXIyi1AtSDUIVflzPZjlmZ4FSq4TpCFdq1Hq+oBdx85VeegRjNUMla1wFLQftP9qoF06IWjFIFEgaU58aoXlpyRm32ChtspvGrPryWQtE2/+bCgWW15sWRJrZeRkfCInBUIU+19gg4STMG541J8yTiD839QaKKv0Wtpg/R6Bs+Cta3/E/nrG64xIA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6882.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(6029001)(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(8936002)(8676002)(186003)(316002)(4326008)(6486002)(6512007)(83380400001)(110136005)(36756003)(71200400001)(66946007)(2906002)(86362001)(66556008)(64756008)(5660300002)(478600001)(6506007)(66476007)(66446008)(2616005)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 3qhO+oE9JbO4/fzvqGFlDc2HHmKz77hGchRpzwy6CFf7hcLIEAY19bgoIgsaMMSVGPcmU7TVpmEVDA3A1blLbLFZfWIXn5W8xY8aK8k4Mp9fUEDeexa/ta5QEOtz9EgZzJ6mSSapXeD6xUbpOVWuur/AlTdsLQiGuQJrI1gdMc18JIh21WtO1UEEOnuMYXyfC2dX9hdsXIysNogeN6T2ShblDWe6sQxzCAqwrih4WFn93UTpZCe/ndt6Js8lYerd3KUuBYUeBCSBzNb4vNQpA/pumtVHkUlw+dTbEQ1UjPIlp9VZX6hqoXxLm4WUw1NDVlCOIHGZJQMUFkI21TuMvlMT+WQRNlfNrbfHhlR5N5wu74JAf03DIMkhl8WZ4vrwjemnPFkVpjiPYNQBHsI+ofaP2uh6IAYM+rE75CPWW6n+m904VvHrnN2+Vg2QYjVbtDGtkHdboB4n8sbQ+qQHDgWbw1PWZqQN69/9pqXjad2gi2doL2m7oTbGkcxAFq/IVR5ukcxL641X/QxakgOssLzyiwXVRDrqwyLH3ZW6ZtRfL1Mw6m1UcsHunFnZQcLR
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <075FE95E888DA74D9D31303055259EF9@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=rEVktdT3E8GmpRO9z7GuMg2RGypgd6QLHPn36U0peL0=;
+        b=PR2hvLReEYbJR9cIMtBEq1COW5wMj73sV5MOfIA3RUyPu+CjuaMLwbJ7PIyKwjDB6z
+         qJMUbYvT7KtF8Cmi1WC8uluKTs5CaIa8OVxf/NbzUskdGuTPeZph87IL1bTRQgaNTn0E
+         qxEyOlTV7By1HN/UVAw4Ih8sOm6XgcDOC3641pYsOhB3PfeprAlAGAx9suJMW/u4qabz
+         ibpj75wh0HhDafVHHjZUmOYc6nPL3ZjpZn4ilBs230T93n8Gkg3RAtn5ANVWwumNMntD
+         IqmNMSXx61N2lZATnsm2INDB3ZefWaXC2c7m5aiSiW9lhA65g0ffiplvYPBi424pEGfA
+         rrAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=rEVktdT3E8GmpRO9z7GuMg2RGypgd6QLHPn36U0peL0=;
+        b=YI9tq9Bbaw6pR7mV037zFDGml63MbAmOaGxbHxMoeITAyH1aawS70qyB07QVb18/pa
+         3I7gzTgyhu3H6KlmUPctmI53s/TWaGmcsHmHNgeYdEamZ6VgrHLSinfQ6O5SbMCAEM4v
+         YRzeq236oNN4Q936OIqwdSOG0mgtp1pjtqle7cFXR+6zJ2bZghmGrxw1ZWqVu5f7Pzmw
+         bU2e9F+3jEWoE2YTNfhoaXCnpJ8zRFThNBg70emfQd/YP0wJq5IZ17SwMbKmjkJt5fiR
+         HjnG4NrGRDCufI5WiCreCkrs2LXRJ7ppT2lYQ+YtgORfYJffoCXYnsnCOneEtipQ/dVo
+         oH9w==
+X-Gm-Message-State: AOAM530oReQjBePPmjeaWauF85rbSNsWi1LNeO9nPR+G3ZAklN4SgZzz
+        tJRjUa7ygOJZOOTq8OaJq9kT4w==
+X-Google-Smtp-Source: ABdhPJzu38nNsp52/BrVgV2d29aCDGqwkjFTb4zX58eEDB02VOHExz+CoQJxk433NYrDgu0s4OD2/A==
+X-Received: by 2002:aed:32e5:: with SMTP id z92mr6036278qtd.282.1594917656830;
+        Thu, 16 Jul 2020 09:40:56 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id 19sm7518338qke.44.2020.07.16.09.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 09:40:54 -0700 (PDT)
+Message-ID: <551419076ba8c6fbf9ca03786b660f6277dc665b.camel@massaru.org>
+Subject: Re: [RFC 3/3] lib: Convert test_user_copy to KUnit test
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Thu, 16 Jul 2020 13:40:51 -0300
+In-Reply-To: <CAFd5g471kwX7pHRwksbjMoEyLPoNjwd1kjzvi19oNHn45-a_ew@mail.gmail.com>
+References: <20200715031120.1002016-1-vitor@massaru.org>
+         <20200715031120.1002016-4-vitor@massaru.org>
+         <CAFd5g471kwX7pHRwksbjMoEyLPoNjwd1kjzvi19oNHn45-a_ew@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6882.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fa6677a-abe0-48f6-2025-08d829a6c72f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2020 16:39:15.4506
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tyBRyXIkQTaRmZW/PkxEGq8+VV8Y+DZv1UfLtpTU67hUMbNJf7H49oICAcMEaoyTq6j5RBe9KXlPRmRlLyV4GrKqnDQlN1FsiA8d+TAAD+E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4711
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTE1IGF0IDIxOjM5IC0wNzAwLCBCaW4gTWVuZyB3cm90ZToNCj4gRnJv
-bTogQmluIE1lbmcgPGJpbi5tZW5nQHdpbmRyaXZlci5jb20+DQo+IA0KPiBUaGlzIGFkZHMgU2lG
-aXZlIGRyaXZlcnMgdG8gcnYzMl9kZWZjb25maWcsIHRvIGtlZXAgaW4gc3luYyB3aXRoIHRoZQ0K
-PiA2NC1iaXQgY29uZmlnLiBUaGlzIGlzIHVzZWZ1bCB3aGVuIHRlc3RpbmcgMzItYml0IGtlcm5l
-bCB3aXRoIFFFTVUNCj4gJ3NpZml2ZV91JyAzMi1iaXQgbWFjaGluZS4NCj4gDQo+IFNpZ25lZC1v
-ZmYtYnk6IEJpbiBNZW5nIDxiaW4ubWVuZ0B3aW5kcml2ZXIuY29tPg0KDQpSZXZpZXdlZC1ieTog
-QWxpc3RhaXIgRnJhbmNpcyA8YWxpc3RhaXIuZnJhbmNpc0B3ZGMuY29tPg0KDQpBbGlzdGFpcg0K
-DQo+IC0tLQ0KPiANCj4gIGFyY2gvcmlzY3YvY29uZmlncy9ydjMyX2RlZmNvbmZpZyB8IDUgKysr
-KysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQg
-YS9hcmNoL3Jpc2N2L2NvbmZpZ3MvcnYzMl9kZWZjb25maWcNCj4gYi9hcmNoL3Jpc2N2L2NvbmZp
-Z3MvcnYzMl9kZWZjb25maWcNCj4gaW5kZXggMDViYmY1Mi4uODc1OTUwMSAxMDA2NDQNCj4gLS0t
-IGEvYXJjaC9yaXNjdi9jb25maWdzL3J2MzJfZGVmY29uZmlnDQo+ICsrKyBiL2FyY2gvcmlzY3Yv
-Y29uZmlncy9ydjMyX2RlZmNvbmZpZw0KPiBAQCAtMTQsNiArMTQsNyBAQCBDT05GSUdfQ0hFQ0tQ
-T0lOVF9SRVNUT1JFPXkNCj4gIENPTkZJR19CTEtfREVWX0lOSVRSRD15DQo+ICBDT05GSUdfRVhQ
-RVJUPXkNCj4gIENPTkZJR19CUEZfU1lTQ0FMTD15DQo+ICtDT05GSUdfU09DX1NJRklWRT15DQo+
-ICBDT05GSUdfU09DX1ZJUlQ9eQ0KPiAgQ09ORklHX0FSQ0hfUlYzMkk9eQ0KPiAgQ09ORklHX1NN
-UD15DQo+IEBAIC02MSw2ICs2Miw4IEBAIENPTkZJR19IVkNfUklTQ1ZfU0JJPXkNCj4gIENPTkZJ
-R19WSVJUSU9fQ09OU09MRT15DQo+ICBDT05GSUdfSFdfUkFORE9NPXkNCj4gIENPTkZJR19IV19S
-QU5ET01fVklSVElPPXkNCj4gK0NPTkZJR19TUEk9eQ0KPiArQ09ORklHX1NQSV9TSUZJVkU9eQ0K
-PiAgIyBDT05GSUdfUFRQXzE1ODhfQ0xPQ0sgaXMgbm90IHNldA0KPiAgQ09ORklHX1BPV0VSX1JF
-U0VUPXkNCj4gIENPTkZJR19EUk09eQ0KPiBAQCAtNzYsNiArNzksOCBAQCBDT05GSUdfVVNCX09I
-Q0lfSENEPXkNCj4gIENPTkZJR19VU0JfT0hDSV9IQ0RfUExBVEZPUk09eQ0KPiAgQ09ORklHX1VT
-Ql9TVE9SQUdFPXkNCj4gIENPTkZJR19VU0JfVUFTPXkNCj4gK0NPTkZJR19NTUM9eQ0KPiArQ09O
-RklHX01NQ19TUEk9eQ0KPiAgQ09ORklHX1JUQ19DTEFTUz15DQo+ICBDT05GSUdfVklSVElPX1BD
-ST15DQo+ICBDT05GSUdfVklSVElPX0JBTExPT049eQ0K
+On Wed, 2020-07-15 at 17:40 -0700, Brendan Higgins wrote:
+> On Tue, Jul 14, 2020 at 8:11 PM Vitor Massaru Iha <vitor@massaru.org>
+> wrote:
+> > This adds the conversion of the runtime tests of test_user_copy
+> > fuctions,
+> > from `lib/test_user_copy.c`to KUnit tests.
+> > 
+> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> > ---
+> >  lib/Kconfig.debug                           |  17 ++
+> >  lib/Makefile                                |   2 +-
+> >  lib/{test_user_copy.c => user_copy_kunit.c} | 196 +++++++++-------
+> > ----
+> >  3 files changed, 102 insertions(+), 113 deletions(-)
+> >  rename lib/{test_user_copy.c => user_copy_kunit.c} (55%)
+> > 
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 9ad9210d70a1..29558674c011 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -2154,6 +2154,23 @@ config SYSCTL_KUNIT_TEST
+> > 
+> >           If unsure, say N.
+> > 
+> > +config USER_COPY_KUNIT
+> > +       tristate "KUnit Test for user/kernel boundary protections"
+> > +       depends on KUNIT
+> > +       depends on m
+> > +       help
+> > +         This builds the "test_user_copy" module that runs sanity
+> > checks
+> > +         on the copy_to/from_user infrastructure, making sure
+> > basic
+> > +         user/kernel boundary testing is working. If it fails to
+> > load,
+> > +         a regression has been detected in the user/kernel memory
+> > boundary
+> > +         protections.
+> > +
+> > +          For more information on KUnit and unit tests in general
+> > please refer
+> > +         to the KUnit documentation in Documentation/dev-
+> > tools/kunit/.
+> > +
+> > +         If unsure, say N.
+> 
+> Where do you delete the entry for CONFIG_TEST_USER_COPY? I don't see
+> it here.
+
+I didn't. Thanks I'll delete it.
+
+> >  config LIST_KUNIT_TEST
+> >         tristate "KUnit Test for Kernel Linked-list structures" if
+> > !KUNIT_ALL_TESTS
+> >         depends on KUNIT
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index b1c42c10073b..8c145f85accc 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -78,7 +78,6 @@ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+> >  obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+> >  obj-$(CONFIG_TEST_RHASHTABLE) += test_rhashtable.o
+> >  obj-$(CONFIG_TEST_SORT) += test_sort.o
+> > -obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
+> >  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
+> >  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
+> >  obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+> > @@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+> >  # KUnit tests
+> >  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+> >  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+> > +obj-$(CONFIG_USER_COPY_KUNIT) += user_copy_kunit.o
+> > diff --git a/lib/test_user_copy.c b/lib/user_copy_kunit.c
+> > similarity index 55%
+> > rename from lib/test_user_copy.c
+> > rename to lib/user_copy_kunit.c
+> > index 5ff04d8fe971..c15bb1e997d6 100644
+> > --- a/lib/test_user_copy.c
+> > +++ b/lib/user_copy_kunit.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/uaccess.h>
+> >  #include <linux/vmalloc.h>
+> > +#include <kunit/test.h>
+> > 
+> >  /*
+> >   * Several 32-bit architectures support 64-bit {get,put}_user()
+> > calls.
+> > @@ -31,26 +32,16 @@
+> >  # define TEST_U64
+> >  #endif
+> > 
+> > -#define test(condition, msg,
+> > ...)                                      \
+> > -({                                                                
+> >      \
+> > -       int cond =
+> > (condition);                                         \
+> > -       if
+> > (cond)                                                       \
+> > -               pr_warn("[%d] " msg "\n", __LINE__,
+> > ##__VA_ARGS__);     \
+> > -       cond;                                                      
+> >      \
+> > -})
+> > -
+> >  static bool is_zeroed(void *from, size_t size)
+> >  {
+> >         return memchr_inv(from, 0x0, size) == NULL;
+> >  }
+> > 
+> > -static int test_check_nonzero_user(char *kmem, char __user *umem,
+> > size_t size)
+> > +static void test_check_nonzero_user(struct kunit *test, char
+> > *kmem, char __user *umem, size_t size)
+> >  {
+> > -       int ret = 0;
+> >         size_t start, end, i, zero_start, zero_end;
+> > 
+> > -       if (test(size < 2 * PAGE_SIZE, "buffer too small"))
+> > -               return -EINVAL;
+> > +       KUNIT_EXPECT_FALSE_MSG(test, size < 2 * PAGE_SIZE, "buffer
+> > too small");
+> > 
+> >         /*
+> >          * We want to cross a page boundary to exercise the code
+> > more
+> > @@ -84,7 +75,7 @@ static int test_check_nonzero_user(char *kmem,
+> > char __user *umem, size_t size)
+> >         for (i = zero_end; i < size; i += 2)
+> >                 kmem[i] = 0xff;
+> > 
+> > -       ret |= test(copy_to_user(umem, kmem, size),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_to_user(umem, kmem,
+> > size),
+> >                     "legitimate copy_to_user failed");
+> > 
+> >         for (start = 0; start <= size; start++) {
+> > @@ -93,35 +84,31 @@ static int test_check_nonzero_user(char *kmem,
+> > char __user *umem, size_t size)
+> >                         int retval = check_zeroed_user(umem +
+> > start, len);
+> >                         int expected = is_zeroed(kmem + start,
+> > len);
+> > 
+> > -                       ret |= test(retval != expected,
+> > -                                   "check_nonzero_user(=%d) !=
+> > memchr_inv(=%d) mismatch (start=%zu, end=%zu)",
+> > -                                   retval, expected, start, end);
+> > +                       KUNIT_EXPECT_FALSE_MSG(test, retval !=
+> > expected,
+> > +                           "check_nonzero_user(=%d) !=
+> > memchr_inv(=%d) mismatch (start=%zu, end=%zu)",
+> > +                           retval, expected, start, end);
+> >                 }
+> >         }
+> > -
+> > -       return ret;
+> >  }
+> > 
+> > -static int test_copy_struct_from_user(char *kmem, char __user
+> > *umem,
+> > +static void test_copy_struct_from_user(struct kunit *test, char
+> > *kmem, char __user *umem,
+> >                                       size_t size)
+> >  {
+> > -       int ret = 0;
+> >         char *umem_src = NULL, *expected = NULL;
+> >         size_t ksize, usize;
+> > 
+> >         umem_src = kmalloc(size, GFP_KERNEL);
+> > -       ret = test(umem_src == NULL, "kmalloc failed");
+> > -       if (ret)
+> > -               goto out_free;
+> > +       KUNIT_EXPECT_FALSE_MSG(test, umem_src == NULL, "kmalloc
+> > failed");
+> > 
+> >         expected = kmalloc(size, GFP_KERNEL);
+> > -       ret = test(expected == NULL, "kmalloc failed");
+> > -       if (ret)
+> > -               goto out_free;
+> > +
+> > +       if (expected == NULL)
+> > +               kfree(umem_src);
+> > +       KUNIT_EXPECT_FALSE_MSG(test, expected == NULL, "kmalloc
+> > failed");
+> > 
+> >         /* Fill umem with a fixed byte pattern. */
+> >         memset(umem_src, 0x3e, size);
+> > -       ret |= test(copy_to_user(umem, umem_src, size),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_to_user(umem, umem_src,
+> > size),
+> >                     "legitimate copy_to_user failed");
+> > 
+> >         /* Check basic case -- (usize == ksize). */
+> > @@ -131,9 +118,9 @@ static int test_copy_struct_from_user(char
+> > *kmem, char __user *umem,
+> >         memcpy(expected, umem_src, ksize);
+> > 
+> >         memset(kmem, 0x0, size);
+> > -       ret |= test(copy_struct_from_user(kmem, ksize, umem,
+> > usize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_struct_from_user(kmem,
+> > ksize, umem, usize),
+> >                     "copy_struct_from_user(usize == ksize)
+> > failed");
+> > -       ret |= test(memcmp(kmem, expected, ksize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, memcmp(kmem, expected, ksize),
+> >                     "copy_struct_from_user(usize == ksize) gives
+> > unexpected copy");
+> > 
+> >         /* Old userspace case -- (usize < ksize). */
+> > @@ -144,9 +131,9 @@ static int test_copy_struct_from_user(char
+> > *kmem, char __user *umem,
+> >         memset(expected + usize, 0x0, ksize - usize);
+> > 
+> >         memset(kmem, 0x0, size);
+> > -       ret |= test(copy_struct_from_user(kmem, ksize, umem,
+> > usize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_struct_from_user(kmem,
+> > ksize, umem, usize),
+> >                     "copy_struct_from_user(usize < ksize) failed");
+> > -       ret |= test(memcmp(kmem, expected, ksize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, memcmp(kmem, expected, ksize),
+> >                     "copy_struct_from_user(usize < ksize) gives
+> > unexpected copy");
+> > 
+> >         /* New userspace (-E2BIG) case -- (usize > ksize). */
+> > @@ -154,7 +141,7 @@ static int test_copy_struct_from_user(char
+> > *kmem, char __user *umem,
+> >         usize = size;
+> > 
+> >         memset(kmem, 0x0, size);
+> > -       ret |= test(copy_struct_from_user(kmem, ksize, umem, usize)
+> > != -E2BIG,
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_struct_from_user(kmem,
+> > ksize, umem, usize) != -E2BIG,
+> >                     "copy_struct_from_user(usize > ksize) didn't
+> > give E2BIG");
+> > 
+> >         /* New userspace (success) case -- (usize > ksize). */
+> > @@ -162,24 +149,18 @@ static int test_copy_struct_from_user(char
+> > *kmem, char __user *umem,
+> >         usize = size;
+> > 
+> >         memcpy(expected, umem_src, ksize);
+> > -       ret |= test(clear_user(umem + ksize, usize - ksize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, clear_user(umem + ksize, usize
+> > - ksize),
+> >                     "legitimate clear_user failed");
+> > 
+> >         memset(kmem, 0x0, size);
+> > -       ret |= test(copy_struct_from_user(kmem, ksize, umem,
+> > usize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_struct_from_user(kmem,
+> > ksize, umem, usize),
+> >                     "copy_struct_from_user(usize > ksize) failed");
+> > -       ret |= test(memcmp(kmem, expected, ksize),
+> > +       KUNIT_EXPECT_FALSE_MSG(test, memcmp(kmem, expected, ksize),
+> >                     "copy_struct_from_user(usize > ksize) gives
+> > unexpected copy");
+> > -
+> > -out_free:
+> > -       kfree(expected);
+> > -       kfree(umem_src);
+> > -       return ret;
+> >  }
+> > 
+> > -static int __init test_user_copy_init(void)
+> > +static void user_copy_test(struct kunit *test)
+> >  {
+> > -       int ret = 0;
+> >         char *kmem;
+> >         char __user *usermem;
+> >         char *bad_usermem;
+> > @@ -192,16 +173,14 @@ static int __init test_user_copy_init(void)
+> >  #endif
+> > 
+> >         kmem = kmalloc(PAGE_SIZE * 2, GFP_KERNEL);
+> > -       if (!kmem)
+> > -               return -ENOMEM;
+> > +       KUNIT_EXPECT_FALSE_MSG(test, kmem == NULL, "kmalloc
+> > failed");
+> > 
+> >         user_addr = vm_mmap(NULL, 0, PAGE_SIZE * 2,
+> >                             PROT_READ | PROT_WRITE | PROT_EXEC,
+> >                             MAP_ANONYMOUS | MAP_PRIVATE, 0);
+> >         if (user_addr >= (unsigned long)(TASK_SIZE)) {
+> > -               pr_warn("Failed to allocate user memory\n");
+> >                 kfree(kmem);
+> > -               return -ENOMEM;
+> > +               KUNIT_FAIL(test, "Failed to allocate user memory");
+> >         }
+> > 
+> >         usermem = (char __user *)user_addr;
+> > @@ -211,29 +190,29 @@ static int __init test_user_copy_init(void)
+> >          * Legitimate usage: none of these copies should fail.
+> >          */
+> >         memset(kmem, 0x3a, PAGE_SIZE * 2);
+> > -       ret |= test(copy_to_user(usermem, kmem, PAGE_SIZE),
+> > -                   "legitimate copy_to_user failed");
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_to_user(usermem, kmem,
+> > PAGE_SIZE), "legitimate copy_to_user failed");
+> > +
+> >         memset(kmem, 0x0, PAGE_SIZE);
+> > -       ret |= test(copy_from_user(kmem, usermem, PAGE_SIZE),
+> > -                   "legitimate copy_from_user failed");
+> > -       ret |= test(memcmp(kmem, kmem + PAGE_SIZE, PAGE_SIZE),
+> > -                   "legitimate usercopy failed to copy data");
+> > -
+> > -#define test_legit(size,
+> > check)                                                  \
+> > -       do
+> > {                                                              \
+> > -               val_##size =
+> > check;                                       \
+> > -               ret |= test(put_user(val_##size, (size __user
+> > *)usermem), \
+> > -                   "legitimate put_user (" #size ")
+> > failed");            \
+> > -               val_##size =
+> > 0;                                           \
+> > -               ret |= test(get_user(val_##size, (size __user
+> > *)usermem), \
+> > -                   "legitimate get_user (" #size ")
+> > failed");            \
+> > -               ret |= test(val_##size !=
+> > check,                          \
+> > -                   "legitimate get_user (" #size ") failed to do
+> > copy"); \
+> > -               if (val_##size != check)
+> > {                                \
+> > -                       pr_info("0x%llx !=
+> > 0x%llx\n",                     \
+> > -                               (unsigned long
+> > long)val_##size,           \
+> > -                               (unsigned long
+> > long)check);               \
+> > -               }                                                  
+> >        \
+> > +       KUNIT_EXPECT_FALSE_MSG(test, copy_from_user(kmem, usermem,
+> > PAGE_SIZE),
+> > +                              "legitimate copy_from_user failed");
+> > +       KUNIT_EXPECT_FALSE_MSG(test, memcmp(kmem, kmem + PAGE_SIZE,
+> > PAGE_SIZE),
+> > +                              "legitimate usercopy failed to copy
+> > data");
+> > +
+> > +#define test_legit(size,
+> > check)                                                             
+> >            \
+> > +       do
+> > {                                                                  
+> >                   \
+> > +               val_##size =
+> > check;                                                             
+> > \
+> > +               KUNIT_EXPECT_FALSE_MSG(test, put_user(val_##size,
+> > (size __user *)usermem),      \
+> > +                               "legitimate put_user (" #size ")
+> > failed");                      \
+> > +               val_##size =
+> > 0;                                                                 
+> > \
+> > +               KUNIT_EXPECT_FALSE_MSG(test, get_user(val_##size,
+> > (size __user *)usermem),      \
+> > +                               "legitimate get_user (" #size ")
+> > failed");                      \
+> > +               KUNIT_EXPECT_FALSE_MSG(test, val_##size !=
+> > check,                               \
+> > +                               "legitimate get_user (" #size ")
+> > failed to do copy");           \
+> > +               if (val_##size != check)
+> > {                                                      \
+> > +                       kunit_info(test, "0x%llx !=
+> > 0x%llx\n",                                  \
+> > +                               (unsigned long
+> > long)val_##size,                                 \
+> > +                               (unsigned long
+> > long)check);                                     \
+> > +               }                                                  
+> >                              \
+> >         } while (0)
+> > 
+> >         test_legit(u8,  0x5a);
+> > @@ -245,9 +224,9 @@ static int __init test_user_copy_init(void)
+> >  #undef test_legit
+> > 
+> >         /* Test usage of check_nonzero_user(). */
+> > -       ret |= test_check_nonzero_user(kmem, usermem, 2 *
+> > PAGE_SIZE);
+> > +       test_check_nonzero_user(test, kmem, usermem, 2 *
+> > PAGE_SIZE);
+> >         /* Test usage of copy_struct_from_user(). */
+> > -       ret |= test_copy_struct_from_user(kmem, usermem, 2 *
+> > PAGE_SIZE);
+> > +       test_copy_struct_from_user(test, kmem, usermem, 2 *
+> > PAGE_SIZE);
+> > 
+> >         /*
+> >          * Invalid usage: none of these copies should succeed.
+> > @@ -258,13 +237,13 @@ static int __init test_user_copy_init(void)
+> >         memset(kmem + PAGE_SIZE, 0, PAGE_SIZE);
+> > 
+> >         /* Reject kernel-to-kernel copies through copy_from_user().
+> > */
+> > -       ret |= test(!copy_from_user(kmem, (char __user *)(kmem +
+> > PAGE_SIZE),
+> > -                                   PAGE_SIZE),
+> > -                   "illegal all-kernel copy_from_user passed");
+> > +       KUNIT_EXPECT_FALSE_MSG(test, !copy_from_user(kmem, (char
+> > __user *)(kmem + PAGE_SIZE),
+> > +                                                PAGE_SIZE),
+> > +                               "illegal all-kernel copy_from_user
+> > passed");
+> > 
+> >         /* Destination half of buffer should have been zeroed. */
+> > -       ret |= test(memcmp(kmem + PAGE_SIZE, kmem, PAGE_SIZE),
+> > -                   "zeroing failure for illegal all-kernel
+> > copy_from_user");
+> > +       KUNIT_EXPECT_FALSE_MSG(test, memcmp(kmem + PAGE_SIZE, kmem,
+> > PAGE_SIZE),
+> > +                       "zeroing failure for illegal all-kernel
+> > copy_from_user");
+> > 
+> >  #if 0
+> >         /*
+> > @@ -273,30 +252,28 @@ static int __init test_user_copy_init(void)
+> >          * to be tested in LKDTM instead, since this test module
+> > does not
+> >          * expect to explode.
+> >          */
+> > -       ret |= test(!copy_from_user(bad_usermem, (char __user
+> > *)kmem,
+> > -                                   PAGE_SIZE),
+> > -                   "illegal reversed copy_from_user passed");
+> > +       KUNIT_EXPECT_FALSE_MSG(test, !copy_from_user(bad_usermem,
+> > (char __user *)kmem,
+> > +                                                    PAGE_SIZE),
+> > +                               "illegal reversed copy_from_user
+> > passed");
+> >  #endif
+> > -       ret |= test(!copy_to_user((char __user *)kmem, kmem +
+> > PAGE_SIZE,
+> > -                                 PAGE_SIZE),
+> > -                   "illegal all-kernel copy_to_user passed");
+> > -       ret |= test(!copy_to_user((char __user *)kmem, bad_usermem,
+> > -                                 PAGE_SIZE),
+> > -                   "illegal reversed copy_to_user passed");
+> > -
+> > -#define test_illegal(size,
+> > check)                                          \
+> > -       do
+> > {                                                                \
+> > -               val_##size =
+> > (check);                                       \
+> > -               ret |= test(!get_user(val_##size, (size __user
+> > *)kmem),     \
+> > -                   "illegal get_user (" #size ")
+> > passed");                 \
+> > -               ret |= test(val_##size !=
+> > (size)0,                          \
+> > -                   "zeroing failure for illegal get_user (" #size
+> > ")");    \
+> > -               if (val_##size != (size)0)
+> > {                                \
+> > -                       pr_info("0x%llx !=
+> > 0\n",                            \
+> > -                               (unsigned long
+> > long)val_##size);            \
+> > -               }                                                  
+> >          \
+> > -               ret |= test(!put_user(val_##size, (size __user
+> > *)kmem),     \
+> > -                   "illegal put_user (" #size ")
+> > passed");                 \
+> > +       KUNIT_EXPECT_FALSE_MSG(test, !copy_to_user((char __user
+> > *)kmem, kmem + PAGE_SIZE, PAGE_SIZE),
+> > +                       "illegal all-kernel copy_to_user passed");
+> > +       KUNIT_EXPECT_FALSE_MSG(test, !copy_to_user((char __user
+> > *)kmem, bad_usermem, PAGE_SIZE),
+> > +                       "illegal reversed copy_to_user passed");
+> > +
+> > +#define test_illegal(size,
+> > check)                                                             
+> >  \
+> > +       do
+> > {                                                                  
+> >                   \
+> > +               val_##size =
+> > (check);                                                           
+> > \
+> > +               KUNIT_EXPECT_FALSE_MSG(test, !get_user(val_##size,
+> > (size __user *)kmem),        \
+> > +                               "illegal get_user (" #size ")
+> > passed");                         \
+> > +               KUNIT_EXPECT_FALSE_MSG(test, val_##size !=
+> > (size)0,                             \
+> > +                               "zeroing failure for illegal
+> > get_user (" #size ")");            \
+> > +               if (val_##size != (size)0)
+> > {                                                    \
+> > +                       kunit_info(test, "0x%llx !=
+> > 0\n",                                       \
+> > +                                       (unsigned long
+> > long)val_##size);                        \
+> > +               }                                                  
+> >                              \
+> > +               KUNIT_EXPECT_FALSE_MSG(test, !put_user(val_##size,
+> > (size __user *)kmem),        \
+> > +                               "illegal put_user (" #size ")
+> > passed");                         \
+> >         } while (0)
+> > 
+> >         test_illegal(u8,  0x5a);
+> > @@ -309,23 +286,18 @@ static int __init test_user_copy_init(void)
+> > 
+> >         vm_munmap(user_addr, PAGE_SIZE * 2);
+> >         kfree(kmem);
+> > -
+> > -       if (ret == 0) {
+> > -               pr_info("tests passed.\n");
+> > -               return 0;
+> > -       }
+> > -
+> > -       return -EINVAL;
+> >  }
+> > 
+> > -module_init(test_user_copy_init);
+> > -
+> > -static void __exit test_user_copy_exit(void)
+> > -{
+> > -       pr_info("unloaded.\n");
+> > -}
+> > +static struct kunit_case user_copy_test_cases[] = {
+> > +       KUNIT_CASE(user_copy_test),
+> > +       {}
+> > +};
+> > 
+> > -module_exit(test_user_copy_exit);
+> > +static struct kunit_suite user_copy_test_suite = {
+> > +       .name = "user_copy",
+> > +       .test_cases = user_copy_test_cases,
+> > +};
+> > 
+> > +kunit_test_suites(&user_copy_test_suite);
+> >  MODULE_AUTHOR("Kees Cook <keescook@chromium.org>");
+> >  MODULE_LICENSE("GPL");
+> > --
+> > 2.26.2
+> > 
+
