@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2B62224F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278C22224F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgGPOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:12:15 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:38108 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728589AbgGPOMO (ORCPT
+        id S1728894AbgGPONL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgGPONK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:12:14 -0400
-Received: by mail-ot1-f65.google.com with SMTP id t18so4294264otq.5;
-        Thu, 16 Jul 2020 07:12:13 -0700 (PDT)
+        Thu, 16 Jul 2020 10:13:10 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FE7C061755;
+        Thu, 16 Jul 2020 07:13:10 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id h17so2756167qvr.0;
+        Thu, 16 Jul 2020 07:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MunR6GZ/FxKH9Lu0jf46UJO1MCI3dtMcL3Xjnx8nY0k=;
+        b=K77ER9aR+pqx/w1FjvCLoGx4bmnx/2ysFiLoCUKUY743rR4JHoFmv5q72gUKIDhEbL
+         uq9bCW1jTLMn5WJKuKz2As/WzA3039C1Y2yWBCVe+uxNC8upI5Z/dvX777At+scMYozm
+         y7lHDAFd6Pj7h1TzD6TEGTSD34DunHCjsV15uFKKnOYSnHM+xpOVW2EERo7Q/XBywkzO
+         l5tiSnIjnASSa+Pzxm2FzMVCTbnQdKv/gbbIYYYXEfEukhN5Qy9ksfqg1pUn+W35LJUA
+         SDvyzW1Zir1Po3jZUJQUceDtPlKN6iWas44Rk0J2lVdo/kZQSaP7mLgHyhq2Fno4PKpo
+         N4vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eMNpnTIeC/iF+Y3olmBi/4bZyuqHtNOjligpTstZIfc=;
-        b=Pjm8F4eAg63xn97ukkyxU0cjoFqsseDjSwDVVikbwfs+WGRV+QkJf9CBTtIduRyQE8
-         UmyfcVsbFZ5O6K8aAkn1Tr3eIqxJAoFPdyucizvTgBELQpbtfkTJ3DLsINDYrKcgxGMz
-         QleakIOg0G/LW/mAwqdOdzGoGkA8PI+NFr2rDaTxQtaxfGfv2UF4M9TfOrKYfzA6NaDZ
-         HFEJ+knLxlnzg/sTTBBgcI3A+BiIg4wvgRmolId8QdZzFibgJAtZ4tXIQhvovb2HKvDC
-         uRRW5rHcdQ4mPFNrY2oyavkWevqfT2VW4l61HXOkRfra5snueOdIExGmMLAzQ+Bg1dnm
-         e7sQ==
-X-Gm-Message-State: AOAM532zZvTRzySDHziuECHB7SOIqESTnyCGVWEwsv/XKRvpPXwRefak
-        GOmrPRyGfKR+A5TtWqv3TKH5d808aERpRzzFN/o=
-X-Google-Smtp-Source: ABdhPJz8JShPr1B7m8+xQ6qDCyyXempqtdVlG59chzJx01cDNuzLpVEsfXL9aedezZ0bI1sxnSPnZgoSUWwkLs0WANk=
-X-Received: by 2002:a9d:2646:: with SMTP id a64mr4355766otb.107.1594908733133;
- Thu, 16 Jul 2020 07:12:13 -0700 (PDT)
+        bh=MunR6GZ/FxKH9Lu0jf46UJO1MCI3dtMcL3Xjnx8nY0k=;
+        b=b5omWWBeJ89zzkqEgRvkyk19OpihynKp0yVcFa1/dA6wfpYjGatZHJO0R+YyhshCRd
+         16wMJv72t2znFp+lFd1X1nnBy28Ju1jUgqDMeSQZmLstqPsvnEz7zzJWkNIoD7AxUaPF
+         FXfCN4TGqsoqkqXNrK/xbFsUfbZGb/hs0HMPV1Nn/71S11ffIDLTVvjxs5Y12Ts53ANW
+         5EDDjyPwAmHxTR+WRLzlFB4WgcR8l3U5oOHdA5DegDwa7qKJJeW3Jb1lq6+GZk9Wpvus
+         y2v9FzDx8lL2P9ShW09F5MFGgV4gjb74f6aZzLXpVY8715LvnpRM+EKZZv44KI+UoSvR
+         UtNw==
+X-Gm-Message-State: AOAM53025JsILQHGGUR8fUackYqlT4tcvoMy+gVhD7aiKNCuXo5FyxIQ
+        ZhembtiE4gpxEEKVFOeEcOXn05RZ+zN2DVu1KMPhkg==
+X-Google-Smtp-Source: ABdhPJwFWc0PEVtHziMstDPi7O8TugU93MCmYBWkGd/i/93U0H14vOAYd5IncF2biXwh9nK49UJ+CCk32Ziy/XJFvTQ=
+X-Received: by 2002:a05:6214:a85:: with SMTP id ev5mr4277615qvb.153.1594908789189;
+ Thu, 16 Jul 2020 07:13:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200713144930.1034632-1-lee.jones@linaro.org>
- <20200713144930.1034632-21-lee.jones@linaro.org> <CAMuHMdWMUN8sU09J1eSsSJ9sXMhf10GUHeP47UDf6+yp8vnAnw@mail.gmail.com>
- <CACRpkdYep_r1KsTnU2gVr-DeOf50hRiyTRq=jgeas=fD-qPHVg@mail.gmail.com>
-In-Reply-To: <CACRpkdYep_r1KsTnU2gVr-DeOf50hRiyTRq=jgeas=fD-qPHVg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 16 Jul 2020 16:12:01 +0200
-Message-ID: <CAMuHMdUVp3Zt1jr4mrmpm23W3f7S8ha9T9UGPiwkkENgXuE-Dw@mail.gmail.com>
-Subject: Re: [PATCH 20/25] pinctrl: pinctrl-rza1: Demote some kerneldoc
- headers and fix others
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+References: <1594591536-531-1-git-send-email-iuliana.prodan@nxp.com> <1594591536-531-3-git-send-email-iuliana.prodan@nxp.com>
+In-Reply-To: <1594591536-531-3-git-send-email-iuliana.prodan@nxp.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Thu, 16 Jul 2020 16:12:57 +0200
+Message-ID: <CAFLxGvy0T-E-YecWbGZsDVPajuYVc8L-Uf8UCST_61+t+nfhrA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] crypto: caam - support tagged keys for skcipher algorithms
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-imx <linux-imx@nxp.com>, David Gstir <david@sigma-star.at>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Thu, Jul 16, 2020 at 3:57 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Wed, Jul 15, 2020 at 9:30 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > i.e. will queue in sh-pfc-for-v5.9.
+On Mon, Jul 13, 2020 at 12:09 AM Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
 >
-> OK since Geert is queueing this I'll drop this patch from my tree.
+> Tagged keys are keys that contain metadata indicating what
+> they are and how to handle them using tag_object API.
+>
+> Add support, for tagged keys, to skcipher algorithms by
+> adding new transformations, with _tk_ prefix to distinguish
+> between plaintext and tagged keys.
+>
+> For job descriptors a new option (key_cmd_opt) was added for KEY command.
+> Tagged keys can be loaded using only a KEY command with ENC=1
+> and the proper setting of the EKT bit. The EKT bit in the
+> KEY command indicates which encryption algorithm (AES-ECB or
+> AES-CCM) should be used to decrypt the key. These options will be kept in
+> key_cmd_opt.
+>
+> The tk_ transformations can be used directly by their name:
+> struct sockaddr_alg sa = {
+>     .salg_family = AF_ALG,
+>     .salg_type = "skcipher", /* this selects the symmetric cipher */
+>     .salg_name = "tk(cbc(aes))" /* this is the cipher name */
+> };
+> or for dm-crypt, e.g. using dmsetup:
+> dmsetup -v create encrypted --table "0 $(blockdev --getsz /dev/mmcblk2p10)
+> crypt capi:tk(cbc(aes))-plain :32:logon:seckey 0 /dev/mmcblk2p10 0 1
+> sector_size:512".
 
-Oops, sorry, I didn't know you were planning to apply this one.
+How to use it with cryptsetup?
+I'm asking because it is not clear to me why you are not implementing
+a new kernel key type (KEYS subsystem)
+to utilize tagged keys.
+Many tools already support the keyctl userspace interface (cryptsetup,
+fscrypt, ...).
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Thanks,
+//richard
