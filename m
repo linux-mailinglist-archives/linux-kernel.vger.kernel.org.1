@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2412E222290
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CC622228E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728851AbgGPMiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 08:38:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36176 "EHLO mx2.suse.de"
+        id S1728834AbgGPMim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 08:38:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36074 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgGPMii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728601AbgGPMii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Jul 2020 08:38:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51871B945;
+        by mx2.suse.de (Postfix) with ESMTP id E5501B947;
         Thu, 16 Jul 2020 12:38:40 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     akpm@linux-foundation.org
@@ -22,9 +22,9 @@ Cc:     mhocko@suse.com, linux-mm@kvack.org, mike.kravetz@oracle.com,
         naoya.horiguchi@nec.com, linux-kernel@vger.kernel.org,
         Oscar Salvador <osalvador@suse.de>,
         Oscar Salvador <osalvador@suse.com>
-Subject: [PATCH v4 14/15] mm,hwpoison: Return 0 if the page is already poisoned in soft-offline
-Date:   Thu, 16 Jul 2020 14:38:08 +0200
-Message-Id: <20200716123810.25292-15-osalvador@suse.de>
+Subject: [PATCH v4 15/15] mm,hwpoison: introduce MF_MSG_UNSPLIT_THP
+Date:   Thu, 16 Jul 2020 14:38:09 +0200
+Message-Id: <20200716123810.25292-16-osalvador@suse.de>
 X-Mailer: git-send-email 2.13.7
 In-Reply-To: <20200716123810.25292-1-osalvador@suse.de>
 References: <20200716123810.25292-1-osalvador@suse.de>
@@ -33,72 +33,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there is an inconsistency when calling soft-offline from
-different paths on a page that is already poisoned.
+memory_failure() is supposed to call action_result() when it handles
+a memory error event, but there's one missing case. So let's add it.
 
-1) madvise:
+I find that include/ras/ras_event.h has some other MF_MSG_* undefined,
+so this patch also adds them.
 
-        madvise_inject_error skips any poisoned page and continues
-        the loop.
-        If that was the only page to madvise, it returns 0.
-
-2) /sys/devices/system/memory/:
-
-        When calling soft_offline_page_store()->soft_offline_page(),
-        we return -EBUSY in case the page is already poisoned.
-        This is inconsistent with a) the above example and b)
-        memory_failure, where we return 0 if the page was poisoned.
-
-Fix this by dropping the PageHWPoison() check in madvise_inject_error,
-and let soft_offline_page return 0 if it finds the page already poisoned.
-
-Please, note that this represents a user-api change, since now the
-return error when calling soft_offline_page_store()->soft_offline_page()
-will be different.
-
-Signed-off-by: Oscar Salvador <osalvador@suse.com>
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Oscar Salvador <osalvador@suse.com
 ---
- mm/madvise.c        | 3 ---
- mm/memory-failure.c | 4 ++--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ include/linux/mm.h      | 1 +
+ include/ras/ras_event.h | 3 +++
+ mm/memory-failure.c     | 5 ++++-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 226f0fcf0828..7b5ca96108cd 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -920,9 +920,6 @@ static int madvise_inject_error(int behavior,
- 		 */
- 		put_page(page);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 8f6a45165ec8..678ea25625d7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3046,6 +3046,7 @@ enum mf_action_page_type {
+ 	MF_MSG_BUDDY,
+ 	MF_MSG_BUDDY_2ND,
+ 	MF_MSG_DAX,
++	MF_MSG_UNSPLIT_THP,
+ 	MF_MSG_UNKNOWN,
+ };
  
--		if (PageHWPoison(page))
--			continue;
--
- 		if (behavior == MADV_SOFT_OFFLINE) {
- 			pr_info("Soft offlining pfn %#lx at process virtual address %#lx\n",
- 				 pfn, start);
+diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
+index 36c5c5e38c1d..0bdbc0d17d2f 100644
+--- a/include/ras/ras_event.h
++++ b/include/ras/ras_event.h
+@@ -361,6 +361,7 @@ TRACE_EVENT(aer_event,
+ 	EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )	\
+ 	EM ( MF_MSG_HUGE, "huge page" )					\
+ 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
++	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
+ 	EM ( MF_MSG_UNMAP_FAILED, "unmapping failed page" )		\
+ 	EM ( MF_MSG_DIRTY_SWAPCACHE, "dirty swapcache page" )		\
+ 	EM ( MF_MSG_CLEAN_SWAPCACHE, "clean swapcache page" )		\
+@@ -373,6 +374,8 @@ TRACE_EVENT(aer_event,
+ 	EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )	\
+ 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
+ 	EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )		\
++	EM ( MF_MSG_DAX, "dax page" )					\
++	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
+ 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
+ 
+ /*
 diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index c6c83337708a..2b2aa5a76b9b 100644
+index 2b2aa5a76b9b..7359164c3fe9 100644
 --- a/mm/memory-failure.c
 +++ b/mm/memory-failure.c
-@@ -1781,7 +1781,7 @@ static int __soft_offline_page(struct page *page)
- 		unlock_page(page);
- 		put_page(page);
- 		pr_info("soft offline: %#lx page already poisoned\n", pfn);
--		return -EBUSY;
-+		return 0;
+@@ -569,6 +569,7 @@ static const char * const action_page_types[] = {
+ 	[MF_MSG_BUDDY]			= "free buddy page",
+ 	[MF_MSG_BUDDY_2ND]		= "free buddy page (2nd try)",
+ 	[MF_MSG_DAX]			= "dax page",
++	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
+ 	[MF_MSG_UNKNOWN]		= "unknown page",
+ };
+ 
+@@ -1359,8 +1360,10 @@ int memory_failure(unsigned long pfn, int flags)
  	}
  
- 	if (!PageHuge(page))
-@@ -1881,7 +1881,7 @@ int soft_offline_page(unsigned long pfn)
- 
- 	if (PageHWPoison(page)) {
- 		pr_info("soft offline: %#lx page already poisoned\n", pfn);
--		return -EBUSY;
-+		return 0;
+ 	if (PageTransHuge(hpage)) {
+-		if (try_to_split_thp_page(p, "Memory Failure") < 0)
++		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
++			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
+ 			return -EBUSY;
++		}
+ 		VM_BUG_ON_PAGE(!page_count(p), p);
  	}
  
- 	get_online_mems();
 -- 
 2.26.2
 
