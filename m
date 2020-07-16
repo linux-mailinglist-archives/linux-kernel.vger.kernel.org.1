@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27DE2222E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D792222F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgGPMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 08:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
+        id S1728126AbgGPMyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 08:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727106AbgGPMwH (ORCPT
+        with ESMTP id S1726537AbgGPMyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:52:07 -0400
+        Thu, 16 Jul 2020 08:54:49 -0400
 Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B5AC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 05:52:07 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r19so6932602ljn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 05:52:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B82C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 05:54:49 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so6952651ljg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 05:54:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HCnwyZoMzuPKsERhk3jj3Z4cbSkn3iN0nOs3nxQkMq0=;
-        b=sOjZAMG0GZhuc7hKNYzLVK9cSOp5waHIXzYWhb43Fz8ZgX9z9+bNavNcAEpG70dgBk
-         ymAxg8CBGeGJogHJ8EZfOJxQxQrcVu4fbyFxrtPhw/lrQtdZwuFiFnU3Ns9+2O77tI7T
-         t+cLNEO2tso3H8qv2p3wup/rHCTC9UnJFDeLIR9S3z+CUU/XMjzPHMO8ZlQKuTNz6l/0
-         eNvh5dAs47H6r7AMj0WyGKIZ3da6n+akTPo1vtDqAr7R9LVFcAQzgEkzK7V29ThxVSfl
-         tlafLPmggszgOc2KgLZv3yeFkDfhxzR7uBKLqBJdhVoSPaG7IxVDNowwB3Q79TU4M5aw
-         Us8w==
+        bh=mQI1oerBg67N/QEQ4aYPTUgh5UH04z0Y8Afk15C7qQo=;
+        b=Eu3ev43Gj+jFZ2Micy2fEmYcl8drBi0P/k/9dv3SJQ4hIaFztEB8MVkTm9Vf8Jfplc
+         qbLNBdkRs2Rk1t+yOtcwehSChqOf0ny/lQ8WDZIDEE1hcG5Y14IuhmaFdU7YqPLLr0e+
+         BUFc/1uHgHz4ualc+bbUUcCjcirrrqOVDccm4Xmj1/PKO9sJeTBfoaA3WetpeWkKlGTh
+         BmZQF40QA1eaBxTLgTWGabGh/zNYdBZtXokRESDLph9PxguKWlWEkmPE/BOrQLj0xWTF
+         Df80+y3wSEDjPmXHrMnxo2L6/NzK0qjjzs5GY5IcLb975Rpo4uPmsKIFW/d3KsYjiZxe
+         kqTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HCnwyZoMzuPKsERhk3jj3Z4cbSkn3iN0nOs3nxQkMq0=;
-        b=RDx70bu9+og1mA5iay755YcMnOs60l2RRDzXVZIpe2afSo/DjZOu2he8bvE9Zzq5ko
-         xkmE01PwJpkuBJBPLY+0vWxqfzVJOBeLGERsNLv8HYonHunxMXeLk1qnjOZitb/Oy5Xd
-         Y7uJiNwsO9fKnoKI9ZDzhjcMCBiaDHNoiNesWwVruIzoC3FrMMNbDzguRw2SdhuYFO6a
-         g/YKEZ3jrsnOQR/i1kOeBr/O7i5tNVttmjVm0feIxqrX7yJVbeRV+KNlJr0qDWM88AkD
-         pHaSY7Mjzm6h7weWAbYH0qjfAw4FhrN8ZQJL+2CKye4K3R4Owjj1yGfcTr1P0YkxNDFb
-         DIfg==
-X-Gm-Message-State: AOAM531T+td4kZqG/Q+fFzVR9iBn8dJzgsJDfhEW66WcZpBLqKG/1pwa
-        RXSnT3GBWSkAFjA8n+yynV3HoXl8FGGifzJLzltfMQ==
-X-Google-Smtp-Source: ABdhPJw/BhPEYT/8575MJQZaoQ8ocAWYoTgsBn5QFuT7ytXA0Q8/v+AT4JkXs2IK1Vyo3oIafinMzE0ToIsQaj9hRe4=
-X-Received: by 2002:a2e:810a:: with SMTP id d10mr1900535ljg.144.1594903926142;
- Thu, 16 Jul 2020 05:52:06 -0700 (PDT)
+        bh=mQI1oerBg67N/QEQ4aYPTUgh5UH04z0Y8Afk15C7qQo=;
+        b=McqVdw/yVhpvVq0ipEbTHWiIFzTb8Ysu25PWslGrAkEQQfOUzuL6rP6MeJ4q5zRo4p
+         81zW0psyYscLGCRmer21sBK+qo/KWVU5jW+21jc3JW1un4IVUhhIDA7tXTQX01QW8U/D
+         SopD0bAzJtfyksRru6p8jD683YysbgbJ9K9GWwEoXuO05NigrdOYbTZNllq/+XEnKjtS
+         sWrM+/cJYO0A5VBig8rd/SctF66pEiGXxFmspj7TWxhvMXrIbXHYpKjZzXPdfxprxzaI
+         i7c8NCXcIpsamoJGVwPNg3CNTlFDnBG0WMaJnWFZGpHVsgH7wR6lT+xWo4I1QAwAwqqv
+         hGFQ==
+X-Gm-Message-State: AOAM531Ea50mIFdKBor3xp3YliiJhYyHrTc551nO8mPjb/lAmDoJpwnW
+        KlaRl7evq9GGwge04mvEset9xdwntSyZ7/KcUD52Ag==
+X-Google-Smtp-Source: ABdhPJzQ+xr8K7uDdKRcwbGwycJoaG1dk8RlTTlU7MSPc38Pa89AEeS/T5p7WQEQhf+wQvhNQTS/GOwfO/JIzrmKYOA=
+X-Received: by 2002:a2e:8597:: with SMTP id b23mr1812907lji.338.1594904087965;
+ Thu, 16 Jul 2020 05:54:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200710231824.60699-1-john.stultz@linaro.org>
-In-Reply-To: <20200710231824.60699-1-john.stultz@linaro.org>
+References: <20200711035544.2832154-1-palmer@dabbelt.com> <20200711035544.2832154-3-palmer@dabbelt.com>
+In-Reply-To: <20200711035544.2832154-3-palmer@dabbelt.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Jul 2020 14:51:55 +0200
-Message-ID: <CACRpkdaSiUwa0i5nQy8EZOg7smN3g2a+1AV2x+1PShNc071UFg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Allow for qcom-pdc to be loadable as a module
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Date:   Thu, 16 Jul 2020 14:54:37 +0200
+Message-ID: <CACRpkdY6TxH0rAY5Kn8MsM8RhN1hR-_RYkoUuCpqf9W0D8+0OA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm: Use the new generic copy_oldmem_page()
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     mick@ics.forth.gr, Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>, masahiroy@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Mikhail Zaslonko <zaslonko@linux.ibm.com>, willy@infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>, paulmck@kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Potapenko <glider@google.com>, elver@google.com,
+        David Gow <davidgow@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Takahiro Akashi <takahiro.akashi@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 1:18 AM John Stultz <john.stultz@linaro.org> wrote:
+On Sat, Jul 11, 2020 at 5:59 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 
-> This patch series provides exports and config tweaks to allow
-> the qcom-pdc driver to be able to be configured as a permement
-> modules (particularlly useful for the Android Generic Kernel
-> Image efforts).
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
 >
-> This was part of a larger patch series, to enable qcom_scm
-> driver to be a module as well, but I've split it out as there
-> are some outstanding objections I still need to address with
-> the follow-on patches, and wanted to see if progress could be
-> made on this subset of the series in the meantime.
+> This is exactly the same as the arm64 code, which I just into lib/ to
+> avoid copying it into the RISC-V port.  This builds with defconfig and with
+> CRASH_DUMP=y.
 >
-> New in v3:
-> *  Drop conditional usage of IRQCHIP_DECLARE as suggested by
->    Stephen Boyd and Marc Zyngier
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-This patch set looks entirely reasonable to me.
+Looks good to me.
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
