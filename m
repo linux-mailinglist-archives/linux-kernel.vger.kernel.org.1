@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB78221FD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8687C221FD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgGPJkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgGPJkw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:40:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C4BC061755;
-        Thu, 16 Jul 2020 02:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DODVfvRjphploJcUvRl2f5HSQLQF2PLhJJB7s8CHhjQ=; b=wCfVy1BYq74yjZWXOTO2nHfY+M
-        m52ZzX9/5ND6SEwsQMoMegz2OtZELaiXSuS61XrZ5RrqX7GrLrlhEfW34Swp/turxkEQIO1sIRkfM
-        tNNsKlI/qGKlPhvGwhExwrpGzweEFYUtJJCWa4mux4HowvWdaY8HXPsGLZnkdfRHfC+yRQfx1gJJC
-        F4yV6oFbZaj9d+SLSw95wDHKoxnwq0HL6NZoIpjGdw1Lp37udC7Y0vEGRndVCSbaLYi+fZnS0287f
-        oUKpoP7jf1B9RL4C8wN9qMNWwjFWxfX9xORSixllhBZAW3AxmLs/dtJ2wEGl9El1ZmnfDwwrjvFod
-        CleI6WhQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jw0Ne-0004td-2E; Thu, 16 Jul 2020 09:40:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1726973AbgGPJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725996AbgGPJlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:41:50 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4C4A30066E;
-        Thu, 16 Jul 2020 11:40:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 63B9826501E59; Thu, 16 Jul 2020 11:40:39 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 11:40:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
-Message-ID: <20200716094039.GQ10769@hirez.programming.kicks-ass.net>
-References: <8cbf2963-d0e4-0ca8-4ffe-c2057694447f@physik.fu-berlin.de>
- <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
- <CAMuHMdUre2-fRgLP8YiwjAKN6J=m1vGhPSMMUdpof7jPJfcWuw@mail.gmail.com>
- <def65208-a38b-8663-492a-cae150027003@physik.fu-berlin.de>
- <b5f1853e-031d-c09d-57d2-fb4baffa01ea@physik.fu-berlin.de>
- <CAMuHMdW8RtJKk3u7RWQKP2tA3AYT2rB2aqhUT1KnJ4tJwWWKDA@mail.gmail.com>
- <b5cd845f-7b5e-af8e-a15d-3ede7e61ced4@physik.fu-berlin.de>
- <0322def7-fc16-c805-8f2b-c88fffce2f1e@physik.fu-berlin.de>
- <2df7ca7f-7e26-c916-b6ac-4ec1913fb8d7@physik.fu-berlin.de>
- <CAMuHMdXjfq=RjJ2doR7XyQMnZUA8ccxKc7_tyUzTX29tpyZojw@mail.gmail.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C58042065D;
+        Thu, 16 Jul 2020 09:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594892510;
+        bh=tFMjaTObTGfQzsxUT7iWfGij3LNoOn67jvCe37qigkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WG4ewMb3Rq4brE9ktYGjoGPCThQEUtSA/M8Js/9Xe1iCHvrVmnM6jZGVFU/T2Ol55
+         9Oy1DYmOYZ7uldE7+vuMd5vdtGnBIQRENZ28wA8VHQXJT0GGwL0iZoMP9rZMbZjkl8
+         H6FV45HV9MNpsqedgLSyEHhvryUlRM8vuNWyhMxU=
+Date:   Thu, 16 Jul 2020 10:41:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     john.garry@huawei.com, zhangshaokun@hisilicon.com,
+        mark.rutland@arm.com, wang.wanghaifeng@huawei.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH] drivers/perf: Fix kernel panic when rmmod PMU modules
+ during perf sampling
+Message-ID: <20200716094144.GC6771@willie-the-truck>
+References: <1594891165-8228-1-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdXjfq=RjJ2doR7XyQMnZUA8ccxKc7_tyUzTX29tpyZojw@mail.gmail.com>
+In-Reply-To: <1594891165-8228-1-git-send-email-liuqi115@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 08:21:27PM +0200, Geert Uytterhoeven wrote:
+On Thu, Jul 16, 2020 at 05:19:25PM +0800, Qi Liu wrote:
+> Kernel panic will also happen when users try to unbind PMU drivers with
+> device. This unbind issue could be solved by another patch latter.
+> 
+>  drivers/perf/arm_smmuv3_pmu.c                 | 1 +
+>  drivers/perf/fsl_imx8_ddr_perf.c              | 1 +
+>  drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c | 1 +
+>  drivers/perf/hisilicon/hisi_uncore_hha_pmu.c  | 1 +
+>  drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c  | 1 +
+>  5 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+> index 48e28ef..90caba56 100644
+> --- a/drivers/perf/arm_smmuv3_pmu.c
+> +++ b/drivers/perf/arm_smmuv3_pmu.c
+> @@ -742,6 +742,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, smmu_pmu);
+> 
+>  	smmu_pmu->pmu = (struct pmu) {
+> +		.module		= THIS_MODULE,
 
-> Oh, we actually discussed that:
-> https://lore.kernel.org/linux-mm/20191204133454.GW2844@hirez.programming.kicks-ass.net/
-> but there was no conclusion...
+I thought platform_driver_register() did this automatically?
 
-Urgh.. clearly that fell off the table :-(
-
-So yes, that patch works, but as I wrote, I think it's still broken.
-Then again, that particular breakage has been there for a long time.
-
-Ooohh.. I have another whole patch-set that fixes that across
-architectures which I forgot about too:
-
-  https://lkml.kernel.org/r/20191211120713.360281197@infradead.org
-
-that actually included the SH fix.
-
-Then Aneesh got a bunch of those patches merged because he needed it for
-Power, but the rest bitrotted again.
-
-Let me rebase/refresh the rest of that and send it out again.
+Will
