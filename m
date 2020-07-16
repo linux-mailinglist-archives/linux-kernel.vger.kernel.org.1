@@ -2,69 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D1C221F66
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B218221F55
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgGPJHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:07:01 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:35620 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgGPJHA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:07:00 -0400
-Received: by mail-lj1-f193.google.com with SMTP id q4so6341975lji.2;
-        Thu, 16 Jul 2020 02:06:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OBEQGPTChpp2rgfOeM1kSlSWAgJYyyqDBB2eHOFChvg=;
-        b=E3WGiQii4LSgSwQD1wK61QMPu1byZy4EaIJ5eFfCeE01Q2L4FTjQmvV7W0f4hrxcSA
-         36V2Kh3nnTexA6Km5cqGc7fsFPCStRMb5kyFJ5CXvzksAHZa9QNU7uESMHqXXX5Q2CNe
-         L/w2ijxPJSakpFWYWrJosDlboAPRjl4Cf2E5TnbVBqUMF7brV/jYAzwZwb8upw4wNTiO
-         KlIltQIontVYk/lRA6Ks3R8IHTEwCMuqbaEcK3ieTQcxiRa7ICicjVmF/pWZFZ3SCVEb
-         OsP8MM7hH3R2t5lucWqbHD5DKv+o28mTHvWvdWonK8hVrMC4Q2DXR2u3dqdhf4tqnr2a
-         /gsA==
-X-Gm-Message-State: AOAM530UIwgvZjaP2H7+4Ts5Q7EbtLs4glcdLbgAUU+mpY+47NuOQO2G
-        6a48DhRfXee0rbzYJ5IXbcGjouyr0XHmpnjkqlA=
-X-Google-Smtp-Source: ABdhPJzY4AtdWyo0zU9lTfnS590Gsucs///uO2eLVmlTpmxBUsgFn3PU56CccKqZUhFsj1MTJh4QVTSCc2tt6OsY5EQ=
-X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr1584485ljp.37.1594890418508;
- Thu, 16 Jul 2020 02:06:58 -0700 (PDT)
+        id S1728445AbgGPJDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:03:03 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54260 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728349AbgGPJDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:03:02 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6B75115B7A521A036300;
+        Thu, 16 Jul 2020 17:03:01 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 16 Jul 2020 17:02:58 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rich Felker <dalias@libc.org>
+CC:     <linux-sh@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] sh: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Thu, 16 Jul 2020 17:06:53 +0800
+Message-ID: <20200716090653.14256-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CGME20200716053452eucas1p24dedd4565b90817c244724b1c52a8329@eucas1p2.samsung.com>
- <20200716053438.3498-1-m.szyprowski@samsung.com>
-In-Reply-To: <20200716053438.3498-1-m.szyprowski@samsung.com>
-From:   Sudeep Holla <sudeep.holla@arm.com>
-Date:   Thu, 16 Jul 2020 10:06:46 +0100
-Message-ID: <CAPKp9uYCKBpWazGCV8gw8U0ZBB-X5UkeSw4+_5m6awZ8W=azFA@mail.gmail.com>
-Subject: Re: [PATCH] rtc: pl031: fix alarm support
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-rtc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 6:37 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> Commit 75a472845196 ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
-> adjusted driver to the new API, but during the conversion a call to enable
-> alarm irq in set_alarm() was lost. Restore it, what fixes alarm support in
-> the PL031 RTC driver.
->
+From: Chen Huang <chenhuang5@huawei.com>
 
-I posted exact same fix couple of days back[1]
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
---
-Regards,
-Sudeep
+Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+---
+ arch/sh/mm/asids-debugfs.c | 15 ++-------------
+ arch/sh/mm/cache-debugfs.c | 15 ++-------------
+ arch/sh/mm/pmb.c           | 15 ++-------------
+ 3 files changed, 6 insertions(+), 39 deletions(-)
 
-[1] http://lore.kernel.org/r/20200714124556.20294-1-sudeep.holla@arm.com
+diff --git a/arch/sh/mm/asids-debugfs.c b/arch/sh/mm/asids-debugfs.c
+index 065519ba6..d16d6f5ec 100644
+--- a/arch/sh/mm/asids-debugfs.c
++++ b/arch/sh/mm/asids-debugfs.c
+@@ -26,7 +26,7 @@
+ #include <asm/processor.h>
+ #include <asm/mmu_context.h>
+ 
+-static int asids_seq_show(struct seq_file *file, void *iter)
++static int asids_debugfs_show(struct seq_file *file, void *iter)
+ {
+ 	struct task_struct *p;
+ 
+@@ -48,18 +48,7 @@ static int asids_seq_show(struct seq_file *file, void *iter)
+ 	return 0;
+ }
+ 
+-static int asids_debugfs_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, asids_seq_show, inode->i_private);
+-}
+-
+-static const struct file_operations asids_debugfs_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= asids_debugfs_open,
+-	.read_iter		= seq_read_iter,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(asids_debugfs);
+ 
+ static int __init asids_debugfs_init(void)
+ {
+diff --git a/arch/sh/mm/cache-debugfs.c b/arch/sh/mm/cache-debugfs.c
+index 114085cd5..b0f185169 100644
+--- a/arch/sh/mm/cache-debugfs.c
++++ b/arch/sh/mm/cache-debugfs.c
+@@ -22,7 +22,7 @@ enum cache_type {
+ 	CACHE_TYPE_UNIFIED,
+ };
+ 
+-static int cache_seq_show(struct seq_file *file, void *iter)
++static int cache_debugfs_show(struct seq_file *file, void *iter)
+ {
+ 	unsigned int cache_type = (unsigned int)file->private;
+ 	struct cache_info *cache;
+@@ -94,18 +94,7 @@ static int cache_seq_show(struct seq_file *file, void *iter)
+ 	return 0;
+ }
+ 
+-static int cache_debugfs_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, cache_seq_show, inode->i_private);
+-}
+-
+-static const struct file_operations cache_debugfs_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= cache_debugfs_open,
+-	.read_iter		= seq_read_iter,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(cache_debugfs);
+ 
+ static int __init cache_debugfs_init(void)
+ {
+diff --git a/arch/sh/mm/pmb.c b/arch/sh/mm/pmb.c
+index 1944c412f..68eb7cc6e 100644
+--- a/arch/sh/mm/pmb.c
++++ b/arch/sh/mm/pmb.c
+@@ -812,7 +812,7 @@ bool __in_29bit_mode(void)
+         return (__raw_readl(PMB_PASCR) & PASCR_SE) == 0;
+ }
+ 
+-static int pmb_seq_show(struct seq_file *file, void *iter)
++static int pmb_debugfs_show(struct seq_file *file, void *iter)
+ {
+ 	int i;
+ 
+@@ -846,18 +846,7 @@ static int pmb_seq_show(struct seq_file *file, void *iter)
+ 	return 0;
+ }
+ 
+-static int pmb_debugfs_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, pmb_seq_show, NULL);
+-}
+-
+-static const struct file_operations pmb_debugfs_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= pmb_debugfs_open,
+-	.read_iter		= seq_read_iter,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(pmb_debugfs);
+ 
+ static int __init pmb_debugfs_init(void)
+ {
+-- 
+2.17.1
+
