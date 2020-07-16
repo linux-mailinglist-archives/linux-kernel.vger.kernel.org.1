@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E8C222181
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00639222194
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgGPLck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 07:32:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727963AbgGPLcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:32:39 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC3B92074B;
-        Thu, 16 Jul 2020 11:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594899159;
-        bh=3cOvlaZ05EcmrtKX6g8BP2m/rqNbiRqnjZrKgj08tjE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ne0dpTmDWaQ3qVkvvYEshgxF7lYWvaZkeH6xK7kTKoLW3O+pFyWi2L1A2EhHzrP39
-         7O5lhBIAzAb0W62JVPPHfaaMwgIHVLghVV1DYu6+lrWZn/cMVuTJT2MQ/a3VvQ3AO9
-         etxnVjWL9KQXfEWSx0NW/wq/SB+ProewtyANR1u4=
-Date:   Thu, 16 Jul 2020 12:32:35 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        trivial@kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, maz@kernel.org
-Subject: Re: [PATCH 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
-Message-ID: <20200716113234.GA7290@willie-the-truck>
-References: <1592846920-45338-1-git-send-email-john.garry@huawei.com>
- <20200716101940.GA7036@willie-the-truck>
- <20200716102233.GC7036@willie-the-truck>
- <20200716102814.GD7036@willie-the-truck>
- <bd302efa-20d8-e1b3-6a80-db65ab5ad752@huawei.com>
- <aef1e4a4-d594-f477-9029-8f4295bb9f6c@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aef1e4a4-d594-f477-9029-8f4295bb9f6c@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728194AbgGPLgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 07:36:11 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:35028 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgGPLgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:36:06 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 16 Jul 2020 04:36:06 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jul 2020 04:36:04 -0700
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Jul 2020 17:05:38 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 0740C4B0D; Thu, 16 Jul 2020 17:05:37 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, jsanka@codeaurora.org,
+        travitej@codeaurora.org, nganji@codeaurora.org
+Subject: [PATCH 1/3] arm64: dts: sc7180: add interconnect bindings for display
+Date:   Thu, 16 Jul 2020 17:05:32 +0530
+Message-Id: <1594899334-19772-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 12:22:05PM +0100, Robin Murphy wrote:
-> On 2020-07-16 11:56, John Garry wrote:
-> > On 16/07/2020 11:28, Will Deacon wrote:
-> > > On Thu, Jul 16, 2020 at 11:22:33AM +0100, Will Deacon wrote:
-> > > > On Thu, Jul 16, 2020 at 11:19:41AM +0100, Will Deacon wrote:
-> > > > > On Tue, Jun 23, 2020 at 01:28:36AM +0800, John Garry wrote:
-> > > > > > As mentioned in [0], the CPU may consume many cycles processing
-> > > > > > arm_smmu_cmdq_issue_cmdlist(). One issue we find is the
-> > > > > > cmpxchg() loop to
-> > > > > > get space on the queue takes approx 25% of the cycles
-> > > > > > for this function.
-> > > > > > 
-> > > > > > This series removes that cmpxchg().
-> > > > > 
-> > > > > How about something much simpler like the diff below? >>
-> > > > Ah, scratch that, I don't drop the lock if we fail the cas with it held.
-> > > > Let me hack it some more (I have no hardware so I can only
-> > > > build-test this).
-> > > 
-> > > Right, second attempt...
-> > 
-> > I can try it, but if performance if not as good, then please check mine
-> > further (patch 4/4 specifically) - performance is really good, IMHO.
-> 
-> Perhaps a silly question (I'm too engrossed in PMU world ATM to get properly
-> back up to speed on this), but couldn't this be done without cmpxchg anyway?
-> Instinctively it feels like instead of maintaining a literal software copy
-> of the prod value, we could resolve the "claim my slot in the queue" part
-> with atomic_fetch_add on a free-running 32-bit "pseudo-prod" index, then
-> whoever updates the hardware deals with the truncation and wrap bit to
-> convert it to an actual register value.
+From: Krishna Manikandan <mkrishn@codeaurora.org>
 
-Maybe, but it's easier said than done. The hard part is figuring how that
-you have space and there's no way I'm touching that logic without a way to
-test this.
+This change adds the interconnect bindings to the
+MDSS node. This will establish Display to DDR path
+for bus bandwidth voting.
 
-I'm also not keen to complicate the code because of systems that don't scale
-well with contended CAS [1]. If you put down loads of cores, you need an
-interconnect/coherence protocol that can handle it.
+Changes in v2:
+	- Change in commit message(Matthias Kaehlcke)
 
-Will
+Changes in v3:
+	- Updated commit message to include
+	  reviewer's name in v2
 
-[1] https://lore.kernel.org/lkml/20190607072652.GA5522@hc/T/#m0d00f107c29223045933292a8b5b90d2ca9b7e5c
+Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 998f101..4f2c0d1 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -1522,6 +1522,9 @@
+ 			interrupt-controller;
+ 			#interrupt-cells = <1>;
+ 
++			interconnects = <&mmss_noc MASTER_MDP0 &mc_virt SLAVE_EBI1>;
++			interconnect-names = "mdp0-mem";
++
+ 			iommus = <&apps_smmu 0x800 0x2>;
+ 
+ 			#address-cells = <2>;
+-- 
+1.9.1
+
