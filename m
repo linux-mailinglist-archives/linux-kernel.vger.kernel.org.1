@@ -2,450 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABB3222D31
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816D5222D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgGPUsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 16:48:17 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:32939 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgGPUsQ (ORCPT
+        id S1726546AbgGPUvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 16:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgGPUva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:48:16 -0400
-Received: from localhost.localdomain ([93.22.39.121])
-        by mwinf5d12 with ME
-        id 3wo8230042cqCS503wo9Tc; Thu, 16 Jul 2020 22:48:14 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 16 Jul 2020 22:48:14 +0200
-X-ME-IP: 93.22.39.121
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org, jes@trained-monkey.org
-Cc:     linux-acenic@sunsite.dk, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: alteon: switch from 'pci_' to 'dma_' API
-Date:   Thu, 16 Jul 2020 22:48:02 +0200
-Message-Id: <20200716204802.326057-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Thu, 16 Jul 2020 16:51:30 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491E2C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:51:30 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id c16so7476763ioi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/OMgh93Kb2HkE6P0kAr28R6z12ut/xwA3vG3iFDckbI=;
+        b=SlhjXoboBAxGh2VTbr9NcInkijK7jQpCCQnuS6p+0nfgmyeVsheY4bc3BdXFSkBPTD
+         j3PQMvPR5EZ0k3Bz8aBB5FiDK5eypyjPNP42owrGwPGZalFhiDbNSwOk1bM4s3eSCZkC
+         t1nHWdMiS5XFpAFhIGk1PPbIC5sxZ+0K5oQFobuIKINk+5fhlhrQu/zBAXEjKjL+37fc
+         B6KHhfMuEiwftkGVc+I9WskJLKiqmTxyD0TGV3XaLT5nKUXr0t/bhvar61NQsvEBNFm8
+         bk9eKcwh96dfrbzu5YVUq0wY8MOR9LXEocoukxOjqRuQYvzHQ7lq/lJ6VWFgpiEeWzYQ
+         hvYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/OMgh93Kb2HkE6P0kAr28R6z12ut/xwA3vG3iFDckbI=;
+        b=Mw3ePd+dPySQfrIkYMO9I+N/9zRFd2Xffa+RX/aqr6zivwnQh7z1GOY8xAj8s/e6f1
+         gKThgPsdhGeQkrFYHMYG/T5Dui7TG6UGZ9SrGSlVgk1FVvhvG6V318Y8qbnnvl6fFzem
+         NC4cE31mGUxub7mU+6kElwcz5QCYICLeM+UPxKLOvGxHRY5zVfjlMDyik0aQpqnX7JuC
+         XThbvzNi/Vl5AiRY0I+OGHSHRlROsrzIJpACLtut7NO5Q97ERxy1HiyTqQVzj87tb578
+         hEYzSDzmolv4P4bjIFuHpuOa31tcyMxIIBBcoI9el0OF4uyha+S9EuCo1S31FF9B9WC2
+         yAaw==
+X-Gm-Message-State: AOAM530rwWGDxDzKxO0GSIccGmbOa38N8UwzszDCnmsHu1VjfvqKx5Sx
+        KlJLD5fkgrbVokRcoM3/fLvv/57EQi8nkg==
+X-Google-Smtp-Source: ABdhPJy2wUZWh2Y4jruQ6d5kCL/LKMYVm6LNd8/aYi1fc8AM2ykPWqla4cvX5vltX/y94v5ZxMTqlA==
+X-Received: by 2002:a5e:a60d:: with SMTP id q13mr6237726ioi.199.1594932689231;
+        Thu, 16 Jul 2020 13:51:29 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id i12sm3469283ioi.48.2020.07.16.13.51.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 13:51:28 -0700 (PDT)
+Subject: Re: [PATCH RFC v2 1/3] io_uring: use an enumeration for
+ io_uring_register(2) opcodes
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Kees Cook <keescook@chromium.org>,
+        Aleksa Sarai <asarai@suse.de>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20200716124833.93667-1-sgarzare@redhat.com>
+ <20200716124833.93667-2-sgarzare@redhat.com>
+ <ca242a15-576d-4099-a5f8-85c08985e3ff@gmail.com>
+ <a2f109b2-adbf-147d-9423-7a1a4bf99967@kernel.dk>
+ <20326d79-fb5a-2480-e52a-e154e056171f@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <76879432-745d-a5ca-b171-b1391b926ea2@kernel.dk>
+Date:   Thu, 16 Jul 2020 14:51:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20326d79-fb5a-2480-e52a-e154e056171f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On 7/16/20 2:47 PM, Pavel Begunkov wrote:
+> On 16/07/2020 23:42, Jens Axboe wrote:
+>> On 7/16/20 2:16 PM, Pavel Begunkov wrote:
+>>> On 16/07/2020 15:48, Stefano Garzarella wrote:
+>>>> The enumeration allows us to keep track of the last
+>>>> io_uring_register(2) opcode available.
+>>>>
+>>>> Behaviour and opcodes names don't change.
+>>>>
+>>>> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>>> ---
+>>>>  include/uapi/linux/io_uring.h | 27 ++++++++++++++++-----------
+>>>>  1 file changed, 16 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+>>>> index 7843742b8b74..efc50bd0af34 100644
+>>>> --- a/include/uapi/linux/io_uring.h
+>>>> +++ b/include/uapi/linux/io_uring.h
+>>>> @@ -253,17 +253,22 @@ struct io_uring_params {
+>>>>  /*
+>>>>   * io_uring_register(2) opcodes and arguments
+>>>>   */
+>>>> -#define IORING_REGISTER_BUFFERS		0
+>>>> -#define IORING_UNREGISTER_BUFFERS	1
+>>>> -#define IORING_REGISTER_FILES		2
+>>>> -#define IORING_UNREGISTER_FILES		3
+>>>> -#define IORING_REGISTER_EVENTFD		4
+>>>> -#define IORING_UNREGISTER_EVENTFD	5
+>>>> -#define IORING_REGISTER_FILES_UPDATE	6
+>>>> -#define IORING_REGISTER_EVENTFD_ASYNC	7
+>>>> -#define IORING_REGISTER_PROBE		8
+>>>> -#define IORING_REGISTER_PERSONALITY	9
+>>>> -#define IORING_UNREGISTER_PERSONALITY	10
+>>>> +enum {
+>>>> +	IORING_REGISTER_BUFFERS,
+>>>> +	IORING_UNREGISTER_BUFFERS,
+>>>> +	IORING_REGISTER_FILES,
+>>>> +	IORING_UNREGISTER_FILES,
+>>>> +	IORING_REGISTER_EVENTFD,
+>>>> +	IORING_UNREGISTER_EVENTFD,
+>>>> +	IORING_REGISTER_FILES_UPDATE,
+>>>> +	IORING_REGISTER_EVENTFD_ASYNC,
+>>>> +	IORING_REGISTER_PROBE,
+>>>> +	IORING_REGISTER_PERSONALITY,
+>>>> +	IORING_UNREGISTER_PERSONALITY,
+>>>> +
+>>>> +	/* this goes last */
+>>>> +	IORING_REGISTER_LAST
+>>>> +};
+>>>
+>>> It breaks userspace API. E.g.
+>>>
+>>> #ifdef IORING_REGISTER_BUFFERS
+>>
+>> It can, yes, but we have done that in the past. In this one, for
+> 
+> Ok, if nobody on the userspace side cares, then better to do that
+> sooner than later.
+> 
+> 
+>> example:
+>>
+>> commit 9e3aa61ae3e01ce1ce6361a41ef725e1f4d1d2bf (tag: io_uring-5.5-20191212)
+>> Author: Jens Axboe <axboe@kernel.dk>
+>> Date:   Wed Dec 11 15:55:43 2019 -0700
+>>
+>>     io_uring: ensure we return -EINVAL on unknown opcod
+>>
+>> But it would be safer/saner to do this like we have the done the IOSQE_
+>> flags.
+> 
+> IOSQE_ are a bitmask, but this would look peculiar
+> 
+> enum {
+> 	__IORING_REGISTER_BUFFERS,
+> 	...
+> };
+> define IORING_REGISTER_BUFFERS __IORING_REGISTER_BUFFERS
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Yeah true of course, that won't really work for this case at all.
 
-When memory is allocated in 'ace_allocate_descriptors()' and
-'ace_init()' GFP_KERNEL can be used because both functions are called from
-the probe function and no lock is acquired.
+That said, I don't think it's a huge deal to turn it into an enum.
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/alteon/acenic.c | 114 +++++++++++++--------------
- 1 file changed, 56 insertions(+), 58 deletions(-)
-
-diff --git a/drivers/net/ethernet/alteon/acenic.c b/drivers/net/ethernet/alteon/acenic.c
-index 5d192d551623..99431c9a899b 100644
---- a/drivers/net/ethernet/alteon/acenic.c
-+++ b/drivers/net/ethernet/alteon/acenic.c
-@@ -642,9 +642,8 @@ static void acenic_remove_one(struct pci_dev *pdev)
- 
- 			ringp = &ap->skb->rx_std_skbuff[i];
- 			mapping = dma_unmap_addr(ringp, mapping);
--			pci_unmap_page(ap->pdev, mapping,
--				       ACE_STD_BUFSIZE,
--				       PCI_DMA_FROMDEVICE);
-+			dma_unmap_page(&ap->pdev->dev, mapping,
-+				       ACE_STD_BUFSIZE, DMA_FROM_DEVICE);
- 
- 			ap->rx_std_ring[i].size = 0;
- 			ap->skb->rx_std_skbuff[i].skb = NULL;
-@@ -662,9 +661,9 @@ static void acenic_remove_one(struct pci_dev *pdev)
- 
- 				ringp = &ap->skb->rx_mini_skbuff[i];
- 				mapping = dma_unmap_addr(ringp,mapping);
--				pci_unmap_page(ap->pdev, mapping,
-+				dma_unmap_page(&ap->pdev->dev, mapping,
- 					       ACE_MINI_BUFSIZE,
--					       PCI_DMA_FROMDEVICE);
-+					       DMA_FROM_DEVICE);
- 
- 				ap->rx_mini_ring[i].size = 0;
- 				ap->skb->rx_mini_skbuff[i].skb = NULL;
-@@ -681,9 +680,8 @@ static void acenic_remove_one(struct pci_dev *pdev)
- 
- 			ringp = &ap->skb->rx_jumbo_skbuff[i];
- 			mapping = dma_unmap_addr(ringp, mapping);
--			pci_unmap_page(ap->pdev, mapping,
--				       ACE_JUMBO_BUFSIZE,
--				       PCI_DMA_FROMDEVICE);
-+			dma_unmap_page(&ap->pdev->dev, mapping,
-+				       ACE_JUMBO_BUFSIZE, DMA_FROM_DEVICE);
- 
- 			ap->rx_jumbo_ring[i].size = 0;
- 			ap->skb->rx_jumbo_skbuff[i].skb = NULL;
-@@ -713,8 +711,8 @@ static void ace_free_descriptors(struct net_device *dev)
- 			 RX_JUMBO_RING_ENTRIES +
- 			 RX_MINI_RING_ENTRIES +
- 			 RX_RETURN_RING_ENTRIES));
--		pci_free_consistent(ap->pdev, size, ap->rx_std_ring,
--				    ap->rx_ring_base_dma);
-+		dma_free_coherent(&ap->pdev->dev, size, ap->rx_std_ring,
-+				  ap->rx_ring_base_dma);
- 		ap->rx_std_ring = NULL;
- 		ap->rx_jumbo_ring = NULL;
- 		ap->rx_mini_ring = NULL;
-@@ -722,31 +720,30 @@ static void ace_free_descriptors(struct net_device *dev)
- 	}
- 	if (ap->evt_ring != NULL) {
- 		size = (sizeof(struct event) * EVT_RING_ENTRIES);
--		pci_free_consistent(ap->pdev, size, ap->evt_ring,
--				    ap->evt_ring_dma);
-+		dma_free_coherent(&ap->pdev->dev, size, ap->evt_ring,
-+				  ap->evt_ring_dma);
- 		ap->evt_ring = NULL;
- 	}
- 	if (ap->tx_ring != NULL && !ACE_IS_TIGON_I(ap)) {
- 		size = (sizeof(struct tx_desc) * MAX_TX_RING_ENTRIES);
--		pci_free_consistent(ap->pdev, size, ap->tx_ring,
--				    ap->tx_ring_dma);
-+		dma_free_coherent(&ap->pdev->dev, size, ap->tx_ring,
-+				  ap->tx_ring_dma);
- 	}
- 	ap->tx_ring = NULL;
- 
- 	if (ap->evt_prd != NULL) {
--		pci_free_consistent(ap->pdev, sizeof(u32),
--				    (void *)ap->evt_prd, ap->evt_prd_dma);
-+		dma_free_coherent(&ap->pdev->dev, sizeof(u32),
-+				  (void *)ap->evt_prd, ap->evt_prd_dma);
- 		ap->evt_prd = NULL;
- 	}
- 	if (ap->rx_ret_prd != NULL) {
--		pci_free_consistent(ap->pdev, sizeof(u32),
--				    (void *)ap->rx_ret_prd,
--				    ap->rx_ret_prd_dma);
-+		dma_free_coherent(&ap->pdev->dev, sizeof(u32),
-+				  (void *)ap->rx_ret_prd, ap->rx_ret_prd_dma);
- 		ap->rx_ret_prd = NULL;
- 	}
- 	if (ap->tx_csm != NULL) {
--		pci_free_consistent(ap->pdev, sizeof(u32),
--				    (void *)ap->tx_csm, ap->tx_csm_dma);
-+		dma_free_coherent(&ap->pdev->dev, sizeof(u32),
-+				  (void *)ap->tx_csm, ap->tx_csm_dma);
- 		ap->tx_csm = NULL;
- 	}
- }
-@@ -763,8 +760,8 @@ static int ace_allocate_descriptors(struct net_device *dev)
- 		 RX_MINI_RING_ENTRIES +
- 		 RX_RETURN_RING_ENTRIES));
- 
--	ap->rx_std_ring = pci_alloc_consistent(ap->pdev, size,
--					       &ap->rx_ring_base_dma);
-+	ap->rx_std_ring = dma_alloc_coherent(&ap->pdev->dev, size,
-+					     &ap->rx_ring_base_dma, GFP_KERNEL);
- 	if (ap->rx_std_ring == NULL)
- 		goto fail;
- 
-@@ -774,7 +771,8 @@ static int ace_allocate_descriptors(struct net_device *dev)
- 
- 	size = (sizeof(struct event) * EVT_RING_ENTRIES);
- 
--	ap->evt_ring = pci_alloc_consistent(ap->pdev, size, &ap->evt_ring_dma);
-+	ap->evt_ring = dma_alloc_coherent(&ap->pdev->dev, size,
-+					  &ap->evt_ring_dma, GFP_KERNEL);
- 
- 	if (ap->evt_ring == NULL)
- 		goto fail;
-@@ -786,25 +784,25 @@ static int ace_allocate_descriptors(struct net_device *dev)
- 	if (!ACE_IS_TIGON_I(ap)) {
- 		size = (sizeof(struct tx_desc) * MAX_TX_RING_ENTRIES);
- 
--		ap->tx_ring = pci_alloc_consistent(ap->pdev, size,
--						   &ap->tx_ring_dma);
-+		ap->tx_ring = dma_alloc_coherent(&ap->pdev->dev, size,
-+						 &ap->tx_ring_dma, GFP_KERNEL);
- 
- 		if (ap->tx_ring == NULL)
- 			goto fail;
- 	}
- 
--	ap->evt_prd = pci_alloc_consistent(ap->pdev, sizeof(u32),
--					   &ap->evt_prd_dma);
-+	ap->evt_prd = dma_alloc_coherent(&ap->pdev->dev, sizeof(u32),
-+					 &ap->evt_prd_dma, GFP_KERNEL);
- 	if (ap->evt_prd == NULL)
- 		goto fail;
- 
--	ap->rx_ret_prd = pci_alloc_consistent(ap->pdev, sizeof(u32),
--					      &ap->rx_ret_prd_dma);
-+	ap->rx_ret_prd = dma_alloc_coherent(&ap->pdev->dev, sizeof(u32),
-+					    &ap->rx_ret_prd_dma, GFP_KERNEL);
- 	if (ap->rx_ret_prd == NULL)
- 		goto fail;
- 
--	ap->tx_csm = pci_alloc_consistent(ap->pdev, sizeof(u32),
--					  &ap->tx_csm_dma);
-+	ap->tx_csm = dma_alloc_coherent(&ap->pdev->dev, sizeof(u32),
-+					&ap->tx_csm_dma, GFP_KERNEL);
- 	if (ap->tx_csm == NULL)
- 		goto fail;
- 
-@@ -830,8 +828,8 @@ static void ace_init_cleanup(struct net_device *dev)
- 	ace_free_descriptors(dev);
- 
- 	if (ap->info)
--		pci_free_consistent(ap->pdev, sizeof(struct ace_info),
--				    ap->info, ap->info_dma);
-+		dma_free_coherent(&ap->pdev->dev, sizeof(struct ace_info),
-+				  ap->info, ap->info_dma);
- 	kfree(ap->skb);
- 	kfree(ap->trace_buf);
- 
-@@ -1129,9 +1127,9 @@ static int ace_init(struct net_device *dev)
- 	/*
- 	 * Configure DMA attributes.
- 	 */
--	if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
-+	if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))) {
- 		ap->pci_using_dac = 1;
--	} else if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
-+	} else if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) {
- 		ap->pci_using_dac = 0;
- 	} else {
- 		ecode = -ENODEV;
-@@ -1143,8 +1141,8 @@ static int ace_init(struct net_device *dev)
- 	 * and the control blocks for the transmit and receive rings
- 	 * as they need to be setup once and for all.
- 	 */
--	if (!(info = pci_alloc_consistent(ap->pdev, sizeof(struct ace_info),
--					  &ap->info_dma))) {
-+	if (!(info = dma_alloc_coherent(&ap->pdev->dev, sizeof(struct ace_info),
-+					&ap->info_dma, GFP_KERNEL))) {
- 		ecode = -EAGAIN;
- 		goto init_error;
- 	}
-@@ -1646,10 +1644,10 @@ static void ace_load_std_rx_ring(struct net_device *dev, int nr_bufs)
- 		if (!skb)
- 			break;
- 
--		mapping = pci_map_page(ap->pdev, virt_to_page(skb->data),
-+		mapping = dma_map_page(&ap->pdev->dev,
-+				       virt_to_page(skb->data),
- 				       offset_in_page(skb->data),
--				       ACE_STD_BUFSIZE,
--				       PCI_DMA_FROMDEVICE);
-+				       ACE_STD_BUFSIZE, DMA_FROM_DEVICE);
- 		ap->skb->rx_std_skbuff[idx].skb = skb;
- 		dma_unmap_addr_set(&ap->skb->rx_std_skbuff[idx],
- 				   mapping, mapping);
-@@ -1707,10 +1705,10 @@ static void ace_load_mini_rx_ring(struct net_device *dev, int nr_bufs)
- 		if (!skb)
- 			break;
- 
--		mapping = pci_map_page(ap->pdev, virt_to_page(skb->data),
-+		mapping = dma_map_page(&ap->pdev->dev,
-+				       virt_to_page(skb->data),
- 				       offset_in_page(skb->data),
--				       ACE_MINI_BUFSIZE,
--				       PCI_DMA_FROMDEVICE);
-+				       ACE_MINI_BUFSIZE, DMA_FROM_DEVICE);
- 		ap->skb->rx_mini_skbuff[idx].skb = skb;
- 		dma_unmap_addr_set(&ap->skb->rx_mini_skbuff[idx],
- 				   mapping, mapping);
-@@ -1763,10 +1761,10 @@ static void ace_load_jumbo_rx_ring(struct net_device *dev, int nr_bufs)
- 		if (!skb)
- 			break;
- 
--		mapping = pci_map_page(ap->pdev, virt_to_page(skb->data),
-+		mapping = dma_map_page(&ap->pdev->dev,
-+				       virt_to_page(skb->data),
- 				       offset_in_page(skb->data),
--				       ACE_JUMBO_BUFSIZE,
--				       PCI_DMA_FROMDEVICE);
-+				       ACE_JUMBO_BUFSIZE, DMA_FROM_DEVICE);
- 		ap->skb->rx_jumbo_skbuff[idx].skb = skb;
- 		dma_unmap_addr_set(&ap->skb->rx_jumbo_skbuff[idx],
- 				   mapping, mapping);
-@@ -1977,10 +1975,8 @@ static void ace_rx_int(struct net_device *dev, u32 rxretprd, u32 rxretcsm)
- 
- 		skb = rip->skb;
- 		rip->skb = NULL;
--		pci_unmap_page(ap->pdev,
--			       dma_unmap_addr(rip, mapping),
--			       mapsize,
--			       PCI_DMA_FROMDEVICE);
-+		dma_unmap_page(&ap->pdev->dev, dma_unmap_addr(rip, mapping),
-+			       mapsize, DMA_FROM_DEVICE);
- 		skb_put(skb, retdesc->size);
- 
- 		/*
-@@ -2046,9 +2042,10 @@ static inline void ace_tx_int(struct net_device *dev,
- 		skb = info->skb;
- 
- 		if (dma_unmap_len(info, maplen)) {
--			pci_unmap_page(ap->pdev, dma_unmap_addr(info, mapping),
-+			dma_unmap_page(&ap->pdev->dev,
-+				       dma_unmap_addr(info, mapping),
- 				       dma_unmap_len(info, maplen),
--				       PCI_DMA_TODEVICE);
-+				       DMA_TO_DEVICE);
- 			dma_unmap_len_set(info, maplen, 0);
- 		}
- 
-@@ -2337,9 +2334,10 @@ static int ace_close(struct net_device *dev)
- 			} else
- 				memset(ap->tx_ring + i, 0,
- 				       sizeof(struct tx_desc));
--			pci_unmap_page(ap->pdev, dma_unmap_addr(info, mapping),
-+			dma_unmap_page(&ap->pdev->dev,
-+				       dma_unmap_addr(info, mapping),
- 				       dma_unmap_len(info, maplen),
--				       PCI_DMA_TODEVICE);
-+				       DMA_TO_DEVICE);
- 			dma_unmap_len_set(info, maplen, 0);
- 		}
- 		if (skb) {
-@@ -2369,9 +2367,9 @@ ace_map_tx_skb(struct ace_private *ap, struct sk_buff *skb,
- 	dma_addr_t mapping;
- 	struct tx_ring_info *info;
- 
--	mapping = pci_map_page(ap->pdev, virt_to_page(skb->data),
--			       offset_in_page(skb->data),
--			       skb->len, PCI_DMA_TODEVICE);
-+	mapping = dma_map_page(&ap->pdev->dev, virt_to_page(skb->data),
-+			       offset_in_page(skb->data), skb->len,
-+			       DMA_TO_DEVICE);
- 
- 	info = ap->skb->tx_skbuff + idx;
- 	info->skb = tail;
 -- 
-2.25.1
+Jens Axboe
 
