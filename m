@@ -2,248 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6E72220DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7632220E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgGPKpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 06:45:14 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50963 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726350AbgGPKpN (ORCPT
+        id S1727883AbgGPKsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 06:48:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60016 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgGPKsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:45:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594896311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OxYWZgwLWn7Rnmoh675ZCFOcGubhbtM3QKjvJxepby8=;
-        b=TUi+qcnBaDiD11KS7rbb3y87vAhw8El9JwyVJIMAkje2t+XHEMJvcXbXloHRn5x4nwy+Jq
-        fLjLUPdlCfHVUb6RGzIPwSJ8kQf8lvN+bZTmpAyYUgRwMoTeSylJt81sWJtoMBUR59JOak
-        E0tN9TP3luOOQE7RCHz7jvuNKxHsCGU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-8q20Rjk8M_-nFl3Udlv2og-1; Thu, 16 Jul 2020 06:45:07 -0400
-X-MC-Unique: 8q20Rjk8M_-nFl3Udlv2og-1
-Received: by mail-wr1-f72.google.com with SMTP id f5so5357182wrv.22
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 03:45:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OxYWZgwLWn7Rnmoh675ZCFOcGubhbtM3QKjvJxepby8=;
-        b=GZGB917fjCsuY6oAuK8izBMcaRMWsde4Pw+oOvB65QUQfHYAp+bbMOpzXQKk/tudkB
-         5X+xiFF1s8T6Nu2PLkIpafyK+3yFo1sa+ueSLclWAaIUyrbKm953a7EdNbhK05U3L5CA
-         Ih13YkIUBeJp3kSKfW+A/c298bWuF13oyRqr+VycyUM1kJa/LxFX/1r0t+6JAcZ8x3nM
-         QJXrmP4WE0H77Wxl4eUo1SzCAmIjOPk2CeqUjAh9eFEEIBgwjoPNW3y2OyP2j2r43MNF
-         iNLLlWQaeC48AyCEAGRdphleB9Z0ljvDhIhKWU4Udc1yzDhsIP/jgrymCTITclHFpgWX
-         AzIA==
-X-Gm-Message-State: AOAM533NCawwJUSLfLtUDMTy9+cTPIjZnSYLZq46DKdrGYVNoCwLXs/O
-        6/jrBAhdoz2eNsRov2mb2eu+B2jF8lMZo2nvrVkLMPa6/OIGf1PGPNTicBiIE3nJC/JtAiWJGwv
-        pW/o7szMZFl2frzP9ciwEqcp/
-X-Received: by 2002:a5d:55cb:: with SMTP id i11mr4277120wrw.28.1594896306113;
-        Thu, 16 Jul 2020 03:45:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYbnuKjraPbNIkft/3GTUfSsNTNTx6l/aUgESxOucWFlYdAHLRLOjvsyeHY5kY8Vrt3fD+lA==
-X-Received: by 2002:a5d:55cb:: with SMTP id i11mr4277090wrw.28.1594896305809;
-        Thu, 16 Jul 2020 03:45:05 -0700 (PDT)
-Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
-        by smtp.gmail.com with ESMTPSA id w128sm8996937wmb.19.2020.07.16.03.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 03:45:04 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 06:45:00 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     teawater <teawaterz@linux.alibaba.com>
-Cc:     Hui Zhu <teawater@gmail.com>, david@redhat.com,
-        jasowang@redhat.com, akpm@linux-foundation.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        qemu-devel@nongnu.org, virtio-dev@lists.oasis-open.org,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [virtio-dev] [RFC for Linux v4 0/2] virtio_balloon: Add
- VIRTIO_BALLOON_F_CONT_PAGES to report continuous pages
-Message-ID: <20200716064340-mutt-send-email-mst@kernel.org>
-References: <1594867315-8626-1-git-send-email-teawater@gmail.com>
- <20200716021929-mutt-send-email-mst@kernel.org>
- <744230FA-78D8-4568-8188-683087065E84@linux.alibaba.com>
+        Thu, 16 Jul 2020 06:48:17 -0400
+Date:   Thu, 16 Jul 2020 10:48:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594896495;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=JCtqpSMiY3xUJef3DDkPQi7kzGOHIVyC/0EPni/LeRc=;
+        b=B3nro80TcMgA+TJAXC9NvypjjcexrZBFoQGp7P8SLoNTZn0ZaAQxK8Bv/5g8c2Uwh7/w3w
+        72N0t2Q1xUisSRF9VOtZUySgeczicsOSctIoWnBVOG2kCLXAYfMGGQQCMNo8AvpWjKkJS2
+        ezhMeXrwp3A6cj/FuGdUcmvnC3JsXftqsoiXA8eEpHslWgLrLO0+rDk/TbRLywETQM7u9H
+        /shGusxqozd145MIRbpUTrjpdCJwniOnIc3pc3Ad88miRCBLddrKmwyCG35hIsI1dfIFKr
+        2EmVxMsL9Yo6EbIlJrsmp2jV/Uvlzh8cK5NYgtgdCem2asNdRevooQAE16kuKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594896495;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=JCtqpSMiY3xUJef3DDkPQi7kzGOHIVyC/0EPni/LeRc=;
+        b=02SbIAcSB6RrEYTrzkshN8lzt1tEnDbtSH3Ik/ytOrFW8lTRcbfudWk082ovcAmqvlale0
+        R1EaQV+GyAkudmBw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/idtentry: Remove stale comment
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <744230FA-78D8-4568-8188-683087065E84@linux.alibaba.com>
+Message-ID: <159489649426.4006.4244079083466119309.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:01:18PM +0800, teawater wrote:
-> 
-> 
-> > 2020年7月16日 14:38，Michael S. Tsirkin <mst@redhat.com> 写道：
-> > 
-> > On Thu, Jul 16, 2020 at 10:41:50AM +0800, Hui Zhu wrote:
-> >> The first, second and third version are in [1], [2] and [3].
-> >> Code of current version for Linux and qemu is available in [4] and [5].
-> >> Update of this version:
-> >> 1. Report continuous pages will increase the speed.  So added deflate
-> >>   continuous pages.
-> >> 2. According to the comments from David in [6], added 2 new vqs inflate_cont_vq
-> >>   and deflate_cont_vq to report continuous pages with format 32 bits pfn and 32
-> >>   bits size.
-> >> Following is the introduction of the function.
-> >> These patches add VIRTIO_BALLOON_F_CONT_PAGES to virtio_balloon. With this
-> >> flag, balloon tries to use continuous pages to inflate and deflate.
-> >> Opening this flag can bring two benefits:
-> >> 1. Report continuous pages will increase memory report size of each time
-> >>   call tell_host.  Then it will increase the speed of balloon inflate and
-> >>   deflate.
-> >> 2. Host THPs will be splitted when qemu release the page of balloon inflate.
-> >>   Inflate balloon with continuous pages will let QEMU release the pages
-> >>   of same THPs.  That will help decrease the splitted THPs number in
-> >>   the host.
-> >>   Following is an example in a VM with 1G memory 1CPU.  This test setups an
-> >>   environment that has a lot of fragmentation pages.  Then inflate balloon will
-> >>   split the THPs.
-> 
-> 
-> >> // This is the THP number before VM execution in the host.
-> >> // None use THP.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:         0 kB
-> These lines are from host.
-> 
-> >> // After VM start, use usemem
-> >> // (https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git)
-> >> // punch-holes function generates 400m fragmentation pages in the guest
-> >> // kernel.
-> >> usemem --punch-holes -s -1 800m &
-> These lines are from guest.  They setups the environment that has a lot of fragmentation pages.
-> 
-> >> // This is the THP number after this command in the host.
-> >> // Some THP is used by VM because usemem will access 800M memory
-> >> // in the guest.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:    911360 kB
-> These lines are from host.
-> 
-> >> // Connect to the QEMU monitor, setup balloon, and set it size to 600M.
-> >> (qemu) device_add virtio-balloon-pci,id=balloon1
-> >> (qemu) info balloon
-> >> balloon: actual=1024
-> >> (qemu) balloon 600
-> >> (qemu) info balloon
-> >> balloon: actual=600
-> These lines are from host.
-> 
-> >> // This is the THP number after inflate the balloon in the host.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:     88064 kB
-> These lines are from host.
-> 
-> >> // Set the size back to 1024M in the QEMU monitor.
-> >> (qemu) balloon 1024
-> >> (qemu) info balloon
-> >> balloon: actual=1024
-> These lines are from host.
-> 
-> >> // Use usemem to increase the memory usage of QEMU.
-> >> killall usemem
-> >> usemem 800m
-> These lines are from guest.
-> 
-> >> // This is the THP number after this operation.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:     65536 kB
-> These lines are from host.
-> 
-> 
-> 
-> >> 
-> >> Following example change to use continuous pages balloon.  The number of
-> >> splitted THPs is decreased.
-> >> // This is the THP number before VM execution in the host.
-> >> // None use THP.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:         0 kB
-> These lines are from host.
-> 
-> >> // After VM start, use usemem punch-holes function generates 400M
-> >> // fragmentation pages in the guest kernel.
-> >> usemem --punch-holes -s -1 800m &
-> These lines are from guest.  They setups the environment that has a lot of fragmentation pages.
-> 
-> >> // This is the THP number after this command in the host.
-> >> // Some THP is used by VM because usemem will access 800M memory
-> >> // in the guest.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:    911360 kB
-> These lines are from host.
-> 
-> >> // Connect to the QEMU monitor, setup balloon, and set it size to 600M.
-> >> (qemu) device_add virtio-balloon-pci,id=balloon1,cont-pages=on
-> >> (qemu) info balloon
-> >> balloon: actual=1024
-> >> (qemu) balloon 600
-> >> (qemu) info balloon
-> >> balloon: actual=600
-> These lines are from host.
-> 
-> >> // This is the THP number after inflate the balloon in the host.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:    616448 kB
-> >> // Set the size back to 1024M in the QEMU monitor.
-> >> (qemu) balloon 1024
-> >> (qemu) info balloon
-> >> balloon: actual=1024
-> These lines are from host.
-> 
-> >> // Use usemem to increase the memory usage of QEMU.
-> >> killall usemem
-> >> usemem 800m
-> These lines are from guest.
-> 
-> >> // This is the THP number after this operation.
-> >> cat /proc/meminfo | grep AnonHugePages:
-> >> AnonHugePages:    907264 kB
-> These lines are from host.
-> 
-> > 
-> > I'm a bit confused about which of the above run within guest,
-> > and which run within host. Could you explain pls?
-> > 
-> > 
-> 
-> I added some introduction to show where these lines is get from.
-> 
-> Best,
-> Hui
+The following commit has been merged into the x86/entry branch of tip:
 
+Commit-ID:     790ce3b40017bbd759a3d81e23c05d42b3d34b90
+Gitweb:        https://git.kernel.org/tip/790ce3b40017bbd759a3d81e23c05d42b3d34b90
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 14 Jul 2020 16:01:52 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 16 Jul 2020 12:44:26 +02:00
 
-OK so we see host has more free THPs. But guest has presumably less now - so
-the total page table depth is the same. Did we gain anything?
+x86/idtentry: Remove stale comment
 
-> 
-> > 
-> >> [1] https://lkml.org/lkml/2020/3/12/144
-> >> [2] https://lore.kernel.org/linux-mm/1584893097-12317-1-git-send-email-teawater@gmail.com/
-> >> [3] https://lkml.org/lkml/2020/5/12/324
-> >> [4] https://github.com/teawater/linux/tree/balloon_conts
-> >> [5] https://github.com/teawater/qemu/tree/balloon_conts
-> >> [6] https://lkml.org/lkml/2020/5/13/1211
-> >> 
-> >> Hui Zhu (2):
-> >>  virtio_balloon: Add VIRTIO_BALLOON_F_CONT_PAGES and inflate_cont_vq
-> >>  virtio_balloon: Add deflate_cont_vq to deflate continuous pages
-> >> 
-> >> drivers/virtio/virtio_balloon.c     |  180 +++++++++++++++++++++++++++++++-----
-> >> include/linux/balloon_compaction.h  |   12 ++
-> >> include/uapi/linux/virtio_balloon.h |    1
-> >> mm/balloon_compaction.c             |  117 +++++++++++++++++++++--
-> >> 4 files changed, 280 insertions(+), 30 deletions(-)
-> > 
-> > 
-> > ---------------------------------------------------------------------
-> > To unsubscribe, e-mail: virtio-dev-unsubscribe@lists.oasis-open.org
-> > For additional commands, e-mail: virtio-dev-help@lists.oasis-open.org
+Stack switching for interrupt handlers happens in C now for both 64 and
+32bit. Remove the stale comment which claims the contrary.
 
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/include/asm/idtentry.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 2293b44..50ea186 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -191,11 +191,9 @@ __visible noinstr void func(struct pt_regs *regs, unsigned long error_code)
+  * to the function as error_code argument which needs to be truncated
+  * to an u8 because the push is sign extending.
+  *
+- * On 64-bit idtentry_enter/exit() are invoked in the ASM entry code before
+- * and after switching to the interrupt stack. On 32-bit this happens in C.
+- *
+  * irq_enter/exit_rcu() are invoked before the function body and the
+- * KVM L1D flush request is set.
++ * KVM L1D flush request is set. Stack switching to the interrupt stack
++ * has to be done in the function body if necessary.
+  */
+ #define DEFINE_IDTENTRY_IRQ(func)					\
+ static __always_inline void __##func(struct pt_regs *regs, u8 vector);	\
