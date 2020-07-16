@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7700E222691
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBD5222699
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgGPPKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgGPPKe (ORCPT
+        id S1728678AbgGPPMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:12:23 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62416 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728150AbgGPPMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:10:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8056EC08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:10:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r12so7350190wrj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:10:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2m1M98EH1nfWkFNzV2VhpZKvvoVfQRllbm5fo3WQqlY=;
-        b=LOendPNIH4Ofg8EGJ+B7ht+ifCEDSJEs0Y7UgjXJxJQUVInRrJUX57gDkVZxGHYjsZ
-         huOkeoMfVADRZfQ+hxvRIZr+u5Kw73rUxW0y/W4OQO3t7mbSNpedFbhfSUi/CdqiP++F
-         dZ8fMAHU7FhFKiF7paIyQ2XQR8qZlSeLOZeQLJCrzL6hVGpAq3BVRID66H3ssWcMrsNP
-         ozgidJwcVDai/+ESiQysfhiLSY1ow3zSgzAp8e/bia4rwkV0FH8pPGVHwWFAYZrzFOak
-         KfQ1/2F5dOZyvvoSt2ZCqsvWoyRER02JfoX87tgwcHKwMRAHLtZkyFcIzGaHF3A0DdNz
-         VxJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2m1M98EH1nfWkFNzV2VhpZKvvoVfQRllbm5fo3WQqlY=;
-        b=Tt+4WNrLk/gjfbX3/H2tWVLfBi2DQy1MS73iWTg9gAQerOHWGGHoA2ViizOYqnFOG3
-         Ur+9HrES7K1VcPSufcXWDhHqAO2QdcWor8djPyoJd8UYKBaXdJuaZ6BCdITUcIHsydGv
-         nOfBAJf5PmO/dfKFoGl9EWGyO5uYvefCldPCVMxfQfbJJnDi4tPctwX/ymmSXe9qi9Wx
-         1hvp9KvwlkhhFLBCIdz5v5RZcyOPlUK31jnUwPtkbgay3xI5BgKImMVFuDFUkqfg4EXh
-         9CPyv0jyqUeLwblZMPGiF70pNjyNMEAxfi0qaGODMywAT7pwdR1/Wo+gb55dpaIdfPmK
-         3uuA==
-X-Gm-Message-State: AOAM532M0ZiZykdjnREaXXwNaTSiw9J+4dHUAU/GS0Dy223AFaDQy4UA
-        ih7xOlp3J9GcKecX5sqA4VwIzg==
-X-Google-Smtp-Source: ABdhPJwBTtAOhrqKUUqfWPZvxA5XjDD38qzwHlXSFn/QJ+SGDyX9onIUUbkdHZL69xzg75el0nUvDw==
-X-Received: by 2002:a5d:55ca:: with SMTP id i10mr5507967wrw.225.1594912233054;
-        Thu, 16 Jul 2020 08:10:33 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w7sm8654363wmc.32.2020.07.16.08.10.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 08:10:32 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 16:10:29 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     robh+dt@kernel.org, mripard@kernel.org, wens@csie.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        gregory.clement@bootlin.com, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org,
-        srinivas.kandagatla@linaro.org, linus.walleij@linaro.org,
-        anarsoul@gmail.com, tiny.windzz@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
-        p.zabel@pengutronix.de, clabbe@baylibre.com, icenowy@aosc.io,
-        megous@megous.com, stefan@olimex.com, bage@linutronix.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, huangshuosheng@allwinnertech.com,
-        liyong@allwinnertech.com
-Subject: Re: [PATCH v3 10/16] mfd: axp20x: Allow the AXP803 to be probed by
- I2C
-Message-ID: <20200716151029.GA3165313@dell>
-References: <20200708071942.22595-1-frank@allwinnertech.com>
- <20200708071942.22595-11-frank@allwinnertech.com>
+        Thu, 16 Jul 2020 11:12:23 -0400
+Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06GFCKfs068296;
+        Fri, 17 Jul 2020 00:12:20 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
+ Fri, 17 Jul 2020 00:12:20 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06GFCJbd068287
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Fri, 17 Jul 2020 00:12:19 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: [PATCH v2] binder: Don't use mmput() from shrinker function.
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve Hjonnevag <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        linux-mm <linux-mm@kvack.org>
+References: <0000000000001fbbb605aa805c9b@google.com>
+ <5ce3ee90-333e-638d-ac8c-cd6d7ab7aa3b@I-love.SAKURA.ne.jp>
+ <20200716083506.GA20915@dhcp22.suse.cz>
+ <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
+ <20200716135445.GN31089@dhcp22.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp>
+Date:   Fri, 17 Jul 2020 00:12:15 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200716135445.GN31089@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200708071942.22595-11-frank@allwinnertech.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Jul 2020, Frank Lee wrote:
+syzbot is reporting that mmput() from shrinker function has a risk of
+deadlock [1], for delayed_uprobe_add() from update_ref_ctr() calls
+kzalloc(GFP_KERNEL) with delayed_uprobe_lock held, and
+uprobe_clear_state() from __mmput() also holds delayed_uprobe_lock.
 
-> The AXP803 can be used both using the RSB proprietary bus, or a more
-> traditional I2C bus.
-> 
-> Let's add that possibility.
-> 
-> Signed-off-by: Frank Lee <frank@allwinnertech.com>
-> ---
->  drivers/mfd/axp20x-i2c.c | 2 ++
->  1 file changed, 2 insertions(+)
+Commit a1b2289cef92ef0e ("android: binder: drop lru lock in isolate
+callback") replaced mmput() with mmput_async() in order to avoid sleeping
+with spinlock held. But this patch replaces mmput() with mmput_async() in
+order not to start __mmput() from shrinker context.
 
-Applied, thanks.
+[1] https://syzkaller.appspot.com/bug?id=bc9e7303f537c41b2b0cc2dfcea3fc42964c2d45
 
+Reported-by: syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ drivers/android/binder_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index 42c672f1584e..cbe6aa77d50d 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -947,7 +947,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
+ 		trace_binder_unmap_user_end(alloc, index);
+ 	}
+ 	mmap_read_unlock(mm);
+-	mmput(mm);
++	mmput_async(mm);
+ 
+ 	trace_binder_unmap_kernel_start(alloc, index);
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.18.4
+
