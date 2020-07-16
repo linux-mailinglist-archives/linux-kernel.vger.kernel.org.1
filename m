@@ -2,117 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67652226DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304DF2226DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgGPPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:22:38 -0400
-Received: from smtp-1908.mail.infomaniak.ch ([185.125.25.8]:48189 "EHLO
-        smtp-1908.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728949AbgGPPWh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:22:37 -0400
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4B6yfy65zfzlhfRc;
-        Thu, 16 Jul 2020 17:22:34 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4B6yfq65Djzlh8TX;
-        Thu, 16 Jul 2020 17:22:27 +0200 (CEST)
-Subject: Re: [PATCH v6 7/7] ima: add policy support for the new file open
- MAY_OPENEXEC flag
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200714181638.45751-1-mic@digikod.net>
- <20200714181638.45751-8-mic@digikod.net> <202007151339.283D7CD@keescook>
- <8df69733-0088-3e3c-9c3d-2610414cea2b@digikod.net>
- <61c05cb0-a956-3cc7-5dab-e11ebf0e95bf@infradead.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <639b1727-2d61-5c29-623f-87eaf5a66a03@digikod.net>
-Date:   Thu, 16 Jul 2020 17:22:26 +0200
-User-Agent: 
+        id S1729166AbgGPPWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728949AbgGPPWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 11:22:40 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2A1A2063A;
+        Thu, 16 Jul 2020 15:22:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594912959;
+        bh=DwVHfGGJTGv6nAmHEhHPiFSRol8+UO9qWC7oNMEKASg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W0VJ/hAd4vqcwztpNEBI3+gu2X6XCIMlXEJqmrcrsPfef0Gk2HJlpLz49T9DjFoxT
+         afouBzBFOrke2t2bJceDxRxXTSlVVpRIYkoU+JTRDF3J5SLykzFiDnOfOvr/TwiePL
+         lQoK62C/7yEmeDabLGtumJMMR8+2ypo8oQbpJ+ds=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 369E4403C7; Thu, 16 Jul 2020 12:22:37 -0300 (-03)
+Date:   Thu, 16 Jul 2020 12:22:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
+        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
+        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        nasastry@in.ibm.com
+Subject: Re: [PATCH v3 0/5] powerpc/perf: Add json file support for hv_24x7
+ core level events
+Message-ID: <20200716152237.GC373728@kernel.org>
+References: <20200716094216.1418659-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <61c05cb0-a956-3cc7-5dab-e11ebf0e95bf@infradead.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716094216.1418659-1-kjain@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, Jul 16, 2020 at 03:12:11PM +0530, Kajol Jain escreveu:
+> Patchset enhance current runtime parameter support. It introduces new
+> fields like "PerChip" and "PerCore" similar to the field "PerPkg" which is
+> used to specify perpkg events. 
+> 
+> The "PerCore" and "PerChip" specifies whether its core or chip events.
+> Based on which we can decide which runtime parameter user want to
+> access. Now character  '?' can refers different parameter based on user
+> requirement.
+> 
+> Initially, every time we want to add new terms like chip, core, thread
+> etc, we need to create corrsponding fields in pmu_events and event
+> struct.
+> This patchset adds an enum called 'aggr_mode_class' which store all these
+> aggregation like perpkg/percore. It also adds new field 'AggregationMode'
+> to capture these terms.
+> Now, if user wants to add any new term, they just need to add it in
+> the enum defined. I try to test it with  my current setup.
+> 
+> I also need to replace PerPkg field to AggregationMode in all the
+> x86 uncore json files. It will great if Andi and team can test it
+> and let me know if they have any concerns.
+> 
+> Changelog:
+> v2 -> v3:
+> - Did some nits changes suggested by Jiri include correction of
+>   indentation, and making PerCore/PerChip values forward after
+>   PerPkg as 1 in the enum.
+> - Rebase the patchset on Arnaldo's tmp.perf/core branch.
+> - Change RFC tag
 
-On 16/07/2020 16:59, Randy Dunlap wrote:
-> On 7/16/20 7:40 AM, Mickaël Salaün wrote:
->>
->> On 15/07/2020 22:40, Kees Cook wrote:
->>> On Tue, Jul 14, 2020 at 08:16:38PM +0200, Mickaël Salaün wrote:
->>>> From: Mimi Zohar <zohar@linux.ibm.com>
->>>>
->>>> The kernel has no way of differentiating between a file containing data
->>>> or code being opened by an interpreter.  The proposed O_MAYEXEC
->>>> openat2(2) flag bridges this gap by defining and enabling the
->>>> MAY_OPENEXEC flag.
->>>>
->>>> This patch adds IMA policy support for the new MAY_OPENEXEC flag.
->>>>
->>>> Example:
->>>> measure func=FILE_CHECK mask=^MAY_OPENEXEC
->>>> appraise func=FILE_CHECK appraise_type=imasig mask=^MAY_OPENEXEC
->>>>
->>>> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
->>>> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>> Acked-by: Mickaël Salaün <mic@digikod.net>
->>>
->>> (Process nit: if you're sending this on behalf of another author, then
->>> this should be Signed-off-by rather than Acked-by.)
->>
->> I'm not a co-author of this patch.
->>
+Hey, have anybody provided Acked-by/Reviewed-by for previous revisions
+of this patchset? If so you could have collected them for patches
+without changes, was that the case?
+
+- Arnaldo
+ 
+> v1 -> v2:
+> - Rather then adding new field as PerCore/PerChip, created a new enum
+>   to get these fields. And new field as "AggregationMode" which can
+>   be used to capture these fields from json file.
+>   - Suggested By Ian Rogers
 > 
-> from Documentation/process/submitting-patches.rst:
 > 
-> The Signed-off-by: tag indicates that the signer was involved in the
-> development of the patch, or that he/she was in the patch's delivery path.
->                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Kajol Jain (5):
+>   perf/pmu-events/jevents: Add enum to store aggregation like PerPkg
+>   pmu-events/x86/uncore: Replace PerPkg field to AggregationMode in x86
+>     json files
+>   perf jevents: Add support for parsing perchip/percore events
+>   perf/tools: Pass pmu_event structure as a parameter for
+>     arch_get_runtimeparam
+>   perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
+> 
+>  tools/perf/arch/powerpc/util/header.c         |   7 +-
+>  .../arch/powerpc/power9/nest_metrics.json     |  27 +-
+>  .../arch/x86/broadwellde/uncore-cache.json    |  62 ++--
+>  .../arch/x86/broadwellde/uncore-memory.json   |  18 +-
+>  .../arch/x86/broadwellde/uncore-power.json    |  18 +-
+>  .../arch/x86/broadwellx/uncore-cache.json     |  62 ++--
+>  .../x86/broadwellx/uncore-interconnect.json   |   6 +-
+>  .../arch/x86/broadwellx/uncore-memory.json    |  18 +-
+>  .../arch/x86/broadwellx/uncore-power.json     |  18 +-
+>  .../arch/x86/cascadelakex/uncore-memory.json  |  64 ++--
+>  .../arch/x86/cascadelakex/uncore-other.json   | 332 +++++++++---------
+>  .../arch/x86/haswellx/uncore-cache.json       |  62 ++--
+>  .../x86/haswellx/uncore-interconnect.json     |   6 +-
+>  .../arch/x86/haswellx/uncore-memory.json      |  18 +-
+>  .../arch/x86/haswellx/uncore-power.json       |  18 +-
+>  .../arch/x86/ivytown/uncore-cache.json        |  62 ++--
+>  .../arch/x86/ivytown/uncore-interconnect.json |  10 +-
+>  .../arch/x86/ivytown/uncore-memory.json       |  16 +-
+>  .../arch/x86/ivytown/uncore-power.json        |  52 +--
+>  .../arch/x86/jaketown/uncore-cache.json       |  40 +--
+>  .../x86/jaketown/uncore-interconnect.json     |  10 +-
+>  .../arch/x86/jaketown/uncore-memory.json      |  18 +-
+>  .../arch/x86/jaketown/uncore-power.json       |  52 +--
+>  .../x86/knightslanding/uncore-memory.json     |   8 +-
+>  .../arch/x86/skylakex/uncore-memory.json      |  36 +-
+>  .../arch/x86/skylakex/uncore-other.json       | 220 ++++++------
+>  .../arch/x86/tremontx/uncore-memory.json      |  14 +-
+>  .../arch/x86/tremontx/uncore-other.json       |  70 ++--
+>  .../arch/x86/tremontx/uncore-power.json       |   2 +-
+>  tools/perf/pmu-events/jevents.c               |  45 ++-
+>  tools/perf/pmu-events/jevents.h               |   2 +-
+>  tools/perf/pmu-events/pmu-events.h            |   8 +-
+>  tools/perf/tests/pmu-events.c                 |   8 +-
+>  tools/perf/util/metricgroup.c                 |   5 +-
+>  tools/perf/util/metricgroup.h                 |   3 +-
+>  tools/perf/util/pmu.c                         |   6 +-
+>  36 files changed, 729 insertions(+), 694 deletions(-)
+> 
+> -- 
+> 2.26.2
 > 
 
-OK, I though such tag had to go along with the From/Author, the
-Committer or a Co-developed-by tag, but there is also this specific
-case. I'll fix that in the next series.
+-- 
+
+- Arnaldo
