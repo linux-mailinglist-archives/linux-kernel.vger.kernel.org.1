@@ -2,134 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BBF222707
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D5322270C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbgGPPak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:30:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33998 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729052AbgGPPah (ORCPT
+        id S1729215AbgGPPbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728415AbgGPPbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:30:37 -0400
-Date:   Thu, 16 Jul 2020 15:30:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594913435;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4DCCK8mVk+HskFG6V++QI8sTSi5CIGdPTT0aJ5kjZzI=;
-        b=U8EiHjVunrtFn4bSMXFeAfEdJjJqVWRAXNOOpsEOvRKdOGsy2ELmV9GuB7v2b3frf7DKbF
-        wBDTj7Y1PgvQ7o3WS2cO0BJFZvmpvHkWHTgJcvHXJE93ydlzQr558lc6ZBxY04S67IUrgM
-        zLt01RsWpYHxtFpxncFv6A3UNJdZVjI9RkFAahdd7DGEX4LwI02x7Re9JwHr9d0m0RoM/C
-        HU8tbJftza4l4KIYoAUEFQ/Etsj1dSFbeeGiboff9dUEa693z8AoOSIgFT+2dIKwZcukt8
-        I60D0dq7UzXriL5jYzbfLiA5UO71UiQp/ApEwarIoDpicMR+R5m/+kX3KDQ+ug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594913435;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4DCCK8mVk+HskFG6V++QI8sTSi5CIGdPTT0aJ5kjZzI=;
-        b=Erfd0bv8OYtUWHksHjKmTDlXcTSD53S33rx0mOTAhILEgHrXaA4eaD2nM076WzKCV2dusM
-        mvcvs/Sgm37zO0CA==
-From:   "tip-bot2 for Jian Cai" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/entry: Add compatibility with IAS
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jian Cai <caij2003@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200714233024.1789985-1-caij2003@gmail.com>
-References: <20200714233024.1789985-1-caij2003@gmail.com>
+        Thu, 16 Jul 2020 11:31:34 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9522CC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:31:34 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m16so4021829pls.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jGC0Cma9sD+M6C66CXjEVdr4Gdb8mMF8OboSIxxwdH4=;
+        b=ZCAVB8nsh1reVbsCtXsNpc9/GpvQQzf253bRke2fSht/9fsA2S0zNy7s7Q7zaYprZf
+         XIp3CYeZYUJRxqJWxlw4GYR6Rxfcw9Cy7l7xTQwKslcSPJZlLm/qGcYymwn8C7VPsU+k
+         dDBF3EEYw3UhdPnQHkORD5qj1r8KpyjprM3rc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jGC0Cma9sD+M6C66CXjEVdr4Gdb8mMF8OboSIxxwdH4=;
+        b=Sk9+YSlO1uVwVmAVFc9XlYcEF53QWjLVHOaK7+8+mJqYKSAVD3ic701bHZM1VAWnSF
+         Wiv1+fXKo08K0ZKYK0TQbHznHV8crZBvBaBrIkrMqTYtHewqtNrwyIv5Hmqxzd2Xvo60
+         ya/4nlvXQZYatbhIncwLov35QJmI/XQMPkmh0432eyL/V2s6h7eVmIGjT4Dn73oPMv5/
+         740QFaOCZ/EExFqXn6IALIBUx7tWMAnh78QY2K3tH8bmbAR9A7HLa9djrZ0LrVtlhsZT
+         nFvb23F4QvVc7G8cHNyTs6zq9k57JW5XsfFNw/xV8wNb4qcVoVxJmBkAdgNKFEnixabd
+         dPPg==
+X-Gm-Message-State: AOAM531UAnV07r1/uHyjBeVyqaTt5Y902z1ALWWnzbSDpvqIg4Yrn5v4
+        sk7wHYzh7ecDZ9xCOLm5SUjelA==
+X-Google-Smtp-Source: ABdhPJweDZrRnoUX7jCQB/uM+EQPmvMQFRn5PcnR6HDszEBspoWj0c+Kso5Fx/ceySNNzLeNRQX5LA==
+X-Received: by 2002:a17:90b:390e:: with SMTP id ob14mr4976168pjb.221.1594913494019;
+        Thu, 16 Jul 2020 08:31:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e195sm5218464pfh.218.2020.07.16.08.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 08:31:33 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 08:31:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Jan Kara <jack@suse.cz>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] fs: Introduce O_MAYEXEC flag for openat2(2)
+Message-ID: <202007160822.CCDB5478@keescook>
+References: <20200714181638.45751-1-mic@digikod.net>
+ <20200714181638.45751-5-mic@digikod.net>
+ <202007151304.9F48071@keescook>
+ <b209ea10-5b7f-c40e-5b6a-3da9028403d5@digikod.net>
 MIME-Version: 1.0
-Message-ID: <159491343466.4006.9823116110789109364.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b209ea10-5b7f-c40e-5b6a-3da9028403d5@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Thu, Jul 16, 2020 at 04:18:27PM +0200, Mickaël Salaün wrote:
+> On 15/07/2020 22:06, Kees Cook wrote:
+> > On Tue, Jul 14, 2020 at 08:16:35PM +0200, Mickaël Salaün wrote:
+> >> The implementation of O_MAYEXEC almost duplicates what execve(2) and
+> >> uselib(2) are already doing: setting MAY_OPENEXEC in acc_mode (which can
+> >> then be checked as MAY_EXEC, if enforced), and propagating FMODE_EXEC to
+> >> _fmode via __FMODE_EXEC flag (which can then trigger a
+> >> fanotify/FAN_OPEN_EXEC event).
+> >> [...]
+> > 
+> > Adding __FMODE_EXEC here will immediately change the behaviors of NFS
+> > and fsnotify. If that's going to happen, I think it needs to be under
+> > the control of the later patches doing the behavioral controls.
+> > (specifically, NFS looks like it completely changes its access control
+> > test when this is set and ignores the read/write checks entirely, which
+> > is not what's wanted).
+> 
+> __FMODE_EXEC was suggested by Jan Kara and Matthew Bobrowski because of
+> fsnotify. However, the NFS handling of SUID binaries [1] indeed leads to
+> an unintended behavior. This also means that uselib(2) shouldn't work
+> properly with NFS. I can remove the __FMODE_EXEC flag for now.
 
-Commit-ID:     6ee93f8df09c470da1a4af11e394c52d7b62418c
-Gitweb:        https://git.kernel.org/tip/6ee93f8df09c470da1a4af11e394c52d7b62418c
-Author:        Jian Cai <caij2003@gmail.com>
-AuthorDate:    Tue, 14 Jul 2020 16:30:21 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 16 Jul 2020 17:25:09 +02:00
+I kind of wonder if we need to more completely fix __FMODE_EXEC?
 
-x86/entry: Add compatibility with IAS
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=f8d9a897d4384b77f13781ea813156568f68b83e
 
-Clang's integrated assembler does not allow symbols with non-absolute
-values to be reassigned. Modify the interrupt entry loop macro to be
-compatible with IAS by using a label and an offset.
+Hmpf, this implies that "fmode" should contain MAY_EXEC? It really looks
+like __FMODE_EXEC is a hack for places where only "flags" were passed
+around, and this only seems to be an issue for NFS at this point? And it
+should be fixable for fsnotify too?
 
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Brian Gerst <brgerst@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Jian Cai <caij2003@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> #
-Link: https://github.com/ClangBuiltLinux/linux/issues/1043
-Link: https://lkml.kernel.org/r/20200714233024.1789985-1-caij2003@gmail.com
----
- arch/x86/include/asm/idtentry.h | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+Hmm. (And nothing should use uselib anyway...)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index f3d7083..5efaaed 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -469,16 +469,15 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 	.align 8
- SYM_CODE_START(irq_entries_start)
-     vector=FIRST_EXTERNAL_VECTOR
--    pos = .
-     .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
- 	UNWIND_HINT_IRET_REGS
-+0 :
- 	.byte	0x6a, vector
- 	jmp	asm_common_interrupt
- 	nop
- 	/* Ensure that the above is 8 bytes max */
--	. = pos + 8
--    pos=pos+8
--    vector=vector+1
-+	. = 0b + 8
-+	vector = vector+1
-     .endr
- SYM_CODE_END(irq_entries_start)
- 
-@@ -486,16 +485,15 @@ SYM_CODE_END(irq_entries_start)
- 	.align 8
- SYM_CODE_START(spurious_entries_start)
-     vector=FIRST_SYSTEM_VECTOR
--    pos = .
-     .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
- 	UNWIND_HINT_IRET_REGS
-+0 :
- 	.byte	0x6a, vector
- 	jmp	asm_spurious_interrupt
- 	nop
- 	/* Ensure that the above is 8 bytes max */
--	. = pos + 8
--    pos=pos+8
--    vector=vector+1
-+	. = 0b + 8
-+	vector = vector+1
-     .endr
- SYM_CODE_END(spurious_entries_start)
- #endif
+-- 
+Kees Cook
