@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623D722248C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1A8222490
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgGPN7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S1729181AbgGPN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729145AbgGPN7p (ORCPT
+        with ESMTP id S1729147AbgGPN7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:45 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4929C08C5DB
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:44 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 17so11716928wmo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:44 -0700 (PDT)
+        Thu, 16 Jul 2020 09:59:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6F2C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o11so7172911wrv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9Eaol5OJho4x5OhdGBezivs0c17Lo7ITBf48jP3v0yo=;
-        b=RHQeFYL/OmK16RHx2LSLSKLrhLMmhA0CaejXG1HaWnEDt7K50YHifx5xJLClwMV/wS
-         TCNPelO8eMk3T7G/lqrywMaTLydA1aYBQ+vT84ZILA8314FO5/NhEqsMBRUSwbRc7uFj
-         Ri1hVY0VecyEy05MzOC6BKwOhgx6Wkpn3b07Ng7i9rz//IMICEXzlereQVymFXUSY5w+
-         R4o+NlvdsFomvyGSH+LWwNa+MqcZ39O/aAsNef5bP1tW7AY5GTtEa0J42pRPUeGIiHdG
-         8NlLf8q3Hzr1Mc11aUqeb6pWZ3qwmhMd4exbaW1nUR3jKIZJen/6eIasClPW9M3IHePW
-         5EaA==
+        bh=Cb+wSympQ/t7mvjSrlchyDpaG5lOzmi7hZ5OiAi8Mno=;
+        b=oumlQEnIha+gPZ486gfCpU6mSvsOEk0BcYWvK8/hsanQRyIRhlTtGw1XHd1ZKAntb3
+         zDCnA15Semh4CaC/EsmkpiGdRQuSj3HgP1HhW3Qv/aHf5Td42D9Z4s/uVHYp4Fjz1XM1
+         OCw8fiy1rDDE/qdrqb3Agd4WT/q9uKQc/RTWRkahnyGhccuQbTeTdywSX3gDFBt+N6RP
+         DaFDmvWjnPap3vH8zCePAv8eTD5BA3XtcLMJHhOkJsJKl+VNjLZYQmU18Xd05QLMfFk/
+         Y1tiTBVpPgEEjfvv8u3az3bSjHw7AHyPFTQ8fjW2rJ/PXcQiEzZfbNXbvkPrCkOxV1R1
+         +g+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9Eaol5OJho4x5OhdGBezivs0c17Lo7ITBf48jP3v0yo=;
-        b=cyyTVaIJzxqTO5AJHgJGmeRcsNuVYLeQZF8tmbnV03nHjcAZ652u9xTXzFNpAkDdhI
-         onLx46zuhcxLMYkpf6Hpq1GtMQSH9i8UOX9hrwALZ5cSZt6VT/1YpJ7WEMDF9+eNnL+b
-         H9qJKEk0FpNyGBqQpeN9z08dPK7ePorL6NPQPeP5VtyvFdRFt5LsqUQG6i0BxUtnm/C+
-         9CPH6ZlmNLGpGbXU3GZZ9TO1k2xAZMzcm2+VgtnRt0tV21zRn7xA7gz1ZQuRSRR0KSn0
-         vDEdgclO7xIRM381MmtNpwDinIgkRkROMeCS3YglG02v1UXsXKMDNkCNoHtbVx4eMTzr
-         Zx1g==
-X-Gm-Message-State: AOAM5323NdCMHzuzYCVPay27O2wSdPsuINd2zQzo6vtUIcATJKX8DwwS
-        YK/g+0JNBrspHfSTdId54oLCbcG7ONA=
-X-Google-Smtp-Source: ABdhPJwanyU3zpVxpnfrGhUaYF6MgwV6z6GKysPVU7d5bkqGLUbbniCS3mFBPRMuxoy4Z7WLfIZhfw==
-X-Received: by 2002:a1c:7e44:: with SMTP id z65mr4400925wmc.52.1594907983670;
-        Thu, 16 Jul 2020 06:59:43 -0700 (PDT)
+        bh=Cb+wSympQ/t7mvjSrlchyDpaG5lOzmi7hZ5OiAi8Mno=;
+        b=YYZojj/9SD1An2oPsfgP5uHx0pYdVfDeG9XUPV0q2u+lUnRyf9KAye+ivE5jQyO+lo
+         PsISdK5Al0FcFu59eqrxSl87IZ3umRIYrEQ4b3bc6NdiB/2rBh5TGZtYJ3Wt4wJJmiJO
+         diR97PVnkptqxywrMmZpdM1M58rBH2EenSq829UluPHl0QpLO3DiKINIFwzt9o5sIX9S
+         uqe90cX29yrI1gruYqEfpAul9f/aDeMpLosbjv+/gZEUJFZP5zLcgtO+zSOsjmmzLNSR
+         cNLVO9lJdfiDon0uXu/Z701x9pOtpgz6NZ/hEjk1s1ZXYQ0zCzSHMw/Xhw/qcAXbSINX
+         oIEw==
+X-Gm-Message-State: AOAM530YVY4gcwD6psMNGowt9jyQVf8eJpkNCtqtVc7ck3Zy/vN+4z6p
+        FG4vDa5PNfKFLKj+3UHUfFcdsg==
+X-Google-Smtp-Source: ABdhPJzTCQ3Uui/xfkaXvBiqKU2DEubjel0BONeoSaNK/ek/9whacXXXBE4S96ii0ZuJ6/6OxW817g==
+X-Received: by 2002:adf:81c7:: with SMTP id 65mr4973510wra.47.1594907984888;
+        Thu, 16 Jul 2020 06:59:44 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.42
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:43 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:44 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 09/30] iio: dummy: iio_simple_dummy: Demote unworthy kerneldocs and correct misspelling
-Date:   Thu, 16 Jul 2020 14:59:07 +0100
-Message-Id: <20200716135928.1456727-10-lee.jones@linaro.org>
+Subject: [PATCH 10/30] iio: dummy: iio_simple_dummy: Add newline after function-end
+Date:   Thu, 16 Jul 2020 14:59:08 +0100
+Message-Id: <20200716135928.1456727-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -66,50 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-File header comments are not good candidates for kerneldoc.  Neither
-are generic comment blocks.
+Fixes the following checkpatch.pl warning(s):
 
-Fixes the following W=1 kernel build warning(s):
-
- drivers/iio/dummy/iio_simple_dummy.c:26: warning: cannot understand function prototype: 'const struct config_item_type iio_dummy_type = '
- drivers/iio/dummy/iio_simple_dummy.c:564: warning: Function parameter or member 'name' not described in 'iio_dummy_probe'
- drivers/iio/dummy/iio_simple_dummy.c:564: warning: Excess function parameter 'index' description in 'iio_dummy_probe'
- drivers/iio/dummy/iio_simple_dummy.c:700: warning: cannot understand function prototype: 'const struct iio_sw_device_ops iio_dummy_device_ops = '
+ CHECK: Please use a blank line after function/struct/union/enum declarations
+ #46: FILE: drivers/iio/dummy/iio_simple_dummy.c:690:
+  }
+ +/*
+ total: 0 errors, 0 warnings, 1 checks, 22 lines checked
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/dummy/iio_simple_dummy.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/dummy/iio_simple_dummy.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/iio/dummy/iio_simple_dummy.c b/drivers/iio/dummy/iio_simple_dummy.c
-index 6cb02299a2152..be66b26373723 100644
+index be66b26373723..cc4335963d0cf 100644
 --- a/drivers/iio/dummy/iio_simple_dummy.c
 +++ b/drivers/iio/dummy/iio_simple_dummy.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * Copyright (c) 2011 Jonathan Cameron
-  *
-  * A reference industrial I/O driver to illustrate the functionality available.
-@@ -553,7 +553,7 @@ static int iio_dummy_init_device(struct iio_dev *indio_dev)
- 
- /**
-  * iio_dummy_probe() - device instance probe
-- * @index: an id number for this instance.
-+ * @name: name of this instance.
-  *
-  * Arguments are bus type specific.
-  * I2C: iio_dummy_probe(struct i2c_client *client,
-@@ -687,7 +687,7 @@ static int iio_dummy_remove(struct iio_sw_device *swd)
+@@ -687,6 +687,7 @@ static int iio_dummy_remove(struct iio_sw_device *swd)
  
  	return 0;
  }
--/**
-+/*
++
+ /*
   * module_iio_sw_device_driver() -  device driver registration
   *
-  * Varies depending on bus type of the device. As there is no device
 -- 
 2.25.1
 
