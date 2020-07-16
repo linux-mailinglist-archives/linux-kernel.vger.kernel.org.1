@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B1722249B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED412224AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbgGPOAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
+        id S1729291AbgGPOAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729205AbgGPOAD (ORCPT
+        with ESMTP id S1729019AbgGPOAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:00:03 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337EAC08C5DB
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:00:03 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f18so11699712wml.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:00:03 -0700 (PDT)
+        Thu, 16 Jul 2020 10:00:04 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67116C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:00:04 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so7137972wrs.11
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:00:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pKASaRWXf6Jrobw8UPiL6AmNdIp32mR3nx4dwq7oKAc=;
-        b=rViawsa3WdUpkRJOtl0hbcb351+pPz2u3LYDiLi2tj2Ho8sFnTR0UeVIzIlT4WNSe0
-         aWrCkXQTRZuZV62OU0aKoery/BgPcT9Cncw7J80KMSq1DT4pYfbguTpS20woVdRkCD7D
-         LfLqYlW1iQt5zc8KOxLJksfLxvlWEH8dZyROEPD2GTgtGFUDbYEELOkcbsrRm1kGDcjn
-         xZXAB+bzOKURjqKnKOxTlouXKBGDpyFlNoTtjtzsp3P+VW0y5iqv1PRaCNazUW9qcDjs
-         kHKBeqZrBSSh5KF5NhI/pPFsyx5Q+cTaEC/PXB43aKMHlBq5ZtxJON+AIcuZNNtIpiYq
-         hhxw==
+        bh=7Zqjbhr41mFcuxqFYTmtQRdbWtEY5mhva2FxvIlylMM=;
+        b=PUoZ+kjfsG82Ntq8kXFJfLh56Snfmmn8k1IU3BDK0t0ulTX7ghosaJx/XI+qK/ZdZt
+         i+oqbw0ftNTxD88caU4Y+3QKALiJNbW2x1Sfcy6KcIhCF+p6X2bO2sPN5t39nYxeOOh6
+         8x+ACpIeHkGsXmrJKIiOn1/noFzvRmQ4/ZeEUblFuiNFRF6HXK1aLMYZhmzv4hQQOht4
+         MwzHi6g7tvyX0nlNad2s1zwPH3Ckv+HptxVoBjBABU8qKfLwEIBRuWZWaMJaGa8BBj/P
+         8qWe635b+zu59V1K2w4uv2FpusVkJ1EjI/ZGfWz9Aq6ksWcosneBunT+r+xImyTSBThJ
+         ylEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pKASaRWXf6Jrobw8UPiL6AmNdIp32mR3nx4dwq7oKAc=;
-        b=s4nc4ZUtdFNuJs5xO2zMAy543+XfCkD7y15gJzaVRhIziEKa5CFYemBIIF6Wvp7Y85
-         GRTEALxr5wTMfjXULA3VPXPbCLRoeAESrSGjLQEmYmSNcfe/Y1EyEmHEWsy2PCWhxqSc
-         Bcfg5X5D2pEd+JwhwYRhOlNSwi7hD2yNyTOIELIhgd3InTby+FefwwWLEbJzFdrQpbTG
-         NYG2IXGhItZCn+tDhsDUMmuOIrYwQ/OgOh6RFOwrxW5t4R4DR0+XcL3y7V5OGof7PGJM
-         NFQdECaX63Go4cIEZA7/oPRp7aXqX2AQMYdYDIex/Ot7eXuQHOBt5tsKgEsxZ9hfcQ3U
-         U41A==
-X-Gm-Message-State: AOAM530+lCjrQtEu53EUkrtqJzS64fyWWQYRpemgE+/CJ3ebsj8vQErj
-        80lLKPFrDtXroqtpuVDJkVL2sw==
-X-Google-Smtp-Source: ABdhPJxpaB51Ov3WuPfHAs0mfsQamBGiC60+2uEATqjVFq6kqZxUaJ+4h6Ae7gACMzlfdCrLLD6BHg==
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr4712437wmp.91.1594908001865;
-        Thu, 16 Jul 2020 07:00:01 -0700 (PDT)
+        bh=7Zqjbhr41mFcuxqFYTmtQRdbWtEY5mhva2FxvIlylMM=;
+        b=hrFdm2W0+Krid2FsIdsRaitK9S/1IEYUJFERd6U4/RQNzP1YvMMNExEVfz1pKfYWqE
+         A4EKiKSWq3hE4aQPAnPdf4TZHwmJVWmFYDcGMiipFfw8PAoqkcF6A0r8uASCpL6Ay6Zc
+         YNn+XOgTgW+9EF5e3OJKF2uNLC0muT78/PPE1nj5H0k4bJFYB0tbX8pWvmqXXyqFPa0n
+         Xs7d6ESapNboO1qwGxAcwTBY8afIZxQ8XqlUBxDYJbiAy1a0aA+EdNEg6AWMw54L6o8G
+         ED0bOY0GR1OS3hD/103CShBPPMQI6/b9lXUsW+XXw/6nWK07RoleUw+GOmpzK9UUXE9d
+         DQ8g==
+X-Gm-Message-State: AOAM53359NdETIssIQOQgNNbtfrWn5NCRWliNTsTZFARZAmGGtqZ+Aft
+        9OImxYGGJRuoidqPSrpOuSsfnA==
+X-Google-Smtp-Source: ABdhPJwvMNt0x0XmHey72Trxma7/tiCQqWEKjnfToFouTqsZD0Ln5yHNxJrVKA/QTX/ZMNVd0ANjDA==
+X-Received: by 2002:adf:ef4d:: with SMTP id c13mr5088520wrp.315.1594908003134;
+        Thu, 16 Jul 2020 07:00:03 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.07.00.00
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.07.00.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 07:00:01 -0700 (PDT)
+        Thu, 16 Jul 2020 07:00:02 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo Ribalda <ribalda@kernel.org>
-Subject: [PATCH 24/30] iio: dac: ad5761: Fix kerneldoc attribute formatting for 'lock'
-Date:   Thu, 16 Jul 2020 14:59:22 +0100
-Message-Id: <20200716135928.1456727-25-lee.jones@linaro.org>
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: [PATCH 25/30] iio: dac: ad5764: Fix misdocumenting and formatting error
+Date:   Thu, 16 Jul 2020 14:59:23 +0100
+Message-Id: <20200716135928.1456727-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -70,34 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Attribute descriptions must match the name exactly.
+
 Kerneldoc expects attributes/parameters to be in '@*.: ' format.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/dac/ad5761.c:80: warning: Function parameter or member 'lock' not described in 'ad5761_state'
+ drivers/iio/dac/ad5764.c:42: warning: Function parameter or member 'channels' not described in 'ad5764_chip_info'
+ drivers/iio/dac/ad5764.c:67: warning: Function parameter or member 'lock' not described in 'ad5764_state'
 
 Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Ricardo Ribalda <ribalda@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/dac/ad5761.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/dac/ad5764.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/dac/ad5761.c b/drivers/iio/dac/ad5761.c
-index 67c4fa75c6f13..1d9d0e22d6f44 100644
---- a/drivers/iio/dac/ad5761.c
-+++ b/drivers/iio/dac/ad5761.c
-@@ -57,7 +57,7 @@ enum ad5761_supported_device_ids {
-  * @use_intref:		true when the internal voltage reference is used
-  * @vref:		actual voltage reference in mVolts
-  * @range:		output range mode used
+diff --git a/drivers/iio/dac/ad5764.c b/drivers/iio/dac/ad5764.c
+index 5b0f0fe354f6b..1e16c464241c4 100644
+--- a/drivers/iio/dac/ad5764.c
++++ b/drivers/iio/dac/ad5764.c
+@@ -33,9 +33,8 @@
+  * struct ad5764_chip_info - chip specific information
+  * @int_vref:	Value of the internal reference voltage in uV - 0 if external
+  *		reference voltage is used
+- * @channel	channel specification
++ * @channels:	channel specification
+ */
+-
+ struct ad5764_chip_info {
+ 	unsigned long int_vref;
+ 	const struct iio_chan_spec *channels;
+@@ -46,7 +45,7 @@ struct ad5764_chip_info {
+  * @spi:		spi_device
+  * @chip_info:		chip info
+  * @vref_reg:		vref supply regulators
 - * @lock		lock to protect the data buffer during SPI ops
 + * @lock:		lock to protect the data buffer during SPI ops
-  * @data:		cache aligned spi buffer
+  * @data:		spi transfer buffers
   */
- struct ad5761_state {
+ 
 -- 
 2.25.1
 
