@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973A9221910
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D233221923
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgGPAty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 20:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34700 "EHLO mail.kernel.org"
+        id S1727782AbgGPAzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 20:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726479AbgGPAty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 20:49:54 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        id S1726479AbgGPAzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 20:55:13 -0400
+Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 995B320714;
-        Thu, 16 Jul 2020 00:49:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13DD120658;
+        Thu, 16 Jul 2020 00:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594860593;
-        bh=xtI9o2lqHt5Ccrnbi17Hnwy+IYNicxUrMPOA/qoreVM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AfMKIgbJ+kGK6ru9hOKz+UxF9xVNm3URi6D128F+AlNu8jGMrG6Nghy7/+obPEoiM
-         +F52eXereqYeNgk+c3CEKCWQNC0Va0u/gGTcR9AdDgWPP3R9Ou0P2Wic5fWa8jRhkq
-         NwpgE2PFzoO4HzYzupQ4dupVdmFpngyse61td1P8=
-Date:   Wed, 15 Jul 2020 17:49:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>, davem@davemloft.net,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] vsock/virtio: annotate 'the_virtio_vsock' RCU pointer
-Message-ID: <20200715174951.0c4e5bca@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200715143446.kfl3zb4vwkk4ic4r@steredhat>
-References: <20200710121243.120096-1-sgarzare@redhat.com>
-        <20200713065423-mutt-send-email-mst@kernel.org>
-        <20200715143446.kfl3zb4vwkk4ic4r@steredhat>
+        s=default; t=1594860913;
+        bh=Uy/8ESF+QLnINaje1tAvlX+l9b8wvAMN50TwncsSIbI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ZkOEyqooUuO7oga3APF1nhJgYu8RN7Zyn+hujImeGqtPW6UntYiI3OBE06FKH5+PG
+         SQ/4krRlKEWkFsXJ6TlCq9jdO1X/BgGDurnqyv/kTqmgke3nC+ef9wYeksYSVuEpBK
+         ZGZYXh2w1TYdNZ1gIFU2S9LmqCtXTice8qzjLkWY=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1594739122-29327-1-git-send-email-sivaprak@codeaurora.org>
+References: <1594739122-29327-1-git-send-email-sivaprak@codeaurora.org>
+Subject: Re: [PATCH 0/4] Split ipq8074 reset bindings from clock bindings
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
+To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org
+Date:   Wed, 15 Jul 2020 17:55:12 -0700
+Message-ID: <159486091238.1987609.14897518216700398772@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020 16:34:46 +0200 Stefano Garzarella wrote:
-> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> > 
-> > who's merging this? Dave?  
-> 
-> I think so, but I forgot the 'net' tag :-(
-> 
-> I'll wait to see if Dave will queue this, otherwise I'll resend with
-> the 'net' tag.
+Quoting Sivaprakash Murugesan (2020-07-14 08:05:18)
+> The patch series https://lwn.net/Articles/825325/ wrongly added clock
+> bindings into reset bindings. This is caught by=20
+> kernel test robot <lkp@intel.com> after it got merged into the clk-next
+> tree.
+>=20
+> To avoid these kind of future mistakes it is better we split up the reset
+> bindings from clock bindings.
+>=20
+> Since the clock patches in https://lwn.net/Articles/825325/ are applied to
+> clk-next it would be better if all the changes in this series to go throu=
+gh
+> clk-next.
 
-Applied to net now, thanks!
+I disagree. We've put them all in the same file because they're all used
+provided by the same compatible string. Please keep doing that and just
+fix the number scheme if that is the problem. Also, use lore.kernel.org
+for your links next time (i.e. https://lore.kernel.org/r/<message-id>)
+so that we don't need to rely on lwn.net links.
