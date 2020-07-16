@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44576221E69
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD77221E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgGPIbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:31:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgGPIbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:31:19 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ED4E20771;
-        Thu, 16 Jul 2020 08:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594888279;
-        bh=GzFI9I6+K4axw7cYstVenNEukmi1BijumC9HWik5Nfs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nssIDpoby9zjwgo2NHCCkUxkO0RftC4dVhWeH1CB87j44KdTcJSh/p1tMb92MZSvs
-         Hvi6fiAAMeD15leFU8RYmO9qWsLyvl6cVGjCzXKGGkxag3Ov4braMP9TiCoz25Cr/f
-         +syHFqNoXkdJ9xT+L3sPUtsYFfDX1T4LVQK7hR+0=
-Received: by pali.im (Postfix)
-        id C8D14E7A; Thu, 16 Jul 2020 10:31:16 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 10:31:16 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH] power: fix duplicated words in bq2415x_charger.h
-Message-ID: <20200716083116.oqio4clyotjqy5vw@pali>
-References: <74a380ee-d0a7-a58b-5740-6f1049d05d76@infradead.org>
+        id S1728002AbgGPIbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgGPIbr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:31:47 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7306C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:31:46 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id r19so6113136ljn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YBdBkCZyYrnro0mG4wNU/SXS3tLA8FxNGX+obuNgjH8=;
+        b=p7Podd+vPOqWJxeSsTXewwQJ0pYEiECsXkQ0W0tTlg1WtzqovoD0lIeXALNMQTneJY
+         604+6fxhst8qRgbo6s1Hc639xjJUdtyMKoUX8PB/9JIopac0hBV6FjHPtNjovabGggjt
+         AJ0s2M0cDTK0UZd1ZlVIE0BGTo0u9MiP2b46VswczuwB4MpvS5ARlyQBeZ6qR7xQbDdu
+         1mO9Njf1lroyNzg122nkwu11lYwHrYVuQlW/fstTtq1jzzIvlsO4FhjhybmXpfwr+Spw
+         DujOXbXHRH5cxw0nStYzF9/MswhlsqF6ivYvZNDaVDiuMBZ/UYdklChcy8oaXeOa2QOS
+         gHTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YBdBkCZyYrnro0mG4wNU/SXS3tLA8FxNGX+obuNgjH8=;
+        b=HiB9ZB8Wklt0YkCPO48m62OnalJeIp7E/jbcXop4doQtA6pNvN5VVxdHXAiai86JDB
+         ajJ2QIm+vUT5XUZkGUJHUq4ScHLqwGdZaOdaEOTgl0LNEKCZcIPwngisMa4MZUtI77hI
+         clKPSfmmmqW/u585U9c6/OMh0cR76KlRaJOMsHYABX0LUiyS0Mkz3AqlmpfSFu1gDdGN
+         a5KCAhXM+JtLTPGkxl/D12URdUq6QBMve663UDza9HRAAQ2BI+HDEkRBPjdBOO9FuZeX
+         Uqfll64sHBuoLhI4grJpJwK1ywYPTfKhtC+vs5yQOz52i4pJBPFyLwKlhjfUEO0yuhti
+         r8oQ==
+X-Gm-Message-State: AOAM5307+82d0M06iIUKPBaqKzd9nTSREcO9otV2tAPcCiYmBakJF5jy
+        20FfVEBF4YIamfHlOjFiE5AfEWpGiUEU9OzYeSAdr53eteQ=
+X-Google-Smtp-Source: ABdhPJy4xVhgi7qV+wdCvfTxXW1sKMtMQ2SQtdo9WMbH1aOpTecfj5o/jZrVXV9VwVBxb/zyeN1VEJor6pJwOtfXLxk=
+X-Received: by 2002:a05:651c:1291:: with SMTP id 17mr1581632ljc.286.1594888305338;
+ Thu, 16 Jul 2020 01:31:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <74a380ee-d0a7-a58b-5740-6f1049d05d76@infradead.org>
-User-Agent: NeoMutt/20180716
+References: <20200701030039.2834418-1-joel@jms.id.au>
+In-Reply-To: <20200701030039.2834418-1-joel@jms.id.au>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Jul 2020 10:31:34 +0200
+Message-ID: <CACRpkdY_3HHfC1uDHVfnD529o5Wpa7msZU+YMomnpUS6qJjx4g@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: aspeed: Improve debug output
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 15 July 2020 18:30:01 Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Drop the doubled word "for".
-> Change "It it" to "If it".
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Pali Rohár <pali@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: linux-pm@vger.kernel.org
+On Wed, Jul 1, 2020 at 5:00 AM Joel Stanley <joel@jms.id.au> wrote:
 
-Thanks!
+> From: Andrew Jeffery <andrew@aj.id.au>
+>
+> We need to iterate over each pin in a group for a function and
+> disable higher priority mux configurations on the pin before finally
+> muxing the relevant function's signal. With the current debug output it
+> is hard to track what register output is relevant to which operation, so
+> break up the actions in the debug output by providing some more context.
+>
+> Before:
+>
+>     [    5.446656] aspeed-g6-pinctrl 1e6e2000.syscon:pinctrl: request pin 37 (B26) for 1e780000.gpio:341
+>     [    5.447377] Want SCU414[0x00000020]=0x1, got 0x0 from 0x00000000
+>     [    5.447854] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
+>     [    5.448340] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
+>
+> After:
+>
+>     [    5.298053] Muxing pin 37 for GPIO
+>     [    5.298294] Disabling signal NRI4 for NRI4
+>     [    5.298593] Want SCU414[0x00000020]=0x1, got 0x0 from 0x00000000
+>     [    5.298983] Disabling signal RGMII4RXD1 for RGMII4
+>     [    5.299309] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
+>     [    5.299694] Disabling signal RMII4RXD1 for RMII4
+>     [    5.300014] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
+>     [    5.300396] Enabling signal GPIOE5 for GPIOE5
+>     [    5.300687] Muxed pin 37 as GPIOE5
+>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
 
-Acked-by: Pali Rohár <pali@kernel.org>
+Patch applied, thanks!
 
-> ---
->  include/linux/power/bq2415x_charger.h |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- linux-next-20200714.orig/include/linux/power/bq2415x_charger.h
-> +++ linux-next-20200714/include/linux/power/bq2415x_charger.h
-> @@ -14,8 +14,8 @@
->   * value is -1 then default chip value (specified in datasheet) will be
->   * used.
->   *
-> - * Value resistor_sense is needed for for configuring charge and
-> - * termination current. It it is less or equal to zero, configuring charge
-> + * Value resistor_sense is needed for configuring charge and
-> + * termination current. If it is less or equal to zero, configuring charge
->   * and termination current will not be possible.
->   *
->   * For automode support is needed to provide name of power supply device
-> 
+Yours,
+Linus Walleij
