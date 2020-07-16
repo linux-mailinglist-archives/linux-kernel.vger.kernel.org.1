@@ -2,117 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40F5221A37
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 04:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23300221A39
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 04:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgGPCmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 22:42:47 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55362 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727891AbgGPCmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 22:42:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U2rVPuE_1594867357;
-Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0U2rVPuE_1594867357)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 16 Jul 2020 10:42:39 +0800
-From:   Hui Zhu <teawater@gmail.com>
-To:     mst@redhat.com, david@redhat.com, jasowang@redhat.com,
-        akpm@linux-foundation.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        qemu-devel@nongnu.org, virtio-dev@lists.oasis-open.org
-Cc:     Hui Zhu <teawater@gmail.com>, Hui Zhu <teawaterz@linux.alibaba.com>
-Subject: [RFC for qemu v4 2/2] virtio_balloon: Add dcvq to deflate continuous pages
-Date:   Thu, 16 Jul 2020 10:41:55 +0800
-Message-Id: <1594867315-8626-6-git-send-email-teawater@gmail.com>
+        id S1728049AbgGPCnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 22:43:20 -0400
+Received: from mx.socionext.com ([202.248.49.38]:52330 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726998AbgGPCnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 22:43:20 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 16 Jul 2020 11:43:18 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 83250180BC2;
+        Thu, 16 Jul 2020 11:43:18 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Thu, 16 Jul 2020 11:43:18 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id DB3321A0509;
+        Thu, 16 Jul 2020 11:43:17 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v3 0/2] Add new UniPhier AHCI PHY driver
+Date:   Thu, 16 Jul 2020 11:43:00 +0900
+Message-Id: <1594867382-27509-1-git-send-email-hayashi.kunihiko@socionext.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594867315-8626-1-git-send-email-teawater@gmail.com>
-References: <1594867315-8626-1-git-send-email-teawater@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds a vq dcvq to deflate continuous pages.
-When VIRTIO_BALLOON_F_CONT_PAGES is set, try to get continuous pages
-from icvq and use madvise MADV_WILLNEED with the pages.
+This series adds support for AHCI PHY interface implemented in Socionext
+UniPhier SoCs. This driver supports PXs2 and PXs3 SoCs.
 
-Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
----
- hw/virtio/virtio-balloon.c         | 14 +++++++++-----
- include/hw/virtio/virtio-balloon.h |  2 +-
- 2 files changed, 10 insertions(+), 6 deletions(-)
+Changes since v2:
+- Adjust copyright year
+- Add helper for enabling the controller
+- Remove redundant .init in uniphier_pxs2_data
+- Add comments for dummy read accesses
+- Fix return value in uniphier_ahciphy_init
+- dt-bindings: Add Reviewed-by line
 
-diff --git a/hw/virtio/virtio-balloon.c b/hw/virtio/virtio-balloon.c
-index d36a5c8..165adf7 100644
---- a/hw/virtio/virtio-balloon.c
-+++ b/hw/virtio/virtio-balloon.c
-@@ -138,7 +138,8 @@ static void balloon_inflate_page(VirtIOBalloon *balloon,
- }
- 
- static void balloon_deflate_page(VirtIOBalloon *balloon,
--                                 MemoryRegion *mr, hwaddr mr_offset)
-+                                 MemoryRegion *mr, hwaddr mr_offset,
-+                                 size_t size)
- {
-     void *addr = memory_region_get_ram_ptr(mr) + mr_offset;
-     ram_addr_t rb_offset;
-@@ -153,10 +154,11 @@ static void balloon_deflate_page(VirtIOBalloon *balloon,
-     rb_page_size = qemu_ram_pagesize(rb);
- 
-     host_addr = (void *)((uintptr_t)addr & ~(rb_page_size - 1));
-+    size &= ~(rb_page_size - 1);
- 
-     /* When a page is deflated, we hint the whole host page it lives
-      * on, since we can't do anything smaller */
--    ret = qemu_madvise(host_addr, rb_page_size, QEMU_MADV_WILLNEED);
-+    ret = qemu_madvise(host_addr, size, QEMU_MADV_WILLNEED);
-     if (ret != 0) {
-         warn_report("Couldn't MADV_WILLNEED on balloon deflate: %s",
-                     strerror(errno));
-@@ -354,7 +356,7 @@ static void virtio_balloon_handle_output(VirtIODevice *vdev, VirtQueue *vq)
-             pa = (hwaddr) p << VIRTIO_BALLOON_PFN_SHIFT;
-             offset += 4;
- 
--            if (vq == s->icvq) {
-+            if (vq == s->icvq || vq == s->dcvq) {
-                 uint32_t psize_ptr;
-                 if (iov_to_buf(elem->out_sg, elem->out_num, offset, &psize_ptr, 4) != 4) {
-                     break;
-@@ -383,8 +385,9 @@ static void virtio_balloon_handle_output(VirtIODevice *vdev, VirtQueue *vq)
-                     balloon_inflate_page(s, section.mr,
-                                          section.offset_within_region,
-                                          psize, &pbp);
--                } else if (vq == s->dvq) {
--                    balloon_deflate_page(s, section.mr, section.offset_within_region);
-+                } else if (vq == s->dvq || vq == s->dcvq) {
-+                    balloon_deflate_page(s, section.mr, section.offset_within_region,
-+                                         psize);
-                 } else {
-                     g_assert_not_reached();
-                 }
-@@ -838,6 +841,7 @@ static void virtio_balloon_device_realize(DeviceState *dev, Error **errp)
- 
-     if (virtio_has_feature(s->host_features, VIRTIO_BALLOON_F_CONT_PAGES)) {
-         s->icvq = virtio_add_queue(vdev, 128, virtio_balloon_handle_output);
-+        s->dcvq = virtio_add_queue(vdev, 128, virtio_balloon_handle_output);
-     }
- 
-     reset_stats(s);
-diff --git a/include/hw/virtio/virtio-balloon.h b/include/hw/virtio/virtio-balloon.h
-index 6a2514d..848a7fb 100644
---- a/include/hw/virtio/virtio-balloon.h
-+++ b/include/hw/virtio/virtio-balloon.h
-@@ -42,7 +42,7 @@ enum virtio_balloon_free_page_report_status {
- 
- typedef struct VirtIOBalloon {
-     VirtIODevice parent_obj;
--    VirtQueue *ivq, *dvq, *svq, *free_page_vq, *icvq;
-+    VirtQueue *ivq, *dvq, *svq, *free_page_vq, *icvq, *dcvq;
-     uint32_t free_page_report_status;
-     uint32_t num_pages;
-     uint32_t actual;
+Changes since v1:
+- dt-bindings: Fix items in reset-names
+
+Kunihiko Hayashi (2):
+  dt-bindings: phy: Add UniPhier AHCI PHY description
+  phy: socionext: Add UniPhier AHCI PHY driver support
+
+ .../bindings/phy/socionext,uniphier-ahci-phy.yaml  |  76 +++++
+ drivers/phy/socionext/Kconfig                      |  10 +
+ drivers/phy/socionext/Makefile                     |   1 +
+ drivers/phy/socionext/phy-uniphier-ahci.c          | 323 +++++++++++++++++++++
+ 4 files changed, 410 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+ create mode 100644 drivers/phy/socionext/phy-uniphier-ahci.c
+
 -- 
 2.7.4
 
