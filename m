@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E3F2223C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999EB2223D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgGPNVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        id S1728374AbgGPNZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgGPNVW (ORCPT
+        with ESMTP id S1726537AbgGPNZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:21:22 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A0EC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:21:21 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f7so7076670wrw.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:21:21 -0700 (PDT)
+        Thu, 16 Jul 2020 09:25:14 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10B0C061755;
+        Thu, 16 Jul 2020 06:25:13 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so4745340edq.8;
+        Thu, 16 Jul 2020 06:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=7YbtSjQOGUa/q+irulkRFVoHCpjbJGuPHTve5CYTDyY=;
-        b=QOdYFmVlH7OY1uIqGhDN9Cb/bQtBwCY++VIocH0ZX2YtmJfaHdIthkum9ne1K2L3km
-         x/NAgqoY9mjWAWQeOMeC1A9qm9IiD23UucmNZy1HSW/z1j6rnZAKtnGmWWhGdeV1PqKm
-         7FrW+MdB+6FcFO3z5rVGVLG/4ERXiBkzp5CGYB3LnjDgEezHGOwY/59gjrPTl+FgA5pR
-         oSWG13l4Urz3ziXeIXgSRJPCvLJwf9yCj7PyuDSxflm7mTdxfnGz/6eJV+qRz3pUEolf
-         CcNrttAD2uDeYWcCbrCH5V+kTsXVbgLtOaVpEcbkjFLig9Og7ut7Etw+m0MQZIVgM45G
-         01Iw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qAJPPOLuJw/tHb1pZVSinVePDzJWispr0rvTXNStLhk=;
+        b=nB/WDx1SGvO5JQhsz3LbhJQ7xS47m5yH14JLOluQoP8cIoCj6yuxinOszE73jtFsoN
+         II0uShc06PMirTbyzBak0Z2jDWKI76s2FRgad3W+JuBNxGgkNPWKAZBaroWtOhMJw3AH
+         0Y1ok6Y3JOOMZGYv9xpt0nNe8jIEb7THmzGZvKv3ThzqC/kstIwzysxDYYYZM/odZopQ
+         5NuHiJncb3r0JtUR5hR0A3z2Up1pIRcA6qjTT6P3GpELs5SaP/SfhojvFj4YC0k429ds
+         TjAV9aH2xgRWNNhQWf1T7cp3Vnl4HYHdMx4KD2FjVK71Vj5A5Bv7U06GuhxzZmKEAA+e
+         whyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=7YbtSjQOGUa/q+irulkRFVoHCpjbJGuPHTve5CYTDyY=;
-        b=KGYayR3wsp4IaxZpUN7gSOak4g+CDDBo9KrchmFr+UUSPZIMEPMLOEu6t3998o0ncp
-         8Wg54ZvN12zUc+MIziABGwgrSTDnnNRQVB++WriPry23ZOmC/n5UVGiAQ9E4UN3hqFNJ
-         wLxXtMdsVwcQ0wvd0PK5ZKz/kVDUxBkmZ14zX/oaa6rJt1MRLAHfgNYJq+vMCzNA9OND
-         nyILRvPZsEWcWv6gAtP5uNfLrO0KZXur73VwPctNfSxZ1tgZvSKwtSFLISU/XM/keszs
-         PiTrvju3NYSHZk2ezppkiQi8S0k7ANtvUbz/YVEXf3JOAYwEJlBa2cyX267U3jots/tt
-         tiCA==
-X-Gm-Message-State: AOAM533OTer5qXOCEIUwY0sR+QaXMskOQY9IiDqSLBHl37pnNmcT7GAM
-        E7yE6VLw+Bh6YpKJ1CdCoi/Qrw==
-X-Google-Smtp-Source: ABdhPJziwy34yB77Mu4b5lIbKxi2PVplLfoz+eGeRbOlWefCvTn6vC0VVKdXrNjnmr6t6gwKmfAYTQ==
-X-Received: by 2002:a5d:420b:: with SMTP id n11mr5018134wrq.91.1594905680354;
-        Thu, 16 Jul 2020 06:21:20 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9880:a643:3e69:6393? ([2a01:e34:ed2f:f020:9880:a643:3e69:6393])
-        by smtp.googlemail.com with ESMTPSA id 133sm9027135wme.5.2020.07.16.06.21.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 06:21:19 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        alex.hung@canonical.com, bsz@semihalf.com
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal fixes for v5.8-rc6
-Message-ID: <40ec1ad2-1938-81ee-5ddb-965c18ddd25f@linaro.org>
-Date:   Thu, 16 Jul 2020 15:21:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qAJPPOLuJw/tHb1pZVSinVePDzJWispr0rvTXNStLhk=;
+        b=YSXTKJxKUD7KugxFq0dgpDRivKeZAZTX1f+65UrN92sjYor+NZx51PtDRfWMky4mGM
+         t3ftMu8rnNqRJVyXm4bl++A1UKLCa5gSMAGBFQMex8kwsdG4OiCz0dPRcx9ww2hNprhF
+         imGTUSFX0w6udyKC87tPFiIPd9nelMlVb7nLbvCT/URre6pFnH3PWjYMqW8LbUj9ZuBp
+         TK2aq5UZOyd9/uypS+2bn6puiyjGtlKB/h1AJfEk8/MRY5b/42sWP2Om/Y7qYAhhW2Gj
+         he319ZrjOl3mf7rdcOV145R8IuL8B73G9ERJFKSMa28Ua22VYkkckWElrZZw8yUiWNwo
+         kGXg==
+X-Gm-Message-State: AOAM531av9PsPSaOU0FDRkXQuBASVEjeOJTi3KeFdCnYg41Pl2H0jxid
+        SCLQQg3fpmSHjEyWFlkaqOw=
+X-Google-Smtp-Source: ABdhPJxLECYl1nUxuLTa/pRmJrq5T3akb7eBMyKeT+Yh/7+rF93A3oumboTF5NgJQ7f/oh/her18gA==
+X-Received: by 2002:aa7:c6d1:: with SMTP id b17mr4546029eds.201.1594905912474;
+        Thu, 16 Jul 2020 06:25:12 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id o18sm5038155ejr.45.2020.07.16.06.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 06:25:10 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 15:25:09 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
+        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
+        digetx@gmail.com, sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [RFC PATCH v3 01/18] dt-bindings: i2c: tegra: Document Tegra210
+ VI I2C clocks and power-domains
+Message-ID: <20200716132509.GH535268@ulmo>
+References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
+ <1594786855-26506-2-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/Gk0KcsbyUMelFU1"
+Content-Disposition: inline
+In-Reply-To: <1594786855-26506-2-git-send-email-skomatineni@nvidia.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
 
-  Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
+--/Gk0KcsbyUMelFU1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the Git repository at:
+On Tue, Jul 14, 2020 at 09:20:38PM -0700, Sowjanya Komatineni wrote:
+> This patch documents missing clocks and power-domains of Tegra210 VI I2C.
+>=20
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../devicetree/bindings/i2c/nvidia,tegra20-i2c.txt    | 19 +++++++++++++=
+------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
 
+Applied, thanks.
 
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.8-rc6
+Thierry
 
-for you to fetch changes up to a8f62f183021be389561570ab5f8c701a5e70298:
+--/Gk0KcsbyUMelFU1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  Revert "thermal: mediatek: fix register index error" (2020-07-15
-11:12:48 +0200)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-- Fix invalid index array access on int340x_thermal leading to a
-  kernel panic (Bartosz Szczepanek)
+iQIyBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8QVTUACgkQ3SOs138+
+s6GD9Q/1G32YqO6vyxnxRnDKF+eMWoaJCmEX9ZrBMCVb8gsN4zULuSYSKyApA/Df
+jF8HpJqUs+q5rLTRIiJhcbzHRGAmPHyJB8HbSdhczMOxGO0BUiRmmOdPg8Nu56sY
+6Y0oIx9t+YFddQw4GjtWlo+/qqXGjw7uZPge5bvwu9Eu7qmIiTIS9+u4Er/cQTGN
+Mv7HV2lXxJb1WOeU6fnNNYhIqEps84XJHx4I8iIh93g4yWhU0gzcvrVjmQ5Ce0SM
+YJfUbO1gaI+87TMpGg93rMsvyQfdK61hIXmDhwuTy4c5/57tSpxWGcx+6lzPmvg1
+hEwhwKf2iDw2UNhVny6W5kKxuKMBki8eObRkOyayZ9mdrpZb/dv03axKR99odEY2
+Grv+BTblrLBudH3PUZc2aoo8SgDTqiRvn8p2IEFO6F3xD6YQnAHWYd0PcUZhFiZJ
+fuM3fzERkIUbrSiY/HbVkWEKkoneNY1TY17i6tP12YwZhIvVDu2w13i9N2RKcKid
+TcRVA/aCd47buEa9y5GeiN1a9NBtDEk+1/z5qte/GrqF+zLXCrS+nyVcbepj23r7
+Z31SU2NJIxK846PdM1Xx32Hl4bgv6KEheZ5jCEkJhgrglBP0ueZjIolzZre4QVka
+ycxwcfpat4V47begjHpQ9p+SU/Vqog0gI+vYz0y827i41d8wSg==
+=YyuR
+-----END PGP SIGNATURE-----
 
-- Fix debug message level to prevent flooding on some platform (Alex
-  Hung)
-
-- Fix invalid bank access by reverting "thermal: mediatek: fix
-  register index error" (Enric Balletbo i Serra)
-
-----------------------------------------------------------------
-Alex Hung (1):
-      thermal: int3403_thermal: Downgrade error message
-
-Bartosz Szczepanek (1):
-      thermal/int340x_thermal: Prevent page fault on .set_mode() op
-
-Enric Balletbo i Serra (1):
-      Revert "thermal: mediatek: fix register index error"
-
- drivers/thermal/intel/int340x_thermal/int3400_thermal.c | 7 ++++++-
- drivers/thermal/intel/int340x_thermal/int3403_thermal.c | 2 +-
- drivers/thermal/mtk_thermal.c                           | 6 ++----
- 3 files changed, 9 insertions(+), 6 deletions(-)
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+--/Gk0KcsbyUMelFU1--
