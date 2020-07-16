@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544FA221AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545E6221AB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgGPDSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:18:13 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:48538 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726960AbgGPDQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:16:41 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S7;
-        Thu, 16 Jul 2020 11:16:34 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/8] irqchip/loongson-pch-pic: Check return value of irq_domain_translate_twocell()
+        id S1728326AbgGPDR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:17:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8164 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728291AbgGPDRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:17:19 -0400
+IronPort-SDR: OdnQU85mYcQfWJiMkKli+PVyooRpjEYBiF+mX7UegCHpa3NBHLgk/rTt+0hI+TIT7JSoVvJxk9
+ VCkXWeXFaUKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="210844869"
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="210844869"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 20:17:18 -0700
+IronPort-SDR: oPH15PgiG93QSLB7jnt4dL1RUrJBgcCH09jfpQLd8HhDCezAW4bvbu8vUIRuK1SMlahR1s/dGR
+ KkkQy03e5BXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="360910494"
+Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
+  by orsmga001.jf.intel.com with ESMTP; 15 Jul 2020 20:17:16 -0700
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        jmattson@google.com
+Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
+Subject: [RESEND v13 11/11] KVM: x86: Enable CET virtualization and advertise CET to userspace
 Date:   Thu, 16 Jul 2020 11:16:27 +0800
-Message-Id: <1594869390-21053-6-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF17JrW8tw15tw4UZry7Jrb_yoW8WF1xpF
-        4UAwnrXr4DJFyUZw1xCws5X343Jw1ftFW7KayfKas3WrZ5J34qkF1UCFn5ur4rZF43JFyU
-        Zrs8KFWUuF13AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBqb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
-        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWx
-        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48MxAIw2
-        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
-        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrw
-        CI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0rhL5UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Message-Id: <20200716031627.11492-12-weijiang.yang@intel.com>
+X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200716031627.11492-1-weijiang.yang@intel.com>
+References: <20200716031627.11492-1-weijiang.yang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check the return value of irq_domain_translate_twocell() due to
-it may returns -EINVAL if failed and use variable fwspec for it,
-and then use a new variable parent_fwspec which is proper for
-irq_domain_alloc_irqs_parent().
+Set the feature bits so that CET capabilities can be seen in guest via
+CPUID enumeration. Add CR4.CET bit support in order to allow guest set CET
+master control bit(CR4.CET).
 
-Fixes: ef8c01eb64ca ("irqchip: Add Loongson PCH PIC controller")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Disable KVM CET feature once unrestricted_guest is turned off because
+KVM cannot emulate guest CET behavior well in this case.
+
+Don't expose CET feature if dependent CET bits are cleared in host XSS.
+
+Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
 ---
- drivers/irqchip/irq-loongson-pch-pic.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  3 ++-
+ arch/x86/kvm/cpuid.c            |  5 +++--
+ arch/x86/kvm/vmx/vmx.c          |  5 +++++
+ arch/x86/kvm/x86.c              | 11 +++++++++++
+ 4 files changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-index 2a05b93..016f32c 100644
---- a/drivers/irqchip/irq-loongson-pch-pic.c
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -135,16 +135,19 @@ static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
- 	int err;
- 	unsigned int type;
- 	unsigned long hwirq;
--	struct irq_fwspec fwspec;
-+	struct irq_fwspec *fwspec = arg;
-+	struct irq_fwspec parent_fwspec;
- 	struct pch_pic *priv = domain->host_data;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index e8c749596ba2..c4c82db68b6a 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -99,7 +99,8 @@
+ 			  | X86_CR4_PGE | X86_CR4_PCE | X86_CR4_OSFXSR | X86_CR4_PCIDE \
+ 			  | X86_CR4_OSXSAVE | X86_CR4_SMEP | X86_CR4_FSGSBASE \
+ 			  | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_VMXE \
+-			  | X86_CR4_SMAP | X86_CR4_PKE | X86_CR4_UMIP))
++			  | X86_CR4_SMAP | X86_CR4_PKE | X86_CR4_UMIP \
++			  | X86_CR4_CET))
  
--	irq_domain_translate_twocell(domain, arg, &hwirq, &type);
-+	err = irq_domain_translate_twocell(domain, fwspec, &hwirq, &type);
-+	if (err)
-+		return err;
+ #define CR8_RESERVED_BITS (~(unsigned long)X86_CR8_TPR)
  
--	fwspec.fwnode = domain->parent->fwnode;
--	fwspec.param_count = 1;
--	fwspec.param[0] = hwirq + priv->ht_vec_base;
-+	parent_fwspec.fwnode = domain->parent->fwnode;
-+	parent_fwspec.param_count = 1;
-+	parent_fwspec.param[0] = hwirq + priv->ht_vec_base;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index d97b2a6e8a8c..a085b8c57f34 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -340,7 +340,8 @@ void kvm_set_cpu_caps(void)
+ 		F(AVX512VBMI) | F(LA57) | F(PKU) | 0 /*OSPKE*/ | F(RDPID) |
+ 		F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
+ 		F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
+-		F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/
++		F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
++		F(SHSTK)
+ 	);
+ 	/* Set LA57 based on hardware capability. */
+ 	if (cpuid_ecx(7) & F(LA57))
+@@ -356,7 +357,7 @@ void kvm_set_cpu_caps(void)
+ 	kvm_cpu_cap_mask(CPUID_7_EDX,
+ 		F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
+ 		F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
+-		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM)
++		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) | F(IBT)
+ 	);
  
--	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
-+	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &parent_fwspec);
- 	if (err)
- 		return err;
+ 	/* TSC_ADJUST and ARCH_CAPABILITIES are emulated in software. */
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 5d4250b9dec8..31593339b6fe 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7542,6 +7542,11 @@ static __init void vmx_set_cpu_caps(void)
  
+ 	if (vmx_waitpkg_supported())
+ 		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
++
++	if (!enable_unrestricted_guest) {
++		kvm_cpu_cap_clear(X86_FEATURE_SHSTK);
++		kvm_cpu_cap_clear(X86_FEATURE_IBT);
++	}
+ }
+ 
+ static void vmx_request_immediate_exit(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 76892fb0b0a0..c7393d62ad72 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9808,10 +9808,21 @@ int kvm_arch_hardware_setup(void *opaque)
+ 	if (kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+ 		supported_xss = host_xss & KVM_SUPPORTED_XSS;
+ 
++	if (!(supported_xss & (XFEATURE_MASK_CET_USER |
++	    XFEATURE_MASK_CET_KERNEL))) {
++		kvm_cpu_cap_clear(X86_FEATURE_SHSTK);
++		kvm_cpu_cap_clear(X86_FEATURE_IBT);
++	}
++
+ #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
+ 	cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
+ #undef __kvm_cpu_cap_has
+ 
++	if (!kvm_cpu_cap_has(X86_FEATURE_SHSTK) &&
++	    !kvm_cpu_cap_has(X86_FEATURE_IBT))
++		supported_xss &= ~(XFEATURE_MASK_CET_USER |
++				   XFEATURE_MASK_CET_KERNEL);
++
+ 	if (kvm_has_tsc_control) {
+ 		/*
+ 		 * Make sure the user can only configure tsc_khz values that
 -- 
-2.1.0
+2.17.2
 
