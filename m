@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8436D222B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083BC222B45
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgGPSvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:51:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40704 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726986AbgGPSvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:51:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 446E8AB76;
-        Thu, 16 Jul 2020 18:51:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 468A6DA790; Thu, 16 Jul 2020 20:51:10 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 20:51:10 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs: fix mount failure caused by race with umount
-Message-ID: <20200716185110.GB3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <e2857658-230e-48e6-d6cf-587be4a8a0bc@toxicpanda.com>
- <20200710172304.139763-1-boris@bur.io>
+        id S1729341AbgGPSwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:52:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34942 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726986AbgGPSwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:52:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594925531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hv8DvK0upvVoTIHsLS9sWiIB7kS2ZyTYYRmQ0XHnu9w=;
+        b=fStVqY298RuNUQOi5SzDK+qmX212wV0/dEObX7WDl2GYZ2eGiOKvj+guFsNtK0FMo96d9P
+        REI2BtW4lLYvI9HZgkNIzVxbMz9UC9GBtcFsnPktC1Mu6fxeX4zce8eMhOgkFrV9PZtKkg
+        M2db2H2CvIvtRAU09XXN0sjB7NVm7u4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-YQgUMFfeNDO1DN3_NOnLzg-1; Thu, 16 Jul 2020 14:52:04 -0400
+X-MC-Unique: YQgUMFfeNDO1DN3_NOnLzg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26718800469;
+        Thu, 16 Jul 2020 18:52:02 +0000 (UTC)
+Received: from krava (unknown [10.40.192.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4AE0217D04;
+        Thu, 16 Jul 2020 18:51:59 +0000 (UTC)
+Date:   Thu, 16 Jul 2020 20:51:58 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 03/18] perf metric: Add expr__add_id function
+Message-ID: <20200716185158.GA426898@krava>
+References: <20200712132634.138901-1-jolsa@kernel.org>
+ <20200712132634.138901-4-jolsa@kernel.org>
+ <20200716152906.GC374956@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200710172304.139763-1-boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200716152906.GC374956@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 10:23:04AM -0700, Boris Burkov wrote:
-> Here is the sequence laid out in greater detail:
+On Thu, Jul 16, 2020 at 12:29:06PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sun, Jul 12, 2020 at 03:26:19PM +0200, Jiri Olsa escreveu:
+> > Adding expr__add_id function to data for ID
+> > with zero value, which is used when scanning
+> > the expression for IDs.
+> > 
+> > Acked-by: Ian Rogers <irogers@google.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/util/expr.c | 29 +++++++++++++++++++++++------
+> >  tools/perf/util/expr.h |  1 +
+> >  tools/perf/util/expr.y |  2 +-
+> >  3 files changed, 25 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> > index 5d05f9765ed8..4b8953605aed 100644
+> > --- a/tools/perf/util/expr.c
+> > +++ b/tools/perf/util/expr.c
+> > @@ -32,6 +32,24 @@ static bool key_equal(const void *key1, const void *key2,
+> >  	return !strcmp((const char *)key1, (const char *)key2);
+> >  }
+> >  
+> > +/* Caller must make sure id is allocated */
+> > +int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
+> > +{
+> > +	struct expr_id_data *data_ptr = NULL, *old_data = NULL;
+> > +	char *old_key = NULL;
+> > +	int ret;
+> > +
+> > +	data_ptr = malloc(sizeof(*data_ptr));
+> > +	if (!data_ptr)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = hashmap__set(&ctx->ids, id, data_ptr,
+> > +			   (const void **)&old_key, (void **)&old_data);
+> > +	free(old_key);
+> > +	free(old_data);
 > 
-> CPU0                                                    CPU1
-> down_write sb->s_umount
-> btrfs_kill_super
->   kill_anon_super(sb)
->     generic_shutdown_super(sb);
->       shrink_dcache_for_umount(sb);
->       sync_filesystem(sb);
->       evict_inodes(sb); // SLOW
-> 
->                                               btrfs_mount_root
->                                                 btrfs_scan_one_device
->                                                 fs_devices = device->fs_devices
->                                                 fs_info->fs_devices = fs_devices
->                                                 // fs_devices-opened makes this a no-op
->                                                 btrfs_open_devices(fs_devices, mode, fs_type)
->                                                 s = sget(fs_type, test, set, flags, fs_info);
->                                                   find sb in s_instances
->                                                   grab_super(sb);
->                                                     down_write(&s->s_umount); // blocks
-> 
->       sop->put_super(sb)
->         // sb->fs_devices->opened == 2; no-op
->       spin_lock(&sb_lock);
->       hlist_del_init(&sb->s_instances);
->       spin_unlock(&sb_lock);
->       up_write(&sb->s_umount);
->                                                     return 0;
->                                                   retry lookup
->                                                   don't find sb in s_instances (deleted by CPU0)
->                                                   s = alloc_super
->                                                   return s;
->                                                 btrfs_fill_super(s, fs_devices, data)
->                                                   open_ctree // fs_devices total_rw_bytes improperly set!
->                                                     btrfs_read_chunk_tree
->                                                       read_one_dev // increment total_rw_bytes again!!
->                                                       super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
+> Hey, if hashmap__set() fails then we leak data_ptr?
 
-It seems weird that umount and mount can be mixed in such way but with
-the VFS locks and structures it's valid, so the devices managed by btrfs
-slipped through.
+right, good catch, will fix
 
-With the suggested fix, the bit BTRFS_DEV_STATE_IN_FS_METADATA becomes
-quite important and the synchronization of the device related data.
-The semantics seems quite subtle and inconsistent regarding other uses
-of set_bit or clear_bit and the total_rw_bytes.
+thanks,
+jirka
 
-I'm thinkig about unconditional setting of IN_FS_METADATA as it is now,
-but recalculating total_rw_size outside of read_one_dev in
-btrfs_read_chunk_tree. There it should not matter if the bit was set by
-the unmounted or the mounted filesystem, as long as the locking rules
-for updating fs_devices hold. For that we have uuid_mutex and
-fs_devices::device_list_mutex, this is used elsewhere so fixing it using
-existing mechanisms is IMHO better way than relying on subtle
-undocumented semantics of the state bit.
