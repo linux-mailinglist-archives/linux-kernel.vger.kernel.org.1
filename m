@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4610822243D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1F122243F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbgGPNsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:48:47 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46724 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728093AbgGPNsq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:48:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594907324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GfvtRZl6XjjqgsUho+mp1mDesIN25Q1M46CfrAHyf5E=;
-        b=SfqKe+gNMqaMKgHfybf+ieUujVXBmxQ/gBRrVTTN8McUsJqsb+7ADFiOrBJs5M6Xhfh7vu
-        /5n1z4KNRfm+UPnpkH5rJx7Yl2NtZe1Chd67Oui4ccPEJkfwC+jDpGwUbxF9uGc717vbya
-        HSsDULINrxLwQg6xK2YFH2qai5OWw8k=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-BmnPp_yuP-uniWIoy0c9zQ-1; Thu, 16 Jul 2020 09:48:43 -0400
-X-MC-Unique: BmnPp_yuP-uniWIoy0c9zQ-1
-Received: by mail-qv1-f69.google.com with SMTP id u10so3428108qvj.23
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:48:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=GfvtRZl6XjjqgsUho+mp1mDesIN25Q1M46CfrAHyf5E=;
-        b=G8kIezbQT9lJxRO4ZT4Rr9WgWUDpOjFykGG1g3Gv9oyJ+nAAcQFJAQJmGaVUK6jd/G
-         hxJob4NQ4TphFvQ3oz/eRHI1jOTaAu8u8eku56TAn2sUrhPkXZdek6NdXIwRM3k6zJem
-         kY4B7efS7SRwpOGGYJZGTxCtJQ7caKP4EDv49Ot9+KYZjOSP6f5lxqkWY4oK8NgM15wj
-         Q69TPBPIo6MtqqVn5UzFqh2RvtGKkYor5FZ5mAyrYiuMAoUD4WiVkq3uqHkUOobl6qSo
-         WbcVGp6oU7iRtYQSCA+ZSjUFxemsLUSJCp9qojgxTKQdbPbGPDn/2fkQb8OnAcJ6Lz8i
-         xcPw==
-X-Gm-Message-State: AOAM533p7O3b8iBsUkFvC+GzkufQmfrK1RTLCDDA5Dl7DXDUZxh1xGMd
-        GQRPnXexzK2Lt1dEt4kjczRUILA4E7WIb9g7W2XXEdDm1JoRWi/c/6rSYRjBRPEV0PmCzmk7SGC
-        Pk0Gwk1cmOWLvbfjH7VzhIm68
-X-Received: by 2002:a05:6214:a72:: with SMTP id ef18mr4342615qvb.166.1594907322451;
-        Thu, 16 Jul 2020 06:48:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0Oubl/AqRtyIxgKrCGuB+yjKyn9Gpk897PmC3Xhvn7arTCjRXwWZ17enUl/Seg7/aLuCVeA==
-X-Received: by 2002:a05:6214:a72:: with SMTP id ef18mr4342587qvb.166.1594907322139;
-        Thu, 16 Jul 2020 06:48:42 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k197sm7161963qke.133.2020.07.16.06.48.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 06:48:41 -0700 (PDT)
-Subject: Re: [PATCH] reiserfs : fix improper free in reiserfs_get_block
-To:     Jan Kara <jack@suse.cz>
-Cc:     Matthew Wilcox <willy@infradead.org>, william.kucharski@oracle.com,
-        jeffm@suse.com, joseph.qi@linux.alibaba.com,
-        liao.pingfang@zte.com.cn, reiserfs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200714130509.11791-1-trix@redhat.com>
- <20200714131043.GB12769@casper.infradead.org>
- <bc5a13bd-54c4-509d-7202-20c93f43e2f6@redhat.com>
- <20200715080451.GK23073@quack2.suse.cz>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <41a5b57f-2bea-04a6-3510-6d76bd5098d5@redhat.com>
-Date:   Thu, 16 Jul 2020 06:48:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728881AbgGPNtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:49:00 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7771 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728093AbgGPNs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:48:59 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 444E759714EF947306CC;
+        Thu, 16 Jul 2020 21:48:57 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.238) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
+ 21:48:47 +0800
+Subject: [PATCH -next v2] media: tuners: reduce stack usage in
+ mxl5005s_reconfigure
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <linux-next@vger.kernel.org>, <mchehab@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <john.wanghui@huawei.com>
+References: <20200716171742.45621-1-cuibixuan@huawei.com>
+Message-ID: <7b3e9680-9a39-45d3-44c2-85b374df4a19@huawei.com>
+Date:   Thu, 16 Jul 2020 21:48:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200715080451.GK23073@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200716171742.45621-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.238]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the warning: [-Werror=-Wframe-larger-than=]
 
-On 7/15/20 1:04 AM, Jan Kara wrote:
-> On Tue 14-07-20 06:12:47, Tom Rix wrote:
->> On 7/14/20 6:10 AM, Matthew Wilcox wrote:
->>> On Tue, Jul 14, 2020 at 06:05:09AM -0700, trix@redhat.com wrote:
->>>> From: Tom Rix <trix@redhat.com>
->>>>
->>>> clang static analysis flags this error
->>>>
->>>> inode.c:1083:5: warning: Argument to kfree() is the address of the
->>>>   local variable 'unf_single', which is not memory allocated by
->>>>   malloc() [unix.Malloc]
->>>>                                 kfree(un);
->>>>                                 ^~~~~~~~~
->>>> Assignment of 'un'
->>>>
->>>> 	/*
->>>> 	 * We use this in case we need to allocate
->>>> 	 * only one block which is a fastpath
->>>> 	 */
->>>> 	unp_t unf_single = 0;
->>>>
->>>> 	...
->>>>
->>>> 	if (blocks_needed == 1) {
->>>> 		un = &unf_single;
->>>> 	} else {
->>>> 		un = kcalloc(min(blocks_needed, max_to_insert),
->>>> 			     UNFM_P_SIZE, GFP_NOFS);
->>>> 		if (!un) {
->>>> 			un = &unf_single;
->>>> 			blocks_needed = 1;
->>>> 			max_to_insert = 0;
->>>> 		}
->>>> 	}
->>>>
->>>> The logic to free 'un'
->>>>
->>>> 	if (blocks_needed != 1)
->>>> 		kfree(un);
->>>>
->>>> Because the kcalloc failure falls back to using unf_single,
->>>> the if-check for the free is wrong.
->>> I think you mean "Because clang's static analysis is limited, it
->>> warns incorrectly about this".  There's no path to get to the
->>> kfree with blocks_needed != 1 and un being equal to &unf_single.
->> Ok.
-> I agree with Matthew the patch will make the code more obviously correct so
-> it's a sensible cleanup. But the changelog needs to redone to reflect this
-> is just a cleanup before the patch can be merged.
->
-> 									Honza
+drivers/media/tuners/mxl5005s.c: In function 'mxl5005s_reconfigure':
+drivers/media/tuners/mxl5005s.c:3953:1:
+warning: the frame size of 1152 bytes is larger than 1024 bytes
 
-I am going to look into the problem with the analyzer because that is where the fix should go.
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ drivers/media/tuners/mxl5005s.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-If the problem isn't resolvable, i will loop back to this clean up.
+diff --git a/drivers/media/tuners/mxl5005s.c b/drivers/media/tuners/mxl5005s.c
+index 1c07e2225fb3..f6e82a8e7d37 100644
+--- a/drivers/media/tuners/mxl5005s.c
++++ b/drivers/media/tuners/mxl5005s.c
+@@ -3926,15 +3926,26 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
+ 	u32 bandwidth)
+ {
+ 	struct mxl5005s_state *state = fe->tuner_priv;
+-
+-	u8 AddrTable[MXL5005S_REG_WRITING_TABLE_LEN_MAX];
+-	u8 ByteTable[MXL5005S_REG_WRITING_TABLE_LEN_MAX];
++	u8 *AddrTable;
++	u8 *ByteTable;
+ 	int TableLen;
 
-Tom
+ 	dprintk(1, "%s(type=%d, bw=%d)\n", __func__, mod_type, bandwidth);
+
+ 	mxl5005s_reset(fe);
+
++	AddrTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
++			    GFP_KERNEL);
++	if (!AddrTable)
++		return -ENOMEM;
++
++	ByteTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
++			    GFP_KERNEL);
++	if (!ByteTable) {
++		kfree(AddrTable);
++		return -ENOMEM;
++	}
++
+ 	/* Tuner initialization stage 0 */
+ 	MXL_GetMasterControl(ByteTable, MC_SYNTH_RESET);
+ 	AddrTable[0] = MASTER_CONTROL_ADDR;
+@@ -3949,6 +3960,9 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
+
+ 	mxl5005s_writeregs(fe, AddrTable, ByteTable, TableLen);
+
++	kfree(AddrTable);
++	kfree(ByteTable);
++
+ 	return 0;
+ }
+
+--
+2.17.1
+
+
+.
+
+
 
