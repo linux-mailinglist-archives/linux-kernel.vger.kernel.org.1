@@ -2,154 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD3A221C06
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 07:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6BB221C16
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 07:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgGPFmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 01:42:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32841 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725913AbgGPFmU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 01:42:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594878139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7iOIeIlKEJcsPpbGDHdQOFqlT3P7K/L/+J8sfRdcsv8=;
-        b=R69s7LactDAhvrFV18FlxBPbYq1ZwWa4ksF7JtBfp1uMW3uvZJWBeR5jSVwUYkpk68DjEq
-        7Ij/R7pqznoaAjPz+yAoAYrdEY9WjTiVuiWudNMp3FjGnKwk7+4ADJFYq3Xdc23eejZ1xW
-        eumZrxVYiOTlyHef+ikNhRCB5iWvotE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-rQWCdGBGPC22mc1Ieh8pbQ-1; Thu, 16 Jul 2020 01:42:17 -0400
-X-MC-Unique: rQWCdGBGPC22mc1Ieh8pbQ-1
-Received: by mail-wm1-f72.google.com with SMTP id o13so4010280wmh.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 22:42:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7iOIeIlKEJcsPpbGDHdQOFqlT3P7K/L/+J8sfRdcsv8=;
-        b=Q2nnVQUpfvX3RVEVGk6iIoRWQ8ej5Qpm+S3N3YqkYOfDEi3cTyihjuPyzHGRsiJLTQ
-         FMf5VJC+Lg0Ip1pAzUqPjVLGP+sUGIlOr7/PgbzaCC3cvj/so6Tk5TR8SZ8iJOYWi9dm
-         5VNc1bAfjueCqhsAq+AarnE4oYPTG/vbbXiXtWenAlcbYtue8wXU7xX0miIeRvHl4IGv
-         Wn70f3cGrkwCmQ57Ax3Z49YOSSkl9mnIQXWusyJ7Kl54odqpDoEleDncPjm3sxjtjhjc
-         RDp+I/ZOC2Cc7W0M0uxo6jba0esTZ4dlhbFwnil1FpQx5tEBuO07TOZBfLKBBTgpvSCq
-         AZ1Q==
-X-Gm-Message-State: AOAM533rEWcYjbuoaUndNrFYKf5X82qtrKIh1CzcJ/xcaNrJEbfpgHky
-        6XaPxAHnQWjycPCsJ1hE3E6mdr0QBeTRVQe/W2AiOJCZZHY3swYhp6GGG6vVmHIFHimAHM+/9HO
-        N8unV0nuCTORC1pAJS2D5un/Z
-X-Received: by 2002:a05:600c:2152:: with SMTP id v18mr2861027wml.5.1594878135967;
-        Wed, 15 Jul 2020 22:42:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzk2KiSkJtmITnTvlIhxB0cz7evD1urhzNi5ygQuhGm8+M1oimW0b4DZK0pti7JeSPSHt1ykw==
-X-Received: by 2002:a05:600c:2152:: with SMTP id v18mr2861015wml.5.1594878135700;
-        Wed, 15 Jul 2020 22:42:15 -0700 (PDT)
-Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
-        by smtp.gmail.com with ESMTPSA id k11sm7467756wrd.23.2020.07.15.22.42.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 22:42:15 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 01:42:12 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH RFC don't apply] vdpa_sim: endian-ness for config space
-Message-ID: <20200716013306-mutt-send-email-mst@kernel.org>
-References: <20200715135540.22832-1-mst@redhat.com>
- <8f39dcc1-0899-7ed8-8a6e-75672417b9e3@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8f39dcc1-0899-7ed8-8a6e-75672417b9e3@redhat.com>
+        id S1726293AbgGPFpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 01:45:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57786 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725935AbgGPFpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 01:45:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594878352; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=QCdzWtaoCFQUbVW6Q4oVXM+yOcrN8PD2KCUkLjOvy2I=; b=Mo/Fg7lk7bwH8ysX4dHBNJNFvtTVIZIkcuR187zPafOT7bmBPr2FerxBOFXaoUvWBC/u3IYD
+ f44X+jOlBMcYhmzaf8LCtxvX2ESd61JmKbrPgQJRp3NfAseR3B/uX6Aqo4Ewka/Em8+hJAY/
+ hNnACl8DzMERraWI8PprNZf/h+g=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
+ 5f0fe97fc7a053446a791c99 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 05:45:35
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D2A1EC43395; Thu, 16 Jul 2020 05:45:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80335C433C9;
+        Thu, 16 Jul 2020 05:45:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 80335C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     stanimir.varbanov@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2 0/4] DVFS support for Venus
+Date:   Thu, 16 Jul 2020 11:12:15 +0530
+Message-Id: <1594878139-3402-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 10:02:32PM +0800, Jason Wang wrote:
-> 
-> On 2020/7/15 下午9:58, Michael S. Tsirkin wrote:
-> > VDPA sim stores config space as native endian, but that
-> > is wrong: modern guests expect LE.
-> > I coded up the following to fix it up, but it is wrong too:
-> > vdpasim_create is called before guest features are known.
-> > 
-> > So what should we do? New ioctl to specify the interface used?
-> > More ideas?
-> > 
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> 
-> 
-> Can we do the endian conversion in set_config/get_config()?
-> 
-> Thanks
+v2: Fixed up the labels of OPP nodes in patch 4
+    Included the bindings update patch as part of this series,
+    a resend of https://lore.kernel.org/patchwork/patch/1241077/
 
-That is problematic at least from static checking point of view.
-It would be reasonable to do it in vdpasim_set_features, except
-legacy guests might not set features at all.
-So my proposal is:
-- set config in vdpasim_set_features
-- document that this is where devices should initialize config
-- vdpa core will maintain a "features set" flag, if get/set config
-  is called without set features, core will call set features
-  automatically with 0 value.
+These patches add DVFS support for Venus
 
-Thoughts?
+Patch 1 will need to be picked by Rob.
+Patch 2 will need to be picked by Stan,
+Patch 3 and 4 should land via the qcom tree.
 
+Rajendra Nayak (4):
+  dt-bindings: media: venus: Add an optional power domain for perf
+    voting
+  media: venus: core: Add support for opp tables/perf voting
+  arm64: dts: sdm845: Add OPP tables and power-domains for venus
+  arm64: dts: sc7180: Add OPP tables and power-domains for venus
 
-> 
-> > 
-> > 
-> > ---
-> >   drivers/vdpa/vdpa_sim/vdpa_sim.c | 22 ++++++++++++++++++++--
-> >   1 file changed, 20 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> > index a9bc5e0fb353..cc754ae0ec15 100644
-> > --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> > +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> > @@ -24,6 +24,7 @@
-> >   #include <linux/etherdevice.h>
-> >   #include <linux/vringh.h>
-> >   #include <linux/vdpa.h>
-> > +#include <linux/virtio_byteorder.h>
-> >   #include <linux/vhost_iotlb.h>
-> >   #include <uapi/linux/virtio_config.h>
-> >   #include <uapi/linux/virtio_net.h>
-> > @@ -72,6 +73,23 @@ struct vdpasim {
-> >   	u64 features;
-> >   };
-> > +/* TODO: cross-endian support */
-> > +static inline bool vdpasim_is_little_endian(struct vdpasim *vdpasim)
-> > +{
-> > +	return virtio_legacy_is_little_endian() ||
-> > +		(vdpasim->features & (1ULL << VIRTIO_F_VERSION_1));
-> > +}
-> > +
-> > +static inline u16 vdpasim16_to_cpu(struct vdpasim *vdpasim, __virtio16 val)
-> > +{
-> > +	return __virtio16_to_cpu(vdpasim_is_little_endian(vdpasim), val);
-> > +}
-> > +
-> > +static inline __virtio16 cpu_to_vdpasim16(struct vdpasim *vdpasim, u16 val)
-> > +{
-> > +	return __cpu_to_virtio16(vdpasim_is_little_endian(vdpasim), val);
-> > +}
-> > +
-> >   static struct vdpasim *vdpasim_dev;
-> >   static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
-> > @@ -332,8 +350,8 @@ static struct vdpasim *vdpasim_create(void)
-> >   		goto err_iommu;
-> >   	config = &vdpasim->config;
-> > -	config->mtu = 1500;
-> > -	config->status = VIRTIO_NET_S_LINK_UP;
-> > +	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-> > +	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
-> >   	eth_random_addr(config->mac);
-> >   	vringh_set_iotlb(&vdpasim->vqs[0].vring, vdpasim->iommu);
+ .../bindings/media/qcom,sc7180-venus.yaml          |  6 ++-
+ .../bindings/media/qcom,sdm845-venus-v2.yaml       |  6 ++-
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               | 35 +++++++++++++-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               | 40 +++++++++++++++-
+ drivers/media/platform/qcom/venus/core.c           | 43 ++++++++++++++---
+ drivers/media/platform/qcom/venus/core.h           |  5 ++
+ drivers/media/platform/qcom/venus/pm_helpers.c     | 54 ++++++++++++++++++++--
+ 7 files changed, 173 insertions(+), 16 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
