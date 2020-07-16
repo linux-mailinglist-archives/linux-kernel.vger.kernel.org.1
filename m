@@ -2,129 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64BF222EE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44AA222EE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgGPXTZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Jul 2020 19:19:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37712 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726846AbgGPXTV (ORCPT
+        id S1727075AbgGPXTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726846AbgGPXTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:19:21 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GN2r0f177405;
-        Thu, 16 Jul 2020 19:18:36 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 329x6077m7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 19:18:36 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06GNBBQ8031579;
-        Thu, 16 Jul 2020 23:18:34 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04wdc.us.ibm.com with ESMTP id 327529cf4m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 23:18:34 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06GNIYpI53281202
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 23:18:34 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4081DAE060;
-        Thu, 16 Jul 2020 23:18:34 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 996E5AE05C;
-        Thu, 16 Jul 2020 23:18:33 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.65.214.95])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Jul 2020 23:18:33 +0000 (GMT)
-From:   Tulio Magno Quites Machado Filho <tuliom@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-arch@vger.kernel.org, nathanl@linux.ibm.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>, luto@kernel.org,
-        tglx@linutronix.de, vincenzo.frascino@arm.com,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 5/8] powerpc/vdso: Prepare for switching VDSO to generic C implementation.
-In-Reply-To: <20200715204725.Horde.5GZvsEv4ZkdzFHL76HZiFg8@messagerie.si.c-s.fr>
-References: <cover.1588079622.git.christophe.leroy@c-s.fr> <2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr> <878sflvbad.fsf@mpe.ellerman.id.au> <20200715204725.Horde.5GZvsEv4ZkdzFHL76HZiFg8@messagerie.si.c-s.fr>
-User-Agent: Notmuch/0.29.1 (http://notmuchmail.org) Emacs/26.3 (x86_64-redhat-linux-gnu)
-Date:   Thu, 16 Jul 2020 20:18:32 -0300
-Message-ID: <87ft9rdp6f.fsf@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007160148
+        Thu, 16 Jul 2020 19:19:19 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6895C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:19:19 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k4so4563368pld.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:19:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n4KTe3/xuQSWnZuouMggMmRt0/TA0hq7CmPqtl7gf30=;
+        b=yS1UlVCB7/DevfhrSDlYG4yNIeaAteh3TMZPyrtc3jolPKCiHV225h1xQe5YOZhTlI
+         BR/eM9E7fTCROcgjOezPXe0aal4ZJ7M6an23k9aHgb0dx97C5FuSCSOJdh8TbQjVpltg
+         5g0POU6F1xR33zbXr4DVSSbz9khLkqi3MWw/vv1viWmmMJNJXq6468d0wU18kD6xtK1R
+         0/Z3yP84fRQAKdNEEyZAQAxsTf6ex3B2PgElbg0682gaR0tZZmI0Zq2DPmhhr4d3FNuQ
+         f3WcXzoDaEkz4ACVCg4qB1YI7nxsjxZx77Bf05P/dVN16z7F8sAO1vHDjeRTsipfLHFL
+         OQAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=n4KTe3/xuQSWnZuouMggMmRt0/TA0hq7CmPqtl7gf30=;
+        b=tNn0dGjcINGHqENf6dhadOU5JOabTXdB56dkjtdFvi4tM3CdSdMRVbDkhmRmOuyS8+
+         5z0Ow+dOst5XRtqXpCCHu58oBPCcb/I4+B6DLIa5AM333zKDwSI03Mkd+nRxN7YY5Nht
+         kY7iFw+YgwrCAVbDO/iN716jSnufODC/mt+52w6cMrWNVG1bV5Sq6g5Nr3KRsuYIKFe3
+         kgipMoN9c5bqrQJCwbcuq2/1Cneg7wxdAynfcAE9myezwZxpLLn4fkYJSECme+oGuXS6
+         76d5ZrgigQ1hjZ9zbNkTY3jQkFeKGa+flkvGeJmMZXEhZLR5mT/tP0Um+L3v6pYAy9EJ
+         aQBw==
+X-Gm-Message-State: AOAM532qOZ3Xpf/sTUlDxDlIrFE1rds9zFsXc1BV2GyveDv0jP/bJQIE
+        fCxtQqFX1Fz+LUfAiFWhTnNSDw==
+X-Google-Smtp-Source: ABdhPJycqY6eAxKaeNeuobCKcFDl/A/Pm6poKCispycxj4QQknv/oWVgsDB75ASvN2wpr21lu4X37g==
+X-Received: by 2002:a17:90a:f996:: with SMTP id cq22mr7779446pjb.208.1594941558995;
+        Thu, 16 Jul 2020 16:19:18 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id r25sm1627287pgv.88.2020.07.16.16.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 16:19:18 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 16:19:18 -0700 (PDT)
+X-Google-Original-Date: Thu, 16 Jul 2020 16:03:52 PDT (-0700)
+Subject:     Re: [PATCH] Replace HTTP links with HTTPS ones: RISC-V
+In-Reply-To: <20200705220236.29402-1-grandmaster@al2klimov.de>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        christian@brauner.io, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, grandmaster@al2klimov.de
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     grandmaster@al2klimov.de
+Message-ID: <mhng-79889b3a-dda3-49ab-ba9b-0c20292c2c31@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-
-> Michael Ellerman <mpe@ellerman.id.au> a écrit :
+On Sun, 05 Jul 2020 15:02:36 PDT (-0700), grandmaster@al2klimov.de wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 >
->> Christophe Leroy <christophe.leroy@c-s.fr> writes:
->>> Prepare for switching VDSO to generic C implementation in following
->>> patch. Here, we:
->>> - Modify __get_datapage() to take an offset
->>> - Prepare the helpers to call the C VDSO functions
->>> - Prepare the required callbacks for the C VDSO functions
->>> - Prepare the clocksource.h files to define VDSO_ARCH_CLOCKMODES
->>> - Add the C trampolines to the generic C VDSO functions
->>>
->>> powerpc is a bit special for VDSO as well as system calls in the
->>> way that it requires setting CR SO bit which cannot be done in C.
->>> Therefore, entry/exit needs to be performed in ASM.
->>>
->>> Implementing __arch_get_vdso_data() would clobber the link register,
->>> requiring the caller to save it. As the ASM calling function already
->>> has to set a stack frame and saves the link register before calling
->>> the C vdso function, retriving the vdso data pointer there is lighter.
->> ...
->>
->>> diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h  
->>> b/arch/powerpc/include/asm/vdso/gettimeofday.h
->>> new file mode 100644
->>> index 000000000000..4452897f9bd8
->>> --- /dev/null
->>> +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
->>> @@ -0,0 +1,175 @@
->>> +/* SPDX-License-Identifier: GPL-2.0 */
->>> +#ifndef __ASM_VDSO_GETTIMEOFDAY_H
->>> +#define __ASM_VDSO_GETTIMEOFDAY_H
->>> +
->>> +#include <asm/ptrace.h>
->>> +
->>> +#ifdef __ASSEMBLY__
->>> +
->>> +.macro cvdso_call funct
->>> +  .cfi_startproc
->>> +	PPC_STLU	r1, -STACK_FRAME_OVERHEAD(r1)
->>> +	mflr		r0
->>> +  .cfi_register lr, r0
->>> +	PPC_STL		r0, STACK_FRAME_OVERHEAD + PPC_LR_STKOFF(r1)
->>
->> This doesn't work for me on ppc64(le) with glibc.
->>
->> glibc doesn't create a stack frame before making the VDSO call, so the
->> store of r0 (LR) goes into the caller's frame, corrupting the saved LR,
->> leading to an infinite loop.
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>           If both the HTTP and HTTPS versions
+>           return 200 OK and serve the same content:
+>             Replace HTTP with HTTPS.
 >
-> Where should it be saved if it can't be saved in the standard location ?
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also https://lkml.org/lkml/2020/6/27/64
+>
+>  If there are any valid, but yet not changed URLs:
+>  See https://lkml.org/lkml/2020/6/26/837
+>
+>  arch/riscv/include/uapi/asm/unistd.h       | 2 +-
+>  tools/arch/riscv/include/uapi/asm/unistd.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/include/uapi/asm/unistd.h b/arch/riscv/include/uapi/asm/unistd.h
+> index 13ce76cc5aff..4b989ae15d59 100644
+> --- a/arch/riscv/include/uapi/asm/unistd.h
+> +++ b/arch/riscv/include/uapi/asm/unistd.h
+> @@ -12,7 +12,7 @@
+>   * GNU General Public License for more details.
+>   *
+>   * You should have received a copy of the GNU General Public License
+> - * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+> + * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+>   */
+>
+>  #ifdef __LP64__
+> diff --git a/tools/arch/riscv/include/uapi/asm/unistd.h b/tools/arch/riscv/include/uapi/asm/unistd.h
+> index 0e2eeeb1fd27..f506cca520b0 100644
+> --- a/tools/arch/riscv/include/uapi/asm/unistd.h
+> +++ b/tools/arch/riscv/include/uapi/asm/unistd.h
+> @@ -12,7 +12,7 @@
+>   * GNU General Public License for more details.
+>   *
+>   * You should have received a copy of the GNU General Public License
+> - * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+> + * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+>   */
+>
+>  #ifdef __LP64__
 
-As Michael pointed out, userspace doesn't treat the VDSO as a normal function
-call.  In order to keep compatibility with existent software, LR would need to
-be saved on another stack frame.
+Thanks.  This is on for-next.
 
--- 
-Tulio Magno
+Unless anyone has any objections I'll eventually go remove all the license
+boilerplates from arch/rsicv, as it looks like I missed a few when I converted
+them over:
+
+$ git grep "GNU" | grep riscv
+arch/riscv/Makefile:# This file is subject to the terms and conditions of the GNU General Public
+arch/riscv/boot/Makefile:# This file is subject to the terms and conditions of the GNU General Public
+arch/riscv/boot/install.sh:# This file is subject to the terms and conditions of the GNU General Public
+arch/riscv/include/uapi/asm/elf.h: * it under the terms of the GNU General Public License as published by
+arch/riscv/kernel/fpu.S: *   modify it under the terms of the GNU General Public License
+arch/riscv/kernel/fpu.S: *   GNU General Public License for more details.
