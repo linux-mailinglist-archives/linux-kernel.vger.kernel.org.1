@@ -2,180 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5859221C3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 07:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1C7221C4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgGPF6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 01:58:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6048 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725913AbgGPF6W (ORCPT
+        id S1727915AbgGPGFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbgGPGFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 01:58:22 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G5WHrT001936;
-        Thu, 16 Jul 2020 01:58:15 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32792wvxy7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 01:58:15 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06G5WL6S002191;
-        Thu, 16 Jul 2020 01:58:15 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32792wvxxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 01:58:15 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06G5tdPD001596;
-        Thu, 16 Jul 2020 05:58:13 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04dal.us.ibm.com with ESMTP id 327529r05p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 05:58:13 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06G5wCS117105226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 05:58:12 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC6C5C605B;
-        Thu, 16 Jul 2020 05:58:11 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A8083C6057;
-        Thu, 16 Jul 2020 05:58:08 +0000 (GMT)
-Received: from morokweng.localdomain (unknown [9.163.73.114])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Thu, 16 Jul 2020 05:58:08 +0000 (GMT)
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com> <159466088775.24747.1248185448154277951.stgit@hbathini.in.ibm.com> <87365t8pse.fsf@morokweng.localdomain>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Hari Bathini <hbathini@linux.ibm.com>
-Cc:     Pingfan Liu <piliu@redhat.com>, Nayna Jain <nayna@linux.ibm.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [PATCH v3 04/12] ppc64/kexec_file: avoid stomping memory used by special regions
-In-reply-to: <87365t8pse.fsf@morokweng.localdomain>
-Date:   Thu, 16 Jul 2020 02:58:04 -0300
-Message-ID: <87pn8w80ib.fsf@morokweng.localdomain>
+        Thu, 16 Jul 2020 02:05:10 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B428C061755;
+        Wed, 15 Jul 2020 23:05:10 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id e13so4512677qkg.5;
+        Wed, 15 Jul 2020 23:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C/Sx3DD1xiFaSouN+hVZkXpnDAPJUJUqVEbjzUVKBjY=;
+        b=hjKUUYbaz0sPmdc6UkL8TZ4OoDP5uCGuba45k0YMT6bu+EKvgOa1BPJ6yRhs9m7cq6
+         CTjX45iH8nxWh9STseaR2UkX8wBd/vgoJ188UbrshIEKILPkp1IL+XCnhQ9G4gKYWGb1
+         gZHn6ivhyTnaOSMhs7Ow6/q/kXFmIjybLHzwW6PuVBNsroG/OgP8aPZFryIV14rKwTpO
+         ITK1GBBw06ZPq+uPik67Q6qUvxzmYe1akszXBinO20+G1+8H3ZzSmrgGfQ4QzMzAkQ4d
+         ATxa7jrwbD6Wp5bo7p1Sdg6M1aw36MfNtGMW/HufqTeqg/8JgpMvzt+CP2khPp9rLwhf
+         NSfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C/Sx3DD1xiFaSouN+hVZkXpnDAPJUJUqVEbjzUVKBjY=;
+        b=cU3m+nMXEWRBtZr7NirE9oYUnIcZjOQaXVGMLB2oImhynyS9MfOIJoU7e3Bg/gGXFX
+         pB68t5Hp4E0pkqGdvaOQrEFaYRE4JHiqdkJsKaVvMSp2xNNziXWIdUulMZ7SjaHJ3sTw
+         P4d4xtgvooSughihjwBGU4LtdSTkZ/xmh6AHq1RyuKhOdKqq1TK5ndiGPeS7BwGU6eJb
+         Qabl+0OGiaRIyagnkMZ2PBAIzc1jojNHiriy4D+Xte0rq396JZelV81/XtZSrHKcpF44
+         VTzu3NO0j+iPt74VkBgOD5AsnC6NwcexEzv98SX+dTmec7kwEeR+FfhQZ/UD00zzUV/G
+         jlRQ==
+X-Gm-Message-State: AOAM530oW8+mCnjkUCVcEAZzs8bs4SlcHTD4RAfamkHqlIyITKyiVAMp
+        8D4VvQzbVX0hmnWL9IIMUZr+SESuw0fAFFOgw8M=
+X-Google-Smtp-Source: ABdhPJxsUjKeetvu0GriGmGx8SewSAdbVUPi3lkk8oiAMpiNXMbWGBd3Uk1PlySj3VC0hVbyi/jEMpgm4s/WCadMCXI=
+X-Received: by 2002:ae9:f002:: with SMTP id l2mr2532019qkg.437.1594879509565;
+ Wed, 15 Jul 2020 23:05:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_12:2020-07-15,2020-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007160038
+References: <20200715052601.2404533-1-songliubraving@fb.com> <20200715052601.2404533-3-songliubraving@fb.com>
+In-Reply-To: <20200715052601.2404533-3-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jul 2020 23:04:58 -0700
+Message-ID: <CAEf4BzZdvBKp6WO+zUTF0F9iL2WaukvTWNGZggUPx-nwESpQ7w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add callchain_stackid
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 11:09 PM Song Liu <songliubraving@fb.com> wrote:
+>
+> This tests new helper function bpf_get_stackid_pe and bpf_get_stack_pe.
+> These two helpers have different implementation for perf_event with PEB
+> entries.
+>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  .../bpf/prog_tests/perf_event_stackmap.c      | 120 ++++++++++++++++++
+>  .../selftests/bpf/progs/perf_event_stackmap.c |  64 ++++++++++
+>  2 files changed, 184 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+>
 
-Thiago Jung Bauermann <bauerman@linux.ibm.com> writes:
+Just few simplification suggestions, but overall looks good, so please add:
 
-> Hari Bathini <hbathini@linux.ibm.com> writes:
->
->> diff --git a/arch/powerpc/include/asm/crashdump-ppc64.h b/arch/powerpc/include/asm/crashdump-ppc64.h
->> new file mode 100644
->> index 0000000..90deb46
->> --- /dev/null
->> +++ b/arch/powerpc/include/asm/crashdump-ppc64.h
->> @@ -0,0 +1,10 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +#ifndef _ASM_POWERPC_CRASHDUMP_PPC64_H
->> +#define _ASM_POWERPC_CRASHDUMP_PPC64_H
->> +
->> +/* min & max addresses for kdump load segments */
->> +#define KDUMP_BUF_MIN		(crashk_res.start)
->> +#define KDUMP_BUF_MAX		((crashk_res.end < ppc64_rma_size) ? \
->> +				 crashk_res.end : (ppc64_rma_size - 1))
->> +
->> +#endif /* __ASM_POWERPC_CRASHDUMP_PPC64_H */
->> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
->> index 7008ea1..bf47a01 100644
->> --- a/arch/powerpc/include/asm/kexec.h
->> +++ b/arch/powerpc/include/asm/kexec.h
->> @@ -100,14 +100,16 @@ void relocate_new_kernel(unsigned long indirection_page, unsigned long reboot_co
->>  #ifdef CONFIG_KEXEC_FILE
->>  extern const struct kexec_file_ops kexec_elf64_ops;
->>
->> -#ifdef CONFIG_IMA_KEXEC
->>  #define ARCH_HAS_KIMAGE_ARCH
->>
->>  struct kimage_arch {
->> +	struct crash_mem *exclude_ranges;
->> +
->> +#ifdef CONFIG_IMA_KEXEC
->>  	phys_addr_t ima_buffer_addr;
->>  	size_t ima_buffer_size;
->> -};
->>  #endif
->> +};
->>
->>  int setup_purgatory(struct kimage *image, const void *slave_code,
->>  		    const void *fdt, unsigned long kernel_load_addr,
->> @@ -125,6 +127,7 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->>  			unsigned long initrd_load_addr,
->>  			unsigned long initrd_len, const char *cmdline);
->>  #endif /* CONFIG_PPC64 */
->> +
->>  #endif /* CONFIG_KEXEC_FILE */
->>
->>  #else /* !CONFIG_KEXEC_CORE */
->> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
->> index 23ad04c..c695f94 100644
->> --- a/arch/powerpc/kexec/elf_64.c
->> +++ b/arch/powerpc/kexec/elf_64.c
->> @@ -22,6 +22,7 @@
->>  #include <linux/of_fdt.h>
->>  #include <linux/slab.h>
->>  #include <linux/types.h>
->> +#include <asm/crashdump-ppc64.h>
->>
->>  static void *elf64_load(struct kimage *image, char *kernel_buf,
->>  			unsigned long kernel_len, char *initrd,
->> @@ -46,6 +47,12 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->>  	if (ret)
->>  		goto out;
->>
->> +	if (image->type == KEXEC_TYPE_CRASH) {
->> +		/* min & max buffer values for kdump case */
->> +		kbuf.buf_min = pbuf.buf_min = KDUMP_BUF_MIN;
->> +		kbuf.buf_max = pbuf.buf_max = KDUMP_BUF_MAX;
->
-> This is only my personal opinion and an actual maintainer may disagree,
-> but just looking at the lines above, I would assume that KDUMP_BUF_MIN
-> and KDUMP_BUF_MAX were constants, when in fact they aren't.
->
-> I suggest using static inline macros in <asm/crashdump-ppc64.h>, for
-> example:
->
-> static inline resource_size_t get_kdump_buf_min(void)
-> {
-> 	return crashk_res.start;
-> }
->
-> static inline resource_size_t get_kdump_buf_max(void)
-> {
-> 	return (crashk_res.end < ppc64_rma_size) ? \
-> 		 crashk_res.end : (ppc64_rma_size - 1)
-> }
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-I later noticed that KDUMP_BUF_MIN and KDUMP_BUF_MAX are only used here.
-In this case, I think the best option is to avoid the macros and inline
-functions and just use the actual expressions in the code.
+[...]
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+> +
+> +void test_perf_event_stackmap(void)
+> +{
+> +       struct perf_event_attr attr = {
+> +               /* .type = PERF_TYPE_SOFTWARE, */
+> +               .type = PERF_TYPE_HARDWARE,
+> +               .config = PERF_COUNT_HW_CPU_CYCLES,
+> +               .precise_ip = 2,
+> +               .sample_type = PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
+> +                       PERF_SAMPLE_CALLCHAIN,
+> +               .branch_sample_type = PERF_SAMPLE_BRANCH_USER |
+> +                       PERF_SAMPLE_BRANCH_NO_FLAGS |
+> +                       PERF_SAMPLE_BRANCH_NO_CYCLES |
+> +                       PERF_SAMPLE_BRANCH_CALL_STACK,
+> +               .sample_period = 5000,
+> +               .size = sizeof(struct perf_event_attr),
+> +       };
+> +       struct perf_event_stackmap *skel;
+> +       __u32 duration = 0;
+> +       cpu_set_t cpu_set;
+> +       int pmu_fd, err;
+> +
+> +       skel = perf_event_stackmap__open();
+> +
+> +       if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+> +               return;
+> +
+> +       /* override program type */
+> +       bpf_program__set_perf_event(skel->progs.oncpu);
+
+this should be unnecessary, didn't libbpf detect the type correctly
+from SEC? If not, let's fix that.
+
+> +
+> +       err = perf_event_stackmap__load(skel);
+> +       if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
+> +               goto cleanup;
+> +
+> +       CPU_ZERO(&cpu_set);
+> +       CPU_SET(0, &cpu_set);
+> +       err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
+> +       if (CHECK(err, "set_affinity", "err %d, errno %d\n", err, errno))
+> +               goto cleanup;
+> +
+> +       pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
+> +                        0 /* cpu 0 */, -1 /* group id */,
+> +                        0 /* flags */);
+> +       if (pmu_fd < 0) {
+> +               printf("%s:SKIP:cpu doesn't support the event\n", __func__);
+> +               test__skip();
+> +               goto cleanup;
+> +       }
+> +
+> +       skel->links.oncpu = bpf_program__attach_perf_event(skel->progs.oncpu,
+> +                                                          pmu_fd);
+> +       if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
+> +                 "err %ld\n", PTR_ERR(skel->links.oncpu))) {
+> +               close(pmu_fd);
+> +               goto cleanup;
+> +       }
+> +
+> +       /* create kernel and user stack traces for testing */
+> +       func_6();
+> +
+> +       CHECK(skel->data->stackid_kernel != 2, "get_stackid_kernel", "failed\n");
+> +       CHECK(skel->data->stackid_user != 2, "get_stackid_user", "failed\n");
+> +       CHECK(skel->data->stack_kernel != 2, "get_stack_kernel", "failed\n");
+> +       CHECK(skel->data->stack_user != 2, "get_stack_user", "failed\n");
+> +       close(pmu_fd);
+
+I think pmu_fd will be closed by perf_event_stackmap__destory (through
+closing the link)
+
+> +
+> +cleanup:
+> +       perf_event_stackmap__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+> new file mode 100644
+> index 0000000000000..1b0457efeedec
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+> @@ -0,0 +1,64 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2020 Facebook
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +#ifndef PERF_MAX_STACK_DEPTH
+> +#define PERF_MAX_STACK_DEPTH         127
+> +#endif
+> +
+> +#ifndef BPF_F_USER_STACK
+> +#define BPF_F_USER_STACK               (1ULL << 8)
+> +#endif
+
+BPF_F_USER_STACK should be in vmlinux.h already, similarly to BPF_F_CURRENT_CPU
+
+> +
+> +typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
+> +       __uint(max_entries, 16384);
+> +       __uint(key_size, sizeof(__u32));
+> +       __uint(value_size, sizeof(stack_trace_t));
+> +} stackmap SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, stack_trace_t);
+> +} stackdata_map SEC(".maps");
+> +
+> +long stackid_kernel = 1;
+> +long stackid_user = 1;
+> +long stack_kernel = 1;
+> +long stack_user = 1;
+> +
+
+nit: kind of unusual to go from 1 -> 2, why no zero to one as a flag?
+those variables will be available through skel->bss, btw
+
+> +SEC("perf_event")
+> +int oncpu(void *ctx)
+> +{
+> +       int max_len = PERF_MAX_STACK_DEPTH * sizeof(__u64);
+> +       stack_trace_t *trace;
+> +       __u32 key = 0;
+> +       long val;
+> +
+> +       val = bpf_get_stackid(ctx, &stackmap, 0);
+> +       if (val > 0)
+> +               stackid_kernel = 2;
+> +       val = bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
+> +       if (val > 0)
+> +               stackid_user = 2;
+> +
+> +       trace = bpf_map_lookup_elem(&stackdata_map, &key);
+> +       if (!trace)
+> +               return 0;
+> +
+> +       val = bpf_get_stack(ctx, trace, max_len, 0);
+
+given you don't care about contents of trace, you could have used
+`stack_trace_t trace = {}` global variable instead of PERCPU_ARRAY.
+
+> +       if (val > 0)
+> +               stack_kernel = 2;
+> +
+> +       val = bpf_get_stack(ctx, trace, max_len, BPF_F_USER_STACK);
+
+nit: max_len == sizeof(stack_trace_t) ?
+
+> +       if (val > 0)
+> +               stack_user = 2;
+> +
+> +       return 0;
+> +}
+> +
+> +char LICENSE[] SEC("license") = "GPL";
+> --
+> 2.24.1
+>
