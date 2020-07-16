@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237E7222F03
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31AB222F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgGPXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:30:45 -0400
-Received: from smtp-as-01.vtxnet.net ([194.38.175.130]:44802 "EHLO
-        smtp-as-01.vtxnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgGPXap (ORCPT
+        id S1726130AbgGPXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:37:56 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4968 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725933AbgGPXh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:30:45 -0400
-X-Greylist: delayed 1200 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 19:30:44 EDT
-X-Spam-Flag: NO
-X-Spam-Score: 1.2
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 tagged_above=-999 required=999
-        tests=[FREEMAIL_FORGED_REPLYTO=1.199, LOTS_OF_MONEY=0.001]
-        autolearn=no autolearn_force=no
-Received: from smtp-02.datacomm.ch (smtp-02-5.datacomm.ch [212.40.2.22])
-        by smtp-as-01.vtxnet.net (Postfix) with ESMTP id ECD95406FE;
-        Fri, 17 Jul 2020 00:50:54 +0200 (CEST)
-Received: from webmail.vtx.ch (bas-flu-webmail-01.vtxnet.net [212.40.2.41])
-        by smtp-02.datacomm.ch (VTX Datacomm AG) with ESMTP id 1F78A120051;
-        Fri, 17 Jul 2020 00:50:54 +0200 (CEST)
-Received: from [156.38.89.48]
- by webmail.vtx.ch
- with HTTP (HTTP/1.1 POST); Fri, 17 Jul 2020 00:50:54 +0200
+        Thu, 16 Jul 2020 19:37:56 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GMoKkV008939
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:01:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=LL2rGApnWJch90rgZTalBSdlaarxIQ3540QQIkq13K0=;
+ b=SEWq1E9UlTTJFt8WWCCY16XLbk/XwxiN0s3fI4RRBgSclvbQ27nKvvN3MODXhy5z/trt
+ yGpm+BBWl+nu01MIvnjPyVBtNyetJmqz98LYOOfjcZKc2bAQdviOBrrYnSVY+kJeuiwz
+ e0hP2dEvW4WQ3E5pbJ0gncxbQOvRoVgbdMI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32avg5h41h-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:01:49 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 16 Jul 2020 16:01:39 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id B453F62E523E; Thu, 16 Jul 2020 15:59:36 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 0/2] bpf: fix stackmap on perf_events with PEBS
+Date:   Thu, 16 Jul 2020 15:59:31 -0700
+Message-ID: <20200716225933.196342-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Date:   Fri, 17 Jul 2020 00:50:54 +0200
-From:   =?UTF-8?Q?Ocean_Finance=C2=AE?= <hoheneggerbrail@vtxmail.ch>
-To:     undisclosed-recipients:;
-Subject: =?UTF-8?Q?Gl=C3=BCckwunsch_!!?=
-Organization: =?UTF-8?Q?Ocean_Finance=C2=AE?=
-Reply-To: oceanfinance__@hotmail.com
-Mail-Reply-To: oceanfinance__@hotmail.com
-Message-ID: <4727f41278594856d69e0fbcf511c1ad@vtxmail.ch>
-X-Sender: hoheneggerbrail@vtxmail.ch
-User-Agent: Roundcube Webmail/1.2.10
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 clxscore=1015 impostorscore=0 phishscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160148
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Calling get_perf_callchain() on perf_events from PEBS entries may cause
+unwinder errors. To fix this issue, perf subsystem fetches callchain earl=
+y,
+and marks perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
+Similar issue exists when BPF program calls get_perf_callchain() via
+helper functions. For more information about this issue, please refer to
+discussions in [1].
 
+This set fixes this issue with helper proto bpf_get_stackid_pe and
+bpf_get_stack_pe.
 
--- 
-Sehr geehrter Herr / Frau,
+[1] https://lore.kernel.org/lkml/ED7B9430-6489-4260-B3C5-9CFA2E3AA87A@fb.=
+com/
 
-Ich hoffe, Sie sind bei guter Gesundheit durch die Pandemie
-Coronavirus (COVID-19)
+Changes v2 =3D> v3:
+1. Fix handling of stackmap skip field. (Andrii)
+2. Simplify the code in a few places. (Andrii)
 
-Ich bin Herr Heckmann Carl von der Active Lenders Loan Company,
-bekannt als Ocean Finance®. Damit möchten wir Sie darüber informieren,
-dass wir alle Arten von Darlehen zu einem Zinssatz von 2% anbieten.
-Wenn Sie daran interessiert sind, innerhalb von 24 Stunden ein
-Darlehen zu erhalten, genehmigen Sie es und überweisen Sie es auf Ihr
-Bankkonto. Bitte kontaktieren Sie uns mit den folgenden Informationen.
-Unser Kreditangebot reicht von 20.000,00 bis 20.000.000,00 (EUR).
+Changes v1 =3D> v2:
+1. Simplify the design and avoid introducing new helper function. (Andrii=
+)
 
-Bitte füllen Sie das unten stehende Formular aus und senden Sie es so
-schnell wie möglich zurück.
+Song Liu (2):
+  bpf: separate bpf_get_[stack|stackid] for perf events BPF
+  selftests/bpf: add callchain_stackid
 
-Ihr vollständiger Name:
-Erforderlicher Darlehensbetrag:
-Laufzeit des Darlehens:
-Zweck des Kredits:
-Telefonnummer:
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/stackmap.c                         | 202 ++++++++++++++++--
+ kernel/trace/bpf_trace.c                      |   4 +-
+ .../bpf/prog_tests/perf_event_stackmap.c      | 116 ++++++++++
+ .../selftests/bpf/progs/perf_event_stackmap.c |  59 +++++
+ 5 files changed, 363 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
+ckmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
+.c
 
-In Bestätigung dieser E-Mail können wir mit der Bearbeitung Ihres
-Darlehens beginnen und versprechen, Ihren Herzenswunsch zu erfüllen.
-Freundliche Grüße.
-
-Herr Heckmann Carl
-Finanzberater
+--
+2.24.1
