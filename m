@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B61222C8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0613C222C8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgGPUN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 16:13:28 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57825 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728788AbgGPUN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:13:27 -0400
-IronPort-SDR: toPVT0M45iPCCadNNsANJ7lJiaqisHTjDvMiApWhFAAyGZg+BIUeRi4r8LOt45VI6Yw+fwn/07
- 8jVltA/3anGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="214214451"
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="214214451"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 13:13:26 -0700
-IronPort-SDR: fqjbAsFcqXqHhyz4Ik6CS/yPTPtMpP9HdDCtL+5XDmAJF+f4N+jIuG6NAA+IjvsraVzZ7zwVzm
- q1ZfLMKcWH8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="308761731"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Jul 2020 13:13:26 -0700
-Date:   Thu, 16 Jul 2020 13:13:26 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/split_lock: Enumerate split lock feature on Sapphire
- Rapids
-Message-ID: <20200716201325.GB66451@romley-ivt3.sc.intel.com>
-References: <1593208534-33721-1-git-send-email-fenghua.yu@intel.com>
- <20200716193659.GA66451@romley-ivt3.sc.intel.com>
- <20200716195010.GV10769@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716195010.GV10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1729700AbgGPUNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 16:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728788AbgGPUNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 16:13:45 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9F7C061755;
+        Thu, 16 Jul 2020 13:13:45 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id E8E8011E4591F;
+        Thu, 16 Jul 2020 13:13:43 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 13:13:41 -0700 (PDT)
+Message-Id: <20200716.131341.1043144835432437801.davem@davemloft.net>
+To:     asmadeus@codewreck.org
+Cc:     hch@lst.de, nazard@nazar.ca, ericvh@gmail.com, lucho@ionkov.net,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+e6f77e16ff68b2434a2c@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net/9p: validate fds in p9_fd_open
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200716075820.GA3720@nautica>
+References: <20200715134756.GB22828@nautica>
+        <20200715.142459.1215411672362681844.davem@davemloft.net>
+        <20200716075820.GA3720@nautica>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 16 Jul 2020 13:13:44 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
 
-On Thu, Jul 16, 2020 at 09:50:10PM +0200, Peter Zijlstra wrote:
-> On Thu, Jul 16, 2020 at 12:37:00PM -0700, Fenghua Yu wrote:
-> > Hi, Thomas, Boris, Ingo,
-> > 
-> > On Fri, Jun 26, 2020 at 02:55:34PM -0700, Fenghua Yu wrote:
-> The only comment I have is that us needing it is ludicrous :/ What's the
-> bloody point of having it 'enumerated' if you then still have to use FMS
-> lists.
-> 
-> There's nowhere near enough cursing in the comment that goes with that
-> list.
+The amount of time you used to compose this email exceeds by several
+orders of magnitude the amount of effort it would have taken to merge
+the fix to Linus, calm the syzbot warnings, and make those warnings
+therefore more useful for people doing active development.
 
-Tony answered Thomas' similar question at
-https://lore.kernel.org/lkml/20200416223335.GA23759@agluck-desk2.amr.corp.intel.com/
+I think your priorities are kinda off, but we can agree to disagree
+I guess.
 
-Is that sufficient enough to answer your question?
-
-Thanks.
-
--Fenghua
+Thank you.
