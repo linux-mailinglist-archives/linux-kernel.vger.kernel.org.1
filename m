@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3899A222F31
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1B5222F54
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgGPXkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
+        id S1726694AbgGPXpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:45:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgGPXkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:40:17 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        id S1726528AbgGPXpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:45:17 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93C9C207DD;
-        Thu, 16 Jul 2020 22:24:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA8B8208A7;
+        Thu, 16 Jul 2020 22:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594938278;
-        bh=riITmyDuf/GN7tn3G7Z7oGKq7CHs6wg0gna9EwStjOA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rFcTojhGlgn7aOQAoBlbvZRbKqOM4JutY2KHUv9y/9rqJNTYzIZhvbLK04ZbumoGg
-         wB6NekP1ii1I29EuOivzF8L8ZBLe6E4v9xkdD4tngqvYb8MxyNF1kIeDqM5ZoHEtDm
-         Wlk4yIQUueHEmg9xpIZIGP6ZlrVvegsWUyjMsYN8=
-Date:   Thu, 16 Jul 2020 15:24:38 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     linmiaohe <linmiaohe@huawei.com>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: mmap: Merge vma after call_mmap() if possible
-Message-Id: <20200716152438.9317f4f95b92de75f88ea99f@linux-foundation.org>
-In-Reply-To: <1594696064-1409-1-git-send-email-linmiaohe@huawei.com>
-References: <1594696064-1409-1-git-send-email-linmiaohe@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1594938609;
+        bh=WpG9Nz+vUXsNwnnFQo6kTLy37Q40YlIhwgs82GMReoA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=beoOAfeRf8b/t27dYfPS7Rb7VXMa5PE7oMxXI/bN7PmvjrUBqI1xJDceo2wt+fu09
+         a/hGt+le8EUrIV3u47mTbEsa+2pOxt4LMagSGCojrPCpbYyL/pP0WSEK6z2SdBdEFP
+         bJq1/UdSbzdHgJ/huB+EfjrxNTZX2YzPJgXnoke4=
+Date:   Thu, 16 Jul 2020 23:29:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     mnlife qiao <mnlife.qiao@gmail.com>
+Cc:     lgirdwood@gmail.com, Jaroslav Kysela <perex@perex.cz>,
+        open list <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, mnlife <mnlife@foxmail.com>
+Subject: Re: [PATCH] ASoC: soc-jack: calling snd_soc_jack_report causes a
+ null pointer access
+Message-ID: <20200716222958.GA25428@sirena.org.uk>
+References: <5f0e49da.1c69fb81.1ede7.a8fbSMTPIN_ADDED_MISSING@mx.google.com>
+ <CAGjHXR2ExzMO3ntwzZy9QUhpuqe-VZAXOucNkXXZK+0XZcaQWQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
+Content-Disposition: inline
+In-Reply-To: <CAGjHXR2ExzMO3ntwzZy9QUhpuqe-VZAXOucNkXXZK+0XZcaQWQ@mail.gmail.com>
+X-Cookie: Yow!  I threw up on my window!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 11:07:44 +0800 linmiaohe <linmiaohe@huawei.com> wrote:
 
-> From: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> The vm_flags may be changed after call_mmap() because drivers may set some
-> flags for their own purpose. As a result, we failed to merge the adjacent
-> vma due to the different vm_flags as userspace can't pass in the same one.
-> Try to merge vma after call_mmap() to fix this issue.
-> 
-> Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/mmap.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 59a4682ebf3f..9568117471f8 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1689,7 +1689,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  		struct list_head *uf)
->  {
->  	struct mm_struct *mm = current->mm;
-> -	struct vm_area_struct *vma, *prev;
-> +	struct vm_area_struct *vma, *prev, *merge;
->  	int error;
->  	struct rb_node **rb_link, *rb_parent;
->  	unsigned long charged = 0;
-> @@ -1773,6 +1773,20 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  		if (error)
->  			goto unmap_and_free_vma;
->  
-> +		/* If vm_flags changed after call_mmap(), we should try merge vma again
-> +		 * as we may succeed this time.
-> +		 */
-> +		if (unlikely(vm_flags != vma->vm_flags && prev)) {
-> +			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
-> +				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
-> +			if (merge) {
-> +				fput(file);
-> +				vm_area_free(vma);
-> +				vma = merge;
-> +				goto unmap_writable;
+--mYCpIKhGyMATD0i+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Shouldn't we update local variable `vm_flags' here, to pick up the
-change?  And possibly `addr'?
+On Wed, Jul 15, 2020 at 08:24:04AM +0800, mnlife qiao wrote:
+> When snd_soc_card_jack_new is not called or the call fails,
+> calling this function causes a null pointer access
 
-> +			}
-> +		}
-> +
->  		/* Can addr have changed??
->  		 *
->  		 * Answer: Yes, several device drivers can do it in their
-> @@ -1795,6 +1809,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  	vma_link(mm, vma, prev, rb_link, rb_parent);
->  	/* Once vma denies write, undo our temporary denial count */
->  	if (file) {
-> +unmap_writable:
->  		if (vm_flags & VM_SHARED)
->  			mapping_unmap_writable(file->f_mapping);
->  		if (vm_flags & VM_DENYWRITE)
+> --- a/sound/soc/soc-jack.c
+> +++ b/sound/soc/soc-jack.c
+> @@ -44,7 +44,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int=
+ status, int mask)
+> 	unsigned int sync =3D 0;
+> 	int enable;
+>=20
+> -	if (!jack)
+> +	if (!jack || !jack->jack)
+> 		return;
 
+I'm afraid this still won't apply - there's a text/html version of the
+patch, in the text portion tabs have been converted into spaces and it
+appears some other issues that mean git am can't understand it.
+
+--mYCpIKhGyMATD0i+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8Q1OYACgkQJNaLcl1U
+h9ARUgf+Mg9kwI/C/ZcV8nUJRP/ff392AISPJd5Xt5EZjYci1c9uk8JW9HhtNcdi
+fWwj02+qZRaR8EWVlJUgLLQGLJ+rgm4dRdGkXzrYUXS4CCdeJVf4MPEmw6oMD76v
+j+a7qx7btZnuspKbSQe8Lky4xN/cRd3QVW9axOsBiyn6PqiEmyHhO9TjjjrdckLA
+TMOC+JtadYnmytwk4OkVu8KEaAVDcVPfKA3TklIx5fIA6mZoLBqqyN+hJmZS90z9
+KWXGPnT8/Hxa3fQh4p1kWefphZ0K2Szd6T62EQw7YRczfoR6eeISfVun6Z8WYrTM
+CqBHRH9jRWJquvn/0QAZKhyMBf7pFw==
+=bQhM
+-----END PGP SIGNATURE-----
+
+--mYCpIKhGyMATD0i+--
