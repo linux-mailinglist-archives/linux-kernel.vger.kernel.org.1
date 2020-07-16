@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBB4222AED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B69222AD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729673AbgGPSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:21:30 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:40388 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgGPSV0 (ORCPT
+        id S1729572AbgGPSVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:21:04 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59484 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729544AbgGPSVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:21:26 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06GIL7sx062632;
-        Thu, 16 Jul 2020 13:21:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594923667;
-        bh=AtFpbFN/pk3H2W7tsZe1q1Dl9Qhx5ZausPpl8TMz2w4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=h+AjHwpyp4eMvnTj4HGj+tpJAeKcUL6O9GmQbCRsX9bpe4dge1SQYtQaSSCAYynp+
-         fJ7CnQEYRVLUJ/+2tatpBeZyBsgHUs/7CzZC6V/z5XvmIiIuCBOXUDwngsd+sO3XJb
-         BrM6hbvwnWcNJq2Tr7Ze+X5pOpVfDf1ZoZCnJB7g=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06GIL7No122919
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Jul 2020 13:21:07 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 16
- Jul 2020 13:21:06 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 16 Jul 2020 13:21:06 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06GIL6ME128238;
-        Thu, 16 Jul 2020 13:21:06 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>,
-        <marek.behun@nic.cz>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v31 12/12] ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
-Date:   Thu, 16 Jul 2020 13:20:07 -0500
-Message-ID: <20200716182007.18389-13-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200716182007.18389-1-dmurphy@ti.com>
-References: <20200716182007.18389-1-dmurphy@ti.com>
+        Thu, 16 Jul 2020 14:21:00 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E7AF320B4909;
+        Thu, 16 Jul 2020 11:20:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E7AF320B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1594923659;
+        bh=EQouyNC75DO1HsNnhD3+10RmroB00VBujwUdao5crR4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AlLWGc9gUvnMB7UwGwCLpIAYfC/XPdwoLPOvLh6rcFv5LPR3FS5XoPECUgTkm7EDV
+         GZFBRU2hU43W3bR8QI6OCDTpA9RJJjsTj3/x9YcZe2qcVfig3fvqBRZS1OyvjsY5n6
+         Ug7JdAKvuWBseNKYHxSWIy8kwFBFxbBs3qjJIVCs=
+Date:   Thu, 16 Jul 2020 13:20:57 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Nayna Jain <nayna@linux.ibm.com>
+Subject: Re: [PATCH v3 07/12] ima: Fail rule parsing when
+ appraise_flag=blacklist is unsupportable
+Message-ID: <20200716182057.GE3673@sequoia>
+References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
+ <20200709061911.954326-8-tyhicks@linux.microsoft.com>
+ <1594923290.12900.376.camel@linux.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <1594923290.12900.376.camel@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the reg property to each channel node.  This update is
-to accommodate the multicolor framework.  In addition to the
-accommodation this allows the LEDs to be placed on any channel
-and allow designs to skip channels as opposed to requiring
-sequential order.
+On 2020-07-16 14:14:50, Mimi Zohar wrote:
+> On Thu, 2020-07-09 at 01:19 -0500, Tyler Hicks wrote:
+> > The "appraise_flag" option is only appropriate for appraise actions
+> > and its "blacklist" value is only appropriate when
+> > CONFIG_IMA_APPRAISE_MODSIG is enabled and "appraise_flag=blacklist" is
+> > only appropriate when "appraise_type=imasig|modsig" is also present.
+> > Make this clear at policy load so that IMA policy authors don't assume
+> > that other uses of "appraise_flag=blacklist" are supported.
+> 
+> The code looks correct, but this patch description could be written at
+> a higher level.  Perhaps it just needs to be prefixed with something
+> like this:
+> 
+> Verifying that a file hash is not blacklisted is currently only
+> supported for files with appended signatures (modsig).  In the future,
+> this might change.  For now, ...
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Pavel Machek <pavel@ucw.cz>
----
- arch/arm/boot/dts/ste-href.dtsi | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+That makes sense. I'm not up to speed on the intent behind the blacklist
+feature or where it may go in the future so I didn't think to add
+anything along those lines.
 
-diff --git a/arch/arm/boot/dts/ste-href.dtsi b/arch/arm/boot/dts/ste-href.dtsi
-index 33e3b0b3c53d..ff47cbf6ed3b 100644
---- a/arch/arm/boot/dts/ste-href.dtsi
-+++ b/arch/arm/boot/dts/ste-href.dtsi
-@@ -58,16 +58,21 @@ lp5521@33 {
- 				reg = <0x33>;
- 				label = "lp5521_pri";
- 				clock-mode = /bits/ 8 <2>;
--				chan0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				chan@0 {
-+					reg = <0>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 					linux,default-trigger = "heartbeat";
- 				};
--				chan1 {
-+				chan@1 {
-+					reg = <1>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan2 {
-+				chan@2 {
-+					reg = <2>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
-@@ -77,15 +82,20 @@ lp5521@34 {
- 				reg = <0x34>;
- 				label = "lp5521_sec";
- 				clock-mode = /bits/ 8 <2>;
--				chan0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				chan@0 {
-+					reg = <0>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan1 {
-+				chan@1 {
-+					reg = <1>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan2 {
-+				chan@2 {
-+					reg = <2>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--- 
-2.27.0
+If you are happy with the rest of the series, please feel free to append
+this to the commit message. Otherwise, I can add it if I need to submit
+a new revision of the series.
 
+Tyler
+
+> 
+> Mimi
+> 
+> > 
+> > Fixes: 273df864cf74 ("ima: Check against blacklisted hashes for files with modsig")
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > Cc: Nayna Jain <nayna@linux.ibm.com>
+> 
+> > ---
+> > 
+> > * v3
+> >   - New patch
+> > 
+> >  security/integrity/ima/ima_policy.c | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > index 81da02071d41..9842e2e0bc6d 100644
+> > --- a/security/integrity/ima/ima_policy.c
+> > +++ b/security/integrity/ima/ima_policy.c
+> > @@ -1035,6 +1035,11 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+> >  		return false;
+> >  	}
+> >  
+> > +	/* Ensure that combinations of flags are compatible with each other */
+> > +	if (entry->flags & IMA_CHECK_BLACKLIST &&
+> > +	    !(entry->flags & IMA_MODSIG_ALLOWED))
+> > +		return false;
+> > +
+> >  	return true;
+> >  }
+> >  
+> > @@ -1371,8 +1376,14 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+> >  				result = -EINVAL;
+> >  			break;
+> >  		case Opt_appraise_flag:
+> > +			if (entry->action != APPRAISE) {
+> > +				result = -EINVAL;
+> > +				break;
+> > +			}
+> > +
+> >  			ima_log_string(ab, "appraise_flag", args[0].from);
+> > -			if (strstr(args[0].from, "blacklist"))
+> > +			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+> > +			    strstr(args[0].from, "blacklist"))
+> >  				entry->flags |= IMA_CHECK_BLACKLIST;
+> >  			break;
+> >  		case Opt_permit_directio:
