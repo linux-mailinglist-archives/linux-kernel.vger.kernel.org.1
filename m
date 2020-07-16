@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F7F222848
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 18:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84FC22284E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 18:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729304AbgGPQ3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 12:29:43 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33338 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728845AbgGPQ3m (ORCPT
+        id S1729253AbgGPQcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 12:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729048AbgGPQcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 12:29:42 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jw6lI-0001Zl-5G; Thu, 16 Jul 2020 16:29:32 +0000
-Date:   Thu, 16 Jul 2020 18:29:31 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve Hjonnevag <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] binder: Don't use mmput() from shrinker function.
-Message-ID: <20200716162931.g3delsp7qmfjup6x@wittgenstein>
-References: <0000000000001fbbb605aa805c9b@google.com>
- <5ce3ee90-333e-638d-ac8c-cd6d7ab7aa3b@I-love.SAKURA.ne.jp>
- <20200716083506.GA20915@dhcp22.suse.cz>
- <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
- <20200716135445.GN31089@dhcp22.suse.cz>
- <4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp>
- <20200716151756.GO31089@dhcp22.suse.cz>
+        Thu, 16 Jul 2020 12:32:06 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2B5C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 09:32:05 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id el4so2955018qvb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 09:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=IqaV5FL0PECxrzqMcMpsU9VUXbw3Oykiac0eOEM8xRk=;
+        b=coWa0ly+THdkxmgAczU5j9YW2aZldQ+LrSFhlaBEd4BmZx6OP9QCpUiKKmkMvikvTv
+         IwNqFmD13zSYGJ3Zh7enFVghVnftWaN+vSKRmGVHLgBNDWC/5gRlvJEcLujqB7jjJPez
+         J8r97Xsji3+8GEr8De5QUMMLxi6z8XIa1O5rbljptJtjo4bSVC8BThwDxIZqVJ+CwCNz
+         LxKJBFDtUsvXAahhlyCvHcl29Jj6xMg2otzTkGUaRf2+a8KBB1kjm/cfokdzDoRlgHOh
+         QnZ/Y4+Q7jYPfBVVRjfJshnYWt+DVDWaHsZSbgfktyYMoAE0KKfvyXxXj81fg+t5dTeZ
+         X3Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=IqaV5FL0PECxrzqMcMpsU9VUXbw3Oykiac0eOEM8xRk=;
+        b=ZpS9DlZqFNe2XpCfTrTY7nwmBg4AbQmT3eW0cUKFgTtDwWIkdTW3b+xGa7ZYJuajtF
+         zJtdeKalm2mB5DC8A0uFRIUuOna9SpgStTtA7CAplIBlHCuWaYdFqPxn5C33bUKLYS5N
+         hb5ZpaYR8kkA/3yl1jRwYQg8kXn6FmC631/mC8T2vAU5ScAaQov+wDOxKQR3APnK+NVw
+         Mk3AG5wZisFO1wYkpRI1fdlvN8ehpQSlsJioboyouuJF1yI18bGu6IAla/zUDiow4kYX
+         2WI5vSTlI3pSYlv6iSmb02VemF+84H3kmKn9F+Q5iJ8o+iuuUo3bOqYm2fLei1/W7cFt
+         k72A==
+X-Gm-Message-State: AOAM532hq1vdV2RadqspiRTVaBha2CnI6d4Hk4hqa0kJPm0onka5//HA
+        JUz742KfMpXPo5L16dX4Y5l+vGC0TeZvAsmS
+X-Google-Smtp-Source: ABdhPJy97JfulwTIX38u7Qbd97AVcE4dFHFkx2zvVbbPhDUKKWpZv/FUnRVMqlX0T+/IfOSfVGDcuQ==
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr4872867qvb.228.1594917124969;
+        Thu, 16 Jul 2020 09:32:04 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id f15sm7083485qka.120.2020.07.16.09.32.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 09:32:04 -0700 (PDT)
+Message-ID: <196eed159aa0e4c94f7481b148a458a465050dc7.camel@massaru.org>
+Subject: Re: [RFC 0/3] kunit: add support to use modules
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     Kees Cook <keescook@chromium.org>, David Gow <davidgow@google.com>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Thu, 16 Jul 2020 13:32:01 -0300
+In-Reply-To: <202007151939.62EFE6F@keescook>
+References: <20200715031120.1002016-1-vitor@massaru.org>
+         <CABVgOSkBAiMSMzCx62_CRo_0e2SGdvRWZ0dSC4t628YJBw-3Aw@mail.gmail.com>
+         <202007151939.62EFE6F@keescook>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200716151756.GO31089@dhcp22.suse.cz>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 05:17:56PM +0200, Michal Hocko wrote:
-> On Fri 17-07-20 00:12:15, Tetsuo Handa wrote:
-> > syzbot is reporting that mmput() from shrinker function has a risk of
-> > deadlock [1], for delayed_uprobe_add() from update_ref_ctr() calls
-> > kzalloc(GFP_KERNEL) with delayed_uprobe_lock held, and
-> > uprobe_clear_state() from __mmput() also holds delayed_uprobe_lock.
-> > 
-> > Commit a1b2289cef92ef0e ("android: binder: drop lru lock in isolate
-> > callback") replaced mmput() with mmput_async() in order to avoid sleeping
-> > with spinlock held. But this patch replaces mmput() with mmput_async() in
-> > order not to start __mmput() from shrinker context.
-> > 
-> > [1] https://syzkaller.appspot.com/bug?id=bc9e7303f537c41b2b0cc2dfcea3fc42964c2d45
-> > 
-> > Reported-by: syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>
-> > Reported-by: syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>
-> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+On Wed, 2020-07-15 at 19:41 -0700, Kees Cook wrote:
+> On Wed, Jul 15, 2020 at 11:47:11AM +0800, David Gow wrote:
+> > - The inheriting of the mm stuff still means that
+> > copy_{from,to}_user() will only work if loaded as a module. This
+> > really needs to be documented. (Ideally, we'd find a way of having
+> > this work even for built-in tests, but I don't have any real ideas
+> > as
+> > to how that could be done).
 > 
-> Reviewed-by: Michal Hocko <mhocko@suse.com>
+> I'd like to better understand this ... are there conditions where
+> vm_mmap() doesn't work? I thought this would either use current()
+> (e.g.
+> how LKDTM uses it when getting triggered from debugfs), or use
+> init_mm.
+> 
+> I'd really like to see the mm patch more well described/justified.
+> 
 
-Thanks for the careful review Michal!
-Does this need a Cc: stable?
+Sure, I'll describe the patch better.
 
-Otherwise
+Thanks for the review.
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-
-Thanks!
-Christian
