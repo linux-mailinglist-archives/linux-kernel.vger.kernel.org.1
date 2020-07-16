@@ -2,118 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78187221994
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375D02219A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbgGPBlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 21:41:47 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:44143 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbgGPBlr (ORCPT
+        id S1727942AbgGPBtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:49:32 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29154 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726785AbgGPBtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:41:47 -0400
-Received: by mail-pg1-f195.google.com with SMTP id j19so3997747pgm.11;
-        Wed, 15 Jul 2020 18:41:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ZE6+Fvkj3P3JQEeypXr9zENjz3WklDtbROXfROTocSQ=;
-        b=TLB2kYFhB7oPedDA0JfrqtztKBJkCTv6C4LQjUgOOuX44RbwZx4Cun9dqIHoB4Eh7v
-         UHHGkMU8oXLNFhHFzBxSfGGLEZYMEm2qrcnMLPbVga/09UbNi1E65Upg8d+n4wBZpdLG
-         F665BRo3SG9i2aTOqaC2LgFGWv2U64E0rneyou2pjNXN8ChXGCG8URor12L2fuBMivdn
-         IBCtgAL8ARUmZv7njjNQRJhM6Z2YKsUBBzdJYtNb8aL2V43fRZ1Xf/FH45zpvZNeFQW7
-         FApmvEd4tmzdNuPUNf9x+rAtNI16oAqCyPqxCGP5ozBLDUNM3eFxNskFa43FRN1bi2Q2
-         j8cA==
-X-Gm-Message-State: AOAM533XuXAxHOwahjZ+947sJxLhfQn8Bd1WA081hL3KbbpTgiAPKoQ/
-        qXCRQgUv0YaMtbzeWtdwUNg=
-X-Google-Smtp-Source: ABdhPJxIiXW+Xwjpb3WiyKB41aDR7ZOKMMvkWlAmTvRmG4LEgwx94NmKugwphZjbOM7CU/awEW6LNg==
-X-Received: by 2002:a62:6484:: with SMTP id y126mr1833113pfb.166.1594863706684;
-        Wed, 15 Jul 2020 18:41:46 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id e195sm3088123pfh.218.2020.07.15.18.41.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2020 18:41:45 -0700 (PDT)
-Subject: Re: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-To:     Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
- <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
- <SN6PR04MB38720C3D8FC176C3C7FB51B89A7E0@SN6PR04MB3872.namprd04.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <4174fcf4-73ec-8e3f-90a5-1e7584e3e2d0@acm.org>
-Date:   Wed, 15 Jul 2020 18:41:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 15 Jul 2020 21:49:32 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G1WUhP039843;
+        Wed, 15 Jul 2020 21:49:24 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32a45ayy2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Jul 2020 21:49:23 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06G1X6We041902;
+        Wed, 15 Jul 2020 21:49:23 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32a45ayy2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Jul 2020 21:49:23 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06G1Zcr0009949;
+        Thu, 16 Jul 2020 01:49:22 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma04dal.us.ibm.com with ESMTP id 327529pfc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jul 2020 01:49:22 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06G1nLls14484156
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jul 2020 01:49:21 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3AFD112064;
+        Thu, 16 Jul 2020 01:49:21 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DCC50112061;
+        Thu, 16 Jul 2020 01:49:16 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.163.73.114])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Thu, 16 Jul 2020 01:49:16 +0000 (GMT)
+References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com> <159466085652.24747.2414199807974963385.stgit@hbathini.in.ibm.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Hari Bathini <hbathini@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v3 02/12] powerpc/kexec_file: mark PPC64 specific code
+In-reply-to: <159466085652.24747.2414199807974963385.stgit@hbathini.in.ibm.com>
+Date:   Wed, 15 Jul 2020 22:49:12 -0300
+Message-ID: <87v9io8c13.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <SN6PR04MB38720C3D8FC176C3C7FB51B89A7E0@SN6PR04MB3872.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-15_12:2020-07-15,2020-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160005
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-15 11:34, Avi Shchislowski wrote:
-> My name is Avi Shchislowski, I am managing the WDC's Linux Host R&D team in which Avri is a member of.
-> As the review process of HPB is progressing very constructively, we are getting more and more requests from OEMs, Inquiring about HPB in general, and host control mode in particular.
-> 
-> Their main concern is that HPB will make it to 5.9 merge window, but the host control mode patches will not.
-> Thus, because of recent Google's GKI, the next Android LTS might not include HPB with host control mode.
-> 
-> Aside of those requests, initial host control mode testing are showing promising prospective with respect of performance gain.
-> 
-> What would be, in your opinion, the best policy that host control mode is included in next Android LTS?
 
-Hi Avi,
+I didn't forget about this patch. I just wanted to see more of the
+changes before comenting on it.
 
-Are you perhaps referring to the HPB patch series that has already been
-posted? Although I'm not sure of this, I think that the SCSI maintainer
-expects more Reviewed-by: and Tested-by: tags. Has anyone from WDC
-already taken the time to review and/or test this patch series?
+Hari Bathini <hbathini@linux.ibm.com> writes:
 
-Thanks,
+> Some of the kexec_file_load code isn't PPC64 specific. Move PPC64
+> specific code from kexec/file_load.c to kexec/file_load_64.c. Also,
+> rename purgatory/trampoline.S to purgatory/trampoline_64.S in the
+> same spirit.
 
-Bart.
+There's only a 64 bit implementation of kexec_file_load() so this is a
+somewhat theoretical exercise, but there's no harm in getting the code
+organized, so:
+
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
+I have just one question below.
+
+> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+> Tested-by: Pingfan Liu <piliu@redhat.com>
+> ---
+>
+> v2 -> v3:
+> * Unchanged. Added Tested-by tag from Pingfan.
+>
+> v1 -> v2:
+> * No changes.
+>
+>
+>  arch/powerpc/include/asm/kexec.h       |   11 +++
+>  arch/powerpc/kexec/Makefile            |    2 -
+>  arch/powerpc/kexec/elf_64.c            |    7 +-
+>  arch/powerpc/kexec/file_load.c         |   37 ++--------
+>  arch/powerpc/kexec/file_load_64.c      |  108 ++++++++++++++++++++++++++++++
+>  arch/powerpc/purgatory/Makefile        |    4 +
+>  arch/powerpc/purgatory/trampoline.S    |  117 --------------------------------
+>  arch/powerpc/purgatory/trampoline_64.S |  117 ++++++++++++++++++++++++++++++++
+>  8 files changed, 248 insertions(+), 155 deletions(-)
+>  create mode 100644 arch/powerpc/kexec/file_load_64.c
+>  delete mode 100644 arch/powerpc/purgatory/trampoline.S
+>  create mode 100644 arch/powerpc/purgatory/trampoline_64.S
+
+<snip>
+
+> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
+> new file mode 100644
+> index 0000000..e6bff960
+> --- /dev/null
+> +++ b/arch/powerpc/kexec/file_load_64.c
+> @@ -0,0 +1,108 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ppc64 code to implement the kexec_file_load syscall
+> + *
+> + * Copyright (C) 2004  Adam Litke (agl@us.ibm.com)
+> + * Copyright (C) 2004  IBM Corp.
+> + * Copyright (C) 2004,2005  Milton D Miller II, IBM Corporation
+> + * Copyright (C) 2005  R Sharada (sharada@in.ibm.com)
+> + * Copyright (C) 2006  Mohan Kumar M (mohan@in.ibm.com)
+> + * Copyright (C) 2020  IBM Corporation
+> + *
+> + * Based on kexec-tools' kexec-ppc64.c, kexec-elf-rel-ppc64.c, fs2dt.c.
+> + * Heavily modified for the kernel by
+> + * Hari Bathini <hbathini@linux.ibm.com>.
+> + */
+> +
+> +#include <linux/kexec.h>
+> +#include <linux/of_fdt.h>
+> +#include <linux/libfdt.h>
+> +
+> +const struct kexec_file_ops * const kexec_file_loaders[] = {
+> +	&kexec_elf64_ops,
+> +	NULL
+> +};
+> +
+> +/**
+> + * setup_purgatory_ppc64 - initialize PPC64 specific purgatory's global
+> + *                         variables and call setup_purgatory() to initialize
+> + *                         common global variable.
+> + * @image:                 kexec image.
+> + * @slave_code:            Slave code for the purgatory.
+> + * @fdt:                   Flattened device tree for the next kernel.
+> + * @kernel_load_addr:      Address where the kernel is loaded.
+> + * @fdt_load_addr:         Address where the flattened device tree is loaded.
+> + *
+> + * Returns 0 on success, negative errno on error.
+> + */
+> +int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
+> +			  const void *fdt, unsigned long kernel_load_addr,
+> +			  unsigned long fdt_load_addr)
+> +{
+> +	int ret;
+> +
+> +	ret = setup_purgatory(image, slave_code, fdt, kernel_load_addr,
+> +			      fdt_load_addr);
+> +	if (ret)
+> +		pr_err("Failed to setup purgatory symbols");
+> +	return ret;
+> +}
+> +
+> +/**
+> + * setup_new_fdt_ppc64 - Update the flattend device-tree of the kernel
+> + *                       being loaded.
+> + * @image:               kexec image being loaded.
+> + * @fdt:                 Flattened device tree for the next kernel.
+> + * @initrd_load_addr:    Address where the next initrd will be loaded.
+> + * @initrd_len:          Size of the next initrd, or 0 if there will be none.
+> + * @cmdline:             Command line for the next kernel, or NULL if there will
+> + *                       be none.
+> + *
+> + * Returns 0 on success, negative errno on error.
+> + */
+> +int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
+> +			unsigned long initrd_load_addr,
+> +			unsigned long initrd_len, const char *cmdline)
+> +{
+> +	int chosen_node, ret;
+> +
+> +	/* Remove memory reservation for the current device tree. */
+> +	ret = delete_fdt_mem_rsv(fdt, __pa(initial_boot_params),
+> +				 fdt_totalsize(initial_boot_params));
+> +	if (ret == 0)
+> +		pr_debug("Removed old device tree reservation.\n");
+> +	else if (ret != -ENOENT) {
+> +		pr_err("Failed to remove old device-tree reservation.\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = setup_new_fdt(image, fdt, initrd_load_addr, initrd_len,
+> +			    cmdline, &chosen_node);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
+> +	if (ret)
+> +		pr_err("Failed to update device-tree with linux,booted-from-kexec\n");
+> +
+> +	return ret;
+> +}
+
+For setup_purgatory_ppc64() you start with an empty function and build
+from there, but for setup_new_fdt_ppc64() you moved some code here. Is
+the code above 64 bit specific?
+
+--
+Thiago Jung Bauermann
+IBM Linux Technology Center
