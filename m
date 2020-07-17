@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9CD223E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3709223E85
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgGQOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:44:26 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22688 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726198AbgGQOo0 (ORCPT
+        id S1726811AbgGQOqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:46:24 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:28207 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgGQOqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:44:26 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HEUmGP056868;
-        Fri, 17 Jul 2020 10:43:59 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32b61k6jhm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 10:43:58 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HEeAsW001138;
-        Fri, 17 Jul 2020 14:43:58 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02dal.us.ibm.com with ESMTP id 32752a5vre-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 14:43:58 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HEhsdp2425390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 14:43:55 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 878AB78060;
-        Fri, 17 Jul 2020 14:43:56 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9E9D78067;
-        Fri, 17 Jul 2020 14:43:53 +0000 (GMT)
-Received: from [153.66.254.194] (unknown [9.85.141.100])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Jul 2020 14:43:53 +0000 (GMT)
-Message-ID: <1594997031.3344.27.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 0/5] mm: extend memfd with ability to create
- "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Pavel Machek <pavel@ucw.cz>, Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christopher Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Idan Yaniv <idan.yaniv@ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Mike Rapoport <rppt@linux.ibm.com>
-Date:   Fri, 17 Jul 2020 07:43:51 -0700
-In-Reply-To: <20200717083601.GB1027@bug>
-References: <20200706172051.19465-1-rppt@kernel.org>
-         <20200717083601.GB1027@bug>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-17_06:2020-07-17,2020-07-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 lowpriorityscore=0
- spamscore=100 clxscore=1011 bulkscore=0 mlxlogscore=-1000 adultscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
- mlxscore=100 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007170103
+        Fri, 17 Jul 2020 10:46:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594997183; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=+bOQoMlayiU8zaVsun4ZAjjXcdS6Du8WzvCubqCAKxo=; b=UvDf7R8JjH4vYmfcy0MATKtVKVxfrQm/QGwgmVV20I8e9aGsbDshOyf4Y9FXqimh+2dWQGpt
+ xcfI4nZLHwFpRLa3F61JmjFSEgHK7kE/OavVs4tWLxARE6kftCHp6h46Q1M1L9puzKxXINPy
+ B01er3Ej+q6AXzI7PUZExCmIBB0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5f11b9b4427cd55766cfc9a4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 14:46:12
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CCE4DC433CA; Fri, 17 Jul 2020 14:46:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3593C433C6;
+        Fri, 17 Jul 2020 14:46:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3593C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Fri, 17 Jul 2020 08:46:07 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: Re: [PATCH v2] drm: msm: a6xx: fix gpu failure after system resume
+Message-ID: <20200717144607.GA16703@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+References: <1594996458-15529-1-git-send-email-akhilpo@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594996458-15529-1-git-send-email-akhilpo@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-17 at 10:36 +0200, Pavel Machek wrote:
-> Hi!
+On Fri, Jul 17, 2020 at 08:04:18PM +0530, Akhil P Oommen wrote:
+> On targets where GMU is available, GMU takes over the ownership of GX GDSC
+> during its initialization. So, move the refcount-get on GX PD before we
+> initialize the GMU. This ensures that nobody can collapse the GX GDSC
+> once GMU owns the GX GDSC. This patch fixes some GMU OOB errors seen
+> during GPU wake up during a system resume.
+
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> Reported-by: Matthias Kaehlcke <mka@chromium.org>
+> Tested-by: Matthias Kaehlcke <mka@chromium.org>
+
+The Signed-off-by needs to be at the end but I think Rob can do that for you.
+
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+
+> ---
+> Changes from v1:
+> - Reworded the commit text
+> - Added Reported-by & Tested-by tags
 > 
-> > This is a second version of "secret" mappings implementation backed
-> > by a file descriptor. 
-> > 
-> > The file descriptor is created using memfd_create() syscall with a
-> > new MFD_SECRET flag. The file descriptor should be configured using
-> > ioctl() to define the desired protection and then mmap() of the fd
-> > will create a "secret" memory mapping. The pages in that mapping
-> > will be marked as not present in the direct map and will have
-> > desired protection bits set in the user page table. For instance,
-> > current implementation allows uncached mappings.
-> > 
-> > Hiding secret memory mappings behind an anonymous file allows
-> > (ab)use of the page cache for tracking pages allocated for the
-> > "secret" mappings as well as using address_space_operations for
-> > e.g. page migration callbacks.
-> > 
-> > The anonymous file may be also used implicitly, like hugetlb files,
-> > to implement mmap(MAP_SECRET) and use the secret memory areas with
-> > "native" mm ABIs.
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
 > 
-> I believe unix userspace normally requires mappings to be... well...
-> protected from other users. How is this "secret" thing different? How
-> do you explain the difference to userland programmers?
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 21e77d6..1d33020 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -854,10 +854,19 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+>  	/* Turn on the resources */
+>  	pm_runtime_get_sync(gmu->dev);
+>  
+> +	/*
+> +	 * "enable" the GX power domain which won't actually do anything but it
+> +	 * will make sure that the refcounting is correct in case we need to
+> +	 * bring down the GX after a GMU failure
+> +	 */
+> +	if (!IS_ERR_OR_NULL(gmu->gxpd))
+> +		pm_runtime_get_sync(gmu->gxpd);
+> +
+>  	/* Use a known rate to bring up the GMU */
+>  	clk_set_rate(gmu->core_clk, 200000000);
+>  	ret = clk_bulk_prepare_enable(gmu->nr_clocks, gmu->clocks);
+>  	if (ret) {
+> +		pm_runtime_put(gmu->gxpd);
+>  		pm_runtime_put(gmu->dev);
+>  		return ret;
+>  	}
+> @@ -903,19 +912,12 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+>  	else
+>  		a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
+>  
+> -	/*
+> -	 * "enable" the GX power domain which won't actually do anything but it
+> -	 * will make sure that the refcounting is correct in case we need to
+> -	 * bring down the GX after a GMU failure
+> -	 */
+> -	if (!IS_ERR_OR_NULL(gmu->gxpd))
+> -		pm_runtime_get(gmu->gxpd);
+> -
+>  out:
+>  	/* On failure, shut down the GMU to leave it in a good state */
+>  	if (ret) {
+>  		disable_irq(gmu->gmu_irq);
+>  		a6xx_rpmh_stop(gmu);
+> +		pm_runtime_put(gmu->gxpd);
+>  		pm_runtime_put(gmu->dev);
+>  	}
+>  
+> -- 
+> 2.7.4
+> 
 
-That's true in the normal case, but for the container cloud the threat
-model we're considering is a hostile other tenant trying to trick the
-kernel into giving them access to your mappings.  In the FOSDEM talk we
-did about this:
-
-https://fosdem.org/2020/schedule/event/kernel_address_space_isolation/
-
-We demonstrated the case where the hostile tenant obtained host root
-and then tried to get access via ptrace.  The point being that pushing
-the pages out of the direct map means that even root can't get access
-to the secret by any means the OS provides.  If you want to play with
-this yourself, we have a userspace library:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git/
-
-It does two things: the first is act as a preloader for openssl to
-redirect all the OPENSSL_malloc calls to secret memory meaning any
-secret keys get automatically protected this way and the other thing it
-does is expose the API to the user who needs it.  I anticipate that a
-lot of the use cases would be like the openssl one: many toolkits that
-deal with secret keys already have special handling for the memory to
-try to give them greater protection, so this would simply be pluggable
-into the toolkits without any need for user application modification.
-
-James
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
