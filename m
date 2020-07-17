@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F304E22375D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6446223762
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgGQIuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgGQIuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:50:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD79C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:50:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j19so6347207pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PD2ZLQCvLaWVcoV1PzZsr55F59ipm51nH9LfNuI1BWE=;
-        b=lRtQzivEf2cCiMyei1lVXETGj3wO+frDXypbkG9dastQNt9ukpIkiW1uHKa96n7L1m
-         9aQxIP3dbyq33eF2GJ+iNrBMDKd5HwIdJ8W1/lzafOBHQXzpqxN0CQrglNxsrkk9IaMT
-         CpB9WBuu7qJGza5D5lxMmfdhxPmqrvFJlMqBZsZe1aFDJ9uTCgV04YaedAyLcrZ3viUy
-         tT91uJD7nyMJ+AY6we1LzwkroN1cK43LBwYex/fypAfMErA0yOrmETET80xy0LT72Hlw
-         7v536I49sOzpqQJwr+7hOl7JM4xeQ4NMbm1BN5YrJY+vfoN+VZlClYgN5nM7I8T6DQjQ
-         vJ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PD2ZLQCvLaWVcoV1PzZsr55F59ipm51nH9LfNuI1BWE=;
-        b=r2c7zqLp60Ae2mNjydx3p8UEWWIrxr8mJ3U+ZXtOnqhGy9O603YgU0+SHX+SRfPqvx
-         x+YOYdZalExFcV6pbD1/IABKOi0XC3zCs+hSY7+yUhdn8zPsw42H7WUVSt42vHOHxbr5
-         3CsSo8auKl1ZA90mvQBXROEA0AIPSu0/E621b548JdKo8xtfeMkWSGFOnY3sbSDS1pGT
-         F2/c9ZMGDYAtzQ5pbmMcOrTa7zusjvU7pkejC/bAQuWgjKp2GCXhcxbkOdp9wIa6fdPY
-         FNh8yOyNmzDGv3QgA4gAto6JJu0r4N2iolZMect5OJolqH14dzqzisvvS0b5dSBKSBdR
-         HkKw==
-X-Gm-Message-State: AOAM5300gqaaWtrVHnREB39SX2LbeY3LApSmDIxxuIkzhuIEPqPX3lgu
-        83pkoVTAO5J1J5j9YbzSCboNJwwI5En3MA==
-X-Google-Smtp-Source: ABdhPJxwbnGcCA+Ao1mGz9LcqCtufhcCqaj6FVUTjWwdjDgxuXUXyF61QXObtW678H1QzTjA0jJ+GA==
-X-Received: by 2002:a63:125a:: with SMTP id 26mr8055436pgs.340.1594975822468;
-        Fri, 17 Jul 2020 01:50:22 -0700 (PDT)
-Received: from debian.flets-east.jp ([2400:2411:502:a100:c84b:19e2:9b53:48bb])
-        by smtp.gmail.com with ESMTPSA id f207sm7309364pfa.107.2020.07.17.01.50.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Jul 2020 01:50:21 -0700 (PDT)
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     masahisa.kojima@linaro.org, jarkko.sakkinen@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, ardb@kernel.org,
-        devicetree@vger.kernel.org, linux-integrity@vger.kernel.org,
-        peterhuewe@gmx.de, jgg@ziepe.ca, Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 2/2] dt-bindings: Add SynQucer TPM MMIO as a trivial device
-Date:   Fri, 17 Jul 2020 17:49:32 +0900
-Message-Id: <20200717084932.3449-3-masahisa.kojima@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200717084932.3449-1-masahisa.kojima@linaro.org>
-References: <20200717084932.3449-1-masahisa.kojima@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726113AbgGQIwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:52:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgGQIwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:52:50 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95E232080D;
+        Fri, 17 Jul 2020 08:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594975969;
+        bh=eVGjv8woJUWyNNxl+GLmYWkXLWT7ol5zI9Z1lRtZoQ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yhwta4gO6ioPIQUHdeAr01Amkbc9Xb+sAP5mloffp4PcnAk082EKbZM+/S48ksUMd
+         6t58i4T/XVg4DbyX2b5P95VzYt5voyc65vPYWtyQjPEfxADDBwoglUuhIFTvAg5/HL
+         N9Q2ZulXXgqCRMV2luecO4Puv+7LdBDkjlQZAKLs=
+Date:   Fri, 17 Jul 2020 17:52:45 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: Re: [PATCH v4 3/7] vmalloc: Add text_alloc() and text_free()
+Message-Id: <20200717175245.54758e3954abd1bcccfe5500@kernel.org>
+In-Reply-To: <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
+References: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
+        <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a compatible string for the SynQuacer TPM to the binding for a
-TPM exposed via a memory mapped TIS frame. The MMIO window behaves
-slightly differently on this hardware, so it requires its own
-identifier.
+On Fri, 17 Jul 2020 06:04:17 +0300
+Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+> Introduce functions for allocating memory for dynamic trampolines, such
+> as kprobes. An arch can promote the availability of these functions with
+> CONFIG_ARCH_HAS_TEXT_ALLOC. Provide default/fallback implementation
+> wrapping module_alloc() and module_memfree().
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 4165352a590a..814148939e5a 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -328,6 +328,8 @@ properties:
-           - silabs,si7020
-             # Skyworks SKY81452: Six-Channel White LED Driver with Touch Panel Bias Supply
-           - skyworks,sky81452
-+            # Socionext SynQuacer TPM MMIO module
-+          - socionext,synquacer-tpm-mmio
-             # i2c serial eeprom  (24cxx)
-           - st,24c256
-             # Ambient Light Sensor with SMBUS/Two Wire Serial Interface
+Doesn't it depend on CONFIG_MODULE?
+
+Thank you,
+
+> 
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  include/linux/vmalloc.h | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 0221f852a7e1..e981436e30b6 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -9,6 +9,7 @@
+>  #include <asm/page.h>		/* pgprot_t */
+>  #include <linux/rbtree.h>
+>  #include <linux/overflow.h>
+> +#include <linux/moduleloader.h>
+>  
+>  #include <asm/vmalloc.h>
+>  
+> @@ -249,4 +250,26 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+>  int register_vmap_purge_notifier(struct notifier_block *nb);
+>  int unregister_vmap_purge_notifier(struct notifier_block *nb);
+>  
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +/*
+> + * Allocate memory to be used for dynamic trampoline code.
+> + */
+> +void *text_alloc(unsigned long size);
+> +
+> +/*
+> + * Free memory returned from text_alloc().
+> + */
+> +void text_free(void *region);
+> +#else
+> +static inline void *text_alloc(unsigned long size)
+> +{
+> +	return module_alloc(size);
+> +}
+> +
+> +static inline void text_free(void *region)
+> +{
+> +	module_memfree(region);
+> +}
+> +#endif
+> +
+>  #endif /* _LINUX_VMALLOC_H */
+> -- 
+> 2.25.1
+> 
+
+
 -- 
-2.20.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
