@@ -2,266 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFB22243DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0C92243E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgGQTJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 15:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgGQTJU (ORCPT
+        id S1728588AbgGQTKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 15:10:36 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:58472 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgGQTKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:09:20 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8589CC0619D7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:09:20 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f139so18777961wmf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:09:20 -0700 (PDT)
+        Fri, 17 Jul 2020 15:10:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=/UwwbEO31JzWlxVDesKcj2Uig1rl25e7gpMnEAJZlHk=;
-        b=NtcD0AV61oUWC+RH/APD49gbMw5tQR68QWkcDSkAsdwtPDuI2/0o5++LjciNqFWxxw
-         vviFRfll6shJzfScdC0jhtTaXB6Zuev5yJvEs1IekKAGFT7ER1iNhvpeMUtdND3ZQvwJ
-         hupxDZp7ckwJ+xdPl2eMXB3Fvs6GTG8fkSQaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/UwwbEO31JzWlxVDesKcj2Uig1rl25e7gpMnEAJZlHk=;
-        b=M8t897YaGeERN9dz+8NBtQ5wE+B+upCi55LXNBNWv6mCh9qOR1vktZAfTFGeVHInrF
-         Kxjrl+/JVFSSHVz1vLDmOKqZNf1tjomdIObVcfSmDEqoxCehaiIP5c9yi/K4kaoFkPRI
-         ERUCoafarvU0g5BsvdIcXfxbZGfkkqNm4ugpE3Ngta1VqBCTyGZzzpR+GgkFxuSqTUk8
-         DUvjjUNSMtiL8l1oLV+xmHHTBEPfgv76RxDjDp4/MQO2kdowCBsKnmtUA70vYPY5SJYk
-         b5io88XSuaOdpu4xZ580WVuGkzkEv/+8674dbb54nL0BW495w08PRTsX0AJpVQBiwzGv
-         u8iQ==
-X-Gm-Message-State: AOAM532yVZ5/UT02I4Da9AEqvZYUQ1qpSZYJtVMrKin98LKfh0ttBnkn
-        ika/m5DgHDKXA2QM82kIA3TfMbXbM7Z/jJ6IllMRgVA52pOYOju+RqOmgU3rCLtQzlVACUzkDQS
-        nrCTJj+EmeY3l/GETGtDMj4Hy0eiU+DpJthjefnaGPZYbkT7SedW5i+exFyFE9HDHjbGhVE47WY
-        mlWzdKT/sP
-X-Google-Smtp-Source: ABdhPJyZZOy616iG3iWzKwu2GQUAX6FSY9CFeooc2IGFznGVhRF6ATFrlCPVaT9bxQx59r4M9X3NeA==
-X-Received: by 2002:a05:600c:2144:: with SMTP id v4mr11364035wml.128.1595012958784;
-        Fri, 17 Jul 2020 12:09:18 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id 68sm2817078wra.39.2020.07.17.12.09.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 12:09:18 -0700 (PDT)
-Subject: Re: [PATCH 02/13] fs/kernel_read_file: Remove
- FIRMWARE_PREALLOC_BUFFER enum
-To:     Kees Cook <keescook@chromium.org>
-Cc:     stable@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jessica Yu <jeyu@kernel.org>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Jones <pjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200717174309.1164575-1-keescook@chromium.org>
- <20200717174309.1164575-3-keescook@chromium.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <5203c5a1-1ced-f6b1-1086-df65479901a9@broadcom.com>
-Date:   Fri, 17 Jul 2020 12:09:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595013033; x=1626549033;
+  h=date:from:to:cc:message-id:references:mime-version:
+   content-transfer-encoding:in-reply-to:subject;
+  bh=JXEp3fu4ueKSPTL/aTTxogwWbfIdE4zKSLg5x2ylncA=;
+  b=qFWB9M0p4V9EPFUX9w3CtmL975Re8xUfeScpOkbW6oj2DTGFjPIHiIMR
+   GADrCHxJI1cPfotygfYbnRJ/COloPrZfb1ZMYfW/sFDnXT5cFzuud0rta
+   2eyL3KD/Cvwb7/O/h0iya5YppUjJHaaNB/F4sTcRYTLJgxf514RxfGnFB
+   8=;
+IronPort-SDR: B7g8C+O+44k2rWyS1+qLZ7Ril88L7euUS5PHylv/wSxXaBC1vnDAauj2J020dgzo+5pOznIGT3
+ 9bsyqNana+Aw==
+X-IronPort-AV: E=Sophos;i="5.75,364,1589241600"; 
+   d="scan'208";a="42640067"
+Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend mode
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 17 Jul 2020 19:10:32 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id D73BFA20E1;
+        Fri, 17 Jul 2020 19:10:24 +0000 (UTC)
+Received: from EX13D08UEE003.ant.amazon.com (10.43.62.118) by
+ EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 17 Jul 2020 19:10:09 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13D08UEE003.ant.amazon.com (10.43.62.118) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 17 Jul 2020 19:10:09 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Fri, 17 Jul 2020 19:10:09 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id 3826A56980; Fri, 17 Jul 2020 19:10:09 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 19:10:09 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <hpa@zytor.com>, <x86@kernel.org>, <jgross@suse.com>,
+        <linux-pm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kamatam@amazon.com>, <sstabellini@kernel.org>,
+        <konrad.wilk@oracle.com>, <roger.pau@citrix.com>,
+        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
+        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
+        <eduval@amazon.com>, <sblbir@amazon.com>,
+        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
+Message-ID: <20200717191009.GA3387@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+References: <cover.1593665947.git.anchalag@amazon.com>
+ <20200702182136.GA3511@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <50298859-0d0e-6eb0-029b-30df2a4ecd63@oracle.com>
+ <20200715204943.GB17938@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20200717174309.1164575-3-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-07-17 10:42 a.m., Kees Cook wrote:
-> FIRMWARE_PREALLOC_BUFFER is a "how", not a "what", and confuses the LSMs
-> that are interested in filtering between types of things. The "how"
-> should be an internal detail made uninteresting to the LSMs.
+On Wed, Jul 15, 2020 at 05:18:08PM -0400, Boris Ostrovsky wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+> On 7/15/20 4:49 PM, Anchal Agarwal wrote:
+> > On Mon, Jul 13, 2020 at 11:52:01AM -0400, Boris Ostrovsky wrote:
+> >> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> >>
+> >>
+> >>
+> >> On 7/2/20 2:21 PM, Anchal Agarwal wrote:
+> >>> +
+> >>> +bool xen_is_xen_suspend(void)
+> >>
+> >> Weren't you going to call this pv suspend? (And also --- is this suspend
+> >> or hibernation? Your commit messages and cover letter talk about fixing
+> >> hibernation).
+> >>
+> >>
+> > This is for hibernation is for pvhvm/hvm/pv-on-hvm guests as you may call it.
+> > The method is just there to check if "xen suspend" is in progress.
+> > I do not see "xen_suspend" differentiating between pv or hvm
+> > domain until later in the code hence, I abstracted it to xen_is_xen_suspend.
+> 
+> 
+> I meant "pv suspend" in the sense that this is paravirtual suspend, not
+> suspend for paravirtual guests. Just like pv drivers are for both pv and
+> hvm guests.
+> 
+> 
+> And then --- should it be pv suspend or pv hibernation?
+> 
 >
-> Fixes: a098ecd2fa7d ("firmware: support loading into a pre-allocated buffer")
-> Fixes: fd90bc559bfb ("ima: based on policy verify firmware signatures (pre-allocated buffer)")
-> Fixes: 4f0496d8ffa3 ("ima: based on policy warn about loading firmware (pre-allocated buffer)")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Scott Branden <scott.branden@broadcom.com>
-> ---
-> To aid in backporting, this change is made before moving
-> kernel_read_file() to separate header/source files.
-> ---
->   drivers/base/firmware_loader/main.c | 5 ++---
->   fs/exec.c                           | 7 ++++---
->   include/linux/fs.h                  | 2 +-
->   kernel/module.c                     | 2 +-
->   security/integrity/digsig.c         | 2 +-
->   security/integrity/ima/ima_fs.c     | 2 +-
->   security/integrity/ima/ima_main.c   | 6 ++----
->   7 files changed, 12 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-> index ca871b13524e..c2f57cedcd6f 100644
-> --- a/drivers/base/firmware_loader/main.c
-> +++ b/drivers/base/firmware_loader/main.c
-> @@ -465,14 +465,12 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
->   	int i, len;
->   	int rc = -ENOENT;
->   	char *path;
-> -	enum kernel_read_file_id id = READING_FIRMWARE;
->   	size_t msize = INT_MAX;
->   	void *buffer = NULL;
->   
->   	/* Already populated data member means we're loading into a buffer */
->   	if (!decompress && fw_priv->data) {
->   		buffer = fw_priv->data;
-> -		id = READING_FIRMWARE_PREALLOC_BUFFER;
->   		msize = fw_priv->allocated_size;
->   	}
->   
-> @@ -496,7 +494,8 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
->   
->   		/* load firmware files from the mount namespace of init */
->   		rc = kernel_read_file_from_path_initns(path, &buffer,
-> -						       &size, msize, id);
-> +						       &size, msize,
-> +						       READING_FIRMWARE);
->   		if (rc) {
->   			if (rc != -ENOENT)
->   				dev_warn(device, "loading %s failed with error %d\n",
-> diff --git a/fs/exec.c b/fs/exec.c
-> index e6e8a9a70327..2bf549757ce7 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -927,6 +927,7 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
->   {
->   	loff_t i_size, pos;
->   	ssize_t bytes = 0;
-> +	void *allocated = NULL;
->   	int ret;
->   
->   	if (!S_ISREG(file_inode(file)->i_mode) || max_size < 0)
-> @@ -950,8 +951,8 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
->   		goto out;
->   	}
->   
-> -	if (id != READING_FIRMWARE_PREALLOC_BUFFER)
-> -		*buf = vmalloc(i_size);
-> +	if (!*buf)
-> +		*buf = allocated = vmalloc(i_size);
->   	if (!*buf) {
->   		ret = -ENOMEM;
->   		goto out;
-> @@ -980,7 +981,7 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
->   
->   out_free:
->   	if (ret < 0) {
-> -		if (id != READING_FIRMWARE_PREALLOC_BUFFER) {
-> +		if (allocated) {
->   			vfree(*buf);
->   			*buf = NULL;
->   		}
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 3f881a892ea7..95fc775ed937 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2993,10 +2993,10 @@ static inline void i_readcount_inc(struct inode *inode)
->   #endif
->   extern int do_pipe_flags(int *, int);
->   
-> +/* This is a list of *what* is being read, not *how*. */
->   #define __kernel_read_file_id(id) \
->   	id(UNKNOWN, unknown)		\
->   	id(FIRMWARE, firmware)		\
-> -	id(FIRMWARE_PREALLOC_BUFFER, firmware)	\
->   	id(FIRMWARE_EFI_EMBEDDED, firmware)	\
->   	id(MODULE, kernel-module)		\
->   	id(KEXEC_IMAGE, kexec-image)		\
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 0c6573b98c36..26105148f4d2 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -3988,7 +3988,7 @@ SYSCALL_DEFINE3(finit_module, int, fd, const char __user *, uargs, int, flags)
->   {
->   	struct load_info info = { };
->   	loff_t size;
-> -	void *hdr;
-> +	void *hdr = NULL;
->   	int err;
->   
->   	err = may_init_module();
-> diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-> index e9cbadade74b..ac02b7632353 100644
-> --- a/security/integrity/digsig.c
-> +++ b/security/integrity/digsig.c
-> @@ -169,7 +169,7 @@ int __init integrity_add_key(const unsigned int id, const void *data,
->   
->   int __init integrity_load_x509(const unsigned int id, const char *path)
->   {
-> -	void *data;
-> +	void *data = NULL;
->   	loff_t size;
->   	int rc;
->   	key_perm_t perm;
-> diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
-> index e3fcad871861..15a44c5022f7 100644
-> --- a/security/integrity/ima/ima_fs.c
-> +++ b/security/integrity/ima/ima_fs.c
-> @@ -272,7 +272,7 @@ static const struct file_operations ima_ascii_measurements_ops = {
->   
->   static ssize_t ima_read_policy(char *path)
->   {
-> -	void *data;
-> +	void *data = NULL;
->   	char *datap;
->   	loff_t size;
->   	int rc, pathlen = strlen(path);
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index c1583d98c5e5..f80ee4ce4669 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -611,19 +611,17 @@ void ima_post_path_mknod(struct dentry *dentry)
->   int ima_read_file(struct file *file, enum kernel_read_file_id read_id)
->   {
->   	/*
-> -	 * READING_FIRMWARE_PREALLOC_BUFFER
-> -	 *
->   	 * Do devices using pre-allocated memory run the risk of the
->   	 * firmware being accessible to the device prior to the completion
->   	 * of IMA's signature verification any more than when using two
-> -	 * buffers?
-> +	 * buffers? It may be desirable to include the buffer address
-> +	 * in this API and walk all the dma_map_single() mappings to check.
->   	 */
->   	return 0;
->   }
->   
->   const int read_idmap[READING_MAX_ID] = {
->   	[READING_FIRMWARE] = FIRMWARE_CHECK,
-> -	[READING_FIRMWARE_PREALLOC_BUFFER] = FIRMWARE_CHECK,
->   	[READING_MODULE] = MODULE_CHECK,
->   	[READING_KEXEC_IMAGE] = KEXEC_KERNEL_CHECK,
->   	[READING_KEXEC_INITRAMFS] = KEXEC_INITRAMFS_CHECK,
+Ok so I think I am lot confused by this question. Here is what this
+function for, function xen_is_xen_suspend() just tells us whether 
+the guest is in "SHUTDOWN_SUSPEND" state or not. This check is needed
+for correct invocation of syscore_ops callbacks registered for guest's
+hibernation and for xenbus to invoke respective callbacks[suspend/resume
+vs freeze/thaw/restore].
+Since "shutting_down" state is defined static and is not directly available
+to other parts of the code, the function solves the purpose.
 
+I am having hard time understanding why this should be called pv
+suspend/hibernation unless you are suggesting something else?
+Am I missing your point here? 
+> 
+> >>> +{
+> >>> +     return suspend_mode == XEN_SUSPEND;
+> >>> +}
+> >>> +
+> >>
+> >> +static int xen_setup_pm_notifier(void)
+> >> +{
+> >> +     if (!xen_hvm_domain())
+> >> +             return -ENODEV;
+> >>
+> >> I forgot --- what did we decide about non-x86 (i.e. ARM)?
+> > It would be great to support that however, its  out of
+> > scope for this patch set.
+> > I’ll be happy to discuss it separately.
+> 
+> 
+> I wasn't implying that this *should* work on ARM but rather whether this
+> will break ARM somehow (because xen_hvm_domain() is true there).
+> 
+> 
+Ok makes sense. TBH, I haven't tested this part of code on ARM and the series
+was only support x86 guests hibernation.
+Moreover, this notifier is there to distinguish between 2 PM
+events PM SUSPEND and PM hibernation. Now since we only care about PM
+HIBERNATION I may just remove this code and rely on "SHUTDOWN_SUSPEND" state.
+However, I may have to fix other patches in the series where this check may
+appear and cater it only for x86 right?
+> 
+> >>
+> >> And PVH dom0.
+> > That's another good use case to make it work with however, I still
+> > think that should be tested/worked upon separately as the feature itself
+> > (PVH Dom0) is very new.
+> 
+> 
+> Same question here --- will this break PVH dom0?
+> 
+I haven't tested it as a part of this series. Is that a blocker here?
+> 
+Thanks,
+Anchal
+> -boris
+> 
+> 
