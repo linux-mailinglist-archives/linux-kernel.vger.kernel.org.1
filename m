@@ -2,142 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0214E2243C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3275D2243CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgGQTFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 15:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728451AbgGQTF1 (ORCPT
+        id S1728544AbgGQTF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 15:05:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47754 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727978AbgGQTFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:05:27 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1349DC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:05:27 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id f5so13848633ljj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EHhwNWLvCGKwFX6ZeCk25F8g9x2pupMKT7Bn+2O6siI=;
-        b=UMpy7eBg0VQk13Zh0CsA8daqqCqMYLR/yLgZvVSL0lJ8/e5Ix44NjgigL3+q8XJArC
-         +CoZF6icBgyJrPruDpKiDqs3SPz2T9oivrXhdcRHtNzZ1eOY09EfmGogrMEiKoqjN8Tf
-         QfSD4InjPcIuMhztE9TSwtLzGwGlEqO2hK1TlNN3tpgoD/IpL93Q8TOpldntF8RTIa9i
-         C8ukkczG2UxL4WrwjzmXVCfquGoET/KgUjsKal4Q1IavPiGqE2sp7z7Ky8vMrNAWrbHJ
-         dh1pCRPAhK/qgJYywFwZzK5mejpW5pcI+fhWKbs7znm9DT4r7gpOB4C5y4W8oNfI1t7j
-         EZsw==
+        Fri, 17 Jul 2020 15:05:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595012753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QA04z49XQxRpsbQtr5ADLmijNDZoNbT33TpqwbOswEA=;
+        b=QwAi6GdhyOKd5pVegToESPBTVpgfeDu0qXJFgurV5v7tw/qFfwZrXt1Dds1xDlVXbKhHVn
+        hEInuVRuMa7fnBd6roCa1JKGvAh99tBzYd9mz4x5FTvByP6h1kcQ+fd2Ux3SdRnh7JY6uL
+        HKcRpC6GMQ9Nml9/MUvk+e1mofF2NjA=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-3gQw-uaoM3W0qwUX7qEACw-1; Fri, 17 Jul 2020 15:05:52 -0400
+X-MC-Unique: 3gQw-uaoM3W0qwUX7qEACw-1
+Received: by mail-ej1-f69.google.com with SMTP id h26so6359286ejb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:05:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EHhwNWLvCGKwFX6ZeCk25F8g9x2pupMKT7Bn+2O6siI=;
-        b=V9A8nk7ziHhKGnTdQNEu4sLZwU4mP64O+fseWMeARCNtK923BorJqOXdZXde0zAMSN
-         8tT7p0vDWSK4udnWK3V8is1yKizjo7IskJSZyYK8K47lXk7077qQ2s89/ZCT0LWDq/wn
-         n+PIdfQeNehxYM0D+8/6JKSj2HxZbmSnfo41dbR8eXRu82Emtb1UFj/S2X/hPp0jE6NS
-         +DunTiwqhhs1Z0BrIkTwZVLpZmjTeUjx2MuZ/pYEw35kBriMK/Si/F3Kg6EJOv5uJzSe
-         pJFlA+2GiHKrerbCC9sq7O4MJiW9NYh5ieRfYMRDC1l6RUTUuFchUCi3VGc9frLVpF8/
-         wnDg==
-X-Gm-Message-State: AOAM532yVStOoNE8Y1+BUuD2FzlWG9clm1qmnpH94szgIK/vOyxaor/R
-        M5EcFnq52O1rg020+4CognfEyiaLE8CPYMymctx65w==
-X-Google-Smtp-Source: ABdhPJzA2lclNj5LaSPAOhsYYmx7y36gm/usqNFraHHlhKV4rNqxpPH0IXWB5YiqK4pOf3QGE+Q7RO/aAlHNo2NWhrU=
-X-Received: by 2002:a2e:9b42:: with SMTP id o2mr4877549ljj.102.1595012725372;
- Fri, 17 Jul 2020 12:05:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QA04z49XQxRpsbQtr5ADLmijNDZoNbT33TpqwbOswEA=;
+        b=PYg5x/PjZJKTaQg2Fy3sZo8W5P8GLO2m1e4wYUNeXaVTDJc6JxBRayTIKYmvyNKT5n
+         i3NTlpr8sTflQtBVDjbRtOho8f8oBK6rY6/XM5TpfOsPhaArhjJ6s6Ok2EA7n7tbWdEz
+         cmdjxOTMDTonH7M/wR7Hel75skZiHZ4ENcva+x1kNdu7ntcoR+20koLUUuLv9dz8Bnkv
+         /Z5Spuai7NEa/vptY1VxAOg+/qX61DlUc3UT9+PEPLXXv26bJv+VycWs346ZdufXiHtz
+         wVd7tFXEm5TcEcfDIH42X8o+sfVHSimbUS6UvtYelq7a7JL5Vxcwz3T/5qEGN6kI0sST
+         slKA==
+X-Gm-Message-State: AOAM5337P3smJUtQi0zJRzGS0642WkWU3vghREqoCZiBBBJmCtFvkLt/
+        tfJPeLv0lecSVsxNJh2RYHspAmUNMCvXGLZmKCTbWLeMLEirxBVNNDgbyjPHpbL2iFY2os1wr6R
+        UpEOoOc9/PtrrxnGwI9sQtsWy
+X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr9659944ejb.115.1595012750737;
+        Fri, 17 Jul 2020 12:05:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxawMnEihhU00mwwY2KMXzPnp583S5oS9vU4nqqnr6E/4WlXYRDH2z1ZDUEgvDfZKxqw/acwg==
+X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr9659924ejb.115.1595012750517;
+        Fri, 17 Jul 2020 12:05:50 -0700 (PDT)
+Received: from kherbst.pingu.com ([2a02:8308:b0be:6900:482c:9537:40:83ba])
+        by smtp.gmail.com with ESMTPSA id 92sm9030732edg.78.2020.07.17.12.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 12:05:49 -0700 (PDT)
+From:   Karol Herbst <kherbst@redhat.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     Karol Herbst <kherbst@redhat.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Lyude Paul <lyude@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH] RFC: ACPI / OSI: remove workarounds for hybrid graphics laptops
+Date:   Fri, 17 Jul 2020 21:05:47 +0200
+Message-Id: <20200717190547.648604-1-kherbst@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
- <20200712131003.23271-2-madhuparnabhowmik10@gmail.com> <20200712160856.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
- <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com> <20200717170747.GW9247@paulmck-ThinkPad-P72>
-In-Reply-To: <20200717170747.GW9247@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 18 Jul 2020 00:35:12 +0530
-Message-ID: <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        madhuparnabhowmik10@gmail.com
-Cc:     Dexuan-Linux Cui <dexuan.linux@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        frextrite@gmail.com, lkft-triage@lists.linaro.org,
-        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+It's hard to figure out what systems are actually affected and right now I
+don't see a good way of removing those...
 
-> I am not seeing this here.
+But I'd like to see thos getting removed and drivers fixed instead (which
+happened at least for nouveau).
 
-Do you notice any warnings while building linux next master
-for x86_64 architecture ?
+And as mentioned before, I prefer people working on fixing issues instead
+of spending time to add firmware level workarounds which are hard to know
+to which systems they apply to, hard to remove and basically a big huge
+pain to work with.
+In the end I have no idea how to even figure out what systems are affected
+and which not by this, so I have no idea how to even verify we can safely
+remove this (which just means those are impossible to remove unless we risk
+breaking systems, which again makes those supper annoying to deal with).
 
-> Could you please let us know what compiler
-> and command-line options you are using to generate this?
+Also from the comments it's hard to get what those bits really do. Are they
+just preventing runtime pm or do the devices are powered down when booting?
+I am sure it's the former, still...
 
-We have two build systems one showing it as error and build breaks
-and another one showing it as warning and build pass.
-tool chain: gcc 9.3.0
-build command:
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Dx86 HOSTCC=3Dgcc
-CC=3D"sccache gcc" O=3Dbuild
+Please, don't do this again.
 
-metadata:
-    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-ne=
-xt.git,
-    target_arch: x86,
-    toolchain: gcc-9,
-    git_short_log: aab7ee9f8ff0 (\Add linux-next specific files for 2020071=
-7\),
-    git_sha: aab7ee9f8ff0110bfcd594b33dc33748dc1baf46,
-    git_describe: next-20200717,
-    kernel_version: 5.8.0-rc5,
+For now, those workaround prevent power savings on systems those workaround
+applies to, which might be any so those should get removed asap and if
+new issues arrise removing those please do a proper bug report and we can
+look into it and come up with a proper fix (and keep this patch out until
+we resolve all of those).
 
-warning log,
---
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Dx86 HOSTCC=3Dgcc
-CC=3D"sccache gcc" O=3Dbuild
-#
-In file included from ../include/linux/pid.h:5,
-                 from ../include/linux/sched.h:14,
-                 from ../include/linux/kvm_host.h:12,
-                 from ../arch/x86/kvm/mmu/page_track.c:14:
-../arch/x86/kvm/mmu/page_track.c: In function =E2=80=98kvm_page_track_write=
-=E2=80=99:
-../include/linux/rculist.h:727:30: warning: left-hand operand of comma
-expression has no effect [-Wunused-value]
-  727 |  for (__list_check_srcu(cond),     \
-      |                              ^
-../arch/x86/kvm/mmu/page_track.c:232:2: note: in expansion of macro
-=E2=80=98hlist_for_each_entry_srcu=E2=80=99
-  232 |  hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
-../arch/x86/kvm/mmu/page_track.c: In function =E2=80=98kvm_page_track_flush=
-_slot=E2=80=99:
-../include/linux/rculist.h:727:30: warning: left-hand operand of comma
-expression has no effect [-Wunused-value]
-  727 |  for (__list_check_srcu(cond),     \
-      |                              ^
-../arch/x86/kvm/mmu/page_track.c:258:2: note: in expansion of macro
-=E2=80=98hlist_for_each_entry_srcu=E2=80=99
-  258 |  hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
-arch/x86/kvm/svm/svm.o: warning: objtool: svm_flush_tlb_gva()+0x12:
-call without frame pointer save/setup
-kernel/bpf/core.o: warning: objtool: ___bpf_prog_run.cold()+0x7: call
-without frame pointer save/setup
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+CC: Alex Hung <alex.hung@canonical.com>
+CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC: Len Brown <lenb@kernel.org>
+CC: Lyude Paul <lyude@redhat.com>
+CC: linux-kernel@vger.kernel.org
+CC: dri-devel@lists.freedesktop.org
+CC: nouveau@lists.freedesktop.org
+---
+ drivers/acpi/osi.c | 24 ------------------------
+ 1 file changed, 24 deletions(-)
 
-ref:
-https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/643978120
+diff --git a/drivers/acpi/osi.c b/drivers/acpi/osi.c
+index 9f68538091384..d4405e1ca9b97 100644
+--- a/drivers/acpi/osi.c
++++ b/drivers/acpi/osi.c
+@@ -44,30 +44,6 @@ osi_setup_entries[OSI_STRING_ENTRIES_MAX] __initdata = {
+ 	{"Processor Device", true},
+ 	{"3.0 _SCP Extensions", true},
+ 	{"Processor Aggregator Device", true},
+-	/*
+-	 * Linux-Dell-Video is used by BIOS to disable RTD3 for NVidia graphics
+-	 * cards as RTD3 is not supported by drivers now.  Systems with NVidia
+-	 * cards will hang without RTD3 disabled.
+-	 *
+-	 * Once NVidia drivers officially support RTD3, this _OSI strings can
+-	 * be removed if both new and old graphics cards are supported.
+-	 */
+-	{"Linux-Dell-Video", true},
+-	/*
+-	 * Linux-Lenovo-NV-HDMI-Audio is used by BIOS to power on NVidia's HDMI
+-	 * audio device which is turned off for power-saving in Windows OS.
+-	 * This power management feature observed on some Lenovo Thinkpad
+-	 * systems which will not be able to output audio via HDMI without
+-	 * a BIOS workaround.
+-	 */
+-	{"Linux-Lenovo-NV-HDMI-Audio", true},
+-	/*
+-	 * Linux-HPI-Hybrid-Graphics is used by BIOS to enable dGPU to
+-	 * output video directly to external monitors on HP Inc. mobile
+-	 * workstations as Nvidia and AMD VGA drivers provide limited
+-	 * hybrid graphics supports.
+-	 */
+-	{"Linux-HPI-Hybrid-Graphics", true},
+ };
+ 
+ static u32 acpi_osi_handler(acpi_string interface, u32 supported)
+-- 
+2.26.2
 
-
->                                                         Thanx, Paul
-
-- Naresh
