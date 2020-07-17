@@ -2,73 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FFE2245F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 23:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99ED2245F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 23:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgGQVqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 17:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgGQVqy (ORCPT
+        id S1727045AbgGQVsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 17:48:47 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28150 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726720AbgGQVsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 17:46:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4620C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 14:46:54 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595022412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yWveIph5h7e6cozVWaFqIR73Md1np3NT/tbXFuQjfvE=;
-        b=wvZZuBKxsyntLi9dvohYK7W5JLCHU6Jjh61wISFmO4GUDzcuPLnsJ5IAt4xsDNBl3ddPPk
-        5z0f6H6OFgAtoXHNZa2MSpmLZmpDpdfuDl3c+DHCmYnp31J7+fHEhyloR9dhl2VF8eKNbj
-        PUNbyrB2q7sqMC4vKSL8GDEw3e1N3bHgtlDE2NokzN7Nsf3QuxmwIeZMPxl++EmY22CgmI
-        7jr0KN6j/kj+0HKIY1zuJCOcoRdPeWn7qgnU6YsoDAyRyovsd2fWHBNTsJADNj8AQ1iEGD
-        dr0zU6eZB3jaZDHQlSrumdxsRX+1VZ9++V9xATLO2FGhI8r15kqyqNPvix5i5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595022412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yWveIph5h7e6cozVWaFqIR73Md1np3NT/tbXFuQjfvE=;
-        b=uNkLjK3Qw9GohkazRC0eH1ZSL380pAOjNgUdhgRN9ruP53vnB/B+YtouZEAfRumcxtBGij
-        W/YpkBLt8plmIpBg==
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org
-Cc:     mingo@redhat.com, dvhart@infradead.org, kernel@collabora.com,
-        krisman@collabora.com,
-        =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Subject: Re: [RESEND PATCH 3/4] futex: Remove unused or redundant includes
-In-Reply-To: <20200702202843.520764-4-andrealmeid@collabora.com>
-References: <20200702202843.520764-1-andrealmeid@collabora.com> <20200702202843.520764-4-andrealmeid@collabora.com>
-Date:   Fri, 17 Jul 2020 23:46:52 +0200
-Message-ID: <875zalrf03.fsf@nanos.tec.linutronix.de>
+        Fri, 17 Jul 2020 17:48:46 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HLUie2023542
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 14:48:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=E1zbxRNa6n18xFElQmvtOWH5Yyo6DOn9fwekaPZ2vh8=;
+ b=gUqLwyZTZPmtoeGM4+8xXp9nCmn9bj+osbXA/ahOO0+ep2yt7PK0GZcrJLu08MGhd9iD
+ JgQ5H5VdcuisNjY4cVmvmjqoIB+6O3qOmjEqgmkmsR83067gOtHMh4UAJJWQTo6n2Id5
+ oU+KOEDqY70fbx7RB4c/4LCJzFovc9YBeDI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32a7dfbkkb-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 14:48:45 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 17 Jul 2020 14:48:40 -0700
+Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
+        id 8D7E714C528E; Fri, 17 Jul 2020 14:48:28 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Smtp-Origin-Cluster: prn0c01
+Subject: [PATCH] mm: slab/memcg: fix build on MIPS
+Date:   Fri, 17 Jul 2020 14:48:10 -0700
+Message-ID: <20200717214810.3733082-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_10:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ phishscore=0 spamscore=0 clxscore=1015 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=2 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170145
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andr=C3=A9 Almeida <andrealmeid@collabora.com> writes:
+Naresh reported that linux-next build is broken on MIPS. The problem
+is reproducible using gcc 8 and 9, but not 10.
 
-> Since 82af7aca ("Removal of FUTEX_FD"), some includes related to file
-> operations aren't needed anymore. More investigation around the includes
-> showed that a lot of includes aren't required for compilation, possible
-> due to redundant includes. Simplify the code by removing unused
-> includes.
->
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-> ---
-> To test this code, I compiled with different configurations (x86_64,
-> i386, with x32 ABI supported enabled/disabled), and ran futex
-> selftests.
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Dmips
+CROSS_COMPILE=3Dmips-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
+mips-linux-gnu-gcc" O=3Dbuild
+../mm/slub.c: In function =E2=80=98slab_alloc.constprop=E2=80=99:
+../mm/slub.c:2897:30: error: inlining failed in call to always_inline
+=E2=80=98slab_alloc.constprop=E2=80=99: recursive inlining
+ 2897 | static __always_inline void *slab_alloc(struct kmem_cache *s,
+      |                              ^~~~~~~~~~
+../mm/slub.c:2905:14: note: called from here
+ 2905 |  void *ret =3D slab_alloc(s, gfpflags, _RET_IP_);
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mm/slub.c: In function =E2=80=98sysfs_slab_alias=E2=80=99:
+../mm/slub.c:2897:30: error: inlining failed in call to always_inline
+=E2=80=98slab_alloc.constprop=E2=80=99: recursive inlining
+ 2897 | static __always_inline void *slab_alloc(struct kmem_cache *s,
+      |                              ^~~~~~~~~~
+../mm/slub.c:2905:14: note: called from here
+ 2905 |  void *ret =3D slab_alloc(s, gfpflags, _RET_IP_);
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mm/slub.c: In function =E2=80=98sysfs_slab_add=E2=80=99:
+../mm/slub.c:2897:30: error: inlining failed in call to always_inline
+=E2=80=98slab_alloc.constprop=E2=80=99: recursive inlining
+ 2897 | static __always_inline void *slab_alloc(struct kmem_cache *s,
+      |                              ^~~~~~~~~~
+../mm/slub.c:2905:14: note: called from here
+ 2905 |  void *ret =3D slab_alloc(s, gfpflags, _RET_IP_);
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I agree fully with the FD related ones, but are you sure that all of the
-others are included on all architectures magically? x86 is just one
-piece of the puzzle. We'll see ...
+The problem was introduced by commit "mem: memcg/slab: use a single
+set of kmem_caches for all allocations", which added an allocation
+of the space for the obj_cgroup vector into the slab post hook
+and created a recursive inlining.
+
+The easies way to fix this is to move memcg_alloc_page_obj_cgroups()
+to memcontrol.c and make it a generic (not static inline) function.
+It breaks the inlining recursion and fixes the build.
+
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+---
+ mm/memcontrol.c | 20 ++++++++++++++++++++
+ mm/slab.h       | 21 ++-------------------
+ 2 files changed, 22 insertions(+), 19 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3f49e9bdbf2d..f47e9f0d42f4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2831,6 +2831,26 @@ static void commit_charge(struct page *page, struc=
+t mem_cgroup *memcg)
+ }
+=20
+ #ifdef CONFIG_MEMCG_KMEM
++int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s=
+,
++				 gfp_t gfp)
++{
++	unsigned int objects =3D objs_per_slab_page(s, page);
++	void *vec;
++
++	vec =3D kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
++			   page_to_nid(page));
++	if (!vec)
++		return -ENOMEM;
++
++	if (cmpxchg(&page->obj_cgroups, NULL,
++		    (struct obj_cgroup **) ((unsigned long)vec | 0x1UL)))
++		kfree(vec);
++	else
++		kmemleak_not_leak(vec);
++
++	return 0;
++}
++
+ /*
+  * Returns a pointer to the memory cgroup to which the kernel object is =
+charged.
+  *
+diff --git a/mm/slab.h b/mm/slab.h
+index 92a4104b22b3..6cc323f1313a 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -257,25 +257,8 @@ static inline bool page_has_obj_cgroups(struct page =
+*page)
+ 	return ((unsigned long)page->obj_cgroups & 0x1UL);
+ }
+=20
+-static inline int memcg_alloc_page_obj_cgroups(struct page *page,
+-					       struct kmem_cache *s, gfp_t gfp)
+-{
+-	unsigned int objects =3D objs_per_slab_page(s, page);
+-	void *vec;
+-
+-	vec =3D kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
+-			   page_to_nid(page));
+-	if (!vec)
+-		return -ENOMEM;
+-
+-	if (cmpxchg(&page->obj_cgroups, NULL,
+-		    (struct obj_cgroup **) ((unsigned long)vec | 0x1UL)))
+-		kfree(vec);
+-	else
+-		kmemleak_not_leak(vec);
+-
+-	return 0;
+-}
++int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s=
+,
++				 gfp_t gfp);
+=20
+ static inline void memcg_free_page_obj_cgroups(struct page *page)
+ {
+--=20
+2.26.2
+
