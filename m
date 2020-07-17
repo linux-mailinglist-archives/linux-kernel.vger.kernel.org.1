@@ -2,98 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAFC224261
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF23224284
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgGQRoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728091AbgGQRoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:44:15 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89A6D22B4E;
-        Fri, 17 Jul 2020 17:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595007854;
-        bh=8KhGhYBxnfryGaCJ4USJbgh0ERjIkpbE+Ah2Ia0FzVY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W0nYfbVjzCONNpiGooYEWPPFRXkLlokkcPhl3A1lZqCJ+5OOenlOxseUiU6mMCB/A
-         znN2y7Yk4Pb6bptYEZ5CEyHi/0plSim+pZbDtv7Pp1w2uzJFDz38fLej6XM2nNTPi5
-         6RI7Y2NKe9s7mXZxbDZ655w3wevWqwVCFlCfXq14=
-Received: by mail-ot1-f46.google.com with SMTP id t18so7451299otq.5;
-        Fri, 17 Jul 2020 10:44:14 -0700 (PDT)
-X-Gm-Message-State: AOAM5314oTvqHBMMiHtgGYsaLvgZnSIboHW7R91gY80GST5N1g80yOBp
-        Gf6CZtI9dbPUnejvDefO1ukVwuB5HBdG/VpaWA==
-X-Google-Smtp-Source: ABdhPJzmF19p2CWPSseEsvbYzrAu3m4cEXKROdnW9Mwivlqz1HHyHd8Lvx2gzO5P1fA1g1DlI6dgjzgfnM6jDjbbmBQ=
-X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr9977843ots.192.1595007853870;
- Fri, 17 Jul 2020 10:44:13 -0700 (PDT)
+        id S1726786AbgGQRrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:47:45 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6170 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726232AbgGQRro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 13:47:44 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06HHlYcC011245;
+        Fri, 17 Jul 2020 10:47:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ismwuUsenhx6tCs9S3sjoVHVjXmpL8GD2doGKWKGjWY=;
+ b=YJ+rsBT6wY0m8c8H658GEv+K5ieS7MmK5VdOXZmFxKx2jjBeccMkJoIsBoMzoU6Jueq7
+ pJG/XyeKSISmNTEETcJjWaOKFiP5U3l9EZPmYaY9tidSf2w/Ppww/EbC3Y9eEvRbuujz
+ 2MAV8fYFBgENmlm8BIPHvzM9zlhagAlmyuk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 32arerxctf-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 17 Jul 2020 10:47:34 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 17 Jul 2020 10:47:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JnVs4nkmQl48iIFmXRSR6BGAEB1f7yxO/BlEWv+0POpw/to9BOMjhF56JwaUiwkZclXYy7v0hxP8Abr1E1un4IsiB2CtKyRBDS8QK3gs+P024S/2ON5M09Qq55MM3bZ3Sh0Il6Ot2pxI8P45dEPt4lPPwMFobY4rz1BtMoofx32Exx1gcbDP3YoFPTLsjWM7erh4VGHH/e7eldHMjmux5mnB+RDGGEUV7iXraqPDmiLtSc+v0lH0fY2Yu4HVsO+lkM3OAgQNif+LJkcB0Sz6HlSlhb1fDj60JIrl+zC1KS/ezn6TnoBDBhN+peVo4i2+2JcLK9h5mLsDgnLFDwyEBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ismwuUsenhx6tCs9S3sjoVHVjXmpL8GD2doGKWKGjWY=;
+ b=MC+xg4agbOI9hoO2+mN4ryayqLRH9R8DBDrVDyBbW5lAVIzTdayicLfUkQTEAUOY+/PUgk+kdRlp7MeFvz3E2vuAjUGfpy8zP7+06Ulo4aGhVqTa9YsQQfsrdnvSqCfCpt1y9EzxzrvuX4L2NnQfh1xT//z6SIdAxfsAt333IUDg4h1mfLT9cqHKNuVkCsbGvCU/um5v9lpDTek8oXsbxVXvC4inenGRi9UxmwZh5kwiRU5PTOQhkN/g45qXtD0VwE3iPY7Cz8dbuwnsMNjIm5nz4ogRommQCVyBYrjln9vGz8hw4rpe2wwQUxStTx9u51xwp6ZG6Ymk5Ds1xw151Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ismwuUsenhx6tCs9S3sjoVHVjXmpL8GD2doGKWKGjWY=;
+ b=QqKhkp/ooS/IJrBTQzqSx9al+DXkKeiyczWXVN4azEwnqKhAY5PW7H/RqVqroVV62OLsJw9XPNx+NklR2L6DrSecNgJdOpDlCDzOdzNP6UX2cVJnZppIGnYYslOBtWSjet2AWl4bO4lEIueb0ufhChnEaj5CiU+AmSeYVvwi8a0=
+Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3144.namprd15.prod.outlook.com (2603:10b6:a03:fe::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Fri, 17 Jul
+ 2020 17:47:08 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3195.022; Fri, 17 Jul 2020
+ 17:47:08 +0000
+Date:   Fri, 17 Jul 2020 10:47:05 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <20200717174705.GA55916@carbon.DHCP.thefacebook.com>
+References: <20200717203127.00db2444@canb.auug.org.au>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717203127.00db2444@canb.auug.org.au>
+X-ClientProxiedBy: BY5PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::41) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <20200702191322.2639681-1-helen.koike@collabora.com> <20200702191322.2639681-5-helen.koike@collabora.com>
-In-Reply-To: <20200702191322.2639681-5-helen.koike@collabora.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 17 Jul 2020 11:44:02 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLYHY85_JhpGKwTOSP99uCER9VEf-gp3g4nFhN4ktCO3w@mail.gmail.com>
-Message-ID: <CAL_JsqLYHY85_JhpGKwTOSP99uCER9VEf-gp3g4nFhN4ktCO3w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/9] media: staging: dt-bindings: rkisp1: fix "no reg"
- error in parent node
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     devicetree@vger.kernel.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
-        Johan Jonker <jbx6244@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:bef8) by BY5PR13CA0028.namprd13.prod.outlook.com (2603:10b6:a03:180::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.9 via Frontend Transport; Fri, 17 Jul 2020 17:47:08 +0000
+X-Originating-IP: [2620:10d:c090:400::5:bef8]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8ca2caf9-1504-425c-32df-08d82a796d42
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3144:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3144BA5CA8B7397B8B26298CBE7C0@BYAPR15MB3144.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:586;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kQWk/VVyBWfPoSqn0gUT09Fy/tZrS8+S8RXBIaHnhkxDmp6x45FTbpR51dNTeLH5f2MwGbzYkQ9Ma+xUGNKGgDijfxFEr3VWjKxowEs5xJNETY7EJJZ1mlA2BMC6lbn/If4kiGgcTJTHStNxZYTpX2YeRM9OgrrGKSuiYufkaTcNLDoeZIeGJBYuW3llty9NYllyPPyFTyA5cDdR6hxsbrmbcZX04cKBZjdIpEYe+lfp5YpDkPm4xQgcNkNGpueXKv/EqRtgZj+pp+PWJ2Fp2uocSj6lTrA5TtO6SKKoHzvITeZJe6VFxHbYjBXnnMjyMNeE6uWhxXgZb6VeTBsRmA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(366004)(136003)(39860400002)(396003)(6506007)(86362001)(6666004)(54906003)(110136005)(9686003)(5660300002)(55016002)(83380400001)(8936002)(16526019)(8676002)(2906002)(33656002)(478600001)(186003)(4326008)(66946007)(52116002)(66556008)(316002)(1076003)(66476007)(7696005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: G1QG2W4gZltnulqRcisa0LtFqSH7/IRk2ljY/tlqxaZMl2IzNRYCsg5PAEksEaQYrGgvJU9451iEPtgXioQsTXF1bjOKWVV7+bSefkewHmEUXNYgJWlYawN9dEtQjycJej+PRvoLpww5x3mGqCXo7DkF0lMqYucNObSu61JwswjFoSYApKv3YWHihYxT7GFD6H6cCCbtGnfSYrY6VwOrhxAG6le/douTDYp9d0rHk5qjMw/dkP8piyg7xLn95dgH8qS0XlmqxSH4L61lDvU5bLoOoQoEAw5YFP3VZ6tjLTLoUiwR88QKuFrK4aJ/3RaUJQlLg3H+PPSQM7kYVFe3cwXmUlWJ/2zmB+3FfRjviDlaO5c/+//NnmQU6dInABbcvybZmEBgTQO2t/bqhH6hE+bbiYX2DVplwKoNSvItAloKAnC6JNZhfOzqMBODBvUbgej6KFwPOXq/y/lDALtxqB9R/xBFjTheIuPWsaimKDRczvOuKBxA8z13qdBXqj0GPo3RlMcDp7Zi68hw3MhuJg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ca2caf9-1504-425c-32df-08d82a796d42
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2020 17:47:08.7538
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ji0HF7vllLezDvvFYqGL0offLy8XnbYHrJHdolEhvWVia10eGMZ/7GX0xAXV5FOj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3144
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_08:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 suspectscore=1 malwarescore=0
+ spamscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170127
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 1:13 PM Helen Koike <helen.koike@collabora.com> wrote:
->
-> Fix the following error found with make ARCH=arm64 dt_binding_check:
->
-> Documentation/devicetree/bindings/media/rockchip-isp1.example.dts:24.27-101.11:
-> Warning (unit_address_vs_reg): /example-0/parent@0: node has a unit name, but no reg or ranges property
->
-> Reported-by: Johan Jonker <jbx6244@gmail.com>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> ---
->
-> V3:
-> - this is a new patch in the series
-> ---
->  .../Documentation/devicetree/bindings/media/rockchip-isp1.yaml   | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> index e5b9c0574e352..4d111ef2e89c7 100644
-> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> @@ -126,6 +126,7 @@ examples:
->      #include <dt-bindings/power/rk3399-power.h>
->
->      parent0: parent@0 {
-> +        reg = <0 0>;
+On Fri, Jul 17, 2020 at 08:31:27PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the akpm-current tree, today's linux-next build (powerpc
+> ppc64_defconfig) produced this warning:
+> 
+> mm/vmstat.c:614: warning: "MAX_THRESHOLD" redefined
+>   614 | #define MAX_THRESHOLD 0
+>       | 
+> mm/vmstat.c:172: note: this is the location of the previous definition
+>   172 | #define MAX_THRESHOLD 125
+>       | 
+> mm/vmstat.c:614: warning: "MAX_THRESHOLD" redefined
+>   614 | #define MAX_THRESHOLD 0
+>       | 
+> mm/vmstat.c:172: note: this is the location of the previous definition
+>   172 | #define MAX_THRESHOLD 125
+>       | 
+> 
+> Introduced by commit
+> 
+>   5f6bac149e10 ("mm: vmstat: fix /proc/sys/vm/stat_refresh generating false warnings")
+> 
+> The preproccesor directives look like this:
+> 
+> #ifdef CONFIG_SMP
+> #define MAX_THRESHOLD 125
+> #ifdef CONFIG_HAVE_CMPXCHG_LOCAL
+> #else
+> #define MAX_THRESHOLD 0
+> 
+> So I guess the second MAX_THRESHOLD was put after the wrong #else?
 
-Just drop the unit-address.
+Right, I missed it. Sorry for the inconvenience!
+And thank you for pointing at it!
 
->          #address-cells = <2>;
->          #size-cells = <2>;
->
-> --
-> 2.26.0
->
+The following diff fixes it.
+
+Andrew, can you, please, squash it into the
+"mm: vmstat: fix /proc/sys/vm/stat_refresh generating false warnings" ?
+
+Thank you!
+
+--
+
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 8f0ef8aaf8ee..08e415e0a15d 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -168,9 +168,12 @@ EXPORT_SYMBOL(vm_numa_stat);
+ EXPORT_SYMBOL(vm_node_stat);
+ 
+ #ifdef CONFIG_SMP
+-
+ #define MAX_THRESHOLD 125
++#else
++#define MAX_THRESHOLD 0
++#endif
+ 
++#ifdef CONFIG_SMP
+ int calculate_pressure_threshold(struct zone *zone)
+ {
+ 	int threshold;
+@@ -611,8 +614,6 @@ void dec_node_page_state(struct page *page, enum node_stat_item item)
+ EXPORT_SYMBOL(dec_node_page_state);
+ #else
+ 
+-#define MAX_THRESHOLD 0
+-
+ /*
+  * Use interrupt disable to serialize counter updates
+  */
+-- 
+2.26.2
+
