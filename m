@@ -2,94 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B1A2236A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86932236AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgGQIKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:10:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51884 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbgGQIKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:10:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 238E9AFF1;
-        Fri, 17 Jul 2020 08:10:11 +0000 (UTC)
-Subject: Re: [PATCH 1/4] mm/page_alloc: fix non cma alloc context
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, stable@vger.kernel.org
-References: <1594789529-6206-1-git-send-email-iamjoonsoo.kim@lge.com>
- <332d620b-bfe3-3b69-931b-77e3a74edbfd@suse.cz>
- <CAAmzW4NbG0fCtU2mV83pRamUeOEqKKxGTpQK2zuDxzmoF2FVrg@mail.gmail.com>
- <6f18d999-4518-31ce-4cea-9b5b89a577ad@suse.cz>
- <CAAmzW4MLc8bmkYW1q1fL_WRFQHksX-oy9tS-s9Kb-A=ZEeGETQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5a8b13d5-da40-7b1b-2968-e6701001cc0e@suse.cz>
-Date:   Fri, 17 Jul 2020 10:10:05 +0200
+        id S1728333AbgGQILl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:11:41 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52582 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726113AbgGQILk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:11:40 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06H84Ni4186145;
+        Fri, 17 Jul 2020 04:11:33 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32autb2ph8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 04:11:33 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06H84cf4187071;
+        Fri, 17 Jul 2020 04:11:32 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32autb2pgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 04:11:32 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06H8Ab8N008393;
+        Fri, 17 Jul 2020 08:11:31 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01dal.us.ibm.com with ESMTP id 328ux7w3r1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 08:11:31 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06H8BTXV39911930
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 08:11:29 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD897BE051;
+        Fri, 17 Jul 2020 08:11:29 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3E30BE054;
+        Fri, 17 Jul 2020 08:11:23 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.115.95])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 17 Jul 2020 08:11:23 +0000 (GMT)
+Subject: Re: [PATCH v3 0/5] powerpc/perf: Add json file support for hv_24x7
+ core level events
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
+        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
+        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        nasastry@in.ibm.com
+References: <20200716094216.1418659-1-kjain@linux.ibm.com>
+ <20200716152237.GC373728@kernel.org>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <a80eebc2-885c-171d-7c7a-74df727d60b4@linux.ibm.com>
+Date:   Fri, 17 Jul 2020 13:41:22 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAAmzW4MLc8bmkYW1q1fL_WRFQHksX-oy9tS-s9Kb-A=ZEeGETQ@mail.gmail.com>
+In-Reply-To: <20200716152237.GC373728@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_04:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 spamscore=100
+ priorityscore=1501 suspectscore=0 mlxscore=100 phishscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=-1000 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170061
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/20 9:29 AM, Joonsoo Kim wrote:
-> 2020년 7월 16일 (목) 오후 4:45, Vlastimil Babka <vbabka@suse.cz>님이 작성:
+
+
+On 7/16/20 8:52 PM, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jul 16, 2020 at 03:12:11PM +0530, Kajol Jain escreveu:
+>> Patchset enhance current runtime parameter support. It introduces new
+>> fields like "PerChip" and "PerCore" similar to the field "PerPkg" which is
+>> used to specify perpkg events. 
 >>
->> On 7/16/20 9:27 AM, Joonsoo Kim wrote:
->> > 2020년 7월 15일 (수) 오후 5:24, Vlastimil Babka <vbabka@suse.cz>님이 작성:
->> >> >  /*
->> >> >   * get_page_from_freelist goes through the zonelist trying to allocate
->> >> >   * a page.
->> >> > @@ -3706,6 +3714,8 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
->> >> >       struct pglist_data *last_pgdat_dirty_limit = NULL;
->> >> >       bool no_fallback;
->> >> >
->> >> > +     current_alloc_flags(gfp_mask, &alloc_flags);
->> >>
->> >> I don't see why to move the test here? It will still be executed in the
->> >> fastpath, if that's what you wanted to avoid.
->> >
->> > I want to execute it on the fastpath, too. Reason that I moved it here
->> > is that alloc_flags could be reset on slowpath. See the code where
->> > __gfp_pfmemalloc_flags() is on. This is the only place that I can apply
->> > this option to all the allocation paths at once.
+>> The "PerCore" and "PerChip" specifies whether its core or chip events.
+>> Based on which we can decide which runtime parameter user want to
+>> access. Now character  '?' can refers different parameter based on user
+>> requirement.
 >>
->> But get_page_from_freelist() might be called multiple times in the slowpath, and
->> also anyone looking for gfp and alloc flags setup will likely not examine this
->> function. I don't see a problem in having it in two places that already deal
->> with alloc_flags setup, as it is now.
+>> Initially, every time we want to add new terms like chip, core, thread
+>> etc, we need to create corrsponding fields in pmu_events and event
+>> struct.
+>> This patchset adds an enum called 'aggr_mode_class' which store all these
+>> aggregation like perpkg/percore. It also adds new field 'AggregationMode'
+>> to capture these terms.
+>> Now, if user wants to add any new term, they just need to add it in
+>> the enum defined. I try to test it with  my current setup.
+>>
+>> I also need to replace PerPkg field to AggregationMode in all the
+>> x86 uncore json files. It will great if Andi and team can test it
+>> and let me know if they have any concerns.
+>>
+>> Changelog:
+>> v2 -> v3:
+>> - Did some nits changes suggested by Jiri include correction of
+>>   indentation, and making PerCore/PerChip values forward after
+>>   PerPkg as 1 in the enum.
+>> - Rebase the patchset on Arnaldo's tmp.perf/core branch.
+>> - Change RFC tag
 > 
-> I agree that anyone looking alloc flags will miss that function easily. Okay.
-> I will place it on its original place, although we now need to add one
-> more place.
-> *Three places* are gfp_to_alloc_flags(), prepare_alloc_pages() and
-> __gfp_pfmemalloc_flags().
+> Hey, have anybody provided Acked-by/Reviewed-by for previous revisions
+> of this patchset? If so you could have collected them for patches
+> without changes, was that the case?
 
-Hm the check below should also work for ALLOC_OOM|ALLOC_NOCMA then.
+Hi Arnaldo,
+      I did get "Acked-by: Ian Rogers" on my initial prototype which I send in my RFC.
+Link to the patch: https://lkml.org/lkml/2020/7/5/399
 
-/* Avoid allocations with no watermarks from looping endlessly */
-   if (tsk_is_oom_victim(current) &&
-        (alloc_flags == ALLOC_OOM ||
-         (gfp_mask & __GFP_NOMEMALLOC)))
-            goto nopage;
+After that, I break it down and made some nits changes as suggested by Jiri, that's why I didn't
+add his Acked-by tag.
+Ian should I add it, if it seems fine to you.
 
-Maybe it's simpler to change get_page_from_freelist() then. But document well.
-
-> Thanks.
+Thanks,
+Kajol Jain
 > 
-
+> - Arnaldo
+>  
+>> v1 -> v2:
+>> - Rather then adding new field as PerCore/PerChip, created a new enum
+>>   to get these fields. And new field as "AggregationMode" which can
+>>   be used to capture these fields from json file.
+>>   - Suggested By Ian Rogers
+>>
+>>
+>> Kajol Jain (5):
+>>   perf/pmu-events/jevents: Add enum to store aggregation like PerPkg
+>>   pmu-events/x86/uncore: Replace PerPkg field to AggregationMode in x86
+>>     json files
+>>   perf jevents: Add support for parsing perchip/percore events
+>>   perf/tools: Pass pmu_event structure as a parameter for
+>>     arch_get_runtimeparam
+>>   perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
+>>
+>>  tools/perf/arch/powerpc/util/header.c         |   7 +-
+>>  .../arch/powerpc/power9/nest_metrics.json     |  27 +-
+>>  .../arch/x86/broadwellde/uncore-cache.json    |  62 ++--
+>>  .../arch/x86/broadwellde/uncore-memory.json   |  18 +-
+>>  .../arch/x86/broadwellde/uncore-power.json    |  18 +-
+>>  .../arch/x86/broadwellx/uncore-cache.json     |  62 ++--
+>>  .../x86/broadwellx/uncore-interconnect.json   |   6 +-
+>>  .../arch/x86/broadwellx/uncore-memory.json    |  18 +-
+>>  .../arch/x86/broadwellx/uncore-power.json     |  18 +-
+>>  .../arch/x86/cascadelakex/uncore-memory.json  |  64 ++--
+>>  .../arch/x86/cascadelakex/uncore-other.json   | 332 +++++++++---------
+>>  .../arch/x86/haswellx/uncore-cache.json       |  62 ++--
+>>  .../x86/haswellx/uncore-interconnect.json     |   6 +-
+>>  .../arch/x86/haswellx/uncore-memory.json      |  18 +-
+>>  .../arch/x86/haswellx/uncore-power.json       |  18 +-
+>>  .../arch/x86/ivytown/uncore-cache.json        |  62 ++--
+>>  .../arch/x86/ivytown/uncore-interconnect.json |  10 +-
+>>  .../arch/x86/ivytown/uncore-memory.json       |  16 +-
+>>  .../arch/x86/ivytown/uncore-power.json        |  52 +--
+>>  .../arch/x86/jaketown/uncore-cache.json       |  40 +--
+>>  .../x86/jaketown/uncore-interconnect.json     |  10 +-
+>>  .../arch/x86/jaketown/uncore-memory.json      |  18 +-
+>>  .../arch/x86/jaketown/uncore-power.json       |  52 +--
+>>  .../x86/knightslanding/uncore-memory.json     |   8 +-
+>>  .../arch/x86/skylakex/uncore-memory.json      |  36 +-
+>>  .../arch/x86/skylakex/uncore-other.json       | 220 ++++++------
+>>  .../arch/x86/tremontx/uncore-memory.json      |  14 +-
+>>  .../arch/x86/tremontx/uncore-other.json       |  70 ++--
+>>  .../arch/x86/tremontx/uncore-power.json       |   2 +-
+>>  tools/perf/pmu-events/jevents.c               |  45 ++-
+>>  tools/perf/pmu-events/jevents.h               |   2 +-
+>>  tools/perf/pmu-events/pmu-events.h            |   8 +-
+>>  tools/perf/tests/pmu-events.c                 |   8 +-
+>>  tools/perf/util/metricgroup.c                 |   5 +-
+>>  tools/perf/util/metricgroup.h                 |   3 +-
+>>  tools/perf/util/pmu.c                         |   6 +-
+>>  36 files changed, 729 insertions(+), 694 deletions(-)
+>>
+>> -- 
+>> 2.26.2
+>>
+> 
