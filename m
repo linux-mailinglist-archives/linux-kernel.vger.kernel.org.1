@@ -2,218 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F92C223D7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EED6223D84
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgGQN6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S1726963AbgGQN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726221AbgGQN6t (ORCPT
+        with ESMTP id S1726453AbgGQN7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:58:49 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E700C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:58:49 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t6so5475016plo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:58:49 -0700 (PDT)
+        Fri, 17 Jul 2020 09:59:44 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09565C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:59:44 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id e11so8800535qkm.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0yc0MQzf+aR4c3kpqn6zKq+wL53e9ydsRsO1HQgCARc=;
-        b=sKBmke/3eukk/6ewyzLkzBaS5s6MlT0Lo3BG2KEvEkNbpwrqDGvVt+gPRtVTeGCNlO
-         jg/HP/JNS2YE2n4DzIjijUU52pwnZRDlP6UHdi0p3H9yaqWfSLM69hfFcJBFgQP5xvA/
-         SRsk0Xn8z/3NjdlN66jWgiMzVCDX4Wa0dZ7Lmmsad+tqz2o+70KLE5vKm5mEUPILtghb
-         oSjn0k8lmMyKO548havmnn0LNuA1UN+XDMXXppwvf0obECP4ya+T2HITpl4rfEckwIpg
-         xnpP/fdQ0Q+dzy/+pdom++fa2voMqQZS+/wEZyHT1Y78UEcM5XCGpSZefxVljqZp881F
-         hhxw==
+        bh=ZD6pIPqGBsKJeMez/CHitdzBvjnLslWeJDCJg3q41cA=;
+        b=H8C2nuNu+fhYO+A4K5s1D/iEGVIKweceHCtMuvmqcBkq05dtoxz2N4nzH73COlYnoM
+         r7lJSyA3zQcY2WjTUeeVPXUlS2ptEov54lQAAw+C5qtp918AY/4Notio80aPWY1ow6sv
+         vwJ64KrHuPZ3yetcl9dMklp6MRIMAH9quuheMvSI4fFvsC0/dRckj4nV33j4HET75nTo
+         uAg/mvqHj6WzFmUo+InhoweVz6Le6wlehnVCxFHb2hoIV/QBkKXJoqOwW2Zg1T4E7ZDg
+         dPLaOd5fuFEyoIWWZi4TnOzlaqn3TQM20i0HR5b+iH8uaHdMUj2xpMeFeiXV95GPD6KG
+         Tq6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0yc0MQzf+aR4c3kpqn6zKq+wL53e9ydsRsO1HQgCARc=;
-        b=Mc+uv9hM1W75Y+iotfj9DTWb8lRxPgvbXrkQYxTrq1NepOcKot3UgVm4QfNdLGN9Cr
-         JiqAHTw/ERXrnUfiSa7lZgfx73E/AK8cM41OIeDxUF9N/UUVQx1HXaN2XVgtTniWFDVL
-         Y6QdovGTduhp3RUP1dZoBfYvT1T1Y5lF24oGq3FVpKqAtg2cmq6GpSFM2oOiJnEzlL/T
-         WtAeC0o6r+CjIjiHclaFKB8qKysPgn9pX5xKsXj1GS3XtMcLEgsAR36N1UwzcF1xtA9V
-         v7W07rFP1rUEPMTpq79LfgDYjS96uH1nfof9tBnbFU7vMJzTv18qCr7awsp++ynJKFg4
-         mmow==
-X-Gm-Message-State: AOAM530iZTw3tsUoQ1qzmK52ptrUkiWxNIjiRVhb3QuEF0MzPyuT2w3k
-        myLbOCX9fMsicWaAwSkxc00=
-X-Google-Smtp-Source: ABdhPJw2fWUXn1hFsQSzz5uCj1nqsuJOAjXj1Hz6rh9fGkxVJnHtLfsaG6ds+7AhE/f5XNt1Ujp/bQ==
-X-Received: by 2002:a17:90b:194f:: with SMTP id nk15mr10271270pjb.189.1594994328869;
-        Fri, 17 Jul 2020 06:58:48 -0700 (PDT)
-Received: from mail.google.com ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id a33sm7885213pgl.75.2020.07.17.06.58.43
+        bh=ZD6pIPqGBsKJeMez/CHitdzBvjnLslWeJDCJg3q41cA=;
+        b=OPRdWXqSwbdxX39vAKexfZqxM1/1+nepZ3essFG5uTZwqBB6GwLY7eXeUri16Cjsmw
+         Xfo399MJFBr63WMDyR/UkKmOTHkmNyg/nN3rDDucR/6WhUeSJ0R85fel8JMoFzWY46RD
+         yy6AI42JtZQ36tPLCVV4LoIHRvVi3JPqUBWDw1MJvqFw4OqPZ153offIZ1Fa2Os+HDsJ
+         So9toKEQSdWWNWBTJNsqFp+ATKDzn5IABroT1xzRHKKVkX7I7L3BMOHjkV8heQFIbik2
+         gcCEBYMUbXlX1174KrLPnl8n3U/JBGWVDAaMgVvOutX4O6HTut/GF1lK1FZGlUQvmB6y
+         AEMw==
+X-Gm-Message-State: AOAM533QB3l8s9WIBXc9SPDi/k9mG0GFagbzuOZT6slPBJUFg4rNFKXn
+        lVjmirU6ZSIidnSTCqkMHlGsGw==
+X-Google-Smtp-Source: ABdhPJz0V9eHHUMY5YFbDJfGvmKvNCK1ZNR4mKHH5fdHumFTh8NJf1VmxqvMFJRxZC9nkgI0n+IHGg==
+X-Received: by 2002:a37:d02:: with SMTP id 2mr8648055qkn.382.1594994383213;
+        Fri, 17 Jul 2020 06:59:43 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:be7d])
+        by smtp.gmail.com with ESMTPSA id z187sm9788095qkb.102.2020.07.17.06.59.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 06:58:48 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 21:58:38 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 02/17] perf ftrace: add option '-F/--funcs' to list
- available functions
-Message-ID: <20200717135838.b2sch4sulsdptc6u@mail.google.com>
-References: <20200711124035.6513-1-changbin.du@gmail.com>
- <20200711124035.6513-3-changbin.du@gmail.com>
- <CAM9d7cjdMQzt6RXOnugoZ77Psu4Y=j9w07quxvtWqo0XagxL6A@mail.gmail.com>
+        Fri, 17 Jul 2020 06:59:42 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 09:58:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     js1304@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v6 2/6] mm/vmscan: protect the workingset on anonymous LRU
+Message-ID: <20200717135849.GA265107@cmpxchg.org>
+References: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592371583-30672-3-git-send-email-iamjoonsoo.kim@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cjdMQzt6RXOnugoZ77Psu4Y=j9w07quxvtWqo0XagxL6A@mail.gmail.com>
+In-Reply-To: <1592371583-30672-3-git-send-email-iamjoonsoo.kim@lge.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 10:49:40AM +0900, Namhyung Kim wrote:
-> Hello,
+On Wed, Jun 17, 2020 at 02:26:19PM +0900, js1304@gmail.com wrote:
+> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 > 
-> On Sat, Jul 11, 2020 at 9:42 PM Changbin Du <changbin.du@gmail.com> wrote:
-> >
-> > This adds an option '-F/--funcs' to list all available functions to trace,
-> > which is read from tracing file 'available_filter_functions'.
-> >
-> > $ sudo ./perf ftrace -F | head
-> > trace_initcall_finish_cb
-> > initcall_blacklisted
-> > do_one_initcall
-> > do_one_initcall
-> > trace_initcall_start_cb
-> > run_init_process
-> > try_to_run_init_process
-> > match_dev_by_label
-> > match_dev_by_uuid
-> > rootfs_init_fs_context
-> >
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> >
-> > ---
-> > v2: option name '-l/--list-functions' -> '-F/--funcs'
-> > ---
-> >  tools/perf/Documentation/perf-ftrace.txt |  4 +++
-> >  tools/perf/builtin-ftrace.c              | 43 ++++++++++++++++++++++++
-> >  2 files changed, 47 insertions(+)
-> >
-> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-> > index 952e46669168..d79560dea19f 100644
-> > --- a/tools/perf/Documentation/perf-ftrace.txt
-> > +++ b/tools/perf/Documentation/perf-ftrace.txt
-> > @@ -30,6 +30,10 @@ OPTIONS
-> >  --verbose=::
-> >          Verbosity level.
-> >
-> > +-F::
-> > +--funcs::
-> > +        List all available functions to trace.
-> > +
-> >  -p::
-> >  --pid=::
-> >         Trace on existing process id (comma separated list).
-> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> > index 5f53da87040d..244cc8e6bd60 100644
-> > --- a/tools/perf/builtin-ftrace.c
-> > +++ b/tools/perf/builtin-ftrace.c
-> > @@ -32,6 +32,7 @@ struct perf_ftrace {
-> >         struct evlist           *evlist;
-> >         struct target           target;
-> >         const char              *tracer;
-> > +       bool                    list_avail_functions;
-> >         struct list_head        filters;
-> >         struct list_head        notrace;
-> >         struct list_head        graph_funcs;
-> > @@ -127,6 +128,43 @@ static int append_tracing_file(const char *name, const char *val)
-> >         return __write_tracing_file(name, val, true);
-> >  }
-> >
-> > +static int read_tracing_file_to_stdout(const char *name)
-> > +{
-> > +       char buf[4096];
-> > +       char *file;
-> > +       int fd;
-> > +       int ret = -1;
-> > +
-> > +       file = get_tracing_file(name);
-> > +       if (!file) {
-> > +               pr_debug("cannot get tracing file: %s\n", name);
-> > +               return -1;
-> > +       }
-> > +
-> > +       fd = open(file, O_RDONLY);
-> > +       if (fd < 0) {
-> > +               pr_debug("cannot open tracing file: %s: %s\n",
-> > +                        name, str_error_r(errno, buf, sizeof(buf)));
-> > +               goto out;
-> > +       }
-> > +
-> > +       /* read contents to stdout */
-> > +       while (true) {
-> > +               int n = read(fd, buf, sizeof(buf));
-> > +               if (n <= 0)
-> > +                       goto out_close;
-> > +               if (fwrite(buf, n, 1, stdout) != 1)
-> > +                       goto out_close;
-> > +       }
-> > +       ret = 0;
+> In current implementation, newly created or swap-in anonymous page
+> is started on active list. Growing active list results in rebalancing
+> active/inactive list so old pages on active list are demoted to inactive
+> list. Hence, the page on active list isn't protected at all.
 > 
-> As I said before, there's no break in the loop above
-> so the ret can never be 0.
->
-I see now. Just fixed it as:
-        while (true) {
-                int n = read(fd, buf, sizeof(buf));
--               if (n <= 0)
-+               if (n == 0)
-+                       break;
-+               else if (n < 0)
-                        goto out_close;
-+
-
-Thanks!
-
-> Thanks
-> Namhyung
+> Following is an example of this situation.
 > 
-> > +
-> > +out_close:
-> > +       close(fd);
-> > +out:
-> > +       put_tracing_file(file);
-> > +       return ret;
-> > +}
-> > +
-> >  static int reset_tracing_cpu(void);
-> >  static void reset_tracing_filters(void);
-> >
-> > @@ -301,6 +339,9 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
-> >         signal(SIGCHLD, sig_handler);
-> >         signal(SIGPIPE, sig_handler);
-> >
-> > +       if (ftrace->list_avail_functions)
-> > +               return read_tracing_file_to_stdout("available_filter_functions");
-> > +
-> >         if (reset_tracing_files(ftrace) < 0) {
-> >                 pr_err("failed to reset ftrace\n");
-> >                 goto out;
-> > @@ -470,6 +511,8 @@ int cmd_ftrace(int argc, const char **argv)
-> >         const struct option ftrace_options[] = {
-> >         OPT_STRING('t', "tracer", &ftrace.tracer, "tracer",
-> >                    "tracer to use: function or function_graph (This option is deprecated)"),
-> > +       OPT_BOOLEAN('F', "funcs", &ftrace.list_avail_functions,
-> > +                   "Show available functions to filter"),
-> >         OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
-> >                    "trace on existing process id"),
-> >         OPT_INCR('v', "verbose", &verbose,
-> > --
-> > 2.25.1
-> >
+> Assume that 50 hot pages on active list. Numbers denote the number of
+> pages on active/inactive list (active | inactive).
+> 
+> 1. 50 hot pages on active list
+> 50(h) | 0
+> 
+> 2. workload: 50 newly created (used-once) pages
+> 50(uo) | 50(h)
+> 
+> 3. workload: another 50 newly created (used-once) pages
+> 50(uo) | 50(uo), swap-out 50(h)
+> 
+> This patch tries to fix this issue.
+> Like as file LRU, newly created or swap-in anonymous pages will be
+> inserted to the inactive list. They are promoted to active list if
+> enough reference happens. This simple modification changes the above
+> example as following.
+> 
+> 1. 50 hot pages on active list
+> 50(h) | 0
+> 
+> 2. workload: 50 newly created (used-once) pages
+> 50(h) | 50(uo)
+> 
+> 3. workload: another 50 newly created (used-once) pages
+> 50(h) | 50(uo), swap-out 50(uo)
+> 
+> As you can see, hot pages on active list would be protected.
+> 
+> Note that, this implementation has a drawback that the page cannot
+> be promoted and will be swapped-out if re-access interval is greater than
+> the size of inactive list but less than the size of total(active+inactive).
+> To solve this potential issue, following patch will apply workingset
+> detection that is applied to file LRU some day before.
+> 
+> v6: Before this patch, all anon pages (inactive + active) are considered
+> as workingset. However, with this patch, only active pages are considered
+> as workingset. So, file refault formula which uses the number of all
+> anon pages is changed to use only the number of active anon pages.
 
--- 
-Cheers,
-Changbin Du
+I can see that also from the code, but it doesn't explain why.
+
+And I'm not sure this is correct. I can see two problems with it.
+
+After your patch series, there is still one difference between anon
+and file: cache trim mode. If the "use-once" anon dominate most of
+memory and you have a small set of heavily thrashing files, it would
+not get recognized. File refaults *have* to compare their distance to
+the *entire* anon set, or we could get trapped in cache trimming mode
+even as file pages with access frequencies <= RAM are thrashing.
+
+On the anon side, there is no cache trimming mode. But even if we're
+not in cache trimming mode and active file is already being reclaimed,
+we have to recognize thrashing on the anon side when reuse frequencies
+are within available RAM. Otherwise we treat an inactive file that is
+not being reused as having the same value as an anon page that is
+being reused. And then we may reclaim file and anon at the same rate
+even as anon is thrashing and file is not. That's not right.
+
+We need to activate everything with a reuse frequency <= RAM. Reuse
+frequency is refault distance plus size of the inactive list the page
+was on. This means anon distances should be compared to active anon +
+inactive file + active file, and file distances should be compared to
+active file + inactive_anon + active anon.
+
+workingset_size should basically always be everything except the
+inactive list the page is refaulting from as that represents the delta
+between total RAM and the amount of space this page had available.
