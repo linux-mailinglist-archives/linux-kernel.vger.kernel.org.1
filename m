@@ -2,186 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC582223E2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2B1223E22
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgGQOhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726843AbgGQOhh (ORCPT
+        id S1726801AbgGQOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:36:58 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11639 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgGQOgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:37:37 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80608C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:37:37 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t6so6765272pgq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MNrpaoZVGEfTNw615GzyXCuvGdypRr0hU2eDJlGIah0=;
-        b=mgtJLXYcCmIVB0XtjkbhoO1bX5zANd9SM2mx7tWtA3f7j/MBaJ8ZefFHw7cBLJPBb+
-         NtUSC36dqshjkA9O85NDyweC/nimKOsTzJD2kpXQw10e2U1q2Nw4qMEm5FC2SjyDqxhB
-         BE5CR+pGcuHpHnXcnL3PzF/ynyxmwee5fhR4UrREcBWS+zYO2Q+cBWh39J1KA/LpZHm5
-         OKn+J+n1N0VEECNmDzdRhj27lVuwHgk9TXqU56xD6O4pyx/UGCMLEz2pwcCPkfUwE+Jn
-         6ST7WgGm4vQpKt2z1qvSCnlcOcOIl513FbMO30LGqcoYIOn2FEm3W5LOgeP6DJZP2dxg
-         rZqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MNrpaoZVGEfTNw615GzyXCuvGdypRr0hU2eDJlGIah0=;
-        b=Jk/XGqZPwmTp7KO3qS5TPd+ypLOMcMTw33/EPNV+Kq6eGxVXmAVS6/z/3V0qanJOpv
-         sLCcnpgrWZm9341XEAlE8el6cInl9QzaY5zfEUfymwkwr3vY21KIVZhE6S44I0dvhpuv
-         cEwGcyEVqUEt9Lh9ny24bzfhGEalrVe37/hum7iKKYxPxH8YBBs/gy5LjEU5gEthZuKQ
-         B9tp+oYbX+iy5EkzZRAYd3kh5Oqwq3z35P92w58XFLZ+8jeLWSn17Oi1UiWM/Dghh84P
-         raubLncfcOcWa6cU0P3K/Ycf4+7p4IHepD5F7neojewVL501v4vcqpEVXDKgGWUWb7rE
-         /GAg==
-X-Gm-Message-State: AOAM53060o/GXleAu3HftCp5oItCPKPp5005g3bTmNMcIfnyuriroCWb
-        wGz3+3ufBIAizC6NLG0Jb/c=
-X-Google-Smtp-Source: ABdhPJzPnuS3N/OVMuEEStKrYxzJjT48nEhmiXIYD55oVf5QkUFkSQT4n6AVN7r9JqEXBF7dDIFxtQ==
-X-Received: by 2002:aa7:9ec2:: with SMTP id r2mr8372750pfq.265.1594996657069;
-        Fri, 17 Jul 2020 07:37:37 -0700 (PDT)
-Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id a68sm3214689pje.35.2020.07.17.07.37.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 07:37:36 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v6 06/17] perf ftrace: add option '--inherit' to trace children processes
-Date:   Fri, 17 Jul 2020 22:36:17 +0800
-Message-Id: <20200717143628.47721-7-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200717143628.47721-1-changbin.du@gmail.com>
-References: <20200717143628.47721-1-changbin.du@gmail.com>
+        Fri, 17 Jul 2020 10:36:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594996615; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=NnSb7TJWGqQpSkl7k2UjULzlt0I9AkBaZ3dCnmY8dCM=; b=B8umfgkoioJ//ho+nFxfiKEBkLCFENG8MuI7Uly8u6O9Ytf9RApKpQ+Ily1XkgusPfzAH18n
+ gKL2prFBr7XWqXuxDMFnYw+SFLopwh/TQG2NLOSCiyVaNAtrC8JFWQVoojQHFYfJX7ZvyVxs
+ t4srjkKDfX6oE2YJBSEKc6Vn6MI=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f11b76bc9bd2efa2e1a5984 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 14:36:27
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A6EC1C433CA; Fri, 17 Jul 2020 14:36:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.9] (unknown [59.99.219.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD85EC433C6;
+        Fri, 17 Jul 2020 14:36:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD85EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH] drm: msm: a6xx: fix gpu failure after system resume
+To:     Rob Clark <robdclark@gmail.com>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Jonathan <jonathan@marek.ca>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+References: <1594733130-398-1-git-send-email-akhilpo@codeaurora.org>
+ <20200714171036.GS3191083@google.com>
+ <CAF6AEGsvbnWiFXQUFR+k-CLJ2CsCEoiVVE8pGVq0X0=VHE3hHA@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <a466103a-7f70-468c-c8d3-16b59ae8b3d5@codeaurora.org>
+Date:   Fri, 17 Jul 2020 20:06:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGsvbnWiFXQUFR+k-CLJ2CsCEoiVVE8pGVq0X0=VHE3hHA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an option '--inherit' to allow us trace children
-processes spawned by our target.
+On 7/15/2020 12:12 AM, Rob Clark wrote:
+> On Tue, Jul 14, 2020 at 10:10 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+>>
+>> On Tue, Jul 14, 2020 at 06:55:30PM +0530, Akhil P Oommen wrote:
+>>> On targets where GMU is available, GMU takes over the ownership of GX GDSC
+>>> during its initialization. So, take a refcount on the GX PD on behalf of
+>>> GMU before we initialize it. This makes sure that nobody can collapse the
+>>> GX GDSC once GMU owns the GX GDSC. This patch fixes some weird failures
+>>> during GPU wake up during system resume.
+>>>
+>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>>
+>> I went through a few dozen suspend/resume cycles on SC7180 and didn't run
+>> into the kernel panic that typically occurs after a few iterations without
+>> this patch.
+>>
+>> Reported-by: Matthias Kaehlcke <mka@chromium.org>
+>> Tested-by: Matthias Kaehlcke <mka@chromium.org>
+>>
+>> On which tree is this patch based on? I had to apply it manually because
+>> 'git am' is unhappy when I try to apply it:
+>>
+>>    error: sha1 information is lacking or useless (drivers/gpu/drm/msm/adreno/a6xx_gmu.c).
+>>    error: could not build fake ancestor
+>>
+>> Both upstream and drm-msm are in my remotes and synced, so I suspect it's
+>> some private tree. Please make sure to base patches on the corresponding
+>> maintainer tree or upstream, whichs makes life easier for maintainers,
+>> testers and reviewers.
+> 
+> I've run into the same issue frequently :-(
+> 
+> BR,
+> -R
+> 
+Sorry, I was using msm-next brand as the base, but had the opp-next 
+branch merged too inadvertently.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-
----
-v2: option name '--trace-children' -> '--inherit'.
----
- tools/perf/Documentation/perf-ftrace.txt |  3 ++
- tools/perf/builtin-ftrace.c              | 38 ++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
-
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index dcac0d75a0e5..3eee073a7042 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -57,6 +57,9 @@ OPTIONS
- 	Set the size of per-cpu tracing buffer, <size> is expected to
- 	be a number with appended unit character - B/K/M/G.
- 
-+--inherit::
-+	Trace children processes spawned by our target.
-+
- -T::
- --trace-funcs=::
- 	Only trace functions given by the argument.  Multiple functions
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 6ce626a2d0d1..765ebd56e05f 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -39,6 +39,7 @@ struct perf_ftrace {
- 	struct list_head	nograph_funcs;
- 	int			graph_depth;
- 	unsigned long		percpu_buffer_size;
-+	bool			inherit;
- };
- 
- struct filter_entry {
-@@ -180,9 +181,27 @@ static int write_tracing_file_int(const char *name, int value)
- 	return 0;
- }
- 
-+static int write_tracing_option_file(const char *name, const char *val)
-+{
-+	char *file;
-+	int ret;
-+
-+	if (asprintf(&file, "options/%s", name) < 0)
-+		return -1;
-+
-+	ret = __write_tracing_file(file, val, false);
-+	free(file);
-+	return ret;
-+}
-+
- static int reset_tracing_cpu(void);
- static void reset_tracing_filters(void);
- 
-+static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
-+{
-+	write_tracing_option_file("function-fork", "0");
-+}
-+
- static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
- {
- 	if (write_tracing_file("tracing_on", "0") < 0)
-@@ -201,6 +220,7 @@ static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
- 		return -1;
- 
- 	reset_tracing_filters();
-+	reset_tracing_options(ftrace);
- 	return 0;
- }
- 
-@@ -339,6 +359,17 @@ static int set_tracing_percpu_buffer_size(struct perf_ftrace *ftrace)
- 	return 0;
- }
- 
-+static int set_tracing_trace_inherit(struct perf_ftrace *ftrace)
-+{
-+	if (!ftrace->inherit)
-+		return 0;
-+
-+	if (write_tracing_option_file("function-fork", "1") < 0)
-+		return -1;
-+
-+	return 0;
-+}
-+
- static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- {
- 	char *trace_file;
-@@ -408,6 +439,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- 		goto out_reset;
- 	}
- 
-+	if (set_tracing_trace_inherit(ftrace) < 0) {
-+		pr_err("failed to set tracing option function-fork\n");
-+		goto out_reset;
-+	}
-+
- 	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
- 		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
- 		goto out_reset;
-@@ -600,6 +636,8 @@ int cmd_ftrace(int argc, const char **argv)
- 		    "Max depth for function graph tracer"),
- 	OPT_CALLBACK('m', "buffer-size", &ftrace.percpu_buffer_size, "size",
- 		     "size of per cpu buffer", parse_buffer_size),
-+	OPT_BOOLEAN(0, "inherit", &ftrace.inherit,
-+		    "trace children processes"),
- 	OPT_END()
- 	};
- 
--- 
-2.25.1
-
+-Akhil
