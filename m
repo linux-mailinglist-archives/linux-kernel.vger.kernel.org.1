@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF93D2230C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F61C2230C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgGQBt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 21:49:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36320 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726710AbgGQBtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 21:49:22 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6E78924D9B1F4BEE533D;
-        Fri, 17 Jul 2020 09:49:20 +0800 (CST)
-Received: from [10.174.179.105] (10.174.179.105) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 17 Jul
- 2020 09:49:15 +0800
-Subject: Re: [PATCH] ASoC: meson: add the missed kfree() for
- axg_card_add_tdm_loopback
-To:     Jerome Brunet <jbrunet@baylibre.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <khilman@baylibre.com>, <kuninori.morimoto.gx@renesas.com>
-References: <20200716132558.33932-1-jingxiangfeng@huawei.com>
- <1jzh7zegfw.fsf@starbuckisacylon.baylibre.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-Message-ID: <5F11039A.7040308@huawei.com>
-Date:   Fri, 17 Jul 2020 09:49:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
-MIME-Version: 1.0
-In-Reply-To: <1jzh7zegfw.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.105]
-X-CFilter-Loop: Reflected
+        id S1726514AbgGQBw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 21:52:26 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:38770 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgGQBwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 21:52:25 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 5B07CC5C96;
+        Fri, 17 Jul 2020 09:52:22 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P22085T140330059949824S1594950740444703_;
+        Fri, 17 Jul 2020 09:52:21 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <cad690310766119713eafb7a4357bfcc>
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Jianqun Xu <jay.xu@rock-chips.com>
+To:     heiko@sntech.de, linus.walleij@linaro.org
+Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kever.yang@rock-chips.com,
+        david.wu@rock-chips.com, Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH 05/13] pinctrl: rockchip: create irq mapping in gpio_to_irq
+Date:   Fri, 17 Jul 2020 09:52:19 +0800
+Message-Id: <20200717015219.14047-1-jay.xu@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200717014908.13914-1-jay.xu@rock-chips.com>
+References: <20200717014908.13914-1-jay.xu@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove totally irq mappings create in probe, the gpio irq mapping will
+be created when do
+    gpio_to_irq ->
+        rockchip_gpio_to_irq ->
+            irq_create_mapping
+
+This patch can speed up system boot on, also abandon many unused irq
+mappings' create.
+
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+---
+ drivers/pinctrl/pinctrl-rockchip.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+index d34fada39227..1be4627f3877 100644
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -3196,7 +3196,7 @@ static void rockchip_irq_demux(struct irq_desc *desc)
+ 
+ 		irq = __ffs(pend);
+ 		pend &= ~BIT(irq);
+-		virq = irq_linear_revmap(bank->domain, irq);
++		virq = irq_find_mapping(bank->domain, irq);
+ 
+ 		if (!virq) {
+ 			dev_err(bank->drvdata->dev, "unmapped irq %d\n", irq);
+@@ -3375,7 +3375,7 @@ static int rockchip_interrupts_register(struct platform_device *pdev,
+ 	unsigned int clr = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
+ 	struct irq_chip_generic *gc;
+ 	int ret;
+-	int i, j;
++	int i;
+ 
+ 	for (i = 0; i < ctrl->nr_banks; ++i, ++bank) {
+ 		if (!bank->valid) {
+@@ -3402,7 +3402,7 @@ static int rockchip_interrupts_register(struct platform_device *pdev,
+ 
+ 		ret = irq_alloc_domain_generic_chips(bank->domain, 32, 1,
+ 					 "rockchip_gpio_irq", handle_level_irq,
+-					 clr, 0, IRQ_GC_INIT_MASK_CACHE);
++					 clr, 0, 0);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "could not alloc generic chips for bank %s\n",
+ 				bank->name);
+@@ -3411,14 +3411,6 @@ static int rockchip_interrupts_register(struct platform_device *pdev,
+ 			continue;
+ 		}
+ 
+-		/*
+-		 * Linux assumes that all interrupts start out disabled/masked.
+-		 * Our driver only uses the concept of masked and always keeps
+-		 * things enabled, so for us that's all masked and all enabled.
+-		 */
+-		writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTMASK);
+-		writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTEN);
+-
+ 		gc = irq_get_domain_generic_chip(bank->domain, 0);
+ 		gc->reg_base = bank->reg_base;
+ 		gc->private = bank;
+@@ -3435,13 +3427,17 @@ static int rockchip_interrupts_register(struct platform_device *pdev,
+ 		gc->chip_types[0].chip.irq_set_type = rockchip_irq_set_type;
+ 		gc->wake_enabled = IRQ_MSK(bank->nr_pins);
+ 
++		/*
++		 * Linux assumes that all interrupts start out disabled/masked.
++		 * Our driver only uses the concept of masked and always keeps
++		 * things enabled, so for us that's all masked and all enabled.
++		 */
++		writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTMASK);
++		writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTEN);
++		gc->mask_cache = 0xffffffff;
++
+ 		irq_set_chained_handler_and_data(bank->irq,
+ 						 rockchip_irq_demux, bank);
+-
+-		/* map the gpio irqs here, when the clock is still running */
+-		for (j = 0 ; j < 32 ; j++)
+-			irq_create_mapping(bank->domain, j);
+-
+ 		clk_disable(bank->clk);
+ 	}
+ 
+-- 
+2.17.1
 
 
-On 2020/7/16 21:29, Jerome Brunet wrote:
->
-> On Thu 16 Jul 2020 at 15:25, Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
->
->> axg_card_add_tdm_loopback() misses to call kfree() in an error path. Add
->> the missed function call to fix it.
->>
->> Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
->> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
->
-> Thanks for fixing this.
-> Maybe it would be better to use the devm_ variant for the name instead ?
 
-Ok, I'll send a v2 with this change.
-
-Thanks for your review.
->
->> ---
->>   sound/soc/meson/axg-card.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
->> index 89f7f64747cd..6eac22ba8b99 100644
->> --- a/sound/soc/meson/axg-card.c
->> +++ b/sound/soc/meson/axg-card.c
->> @@ -121,8 +121,10 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
->>   		return -ENOMEM;
->>
->>   	dlc = devm_kzalloc(card->dev, 2 * sizeof(*dlc), GFP_KERNEL);
->> -	if (!dlc)
->> +	if (!dlc) {
->> +		kfree(lb->name);
->>   		return -ENOMEM;
->> +	}
->>
->>   	lb->cpus = &dlc[0];
->>   	lb->codecs = &dlc[1];
->
-> .
->
