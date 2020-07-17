@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BB9223698
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2FC2236A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgGQIHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:07:51 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43096 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbgGQIHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:07:51 -0400
-IronPort-SDR: lY88EXfJinOBNj/YVxtEA9Qj4YNXCJ4W+tNto1uaiMalH4v8bf/rcupsfecH/7uAQ3iUeDNeP5
- ZJlZS4qf+WYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="137670258"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="137670258"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 01:07:50 -0700
-IronPort-SDR: nwd7jPJHwVPkxZaosK2NPWshU/1YIuZs/EX9Bl/nY2WbjNHt1AGhV6tHybdW217GnnQHy9ljc7
- Gxhm11TQxhmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="430773818"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
-  by orsmga004.jf.intel.com with ESMTP; 17 Jul 2020 01:07:48 -0700
-Subject: Re: [LKP] Re: db57e98d87 ("mm/sparse.c: fix ALIGN() without power of
- 2 in .."): BUG: kernel reboot-without-warning in early-boot stage, last
- printk: early console in setup code
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Mark-PK Tsai <Mark-PK.Tsai@mediatek.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, LKP <lkp@lists.01.org>
-References: <20200716083159.GH3874@shao2-debian>
- <20200716150613.409103a2d1e4c3f5f63652b8@linux-foundation.org>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <699f0838-14d9-9a3b-4265-c05d4793a1c3@intel.com>
-Date:   Fri, 17 Jul 2020 16:07:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1728157AbgGQIKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgGQIKa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:10:30 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97F1C061755;
+        Fri, 17 Jul 2020 01:10:30 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m22so6300350pgv.9;
+        Fri, 17 Jul 2020 01:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wb+mPg1t2a/HwdF5pc/QRkfVddm7WxKqWMPXH/1N+qM=;
+        b=LxO+LekrPnoGrzriVhswyB7/G1U2O6WqKZbD8gwzhVHXmrZAfaUFoi9vYk6U8ycsff
+         k2SbF+c1uJ/5AUZLMGGo2n/HWylovQhcI5LcP20nPEWiCBtRDAkbotjK1MSpNGtbKusK
+         7paGgCd/78ftlysmgKkIQDG9IxtkSjZvuy/U+KpGEd9GnGfRGZXfKpd+KFiTVwV6Ar1T
+         Jfg8x8TE1ELJimwvB0QE+QyhvkSkTezA2Wwa+kURv5jxd5jt2zLzw0Imxskx1ezI2TEx
+         YNIifYoRaPRBWRvjgB1pFDbhJcDP3yJ2Bp+FwsgeMUb6M06phhiRtzJHb90L9ZGOy3S3
+         3kOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wb+mPg1t2a/HwdF5pc/QRkfVddm7WxKqWMPXH/1N+qM=;
+        b=UgSj7+pc6n398nZ5eH33OqBWUZYRsrGjZFb2CaXh/uWaqALsvyiW6bTmbn53acOC4W
+         a9pgX/71VwP62xSqQmDed9mFtMYgLbYF0Z3gsSbg+NobwaU+MwT9/kTi601zSWS+PzZ0
+         bLv2T3hAPAAYekyfEmQiIzB14lVDHlvJhLRQYgkr+JCPPAYRc83fLbu1E4+ROo8O60xI
+         fSoi8qX8P9aOBa0gojMgHDQYNVpSv7h/2BAjSbY746SaQAREADU+K40AYmZYnE/5ooUp
+         zrHp8GtfyZszPoCt+aQLmyODT3KXoPu8d3Bz6yQvWKMx2sOVf3vC5IWSzzgJ6NKI1YZF
+         7kCA==
+X-Gm-Message-State: AOAM530IExGWVEA4xv84Oad7wfK7+j6rqgMjLkFpv88lVGEVyRrojj/8
+        f4YlpsvGZqZAdQkqi2HRyns=
+X-Google-Smtp-Source: ABdhPJwxtCCwa1VmRCFBDVqGdQcJ/2V5fJ5JyH3gwwFNIOYc0esNeHrFaSxs2CqFCUyitRpWn4V8Nw==
+X-Received: by 2002:a62:1d0b:: with SMTP id d11mr7346372pfd.1.1594973430357;
+        Fri, 17 Jul 2020 01:10:30 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id d5sm1937296pju.15.2020.07.17.01.10.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 01:10:29 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1 0/3] block: use generic power management
+Date:   Fri, 17 Jul 2020 13:39:07 +0530
+Message-Id: <20200717080910.342741-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200716150613.409103a2d1e4c3f5f63652b8@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Linux Kernel Mentee: Remove Legacy Power Management.
 
-On 7/17/20 6:06 AM, Andrew Morton wrote:
-> On Thu, 16 Jul 2020 16:32:00 +0800 kernel test robot <lkp@intel.com> wrote:
->
->> Greetings,
->>
->> 0day kernel testing robot got the below dmesg and the first bad commit is
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>
->> commit db57e98d87908b8837352abe08515e42752270c1
->> Author:     Lecopzer Chen <lecopzer.chen@mediatek.com>
->> AuthorDate: Mon Sep 23 15:36:24 2019 -0700
->> Commit:     Linus Torvalds <torvalds@linux-foundation.org>
->> CommitDate: Tue Sep 24 15:54:09 2019 -0700
->>
->>      mm/sparse.c: fix ALIGN() without power of 2 in sparse_buffer_alloc()
-> Are we sure about this?  That patch is a year old - has something
-> in the test setup changed to make it visible at this late stage?
+The purpose of this patch series is to upgrade power management in block
+drivers. This has been done by upgrading .suspend() and .resume() callbacks.
 
-Hi Andrew,
+The upgrade makes sure that the involvement of PCI Core does not change the
+order of operations executed in a driver. Thus, does not change its behavior.
 
-The issue can be reproduced if CONFIG_SPARSEMEM_VMEMMAP is not set
-$ grep CONFIG_SPARSEMEM .config
-CONFIG_SPARSEMEM_MANUAL=y
-CONFIG_SPARSEMEM=y
-CONFIG_SPARSEMEM_EXTREME=y
-CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
-# CONFIG_SPARSEMEM_VMEMMAP is not set
+In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
+helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
+pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
+their job.
 
-$ 
-./reproduce-yocto-vm-yocto-23:20200619042212:x86_64-randconfig-r025-20200618:5.3.0-11836-gdb57e98d87908:1 
-vmlinuz-5.3.0-11836-gdb57e98d87908
-early console in setup code
+The conversion requires the removal of those function calls, change the
+callbacks' definition accordingly and make use of dev_pm_ops structure.
 
-and kernel can boot if enable CONFIG_SPARSEMEM_VMEMMAP
-$ grep CONFIG_SPARSEMEM .config
-CONFIG_SPARSEMEM_MANUAL=y
-CONFIG_SPARSEMEM=y
-CONFIG_SPARSEMEM_EXTREME=y
-CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
-CONFIG_SPARSEMEM_VMEMMAP=y
+All patches are compile-tested only.
 
-$ 
-./reproduce-yocto-vm-yocto-23:20200619042212:x86_64-randconfig-r025-20200618:5.3.0-11836-gdb57e98d87908:1 
-vmlinuz-5.3.0-11836-gdb57e98d87908.CONFIG_SPARSEMEM_VMEMMAP | head
-early console in setup code
-[    0.000000] Linux version 5.3.0-11836-gdb57e98d87908 
-(kbuild@6c2adaf8a115) (clang version 12.0.0 
-(git://gitmirror/llvm_project ed6b578040a85977026c93bf4188f996148f3218)) 
-#1 SMP Fri Jul 17 15:41:47 CST 2020
-[    0.000000] Command line: root=/dev/ram0 hung_task_panic=1 debug 
-apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 
-net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 
-nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 
-drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 
-earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw 
-rcuperf.shutdown=0 watchdog_thresh=60
-[    0.000000] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating 
-point registers'
-[    0.000000] x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
-[    0.000000] x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
-[    0.000000] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]: 256
-[    0.000000] x86/fpu: Enabled xstate features 0x7, context size is 832 
-bytes, using 'standard' format.
-[    0.000000] BIOS-provided physical RAM map:
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
-qemu-system-x86_64: terminating on signal 2
+Test tools:
+    - Compiler: gcc (GCC) 10.1.0
+    - allmodconfig build: make -j$(nproc) W=1 all
 
-Best Regards,
-Rong Chen
+Vaibhav Gupta (3):
+  mtip32xx: use generic power management
+  rsxx: use generic power management
+  skd: use generic power management
+
+ drivers/block/mtip32xx/mtip32xx.c | 54 +++++++------------------------
+ drivers/block/rsxx/core.c         |  9 ++++--
+ drivers/block/skd_main.c          | 36 ++++++---------------
+ 3 files changed, 29 insertions(+), 70 deletions(-)
+
+-- 
+2.27.0
+
