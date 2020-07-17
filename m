@@ -2,127 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681C0223FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062BF223FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgGQPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:37:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbgGQPg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:36:59 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A8412070A;
-        Fri, 17 Jul 2020 15:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595000218;
-        bh=jYc1aUN/I4P6tRz3VyMWhNF0QnaoeYEKgUKNa+KrnaI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lYrCL/576fIybqoKqFHqApQ0M13jBy6owWhQN6cG6wMCWfYYJYR+ejLvNZrakEMXR
-         +ehg8ackJ8jme84icUzgIHxUdZdYMkKHJTwkzu7jculJFLHRIj2SXWg9tO2moPc4G8
-         e6Tn4tBGsia5bmOEY2PEFUAFKJWwet2fMyHfbk+A=
-Date:   Fri, 17 Jul 2020 16:36:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Anson Huang <anson.huang@nxp.com>, Jon Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Adam Ford <aford173@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
-Message-ID: <20200717153647.GA10361@sirena.org.uk>
-References: <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com>
- <DB3PR0402MB39167A4BB808A0679257DEF9F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CACRpkdbCVZaHqijqMck+jLAJuCAT31HA=9wwcV_EnQc=hsXLwg@mail.gmail.com>
- <20200717121436.GA2953399@kroah.com>
- <CAMuHMdWdaQ_jK1T_ErJ36pJbUUS3SFBcqQmyvtufaKha2C76Gg@mail.gmail.com>
- <20200717132101.GA2984939@kroah.com>
- <CAK8P3a3fwwx-2gQTXZ9dbko+DuLELGm=nKrYFXfwcJJOf0Xz5g@mail.gmail.com>
- <20200717141344.GA2992942@kroah.com>
+        id S1727856AbgGQPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:39:10 -0400
+Received: from mail.efficios.com ([167.114.26.124]:49040 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726344AbgGQPjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 11:39:10 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id F35F82C8A1F;
+        Fri, 17 Jul 2020 11:39:08 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 61XC0oH3775c; Fri, 17 Jul 2020 11:39:08 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8E5782C88A5;
+        Fri, 17 Jul 2020 11:39:08 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8E5782C88A5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1595000348;
+        bh=KcymKk7xqqEPTpGeFV6WmpL2INb7TpCCRlY0uv4IIl4=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=gD8pz+GvRrmmamH69LfCRwyu3TOcDwjt7ajYq/DR8gSrVpZSqFY17J1vy3Bh0F/8o
+         sS+G2QDxdzLVS4FjsBBvzriLqSB9ObKBgBBTiZZWeXVi3Sa/o+As9jaFmI/GVdYDUY
+         jsph8cMcJzSZJN43LfMCqyyC+vIW7szdYu4WHYYdi+qhStvM4wOCChUxo23TbDMAwq
+         /dfs5RVE/EMR05TtOaZFpJJ2ooWlzmv/eH6xsIHsMssnxIA6Gs9BKU0/TuaZO6Cpbb
+         ddCLfgNCHwhu4ikCvGtM27lhk7soeCBycFCh62abkSHoULSYmrO0MEjkEYaC3YOu/6
+         vKl66KONA+byg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id VWAgzG4ZGvtm; Fri, 17 Jul 2020 11:39:08 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 7B3A92C88A4;
+        Fri, 17 Jul 2020 11:39:08 -0400 (EDT)
+Date:   Fri, 17 Jul 2020 11:39:08 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, paulmck <paulmck@kernel.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>
+Message-ID: <1697220787.18880.1595000348405.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200717145102.GC1147780@rowland.harvard.edu>
+References: <20200710015646.2020871-1-npiggin@gmail.com> <1594873644.viept6os6j.astroid@bobo.none> <1494299304.15894.1594914382695.JavaMail.zimbra@efficios.com> <1370747990.15974.1594915396143.JavaMail.zimbra@efficios.com> <595582123.17106.1594925921537.JavaMail.zimbra@efficios.com> <20200716212416.GA1126458@rowland.harvard.edu> <1770378591.18523.1594993165391.JavaMail.zimbra@efficios.com> <20200717145102.GC1147780@rowland.harvard.edu>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
-In-Reply-To: <20200717141344.GA2992942@kroah.com>
-X-Cookie: You have a message from the operator.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
+Thread-Topic: x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
+Thread-Index: mVSzzDyP2RjmLYTpgzYa2Ixemz2qhA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+----- On Jul 17, 2020, at 10:51 AM, Alan Stern stern@rowland.harvard.edu wrote:
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Fri, Jul 17, 2020 at 09:39:25AM -0400, Mathieu Desnoyers wrote:
+>> ----- On Jul 16, 2020, at 5:24 PM, Alan Stern stern@rowland.harvard.edu wrote:
+>> 
+>> > On Thu, Jul 16, 2020 at 02:58:41PM -0400, Mathieu Desnoyers wrote:
+>> >> ----- On Jul 16, 2020, at 12:03 PM, Mathieu Desnoyers
+>> >> mathieu.desnoyers@efficios.com wrote:
+>> >> 
+>> >> > ----- On Jul 16, 2020, at 11:46 AM, Mathieu Desnoyers
+>> >> > mathieu.desnoyers@efficios.com wrote:
+>> >> > 
+>> >> >> ----- On Jul 16, 2020, at 12:42 AM, Nicholas Piggin npiggin@gmail.com wrote:
+>> >> >>> I should be more complete here, especially since I was complaining
+>> >> >>> about unclear barrier comment :)
+>> >> >>> 
+>> >> >>> 
+>> >> >>> CPU0                     CPU1
+>> >> >>> a. user stuff            1. user stuff
+>> >> >>> b. membarrier()          2. enter kernel
+>> >> >>> c. smp_mb()              3. smp_mb__after_spinlock(); // in __schedule
+>> >> >>> d. read rq->curr         4. rq->curr switched to kthread
+>> >> >>> e. is kthread, skip IPI  5. switch_to kthread
+>> >> >>> f. return to user        6. rq->curr switched to user thread
+>> >> >>> g. user stuff            7. switch_to user thread
+>> >> >>>                         8. exit kernel
+>> >> >>>                         9. more user stuff
+> 
+> ...
+> 
+>> >> Requiring a memory barrier between update of rq->curr (back to current process's
+>> >> thread) and following user-space memory accesses does not seem to guarantee
+>> >> anything more than what the initial barrier at the beginning of __schedule
+>> >> already
+>> >> provides, because the guarantees are only about accesses to user-space memory.
+> 
+> ...
+> 
+>> > Is it correct to say that the switch_to operations in 5 and 7 include
+>> > memory barriers?  If they do, then skipping the IPI should be okay.
+>> > 
+>> > The reason is as follows: The guarantee you need to enforce is that
+>> > anything written by CPU0 before the membarrier() will be visible to CPU1
+>> > after it returns to user mode.  Let's say that a writes to X and 9
+>> > reads from X.
+>> > 
+>> > Then we have an instance of the Store Buffer pattern:
+>> > 
+>> >	CPU0			CPU1
+>> >	a. Write X		6. Write rq->curr for user thread
+>> >	c. smp_mb()		7. switch_to memory barrier
+>> >	d. Read rq->curr	9. Read X
+>> > 
+>> > In this pattern, the memory barriers make it impossible for both reads
+>> > to miss their corresponding writes.  Since d does fail to read 6 (it
+>> > sees the earlier value stored by 4), 9 must read a.
+>> > 
+>> > The other guarantee you need is that g on CPU0 will observe anything
+>> > written by CPU1 in 1.  This is easier to see, using the fact that 3 is a
+>> > memory barrier and d reads from 4.
+>> 
+>> Right, and Nick's reply involving pairs of loads/stores on each side
+>> clarifies the situation even further.
+> 
+> The key part of my reply was the question: "Is it correct to say that
+> the switch_to operations in 5 and 7 include memory barriers?"  From the
+> text quoted above and from Nick's reply, it seems clear that they do
+> not.
 
-On Fri, Jul 17, 2020 at 04:13:44PM +0200, Greg KH wrote:
-> On Fri, Jul 17, 2020 at 03:54:49PM +0200, Arnd Bergmann wrote:
+I remember that switch_mm implies it, but not switch_to.
 
-> > > And look at the driver core work for many driver subsystems to be fixed
-> > > up just to get a single kernel image to work on multiple platforms.
-> > > Just because older ones did it, doesn't mean it actually works today :)
+The scenario that triggered this discussion is when the scheduler does a
+lazy tlb entry/exit, which is basically switch from a user task to
+a kernel thread without changing the mm, and usually switching back afterwards.
+This optimization means the rq->curr mm temporarily differs, which prevent
+IPIs from being sent by membarrier, but without involving a switch_mm.
+This requires explicit memory barriers either on entry/exit of lazy tlb
+mode, or explicit barriers in the scheduler for those special-cases.
 
-> > Can you give a specific example? The only problem I'm aware of for
-> > those SoCs is drivers being outside of the mainline kernel. Clearly
-> > having support for loadable modules helps SoC vendors because it
-> > allows them to support a new platform with an existing binary kernel
-> > by shipping third-party driver modules, but for stuff that is already
-> > in mainline, we could in theory support all hardware in a single gigantic
-> > binary kernel with no support for loadable modules at all.
+> I agree with Nick: A memory barrier is needed somewhere between the
+> assignment at 6 and the return to user mode at 8.  Otherwise you end up
+> with the Store Buffer pattern having a memory barrier on only one side,
+> and it is well known that this arrangement does not guarantee any
+> ordering.
 
-> That did not work for many drivers for some reason, look at all the work
-> Saravana had to do in the driver core and device tree code for it to
-> happen correctly over the past year.
+Yes, I see this now. I'm still trying to wrap my head around why the memory
+barrier at the end of membarrier() needs to be paired with a scheduler
+barrier though.
 
-Could you be more specific about these issues?  I'm aware of his work
-around probe ordering but that's not at all arch specific, the same
-issues affect every architecture, so doesn't seem to be what you're
-talking about.
+> One thing I don't understand about all this: Any context switch has to
+> include a memory barrier somewhere, but both you and Nick seem to be
+> saying that steps 6 and 7 don't include (or don't need) any memory
+> barriers.  What am I missing?
 
-arm64 has never supported anything other than a multiplatform kernel,
-and the actively maintained 32 bit platforms have supported one for more
-than half a decade at this point.  CI systems keep managing to test
-these kernels, distributions seem to keep managing to ship them and
-users appear able to install and use them so it doesn't seem quite so
-fundamentally broken as all that.
+All context switch have the smp_mb__before_spinlock at the beginning of
+__schedule(), which I suspect is what you refer to. However this barrier
+is before the store to rq->curr, not after.
 
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+Mathieu
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8RxY4ACgkQJNaLcl1U
-h9DeQgf/WFJpLDFRsnueznmq4Wb0AlXKTMQMYtt95FUFV2LNcNJzvy6OQZ/ggVo/
-Y8VvSa5i9gfeOzO7kadzCZxHXPtZu9Jb4ZZYdEnzubh+/TiVUQoyhZSq7KKzo1Pt
-81k6zKBpyfO+1JfXhWORRqU9lhanGvGconjefn25LVtARQw3YQWepyKVGfw4x2A2
-xYxhoC3F7SdE7dLDPUa32DzmuTQmXX056JzwX6zAusBtHknnJWiFuPkLs5yjQ92f
-BGi5y5bWcmZfgjJwx9kc82Fua3tY63sQnRNJrUITDxC8aeqaDIGFyna/rMwxMH5k
-tV3+xNfHrx3KDuSmeyqs75QV+2+dlQ==
-=YZrk
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
