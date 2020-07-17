@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89123223FE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506A3223FF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgGQPsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:48:10 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40588 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgGQPsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:48:09 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 41EC41A0906;
-        Fri, 17 Jul 2020 17:48:08 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3521A1A026D;
-        Fri, 17 Jul 2020 17:48:08 +0200 (CEST)
-Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id E581020466;
-        Fri, 17 Jul 2020 17:48:07 +0200 (CEST)
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     laurentiu.tudor@nxp.com, Grigore Popescu <grigore.popescu@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 3/3] bus: fsl-mc: probe the allocatable objects first
-Date:   Fri, 17 Jul 2020 18:48:00 +0300
-Message-Id: <20200717154800.17169-4-ioana.ciornei@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717154800.17169-1-ioana.ciornei@nxp.com>
-References: <20200717154800.17169-1-ioana.ciornei@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726530AbgGQPwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgGQPwP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 11:52:15 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CE5C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 08:52:15 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k27so6857450pgm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 08:52:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=BIJ0H+rrPt+l6s6jH/5QTDHwke6LDMQjCn4+Qb4EHhs=;
+        b=PIXLAzYnDdFiOJ0IrkQrjfUPsv/WrmGn3ce139GjtgIaMKENpq3XTAD8nSdi6EMMy8
+         JMpBne/E0KyqSmkFCAmglWwFFXpu9/YsVK2eLQRBUVkYh5YmXXYT7f5/1/DEx6A3/qfS
+         jKxbQ1Z4oH/wGujc3Sr7qLeFdjYb4FCylCc53gLOQ5Uai1Bs7GIJ1rLEHlqz1I6LMCp1
+         gVb9Es1YIfcGXxAsmZN+CsGRfsJ77WnpMNg42QzayiOKdIii7RxECqmwgWLPQMCB9/76
+         p9fR2ec/hhwmtjhmQ8eZub+J0qkohwy4QrogNXxDqM7R0toNLOHfmbJ8XsZFhid90+Rp
+         SbvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=BIJ0H+rrPt+l6s6jH/5QTDHwke6LDMQjCn4+Qb4EHhs=;
+        b=lztCwSsWybBaiuqMb+3NIG57yz6jfxBGapxGSjySCM49c1gjCkBaP+AAF/7pKaBCT5
+         LZPYiPVNvYM4HeoNCUV7+prjY404Xsg2Xinaq1R4YNAF+eGseTmu0JG18r9izZKieUYP
+         PGtqDmp2unbPOCdvHq+/Wkket/m+WwasyTRVk5fDqqEFdqWlM0Xl3ouHUclSpamDX9Uz
+         3aN8tdXOv5xIfk/T7F+bK2uv0PI5oEykH6bHa8MhoQ2uw2iRLvWnTYGbJ/KhFxH1bcHP
+         ll9mEvZ6lfNwjbTNIQvBZf0WMMESnq4vMBPoZjVhmgjya2fY4V0hJS/DL9zhT/SHTKH8
+         /KOQ==
+X-Gm-Message-State: AOAM533TC6F+rdjZyqDPCvWeArip68QsdHQNkjAvq0FGzIsTCdekq/Zl
+        o/eBL6GGj7Mt/xQOQd25POqNbj4pvqqILw==
+X-Google-Smtp-Source: ABdhPJyB9GpkAjnOjBaf0gAmE9ZbTIUTjcR1GKAIVvzfUFrAqZke/crwFZ+2HHAtlNTCjjJtNdYz2w==
+X-Received: by 2002:a63:3d85:: with SMTP id k127mr8541126pga.29.1595001135087;
+        Fri, 17 Jul 2020 08:52:15 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id k189sm7988029pfd.175.2020.07.17.08.52.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 08:52:14 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] io_uring fix for 5.8-rc6
+Message-ID: <7dd248d7-330a-cc1b-9ddc-bac57c3581d0@kernel.dk>
+Date:   Fri, 17 Jul 2020 09:52:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grigore Popescu <grigore.popescu@nxp.com>
+Hi Linus,
 
-Because the DPNIs are probed before DPMCPs and other objects that need
-to be allocated, messages like "No more resources of type X left" are
-printed by the fsl-mc bus driver. This patch resolves the issue by probing
-the allocatable objects first and then any other object that may use
-them.
+Fix for a case where, with automatic buffer selection, we can leak
+the buffer descriptor for recvmsg.
 
-Signed-off-by: Grigore Popescu <grigore.popescu@nxp.com>
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- drivers/bus/fsl-mc/dprc-driver.c | 57 ++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 17 deletions(-)
+Please pull!
 
-diff --git a/drivers/bus/fsl-mc/dprc-driver.c b/drivers/bus/fsl-mc/dprc-driver.c
-index c8b1c3842c1a..3512d1b95821 100644
---- a/drivers/bus/fsl-mc/dprc-driver.c
-+++ b/drivers/bus/fsl-mc/dprc-driver.c
-@@ -27,7 +27,16 @@ static bool fsl_mc_device_match(struct fsl_mc_device *mc_dev,
- {
- 	return mc_dev->obj_desc.id == obj_desc->id &&
- 	       strcmp(mc_dev->obj_desc.type, obj_desc->type) == 0;
-+}
- 
-+static bool fsl_mc_obj_desc_is_allocatable(struct fsl_mc_obj_desc *obj)
-+{
-+	if (strcmp(obj->type, "dpmcp") == 0 ||
-+	    strcmp(obj->type, "dpcon") == 0 ||
-+	    strcmp(obj->type, "dpbp") == 0)
-+		return true;
-+	else
-+		return false;
- }
- 
- static int __fsl_mc_device_remove_if_not_in_mc(struct device *dev, void *data)
-@@ -150,6 +159,27 @@ static void check_plugged_state_change(struct fsl_mc_device *mc_dev,
- 	}
- }
- 
-+static void fsl_mc_obj_device_add(struct fsl_mc_device *mc_bus_dev,
-+				  struct fsl_mc_obj_desc *obj_desc)
-+{
-+	int error;
-+	struct fsl_mc_device *child_dev;
-+
-+	/*
-+	 * Check if device is already known to Linux:
-+	 */
-+	child_dev = fsl_mc_device_lookup(obj_desc, mc_bus_dev);
-+	if (child_dev) {
-+		check_plugged_state_change(child_dev, obj_desc);
-+		put_device(&child_dev->dev);
-+	} else {
-+		error = fsl_mc_device_add(obj_desc, NULL, &mc_bus_dev->dev,
-+					  &child_dev);
-+		if (error < 0)
-+			return;
-+	}
-+}
-+
- /**
-  * dprc_add_new_devices - Adds devices to the logical bus for a DPRC
-  *
-@@ -166,30 +196,23 @@ static void dprc_add_new_devices(struct fsl_mc_device *mc_bus_dev,
- 				 struct fsl_mc_obj_desc *obj_desc_array,
- 				 int num_child_objects_in_mc)
- {
--	int error;
- 	int i;
- 
-+	/* probe the allocable objects first */
- 	for (i = 0; i < num_child_objects_in_mc; i++) {
--		struct fsl_mc_device *child_dev;
- 		struct fsl_mc_obj_desc *obj_desc = &obj_desc_array[i];
- 
--		if (strlen(obj_desc->type) == 0)
--			continue;
-+		if (strlen(obj_desc->type) > 0 &&
-+		    fsl_mc_obj_desc_is_allocatable(obj_desc))
-+			fsl_mc_obj_device_add(mc_bus_dev, obj_desc);
-+	}
- 
--		/*
--		 * Check if device is already known to Linux:
--		 */
--		child_dev = fsl_mc_device_lookup(obj_desc, mc_bus_dev);
--		if (child_dev) {
--			check_plugged_state_change(child_dev, obj_desc);
--			put_device(&child_dev->dev);
--			continue;
--		}
-+	for (i = 0; i < num_child_objects_in_mc; i++) {
-+		struct fsl_mc_obj_desc *obj_desc = &obj_desc_array[i];
- 
--		error = fsl_mc_device_add(obj_desc, NULL, &mc_bus_dev->dev,
--					  &child_dev);
--		if (error < 0)
--			continue;
-+		if (strlen(obj_desc->type) > 0 &&
-+		    !fsl_mc_obj_desc_is_allocatable(obj_desc))
-+			fsl_mc_obj_device_add(mc_bus_dev, obj_desc);
- 	}
- }
- 
+
+The following changes since commit 16d598030a37853a7a6b4384cad19c9c0af2f021:
+
+  io_uring: fix not initialised work->flags (2020-07-12 09:40:50 -0600)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/io_uring-5.8-2020-07-17
+
+for you to fetch changes up to 681fda8d27a66f7e65ff7f2d200d7635e64a8d05:
+
+  io_uring: fix recvmsg memory leak with buffer selection (2020-07-15 13:35:56 -0600)
+
+----------------------------------------------------------------
+io_uring-5.8-2020-07-17
+
+----------------------------------------------------------------
+Pavel Begunkov (1):
+      io_uring: fix recvmsg memory leak with buffer selection
+
+ fs/io_uring.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+Jens Axboe
 
