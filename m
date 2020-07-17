@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534DA224413
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EE0224419
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgGQTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 15:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728188AbgGQTRN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:17:13 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCAEC0619D6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:17:13 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so12242258wrw.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=n8O46usBchtSHCfeAGHh+h7YSR1FpLP9i8w8Jhlo/5Y=;
-        b=XDpuU1+Cv3dWz7jVTTP8WHIGTi6YuyjOI3T1FZiEYrnsIlj8mcFQqfDnFTKRRrzH9u
-         TbgxilEMUrpQH10WRSdgftDDsNich8CEV9HlaQGZkMotTF3a63pgDPRx94nodIuu2eGI
-         cWOWVG3LI4mCZv7N7Q78cSbu7w1XxUq5xTA8I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=n8O46usBchtSHCfeAGHh+h7YSR1FpLP9i8w8Jhlo/5Y=;
-        b=k/LotenQh/o7dGe+lRqjnwrXXqi2D7O7pp8kNCXOcU0xNYPyPKSzx4G6t/EXzwdXUP
-         uRL4sQucexXZhdI+gr7YVJ+xGOXHra9g/kxY3a2R3jJQY6p08wd9774Wgtr8q+A9AcL1
-         zw+GkmDwBHxlevF2f4TTZUqgN2BlP+ceaIcIUWqnX6ExZLPvVe560ql6p1TQ+Z8dTSrV
-         eDE7RT1lF9q2eaKur/Z5LgSoaY8hSqyyT55YIvWhT4luH3/4YFE3qwUN9/B85pMU8QOq
-         Dkz5guFo9bMCAjG32MSuOvb8n/zg6P4K+i9fnXUjP3gHA6CYR04kM4wvMBakBG8VnTr1
-         +O5A==
-X-Gm-Message-State: AOAM530IbCyQbjsTSEgBeS3F6D0CEPSCMjYNiFelW9KeyIgXdUDay7kF
-        djyYJ+IpwjsQQhHDHQV98+iKJFP2TD6grISGRzeVic9RscGRHX7eOxWOOGMMhqZwtaFtW5e9LFg
-        0xSi1ZZb/smXYjnz5P3u+AT3HPFc2Mh5eb+tmyC/awEMhy5LQ1fAS63Cxm3FuBum9j26tvoW/uQ
-        jfwnNok72/
-X-Google-Smtp-Source: ABdhPJwW1FFKlIY3h+hSleFLd2aPm6qM91p1On9iePncPUkHySNWgYSJZWiZVpa0Bf+tpYWTd3xKWw==
-X-Received: by 2002:adf:f608:: with SMTP id t8mr11981560wrp.308.1595013431346;
-        Fri, 17 Jul 2020 12:17:11 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id 133sm16372350wme.5.2020.07.17.12.17.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 12:17:10 -0700 (PDT)
-Subject: Re: [PATCH 00/13] Introduce partial kernel_read_file() support
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jessica Yu <jeyu@kernel.org>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Jones <pjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <stephen.boyd@linaro.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200717174309.1164575-1-keescook@chromium.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <8de85fc3-9f31-fc59-abc1-29f43fb90988@broadcom.com>
-Date:   Fri, 17 Jul 2020 12:17:02 -0700
+        id S1728502AbgGQTTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 15:19:12 -0400
+Received: from mout.web.de ([212.227.15.4]:36047 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727999AbgGQTTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 15:19:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1595013519;
+        bh=KBBYg5jKhYtdb8avxOVNPB2JOheyh48NTKrDB6hfXp8=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=i4K38OYROzdresS/VIQlsE8MsV7TkvZaDXtyF+GYtmWM55qFfv4vV2POvJIrWUEzf
+         bDHOIILEuRXOp5AYWHA+RMhgxndCagyVeYpOlrEuqWSTToTJ2vkRJ98Ni4GI7bBhgg
+         cTCKrjOIcAfRPODLjYS73GjX2oLnO2UV4adN+uMc=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.15.38]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MSJH1-1kPHAy0k2t-00TSSd; Fri, 17
+ Jul 2020 21:18:39 +0200
+To:     Wang Hai <wanghai38@huawei.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Vishal Kulkarni <vishal@chelsio.com>,
+        Santosh Raspatur <santosh@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Divy Le Ray <divy@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] net: cxgb3: add missed destroy_workqueue in cxgb3 probe
+ failure
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <486de368-03d5-e168-038a-ae1506616703@web.de>
+Date:   Fri, 17 Jul 2020 21:18:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200717174309.1164575-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yBTQ0ySiaUEGe/ZHc137uVzBVhYTmf430PoxbMtU+PpDRYoqryj
+ n+cJUWq0GzP7EMVMv2w22n9DbFDRkmcuMz1kbKDfxlUMR0UqIoUbrgBnDSinCcfWXn9Bnj+
+ kpnb5fJxtbYyCf5cRwzAsFKMRj+k4xAOZVdCJJnIfM2wy4sZnHlHNR/QBHnoLzfylMPQdvt
+ UO39Y1o2tNLZEfnSZyFmw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:67j5l7m4e8c=:+H9RNahoLba1R4Yr+3gGQ9
+ IYQDT+zPsGLWxfPvbW8w+BKj5htZiYZmD3g5rMGlYx59dwg5v4xPje6eAQDngA4DuiYF7M0K2
+ 8GCG/Jv0UaFQCZzVZtoMroG+u0Dc+jCS/00NViclPenltDQdXQA0VVnFnI04BiuIsgpraV5AI
+ U9nxlHJDXbVIk86hhqSQlPWfE9ymQfXUy8LXbu9qtX6wtoQSi28lZuhqL0vbBNdS7L3hGL5RW
+ i3wbp61AiC9f4/mHXY9pdDX/x82GhRAysTHfonWqi2109IMZw3hjuyB003rkG1MzgmI9K9z4i
+ m20IkcEMw4V4zFcIOhYYU53Mc4oHcg6xSE27nnwqoe/S33+DcWPN4RYrryw714EDorT3O+A2Y
+ GRQW3L+RRoxXnrF64y2Hj/rEpD39G14VO/StvljKf7c99mbXIOxy5OlDoNJemktHZmyScX+X2
+ B2omV6ZV1ZQ816IkYeS4qHjCGtYmv9hgWPCXE8Ltm3n/f4uh3Dpm2c3y4i9jdbM+1r6lyMDcH
+ dK/mAJpdMIsfZICy/9AXegI0Vl5LgPwV9AY8VJ8jqeFhwIXQcQcCzvIrt1LqvonUSn3696pPV
+ BRUgT67VGL2Z5Pwt8d8IUuBWXCmv76zc3yaBZ5FjfHEwaL3ZclwRWQJEyQaFpc79Fg2CKkFIw
+ ED4sAKkWXF2ozXbbsJ4hRqJD0kYQqqqJbqv9GW4VWxXo5h5gd8ONEzwO1uBwyeb8YKScHsIjV
+ IJ2ZMUcI6KNOtJyZ4Rx25kcXW+BwuLvfM0dZ96vZsxusqX3gsByHGo08AHe5bwGNLIi4e3KPP
+ 8WL20OV3wWNFucnR2HH8asX9kVwnsqjkMqKoMLFNhb9aKC8X/eRlHLUanKhyDLV7a6+TU95dI
+ kQX0WyLS0xiHTxNYCNZwGhJ+vqBAmELa2In6Nl11/AaXO6CpxuFVUCB8MiJPXDV2oLJYK5+Un
+ n1UHPgpZqwHwsH6AJrwDrLhtR6pHlEWOBBphxnTEli18Inm5bwFLlXEiZoByag4S0e/48rDWi
+ NaYPSrm0VAQrEhq56J7RwdVKTY9D+Mptol0EKV+g7u6gIImgLAKs7oVY9fezAoWNztelYv2em
+ fKlWF0Vjywm6u9DTVEennl1BmfMCpFlTKR7IZP3Tg4/TbvqbzsYlfhVWoBDvel2AyRwMxkP4R
+ /e780DwdocDusbZDVf7YsBdyxd3LdPa3a9DFw6QMuZLe9zWxJkcFmS6QOdPzCB9LYVRq+m4qy
+ zO+AocVzIFBZ6N9yI3P0VjPqS7Ozb/56h+1jr0g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+> Add the missed calls to fix it.
 
-Thanks for sending out.  This looks different than your other patch series.
-We should get the first 5 patches accepted now though as they are
-simple cleanups and fixes.  That will reduce the number of outstanding
-patches in the series.
+You propose to add only a single function call.
 
-At first glance the issue with the changes after that is the existing
-API assumes it has read the whole file and failed if it did not.
-Now, if the file is larger than the amount requested there is no indication?
 
-On 2020-07-17 10:42 a.m., Kees Cook wrote:
-> Hi,
->
-> Here's my attempt at clearing the path to partial read support in
-> kernel_read_file(), which fixes a number of issues along the way. I'm
-> still fighting with the firmware test suite (it doesn't seem to pass
-> for me even in stock v5.7... ?) But I don't want to block Scott's work[1]
-> any this week, so here's the series as it is currently.
->
-> The primary difference to Scott's approach is to avoid adding a new set of
-> functions and just adapt the existing APIs to deal with "offset". Also,
-> the fixes for the enum are first in the series so they can be backported
-> without the header file relocation.
->
-> I'll keep poking at the firmware tests...
->
-> -Kees
->
-> [1] https://lore.kernel.org/lkml/202007161415.10D015477@keescook/
->
-> Kees Cook (12):
->    firmware_loader: EFI firmware loader must handle pre-allocated buffer
->    fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER enum
->    fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
->    fs/kernel_read_file: Split into separate source file
->    fs/kernel_read_file: Remove redundant size argument
->    fs/kernel_read_file: Switch buffer size arg to size_t
->    fs/kernel_read_file: Add file_size output argument
->    LSM: Introduce kernel_post_load_data() hook
->    firmware_loader: Use security_post_load_data()
->    module: Call security_kernel_post_load_data()
->    LSM: Add "contents" flag to kernel_read_file hook
->    fs/kernel_file_read: Add "offset" arg for partial reads
->
-> Scott Branden (1):
->    fs/kernel_read_file: Split into separate include file
->
->   drivers/base/firmware_loader/fallback.c       |   8 +-
->   .../base/firmware_loader/fallback_platform.c  |  12 +-
->   drivers/base/firmware_loader/main.c           |  13 +-
->   fs/Makefile                                   |   3 +-
->   fs/exec.c                                     | 132 +-----------
->   fs/kernel_read_file.c                         | 189 ++++++++++++++++++
->   include/linux/fs.h                            |  39 ----
->   include/linux/ima.h                           |  19 +-
->   include/linux/kernel_read_file.h              |  55 +++++
->   include/linux/lsm_hook_defs.h                 |   6 +-
->   include/linux/lsm_hooks.h                     |  12 ++
->   include/linux/security.h                      |  19 +-
->   kernel/kexec.c                                |   2 +-
->   kernel/kexec_file.c                           |  18 +-
->   kernel/module.c                               |  24 ++-
->   security/integrity/digsig.c                   |   8 +-
->   security/integrity/ima/ima_fs.c               |   9 +-
->   security/integrity/ima/ima_main.c             |  58 ++++--
->   security/integrity/ima/ima_policy.c           |   1 +
->   security/loadpin/loadpin.c                    |  17 +-
->   security/security.c                           |  26 ++-
->   security/selinux/hooks.c                      |   8 +-
->   22 files changed, 432 insertions(+), 246 deletions(-)
->   create mode 100644 fs/kernel_read_file.c
->   create mode 100644 include/linux/kernel_read_file.h
->
+=E2=80=A6
+> +++ b/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
+> @@ -3407,6 +3407,7 @@ static int init_one(struct pci_dev *pdev, const st=
+ruct pci_device_id *ent)
+>  out_disable_device:
+>  	pci_disable_device(pdev);
+>  out:
+> +	destroy_workqueue(cxgb3_wq);
+>  	return err;
+>  }
 
+I suggest to adjust also the usage of the label =E2=80=9Cout=E2=80=9D acco=
+rdingly.
+
+Regards,
+Markus
