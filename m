@@ -2,189 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60C82244ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949AD2244F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgGQUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57046 "EHLO mail.kernel.org"
+        id S1728703AbgGQUNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:13:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57234 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726771AbgGQUL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:11:27 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB95C20704;
-        Fri, 17 Jul 2020 20:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595016686;
-        bh=tfETmY2kzcabHaWuDq17jMljgiTJ65kMRX+WppyLeX4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n8AOiC/htwoUxgp0wROuMdNc2kuVDX11SvXqRzYpqVHPk/MUu+wjOYz90wYGjTK7c
-         y0vhk5S5sJkHWea+JYaKnyCbiu/EOKpGSZYwYPyj6gVE9AziBLt2WLciH8R0kZznkC
-         gBZ3ob6reEaJZY+/wQkOlukoCqtCvoF72P8q8WEE=
-Date:   Fri, 17 Jul 2020 15:11:24 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wei Hu <weh@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, linux-hyperv@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        decui@microsoft.com, mikelley@microsoft.com
-Subject: Re: [PATCH v2] PCI: hv: Fix a timing issue which causes kdump to
- fail occasionally
-Message-ID: <20200717201124.GA767548@bjorn-Precision-5520>
+        id S1726771AbgGQUNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 16:13:31 -0400
+IronPort-SDR: 7oRrle1fhbapvfgR67/7B67/mRCTklbEeo3P3F+bgdSmIFRbaKzfa/bnB7+WPj8qIoekVgvSUU
+ yySAv8FxRWXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="129237707"
+X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; 
+   d="scan'208";a="129237707"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 13:13:30 -0700
+IronPort-SDR: RLmx6VSmhVWsvQuxqbnpKZA/u2RmpcSlmWCqCbpeQLnu4r+8/nXtw00y43AbJotWIl0cJAcwc3
+ SrSqMpD9B+Ww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; 
+   d="scan'208";a="269614421"
+Received: from lkp-server02.sh.intel.com (HELO 50058c6ee6fc) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 17 Jul 2020 13:13:29 -0700
+Received: from kbuild by 50058c6ee6fc with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jwWjZ-0000Ta-8w; Fri, 17 Jul 2020 20:13:29 +0000
+Date:   Sat, 18 Jul 2020 04:11:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS
+ a9232dc5607dbada801f2fe83ea307cda762969a
+Message-ID: <5f12060f.fOzn2VORxxugaZJ1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717025528.3093-1-weh@microsoft.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:55:28AM +0800, Wei Hu wrote:
-> Kdump could fail sometime on HyperV guest over Accerlated Network
-> interface. This is because the retry in hv_pci_enter_d0() relies on
-> an asynchronous host event to arrive guest before calling
-> hv_send_resources_allocated(). This fixes the problem by moving retry
-> to hv_pci_probe(), removing this dependence and making the calling
-> sequence synchronous.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  locking/core
+branch HEAD: a9232dc5607dbada801f2fe83ea307cda762969a  rwsem: fix commas in initialisation
 
-Lorenzo, if you apply this, can you fix this typo?
+elapsed time: 1291m
 
-  s/Accerlated/Accelerated/
+configs tested: 112
+configs skipped: 1
 
-and maybe even
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-  s/HyperV/Hyper-V/
-  s/This fixes the problem/Fix the problem/
-  s/this dependence/this dependency/
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+nds32                             allnoconfig
+powerpc                      ppc64e_defconfig
+arm                           viper_defconfig
+ia64                             alldefconfig
+sh                           se7721_defconfig
+arm                           corgi_defconfig
+sh                        edosk7760_defconfig
+mips                        omega2p_defconfig
+powerpc                  storcenter_defconfig
+arm                           tegra_defconfig
+h8300                            allyesconfig
+powerpc                 linkstation_defconfig
+sparc                       sparc32_defconfig
+arm                          badge4_defconfig
+powerpc                      pmac32_defconfig
+riscv                          rv32_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+x86_64               randconfig-a005-20200717
+x86_64               randconfig-a006-20200717
+x86_64               randconfig-a002-20200717
+x86_64               randconfig-a001-20200717
+x86_64               randconfig-a003-20200717
+x86_64               randconfig-a004-20200717
+i386                 randconfig-a001-20200717
+i386                 randconfig-a005-20200717
+i386                 randconfig-a002-20200717
+i386                 randconfig-a006-20200717
+i386                 randconfig-a003-20200717
+i386                 randconfig-a004-20200717
+x86_64               randconfig-a012-20200716
+x86_64               randconfig-a011-20200716
+x86_64               randconfig-a016-20200716
+x86_64               randconfig-a014-20200716
+x86_64               randconfig-a013-20200716
+x86_64               randconfig-a015-20200716
+i386                 randconfig-a016-20200717
+i386                 randconfig-a011-20200717
+i386                 randconfig-a015-20200717
+i386                 randconfig-a012-20200717
+i386                 randconfig-a013-20200717
+i386                 randconfig-a014-20200717
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
 
-Not sure if "relies on ... event to arrive guest" means "relies on ...
-event arriving in the guest"?  Or maybe "relies on ... event arriving
-before the guest calls ..."?
-
-This would probably all make perfect sense to me if I understood more
-about Hyper-V :)
-
-> v2: Adding Fixes tag according to Michael Kelley's review comment.
-
-There's no need to include this "v2" comment in the commit log.  I
-think if you put it after a line containing only "---" (or maybe
-"--"?), it will be in the email but not in the commit log.
-
-> Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid device state")
-> Signed-off-by: Wei Hu <weh@microsoft.com>
-> ---
->  drivers/pci/controller/pci-hyperv.c | 66 ++++++++++++++---------------
->  1 file changed, 32 insertions(+), 34 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index bf40ff09c99d..738ee30f3334 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -2759,10 +2759,8 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
->  	struct pci_bus_d0_entry *d0_entry;
->  	struct hv_pci_compl comp_pkt;
->  	struct pci_packet *pkt;
-> -	bool retry = true;
->  	int ret;
->  
-> -enter_d0_retry:
->  	/*
->  	 * Tell the host that the bus is ready to use, and moved into the
->  	 * powered-on state.  This includes telling the host which region
-> @@ -2789,38 +2787,6 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
->  	if (ret)
->  		goto exit;
->  
-> -	/*
-> -	 * In certain case (Kdump) the pci device of interest was
-> -	 * not cleanly shut down and resource is still held on host
-> -	 * side, the host could return invalid device status.
-> -	 * We need to explicitly request host to release the resource
-> -	 * and try to enter D0 again.
-> -	 */
-> -	if (comp_pkt.completion_status < 0 && retry) {
-> -		retry = false;
-> -
-> -		dev_err(&hdev->device, "Retrying D0 Entry\n");
-> -
-> -		/*
-> -		 * Hv_pci_bus_exit() calls hv_send_resource_released()
-> -		 * to free up resources of its child devices.
-> -		 * In the kdump kernel we need to set the
-> -		 * wslot_res_allocated to 255 so it scans all child
-> -		 * devices to release resources allocated in the
-> -		 * normal kernel before panic happened.
-> -		 */
-> -		hbus->wslot_res_allocated = 255;
-> -
-> -		ret = hv_pci_bus_exit(hdev, true);
-> -
-> -		if (ret == 0) {
-> -			kfree(pkt);
-> -			goto enter_d0_retry;
-> -		}
-> -		dev_err(&hdev->device,
-> -			"Retrying D0 failed with ret %d\n", ret);
-> -	}
-> -
->  	if (comp_pkt.completion_status < 0) {
->  		dev_err(&hdev->device,
->  			"PCI Pass-through VSP failed D0 Entry with status %x\n",
-> @@ -3058,6 +3024,7 @@ static int hv_pci_probe(struct hv_device *hdev,
->  	struct hv_pcibus_device *hbus;
->  	u16 dom_req, dom;
->  	char *name;
-> +	bool enter_d0_retry = true;
->  	int ret;
->  
->  	/*
-> @@ -3178,11 +3145,42 @@ static int hv_pci_probe(struct hv_device *hdev,
->  	if (ret)
->  		goto free_fwnode;
->  
-> +retry:
->  	ret = hv_pci_query_relations(hdev);
->  	if (ret)
->  		goto free_irq_domain;
->  
->  	ret = hv_pci_enter_d0(hdev);
-> +	/*
-> +	 * In certain case (Kdump) the pci device of interest was
-> +	 * not cleanly shut down and resource is still held on host
-> +	 * side, the host could return invalid device status.
-> +	 * We need to explicitly request host to release the resource
-> +	 * and try to enter D0 again.
-> +	 * The retry should start from hv_pci_query_relations() call.
-> +	 */
-> +	if (ret == -EPROTO && enter_d0_retry) {
-> +		enter_d0_retry = false;
-> +
-> +		dev_err(&hdev->device, "Retrying D0 Entry\n");
-> +
-> +		/*
-> +		 * Hv_pci_bus_exit() calls hv_send_resources_released()
-> +		 * to free up resources of its child devices.
-> +		 * In the kdump kernel we need to set the
-> +		 * wslot_res_allocated to 255 so it scans all child
-> +		 * devices to release resources allocated in the
-> +		 * normal kernel before panic happened.
-> +		 */
-> +		hbus->wslot_res_allocated = 255;
-> +		ret = hv_pci_bus_exit(hdev, true);
-> +
-> +		if (ret == 0)
-> +			goto retry;
-> +
-> +		dev_err(&hdev->device,
-> +			"Retrying D0 failed with ret %d\n", ret);
-> +	}
->  	if (ret)
->  		goto free_irq_domain;
->  
-> -- 
-> 2.20.1
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
