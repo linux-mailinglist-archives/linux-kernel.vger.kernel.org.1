@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8439224388
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CF022437E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgGQS5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S1728535AbgGQS5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728500AbgGQS5O (ORCPT
+        with ESMTP id S1728511AbgGQS5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:57:14 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9740DC0619D2;
-        Fri, 17 Jul 2020 11:57:14 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id j10so8403606qtq.11;
-        Fri, 17 Jul 2020 11:57:14 -0700 (PDT)
+        Fri, 17 Jul 2020 14:57:17 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C1CC0619D2;
+        Fri, 17 Jul 2020 11:57:17 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id u12so8375574qth.12;
+        Fri, 17 Jul 2020 11:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WHG4o9e3c0Ro4niRsuiyIPSjO4sfmpuLTSktuBkoXKg=;
-        b=cvTmK/l+Jw1ZfTiS9KB4uRI6T3iIia8C567x/YhrBoWwmpKqvUn16x8C31FPm6g1Bx
-         lK7n3ZFU+vAt0fSnBptZ9Bzx4NZUMrQBeH6dpMHS2fj81fDaxvhRGgN+fErNdtygnsNR
-         DFMVvIcH5gz8AMVFPll9KwfMaHXWYQELPIJZ0pxBzKGJS1qNXVAQuqvDQflRV9q2d6qi
-         wVX5vM6dFwJnsMmnVTDk/BPILI6mppDmZT4edxarmWVp+2heP8nGVtnROVflp1kmb/eM
-         cF9xG7CZOSDAHOSQ8AtRDe/bh+6Ss6EVKPqFqrmORlO9ZRDMnax06f9ZMsdf6wNrLQTD
-         y8KA==
+        bh=CguGr4FHVrPkRGsMeKgPvOrZnbuic3mwstdNwyosH2c=;
+        b=SNN5BuzwjfYrZ8GhD3hLMzEHQIGnDjMkQByfOWEyjMYw/u/8x9mS5NlhEQ/WDDPyJA
+         OM3zjjIQKKXfyA8AjA6jP+XZlmwMPIvbIxLaEoPQp9MI3xvor2ORmPbPK8BKLyIt5eGY
+         jLbheyc+Y7RdFsnlLNHtld28tclIsnvK9XBvDKDCUY6Wx084UpMxo2uDC6dQ75fx6kaY
+         Jtig00UhaqwPOMkH7WxEBo0uV5ZA5gVCjx/U72WrDw1Tn916yOuBTmSYDkHBbfO8aArV
+         40+73t2M4ERczxsvQvPTLAhj6UjdPjpRad8XaoLHk4E9/l2iYSk37poaMdCthYEZYQ7p
+         lvDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WHG4o9e3c0Ro4niRsuiyIPSjO4sfmpuLTSktuBkoXKg=;
-        b=pkwfXIJ7AdJ3dyH9IT3WY6Fo2tJKmnVJumcOCtafeSbo8ilSZzPPEEtWgbWYKAgiMZ
-         rkiSLgNxcvT//mrebglo/5dHNih49BC2wJ43pvaf7ayZQsQV86SyPjDKEelgYK1ymWo+
-         FfvxCXlNsvLefaTWMa2eBW/B3Kto69ucfnqi8vKuoBNcDr+s6dGA+8BsBzmdjVCPUGuQ
-         jNM2OT2j2c3I+Jox5OEMomxSk2g4bq8TZA/dCNsem/hrt6IIUzCLS8hFPG+vREc0GM24
-         QulMaauMm39zX18ee+TK6Z5GXT4EUDD5oJTYAnjjOaBSRwerMe9D+2E5BgUHKMEl9l33
-         kJrQ==
-X-Gm-Message-State: AOAM5335lRG0Lpdg6bGtpr//tvhItKKO6Vu/N6uGsssTIe1u/11aiLUS
-        SKyJG3jfz4Th1TW+HRklrv4=
-X-Google-Smtp-Source: ABdhPJynblyhgvWW+6JETMuHHTJdZpJ4WnLs2TZv/LQFxX9b2+iAnrqJNlkTrVbgudYckqcSy0Fnng==
-X-Received: by 2002:ac8:189c:: with SMTP id s28mr11393074qtj.97.1595012233840;
-        Fri, 17 Jul 2020 11:57:13 -0700 (PDT)
+        bh=CguGr4FHVrPkRGsMeKgPvOrZnbuic3mwstdNwyosH2c=;
+        b=deTHLtU0pe0Cj/fRRhxCT3G/K90Uo7rjPdlu7BdMgaNBgPerM22kkTZAWfWRsILP8I
+         j4CVXicUS9tqq1eMe9g8ALfs2y9W0FhO4akz/CW/Qi9KQFT6OT0OfWJuQ6yf0qziIrht
+         sscmOZN2gFdmqPoqABBKDamoYn73wLqwQJrWHXlDvtfYMX0b7LybVS8fAmXc3BBlrOLL
+         moynE7MUD5HihYPNW8Tizk1zNYNRNX/4ujMFU4/PQ4dEJDGcPqbgpBMzhX6M9kzvVn59
+         Idlj+DmY796d5fl6aD3Exc3pNf4OtoYwO6tu0IJtRlnnvwUUwciy2ZtAOSqMUd8SA4rN
+         gOkg==
+X-Gm-Message-State: AOAM533DCHiSSCpIWiNYwck0Xi5+KTJd3Xe/p3mQjeYZB76t7TBUqGbi
+        xCnkjP449O52YICl6vU28zU=
+X-Google-Smtp-Source: ABdhPJw68litj6byZk1enWWXza6gm7E1mPQ1foBGbeWVLRLSi1P6R9NaFHBhboLNX68RR/3Q4gqXrg==
+X-Received: by 2002:ac8:197b:: with SMTP id g56mr11969284qtk.105.1595012236965;
+        Fri, 17 Jul 2020 11:57:16 -0700 (PDT)
 Received: from localhost.localdomain ([2804:18:7002:653c:f7ea:490a:10b0:ec39])
-        by smtp.gmail.com with ESMTPSA id r6sm11380097qtt.81.2020.07.17.11.57.11
+        by smtp.gmail.com with ESMTPSA id r6sm11380097qtt.81.2020.07.17.11.57.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 11:57:13 -0700 (PDT)
+        Fri, 17 Jul 2020 11:57:16 -0700 (PDT)
 From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 X-Google-Original-From: Daniel W. S. Almeida
 To:     corbet@lwn.net, mchehab@kernel.org
 Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/25] Documentation: rcu/tree.c: rcu_nmi_enter: fix sphinx warning
-Date:   Fri, 17 Jul 2020 15:56:08 -0300
-Message-Id: <20200717185624.2009393-9-dwlsalmeida@gmail.com>
+Subject: [PATCH 10/25] Documentation: rculist.h: fix sphinx warning
+Date:   Fri, 17 Jul 2020 15:56:09 -0300
+Message-Id: <20200717185624.2009393-10-dwlsalmeida@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200717185624.2009393-1-dwlsalmeida@gmail.com>
 References: <20200717185624.2009393-1-dwlsalmeida@gmail.com>
@@ -70,25 +70,28 @@ From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 
 Fix the following warning:
 
-warning: Excess function parameter 'irq' description in 'rcu_nmi_enter'
+warning: bad line: [@right ][node2 ... ]
+
+This was missing a '*' at the start.
 
 Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 ---
- kernel/rcu/tree.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/rculist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c716eadc7617f..4540659640fe9 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -944,7 +944,6 @@ void __rcu_irq_enter_check_tick(void)
- 
- /**
-  * rcu_nmi_enter - inform RCU of entry to NMI context
-- * @irq: Is this call from rcu_irq_enter?
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index df587d181844b..7eed65b5f7130 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -512,7 +512,7 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
+  * @right: The hlist head on the right
   *
-  * If the CPU was idle from RCU's viewpoint, update rdp->dynticks and
-  * rdp->dynticks_nmi_nesting to let the RCU grace-period handling know
+  * The lists start out as [@left  ][node1 ... ] and
+-                          [@right ][node2 ... ]
++ *                        [@right ][node2 ... ]
+  * The lists end up as    [@left  ][node2 ... ]
+  *                        [@right ][node1 ... ]
+  */
 -- 
 2.27.0
 
