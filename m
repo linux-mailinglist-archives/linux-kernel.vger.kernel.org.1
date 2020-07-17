@@ -2,74 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C882242E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40692242EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgGQSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgGQSFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:05:50 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65C06206F4;
-        Fri, 17 Jul 2020 18:05:47 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 14:05:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Matt Helsley <mhelsley@vmware.com>
-Subject: Re: [RFC][PATCH] objtool,x86_64: Replace recordmcount with objtool
-Message-ID: <20200717140545.6f008208@oasis.local.home>
-In-Reply-To: <CABCJKuda0AFCZ-1J2NTLc-M0xax007a9u-fzOoxmU2z60jvzbA@mail.gmail.com>
-References: <20200624203200.78870-1-samitolvanen@google.com>
-        <20200624203200.78870-5-samitolvanen@google.com>
-        <20200624212737.GV4817@hirez.programming.kicks-ass.net>
-        <20200624214530.GA120457@google.com>
-        <20200625074530.GW4817@hirez.programming.kicks-ass.net>
-        <20200625161503.GB173089@google.com>
-        <20200625200235.GQ4781@hirez.programming.kicks-ass.net>
-        <20200625224042.GA169781@google.com>
-        <20200626112931.GF4817@hirez.programming.kicks-ass.net>
-        <CABCJKucSM7gqWmUtiBPbr208wB0pc25afJXc6yBQzJDZf4LSWA@mail.gmail.com>
-        <20200717133645.7816c0b6@oasis.local.home>
-        <CABCJKuda0AFCZ-1J2NTLc-M0xax007a9u-fzOoxmU2z60jvzbA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726650AbgGQSLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:11:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60054 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgGQSLg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 14:11:36 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1B3F420B4909;
+        Fri, 17 Jul 2020 11:11:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1B3F420B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1595009495;
+        bh=2Pzs4CmdDfnklLSKLq/qkdid1cilbcCSYYl7lLHXGe8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mUU+5r9vVToweMQMPxEGv6yqTVSMaTYsYxEx7SRIAnhU+jY0WVAMStyXuuXe5TEWH
+         gBXzbDKupNrVFU9HYirgAi2f+BA6YjG0a17Wfn2UzlHC/ZD6EBWE2FSgWUAqlEoqB/
+         OC5H9KsJwGW8pNp7776zHDJDSZZt4gMWkd0wAckE=
+Date:   Fri, 17 Jul 2020 13:11:33 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>, Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Nayna Jain <nayna@linux.ibm.com>
+Subject: Re: [PATCH v3 07/12] ima: Fail rule parsing when
+ appraise_flag=blacklist is unsupportable
+Message-ID: <20200717181133.GM3673@sequoia>
+References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
+ <20200709061911.954326-8-tyhicks@linux.microsoft.com>
+ <76d2b27b-3b59-1852-046a-b1718c62b167@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <76d2b27b-3b59-1852-046a-b1718c62b167@linux.vnet.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 10:47:51 -0700
-Sami Tolvanen <samitolvanen@google.com> wrote:
-
-> > Someone just submitted a patch for arm64 for this:
-> >
-> > https://lore.kernel.org/r/20200717143338.19302-1-gregory.herrero@oracle.com
-> >
-> > Is that what you want?  
+On 2020-07-17 13:40:22, Nayna wrote:
 > 
-> That looks like the same issue, but we need to fix this on x86 instead.
+> On 7/9/20 2:19 AM, Tyler Hicks wrote:
+> > The "appraise_flag" option is only appropriate for appraise actions
+> > and its "blacklist" value is only appropriate when
+> > CONFIG_IMA_APPRAISE_MODSIG is enabled and "appraise_flag=blacklist" is
+> > only appropriate when "appraise_type=imasig|modsig" is also present.
+> > Make this clear at policy load so that IMA policy authors don't assume
+> > that other uses of "appraise_flag=blacklist" are supported.
+> > 
+> > Fixes: 273df864cf74 ("ima: Check against blacklisted hashes for files with modsig")
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > Cc: Nayna Jain <nayna@linux.ibm.com>
+> > ---
+> > 
+> > * v3
+> >    - New patch
+> > 
+> >   security/integrity/ima/ima_policy.c | 13 ++++++++++++-
+> >   1 file changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > index 81da02071d41..9842e2e0bc6d 100644
+> > --- a/security/integrity/ima/ima_policy.c
+> > +++ b/security/integrity/ima/ima_policy.c
+> > @@ -1035,6 +1035,11 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+> >   		return false;
+> >   	}
+> > +	/* Ensure that combinations of flags are compatible with each other */
+> > +	if (entry->flags & IMA_CHECK_BLACKLIST &&
+> > +	    !(entry->flags & IMA_MODSIG_ALLOWED))
+> > +		return false;
+> > +
+> >   	return true;
+> >   }
+> > @@ -1371,8 +1376,14 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+> >   				result = -EINVAL;
+> >   			break;
+> >   		case Opt_appraise_flag:
+> > +			if (entry->action != APPRAISE) {
+> > +				result = -EINVAL;
+> > +				break;
+> > +			}
+> > +
+> >   			ima_log_string(ab, "appraise_flag", args[0].from);
+> > -			if (strstr(args[0].from, "blacklist"))
+> > +			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+> > +			    strstr(args[0].from, "blacklist"))
+> >   				entry->flags |= IMA_CHECK_BLACKLIST;
+> 
+> If IMA_APPRAISE_MODSIG is disabled, it will allow the following rule to
+> load, which is not as expected.
+> 
+> "appraise func=xxx_CHECK appraise_flag=blacklist appraise_type=imasig"
+> 
+> Missing is the "else" condition to immediately reject the policy rule.
 
-Does x86 have a way to differentiate between the two that record mcount
-can check?
+Thanks for the review. You're right. This change is needed:
 
--- Steve
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 9842e2e0bc6d..cf3ddb38dfa8 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -1385,6 +1385,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+ 			    strstr(args[0].from, "blacklist"))
+ 				entry->flags |= IMA_CHECK_BLACKLIST;
++			else
++				result = -EINVAL;
+ 			break;
+ 		case Opt_permit_directio:
+ 			entry->flags |= IMA_PERMIT_DIRECTIO;
+
+
+Making this change does not conflict with any later patches in the
+series.
+
+Mimi, I've rebased and force pushed to my fixup branch with this change,
+for your comparison:
+
+ https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/linux.git/log/?h=next-integrity-testing-fixup
+
+Tyler
+
+> 
+> Thanks & Regards,
+> 
+>      - Nayna
+> 
