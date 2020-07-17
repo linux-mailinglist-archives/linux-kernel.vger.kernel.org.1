@@ -2,121 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AAA224335
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E5F224339
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgGQSfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:35:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42404 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728215AbgGQSfs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:35:48 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595010946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uiwrMAqmxawI1Rcn1I56Kp6XcBO1SrZK17qX3Nlc3kE=;
-        b=tnUMGTuFhdwPg+pZQK4Kj3X6yUKyH3XkRktnBEstN/JwQr6b8ytSs633JTcxcsmQjXKMXW
-        YCqzdLvEas7DeI44guNooVpBElpE679FIkfMKP+bQtWCUtNYpnqtk6Ifl35sUIi7MBNDAz
-        UvFtSwNj0uSqvXi1tWsxYuwc3KKgnq161DjLT9I8InSmlx1LzrvNrx90fuVbU0/XDowDQt
-        RlaULjsBTJxYmL014hXjZh7fwjP7ry2LjhljZgJomjYJWaJ+dn8t4FyesmBdPMsyJqHkgY
-        zvosasnwsprN2t9i2YjRSqD2Zp0jqW9vFAd3vc85mOd+5zh6GmaLdvL0GVh2Pw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595010946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uiwrMAqmxawI1Rcn1I56Kp6XcBO1SrZK17qX3Nlc3kE=;
-        b=2cIko/HOAOpf3QwZjLesonVO1v0OVldA6urZyg/KCHfYF/AueNyuYTdi9tsLyqTmOAKJx3
-        3I8Tl5YbnxP6veAA==
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer timer handling to task_work
-In-Reply-To: <20200717172627.GC6067@redhat.com>
-References: <20200716201923.228696399@linutronix.de> <20200716202044.734067877@linutronix.de> <20200717172627.GC6067@redhat.com>
-Date:   Fri, 17 Jul 2020 20:35:46 +0200
-Message-ID: <87zh7yq9a5.fsf@nanos.tec.linutronix.de>
+        id S1728291AbgGQSgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728022AbgGQSgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 14:36:13 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38FFD21702;
+        Fri, 17 Jul 2020 18:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595010972;
+        bh=6IhYIKmVZDeZrypbI87Kz8pgaQhaQha5rJV8Ik5J7bk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=s6sCGYdNX1R9qYXHHidspLXuFmtNrCsbL2kIbUlxAtc26Ua7C0ChuGqSMrMxcE/Q+
+         6R3kR+qo1eQ0iYYDZl4fMNgTUOl7lQplKoP3nbgBhX//diF+tyyahGvPnveim25CdD
+         lam63/GQ/3vp0/VXdRFp6dtfix15TcFPGvmcIEkQ=
+Received: by mail-ot1-f54.google.com with SMTP id 5so7518586oty.11;
+        Fri, 17 Jul 2020 11:36:12 -0700 (PDT)
+X-Gm-Message-State: AOAM532ccMUB4I4bDaCcANMdFqCID3aqLE4EdwqVDSHuIUfU19qaeaMx
+        wOI+Ng6jQ9/cneSIIK6OwO6loVCxdhtgSQPM6g==
+X-Google-Smtp-Source: ABdhPJwvWVISrMjnm+UoMBRoocoox6vjA7uZZ0i4pJ9VBySQKqf+ek0xvhn+opfsWguYonw/q0Q7Q/bIE/Tx5LV1iO8=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr10161318ots.192.1595010971464;
+ Fri, 17 Jul 2020 11:36:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200707102338.989660-1-yamada.masahiro@socionext.com>
+ <20200716230451.GA3041278@bogus> <CAK7LNAQN04i14VwrWspTJ7+Y87rgsopv88Dyv_8+4Hk8Kx0Fdw@mail.gmail.com>
+In-Reply-To: <CAK7LNAQN04i14VwrWspTJ7+Y87rgsopv88Dyv_8+4Hk8Kx0Fdw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 17 Jul 2020 12:36:00 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKahftcjgtMP9H4NE2df1LxaV+31M8KrmBWCVy05P0hHA@mail.gmail.com>
+Message-ID: <CAL_JsqKahftcjgtMP9H4NE2df1LxaV+31M8KrmBWCVy05P0hHA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: uniphier-thermal: add minItems to socionext,tmod-calibration
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oleg,
-
-Oleg Nesterov <oleg@redhat.com> writes:
-> Looks correct to me, but I forgot everything about posix-timers.c
-
-that's not a problem because this is about posix-cpu-timers.c :)
-
-> this obviously means that the expired timer won't fire until the
-> task returns to user-mode but probably we don't care.
-
-If the signal goes to the task itself it does not matter at all because
-it's going to be delivered when the task goes out to user space.
-
-If the signal goes to a supervisor process, then it will be slightly
-delayed but I could not find a problem with that at all.
-
-I'll add more reasoning to the changelog on V3.
-
->> +#ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
->> +void posix_cpu_timers_work(struct callback_head *work);
->> +
->> +static inline void posix_cputimer_init_work(struct posix_cputimers *pct)
->> +{
->> +	pct->task_work.func = posix_cpu_timers_work;
+On Thu, Jul 16, 2020 at 10:54 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> init_task_work() ?
-
-Yeah.
-
->> +}
->> +#else
->> +static inline void posix_cputimer_init_work(struct posix_cputimers *pct) { }
->> +#endif
->> +
->>  static inline void posix_cputimers_init(struct posix_cputimers *pct)
->>  {
->>  	memset(pct, 0, sizeof(*pct));
->>  	pct->bases[0].nextevt = U64_MAX;
->>  	pct->bases[1].nextevt = U64_MAX;
->>  	pct->bases[2].nextevt = U64_MAX;
->> +	posix_cputimer_init_work(pct);
->>  }
+> On Fri, Jul 17, 2020 at 8:09 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Jul 07, 2020 at 07:23:38PM +0900, Masahiro Yamada wrote:
+> > > As the description says, this property contains a pair of calibration
+> > > values. The number of items must be exactly 2.
+> > >
+> > > Add minItems to check a too short property.
+> > >
+> > > While I was here, I also added this property to the example because
+> > > this is the case in the real DT file,
+> > > arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
+> > >
+> > > Also, fix the interrupt type (edge -> level) to align with the
+> > > real DT.
+> > >
+> > > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > > ---
+> > >
+> > >  .../bindings/thermal/socionext,uniphier-thermal.yaml          | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/thermal/socionext,uniphier-thermal.yaml b/Documentation/devicetree/bindings/thermal/socionext,uniphier-thermal.yaml
+> > > index 553c9dcdaeeb..57ffd0c4c474 100644
+> > > --- a/Documentation/devicetree/bindings/thermal/socionext,uniphier-thermal.yaml
+> > > +++ b/Documentation/devicetree/bindings/thermal/socionext,uniphier-thermal.yaml
+> > > @@ -29,6 +29,7 @@ properties:
+> > >
+> > >    socionext,tmod-calibration:
+> > >      $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +    minItems: 2
+> >
+> > The intent was if minItems is not defined, then the default is the same
+> > as maxItems. This is not the default for json-schema, so the tooling is
+> > supposed to add it.
 >
-> And I can't resist. I know this is a common practice, please ignore, but to me
 >
-> 	static inline void posix_cputimers_init(struct posix_cputimers *pct)
-> 	{
-> 		memset(pct, 0, sizeof(*pct));
-> 		pct->bases[0].nextevt = U64_MAX;
-> 		pct->bases[1].nextevt = U64_MAX;
-> 		pct->bases[2].nextevt = U64_MAX;
-> 	#ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
-> 		init_task_work(&pct->task_work, posix_cpu_timers_work);
-> 	#endif
-> 	}
+> This implication is unclear.
 >
-> looks better than 2 posix_cputimer_init_work() definitions above.
+> maxItems should literally only define the max, and
+> we should stick to json-schema as much as possible, IMHO.
 
-Gah, I hate ifdefs in the middle of the code :)
+Yes, but we already deviate a bit as the default json-schema behavior
+is a bit different than DT defaults. For example, with just:
 
-> Note also that signal_struct->posix_cputimers.task_work is never used, perhaps
-> it would be better to move this task_work into task_struct? This way we do not
-> even need to change posix_cputimers_init(), we call simply initialize
-> init_task.posix_task_work.
+items:
+  - const: a
+  - const: b
+  - const: c
 
-Let me look into that.
+All of these pass validation:
 
-Thanks,
+[]
+[ a ]
+[ a, b, c, 1, 2, true ]
 
-        tglx
+when we really only want [ a, b, c ] to pass (by default). So we add
+minItems, maxItems, and additionalItems if not specified.
+
+> It would be nice if json-schema had something like:
+>
+> numItems: 2
+>
+> as a shorthand for
+>
+> minItems: 2
+> maxItems: 2
+
+Yes, I've been thinking the same thing. It wouldn't be unprecedented
+as they added 'const' to shorten 'enum: [ one_entry ]'. We can add our
+own keywords too, but I try to avoid that so far. The only ones we
+have are internal to dtschema (typeSize and phandle).
+
+Rob
