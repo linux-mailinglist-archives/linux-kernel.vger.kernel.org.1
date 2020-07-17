@@ -2,396 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4653223348
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8511722334E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgGQGEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:04:01 -0400
-Received: from mga03.intel.com ([134.134.136.65]:49538 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726083AbgGQGEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:04:00 -0400
-IronPort-SDR: UIxo6veOXBJDx7peBn1RYqrY79jD3kohqVwk43w/8ozJgwMvk3OEslldRQADzk/PLnW7f3Wa2O
- XyVSvYBiB1IA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="149529223"
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="149529223"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 23:03:58 -0700
-IronPort-SDR: XixfNXzTiS3icEMRsGV4fWNYxF7N9zSELLL41MC4ZqZ/ilMXSN71i4Wi22qAuYFJQDw64je/iW
- OcNpgXcDKdVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="486864607"
-Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Jul 2020 23:03:57 -0700
-Received: from orsmsx153.amr.corp.intel.com (10.22.226.247) by
- ORSMSX106.amr.corp.intel.com (10.22.225.133) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Jul 2020 23:03:57 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- ORSMSX153.amr.corp.intel.com (10.22.226.247) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Jul 2020 23:03:57 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.58) by
- edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Thu, 16 Jul 2020 23:03:57 -0700
+        id S1726829AbgGQGEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:04:44 -0400
+Received: from mail-eopbgr1310118.outbound.protection.outlook.com ([40.107.131.118]:7595
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726201AbgGQGEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:04:44 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NiikWBZjLZ6yIep6HowQ0Q20i6u0RwjHCloUaC8HXl+iW+4HcsgWuiINQ76Y4au4aho4GYkmwU7pMg8UX48twJqUTNdMCI8ouC44LeQmeweMrdcH7px9FNi8vzd7E2+ASXxHRkAqGUycjTK+VqTiweBYSgpZU+qv6OEAaGIcDjG7A3YXTserPXVIsi7Lqf6XYtel33YVn9Ub+GdN0k7FeG99I0/MHYsgTo5qmefuzMIYwUi0Jjpt7qO+A3kGjjBo1lPmId3pVPV6p+Jq0NAvKZjPf8dAEfgp0+e+aDcFNL+GyqlMzXWVI2WOY+8nFd7tSFtxGZ5C5ANybbxbBKQ0Uw==
+ b=c0kdmUzDt31iCB8UKqtOGsSOD2y8WP3MmAqBihg/5bnFV+v6IfwhC/hM66O2rGqcXJWacchAG5Rk+zhJfDEgVuvIlobxmKrX96LUa6j9BTggcOs03rD2xvN9I/pyf+lSj9lis95rCUstLzFQFhX16fni7m4ccWX8Ok4SvmFv08Cyah0PXfQ41zWlpMpgf7lL+IK7ITxxFNL3+SrDFaMOFgJdEa0UaaWxmR34PYfree1MpwW3wHCLwHPN349AxwaAQG3YWNBW2aXGgJHZjsIWwlGC269DEUiIk4EgZK7gBw558O69uGRM3fTskHR/h4IqHuWKI3a0LnaK9gpMmq64EQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gy2+q4hiyOtu/08LJLHe7yWO5PepEhAL7twCRxa5QqQ=;
- b=YbIhEaWkpco9fLHlFPCwCdwKELgALc/HW9GfossHtkt//hDljJg26KZvlSejzdFL/FAeXCUESNxW5P13xXKVZV+kziDahdG1zJQVo1OhxgBdw3WXzg1obFbPXo+QI1Zd9cNAuM2B2tMoKoAI2FZKSxGCRJUJUQJnGXnGaGmhdKSj3cteb99/XKH2szk+wlH19D+eI+aQD+YvlUyAIik1aHQkdyhxUmJ0y7W/cFT7v7d7XdYxaLE27MRdeBM3YdqEqOhNrZQIphYyl8NarnZ2to2kElYFgcK+mfu2bNh/elIeriq9zh2UTr3DghpyeUtoGdOmUiB1noFBECMZ5slOgA==
+ bh=XDDANLUSfqTEe2b4Vz2hixm8ZUHTJQkFk3yZzng1SaM=;
+ b=cIgJ9XnDtatZEA4TxsGw4O/c7M5dgmvaXWtghIQBniuWm2c8tISGt8gDqrzmyY5niuOr/aFRQps80eyLHerZxt+p5hOtxGKGgDFMwmJ4s/JvELKvJsBqZ+mFqjKdMjmeCDURtjGQeJNayCR0toYkgTshwdANVKmV1iAS4P7e+IcmcWb0MRWxjNu0gcIfPwKFf0DhmU1ogNdO4lZPLPLpleywuKxR1uGta2MQW7vtIIjme5VdE+Gi8Qc+P4RneWqjUDhWVW3cvc7hVLX4v7EMobv3JGeeZLR6cHXQ5UGhv+jJrbuqLfgtu662qjjqya4CDs1OlD+ZjXS0FMnB2E9htg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gy2+q4hiyOtu/08LJLHe7yWO5PepEhAL7twCRxa5QqQ=;
- b=DSiRgRWYdDj/3fckMM+lukykJeskHFtylrjCVUGAlOtl4f+lGCo8gGsbS4++XLwzg7BdIL8ImcXAa40+jLn4L/Vc7rctaCADvIUhfco9JF1x+kLPfdes4Rm4bHcFiLL+G0nz4izXQ4sXXEckoLmpzMA7FK+0wVeXZNLv+DHUpGY=
-Received: from DM6PR11MB3963.namprd11.prod.outlook.com (2603:10b6:5:19b::16)
- by DM6PR11MB3962.namprd11.prod.outlook.com (2603:10b6:5:192::26) with
+ bh=XDDANLUSfqTEe2b4Vz2hixm8ZUHTJQkFk3yZzng1SaM=;
+ b=T4rSOT9u6RpIMmjENs1TzVLCNzjZyEC4TAanWUrNinYCXQFCD0JvZtynyCWi925/XrGy1T38fG0pm4NAdpYjyal691U65LkmDJ4gmgz2syjTNv9T7Z46jRHno8zvu1/nlij/VQjvzdxXC2yF3VQZBsPhKgPDIY+mSXltbSKhOz4=
+Received: from HK0P153MB0275.APCP153.PROD.OUTLOOK.COM (2603:1096:203:b2::14)
+ by HKAP153MB0370.APCP153.PROD.OUTLOOK.COM (2603:1096:203:d4::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Fri, 17 Jul
- 2020 06:03:56 +0000
-Received: from DM6PR11MB3963.namprd11.prod.outlook.com
- ([fe80::714f:fa64:4fd8:c9df]) by DM6PR11MB3963.namprd11.prod.outlook.com
- ([fe80::714f:fa64:4fd8:c9df%6]) with mapi id 15.20.3195.022; Fri, 17 Jul 2020
- 06:03:56 +0000
-From:   "Mani, Rajmohan" <rajmohan.mani@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ayman Bagabas <ayman.bagabas@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        =?iso-8859-2?Q?Bla=BE_Hrastnik?= <blaz@mxxn.io>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.13; Fri, 17 Jul
+ 2020 06:04:32 +0000
+Received: from HK0P153MB0275.APCP153.PROD.OUTLOOK.COM
+ ([fe80::b5ca:82a1:cb67:52e]) by HK0P153MB0275.APCP153.PROD.OUTLOOK.COM
+ ([fe80::b5ca:82a1:cb67:52e%6]) with mapi id 15.20.3216.013; Fri, 17 Jul 2020
+ 06:04:32 +0000
+From:   Chi Song <Song.Chi@microsoft.com>
+To:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "pmalani@chromium.org" <pmalani@chromium.org>,
-        "bleung@chromium.org" <bleung@chromium.org>
-Subject: RE: [PATCH 1/2] platform/x86: Add Intel Input Output Manager (IOM)
- driver
-Thread-Topic: [PATCH 1/2] platform/x86: Add Intel Input Output Manager (IOM)
- driver
-Thread-Index: AQHWWwsaPBfYigwTQE+Q2/IuyVCXHakJyhoAgAFtwuA=
-Date:   Fri, 17 Jul 2020 06:03:55 +0000
-Message-ID: <DM6PR11MB39632BD9A5A0DF4A9EAB351CF67C0@DM6PR11MB3963.namprd11.prod.outlook.com>
-References: <20200716003310.26125-1-rajmohan.mani@intel.com>
- <20200716003310.26125-2-rajmohan.mani@intel.com>
- <20200716070950.GC962748@kroah.com>
-In-Reply-To: <20200716070950.GC962748@kroah.com>
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: [PATCH net-next] net: hyperv: Add attributes to show RX/TX
+ indirection table
+Thread-Topic: [PATCH net-next] net: hyperv: Add attributes to show RX/TX
+ indirection table
+Thread-Index: AdZb/5iAkDMuWyahRIOBehKiULg7mg==
+Date:   Fri, 17 Jul 2020 06:04:31 +0000
+Message-ID: <HK0P153MB027502644323A21B09F6DA60987C0@HK0P153MB0275.APCP153.PROD.OUTLOOK.COM>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [76.126.121.82]
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-07-17T06:04:30Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e65774ea-85c5-4afa-a5de-cbef4b422b7c;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2404:f801:8050:1:4906:99ed:e85b:7e58]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e9a28461-941f-4b77-ba10-08d82a173097
-x-ms-traffictypediagnostic: DM6PR11MB3962:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8185eb83-bf37-4f0a-326c-08d82a17464a
+x-ms-traffictypediagnostic: HKAP153MB0370:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB39623B510E598C28FDF07EAFF67C0@DM6PR11MB3962.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-microsoft-antispam-prvs: <HKAP153MB0370FAD65B85B353335C6986987C0@HKAP153MB0370.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mvzXFr71DH5CRZt9kXwlawT8BdwOd0R3OvoEcvNnIvZ/MuUhCeWU5S+4GElSte95STgPcAKhYutvC51vZwVP4/AxZLQVZ++//Qx9+0Rajft4su97x3bWyp4sipr6BmWxi1Ayn2WUQGGgvD3L4oto3OSwAb/SqBrqO/JXErRHvnZFwHocgAZHIVNlR7AHdiN/xyaSmdPSPhWpxrHXfi/Fpk0cszYcRF4qZW3zOpd5SMWcydP9FMYgMYKscmDGxfDHB4jgjQNapBfwwyFIvW8ttosXEmngf41CmL+Sz6542BNW4L9tPZR46ODfDAuKdJ8Vg7cH/XrZIskNimwoBJQDcA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(396003)(136003)(39860400002)(346002)(6916009)(316002)(86362001)(26005)(8936002)(4326008)(186003)(9686003)(7696005)(76116006)(5660300002)(52536014)(66946007)(66556008)(66476007)(66446008)(64756008)(54906003)(71200400001)(8676002)(6506007)(53546011)(83380400001)(478600001)(7416002)(2906002)(33656002)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: pLJiItX4I5mHo+39gOhOxqaCH8ulVZIR5VcjjWLDqSqUNaeC7M0zQjiy5xqEIIKcQNNmCuYtKUIN6tP9fa8UxNqKG6LpKsW7RRjEPIfCQWqvwPZ8ec0TCpvDkZoRxb/zYjXtT90gY9d5WQ8UHTLDtNvaEj6Q4DRkWw959ylo+oUI5AilUCbU2YOQEggFb9WqvKpzizzTfaRXb6pJY0gQQ40TXnEcJkFkUWEx9Qs+fKJHTNWBwLL4HtxBLFIAqHeBvwvjIJNO53czrnr0rqkzzoC3Vjs+aVoclv+IVvMIJn+X1kfM9ZEjQvdfJIcZ8l3yfdvxjR0Gfa5e0KkL0Z1Smsr/NyzBdwbVVJquSMLzMmXG6Yd8oWsu3puTcL+5vKB6WP9XSSbSY0q1IqsgRIeiU1sdD0Ed1g+qXj997Oe22bVEkx3eYiVrwTSG4k35l5f/Vf1Pq7Svfd03hzlNnOfAjLCk3sC3PDpu7ybYcIycdPXw+dbTpWFTNAyLZGu5IQPf
-Content-Type: text/plain; charset="iso-8859-2"
+x-microsoft-antispam-message-info: AWSh/tqwDyNF3Ane7vEs8hRdqASZ3us4XsVMPn+EfQyJdu40ENNUbKKbUrKehXk+duOjxGVgNYxrUzk4nMNIQxzcSoBxaE/sSnrCoCxsSHSId32sJoc/e+/4cI0Kjf4fx5uM9FtbJFF5ZXotCJHF4uwQwO1O7Pj+6A5NgiTXqraSetjgBSOtcze+aa3vmWnBlRYr3YPjDusrO0OzHCFX3y1MtNcWaFpxT1O+XHzRJEOBDrDdjjwr8U9Yd3BPYGgP+li/GhrfzA+Uwwwn29wTjrUqUr3tU3N3Kq9UI/0rTEMtIYrJm7qOqaQYqh4WGAiJXc58+QiQ6e5KLCR4QHnpaEoFuRP+LlbpY38og33jbjqJsRaJVl7isG/WaF3hllj6
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0P153MB0275.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(366004)(346002)(136003)(376002)(316002)(54906003)(8990500004)(110136005)(478600001)(10290500003)(7696005)(2906002)(186003)(4326008)(6506007)(55016002)(9686003)(7416002)(52536014)(33656002)(82950400001)(82960400001)(8936002)(8676002)(86362001)(71200400001)(66476007)(66446008)(66556008)(64756008)(76116006)(5660300002)(66946007)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 4Ux+fHsjMv6QasVsW0GJaRaCbEMgaNiFgT74m/Meb7qqCnJgtb1g63qKdgNfjDlEAHZElc8iTM4eXAKve6q8Fg5pB2DwmQnUxi/Q1jssZj1yuycDQUDO96iT0hWlUXVxX1cig994DatD98XaKGwJvGpx9NzoEXljz02aekq0KqoV9XYuTqK6Ne6j0J/vDdAcL5HYVZrC63Sl+XiStVsPqbOTDx9/U3i7Ha4XExcEhEanWAGHMX/+Oixn9oFrlLEd0uwdB4WCLSSXaPh2tPUxHvSWYvbitSQkmj2F/VIUXnyyAr2UX/XjtWZCwv4T2KduT1oSFNbsfQO4udNQ0g5ULRJuDzMY6Vu64XsO+gFmKkZ8EsV1GM0YNYccIp2Gc9URuoK5+huMduSddABrxB+UOCRxJsd0VTllXfpsPuCzx8QeYe5INMm1HfFUCX+u0sBMs2QV4QV5buBlvPgymRP+clTE3VLOgFWUyN8JMqt4KqoaCIUxIkPeV5/n4sJy1UOB/LdZeYjnxNmJ1m7j1+dq4vOC9TrM+lQcj8DGqZaR22w=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9a28461-941f-4b77-ba10-08d82a173097
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2020 06:03:56.0149
+X-MS-Exchange-CrossTenant-AuthSource: HK0P153MB0275.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8185eb83-bf37-4f0a-326c-08d82a17464a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2020 06:04:32.0119
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /y3FNLJOsch1OfxIpuAret+AGJ2m27HXzAAjWWRPbiJ+upbm6t3IHjqgVghO6YE1D7SsjgwoISPuFdfBct5F9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3962
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-userprincipalname: P3XA5Ai1ozqjv2HJJ+zK4bfcu7t7iUNA7uk5/IHN+P16MR8ZQZzT7fDWclnBy+acK2aTro5pNtA5/8cenpxiNA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HKAP153MB0370
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+The network is observed with low performance, if TX indirection table is im=
+balance.
+But the table is in memory and set in runtime, it's hard to know. Add them =
+to attributes can help on troubleshooting.
+---
+ drivers/net/hyperv/netvsc_drv.c | 46 +++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-Thanks for the reviews.
-
-> -----Original Message-----
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Sent: Thursday, July 16, 2020 12:10 AM
-> To: Mani, Rajmohan <rajmohan.mani@intel.com>
-> Cc: Darren Hart <dvhart@infradead.org>; Andy Shevchenko
-> <andy@infradead.org>; Mika Westerberg
-> <mika.westerberg@linux.intel.com>; Dmitry Torokhov
-> <dmitry.torokhov@gmail.com>; Lee Jones <lee.jones@linaro.org>; Ayman
-> Bagabas <ayman.bagabas@gmail.com>; Masahiro Yamada
-> <masahiroy@kernel.org>; Joseph, Jithu <jithu.joseph@intel.com>; Bla=BE
-> Hrastnik <blaz@mxxn.io>; Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com>; linux-kernel@vger.kernel.org;
-> platform-driver-x86@vger.kernel.org; Heikki Krogerus
-> <heikki.krogerus@linux.intel.com>; linux-usb@vger.kernel.org;
-> pmalani@chromium.org; bleung@chromium.org
-> Subject: Re: [PATCH 1/2] platform/x86: Add Intel Input Output Manager (IO=
-M)
-> driver
->=20
-> On Wed, Jul 15, 2020 at 05:33:09PM -0700, Rajmohan Mani wrote:
-> > Input Output Manager (IOM) is part of the Tiger Lake SoC that
-> > configures the Type-C Sub System (TCSS). IOM is a micro controller
-> > that handles Type-C topology, configuration and PM functions of
-> > various Type-C devices connected on the platform.
-> >
-> > This driver helps read relevant information such as Type-C port status
-> > (whether a device is connected to a Type-C port or not) and the
-> > activity type on the Type-C ports (such as USB, Display Port,
-> > Thunderbolt), for consumption by other drivers.
-> >
-> > Currently intel_iom_port_status() API is exported by this driver, that
-> > has information about the Type-C port status and port activity type.
-> >
-> > Signed-off-by: Rajmohan Mani <rajmohan.mani@intel.com>
-> > ---
-> >  drivers/platform/x86/Kconfig                |  16 +++
-> >  drivers/platform/x86/Makefile               |   1 +
-> >  drivers/platform/x86/intel_iom.c            | 133 ++++++++++++++++++++
-> >  include/linux/platform_data/x86/intel_iom.h |  62 +++++++++
->=20
-> Why do you need a .h file for a single .c file that no one else shares th=
-is data?
-> Just put it all in the .c file please.
->=20
-
-The APIs exported by this driver, are used by the caller (Intel PMC USB mux
-control driver), hence the need for header file.
-
-> >  4 files changed, 212 insertions(+)
-> >  create mode 100644 drivers/platform/x86/intel_iom.c  create mode
-> > 100644 include/linux/platform_data/x86/intel_iom.h
-> >
-> > diff --git a/drivers/platform/x86/Kconfig
-> > b/drivers/platform/x86/Kconfig index 0581a54cf562..271feddb20ef 100644
-> > --- a/drivers/platform/x86/Kconfig
-> > +++ b/drivers/platform/x86/Kconfig
-> > @@ -816,6 +816,22 @@ config INTEL_INT0002_VGPIO
-> >  	  To compile this driver as a module, choose M here: the module will
-> >  	  be called intel_int0002_vgpio.
-> >
-> > +config INTEL_IOM
-> > +	tristate "Intel Input Output Manager (IOM) driver"
-> > +	depends on ACPI && PCI
-> > +	help
-> > +	  This driver helps read relevant information such as Type-C port
-> > +	  status (whether a device is connected to a Type-C port or not)
-> > +	  and the activity type on the Type-C ports (such as USB, Display
-> > +	  Port, Thunderbolt), for consumption by other drivers.
-> > +
-> > +	  Currently intel_iom_port_status() API is exported by this driver,
-> > +	  that has information about the Type-C port status and port activity
-> > +	  type.
-> > +
-> > +	  To compile this driver as a module, choose M here: the module will
-> > +	  be called intel_iom.
-> > +
-> >  config INTEL_MENLOW
-> >  	tristate "Thermal Management driver for Intel menlow platform"
-> >  	depends on ACPI_THERMAL
-> > diff --git a/drivers/platform/x86/Makefile
-> > b/drivers/platform/x86/Makefile index 2b85852a1a87..d71e4620a7c6
-> > 100644
-> > --- a/drivers/platform/x86/Makefile
-> > +++ b/drivers/platform/x86/Makefile
-> > @@ -76,6 +76,7 @@ intel_cht_int33fe-objs			:=3D
-> intel_cht_int33fe_common.o \
-> >  					   intel_cht_int33fe_microb.o
-> >  obj-$(CONFIG_INTEL_HID_EVENT)		+=3D intel-hid.o
-> >  obj-$(CONFIG_INTEL_INT0002_VGPIO)	+=3D intel_int0002_vgpio.o
-> > +obj-$(CONFIG_INTEL_IOM)			+=3D intel_iom.o
-> >  obj-$(CONFIG_INTEL_MENLOW)		+=3D intel_menlow.o
-> >  obj-$(CONFIG_INTEL_OAKTRAIL)		+=3D intel_oaktrail.o
-> >  obj-$(CONFIG_INTEL_VBTN)		+=3D intel-vbtn.o
-> > diff --git a/drivers/platform/x86/intel_iom.c
-> > b/drivers/platform/x86/intel_iom.c
-> > new file mode 100644
-> > index 000000000000..ece0fe720b2d
-> > --- /dev/null
-> > +++ b/drivers/platform/x86/intel_iom.c
-> > @@ -0,0 +1,133 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Intel Core SoC Input Output Manager (IOM) driver.
-> > + *
-> > + * This driver provides access to the Input Output Manager (IOM)
-> > +(that
-> > + * is part of Tiger Lake SoC) registers that can be used to know
-> > +about
-> > + * Type-C Sub System related information (such as Type-C port status,
-> > + * activity type on Type-C ports).
-> > + *
-> > + * Copyright (C) 2020, Intel Corporation
-> > + * Author: Rajmohan Mani <rajmohan.mani@intel.com>  */
-> > +
-> > +#include <linux/io.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_data/x86/intel_iom.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/slab.h>
-> > +
-> > +#define IOM_PORT_STATUS_OFFSET				0x560
-> > +
-> > +struct intel_iom {
-> > +	struct device *dev;
-> > +	void __iomem *regbar;
-> > +};
-> > +
-> > +static struct intel_iom iom_dev;
->=20
-> Why just one?  Why is this static?
->=20
-
-There is just one IOM device in the system.
-
-> > +
-> > +/**
-> > + * intel_iom_get() - Get IOM device instance
-> > + *
-> > + * This function returns the IOM device instance. This also ensures
-> > +that
-> > + * this driver cannot be unloaded while the caller has the instance.
-> > + *
-> > + * Call intel_iom_put() to release the instance.
-> > + *
-> > + * Returns IOM device instance on success or error pointer otherwise.
-> > + */
-> > +struct intel_iom *intel_iom_get(void) {
-> > +	struct device *dev =3D get_device(iom_dev.dev);
->=20
-> Wht if dev is NULL?
->=20
-
-Ack. Will add a check for NULL.
-
-> > +
-> > +	/* Prevent this driver from being unloaded while in use */
-> > +	if (!try_module_get(dev->driver->owner)) {
->=20
-> Why are you poking around in a random device's driver's owner?
->=20
-> That's not ok.  And probably totally racy.
->=20
-> Handle module reference counts properly, not like this.
->=20
-
-Ack. Will use THIS_MODULE here.
-
-> And why does it even matter that you incremented the module reference
-> count?  What is that "protecting" you from?
->=20
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_dr=
+v.c
+index 6267f706e8ee..cd6fe96e10c1 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2370,6 +2370,51 @@ static int netvsc_unregister_vf(struct net_device *v=
+f_netdev)
+ 	return NOTIFY_OK;
+ }
 =20
-To prevent this driver from being unloaded, while it is being used.
-
-> > +		put_device(iom_dev.dev);
-> > +		return ERR_PTR(-EBUSY);
-> > +	}
-> > +
-> > +	return &iom_dev;
-> > +}
-> > +EXPORT_SYMBOL_GPL(intel_iom_get);
->=20
-> Who calls this function?
->=20
-
-Intel PMC USB mux control driver, in this case.
-The callers are expected to call intel_iom_get() before using the
-intel_iom_port_status(), after which intel_iom_put() can be called
-to release the IOM device instance.
-
-> > +
-> > +/**
-> > + * intel_iom_put() - Put IOM device instance
-> > + * @iom: IOM device instance
-> > + *
-> > + * This function releases the IOM device instance created using
-> > + * intel_iom_get() and allows the driver to be unloaded.
-> > + *
-> > + * Call intel_iom_put() to release the instance.
-> > + */
-> > +void intel_iom_put(struct intel_iom *iom) {
-> > +	if (!iom)
-> > +		return;
-> > +
-> > +	module_put(iom->dev->driver->owner);
->=20
-> And if the device doesn't have a driver?  boom :(
->=20
-> Don't do this.
->=20
-
-Ack. Will use THIS_MODULE here.
-
-> > +	put_device(iom->dev);
-> > +}
-> > +EXPORT_SYMBOL_GPL(intel_iom_put);
-> > +
-> > +/**
-> > + * intel_iom_port_status() - Get status bits for the Type-C port
-> > + * @iom: IOM device instance
-> > + * @port: Type-C port number
-> > + * @status: pointer to receive the status bits
-> > + *
-> > + * Returns 0 on success, error otherwise.
-> > + */
-> > +int intel_iom_port_status(struct intel_iom *iom, u8 port, u32
-> > +*status) {
-> > +	void __iomem *reg;
-> > +
-> > +	if (!iom)
-> > +		return -ENODEV;
-> > +
-> > +	if (!status || (port > IOM_MAX_PORTS - 1))
-> > +		return -EINVAL;
-> > +
-> > +	reg =3D iom->regbar + IOM_PORT_STATUS_OFFSET + IOM_REG_LEN *
-> port;
-> > +
-> > +	*status =3D ioread32(reg);
-> > +
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(intel_iom_port_status);
->=20
-> So the whole driver is here just to read, directly from memory, a single
-> 32 bit value?
-
-Yes.
-
-> Doesn't that seem like a lot of overkill?  Why can't the caller just
-> do this themselves?
->=20
-
-Ack.
-Intel PMC USB mux device is part of the PCH, while IOM is part of the SoC.
-So I thought it made sense to keep these 2 devices / drivers apart, despite
-the overkill. Heikki also agreed with this approach, given the above.
-
-> greg k-h
++static ssize_t tx_indirection_table_show(struct device *dev,
++					 struct device_attribute *dev_attr,
++					 char *buf)
++{
++	struct net_device *ndev =3D to_net_dev(dev);
++	struct net_device_context *ndc =3D netdev_priv(ndev);
++	int i =3D 0;
++	ssize_t offset =3D 0;
++
++	for (i =3D 0; i < VRSS_SEND_TAB_SIZE; i++)
++		offset +=3D sprintf(buf + offset, "%u ", ndc->tx_table[i]);
++	buf[offset - 1] =3D '\n';
++
++	return offset;
++}
++static DEVICE_ATTR_RO(tx_indirection_table);
++
++static ssize_t rx_indirection_table_show(struct device *dev,
++					 struct device_attribute *dev_attr,
++					 char *buf)
++{
++	struct net_device *ndev =3D to_net_dev(dev);
++	struct net_device_context *ndc =3D netdev_priv(ndev);
++	int i =3D 0;
++	ssize_t offset =3D 0;
++
++	for (i =3D 0; i < ITAB_NUM; i++)
++		offset +=3D sprintf(buf + offset, "%u ", ndc->rx_table[i]);
++	buf[offset - 1] =3D '\n';
++
++	return offset;
++}
++static DEVICE_ATTR_RO(rx_indirection_table);
++
++static struct attribute *netvsc_dev_attrs[] =3D {
++	&dev_attr_tx_indirection_table.attr,
++	&dev_attr_rx_indirection_table.attr,
++	NULL
++};
++
++const struct attribute_group netvsc_dev_group =3D {
++	.name =3D NULL,
++	.attrs =3D netvsc_dev_attrs,
++};
++
+ static int netvsc_probe(struct hv_device *dev,
+ 			const struct hv_vmbus_device_id *dev_id)
+ {
+@@ -2410,6 +2455,7 @@ static int netvsc_probe(struct hv_device *dev,
+=20
+ 	net->netdev_ops =3D &device_ops;
+ 	net->ethtool_ops =3D &ethtool_ops;
++	net->sysfs_groups[0] =3D &netvsc_dev_group;
+ 	SET_NETDEV_DEV(net, &dev->device);
+=20
+ 	/* We always need headroom for rndis header */
+--=20
+2.25.1
