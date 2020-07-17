@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD5522314E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E083B22314D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgGQCwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 22:52:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51538 "EHLO huawei.com"
+        id S1726559AbgGQCvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 22:51:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48198 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726230AbgGQCwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 22:52:19 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CE4CBA8B7E7047906218;
-        Fri, 17 Jul 2020 10:52:17 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Jul 2020
- 10:52:11 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <hayashi.kunihiko@socionext.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <p.zabel@pengutronix.de>,
-        <yamada.masahiro@socionext.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wanghai38@huawei.com>
-Subject: [PATCH] net: ethernet: ave: Fix error returns in ave_init
-Date:   Fri, 17 Jul 2020 10:50:49 +0800
-Message-ID: <20200717025049.43027-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+        id S1726230AbgGQCvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 22:51:48 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2Y0EhFf7jwAAA--.241S2;
+        Fri, 17 Jul 2020 10:51:33 +0800 (CST)
+From:   Kaige Li <likaige@loongson.cn>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH 1/2] ALSA: hda/realtek: Fix headset mic on Loongson platform
+Date:   Fri, 17 Jul 2020 10:51:31 +0800
+Message-Id: <1594954292-1703-1-git-send-email-likaige@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxf2Y0EhFf7jwAAA--.241S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4xJFy3Kr48XF4UKFyfJFb_yoW8CFWrpF
+        1rAa1rWw4xXr9IvrWfGr1jgr18G3WxCFyrZFW5u3WIq34kCrWDKrW2qF4avr13Gr95Gr43
+        Zrn5uay5WF4YgwUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUatC7UUU
+        UU=
+X-CM-SenderInfo: 5olntxtjh6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When regmap_update_bits failed in ave_init(), calls of the functions
-reset_control_assert() and clk_disable_unprepare() were missed.
-Add goto out_reset_assert to do this.
+Add pin quirks to enable use of the headset mic on Loongson platform.
 
-Fixes: 57878f2f4697 ("net: ethernet: ave: add support for phy-mode setting of system controller")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Kaige Li <likaige@loongson.cn>
 ---
- drivers/net/ethernet/socionext/sni_ave.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/ethernet/socionext/sni_ave.c b/drivers/net/ethernet/socionext/sni_ave.c
-index f2638446b62e..81b554dd7221 100644
---- a/drivers/net/ethernet/socionext/sni_ave.c
-+++ b/drivers/net/ethernet/socionext/sni_ave.c
-@@ -1191,7 +1191,7 @@ static int ave_init(struct net_device *ndev)
- 	ret = regmap_update_bits(priv->regmap, SG_ETPINMODE,
- 				 priv->pinmode_mask, priv->pinmode_val);
- 	if (ret)
--		return ret;
-+		goto out_reset_assert;
- 
- 	ave_global_reset(ndev);
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4c7e191..b227be3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6041,6 +6041,7 @@ enum {
+ 	ALC290_FIXUP_SUBWOOFER_HSJACK,
+ 	ALC269_FIXUP_THINKPAD_ACPI,
+ 	ALC269_FIXUP_DMIC_THINKPAD_ACPI,
++	ALC269_FIXUP_LOONGSON_HDA,
+ 	ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+@@ -6381,6 +6382,14 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+ 	},
++	[ALC269_FIXUP_LOONGSON_HDA] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1b, 0x02214c40 }, /* Front Mic */
++			{ 0x15, 0x01014030 }, /* Rear Mic */
++			{ }
++		},
++	},
+ 	[ALC269_FIXUP_DELL4_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -7654,6 +7663,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+ 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MACH-WX9", ALC256_FIXUP_HUAWEI_MACH_WX9_PINS),
++	SND_PCI_QUIRK(0x10ec, 0x0269, "Loongson HDA", ALC269_FIXUP_LOONGSON_HDA),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
 -- 
-2.17.1
+2.1.0
 
