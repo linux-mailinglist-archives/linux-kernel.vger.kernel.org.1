@@ -2,250 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259E0223A7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9109223A85
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgGQL0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 07:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbgGQL0n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 07:26:43 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5D7C08C5C0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 04:26:43 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id s192so2034313vkh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 04:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5E9FxeV8r0Kl53Po7D0HEeofAYDOqosJLkJd0MD2Tk8=;
-        b=nVbzsZEbmCTZXaV8MAK2Ht6VC63/rhQuD/TF1ZrBIFHDIw3D90nYg9iaM4c3FusD8g
-         At6NQM9+nZBOluA4bvaXZufJJcxv7iaCZab5H258ZRcL/IX9Ko1O+B1rGjlHivBQmeTM
-         nutJ2HXsrwg8RL7YCZpmHswJ4ZB/kOm9foPD879qycvpf/VpO/9k61rBIV/6/itIjOwO
-         UdT/3bl7gEb+WEcrBYoRN9QJfcZ189r/yq5i4Tck5xBUTzNN1E3yO+rdjRFoYCt6s42X
-         XlQ8FvTr8SvWcIgKxRmPZDsW6mCPVHWqtK17shVzIqrl4vFaFOkmoknFMT0NR035EaDZ
-         b8tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5E9FxeV8r0Kl53Po7D0HEeofAYDOqosJLkJd0MD2Tk8=;
-        b=WZ3s9GH/XZupa3BifEjkbzogE1YyDxmFxAvjviaBGhSv9QZkYiBxoTrT/SC198Ffrs
-         g2CWj8FTqwP7mIb3koj/eLZVgXTpauK2BjM6Q7jvi+N7uRXwqxziGQO7dPh9itDa3V5z
-         lPtj3cmSvagnFL7XxeZCanbkasTbcMxhKrh2dmbDjlnZZIXvCpwygsODb9tdZ5X8rZid
-         cTCRTkSQPrT85F0MJYCYB6a/6xMXje0XSsagktjM6Y3BVA7NTQulaog0zfA3s9pcDFc7
-         CzHO+7oFU2BEkVRA8x+0dTVHcxNekToxEvAMNGXxE5KiLN3QvTYTaZTRYbcIazRQIHh/
-         aStg==
-X-Gm-Message-State: AOAM530w9Luqcl+GhX7Oe6gVdPw/SgjefUAypTTQmOmP8rIgEdYRO9M9
-        B6jOTIK2TBFQJcfqXR1pMpYIDegF/h8zJLUJgHLMQg==
-X-Google-Smtp-Source: ABdhPJytvrpEpafyX3EjSmJ2gDHSBAaKDmrCpIzufz5I7b/XMY1p4Jiph99BFWgX0W9GbZg07t6c4gVENm8rT4pAT6o=
-X-Received: by 2002:a1f:3f0f:: with SMTP id m15mr6733654vka.53.1594985202239;
- Fri, 17 Jul 2020 04:26:42 -0700 (PDT)
+        id S1726463AbgGQL3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 07:29:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:39156 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725950AbgGQL3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 07:29:20 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5F4B79D3570F161523B9;
+        Fri, 17 Jul 2020 19:29:17 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Jul 2020
+ 19:29:08 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <haren@linux.ibm.com>,
+        <dave.hansen@linux.intel.com>, <npiggin@gmail.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] powerpc: Remove unneeded inline functions
+Date:   Fri, 17 Jul 2020 19:27:14 +0800
+Message-ID: <20200717112714.19304-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+In-Reply-To: <20200715031939.31968-1-yuehaibing@huawei.com>
+References: <20200715031939.31968-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-References: <20200710110819.28965-1-benchuanggli@gmail.com>
-In-Reply-To: <20200710110819.28965-1-benchuanggli@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 17 Jul 2020 13:26:05 +0200
-Message-ID: <CAPDyKFrvzZSYWkqD_JgZSCmF8p+Bj7JXfdbZ5D=OsszTPsSDdw@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 02/21] mmc: core: UHS-II support, modify power-up sequence
-To:     Ben Chuang <benchuanggli@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Takahiro Akashi <takahiro.akashi@linaro.org>,
-        greg.tu@genesyslogic.com.tw
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Jul 2020 at 13:07, Ben Chuang <benchuanggli@gmail.com> wrote:
->
-> From: AKASHI Takahiro <takahiro.akashi@linaro.org>
->
-> According to Fig. 3-35 in "SD Host Controller Simplified Spec. Ver4.20":
-> - Prepare vdd1, vdd2 and ios.timing for using after/in step (2)
-> - chip_select is not used in UHS-II, used to return to the legacy flow
+Both of those functions are only called from 64-bit only code, so the
+stubs should not be needed at all.
 
-Thanks for pointing to the spec, but please explain why/what/how for
-the change - as this helps me to review.
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ arch/powerpc/include/asm/mmu_context.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-I am going to stop commenting on each patch's commit message, beyond
-this patch - as it seems the same comment applies to more patches.
+diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
+index 1a474f6b1992..7f3658a97384 100644
+--- a/arch/powerpc/include/asm/mmu_context.h
++++ b/arch/powerpc/include/asm/mmu_context.h
+@@ -218,8 +218,6 @@ static inline void inc_mm_active_cpus(struct mm_struct *mm) { }
+ static inline void dec_mm_active_cpus(struct mm_struct *mm) { }
+ static inline void mm_context_add_copro(struct mm_struct *mm) { }
+ static inline void mm_context_remove_copro(struct mm_struct *mm) { }
+-static inline void mm_context_add_vas_windows(struct mm_struct *mm) { }
+-static inline void mm_context_remove_vas_windows(struct mm_struct *mm) { }
+ #endif
+ 
+ 
+-- 
+2.17.1
 
->
-> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> ---
->  drivers/mmc/core/core.c      | 62 ++++++++++++++++++++++++------------
->  drivers/mmc/core/regulator.c | 14 ++++++++
->  2 files changed, 56 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index 8d2b808e9b58..85c83c82ad0c 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -1315,33 +1315,51 @@ void mmc_power_up(struct mmc_host *host, u32 ocr)
->         if (host->ios.power_mode == MMC_POWER_ON)
->                 return;
->
-> -       mmc_pwrseq_pre_power_on(host);
-> +       if (host->flags & MMC_UHS2_SUPPORT) {
-> +               /* TODO: handle 'ocr' parameter */
-> +               host->ios.vdd = fls(host->ocr_avail) - 1;
-> +               host->ios.vdd2 = fls(host->ocr_avail_uhs2) - 1;
-> +               if (mmc_host_is_spi(host))
-> +                       host->ios.chip_select = MMC_CS_HIGH;
-> +               else
-> +                       host->ios.chip_select = MMC_CS_DONTCARE;
-> +               host->ios.timing = MMC_TIMING_UHS2;
 
-If I understand correctly, the intent is to always try to initialize
-the UHS-II interface/phy if that is supported. That doesn't seem
-correct to me. What about if the SD card doesn't support UHS-II, then
-we should use the legacy SD interface instead right?
-
-Or perhaps the MMC_UHS2_SUPPORT bit becomes cleared somewhere in the
-error path when first trying to initialize an UHS-II card, from
-subsequent changes?
-
-So, assuming that is the intent then, I am still not sure about this approach.
-
-What about if we instead always start with legacy SD initialization?
-When we have read the OCR register, via mmc_send_app_op_cond(), we can
-check if the card supports UHS-II by looking at the UHS-II Card Status
-(bit 29).
-
-If it turns out that the card supports UHS-II and the host does as
-well, then we do a mmc_power_off() to completely reset the
-card/host/phy. Then we can call into a UHS-II specific path, that
-tries to power on and initialize things according to the UHS-II spec.
-
-In this way, we are going to prioritize initialization of legacy SD
-cards to remain quick, as we won't try to use UHS-II unless the card
-supports it. Moreover, I get the impression that we can keep the
-existing code more as is - and instead introduce UHS-II specifics in a
-separate path. This also also for UHS-II specific optimizations, I
-think.
-
-> +       } else {
-> +               mmc_pwrseq_pre_power_on(host);
->
-> -       host->ios.vdd = fls(ocr) - 1;
-> -       host->ios.power_mode = MMC_POWER_UP;
-> -       /* Set initial state and call mmc_set_ios */
-> -       mmc_set_initial_state(host);
-> +               host->ios.vdd = fls(ocr) - 1;
-> +               host->ios.power_mode = MMC_POWER_UP;
-> +               /* Set initial state and call mmc_set_ios */
-> +               mmc_set_initial_state(host);
->
-> -       mmc_set_initial_signal_voltage(host);
-> +               mmc_set_initial_signal_voltage(host);
->
-> -       /*
-> -        * This delay should be sufficient to allow the power supply
-> -        * to reach the minimum voltage.
-> -        */
-> -       mmc_delay(host->ios.power_delay_ms);
-> -
-> -       mmc_pwrseq_post_power_on(host);
-> +               /*
-> +                * This delay should be sufficient to allow the power supply
-> +                * to reach the minimum voltage.
-> +                */
-> +               mmc_delay(host->ios.power_delay_ms);
->
-> +               mmc_pwrseq_post_power_on(host);
-> +       }
->         host->ios.clock = host->f_init;
-> -
->         host->ios.power_mode = MMC_POWER_ON;
-> +
->         mmc_set_ios(host);
->
-> -       /*
-> -        * This delay must be at least 74 clock sizes, or 1 ms, or the
-> -        * time required to reach a stable voltage.
-> -        */
-> -       mmc_delay(host->ios.power_delay_ms);
-> +       if (host->flags & MMC_UHS2_SUPPORT)
-> +               /*
-> +                * This delay should be sufficient to allow the power supply
-> +                * to reach the minimum voltage.
-> +                */
-> +               /*  TODO: avoid an immediate value */
-> +               mmc_delay(10);
-> +       else
-> +               /*
-> +                * This delay must be at least 74 clock sizes, or 1 ms, or the
-> +                * time required to reach a stable voltage.
-> +                */
-> +               mmc_delay(host->ios.power_delay_ms);
->  }
->
->  void mmc_power_off(struct mmc_host *host)
-> @@ -2307,7 +2325,11 @@ void mmc_start_host(struct mmc_host *host)
->
->         if (!(host->caps2 & MMC_CAP2_NO_PRESCAN_POWERUP)) {
->                 mmc_claim_host(host);
-> -               mmc_power_up(host, host->ocr_avail);
-> +
-> +               /* Power up here will make UHS2 init ugly. */
-> +               if (!(host->caps & MMC_CAP_UHS2))
-> +                       mmc_power_up(host, host->ocr_avail);
-> +
-
-According to my suggestions, then this would not be needed.
-
->                 mmc_release_host(host);
->         }
->
-> diff --git a/drivers/mmc/core/regulator.c b/drivers/mmc/core/regulator.c
-> index 96b1d15045d6..05556225d9ac 100644
-> --- a/drivers/mmc/core/regulator.c
-> +++ b/drivers/mmc/core/regulator.c
-> @@ -247,6 +247,7 @@ int mmc_regulator_get_supply(struct mmc_host *mmc)
->
->         mmc->supply.vmmc = devm_regulator_get_optional(dev, "vmmc");
->         mmc->supply.vqmmc = devm_regulator_get_optional(dev, "vqmmc");
-> +       mmc->supply.vmmc2 = devm_regulator_get_optional(dev, "vmmc2");
-
-Please move the regulator thingy here into a separate patch. Please
-make sure corresponding header file, adding the vmmc2 to it is part of
-that change as well.
-
->
->         if (IS_ERR(mmc->supply.vmmc)) {
->                 if (PTR_ERR(mmc->supply.vmmc) == -EPROBE_DEFER)
-> @@ -266,6 +267,19 @@ int mmc_regulator_get_supply(struct mmc_host *mmc)
->                 dev_dbg(dev, "No vqmmc regulator found\n");
->         }
->
-> +       if (IS_ERR(mmc->supply.vmmc2)) {
-> +               if (PTR_ERR(mmc->supply.vmmc2) == -EPROBE_DEFER)
-> +                       return -EPROBE_DEFER;
-> +               dev_dbg(dev, "No vmmc2 regulator found\n");
-> +       } else {
-> +               ret = mmc_regulator_get_ocrmask(mmc->supply.vmmc2);
-> +               if (ret > 0)
-> +                       mmc->ocr_avail_uhs2 = ret;
-> +               else
-> +                       dev_warn(dev, "Failed getting UHS2 OCR mask: %d\n",
-> +                                ret);
-> +       }
-> +
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(mmc_regulator_get_supply);
-> --
-> 2.27.0
->
-
-Kind regards
-Uffe
