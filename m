@@ -2,312 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C980223E36
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A764223E5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgGQOiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgGQOiV (ORCPT
+        id S1727029AbgGQOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:40:19 -0400
+Received: from out28-149.mail.aliyun.com ([115.124.28.149]:40932 "EHLO
+        out28-149.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbgGQOkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:38:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43F5C0619D5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:38:21 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id q17so5473382pfu.8
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=v3iUKEbLYWfsczfwrFSZXq+1aNtBq+PmA02aYD040KQ=;
-        b=nj/0lhQdZB3jssibx14fW90ksLOsc0ETd0ln27VnZhe8BaCxQLHYHj/Va1B6xFKU0F
-         abpZLWx7qruA9enT7AsUjJyKw/eUsyLMAK7h13Rl/E7fYYVh/1Ag1uCimI7o2QirXMUg
-         ToLjsM+bYCfhZRcQit2p1j4/ORs5aS0kWD5Jb0/T5eku3gYBZpQ9EIHhs3Up8A7C0G0a
-         JFEoSa4ktgsuaO3TJf7R9Rgrie0JDFvttD7qKqegenhkx8IM4wNy/gEeTsdEbbf4hoQS
-         5CI+sWfscbF6F4Y9vev+WjwMHIoX8eii+7PU01tH9HO/whHemHVai/B2IC/Y50ZTzSEB
-         j+/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=v3iUKEbLYWfsczfwrFSZXq+1aNtBq+PmA02aYD040KQ=;
-        b=XZfeYGVvMFtP+ltdEcaN6DEgxZBRg6QM14xB7riKoNYuPFoHGVwPtHbuknKYrlyWm/
-         MxMx7yk7ILS90HBA7wcyxw6kBeRbejxM1Bcn3su2d5F5F6u+TvfDdUBC5OS5buvqlUPL
-         lrsx89dPW0ku1Thguj5Hke/5SByX+vsIBFGtrfYpbtKuh6zjfdRktJEJiTnW9THERslF
-         QxZhap3SZWFzD6pbUAVLLzOWmZXsXTdcje44KpUG+QHRHg7r2cog6o6StSv38fOZRVdF
-         cerywtNfLgoH1fD5axaq6pKImW710gnzs6JlBqWSzB/V/h1WrtsINpMSLz8Bs5Uc0PMg
-         1sGg==
-X-Gm-Message-State: AOAM530xPxIS+wwGnuqXwurAON5mTUDpTlnqh46vSIIsUpWdWaYzOiqE
-        rpzougIKsZACI3H0rgqyL4xR
-X-Google-Smtp-Source: ABdhPJyxwQwgQpL7eEGDuOMnVMDLGfNSdG/typASfyzO5d+e+eGK06cmf4/XSt3z2gT5VWOYUncRGQ==
-X-Received: by 2002:a05:6a00:845:: with SMTP id q5mr8232927pfk.247.1594996700782;
-        Fri, 17 Jul 2020 07:38:20 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6382:1ac4:99cf:535d:1e55:97cf])
-        by smtp.gmail.com with ESMTPSA id o42sm3204518pje.10.2020.07.17.07.38.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Jul 2020 07:38:19 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 20:08:13 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, evgreen@chromium.org,
-        ohad@wizery.com, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH 2/3] remoteproc: qcom_q6v5_mss: Add MBA log extraction
- support
-Message-ID: <20200717143813.GA3301@Mani-XPS-13-9360>
-References: <20200716123630.21892-1-sibis@codeaurora.org>
- <20200716123630.21892-3-sibis@codeaurora.org>
- <20200716134316.GI3271@Mani-XPS-13-9360>
- <4f91a75852104dbeafea3af0c8673505@codeaurora.org>
+        Fri, 17 Jul 2020 10:40:19 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07445006|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0713628-0.00445208-0.924185;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03301;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.I3R317z_1594996812;
+Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I3R317z_1594996812)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Fri, 17 Jul 2020 22:40:13 +0800
+Subject: Re: [PATCH v6 2/2] clocksource: Ingenic: Add support for the Ingenic
+ X1000 OST.
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org, tglx@linutronix.de,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+References: <20200710170259.29028-1-zhouyanjie@wanyeetech.com>
+ <20200710170259.29028-3-zhouyanjie@wanyeetech.com>
+ <dd01a117-265a-e64b-5871-22f0f752834a@linaro.org>
+ <f0dd2ea5-0627-35cf-5a58-aaff0bcb22cd@wanyeetech.com>
+ <9c64bc35-c043-6e4b-cfc3-50f19e4cb315@linaro.org>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <77c49585-63c2-7784-83cc-bf6151095b69@wanyeetech.com>
+Date:   Fri, 17 Jul 2020 22:40:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f91a75852104dbeafea3af0c8673505@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <9c64bc35-c043-6e4b-cfc3-50f19e4cb315@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 08:28:50PM +0530, Sibi Sankar wrote:
-> On 2020-07-16 19:13, Manivannan Sadhasivam wrote:
-> > Hi Sibi,
-> > 
-> > On Thu, Jul 16, 2020 at 06:06:29PM +0530, Sibi Sankar wrote:
-> > > On SC7180 the MBA firmware stores the bootup text logs in a 4K segment
-> > > at the beginning of the MBA region. Add support to extract the logs
-> > > which will be useful to debug mba boot/authentication issues.
-> > > 
-> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > > ---
-> > >  drivers/remoteproc/qcom_q6v5_mss.c | 41
-> > > ++++++++++++++++++++++++++----
-> > >  1 file changed, 36 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/remoteproc/qcom_q6v5_mss.c
-> > > b/drivers/remoteproc/qcom_q6v5_mss.c
-> > > index 95e21ed607cb9..4ddf084b2c6fc 100644
-> > > --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> > > +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> > > @@ -9,6 +9,7 @@
-> > > 
-> > >  #include <linux/clk.h>
-> > >  #include <linux/delay.h>
-> > > +#include <linux/devcoredump.h>
-> > >  #include <linux/dma-mapping.h>
-> > >  #include <linux/interrupt.h>
-> > >  #include <linux/kernel.h>
-> > > @@ -37,6 +38,8 @@
-> > > 
-> > >  #define MPSS_CRASH_REASON_SMEM		421
-> > > 
-> > > +#define MBA_LOG_SIZE			SZ_4K
-> > > +
-> > >  /* RMB Status Register Values */
-> > >  #define RMB_PBL_SUCCESS			0x1
-> > > 
-> > > @@ -139,6 +142,7 @@ struct rproc_hexagon_res {
-> > >  	int version;
-> > >  	bool need_mem_protection;
-> > >  	bool has_alt_reset;
-> > > +	bool has_mba_logs;
-> > >  	bool has_spare_reg;
-> > >  };
-> > > 
-> > > @@ -200,6 +204,7 @@ struct q6v5 {
-> > >  	struct qcom_sysmon *sysmon;
-> > >  	bool need_mem_protection;
-> > >  	bool has_alt_reset;
-> > > +	bool has_mba_logs;
-> > >  	bool has_spare_reg;
-> > >  	int mpss_perm;
-> > >  	int mba_perm;
-> > > @@ -518,6 +523,19 @@ static int q6v5_rmb_mba_wait(struct q6v5
-> > > *qproc, u32 status, int ms)
-> > >  	return val;
-> > >  }
-> > > 
-> > > +static void q6v5_dump_mba_logs(struct q6v5 *qproc)
-> > > +{
-> > > +	struct rproc *rproc = qproc->rproc;
-> > > +	void *data;
-> > > +
-> > > +	data = vmalloc(MBA_LOG_SIZE);
-> > 
-> > Is there any specific reason to use vmalloc for the size of 4K?
-> 
-> data is passed onto dev_coredumpv
-> which takes ownership of the memory
-> and would eventually do a vfree of the
-> data.
-> 
+Hi Daniel,
 
-Ah, okay.
+在 2020/7/17 下午4:02, Daniel Lezcano 写道:
+> On 17/07/2020 08:13, Zhou Yanjie wrote:
+>> Hi Daniel,
+>>
+>> 在 2020/7/17 下午12:20, Daniel Lezcano 写道:
+>>> On 10/07/2020 19:02, 周琰杰 (Zhou Yanjie) wrote:
+>>>> X1000 and SoCs after X1000 (such as X1500 and X1830) had a separate
+>>>> OST, it no longer belongs to TCU. This driver will register both a
+>>>> clocksource and a sched_clock to the system.
+>>>>
+>>>> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+>>>> Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
+>>>> Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
+>>>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>>> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+>>>> ---
+>>>>
+>>>> Notes:
+>>>>       v1->v2:
+>>>>       Fix compile warnings.
+>>>>       Reported-by: kernel test robot <lkp@intel.com>
+>>>>            v2->v3:
+>>>>       No change.
+>>>>            v3->v4:
+>>>>       1.Rename "ost" to "sysost"
+>>>>       1.Remove unrelated changes.
+>>>>       2.Remove ost_clock_parent enum.
+>>>>       3.Remove ost->percpu_timer_channel/ost->global_timer_channel.
+>>>>       4.Set up independent .recalc_rate/.set_rate for percpu/global
+>>>> timer.
+>>>>       5.No longer call functions in variable declarations.
+>>>>            v4->v5:
+>>>>       Use "of_io_request_and_map()" instead "of_iomap()".
+>>>>       Suggested-by: Paul Cercueil <paul@crapouillou.net>
+>>>>            v5->v6:
+>>>>       No change.
+>>>>
+>>>>    drivers/clocksource/Kconfig          |  11 +
+>>>>    drivers/clocksource/Makefile         |   1 +
+>>>>    drivers/clocksource/ingenic-sysost.c | 539
+>>>> +++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 551 insertions(+)
+>>>>    create mode 100644 drivers/clocksource/ingenic-sysost.c
+>>>>
+>>>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+>>>> index 91418381fcd4..1bca8b8fb30f 100644
+>>>> --- a/drivers/clocksource/Kconfig
+>>>> +++ b/drivers/clocksource/Kconfig
+>>>> @@ -696,6 +696,17 @@ config INGENIC_TIMER
+>>>>        help
+>>>>          Support for the timer/counter unit of the Ingenic JZ SoCs.
+>>>>    +config INGENIC_SYSOST
+>>>> +    bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
+>>> We usually use silent options and let the platform's Kconfig enable it.
+>>> We show up the option only when COMPILE_TEST is enabled.
+>>>
+>>> Is there a reason to do it differently?
+>>
+>> Do you mean
+>>
+>> bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
+>>
+>> or
+>>
+>> default MACH_INGENIC ?
+> Both, no default here.
+>
+> eg.
+>
+> bool "Clocksource/timer using the SYSOST in Ingenic X SoCs" if COMPILE_TEST
+>
+> and
+>
+> in arch/mips/Kconfig in the config MACH_INGENIC section :
+>
+> ...
+> select INGENIC_SYSOST
+> ...
 
-Thanks,
-Mani
 
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > > +	if (!data)
-> > > +		return;
-> > > +
-> > > +	memcpy(data, qproc->mba_region, MBA_LOG_SIZE);
-> > > +	dev_coredumpv(&rproc->dev, data, MBA_LOG_SIZE, GFP_KERNEL);
-> > > +}
-> > > +
-> > >  static int q6v5proc_reset(struct q6v5 *qproc)
-> > >  {
-> > >  	u32 val;
-> > > @@ -838,6 +856,7 @@ static int q6v5_mba_load(struct q6v5 *qproc)
-> > >  {
-> > >  	int ret;
-> > >  	int xfermemop_ret;
-> > > +	bool mba_load_err = false;
-> > > 
-> > >  	qcom_q6v5_prepare(&qproc->q6v5);
-> > > 
-> > > @@ -931,7 +950,7 @@ static int q6v5_mba_load(struct q6v5 *qproc)
-> > >  	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_q6);
-> > >  	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_modem);
-> > >  	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_nc);
-> > > -
-> > > +	mba_load_err = true;
-> > >  reclaim_mba:
-> > >  	xfermemop_ret = q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm,
-> > > true,
-> > >  						false, qproc->mba_phys,
-> > > @@ -939,6 +958,8 @@ static int q6v5_mba_load(struct q6v5 *qproc)
-> > >  	if (xfermemop_ret) {
-> > >  		dev_err(qproc->dev,
-> > >  			"Failed to reclaim mba buffer, system may become unstable\n");
-> > > +	} else if (qproc->has_mba_logs & mba_load_err) {
-> > > +		q6v5_dump_mba_logs(qproc);
-> > >  	}
-> > > 
-> > >  disable_active_clks:
-> > > @@ -968,7 +989,7 @@ static int q6v5_mba_load(struct q6v5 *qproc)
-> > >  	return ret;
-> > >  }
-> > > 
-> > > -static void q6v5_mba_reclaim(struct q6v5 *qproc)
-> > > +static void q6v5_mba_reclaim(struct q6v5 *qproc, bool err_path)
-> > >  {
-> > >  	int ret;
-> > >  	u32 val;
-> > > @@ -1006,6 +1027,9 @@ static void q6v5_mba_reclaim(struct q6v5 *qproc)
-> > >  				      qproc->mba_size);
-> > >  	WARN_ON(ret);
-> > > 
-> > > +	if (qproc->has_mba_logs && err_path && !ret)
-> > > +		q6v5_dump_mba_logs(qproc);
-> > > +
-> > >  	ret = qcom_q6v5_unprepare(&qproc->q6v5);
-> > >  	if (ret) {
-> > >  		q6v5_pds_disable(qproc, qproc->proxy_pds,
-> > > @@ -1255,7 +1279,7 @@ static void qcom_q6v5_dump_segment(struct
-> > > rproc *rproc,
-> > >  						false, true,
-> > >  						qproc->mpss_phys,
-> > >  						qproc->mpss_size);
-> > > -			q6v5_mba_reclaim(qproc);
-> > > +			q6v5_mba_reclaim(qproc, false);
-> > >  		}
-> > >  	}
-> > >  }
-> > > @@ -1297,7 +1321,7 @@ static int q6v5_start(struct rproc *rproc)
-> > >  	return 0;
-> > > 
-> > >  reclaim_mpss:
-> > > -	q6v5_mba_reclaim(qproc);
-> > > +	q6v5_mba_reclaim(qproc, true);
-> > > 
-> > >  	return ret;
-> > >  }
-> > > @@ -1313,7 +1337,7 @@ static int q6v5_stop(struct rproc *rproc)
-> > >  	if (ret == -ETIMEDOUT)
-> > >  		dev_err(qproc->dev, "timed out on wait\n");
-> > > 
-> > > -	q6v5_mba_reclaim(qproc);
-> > > +	q6v5_mba_reclaim(qproc, false);
-> > > 
-> > >  	return 0;
-> > >  }
-> > > @@ -1717,6 +1741,7 @@ static int q6v5_probe(struct platform_device
-> > > *pdev)
-> > > 
-> > >  	qproc->version = desc->version;
-> > >  	qproc->need_mem_protection = desc->need_mem_protection;
-> > > +	qproc->has_mba_logs = desc->has_mba_logs;
-> > > 
-> > >  	ret = qcom_q6v5_init(&qproc->q6v5, pdev, rproc,
-> > > MPSS_CRASH_REASON_SMEM,
-> > >  			     qcom_msa_handover);
-> > > @@ -1808,6 +1833,7 @@ static const struct rproc_hexagon_res
-> > > sc7180_mss = {
-> > >  	},
-> > >  	.need_mem_protection = true,
-> > >  	.has_alt_reset = false,
-> > > +	.has_mba_logs = true,
-> > >  	.has_spare_reg = true,
-> > >  	.version = MSS_SC7180,
-> > >  };
-> > > @@ -1843,6 +1869,7 @@ static const struct rproc_hexagon_res
-> > > sdm845_mss = {
-> > >  	},
-> > >  	.need_mem_protection = true,
-> > >  	.has_alt_reset = true,
-> > > +	.has_mba_logs = true,
-> > >  	.has_spare_reg = false,
-> > >  	.version = MSS_SDM845,
-> > >  };
-> > > @@ -1870,6 +1897,7 @@ static const struct rproc_hexagon_res
-> > > msm8998_mss = {
-> > >  	},
-> > >  	.need_mem_protection = true,
-> > >  	.has_alt_reset = false,
-> > > +	.has_mba_logs = false,
-> > >  	.has_spare_reg = false,
-> > >  	.version = MSS_MSM8998,
-> > >  };
-> > > @@ -1900,6 +1928,7 @@ static const struct rproc_hexagon_res
-> > > msm8996_mss = {
-> > >  	},
-> > >  	.need_mem_protection = true,
-> > >  	.has_alt_reset = false,
-> > > +	.has_mba_logs = false,
-> > >  	.has_spare_reg = false,
-> > >  	.version = MSS_MSM8996,
-> > >  };
-> > > @@ -1933,6 +1962,7 @@ static const struct rproc_hexagon_res
-> > > msm8916_mss = {
-> > >  	},
-> > >  	.need_mem_protection = false,
-> > >  	.has_alt_reset = false,
-> > > +	.has_mba_logs = false,
-> > >  	.has_spare_reg = false,
-> > >  	.version = MSS_MSM8916,
-> > >  };
-> > > @@ -1974,6 +2004,7 @@ static const struct rproc_hexagon_res
-> > > msm8974_mss = {
-> > >  	},
-> > >  	.need_mem_protection = false,
-> > >  	.has_alt_reset = false,
-> > > +	.has_mba_logs = false,
-> > >  	.has_spare_reg = false,
-> > >  	.version = MSS_MSM8974,
-> > >  };
-> > > --
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> > > Forum,
-> > > a Linux Foundation Collaborative Project
-> > > 
-> 
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project.
+Sure, I will do it in the next version.
+
+
+Thanks and best regards!
+
+
+>> This driver has some origins from "INGENIC_TIMER" driver and
+>> "INGENIC_OST" driver.
+>> Early Ingenic processors used TCU (timer/counter unit, has 6 or 8
+>> generic timer channels) to provide clocksource and clockevent (both with
+>> only 16bit precision). This part of the processor can only use
+>> "INGENIC_TIMER" driver.
+>>
+>> Later processors provide an independent 32bit or 64bit timer channel
+>> (still under TCU, known as ost channel, this channel can not generate
+>> interrupt) to provid higher precision clocksource. The "INGENIC_OST"
+>> driver is for this channel. These processors can use "INGENIC_TIMER"
+>> driver, but using "INGENIC_OST" driver to provide higher precision
+>> clocksource would be a better choice (clockevent still needs to be
+>> provided by generic timer channel of TCU, and still 16bit precision).
+>>
+>> And the recent processors provide a SYSOST components, it is independent
+>> from TCU, including a 64bit timer channel for clocksource and a 32bit
+>> timer channel for clockevent. Although these processors can also use
+>> "INGENIC_TIMER" driver, but the better choice is completely independent
+>> use of "INGENIC_SYSOST" driver to provide higher precision clocksource
+>> and clockevent.
+> Ok, the rating should do the job then.
+>
+> Thanks for the explanation.
+>
+>> You may have already noticed that this independent SYSOST component is
+>> like an upgraded and streamlined TCU, which only retains one generic
+>> timer channel that can generate interrupts, upgrade it from 16bit to
+>> 32bit, and then retain the 64bit ost channel. so the driver code and
+>> Kconfig code of this patch is largely referenced
+>> "INGENIC_TIMER" driver and "INGENIC_OST" driver.
+>>
+>> Thanks and best regards!
+>>
+>>>> +    default MACH_INGENIC
+>>>> +    depends on MIPS || COMPILE_TEST
+>>>> +    depends on COMMON_CLK
+>>>> +    select MFD_SYSCON
+>>>> +    select TIMER_OF
+>>>> +    select IRQ_DOMAIN
+>>>> +    help
+>>>> +      Support for the SYSOST of the Ingenic X Series SoCs.
+>>>> +
+>>> [ ... ]
+>>>
+>>>
+>
