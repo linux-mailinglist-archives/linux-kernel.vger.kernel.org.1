@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FB5223D96
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1541C223D9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgGQOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:04:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:52782 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgGQOEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:04:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5614930E;
-        Fri, 17 Jul 2020 07:04:12 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 81FE13F66E;
-        Fri, 17 Jul 2020 07:04:11 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org, arm@kernel.org, soc@kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] firmware: arm_scmi: Use NULL instead of integer 0 for rate pointer
-Date:   Fri, 17 Jul 2020 15:04:05 +0100
-Message-Id: <20200717140405.17905-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727771AbgGQOEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:04:42 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43098 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727085AbgGQOEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:04:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594994677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ngwVhwuIZ9N8nKS6j+ofJuXNHDXl3d76opbHIrcwguI=;
+        b=V/p3Tl6UQKN7opakCp3LouEVsVGuvdPESD7CLijOlzfbwU/eVFo+wLW/DdxsV39VC4b+KV
+        BK7slq8ta3FTJoQlM7svoiJHtytfLarLUyHy4rPtUKYx5jPB2/fM1wT9MiJSRhuXpOWQC4
+        OK0djNlkQr8r5hq0w+5v9/GcDe6UGEk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-Jbaj011tOHKhkci7uVfqMw-1; Fri, 17 Jul 2020 10:04:32 -0400
+X-MC-Unique: Jbaj011tOHKhkci7uVfqMw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 757FA18A1DE1;
+        Fri, 17 Jul 2020 14:04:30 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-118-144.rdu2.redhat.com [10.10.118.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C117D6FEF8;
+        Fri, 17 Jul 2020 14:04:29 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>
+Subject: [PATCH 0/2] x86/unwind: A couple of fixes for newly forked tasks
+Date:   Fri, 17 Jul 2020 09:04:24 -0500
+Message-Id: <cover.1594994374.git.jpoimboe@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kbuild test robot reports the following sparse warning:
+A couple of reliable unwinder fixes for newly forked tasks, which were
+reported by Wang ShaoBo.
 
-drivers/firmware/arm_scmi/clock.c:142:21:
-	sparse: Using plain integer as NULL pointer
+Josh Poimboeuf (2):
+  x86/unwind/orc: Fix ORC for newly forked tasks
+  x86/stacktrace: Fix reliable check for empty user task stacks
 
-Use NULL pointer instead of integer 0 for rate pointer and fix the
-warning.
+ arch/x86/kernel/stacktrace.c | 5 -----
+ arch/x86/kernel/unwind_orc.c | 8 ++++++--
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/firmware/arm_scmi/clock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-Hi Arnd,
-
-Kbuild test robot reported this warning from the soc tree. Can you apply
-this directly or do you prefer pull request. Let me know.
-
-Regards,
-Sudeep
-
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 6593ce87f420..75e39882746e 100644
---- a/drivers/firmware/arm_scmi/clock.c
-+++ b/drivers/firmware/arm_scmi/clock.c
-@@ -139,7 +139,7 @@ static int
- scmi_clock_describe_rates_get(const struct scmi_handle *handle, u32 clk_id,
- 			      struct scmi_clock_info *clk)
- {
--	u64 *rate = 0;
-+	u64 *rate = NULL;
- 	int ret, cnt;
- 	bool rate_discrete = false;
- 	u32 tot_rate_cnt = 0, rates_flag;
---
-2.17.1
+-- 
+2.25.4
 
