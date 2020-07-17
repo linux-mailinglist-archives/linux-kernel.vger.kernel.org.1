@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34E8223606
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056E82235F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgGQHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
+        id S1727969AbgGQHfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728223AbgGQHgi (ORCPT
+        with ESMTP id S1725995AbgGQHfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:36:38 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FFDC061755;
-        Fri, 17 Jul 2020 00:36:38 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b9so5100484plx.6;
-        Fri, 17 Jul 2020 00:36:38 -0700 (PDT)
+        Fri, 17 Jul 2020 03:35:48 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6D2C061755;
+        Fri, 17 Jul 2020 00:35:47 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id d16so6901176edz.12;
+        Fri, 17 Jul 2020 00:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DRaWMxjlA+y9G9x8PTReSZmOggDcJdYbq3Dmt0Z1Wlg=;
-        b=bVorRNjURfPpm/ZSKqoTOVMR2C7tuSII04c0fZPgoqxiw+TqPgU/zea0VfdX0tY28p
-         ePSlmNOrYHl/3msFvHYRzacBAnn11tqA5lVhGLjVv6mol7+1E/4VpY5rXHIQ0ZOx0WE4
-         2Q2RkzYpgg1DzaK/lHWk3cGOH5KI68m8hHaLc/YMx4LQH6CvEIgNLXsfjXmBp1s8nUaT
-         ape+r6gbYCgo+UK5Yb9FxiRzfdE1G83JPO91er6wTnZvhrv0WEUN9OYyz8i+fv8HJTXz
-         KJjifQgJYzpqLB6OJBPCOKcApR2jhUIyHZZqHs+NqMMXceyWaCV/youL4Yf0MTxXCx8S
-         /wqA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6rYK2fP0PxrkgdndFMs+CB5yPwy58yRIUW72EzRYRpM=;
+        b=fKHPgO/RexGvyEJpySfos24rsUVfL9YRkRssjkDn/6i8U0cQynR+belzOptx3qtNFB
+         D5n5GlrYPWeVdIb5XmLE9QHcpOQA8SKVulf1gJev7MvDl8uEWsHyH0FnPKwmNKyPTnPx
+         ClrOn5ns4p5F4G6Gh7RXe2jXGt4eAIRqhQ7NxkWMvK9pZRWvckdVsTyC4w6d44m+vOdw
+         e/WGPHVLjPqxroRjHEB7Q+HpxltGOTYJ1ntNbW9oQ4a5Om/wtMhDQvAB+8T4Cp8WiG6Z
+         UZzVwiN3cW0jH3dIYtWiQZQgypk064gLsU+VAgeu5E+3NdlX32Mj/U7JM8Y2wnUj/CiL
+         ftDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DRaWMxjlA+y9G9x8PTReSZmOggDcJdYbq3Dmt0Z1Wlg=;
-        b=ejTz3E56hLgxQD8eVfLy5bQlu9taij3N8akI6gslafIDdCUSRDFhTY+HEy/E18xZ6v
-         D9svgVH0g+pG3hEpvE0CDpzthY/gA5NJrBhIqueqTwLKhAfycunnAXzPMu/f2DSXOOx6
-         nVW9C6JGwn40Zyw6el9oYbPNf9s6oAZJyDmKVq6Yt4jFOQ6JJ8t7AryQV+yRQ4ed/BnH
-         MRz+NzMRdwbLe+mEdjJoEeG4SrijBWG4Ae3Ukvq4GLsF2IQmYRmsl1b9j6K+z2vclv8o
-         hdhzNN6lFtXhLupSV6hpV1AINhSbLMJBu5r09DH9XxTvEXC9TXuhKH02BcNopIu0E2+B
-         bVvA==
-X-Gm-Message-State: AOAM530zNnoAYdP88UjtUF67ANvTr5kwsImNLRRJgIWYE80nyoFUv4n4
-        MgnuWMmKp5UJ+5AgSnd8Y9I=
-X-Google-Smtp-Source: ABdhPJxW65z1lWnxDX/TTJuegvDEfRlYsjEWa8/jsuGw1+KM8ruoBqM7qzWrTX0AYxVD0xQRndRLqQ==
-X-Received: by 2002:a17:902:8491:: with SMTP id c17mr6569011plo.262.1594971397589;
-        Fri, 17 Jul 2020 00:36:37 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id z25sm6794704pfg.140.2020.07.17.00.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 00:36:37 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v3 6/6] tw68: use generic power management
-Date:   Fri, 17 Jul 2020 13:04:36 +0530
-Message-Id: <20200717073436.249623-7-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717073436.249623-1-vaibhavgupta40@gmail.com>
-References: <20200717073436.249623-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6rYK2fP0PxrkgdndFMs+CB5yPwy58yRIUW72EzRYRpM=;
+        b=SQrm3LxnIS2XTF6evnPxeIfYNPCf7Q6vbba8aFt10QaxG4VgIOZD9jQwiGbH2eqMEF
+         JHTuhD9ulm50uPkzeeVA7ByQN2IRSkfiQKu01+7j8iTUaKOQfE3SifP+0ZZNe5vYdlDm
+         loBv5G/a4zgslikd6z5qo3hOlQSM+maub9dntlMU7LzNAdbYUry0fRHq2pHjpoM+S5yJ
+         Gwuv1IoHv+Pnd7TBWU6OGHsqnbtxt7TohGNCYkUseEVNU4X6EawSetUGIV0o7NDusFU1
+         EhyPbrRj6FFIALj+7xyRR3lixenDJ5hmLS3v8tCvShrvdlHy64HBDQla91GLWT7qyIy9
+         vNTQ==
+X-Gm-Message-State: AOAM5321doa+6ubpNcGT+DJ4DvB8fy14OPEN7cnBEo44TnBkvv/j38kI
+        JRYdDjF1fPI+bLTzAU6QGrrjrygEdNOYhBt66Bw=
+X-Google-Smtp-Source: ABdhPJzIc46u2fVJLDQvnexUFBUqZNTcUAMeHjWcSylf7rW5C7OuSBSemBsdJgcqytTBj1vTY/OEC8EkecyJRtfJtUU=
+X-Received: by 2002:a50:a45d:: with SMTP id v29mr7988933edb.284.1594971346164;
+ Fri, 17 Jul 2020 00:35:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1594708863.git.frank@allwinnertech.com> <b8761e036b25f20873534e5f8d10b37b5d2ce72c.1594708864.git.frank@allwinnertech.com>
+ <4771acd6-ecd3-b8e1-8605-75d78720b1d3@linaro.org>
+In-Reply-To: <4771acd6-ecd3-b8e1-8605-75d78720b1d3@linaro.org>
+From:   Frank Lee <tiny.windzz@gmail.com>
+Date:   Fri, 17 Jul 2020 15:35:35 +0800
+Message-ID: <CAEExFWv9_1kec_b+t+nnvT3cziXzmVa8GzJT3pQAZiCf4KA0ig@mail.gmail.com>
+Subject: Re: [PATCH v4 08/16] thermal: sun8i: add TEMP_CALIB_MASK for
+ calibration data in sun50i_h6_ths_calibrate
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Frank Lee <frank@allwinnertech.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?6buE54OB55Sf?= <huangshuosheng@allwinnertech.com>,
+        liyong@allwinnertech.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With legacy PM, drivers themselves were responsible for managing the
-device's power states and takes care of register states.
+On Fri, Jul 17, 2020 at 12:26 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 14/07/2020 09:13, Frank Lee wrote:
+> > From: Yangtao Li <frank@allwinnertech.com>
+> >
+> > For sun50i_h6_ths_calibrate(), the data read from nvmem needs a round of
+> > calculation. On the other hand, the newer SOC may store other data in
+> > the space other than 12bit sensor data. Add mask operation to read data
+> > to avoid conversion error.
+> >
+> > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > Reviewed-by: Yangtao Li <tiny.windzz@gmail.com>
+>
+> Can you clarify these SoB ?
 
-After upgrading to the generic structure, PCI core will take care of
-required tasks and drivers should do only device-specific operations.
+Previously I used 'Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>',
+maybe this should be removed directly?
 
-The driver was invoking PCI helper functions like pci_save/restore_state()
-which is not recommended.
+>
+> Frank Lee==Yangtao Li==frank@allwinnertech.com==tiny.windzz@gmail.com ?
+>
 
-Compile-Tested only.
+Yeah.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/media/pci/tw68/tw68-core.c | 30 +++++++++++-------------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/media/pci/tw68/tw68-core.c b/drivers/media/pci/tw68/tw68-core.c
-index b45f3ffa3de5..065420b09250 100644
---- a/drivers/media/pci/tw68/tw68-core.c
-+++ b/drivers/media/pci/tw68/tw68-core.c
-@@ -359,10 +359,9 @@ static void tw68_finidev(struct pci_dev *pci_dev)
- 	v4l2_device_unregister(&dev->v4l2_dev);
- }
- 
--#ifdef CONFIG_PM
--
--static int tw68_suspend(struct pci_dev *pci_dev , pm_message_t state)
-+static int __maybe_unused tw68_suspend(struct device *dev_d)
- {
-+	struct pci_dev *pci_dev = to_pci_dev(dev_d);
- 	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
- 	struct tw68_dev *dev = container_of(v4l2_dev,
- 				struct tw68_dev, v4l2_dev);
-@@ -373,24 +372,19 @@ static int tw68_suspend(struct pci_dev *pci_dev , pm_message_t state)
- 
- 	synchronize_irq(pci_dev->irq);
- 
--	pci_save_state(pci_dev);
--	pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
- 	vb2_discard_done(&dev->vidq);
- 
- 	return 0;
- }
- 
--static int tw68_resume(struct pci_dev *pci_dev)
-+static int __maybe_unused tw68_resume(struct device *dev_d)
- {
--	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
-+	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev_d);
- 	struct tw68_dev *dev = container_of(v4l2_dev,
- 					    struct tw68_dev, v4l2_dev);
- 	struct tw68_buf *buf;
- 	unsigned long flags;
- 
--	pci_set_power_state(pci_dev, PCI_D0);
--	pci_restore_state(pci_dev);
--
- 	/* Do things that are done in tw68_initdev ,
- 		except of initializing memory structures.*/
- 
-@@ -408,19 +402,17 @@ static int tw68_resume(struct pci_dev *pci_dev)
- 
- 	return 0;
- }
--#endif
- 
- /* ----------------------------------------------------------- */
- 
-+static SIMPLE_DEV_PM_OPS(tw68_pm_ops, tw68_suspend, tw68_resume);
-+
- static struct pci_driver tw68_pci_driver = {
--	.name	  = "tw68",
--	.id_table = tw68_pci_tbl,
--	.probe	  = tw68_initdev,
--	.remove	  = tw68_finidev,
--#ifdef CONFIG_PM
--	.suspend  = tw68_suspend,
--	.resume   = tw68_resume
--#endif
-+	.name	   = "tw68",
-+	.id_table  = tw68_pci_tbl,
-+	.probe	   = tw68_initdev,
-+	.remove	   = tw68_finidev,
-+	.driver.pm = &tw68_pm_ops,
- };
- 
- module_pci_driver(tw68_pci_driver);
--- 
-2.27.0
-
+Yangtao
