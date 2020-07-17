@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7783B2244D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC672244C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbgGQUAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:00:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42864 "EHLO
+        id S1728724AbgGQUAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:00:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42876 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgGQUAU (ORCPT
+        with ESMTP id S1728455AbgGQUAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:00:20 -0400
-Date:   Fri, 17 Jul 2020 20:00:16 -0000
+        Fri, 17 Jul 2020 16:00:19 -0400
+Date:   Fri, 17 Jul 2020 20:00:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595016017;
+        s=2020; t=1595016018;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Uh+iJAGufNvdwDxNyzfTqpU082+x+VkIhHoVSgZe3RU=;
-        b=tWH0FKiy3IASgLOp0zbOPDIyeFjGiBNWwhH19AJdZ8cnsKu4J5BRWJejAspESO7yDbfVHN
-        /aoizTlAf4HxWEpF7cWXXvC9fEae/ki6/9eRzwEXtfGagjVVbV6IK7Vd5Cc4CnwJI7E5Xx
-        OXk38WNAbGTcCbqdXQjsxIPEKDfo6G/rgMYZ5J6Jx1mmjEibr7fL1SgJeVL79GNdCceY07
-        sdjlGRgGwJJHH8qtvjMfVtviN+sPlLoDG3sAi4sK5bk/SN8i3wBYZWJpb4rPlQMPzcB4jY
-        dkEvXmfsR4ULKTa44juqImYXntYAQfsrQQSW0bdCr7CyOOcPG2eJIsgg37YlGg==
+        bh=iiCwFg3+N6w7BgpdTC3q2ig2n6Ttjqwxdvx7BMmCOTI=;
+        b=mWMyhw3irWKrJQMcsJ17rI7OffZMX6rHm+NpCUknrBQ8qlyDl9t4HOkeJnj9k2wSmdpjtp
+        9YuAb000ENiV/Sd/AVPRtMBUvdsE3rGzKej3DWHyBK/K5UVoUJTveF/12b91qT2dsnkiub
+        BAlwSyS4NZuKEx3GwypSmkRcCV4/ojJe5UXxYh+vWjYPyae8fGdxBfZKRTWd+9IS2EeoMz
+        ED9SfL9z0IZRnO5YpJQN96ccp1MwLtSvOpmQU6MoFsmvmJBCd9Y5+75i287ntAFUdwDl3r
+        h8oLO4ow5PbCoC1In9QhKPCo9GxWL5LP6hYo54wQe7erl5kHTHTuwRHz84vY2g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595016017;
+        s=2020e; t=1595016018;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Uh+iJAGufNvdwDxNyzfTqpU082+x+VkIhHoVSgZe3RU=;
-        b=RCfBlkcTcE2giy9P0a+IjoxEt0agSkhGwPipDvfXFbYNbID1tX2aoTm7hlhfh1oqRjoY1G
-        XaR4UQho47N/gBDQ==
+        bh=iiCwFg3+N6w7BgpdTC3q2ig2n6Ttjqwxdvx7BMmCOTI=;
+        b=MbZM+uXcW+VogFrsLD+6jSpBS2HFSzALwL7bZ8YzCso2dAdpdR55TeoxlImhYMfqxCuaIH
+        HhAPV8uH+yUm1ZDw==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timers: Expand clk forward logic beyond nohz
+Subject: [tip: timers/core] timers: Reuse next expiry cache after nohz exit
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200717140551.29076-10-frederic@kernel.org>
-References: <20200717140551.29076-10-frederic@kernel.org>
+In-Reply-To: <20200717140551.29076-9-frederic@kernel.org>
+References: <20200717140551.29076-9-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <159501601684.4006.18089332729710334046.tip-bot2@tip-bot2>
+Message-ID: <159501601744.4006.18407986100047143357.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,100 +59,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     1f8a4212dc83f8353843fabf6465fd918372fbbf
-Gitweb:        https://git.kernel.org/tip/1f8a4212dc83f8353843fabf6465fd918372fbbf
+Commit-ID:     90d52f65f303091be17b5f4ffab7090b2064b4a1
+Gitweb:        https://git.kernel.org/tip/90d52f65f303091be17b5f4ffab7090b2064b4a1
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Fri, 17 Jul 2020 16:05:48 +02:00
+AuthorDate:    Fri, 17 Jul 2020 16:05:47 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 17 Jul 2020 21:55:24 +02:00
+CommitterDate: Fri, 17 Jul 2020 21:55:23 +02:00
 
-timers: Expand clk forward logic beyond nohz
+timers: Reuse next expiry cache after nohz exit
 
-As for next_expiry, the base->clk catch up logic will be expanded beyond
-NOHZ in order to avoid triggering useless softirqs.
-
-If softirqs should only fire to expire pending timers, periodic base->clk
-increments must be skippable for random amounts of time.  Therefore prepare
-to catch-up with missing updates whenever an up-to-date base clock is
-needed.
+Now that the next expiry it tracked unconditionally when a timer is added,
+this information can be reused on a tick firing after exiting nohz.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juri Lelli <juri.lelli@redhat.com>
-Link: https://lkml.kernel.org/r/20200717140551.29076-10-frederic@kernel.org
+Link: https://lkml.kernel.org/r/20200717140551.29076-9-frederic@kernel.org
 
 ---
- kernel/time/timer.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ kernel/time/timer.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 13f48ee..1be92b5 100644
+index 76fd964..13f48ee 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -888,19 +888,12 @@ get_target_base(struct timer_base *base, unsigned tflags)
- 
- static inline void forward_timer_base(struct timer_base *base)
- {
--#ifdef CONFIG_NO_HZ_COMMON
- 	unsigned long jnow;
- 
--	/*
--	 * We only forward the base when we are idle or have just come out of
--	 * idle (must_forward_clk logic), and have a delta between base clock
--	 * and jiffies. In the common case, run_timers will take care of it.
--	 */
--	if (likely(!base->must_forward_clk))
-+	if (!base->must_forward_clk)
- 		return;
- 
- 	jnow = READ_ONCE(jiffies);
--	base->must_forward_clk = base->is_idle;
- 	if ((long)(jnow - base->clk) < 2)
- 		return;
- 
-@@ -915,7 +908,6 @@ static inline void forward_timer_base(struct timer_base *base)
- 			return;
- 		base->clk = base->next_expiry;
- 	}
--#endif
- }
- 
- 
-@@ -1667,10 +1659,8 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 		 * logic is only maintained for the BASE_STD base, deferrable
- 		 * timers may still see large granularity skew (by design).
- 		 */
--		if ((expires - basem) > TICK_NSEC) {
--			base->must_forward_clk = true;
-+		if ((expires - basem) > TICK_NSEC)
- 			base->is_idle = true;
--		}
- 	}
- 	raw_spin_unlock(&base->lock);
- 
-@@ -1769,16 +1759,7 @@ static inline void __run_timers(struct timer_base *base)
- 	/*
- 	 * timer_base::must_forward_clk must be cleared before running
- 	 * timers so that any timer functions that call mod_timer() will
--	 * not try to forward the base. Idle tracking / clock forwarding
--	 * logic is only used with BASE_STD timers.
--	 *
--	 * The must_forward_clk flag is cleared unconditionally also for
--	 * the deferrable base. The deferrable base is not affected by idle
--	 * tracking and never forwarded, so clearing the flag is a NOOP.
--	 *
--	 * The fact that the deferrable base is never forwarded can cause
--	 * large variations in granularity for deferrable timers, but they
--	 * can be deferred for long periods due to idle anyway.
-+	 * not try to forward the base.
+@@ -1706,13 +1706,11 @@ static int collect_expired_timers(struct timer_base *base,
+ 	 * the next expiring timer.
  	 */
- 	base->must_forward_clk = false;
- 
-@@ -1791,6 +1772,7 @@ static inline void __run_timers(struct timer_base *base)
- 		while (levels--)
- 			expire_timers(base, heads + levels);
+ 	if ((long)(now - base->clk) > 2) {
+-		unsigned long next = __next_timer_interrupt(base);
+-
+ 		/*
+ 		 * If the next timer is ahead of time forward to current
+ 		 * jiffies, otherwise forward to the next expiry time:
+ 		 */
+-		if (time_after(next, now)) {
++		if (time_after(base->next_expiry, now)) {
+ 			/*
+ 			 * The call site will increment base->clk and then
+ 			 * terminate the expiry loop immediately.
+@@ -1720,7 +1718,7 @@ static int collect_expired_timers(struct timer_base *base,
+ 			base->clk = now;
+ 			return 0;
+ 		}
+-		base->clk = next;
++		base->clk = base->next_expiry;
  	}
-+	base->must_forward_clk = true;
- 	raw_spin_unlock_irq(&base->lock);
- 	timer_base_unlock_expiry(base);
+ 	return __collect_expired_timers(base, heads);
  }
