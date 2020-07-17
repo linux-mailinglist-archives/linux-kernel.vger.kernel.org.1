@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB452223D37
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640C5223D3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgGQNon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:44:43 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:50372 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgGQNom (ORCPT
+        id S1726399AbgGQNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbgGQNq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:44:42 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HDiYd2116560;
-        Fri, 17 Jul 2020 08:44:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594993474;
-        bh=SMXuWJsxmjPAyDIe0p0NeiPV/Q2TG3sFLtbT/0PqEnY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=qzxIl9xXQKM6im7cQ5vM1Tw31Um4DZ0oONxaswNz4lHb/NF4LJGCzeIjw3jwZrxkG
-         LVy7qIxwoLVf3jsOmYtH34ehFpCKH7F1hNaoCzkKD2RL3Wv19gus4cs9rVkFA+NkGG
-         GcINGjzBsnmjVmy7/hVDiRKVOzAFKA9mH7KQ+FaA=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06HDiXdP057305
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 08:44:33 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
- Jul 2020 08:44:33 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 17 Jul 2020 08:44:33 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HDiR2r061930;
-        Fri, 17 Jul 2020 08:44:29 -0500
-Subject: Re: [PATCH] arm64: arch_k3: enable chipid driver
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Nishanth Menon <nm@ti.com>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20200619162527.1226-1-grygorii.strashko@ti.com>
- <4bbdfff6-8fba-0568-b243-5da9ee6e29b6@ti.com>
- <5529a5b2-f929-76fe-d27f-43d3e0432b43@ti.com>
- <cf3aa171-fb75-b118-ea02-eb380b48b0cf@ti.com>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <00f4fd6e-a21d-6100-ee28-1a31f4e16d1d@ti.com>
-Date:   Fri, 17 Jul 2020 16:44:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 17 Jul 2020 09:46:58 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64895C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:46:58 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l23so933871qkk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:46:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5P4OIwY9QUK4h9roSSRi0+Ffy4n0VXQDJm6kBXWOS4s=;
+        b=YW3OQKQAfKVqT1Egb+B5MNUYPBtYtlKNXMwuYmzLvdi7fy6reGmedSDwvvnOfy47cM
+         d0jaSw2R5WUXi6fRuqRDCZnOh3YRmXZSczGb3nih0o4OjKD9hoAq9Bi/3z5SwN7JtrpO
+         2SPm12xa2vVkKe7nCOflLjYArXFFSX1EumnABmBUypo04a+VitxcEzcNb9yeTIj5+WI+
+         +p/YUjHNAKU9DqXMWdMxknux94s/t7PRJ+q2JLkLcwiM7AMrFtfxXgtUVGUqQAueOdWP
+         6mJzjZHOqK3wS+ub16E4Ur+zPSNKw5EkRno0o864Saa0TxlYhUfaQ02l08SBp4wz6sSc
+         sBZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5P4OIwY9QUK4h9roSSRi0+Ffy4n0VXQDJm6kBXWOS4s=;
+        b=gpIostEjoxyO2Yw2RbzTI8jPkpAqFzljBzzxQVFXWKmvkkHkBR4pflRrlyLAGJ5+k3
+         95jA8uHmn2LV2EGoGFZQtMxOfs+QiyxnlfRPMlPqqZ7ZRd1pxHHIvus7xfpyQ8NvmRBu
+         j03yewbuz3Hd92Ei5y+fdutYbo7Xcp0KpyjU0O+4nEmxJjzf8BqzetREJsorGBSpqx+v
+         CHAz20oRGh7KpK6/FVCllp3JBLTza4dpBv88OPmTBDSHgpBlmm1BhhxEkgpWxjSkPMdM
+         Zagb+S+VDTXmJ/fA4dMpub5Qdh3egwomWZj/pJUPUUGA6yLMLbX8ZEP+40d/JnFFSeBu
+         BZlg==
+X-Gm-Message-State: AOAM530FZptZNrMmU12TmzLce5qVrxIm8vU6m8eNTk4X5z1u7roj1NCg
+        omi3OTa6EwDUk89LQMLRTgbKo13dGmc=
+X-Google-Smtp-Source: ABdhPJzXknVXEJjneVcxfIJvL2dOl6s/d14Cum6dyvI7mkbXB9HDOq3h0XdtY3AXjRjBotB2EKUiIg==
+X-Received: by 2002:a05:620a:a56:: with SMTP id j22mr8716602qka.193.1594993617582;
+        Fri, 17 Jul 2020 06:46:57 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d8sm10497586qkl.118.2020.07.17.06.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 06:46:56 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 17 Jul 2020 09:46:54 -0400
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/7] x86/boot: Remove run-time relocations from
+ compressed kernel
+Message-ID: <20200717134654.GA3187880@rani.riverdale.lan>
+References: <20200714023836.2310569-1-nivedita@alum.mit.edu>
+ <20200715004133.1430068-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <cf3aa171-fb75-b118-ea02-eb380b48b0cf@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200715004133.1430068-1-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2020 13:03, Grygorii Strashko wrote:
-> Hi All,
+On Tue, Jul 14, 2020 at 08:41:26PM -0400, Arvind Sankar wrote:
+> The compressed kernel currently contains bogus run-time relocations in
+> the startup code in head_{32,64}.S, which are generated by the linker,
+> but must not actually be processed at run-time.
 > 
-> On 07/07/2020 10:02, Peter Ujfalusi wrote:
->> On 01/07/2020 13.18, Grygorii Strashko wrote:
->>> On 19/06/2020 19:25, Grygorii Strashko wrote:
->>>> Select TI chip id driver for TI's SoCs based on K3 architecture to
->>>> provide
->>>> this information to user space and Kernel as it is required by other
->>>> drivers to determine SoC revision to function properly.
->>>>
->>>> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->>>> Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
->>>> ---
->>>>    arch/arm64/Kconfig.platforms | 1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/arch/arm64/Kconfig.platforms 
->>>> b/arch/arm64/Kconfig.platforms
->>>> index 8dd05b2a925c..1d3710e3626a 100644
->>>> --- a/arch/arm64/Kconfig.platforms
->>>> +++ b/arch/arm64/Kconfig.platforms
->>>> @@ -98,6 +98,7 @@ config ARCH_K3
->>>>        select TI_SCI_PROTOCOL
->>>>        select TI_SCI_INTR_IRQCHIP
->>>>        select TI_SCI_INTA_IRQCHIP
->>>> +    select TI_K3_SOCINFO
->>>>        help
->>>>          This enables support for Texas Instruments' K3 multicore SoC
->>>>          architecture.
->>>>
->>>
->>> Are there any comments?
->>
->> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->>
->>> The driver and dt changes were merged [1][2] and for adding new 
->>> am654x SoC
->>> revision SR2.0 we need this driver to be enabled always as other drivers
->>> are
->>> going to use SOC Bus API intensively.
->>>
->>> No dependencies.
->>>
->>> [1]
->>> https://lore.kernel.org/lkml/20200512123449.16517-1-grygorii.strashko@ti.com/ 
->>>
->>>
->>> [2]
->>> https://lore.kernel.org/lkml/20200613164346.28852-1-grygorii.strashko@ti.com/ 
->>>
->>>
+> This generates warnings when linking with the BFD linker, and errors
+> with LLD, which defaults to erroring on run-time relocations in read-only
+> sections. It also requires the -z noreloc-overflow hack for the 64-bit
+> kernel, which prevents us from linking it as -pie on an older BFD linker
+> (<= 2.26) or on LLD, because the locations that are to be apparently
+> relocated are only 32-bits in size and so cannot really have
+> R_X86_64_RELATIVE relocations.
 > 
-> Any chances it can be applied for 5.9?
+> This series aims to get rid of these relocations. I've build- and
+> boot-tested with combinations of clang/gcc-10 with lld/bfd-2.34, and
+> gcc-4.9.0 with bfd-2.24, skipping clang on 32-bit because it currently
+> has other issues [0].
+> 
 
-Queuing up for 5.9, thanks.
+Hi Thomas, Ingo, Borislav, would you be able to take a look over this
+series in time for 5.9?
 
-Sorry there has been some confusion on my behalf regarding the config 
-changes.
-
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks.
