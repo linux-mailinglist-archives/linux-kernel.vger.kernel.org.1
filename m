@@ -2,238 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28AF223C26
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6833B223C28
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgGQNQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        id S1726855AbgGQNSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbgGQNQt (ORCPT
+        with ESMTP id S1726090AbgGQNSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:16:49 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFD4C061755;
-        Fri, 17 Jul 2020 06:16:48 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id s10so11005272wrw.12;
-        Fri, 17 Jul 2020 06:16:48 -0700 (PDT)
+        Fri, 17 Jul 2020 09:18:03 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCE7C08C5C0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:18:02 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id j11so12571842ljo.7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vs4AfRAnPExeeuyiR5DGWNr9f7rEdWEHMwAyJzCVFy0=;
-        b=X1X650+/OJIdkuT8tYULqZ7epcSuQNC0aWmohUOFdAm4DabLoremwwlRcdAvIp7CBF
-         Y15XYfiFFoT9lN+Q9SfCFQD3ihAccJLL6cEwDDtoIYKXrq5qS9+jHMSKEN5zLD4BsnTW
-         sap9hRQk9LnKCRkdEi9gmojGpC2CKHl2K/ScY73WUiwn5Mc4UgOPOkObf/xZRyo729Qd
-         efKiBGb+jpdd1TLT8Mi8V2MQwZ2k+oP45ywvsF/mgO/ZgTpqtvGYSQr2llxuqCTKJzLE
-         IZhOAkoFNxait8ho4i4kXhyRGYEvc0V6dErp5mORYaFA44Pp3FX6ug/jn7TYfmsYoQKO
-         XNBQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YM/u3gjvM4q2JWx7UhekKDRsr2AbTo4qfrXy3xVIS9k=;
+        b=sf/T5sXRhkN8YEk+EOhFcH7el1N/kDRdyYraixUm9LORleyvBRdP8ykec29CpkXDZ0
+         XdWo4qDS1Eb3DhdzVwzo3n7xUQVm7CNj//prYhxniDyOhmZgnDxQq2loH/Q1zmNqNpw1
+         lB8Qmjes7B8dWb1K+U5rZm9CwsCECVIpnOt3TWQ8DL4f4muqq9Bsc8cf06KfSeuQYX50
+         2IbpMhKO+GSpgked7oB5bNy8GmbF/7mxtbN+DMyEhnj92oIcfQPJ53kNUUSYjZMYWn8V
+         FX0kTIWd/AuJ37dNa7Ivap7Qnqg8eIGtZoFy5rLiFsUVU4H+aiD9jnatv4aor2jp97pk
+         MGKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vs4AfRAnPExeeuyiR5DGWNr9f7rEdWEHMwAyJzCVFy0=;
-        b=ZWGX8w4NmBbj2N3D7hRkQieGxwhXceWtrH/mutabob9Ki40PpoNBAefd/7mLbLD0oN
-         vg6u7TaNGpAwqLR5BxCFKnY+IW2pJr/seTZDoXsY87WJw/wA0UGgwXK+qJvaA5j73jRy
-         bQsAeoHrW96Ci52C/V1QD0+3q8iWQJ3qoPfm9+uR3LS+M2qC6BKT2te7FHsIEGIK0dy9
-         167KXZzUjNr2FZL2tc4/nMREjY9Kkuz7KjYnIH17iI64X4gY7Jo2/BgB6CR6MIag+Usw
-         lMGk5b/ZfWagXFB7Otl+HrSpUnpM5WD7DBr5rO9jqSl07KWWuFud8QvGxKdATSXsyB9i
-         4pBQ==
-X-Gm-Message-State: AOAM530UTXxz84MOScXw0ldN8KcPXv7FtYZiP5m8HDsNL68IfCz0bbD/
-        FjKBkdj4+2vZefE9LHUEX2MDjgDN
-X-Google-Smtp-Source: ABdhPJyXulweRUs3+pX+8YMzfHldby1Vmk6XsWfpdOE7cWknggpCQHsBXrm55Cf7GiHPKNqz9goA7w==
-X-Received: by 2002:a05:6000:1cf:: with SMTP id t15mr11049470wrx.180.1594991807586;
-        Fri, 17 Jul 2020 06:16:47 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host-87-7-31-173.retail.telecomitalia.it. [87.7.31.173])
-        by smtp.googlemail.com with ESMTPSA id y6sm14559922wrr.74.2020.07.17.06.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 06:16:47 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rob Herring <robh@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v10 2/2] devicetree: bindings: phy: Document ipq806x dwc3 qcom phy
-Date:   Fri, 17 Jul 2020 15:16:32 +0200
-Message-Id: <20200717131635.11076-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717131635.11076-1-ansuelsmth@gmail.com>
-References: <20200717131635.11076-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YM/u3gjvM4q2JWx7UhekKDRsr2AbTo4qfrXy3xVIS9k=;
+        b=QmxxRqDhs5D0r2xRtJRmv5QhkPnbHigFUMEfHFyDbQIxK4nQtCfTnw9w6JtibY+NaF
+         7aS0PgTu6CyfH6h9HsVUphN7k2xrxgQh/gfuaP1eOX6VDQzMB+aOqjcFFPQG0CfnmAS3
+         6F/VJxy+dgza2KrRKTc15gxRz8bFjvtD7KubI+cCMvTKpvkNVHyfk7klUY4qKIVfnF/r
+         wAqKk4ClT3ecOtpzZZCj2s2xIURUqZ0wwy14fmd/63IK/4Jb4jtamu9VLXwUKz2kdczy
+         vNAvE+66f9dKF+JR07aBN/VArdyDwHOpfySapV4wacM29NitJBNlPK9vui9Cjh5jZUnV
+         WGtQ==
+X-Gm-Message-State: AOAM533oNhnckTmb2jcg04kH5oDPVcpImLD6D6Fp/0McXr77jqy9Kkkz
+        p0JzMJ75Nsbg6B5BnWkFVI71GuEvN0SqcA7PJkunpw4wdkQ=
+X-Google-Smtp-Source: ABdhPJzyiKZ2NKZx86wa+HGnmDvLl67Vrz1HhWzCdoYhwu2nhGboSac3BbZ6dVMwxJ5PgjdsgB9Ac7A5V093fgDDewk=
+X-Received: by 2002:a2e:910c:: with SMTP id m12mr4340344ljg.274.1594991881148;
+ Fri, 17 Jul 2020 06:18:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200627105437.453053-1-apusaka@google.com> <20200627185320.RFC.v1.1.Icea550bb064a24b89f2217cf19e35b4480a31afd@changeid>
+ <91CFE951-262A-4E83-8550-25445AE84B5A@holtmann.org> <CAJQfnxFSfbUbPLVC-be41TqNXzr_6hLq2z=u521HL+BqxLHn_Q@mail.gmail.com>
+ <7BBB55E0-FBD9-40C0-80D9-D5E7FC9F80D2@holtmann.org> <CALWDO_Vrn_pXMbkXifKFazha7BYPqLpCthqHOb9ZmVE3wDRMfA@mail.gmail.com>
+ <F17D321B-DCD2-4A80-97EE-B4589FBFF406@holtmann.org>
+In-Reply-To: <F17D321B-DCD2-4A80-97EE-B4589FBFF406@holtmann.org>
+From:   Alain Michaud <alainmichaud@google.com>
+Date:   Fri, 17 Jul 2020 09:17:49 -0400
+Message-ID: <CALWDO_WHZppfGoUNZbNoH0ACCUfOhwYtNXRpH+pvsAx5bGVNqA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/2] Bluetooth: queue ACL packets if no handle is found
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Archie Pusaka <apusaka@google.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document dwc3 qcom phy hs and ss phy bindings needed to correctly
-inizialize and use usb on ipq806x SoC.
+Hi Marcel,
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v7:
-* Drop useless AllOf 
-v6:
-* Add maximum value
-v5:
-* Fix dt_binding_check error
-v4:
-* Add qcom to specific bindings
-v3:
-* Use explicit reg instead of regmap
+On Fri, Jul 17, 2020 at 2:51 AM Marcel Holtmann <marcel@holtmann.org> wrote=
+:
+>
+> Hi Alain,
+>
+> > >>> There is a possibility that an ACL packet is received before we
+> > >>> receive the HCI connect event for the corresponding handle. If this
+> > >>> happens, we discard the ACL packet.
+> > >>>
+> > >>> Rather than just ignoring them, this patch provides a queue for
+> > >>> incoming ACL packet without a handle. The queue is processed when
+> > >>> receiving a HCI connection event. If 2 seconds elapsed without
+> > >>> receiving the HCI connection event, assume something bad happened
+> > >>> and discard the queued packet.
+> > >>>
+> > >>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > >>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > >>
+> > >> so two things up front. I want to hide this behind a HCI_QUIRK_OUT_O=
+F_ORDER_ACL that a transport driver has to set first. Frankly if this kind =
+of out-of-order happens on UART or SDIO transports, then something is obvio=
+usly going wrong. I have no plan to fix up after a fully serialized transpo=
+rt.
+> > >>
+> > >> Secondly, if a transport sets HCI_QUIRK_OUT_OF_ORDER_ACL, then I wan=
+t this off by default. You can enable it via an experimental setting. The r=
+eason here is that we have to make it really hard and fail as often as poss=
+ible so that hardware manufactures and spec writers realize that something =
+is fundamentally broken here.
+> > I don't have any objection to making this explicit enable to non serial=
+ized transports.  However, I do wonder what the intention is around making =
+this off by default.  We already know there is a race condition between the=
+ interupt and bulk endpoints over USB, so this can and does happen.  Hardwa=
+re manufaturers can't relly do much about this other than trying to pull th=
+e interupt endpoint more often, but that's only a workaround, it can't avoi=
+d it all together.
+> >
+> > IMO, this seems like a legitimate fix at the host level and I don't see=
+ any obvious benefits to hide this fix under an experimental feature and ma=
+ke it more difficult for the customers and system integrators to discover.
+>
+> the problem is that this is not a fix. It is papering over a hole and at =
+best a workaround with both eyes closed and hoping for the best. I am not l=
+ooking forward for the first security researcher to figure out that they ha=
+ve a chance to inject an unencrypted packet since we are waiting 2 seconds =
+for the USB transport to get its act together.
+I don't think this is the right characterization but I agree, 2
+seconds would be too long, it would ideally be no longer than the USB
+polling interval diff.
 
- .../bindings/phy/qcom,ipq806x-usb-phy-hs.yaml | 55 ++++++++++++++
- .../bindings/phy/qcom,ipq806x-usb-phy-ss.yaml | 73 +++++++++++++++++++
- 2 files changed, 128 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml
+>
+> In addition, I think that Luiz attempt to align with the poll intervals i=
+nside the USB transport directly is a cleaner and more self-contained appro=
+ach. It also reduces the window of opportunity for any attacker since we ac=
+tually align the USB transport specific intervals with each other.
+I'll have to look at Luiz's patch and think through if this really
+eliminates the problem.  If may indeed be a more practical approach to
+this problem.
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml
-new file mode 100644
-index 000000000000..23887ebe08fd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/qcom,ipq806x-usb-phy-hs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm ipq806x usb DWC3 HS PHY CONTROLLER
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+description:
-+  DWC3 PHY nodes are defined to describe on-chip Synopsis Physical layer
-+  controllers used in ipq806x. Each DWC3 PHY controller should have its
-+  own node.
-+
-+properties:
-+  compatible:
-+    const: qcom,ipq806x-usb-phy-hs
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - const: ref
-+      - const: xo
-+
-+required:
-+  - compatible
-+  - "#phy-cells"
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+
-+    hs_phy_0: phy@110f8800 {
-+      compatible = "qcom,ipq806x-usb-phy-hs";
-+      reg = <0x110f8800 0x30>;
-+      clocks = <&gcc USB30_0_UTMI_CLK>;
-+      clock-names = "ref";
-+      #phy-cells = <0>;
-+    };
-diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml
-new file mode 100644
-index 000000000000..fa30c24b4405
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/qcom,ipq806x-usb-phy-ss.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm ipq806x usb DWC3 SS PHY CONTROLLER
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+description:
-+  DWC3 PHY nodes are defined to describe on-chip Synopsis Physical layer
-+  controllers used in ipq806x. Each DWC3 PHY controller should have its
-+  own node.
-+
-+properties:
-+  compatible:
-+    const: qcom,ipq806x-usb-phy-ss
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - const: ref
-+      - const: xo
-+
-+  qcom,rx-eq:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Override value for rx_eq.
-+    default: 4
-+    maximum: 7
-+
-+  qcom,tx-deamp-3_5db:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Override value for transmit preemphasis.
-+    default: 23
-+    maximum: 63
-+
-+  qcom,mpll:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Override value for mpll.
-+    default: 0
-+    maximum: 7
-+
-+required:
-+  - compatible
-+  - "#phy-cells"
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+
-+    ss_phy_0: phy@110f8830 {
-+      compatible = "qcom,ipq806x-usb-phy-ss";
-+      reg = <0x110f8830 0x30>;
-+      clocks = <&gcc USB30_0_MASTER_CLK>;
-+      clock-names = "ref";
-+      #phy-cells = <0>;
-+    };
--- 
-2.27.0
-
+>
+> Regards
+>
+> Marcel
+>
