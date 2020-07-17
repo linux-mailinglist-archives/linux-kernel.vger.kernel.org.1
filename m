@@ -2,107 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A980224502
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D7B224504
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgGQUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:15:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42952 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgGQUPg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:15:36 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595016935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRr/bKkS7/U/6PsK6K4fGaOQKjxoGqV1/oWizy/cOuM=;
-        b=eYf4efJLxfwui+MVHDpTy8jq6eCnUI4+IQiXhuXrDc4H0ue1Al5tBX1sJ4qLQ4wKQqH1u2
-        956eMEIeLHrk4AfWY5YdKGxN9t86NZq3LOzOQFAsm6RnPo+CGISWOc2KlRkaUn2M/19rH4
-        PYVIYHad73Ryn5glPiK5I8Ua8CBz3nnmTYEgdtkKVwdTzgktOGxwDnX6z7GNL5dRIPnJqy
-        r/HqCXNvaIeqpARi2Kz1dBDslRlnKL4CiEdmkZBbw8zK9Ji5leH8jWEX9kH0weXqiDfItp
-        SSCH6bjrJ4+kfEzJotJE4V3qfD2igHia1mhyVz2S0soBzGh56xAFUglkAE79eA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595016935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRr/bKkS7/U/6PsK6K4fGaOQKjxoGqV1/oWizy/cOuM=;
-        b=D4hS5as4Ya+T4lxgDZSTebQLTY2wKeMIwZFGGYs735Ikk9vClgh/patDA2HRNIR53PLoWD
-        EXoAABBo5bb3KHCg==
-To:     Muchun Song <songmuchun@bytedance.com>, peterz@infradead.org,
-        mingo@kernel.org, bigeasy@linutronix.de, namit@vmware.com
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH RESEND] smp: Fix a potential usage of stale nr_cpus
-In-Reply-To: <20200716070457.53255-1-songmuchun@bytedance.com>
-References: <20200716070457.53255-1-songmuchun@bytedance.com>
-Date:   Fri, 17 Jul 2020 22:15:34 +0200
-Message-ID: <87k0z1rj89.fsf@nanos.tec.linutronix.de>
+        id S1728739AbgGQUPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:15:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726771AbgGQUPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 16:15:42 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5E4E2074B;
+        Fri, 17 Jul 2020 20:15:40 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 16:15:38 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Gregory Herrero <gregory.herrero@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] recordmcount: only record relocation of type
+ R_AARCH64_CALL26 on arm64.
+Message-ID: <20200717161538.39edfa46@oasis.local.home>
+In-Reply-To: <20200717200119.GP17377@ltoracle>
+References: <20200717143338.19302-1-gregory.herrero@oracle.com>
+        <20200717133003.025f2096@oasis.local.home>
+        <20200717200119.GP17377@ltoracle>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Muchun,
+On Fri, 17 Jul 2020 22:01:19 +0200
+Gregory Herrero <gregory.herrero@oracle.com> wrote:
 
-Muchun Song <songmuchun@bytedance.com> writes:
+> Thanks Steve.
+> Should I send a V2 to add 'Cc: stable@vger.kernel.org' in the commit
+> description or can someone take care of it when adding the commit to
+> the tree?
 
-> The get_option() maybe return 0, it means that the nr_cpus is
-> not initialized.
+If I was taking it, I would simply add the Cc: stable@vger.kernel.org
+to the commit log, and no resend would be needed.
 
-Good catch, but see below.
+It's up to the ARM64 maintainers to decide in this case.
 
-> Then we will use the stale nr_cpus to initialize
+Cheers,
 
-We use nothing. Please describe your changes in technical neutral
-language.
-
-> the nr_cpu_ids. So fix it.
-
-'So fix it.' is not much valuable information. What about:
-
-    Check the return value to prevent this.
-
-Hmm?
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  kernel/smp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index 472c2b274c65..2a9a04acf123 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -634,8 +634,7 @@ static int __init nrcpus(char *str)
->  {
->  	int nr_cpus;
->  
-> -	get_option(&str, &nr_cpus);
-> -	if (nr_cpus > 0 && nr_cpus < nr_cpu_ids)
-> +	if (get_option(&str, &nr_cpus) && nr_cpus > 0 && nr_cpus < nr_cpu_ids)
->  		nr_cpu_ids = nr_cpus;
->  
->  	return 0;
-
-get_option() can return 0 - 3:
-
- *      0 - no int in string
- *      1 - int found, no subsequent comma
- *      2 - int found including a subsequent comma
- *      3 - hyphen found to denote a range
-
-For this parameter exists only one valid format: '1 - int found, no comma',
-right?
-
-So why fixing it just half and why returning '0' aka success if the
-parameter is bogus?
-
-Thanks,
-
-        tglx
+-- Steve
