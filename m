@@ -2,211 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634D6224727
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 01:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359E8224736
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 01:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728723AbgGQXsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 19:48:22 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:39574 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728562AbgGQXsS (ORCPT
+        id S1728750AbgGQXs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 19:48:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44038 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgGQXs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 19:48:18 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HNmBMP013382;
-        Fri, 17 Jul 2020 18:48:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595029691;
-        bh=jq4rgHcvJJ8L4v7IzJjoMyKc+IOd8AzBCxOmX0OsqdM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=nAggGv61x1G5J2XqEiM57YhQZkQDhm1lsM0/QjH3tL7fnhWz/9v56rWSNJvkFl/P9
-         jbWrB0/iAysU09bNjo8mPIow1pvaw7yVGneFCF5M8SEdla9FUzAT0HX+2h50fGM9Yr
-         ZYFRgGifaez3SHz3q/ybW/bWfxlhUkz2/VlWqgdE=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HNmBAr029966;
-        Fri, 17 Jul 2020 18:48:11 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
- Jul 2020 18:48:11 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 17 Jul 2020 18:48:10 -0500
-Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HNmBTt129102;
-        Fri, 17 Jul 2020 18:48:11 -0500
-Received: from localhost ([10.250.34.57])
-        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 06HNmAmv108326;
-        Fri, 17 Jul 2020 18:48:11 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH v4 6/6] remoteproc: k3-dsp: Add support for L2RAM loading on C66x DSPs
-Date:   Fri, 17 Jul 2020 18:48:00 -0500
-Message-ID: <20200717234800.9423-7-s-anna@ti.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200717234800.9423-1-s-anna@ti.com>
-References: <20200717234800.9423-1-s-anna@ti.com>
+        Fri, 17 Jul 2020 19:48:56 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595029734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hLhSscQ3zjADZ+KvQLXC+idNGz5GUHoq9ureYCScp5U=;
+        b=otR6BaPIX5ohSReVosDJMA7wVnx74Mt1JjlMB/d2YD3fO+9yblYQrARg0Dkk2auM4iL22o
+        aCnjFY+hCu6smfszJQalEPfseSQ9tXZFw8ssK5E36SGeCCzMsE4WzaoKKH9MdqFcNY4PY8
+        LhUR7AsAfVnbYSt5poq5JOXT+hK9C2kUjFd5/NpdAcrA9QktEy9gTJHQbY+ufa4JwJvUwl
+        GanUD6/J2LDk9RluUBaTw4PtUdFJUBUoB49qeoGBE0AcMDiLC9zyQIsKfA4yAG8+O8q+7B
+        119hePJXpFb22yZOQevEr2rUbfZ96MkSOiUo2ZdMmPaGwH8ALz/UUfuZkQIILw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595029734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hLhSscQ3zjADZ+KvQLXC+idNGz5GUHoq9ureYCScp5U=;
+        b=kfhrArN30d6YNoUwK1sDjzlfSELEzY7vWajQmDmdzPRtazzFBvNQf98PUPIWzA92B/Sa5l
+        gOSSiOH+weNgcsCA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] printk: reimplement LOG_CONT handling
+Date:   Sat, 18 Jul 2020 01:54:14 +0206
+Message-Id: <20200717234818.8622-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The resets for the DSP processors on K3 SoCs are managed through the
-Power and Sleep Controller (PSC) module. Each DSP typically has two
-resets - a global module reset for powering on the device, and a local
-reset that affects only the CPU while allowing access to the other
-sub-modules within the DSP processor sub-systems.
+Hello,
 
-The C66x DSPs have two levels of internal RAMs that can be used to
-boot from, and the firmware loading into these RAMs require the
-local reset to be asserted with the device powered on/enabled using
-the module reset. Enhance the K3 DSP remoteproc driver to add support
-for loading into the internal RAMs. The local reset is deasserted on
-SoC power-on-reset, so logic has to be added in probe in remoteproc
-mode to balance the remoteproc state-machine.
+Here is the second series to rework the printk subsystem. This series
+removes LOG_CONT handling from printk() callers, storing all LOG_CONT
+parts individually in the ringbuffer. With this series, LOG_CONT
+handling is moved to the ringbuffer readers that provide the record
+contents to users (console printing, syslog, /dev/kmsg).
 
-Note that the local resets are a no-op on C71x cores, and the hardware
-does not supporting loading into its internal RAMs.
+This change is necessary in order to support the upcoming move to a
+fully lockless printk() implementation.
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
-v4: No changes
-v3: https://patchwork.kernel.org/patch/11602323/
+This series is in line with the agreements [0] made at the meeting
+during LPC2019 in Lisbon, with 1 exception: For the /dev/kmsg
+interface, empty line placeholder records are reported for the
+LOG_CONT parts.
 
- drivers/remoteproc/ti_k3_dsp_remoteproc.c | 72 +++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+Using placeholders avoids tools such as systemd-journald from
+erroneously reporting missed messages. However, it also means that
+empty placeholder records are visible in systemd-journald logs and
+displayed in tools such as dmesg.
 
-diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-index 18f714b012df..43566ead7a1d 100644
---- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-+++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-@@ -174,6 +174,9 @@ static int k3_dsp_rproc_reset(struct k3_dsp_rproc *kproc)
- 		return ret;
- 	}
- 
-+	if (kproc->data->uses_lreset)
-+		return ret;
-+
- 	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
- 						    kproc->ti_sci_id);
- 	if (ret) {
-@@ -191,6 +194,9 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
- 	struct device *dev = kproc->dev;
- 	int ret;
- 
-+	if (kproc->data->uses_lreset)
-+		goto lreset;
-+
- 	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
- 						    kproc->ti_sci_id);
- 	if (ret) {
-@@ -198,6 +204,7 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
- 		return ret;
- 	}
- 
-+lreset:
- 	ret = reset_control_deassert(kproc->reset);
- 	if (ret) {
- 		dev_err(dev, "local-reset deassert failed, ret = %d\n", ret);
-@@ -209,6 +216,53 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
- 	return ret;
- }
- 
-+/*
-+ * The C66x DSP cores have a local reset that affects only the CPU, and a
-+ * generic module reset that powers on the device and allows the DSP internal
-+ * memories to be accessed while the local reset is asserted. This function is
-+ * used to release the global reset on C66x DSPs to allow loading into the DSP
-+ * internal RAMs. The .prepare() ops is invoked by remoteproc core before any
-+ * firmware loading, and is followed by the .start() ops after loading to
-+ * actually let the C66x DSP cores run.
-+ */
-+static int k3_dsp_rproc_prepare(struct rproc *rproc)
-+{
-+	struct k3_dsp_rproc *kproc = rproc->priv;
-+	struct device *dev = kproc->dev;
-+	int ret;
-+
-+	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
-+						    kproc->ti_sci_id);
-+	if (ret)
-+		dev_err(dev, "module-reset deassert failed, cannot enable internal RAM loading, ret = %d\n",
-+			ret);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This function implements the .unprepare() ops and performs the complimentary
-+ * operations to that of the .prepare() ops. The function is used to assert the
-+ * global reset on applicable C66x cores. This completes the second portion of
-+ * powering down the C66x DSP cores. The cores themselves are only halted in the
-+ * .stop() callback through the local reset, and the .unprepare() ops is invoked
-+ * by the remoteproc core after the remoteproc is stopped to balance the global
-+ * reset.
-+ */
-+static int k3_dsp_rproc_unprepare(struct rproc *rproc)
-+{
-+	struct k3_dsp_rproc *kproc = rproc->priv;
-+	struct device *dev = kproc->dev;
-+	int ret;
-+
-+	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
-+						    kproc->ti_sci_id);
-+	if (ret)
-+		dev_err(dev, "module-reset assert failed, ret = %d\n", ret);
-+
-+	return ret;
-+}
-+
- /*
-  * Power up the DSP remote processor.
-  *
-@@ -352,6 +406,8 @@ static void *k3_dsp_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
- }
- 
- static const struct rproc_ops k3_dsp_rproc_ops = {
-+	.prepare	= k3_dsp_rproc_prepare,
-+	.unprepare	= k3_dsp_rproc_unprepare,
- 	.start		= k3_dsp_rproc_start,
- 	.stop		= k3_dsp_rproc_stop,
- 	.kick		= k3_dsp_rproc_kick,
-@@ -612,6 +668,22 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
- 		goto release_tsp;
- 	}
- 
-+	/*
-+	 * ensure the DSP local reset is asserted to ensure the DSP doesn't
-+	 * execute bogus code in .prepare() when the module reset is released.
-+	 */
-+	if (data->uses_lreset) {
-+		ret = reset_control_status(kproc->reset);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to get reset status, status = %d\n",
-+				ret);
-+			goto release_mem;
-+		} else if (ret == 0) {
-+			dev_warn(dev, "local reset is deasserted for device\n");
-+			k3_dsp_rproc_reset(kproc);
-+		}
-+	}
-+
- 	ret = rproc_add(rproc);
- 	if (ret) {
- 		dev_err(dev, "failed to add register device with remoteproc core, status = %d\n",
+The effect can be easily observed with the sysrq help:
+
+$ echo h | sudo tee /proc/sysrq-trigger
+$ sudo dmesg | tail -n 30
+$ sudo journalctl -k -n 30
+
+Providing the placeholder entries allows a userspace tool to identify
+if records were actually lost. IMHO this an important feature. Its
+side effect can be addressed by userspace tools if they change to
+silently consume empty records.
+
+For dump tools that process the ringbuffer directly (such as crash,
+makedumpfile, kexec-tools), they will need to implement LOG_CONT
+handling if they want to present clean continuous line messages.
+
+Finally, by moving LOG_CONT handling from writers to readers, some
+incorrect pr_cont() usage is revealed. Patch 4 of this series
+addresses one such example.
+
+This series is based on the printk git tree [1] printk-rework branch.
+
+[0] https://lkml.kernel.org/r/87k1acz5rx.fsf@linutronix.de
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git (printk-rework branch)
+
+John Ogness (4):
+  printk: ringbuffer: support dataless records
+  printk: store instead of processing cont parts
+  printk: process cont records during reading
+  ipconfig: cleanup printk usage
+
+ kernel/printk/printk.c            | 569 ++++++++++++++++++++----------
+ kernel/printk/printk_ringbuffer.c |  58 ++-
+ kernel/printk/printk_ringbuffer.h |  15 +-
+ net/ipv4/ipconfig.c               |  25 +-
+ 4 files changed, 434 insertions(+), 233 deletions(-)
+
 -- 
-2.26.0
+2.20.1
 
