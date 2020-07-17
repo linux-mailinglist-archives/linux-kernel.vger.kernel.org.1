@@ -2,103 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A73223630
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28D1223637
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgGQHtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S1728178AbgGQHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgGQHtq (ORCPT
+        with ESMTP id S1726105AbgGQHv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:49:46 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBAAC061755;
-        Fri, 17 Jul 2020 00:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=GxSH3WgRcAs4BQXGeagIES8YCdrXCuFUlM7hGjVh35Y=; b=pCij9v6b1c9DzBtrS1BYXlN1ZU
-        FbJTzahWrmUxhdKMMORQgOqP5gPLHXFbskUzmny1M2ZkQhnVdQ+w6WyCcIB7np1FHqGFAOvCupBTj
-        RfD0Q4hCeQybP0qlBa5zVmma+dBvjeesHZoiuzQtITsBNEgSBFhWnTTyif4c26CFzlMoKCciEF46G
-        3zc5rUO9YUl80ii83Hhcvjul89S4q/zalLNGiTDAG+Bedswam5XVk1AW5D/hsIJFBj0m5ZhMHVhCm
-        dAvUMV82Li3yjSP1F2MG0qieSY1coQ5SwVzFBNYthOYna6xj8VElsZS9VdFIHwKQOMTUnU2AMsXbM
-        8ixXfToA==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1jwL7f-00033F-1W; Fri, 17 Jul 2020 08:49:35 +0100
-Date:   Fri, 17 Jul 2020 08:49:35 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        John Crispin <john@phrozen.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: net: dsa: qca8k: Add PORT0_PAD_CTRL
- properties
-Message-ID: <20200717074934.GH23489@earth.li>
-References: <2e1776f997441792a44cd35a16f1e69f848816ce.1594668793.git.mnhagan88@gmail.com>
- <ea0a35ed686e6dace77e25cb70a8f39fdd1ea8ad.1594668793.git.mnhagan88@gmail.com>
- <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200716223822.yptldqqn36fbp2i7@skbuf>
+        Fri, 17 Jul 2020 03:51:29 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47252C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:29 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id s26so5012110pfm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AXXHt8+DPkVprDBBChiV85baUHo9NZb8056HrL8z4ac=;
+        b=nKMT7VO6DqHGKROxMl7G6Awn7bB9Hv3cpJRT/kPlkk+1G0DhgN8vtNQ1qhjhcHjxQ0
+         ZbGgypqmXtMNPfPvqq4QsGqD2TqG/UA0hcpfwF3PWMy7bG+fhSquK2Pmvrajv4CjLliL
+         PihP0mIMVYURhvFv0l65KGC6R69Zf12DnMOxQvE6pWQm4Q81sQAKuf6vlk90HUe1elU2
+         wha201nheuDZyDHsAxID7VxaB4nQpqATrDgvOSnh211cDL69XkRbUc+E+zo3IFLmziRH
+         yB7wla/1hGCR3rM6N5Djm0moL0xFen9Aj9pxON7ZEKQb9vxRfimxwPZp6PNeHBotDoRC
+         yK0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AXXHt8+DPkVprDBBChiV85baUHo9NZb8056HrL8z4ac=;
+        b=DgI8NQdaKE2xdoM2VZ4yZdN+3iGaUrpL75N83KH5werZrVjqOKSql493kX4gXTJt0h
+         EYGym6oiJp3oMuwstPAzH8UCamfwWkdQ286TChoHf8atMsyha27lzMRQlHuj5upRdEXz
+         xURUySuzxx8lJbwRtqLcDaDaXyxSJumN9P+Lp8FD5iTYA2A/hpIjiOlNhSKrhtPmSIbi
+         6YZfrvOo8YhQtJcn4bPTOP8x4AmxyKMrNylLhDsbRGjLLaAlLuqvG7c/AqlO51umpGmN
+         qz0Im5V4YDckwcN8LumwZzi56i9qi5P5AZ+6gbBcriGV385MvlkcalYisPq4C0B7N6Ii
+         Iwkg==
+X-Gm-Message-State: AOAM532IwpqAOjZSOAhx6lDimU8uOgLNN6+tZ3SVDJwxhO4rSKZ9yWiw
+        bU7vTAPWpgkZq7l9c8w6ordewA89XzInAQ==
+X-Google-Smtp-Source: ABdhPJxAh8Qm+1I1c+dDYZJIfvbYs3crQxXI4y9cojL+rmjVpLRVyolyeVmejwHACXtBihNfuU8+/w==
+X-Received: by 2002:a62:1c8b:: with SMTP id c133mr7245432pfc.134.1594972284059;
+        Fri, 17 Jul 2020 00:51:24 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id s68sm1924332pjb.38.2020.07.17.00.51.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 00:51:23 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1 1/3] amd64-agp: use generic power management
+Date:   Fri, 17 Jul 2020 13:19:35 +0530
+Message-Id: <20200717074937.296192-2-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
+References: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716223822.yptldqqn36fbp2i7@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 01:38:22AM +0300, Vladimir Oltean wrote:
-> On Thu, Jul 16, 2020 at 03:09:25PM -0700, Jakub Kicinski wrote:
-> > On Mon, 13 Jul 2020 21:50:26 +0100 Matthew Hagan wrote:
-> > > +- qca,sgmii-rxclk-falling-edge:	If present, sets receive clock phase to
-> > > +				falling edge.
-> > > +- qca,sgmii-txclk-falling-edge:	If present, sets transmit clock phase to
-> > > +				falling edge.
-> > 
-> > These are not something that other vendors may implement and therefore
-> > something we may want to make generic? Andrew?
-> > 
-> 
-> It was asked before whether this device uses source-synchronous clock
-> for SGMII or if it recovers the clock from the data stream. Just "pass"
-> was given for a response.
-> 
-> https://patchwork.ozlabs.org/project/netdev/patch/8ddd76e484e1bedd12c87ea0810826b60e004a65.1591380105.git.noodles@earth.li/
-> 
-> One can, in principle, tell easily by examining schematics. If the SGMII
-> is only connected via RX_P, RX_N, TX_P, TX_N (and optionally there might
-> be external reference clocks for the SERDES lanes, but these are not
-> part of the data connection itself), then the clock is recovered from
-> the serial data stream, and we have no idea what "SGMII delays" are.
-> 
-> If the schematic shows 2 extra clock signals, one in each transmit
-> direction, then this is, in Russell King's words, "a new world of RGMII
-> delay pain but for SGMII". In principle I would fully expect clock skews
-> to be necessary for any high-speed protocol with source-synchronous
-> clocking. The problem, really, is that we aren't ready to deal with this
-> properly. We aren't distinguishing "SGMII with clock" from "SGMII
-> without clock" in any way. We have no idea who else is using such a
-> thing. Depending on the magnitude of this new world, it may be wise to
-> let these bindings go in as-is, or do something more kernel-wide...
+Drivers using legacy PM have to manage PCI states and device's PM states
+themselves. They also need to take care of configuration registers.
 
-I don't have the schematic for the device I've been working with, but
-the switch data sheet just shows 2 differential pairs (input/output) for
-the SerDes Interface (whereas the RGMII interfaces *are* listed with
-their clocks).
+With improved and powerful support of generic PM, PCI Core takes care of
+above mentioned, device-independent, jobs.
 
-J.
+This driver makes use of PCI helper functions like
+pci_save/restore_state() and pci_set_power_state() to do required
+operations. In generic mode, they are no longer needed.
 
+Change function parameter in .resume() to "struct device*" type. Use
+to_pci_dev() to get "struct pci_dev*" variable.
+
+After upgrading, .suspend() became an empty-body function, hence defined as
+NULL.
+
+Compile-tested only.
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/char/agp/amd64-agp.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
+index b40edae32817..57fdcc61f88a 100644
+--- a/drivers/char/agp/amd64-agp.c
++++ b/drivers/char/agp/amd64-agp.c
+@@ -588,20 +588,11 @@ static void agp_amd64_remove(struct pci_dev *pdev)
+ 	agp_bridges_found--;
+ }
+ 
+-#ifdef CONFIG_PM
++#define agp_amd64_suspend NULL
+ 
+-static int agp_amd64_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused agp_amd64_resume(struct device *dev)
+ {
+-	pci_save_state(pdev);
+-	pci_set_power_state(pdev, pci_choose_state(pdev, state));
+-
+-	return 0;
+-}
+-
+-static int agp_amd64_resume(struct pci_dev *pdev)
+-{
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
++	struct pci_dev *pdev = to_pci_dev(dev);
+ 
+ 	if (pdev->vendor == PCI_VENDOR_ID_NVIDIA)
+ 		nforce3_agp_init(pdev);
+@@ -609,8 +600,6 @@ static int agp_amd64_resume(struct pci_dev *pdev)
+ 	return amd_8151_configure();
+ }
+ 
+-#endif /* CONFIG_PM */
+-
+ static const struct pci_device_id agp_amd64_pci_table[] = {
+ 	{
+ 	.class		= (PCI_CLASS_BRIDGE_HOST << 8),
+@@ -738,15 +727,14 @@ static const struct pci_device_id agp_amd64_pci_promisc_table[] = {
+ 	{ }
+ };
+ 
++static SIMPLE_DEV_PM_OPS(agp_amd64_pm_ops, agp_amd64_suspend, agp_amd64_resume);
++
+ static struct pci_driver agp_amd64_pci_driver = {
+ 	.name		= "agpgart-amd64",
+ 	.id_table	= agp_amd64_pci_table,
+ 	.probe		= agp_amd64_probe,
+ 	.remove		= agp_amd64_remove,
+-#ifdef CONFIG_PM
+-	.suspend	= agp_amd64_suspend,
+-	.resume		= agp_amd64_resume,
+-#endif
++	.driver.pm	= &agp_amd64_pm_ops,
+ };
+ 
+ 
 -- 
-I just Fedexed my soul to hell. I'm *real* clever.
+2.27.0
+
