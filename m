@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F59A223DBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6F1223DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgGQOH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:07:26 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11825 "EHLO mga01.intel.com"
+        id S1726821AbgGQOGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:06:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726617AbgGQOHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:07:22 -0400
-IronPort-SDR: qVSGWMm0my8l6S3N+wAbQE6TKftESmLsI043U0EL2Ek+sWRhAoBUODgyhxmTHzwhFU8x5R8dPa
- JXuBphRTioFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722774"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="167722774"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:21 -0700
-IronPort-SDR: eq7tlTfsfEAK9q4goK/N6ZresbDdyhHOjI+h86gbbNd8dviWLWHYO34O2F52XcR9xf5l7hkPCl
- 0Edjsl9lggxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="460856462"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:21 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V6 01/14] perf/x86: Use event_base_rdpmc for the RDPMC userspace support
-Date:   Fri, 17 Jul 2020 07:05:41 -0700
-Message-Id: <20200717140554.22863-2-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+        id S1726422AbgGQOGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:06:00 -0400
+Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 640582173E;
+        Fri, 17 Jul 2020 14:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594994760;
+        bh=MgaohWzGrt7HuiOM3koqYgYCQEle+96fHdhMFvnhnms=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hyhOeGGfUyZhSbIA5c+Qh9AE3FNqqGN0yofZMpbobZ75AMY0frWGd7Yp89nNMV1I4
+         LE6lGMOFpiB8XihMUPossXou9D/x/3Hy0O4AtCl2C+pJbgJ8dXyui2IPZc1gOtVNKF
+         PudUXBGYNnXTW2z9mokNOwETkKBv1slnW4HwPRcI=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [PATCH 02/12] timer: Preserve higher bits of expiration on index calculation
+Date:   Fri, 17 Jul 2020 16:05:41 +0200
+Message-Id: <20200717140551.29076-3-frederic@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200717140551.29076-1-frederic@kernel.org>
+References: <20200717140551.29076-1-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+The higher bits of the timer expiration are cropped while calling
+calc_index() due to the implicit cast from unsigned long to unsigned int.
 
-The RDPMC index is always re-calculated for the RDPMC userspace support,
-which is unnecessary.
+This loss shouldn't have consequences on the current code since all the
+computation to calculate the index is done on the lower 32 bits.
 
-The RDPMC index value is stored in the variable event_base_rdpmc for
-the kernel usage, which can be used for RDPMC userspace support as well.
+However we are preparing to return the actual bucket expiration from
+calc_index() in order to properly fix base->next_expiry updates.
+Preserving the higher bits is a requirement to achieve that.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
 ---
- arch/x86/events/core.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ kernel/time/timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 1cbf57dc2ac8..8e108ea378e3 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2208,17 +2208,12 @@ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *m
- 
- static int x86_pmu_event_idx(struct perf_event *event)
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index df1ff803acc4..bcdc3045138d 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -487,7 +487,7 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
+  * Helper function to calculate the array index for a given expiry
+  * time.
+  */
+-static inline unsigned calc_index(unsigned expires, unsigned lvl)
++static inline unsigned calc_index(unsigned long expires, unsigned lvl)
  {
--	int idx = event->hw.idx;
-+	struct hw_perf_event *hwc = &event->hw;
- 
--	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
-+	if (!(hwc->flags & PERF_X86_EVENT_RDPMC_ALLOWED))
- 		return 0;
- 
--	if (x86_pmu.num_counters_fixed && idx >= INTEL_PMC_IDX_FIXED) {
--		idx -= INTEL_PMC_IDX_FIXED;
--		idx |= 1 << 30;
--	}
--
--	return idx + 1;
-+	return hwc->event_base_rdpmc + 1;
- }
- 
- static ssize_t get_attr_rdpmc(struct device *cdev,
+ 	expires = (expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl);
+ 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
 -- 
-2.17.1
+2.26.2
 
