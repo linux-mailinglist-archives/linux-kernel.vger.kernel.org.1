@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE2D22394D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C75223957
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgGQKbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 06:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        id S1726418AbgGQKdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 06:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgGQKbb (ORCPT
+        with ESMTP id S1726040AbgGQKdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 06:31:31 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9690BC061755;
-        Fri, 17 Jul 2020 03:31:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B7S8c0jq5z9s1x;
-        Fri, 17 Jul 2020 20:31:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594981888;
-        bh=24NoZ+xXKS7pzE4azUa5D+8MNAhYZHQnDHcQh22XvGg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mhYHAC5tFriAoUCPmHi4TYSVbGGz8nlubo1YvFh+WYE+qM+ikRWASkkJv69yTGHJi
-         vPlZmTRTfv7etx1ED4vDICl++/81dhHzI7BfPcEV0D9uKtAJC0X2wx23inEkykP+Vr
-         wCHvdacLedjnkJ4OA+8rx6xRo8yGK49zgazorukaDZxbBgqEaIJRvTBdFWbfOIzJRb
-         jUtAFJ1x4nJsXlILZ3/8tiQOR7MfeN0fTeSuZGbFsGT0cBqFCehjUx4Jttm9OC2gRf
-         I1tjP08rK9RN7XC8lqzKw+2u5Etw/cXoaz9LPLDmpqstt2PD9aToNiDtlJiSGOnO7G
-         m6GZ22xwJNvmg==
-Date:   Fri, 17 Jul 2020 20:31:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Subject: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20200717203127.00db2444@canb.auug.org.au>
+        Fri, 17 Jul 2020 06:33:10 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4767AC08C5C0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 03:33:10 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id g10so6978456wmc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 03:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zi8jnewWWqGBDaiGUwotaO11fwfV4C/fWvx82bCaiGs=;
+        b=qAfNIv/1PD9HZtu5z/b7L4wjsmN4Hj3cSHg07fnUfCsnzNroj/Z3PLeA/TEbWAm7I2
+         qgLmmD+DRIAoIDp5bIozb9OiMhtsCrGLyiOhrk2DieUmK+ZSj4BzuiOShQ9+J2snHNDQ
+         ELx620+7CuVezF/5UxkHQNws4RNlg+aB1fn1nHd+LaH5c3xt8i+yX65cjGXC9yjKX7at
+         mDKp6f5bqExeA48g3h0YCtFuG4XPjiTptoqjJHz/fOOkfN/1w9ZM4XXzd9DgCb4tX54O
+         kakfv2F4F3fS4rkCGTYe2D7pOblKyO10gTdolj6BkmxFnRCb+To7yKxggGas1xtWVFS9
+         /itQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zi8jnewWWqGBDaiGUwotaO11fwfV4C/fWvx82bCaiGs=;
+        b=pRSfBFkzJjBPNBMk4JPzDVzSpEt7aYfWSBc1ExTvBIqTiGPFquKx7Ji8O1zr4hqhab
+         gh1Ba35S7vKYcO+pqDH8Bv+9RE26UyC/btaq++HK8DnImcqAg7YHetX/4OQi+HgIySLS
+         Nu724uGi3WGYlDxO+AIFVHUImASf2eoloMPr8hMzrSnDsla+8y6t/2XJ89dnZGVVUGsw
+         isO4vim/wv+ZHVYhItKHxzxjQe6/PH79r4tyUeFOamlfTIrJ86PB6xgwEMDoPDxO4Jd+
+         55P4r8muph/0UlxH83Vi1LiEAJMGupEtKhJxpxDmG6/237Ipr97ZXcUQxFvf2qN8a3YU
+         bexA==
+X-Gm-Message-State: AOAM530X8NPECFWsY09PoqFkDVGijzRiLfMOuf9aw/fbt4bJu8ycI2+b
+        YffgNmz2H8lI9hj8ZKcLaU8uxQ==
+X-Google-Smtp-Source: ABdhPJxqyLRZnxEq1KDZDv0rSrpib/c6MB25cE43V84SI6vmZm32XKilMzpv08RxpslWOrFBpNzoGA==
+X-Received: by 2002:a7b:c94a:: with SMTP id i10mr9028334wml.183.1594981988862;
+        Fri, 17 Jul 2020 03:33:08 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id m9sm12396277wml.45.2020.07.17.03.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 03:33:08 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 11:33:05 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-kernel@vger.kernel.org, Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+Message-ID: <20200717103305.GA2385870@google.com>
+References: <cover.1594707424.git.viresh.kumar@linaro.org>
+ <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <20200717101438.GA2366103@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ESay0Vq+Z/QpSrDUSsdEDuR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717101438.GA2366103@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ESay0Vq+Z/QpSrDUSsdEDuR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Friday 17 Jul 2020 at 11:14:38 (+0100), Quentin Perret wrote:
+> On Tuesday 14 Jul 2020 at 12:06:53 (+0530), Viresh Kumar wrote:
+> >  /**
+> > - * get_load() - get load for a cpu since last updated
+> > + * get_load() - get current load for a cpu
+> >   * @cpufreq_cdev:	&struct cpufreq_cooling_device for this cpu
+> >   * @cpu:	cpu number
+> > - * @cpu_idx:	index of the cpu in time_in_idle*
+> > + * @cpu_idx:	index of the cpu
+> >   *
+> > - * Return: The average load of cpu @cpu in percentage since this
+> > - * function was last called.
+> > + * Return: The current load of cpu @cpu in percentage.
+> >   */
+> >  static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
+> >  		    int cpu_idx)
+> >  {
+> > -	u32 load;
+> > -	u64 now, now_idle, delta_time, delta_idle;
+> > -	struct time_in_idle *idle_time = &cpufreq_cdev->idle_time[cpu_idx];
+> > -
+> > -	now_idle = get_cpu_idle_time(cpu, &now, 0);
+> > -	delta_idle = now_idle - idle_time->time;
+> > -	delta_time = now - idle_time->timestamp;
+> > +	unsigned long util = cpu_util_cfs(cpu_rq(cpu));
+> > +	unsigned long max = arch_scale_cpu_capacity(cpu);
+> 
+> Should we subtract the thermal PELT signal from max?
 
-Hi all,
-
-After merging the akpm-current tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
-
-mm/vmstat.c:614: warning: "MAX_THRESHOLD" redefined
-  614 | #define MAX_THRESHOLD 0
-      |=20
-mm/vmstat.c:172: note: this is the location of the previous definition
-  172 | #define MAX_THRESHOLD 125
-      |=20
-mm/vmstat.c:614: warning: "MAX_THRESHOLD" redefined
-  614 | #define MAX_THRESHOLD 0
-      |=20
-mm/vmstat.c:172: note: this is the location of the previous definition
-  172 | #define MAX_THRESHOLD 125
-      |=20
-
-Introduced by commit
-
-  5f6bac149e10 ("mm: vmstat: fix /proc/sys/vm/stat_refresh generating false=
- warnings")
-
-The preproccesor directives look like this:
-
-#ifdef CONFIG_SMP
-#define MAX_THRESHOLD 125
-#ifdef CONFIG_HAVE_CMPXCHG_LOCAL
-#else
-#define MAX_THRESHOLD 0
-
-So I guess the second MAX_THRESHOLD was put after the wrong #else?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ESay0Vq+Z/QpSrDUSsdEDuR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8Rff8ACgkQAVBC80lX
-0GzcYAf+N3qQXO9/sWNp7DvSSHpOveKIUjaSofsd7+GmP5aVCeoEKskHam7B3U/w
-47rNc/QXEcC9PjvS5ZPqoQedtoTa+E5TqiiF1rWsjP1p1NZEQLkLSkB9ntlatjFn
-9RDWLKlbi2KkHV+o3VV0RPuhKcsNnWv7qr5iPLTO5wYgIXtVxuhF/eCEr08YDAlk
-1BSJFfjvP2CpD9/DKd/ZAY23Gatr/iEL+capOJv+MvxwxxbSl8f+auYpdXsVvKv0
-793JrIqUhAKtqC+A93Qu9dIzkS7Q+jgbhOrIt51U45/J4oITbujHCAOVN8+cXhCj
-kzJ7eERBiihLrCUXqz1ixClhA1bU2A==
-=nfvV
------END PGP SIGNATURE-----
-
---Sig_/ESay0Vq+Z/QpSrDUSsdEDuR--
+Actually, that or add it the ENERGY_UTIL case in effective_cpu_util() as
+this appears to be missing for EAS too ...
