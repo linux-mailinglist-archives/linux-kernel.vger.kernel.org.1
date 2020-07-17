@@ -2,42 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CAE22316F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CAD223171
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgGQDEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:04:52 -0400
-Received: from mga07.intel.com ([134.134.136.100]:27257 "EHLO mga07.intel.com"
+        id S1726710AbgGQDFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:05:04 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31744 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgGQDEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:04:50 -0400
-IronPort-SDR: frDmIyvt8bPd8Bu1l1sgSEV1fJFbP5AxUDFHNtzsL9FmxkTAXN9YCs3ftYXPFn6ZJXpK3TkFSz
- Ni8R8aBkK7zg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="214253048"
+        id S1726333AbgGQDFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 23:05:03 -0400
+IronPort-SDR: 2EoA/lRhEj5Sco1JVfCmPiyLeOMDM5klp3xkcl1wEPHHKQL0QMu+hQl2DtUCf2Yl3JCzPyAEFg
+ 9q82v2AlCVGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="148690279"
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="214253048"
+   d="scan'208";a="148690279"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:47 -0700
-IronPort-SDR: uOu7cDqrL7+h5l+5Fn+h1S/hkwpsAu3mNfFB15mMGo34p9NETnRqPy7GMfFMXihLf5C3f6k9GL
- 0dvnImOzaUIQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:05:03 -0700
+IronPort-SDR: 1dEBKHBf5eSnykHhzjCLssD63a2cZRD788GrnUk/Z12D+yX9HXRkVrmoWEAFPwVXsygbcw7kO2
+ YmQpFKofvwbg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="286686891"
+   d="scan'208";a="286686957"
 Received: from pgerasim-mobl1.ccr.corp.intel.com (HELO localhost) ([10.249.34.31])
-  by orsmga006.jf.intel.com with ESMTP; 16 Jul 2020 20:04:43 -0700
+  by orsmga006.jf.intel.com with ESMTP; 16 Jul 2020 20:04:57 -0700
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
-Subject: [PATCH v4 3/7] vmalloc: Add text_alloc() and text_free()
-Date:   Fri, 17 Jul 2020 06:04:17 +0300
-Message-Id: <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>, Miroslav Benes <mbenes@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Omar Sandoval <osandov@fb.com>, Marco Elver <elver@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>
+Subject: [PATCH v4 4/7] arch/x86: Implement text_alloc() and text_free()
+Date:   Fri, 17 Jul 2020 06:04:18 +0300
+Message-Id: <20200717030422.679972-5-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
 References: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
@@ -48,58 +57,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce functions for allocating memory for dynamic trampolines, such
-as kprobes. An arch can promote the availability of these functions with
-CONFIG_ARCH_HAS_TEXT_ALLOC. Provide default/fallback implementation
-wrapping module_alloc() and module_memfree().
+Implement text_alloc() and text_free() with vmalloc() and vfree(), thus
+dropping the dependency to the module subsystem.
 
-Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
 Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- include/linux/vmalloc.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ arch/x86/Kconfig             |  3 +++
+ arch/x86/kernel/Makefile     |  1 +
+ arch/x86/kernel/text_alloc.c | 41 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+)
+ create mode 100644 arch/x86/kernel/text_alloc.c
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 0221f852a7e1..e981436e30b6 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -9,6 +9,7 @@
- #include <asm/page.h>		/* pgprot_t */
- #include <linux/rbtree.h>
- #include <linux/overflow.h>
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0dea7fdd7a00..a4ee5d1300f6 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2035,6 +2035,9 @@ config KEXEC_FILE
+ config ARCH_HAS_KEXEC_PURGATORY
+ 	def_bool KEXEC_FILE
+ 
++config ARCH_HAS_TEXT_ALLOC
++	def_bool y
++
+ config KEXEC_SIG
+ 	bool "Verify kernel signature during kexec_file_load() syscall"
+ 	depends on KEXEC_FILE
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index e77261db2391..fa1415424ae3 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -68,6 +68,7 @@ obj-y			+= tsc.o tsc_msr.o io_delay.o rtc.o
+ obj-y			+= pci-iommu_table.o
+ obj-y			+= resource.o
+ obj-y			+= irqflags.o
++obj-y			+= text_alloc.o
+ 
+ obj-y				+= process.o
+ obj-y				+= fpu/
+diff --git a/arch/x86/kernel/text_alloc.c b/arch/x86/kernel/text_alloc.c
+new file mode 100644
+index 000000000000..c8e5296ebceb
+--- /dev/null
++++ b/arch/x86/kernel/text_alloc.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ *  Kernel module help for x86.
++ *  Copyright (C) 2001 Rusty Russell.
++ */
++
++#include <linux/kasan.h>
++#include <linux/mm.h>
 +#include <linux/moduleloader.h>
- 
- #include <asm/vmalloc.h>
- 
-@@ -249,4 +250,26 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
- int register_vmap_purge_notifier(struct notifier_block *nb);
- int unregister_vmap_purge_notifier(struct notifier_block *nb);
- 
-+#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-+/*
-+ * Allocate memory to be used for dynamic trampoline code.
-+ */
-+void *text_alloc(unsigned long size);
++#include <linux/vmalloc.h>
++#include <asm/setup.h>
 +
-+/*
-+ * Free memory returned from text_alloc().
-+ */
-+void text_free(void *region);
-+#else
-+static inline void *text_alloc(unsigned long size)
++void *text_alloc(unsigned long size)
 +{
-+	return module_alloc(size);
++	void *p;
++
++	if (PAGE_ALIGN(size) > MODULES_LEN)
++		return NULL;
++
++	p = __vmalloc_node_range(size, MODULE_ALIGN, MODULES_VADDR, MODULES_END,
++				 GFP_KERNEL, PAGE_KERNEL, 0, NUMA_NO_NODE,
++				 __builtin_return_address(0));
++
++	if (p && (kasan_module_alloc(p, size) < 0)) {
++		vfree(p);
++		return NULL;
++	}
++
++	return p;
 +}
 +
-+static inline void text_free(void *region)
++void text_free(void *region)
 +{
-+	module_memfree(region);
-+}
-+#endif
++	/*
++	 * This memory may be RO, and freeing RO memory in an interrupt is not
++	 * supported by vmalloc.
++	 */
++	WARN_ON(in_interrupt());
 +
- #endif /* _LINUX_VMALLOC_H */
++	vfree(region);
++}
 -- 
 2.25.1
 
