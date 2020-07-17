@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C214F223D67
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69D3223D63
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgGQNzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
+        id S1727815AbgGQNyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgGQNyk (ORCPT
+        with ESMTP id S1727091AbgGQNyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:54:40 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20EFC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:40 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o2so17218901wmh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:40 -0700 (PDT)
+        Fri, 17 Jul 2020 09:54:41 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1CDC0619D5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f7so11236342wrw.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CPH+QD7EGY89rpfM+jPOD+8I8Jq38VLlFewJk4yzuOM=;
-        b=VjzgIcU3+ooip1M3AXK8TOgT0tdwcKF6NfoM8oDGAwDytuhYS3FzrGb+gD0Sjj04RP
-         6tyujb+FQaCiDYHM2ixzWByHiOOkfBd0lBsy9VaxV+PtktCvhVOceqQZ+cKcGruuUrA0
-         O7Gv5SFLmuApMRfZ4hdAu4HGPK1lB5nEBEfUyYFoDANRIzWirPpShVehPf4xCLYivPps
-         iB2xoC8Y6/AfyoniZHOquXz01a98gHtBPW5io+sA1mafGTG8zdNDuQHU+/7aGle0kbSz
-         m/3XeCqXw41/d+ARjP+Ax1G3nDZ5ChIQ52kQUK5FqdILlK3EDB/vZfoYqY0F57+cPyl0
-         1E9A==
+        bh=AI7c50J2x+3VkfEYyAsOrnfGhBXfcF4lm0Ws/hDguDo=;
+        b=BJWYGXYq1pgsO4ivqCiR82eR35O7gSNMT6QzlxPG0J5WFo7f9l9ct2/Tj5hbius4wJ
+         Z3Nj9oYaqBKMg1Xoi6M4UZkmmfrLIkOblh0TJcSGnmWoWrAo6+546QwFRUIZFYt0uk9F
+         P4n6sI1WeB+yEJLGruWOY5oFh5vAAwBE0sSKpokIUpMVYM0U5mlq0hoKOTFrP6pj1ogt
+         qBVxuMuEOaLVOwxwyszj1rDIl05cV1teNU20ANvSq5UID796wEmfuWiVh9kq+r3ORgD1
+         CKk+4gQ6lc1SCsduPRjx9fMiZ8f6nvrTSL7uHPXLrhtjK2mTSQcMBXQMTJfGqOP5i/M3
+         qjLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CPH+QD7EGY89rpfM+jPOD+8I8Jq38VLlFewJk4yzuOM=;
-        b=B7ZoPnxcIpM/yy6CQxExxNPDO1nN2QdDvQiK5wHz04aJ1XJgKLsL21cskkm9HQO9rX
-         MKxpiJtKowuHMU85SCTT9lI49/CFqkKF0HwTWP0rU5hMlV0E7EewJC6wmDWe5Tmmm5Wo
-         9TnaUS2SFL6QvcMy8AyLSVZr0l+iJeuEUQpfYx8tKqOIcBG+gNUv6YWSOTfrHXjmwbEW
-         /QO/r1FbgBhp92NiI0MiFuniGToej8dqrtcgSIadiQvDvD4OXqVIKEKNcDlkTZARD2hd
-         oYzm1FazwWtpKnqWeqsFLMbwCcCL9NGQVTHtPu5s+i9KVlgUBGxiWSCb7AczhM7rE52I
-         e/yg==
-X-Gm-Message-State: AOAM533V0ml0Q04zXgUQ1DgMY7T8XsBZC+0STAjjpfBYHCC8Gih/8y4z
-        zhjPez6OLc9oFNq17cCQTPur7g==
-X-Google-Smtp-Source: ABdhPJw8rtOM08fs2Dc82BjfBnHOOT1pIb5vMuLLZE4XFUuoUcXbreINH3AZhhkT4VVddL8v21h2jw==
-X-Received: by 2002:a1c:48d7:: with SMTP id v206mr9115687wma.145.1594994079322;
-        Fri, 17 Jul 2020 06:54:39 -0700 (PDT)
+        bh=AI7c50J2x+3VkfEYyAsOrnfGhBXfcF4lm0Ws/hDguDo=;
+        b=Ywwws8Gu2oGkd/Df6xfkDBvgr21RQ0kW2E9mm89fkZaRh4LvMAz8zX3ri7uoZdd6j/
+         YPRpS03DbByJKh5BFNOIYhN0nOtFmjRcissj24y4oGHIgF7hQ0lXP+7yS80973PvyRFg
+         j7WXqaKbUPPaskQ2t1ig3UjPCuBKdR+Y8IhxNNAbKpZmZcKaBpCb+c+5JcWrNMaavYc8
+         riuQCeiPp2y8z9vHk2WE/5i12GdLUC/J5Gqh13OihxJBtD/xMqhUxWpXSNUmJU/71mfQ
+         CA+a5ETjN8vUdQKczW6Z/cxspEnXl7LXe4yWvycuh0LQOoIMqdV7MIC6+5JJaCuL3ItW
+         iHcA==
+X-Gm-Message-State: AOAM530fr3swWXmGilzq5jQaH08S32L6uJzo7wovjTIjmld5SHxNBpC6
+        Kfd9fr6U2Fe1M9++++R8p+BqACDLZQ0cjA==
+X-Google-Smtp-Source: ABdhPJzcxiqCEsLDkUJ5mleRr1Wv9TnyI904k47F56Gh6ETTAgfzBGp386wph9T+fLWOu0SbjVA3ng==
+X-Received: by 2002:adf:f104:: with SMTP id r4mr10951860wro.90.1594994080427;
+        Fri, 17 Jul 2020 06:54:40 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id w128sm16118356wmb.19.2020.07.17.06.54.38
+        by smtp.gmail.com with ESMTPSA id w128sm16118356wmb.19.2020.07.17.06.54.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 06:54:38 -0700 (PDT)
+        Fri, 17 Jul 2020 06:54:39 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Radu Pirea <radu_nicolae.pirea@upb.ro>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 12/14] spi: spi-at91-usart: Remove unused OF table 'struct of_device_id'
-Date:   Fri, 17 Jul 2020 14:54:22 +0100
-Message-Id: <20200717135424.2442271-13-lee.jones@linaro.org>
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2 13/14] spi: spi-pxa2xx: Do not define 'struct acpi_device_id' when !CONFIG_ACPI
+Date:   Fri, 17 Jul 2020 14:54:23 +0100
+Message-Id: <20200717135424.2442271-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717135424.2442271-1-lee.jones@linaro.org>
 References: <20200717135424.2442271-1-lee.jones@linaro.org>
@@ -70,43 +69,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only way this driver can be probed by MFD via its parent device.
-
-No other reference to 'microchip,at91sam9g45-usart-spi' exists in the kernel.
+Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
+struct 'pxa2xx_spi_acpi_match' becomes defined but unused.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-at91-usart.c:684:34: warning: ‘at91_usart_spi_dt_ids’ defined but not used [-Wunused-const-variable=]
- 684 | static const struct of_device_id at91_usart_spi_dt_ids[] = {
+ drivers/spi/spi-pxa2xx.c:1435:36: warning: ‘pxa2xx_spi_acpi_match’ defined but not used [-Wunused-const-variable=]
+ 1435 | static const struct acpi_device_id pxa2xx_spi_acpi_match[] = {
  | ^~~~~~~~~~~~~~~~~~~~~
 
-Cc: Radu Pirea <radu_nicolae.pirea@upb.ro>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Suggested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Daniel Mack <daniel@zonque.org>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-at91-usart.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/spi/spi-pxa2xx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-at91-usart.c b/drivers/spi/spi-at91-usart.c
-index 88033422a42ae..8c8352625d232 100644
---- a/drivers/spi/spi-at91-usart.c
-+++ b/drivers/spi/spi-at91-usart.c
-@@ -681,13 +681,6 @@ static const struct dev_pm_ops at91_usart_spi_pm_ops = {
- 			   at91_usart_spi_runtime_resume, NULL)
- };
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 0040362b71622..814268405ab0b 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1432,6 +1432,7 @@ static void cleanup(struct spi_device *spi)
+ 	kfree(chip);
+ }
  
--static const struct of_device_id at91_usart_spi_dt_ids[] = {
--	{ .compatible = "microchip,at91sam9g45-usart-spi"},
--	{ /* sentinel */}
--};
--
--MODULE_DEVICE_TABLE(of, at91_usart_spi_dt_ids);
--
- static struct platform_driver at91_usart_spi_driver = {
- 	.driver = {
- 		.name = "at91_usart_spi",
++#ifdef CONFIG_ACPI
+ static const struct acpi_device_id pxa2xx_spi_acpi_match[] = {
+ 	{ "INT33C0", LPSS_LPT_SSP },
+ 	{ "INT33C1", LPSS_LPT_SSP },
+@@ -1442,6 +1443,7 @@ static const struct acpi_device_id pxa2xx_spi_acpi_match[] = {
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, pxa2xx_spi_acpi_match);
++#endif
+ 
+ /*
+  * PCI IDs of compound devices that integrate both host controller and private
 -- 
 2.25.1
 
