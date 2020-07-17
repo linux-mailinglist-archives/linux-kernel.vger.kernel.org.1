@@ -2,142 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75E2224632
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 00:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370B522463D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 00:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgGQWLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 18:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        id S1726673AbgGQW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 18:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgGQWLY (ORCPT
+        with ESMTP id S1726399AbgGQW10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 18:11:24 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31176C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 15:11:24 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z13so12586414wrw.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 15:11:24 -0700 (PDT)
+        Fri, 17 Jul 2020 18:27:26 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B583C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 15:27:26 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z15so12600178wrl.8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 15:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j4Rcza/WtCshpklaOYU1XXSSWM9/PXwLNmLO5rqs6/A=;
-        b=l2m57u+TR4yEo/1/8o+mwdtGzk63QHxgIMu87Ezzks74yZ2A92/vqJubckkePUbdhU
-         LP/tqlBQJ1R0ia3hcvytWw5WrPv+Twwz7MRAKCogV0qZd4+vYnav+hotGOlSvORagU7o
-         eA0ujl8h3zkX30s8RlTxs7RLYMQHqfzRoFE6svuB0ZnWIvz4sXfqpn1RS445ioE7G4Rj
-         NKikZ5JzZeIG8gdH70AJZlgOtQ+ffPSXnSBm+L/lLJiZwpG3gyA6ihu8ZNsOOOg2WBTS
-         b/Skv5ckjdXWk7bECXgpN4ENRkNE7DJNA/ietcFm0IX9fC1SAihESU0coGWMt5wryWUb
-         JwSA==
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EvZfM7tSlBvQupdfYs+4sQhtafmRlnSnH6RQB9/57lE=;
+        b=BALRBWDK3OFtn2VmJ5nZHTR9pM51ksljccFyTBcyyX7bpgsd19EjLqCBWtl9kKUX0Y
+         4w8epWV9R2HFpGWlCx1dzLRDdnLdYREVQM8r6L74qPC44o8FZH2+Bc+XQEumOKfBQ7qB
+         8SffiaN/Prgk7fuWau8BRzfpotRm4p67pf/zw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j4Rcza/WtCshpklaOYU1XXSSWM9/PXwLNmLO5rqs6/A=;
-        b=PIBkDdClnWKgsQfd2I7hUigBvavuTjCCT4tBeZ1csnXZ25uWxNcIS951ntnCHTbf/s
-         ZhXsYG5frGhOs72cOXSsBPbrXqJ3U9perGQv9IPqCcOt7PPzqXeJjilZu9aEvRPfPWrZ
-         ldw7qBd9YMqNagOfDOdnDdII2PY4C0pGQVff11E9GuGKUjVHdl0FXXI65F3VD6Mjsv3S
-         4M6+3TA/4fRcNfiVji7BgulFUANYy6JAZNkV/Tb9VevF08caZzHeuGf2S8jhUOIiPhGf
-         BI1CZq1ahQ23bMn7UOcQtNuSTSRJ1mAiizDPgtCvdkv7dsDv3GTQEslhoej5s0fH6lX3
-         wyBA==
-X-Gm-Message-State: AOAM532UuRiv4qcLMEQ5G8Ec6OA4hFfPAOJ4SwkIp2lwH459lr8Jx+SY
-        yAxAbyu9NjDJEZ/dy1HGA42oOtJ3Hq4U74IB3XpQGQ==
-X-Google-Smtp-Source: ABdhPJxz9pnbJ6uCJ7qOWl9Y2R7L7oyGZdyKyr4ATbEQ0y1SVV3OMBaogGuCNNhk6KpiiH2gAm9Ez4We2qOo4s4NN+g=
-X-Received: by 2002:a5d:4bd2:: with SMTP id l18mr11755969wrt.119.1595023882694;
- Fri, 17 Jul 2020 15:11:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EvZfM7tSlBvQupdfYs+4sQhtafmRlnSnH6RQB9/57lE=;
+        b=lILoi70H2+2YJvBZNEtgIC4stAG5ccOk9IXpzWRXApMXPpZODmJgb3ar+o2ciKmMl+
+         Z+gyAMOvduTiq4fd2BuAiJsdEsIbpgPc0ANlgDIMqMVlZ2nLH3BMsLx2/AC0Eg/U8y8g
+         XDSeLJMcsNQqGlb/VneJPhIma4n+llSwQ7Nflcx9j5lyCwpdpDtMenubTKAZy1Ud8dXS
+         W1BpSLR3Qmg5RgvqKs4Crmubscm+Qpalk7ca2IKOV9nDy3OEdq2qBMenZlw//4k1pbxC
+         kORMY+QgYBDHPkBVzrWZz2jNrAnOKthIB6rN7E4JHpLTZBtLWBRp6I67+MJY0JXHVOqw
+         3Yow==
+X-Gm-Message-State: AOAM5336JwFhqf3SjjuGJhboNLeXhqaJIS3axMdQRCKg0u32LAx9r0A8
+        IiH+7sQIb5zjmC1bmfFe/aDSarUiBtK7TWh3
+X-Google-Smtp-Source: ABdhPJx0qOnDdZN6gx4AvHIXjO6Am9+EduH4EbfKF2bXMV+Mc2rxaCL6YsZxoJ/EKxkzWy2AC+xdbA==
+X-Received: by 2002:a5d:4b4f:: with SMTP id w15mr11924497wrs.84.1595024844553;
+        Fri, 17 Jul 2020 15:27:24 -0700 (PDT)
+Received: from [10.230.182.181] ([192.19.224.250])
+        by smtp.gmail.com with ESMTPSA id c17sm821888wrc.42.2020.07.17.15.27.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 15:27:23 -0700 (PDT)
+Subject: Re: [PATCH v2] pwm: bcm-iproc: handle clk_get_rate() return
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+References: <20200717182512.26001-1-scott.branden@broadcom.com>
+From:   Ray Jui <ray.jui@broadcom.com>
+Message-ID: <c4f5cb1a-c94e-9b05-b8ad-c9eecd7e70e3@broadcom.com>
+Date:   Fri, 17 Jul 2020 15:27:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200716094216.1418659-1-kjain@linux.ibm.com> <20200716152237.GC373728@kernel.org>
- <a80eebc2-885c-171d-7c7a-74df727d60b4@linux.ibm.com> <20200717085536.GC528602@krava>
-In-Reply-To: <20200717085536.GC528602@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 17 Jul 2020 15:11:11 -0700
-Message-ID: <CAP-5=fVu5wcb864RWa8_j8kv3XLU0Cr5nbhvrwBNytfgmuPObg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] powerpc/perf: Add json file support for hv_24x7
- core level events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     kajoljain <kjain@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        maddy@linux.ibm.com, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>, nasastry@in.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200717182512.26001-1-scott.branden@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 1:55 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, Jul 17, 2020 at 01:41:22PM +0530, kajoljain wrote:
-> >
-> >
-> > On 7/16/20 8:52 PM, Arnaldo Carvalho de Melo wrote:
-> > > Em Thu, Jul 16, 2020 at 03:12:11PM +0530, Kajol Jain escreveu:
-> > >> Patchset enhance current runtime parameter support. It introduces new
-> > >> fields like "PerChip" and "PerCore" similar to the field "PerPkg" which is
-> > >> used to specify perpkg events.
-> > >>
-> > >> The "PerCore" and "PerChip" specifies whether its core or chip events.
-> > >> Based on which we can decide which runtime parameter user want to
-> > >> access. Now character  '?' can refers different parameter based on user
-> > >> requirement.
-> > >>
-> > >> Initially, every time we want to add new terms like chip, core, thread
-> > >> etc, we need to create corrsponding fields in pmu_events and event
-> > >> struct.
-> > >> This patchset adds an enum called 'aggr_mode_class' which store all these
-> > >> aggregation like perpkg/percore. It also adds new field 'AggregationMode'
-> > >> to capture these terms.
-> > >> Now, if user wants to add any new term, they just need to add it in
-> > >> the enum defined. I try to test it with  my current setup.
-> > >>
-> > >> I also need to replace PerPkg field to AggregationMode in all the
-> > >> x86 uncore json files. It will great if Andi and team can test it
-> > >> and let me know if they have any concerns.
-> > >>
-> > >> Changelog:
-> > >> v2 -> v3:
-> > >> - Did some nits changes suggested by Jiri include correction of
-> > >>   indentation, and making PerCore/PerChip values forward after
-> > >>   PerPkg as 1 in the enum.
-> > >> - Rebase the patchset on Arnaldo's tmp.perf/core branch.
-> > >> - Change RFC tag
-> > >
-> > > Hey, have anybody provided Acked-by/Reviewed-by for previous revisions
-> > > of this patchset? If so you could have collected them for patches
-> > > without changes, was that the case?
-> >
-> > Hi Arnaldo,
-> >       I did get "Acked-by: Ian Rogers" on my initial prototype which I send in my RFC.
-> > Link to the patch: https://lkml.org/lkml/2020/7/5/399
-> >
-> > After that, I break it down and made some nits changes as suggested by Jiri, that's why I didn't
-> > add his Acked-by tag.
-> > Ian should I add it, if it seems fine to you.
->
-> I posted one more comment and I'd also like to hear from
-> guys maintainng json list on intel side that they are ok
-> with this, mainly the change introduced in:
->
->   pmu-events/x86/uncore: Replace PerPkg field to AggregationMode in x86 json files
->
-> Andi?
->
-> thanks,
-> jirka
 
-I am happy with this change.
 
-Acked-by: Ian Rogers <irogers@google.com>
+On 7/17/2020 11:25 AM, Scott Branden wrote:
+> From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+> 
+> Handle clk_get_rate() returning <= 0 condition to avoid
+> possible division by zero.
+> 
+> Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
+> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> 
+> ---
+> Changes from v1: ensure  'polarity' and 'enabled' are populated
+> when clk_get_rate is 0.
+> ---
+>  drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
+> index 1f829edd8ee7..d392a828fc49 100644
+> --- a/drivers/pwm/pwm-bcm-iproc.c
+> +++ b/drivers/pwm/pwm-bcm-iproc.c
+> @@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	u64 tmp, multi, rate;
+>  	u32 value, prescale;
+>  
+> -	rate = clk_get_rate(ip->clk);
+> -
+>  	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
+>  
+>  	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
+> @@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	else
+>  		state->polarity = PWM_POLARITY_INVERSED;
+>  
+> +	rate = clk_get_rate(ip->clk);
+> +	if (rate == 0) {
+> +		state->period = 0;
+> +		state->duty_cycle = 0;
+> +		return;
+> +	}
+> +
+>  	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
+>  	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
+>  	prescale &= IPROC_PWM_PRESCALE_MAX;
+> 
 
-Thanks,
-Ian
+This patch looks good to me. Thanks!
+
+Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+
