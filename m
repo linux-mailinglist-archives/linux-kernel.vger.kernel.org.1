@@ -2,201 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0852E22394F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FF122394B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgGQKbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 06:31:41 -0400
-Received: from mail-am6eur05on2122.outbound.protection.outlook.com ([40.107.22.122]:21940
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726599AbgGQKbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 06:31:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fA5aGbs49rCKxK0dYQ+guO0GDuUnWqQcgWAHlK3E5i8kDcSHZ/tM31rR/mFQhT8bKCbNwaKsFLcyx4i7C+TWvGEjLAvLBKdHt6qNLBwMpkJB0/oaDbK9g3a8YKg19+eu5K8yMmdGtg/AwxlpGBEtTpLFSRG5R0XBrP7HuEWgiqeAPxb5t0TUUHrVL1/R9GdLe+B1EmMzpvVpfCDhH2auc/mv8D+C6e2OuAdU6pIi9CJ+wWu25SaT1FxZRBHoIzhgZkc9UtWu7LJ14zvCOLpxm4ovMLDDmHhv0ZsCVL/W2ZBpF8+Xok2t5ApriEpsTNi0VXqq223TFQEnSDP5FjksIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z5gtqm/eQhHpSeZnbW7tSt56P+Kn6c0Rt0ra9UYuY+0=;
- b=ZjhRK1bvPJQhAw9LH2RQXije3/1k4Xh9e3Nw7byKGwfElEXg+AiuSaDcgSbNtmI8elxZeFNBYzUNUNiwFguzETa8NJP76tM/ETMOhmsY6qbULyfZBFd/vu7NbAM8MLb2rHL7YWkZfM7EA/in3qDrro6UCd1Je0M1dva0rxyQm+hudTIsEoLSrLmzaQ+Tg+pA47vuQST/SARKpH2dWFxj1XG1x83/kCkzByNWB0C01ad8nes0ad3mvncBtosqg6yKReaSovWZEQnG9hZM74p1qLuxU8l9JKMmck727r1JFUjIdDXJ2yzanoX0ttxvEbwiaIG8+/FfZVVFAsPG6rt6kA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z5gtqm/eQhHpSeZnbW7tSt56P+Kn6c0Rt0ra9UYuY+0=;
- b=Ofj8vg7cIDCdGJ9Y0BUCypEpPYFVcymUJamDRidFHpj3Oi8Vg9DBfHFXl2pDQ0086POWCwbh6/fXgzo9YSlZxo3xFnuf/oiAApVIE3sGQb88BHIr3xAjcEuLa0GvJhK7IBI5ZHHzNX+ZZYXmelHiZI5szhbf/4z4Id04cWukP4g=
-Authentication-Results: linux-watchdog.org; dkim=none (message not signed)
- header.d=none;linux-watchdog.org; dmarc=none action=none
- header.from=nokia.com;
-Received: from DB7PR07MB5356.eurprd07.prod.outlook.com (2603:10a6:10:70::33)
- by DB7PR07MB4571.eurprd07.prod.outlook.com (2603:10a6:5:32::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.10; Fri, 17 Jul
- 2020 10:31:35 +0000
-Received: from DB7PR07MB5356.eurprd07.prod.outlook.com
- ([fe80::986:d072:defd:74a9]) by DB7PR07MB5356.eurprd07.prod.outlook.com
- ([fe80::986:d072:defd:74a9%6]) with mapi id 15.20.3195.022; Fri, 17 Jul 2020
- 10:31:35 +0000
-From:   Krzysztof Sobota <krzysztof.sobota@nokia.com>
-To:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@roeck-us.net
-Cc:     krzysztof.sobota@nokia.com, alexander.sverdlin@nokia.com
-Subject: [PATCH v4] watchdog: initialize device before misc_register
-Date:   Fri, 17 Jul 2020 12:31:09 +0200
-Message-Id: <20200717103109.14660-1-krzysztof.sobota@nokia.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HE1PR05CA0372.eurprd05.prod.outlook.com
- (2603:10a6:7:94::31) To DB7PR07MB5356.eurprd07.prod.outlook.com
- (2603:10a6:10:70::33)
+        id S1726233AbgGQKb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 06:31:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:51312 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgGQKb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 06:31:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AFEAD6E;
+        Fri, 17 Jul 2020 03:31:26 -0700 (PDT)
+Received: from bogus (unknown [10.37.8.134])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7359E3F66E;
+        Fri, 17 Jul 2020 03:31:24 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 11:31:20 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>,
+        "Paul J. Murphy" <paul.j.murphy@linux.intel.com>,
+        "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] firmware: arm_scmi: Pass shmem address to SMCCC call
+Message-ID: <20200717103120.GC24501@bogus>
+References: <20200715165518.57558-1-daniele.alessandrelli@linux.intel.com>
+ <5f74221b-aec7-7715-19d1-5cbb406f1bdc@gmail.com>
+ <b4d22e4a5154a9ad4c224eb2dfaeb61ed1680834.camel@linux.intel.com>
+ <faa53c11-3c72-9b9b-85ad-9d234f373b4d@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from master-ThinkPad-T470.emea.nsn-net.net (131.228.2.28) by HE1PR05CA0372.eurprd05.prod.outlook.com (2603:10a6:7:94::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Fri, 17 Jul 2020 10:31:33 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [131.228.2.28]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6a65da28-c127-4a26-f775-08d82a3c9445
-X-MS-TrafficTypeDiagnostic: DB7PR07MB4571:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR07MB45714EE939D547EACF475BAD937C0@DB7PR07MB4571.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3YxerYGSF+tFlmi2rIIpvrTSkdQdz7xsHTi1YGBZ1k+eP5lHa+vTvL3TUC8AGkt5iwt3MTONBiamYrlEG6r29uu+2SCdLHglnQHyeRSLtM4A8pKpGNwgl7IrRQ1KEtmOQdJ4gYP25I4p/XdgwxKBgORFBhc6cBoUv02FdahgnIxs2ppumwnNBNrcbxUJRTMhRJFnNqAnb3qlWC23n6VGZLNN/T1EgR/jl9qahCpOIW0T6O5jM98+oC2AGGvNcZGicSelug2/UmNYQ+RGx+7gq9i83PmIuwWbITHvyTdc0q2Nf2RUpa82lXSoPHkBH+10z5/kA/f82Sj6Mc4GLkIuww==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR07MB5356.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(6666004)(1076003)(6506007)(83380400001)(186003)(316002)(44832011)(26005)(16526019)(2906002)(2616005)(6486002)(66946007)(66556008)(5660300002)(36756003)(8676002)(478600001)(52116002)(45080400002)(86362001)(4326008)(8936002)(6512007)(66476007)(956004)(107886003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: /xFvCTT4vfP6MJwM+EUESSAwciklpI5RJBpKv2ED5ngtJC7T3gYU4jVBNJdjn3cDV/E5fW23OYuBgFrt7llakPDSdtf2WwqxZl79AE14teDQejbc04NRYoQZqAj4/MsCcBLq8j1FTM8+1GRBgrFX0syLsvGm4q+JJqu36tb3mh6TW6uGM6kVihtpdMkrpXT4ypVUgrA/zhyXaIyUROdz+DM1zEHLQxlRM9WstC4s7P9biIAuH6Lx/Cfxyw0mxCTyzjwbWhH3hM7D2w6WeNDvZSmZyzeZ0DLuqsPssYSQV1XzaR0SLeXc3DbgzAZ3jAWnmPmnwTxcvE5yHAEYDn2pv/fPSLVXnluIf4glYeN+zfDgf9C+Vo7IuEzBKXzKme8qRTSgcU6pVfhtncDLKQhBMtoEBYuBiR3N8y/w3nWE8qJn8uTja4MnWBbI3OU59p6hnYIF56jyQ0s/Zy6+IMMTo2fKsChamTwHbdhZFbKitF8=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a65da28-c127-4a26-f775-08d82a3c9445
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR07MB5356.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2020 10:31:35.1800
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U7Vr5ndGnFY96hd/PCx3kVzFEz3v3xYMPTF1Ug7QY8zhiLHsHhQdaht3f+OZS8pF0boDdQb9eNhxtFA2Y+/CZPkJltMcsq0l9gXI0WsbhKY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR07MB4571
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <faa53c11-3c72-9b9b-85ad-9d234f373b4d@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When watchdog device is being registered, it calls misc_register that
-makes watchdog available for systemd to open. This is a data race
-scenario, because when device is open it may still have device struct
-not initialized - this in turn causes a crash. This patch moves
-device initialization before misc_register call and it solves the
-problem printed below.
+On Thu, Jul 16, 2020 at 12:57:23PM -0700, Florian Fainelli wrote:
+>
+>
+> On 7/16/2020 7:13 AM, Daniele Alessandrelli wrote:
+> > Hi Florian,
+> >
+> > Thanks for you feedback.
+> >
+> > On Wed, 2020-07-15 at 15:43 -0700, Florian Fainelli wrote:
+> >>
+> >> On 7/15/2020 9:55 AM, Daniele Alessandrelli wrote:
+> >>> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> >>>
+> >>> Currently, when SMC/HVC is used as transport, the base address of
+> >>> the
+> >>> shared memory used for communication is not passed to the SMCCC
+> >>> call.
+> >>> This means that such an address must be hard-coded into the
+> >>> bootloader.
+> >>>
+> >>> In order to increase flexibility and allow the memory layout to be
+> >>> changed without modifying the bootloader, this patch adds the
+> >>> shared
+> >>> memory base address to the a1 argument of the SMCCC call.
+> >>>
+> >>> On the Secure Monitor side, the service call implementation can
+> >>> therefore read the a1 argument in order to know the location of the
+> >>> shared memory to use. This change is backward compatible to
+> >>> existing
+> >>> service call implementations as long as they don't check for a1 to
+> >>> be
+> >>> zero.
+> >>
+> >> resource_size_t being defined after phys_addr_t, its size is
+> >> different
+> >> between 32-bit, 32-bit with PAE and 64-bit so it would probably make
+> >> more sense to define an physical address alignment, or maybe an
+> >> address
+> >> that is in multiple of 4KBytes so you can address up to 36-bits of
+> >> physical address even on a 32-bit only system?
+> >
+> > I see your point. After a quick look, I think that, practically, the
+> > issue is with ARM32 LPAE addresses, for which phys_addr_t is a u64. So,
+> > basically, for AArch32 systems with LPAE the 64-bit shmem_paddr gets
+> > truncated to 32-bit when it's passed to the SMC32/HVC32 call.
+> >
+> > To solve that, I would prefer splitting the address between two SMC
+> > parameters (a1 = addr_lo, a2 = addr_hi), instead of imposing an
+> > arbitrary alignment. Would that be reasonable?
+>
+> The low/high part would only be relevant on a 32-bit LPAE platform which
+> is probably a corner case, I would just pass the shmem_paddr / 4096
+> since that is the smallest granule size and alignment possible and it
+> still allows you to map up to 36-bits of physical address, which is the
+> maximum that the long descriptor in LPAE can support. For 64-bit we have
+> no such problems since we have the full register width.
+>
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 1 at lib/kobject.c:612 kobject_get+0x50/0x54
-kobject: '(null)' ((ptrval)): is not initialized, yet kobject_get() is being called.
-Modules linked in: k2_reset_status(O) davinci_wdt(+) sfn_platform_hwbcn(O) fsmddg_sfn(O) clk_misc_mmap(O) clk_sw_bcn(O) fsp_reset(O) cma_mod(O) slave_sup_notif(O) fpga_master(O) latency(O+) evnotify(O) enable_arm_pmu(O) xge(O) rio_mport_cdev br_netfilter bridge stp llc nvrd_checksum(O) ipv6
-CPU: 3 PID: 1 Comm: systemd Tainted: G           O      4.19.113-g2579778-fsm4_k2 #1
-Hardware name: Keystone
-[<c02126c4>] (unwind_backtrace) from [<c020da94>] (show_stack+0x18/0x1c)
-[<c020da94>] (show_stack) from [<c07f87d8>] (dump_stack+0xb4/0xe8)
-[<c07f87d8>] (dump_stack) from [<c0221f70>] (__warn+0xfc/0x114)
-[<c0221f70>] (__warn) from [<c0221fd8>] (warn_slowpath_fmt+0x50/0x74)
-[<c0221fd8>] (warn_slowpath_fmt) from [<c07fd394>] (kobject_get+0x50/0x54)
-[<c07fd394>] (kobject_get) from [<c0602ce8>] (get_device+0x1c/0x24)
-[<c0602ce8>] (get_device) from [<c06961e0>] (watchdog_open+0x90/0xf0)
-[<c06961e0>] (watchdog_open) from [<c06001dc>] (misc_open+0x130/0x17c)
-[<c06001dc>] (misc_open) from [<c0388228>] (chrdev_open+0xec/0x1a8)
-[<c0388228>] (chrdev_open) from [<c037fa98>] (do_dentry_open+0x204/0x3cc)
-[<c037fa98>] (do_dentry_open) from [<c0391e2c>] (path_openat+0x330/0x1148)
-[<c0391e2c>] (path_openat) from [<c0394518>] (do_filp_open+0x78/0xec)
-[<c0394518>] (do_filp_open) from [<c0381100>] (do_sys_open+0x130/0x1f4)
-[<c0381100>] (do_sys_open) from [<c0201000>] (ret_fast_syscall+0x0/0x28)
-Exception stack(0xd2ceffa8 to 0xd2cefff0)
-ffa0:                   b6f69968 00000000 ffffff9c b6ebd210 000a0001 00000000
-ffc0: b6f69968 00000000 00000000 00000142 fffffffd ffffffff 00b65530 bed7bb78
-ffe0: 00000142 bed7ba70 b6cc2503 b6cc41d6
----[ end trace 7b16eb105513974f ]---
+OK, I will check if 32-bit identifier can be relaxed in the spec in which
+case we can avoid having DT binding for the identifier. If that is possible
+we could use addr/4k page size.
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 1 at lib/refcount.c:153 kobject_get+0x24/0x54
-refcount_t: increment on 0; use-after-free.
-Modules linked in: k2_reset_status(O) davinci_wdt(+) sfn_platform_hwbcn(O) fsmddg_sfn(O) clk_misc_mmap(O) clk_sw_bcn(O) fsp_reset(O) cma_mod(O) slave_sup_notif(O) fpga_master(O) latency(O+) evnotify(O) enable_arm_pmu(O) xge(O) rio_mport_cdev br_netfilter bridge stp llc nvrd_checksum(O) ipv6
-CPU: 3 PID: 1 Comm: systemd Tainted: G        W  O      4.19.113-g2579778-fsm4_k2 #1
-Hardware name: Keystone
-[<c02126c4>] (unwind_backtrace) from [<c020da94>] (show_stack+0x18/0x1c)
-[<c020da94>] (show_stack) from [<c07f87d8>] (dump_stack+0xb4/0xe8)
-[<c07f87d8>] (dump_stack) from [<c0221f70>] (__warn+0xfc/0x114)
-[<c0221f70>] (__warn) from [<c0221fd8>] (warn_slowpath_fmt+0x50/0x74)
-[<c0221fd8>] (warn_slowpath_fmt) from [<c07fd368>] (kobject_get+0x24/0x54)
-[<c07fd368>] (kobject_get) from [<c0602ce8>] (get_device+0x1c/0x24)
-[<c0602ce8>] (get_device) from [<c06961e0>] (watchdog_open+0x90/0xf0)
-[<c06961e0>] (watchdog_open) from [<c06001dc>] (misc_open+0x130/0x17c)
-[<c06001dc>] (misc_open) from [<c0388228>] (chrdev_open+0xec/0x1a8)
-[<c0388228>] (chrdev_open) from [<c037fa98>] (do_dentry_open+0x204/0x3cc)
-[<c037fa98>] (do_dentry_open) from [<c0391e2c>] (path_openat+0x330/0x1148)
-[<c0391e2c>] (path_openat) from [<c0394518>] (do_filp_open+0x78/0xec)
-[<c0394518>] (do_filp_open) from [<c0381100>] (do_sys_open+0x130/0x1f4)
-[<c0381100>] (do_sys_open) from [<c0201000>] (ret_fast_syscall+0x0/0x28)
-Exception stack(0xd2ceffa8 to 0xd2cefff0)
-ffa0:                   b6f69968 00000000 ffffff9c b6ebd210 000a0001 00000000
-ffc0: b6f69968 00000000 00000000 00000142 fffffffd ffffffff 00b65530 bed7bb78
-ffe0: 00000142 bed7ba70 b6cc2503 b6cc41d6
----[ end trace 7b16eb1055139750 ]---
+> >>
+> >> What discovery mechanism does the OS have that the specified address
+> >> within the SMCCC call has been accepted by the firmware given the
+> >> return value of that SMCCC call does not appear to be used or checked? Do
+> >> we just expect a timeout initializing the SCMI subsystem?
+> >
+> > The return code is actually checked at the end of the function:
+> > https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/firmware/arm_scmi/smc.c#L118
+> >
+> > But in the meantime scmi_rx_callback() has already been called. Not
+> > sure if that's intentional or a possible bug.
+> >
+> >>
+> >> Given that the kernel must somehow reserve this memory as a shared
+> >> memory area for obvious reasons, and the trusted firmware must also
+> >> ensure it treats this memory region with specific permissions in its
+> >> translation regime, does it really make sense to give that much
+> >> flexibility?
 
-Fixes: 72139dfa2464 ("watchdog: Fix the race between the release of watchdog_core_data and cdev")
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Krzysztof Sobota <krzysztof.sobota@nokia.com>
----
-v1 -> v2
-* removed Change-Id tag
-* added Review-by tag
-v2 -> v3
-* convert spaces to tabs
-* convert (hopefully) mail to plaintext
-v3 -> v4
-* use git send-email to fix style problems
-* rebase on top of master
----
- drivers/watchdog/watchdog_dev.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+I share same opinion as Florian here.
 
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-index 7e4cd34a8c20..b535f5fa279b 100644
---- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -994,6 +994,15 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
- 	if (IS_ERR_OR_NULL(watchdog_kworker))
- 		return -ENODEV;
- 
-+	device_initialize(&wd_data->dev);
-+	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
-+	wd_data->dev.class = &watchdog_class;
-+	wd_data->dev.parent = wdd->parent;
-+	wd_data->dev.groups = wdd->groups;
-+	wd_data->dev.release = watchdog_core_data_release;
-+	dev_set_drvdata(&wd_data->dev, wdd);
-+	dev_set_name(&wd_data->dev, "watchdog%d", wdd->id);
-+
- 	kthread_init_work(&wd_data->work, watchdog_ping_work);
- 	hrtimer_init(&wd_data->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
- 	wd_data->timer.function = watchdog_timer_expired;
-@@ -1014,15 +1023,6 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
- 		}
- 	}
- 
--	device_initialize(&wd_data->dev);
--	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
--	wd_data->dev.class = &watchdog_class;
--	wd_data->dev.parent = wdd->parent;
--	wd_data->dev.groups = wdd->groups;
--	wd_data->dev.release = watchdog_core_data_release;
--	dev_set_drvdata(&wd_data->dev, wdd);
--	dev_set_name(&wd_data->dev, "watchdog%d", wdd->id);
--
- 	/* Fill in the data structures */
- 	cdev_init(&wd_data->cdev, &watchdog_fops);
- 
--- 
-2.14.0
+[...]
 
+> >> If your boot loader has FDT patching capability, maybe it can also do
+> >> a SMC call to provide the address to your trusted firmware, prior to
+> >> loading the Linux kernel, and then they both agree, prior to boot
+> >> about the shared memory address?
+> >
+> > Yes, that's a possible solution, but it looks more complicated to me,
+> > since it adds an additional component (the boot loader) to the
+> > equation, while the goal of this patch was to reduce the coupling
+> > between components (namely the DT/kernel and the trusted firmware).
+> >
+> > I guess my question is: if we fix the handling of LPAE addresses and
+> > the SMC return code, what is the drawback of having the shmem address
+> > passed to the SMC?
+>
+> My only concern is that if somehow Linux gets assigned a shared memory
+> range that is completely outside of what the trusted firmware has
+> already mapped, or is capable of addressing, or any combination thereof,
+> it could be challenging to debug what is going on, especially if INVALID
+> PARAMETER must not be returned (assuming this is to avoid Linux
+> discovering where other shared memory areas pertaining to the firmware
+> reside?).
+>
+
+Valid point. Again, I was planning to use this as identifier and didn't
+think of the usecase Daniele mentions here.
+
+> The other concern I have is that we are not documenting the various
+> SMCCC calling conventions, soon enough it will be come out of control,
+> and we are already allowing people to define their own function IDs and
+> parameters to call into the trusted firmware. This sounds like something
+> that is so basic that it should be standardized from the top, by ARM.
+>
+
+Completely agreed. I have failed to achieve that myself. Unless there is
+demand from partners/vendors, it will be dismissed by architects. All
+I managed to get in was the identifier as the argument for SMC/HVC to
+support multiple channels. However 32-bit id will be issue to be used
+with 64-bit address. I will see if we can drop that 32-bit requirement
+from the spec.
+
+> >
+> > Anyway, I should have mentioned this in the commit message (sorry for
+> > not doing so), but I submitted this patch because initial feedback from
+> > Sudeep was positive [1]; but if there is no consensus around it I'm
+> > fine with dropping it.
+> >
+> > [1] https://lore.kernel.org/lkml/20200710075931.GB1189@bogus/
+>
+> My review is by no means authoritative however in deploying SCMI on our
+> Broadcom STB platforms some experience was gained in the process which
+> is how it piqued my interest. Thanks for providing more background to
+> this patch, this does help.
+>
+
+Your knowledge is important and please always share the same and happy
+to take all your review into consideration always. End goal is to help
+all or most of the users of the driver if possible.
+
+> We have opted for a solution where the boot loader knows about all
+> possible reserved regions prior to booting/loading the trusted firmware
+> as well as the kernel, therefore it can pass that information to both
+> and we never really had a situation where the two need to evolve in an
+> uncoordinated way.
+
+I agree and uncoordinated evolution may not be as simple as it is
+presented by Daniele earlier and I am not confident to support that.
+The main reason for giving positive response for this initially is
+for the addition of identifier which I always thought is required for
+supporting multiple channels. E.g. DVFS/Perf has dedicated channel.
+
+--
+Regards,
+Sudeep
