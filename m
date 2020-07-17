@@ -2,547 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F0C2233C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5AF22347F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgGQGYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
+        id S1728005AbgGQG1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgGQGYo (ORCPT
+        with ESMTP id S1726962AbgGQG1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:24:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86202C08C5C0;
-        Thu, 16 Jul 2020 23:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=kbGmHpM4oj2iSBg8afJLPvPTqr4Oo7etdmQf4Gx3p6g=; b=enqk4z7AtkWvVVT0ktmRixHxYG
-        ZE6nr495nmVeqXTvqNhSZAk/LeaHFxGyOtXhcccmzRAlDjVvCGobT5rvHbv8NtqQVHaaC0xnJ3Hb9
-        Er4n5IYTU1mkuPplXbnndtuOcDytQpv+nxt2M2mW36ArSipGP+w85zBQ6rbtZjlLM/sDr+9hGxTHZ
-        Qlr1OYczhUpJGuvEig/YgFx4M/upAXCRfjYxwDUMHdHL9JWNfSAGdJfBWwKwwpLzh7X4CsuKqjYrI
-        r7j1ievIEPg0b6BeMmzWbCoFv1zqE/m3+gPFPm60upHtjdfqlSfIuBgAOyTb4MtC1WwSlbOkQ2ELx
-        UAjW3v0A==;
-Received: from [2001:4bb8:105:4a81:3772:912d:640:e6c6] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwJnM-000576-Cm; Fri, 17 Jul 2020 06:24:33 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Chas Williams <3chas3@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, mptcp@lists.01.org
-Subject: [PATCH 22/22] net: make ->{get,set}sockopt in proto_ops optional
-Date:   Fri, 17 Jul 2020 08:23:31 +0200
-Message-Id: <20200717062331.691152-23-hch@lst.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717062331.691152-1-hch@lst.de>
-References: <20200717062331.691152-1-hch@lst.de>
+        Fri, 17 Jul 2020 02:27:39 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754E3C061755;
+        Thu, 16 Jul 2020 23:27:39 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id dm12so3821754qvb.9;
+        Thu, 16 Jul 2020 23:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A3qqFF9yd3EKW/+nagLOaGgu79oDzMUA/VxmH16ttug=;
+        b=ZixpRszNUNTbAzJhX/ocpWCSZ9iF+5uvw17oQTar95O/SvFbUASypBidCkEVY9HMLF
+         SwkhIbNuNlOszMxEazsN/bF20wXIYRLh5nkCTA//BjMDxuqAP8oLeiSKFLnfaj4PHWUo
+         jnjLHvlOwajtqkaBjc2ET2Vns9Gm/fgMocFZI7DGd/U3sSqo+fmqVDwMWu1GxqQ+NKew
+         tRDeYwRvL4co/lxvjH/JBzB/4UMCJPi+DcmJe1vgxnmpNtyOFi6XL9WYPW/a0umAKqlq
+         9hSP7eF5XH2TM7zRdeHWoTe+1ASmGZcjkr0HI32/qFbU050sZtA9cxw34YzFDdRDeR/l
+         j2fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A3qqFF9yd3EKW/+nagLOaGgu79oDzMUA/VxmH16ttug=;
+        b=P4gb6TFYFgJFQiXSBe1VydgUSQ1XQ+VlhZmeXUUXsI/xx43d7QxOmtVWpm81ce0oM4
+         ckG77RGv41Zc5Zssuza179KbArAOEprqQw5RULrkj0uRJILAv46uF72imI6hkB8eWhFW
+         f3D9XGH15aCLY3Vo3++2OfzLGSPiX/Zv6QLBSVXftfXyI4ATNRelT0GWEAQc1gNR/uDB
+         vv286sXOTAvbdt329fUPTq2FoBY+rbVQftWYdA0cKxe5gx19Zq2H1rIK4tjVl6l6nBkv
+         eKq+A2+UlwX0JEPR+GBqUV/9g4yC73VP2sdpTDWah7PHKg+uOBLbvgTXCjej/LvCCF1i
+         wqvw==
+X-Gm-Message-State: AOAM533zatl2Ro2odTZdzAhMfCVh53E27YL0F+uPkxPRYJdUYIB1ZC50
+        LeMycu8mFOstm/HD8qlWE3fi3qF34uRVFYOc+EjKGWIX
+X-Google-Smtp-Source: ABdhPJwZWWO4WoZvg8RmUJxWGouo5QxAZHQLboX1iGjpX0vnF24PIbk3GO27rwGBsGCQZvrN9AnVJoO4Auo5M6hOVfQ=
+X-Received: by 2002:a05:6214:1586:: with SMTP id m6mr7428351qvw.171.1594967258230;
+ Thu, 16 Jul 2020 23:27:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200717144656.4bdbf81f@canb.auug.org.au>
+In-Reply-To: <20200717144656.4bdbf81f@canb.auug.org.au>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Fri, 17 Jul 2020 08:27:27 +0200
+Message-ID: <CAFULd4Ye2d-8BY7aY+_2tYwcXsfSCe3O6aJ4LF0KhvWTjVt0rA@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the tip tree with the crypto tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just check for a NULL method instead of wiring up
-sock_no_{get,set}sockopt.
+On Fri, Jul 17, 2020 at 6:47 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the tip tree got a conflict in:
+>
+>   arch/x86/include/asm/inst.h
+>
+> between commit:
+>
+>   d7866e503bdc ("crypto: x86 - Remove include/asm/inst.h")
+>
+> from the crypto tree and commit:
+>
+>   eaad981291ee ("x86/entry/64: Introduce the FIND_PERCPU_BASE macro")
+>
+> from the tip tree.
+>
+> I fixed it up (I brought the file back but removed what the crypto tree
+> no longer needed - see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>
+> I think if the crypto tree brought back this file as well (even without
+> the RDPID macro, it would make this conflict much more manageable.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- crypto/af_alg.c             |  1 -
- crypto/algif_aead.c         |  4 ----
- crypto/algif_hash.c         |  4 ----
- crypto/algif_rng.c          |  2 --
- crypto/algif_skcipher.c     |  4 ----
- drivers/isdn/mISDN/socket.c |  2 --
- drivers/net/ppp/pppoe.c     |  2 --
- drivers/net/ppp/pptp.c      |  2 --
- include/net/sock.h          |  2 --
- net/appletalk/ddp.c         |  2 --
- net/bluetooth/bnep/sock.c   |  2 --
- net/bluetooth/cmtp/sock.c   |  2 --
- net/bluetooth/hidp/sock.c   |  2 --
- net/caif/caif_socket.c      |  2 --
- net/can/bcm.c               |  2 --
- net/core/sock.c             | 14 --------------
- net/key/af_key.c            |  2 --
- net/nfc/llcp_sock.c         |  2 --
- net/nfc/rawsock.c           |  4 ----
- net/packet/af_packet.c      |  2 --
- net/phonet/socket.c         |  2 --
- net/qrtr/qrtr.c             |  2 --
- net/smc/af_smc.c            |  9 +++++++--
- net/socket.c                |  4 ++++
- net/unix/af_unix.c          |  6 ------
- net/vmw_vsock/af_vsock.c    |  2 --
- 26 files changed, 11 insertions(+), 73 deletions(-)
+I will prepare a v2 that leaves needed part of inst.h.
 
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index 28fc323e3fe304..29f71428520b4b 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -335,7 +335,6 @@ static const struct proto_ops alg_proto_ops = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.sendpage	=	sock_no_sendpage,
- 	.sendmsg	=	sock_no_sendmsg,
-diff --git a/crypto/algif_aead.c b/crypto/algif_aead.c
-index 0ae000a61c7f5b..527d09a694627b 100644
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -361,11 +361,9 @@ static struct proto_ops algif_aead_ops = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
- 	.accept		=	sock_no_accept,
--	.setsockopt	=	sock_no_setsockopt,
- 
- 	.release	=	af_alg_release,
- 	.sendmsg	=	aead_sendmsg,
-@@ -454,11 +452,9 @@ static struct proto_ops algif_aead_ops_nokey = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
- 	.accept		=	sock_no_accept,
--	.setsockopt	=	sock_no_setsockopt,
- 
- 	.release	=	af_alg_release,
- 	.sendmsg	=	aead_sendmsg_nokey,
-diff --git a/crypto/algif_hash.c b/crypto/algif_hash.c
-index e71727c25a7db7..50f7b22f1b4825 100644
---- a/crypto/algif_hash.c
-+++ b/crypto/algif_hash.c
-@@ -279,10 +279,8 @@ static struct proto_ops algif_hash_ops = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
--	.setsockopt	=	sock_no_setsockopt,
- 
- 	.release	=	af_alg_release,
- 	.sendmsg	=	hash_sendmsg,
-@@ -383,10 +381,8 @@ static struct proto_ops algif_hash_ops_nokey = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
--	.setsockopt	=	sock_no_setsockopt,
- 
- 	.release	=	af_alg_release,
- 	.sendmsg	=	hash_sendmsg_nokey,
-diff --git a/crypto/algif_rng.c b/crypto/algif_rng.c
-index 087c0ad09d382b..6300e0566dc560 100644
---- a/crypto/algif_rng.c
-+++ b/crypto/algif_rng.c
-@@ -101,11 +101,9 @@ static struct proto_ops algif_rng_ops = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
- 	.accept		=	sock_no_accept,
--	.setsockopt	=	sock_no_setsockopt,
- 	.sendmsg	=	sock_no_sendmsg,
- 	.sendpage	=	sock_no_sendpage,
- 
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index ec5567c87a6df4..c487887f46711e 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -188,11 +188,9 @@ static struct proto_ops algif_skcipher_ops = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
- 	.accept		=	sock_no_accept,
--	.setsockopt	=	sock_no_setsockopt,
- 
- 	.release	=	af_alg_release,
- 	.sendmsg	=	skcipher_sendmsg,
-@@ -281,11 +279,9 @@ static struct proto_ops algif_skcipher_ops_nokey = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.bind		=	sock_no_bind,
- 	.accept		=	sock_no_accept,
--	.setsockopt	=	sock_no_setsockopt,
- 
- 	.release	=	af_alg_release,
- 	.sendmsg	=	skcipher_sendmsg_nokey,
-diff --git a/drivers/isdn/mISDN/socket.c b/drivers/isdn/mISDN/socket.c
-index dff4132b3702c6..1b2b91479107bc 100644
---- a/drivers/isdn/mISDN/socket.c
-+++ b/drivers/isdn/mISDN/socket.c
-@@ -738,8 +738,6 @@ static const struct proto_ops base_sock_ops = {
- 	.recvmsg	= sock_no_recvmsg,
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.connect	= sock_no_connect,
- 	.socketpair	= sock_no_socketpair,
- 	.accept		= sock_no_accept,
-diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
-index beedaad082551b..d7f50b835050d1 100644
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -1110,8 +1110,6 @@ static const struct proto_ops pppoe_ops = {
- 	.poll		= datagram_poll,
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.sendmsg	= pppoe_sendmsg,
- 	.recvmsg	= pppoe_recvmsg,
- 	.mmap		= sock_no_mmap,
-diff --git a/drivers/net/ppp/pptp.c b/drivers/net/ppp/pptp.c
-index acccb747aedad6..ee5058445d06e2 100644
---- a/drivers/net/ppp/pptp.c
-+++ b/drivers/net/ppp/pptp.c
-@@ -618,8 +618,6 @@ static const struct proto_ops pptp_ops = {
- 	.getname    = pptp_getname,
- 	.listen     = sock_no_listen,
- 	.shutdown   = sock_no_shutdown,
--	.setsockopt = sock_no_setsockopt,
--	.getsockopt = sock_no_getsockopt,
- 	.sendmsg    = sock_no_sendmsg,
- 	.recvmsg    = sock_no_recvmsg,
- 	.mmap       = sock_no_mmap,
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 3bd8bc578bf3e5..62e18fc8ac9f96 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1714,8 +1714,6 @@ int sock_no_getname(struct socket *, struct sockaddr *, int);
- int sock_no_ioctl(struct socket *, unsigned int, unsigned long);
- int sock_no_listen(struct socket *, int);
- int sock_no_shutdown(struct socket *, int);
--int sock_no_getsockopt(struct socket *, int , int, char __user *, int __user *);
--int sock_no_setsockopt(struct socket *, int, int, char __user *, unsigned int);
- int sock_no_sendmsg(struct socket *, struct msghdr *, size_t);
- int sock_no_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t len);
- int sock_no_recvmsg(struct socket *, struct msghdr *, size_t, int);
-diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
-index 15787e8c0629a0..1d48708c5a2eb5 100644
---- a/net/appletalk/ddp.c
-+++ b/net/appletalk/ddp.c
-@@ -1917,8 +1917,6 @@ static const struct proto_ops atalk_dgram_ops = {
- #endif
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.sendmsg	= atalk_sendmsg,
- 	.recvmsg	= atalk_recvmsg,
- 	.mmap		= sock_no_mmap,
-diff --git a/net/bluetooth/bnep/sock.c b/net/bluetooth/bnep/sock.c
-index cfd83c5521aecc..d515571b2afba9 100644
---- a/net/bluetooth/bnep/sock.c
-+++ b/net/bluetooth/bnep/sock.c
-@@ -182,8 +182,6 @@ static const struct proto_ops bnep_sock_ops = {
- 	.recvmsg	= sock_no_recvmsg,
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.connect	= sock_no_connect,
- 	.socketpair	= sock_no_socketpair,
- 	.accept		= sock_no_accept,
-diff --git a/net/bluetooth/cmtp/sock.c b/net/bluetooth/cmtp/sock.c
-index defdd4871919f3..96d49d9fae9643 100644
---- a/net/bluetooth/cmtp/sock.c
-+++ b/net/bluetooth/cmtp/sock.c
-@@ -185,8 +185,6 @@ static const struct proto_ops cmtp_sock_ops = {
- 	.recvmsg	= sock_no_recvmsg,
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.connect	= sock_no_connect,
- 	.socketpair	= sock_no_socketpair,
- 	.accept		= sock_no_accept,
-diff --git a/net/bluetooth/hidp/sock.c b/net/bluetooth/hidp/sock.c
-index 03be6a4baef30e..595fb3c9d6c361 100644
---- a/net/bluetooth/hidp/sock.c
-+++ b/net/bluetooth/hidp/sock.c
-@@ -233,8 +233,6 @@ static const struct proto_ops hidp_sock_ops = {
- 	.recvmsg	= sock_no_recvmsg,
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.connect	= sock_no_connect,
- 	.socketpair	= sock_no_socketpair,
- 	.accept		= sock_no_accept,
-diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
-index ef14da50a98191..b94ecd931002e7 100644
---- a/net/caif/caif_socket.c
-+++ b/net/caif/caif_socket.c
-@@ -981,7 +981,6 @@ static const struct proto_ops caif_seqpacket_ops = {
- 	.listen = sock_no_listen,
- 	.shutdown = sock_no_shutdown,
- 	.setsockopt = setsockopt,
--	.getsockopt = sock_no_getsockopt,
- 	.sendmsg = caif_seqpkt_sendmsg,
- 	.recvmsg = caif_seqpkt_recvmsg,
- 	.mmap = sock_no_mmap,
-@@ -1002,7 +1001,6 @@ static const struct proto_ops caif_stream_ops = {
- 	.listen = sock_no_listen,
- 	.shutdown = sock_no_shutdown,
- 	.setsockopt = setsockopt,
--	.getsockopt = sock_no_getsockopt,
- 	.sendmsg = caif_stream_sendmsg,
- 	.recvmsg = caif_stream_recvmsg,
- 	.mmap = sock_no_mmap,
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index c96fa0f33db39c..d14ea12affb112 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1648,8 +1648,6 @@ static const struct proto_ops bcm_ops = {
- 	.gettstamp     = sock_gettstamp,
- 	.listen        = sock_no_listen,
- 	.shutdown      = sock_no_shutdown,
--	.setsockopt    = sock_no_setsockopt,
--	.getsockopt    = sock_no_getsockopt,
- 	.sendmsg       = bcm_sendmsg,
- 	.recvmsg       = bcm_recvmsg,
- 	.mmap          = sock_no_mmap,
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 48655d5c4cf37a..d828bfe1c47dfa 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2783,20 +2783,6 @@ int sock_no_shutdown(struct socket *sock, int how)
- }
- EXPORT_SYMBOL(sock_no_shutdown);
- 
--int sock_no_setsockopt(struct socket *sock, int level, int optname,
--		    char __user *optval, unsigned int optlen)
--{
--	return -EOPNOTSUPP;
--}
--EXPORT_SYMBOL(sock_no_setsockopt);
--
--int sock_no_getsockopt(struct socket *sock, int level, int optname,
--		    char __user *optval, int __user *optlen)
--{
--	return -EOPNOTSUPP;
--}
--EXPORT_SYMBOL(sock_no_getsockopt);
--
- int sock_no_sendmsg(struct socket *sock, struct msghdr *m, size_t len)
- {
- 	return -EOPNOTSUPP;
-diff --git a/net/key/af_key.c b/net/key/af_key.c
-index b67ed3a8486c25..f13626c1a98592 100644
---- a/net/key/af_key.c
-+++ b/net/key/af_key.c
-@@ -3734,8 +3734,6 @@ static const struct proto_ops pfkey_ops = {
- 	.ioctl		=	sock_no_ioctl,
- 	.listen		=	sock_no_listen,
- 	.shutdown	=	sock_no_shutdown,
--	.setsockopt	=	sock_no_setsockopt,
--	.getsockopt	=	sock_no_getsockopt,
- 	.mmap		=	sock_no_mmap,
- 	.sendpage	=	sock_no_sendpage,
- 
-diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
-index 28604414dec1b7..6da1e2334bb697 100644
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -921,8 +921,6 @@ static const struct proto_ops llcp_rawsock_ops = {
- 	.ioctl          = sock_no_ioctl,
- 	.listen         = sock_no_listen,
- 	.shutdown       = sock_no_shutdown,
--	.setsockopt     = sock_no_setsockopt,
--	.getsockopt     = sock_no_getsockopt,
- 	.sendmsg        = sock_no_sendmsg,
- 	.recvmsg        = llcp_sock_recvmsg,
- 	.mmap           = sock_no_mmap,
-diff --git a/net/nfc/rawsock.c b/net/nfc/rawsock.c
-index ba5ffd3badd324..b2061b6746eaa6 100644
---- a/net/nfc/rawsock.c
-+++ b/net/nfc/rawsock.c
-@@ -276,8 +276,6 @@ static const struct proto_ops rawsock_ops = {
- 	.ioctl          = sock_no_ioctl,
- 	.listen         = sock_no_listen,
- 	.shutdown       = sock_no_shutdown,
--	.setsockopt     = sock_no_setsockopt,
--	.getsockopt     = sock_no_getsockopt,
- 	.sendmsg        = rawsock_sendmsg,
- 	.recvmsg        = rawsock_recvmsg,
- 	.mmap           = sock_no_mmap,
-@@ -296,8 +294,6 @@ static const struct proto_ops rawsock_raw_ops = {
- 	.ioctl          = sock_no_ioctl,
- 	.listen         = sock_no_listen,
- 	.shutdown       = sock_no_shutdown,
--	.setsockopt     = sock_no_setsockopt,
--	.getsockopt     = sock_no_getsockopt,
- 	.sendmsg        = sock_no_sendmsg,
- 	.recvmsg        = rawsock_recvmsg,
- 	.mmap           = sock_no_mmap,
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 35aee9e980536d..c240fb5de3f014 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -4503,8 +4503,6 @@ static const struct proto_ops packet_ops_spkt = {
- 	.gettstamp =	sock_gettstamp,
- 	.listen =	sock_no_listen,
- 	.shutdown =	sock_no_shutdown,
--	.setsockopt =	sock_no_setsockopt,
--	.getsockopt =	sock_no_getsockopt,
- 	.sendmsg =	packet_sendmsg_spkt,
- 	.recvmsg =	packet_recvmsg,
- 	.mmap =		sock_no_mmap,
-diff --git a/net/phonet/socket.c b/net/phonet/socket.c
-index 87c60f83c18061..2599235d592e0b 100644
---- a/net/phonet/socket.c
-+++ b/net/phonet/socket.c
-@@ -439,8 +439,6 @@ const struct proto_ops phonet_dgram_ops = {
- 	.ioctl		= pn_socket_ioctl,
- 	.listen		= sock_no_listen,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.sendmsg	= pn_socket_sendmsg,
- 	.recvmsg	= sock_common_recvmsg,
- 	.mmap		= sock_no_mmap,
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index 24a8c3c6da0dca..0cb4adfc6641da 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -1208,8 +1208,6 @@ static const struct proto_ops qrtr_proto_ops = {
- 	.gettstamp	= sock_gettstamp,
- 	.poll		= datagram_poll,
- 	.shutdown	= sock_no_shutdown,
--	.setsockopt	= sock_no_setsockopt,
--	.getsockopt	= sock_no_getsockopt,
- 	.release	= qrtr_release,
- 	.mmap		= sock_no_mmap,
- 	.sendpage	= sock_no_sendpage,
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 9033215438384b..9711c9e0e515bf 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1742,8 +1742,11 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
- 	/* generic setsockopts reaching us here always apply to the
- 	 * CLC socket
- 	 */
--	rc = smc->clcsock->ops->setsockopt(smc->clcsock, level, optname,
--					   optval, optlen);
-+	if (unlikely(!smc->clcsock->ops->setsockopt))
-+		rc = -EOPNOTSUPP;
-+	else
-+		rc = smc->clcsock->ops->setsockopt(smc->clcsock, level, optname,
-+						   optval, optlen);
- 	if (smc->clcsock->sk->sk_err) {
- 		sk->sk_err = smc->clcsock->sk->sk_err;
- 		sk->sk_error_report(sk);
-@@ -1808,6 +1811,8 @@ static int smc_getsockopt(struct socket *sock, int level, int optname,
- 
- 	smc = smc_sk(sock->sk);
- 	/* socket options apply to the CLC socket */
-+	if (unlikely(!smc->clcsock->ops->getsockopt))
-+		return -EOPNOTSUPP;
- 	return smc->clcsock->ops->getsockopt(smc->clcsock, level, optname,
- 					     optval, optlen);
- }
-diff --git a/net/socket.c b/net/socket.c
-index dec345982abbb6..93846568c2fb7a 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2131,6 +2131,8 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *optval,
- 
- 	if (level == SOL_SOCKET && !sock_use_custom_sol_socket(sock))
- 		err = sock_setsockopt(sock, level, optname, optval, optlen);
-+	else if (unlikely(!sock->ops->setsockopt))
-+		err = -EOPNOTSUPP;
- 	else
- 		err = sock->ops->setsockopt(sock, level, optname, optval,
- 					    optlen);
-@@ -2175,6 +2177,8 @@ int __sys_getsockopt(int fd, int level, int optname, char __user *optval,
- 
- 	if (level == SOL_SOCKET)
- 		err = sock_getsockopt(sock, level, optname, optval, optlen);
-+	else if (unlikely(!sock->ops->getsockopt))
-+		err = -EOPNOTSUPP;
- 	else
- 		err = sock->ops->getsockopt(sock, level, optname, optval,
- 					    optlen);
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 3385a7a0b23133..181ea6fb56a617 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -714,8 +714,6 @@ static const struct proto_ops unix_stream_ops = {
- #endif
- 	.listen =	unix_listen,
- 	.shutdown =	unix_shutdown,
--	.setsockopt =	sock_no_setsockopt,
--	.getsockopt =	sock_no_getsockopt,
- 	.sendmsg =	unix_stream_sendmsg,
- 	.recvmsg =	unix_stream_recvmsg,
- 	.mmap =		sock_no_mmap,
-@@ -741,8 +739,6 @@ static const struct proto_ops unix_dgram_ops = {
- #endif
- 	.listen =	sock_no_listen,
- 	.shutdown =	unix_shutdown,
--	.setsockopt =	sock_no_setsockopt,
--	.getsockopt =	sock_no_getsockopt,
- 	.sendmsg =	unix_dgram_sendmsg,
- 	.recvmsg =	unix_dgram_recvmsg,
- 	.mmap =		sock_no_mmap,
-@@ -767,8 +763,6 @@ static const struct proto_ops unix_seqpacket_ops = {
- #endif
- 	.listen =	unix_listen,
- 	.shutdown =	unix_shutdown,
--	.setsockopt =	sock_no_setsockopt,
--	.getsockopt =	sock_no_getsockopt,
- 	.sendmsg =	unix_seqpacket_sendmsg,
- 	.recvmsg =	unix_seqpacket_recvmsg,
- 	.mmap =		sock_no_mmap,
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 626bf9044418cc..df204c6761c453 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1202,8 +1202,6 @@ static const struct proto_ops vsock_dgram_ops = {
- 	.ioctl = sock_no_ioctl,
- 	.listen = sock_no_listen,
- 	.shutdown = vsock_shutdown,
--	.setsockopt = sock_no_setsockopt,
--	.getsockopt = sock_no_getsockopt,
- 	.sendmsg = vsock_dgram_sendmsg,
- 	.recvmsg = vsock_dgram_recvmsg,
- 	.mmap = sock_no_mmap,
--- 
-2.27.0
+Uros.
 
+> /* SPDX-License-Identifier: GPL-2.0 */
+> /*
+>  * Generate .byte code for some instructions not supported by old
+>  * binutils.
+>  */
+> #ifndef X86_ASM_INST_H
+> #define X86_ASM_INST_H
+>
+> #ifdef __ASSEMBLY__
+>
+> #define REG_NUM_INVALID         100
+>
+> #define REG_TYPE_R32            0
+> #define REG_TYPE_R64            1
+> #define REG_TYPE_XMM            2
+> #define REG_TYPE_INVALID        100
+>
+>         .macro R32_NUM opd r32
+>         \opd = REG_NUM_INVALID
+>         .ifc \r32,%eax
+>         \opd = 0
+>         .endif
+>         .ifc \r32,%ecx
+>         \opd = 1
+>         .endif
+>         .ifc \r32,%edx
+>         \opd = 2
+>         .endif
+>         .ifc \r32,%ebx
+>         \opd = 3
+>         .endif
+>         .ifc \r32,%esp
+>         \opd = 4
+>         .endif
+>         .ifc \r32,%ebp
+>         \opd = 5
+>         .endif
+>         .ifc \r32,%esi
+>         \opd = 6
+>         .endif
+>         .ifc \r32,%edi
+>         \opd = 7
+>         .endif
+> #ifdef CONFIG_X86_64
+>         .ifc \r32,%r8d
+>         \opd = 8
+>         .endif
+>         .ifc \r32,%r9d
+>         \opd = 9
+>         .endif
+>         .ifc \r32,%r10d
+>         \opd = 10
+>         .endif
+>         .ifc \r32,%r11d
+>         \opd = 11
+>         .endif
+>         .ifc \r32,%r12d
+>         \opd = 12
+>         .endif
+>         .ifc \r32,%r13d
+>         \opd = 13
+>         .endif
+>         .ifc \r32,%r14d
+>         \opd = 14
+>         .endif
+>         .ifc \r32,%r15d
+>         \opd = 15
+>         .endif
+> #endif
+>         .endm
+>
+>         .macro R64_NUM opd r64
+>         \opd = REG_NUM_INVALID
+> #ifdef CONFIG_X86_64
+>         .ifc \r64,%rax
+>         \opd = 0
+>         .endif
+>         .ifc \r64,%rcx
+>         \opd = 1
+>         .endif
+>         .ifc \r64,%rdx
+>         \opd = 2
+>         .endif
+>         .ifc \r64,%rbx
+>         \opd = 3
+>         .endif
+>         .ifc \r64,%rsp
+>         \opd = 4
+>         .endif
+>         .ifc \r64,%rbp
+>         \opd = 5
+>         .endif
+>         .ifc \r64,%rsi
+>         \opd = 6
+>         .endif
+>         .ifc \r64,%rdi
+>         \opd = 7
+>         .endif
+>         .ifc \r64,%r8
+>         \opd = 8
+>         .endif
+>         .ifc \r64,%r9
+>         \opd = 9
+>         .endif
+>         .ifc \r64,%r10
+>         \opd = 10
+>         .endif
+>         .ifc \r64,%r11
+>         \opd = 11
+>         .endif
+>         .ifc \r64,%r12
+>         \opd = 12
+>         .endif
+>         .ifc \r64,%r13
+>         \opd = 13
+>         .endif
+>         .ifc \r64,%r14
+>         \opd = 14
+>         .endif
+>         .ifc \r64,%r15
+>         \opd = 15
+>         .endif
+> #endif
+>         .endm
+>
+>         .macro XMM_NUM opd xmm
+>         \opd = REG_NUM_INVALID
+>         .ifc \xmm,%xmm0
+>         \opd = 0
+>         .endif
+>         .ifc \xmm,%xmm1
+>         \opd = 1
+>         .endif
+>         .ifc \xmm,%xmm2
+>         \opd = 2
+>         .endif
+>         .ifc \xmm,%xmm3
+>         \opd = 3
+>         .endif
+>         .ifc \xmm,%xmm4
+>         \opd = 4
+>         .endif
+>         .ifc \xmm,%xmm5
+>         \opd = 5
+>         .endif
+>         .ifc \xmm,%xmm6
+>         \opd = 6
+>         .endif
+>         .ifc \xmm,%xmm7
+>         \opd = 7
+>         .endif
+>         .ifc \xmm,%xmm8
+>         \opd = 8
+>         .endif
+>         .ifc \xmm,%xmm9
+>         \opd = 9
+>         .endif
+>         .ifc \xmm,%xmm10
+>         \opd = 10
+>         .endif
+>         .ifc \xmm,%xmm11
+>         \opd = 11
+>         .endif
+>         .ifc \xmm,%xmm12
+>         \opd = 12
+>         .endif
+>         .ifc \xmm,%xmm13
+>         \opd = 13
+>         .endif
+>         .ifc \xmm,%xmm14
+>         \opd = 14
+>         .endif
+>         .ifc \xmm,%xmm15
+>         \opd = 15
+>         .endif
+>         .endm
+>
+>         .macro REG_TYPE type reg
+>         R32_NUM reg_type_r32 \reg
+>         R64_NUM reg_type_r64 \reg
+>         XMM_NUM reg_type_xmm \reg
+>         .if reg_type_r64 <> REG_NUM_INVALID
+>         \type = REG_TYPE_R64
+>         .elseif reg_type_r32 <> REG_NUM_INVALID
+>         \type = REG_TYPE_R32
+>         .elseif reg_type_xmm <> REG_NUM_INVALID
+>         \type = REG_TYPE_XMM
+>         .else
+>         \type = REG_TYPE_INVALID
+>         .endif
+>         .endm
+>
+>         .macro PFX_OPD_SIZE
+>         .byte 0x66
+>         .endm
+>
+>         .macro PFX_REX opd1 opd2 W=0
+>         .if ((\opd1 | \opd2) & 8) || \W
+>         .byte 0x40 | ((\opd1 & 8) >> 3) | ((\opd2 & 8) >> 1) | (\W << 3)
+>         .endif
+>         .endm
+>
+>         .macro MODRM mod opd1 opd2
+>         .byte \mod | (\opd1 & 7) | ((\opd2 & 7) << 3)
+>         .endm
+>
+> .macro RDPID opd
+>         REG_TYPE rdpid_opd_type \opd
+>         .if rdpid_opd_type == REG_TYPE_R64
+>         R64_NUM rdpid_opd \opd
+>         .else
+>         R32_NUM rdpid_opd \opd
+>         .endif
+>         .byte 0xf3
+>         .if rdpid_opd > 7
+>         PFX_REX rdpid_opd 0
+>         .endif
+>         .byte 0x0f, 0xc7
+>         MODRM 0xc0 rdpid_opd 0x7
+> .endm
+> #endif
+>
+> #endif
+>
+> --
+> Cheers,
+> Stephen Rothwell
