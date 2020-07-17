@@ -2,144 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AD922332A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3343F223331
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgGQF5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 01:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
+        id S1726832AbgGQF6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 01:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgGQF5J (ORCPT
+        with ESMTP id S1726036AbgGQF6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:57:09 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B03EC061755;
-        Thu, 16 Jul 2020 22:57:09 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B7L3z5kSgz9sQt;
-        Fri, 17 Jul 2020 15:57:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594965425;
-        bh=pogloshOGM434OcRKBF6s6ykZvFgAvuWoOESdMeuiYQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Qh6uvWzU9USOoVdsHuNu9fBrdoTUryAb8L7RQvx42+KbM904Jpg/QAkQVAzaoCEWd
-         TYd71mEQtOaxgHgVkBEu7L8kn14f2SbliwRKDAcyU/KTeG05Bv+MqKF9Xi//sa5UkL
-         BzNBXO6HwX6qz5LmOPHV9eTmhV2YWZS9eyhac3rBSnrRCPAwxackvwxhOU52Ni8uJN
-         IzusT8QiRIzNqHR/Les5DWWLeLA96mxB+tLEjAVFP4+yiU6p9BPvpoJHkrLMyEnCKx
-         W0pDwPPaZHpO/t+JesjlkDXhVIZbu8pmfJRfkvO08lZRJxAxm7Ekvv8duZRNshXgi+
-         rgyqV0Ey1ytXQ==
-Date:   Fri, 17 Jul 2020 15:57:01 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kvm tree
-Message-ID: <20200717155701.2d7caebb@canb.auug.org.au>
+        Fri, 17 Jul 2020 01:58:09 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BEDC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:58:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f7so9756388wrw.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=y+sfitwB9RQXaHMyhrlOuoxQi7jIpz91CNFJlZFY97c=;
+        b=qu8JISPQkUB+/IPHcl7tm++fpzdju53pbghz0M3vQRg3INR1HbX2hwy6yUQtMYS64+
+         Q1kS18Kh+E0JPqarrQf9TgLpRss2QNRjGGdLKafs4z0MQ0aQsYMUIc+T6GJQcoecm++G
+         1VIo7+n5BELKEg6j1MrNrovTgKRBY4PLAUr8o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=y+sfitwB9RQXaHMyhrlOuoxQi7jIpz91CNFJlZFY97c=;
+        b=Ra0DLb27OM2pYK0pH3qWRGNE5Vfj0ouiAyIfnMyOgEt8AjIaKaIVS8P8UKJgXJYJXh
+         P9dNNYgkxGovdGiAOkIDx9HDlk0BupJRkrGGFr34HwTZDptnJiO5XGYlHd3nNwiEwz8O
+         a7BPBg3bIZvWJCZTQshNbCh3koqmq6KN4y1yXW0LGkx8GC18JlKBrWNyfctipKryuAK2
+         FH8LJM6dGkc3tRChLSg+oVJvI4diuXBUlFACF6colzdCt/c4uo2pghWVe0w+pQD3cHBV
+         bqi0OAfMEXcBTnb7aG/2XdiTAtdIlhX8gK5TgDpnJ/C/e4+H2LUf+w4qDTeiI9QP/xRA
+         gsCA==
+X-Gm-Message-State: AOAM530sla4UTMVnbjHcMVCluZvIs2fX+ihDd0ojOGIymebiRrpGr2rq
+        B+4tC4dL31nVgBhKgFe68EPdwDOXtO8=
+X-Google-Smtp-Source: ABdhPJy+tMl3Mc4bvC023mYG8ty1ClwLPLvia450TWxXXjtuL1Pi3mo4227XLeRNv+QHyYzCwL72eA==
+X-Received: by 2002:adf:ef8a:: with SMTP id d10mr8433221wro.126.1594965487346;
+        Thu, 16 Jul 2020 22:58:07 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-d401-59e4-6cf2-294a.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:d401:59e4:6cf2:294a])
+        by smtp.gmail.com with ESMTPSA id j4sm13167679wrp.51.2020.07.16.22.58.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 22:58:06 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
+        Nayna Jain <nayna@linux.ibm.com>
+Cc:     linuxppc-dev@ozlabs.org, linux-kernel@vger.kernel.org,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: Re: [PATCH v3] powerpc/pseries: detect secure and trusted boot state of the system.
+In-Reply-To: <20200716081337.GB32107@kitsune.suse.cz>
+References: <1594813921-12425-1-git-send-email-nayna@linux.ibm.com> <20200716081337.GB32107@kitsune.suse.cz>
+Date:   Fri, 17 Jul 2020 15:58:01 +1000
+Message-ID: <87pn8uu1hy.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A2+892SpS7JbA5SH7D40+2e";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A2+892SpS7JbA5SH7D40+2e
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Michal Such=C3=A1nek <msuchanek@suse.de> writes:
 
-Hi all,
+> On Wed, Jul 15, 2020 at 07:52:01AM -0400, Nayna Jain wrote:
+>> The device-tree property to check secure and trusted boot state is
+>> different for guests(pseries) compared to baremetal(powernv).
+>>=20
+>> This patch updates the existing is_ppc_secureboot_enabled() and
+>> is_ppc_trustedboot_enabled() functions to add support for pseries.
+>>=20
+>> The secureboot and trustedboot state are exposed via device-tree propert=
+y:
+>> /proc/device-tree/ibm,secure-boot and /proc/device-tree/ibm,trusted-boot
+>>=20
+>> The values of ibm,secure-boot under pseries are interpreted as:
+>                                       ^^^
+>>=20
+>> 0 - Disabled
+>> 1 - Enabled in Log-only mode. This patch interprets this value as
+>> disabled, since audit mode is currently not supported for Linux.
+>> 2 - Enabled and enforced.
+>> 3-9 - Enabled and enforcing; requirements are at the discretion of the
+>> operating system.
+>>=20
+>> The values of ibm,trusted-boot under pseries are interpreted as:
+>                                        ^^^
+> These two should be different I suppose?
 
-After merging the kvm tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+I'm not quite sure what you mean? They'll be documented in a future
+revision of the PAPR, once I get my act together and submit the
+relevant internal paperwork.
 
-arch/x86/kernel/kvm.c: In function '__sysvec_kvm_asyncpf_interrupt':
-arch/x86/kernel/kvm.c:275:13: error: implicit declaration of function 'idte=
-ntry_enter_cond_rcu'; did you mean 'idtentry_enter_nmi'? [-Werror=3Dimplici=
-t-function-declaration]
-  275 |  rcu_exit =3D idtentry_enter_cond_rcu(regs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~
-      |             idtentry_enter_nmi
-arch/x86/kernel/kvm.c:286:2: error: implicit declaration of function 'idten=
-try_exit_cond_rcu'; did you mean 'idtentry_exit_nmi'? [-Werror=3Dimplicit-f=
-unction-declaration]
-  286 |  idtentry_exit_cond_rcu(regs, rcu_exit);
-      |  ^~~~~~~~~~~~~~~~~~~~~~
-      |  idtentry_exit_nmi
-
-Caused by commit
-
-  b037b09b9058 ("x86/entry: Rename idtentry_enter/exit_cond_rcu() to idtent=
-ry_enter/exit()")
-
-from the tip tree interacting with commit
-
-  26d05b368a5c ("Merge branch 'kvm-async-pf-int' into HEAD")
-
-from the kvm tree.
-
-I have applied the following merge fix patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 17 Jul 2020 15:51:27 +1000
-Subject: [PATCH] fix up for idtentry_{enter,exit}_cond_rcu() renaming
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/x86/kernel/kvm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index cebd96687194..91dd322f768d 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -270,9 +270,9 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
- {
- 	struct pt_regs *old_regs =3D set_irq_regs(regs);
- 	u32 token;
--	bool rcu_exit;
-+	idtentry_state_t state;
-=20
--	rcu_exit =3D idtentry_enter_cond_rcu(regs);
-+	state =3D idtentry_enter(regs);
-=20
- 	inc_irq_stat(irq_hv_callback_count);
-=20
-@@ -283,7 +283,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
- 		wrmsrl(MSR_KVM_ASYNC_PF_ACK, 1);
- 	}
-=20
--	idtentry_exit_cond_rcu(regs, rcu_exit);
-+	idtentry_exit(regs, state);
- 	set_irq_regs(old_regs);
- }
-=20
---=20
-2.27.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/A2+892SpS7JbA5SH7D40+2e
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8RPa0ACgkQAVBC80lX
-0Gz2TggAl6/wSCerW01gjKj4t12AMidEFOAeQs+6Wu9p8rYdNsggQaPG4Y3mMJtr
-T44siKA0jHZ4iHFm/8BrjopwqDcJ5EGoOqAGm1MVOHZILE4Pjg22yxvJm5kc/1aQ
-8fxTiGMc5H5ntKpkeVlsVr+tumcQf1yAtQYhkHGbEloeVHBVS98rQkBzq/9ERLoN
-4DuLnOw6lalilJBSinhs431OzZL243An4aX+Li2S6rn57k9tNVd54xFzNGtUE3B6
-SRpG3twknomwuHVNDDFyL7EQ/eAZg8W2v5YGSqIe9YPvDL3M+Zjrfcsd9bwhD1+T
-5ieVxU+gK1WbvteqeTQGI4xQCndvtA==
-=rcvQ
------END PGP SIGNATURE-----
-
---Sig_/A2+892SpS7JbA5SH7D40+2e--
+Daniel
+>
+> Thanks
+>
+> Michal
+>> 0 - Disabled
+>> 1 - Enabled
+>>=20
+>> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
+>> Reviewed-by: Daniel Axtens <dja@axtens.net>
+>> ---
+>> v3:
+>> * fixed double check. Thanks Daniel for noticing it.
+>> * updated patch description.
+>>=20
+>> v2:
+>> * included Michael Ellerman's feedback.
+>> * added Daniel Axtens's Reviewed-by.
+>>=20
+>>  arch/powerpc/kernel/secure_boot.c | 19 +++++++++++++++++--
+>>  1 file changed, 17 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/arch/powerpc/kernel/secure_boot.c b/arch/powerpc/kernel/sec=
+ure_boot.c
+>> index 4b982324d368..118bcb5f79c4 100644
+>> --- a/arch/powerpc/kernel/secure_boot.c
+>> +++ b/arch/powerpc/kernel/secure_boot.c
+>> @@ -6,6 +6,7 @@
+>>  #include <linux/types.h>
+>>  #include <linux/of.h>
+>>  #include <asm/secure_boot.h>
+>> +#include <asm/machdep.h>
+>>=20=20
+>>  static struct device_node *get_ppc_fw_sb_node(void)
+>>  {
+>> @@ -23,12 +24,19 @@ bool is_ppc_secureboot_enabled(void)
+>>  {
+>>  	struct device_node *node;
+>>  	bool enabled =3D false;
+>> +	u32 secureboot;
+>>=20=20
+>>  	node =3D get_ppc_fw_sb_node();
+>>  	enabled =3D of_property_read_bool(node, "os-secureboot-enforcing");
+>> -
+>>  	of_node_put(node);
+>>=20=20
+>> +	if (enabled)
+>> +		goto out;
+>> +
+>> +	if (!of_property_read_u32(of_root, "ibm,secure-boot", &secureboot))
+>> +		enabled =3D (secureboot > 1);
+>> +
+>> +out:
+>>  	pr_info("Secure boot mode %s\n", enabled ? "enabled" : "disabled");
+>>=20=20
+>>  	return enabled;
+>> @@ -38,12 +46,19 @@ bool is_ppc_trustedboot_enabled(void)
+>>  {
+>>  	struct device_node *node;
+>>  	bool enabled =3D false;
+>> +	u32 trustedboot;
+>>=20=20
+>>  	node =3D get_ppc_fw_sb_node();
+>>  	enabled =3D of_property_read_bool(node, "trusted-enabled");
+>> -
+>>  	of_node_put(node);
+>>=20=20
+>> +	if (enabled)
+>> +		goto out;
+>> +
+>> +	if (!of_property_read_u32(of_root, "ibm,trusted-boot", &trustedboot))
+>> +		enabled =3D (trustedboot > 0);
+>> +
+>> +out:
+>>  	pr_info("Trusted boot mode %s\n", enabled ? "enabled" : "disabled");
+>>=20=20
+>>  	return enabled;
+>> --=20
+>> 2.26.2
+>>=20
