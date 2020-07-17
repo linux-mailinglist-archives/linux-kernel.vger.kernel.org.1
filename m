@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904F32232E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E9D2232E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgGQFZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 01:25:04 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:45529 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgGQFZC (ORCPT
+        id S1726759AbgGQF0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 01:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgGQF0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:25:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594963502; x=1626499502;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=kMFY+iFINV2UkxWA2naAspyqveyH8Udp/5aG41Wqrj8=;
-  b=XS/TdvxKcjGZJtVq6MVEHK0olzjbAIrU9SFQV6i744q1jKvzP5650ylY
-   1QM1Vf2vsNhnFWEoOsZHRwjTdIO9eTw/9DTErg0NTTRBJ/qL2l/kltNre
-   3jCN06zp6oMxWsNCy7aWliKKOu6bdPSkq9vvgpuy3s+6Rs30/tqkaH4cF
-   r5eNtQKhMKd17AEWB1X3KosD4pTkkMcRfYNOkaHfeGXgOgj1mJg4g9hXz
-   pMRXa6zvyfDbWiJaqbr8c3Wz8Hi3NZ9F4HbKNaYSg0h8AvA/SetnchPRI
-   Srlwhik2qZo9JPyQh+64Mb7Egw623vLwMG5uu4U1dxmtN6WzE/3L3bmwV
-   g==;
-IronPort-SDR: mPNl/SfSv8NS+fyrIhlYrLq6J0Wq/IjIzWjVO3cLOJVBCBXw2o5jUAeJsL3KGyXBeE+kM2JgdV
- mRJvfucVXk/gN4dTvrXJqqdU4lj/gPRhV+EHDHOS/sIZIgGxHPZtwJg0Jk3BdZJ/icztGjiijH
- cVSJj1RedG92KhvOjcPnhJAVtDuVTnQ032mB26TvWKyBtyTNtPaE0i7HiXCVLexgLdAyxNXZRw
- WmjqUTxWV9ugLCVsFOB+djAHRwv8Y7UIV0jiujPhLFYqBbc035LvGICGDvGvciV4ZXQ+XjcA2u
- MHI=
-X-IronPort-AV: E=Sophos;i="5.75,361,1589212800"; 
-   d="scan'208";a="143974611"
-Received: from mail-bn8nam11lp2173.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.173])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jul 2020 13:25:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gKAbyckqBx9yMxlkZhpfjLZ9d32otWdclvNo8YL7cuUniT9QQgTl7HqAx2zA5lHdo+95iXeMQRNduPavxYBJMEfycErsW7Nel9yz4vdxlJfJY+GPVMidv/f52XLAuK9U6Enyxhx7lftxyUURgXrA/8A7aYxUUSQiZej8wr79yd7jEP0GNKgHUlSTFr1EpsfqtyCLfRb45QlFtbT+lKoXIEncs7tmENXFYSF4YT+GSey3qsM5KKHNkzU493g7lgJfugdSCIETLnDJhFK66vvb7TKUVNxj6YT020uABfk3oNgAWPrLlGOyVx8f56awgdnaIGu1AeJhWsc9J+5pUTowOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kMFY+iFINV2UkxWA2naAspyqveyH8Udp/5aG41Wqrj8=;
- b=CEicl4nIwPAbb9oIwXJQ6XfKa93MWxBaXDLFYMNmx6ZTncvrSWpm4MzQ6K4AsrWrfCW1pW2dG7OyF6PsOKugm7b9KA6tIv6Y7XJb+5uizygCME0/dppDsATJuMjnpyXEYkaj9fdmveWeuatY/uKkFp+K+avoUwxHQ6qgxfIxbVp9gEWhAFQ7wsf7Yu06/C56Uo1hRqpQn38f/xSPuclK04T0tT9UQgV7WReF2ky6gHSp8LFcpU+gad9AEUcsvtU92KHjIRWFvD0XBBAVE0foyE7iU0ehQ600ILh4iu49G7IM1CC7d/6feJRuxMZX35RNNFicUPGBMfHVtSoFalMIfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kMFY+iFINV2UkxWA2naAspyqveyH8Udp/5aG41Wqrj8=;
- b=j8Fqdnxpqvdb77I/KMK9JGAJapZvNp+KFmftY2r55vQbXFWUEGRCMnt52nNSfqtBWB+m9Irc2mpcT2ZuQ7J2GzgeOksaj2PylTVH0cJuJsBf2uNSh+xj/skGddp8c4C9gwAZ6V5NSRLbFf2Z2pG79qPug5u9raI36pkbw6NwQnc=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB5358.namprd04.prod.outlook.com (2603:10b6:805:fd::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Fri, 17 Jul
- 2020 05:24:56 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2%4]) with mapi id 15.20.3174.025; Fri, 17 Jul 2020
- 05:24:56 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        'Sang-yoon Oh' <sangyoon.oh@samsung.com>,
-        'Sung-Jun Park' <sungjun07.park@samsung.com>,
-        'yongmyung lee' <ymhungry.lee@samsung.com>,
-        'Jinyoung CHOI' <j-young.choi@samsung.com>,
-        'Adel Choi' <adel.choi@samsung.com>,
-        'BoRam Shin' <boram.shin@samsung.com>
-Subject: RE: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-Thread-Topic: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-Thread-Index: AQHWWQGynHMGu/0fRkiVvG9Dpk1z6KkJaD4AgAHaWnA=
-Date:   Fri, 17 Jul 2020 05:24:56 +0000
-Message-ID: <SN6PR04MB4640A5A8C71A51DB45968DAFFC7C0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
-        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
- <077301d65b0d$24d79920$6e86cb60$@samsung.com>
-In-Reply-To: <077301d65b0d$24d79920$6e86cb60$@samsung.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1d9faf3e-90bc-416d-0b24-08d82a11be1d
-x-ms-traffictypediagnostic: SN6PR04MB5358:
-x-microsoft-antispam-prvs: <SN6PR04MB535839F10D281EEFD0FFF7FCFC7C0@SN6PR04MB5358.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:478;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M2i69ZhrmTpfUenM4CFyUOK71dh/0+VUJfJTGiUd9cOqldWx+MZr5GkNDIFhCXwSdQTcThFDRvhWQkFrYkPqe6zQplsZu9sNq92Hzp52WZuAZxR5eDBaArFdjmkURYy/4MUNMZZp68fWjd+2I8ldnx4DZ/c7sJ2r60mFZivqNvLW3FgkhuAlt0nrhwldzq0f34tt5b0EFpziGEHIgeDQNlE34Dqj6x8DPb+VNv9XtBi/JoSKfTFU7DcHTkGgI2ZdTs8AK0qbhlQHDr3HE825ozPkKChJyOSpRspYPWvFhTNacppQnxzMBt2hX7qwCSFq3oSqg7jHx9XPWh/iIkIFb3tsq874Hy148qqRBnZ2eaDAZJ3aoonxopqAcelOACA7
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(366004)(376002)(136003)(83380400001)(478600001)(86362001)(6506007)(5660300002)(52536014)(7416002)(8936002)(33656002)(9686003)(64756008)(316002)(4326008)(186003)(55016002)(26005)(2906002)(4744005)(71200400001)(76116006)(66476007)(66556008)(7696005)(54906003)(66946007)(110136005)(8676002)(66446008)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: B0Gxql9yL8UTz5AZWDWNyYRTU/WComcBwXHpuO51WfSs5nOdxY1L2VWGIzXEzLTP71hVIHIgd089qPRT8e31xXEYzMmCPhUBdPfDd1XJtRClhvPSiBfD5DeC0eW6+g9hwu6S1fCIiKWf056LKLqU/gK6kDy+9UgPwyNPO/hm4qV6i81u36zRLdfVqU7+SRaI9J43dMB+j/ZqRcvZM+z1NpiEHtgwzcpWTbqmpAaqFY5tp0Hb6Zwt288yEc125PQ+XpxeGuo4+bMUBREwdiAKG845Zm7sCzg3fgcLSm289X/g9nyAcJfqy43blOOlFL8RhFuxuAzxi+akWWVCxol/FpwwBfIgic/GtX3GoKwKrAxTXQf/25z80SDvdFIUshhFFBdGeLUsr6plu2HAyMJBW9x9BDE709BkzsNNmTo2EmwxpAtjJBmAt3I/TyykUkWYArYXGJbyqMvy0xWvM3C6p2hblbkVjHZH3KJtqti0Kw8=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 17 Jul 2020 01:26:02 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44F4C061755;
+        Thu, 16 Jul 2020 22:26:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B7KN65K28z9sRR;
+        Fri, 17 Jul 2020 15:25:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594963560;
+        bh=LbMvc5Iklk5Xyio7B6Dc+w1qLyJXPJQeJsnn4jpFg6Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HSs0Kgl9Ta8tvTHe1BgLFTd26tXH473RBtQnTuMJip+2hTgbOqhFvIajhjWyILvAF
+         g+EguwyXjq0+GhXfUoV/0j1GM+DaGaBSxkZCOmGNX7PLr4sgF3RsftUYTwQIQwgLOi
+         fhnXKyCAMTV9PitJ4MNxcU/v7n6fpOWTmumDIaZMfcmFkeNbXVXlVKUJi6ysLan6JI
+         FMo+eMIND3AvXNbCn39S89ng9qYc/49CiVFsLn7GTkx0gs3bG8JBQgWGtgFDGcZl1m
+         KUno5e80DQIsubaqIYgJdIWvYtYmsh25MIcy1vxNO+Bycmt5gLddFPnoUR3GE91njm
+         Vso4KK27is2Kg==
+Date:   Fri, 17 Jul 2020 15:25:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: linux-next: manual merge of the kvm tree with the tip tree
+Message-ID: <20200717152557.49ca6764@canb.auug.org.au>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4640.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d9faf3e-90bc-416d-0b24-08d82a11be1d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2020 05:24:56.3291
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MB7tjo8LBWeDgE9HZm71R+MydD91xvDmaGP1Ni2uR6w0P/cXWYyRrey51yN5KXsvuHKDzy9q02uvBM4vkNPFGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5358
+Content-Type: multipart/signed; boundary="Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+ID4gdjUgLT4gdjYNCj4gPiBDaGFuZ2UgYmFzZSBjb21taXQgdG8gYjUzMjkzZmE2NjJlMjhh
-ZTBjZGQ0MDgyOGRjNjQxYzA5ZjEzMzQwNQ0KPiA+DQo+IElmIG5vIGZ1cnRoZXIgY29tbWVudHMs
-IGNhbiB0aGlzIHNlcmllcyBoYXZlIHlvdXIgUmV2aWV3ZWQtYnkgb3IgQWNrZWQtYnkNCj4gdGFn
-LCBzbyB0aGF0IHRoaXMgY2FuIGJlIHRha2VuIGZvciA1Ljk/DQo+IFRoYW5rcyENCkhleSwgeWVz
-LiAgU28gc29ycnkgZm9yIHRoaXMgZGVsYXksIEkgd2FzIGF3YXkgZm9yIGZldyBkYXlzLg0KWWVz
-IC0gVGhpcyBzZXJpZXMgbG9va3MgZ29vZCB0byBtZS4NCg0KVGhhbmtzLA0KQXZyaQ0KDQo+IA0K
-PiA+IHY0IC0+IHY1DQo+ID4gRGVsZXRlIHVudXNlZCBtYWNybyBkZWZpbmUuDQo+IA0KDQo=
+--Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the kvm tree got a conflict in:
+
+  arch/x86/kernel/kvm.c
+
+between commit:
+
+  b037b09b9058 ("x86/entry: Rename idtentry_enter/exit_cond_rcu() to idtent=
+ry_enter/exit()")
+
+from the tip tree and commit:
+
+  b1d405751cd5 ("KVM: x86: Switch KVM guest to using interrupts for page re=
+ady APF delivery")
+
+from the kvm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kernel/kvm.c
+index 3f78482d9496,d9995931ea18..000000000000
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@@ -232,18 -235,13 +235,13 @@@ EXPORT_SYMBOL_GPL(kvm_read_and_reset_ap
+ =20
+  noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
+  {
+- 	u32 reason =3D kvm_read_and_reset_apf_flags();
++ 	u32 flags =3D kvm_read_and_reset_apf_flags();
+ -	bool rcu_exit;
+ +	idtentry_state_t state;
+ =20
+- 	switch (reason) {
+- 	case KVM_PV_REASON_PAGE_NOT_PRESENT:
+- 	case KVM_PV_REASON_PAGE_READY:
+- 		break;
+- 	default:
++ 	if (!flags)
+  		return false;
+- 	}
+ =20
+ -	rcu_exit =3D idtentry_enter_cond_rcu(regs);
+ +	state =3D idtentry_enter(regs);
+  	instrumentation_begin();
+ =20
+  	/*
+
+--Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8RNmUACgkQAVBC80lX
+0GyLnAf+JEDs0FjozNrM0bFizJ/eK1Z66gfGFZ/26fWbMM5oot3q2R6YP2+D+g5Z
+VIoed+WHh1aHeXrrN3nKtGP+Z8NpuiIx3HKa1Tu9dCroEgHUS/xdz3eZ5Jf/MlF3
+yFxY1GxOtoAp4WT9n2hVA07V6CLvf2Y/x/rueS2rDE8PODZdWdQHaaBR/++a1DWU
+UEOyDXs/Kic6xHj9jhggqkYOxIIk0V1TrCkh42x0p1pxh0P4NwVUUSl/55N0e6Lq
+nPqD5CQZEkHLswKgD/r3EzMqEub+oA1tZhWpFueNwwj+KZ5G9e0Qkc7Xirr5LBDI
+RBo0ONnFW19DoPMZtuj/2Jb0GzWZzQ==
+=S/OY
+-----END PGP SIGNATURE-----
+
+--Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7--
