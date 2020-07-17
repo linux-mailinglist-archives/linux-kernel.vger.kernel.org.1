@@ -2,81 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA44223201
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70036223206
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgGQEQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:16:27 -0400
-Received: from mx.socionext.com ([202.248.49.38]:8495 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgGQEQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:16:26 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 17 Jul 2020 13:16:24 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 307C2180117;
-        Fri, 17 Jul 2020 13:16:25 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Fri, 17 Jul 2020 13:16:25 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by iyokan.css.socionext.com (Postfix) with ESMTP id B541E403AE;
-        Fri, 17 Jul 2020 13:16:24 +0900 (JST)
-Received: from [10.212.2.196] (unknown [10.212.2.196])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 59A65120488;
-        Fri, 17 Jul 2020 13:16:24 +0900 (JST)
-Subject: Re: [PATCH] net: ethernet: ave: Fix error returns in ave_init
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, p.zabel@pengutronix.de,
-        yamada.masahiro@socionext.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200717025049.43027-1-wanghai38@huawei.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <ca44d4aa-b65c-adac-334a-85e54816e9e3@socionext.com>
-Date:   Fri, 17 Jul 2020 13:16:24 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726512AbgGQESv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:18:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35238 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725807AbgGQESv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 00:18:51 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06H4IRsY125396;
+        Fri, 17 Jul 2020 00:18:42 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 329r21chj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 00:18:41 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06H4IfVc126964;
+        Fri, 17 Jul 2020 00:18:41 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 329r21ch61-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 00:18:41 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06H4An6u008164;
+        Fri, 17 Jul 2020 04:17:32 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 327527k6bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 04:17:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06H4G6LP28049780
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 04:16:06 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 870D85205A;
+        Fri, 17 Jul 2020 04:17:29 +0000 (GMT)
+Received: from [9.102.1.129] (unknown [9.102.1.129])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 50F8052057;
+        Fri, 17 Jul 2020 04:17:26 +0000 (GMT)
+Subject: Re: [PATCH v3 06/12] ppc64/kexec_file: restrict memory usage of kdump
+ kernel
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     Pingfan Liu <piliu@redhat.com>, Petr Tesarik <ptesarik@suse.cz>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>
+References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
+ <159466091925.24747.6840028682768745598.stgit@hbathini.in.ibm.com>
+ <87365s9ysj.fsf@morokweng.localdomain>
+ <baa29ea9-7698-a7e8-e5a4-c9f842e1fcc8@linux.ibm.com>
+ <875zance3n.fsf@morokweng.localdomain>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <f1e6f1d4-5052-ce6a-747f-bb821987b75a@linux.ibm.com>
+Date:   Fri, 17 Jul 2020 09:47:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200717025049.43027-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <875zance3n.fsf@morokweng.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 lowpriorityscore=0
+ bulkscore=0 adultscore=0 spamscore=100 mlxscore=100 phishscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 impostorscore=0
+ mlxlogscore=-1000 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170025
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wang,
 
-On 2020/07/17 11:50, Wang Hai wrote:
-> When regmap_update_bits failed in ave_init(), calls of the functions
-> reset_control_assert() and clk_disable_unprepare() were missed.
-> Add goto out_reset_assert to do this.
+
+On 17/07/20 3:33 am, Thiago Jung Bauermann wrote:
 > 
-> Fixes: 57878f2f4697 ("net: ethernet: ave: add support for phy-mode setting of system controller")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->   drivers/net/ethernet/socionext/sni_ave.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Hari Bathini <hbathini@linux.ibm.com> writes:
 > 
-> diff --git a/drivers/net/ethernet/socionext/sni_ave.c b/drivers/net/ethernet/socionext/sni_ave.c
-> index f2638446b62e..81b554dd7221 100644
-> --- a/drivers/net/ethernet/socionext/sni_ave.c
-> +++ b/drivers/net/ethernet/socionext/sni_ave.c
-> @@ -1191,7 +1191,7 @@ static int ave_init(struct net_device *ndev)
->   	ret = regmap_update_bits(priv->regmap, SG_ETPINMODE,
->   				 priv->pinmode_mask, priv->pinmode_val);
->   	if (ret)
-> -		return ret;
-> +		goto out_reset_assert;
->   
->   	ave_global_reset(ndev);
->   
+>> On 16/07/20 4:22 am, Thiago Jung Bauermann wrote:
+>>>
+>>> Hari Bathini <hbathini@linux.ibm.com> writes:
+>>>
+
+<snip>
+ 
+>>>> +	 * each representing a memory range.
+>>>> +	 */
+>>>> +	ranges = (len >> 2) / (n_mem_addr_cells + n_mem_size_cells);
+>>>> +
+>>>> +	for (i = 0; i < ranges; i++) {
+>>>> +		base = of_read_number(prop, n_mem_addr_cells);
+>>>> +		prop += n_mem_addr_cells;
+>>>> +		end = base + of_read_number(prop, n_mem_size_cells) - 1;
+>>
+>> prop is not used after the above.
+>>
+>>> You need to `prop += n_mem_size_cells` here.
+>>
+>> But yeah, adding it would make it look complete in some sense..
 > 
+> Isn't it used in the next iteration of the loop?
 
-Thank you for pointing out.
+Memory@XXX/reg typically has only one range. I was looking at it
+from that perspective which is not right. Will update.
 
-Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-
----
-Best Regards
-Kunihiko Hayashi
+Thanks
+Hari
