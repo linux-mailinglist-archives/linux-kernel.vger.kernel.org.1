@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DB122411D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8BF2240EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgGQQ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S1727794AbgGQQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgGQQ4J (ORCPT
+        with ESMTP id S1727085AbgGQQ4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:56:09 -0400
+        Fri, 17 Jul 2020 12:56:10 -0400
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BFEC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:08 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q15so15966277wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3980C0619D4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a6so7558846wmm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YT0JMRu5eQoXCKZAUBFbS9kdf7HqY+KCePcGHxfvNYY=;
-        b=eTKat4s5/E2CjyBQFfD4OL1Ried9ygggeHKRbE97/qquwCB2+CYfFiIS6FYHPLNsx5
-         3bvHk49rpmbB7hewemhLQokS/V6/KSynXxRNFacpI5IIVQ+fMQrB1RyK/ewDBVY73ToY
-         ako+0yfuwsc6WN8/S4LT22mJVi28aSWaKEI8EbCNebD6upedRCYsYFg/7LwdcTjXzG/t
-         jFXi4H8Z4gXXgZ6RanUmbysgAER+yapMU6ZDtSaCQX0aOfrvxKiNpmZpbq9NZSN7EWoN
-         vUY+SBWM+Pe0yMnFXI41l/n+N/+BHK5CFTQDwMCOBeE3d7zZlpHyMJPSUywTDPbWVuJc
-         kaTQ==
+        bh=aaAEngpMWZcocEAV7ao9KvOaMLVn8ta5ctXWHocndM4=;
+        b=ZJrx999gJcsSLac1AZ9jE6z8jV20FHjvtuuZDeNZG7HmMiRiV1M2DywOLcnLAFsliW
+         fG+mlXYbAxvnbjjZkWjHuF9BYWR/7wF3kKCap0LZMvllWDGAhHjxxvxOQKqYEr+llUqA
+         NGjfzKwMotju6ppU4nTnZ0p+f8xe6VW8fbuxm+mu0xl9f6Y6LXu2vNQ5CnT2vFx49svh
+         vUd1XaBFV/TrXYr+xcMOpmBojGd8ANfmaU/xCxHv9xNfL+9mlNYne7VyXjDAYOWM1sI6
+         ZG5W9UHH+n2yJf3nXLdLpAC6rmDWlUr25+GdyIS40DPqFWAP68ByyY2LCuBjhNWmyPk1
+         0V3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YT0JMRu5eQoXCKZAUBFbS9kdf7HqY+KCePcGHxfvNYY=;
-        b=a5NagarLh1nVaeIWvHFAfSOf0vT72/+XhlQ5ySfnk17RT51YEwstOjgWvuKpSFCyxl
-         cPYJZyfOS9CXYz84pCJ6jdPNGY59Xo6R11HJr5QixBCsFycDJMIHupaA5kRYV7yqIBgX
-         VmC1FdsAarCzinTGs9jYmHEwK1R7gs+5Xuln9wCiBEmR7HTJPiHDp7n6xOT4FuO9Lk3H
-         4q/XAYx3Y1uvQZfQu64gVdga3tdNC++n5DGC/VbIVFaHYtIN9OoLjPx7xeqKljYrCKNw
-         X2+TziZ46ayCdBJ57oTZvsROh5W9iDvtpshaEuJEUP2mgJSgwhpUOkCdEpi1yyO/SC6L
-         igiw==
-X-Gm-Message-State: AOAM530Jr7X0oDDZidejhT2US0H1k9YnSFMn2LOCSEnUXWMi7TnLWjZ3
-        ALjzBoufwlQ52QNH6yO+mWFawA==
-X-Google-Smtp-Source: ABdhPJzJZIsoV7iAoqalIXWp6mzGqQalHQtp2jPJU/OINo7Arv9yvyl5bvzrXnJxJul0lIZXe1sF6A==
-X-Received: by 2002:a1c:2e57:: with SMTP id u84mr10869481wmu.52.1595004967573;
-        Fri, 17 Jul 2020 09:56:07 -0700 (PDT)
+        bh=aaAEngpMWZcocEAV7ao9KvOaMLVn8ta5ctXWHocndM4=;
+        b=mE2VJ/9E1xlqN2oDDLD1KreDEB0U3IeWO4oua5iuhSCAM5/qzjbcZuaoR/rtpHbY0F
+         SSLjZQiB/tWZXoJo6nrWpzrsFnQ+zyLOOw4T9H6Ys0bDB8kPeP7uY4vO8NJeCRmR20h2
+         BcDBrG8N60/LasyfEtJfAhBAf/xWyS9kcmLyMveoGkm65FYUwBrYUuTmdJzp9WJBYR6z
+         +tcF6x/fu8KiIjc+k/NVofLGY5hr5U/DJ9gNPECfbAbFH+F5QGHHsaZWunzG6+dkqx6s
+         lD+3PHd+viRgx0AQ06cj/lQpSNmcAo2xUexgO28PeZtFQI2//tjmeeu0+2nb6k5IWleN
+         f3zQ==
+X-Gm-Message-State: AOAM532XEJYOoT7XX9VbxImYqmxqHAFKwQrZGHA8KXr0UaZOmG5cGlMP
+        nCsuaY0nATYO+C4bg2ZKSayRSA==
+X-Google-Smtp-Source: ABdhPJwurLCgsUKBH4m6dcESQTptlhoR0rEHbjcOfc+k2e9gB4ZDfT9hTuuRh6BlyqKKP1waMkjOXA==
+X-Received: by 2002:a7b:cb92:: with SMTP id m18mr9877767wmi.94.1595004968669;
+        Fri, 17 Jul 2020 09:56:08 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.06
+        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 09:56:07 -0700 (PDT)
+        Fri, 17 Jul 2020 09:56:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        David Veenstra <davidjulianveenstra@gmail.com>,
-        Graff Yang <graff.yang@gmail.com>
-Subject: [PATCH 08/30] iio: resolver: ad2s1200: Change ordering of compiler attribute macro
-Date:   Fri, 17 Jul 2020 17:55:16 +0100
-Message-Id: <20200717165538.3275050-9-lee.jones@linaro.org>
+        Crt Mori <cmo@melexis.com>
+Subject: [PATCH 09/30] iio: temperature: mlx90632: Function parameter descriptions must match exactly
+Date:   Fri, 17 Jul 2020 17:55:17 +0100
+Message-Id: <20200717165538.3275050-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717165538.3275050-1-lee.jones@linaro.org>
 References: <20200717165538.3275050-1-lee.jones@linaro.org>
@@ -69,34 +67,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc gets confused if the variable does not follow the
-type/attribute definitions.
+'*'s are not welcome in kerneldoc parameter names.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/resolver/ad2s1200.c:44: warning: Function parameter or member '____cacheline_aligned' not described in 'ad2s1200_state'
+ drivers/iio/temperature/mlx90632.c:175: warning: Function parameter or member 'data' not described in 'mlx90632_perform_measurement'
 
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: David Veenstra <davidjulianveenstra@gmail.com>
-Cc: Graff Yang <graff.yang@gmail.com>
+Cc: Crt Mori <cmo@melexis.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/resolver/ad2s1200.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/temperature/mlx90632.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/resolver/ad2s1200.c b/drivers/iio/resolver/ad2s1200.c
-index a391f46ee06b7..29cfd57eff9e7 100644
---- a/drivers/iio/resolver/ad2s1200.c
-+++ b/drivers/iio/resolver/ad2s1200.c
-@@ -40,7 +40,7 @@ struct ad2s1200_state {
- 	struct spi_device *sdev;
- 	struct gpio_desc *sample;
- 	struct gpio_desc *rdvel;
--	__be16 rx ____cacheline_aligned;
-+	__be16 ____cacheline_aligned rx;
- };
+diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
+index eaca6ba068646..b9a8089be3f63 100644
+--- a/drivers/iio/temperature/mlx90632.c
++++ b/drivers/iio/temperature/mlx90632.c
+@@ -164,8 +164,8 @@ static s32 mlx90632_pwr_continuous(struct regmap *regmap)
+ }
  
- static int ad2s1200_read_raw(struct iio_dev *indio_dev,
+ /**
+- * mlx90632_perform_measurement - Trigger and retrieve current measurement cycle
+- * @*data: pointer to mlx90632_data object containing regmap information
++ * mlx90632_perform_measurement() - Trigger and retrieve current measurement cycle
++ * @data: pointer to mlx90632_data object containing regmap information
+  *
+  * Perform a measurement and return latest measurement cycle position reported
+  * by sensor. This is a blocking function for 500ms, as that is default sensor
 -- 
 2.25.1
 
