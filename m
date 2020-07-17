@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07080224391
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76403224366
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgGQS5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728411AbgGQS5s (ORCPT
+        id S1728244AbgGQS4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:56:18 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:34749 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbgGQS4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:57:48 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BCFC0619D2;
-        Fri, 17 Jul 2020 11:57:48 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c139so9684183qkg.12;
-        Fri, 17 Jul 2020 11:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EZpiBcjGlIPxF0KYd7Qc+BnCOu25vSDqixulLrFvuOY=;
-        b=udQB1X7Om0JJKCtkDF+i4wDpOjQQUvPYkGHL7BaYyW5sBK96EfJnW04juDmu3CMuRG
-         AI2Je8tLMY//PT3Tduq7EPF6xKcV/1Reggd4DCMfPeFkOd/GvfpG/s+zNqhkVCLtOUSI
-         MXXPmW1A2eeIiUXB+ee6eQM61cvDLRajVZ1ardx8Mjs6sGr87IsfatgoqreJgJjEOTt3
-         DdUwKjfBp/Wud04Q1709+ojlIph43SEJKtm2fA2ES2GA3eOMETiFJ9rogFBoHLIFBLzj
-         6tPEiIm8QqySrgBInDheQ9N7h32JiQmiwSmafc2edIfDduRY8dR2+0MHLRgg+tzs6lws
-         KFpw==
+        Fri, 17 Jul 2020 14:56:17 -0400
+Received: by mail-io1-f70.google.com with SMTP id b133so7109213iof.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 11:56:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EZpiBcjGlIPxF0KYd7Qc+BnCOu25vSDqixulLrFvuOY=;
-        b=ae5lSKF61oGU/5gYyS2CZsC5vXZkdc2gTLXaeFD48ZWoiNf+fxzMigSkRX62TjGE7W
-         8UcOwfxSTNCQUIiO8XWa8nMtKipdkglSEO1YPDhSBhR4ZAs5mm7IOoNfiCNOR46Mf1h8
-         QK9obagwxx9K1X/hehydvbzFED1FWKUfDmegXZq3oQleDWASsoDZQTdfQc29Q/bKAn5g
-         dWGaVx8RXkvILQCDtZvLzxeFtn1fCSp81XYGN1TT+VfBUooxy7kL9rsf/kJ1g61+d/oU
-         fGJb+YhxYZb/1owxgX+6HRdUV9+gWHJ12nTZYjJyurZmC6SfDRMiBegzbysf+36CtA+j
-         aQxg==
-X-Gm-Message-State: AOAM530AY6TgfeCMHfrGFsV/y3zIDhPVMraVlxfOzJd18vaDt8jA0mdq
-        5uC5wdYOGgk5JsKTdI7Caeo=
-X-Google-Smtp-Source: ABdhPJxskhUb3+0MpFjxcG1s5cEFwat3wq15g1MDMjkt2vkJEWlZeGVjg/3FFj9YfU3Vp7Ss/Rql5g==
-X-Received: by 2002:a37:954:: with SMTP id 81mr10093122qkj.336.1595012267562;
-        Fri, 17 Jul 2020 11:57:47 -0700 (PDT)
-Received: from localhost.localdomain ([2804:18:7002:653c:f7ea:490a:10b0:ec39])
-        by smtp.gmail.com with ESMTPSA id r6sm11380097qtt.81.2020.07.17.11.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 11:57:47 -0700 (PDT)
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-X-Google-Original-From: Daniel W. S. Almeida
-To:     corbet@lwn.net, mchehab@kernel.org
-Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 16/25] Documentation/process/index.rst: Fix sphinx warning
-Date:   Fri, 17 Jul 2020 15:56:15 -0300
-Message-Id: <20200717185624.2009393-16-dwlsalmeida@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717185624.2009393-1-dwlsalmeida@gmail.com>
-References: <20200717185624.2009393-1-dwlsalmeida@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/eE1uWfIufW8vQMws/6jTiBN48Hy0hA3uku2kspGanw=;
+        b=AXUv4g2TerncNYxSqNk0KOGO4oP98JEg4S00QkzgQD82PzbUVjI+tVWSMFyPxuZDYL
+         RUdIKzjYh9dgIm1SrouknoQHGu+pXAHwTeF+/k3Z55VBLr5w0ubwHQk8w28fgq35VoQH
+         DBCrTMWuXAInx1EEPWKaEVkc8+vTpuWz34MVhg1v33YlKNWIPQzKJAgl/HTJOFqpEsiI
+         AYZ0r5JHtNSIdDSSJtpbpOFJ+yXvKcCej9k+Nv/27KGTAB1HR7xlzknZ2Gihm3APmPQq
+         fk9f3mlKIlhvH2+nn8P5PZWx2BtIxpXtTNUlsPWuCg0UmoHkwDVyJHN/AvJVtmeScQoQ
+         1xMQ==
+X-Gm-Message-State: AOAM532h6yUQEoUI0b5uQow5BCUVri6LWQE2XAppW35cR1ha7JIt+hiW
+        YqQM1GaxcliPo1jbaMFHAF4g/8EMRVLNesDQU7eI0snP4/Q0
+X-Google-Smtp-Source: ABdhPJw1KdtA5u31Fl/CNv94wwk5X2Mpayq9H7dYSjQoKDiYimMRrexaFHuYHOiZGYWJ4jbuCnTIrXYo/uhswzv7ZNO6SlvEqSxj
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:1bdb:: with SMTP id f88mr11577720ill.233.1595012176420;
+ Fri, 17 Jul 2020 11:56:16 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 11:56:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000030271005aaa7b603@google.com>
+Subject: general protection fault in ath9k_hif_usb_rx_cb (2)
+From:   syzbot <syzbot+c6dde1f690b60e0b9fbe@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
+        davem@davemloft.net, kuba@kernel.org, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Hello,
 
-Fix the following warning:
+syzbot found the following issue on:
 
-WARNING: toctree contains reference to nonexisting document
-'process/unaligned-memory-access'
+HEAD commit:    313da01a usb: misc: sisusbvga: Move static const tables ou..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=14226dd0900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=999be4eb2478ffa5
+dashboard link: https://syzkaller.appspot.com/bug?extid=c6dde1f690b60e0b9fbe
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c6dde1f690b60e0b9fbe@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc00000001f2: 0000 [#1] SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000f90-0x0000000000000f97]
+CPU: 1 PID: 356 Comm: syz-executor.1 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:627 [inline]
+RIP: 0010:ath9k_hif_usb_rx_cb+0x843/0xf80 drivers/net/wireless/ath/ath9k/hif_usb.c:671
+Code: 00 00 00 49 8d 7f 08 48 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 51 05 00 00 4d 8b 7f 08 49 8d bf 90 0f 00 00 48 89 f8 48 c1 e8 03 <0f> b6 04 28 84 c0 74 08 3c 03 0f 8e 25 05 00 00 48 8b 44 24 30 0f
+RSP: 0018:ffff8881db309920 EFLAGS: 00010002
+RAX: 00000000000001f2 RBX: 0000000000000c05 RCX: ffffc900006a8000
+RDX: 0000000000040000 RSI: ffffffff82e1f88b RDI: 0000000000000f90
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8881c3e144a3
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000c05 R14: ffff8881d9babb40 R15: 0000000000000000
+FS:  0000000002773940(0000) GS:ffff8881db300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f052251e740 CR3: 00000001ad63e000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __usb_hcd_giveback_urb+0x32d/0x560 drivers/usb/core/hcd.c:1650
+ usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
+ dummy_timer+0x11f2/0x3240 drivers/usb/gadget/udc/dummy_hcd.c:1967
+ call_timer_fn+0x1ac/0x6e0 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers.part.0+0x54c/0x9e0 kernel/time/timer.c:1773
+ __run_timers kernel/time/timer.c:1745 [inline]
+ run_timer_softirq+0x80/0x120 kernel/time/timer.c:1786
+ __do_softirq+0x222/0x95b kernel/softirq.c:292
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0xed/0x140 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:387 [inline]
+ __irq_exit_rcu kernel/softirq.c:417 [inline]
+ irq_exit_rcu+0x150/0x1f0 kernel/softirq.c:429
+ sysvec_apic_timer_interrupt+0x49/0xc0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:596
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/irqflags.h:85 [inline]
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x3b/0x40 kernel/locking/spinlock.c:191
+Code: e8 ca b5 76 fb 48 89 ef e8 62 a2 77 fb f6 c7 02 75 11 53 9d e8 16 46 95 fb 65 ff 0d cf 0d 52 7a 5b 5d c3 e8 f7 4b 95 fb 53 9d <eb> ed 0f 1f 00 55 48 89 fd 65 ff 05 b5 0d 52 7a 45 31 c9 41 b8 01
+RSP: 0018:ffff8881ad7b7c30 EFLAGS: 00000292
+RAX: 0000000000243e09 RBX: 0000000000000292 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff85afe139
+RBP: ffff8881d57fd4a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff8881c6e14b00 R14: 0000000000000000 R15: ffff8881c6e14fd8
+ do_wait+0x42e/0x9b0 kernel/exit.c:1473
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1621
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1633
+ do_syscall_64+0x50/0x90 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x415ffa
+Code: Bad RIP value.
+RSP: 002b:00007ffd2403c368 EFLAGS: 00000246 ORIG_RAX: 000000000000003d
+RAX: ffffffffffffffda RBX: 0000000000023821 RCX: 0000000000415ffa
+RDX: 0000000040000001 RSI: 00007ffd2403c3a0 RDI: ffffffffffffffff
+RBP: 0000000000000060 R08: 0000000000000001 R09: 0000000002773940
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffd2403c3a0 R14: 0000000000023821 R15: 00007ffd2403c3b0
+Modules linked in:
+---[ end trace 1a7827ecbdcfd2ad ]---
+RIP: 0010:ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:627 [inline]
+RIP: 0010:ath9k_hif_usb_rx_cb+0x843/0xf80 drivers/net/wireless/ath/ath9k/hif_usb.c:671
+Code: 00 00 00 49 8d 7f 08 48 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 51 05 00 00 4d 8b 7f 08 49 8d bf 90 0f 00 00 48 89 f8 48 c1 e8 03 <0f> b6 04 28 84 c0 74 08 3c 03 0f 8e 25 05 00 00 48 8b 44 24 30 0f
+RSP: 0018:ffff8881db309920 EFLAGS: 00010002
+RAX: 00000000000001f2 RBX: 0000000000000c05 RCX: ffffc900006a8000
+RDX: 0000000000040000 RSI: ffffffff82e1f88b RDI: 0000000000000f90
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8881c3e144a3
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000c05 R14: ffff8881d9babb40 R15: 0000000000000000
+FS:  0000000002773940(0000) GS:ffff8881db300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f052251e740 CR3: 00000001ad63e000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- Documentation/process/index.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
-index f07c9250c3acb..dd231ffc8422d 100644
---- a/Documentation/process/index.rst
-+++ b/Documentation/process/index.rst
-@@ -32,7 +32,7 @@ Below are the essential guides that every developer should read.
-    kernel-enforcement-statement
-    kernel-driver-statement
- 
--Other guides to the community that are of interest to most developers are: 
-+Other guides to the community that are of interest to most developers are:
- 
- .. toctree::
-    :maxdepth: 1
-@@ -61,7 +61,7 @@ lack of a better place.
-    botching-up-ioctls
-    clang-format
-    ../riscv/patch-acceptance
--   unaligned-memory-access
-+   ../core-api/unaligned-memory-access
- 
- .. only::  subproject and html
- 
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
