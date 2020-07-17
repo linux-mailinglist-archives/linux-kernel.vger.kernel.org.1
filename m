@@ -2,129 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5162223C60
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1497D223C96
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgGQNXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
+        id S1726635AbgGQN1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgGQNXQ (ORCPT
+        with ESMTP id S1726198AbgGQN1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:23:16 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6FFC08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:23:16 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r19so12532035ljn.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:23:16 -0700 (PDT)
+        Fri, 17 Jul 2020 09:27:01 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DDAC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:27:01 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id md7so6365511pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=r5HS07ICf7E3a3QJxXXjTIF72wcfgMRIm+vhJsEtkcw=;
-        b=G/PDUzaIqdp1Gjj31VxhrrYLJsacpjKxAAeitpvz2KCk8yGUDLzVXlJ3q8zbAFP57j
-         r9tjyIvZkl67/BTM0oesxWME9XtuWS+46jAX+1t27JSS56lOyCbBDij7xZXHOa0dVyuh
-         7FiV92akZrkKRS6MZXvmgsB0stALd/vxBZU13pULuaIUK+0sVBzOXorHxtl227Nbmq6v
-         1uiigkmHl8tttEMfHoQVrbPXVQprxr/JmOjBIyTwAbPoVSPNRu9dqL2MOJAWM0bUcge0
-         RXWVCIoq2wClrs/UG/zsTqBNKGO7IieNNdBfsIyJSyiMRaT3pkmAj24448EPmt1d+j9I
-         m6tg==
+         :content-disposition:in-reply-to;
+        bh=zq4eLLHEPFYePLYsXs6ch0tfK/nwjUC8UEFOw6QoLa4=;
+        b=Lnaq3z9kEZHMV2ApMiDweXrRyPWYk31gywhdPzee8VL9Y1liBih4Qdlsx1mxPcWIo6
+         msRB1swgM/ShishzCGdhje5EFoPZq2aEwMyHoME5q/2aF/2LUVgaMyH1zxpV7anczIVe
+         ffsLlpvh48FxHxgUaCQ0gWER9ya+fyVtXqq2vgbEp5H4fLz65bgzbSutlRqupte0bCN1
+         cwriX2q6wlUg8NzCRvy3SHgAkAVTbzaD+BRmT6Pr0cSpn0WFv6+2Y+VfXeK9Y5QCodQW
+         7sQLVVFXDeAZDj4i8sZa2B/IZZgu4FS1DVOKB7Y0MkKgV698rIJwOT0JrIzQwS8z1ZaT
+         ThVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r5HS07ICf7E3a3QJxXXjTIF72wcfgMRIm+vhJsEtkcw=;
-        b=Iy4p749CsJ3VMks0+/jFjqfNyBydbiXKHrZPuckKq6Bp1mO8SxX2hLKt0oEI8OpZMQ
-         xdlDS6iwj+OaclfeBShzaG64dFPfyzsNts4lA9DWvX52J9bwQByc1/5iJOZ7Y0+PKMlg
-         NUm3h1TJTxWjBzr0s9WZ3mhfIsipEZBkr+jeYkdkU3OiJj/uceZ1FT1vrackkWRsV9b0
-         hP4eKyMTjN5s7HymapMdW1RCXvwv5sMYmaWUpq2Az1bhRtZOCaRdw3pbszxq5zz3V/+s
-         GRFpy1ZtQ5O9dzZ1/V8J0OKDYmULzZ1enAKLGgM6+01ws2nwEtIaxkmlwfmo8GDQpaZK
-         AEig==
-X-Gm-Message-State: AOAM531Unzamu5QZCRfy1UoxM4/UI5z4sb/SPBFNBBmWGFNt7lGVwARG
-        1Rs6+hI7r7GlGDnGKUzHtzqS1Q==
-X-Google-Smtp-Source: ABdhPJzUBTptxuJTLZ8lzud6Q9kGgaD4DEmyeJiAqkYBb3btArneE3fHcpaQCMg8v1lLUysLkIvUDg==
-X-Received: by 2002:a2e:1441:: with SMTP id 1mr4364600lju.93.1594992194884;
-        Fri, 17 Jul 2020 06:23:14 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id w5sm1648620lji.49.2020.07.17.06.23.14
+         :mime-version:content-disposition:in-reply-to;
+        bh=zq4eLLHEPFYePLYsXs6ch0tfK/nwjUC8UEFOw6QoLa4=;
+        b=t81NLHbLjVa9nP5X6kdSto/YTKXIuHved+9P2WL+Q2ckjYQ/mxb5wChCGWqR9SpeLq
+         P88VL4QGOByJbs4DfnLSGySsJcNdWWAZSQ31A/hG0mg4UvtmQyFK8w6cdrllWk876ikd
+         ZyhblrrEWPglKTYtgivlYJkTuaaSXKp3Z+AGLXlfe/suLPJXtODPYOkAM1cTYXcxhO7J
+         9BFRNy81hnEoqq1FtXXC3tiYJIWiT1j1RcS8sq6hKtAAKUWJKlk/9hRXc3eB6XgMNXrE
+         oCPt4NVvqT2O7VczYhTgyWjZDehLkLvBvd+u8iwnEQ8B9QArRX+B1zilaffLc5C2qZoI
+         JI4A==
+X-Gm-Message-State: AOAM532PnHBG3eWGzgjm3rGBQEs0kepfkR4cNfILufyX41bc9PK1TysW
+        zZRO8trgidrP7HW1SbRICZ4=
+X-Google-Smtp-Source: ABdhPJz+mYdiWoy/UhbS6h4VA5AJY9KMK4o0CTUuYibW3x9Kg9pZURkVluqLVuzmBoFmY82ceB+pkw==
+X-Received: by 2002:a17:902:547:: with SMTP id 65mr7541416plf.191.1594992420594;
+        Fri, 17 Jul 2020 06:27:00 -0700 (PDT)
+Received: from mail.google.com ([149.248.10.52])
+        by smtp.gmail.com with ESMTPSA id d16sm7877616pfo.156.2020.07.17.06.26.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 06:23:14 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 15:23:13 +0200
-From:   Niklas <niklas.soderlund@ragnatech.se>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 03/20] thermal: rcar_gen3_thermal: Add r8a774e1 support
-Message-ID: <20200717132313.GB177462@oden.dyn.berto.se>
-References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594811350-14066-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 17 Jul 2020 06:26:59 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 21:26:50 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 03/17] perf ftrace: add option -t/--tid to filter by
+ thread id
+Message-ID: <20200717132650.i32oovllal22b35i@mail.google.com>
+References: <20200711124035.6513-1-changbin.du@gmail.com>
+ <20200711124035.6513-4-changbin.du@gmail.com>
+ <20200716153630.GD374956@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1594811350-14066-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200716153630.GD374956@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lad,
-
-Thanks for your work.
-
-On 2020-07-15 12:08:53 +0100, Lad Prabhakar wrote:
-> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+On Thu, Jul 16, 2020 at 12:36:30PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Jul 11, 2020 at 08:40:21PM +0800, Changbin Du escreveu:
+> > This allows us to trace single thread instead of the whole process.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > ---
+> >  tools/perf/Documentation/perf-ftrace.txt | 4 ++++
+> >  tools/perf/builtin-ftrace.c              | 2 ++
+> >  2 files changed, 6 insertions(+)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
+> > index d79560dea19f..e204bf6d50d8 100644
+> > --- a/tools/perf/Documentation/perf-ftrace.txt
+> > +++ b/tools/perf/Documentation/perf-ftrace.txt
+> > @@ -38,6 +38,10 @@ OPTIONS
+> >  --pid=::
+> >  	Trace on existing process id (comma separated list).
+> >  
+> > +-t::
+> > +--tid=::
+> > +	Trace on existing thread id (comma separated list).
+> > +
 > 
-> Add r8a774e1 specific compatible string.
 > 
-> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-
-> ---
->  drivers/thermal/rcar_gen3_thermal.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Humm, I just  tried:
 > 
-> diff --git a/drivers/thermal/rcar_gen3_thermal.c b/drivers/thermal/rcar_gen3_thermal.c
-> index c48c5e9b8f20..3f129ce4adc0 100644
-> --- a/drivers/thermal/rcar_gen3_thermal.c
-> +++ b/drivers/thermal/rcar_gen3_thermal.c
-> @@ -314,6 +314,10 @@ static const struct of_device_id rcar_gen3_thermal_dt_ids[] = {
->  		.compatible = "renesas,r8a774b1-thermal",
->  		.data = &rcar_gen3_ths_tj_1,
->  	},
-> +	{
-> +		.compatible = "renesas,r8a774e1-thermal",
-> +		.data = &rcar_gen3_ths_tj_1,
-> +	},
->  	{
->  		.compatible = "renesas,r8a7795-thermal",
->  		.data = &rcar_gen3_ths_tj_1,
+> [root@five ~]# yes > /dev/null &
+> [1] 18265
+> [root@five ~]# perf ftrace --tid 18265
+> ^C[root@five ~]#
+> 
+> After waiting for a while, nothing, what am I doing wrong?
+>
+I got it wrong. Currently ftrace only can filter by pid. If the pid is not
+the main thread it won't work.
+
+So this patch makes no sense. will drop this.
+
+> - Arnaldo
+> 
+> 
+> >  -a::
+> >  --all-cpus::
+> >  	Force system-wide collection.  Scripts run without a <command>
+> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> > index 244cc8e6bd60..1188b82c6541 100644
+> > --- a/tools/perf/builtin-ftrace.c
+> > +++ b/tools/perf/builtin-ftrace.c
+> > @@ -515,6 +515,8 @@ int cmd_ftrace(int argc, const char **argv)
+> >  		    "Show available functions to filter"),
+> >  	OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
+> >  		   "trace on existing process id"),
+> > +	OPT_STRING('t', "tid", &ftrace.target.tid, "tid",
+> > +		   "trace on existing thread id (exclusive to --pid)"),
+> >  	OPT_INCR('v', "verbose", &verbose,
+> >  		 "be more verbose"),
+> >  	OPT_BOOLEAN('a', "all-cpus", &ftrace.target.system_wide,
+> > -- 
+> > 2.25.1
+> > 
+> 
 > -- 
-> 2.17.1
 > 
+> - Arnaldo
 
 -- 
-Regards,
-Niklas Söderlund
+Cheers,
+Changbin Du
