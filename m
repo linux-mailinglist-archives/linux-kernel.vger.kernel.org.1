@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30FC2244F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6118E22450B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgGQUO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        id S1728612AbgGQURa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgGQUO4 (ORCPT
+        with ESMTP id S1728183AbgGQUR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:14:56 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AF6C0619D2;
-        Fri, 17 Jul 2020 13:14:56 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id q4so14119405lji.2;
-        Fri, 17 Jul 2020 13:14:56 -0700 (PDT)
+        Fri, 17 Jul 2020 16:17:28 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688FBC0619D4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 13:17:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 207so5924813pfu.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 13:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FkWVr5zp5BC/cYtB354fZGgMcjVM5l8oIeKEC5H54O8=;
-        b=I8YXBM35hH1s2nXJoK1+VOFw/G3kED5UoxeMOVdBSMzbYvRoB7xrjgniZ743y/0DQ+
-         gRmPH5NJeSL11Wtixy7LpjSo0ZIrciCdcHCzFQrIoRZ+Ar5hi3sm/MsQlDnZkbuhBS5J
-         /fTcm3QddMcLA2PDJd2Xl96Ss6abAZ6xl1YmTE/v6mBZxGjFRk+ZIQAhRXw/Zr6pxnjD
-         vI6tKr2Buo6KCetCoHP2tAgP5ygefnrUcWxU/pOyBNQ1Jx5v82xD5v0jYRumxJY3ZHns
-         YWpf/QLIJvo7XbebIb16XWOyF8ndcZqbVyoTId5pXJJJx9RQPTQGEZFcoOinCc+/h9ux
-         XHMQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iywrvyPBUDOgHRTdq53ACuS34hQViRNteLGcc1mvGYA=;
+        b=ZzQEnJsNJiKD1+yaEqf4xcmZtSkJVW4gUh/WVumhUke25claBLvOg39F57AjX/yF+t
+         IvyVWmqsEW1BG1/7ICm+lb5tIZHbhj6w4nT+BPSJ6CibQrPdK+8W8oAm9ZV7+CSh3o1L
+         9SBC3nq8OLCaa+A3fSH2QIaFY3KBeCMeHL73w5dOYvvE1PpkBGOCFRx8y6ZlQ31K2kAi
+         ZxpJ9UEIW9v0vrZQNDYA2jBFcqpLUTC5ham8evExg5OaVhsyNcwqAZTR3fjV6lHUUC3g
+         enqTg+ha9FChfUqjoDjg6uCiikxsYcZBbiKoKMsgyjIjrKE6ubdCgM7ABH06BNxm421j
+         xWGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FkWVr5zp5BC/cYtB354fZGgMcjVM5l8oIeKEC5H54O8=;
-        b=rbIph5+wmsJW3Judoy462er/si7r0YskiNFaPjWoldC1nwgEbLxuYm3Rt3YUaaDLoo
-         RcQrjQgW9Mn5H7CN6xi2PUqACCFVczNwG2V3eZRebrz9ajsSwYu+hB/9F2ce4IyzRt3G
-         Gdhw4OeGRoDAs9zXymx+BFg7CcVdG60RK6dL81UTCxcsx5kDSLJSv8gA5oYQoFzxNEzV
-         kT/8kTof94vjSEjEjhLFvJhCeCHQVHmc0Miypyy+Axm5DJ1GZ9YI9lKEaCQYR7J3JAq6
-         GYqqpKd69J/xYnhlNzjt6O6rSLgaNIfv9UbtCstFl2PyodJkaCLP4hEa9rEUjqqGud+X
-         ZmWg==
-X-Gm-Message-State: AOAM531iq4S6YlPwocn6JhA5IIohzBVIGlevoXg5+CU9O40EtrYzlAJW
-        T7EnS7nj2RfTzLB/PxedkbOsh9vJ
-X-Google-Smtp-Source: ABdhPJyp3rS1I8TlETFWJxyFclpR+MDYEDvhNGj1hflmucIV1aJFhc+30qRGfh5li8IzI6Q2NqjREg==
-X-Received: by 2002:a05:651c:1a7:: with SMTP id c7mr5485739ljn.345.1595016894667;
-        Fri, 17 Jul 2020 13:14:54 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-76-4-184.pppoe.mtu-net.ru. [91.76.4.184])
-        by smtp.googlemail.com with ESMTPSA id r11sm1823788ljc.66.2020.07.17.13.14.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 13:14:53 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
- tegra_mipi_calibrate and tegra_mipi_wait
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
-        helen.koike@collabora.com
-Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
- <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
- <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
- <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
- <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
- <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
- <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
- <4690e682-8495-2327-87c7-c2f06a7a479d@nvidia.com>
- <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
- <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
- <550f1796-67ca-5856-223d-c68360243954@nvidia.com>
- <ca8f2184-de30-03ec-9caf-e20a22d96a77@nvidia.com>
- <080b30c7-1dce-dd2f-dd96-40f6e25da4d6@gmail.com>
- <b125deab-7900-6266-d405-4d7f029089b4@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ea3d2bb0-bf35-dfdf-ed1f-7656a9558072@gmail.com>
-Date:   Fri, 17 Jul 2020 23:14:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iywrvyPBUDOgHRTdq53ACuS34hQViRNteLGcc1mvGYA=;
+        b=cuq6tyhml8dmTn7wkLFid7uhSm0Ab/aSVsUgH+RnvZLEacrBJDkDLEZfLXHqVDuxoX
+         WVzMkQ7OHqi0f+UKb45HcrC/oobl7rGrhLMrUWy27jIX57IdMuLQ7FgugMtx044ABwJB
+         +Lc1s/BJ5TZjmmLYqra/OLQ/GOeQLDRMXdusfQ2vKKv5RPStHFHALte8rHBOvZZ0RRRJ
+         N/7XNX/gR8N18WPP8LfLyFwrl6ZvOi2dO2Gx+3Fmkp9Utu3+OKfPGlGIXkAahYGsFXWs
+         y2WOCU90jnPAp5UNcylksv5dVXmRNOHorMzzgl2qKtsiQz86mlm4GMNW5lMeucU2XnNF
+         gZJw==
+X-Gm-Message-State: AOAM532a/uR5vNx1/CXrjJo9OFAn3q5VHUG5r1/FturDojHH1O6QF7+/
+        Cnb6X5N/rDbMuff1eZZDZRnikw==
+X-Google-Smtp-Source: ABdhPJz7Sa8W0Soyk0M+slHFD6+b0FyIRfrfoarpP+teJuhSDo13gE34xXY80gmRSxgao04OxKIvOg==
+X-Received: by 2002:a63:c150:: with SMTP id p16mr10228264pgi.141.1595017047679;
+        Fri, 17 Jul 2020 13:17:27 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id w12sm3084248pjb.18.2020.07.17.13.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 13:17:26 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 13:15:25 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 26/30] iio: adc: qcom-pm8xxx-xoadc: Demote standard
+ comment block and supply missing description
+Message-ID: <20200717201525.GK388985@builder.lan>
+References: <20200717165538.3275050-1-lee.jones@linaro.org>
+ <20200717165538.3275050-27-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <b125deab-7900-6266-d405-4d7f029089b4@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717165538.3275050-27-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.07.2020 18:41, Sowjanya Komatineni пишет:
-...
->> Also, what about the auto-calibration? Isn't it needed to be enabled for
->> CSI?
-> STARTCAL does one time calibration and with AUTOCAL calibration will be
-> triggered periodically.
-> 
-> For pads PULLUP/PULLDN/TERM impedance calibration, we only need one-time
-> calibration on pads power up.
-> 
-> We always use one time pads calibration for CSI.
+On Fri 17 Jul 09:55 PDT 2020, Lee Jones wrote:
 
-Alright, thank you for the clarification!
+> Kerneldoc is only suitable for documenting functions and struct/enums.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_INTERNAL' description in 'PM8XXX_CHANNEL_INTERNAL'
+>  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_125V' description in 'PM8XXX_CHANNEL_INTERNAL'
+>  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_INTERNAL_2' description in 'PM8XXX_CHANNEL_INTERNAL'
+>  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_MUXOFF' description in 'PM8XXX_CHANNEL_INTERNAL'
+>  drivers/iio/adc/qcom-pm8xxx-xoadc.c:412: warning: Function parameter or member 'variant' not described in 'pm8xxx_xoadc'
+> 
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/iio/adc/qcom-pm8xxx-xoadc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/qcom-pm8xxx-xoadc.c b/drivers/iio/adc/qcom-pm8xxx-xoadc.c
+> index c599ffa45a04c..cd5fa30e77df4 100644
+> --- a/drivers/iio/adc/qcom-pm8xxx-xoadc.c
+> +++ b/drivers/iio/adc/qcom-pm8xxx-xoadc.c
+> @@ -120,7 +120,7 @@
+>  #define ADC_ARB_USRP_DATA0			0x19D
+>  #define ADC_ARB_USRP_DATA1			0x19C
+>  
+> -/**
+> +/*
+>   * Physical channels which MUST exist on all PM variants in order to provide
+>   * proper reference points for calibration.
+>   *
+> @@ -388,6 +388,7 @@ struct pm8xxx_chan_info {
+>   * struct pm8xxx_xoadc - state container for the XOADC
+>   * @dev: pointer to device
+>   * @map: regmap to access registers
+> + * @variant: XOADC variant characteristics
+>   * @vref: reference voltage regulator
+>   * characteristics of the channels, and sensible default settings
+>   * @nchans: number of channels, configured by the device tree
+> -- 
+> 2.25.1
+> 
