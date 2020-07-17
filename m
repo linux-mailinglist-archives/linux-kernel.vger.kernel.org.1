@@ -2,61 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D0B223694
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A6D223663
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbgGQIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:06:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8312 "EHLO huawei.com"
+        id S1728000AbgGQIAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:00:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45354 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726198AbgGQIGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:06:07 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DD773C5387197067B19F;
-        Fri, 17 Jul 2020 16:06:04 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 17 Jul 2020 16:05:56 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <guohanjun@huawei.com>, <wangxiongfeng2@huawei.com>
-Subject: [PATCH] PCI/ASPM: add missing newline when printing parameter 'policy' by sysfs
-Date:   Fri, 17 Jul 2020 15:59:25 +0800
-Message-ID: <1594972765-10404-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1726105AbgGQIAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:00:44 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A1E10D976030469F0894;
+        Fri, 17 Jul 2020 16:00:38 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.91) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Jul 2020
+ 16:00:36 +0800
+Subject: Re: [PATCH -next] drm/komeda: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        "james qian wang (Arm Technology China)" <james.qian.wang@arm.com>
+CC:     Mihail Atanassov <mihail.atanassov@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
+References: <20200716090333.13334-1-miaoqinglang@huawei.com>
+ <20200717064017.GA76612@jamwan02-TSP300>
+ <CAKMK7uEpmhKok9Q3Rrg0v=1p7pv-wpV0Y3-k9GVav+Ad5Z4AkQ@mail.gmail.com>
+From:   miaoqinglang <miaoqinglang@huawei.com>
+Message-ID: <7264de7e-6da4-288d-855d-410b2e05458b@huawei.com>
+Date:   Fri, 17 Jul 2020 16:00:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
+In-Reply-To: <CAKMK7uEpmhKok9Q3Rrg0v=1p7pv-wpV0Y3-k9GVav+Ad5Z4AkQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.91]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I cat ASPM parameter 'policy' by sysfs, it displays as follows.
-It's better to add a newline for easy reading.
 
-[root@localhost ~]# cat /sys/module/pcie_aspm/parameters/policy
-[default] performance powersave powersupersave [root@localhost ~]#
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/pci/pcie/aspm.c | 1 +
- 1 file changed, 1 insertion(+)
+在 2020/7/17 15:06, Daniel Vetter 写道:
+> On Fri, Jul 17, 2020 at 8:40 AM james qian wang (Arm Technology China)
+> <james.qian.wang@arm.com> wrote:
+>>
+>> On Thu, Jul 16, 2020 at 05:03:33PM +0800, Qinglang Miao wrote:
+>>> From: Liu Shixin <liushixin2@huawei.com>
+>>>
+>>> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>>>
+>>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>>> ---
+>>>   drivers/gpu/drm/arm/display/komeda/komeda_dev.c | 13 +------------
+>>>   1 file changed, 1 insertion(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
+>>> index 0246b2e94..4a10e6b9e 100644
+>>> --- a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
+>>> +++ b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
+>>> @@ -41,18 +41,7 @@ static int komeda_register_show(struct seq_file *sf, void *x)
+>>>        return 0;
+>>>   }
+>>>
+>>> -static int komeda_register_open(struct inode *inode, struct file *filp)
+>>> -{
+>>> -     return single_open(filp, komeda_register_show, inode->i_private);
+>>> -}
+>>> -
+>>> -static const struct file_operations komeda_register_fops = {
+>>> -     .owner          = THIS_MODULE,
+>>> -     .open           = komeda_register_open,
+>>> -     .read_iter              = seq_read_iter,
+>>> -     .llseek         = seq_lseek,
+>>> -     .release        = single_release,
+>>> -};
+>>> +DEFINE_SHOW_ATTRIBUTE(komeda_register);
+>>>
+>>
+>> Hi Shixin & Qinglang
+>>
+>> Thanks for your patch.
+>>
+>> Reviewed-by: James Qian Wang <james.qian.wang@arm.com>
+>>
+>> Since your patch is not for drm-misc-next, so seems better
+>> to leave it to you to merge it. :)
+> 
+> I do think it's for drm-misc-next, what other tree would it be for?
+> Some people put -next in their patch tag to differentiate from -fixes,
+> so maintainers know what to do with the patch. It's also not part of a
+> series, hence I think this is on you to apply it.
+ >
+Hi James & Daniel,
 
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index b17e5ff..253c30c 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -1182,6 +1182,7 @@ static int pcie_aspm_get_policy(char *buffer, const struct kernel_param *kp)
- 			cnt += sprintf(buffer + cnt, "[%s] ", policy_str[i]);
- 		else
- 			cnt += sprintf(buffer + cnt, "%s ", policy_str[i]);
-+	cnt += sprintf(buffer + cnt, "\n");
- 	return cnt;
- }
- 
--- 
-1.7.12.4
+​Sorry I didn't make it clear in commit log, but it do based on linux-next.
+
+​I think the reason why James think it's not for drm-misc-next
+is conflicts exists when this patch being applied. There's conflicts 
+because commit <4d4901c6d7> which switched over direct seq_read method 
+calls to seq_read_iter should applied before this clean-up patch(linkage 
+listed as below).
+
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next/+/4d4901c6d748efab8aab6e7d2405dadaed0bea50
+
+I can send a new patch based on mainline if needed.
+
+​Thanks.
+
+Qinglang
+
+.
+	
+ >
+> Cheers, Daniel
+> 
+>>
+>> Thanks
+>> James
+>>
+>>>   #ifdef CONFIG_DEBUG_FS
+>>>   static void komeda_debugfs_init(struct komeda_dev *mdev)
+>>> --
+>>> 2.17.1
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> 
+> 
 
