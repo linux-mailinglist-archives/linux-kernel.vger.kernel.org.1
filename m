@@ -2,158 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A02022428F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F68224296
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgGQRtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S1727106AbgGQRus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgGQRtQ (ORCPT
+        with ESMTP id S1726104AbgGQRur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:49:16 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF6EC0619D4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:49:16 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id n5so7034301pgf.7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:49:16 -0700 (PDT)
+        Fri, 17 Jul 2020 13:50:47 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63329C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:50:47 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id m9so5769719pfh.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UmBYnpJxLOKWnlQafaq4C6F9spEh+E46qapMdJKdqIk=;
-        b=jGmpJbFeB/mWj5s08JrCEpmPrV70zk0iTrM1SwiDc7+x09ybNxYSjiRZRaCoAi76lN
-         0xgvyFMiLQs/gjLKvXL9xklDnnClPU+OuYnQ7oQhSr3KOT+mv8YST83YVjeNEhJjlN+s
-         vj2un2SxZ6x6CLOG8xk18RT0iCO7YnKwd/D+w=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eI8HvUK+CMya1WaG9TiupjG1WqCMo2nAHU2MtUlxSro=;
+        b=isf6Sxzh6k+W/K9cUCxxTRIYMWRAG/8IoFTnDOUdOt4/S7iGxlcC2iIn4PqdA6MRnG
+         dYYmIHkDNTyTHktuBk0DKHJpGnSZcDvnXwINW4FU2Kz/GXK6c6V87z0dd7QJDy5LyTrJ
+         3qBboaZr8fXlxTvmTaIDX2Lglx1QLnppBuCSiVHxytzzt5Ml9ZKXOXHTQTRb3pHCUEBW
+         TmgnkEfU/lv0rXwTgCXpOi6hk1a+JUY+0VvVEp6dlzOgZofU1Wxf+MKBQpoOLvZCd208
+         R0obSzHLaE0lgOWf0F6Vqr0engzm7cay7FjcZPr3+iDu+RDptAde1pv2i4w1Uggoe8A1
+         VG8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UmBYnpJxLOKWnlQafaq4C6F9spEh+E46qapMdJKdqIk=;
-        b=QUOfsprARUcKH/7NXhisqKhSahbnldGkf7Fn3k2iaP0SSEzqhyPTSIdehlvKreXbHL
-         1GRDXGOUxpRGJsXInSujM9N9F9J60cp5y1Cet+836J1CA1q+lNlTJmkw1ZiddxyAYmzE
-         nCyQA98UJVKusZN9tIpfbwBNGV6YUDP5+pyhE5PQ6zaboooJ74Ponxi9071YH61RAFit
-         bEKe6uUQyRn7VwpWJnh8mvhvNO76JqqZZKoQMtxJDsqUvVZLLa2IUPoehGT5IkfLFNr+
-         UPDCTsx4uB1CeSp0px1GZ7iTidjnVyVZhaHIUC1ZGfbEPlydnPb5Oznlf2RrdhdUe5E1
-         1MWA==
-X-Gm-Message-State: AOAM531Ooqd0A2odvgi46s5Nj+oFBPbZJT8tV7lbk2QxobuM6KjIAgyw
-        5iJB8DB1k9mBuI0B1JWMm6W+tHYPmZg=
-X-Google-Smtp-Source: ABdhPJzpf9/ZajaIEXyFjFi2Ba7LeZk4ZttZruqVO8DSt3fEPjVmPRj3vBVymqSJ3TNgQl5mmN3v+w==
-X-Received: by 2002:a63:8c5d:: with SMTP id q29mr9353865pgn.249.1595008155556;
-        Fri, 17 Jul 2020 10:49:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s30sm8709549pgn.34.2020.07.17.10.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 10:49:14 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 10:49:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [patch V3 01/13] entry: Provide generic syscall entry
- functionality
-Message-ID: <202007171045.FB4A586F1D@keescook>
-References: <20200716182208.180916541@linutronix.de>
- <20200716185424.011950288@linutronix.de>
- <202007161336.B993ED938@keescook>
- <87d04vt98w.fsf@nanos.tec.linutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eI8HvUK+CMya1WaG9TiupjG1WqCMo2nAHU2MtUlxSro=;
+        b=h2qkxPv40KNgskPQmKC0BwHhymceMjnOHC/W4IBdTEzpDDi1K4V2dwlwnYnlD1hlnb
+         y7KrO1BLCEdQZsDn9CJRP3//9vQtzTMLz11Vt1TEMvz1MSblb2U5eXwQRORRf8Vy7m1H
+         EmfiCcp4xIKNs5NOVsHypadrFZwb7fXi47wx+aMJV3p/gTW5ErGePYVet8dEckfK7YT0
+         1H86Ff2XW1H8QBplvIBGgbDX0sevigJ9BIidZMG6vKCuiC0x7tc15sAtsrGhtRs/e2cY
+         xb6kAWxD7zjQ40zMFFhUeyx78zm/+a9gqoeDgkKIyezditE39+E2XqVlojw/3znSUD/u
+         HUSQ==
+X-Gm-Message-State: AOAM532RxdPt6MqFYJc4x4FWLwqbLn1Lukr/c8i/5EHWhQIyNZToCay5
+        BlZdINbBoQoV9j7sFx5f8HnpDBBdFp1N56knMCPRYA==
+X-Google-Smtp-Source: ABdhPJwKS81H6pwFlmHpNU/HExkebBEVDO6VEjW67T824a1ZEENuInJi0MLH4KrsMp0mgSXLeGk6AnS9eOzu1KXXbBo=
+X-Received: by 2002:a63:dd09:: with SMTP id t9mr9481183pgg.41.1595008246639;
+ Fri, 17 Jul 2020 10:50:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87d04vt98w.fsf@nanos.tec.linutronix.de>
+References: <20200717024447.3128361-1-saravanak@google.com> <87k0z2xvp6.wl-maz@kernel.org>
+In-Reply-To: <87k0z2xvp6.wl-maz@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 17 Jul 2020 10:50:10 -0700
+Message-ID: <CAGETcx9Fz96tnYCsgPyLMsALDAa7EcNKSQh9BOeCO2X_5pBm1w@mail.gmail.com>
+Subject: Re: [PATCH v2] irqchip: Add IRQCHIP_PLATFORM_DRIVER_BEGIN/END and
+ IRQCHIP_MATCH helper macros
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 11:55:59PM +0200, Thomas Gleixner wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > On Thu, Jul 16, 2020 at 08:22:09PM +0200, Thomas Gleixner wrote:
-> >> This code is needlessly duplicated and  different in all
-> >> architectures.
-> >> 
-> >> Provide a generic version based on the x86 implementation which has all the
-> >> RCU and instrumentation bits right.
+On Fri, Jul 17, 2020 at 3:49 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Saravana,
+>
+> Thanks for re-spinning this one.
+>
+> On Fri, 17 Jul 2020 03:44:47 +0100,
+> Saravana Kannan <saravanak@google.com> wrote:
 > >
-> > Ahh! You're reading my mind!
-> 
-> I told you about that plan at the last conference over a beer :)
-
-Thank you for incepting it in my head, then! ;)
-
-> > [1] https://lore.kernel.org/lkml/20200716193141.4068476-2-krisman@collabora.com/
-> 
-> Saw that fly by. *shudder*
-
-Aw, it's nice. Better emulation! :)
-
-> 
-> >> +/*
-> >> + * Define dummy _TIF work flags if not defined by the architecture or for
-> >> + * disabled functionality.
-> >> + */
+> > Compiling an irqchip driver as a platform driver needs to bunch of
+> > things to be done right:
+> > - Making sure the parent domain is initialized first
+> > - Making sure the device can't be unbound from sysfs
+> > - Disallowing module unload if it's built as a module
+> > - Finding the parent node
+> > - Etc.
 > >
-> > When I was thinking about this last week I was pondering having a split
-> > between the arch-agnositc TIF flags and the arch-specific TIF flags, and
-> > that each arch could have a single "there is agnostic work to be done"
-> > TIF in their thread_info, and the agnostic flags could live in
-> > task_struct or something. Anyway, I'll keep reading...
-> 
-> That's going to be nasty. We rather go and expand the TIF storage to
-> 64bit. And then do the following in a generic header:
+> > Instead of trying to make sure all future irqchip platform drivers get
+> > this right, provide boilerplate macros that take care of all of this.
+> >
+> > An example use would look something like this. Where acme_foo_init and
+> > acme_bar_init are similar to what would be passed to IRQCHIP_DECLARE.
+> >
+> > IRQCHIP_PLATFORM_DRIVER_BEGIN
+>
+> I think there is some value in having the BEGIN statement containing
+> the driver name, see below.
+>
+> > IRQCHIP_MATCH(foo, "acme,foo", acme_foo_init)
+> > IRQCHIP_MATCH(bar, "acme,bar", acme_bar_init)
+> > IRQCHIP_PLATFORM_DRIVER_END(acme_irq)
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/irqchip/irqchip.c | 22 ++++++++++++++++++++++
+> >  include/linux/irqchip.h   | 23 +++++++++++++++++++++++
+> >  2 files changed, 45 insertions(+)
+> >
+> > diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
+> > index 2b35e68bea82..236ea793f01c 100644
+> > --- a/drivers/irqchip/irqchip.c
+> > +++ b/drivers/irqchip/irqchip.c
+> > @@ -10,8 +10,10 @@
+> >
+> >  #include <linux/acpi.h>
+> >  #include <linux/init.h>
+> > +#include <linux/of_device.h>
+> >  #include <linux/of_irq.h>
+> >  #include <linux/irqchip.h>
+> > +#include <linux/platform_device.h>
+> >
+> >  /*
+> >   * This special of_device_id is the sentinel at the end of the
+> > @@ -29,3 +31,23 @@ void __init irqchip_init(void)
+> >       of_irq_init(__irqchip_of_table);
+> >       acpi_probe_device_table(irqchip);
+> >  }
+> > +
+> > +int platform_irqchip_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device_node *np = pdev->dev.of_node;
+> > +     struct device_node *par_np = of_irq_find_parent(np);
+> > +     of_irq_init_cb_t irq_init_cb = of_device_get_match_data(&pdev->dev);
+> > +
+> > +     if (!irq_init_cb)
+> > +             return -EINVAL;
+> > +
+> > +     if (par_np == np)
+> > +             par_np = NULL;
+> > +
+> > +     /* If there's a parent irqchip, make sure it has been initialized. */
+> > +     if (par_np && !irq_find_matching_host(np, DOMAIN_BUS_ANY))
+>
+> There is no guarantee that the calling driver wants BUS_ANY as a token
+> for its parent. It may work for now, if you only have dependencies to
+> drivers that only expose a single domain, but that's not a general
+> purpose check..
+>
+> At least, please add a comment saying that the new driver may want to
+> check that the irqdomain it depends on may not be available.
 
-I though the point was to make the TIF_WORK check as fast as possible,
-even on the 32-bit word systems. I mean it's not a huge performance hit,
-but *shrug*
+This is just checking if the parent interrupt controller has been
+initialized. It's just saying that if NONE of the parent irq domains
+have been registered, it's not time for this interrupt controller to
+initialize. And yes, as you said, the actual init code can do more
+checks and defer probe too. Maybe I'll just put the 2nd sentence as
+the comment.
 
-> 
-> #ifndef TIF_ARCH_SPECIFIC
-> # define TIF_ARCH_SPECIFIC
-> #endif
-> 
-> enum tif_bits {
-> 	TIF_NEED_RESCHED = 0,
->         TIF_...,
->         TIF_LAST_GENERIC,
->         TIF_ARCH_SPECIFIC,
-> };
->         
-> and in the arch specific one:
-> 
-> #define TIF_ARCH_SPECIFIC	\
-> 	TIF_ARCH_1,             \
->         TIF_ARCH_2,
-> 
-> or something like that.
+>
+> > +             return -EPROBE_DEFER;
+> > +
+> > +     return irq_init_cb(np, par_np);
+> > +}
+> > +EXPORT_SYMBOL_GPL(platform_irqchip_probe);
+> > diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+> > index 950e4b2458f0..6d5eba7cbbb7 100644
+> > --- a/include/linux/irqchip.h
+> > +++ b/include/linux/irqchip.h
+> > @@ -13,6 +13,7 @@
+> >
+> >  #include <linux/acpi.h>
+> >  #include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> >
+> >  /*
+> >   * This macro must be used by the different irqchip drivers to declare
+> > @@ -26,6 +27,28 @@
+> >   */
+> >  #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
+> >
+> > +extern int platform_irqchip_probe(struct platform_device *pdev);
+> > +
+> > +#define IRQCHIP_PLATFORM_DRIVER_BEGIN \
+> > +static const struct of_device_id __irqchip_match_table[] = {
+>
+> How about:
+>
+> #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
+> static const struct of_device_id __irqchip_match_table_##drv_name = {
+>
+> which makes it easier to debug when you want to identify specific
+> structures in an object (otherwise, they all have the same
+> name...). it is also much more pleasing aesthetically ;-).
 
-Okay, yeah, that can work.
+I totally agree. I wanted BEGIN to have the name and END to not have
+to specify the name. But I couldn't figure out a way to do it. I
+assumed you wouldn't want the names repeated in both BEGIN and END. If
+you are okay with that, I prefer your suggestion too.
 
-> > There's been some recent confusion over "has the syscall changed,
-> > or did seccomp request it be skipped?" that was explored in arm64[2]
-> > (though I see Will and Keno in CC already). There might need to be a
-> > clearer way to distinguish between "wild userspace issued a -1 syscall"
-> > and "seccomp or ptrace asked for the syscall to be skipped". The
-> > difference is mostly about when ENOSYS gets set, with respect to calls
-> > to syscall_set_return_value(), but if the syscall gets changed, the arch
-> > may need to recheck the value and consider ENOSYS, etc. IIUC, what Will
-> > ended up with[3] was having syscall_trace_enter() return the syscall return
-> > value instead of the new syscall.
-> 
-> I was chatting with Will about that yesterday. IIRC he plans to fix the
-> immediate issue on arm64 first and then move arm64 over to the generic
-> variant. That's the reason why I reshuffled the patch series so the
-> generic parts are first which allows me to provide will a branch with
-> just those. If there are any changes needed we can just feed them back
-> into that branch and fixup the affected architecture trees.
-> 
-> IOW, that should not block progress on this stuff.
+> > +
+> > +#define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
+> > +
+> > +#define IRQCHIP_PLATFORM_DRIVER_END(drv_name)                \
+> > +     {},                                             \
+> > +};                                                   \
+> > +MODULE_DEVICE_TABLE(of, __irqchip_match_table);              \
+> > +static struct platform_driver drv_name##_driver = {  \
+>
+> const?
 
-Ok, great! I just wanted to make sure that didn't surprise anyone. :)
+Sure.
 
--- 
-Kees Cook
+> > +     .probe  = platform_irqchip_probe,               \
+> > +     .driver = {                                     \
+> > +             .name = #drv_name,                      \
+> > +             .owner = THIS_MODULE,                   \
+> > +             .of_match_table = __irqchip_match_table,\
+> > +             .suppress_bind_attrs = true,            \
+> > +     },                                              \
+> > +};                                                   \
+> > +builtin_platform_driver(drv_name##_driver)
+> > +
+> >  /*
+> >   * This macro must be used by the different irqchip drivers to declare
+> >   * the association between their version and their initialization function.
+> > --
+> > 2.28.0.rc0.105.gf9edc3c819-goog
+> >
+> >
+>
+> Otherwise looks good. When you respin it, it would be good to also
+> submit one user of this API by converting an existing driver, as I'd
+> hate to merge something that has no user.
+
+The only one I know will work is the qcom pdc one from John. So I was
+hoping John would respin his patch if you accept this one or I was
+going to redo it after it shows up on linux-next. Maybe MTK can use
+this too for their other series?
+
+-Saravana
