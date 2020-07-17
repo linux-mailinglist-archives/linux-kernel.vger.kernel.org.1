@@ -2,103 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CA0223CB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C368A223CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgGQNaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726221AbgGQNaQ (ORCPT
+        id S1726418AbgGQNce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:32:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42140 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726071AbgGQNcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:30:16 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297F8C061755;
-        Fri, 17 Jul 2020 06:30:16 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k5so6363083pjg.3;
-        Fri, 17 Jul 2020 06:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KA8+BCThQcJ0LRUas8mEHnLeHf4G0JN/o4kBoJ11ao4=;
-        b=Ew7go265THrXcCo9R7QqWPFNUC6m+Vh6NUeRwvXlPSe0VJZbR9rQfMfYlxSKi6RaRA
-         gVb2Kvq/vbg4rZtdMgU4zzpyoX0eMTJ+JWtKzKZgulGNc9Vxv0CjB63kr8JW2jbPTgaB
-         +5eHRJ6epadXZHiChy1g5fTc8SmbomqyqvoKfAdm94q3xU1OxI1ClfrzRD/54HHA8kZ6
-         A22lh+Sn3ahXiS7Wq0KwYg7RKteQlr2DUvuD4NO6tR4WK/1zt+aQSj08kvrauISzdOhg
-         8ldOhoRF2r3Vcelfcm5j/brDYmiLq52RsoI+ermOb5Tw/N5dNQcBbKMivzNWK8v3qJ6Q
-         3cnw==
+        Fri, 17 Jul 2020 09:32:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594992751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gw7Bdg5F6PTJRpZOqnV/ZVS3jnjuaxd2N0oczZTUZYw=;
+        b=hFvShSzP3+GF25ieuiTCnNWYr9LT7HOCI4+FfBk74dZDJX5D/0bBPddM6asy5foMXrteCT
+        /JYuWqYwXONEv/4F5YQdv8SXeyWEnPLdojCF73SkjAV6Nfgz20NutZ/RXrV0MrqCgp6vMo
+        lErxlP+MTkujGUJSXVvOPMIUWjj1E8Q=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-7lYyssRSNbO7LNHT5ank8A-1; Fri, 17 Jul 2020 09:32:30 -0400
+X-MC-Unique: 7lYyssRSNbO7LNHT5ank8A-1
+Received: by mail-qv1-f70.google.com with SMTP id l12so5499220qvu.21
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:32:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KA8+BCThQcJ0LRUas8mEHnLeHf4G0JN/o4kBoJ11ao4=;
-        b=Qw5LqgaEdivSDDmimTVe1t5FvoxhXOKA5ZxDW1ro1z6s6RP1SoA/78oraHJK4KaFyY
-         evqhqZLtN/qEFCgkReXfCYQXLHqm56VCnS+TVhztaast2Q22fFQb80TDnsXeAMgXSQdb
-         dZcmZvggYrw/YFADrbQ6mrWVYGzisHqJz26uFUez7rcsKm9TTftjQeiskSxPwZGPoNup
-         kVbttvE2WdaoaCnhg+uKhCozsoryx6sH+3Vmd0yp9CJDt9+9gjc8Sgsh+xcgW3p5vp6M
-         8sAYiBrr2oOLqxCt7AUS0K24myb5d+DNe+xXZlQKH1peOXJ7Oq+B74LxBfd5nNbNgYL4
-         Y08Q==
-X-Gm-Message-State: AOAM5309lK3nYTLaKO6N2McMTCpF1UhDz02VcG2hdojFMlOdLvp1IZzA
-        cvHiMrG2yTOglKGlLKm19h0=
-X-Google-Smtp-Source: ABdhPJyTEisx3beIa/u5++UyoSvIIfKcqCyUwaWL1AJo3A+t3cP0eYEO1wwLNqXySkLvcofRnsjoYg==
-X-Received: by 2002:a17:90a:ed87:: with SMTP id k7mr10231962pjy.31.1594992615587;
-        Fri, 17 Jul 2020 06:30:15 -0700 (PDT)
-Received: from localhost ([89.208.244.139])
-        by smtp.gmail.com with ESMTPSA id t20sm7974375pfc.158.2020.07.17.06.30.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Jul 2020 06:30:14 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     m-karicheri2@ti.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, gustavo.pimentel@synopsys.com,
-        linux-pci@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v1] PCI: dwc: fix a warning about variable 'res' is uninitialized
-Date:   Fri, 17 Jul 2020 21:30:07 +0800
-Message-Id: <20200717133007.23858-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gw7Bdg5F6PTJRpZOqnV/ZVS3jnjuaxd2N0oczZTUZYw=;
+        b=X5jttXYHfvpzNTB/z17LjCwzsXVTXNRE9xB5EOrncQvOMU9PN8WQXz4Tz/WL1UsFBy
+         hkIWu93XmSkEBY3DwBy219C8hrsKK1vA71njTKFx/wlll7j9L6Nbc4p48OYVWkDfIVgF
+         zOFNr1sWn+/gJxC69DG6mP4Bp44+9DHy7WJnMare+QvN6Wm4Ap60Iil33A8PNcMo8J+E
+         F2usLa4K+GkgbiCzyWunJTZcZMtqPjD94iMefaED23ekR3y5KOW0f+4eJuMeWKtnbMFA
+         h+Rjmzn0muEf6o2vW+AW4yOxEN6iVNi7pxZIp9UkUMZo+CsJJlLw3LVb1TPMUUbtB7uq
+         cgwA==
+X-Gm-Message-State: AOAM533rJ+ZwnJLgemJa+F/I2TV7ZqTsCXWuPnrggP7YumPB/fc/AjOT
+        YujMc48EJqC3v5NVynL0WJFP4aXzejhlbR9oaaGlxtMSNyqloJoXD4skMoQBBQisg7Rd0SCRi7G
+        RBJOkuZbZxrh9yRILNZA7CbPi
+X-Received: by 2002:ac8:1305:: with SMTP id e5mr10471764qtj.78.1594992749435;
+        Fri, 17 Jul 2020 06:32:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVukT5N1A8RHevyQUfkREmmAlrpMLsNUwqg40Hvp+6mZmIfyRmX1j7yE1q3Z+1fCBkwQPYqw==
+X-Received: by 2002:ac8:1305:: with SMTP id e5mr10471725qtj.78.1594992749028;
+        Fri, 17 Jul 2020 06:32:29 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j24sm9568765qkl.79.2020.07.17.06.32.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 06:32:28 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Modularization of DFL private feature drivers
+To:     "Wu, Hao" <hao.wu@intel.com>, "Xu, Yilun" <yilun.xu@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>
+References: <1594791498-14495-1-git-send-email-yilun.xu@intel.com>
+ <0c7c63b8-5444-2deb-9fed-18956a5ad938@redhat.com>
+ <DM6PR11MB38194C448ECCF1E6BF386D3F857C0@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <237c776b-8746-421d-26ad-eea7242a9172@redhat.com>
+Date:   Fri, 17 Jul 2020 06:32:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <DM6PR11MB38194C448ECCF1E6BF386D3F857C0@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot reported a compile warning,
 
-drivers/pci/controller/dwc/pci-keystone.c:1236:18: warning: variable 'res'
-is uninitialized when used here [-Wuninitialized]
+On 7/16/20 8:48 PM, Wu, Hao wrote:
+>> Subject: Re: [PATCH 0/2] Modularization of DFL private feature drivers
+>>
+>> Generally i think this is a good approach.
+>>
+>> However I do have concern.
+>>
+>> The feature_id in dfl is magic number, similar to pci id but without a vendor
+>> id.
+>>
+>> Is it possible to add something like a vendor id so different vendors would
+>> not have to be so careful to use a unique id ?
+> Hi Tom,
+>
+> Thanks for the comments.
+>
+> Here is only one field defined in spec, that is feature id to distinguish one
+> feature with another one. There is no vendor id here I think, and several
+> cards are using this for now and seems not possible to change DFH format
+> for these products. : (
 
-The commit c59a7d771134b5 ("PCI: dwc: Convert to
-devm_platform_ioremap_resource_byname()") did a wrong conversion for
-keystone driver. the commit use devm_platform_ioremap_resource_byname()
-to replace platform_get_resource_byname() and devm_ioremap_resource().
-but the subsequent code needs to use the variable 'res', which is got by
-platform_get_resource_byname() for resource "app". so revert it.
+There looks like some unused bits in the first word, how about
 
-Fixes: c59a7d771134b5 ("PCI: dwc: Convert to devm_platform_ioremap_resource_byname()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- drivers/pci/controller/dwc/pci-keystone.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+#define DFH_EOL            BIT_ULL(40)        /* End of list */
 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 5ffc3b40c4f6..00279002102e 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -1228,8 +1228,8 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
- 	if (!pci)
- 		return -ENOMEM;
- 
--	ks_pcie->va_app_base =
--		devm_platform_ioremap_resource_byname(pdev, "app");
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "app");
-+	ks_pcie->va_app_base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(ks_pcie->va_app_base))
- 		return PTR_ERR(ks_pcie->va_app_base);
- 
--- 
-2.25.0
++define DFH_VENDOR    GENMAKE_ULL(49,41) /* Vendor ID */
+
+#define DFH_TYPE        GENMASK_ULL(63, 60)    /* Feature type */
+
+And Intel gets id 0.
+
+>
+> I fully understand the concern is the feature id management, and potential
+> conflicts there from different vendors. One possible method to resolve this
+> is managing the ids in a public place (web? Or just the driver header file for
+> feature id definition), all vendors can request some feature ids, and other
+> people can see which feature ids have been used so that they can avoid
+> using conflict ones with other people.
+
+The conflict will come in development when two vendors use the same unpublished feature id.
+
+Also keeping the truth of id's in the kernel source isn't that great because the public kernel always lags development repositories.
+
+>
+> And in the later version DFH, this feature id will be replaced with GUID
+> I think, so it can resolve the conflict problems from different vendors?
+> But now, we still need to handle the existing ones. : )
+
+This is why I proposed needing to generalize the matching.
+
+>
+> Thanks
+> Hao
+>
+>> This touches some of the matching function of the bus ops.  Could there be a
+>> way for bus ops to be used so that there could be multiple matching
+>> function.  Maybe the one in 0002 as a default so users could override it ?
+>>
+>> The use case I am worrying about is an OEM.  The OEM uses an unclaimed
+>> feature_id and supplies their own platform device device driver to match the
+>> feature_id.  But some later version of the kernel claims this feature_id and
+>> the OEM's driver no longer works and since the value comes from pci config
+>> space it is difficult to change.
+>>
+>> So looking for something like
+>>
+>> register_feature_matcher((*bus_match)(struct device *dev, struct
+>> device_driver *drv))
+>>
+>> static int dfl_bus_match_default(struct device *dev, struct device_driver *drv)
+>> {
+>>     struct dfl_device *dfl_dev = to_dfl_dev(dev);
+>>     struct dfl_driver *dfl_drv = to_dfl_drv(drv);
+>>     const struct dfl_device_id *id_entry = dfl_drv->id_table;
+>>
+>>     while (id_entry->feature_id) {
+>>         if (dfl_match_one_device(id_entry, dfl_dev)) {
+>>             dfl_dev->id_entry = id_entry;
+>>             return 1;
+>>         }
+>>         id_entry++;
+>>     }
+>>
+>>     return 0;
+>> }
+>>
+>> register_feature_matcher(&dfl_bus_match_default)
+>>
+>> static int dfl_bus_match(struct device *dev, struct device_driver *drv)
+>> {
+>>
+>>     struct dfl_device *dfl_dev = to_dfl_dev(dev);
+>>     struct dfl_driver *dfl_drv = to_dfl_drv(drv);
+>>     const struct dfl_device_id *id_entry = dfl_drv->id_table;
+>>
+>>     while (id_entry->feature_id) {
+>>
+>>         matcher = Loop over matchers()
+>>
+>>         if (matcher(dev, drv)) {
+>>             dfl_dev->id_entry = id_entry;
+>>             return 1;
+>>         }
+>>         id_entry++;
+>>     }
+>>
+>>     return 0;
+>> }
+>>
+>> Or maybe use some of the unused bits in the dfl header to add a second
+>> vendor-like id and change existing matcher to look feature_id and
+>> vendor_like_id.
+>>
+>> Tom
+>>
+>>
+>>
+>> On 7/14/20 10:38 PM, Xu Yilun wrote:
+>>> This patchset makes it possible to develop independent driver modules
+>>> for DFL private features. It also helps to leverage existing kernel
+>>> drivers to enable some IP blocks in DFL.
+>>>
+>>> Xu Yilun (2):
+>>>   fpga: dfl: map feature mmio resources in their own feature drivers
+>>>   fpga: dfl: create a dfl bus type to support DFL devices
+>>>
+>>>  Documentation/ABI/testing/sysfs-bus-dfl |  15 ++
+>>>  drivers/fpga/dfl-pci.c                  |  21 +-
+>>>  drivers/fpga/dfl.c                      | 435 +++++++++++++++++++++++++++-----
+>>>  drivers/fpga/dfl.h                      |  91 ++++++-
+>>>  4 files changed, 492 insertions(+), 70 deletions(-)
+>>>  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+>>>
 
