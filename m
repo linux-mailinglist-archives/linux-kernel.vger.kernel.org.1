@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD80F223DB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAE1223DA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgGQOGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54154 "EHLO mail.kernel.org"
+        id S1727058AbgGQOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:06:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbgGQOGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:06:04 -0400
+        id S1726852AbgGQOGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:06:05 -0400
 Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DC9522BEB;
-        Fri, 17 Jul 2020 14:06:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 123712067D;
+        Fri, 17 Jul 2020 14:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594994763;
-        bh=Kn5+0H4zt1qLLnHxyowSOCVs51Y7nDbCOEsyxfENm34=;
+        s=default; t=1594994765;
+        bh=MGr7hTBgNYBC2Wa2mKAhtZR1WrZqEEp+LklgqOmbrwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3LXclembE3geOajgRPe2bgJ1vI7KdFZitOa50VzU1vBnDeXxn+DUYuGoegrjfFvJ
-         MkyDrNWkNNcc/DnUFVfGHtd1LFpN6cVyBS3jZA48tTSzxQ8Iw2makMwgtenHE5Y4PP
-         BQt5yfZoS0nAi7TQPwuYkCTbi+G/LEOODMaBHYQs=
+        b=0PnsJ9KhZ5sQFqjWXQ/baN2TdPkjaRri6254CIjMqhx5pxdZIXwrWfszq3Qolt+J+
+         ZHxL/Xj9sSK3fmRYThbaJ+0ne9Z+6wZ9kBBZHSvUKLB/czvJ1kf/S4KXe+FBkgoMbV
+         KaoO8cz0XZEtKkc+VN9kda+X0tj4F/QumEiANoGI=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 04/12] timer: Move trigger_dyntick_cpu() to enqueue_timer()
-Date:   Fri, 17 Jul 2020 16:05:43 +0200
-Message-Id: <20200717140551.29076-5-frederic@kernel.org>
+Subject: [PATCH 05/12] timer: Add comments about calc_index() ceiling work
+Date:   Fri, 17 Jul 2020 16:05:44 +0200
+Message-Id: <20200717140551.29076-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200717140551.29076-1-frederic@kernel.org>
 References: <20200717140551.29076-1-frederic@kernel.org>
@@ -43,111 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consolidate the code by calling trigger_dyntick_cpu() from
-enqueue_timer() instead of calling it from all its callers.
+calc_index() adds 1 unit of the level granularity to the expiry passed
+in parameter to ensure that the timer doesn't expire too early. Add a
+comment to explain that and the resulting layout in the wheel.
 
+Most-of-the-patch-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juri Lelli <juri.lelli@redhat.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
 Cc: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/time/timer.c | 61 +++++++++++++++++++--------------------------
- 1 file changed, 25 insertions(+), 36 deletions(-)
+ kernel/time/timer.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index a7a3cf737411..2af08a169564 100644
+index 2af08a169564..af1c08b0b168 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -533,30 +533,6 @@ static int calc_wheel_index(unsigned long expires, unsigned long clk,
- 	return idx;
- }
+@@ -156,7 +156,8 @@ EXPORT_SYMBOL(jiffies_64);
  
--/*
-- * Enqueue the timer into the hash bucket, mark it pending in
-- * the bitmap and store the index in the timer flags.
-- */
--static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
--			  unsigned int idx)
--{
--	hlist_add_head(&timer->entry, base->vectors + idx);
--	__set_bit(idx, base->pending_map);
--	timer_set_idx(timer, idx);
--
--	trace_timer_start(timer, timer->expires, timer->flags);
--}
--
--static void
--__internal_add_timer(struct timer_base *base, struct timer_list *timer,
--		     unsigned long *bucket_expiry)
--{
--	unsigned int idx;
--
--	idx = calc_wheel_index(timer->expires, base->clk, bucket_expiry);
--	enqueue_timer(base, timer, idx);
--}
--
- static void
- trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
- 		    unsigned long bucket_expiry)
-@@ -598,15 +574,31 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
- 	wake_up_nohz_cpu(base->cpu);
- }
+ /*
+  * The time start value for each level to select the bucket at enqueue
+- * time.
++ * time. We start from the last possible delta of the previous level
++ * so that we can later add an extra LVL_GRAN(n) to n (see calc_index()).
+  */
+ #define LVL_START(n)	((LVL_SIZE - 1) << (((n) - 1) * LVL_CLK_SHIFT))
  
--static void
--internal_add_timer(struct timer_base *base, struct timer_list *timer)
-+/*
-+ * Enqueue the timer into the hash bucket, mark it pending in
-+ * the bitmap, store the index in the timer flags then wake up
-+ * the target CPU if needed.
-+ */
-+static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
-+			  unsigned int idx, unsigned long bucket_expiry)
+@@ -490,6 +491,15 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
+ static inline unsigned calc_index(unsigned long expires, unsigned lvl,
+ 				  unsigned long *bucket_expiry)
  {
--	unsigned long bucket_expiry;
-+	hlist_add_head(&timer->entry, base->vectors + idx);
-+	__set_bit(idx, base->pending_map);
-+	timer_set_idx(timer, idx);
- 
--	__internal_add_timer(base, timer, &bucket_expiry);
-+	trace_timer_start(timer, timer->expires, timer->flags);
- 	trigger_dyntick_cpu(base, timer, bucket_expiry);
- }
- 
-+static void internal_add_timer(struct timer_base *base, struct timer_list *timer)
-+{
-+	unsigned long bucket_expiry;
-+	unsigned int idx;
 +
-+	idx = calc_wheel_index(timer->expires, base->clk, &bucket_expiry);
-+	enqueue_timer(base, timer, idx, bucket_expiry);
-+}
-+
- #ifdef CONFIG_DEBUG_OBJECTS_TIMERS
- 
- static struct debug_obj_descr timer_debug_descr;
-@@ -1057,16 +1049,13 @@ __mod_timer(struct timer_list *timer, unsigned long expires, unsigned int option
- 	/*
- 	 * If 'idx' was calculated above and the base time did not advance
- 	 * between calculating 'idx' and possibly switching the base, only
--	 * enqueue_timer() and trigger_dyntick_cpu() is required. Otherwise
--	 * we need to (re)calculate the wheel index via
--	 * internal_add_timer().
-+	 * enqueue_timer() is required. Otherwise we need to (re)calculate
-+	 * the wheel index via internal_add_timer().
- 	 */
--	if (idx != UINT_MAX && clk == base->clk) {
--		enqueue_timer(base, timer, idx);
--		trigger_dyntick_cpu(base, timer, bucket_expiry);
--	} else {
-+	if (idx != UINT_MAX && clk == base->clk)
-+		enqueue_timer(base, timer, idx, bucket_expiry);
-+	else
- 		internal_add_timer(base, timer);
--	}
- 
- out_unlock:
- 	raw_spin_unlock_irqrestore(&base->lock, flags);
++	/*
++	 * The timer wheel has to guarantee that a timer does not fire
++	 * early. Early expiry can happen due to:
++	 * - Timer is armed at the edge of a tick
++	 * - Truncation of the expiry time in the outer wheel levels
++	 *
++	 * Round up with level granularity to prevent this.
++	 */
+ 	expires = (expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl);
+ 	*bucket_expiry = expires << LVL_SHIFT(lvl);
+ 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
 -- 
 2.26.2
 
