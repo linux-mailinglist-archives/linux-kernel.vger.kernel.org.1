@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD07223DC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7C2223DD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgGQOH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:07:57 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:58833 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727975AbgGQOHw (ORCPT
+        id S1726580AbgGQOK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:10:27 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:6599 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgGQOK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:07:52 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mbiak-1kZMLb3fzy-00dFCu for <linux-kernel@vger.kernel.org>; Fri, 17 Jul
- 2020 16:07:50 +0200
-Received: by mail-qk1-f170.google.com with SMTP id b4so8808454qkn.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:07:49 -0700 (PDT)
-X-Gm-Message-State: AOAM530sDwi8daHIHfRTEV11GOVGIn3vCDv5m632C1v1gg62NFZuuTof
-        m4r5lsxo8fI4oNV/OZ9CYhnE3HhG/EfjqwVUEOs=
-X-Google-Smtp-Source: ABdhPJwXFbLL8bewhD78mAte99R3/cO1757O1a+iHJWyX5YrwgzzCXRmHIkiOof65wN7r0/W/HCByNL66FBwuEo+RA8=
-X-Received: by 2002:a37:9004:: with SMTP id s4mr671834qkd.286.1594994868740;
- Fri, 17 Jul 2020 07:07:48 -0700 (PDT)
+        Fri, 17 Jul 2020 10:10:26 -0400
+X-Originating-IP: 90.65.108.121
+Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 93190240013;
+        Fri, 17 Jul 2020 14:10:23 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 16:10:23 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH 16/25] arch: arm: mach-at91: pm: Move prototypes to
+ mutually included header
+Message-ID: <20200717141023.GS3428@piout.net>
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-17-lee.jones@linaro.org>
+ <20200713200244.GA23553@piout.net>
+ <20200716134231.GP3165313@dell>
 MIME-Version: 1.0
-References: <20200717140405.17905-1-sudeep.holla@arm.com>
-In-Reply-To: <20200717140405.17905-1-sudeep.holla@arm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Jul 2020 16:07:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2dpjx5MJLurjFC3UCTmOA8VPx0XBVtg+YRz09xxztNLw@mail.gmail.com>
-Message-ID: <CAK8P3a2dpjx5MJLurjFC3UCTmOA8VPx0XBVtg+YRz09xxztNLw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Use NULL instead of integer 0 for
- rate pointer
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:U2gfMsPxtEsUB7duxwCqNup3eRdfb+sEbHD2bg0dKlv/ITV1W5t
- cp7KayNBwyCMqNCfWU38XU9nj0GmyOTxVllW+5QI9+Wihy1LMtwNNg/HiLrMAQa25ANLd2z
- g6qbhHyBLTqfgVrcZ0Ul8OzPx7XveCr66L2u3J3RTvEDdYp+v2qB/ExFcqhzzch9StWgONM
- ADph4K5bHK83bgaMIxgjg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QxIQXya9pQA=:pCjwDEaef+Uliw1bvJfL/y
- 4W8Qng/ENRPmsa0C0lLc7T4UR09mNyfTnWWhkVKtUvnkSY6KbA3IJ04JmR2O/p1XOtVSi5z3m
- Za9oaQd5QQkK0gE0/PXxgYQ50DtVciTj9bLABqKsPpPocOyOlfbm0GZGk3gWY9+ttBmzeWX+s
- lms8JYg/26KBBLefF9wPn0I1Pm7BK3kJDG9Cav4xHJD5EZJ2jc58RE1pXOtw1KAZ4ANOEnSE+
- RQP/9rq79eQ1SG1KSrEh+JUEORlxkcHwGxeb788fdWFb0M712xWIeO6KSuMsjmjz48CJGNiut
- ZLEcjzMr2XUt4pCJ5RsmAQ2hIA+qpOpHe+rP4Y16NKsL14Ka/9Idy3SfZhAH8p+M5XpkrHSdi
- tGSlatoF7/k8GavcdXIEIV122J/neCrNo6N3T7NmsqXkph9vAEVzPjfR9IQNkg6n7x/+RxuaG
- dOW/nnuj3xrqRFKahISCy/uTrK0VZkBJgtJugtr/jA+RBanLX5mVBwjjc/OxCtj4SnNNSwtXe
- oFij7Jw92VJjjNQeRBBbCW2VwIt4zOHQLVfLKFKYOj0IXydo/X710+M49arDbmRurP13xPkKS
- 39xc4QXmS11ql3oTbXrWqNY2/Lxb0igB7hBz1voVSkbiA24dHXZLNQjvuBeaAC0fvlD9LESym
- dZ0syyMjfLW7vlIZkq622APQW+Z5wY7F617SrRb1XcgrfW1S09/0e1RcpPF2abJ0iBzE2H7yk
- paeOmFvAm8QoG+AxP05qCp8dnqnxvnW6BeXMrEcz3oL2VRvVi3CkNKvHux2fJPLvkG1ct0+8d
- MnP1jqpEuphNSQKHdEOcF+6icVMpfwVGj3MJGgUdYNJIiXIgiTcb0VWLkCtgNkbbMW/lgq45Z
- +Kz5bh+hS2jEWtNMMooDNS6myN9EIoDcGjykuXr7hrmanxrEsYOOb9MDuWu/jjUIjDat6+Ik+
- ZcFNPFSj8cF6+Obx9yx/htU1nF6feCY7vG6EqkLMxXv/LsRzbAnRZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716134231.GP3165313@dell>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 4:04 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> Kbuild test robot reports the following sparse warning:
->
-> drivers/firmware/arm_scmi/clock.c:142:21:
->         sparse: Using plain integer as NULL pointer
->
-> Use NULL pointer instead of integer 0 for rate pointer and fix the
-> warning.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/firmware/arm_scmi/clock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Hi Arnd,
->
-> Kbuild test robot reported this warning from the soc tree. Can you apply
-> this directly or do you prefer pull request. Let me know.
+On 16/07/2020 14:42:31+0100, Lee Jones wrote:
+> > > diff --git a/drivers/pinctrl/pinctrl-at91.c b/drivers/pinctrl/pinctrl-at91.c
+> > > index 9c52130876597..37997e5ab0538 100644
+> > > --- a/drivers/pinctrl/pinctrl-at91.c
+> > > +++ b/drivers/pinctrl/pinctrl-at91.c
+> > > @@ -22,6 +22,7 @@
+> > >  #include <linux/pinctrl/pinmux.h>
+> > >  /* Since we request GPIOs from ourself */
+> > >  #include <linux/pinctrl/consumer.h>
+> > > +#include <linux/platform_data/atmel.h>
+> > >  
+> > >  #include "pinctrl-at91.h"
+> > >  #include "core.h"
+> > > diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
+> > > index 99e6069c5fd89..666ef482ea8c0 100644
+> > > --- a/include/linux/platform_data/atmel.h
+> > > +++ b/include/linux/platform_data/atmel.h
+> > 
+> > The plan is to get rid of that file so you should probably find a better
+> > location.
+> 
+> Suggestions welcome.
+> 
 
-Applied, thanks!
+Something like include/soc/at91/pm.h so we can also move
+at91_suspend_entering_slow_clock there and then kill
+platform_data/atmel.h.
 
-      Arnd
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
