@@ -2,233 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901B3223E6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC68223E7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgGQOmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:42:20 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9239 "EHLO mga17.intel.com"
+        id S1727847AbgGQOnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbgGQOmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:42:20 -0400
-IronPort-SDR: tlQ8TSZjoTX6P9fNa/erHDKyu95WXQ6Ras4b8PfLP3+nK1ylAkQAHod8CYR2m16g5GJEcc7iHC
- 9jBe3q302QvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="129680401"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="129680401"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:42:16 -0700
-IronPort-SDR: DBII3F3zmJIXiSQ+6TC0/wqm0d50mN903eGyto/MAemBKdVlN0nZ3lylaKfBBsyI7WPYKHrvbU
- TfMQblqpGSjQ==
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="460866859"
-Received: from enaessen-mobl1.ger.corp.intel.com ([10.251.86.9])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:42:13 -0700
-Message-ID: <fead5227d71a47b80ae406e65b8c3a9624ffa640.camel@linux.intel.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Pass shmem address to SMCCC call
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Peng Fan <peng.fan@nxp.com>,
-        "Paul J. Murphy" <paul.j.murphy@linux.intel.com>,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Date:   Fri, 17 Jul 2020 15:42:09 +0100
-In-Reply-To: <faa53c11-3c72-9b9b-85ad-9d234f373b4d@gmail.com>
-References: <20200715165518.57558-1-daniele.alessandrelli@linux.intel.com>
-         <5f74221b-aec7-7715-19d1-5cbb406f1bdc@gmail.com>
-         <b4d22e4a5154a9ad4c224eb2dfaeb61ed1680834.camel@linux.intel.com>
-         <faa53c11-3c72-9b9b-85ad-9d234f373b4d@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1726104AbgGQOnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:43:20 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41B7E22B4D;
+        Fri, 17 Jul 2020 14:43:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594996999;
+        bh=kfIT860OGYjpsG+nnhvbf8g/TLaZHhOpaJXIoOPMX4k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CtmQXYemaxq5EZM3qammzH9eXI+H3tIAZbwTf1FIOvkKux2il9kBx8+m0GP3sZGVJ
+         yiyiFCcl0C04iZ8omtucXb3T4HxWEcBwG9Vq94CCPlfzmb8UATfR9ys9FrqWQCz0aP
+         tdactR5dpsJmLPN0Y4uFVqZbHsv8hZ4i3nc6+Sgk=
+Date:   Fri, 17 Jul 2020 10:43:18 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lyude Paul <lyude@redhat.com>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Patrick Volkerding <volkerdi@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        stable@vger.kernel.org
+Subject: Re: nouveau regression with 5.7 caused by "PCI/PM: Assume ports
+ without DLL Link Active train links in 100 ms"
+Message-ID: <20200717144318.GP2722994@sasha-vm>
+References: <CACO55tuA+XMgv=GREf178NzTLTHri4kyD5mJjKuDpKxExauvVg@mail.gmail.com>
+ <20200716235440.GA675421@bjorn-Precision-5520>
+ <CACO55tuVJHjEbsW657ToczN++_iehXA8pimPAkzc=NOnx4Ztnw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CACO55tuVJHjEbsW657ToczN++_iehXA8pimPAkzc=NOnx4Ztnw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-07-16 at 12:57 -0700, Florian Fainelli wrote:
-> 
-> On 7/16/2020 7:13 AM, Daniele Alessandrelli wrote:
-> > Hi Florian,
-> > 
-> > Thanks for you feedback.
-> > 
-> > On Wed, 2020-07-15 at 15:43 -0700, Florian Fainelli wrote:
-> > > On 7/15/2020 9:55 AM, Daniele Alessandrelli wrote:
-> > > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > > > 
-> > > > Currently, when SMC/HVC is used as transport, the base address
-> > > > of
-> > > > the
-> > > > shared memory used for communication is not passed to the SMCCC
-> > > > call.
-> > > > This means that such an address must be hard-coded into the
-> > > > bootloader.
-> > > > 
-> > > > In order to increase flexibility and allow the memory layout to
-> > > > be
-> > > > changed without modifying the bootloader, this patch adds the
-> > > > shared
-> > > > memory base address to the a1 argument of the SMCCC call.
-> > > > 
-> > > > On the Secure Monitor side, the service call implementation can
-> > > > therefore read the a1 argument in order to know the location of
-> > > > the
-> > > > shared memory to use. This change is backward compatible to
-> > > > existing
-> > > > service call implementations as long as they don't check for a1
-> > > > to
-> > > > be
-> > > > zero.
-> > > 
-> > > resource_size_t being defined after phys_addr_t, its size is
-> > > different
-> > > between 32-bit, 32-bit with PAE and 64-bit so it would probably
-> > > make
-> > > more sense to define an physical address alignment, or maybe an
-> > > address
-> > > that is in multiple of 4KBytes so you can address up to 36-bits
-> > > of
-> > > physical address even on a 32-bit only system?
-> > 
-> > I see your point. After a quick look, I think that, practically,
-> > the
-> > issue is with ARM32 LPAE addresses, for which phys_addr_t is a u64.
-> > So,
-> > basically, for AArch32 systems with LPAE the 64-bit shmem_paddr
-> > gets
-> > truncated to 32-bit when it's passed to the SMC32/HVC32 call.
-> > 
-> > To solve that, I would prefer splitting the address between two SMC
-> > parameters (a1 = addr_lo, a2 = addr_hi), instead of imposing an
-> > arbitrary alignment. Would that be reasonable?
-> 
-> The low/high part would only be relevant on a 32-bit LPAE platform
-> which
-> is probably a corner case, I would just pass the shmem_paddr / 4096
-> since that is the smallest granule size and alignment possible and it
-> still allows you to map up to 36-bits of physical address, which is
-> the
-> maximum that the long descriptor in LPAE can support. For 64-bit we
-> have
-> no such problems since we have the full register width.
-> 
-> > > What discovery mechanism does the OS have that the specified
-> > > address
-> > > within the SMCCC call has been accepted by the firmware given the
-> > > return
-> > > value of that SMCCC call does not appear to be used or checked?
-> > > Do we
-> > > just expect a timeout initializing the SCMI subsystem?
-> > 
-> > The return code is actually checked at the end of the function:
-> > https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/firmware/arm_scmi/smc.c#L118
-> > 
-> > But in the meantime scmi_rx_callback() has already been called. Not
-> > sure if that's intentional or a possible bug.
-> > 
-> > > Given that the kernel must somehow reserve this memory as a
-> > > shared
-> > > memory area for obvious reasons, and the trusted firmware must
-> > > also
-> > > ensure it treats this memory region with specific permissions in
-> > > its
-> > > translation regime, does it really make sense to give that much
-> > > flexibility?
-> > 
-> > Well, the trusted firmware might reserve a bigger region to be used
-> > for
-> > other service as well. In other words, the MMU of TF-A is not
-> > necessary
-> > specifically set up for this region, but, possibly, for a bigger
-> > general shared region.
-> 
-> But presumably the Linux shared memory area should be mapped in a
-> slightly different way than
-> 
-> > Passing the SCMI shmem to the SMC call allows the shmem to be moved
-> > within such bigger shared memory without modifying the trusted
-> > firmware.
-> > 
-> > > If your boot loader has FDT patching capability, maybe it can
-> > > also do
-> > > a
-> > > SMC call to provide the address to your trusted firmware, prior
-> > > to
-> > > loading the Linux kernel, and then they both agree, prior to boot
-> > > about
-> > > the shared memory address?
-> > 
-> > Yes, that's a possible solution, but it looks more complicated to
-> > me,
-> > since it adds an additional component (the boot loader) to the
-> > equation, while the goal of this patch was to reduce the coupling
-> > between components (namely the DT/kernel and the trusted firmware).
-> > 
-> > I guess my question is: if we fix the handling of LPAE addresses
-> > and
-> > the SMC return code, what is the drawback of having the shmem
-> > address
-> > passed to the SMC?
-> 
-> My only concern is that if somehow Linux gets assigned a shared
-> memory
-> range that is completely outside of what the trusted firmware has
-> already mapped, or is capable of addressing, or any combination
-> thereof,
-> it could be challenging to debug what is going on, especially if
-> INVALID
-> PARAMETER must not be returned (assuming this is to avoid Linux
-> discovering where other shared memory areas pertaining to the
-> firmware
-> reside?).
-> 
-> The other concern I have is that we are not documenting the various
-> SMCCC calling conventions, soon enough it will be come out of
-> control,
-> and we are already allowing people to define their own function IDs
-> and
-> parameters to call into the trusted firmware. This sounds like
-> something
-> that is so basic that it should be standardized from the top, by ARM.
+On Fri, Jul 17, 2020 at 02:43:52AM +0200, Karol Herbst wrote:
+>On Fri, Jul 17, 2020 at 1:54 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>>
+>> [+cc Sasha -- stable kernel regression]
+>> [+cc Patrick, Kai-Heng, LKML]
+>>
+>> On Fri, Jul 17, 2020 at 12:10:39AM +0200, Karol Herbst wrote:
+>> > On Tue, Jul 7, 2020 at 9:30 PM Karol Herbst <kherbst@redhat.com> wrote:
+>> > >
+>> > > Hi everybody,
+>> > >
+>> > > with the mentioned commit Nouveau isn't able to load firmware onto the
+>> > > GPU on one of my systems here. Even though the issue doesn't always
+>> > > happen I am quite confident this is the commit breaking it.
+>> > >
+>> > > I am still digging into the issue and trying to figure out what
+>> > > exactly breaks, but it shows up in different ways. Either we are not
+>> > > able to boot the engines on the GPU or the GPU becomes unresponsive.
+>> > > Btw, this is also a system where our runtime power management issue
+>> > > shows up, so maybe there is indeed something funky with the bridge
+>> > > controller.
+>> > >
+>> > > Just pinging you in case you have an idea on how this could break Nouveau
+>> > >
+>> > > most of the times it shows up like this:
+>> > > nouveau 0000:01:00.0: acr: AHESASC binary failed
+>> > >
+>> > > Sometimes it works at boot and fails at runtime resuming with random
+>> > > faults. So I will be investigating a bit more, but yeah... I am super
+>> > > sure the commit triggered this issue, no idea if it actually causes
+>> > > it.
+>> >
+>> > so yeah.. I reverted that locally and never ran into issues again.
+>> > Still valid on latest 5.7. So can we get this reverted or properly
+>> > fixed? This breaks runtime pm for us on at least some hardware.
+>>
+>> Yeah, that stinks.  We had another similar report from Patrick:
+>>
+>>   https://lore.kernel.org/r/CAErSpo5sTeK_my1dEhWp7aHD0xOp87+oHYWkTjbL7ALgDbXo-Q@mail.gmail.com
+>>
+>> Apparently the problem is ec411e02b7a2 ("PCI/PM: Assume ports without
+>> DLL Link Active train links in 100 ms"), which Patrick found was
+>> backported to v5.4.49 as 828b192c57e8, and you found was backported to
+>> v5.7.6 as afaff825e3a4.
+>>
+>> Oddly, Patrick reported that v5.7.7 worked correctly, even though it
+>> still contains afaff825e3a4.
+>>
+>> I guess in the absence of any other clues we'll have to revert it.
+>> I hate to do that because that means we'll have slow resume of
+>> Thunderbolt-connected devices again, but that's better than having
+>> GPUs completely broken.
+>>
+>> Could you and Patrick open bugzilla.kernel.org reports, attach dmesg
+>> logs and "sudo lspci -vv" output, and add the URLs to Kai-Heng's
+>> original report at https://bugzilla.kernel.org/show_bug.cgi?id=206837
+>> and to this thread?
+>>
+>> There must be a way to fix the slow resume problem without breaking
+>> the GPUs.
+>>
+>
+>I wouldn't be surprised if this is related to the Intel bridge we
+>check against for Nouveau.. I still have to check on another laptop
+>with the same bridge our workaround was required as well but wouldn't
+>be surprised if it shows the same problem. Will get you the
+>information from both systems tomorrow then.
 
-I agree. Having this standardized by ARM is probably what we really
-need.
+I take it that ec411e02b7a2 will be reverted upstream?
 
-> 
-> > Anyway, I should have mentioned this in the commit message (sorry
-> > for
-> > not doing so), but I submitted this patch because initial feedback
-> > from
-> > Sudeep was positive [1]; but if there is no consensus around it I'm
-> > fine with dropping it.
-> > 
-> > [1] https://lore.kernel.org/lkml/20200710075931.GB1189@bogus/
-> 
-> My review is by no means authoritative however in deploying SCMI on
-> our
-> Broadcom STB platforms some experience was gained in the process
-> which
-> is how it piqued my interest. Thanks for providing more background to
-> this patch, this does help.
-
-Just to clarify, your review is very welcome and much appreciated.
-Indeed, feedback from engineers with previous experience like yours is
-really helpful. With the link above I didn't mean to dismiss your
-feedback, but only to provide some background / context.
-
-> 
-> We have opted for a solution where the boot loader knows about all
-> possible reserved regions prior to booting/loading the trusted
-> firmware
-> as well as the kernel, therefore it can pass that information to both
-> and we never really had a situation where the two need to evolve in
-> an
-> uncoordinated way.
-
+-- 
+Thanks,
+Sasha
