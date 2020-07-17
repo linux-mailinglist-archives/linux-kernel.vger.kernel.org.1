@@ -2,205 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE0C224009
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C03E22401C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgGQQAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgGQQAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:00:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8341FC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:00:06 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595001603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzvJduESG71leNpuprS+WOQimkS8tJotSJUZ4FgDv74=;
-        b=Pt9jOmq5ExXSqGlkFzHTQErKR0xsRL6t4cAywgJsCx5iVWr+yOEEX7p4xO38U/fIkdTuC7
-        /lMBvhRk90TPBTo6HYCKFWClqMKT425tN3er680DVBLLk+K9g0K5TxiwxmHbBpEo0m03I0
-        9aoPHvlhODskjHrH/VHruJJ0zziExMwj+DEWU3OfvnWL27YH89e2AVQllmcGrCN0K0ceMM
-        nqZVN9AfY7VfDVpFzj1mK/FlwsZC4Tm/KBPPyHEyPP4iA93b8l0/RGyTCzHaAhuWqwe+qI
-        LVJ3660GtRk+1a0hB0p95GTNwMsXwvhoalnlZ+ImgIBxtefRq2mPH0pq6q/Utg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595001603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzvJduESG71leNpuprS+WOQimkS8tJotSJUZ4FgDv74=;
-        b=03cW4eleU+YLKC/yzkUSSRX0uecOZ2bicPWKgGC4yqlpmknQ9NDokj1e6zWGis/colRvrj
-        2QqaM61qU+4uDdDQ==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Ben Herrenschmidt <benh@amazon.com>,
-        Ali Saidi <alisaidi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH V2] genirq/affinity: Handle affinity setting on inactive interrupts correctly
-In-Reply-To: <87k0z2s2q3.fsf@nanos.tec.linutronix.de>
-References: <87k0z2s2q3.fsf@nanos.tec.linutronix.de>
-Date:   Fri, 17 Jul 2020 18:00:02 +0200
-Message-ID: <877dv2rv25.fsf@nanos.tec.linutronix.de>
+        id S1727828AbgGQQB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:01:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726344AbgGQQA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:00:58 -0400
+Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.194.72])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C5D3204EA;
+        Fri, 17 Jul 2020 16:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595001658;
+        bh=HCMMe4fMnT5S7T6Y9hA0e8QN+UlZn1sl4i+208DYvE8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S53KSg/dyvjJKWabCVGGpfh7QsjKPd9eC320JUlH221vVIoge3owNoT+VBdWR1Sio
+         epLG1hlpJ7tO2DbT2Hpdu+NNG8lp8MTqfR4GGUTOSuOz7DbUx+oMLKJ0p3tEsw9xPT
+         L8Hw143Fu01YyMZWYIgNJRolKXsFKAhKGR2Nyw/E=
+Received: by wens.tw (Postfix, from userid 1000)
+        id 0CE4B5FC63; Sat, 18 Jul 2020 00:00:55 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] arm64: dts: allwinner: h5: Enable CPU DVFS (cpufreq)
+Date:   Sat, 18 Jul 2020 00:00:45 +0800
+Message-Id: <20200717160053.31191-1-wens@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting interrupt affinity on inactive interrupts is inconsistent when
-hierarchical irq domains are enabled. The core code should just store the
-affinity and not call into the irq chip driver for inactive interrupts
-because the chip drivers may not be in a state to handle such requests.
+From: Chen-Yu Tsai <wens@csie.org>
 
-X86 has a hacky workaround for that but all other irq chips have not which
-causes problems e.g. on GIC V3 ITS.
+Hi everyone,
 
-Instead of adding more ugly hacks all over the place, solve the problem in
-the core code. If the affinity is set on an inactive interrupt then:
+This is v2 of my Allwinner H5 SoC cpufreq support series from way
+back [1]. The series enables DVFS for the CPU cores (aka cpufreq)
+on the Allwinner H5 SoC. The OPP table was taken from Armbian, with
+minor tweaks to the maximum voltage to account for slightly increased
+voltage on some of the boards.
 
-    - Store it in the irq descriptors affinity mask
-    - Update the effective affinity to reflect that so user space has
-      a consistent view
-    - Don't call into the irq chip driver
+In this version, the OPP table and tie in to the CPU cores has been
+split out into a separate file, like what was done for the H6. The
+patches adding CPU regulator supplies for all the boards that I don't
+have have been removed. The series now only enables cpufreq for Libre
+Computer ALL-H3-CC and ALL-H5-CC, and Bananapi M2+ v1.2.
 
-This is the core equivalent of the X86 workaround and works correctly
-because the affinity setting is established in the irq chip when the
-interrupt is activated later on.
+For the original Bananapi M2+, if I add the fixed regulator with the
+enable pin, it ends up causing some sort of glitch or lock up on the
+v1.2, which includes the original dts file. Since I haven't been able
+to sort it out yet, I've left it out for now.
 
-Note, that this is only effective when hierarchical irq domains are enabled
-by the architecture. Doing it unconditionally would break legacy irq chip
-implementations.
+Patch 1 assigns the CPU regulator supply to all the CPU cores on the
+Libre Computer ALL-H3-CC.
 
-For hierarchial irq domains this works correctly as none of the drivers can
-have a dependency on affinity setting in inactive state by design.
+Patch 2 assigns the CPU regulator supply to all the CPU cores on the
+Bananapi M2+ v1.2.
 
-Remove the X86 workaround as it is not longer required.
+Patch 3 fixes the voltages specified for the GPIO-controlled regulator
+on the Bananapi M2+ v1.2. The voltages are slightly higher than what
+was originally written.
 
-Fixes: 02edee152d6e ("x86/apic/vector: Ignore set_affinity call for inactive interrupts")
-Reported-by: Ali Saidi <alisaidi@amazon.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200529015501.15771-1-alisaidi@amazon.com
----
-V2: Fix the fallout for CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK=n (0day)
----
- arch/x86/kernel/apic/vector.c |   22 +++++-----------------
- kernel/irq/manage.c           |   37 +++++++++++++++++++++++++++++++++++--
- 2 files changed, 40 insertions(+), 19 deletions(-)
+Patch 4 ties the CPU clock to the CPU cores.
 
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -446,12 +446,10 @@ static int x86_vector_activate(struct ir
- 	trace_vector_activate(irqd->irq, apicd->is_managed,
- 			      apicd->can_reserve, reserve);
- 
--	/* Nothing to do for fixed assigned vectors */
--	if (!apicd->can_reserve && !apicd->is_managed)
--		return 0;
--
- 	raw_spin_lock_irqsave(&vector_lock, flags);
--	if (reserve || irqd_is_managed_and_shutdown(irqd))
-+	if (!apicd->can_reserve && !apicd->is_managed)
-+		assign_irq_vector_any_locked(irqd);
-+	else if (reserve || irqd_is_managed_and_shutdown(irqd))
- 		vector_assign_managed_shutdown(irqd);
- 	else if (apicd->is_managed)
- 		ret = activate_managed(irqd);
-@@ -775,20 +773,10 @@ void lapic_offline(void)
- static int apic_set_affinity(struct irq_data *irqd,
- 			     const struct cpumask *dest, bool force)
- {
--	struct apic_chip_data *apicd = apic_chip_data(irqd);
- 	int err;
- 
--	/*
--	 * Core code can call here for inactive interrupts. For inactive
--	 * interrupts which use managed or reservation mode there is no
--	 * point in going through the vector assignment right now as the
--	 * activation will assign a vector which fits the destination
--	 * cpumask. Let the core code store the destination mask and be
--	 * done with it.
--	 */
--	if (!irqd_is_activated(irqd) &&
--	    (apicd->is_managed || apicd->can_reserve))
--		return IRQ_SET_MASK_OK;
-+	if (WARN_ON_ONCE(!irqd_is_activated(irqd)))
-+		return -EIO;
- 
- 	raw_spin_lock(&vector_lock);
- 	cpumask_and(vector_searchmask, dest, cpu_online_mask);
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -195,9 +195,9 @@ void irq_set_thread_affinity(struct irq_
- 			set_bit(IRQTF_AFFINITY, &action->thread_flags);
- }
- 
-+#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- static void irq_validate_effective_affinity(struct irq_data *data)
- {
--#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 	const struct cpumask *m = irq_data_get_effective_affinity_mask(data);
- 	struct irq_chip *chip = irq_data_get_irq_chip(data);
- 
-@@ -205,9 +205,19 @@ static void irq_validate_effective_affin
- 		return;
- 	pr_warn_once("irq_chip %s did not update eff. affinity mask of irq %u\n",
- 		     chip->name, data->irq);
--#endif
- }
- 
-+static inline void irq_init_effective_affinity(struct irq_data *data,
-+					       const struct cpumask *mask)
-+{
-+	cpumask_copy(irq_data_get_effective_affinity_mask(data), mask);
-+}
-+#else
-+static inline void irq_validate_effective_affinity(struct irq_data *data) { }
-+static inline void irq_init_effective_affinity(struct irq_data *data,
-+					       const struct cpumask *mask) { }
-+#endif
-+
- int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
- 			bool force)
- {
-@@ -304,6 +314,26 @@ static int irq_try_set_affinity(struct i
- 	return ret;
- }
- 
-+static bool irq_set_affinity_deactivated(struct irq_data *data,
-+					 const struct cpumask *mask, bool force)
-+{
-+	struct irq_desc *desc = irq_data_to_desc(data);
-+
-+	/*
-+	 * If the interrupt is not yet activated, just store the affinity
-+	 * mask and do not call the chip driver at all. On activation the
-+	 * driver has to make sure anyway that the interrupt is in a
-+	 * useable state so startup works.
-+	 */
-+	if (!IS_ENABLED(CONFIG_IRQ_DOMAIN_HIERARCHY) || irqd_is_activated(data))
-+		return false;
-+
-+	cpumask_copy(desc->irq_common_data.affinity, mask);
-+	irq_init_effective_affinity(data, mask);
-+	irqd_set(data, IRQD_AFFINITY_SET);
-+	return true;
-+}
-+
- int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,
- 			    bool force)
- {
-@@ -314,6 +344,9 @@ int irq_set_affinity_locked(struct irq_d
- 	if (!chip || !chip->irq_set_affinity)
- 		return -EINVAL;
- 
-+	if (irq_set_affinity_deactivated(data, mask, force))
-+		return 0;
-+
- 	if (irq_can_move_pcntxt(data) && !irqd_is_setaffinity_pending(data)) {
- 		ret = irq_try_set_affinity(data, mask, force);
- 	} else {
+Patch 5 adds trip points and cooling maps to the CPU thermal zones.
+
+Patch 6 adds the OPP table, based on the one from Armbian.
+
+Patch 7 hooks up the CPU regulator supply for the Libre Computer
+ALL-H3-CC H5 variant, and by extension, the ALL-H5-CC.
+
+Patch 8 hooks up the CPU regulator supply for the Bananapi M2+ v1.2.
+
+Changes since v1:
+
+  - Re-ordered patches
+  - Added patches to set regulator supply for all CPU cores
+  - Added thermal trip points and cooling maps
+  - OPP table and assignment split into separate file
+  - Added patches to tie in OPP table file for the boards I have
+
+Please have a look.
+
+
+Regards
+ChenYu
+
+
+[1] https://patchwork.kernel.org/cover/10787869/
+
+
+Chen-Yu Tsai (8):
+  ARM: dts: sunxi: libretech-all-h3-cc: Add regulator supply to all CPU
+    cores
+  ARM: dts: sunxi: bananapi-m2-plus-v1.2: Add regulator supply to all
+    CPU cores
+  ARM: dts: sunxi: bananapi-m2-plus-v1.2: Fix CPU supply voltages
+  arm64: dts: allwinner: h5: Add clock to CPU cores
+  arm64: dts: allwinner: h5: Add trip and cooling maps to CPU thermal
+    zones
+  arm64: dts: allwinner: h5: Add CPU Operating Performance Points table
+  arm64: dts: allwinner: h5: libretech-all-h3-cc: Tie in CPU OPPs
+  arm64: dts: allwinner: h5: bananapi-m2-plus-v1.2: Tie in CPU OPPs
+
+ .../boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi | 18 ++++-
+ .../boot/dts/sunxi-libretech-all-h3-cc.dtsi   | 12 +++
+ .../sun50i-h5-bananapi-m2-plus-v1.2.dts       |  1 +
+ .../boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi | 79 +++++++++++++++++++
+ .../sun50i-h5-libretech-all-h3-cc.dts         |  1 +
+ arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi  | 38 +++++++++
+ 6 files changed, 146 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
+
+-- 
+2.27.0
+
