@@ -2,77 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F92C22326F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6410D22328A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgGQEiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:38:08 -0400
-Received: from guitar.tcltek.co.il ([192.115.133.116]:32859 "EHLO
-        mx.tkos.co.il" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgGQEiI (ORCPT
+        id S1726720AbgGQEni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgGQEnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:38:08 -0400
-Received: from tarshish (unknown [10.0.8.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.tkos.co.il (Postfix) with ESMTPS id 3EE76440A64;
-        Fri, 17 Jul 2020 07:38:04 +0300 (IDT)
-Date:   Fri, 17 Jul 2020 07:38:02 +0300
-From:   Baruch Siach <baruch@tkos.co.il>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH][next] i2c: digicolor: Use fallthrough pseudo-keyword
-Message-ID: <20200717043802.uvorspihdh6cvby3@tarshish>
-References: <20200716220055.GA19603@embeddedor>
+        Fri, 17 Jul 2020 00:43:37 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BC6C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:43:36 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g67so6087035pgc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZS96AHkKsIz+9ewp6Tb9M00I6PYyw+DXgHrEqe3EDMs=;
+        b=hDvG+flSpEjtZ0hG1cnQW3jGKAhn8mwFZiG0ojsB0dQEdpJqbXl4iOSLPiHSNdNkC+
+         GCOsUMWjS4r8SVqtpZdiFxutX/KyypO49Sl0mqtDXHFHdVt+Jq/e86vnqk/iQKUPuzlW
+         q0lC6waAFjEUpQ9xHUe+qCQOW4gZ1frwLgn3VB9vQ5/JC3bmRj9RsfYbdbhz4/cVvuBC
+         nrdLaBls9h+RM4ZWqgmvUw77DZx35UtdnmLVhpj21dOblO7LwVDnPZS4u0DzPexg4J9x
+         KMprlL7LNMBUmWctKrJJlIpAtZor1VL/yV3MEV48nErMbjSamigOUZuftNPQKMRPzllR
+         9yeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZS96AHkKsIz+9ewp6Tb9M00I6PYyw+DXgHrEqe3EDMs=;
+        b=tVwkHrruHfUPzynyJ6ycQx0AmmukcxToxVRlsoRuBFfdnHRgUu397EpjP/QHdCvEsi
+         W0YbhYC+80/7kt98Be57gHipt7R9aP+fKvY6cDyrAnthvDjC1QAbyh2On5WYgMtY2iKw
+         hr3tcanegT9CNv5bFZ/gLkz8tHYt5zVMI9Fg76KEgGdbVrEb30IEpzbEm9ysACB+Wt5n
+         6Bg08GDmo3kyyADU+1fugKpBnxfKiKEdqj+pJtwfAVmERxPtfFdlV/thwvoi4x13s5I2
+         do0JqlgdY23Yndhh1JZV1yejUQnepT2+aahuMp11OhfCQLlAG9n3a7axWMpraUSmGeKv
+         37rw==
+X-Gm-Message-State: AOAM5312w0TTj0F/AHVe0WsRF/0XcmLwIAo4pdgKYH3P2znk2jgBEUOQ
+        h4bY7C13/HBmxJYlTdhCXTlkPQ==
+X-Google-Smtp-Source: ABdhPJw3GVGfOpBPzeAuOqVTdeOgtS4JxzEmnM5OOQRp8CUOC23j8zfe/tH9Tj5+kFYuIQ3SzpYdQQ==
+X-Received: by 2002:a62:e217:: with SMTP id a23mr6467599pfi.257.1594961016203;
+        Thu, 16 Jul 2020 21:43:36 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id j16sm6384044pgb.33.2020.07.16.21.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 21:43:35 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 21:41:33 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com
+Subject: Re: [PATCH 1/3] remoteproc: qcom_q6v5_mss: Add modem debug policy
+ support
+Message-ID: <20200717044133.GB2922385@builder.lan>
+References: <20200716123630.21892-1-sibis@codeaurora.org>
+ <20200716123630.21892-2-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716220055.GA19603@embeddedor>
+In-Reply-To: <20200716123630.21892-2-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+On Thu 16 Jul 05:36 PDT 2020, Sibi Sankar wrote:
 
-On Thu, Jul 16, 2020 at 05:00:55PM -0500, Gustavo A. R. Silva wrote:
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1].
+> Add modem debug policy support which will enable coredumps and live
+> debug support when the msadp firmware is present on secure devices.
 > 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-This URL is likely to break at some point as documentation contest changes. 
-Just refer to in kernel Documentation/process/deprecated.rst file.
-
-Other than that:
-
-Acked-by: Baruch Siach <baruch@tkos.co.il>
-
-Thanks,
-baruch
-
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  drivers/i2c/busses/i2c-digicolor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/remoteproc/qcom_q6v5_mss.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/i2c/busses/i2c-digicolor.c b/drivers/i2c/busses/i2c-digicolor.c
-> index 332f00437479..f67639dc74b7 100644
-> --- a/drivers/i2c/busses/i2c-digicolor.c
-> +++ b/drivers/i2c/busses/i2c-digicolor.c
-> @@ -187,7 +187,7 @@ static irqreturn_t dc_i2c_irq(int irq, void *dev_id)
->  			break;
->  		}
->  		i2c->state = STATE_WRITE;
-> -		/* fall through */
-> +		fallthrough;
->  	case STATE_WRITE:
->  		if (i2c->msgbuf_ptr < i2c->msg->len)
->  			dc_i2c_write_buf(i2c);
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index 13c6d5a72a831..95e21ed607cb9 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -187,6 +187,7 @@ struct q6v5 {
+>  	phys_addr_t mba_phys;
+>  	void *mba_region;
+>  	size_t mba_size;
+> +	size_t dp_size;
+>  
+>  	phys_addr_t mpss_phys;
+>  	phys_addr_t mpss_reloc;
+> @@ -406,6 +407,13 @@ static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
+>  static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
+>  {
+>  	struct q6v5 *qproc = rproc->priv;
+> +	const struct firmware *dp_fw;
+> +
+> +	if (!request_firmware(&dp_fw, "msadp", qproc->dev) && fw->size <= SZ_1M) {
 
--- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+Can we change this to a request_firmware_direct() to avoid the fact that
+as written here devices lacking this file will pause here for 60 seconds
+waiting for userspace to assist in loading it (which at least none of my
+systems do).
+
+I also think that while it's nice to check that fw->size <= SZ_1M, to
+avoid overwriting the tail of it, you should check that SZ_1M +
+dp_fw->size < mba_size. To ensure that the memcpy doesn't go out of
+bounds.
+
+> +		memcpy(qproc->mba_region + SZ_1M, dp_fw->data, dp_fw->size);
+> +		qproc->dp_size = dp_fw->size;
+> +		release_firmware(dp_fw);
+> +	}
+>  
+>  	memcpy(qproc->mba_region, fw->data, fw->size);
+>  
+> @@ -896,6 +904,10 @@ static int q6v5_mba_load(struct q6v5 *qproc)
+>  	}
+>  
+>  	writel(qproc->mba_phys, qproc->rmb_base + RMB_MBA_IMAGE_REG);
+> +	if (qproc->dp_size) {
+> +		writel(qproc->mba_phys + SZ_1M, qproc->rmb_base + RMB_PMI_CODE_START_REG);
+> +		writel(qproc->dp_size, qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
+> +	}
+>  
+>  	ret = q6v5proc_reset(qproc);
+>  	if (ret)
+> @@ -1258,7 +1270,8 @@ static int q6v5_start(struct rproc *rproc)
+>  	if (ret)
+>  		return ret;
+>  
+> -	dev_info(qproc->dev, "MBA booted, loading mpss\n");
+> +	dev_info(qproc->dev, "MBA booted, debug policy %s, loading mpss\n",
+> +		 qproc->dp_size ? "enabled" : "disabled");
+
+"MBA booted with%s debug policy, loading mpss\n", qproc->dp_size ? "" : "out"
+
+Please.
+
+Regards,
+Bjorn
+
+>  
+>  	ret = q6v5_mpss_load(qproc);
+>  	if (ret)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
