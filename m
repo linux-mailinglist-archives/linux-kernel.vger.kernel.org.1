@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39303223A38
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F64A223A3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgGQLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 07:16:48 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56328 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgGQLQr (ORCPT
+        id S1726256AbgGQLUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 07:20:44 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:58776 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbgGQLUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 07:16:47 -0400
-Received: from [IPv6:2a01:e35:2fb5:1510:c567:382e:1974:9868] (unknown [IPv6:2a01:e35:2fb5:1510:c567:382e:1974:9868])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: aferraris)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 589032A5CA8;
-        Fri, 17 Jul 2020 12:16:45 +0100 (BST)
-Subject: Re: [PATCH 0/4] ASoC: fsl_asrc: allow selecting arbitrary clocks
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        Fri, 17 Jul 2020 07:20:43 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HBKWn3074510;
+        Fri, 17 Jul 2020 06:20:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594984832;
+        bh=jQ4FkbUTphg2qbQHxfvAGsCKM+J0mShGKMimgMEZ+AY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=EjR/7guwsFW5JD94vt1u1nkrlgZDru7UadP6GAzAMM9HiR+B0FIT4NChButETuMi4
+         Nz58IZA/HBBlEsH/R9nn2dClNxKKKihQp1KktS6/eWbVdMN6OZLuQAgX3xeIveCyMf
+         E/OldSg4y2VVAFoR1pYhMkOKXs2eye51RBBxnGy8=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06HBKWAu119754
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Jul 2020 06:20:32 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
+ Jul 2020 06:20:31 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 17 Jul 2020 06:20:31 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HBKNWo043822;
+        Fri, 17 Jul 2020 06:20:26 -0500
+Subject: Re: [PATCH 7/7] arm64: defconfig: Enable AM654x SDHCI controller
+To:     Faiz Abbas <faiz_abbas@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sekhar Nori <nsekhar@ti.com>
+CC:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20200702142235.235869-1-arnaud.ferraris@collabora.com>
- <20200702184226.GA23935@Asurada-Nvidia>
-From:   Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Autocrypt: addr=arnaud.ferraris@collabora.com; keydata=
- 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
- xZQG6fKWuIur3RI=
-Message-ID: <abdd7265-43d2-49b5-6afd-70d65baac30e@collabora.com>
-Date:   Fri, 17 Jul 2020 13:16:42 +0200
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        ARM-SoC Maintainers <soc@kernel.org>,
+        Nishanth Menon <nm@ti.com>
+References: <20200619125801.9530-1-faiz_abbas@ti.com>
+ <20200619125801.9530-8-faiz_abbas@ti.com>
+ <3ed03440-7fbd-6abc-8a15-67e7217e2c3d@ti.com>
+ <2e50333c-5387-236f-3fb2-6d8014b224e0@ti.com>
+ <CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com>
+ <75cd485b-e3eb-19ee-ad1f-84cb04b0c807@ti.com>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <933d7132-5d9f-89df-8dec-5d9f6d3e0eee@ti.com>
+Date:   Fri, 17 Jul 2020 14:20:23 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200702184226.GA23935@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <75cd485b-e3eb-19ee-ad1f-84cb04b0c807@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nic,
-
-Le 02/07/2020 à 20:42, Nicolin Chen a écrit :
-> Hi Arnaud,
+On 17/07/2020 11:38, Faiz Abbas wrote:
+> Hi,
 > 
-> On Thu, Jul 02, 2020 at 04:22:31PM +0200, Arnaud Ferraris wrote:
->> The current ASRC driver hardcodes the input and output clocks used for
->> sample rate conversions. In order to allow greater flexibility and to
->> cover more use cases, it would be preferable to select the clocks using
->> device-tree properties.
+> On 16/07/20 11:58 pm, Arnd Bergmann wrote:
+>> On Thu, Jul 16, 2020 at 3:25 PM Sekhar Nori <nsekhar@ti.com> wrote:
+>>>
+>>> On 7/16/20 5:49 PM, Faiz Abbas wrote:
+>>>> Hi,
+>>>>
+>>>> On 19/06/20 6:28 pm, Faiz Abbas wrote:
+>>>>> Enable CONFIG_SDHCI_AM654 to Support AM65x sdhci controller.
+>>>>>
+>>>>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+>>>>> ---
+>>>>>   arch/arm64/configs/defconfig | 1 +
+>>>>>   1 file changed, 1 insertion(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+>>>>> index 883e8bace3ed..40dd13e0adc5 100644
+>>>>> --- a/arch/arm64/configs/defconfig
+>>>>> +++ b/arch/arm64/configs/defconfig
+>>>>> @@ -731,6 +731,7 @@ CONFIG_MMC_DW_ROCKCHIP=y
+>>>>>   CONFIG_MMC_SUNXI=y
+>>>>>   CONFIG_MMC_BCM2835=y
+>>>>>   CONFIG_MMC_SDHCI_XENON=y
+>>>>> +CONFIG_MMC_SDHCI_AM654=y
+>>>>>   CONFIG_MMC_OWL=y
+>>>>>   CONFIG_NEW_LEDS=y
+>>>>>   CONFIG_LEDS_CLASS=y
+>>>>>
+>>>>
+>>>> Gentle ping. Will, Catalin, can this patch be picked up?
+>>>
+>>>  From logs, Arnd has been picking up patches for this file. Looping in
+>>> Arnd and ARM-SoC team.
+>>
+>> I tend to ignore individual patches to the defconfig file unless
+>> they are sent to:soc@kernel.org. The best way to get them
+>> included is to have the platform maintainers pick up the
+>> changes and send them that way as a separate pull request
+>> at the same time as sending any DT updates.
+>>
+>> The MAINTAINERS file lists Tero and Nishanth as maintainers
+>> for the platform. If they want, I can apply this one directly, but in
+>> the future, send it to them.
+>>
 > 
-> We recent just merged a new change that auto-selecting internal
-> clocks based on sample rates as the first option -- ideal ratio
-> mode is the fallback mode now. Please refer to:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20200702&id=d0250cf4f2abfbea64ed247230f08f5ae23979f0
+> Thanks for clarifying Arnd. Tero, can you pick this up?
 
-While working on fixing the automatic clock selection (see my v3), I
-came across another potential issue, which would be better explained
-with an example:
-  - Input has sample rate 8kHz and uses clock SSI1 with rate 512kHz
-  - Output has sample rate 16kHz and uses clock SSI2 with rate 1024kHz
+Ok, this topic has been bit unclear for me also, but if you say I can 
+pick the patches myself and send a pull request out, I can do that.
 
-Let's say my v3 patch is merged, then the selected input clock will be
-SSI1, while the selected output clock will be SSI2. In that case, it's
-all good, as the driver will calculate the dividers right.
-
-Now, suppose a similar board has the input wired to SSI2 and output to
-SSI1, meaning we're now in the following case:
-  - Input has sample rate 8kHz and uses clock SSI2 with rate 512kHz
-  - Output has sample rate 16kHz and uses clock SSI1 with rate 1024kHz
-(the same result is achieved during capture with the initial example
-setup, as input and output properties are then swapped)
-
-In that case, the selected clocks will still be SSI1 for input (just
-because it appears first in the clock table), and SSI2 for output,
-meaning the calculated dividers will be:
-  - input: 512 / 16 => 32 (should be 64)
-  - output: 1024 / 8 => 128 (should be 64 here too)
-
----
-
-I can't see how the clock selection algorithm could be made smart enough
-to cover cases such as this one, as it would need to be aware of the
-exact relationship between the sample rate and the clock rate (my
-example demonstrates a case where the "sample rate to clock rate"
-multiplier is identical for both input and output, but this can't be
-assumed to be always the case).
-
-Therefore, I still believe being able to force clock selection using
-optional DT properties would make sense, while still using the
-auto-selection by default.
-
-Regards,
-Arnaud
-
-> 
-> Having a quick review at your changes, I think the DT part may
-> not be necessary as it's more likely a software configuration.
-> I personally like the new auto-selecting solution more.
-> 
->> This series also fix register configuration and clock assignment so
->> conversion can be conducted effectively in both directions with a good
->> quality.
-> 
-> If there's any further change that you feel you can improve on
-> the top of mentioned change after rebasing, I'd like to review.
-> 
-> Thanks
-> Nic
-> 
+-Tero
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
