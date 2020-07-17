@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6463D223E1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF85223E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgGQOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:34:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42804 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgGQOe6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:34:58 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HEXhD0033219;
-        Fri, 17 Jul 2020 14:34:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=sC82X1Ql6Y+RsP6ymT7mIIOgEdvX7Xx89bBouH4vdWA=;
- b=JPQxJ9YLMSqNwkV8Rj+V9TNkk7ZrUA0Q5oZEDxGcZ4nFsg3idI0nMP6c3NplFmyYiMK+
- ZVfF6fQcWYQWKD3tsEoFlkFEVD7VIH+XEUriVJCm5ets2E2H1AcuJhNni0R7i5Srgl6Z
- XmWcdzu7CnU0F/GTgsALhswC2zWW5RLobM8kyFvC7nNpCksWHeMv4EzW2ne7HWvpMvOW
- K6B4YSR6DmHUiS8J5Fx4CTWzNJIpmedXb6RXzwEqan03XiJpr9h3UikSIP+0jzyY+Sem
- BhWMI5VA/emzIxqrP4+zgg/NDsUQlBxbOsneliea50eH5ca4NjZzG/2EY77Yfs4uhhTH Ew== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 3275cmqk6f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 14:34:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HEXsXb113559;
-        Fri, 17 Jul 2020 14:34:30 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 32bbk0g0b0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 14:34:30 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06HEYTxn114997;
-        Fri, 17 Jul 2020 14:34:29 GMT
-Received: from localhost.localdomain (dhcp-10-175-216-252.vpn.oracle.com [10.175.216.252])
-        by userp3020.oracle.com with ESMTP id 32bbk0g09m-1;
-        Fri, 17 Jul 2020 14:34:29 +0000
-From:   gregory.herrero@oracle.com
-To:     linux-kernel@vger.kernel.org
-Cc:     rostedt@goodmis.org, stable@vger.kernel.org,
-        Gregory Herrero <gregory.herrero@oracle.com>
-Subject: [PATCH] recordmcount: only record relocation of type R_AARCH64_CALL26 on arm64.
-Date:   Fri, 17 Jul 2020 16:33:38 +0200
-Message-Id: <20200717143338.19302-1-gregory.herrero@oracle.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
- bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007170107
+        id S1726893AbgGQOhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:37:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38591 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726836AbgGQOhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:37:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594996622; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=TyKyzR05tZRTaaXsH6YWC6xsJl+USZ1JBrWVHA4S8uY=; b=E7Ai0RHZwQiFrWYs3U0LeW7CWLRw98tBdbzI073Ex52rAl1I/dIrda+w88UTZ852wn2h58Q7
+ JID6hbmeSFbOxTgf3KnhgEWeK/KXozCOQMrT8iEaF2LY32L1T8Hsrk6l4bNmSOIu20iOeioE
+ RRYnU4Ub++IVFe+LdSsOLk6yW7k=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n20.prod.us-west-2.postgun.com with SMTP id
+ 5f11b777512812c070429a54 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 14:36:39
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 42F4EC43391; Fri, 17 Jul 2020 14:36:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57AD6C433C6;
+        Fri, 17 Jul 2020 14:36:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 57AD6C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: [PATCH v2] drm: msm: a6xx: fix gpu failure after system resume
+Date:   Fri, 17 Jul 2020 20:04:18 +0530
+Message-Id: <1594996458-15529-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gregory Herrero <gregory.herrero@oracle.com>
+On targets where GMU is available, GMU takes over the ownership of GX GDSC
+during its initialization. So, move the refcount-get on GX PD before we
+initialize the GMU. This ensures that nobody can collapse the GX GDSC
+once GMU owns the GX GDSC. This patch fixes some GMU OOB errors seen
+during GPU wake up during a system resume.
 
-Currently, if a section has a relocation to '_mcount' symbol, a new
-__mcount_loc entry will be added whatever the relocation type is.
-This is problematic when a relocation to '_mcount' is in the middle of a
-section and is not a call for ftrace use.
-
-Such relocation could be generated with below code for example:
-    bool is_mcount(unsigned long addr)
-    {
-        return (target == (unsigned long) &_mcount);
-    }
-
-With this snippet of code, ftrace will try to patch the mcount location
-generated by this code on module load and fail with:
-
-    Call trace:
-     ftrace_bug+0xa0/0x28c
-     ftrace_process_locs+0x2f4/0x430
-     ftrace_module_init+0x30/0x38
-     load_module+0x14f0/0x1e78
-     __do_sys_finit_module+0x100/0x11c
-     __arm64_sys_finit_module+0x28/0x34
-     el0_svc_common+0x88/0x194
-     el0_svc_handler+0x38/0x8c
-     el0_svc+0x8/0xc
-    ---[ end trace d828d06b36ad9d59 ]---
-    ftrace failed to modify
-    [<ffffa2dbf3a3a41c>] 0xffffa2dbf3a3a41c
-     actual:   66:a9:3c:90
-    Initializing ftrace call sites
-    ftrace record flags: 2000000
-     (0)
-    expected tramp: ffffa2dc6cf66724
-
-So Limit the relocation type to R_AARCH64_CALL26 as in perl version of
-recordmcount.
-
-Fixes: ed60453fa8f8 ("ARM: 6511/1: ftrace: add ARM support for C version of recordmcount")
-Signed-off-by: Gregory Herrero <gregory.herrero@oracle.com>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Reported-by: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
 ---
- scripts/recordmcount.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Changes from v1:
+- Reworded the commit text
+- Added Reported-by & Tested-by tags
 
-diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-index 7225107a9aaf..e59022b3f125 100644
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -434,6 +434,11 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
- 	return 1;
- }
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 21e77d6..1d33020 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -854,10 +854,19 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 	/* Turn on the resources */
+ 	pm_runtime_get_sync(gmu->dev);
  
-+static int arm64_is_fake_mcount(Elf64_Rel const *rp)
-+{
-+	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
-+}
++	/*
++	 * "enable" the GX power domain which won't actually do anything but it
++	 * will make sure that the refcounting is correct in case we need to
++	 * bring down the GX after a GMU failure
++	 */
++	if (!IS_ERR_OR_NULL(gmu->gxpd))
++		pm_runtime_get_sync(gmu->gxpd);
 +
- /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
-  * http://techpubs.sgi.com/library/manuals/4000/007-4658-001/pdf/007-4658-001.pdf
-  * We interpret Table 29 Relocation Operation (Elf64_Rel, Elf64_Rela) [p.40]
-@@ -547,6 +552,7 @@ static int do_file(char const *const fname)
- 		make_nop = make_nop_arm64;
- 		rel_type_nop = R_AARCH64_NONE;
- 		ideal_nop = ideal_nop4_arm64;
-+		is_fake_mcount64 = arm64_is_fake_mcount;
- 		break;
- 	case EM_IA_64:	reltype = R_IA64_IMM64; break;
- 	case EM_MIPS:	/* reltype: e_class    */ break;
+ 	/* Use a known rate to bring up the GMU */
+ 	clk_set_rate(gmu->core_clk, 200000000);
+ 	ret = clk_bulk_prepare_enable(gmu->nr_clocks, gmu->clocks);
+ 	if (ret) {
++		pm_runtime_put(gmu->gxpd);
+ 		pm_runtime_put(gmu->dev);
+ 		return ret;
+ 	}
+@@ -903,19 +912,12 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 	else
+ 		a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
+ 
+-	/*
+-	 * "enable" the GX power domain which won't actually do anything but it
+-	 * will make sure that the refcounting is correct in case we need to
+-	 * bring down the GX after a GMU failure
+-	 */
+-	if (!IS_ERR_OR_NULL(gmu->gxpd))
+-		pm_runtime_get(gmu->gxpd);
+-
+ out:
+ 	/* On failure, shut down the GMU to leave it in a good state */
+ 	if (ret) {
+ 		disable_irq(gmu->gmu_irq);
+ 		a6xx_rpmh_stop(gmu);
++		pm_runtime_put(gmu->gxpd);
+ 		pm_runtime_put(gmu->dev);
+ 	}
+ 
 -- 
-2.27.0
+2.7.4
 
