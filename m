@@ -2,190 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4947C2241A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7EA2241A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgGQRSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:18:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25836 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726293AbgGQRSf (ORCPT
+        id S1727065AbgGQRUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgGQRUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:18:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595006313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gpEKoCVUb0H9sRGX33KH+Wdr5W7X+RwCM8FI3G3gcaI=;
-        b=Dh6x2VRvE8ReYD/NwYO6oLsky1iu2gAnsEBZRmvKiTvZQyz4KiWZCLSko1bZKVOPlptAuj
-        DcA6ID/mjqZyWFpbVD0XlYx84Acu+Fbcs6WOULi2ZS7ssaIVd2O0q8rzZi/yMxgBqocc3q
-        VI0mjsYeYKXMfGe3AS9ryx6I6kwvifk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-gw8k3hR8OzK81GZ112l71Q-1; Fri, 17 Jul 2020 13:18:29 -0400
-X-MC-Unique: gw8k3hR8OzK81GZ112l71Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39F2C8005B0;
-        Fri, 17 Jul 2020 17:18:27 +0000 (UTC)
-Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 924B75C1D4;
-        Fri, 17 Jul 2020 17:18:17 +0000 (UTC)
-Subject: Re: [PATCH v5 03/15] iommu/smmu: Report empty domain nesting info
-To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org
-Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
-        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
-        stefanha@gmail.com, iommu@lists.linux-foundation.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <1594552870-55687-1-git-send-email-yi.l.liu@intel.com>
- <1594552870-55687-4-git-send-email-yi.l.liu@intel.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <5ee6b661-9c46-20ee-332a-1a449b6f3a43@redhat.com>
-Date:   Fri, 17 Jul 2020 19:18:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 17 Jul 2020 13:20:07 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A13C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:20:07 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id g22so2273088vke.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fA/qgfiMlIm6DaorpA1k/f2IvyM46KgPHDRmF2JATYU=;
+        b=iuthQu6LH99OsV+mQbxcja9ScSRaZvsR5qiIt+DsYophAQaNm8NC6wlZi+yHb2iNJl
+         eVtHP21CqgNla77GmrOUfa4p+gI83t5uNHjiPDa9WF1dk3ifmRaIsNHl+kWdnTYi0GfG
+         cno/9YebyzAxYJhLZ8RuA6dKl2b2JUycwnks0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fA/qgfiMlIm6DaorpA1k/f2IvyM46KgPHDRmF2JATYU=;
+        b=fzU/P8Tdz5DTOHM22stGSSi9HKp4CYUKH/NQv4wZvKwp6DSJvBfHZr6Zq1cbBdpz3k
+         9OXhiz92O7+c3zyY87Lj4+1Me/4U2d0/vto6j/Fh+b+HQynt5M7sFaGj/PUvn7TbSm78
+         ayW7AUq/YrNPwWzv/FBtiEYZvArQXw1nQ5XogZIrXuOBDcDb5MtNhtpikD4BCfVt5VAx
+         M9A/7ZaOltRGDSSzRd/gDQ1UJUtWle1j8gyHgESeUgJikFNWBy0c1vrlsfh8CrG8pst/
+         XS3TA3ukIMbicAieYGssUm0RvXxtt9YwJ+mUGlp5Ac5ufIX7RGSgHDMcgqcsA6LpAAdO
+         PkWw==
+X-Gm-Message-State: AOAM531/Kh4RsSuLr2JsCbiiYVTCN5Mgb9NjGsbW6jwPzmPQ3rndfEg3
+        bHqVpeb2lUlhD8ml1AAuVYNbH+Yw5k8=
+X-Google-Smtp-Source: ABdhPJyZOGe03pItgQ36h/iU4r003awwrk1xdU17H2Yhe94xq9OF7znJX4v2woV7tOIRK6vGEYvQlA==
+X-Received: by 2002:ac5:c912:: with SMTP id t18mr8156832vkl.54.1595006406111;
+        Fri, 17 Jul 2020 10:20:06 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id l10sm1297966vkl.53.2020.07.17.10.20.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 10:20:05 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id o25so3110246uar.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:20:04 -0700 (PDT)
+X-Received: by 2002:ab0:150c:: with SMTP id o12mr8307356uae.90.1595006404233;
+ Fri, 17 Jul 2020 10:20:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1594552870-55687-4-git-send-email-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200708194715.4073300-1-abhishekbh@google.com>
+ <87y2ntotah.fsf@nanos.tec.linutronix.de> <CAD=FV=WCu7o41iyn27vNBWo4f_X_XVy+PPPjBKc+70g5jd5+8w@mail.gmail.com>
+ <874kq6ru08.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <874kq6ru08.fsf@nanos.tec.linutronix.de>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 17 Jul 2020 10:19:52 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WPhaZC87Yb5LOYZ3s7_NWS2yhyaA6RXZQYojfAGvX84g@mail.gmail.com>
+Message-ID: <CAD=FV=WPhaZC87Yb5LOYZ3s7_NWS2yhyaA6RXZQYojfAGvX84g@mail.gmail.com>
+Subject: Re: [PATCH v5] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Abhishek Bhardwaj <abhishekbh@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yi,
+Hi,
 
-On 7/12/20 1:20 PM, Liu Yi L wrote:
-> This patch is added as instead of returning a boolean for DOMAIN_ATTR_NESTING,
-> iommu_domain_get_attr() should return an iommu_nesting_info handle.
+On Fri, Jul 17, 2020 at 9:22 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Doug,
+>
+> Doug Anderson <dianders@chromium.org> writes:
+> > On Thu, Jul 9, 2020 at 3:51 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> TBH, I don't see why this is a good idea.
+> >>
+> >>  1) I'm not following your argumentation that the command line option is
+> >>     a poor Kconfig replacement. The L1TF mode is a boot time (module
+> >>     load time) decision and the command line parameter is there to
+> >>     override the carefully chosen and sensible default behaviour.
+> >
+> > When you say that the default behavior is carefully chosen and
+> > sensible, are you saying that (in your opinion) there would never be a
+> > good reason for someone distributing a kernel to others to change the
+> > default?  Certainly I agree that having the kernel command line
+> > parameter is nice to allow someone to override whatever the person
+> > building the kernel chose, but IMO it's not a good way to change the
+> > default built-in to the kernel.
+>
+> The problem is that you have to be careful about what you stick into
+> Kconfig. It's L1TF on x86 today and tomorrow it's MDS and whatever and
+> then you do the same thing on the other architectures as well. And we
+> still need the command line options so that generic builds can be
+> customized at boot time.
+>
+> > The current plan (as I understand it) is that we'd like to ship
+> > Chromebook kernels with this option changed from the default that's
+> > there now.  In your opinion, is that a sane thing to do?
+>
+> If it's sane for you folks, then feel free to do so. Distros & al patch
+> the kernel do death anyway, but that does not mean that mainline has to
+> have everything these people chose to do.
 
-you may add in the commit message you return an empty nesting info
-struct for now as true nesting is not yet supported by the SMMUs.
+Sure, we could carry a local patch.  ...but Chrome OS tries not to be
+like all other distros.  We try very hard (and keep trying harder each
+year) to _not_ carry local patches.  Sure, we fail sometimes, but we
+will still try.  In general it seems like the upstream Linux community
+pushes distros and other Linux users to be upstream first so it's a
+little discouraging to hear the advice of "just carry a local patch".
 
-Besides:
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+In this case, though, I should close the loop.  Abhishek can correct
+me if I'm wrong, but I think the answer here was that it _wasn't_ sane
+for us to change this option via KConfig or even via kernel command
+line.  I believe that Abhishek found that it was better to (in
+userspace) look at the sysfs nodes and configure things how he wanted
+it at runtime.
 
-Thanks
 
-Eric
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Suggested-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> ---
-> v4 -> v5:
-> *) address comments from Eric Auger.
-> ---
->  drivers/iommu/arm-smmu-v3.c | 29 +++++++++++++++++++++++++++--
->  drivers/iommu/arm-smmu.c    | 29 +++++++++++++++++++++++++++--
->  2 files changed, 54 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-> index f578677..ec815d7 100644
-> --- a/drivers/iommu/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm-smmu-v3.c
-> @@ -3019,6 +3019,32 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
->  	return group;
->  }
->  
-> +static int arm_smmu_domain_nesting_info(struct arm_smmu_domain *smmu_domain,
-> +					void *data)
-> +{
-> +	struct iommu_nesting_info *info = (struct iommu_nesting_info *)data;
-> +	unsigned int size;
-> +
-> +	if (!info || smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
-> +		return -ENODEV;
-> +
-> +	size = sizeof(struct iommu_nesting_info);
-> +
-> +	/*
-> +	 * if provided buffer size is smaller than expected, should
-> +	 * return 0 and also the expected buffer size to caller.
-> +	 */
-> +	if (info->size < size) {
-> +		info->size = size;
-> +		return 0;
-> +	}
-> +
-> +	/* report an empty iommu_nesting_info for now */
-> +	memset(info, 0x0, size);
-> +	info->size = size;
-> +	return 0;
-> +}
-> +
->  static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
->  				    enum iommu_attr attr, void *data)
->  {
-> @@ -3028,8 +3054,7 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
->  	case IOMMU_DOMAIN_UNMANAGED:
->  		switch (attr) {
->  		case DOMAIN_ATTR_NESTING:
-> -			*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
-> -			return 0;
-> +			return arm_smmu_domain_nesting_info(smmu_domain, data);
->  		default:
->  			return -ENODEV;
->  		}
-> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-> index 243bc4c..09e2f1b 100644
-> --- a/drivers/iommu/arm-smmu.c
-> +++ b/drivers/iommu/arm-smmu.c
-> @@ -1506,6 +1506,32 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
->  	return group;
->  }
->  
-> +static int arm_smmu_domain_nesting_info(struct arm_smmu_domain *smmu_domain,
-> +					void *data)
-> +{
-> +	struct iommu_nesting_info *info = (struct iommu_nesting_info *)data;
-> +	unsigned int size;
-> +
-> +	if (!info || smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
-> +		return -ENODEV;
-> +
-> +	size = sizeof(struct iommu_nesting_info);
-> +
-> +	/*
-> +	 * if provided buffer size is smaller than expected, should
-> +	 * return 0 and also the expected buffer size to caller.
-> +	 */
-> +	if (info->size < size) {
-> +		info->size = size;
-> +		return 0;
-> +	}
-> +
-> +	/* report an empty iommu_nesting_info for now */
-> +	memset(info, 0x0, size);
-> +	info->size = size;
-> +	return 0;
-> +}
-> +
->  static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
->  				    enum iommu_attr attr, void *data)
->  {
-> @@ -1515,8 +1541,7 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
->  	case IOMMU_DOMAIN_UNMANAGED:
->  		switch (attr) {
->  		case DOMAIN_ATTR_NESTING:
-> -			*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
-> -			return 0;
-> +			return arm_smmu_domain_nesting_info(smmu_domain, data);
->  		default:
->  			return -ENODEV;
->  		}
-> 
+> >>  2) You can add the desired mode to the compiled in (partial) kernel
+> >>     command line today.
+> >
+> > This might be easier on x86 than it is on ARM.  ARM (and ARM64)
+> > kernels only have two modes: kernel provides cmdline and bootloader
+> > provides cmdline.  There are out-of-mainline ANDROID patches to
+> > address this but nothing in mainline.
+> >
+> > The patch we're discussing now is x86-only so it's not such a huge
+> > deal, but the fact that combining the kernel and bootloader
+> > commandline never landed in mainline for arm/arm64 means that this
+> > isn't a super common/expected thing to do.
+>
+> Did you try to get that merged for arm/arm64?
 
+Yes, years ago.  References:
+
+https://lore.kernel.org/r/1326492948-26160-1-git-send-email-dianders@chromium.org
+https://lore.kernel.org/r/1328223508-1228-1-git-send-email-dianders@chromium.org
+
+I didn't keep poking it because I got advice (not on the mailing list)
+that it was better to add a KConfig option rather than extending the
+command line.  ;-)  At the time it seemed a reasonable argument to me
+so I didn't keep pushing that patch.
+
+
+> >>  3) Boot loaders are well capable of handling large kernel command lines
+> >>     and the extra time spend for reading the parameter does not matter
+> >>     at all.
+> >
+> > Long command lines can still be a bit of a chore for humans to deal
+> > with.  Many times I've needed to look at "/proc/cmdline" and make
+> > sense of it.  The longer the command line is and the more cruft
+> > stuffed into it the more of a chore it is.  Yes, this is just one
+> > thing to put in the command line, but if 10 different drivers all have
+> > their "one thing" to put there it gets really long.  If 100 different
+> > drivers all want their one config option there it gets really really
+> > long.
+>
+> This will not go away when you want to support a gazillion of systems
+> which need tweaks left and right due to creative hardware/BIOS with a
+> generic kernel. And come on, parsing a long command line is not rocket
+> science and it's not something you do every two minutes.
+
+It's funny.  Your argument is the same as mine but the opposite.  I
+say: "but so much crap will be in the command line and it will be
+crazy" and you say "but so much crap will be in the KConfig and it
+will be crazy".  ;-)  I guess it depends on where you want to dump
+your trash.
+
+
+> > IMO the command line should be a last resort place to put
+> > things and should just contain:
+> >
+> > 1. Legacy things that _have_ to be in the command line because they've
+> > always been there.
+> >
+> > 2. Things that the bootloader/BIOS needs to communicate to the kernel
+> > and has no better way to communicate.
+> >
+> > 3. Cases where the person running the kernel needs to override a
+> > default set by the person compiling the kernel.
+>
+> Which is the case for a lot of things and it's widely used exactly for
+> that reason.
+
+Right.  To be clear, I definitely wasn't suggesting the option be
+_removed_ from the command line.
+
+
+> >>  4) It's just a tiny part of the whole speculation maze. If we go there
+> >>     for L1TF then we open the flood gates for a gazillion other config
+> >>     options.
+> >
+> > It seems like the only options that we'd need CONFIG option for would
+> > be the ones where it would be sane to change the default compiled into
+> > the kernel.  Hopefully that's not too many things?
+>
+> That's what _you_ need. But accepting this we set a precedence and how
+> do I argue that L1TF makes sense, but other things not? This stuff is
+> horrible enough already, no need to add more ifdefs and options and
+> whatever to it.
+
+Again, I think it gets into a matter of opinion.  I'm also objecting
+to setting a precedence, but in the opposite direction.  Today in
+Chrome OS we don't need to use the command line extending for this
+type of thing at all and (IMO) it's really nice.  Your config options
+are in one place, not mixed halfway between the command line and the
+KConfig.  Allowing this one config option to be configured in the
+command line opens the flood gates for having two places to look for
+the base config.  ;-)
+
+In any case, it doesn't sound like I'm going to convince you.  Also,
+since Abhishek has found another way to move forward it sounds like
+the right thing is to consider his patch abandoned anyway.
+
+
+> > Obviously, like many design choices, the above is all subjective.
+> > It's really your call and if these arguments don't convince you it
+> > sounds like the way forward is just to use "CONFIG_CMDLINE" and take
+> > advantage of the fact that on x86 this will get merged with the
+> > bootloader's command line.
+>
+> I rather see the support for command line merging extended to arm/arm64
+> because that's of general usefulness beyond the problem at hand.
+
+I have no objections to someone upstreaming those patches, for sure.
+Maybe one day the Android team will do it since they seem to have been
+carrying it as a local patch forever.  If nothing else, it gives us
+more flexibility.
+
+
+-Doug
