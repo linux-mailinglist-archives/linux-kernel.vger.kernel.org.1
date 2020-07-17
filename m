@@ -2,149 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6410D22328A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CBB223295
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgGQEni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgGQEnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:43:37 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BC6C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:43:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g67so6087035pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZS96AHkKsIz+9ewp6Tb9M00I6PYyw+DXgHrEqe3EDMs=;
-        b=hDvG+flSpEjtZ0hG1cnQW3jGKAhn8mwFZiG0ojsB0dQEdpJqbXl4iOSLPiHSNdNkC+
-         GCOsUMWjS4r8SVqtpZdiFxutX/KyypO49Sl0mqtDXHFHdVt+Jq/e86vnqk/iQKUPuzlW
-         q0lC6waAFjEUpQ9xHUe+qCQOW4gZ1frwLgn3VB9vQ5/JC3bmRj9RsfYbdbhz4/cVvuBC
-         nrdLaBls9h+RM4ZWqgmvUw77DZx35UtdnmLVhpj21dOblO7LwVDnPZS4u0DzPexg4J9x
-         KMprlL7LNMBUmWctKrJJlIpAtZor1VL/yV3MEV48nErMbjSamigOUZuftNPQKMRPzllR
-         9yeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZS96AHkKsIz+9ewp6Tb9M00I6PYyw+DXgHrEqe3EDMs=;
-        b=tVwkHrruHfUPzynyJ6ycQx0AmmukcxToxVRlsoRuBFfdnHRgUu397EpjP/QHdCvEsi
-         W0YbhYC+80/7kt98Be57gHipt7R9aP+fKvY6cDyrAnthvDjC1QAbyh2On5WYgMtY2iKw
-         hr3tcanegT9CNv5bFZ/gLkz8tHYt5zVMI9Fg76KEgGdbVrEb30IEpzbEm9ysACB+Wt5n
-         6Bg08GDmo3kyyADU+1fugKpBnxfKiKEdqj+pJtwfAVmERxPtfFdlV/thwvoi4x13s5I2
-         do0JqlgdY23Yndhh1JZV1yejUQnepT2+aahuMp11OhfCQLlAG9n3a7axWMpraUSmGeKv
-         37rw==
-X-Gm-Message-State: AOAM5312w0TTj0F/AHVe0WsRF/0XcmLwIAo4pdgKYH3P2znk2jgBEUOQ
-        h4bY7C13/HBmxJYlTdhCXTlkPQ==
-X-Google-Smtp-Source: ABdhPJw3GVGfOpBPzeAuOqVTdeOgtS4JxzEmnM5OOQRp8CUOC23j8zfe/tH9Tj5+kFYuIQ3SzpYdQQ==
-X-Received: by 2002:a62:e217:: with SMTP id a23mr6467599pfi.257.1594961016203;
-        Thu, 16 Jul 2020 21:43:36 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id j16sm6384044pgb.33.2020.07.16.21.43.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 21:43:35 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 21:41:33 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        evgreen@chromium.org, ohad@wizery.com
-Subject: Re: [PATCH 1/3] remoteproc: qcom_q6v5_mss: Add modem debug policy
- support
-Message-ID: <20200717044133.GB2922385@builder.lan>
-References: <20200716123630.21892-1-sibis@codeaurora.org>
- <20200716123630.21892-2-sibis@codeaurora.org>
+        id S1726856AbgGQEp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:45:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgGQEp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 00:45:56 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E66952071A;
+        Fri, 17 Jul 2020 04:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594961155;
+        bh=2d9QmkmWrAR4QgerUk4A9L+J8tlPTeoVoUmhc6Of+hM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SERugfeU3gZ8i8FENUn2s6y6Zh3X0wlF6xeSmAdyIe0xy1genwn9EdD/xjO6LMogx
+         9fHBbceh9pNb0bSIOqEXAfLoJet26PdioE7glSYpCRZ3igepH3zhPrqppLDktS+kN+
+         K1DPdxXI/7kDPq6rl1R3Ee8BGRU4vOUrMYiJBXRU=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH] tools/memory-model: document the "one-time init" pattern
+Date:   Thu, 16 Jul 2020 21:44:27 -0700
+Message-Id: <20200717044427.68747-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716123630.21892-2-sibis@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 16 Jul 05:36 PDT 2020, Sibi Sankar wrote:
+From: Eric Biggers <ebiggers@google.com>
 
-> Add modem debug policy support which will enable coredumps and live
-> debug support when the msadp firmware is present on secure devices.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  drivers/remoteproc/qcom_q6v5_mss.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 13c6d5a72a831..95e21ed607cb9 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -187,6 +187,7 @@ struct q6v5 {
->  	phys_addr_t mba_phys;
->  	void *mba_region;
->  	size_t mba_size;
-> +	size_t dp_size;
->  
->  	phys_addr_t mpss_phys;
->  	phys_addr_t mpss_reloc;
-> @@ -406,6 +407,13 @@ static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
->  static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct q6v5 *qproc = rproc->priv;
-> +	const struct firmware *dp_fw;
-> +
-> +	if (!request_firmware(&dp_fw, "msadp", qproc->dev) && fw->size <= SZ_1M) {
+The "one-time init" pattern is implemented incorrectly in various places
+in the kernel.  And when people do try to implement it correctly, it is
+unclear what to use.  Try to give some proper guidance.
 
-Can we change this to a request_firmware_direct() to avoid the fact that
-as written here devices lacking this file will pause here for 60 seconds
-waiting for userspace to assist in loading it (which at least none of my
-systems do).
+This is motivated by the discussion at
+https://lkml.kernel.org/linux-fsdevel/20200713033330.205104-1-ebiggers@kernel.org/T/#u
+regarding fixing the initialization of super_block::s_dio_done_wq.
 
-I also think that while it's nice to check that fw->size <= SZ_1M, to
-avoid overwriting the tail of it, you should check that SZ_1M +
-dp_fw->size < mba_size. To ensure that the memcpy doesn't go out of
-bounds.
+Cc: Akira Yokosawa <akiyks@gmail.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Andrea Parri <parri.andrea@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Daniel Lustig <dlustig@nvidia.com>
+Cc: Darrick J. Wong <darrick.wong@oracle.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Jade Alglave <j.alglave@ucl.ac.uk>
+Cc: Luc Maranget <luc.maranget@inria.fr>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ tools/memory-model/Documentation/recipes.txt | 151 +++++++++++++++++++
+ 1 file changed, 151 insertions(+)
 
-> +		memcpy(qproc->mba_region + SZ_1M, dp_fw->data, dp_fw->size);
-> +		qproc->dp_size = dp_fw->size;
-> +		release_firmware(dp_fw);
-> +	}
->  
->  	memcpy(qproc->mba_region, fw->data, fw->size);
->  
-> @@ -896,6 +904,10 @@ static int q6v5_mba_load(struct q6v5 *qproc)
->  	}
->  
->  	writel(qproc->mba_phys, qproc->rmb_base + RMB_MBA_IMAGE_REG);
-> +	if (qproc->dp_size) {
-> +		writel(qproc->mba_phys + SZ_1M, qproc->rmb_base + RMB_PMI_CODE_START_REG);
-> +		writel(qproc->dp_size, qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
-> +	}
->  
->  	ret = q6v5proc_reset(qproc);
->  	if (ret)
-> @@ -1258,7 +1270,8 @@ static int q6v5_start(struct rproc *rproc)
->  	if (ret)
->  		return ret;
->  
-> -	dev_info(qproc->dev, "MBA booted, loading mpss\n");
-> +	dev_info(qproc->dev, "MBA booted, debug policy %s, loading mpss\n",
-> +		 qproc->dp_size ? "enabled" : "disabled");
+diff --git a/tools/memory-model/Documentation/recipes.txt b/tools/memory-model/Documentation/recipes.txt
+index 7fe8d7aa3029..04beb06dbfc7 100644
+--- a/tools/memory-model/Documentation/recipes.txt
++++ b/tools/memory-model/Documentation/recipes.txt
+@@ -519,6 +519,157 @@ CPU1 puts the waiting task to sleep and CPU0 fails to wake it up.
+ 
+ Note that use of locking can greatly simplify this pattern.
+ 
++One-time init
++-------------
++
++The "one-time init" pattern is when multiple tasks can race to
++initialize the same data structure(s) on first use.
++
++In many cases, it's best to just avoid the need for this by simply
++initializing the data ahead of time.
++
++But in cases where the data would often go unused, one-time init can be
++appropriate to avoid wasting kernel resources.  It can also be
++appropriate if the initialization has other prerequisites which preclude
++it being done ahead of time.
++
++First, consider if your data has (a) global or static scope, (b) can be
++initialized from atomic context, and (c) cannot fail to be initialized.
++If all of those apply, just use DO_ONCE() from <linux/once.h>:
++
++	DO_ONCE(func);
++
++If that doesn't apply, you'll have to implement one-time init yourself.
++
++The simplest implementation just uses a mutex and an 'inited' flag.
++This implementation should be used where feasible:
++
++	static bool foo_inited;
++	static DEFINE_MUTEX(foo_init_mutex);
++
++	int init_foo_if_needed(void)
++	{
++		int err = 0;
++
++		mutex_lock(&foo_init_mutex);
++		if (!foo_inited) {
++			err = init_foo();
++			if (err == 0)
++				foo_inited = true;
++		}
++		mutex_unlock(&foo_init_mutex);
++		return err;
++	}
++
++The above example uses static variables, but this solution also works
++for initializing something that is part of another data structure.  The
++mutex may still be static.
++
++In where cases where taking the mutex in the "already initialized" case
++presents scalability concerns, the implementation can be optimized to
++check the 'inited' flag outside the mutex.  Unfortunately, this
++optimization is often implemented incorrectly by using a plain load.
++That violates the memory model and may result in unpredictable behavior.
++
++A correct implementation is:
++
++	static bool foo_inited;
++	static DEFINE_MUTEX(foo_init_mutex);
++
++	int init_foo_if_needed(void)
++	{
++		int err = 0;
++
++		/* pairs with smp_store_release() below */
++		if (smp_load_acquire(&foo_inited))
++			return 0;
++
++		mutex_lock(&foo_init_mutex);
++		if (!foo_inited) {
++			err = init_foo();
++			if (err == 0) /* pairs with smp_load_acquire() above */
++				smp_store_release(&foo_inited, true);
++		}
++		mutex_unlock(&foo_init_mutex);
++		return err;
++	}
++
++If only a single data structure is being initialized, then the pointer
++itself can take the place of the 'inited' flag:
++
++	static struct foo *foo;
++	static DEFINE_MUTEX(foo_init_mutex);
++
++	int init_foo_if_needed(void)
++	{
++		int err = 0;
++
++		/* pairs with smp_store_release() below */
++		if (smp_load_acquire(&foo))
++			return 0;
++
++		mutex_lock(&foo_init_mutex);
++		if (!foo) {
++			struct foo *p = alloc_foo();
++
++			if (p) /* pairs with smp_load_acquire() above */
++				smp_store_release(&foo, p);
++			else
++				err = -ENOMEM;
++		}
++		mutex_unlock(&foo_init_mutex);
++		return err;
++	}
++
++There are also cases in which the smp_load_acquire() can be replaced by
++the more lightweight READ_ONCE().  (smp_store_release() is still
++required.)  Specifically, if all initialized memory is transitively
++reachable from the pointer itself, then there is no control dependency
++so the data dependency barrier provided by READ_ONCE() is sufficient.
++
++However, using the READ_ONCE() optimization is discouraged for
++nontrivial data structures, as it can be difficult to determine if there
++is a control dependency.  For complex data structures it may depend on
++internal implementation details of other kernel subsystems.
++
++For the single-pointer case, a further optimized implementation
++eliminates the mutex and instead uses compare-and-exchange:
++
++	static struct foo *foo;
++
++	int init_foo_if_needed(void)
++	{
++		struct foo *p;
++
++		/* pairs with successful cmpxchg_release() below */
++		if (smp_load_acquire(&foo))
++			return 0;
++
++		p = alloc_foo();
++		if (!p)
++			return -ENOMEM;
++
++		/* on success, pairs with smp_load_acquire() above and below */
++		if (cmpxchg_release(&foo, NULL, p) != NULL) {
++			free_foo(p);
++			/* pairs with successful cmpxchg_release() above */
++			smp_load_acquire(&foo);
++		}
++		return 0;
++	}
++
++Note that when the cmpxchg_release() fails due to another task already
++having done it, a second smp_load_acquire() is required, since we still
++need to acquire the data that the other task released.  You may be
++tempted to upgrade cmpxchg_release() to cmpxchg() with the goal of it
++acting as both ACQUIRE and RELEASE, but that doesn't work here because
++cmpxchg() only guarantees memory ordering if it succeeds.
++
++Because of the above subtlety, the version with the mutex instead of
++cmpxchg_release() should be preferred, except potentially in cases where
++it is difficult to provide anything other than a global mutex and where
++the one-time data is part of a frequently allocated structure.  In that
++case, a global mutex might present scalability concerns.
+ 
+ Rules of thumb
+ ==============
+-- 
+2.27.0
 
-"MBA booted with%s debug policy, loading mpss\n", qproc->dp_size ? "" : "out"
-
-Please.
-
-Regards,
-Bjorn
-
->  
->  	ret = q6v5_mpss_load(qproc);
->  	if (ret)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
