@@ -2,140 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40692242EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097192242F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgGQSLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:11:37 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60054 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgGQSLg (ORCPT
+        id S1727044AbgGQSOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:14:41 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59888 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgGQSOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:11:36 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1B3F420B4909;
-        Fri, 17 Jul 2020 11:11:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1B3F420B4909
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595009495;
-        bh=2Pzs4CmdDfnklLSKLq/qkdid1cilbcCSYYl7lLHXGe8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mUU+5r9vVToweMQMPxEGv6yqTVSMaTYsYxEx7SRIAnhU+jY0WVAMStyXuuXe5TEWH
-         gBXzbDKupNrVFU9HYirgAi2f+BA6YjG0a17Wfn2UzlHC/ZD6EBWE2FSgWUAqlEoqB/
-         OC5H9KsJwGW8pNp7776zHDJDSZZt4gMWkd0wAckE=
-Date:   Fri, 17 Jul 2020 13:11:33 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Nayna <nayna@linux.vnet.ibm.com>, Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Nayna Jain <nayna@linux.ibm.com>
-Subject: Re: [PATCH v3 07/12] ima: Fail rule parsing when
- appraise_flag=blacklist is unsupportable
-Message-ID: <20200717181133.GM3673@sequoia>
-References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
- <20200709061911.954326-8-tyhicks@linux.microsoft.com>
- <76d2b27b-3b59-1852-046a-b1718c62b167@linux.vnet.ibm.com>
+        Fri, 17 Jul 2020 14:14:41 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id E3F9C2A5DC6
+Subject: Re: [PATCH v4 5/9] media: staging: rkisp1: remove unecessary clocks
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "heiko@sntech.de" <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
+        Johan Jonker <jbx6244@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Eddie Cai <eddie.cai.linux@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20200702191322.2639681-1-helen.koike@collabora.com>
+ <20200702191322.2639681-6-helen.koike@collabora.com>
+ <CAL_JsqKHG4HgcpWvh_qnHPAkaGCd7Q8APk2ai_QxjUQhvd5APg@mail.gmail.com>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <822de449-8c01-d790-a9f9-e8b513bd7f87@collabora.com>
+Date:   Fri, 17 Jul 2020 15:14:30 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <76d2b27b-3b59-1852-046a-b1718c62b167@linux.vnet.ibm.com>
+In-Reply-To: <CAL_JsqKHG4HgcpWvh_qnHPAkaGCd7Q8APk2ai_QxjUQhvd5APg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-17 13:40:22, Nayna wrote:
+Hi Rob,
+
+Thanks for your review.
+
+On 7/17/20 2:49 PM, Rob Herring wrote:
+> On Thu, Jul 2, 2020 at 1:13 PM Helen Koike <helen.koike@collabora.com> wrote:
+>>
+>> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
+>> hclk_isp, thus we can remove parents from the list.
 > 
-> On 7/9/20 2:19 AM, Tyler Hicks wrote:
-> > The "appraise_flag" option is only appropriate for appraise actions
-> > and its "blacklist" value is only appropriate when
-> > CONFIG_IMA_APPRAISE_MODSIG is enabled and "appraise_flag=blacklist" is
-> > only appropriate when "appraise_type=imasig|modsig" is also present.
-> > Make this clear at policy load so that IMA policy authors don't assume
-> > that other uses of "appraise_flag=blacklist" are supported.
-> > 
-> > Fixes: 273df864cf74 ("ima: Check against blacklisted hashes for files with modsig")
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > Cc: Nayna Jain <nayna@linux.ibm.com>
-> > ---
-> > 
-> > * v3
-> >    - New patch
-> > 
-> >   security/integrity/ima/ima_policy.c | 13 ++++++++++++-
-> >   1 file changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> > index 81da02071d41..9842e2e0bc6d 100644
-> > --- a/security/integrity/ima/ima_policy.c
-> > +++ b/security/integrity/ima/ima_policy.c
-> > @@ -1035,6 +1035,11 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
-> >   		return false;
-> >   	}
-> > +	/* Ensure that combinations of flags are compatible with each other */
-> > +	if (entry->flags & IMA_CHECK_BLACKLIST &&
-> > +	    !(entry->flags & IMA_MODSIG_ALLOWED))
-> > +		return false;
-> > +
-> >   	return true;
-> >   }
-> > @@ -1371,8 +1376,14 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
-> >   				result = -EINVAL;
-> >   			break;
-> >   		case Opt_appraise_flag:
-> > +			if (entry->action != APPRAISE) {
-> > +				result = -EINVAL;
-> > +				break;
-> > +			}
-> > +
-> >   			ima_log_string(ab, "appraise_flag", args[0].from);
-> > -			if (strstr(args[0].from, "blacklist"))
-> > +			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
-> > +			    strstr(args[0].from, "blacklist"))
-> >   				entry->flags |= IMA_CHECK_BLACKLIST;
-> 
-> If IMA_APPRAISE_MODSIG is disabled, it will allow the following rule to
-> load, which is not as expected.
-> 
-> "appraise func=xxx_CHECK appraise_flag=blacklist appraise_type=imasig"
-> 
-> Missing is the "else" condition to immediately reject the policy rule.
+> But it looks like it is the wrap clocks you are removing.
 
-Thanks for the review. You're right. This change is needed:
-
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 9842e2e0bc6d..cf3ddb38dfa8 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -1385,6 +1385,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
- 			    strstr(args[0].from, "blacklist"))
- 				entry->flags |= IMA_CHECK_BLACKLIST;
-+			else
-+				result = -EINVAL;
- 			break;
- 		case Opt_permit_directio:
- 			entry->flags |= IMA_PERMIT_DIRECTIO;
-
-
-Making this change does not conflict with any later patches in the
-series.
-
-Mimi, I've rebased and force pushed to my fixup branch with this change,
-for your comparison:
-
- https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/linux.git/log/?h=next-integrity-testing-fixup
-
-Tyler
+From this binding yes, but the idea is to add in the dt wherever clock
+responsible for the full ACLK path for instance.
+In the example below, clock aclk_isp is ACLK_ISP0_WRAPPER.
+Does this make sense?
 
 > 
-> Thanks & Regards,
+>>
+>> Also, for the isp0, we only need the ISP clock, ACLK and HCLK.
+>> In the future we'll need a pixel clock for RK3288 and RK3399, and a JPEG
+>> clock for RK3288.
+>>
+>> So with the goal to cleanup the dt-bindings and remove it from staging,
+>> simplify clock names to isp, aclk and hclk.
+>>
+>> For reference, this is the isp clock topology on RK3399:
+>>
+>>  xin24m
+>>     pll_npll
+>>        npll
+>>           clk_isp1
+>>           clk_isp0
+>>     pll_cpll
+>>        cpll
+>>           aclk_isp1
+>>              aclk_isp1_noc
+>>              hclk_isp1
+>>                 aclk_isp1_wrapper
+>>                 hclk_isp1_noc
+>>           aclk_isp0
+>>              hclk_isp1_wrapper
+>>              aclk_isp0_wrapper
+>>              aclk_isp0_noc
+>>              hclk_isp0
+>>                 hclk_isp0_wrapper
+>>                 hclk_isp0_noc
+>>  pclkin_isp1_wrapper
+>>
+>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+>>
+>> ---
+>>
+>> Changes in V4:
+>> - update binding according to suggestion by Robin Murphy
+>> on https://patchwork.kernel.org/patch/11475007/
+>>
+>> Changes in V3:
+>> - this is a new patch in the series
+>> ---
+>>  .../bindings/media/rockchip-isp1.yaml         | 30 +++++++++----------
+>>  drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 ++---
+>>  2 files changed, 17 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+>> index 4d111ef2e89c7..f10c53d008748 100644
+>> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+>> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+>> @@ -24,20 +24,20 @@ properties:
+>>      maxItems: 1
+>>
+>>    clocks:
+>> -    items:
+>> -      - description: ISP clock
+>> -      - description: ISP AXI clock clock
+>> -      - description: ISP AXI clock  wrapper clock
+>> -      - description: ISP AHB clock clock
+>> -      - description: ISP AHB wrapper clock
 > 
->      - Nayna
+> This is the correct way to describe multiple clocks.
+
+The idea was to prepare for rk3288 and rk3399 isp1, as suggested here https://patchwork.kernel.org/patch/11475007/#23462085
+
+Or should we do:
+
+clocks:
+  oneOf:
+    # rk3288 clocks
+    - items:
+      - description: ISP clock
+      - description: ISP AXI clock
+      - description: ISP AHB clock
+      - description: ISP Pixel clock
+      - description: ISP JPEG source clock
+    # rk3399 isp0 clocks
+    - items:
+      - description: ISP clock
+      - description: ISP AXI clock
+      - description: ISP AHB clock
+    # rk3399 isp1 clocks
+    - items:
+      - description: ISP clock
+      - description: ISP AXI clock
+      - description: ISP AHB clock
+      - description: ISP Pixel clock
+
+?
+
+
 > 
+>> +    maxItems: 5
+> 
+> Now the 4th and 5th clock are undefined.
+> 
+>> +    minItems: 3
+>> +    description:
+>> +      ISP clock
+>> +      ISP AXI clock
+>> +      ISP AHB clock
+>>
+>>    clock-names:
+>> +    maxItems: 5
+> 
+> This should not be more than the number of entries in 'items'.
+> 
+
+If we follow what I wrote above, should we have:
+
+    clock-names:
+      oneOf:
+        # rk3288 clocks
+        - items:
+          - const: clk_isp
+          - const: aclk_isp
+          - const: hclk_isp
+          - const: pclk_isp_in
+          - const: sclk_isp_jpe
+        # rk3399 isp0 clocks
+        - items:
+          - const: clk_isp
+          - const: aclk_isp
+          - const: hclk_isp
+        # rk3399 isp1 clocks
+        - items:
+          - const: clk_isp
+          - const: aclk_isp
+          - const: hclk_isp
+          - const: pclk_isp
+
+?
+
+Thanks
+Helen
+
+>> +    minItems: 3
+>>      items:
+>> -      - const: clk_isp
+>> -      - const: aclk_isp
+>> -      - const: aclk_isp_wrap
+>> -      - const: hclk_isp
+>> -      - const: hclk_isp_wrap
+>> +      - const: isp
+>> +      - const: aclk
+>> +      - const: hclk
+>>
+>>    iommus:
+>>      maxItems: 1
+>> @@ -135,11 +135,9 @@ examples:
+>>              reg = <0x0 0xff910000 0x0 0x4000>;
+>>              interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH 0>;
+>>              clocks = <&cru SCLK_ISP0>,
+>> -                     <&cru ACLK_ISP0>, <&cru ACLK_ISP0_WRAPPER>,
+>> -                     <&cru HCLK_ISP0>, <&cru HCLK_ISP0_WRAPPER>;
+>> -            clock-names = "clk_isp",
+>> -                          "aclk_isp", "aclk_isp_wrap",
+>> -                          "hclk_isp", "hclk_isp_wrap";
+>> +                     <&cru ACLK_ISP0_WRAPPER>,
+>> +                     <&cru HCLK_ISP0_WRAPPER>;
+>> +            clock-names = "isp", "aclk", "hclk";
+>>              iommus = <&isp0_mmu>;
+>>              phys = <&dphy>;
+>>              phy-names = "dphy";
+>> diff --git a/drivers/staging/media/rkisp1/rkisp1-dev.c b/drivers/staging/media/rkisp1/rkisp1-dev.c
+>> index f38801fea10d9..175ac25fe99fa 100644
+>> --- a/drivers/staging/media/rkisp1/rkisp1-dev.c
+>> +++ b/drivers/staging/media/rkisp1/rkisp1-dev.c
+>> @@ -406,11 +406,9 @@ static irqreturn_t rkisp1_isr(int irq, void *ctx)
+>>  }
+>>
+>>  static const char * const rk3399_isp_clks[] = {
+>> -       "clk_isp",
+>> -       "aclk_isp",
+>> -       "hclk_isp",
+>> -       "aclk_isp_wrap",
+>> -       "hclk_isp_wrap",
+>> +       "isp",
+>> +       "aclk",
+>> +       "hclk",
+>>  };
+>>
+>>  static const struct rkisp1_match_data rk3399_isp_clk_data = {
+>> --
+>> 2.26.0
+>>
