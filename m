@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB8E223108
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A06F22310B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgGQCJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 22:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S1726442AbgGQCMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 22:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgGQCJC (ORCPT
+        with ESMTP id S1726130AbgGQCMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 22:09:02 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DC2C061755;
-        Thu, 16 Jul 2020 19:09:02 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x9so4768764plr.2;
-        Thu, 16 Jul 2020 19:09:02 -0700 (PDT)
+        Thu, 16 Jul 2020 22:12:38 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86909C061755;
+        Thu, 16 Jul 2020 19:12:38 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id w34so6596688qte.1;
+        Thu, 16 Jul 2020 19:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=mQWYymg3Pd104pis2IhNsO9+PGw6QeS8PPO1z8GPhKU=;
-        b=Egxk7JOl9gTuD/ij8L5Z+QdUNjD6rS5I4dbUaFxT9YB/DO6NtUZ4GrFIvtDcgb/UiE
-         1g24XG/sAho5PkdtN6RIHDgPYGqpEQYDKgWhFClzNOrThg1Z680paSueuL1u3kARBAu2
-         fFfhEapKANjqVgXwmBpESUkBuKVEj8U3HabNAyl9ru+Jz6tTiJwAGKbIcmaa/6glLhjW
-         dYOzUVXh/k4GKD8jcN7qGadaW7PkTPBZKMgK0k0Vv4kZbkdGLKUZcUJVlTHVcrbah4Za
-         sXM8RIiEqsYMphf/2hu5z5oKSDn2+cDiA7h/233tUmB47TDl1780Kby+e/NDMRY5Enk9
-         P8fA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2to7PZ35DmNzJzcrbrv1v/mw1Q6DUkd154VCyr9iHYM=;
+        b=Z4QPo/np7cP3M1LqYu5EjVw0oGllxD1s2t1KkJVuTCJmjURgb5cyz7yy1NvEhOURrJ
+         9naR0/w2uRgXGnOo8iLGmMc/Sn3ZT1x8giUYE46Q1ibL0fGebeX5c6KQWHGkm7XhTI1A
+         AW0z9ZDFWii9yToprB4nv8HkRM/e9kDdoYI6A3AZwW+tyJ6kcXJsO76DqSBJR/7BeuC+
+         pjtJjqo1OEohXcmCogMcs8aICiLz37X0KVtUfhCt7FUmYxMc1SpNgSqL0y3KpMLFHK1a
+         m5+pLo8gXsKOjPPXxy2euZt5pIVLPtDICiWUCJFta9OYf/ZZqyoszNZlnG52lKUpOFRk
+         DbEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=mQWYymg3Pd104pis2IhNsO9+PGw6QeS8PPO1z8GPhKU=;
-        b=WlzqIRkRD1or3h0zDNDJf+W4tZxaFM2PYAAknzTWUcd3zGt81byCI9ILJPm9Q3K+hm
-         Igh/HnCBcfw29Lk5rzZxLDhze2AZ1Ailwe6NBzvP+O6UZHlt29HfZacDgvvEeZXlc20G
-         Uft0WSLal67nTgUww7HZPd/ClvrGM3jaap8KHnPB/PviVzePIwbPNBD/R/3YJU2WzvC0
-         jxvfe5D02qME2WWdRtg0k3Bti9xY8F0ORHG0YZuli7mzlgjGqnHK3WiTv42DxTfuEKjm
-         lKn87Y+kAReA2FHOraoD3CQJABGjkaklIRNI+Dtjttt5NWE23/4eFVeCg0SmBqUxwaq0
-         sFMw==
-X-Gm-Message-State: AOAM530K1iXF1kfIH/lQfcrud6iD07eyR0XG/PI7GQvGBCGE7r4DZIXP
-        4uNqOwCnAFPGiLnMJOlz3RfZPf7L
-X-Google-Smtp-Source: ABdhPJzP0xNtaCRHw3hyyHrEYTdSzBXrrQeWoDh62VLKiCP3NT+QW5A1sY59sdtOJ7DJOkumHrhkag==
-X-Received: by 2002:a17:902:c697:: with SMTP id r23mr6151150plx.35.1594951742115;
-        Thu, 16 Jul 2020 19:09:02 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id j17sm5888154pgn.87.2020.07.16.19.09.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2to7PZ35DmNzJzcrbrv1v/mw1Q6DUkd154VCyr9iHYM=;
+        b=nkNsyzg4VL4IzBBXcaWNpAE3T+BqjyVTfLQXfe7615bbwFqzJebGOV0oosmSN1ggsn
+         VQQNgu3/c9pUB4DIFZ4RPUjeOs4Vsl6cxqK3dF6fMUb0bbgyKDNSfyyNfVYzyXzVOhYO
+         TDzBfJztEtKIMqZ2sV2vdt6S3nxO71icwsML0IJJUanoeuN0lIqUdayPgYRkQgLStza+
+         Z/4Ge7Qil/qLrufjXStgavlyruwnL51r+KSlsF+blZfQh+nLucucimNXjcerEroYrYL6
+         8MTuMnt8NmhOT02QMh1qp8QlPxn6P53m/9BwFTUG0xwSQFb5K6LelaN6D9Jgk+zM33JF
+         IEfw==
+X-Gm-Message-State: AOAM532xTSz9t+Y43BqfeXFnJ+5PBVD9WYa0tFEILl/JyG+JjfREG1EP
+        ldkiS12wLGaeZhoO13lSAOg=
+X-Google-Smtp-Source: ABdhPJyL/IPCMF02mbDdmX6L6UIUmDWsfuLL612T41/Tr+CQ6HA3NtNqjsYig6nYlfN8cEZhnO1rvA==
+X-Received: by 2002:aed:2f46:: with SMTP id l64mr8237129qtd.1.1594951957365;
+        Thu, 16 Jul 2020 19:12:37 -0700 (PDT)
+Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id u20sm10432214qtj.39.2020.07.16.19.12.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 19:09:01 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 12:08:56 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v3 0/3] Off-load TLB invalidations to host for !GTSE
-To:     Bharata B Rao <bharata@linux.ibm.com>, Qian Cai <cai@lca.pw>
-Cc:     aneesh.kumar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, sfr@canb.auug.org.au
-References: <20200703053608.12884-1-bharata@linux.ibm.com>
-        <20200716172713.GA4565@lca.pw>
-In-Reply-To: <20200716172713.GA4565@lca.pw>
+        Thu, 16 Jul 2020 19:12:36 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 19:12:35 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "Neftin, Sasha" <sasha.neftin@intel.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Subject: Re: [Intel-wired-lan] [PATCH] igc: Do not use link uninitialized in
+ igc_check_for_copper_link
+Message-ID: <20200717021235.GA4098394@ubuntu-n2-xlarge-x86>
+References: <20200716044934.152364-1-natechancellor@gmail.com>
+ <cdfec63a-e51f-e1a6-aa60-6ca949338306@intel.com>
 MIME-Version: 1.0
-Message-Id: <1594950229.jn9ipe6td1.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cdfec63a-e51f-e1a6-aa60-6ca949338306@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Qian Cai's message of July 17, 2020 3:27 am:
-> On Fri, Jul 03, 2020 at 11:06:05AM +0530, Bharata B Rao wrote:
->> Hypervisor may choose not to enable Guest Translation Shootdown Enable
->> (GTSE) option for the guest. When GTSE isn't ON, the guest OS isn't
->> permitted to use instructions like tblie and tlbsync directly, but is
->> expected to make hypervisor calls to get the TLB flushed.
->>=20
->> This series enables the TLB flush routines in the radix code to
->> off-load TLB flushing to hypervisor via the newly proposed hcall
->> H_RPT_INVALIDATE.=20
->>=20
->> To easily check the availability of GTSE, it is made an MMU feature.
->> The OV5 handling and H_REGISTER_PROC_TBL hcall are changed to
->> handle GTSE as an optionally available feature and to not assume GTSE
->> when radix support is available.
->>=20
->> The actual hcall implementation for KVM isn't included in this
->> patchset and will be posted separately.
->>=20
->> Changes in v3
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> - Fixed a bug in the hcall wrapper code where we were missing setting
->>   H_RPTI_TYPE_NESTED while retrying the failed flush request with
->>   a full flush for the nested case.
->> - s/psize_to_h_rpti/psize_to_rpti_pgsize
->>=20
->> v2: https://lore.kernel.org/linuxppc-dev/20200626131000.5207-1-bharata@l=
-inux.ibm.com/T/#t
->>=20
->> Bharata B Rao (2):
->>   powerpc/mm: Enable radix GTSE only if supported.
->>   powerpc/pseries: H_REGISTER_PROC_TBL should ask for GTSE only if
->>     enabled
->>=20
->> Nicholas Piggin (1):
->>   powerpc/mm/book3s64/radix: Off-load TLB invalidations to host when
->>     !GTSE
->=20
-> Reverting the whole series fixed random memory corruptions during boot on
-> POWER9 PowerNV systems below.
+On Thu, Jul 16, 2020 at 07:29:03PM +0300, Neftin, Sasha wrote:
+> On 7/16/2020 07:49, Nathan Chancellor wrote:
+> > Clang warns:
+> > 
+> Hello Nathan,
+> Thanks for tracking our code.Please, look at https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20200709073416.14126-1-sasha.neftin@intel.com/
+> - I hope this patch already address this Clang warns - please, let me know.
 
-If I s/mmu_has_feature(MMU_FTR_GTSE)/(1)/g in radix_tlb.c, then the .o
-disasm is the same as reverting my patch.
+I have not explicitly tested it but it seems obvious that it will. Let's
+go with that.
 
-Feature bits not being set right? PowerNV should be pretty simple, seems
-to do the same as FTR_TYPE_RADIX.
+Cheers,
+Nathan
 
-So... test being done before static keys are set up? Shouldn't be. Must
-be something obvious I just can't see it.
-
-Thanks,
-Nick
-
+> > drivers/net/ethernet/intel/igc/igc_mac.c:374:6: warning: variable 'link'
+> > is used uninitialized whenever 'if' condition is true
+> > [-Wsometimes-uninitialized]
+> >          if (!mac->get_link_status) {
+> >              ^~~~~~~~~~~~~~~~~~~~~
+> > drivers/net/ethernet/intel/igc/igc_mac.c:424:33: note: uninitialized use
+> > occurs here
+> >          ret_val = igc_set_ltr_i225(hw, link);
+> >                                         ^~~~
+> > drivers/net/ethernet/intel/igc/igc_mac.c:374:2: note: remove the 'if' if
+> > its condition is always false
+> >          if (!mac->get_link_status) {
+> >          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/net/ethernet/intel/igc/igc_mac.c:367:11: note: initialize the
+> > variable 'link' to silence this warning
+> >          bool link;
+> >                   ^
+> >                    = 0
+> > 1 warning generated.
+> > 
+> > It is not wrong, link is only uninitialized after this through
+> > igc_phy_has_link. Presumably, if we skip the majority of this function
+> > when get_link_status is false, we should skip calling igc_set_ltr_i225
+> > as well. Just directly return 0 in this case, rather than bothering with
+> > adding another label or initializing link in the if statement.
+> > 
+> > Fixes: 707abf069548 ("igc: Add initial LTR support")
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1095
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > ---
+> >   drivers/net/ethernet/intel/igc/igc_mac.c | 6 ++----
+> >   1 file changed, 2 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/intel/igc/igc_mac.c b/drivers/net/ethernet/intel/igc/igc_mac.c
+> > index b47e7b0a6398..26e3c56a4a8b 100644
+> > --- a/drivers/net/ethernet/intel/igc/igc_mac.c
+> > +++ b/drivers/net/ethernet/intel/igc/igc_mac.c
+> > @@ -371,10 +371,8 @@ s32 igc_check_for_copper_link(struct igc_hw *hw)
+> >   	 * get_link_status flag is set upon receiving a Link Status
+> >   	 * Change or Rx Sequence Error interrupt.
+> >   	 */
+> > -	if (!mac->get_link_status) {
+> > -		ret_val = 0;
+> > -		goto out;
+> > -	}
+> > +	if (!mac->get_link_status)
+> > +		return 0;
+> >   	/* First we want to see if the MII Status Register reports
+> >   	 * link.  If so, then we want to get the current speed/duplex
+> > 
+> > base-commit: ca0e494af5edb59002665bf12871e94b4163a257
+> > 
+> Thanks,
+> Sasha
