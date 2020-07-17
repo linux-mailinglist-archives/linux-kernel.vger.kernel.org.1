@@ -2,85 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA59E223B88
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FF4223B8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgGQMlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 08:41:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53994 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgGQMlp (ORCPT
+        id S1726563AbgGQMob convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Jul 2020 08:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgGQMo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 08:41:45 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HCfcjF100377;
-        Fri, 17 Jul 2020 07:41:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594989699;
-        bh=vj22npkLr4ycyFgGKzlLVt7vMVT8zWr/amI8H6iFZQI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=NogMo+o2HUFESCsoW02P3oYMBGyiHhXx6KiFlXK35lo78CA6oTVTAgT3gtcK/GylT
-         SNgoUt8ibP4N2ywHMwhnHKy5sIb0NU1vWM+xa18XnCNvHG+9IV+QRIZ+VRCkSMrvJX
-         Wm4bi60O94NDgqc3oi35+yTTrXvdpS0tMqke2mA0=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06HCfcY1091351
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 07:41:38 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
- Jul 2020 07:41:38 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 17 Jul 2020 07:41:38 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HCfZup023969;
-        Fri, 17 Jul 2020 07:41:36 -0500
-Subject: Re: [PATCH next 6/6] dmaengine: ti: k3-udma: Switch to
- k3_ringacc_request_rings_pair
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <dmaengine@vger.kernel.org>
-References: <20200701103030.29684-1-grygorii.strashko@ti.com>
- <20200701103030.29684-7-grygorii.strashko@ti.com>
- <20200702125705.GB273932@vkoul-mobl>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <43ea4163-e477-ba55-9da0-c438fd46833b@ti.com>
-Date:   Fri, 17 Jul 2020 15:41:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 17 Jul 2020 08:44:29 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C79AC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:44:29 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jwPip-0000fy-Uy; Fri, 17 Jul 2020 14:44:15 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jwPik-0002HZ-6Q; Fri, 17 Jul 2020 14:44:10 +0200
+Date:   Fri, 17 Jul 2020 14:44:10 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     trix@redhat.com
+Cc:     robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de,
+        socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, ecathinds@gmail.com, lkp@intel.com,
+        bst@pengutronix.de, maxime.jayat@mobile-devices.fr,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org
+Subject: Re: [PATCH] can: j1939: fix double free in j1939_netdev_start
+Message-ID: <20200717124410.GA32124@pengutronix.de>
+References: <20200710134536.4399-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200702125705.GB273932@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200710134536.4399-1-trix@redhat.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:15:03 up 38 days, 20:41, 157 users,  load average: 0.23, 0.42,
+ 0.76
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tom,
 
-
-On 02/07/2020 15:57, Vinod Koul wrote:
-> On 01-07-20, 13:30, Grygorii Strashko wrote:
->> From: Peter Ujfalusi <peter.ujfalusi@ti.com>
->>
->> We only request ring pairs via K3 DMA driver, switch to use the new
->> k3_ringacc_request_rings_pair() to simplify the code.
+On Fri, Jul 10, 2020 at 06:45:36AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Acked-By: Vinod Koul <vkoul@kernel.org>
+> clang static analysis flags this error
 > 
+> j1939/main.c:292:2: warning: Attempt to free released memory [unix.Malloc]
+>         kfree(priv);
+>         ^~~~~~~~~~~
+> 
+> The problem block of code is
+> 
+> 	ret = j1939_can_rx_register(priv);
+> 	if (ret < 0)
+> 		goto out_priv_put;
+> 
+> 	return priv;
+> 
+>  out_priv_put:
+> 	j1939_priv_set(ndev, NULL);
+> 	dev_put(ndev);
+> 	kfree(priv);
+> 
+> When j1939_can_rx_register fails, it frees priv via the
+> j1939_priv_put release function __j1939_priv_release.
 
-There is build warn with this patch - sending v2.
+In j1939_can_rx_register()...
+
+| static int j1939_can_rx_register(struct j1939_priv *priv)
+| {
+| 	struct net_device *ndev = priv->ndev;
+| 	int ret;
+
+... the function in entered with ref counter == 1.
+(Due to kref_init(&priv->kref); in j1939_priv_create())
+
+|
+| 	j1939_priv_get(priv);
+
+... then the ref counter is increased by 1, resulting in 2.
+
+| 	ret = can_rx_register(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
+| 			      j1939_can_recv, priv, "j1939", NULL);
+| 	if (ret < 0) {
+| 		j1939_priv_put(priv);
+
+And in case of an error, the ref counter is decreased by one again.
+
+| 		return ret;
+| 	}
+|
+| 	return 0;
+| }
+
+So we cannot see why clang thinks the memory is double free()d.
+
+> Since j1939_priv_put is used widely, remove the second
+> free from j1939_netdev_start.
+
+We might replace the manual kfree() and dev_put() by the dropping the
+last ref count and rely on the automatic cleanup.
+
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  net/can/j1939/main.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index 137054bff9ec..991a74bc491b 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -289,7 +289,6 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+>   out_priv_put:
+>  	j1939_priv_set(ndev, NULL);
+>  	dev_put(ndev);
+> -	kfree(priv);
+>  
+>  	return ERR_PTR(ret);
+>  }
+
+regards,
+Oleksij & Marc
 
 -- 
-Best regards,
-grygorii
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
