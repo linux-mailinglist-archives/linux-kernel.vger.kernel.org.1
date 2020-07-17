@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE407223F85
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEE7223F8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgGQPX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgGQPX4 (ORCPT
+        id S1726968AbgGQPZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:25:12 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:35170 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgGQPZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:23:56 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BB5C0619D2;
-        Fri, 17 Jul 2020 08:23:56 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z15so11549927wrl.8;
-        Fri, 17 Jul 2020 08:23:56 -0700 (PDT)
+        Fri, 17 Jul 2020 11:25:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=39DVA3zqy37IA1tKd3smKZZk/q+1H0Y80MNeTQy6wDg=;
-        b=q0JS/OC1B255AdaCCWqQNQayVvqv5EUvuPT8M+lfPx36BqKJqgvYV872My5IIL+DUK
-         LjL2zlx5tLK/LAvwMguh9vqy4Ez9gZ8U0/MuEUvVY6Zk6yYF9I288OyGNO45HrW/90ro
-         UvQsfg2DSShKfuUR5iknLsvfL/D7w1jhtr7WMdY6xmU19sm3gv1Bc3Bz+/IFOkB/lkVU
-         7DHa6nqh4Bpg2KzK1E4pBrss2T9V1QNAVQhw24Z+oWwE6HlM5L2ac1injmC0kv5F4K35
-         1xBTwWTHB3Qp0kya1kP65sBDWxunJUyd4awg8Ik0RT2Z3GOU5NLZZRwC8MQRUqC3QZQO
-         49eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=39DVA3zqy37IA1tKd3smKZZk/q+1H0Y80MNeTQy6wDg=;
-        b=I4xxxvZr1xAITL9noG6ERnugHihdy6WGSSJ0aBZeDQn2rGEghJxdAng9h4L/yvLJRR
-         El6C06mwKINKD77Pul/d+NT1cHmoWSxWCwSGFLHDvFmRPZOuH0I5YHxQxC9+ckIlDda/
-         NAs/v43cPIceASrwvESQluPehL3e6dp/7E7BaE8h29q/o4SN/zTO4KrQaVs4JdsYXbd7
-         V/rgT0f75hp8OL9eMMfVnfYG4XDGGxaOpxZS/9P8/tvmmOUafZQ+/P4VMZcLUXOUfpFd
-         N4Zi1PRULh3/iJroEXgVBV1M5ymKUWFt7EvJRcQ2hczcuwrhymZSGuwfR5gxmmierWBF
-         g4JQ==
-X-Gm-Message-State: AOAM531ruGKuJ8d7nNh3Pe6oPgsfbpBzd3bXSKkyTeYtxTr2G+YX+LCj
-        6oqKOFmtG+vNUPNTk8EaEejb829U
-X-Google-Smtp-Source: ABdhPJyDn/SGGx7/ByOEJUVhCesU8Opuj9JlfNcuFNT0Mi1OfvwomuMRL+gAepJHsnl3MtWV4FN12w==
-X-Received: by 2002:adf:db4d:: with SMTP id f13mr10698179wrj.336.1594999434093;
-        Fri, 17 Jul 2020 08:23:54 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id a22sm13431051wmb.4.2020.07.17.08.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 08:23:53 -0700 (PDT)
-From:   Al Cooper <alcooperx@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Sasi Kumar <sasi.kumar@broadcom.com>
-Subject: [PATCH 7/7] usb: bdc: Use devm_clk_get_optional()
-Date:   Fri, 17 Jul 2020 11:23:07 -0400
-Message-Id: <20200717152307.36705-8-alcooperx@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717152307.36705-1-alcooperx@gmail.com>
-References: <20200717152307.36705-1-alcooperx@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594999511; x=1626535511;
+  h=from:to:cc:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=G75k//OFjohU38ZgosvGO5q8OosY9IuKew7WVhx6Up0=;
+  b=PJ51StK5n5n5riZrPRdrzzapaPbfapbNVDZziuPhAB16s83gqH/3Njk3
+   lHCRLd5AYa4SY3mnzVN3tJ1gVRakT+gJl7yM0PbFAXYlMxqpuvKcrfR/i
+   BPCIaXV9Nq8o1T9wdvgE7m1OJo7HA/wa/CuM+dIPzReCzBc7YShM+MjyN
+   E=;
+IronPort-SDR: e1//RxWVXOsjAC65SEGU+2scnm0JZMIo9PmeGqu5BZ40eJge8dvUXtQP4wXhIddTnkvYQT8Csp
+ G3oOG+K11Mog==
+X-IronPort-AV: E=Sophos;i="5.75,362,1589241600"; 
+   d="scan'208";a="52415837"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-f273de60.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 17 Jul 2020 15:25:09 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-f273de60.us-east-1.amazon.com (Postfix) with ESMTPS id 32E86A261C;
+        Fri, 17 Jul 2020 15:25:07 +0000 (UTC)
+Received: from EX13D21UWB002.ant.amazon.com (10.43.161.177) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 17 Jul 2020 15:25:06 +0000
+Received: from EX13D02UWC001.ant.amazon.com (10.43.162.243) by
+ EX13D21UWB002.ant.amazon.com (10.43.161.177) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 17 Jul 2020 15:25:06 +0000
+Received: from EX13D02UWC001.ant.amazon.com ([10.43.162.243]) by
+ EX13D02UWC001.ant.amazon.com ([10.43.162.243]) with mapi id 15.00.1497.006;
+ Fri, 17 Jul 2020 15:25:06 +0000
+From:   "Saidi, Ali" <alisaidi@amazon.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "Herrenschmidt, Benjamin" <benh@amazon.com>,
+        Ali Saidi <aliaidi@amazon.com>, Marc Zyngier <maz@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] genirq/affinity: Handle affinity setting on inactive
+ interrupts correctly
+Thread-Topic: [PATCH] genirq/affinity: Handle affinity setting on inactive
+ interrupts correctly
+Thread-Index: AQHWXE5yOF+Kj67jZUWJl7gBhLLD9A==
+Date:   Fri, 17 Jul 2020 15:25:05 +0000
+Message-ID: <BBA90891-8A4A-4A39-BF51-13EECDE414F1@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.34]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <84714F54C0845F43865AFD07549EBBE3@amazon.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-
-The BDC clock is optional and we may get an -EPROBE_DEFER error code
-which would not be propagated correctly, fix this by using
-devm_clk_get_optional().
-
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
- drivers/usb/gadget/udc/bdc/bdc_core.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
-index ac989adefe9d..5d8bd9129365 100644
---- a/drivers/usb/gadget/udc/bdc/bdc_core.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
-@@ -497,11 +497,9 @@ static int bdc_probe(struct platform_device *pdev)
- 
- 	dev_dbg(dev, "%s()\n", __func__);
- 
--	clk = devm_clk_get(dev, "sw_usbd");
--	if (IS_ERR(clk)) {
--		dev_info(dev, "Clock not found in Device Tree\n");
--		clk = NULL;
--	}
-+	clk = devm_clk_get_optional(dev, "sw_usbd");
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
- 
- 	ret = clk_prepare_enable(clk);
- 	if (ret) {
--- 
-2.17.1
-
+DQrvu79PbiA3LzE3LzIwLCA5OjAwIEFNLCAiVGhvbWFzIEdsZWl4bmVyIiA8dGdseEBsaW51dHJv
+bml4LmRlPiB3cm90ZToNCg0KICAgIFNldHRpbmcgaW50ZXJydXB0IGFmZmluaXR5IG9uIGluYWN0
+aXZlIGludGVycnVwdHMgaXMgaW5jb25zaXN0ZW50IHdoZW4NCiAgICBoaWVyYXJjaGljYWwgaXJx
+IGRvbWFpbnMgYXJlIGVuYWJsZWQuIFRoZSBjb3JlIGNvZGUgc2hvdWxkIGp1c3Qgc3RvcmUgdGhl
+DQogICAgYWZmaW5pdHkgYW5kIG5vdCBjYWxsIGludG8gdGhlIGlycSBjaGlwIGRyaXZlciBmb3Ig
+aW5hY3RpdmUgaW50ZXJydXB0cw0KICAgIGJlY2F1c2UgdGhlIGNoaXAgZHJpdmVycyBtYXkgbm90
+IGJlIGluIGEgc3RhdGUgdG8gaGFuZGxlIHN1Y2ggcmVxdWVzdHMuDQoNCiAgICBYODYgaGFzIGEg
+aGFja3kgd29ya2Fyb3VuZCBmb3IgdGhhdCBidXQgYWxsIG90aGVyIGlycSBjaGlwcyBoYXZlIG5v
+dCB3aGljaA0KICAgIGNhdXNlcyBwcm9ibGVtcyBlLmcuIG9uIEdJQyBWMyBJVFMuDQoNCiAgICBJ
+bnN0ZWFkIG9mIGFkZGluZyBtb3JlIHVnbHkgaGFja3MgYWxsIG92ZXIgdGhlIHBsYWNlLCBzb2x2
+ZSB0aGUgcHJvYmxlbSBpbg0KICAgIHRoZSBjb3JlIGNvZGUuIElmIHRoZSBhZmZpbml0eSBpcyBz
+ZXQgb24gYW4gaW5hY3RpdmUgaW50ZXJydXB0IHRoZW46DQoNCiAgICAgICAgLSBTdG9yZSBpdCBp
+biB0aGUgaXJxIGRlc2NyaXB0b3JzIGFmZmluaXR5IG1hc2sNCiAgICAgICAgLSBVcGRhdGUgdGhl
+IGVmZmVjdGl2ZSBhZmZpbml0eSB0byByZWZsZWN0IHRoYXQgc28gdXNlciBzcGFjZSBoYXMNCiAg
+ICAgICAgICBhIGNvbnNpc3RlbnQgdmlldw0KICAgICAgICAtIERvbid0IGNhbGwgaW50byB0aGUg
+aXJxIGNoaXAgZHJpdmVyDQoNCiAgICBUaGlzIGlzIHRoZSBjb3JlIGVxdWl2YWxlbnQgb2YgdGhl
+IFg4NiB3b3JrYXJvdW5kIGFuZCB3b3JrcyBjb3JyZWN0bHkNCiAgICBiZWNhdXNlIHRoZSBhZmZp
+bml0eSBzZXR0aW5nIGlzIGVzdGFibGlzaGVkIGluIHRoZSBpcnEgY2hpcCB3aGVuIHRoZQ0KICAg
+IGludGVycnVwdCBpcyBhY3RpdmF0ZWQgbGF0ZXIgb24uDQoNCiAgICBOb3RlLCB0aGF0IHRoaXMg
+aXMgb25seSBlZmZlY3RpdmUgd2hlbiBoaWVyYXJjaGljYWwgaXJxIGRvbWFpbnMgYXJlIGVuYWJs
+ZWQNCiAgICBieSB0aGUgYXJjaGl0ZWN0dXJlLiBEb2luZyBpdCB1bmNvbmRpdGlvbmFsbHkgd291
+bGQgYnJlYWsgbGVnYWN5IGlycSBjaGlwDQogICAgaW1wbGVtZW50YXRpb25zLg0KDQogICAgRm9y
+IGhpZXJhcmNoaWFsIGlycSBkb21haW5zIHRoaXMgd29ya3MgY29ycmVjdGx5IGFzIG5vbmUgb2Yg
+dGhlIGRyaXZlcnMgY2FuDQogICAgaGF2ZSBhIGRlcGVuZGVuY3kgb24gYWZmaW5pdHkgc2V0dGlu
+ZyBpbiBpbmFjdGl2ZSBzdGF0ZSBieSBkZXNpZ24uDQoNCiAgICBSZW1vdmUgdGhlIFg4NiB3b3Jr
+YXJvdW5kIGFzIGl0IGlzIG5vdCBsb25nZXIgcmVxdWlyZWQuDQoNCiAgICBGaXhlczogMDJlZGVl
+MTUyZDZlICgieDg2L2FwaWMvdmVjdG9yOiBJZ25vcmUgc2V0X2FmZmluaXR5IGNhbGwgZm9yIGlu
+YWN0aXZlIGludGVycnVwdHMiKQ0KICAgIFJlcG9ydGVkLWJ5OiBBbGkgU2FpZGkgPGFsaXNhaWRp
+QGFtYXpvbi5jb20+DQogICAgU2lnbmVkLW9mZi1ieTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxp
+bnV0cm9uaXguZGU+DQogICAgQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCiAgICBMaW5rOiBo
+dHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjAwNTI5MDE1NTAxLjE1NzcxLTEtYWxpc2FpZGlA
+YW1hem9uLmNvbQ0KICAgIC0tLQ0KICAgIA0KDQpUZXN0ZWQgb24gYW4gYXJtNjQgc3lzdGVtIHRo
+YXQgb3JpZ2luYWxseSBleHBlcmllbmNlZCB0aGUgaXNzdWUgYW5kIGNvdWxkbid0IHJlcHJvZHVj
+ZSBpdCB3aXRoIHRoaXMgcGF0Y2guDQpUZXN0ZWQtYnk6IEFsaSBTYWlkaSA8YWxpc2FpZGlAYW1h
+em9uLmNvbT4NCg0KVGhhbmtzLA0KQWxpDQoNCg0K
