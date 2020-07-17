@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2C822317C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A946223169
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgGQDGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:06:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:22993 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726593AbgGQDGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:06:05 -0400
-X-UUID: a93f6aa0536b4f93be16a4f7b5ac21cd-20200717
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=CSw11oLawBPErUprkvFsJtdwknxu/qYAQm+6ktkLuU0=;
-        b=juOxDc14sJeJsQmiUgBVLaY3jl/kQIf0jd3/AYi/RGQvMYOhGS6e9tS9IVfjK6M78HbXH8hqmlK9XKnSJA7ODklfeOyZB3akFJ+l9ANuNJJn3Z/xYcTK56uWl1PiQq82zF3tvKmAnxSNnxPTKBW1J5Y7KSq2NsPZo0CPBp1Y6bs=;
-X-UUID: a93f6aa0536b4f93be16a4f7b5ac21cd-20200717
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <huihui.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1127657063; Fri, 17 Jul 2020 11:06:02 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Jul 2020 11:05:29 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Jul 2020 11:05:26 +0800
-From:   Huihui Wang <huihui.wang@mediatek.com>
-To:     Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, huihui wang <huihui.wang@mediatek.com>
-Subject: [PATCH v1 2/2] dma: mediatek: dma address bits config with compatible data
-Date:   Fri, 17 Jul 2020 11:02:05 +0800
-Message-ID: <20200717030203.14872-3-huihui.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200717030203.14872-1-huihui.wang@mediatek.com>
-References: <20200717030203.14872-1-huihui.wang@mediatek.com>
+        id S1727042AbgGQDEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:04:32 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14919 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726974AbgGQDEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 23:04:30 -0400
+IronPort-SDR: b3blxDvRhfJHNUTWuTdPHLPiBNJ0g3hLtG8K8IEXthPr97TmtYzFVD4b+r374VSFEjBcdGp7qJ
+ uisAPJp9Et+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="211069863"
+X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
+   d="scan'208";a="211069863"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:29 -0700
+IronPort-SDR: nTyYsXHs1ccWJhVZoUr8ico2KHUgm+9UgLYhZmUZdJ3K/MDlYJGfmOi3p2Z0530AAQM5EgqY1J
+ IdiukOIk1LQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
+   d="scan'208";a="282657992"
+Received: from pgerasim-mobl1.ccr.corp.intel.com (HELO localhost) ([10.249.34.31])
+  by orsmga003.jf.intel.com with ESMTP; 16 Jul 2020 20:04:27 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH v4 0/7] arch/x86: kprobes: Remove MODULES dependency
+Date:   Fri, 17 Jul 2020 06:04:14 +0300
+Message-Id: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 498D7E9EE804C783BF0F34416D3037089D0916A265142A72B1D3420E8F9ACDE72000:8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogaHVpaHVpIHdhbmcgPGh1aWh1aS53YW5nQG1lZGlhdGVrLmNvbT4NCg0KMS5MZWdhY3kg
-aW1wbGVtZW50IG9ubHkgc3VwcG9ydCAzMyBiaXRzIGFkZHJlc3MsDQp3ZSBjaGFuZ2UgdGhlIHNv
-bHV0aW9uIHRvIHN1cHBvcnQgYW55IHdpZHRoIGFkZHJlc3MuDQoNCjIuRE1BIGFkZHJlc3MgYml0
-cyBpcyB2ZXJ5IGRldGFpbCBpbmZvcm1hdGlvbiwNCmFuZCBpdCBpcyBub3QgcHJvcGVyIHRvIGNv
-bmZpZyBpbiBkZXZpY2UgdHJlZS4NClNvIHdlIG1vdmUgaXQgaW50byBtdGtfdWFydF9hcGRtYS5j
-LA0KYW5kIGNvbmZpZyBpdCBieSBjb21wYXRpYmxlIGRhdGEuDQoNClNpZ25lZC1vZmYtYnk6IGh1
-aWh1aSB3YW5nIDxodWlodWkud2FuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL2RtYS9t
-ZWRpYXRlay9tdGstdWFydC1hcGRtYS5jIHwgNTUgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
-DQogMSBmaWxlIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9ucygtKQ0KDQpk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9kbWEvbWVkaWF0ZWsvbXRrLXVhcnQtYXBkbWEuYyBiL2RyaXZl
-cnMvZG1hL21lZGlhdGVrL210ay11YXJ0LWFwZG1hLmMNCmluZGV4IDI5ZjEyMjNiMjg1YS4uOWMw
-ODBmOTkxN2E3IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9kbWEvbWVkaWF0ZWsvbXRrLXVhcnQtYXBk
-bWEuYw0KKysrIGIvZHJpdmVycy9kbWEvbWVkaWF0ZWsvbXRrLXVhcnQtYXBkbWEuYw0KQEAgLTMx
-LDcgKzMxLDYgQEANCiAjZGVmaW5lIFZGRl9FTl9CCQlCSVQoMCkNCiAjZGVmaW5lIFZGRl9TVE9Q
-X0IJCUJJVCgwKQ0KICNkZWZpbmUgVkZGX0ZMVVNIX0IJCUJJVCgwKQ0KLSNkZWZpbmUgVkZGXzRH
-X0VOX0IJCUJJVCgwKQ0KIC8qIHJ4IHZhbGlkIHNpemUgPj0gIHZmZiB0aHJlICovDQogI2RlZmlu
-ZSBWRkZfUlhfSU5UX0VOX0IJCShCSVQoMCkgfCBCSVQoMSkpDQogLyogdHggbGVmdCBzaXplID49
-IHZmZiB0aHJlICovDQpAQCAtNDMsNyArNDIsNyBAQA0KICNkZWZpbmUgVkZGX0VOX0NMUl9CCQkw
-DQogI2RlZmluZSBWRkZfSU5UX0VOX0NMUl9CCTANCiAjZGVmaW5lIFZGRl80R19TVVBQT1JUX0NM
-Ul9CCTANCi0NCisjZGVmaW5lIFZGRl9PUklfQUREUl9CSVRTX05VTSAgICAzMg0KIC8qDQogICog
-aW50ZXJydXB0IHRyaWdnZXIgbGV2ZWwgZm9yIHR4DQogICogaWYgdGhyZXNob2xkIGlzIG4sIG5v
-IHBvbGxpbmcgaXMgcmVxdWlyZWQgdG8gc3RhcnQgdHguDQpAQCAtNzUsMTAgKzc0LDE0IEBADQog
-I2RlZmluZSBWRkZfREVCVUdfU1RBVFVTCTB4NTANCiAjZGVmaW5lIFZGRl80R19TVVBQT1JUCQkw
-eDU0DQogDQorc3RydWN0IG10a191YXJ0X2FwZG1hY29tcCB7DQorCXVuc2lnbmVkIGludCBhZGRy
-X2JpdHM7DQorfTsNCisNCiBzdHJ1Y3QgbXRrX3VhcnRfYXBkbWFkZXYgew0KIAlzdHJ1Y3QgZG1h
-X2RldmljZSBkZGV2Ow0KIAlzdHJ1Y3QgY2xrICpjbGs7DQotCWJvb2wgc3VwcG9ydF8zM2JpdHM7
-DQorCXVuc2lnbmVkIGludCBzdXBwb3J0X2JpdHM7DQogCXVuc2lnbmVkIGludCBkbWFfcmVxdWVz
-dHM7DQogfTsNCiANCkBAIC0xNTIsOCArMTU1LDkgQEAgc3RhdGljIHZvaWQgbXRrX3VhcnRfYXBk
-bWFfc3RhcnRfdHgoc3RydWN0IG10a19jaGFuICpjKQ0KIAkJbXRrX3VhcnRfYXBkbWFfd3JpdGUo
-YywgVkZGX1dQVCwgMCk7DQogCQltdGtfdWFydF9hcGRtYV93cml0ZShjLCBWRkZfSU5UX0ZMQUcs
-IFZGRl9UWF9JTlRfQ0xSX0IpOw0KIA0KLQkJaWYgKG10a2QtPnN1cHBvcnRfMzNiaXRzKQ0KLQkJ
-CW10a191YXJ0X2FwZG1hX3dyaXRlKGMsIFZGRl80R19TVVBQT1JULCBWRkZfNEdfRU5fQik7DQor
-CQlpZiAobXRrZC0+c3VwcG9ydF9iaXRzID4gVkZGX09SSV9BRERSX0JJVFNfTlVNKQ0KKwkJCW10
-a191YXJ0X2FwZG1hX3dyaXRlKGMsIFZGRl80R19TVVBQT1JULA0KKwkJCQkJICAgICB1cHBlcl8z
-Ml9iaXRzKGQtPmFkZHIpKTsNCiAJfQ0KIA0KIAltdGtfdWFydF9hcGRtYV93cml0ZShjLCBWRkZf
-RU4sIFZGRl9FTl9CKTsNCkBAIC0xOTUsOCArMTk5LDkgQEAgc3RhdGljIHZvaWQgbXRrX3VhcnRf
-YXBkbWFfc3RhcnRfcngoc3RydWN0IG10a19jaGFuICpjKQ0KIAkJbXRrX3VhcnRfYXBkbWFfd3Jp
-dGUoYywgVkZGX1JQVCwgMCk7DQogCQltdGtfdWFydF9hcGRtYV93cml0ZShjLCBWRkZfSU5UX0ZM
-QUcsIFZGRl9SWF9JTlRfQ0xSX0IpOw0KIA0KLQkJaWYgKG10a2QtPnN1cHBvcnRfMzNiaXRzKQ0K
-LQkJCW10a191YXJ0X2FwZG1hX3dyaXRlKGMsIFZGRl80R19TVVBQT1JULCBWRkZfNEdfRU5fQik7
-DQorCQlpZiAobXRrZC0+c3VwcG9ydF9iaXRzID4gVkZGX09SSV9BRERSX0JJVFNfTlVNKQ0KKwkJ
-CW10a191YXJ0X2FwZG1hX3dyaXRlKGMsIFZGRl80R19TVVBQT1JULA0KKwkJCQkJICAgICB1cHBl
-cl8zMl9iaXRzKGQtPmFkZHIpKTsNCiAJfQ0KIA0KIAltdGtfdWFydF9hcGRtYV93cml0ZShjLCBW
-RkZfSU5UX0VOLCBWRkZfUlhfSU5UX0VOX0IpOw0KQEAgLTI5Niw3ICszMDEsNyBAQCBzdGF0aWMg
-aW50IG10a191YXJ0X2FwZG1hX2FsbG9jX2NoYW5fcmVzb3VyY2VzKHN0cnVjdCBkbWFfY2hhbiAq
-Y2hhbikNCiAJCXJldHVybiAtRUlOVkFMOw0KIAl9DQogDQotCWlmIChtdGtkLT5zdXBwb3J0XzMz
-Yml0cykNCisJaWYgKG10a2QtPnN1cHBvcnRfYml0cyA+IFZGRl9PUklfQUREUl9CSVRTX05VTSkN
-CiAJCW10a191YXJ0X2FwZG1hX3dyaXRlKGMsIFZGRl80R19TVVBQT1JULCBWRkZfNEdfU1VQUE9S
-VF9DTFJfQik7DQogDQogCXJldHVybiByZXQ7DQpAQCAtNDY1LDggKzQ3MCwxNCBAQCBzdGF0aWMg
-dm9pZCBtdGtfdWFydF9hcGRtYV9mcmVlKHN0cnVjdCBtdGtfdWFydF9hcGRtYWRldiAqbXRrZCkN
-CiAJfQ0KIH0NCiANCitzdGF0aWMgY29uc3Qgc3RydWN0IG10a191YXJ0X2FwZG1hY29tcCBtdDY3
-NzlfY29tcCA9IHsNCisJLmFkZHJfYml0cyA9IDM0DQorfTsNCisNCiBzdGF0aWMgY29uc3Qgc3Ry
-dWN0IG9mX2RldmljZV9pZCBtdGtfdWFydF9hcGRtYV9tYXRjaFtdID0gew0KLQl7IC5jb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10NjU3Ny11YXJ0LWRtYSIsIH0sDQorCXsgLmNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ2NTc3LXVhcnQtZG1hIiwgLmRhdGEgPSBOVUxMfSwNCisJeyAuY29tcGF0aWJs
-ZSA9ICJtZWRpYXRlayxtdDI3MTItdWFydC1kbWEiLCAuZGF0YSA9IE5VTEx9LA0KKwl7IC5jb21w
-YXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS11YXJ0LWRtYSIsIC5kYXRhID0gJm10Njc3OV9jb21w
-fSwNCiAJeyAvKiBzZW50aW5lbCAqLyB9LA0KIH07DQogTU9EVUxFX0RFVklDRV9UQUJMRShvZiwg
-bXRrX3VhcnRfYXBkbWFfbWF0Y2gpOw0KQEAgLTQ3NSw5ICs0ODYsMTAgQEAgc3RhdGljIGludCBt
-dGtfdWFydF9hcGRtYV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIHsNCiAJ
-c3RydWN0IGRldmljZV9ub2RlICpucCA9IHBkZXYtPmRldi5vZl9ub2RlOw0KIAlzdHJ1Y3QgbXRr
-X3VhcnRfYXBkbWFkZXYgKm10a2Q7DQotCWludCBiaXRfbWFzayA9IDMyLCByYzsNCisJaW50IHJj
-Ow0KIAlzdHJ1Y3QgbXRrX2NoYW4gKmM7DQogCXVuc2lnbmVkIGludCBpOw0KKwljb25zdCBzdHJ1
-Y3QgbXRrX3VhcnRfYXBkbWFjb21wICpjb21wOw0KIA0KIAltdGtkID0gZGV2bV9remFsbG9jKCZw
-ZGV2LT5kZXYsIHNpemVvZigqbXRrZCksIEdGUF9LRVJORUwpOw0KIAlpZiAoIW10a2QpDQpAQCAt
-NDkwLDEzICs1MDIsMjYgQEAgc3RhdGljIGludCBtdGtfdWFydF9hcGRtYV9wcm9iZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIAkJcmV0dXJuIHJjOw0KIAl9DQogDQotCWlmIChvZl9w
-cm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJtZWRpYXRlayxkbWEtMzNiaXRzIikpDQotCQltdGtkLT5z
-dXBwb3J0XzMzYml0cyA9IHRydWU7DQorCWNvbXAgPSBvZl9kZXZpY2VfZ2V0X21hdGNoX2RhdGEo
-JnBkZXYtPmRldik7DQorCWlmICghY29tcCkgew0KKwkJLypJbiBvcmRlciB0byBjb21wYXRpYWJs
-ZSB3aXRoIGxlZ2FjeSBkZXZpY2UgdHJlZSBmaWxlKi8NCisJCWRldl9pbmZvKCZwZGV2LT5kZXYs
-DQorCQkJICJObyBjb21wYXRpYWJsZSwgdXNpbmcgRFRTIGNvbmZpZ3VyYXRpb25cbiIpOw0KKw0K
-KwkJaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChwZGV2LT5kZXYub2Zfbm9kZSwNCisJCQkJCSAg
-Im1lZGlhdGVrLGRtYS0zM2JpdHMiKSkgew0KKwkJCW10a2QtPnN1cHBvcnRfYml0cyA9IDMzOw0K
-KwkJfQ0KKw0KKwl9IGVsc2Ugew0KKwkJbXRrZC0+c3VwcG9ydF9iaXRzID0gY29tcC0+YWRkcl9i
-aXRzOw0KKwl9DQogDQotCWlmIChtdGtkLT5zdXBwb3J0XzMzYml0cykNCi0JCWJpdF9tYXNrID0g
-MzM7DQorCWRldl9pbmZvKCZwZGV2LT5kZXYsDQorCQkgIkRNQSBhZGRyZXNzIGJpdHM6ICVkXG4i
-LCAgbXRrZC0+c3VwcG9ydF9iaXRzKTsNCiANCi0JcmMgPSBkbWFfc2V0X21hc2tfYW5kX2NvaGVy
-ZW50KCZwZGV2LT5kZXYsIERNQV9CSVRfTUFTSyhiaXRfbWFzaykpOw0KKwlyYyA9IGRtYV9zZXRf
-bWFza19hbmRfY29oZXJlbnQoJnBkZXYtPmRldiwNCisJCQkJICAgICAgIERNQV9CSVRfTUFTSyht
-dGtkLT5zdXBwb3J0X2JpdHMpKTsNCiAJaWYgKHJjKQ0KIAkJcmV0dXJuIHJjOw0KIA0KLS0gDQoy
-LjE4LjANCg==
+Remove MODULES dependency by migrating from module_alloc() to the new
+text_alloc() API. Essentially these changes provide preliminaries for
+allowing to compile a static kernel with a proper tracing support.
+
+The same API can be used later on in other sites that allocate space for
+trampolines, and trivially scaled to other arch's. An arch can inform
+with CONFIG_ARCH_HAS_TEXT_ALLOC that it's providing implementation for
+text_alloc().
+
+I tested this by creating a trivial (x86_64_defconfig) kernel and initrd
+(BusyBox) and then run the most basic kprobe:
+
+# ./kprobe p:do_sys_open
+Tracing kprobe do_sys_open. Ctrl-C to end.
+             cat-1018  [000] ....   277.635966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.635966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.636966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.640966: do_sys_open: (do_sys_open+0x0/0x80)
+             cat-1018  [000] ....   277.654963: do_sys_open: (do_sys_open+0x0/0x80)
+
+I did only "sed -i 's/=m/=y/' .config" and disabled CONFIG_MODULES. The
+test was run under QEMU:
+
+qemu-system-x86_64 -kernel output/images/bzImage  \
+-m 1G -initrd output/images/rootfs.cpio \
+-append "root=/dev/sda rw console=ttyS0,115200 acpi=off nokaslr" \
+-serial stdio -display none
+
+v3:
+* Make text_alloc() API disjoint.
+* Remove all the possible extra clutter not absolutely required and
+  split into more logical pieces.
+
+Jarkko Sakkinen (7):
+  module: Add lock_modules() and unlock_modules()
+  kprobes: Use lock_modules() and unlock_modules()
+  vmalloc: Add text_alloc() and text_free()
+  arch/x86: Implement text_alloc() and text_free()
+  arch/x86: kprobes: Use text_alloc() in alloc_insn_page()
+  kprobes: Use text_alloc() and text_free()
+  kprobes: Flag out CONFIG_MODULES dependent code
+
+ arch/Kconfig                   |  2 +-
+ arch/x86/Kconfig               |  3 ++
+ arch/x86/kernel/Makefile       |  1 +
+ arch/x86/kernel/kprobes/core.c |  8 +----
+ arch/x86/kernel/text_alloc.c   | 41 ++++++++++++++++++++++++
+ include/linux/module.h         | 32 ++++++++++++++-----
+ include/linux/vmalloc.h        | 23 ++++++++++++++
+ kernel/kprobes.c               | 57 +++++++++++++++++++++-------------
+ kernel/trace/trace_kprobe.c    | 20 +++++++++---
+ 9 files changed, 146 insertions(+), 41 deletions(-)
+ create mode 100644 arch/x86/kernel/text_alloc.c
+
+-- 
+2.25.1
 
