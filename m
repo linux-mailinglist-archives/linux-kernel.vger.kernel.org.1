@@ -2,157 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A03D22363A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47945223633
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgGQHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728050AbgGQHvo (ORCPT
+        id S1728164AbgGQHuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:50:19 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:48577 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgGQHuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:51:44 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A520C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:44 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x9so5120751plr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zNW9uGCCyuNVj0zzY42fxPcN6t0OrV/LrjNayMGPkQU=;
-        b=VzTODCjH9JpZgBV2q+hOkDevdJ48kMuEhf5B5qyChStHn1ij1kJSK8BljZ+qDpoUkg
-         yseIQ2cKFjHldhbr1a1xNxv8qm+ptqRBM+5M8oDrgls6NrRhnOIlRJ61cggS8/9e+Osg
-         ndn4P+pguRaQCq6yzwISTb5S4n4xZnrSnZvPmseRt9vnoepDxQf/pjX4f/jG3i9pNgb/
-         7Fm2LcV3R4xKnZ+bKXS0eLoolghiY+XtGVgUH7IoNuM7sdRjOcpXkvE84av/NPfKF8qW
-         U8gMr5jhvOlOqhrOYQ0dyj37V2cSZqulhfQ4FOTW+g4hFoRcOgO62bcERyygoJsZ+xmp
-         LQqg==
+        Fri, 17 Jul 2020 03:50:18 -0400
+Received: by mail-io1-f69.google.com with SMTP id r9so5996521ioa.15
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:50:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zNW9uGCCyuNVj0zzY42fxPcN6t0OrV/LrjNayMGPkQU=;
-        b=S22ovbVc4uqPpSyjdrySdLrw5NbTlTGOyQJvfjbIsOIecp8Enc2n9fc/euIysu2yqA
-         Vt5akG8YJHQTPKgfbpCziIq5DTDb7I2Rk799pmM5b/qdNHtB4/k78Shw5l/JihcNhT1T
-         x+CNfiuWKlTD34RyHZIGGyNphqieiun3uxW4cfbjpooRth0xcoOphvn+Wh3wTavwO9n8
-         ENloRdpNVMgV6oN5HTGfWg+iHe/YFw8eWAXMdZfw3SeFTBS5DGyJBppG1mj9RMu7riRf
-         5ByGxbOdKQWBoX3etLEglRU+ofPA+FpGDshZy8OnL9RviSRfBr+RTbiwCWlK7bzlSQZR
-         QZTg==
-X-Gm-Message-State: AOAM532TnnU2tC5Ma3z5fXeVvlqfT0qy4h+SPxaXcu8k13IPgjYsgmu6
-        uV8L8XXNE9njp+TDACCFLPI=
-X-Google-Smtp-Source: ABdhPJwD1SfN9j2JmbPCc+Vz3/Y96fIz7igGol5/BhSuBVM/yI1O17VPNMnGuhY7TLfAdCilMOLyyg==
-X-Received: by 2002:a17:902:10e:: with SMTP id 14mr6368688plb.297.1594972303853;
-        Fri, 17 Jul 2020 00:51:43 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id s68sm1924332pjb.38.2020.07.17.00.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 00:51:43 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1 3/3] via-agp: use generic power management
-Date:   Fri, 17 Jul 2020 13:19:37 +0530
-Message-Id: <20200717074937.296192-4-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
-References: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=K0xpYgdDbOkmDKfy09w7rceR9YlCNd4wQzw3kksCOjY=;
+        b=Qb1+460UwlKaUXXxXiy3jZu8n04SGkzHo3itzSKGcoMF13ru3brChVPI7VSFmDnozV
+         jJgjE+ZCn0+szWGrh1bd/Sc66rFEyIoS0JdLkUwmx0HCFJXvvd0puRtNBRhbWYosbBK4
+         4We520NH4F4/2QAkj565jPYhnuLyM3q2nx0nNttgs2GfsXR8nX/N8Y6q6rgUzCFpdH7z
+         L0KqmwgyVqA8Vre31Ba/ZH4mO2rfhhHH+7DUzXr/lhXV0FWskc+h4jG5qPV/nsQXQX8/
+         YRTAptcefW+ARjOD40GXj7DgTfCcudtq6Ij3++YJiZfSMmke9vT2VdpH97Q//hDzDxtI
+         dq2A==
+X-Gm-Message-State: AOAM530NnpAYmEbQepAbMmaTjePOyFMO1LOKVCHBBYwR2pyFaRqIW3o4
+        pVMhtFwv38YxqJcXlCgy3Ys7rOXj5h0EPVkw+dQ6//ZdNeiz
+X-Google-Smtp-Source: ABdhPJy9MHfJA3K/uRrEETeJS7pFj1JuWZ14huXJU7C83Yu5kG+1/OkMiBmXRvPRmu6Qid9JxiIc0lXqZr1Syi7KxAIV/9gT8Cod
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:ee15:: with SMTP id i21mr8402115ioh.25.1594972217317;
+ Fri, 17 Jul 2020 00:50:17 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 00:50:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000070a78f05aa9e6883@google.com>
+Subject: WARNING in snd_info_get_line
+From:   syzbot <syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com>
+To:     adobriyan@gmail.com, akpm@linux-foundation.org,
+        alsa-devel@alsa-project.org, colin.king@canonical.com,
+        linux-kernel@vger.kernel.org, perex@perex.cz, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PM have to manage PCI states and device's PM states
-themselves. They also need to take care of configuration registers.
+Hello,
 
-With improved and powerful support of generic PM, PCI Core takes care of
-above mentioned, device-independent, jobs.
+syzbot found the following issue on:
 
-This driver makes use of PCI helper functions like
-pci_save/restore_state() and pci_set_power_state() to do required
-operations. In generic mode, they are no longer needed.
+HEAD commit:    f8456690 Merge tag 'clk-fixes-for-linus' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11539507100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e944500a36bc4d55
+dashboard link: https://syzkaller.appspot.com/bug?extid=e42d0746c3c3699b6061
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1531c5ab100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c399c7100000
 
-Change function parameter in .resume() to "struct device*" type. Use
-to_pci_dev() to get "struct pci_dev*" variable.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com
 
-After upgrading, .suspend() became an empty-body function, hence defined as
-NULL.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6804 at sound/core/info.c:609 snd_info_get_line+0x3d0/0x450 sound/core/info.c:609
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 6804 Comm: syz-executor373 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:235
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:255
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:542
+RIP: 0010:snd_info_get_line+0x3d0/0x450 sound/core/info.c:609
+Code: 0f 85 84 00 00 00 41 c6 45 00 00 31 ed 89 e8 48 83 c4 40 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 57 8a 3b fb eb 05 e8 50 8a 3b fb <0f> 0b bd 01 00 00 00 eb da 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c a3
+RSP: 0018:ffffc90001077a38 EFLAGS: 00010293
+RAX: ffffffff86390470 RBX: 0000000000000080 RCX: ffff888096156500
+RDX: 0000000000000000 RSI: ffffc90001077b10 RDI: ffff8880a1e30600
+RBP: ffffc90001077bc8 R08: dffffc0000000000 R09: ffffed10429a6594
+R10: ffffed10429a6594 R11: 0000000000000000 R12: ffff8880a2527908
+R13: ffffc90001077b10 R14: 1ffff110143c60c0 R15: ffff8880a1e30600
+ snd_mixer_oss_proc_write+0x6d/0x670 sound/core/oss/mixer_oss.c:1179
+ snd_info_text_entry_release+0xdf/0x1c0 sound/core/info.c:409
+ close_pdeo+0x16c/0x310 fs/proc/inode.c:244
+ proc_reg_release+0x17c/0x1c0 fs/proc/inode.c:561
+ __fput+0x2f0/0x750 fs/file_table.c:281
+ task_work_run+0x137/0x1c0 kernel/task_work.c:135
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0x601/0x1f80 kernel/exit.c:805
+ do_group_exit+0x161/0x2d0 kernel/exit.c:903
+ __do_sys_exit_group+0x13/0x20 kernel/exit.c:914
+ __se_sys_exit_group+0x10/0x10 kernel/exit.c:912
+ __x64_sys_exit_group+0x37/0x40 kernel/exit.c:912
+ do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43eeb8
+Code: Bad RIP value.
+RSP: 002b:00007ffce5a0e308 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043eeb8
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004be6c8 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d0180 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-Compile-tested only.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- drivers/char/agp/via-agp.c | 25 +++++--------------------
- 1 file changed, 5 insertions(+), 20 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/char/agp/via-agp.c b/drivers/char/agp/via-agp.c
-index 87a92a044570..afa941df7d44 100644
---- a/drivers/char/agp/via-agp.c
-+++ b/drivers/char/agp/via-agp.c
-@@ -492,22 +492,11 @@ static void agp_via_remove(struct pci_dev *pdev)
- 	agp_put_bridge(bridge);
- }
- 
--#ifdef CONFIG_PM
-+#define agp_via_suspend NULL
- 
--static int agp_via_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused agp_via_resume(struct device *dev)
- {
--	pci_save_state (pdev);
--	pci_set_power_state (pdev, PCI_D3hot);
--
--	return 0;
--}
--
--static int agp_via_resume(struct pci_dev *pdev)
--{
--	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
--
--	pci_set_power_state (pdev, PCI_D0);
--	pci_restore_state(pdev);
-+	struct agp_bridge_data *bridge = dev_get_drvdata(dev);
- 
- 	if (bridge->driver == &via_agp3_driver)
- 		return via_configure_agp3();
-@@ -517,8 +506,6 @@ static int agp_via_resume(struct pci_dev *pdev)
- 	return 0;
- }
- 
--#endif /* CONFIG_PM */
--
- /* must be the same order as name table above */
- static const struct pci_device_id agp_via_pci_table[] = {
- #define ID(x) \
-@@ -567,16 +554,14 @@ static const struct pci_device_id agp_via_pci_table[] = {
- 
- MODULE_DEVICE_TABLE(pci, agp_via_pci_table);
- 
-+static SIMPLE_DEV_PM_OPS(agp_via_pm_ops, agp_via_suspend, agp_via_resume);
- 
- static struct pci_driver agp_via_pci_driver = {
- 	.name		= "agpgart-via",
- 	.id_table	= agp_via_pci_table,
- 	.probe		= agp_via_probe,
- 	.remove		= agp_via_remove,
--#ifdef CONFIG_PM
--	.suspend	= agp_via_suspend,
--	.resume		= agp_via_resume,
--#endif
-+	.driver.pm	= &agp_via_pm_ops,
- };
- 
- 
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
