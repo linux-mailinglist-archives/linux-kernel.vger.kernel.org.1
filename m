@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036142234D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6DC2234DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbgGQGn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40940 "EHLO mail.kernel.org"
+        id S1727097AbgGQGnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:43:40 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:42854 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgGQGn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:43:29 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FF6220704;
-        Fri, 17 Jul 2020 06:43:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594968208;
-        bh=DK8wLXW4Bso2Ug/1nliw14Hc5cbCm6Qaa7+yZ6pWy4o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UU231FHlN9u9m9S+RrvJ6YRfedNXP/xxgfNqJI6mEieve2ujinZR7vazoZlPdNVMo
-         CPRBPZ3MyE1RtQq2ZOyUB9NSKL7mrcB/j8P8aob5ldjbJ0pH4cPoblT0COglT2c/FR
-         /HmnE80WCUZw1azCYrFmDhhNlY1jaufmZ5Km0wYg=
-Date:   Fri, 17 Jul 2020 12:13:24 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Nagarjuna Kristam <nkristam@nvidia.com>, jonathanh@nvidia.com,
-        mark.rutland@arm.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 0/7] Tegra XUSB charger detect support
-Message-ID: <20200717064324.GJ82923@vkoul-mobl>
-References: <1593166742-23592-1-git-send-email-nkristam@nvidia.com>
- <20200716124809.GC535268@ulmo>
+        id S1726180AbgGQGnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:43:39 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jwK5f-0005nT-RC; Fri, 17 Jul 2020 16:43:28 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 17 Jul 2020 16:43:27 +1000
+Date:   Fri, 17 Jul 2020 16:43:27 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Colin King <colin.king@canonical.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: xts: use memmove to avoid overlapped memory copy
+Message-ID: <20200717064327.GA2504@gondor.apana.org.au>
+References: <20200716152900.1709694-1-colin.king@canonical.com>
+ <CAMj1kXEWyweZ0E3WHthEG9oiOpOS9UxtTB7xskAsF8FeinNg9w@mail.gmail.com>
+ <20200717052139.GB2045@gondor.apana.org.au>
+ <CAMj1kXH9PHNNUMgwNUv8gBJDxs8w5Eta=AouKM7L=hMWNOQ=HQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716124809.GC535268@ulmo>
+In-Reply-To: <CAMj1kXH9PHNNUMgwNUv8gBJDxs8w5Eta=AouKM7L=hMWNOQ=HQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-07-20, 14:48, Thierry Reding wrote:
+On Fri, Jul 17, 2020 at 08:59:54AM +0300, Ard Biesheuvel wrote:
+>
+> Or change it to b[1] = b[0] (assuming the compiler allows struct
+> assignment in that way). This will always copy XTS_BLOCK_SIZE bytes,
+> but we have sufficient space, and it is probably more efficient  too
+> in most cases.
 
-> Hi Kishon, Vinod,
-> 
-> did you have any further comments on this series or is it good to go
-> into v5.9?
+Sounds good to me.
 
-I dont have this series in my inbox, can you please rebase and resend
-
+Thanks,
 -- 
-~Vinod
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
