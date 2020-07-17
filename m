@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B979223638
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A03D22363A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgGQHvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        id S1728227AbgGQHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgGQHvh (ORCPT
+        with ESMTP id S1728050AbgGQHvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:51:37 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E841AC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:36 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id o1so5122222plk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:36 -0700 (PDT)
+        Fri, 17 Jul 2020 03:51:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A520C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:44 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x9so5120751plr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cWqo/1iGGhIfGKCAu2qJyy90N6APTvXdwVB6pQxCcg0=;
-        b=rVE0X2HTdehxwlgLKfFZNc2cCb/5/HluVTLh895T6EIOW9altfl3qdh4EQ+IXSzCWE
-         XF2HTtZPy2Nu/IFQHuAfm5Wsa5gG3onbgQAc6U/PPxSQfoYQvK+BS0qFPN+OuPVWVhYh
-         RtARknXTxz05y1CdfNR+Ymi8omU/rIxrrYZL+YKsuBWNCz2K8L3jpiMr8IOmBXomz1xs
-         AEPz5fOnFqzQQzKSHEf5emk3lBjENVjkGaQLItuM0oV5DuVAdTM1K4CyO8r/UlLIhGYP
-         b8QZW2JOPC0te8A9HAkdpYK03GFI1yujrC8AZ3uVebT7gAf5OGEDWVkMVgQVol5gMALR
-         BKBQ==
+        bh=zNW9uGCCyuNVj0zzY42fxPcN6t0OrV/LrjNayMGPkQU=;
+        b=VzTODCjH9JpZgBV2q+hOkDevdJ48kMuEhf5B5qyChStHn1ij1kJSK8BljZ+qDpoUkg
+         yseIQ2cKFjHldhbr1a1xNxv8qm+ptqRBM+5M8oDrgls6NrRhnOIlRJ61cggS8/9e+Osg
+         ndn4P+pguRaQCq6yzwISTb5S4n4xZnrSnZvPmseRt9vnoepDxQf/pjX4f/jG3i9pNgb/
+         7Fm2LcV3R4xKnZ+bKXS0eLoolghiY+XtGVgUH7IoNuM7sdRjOcpXkvE84av/NPfKF8qW
+         U8gMr5jhvOlOqhrOYQ0dyj37V2cSZqulhfQ4FOTW+g4hFoRcOgO62bcERyygoJsZ+xmp
+         LQqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cWqo/1iGGhIfGKCAu2qJyy90N6APTvXdwVB6pQxCcg0=;
-        b=FFHZ/EFfsABQcHUeFDtYszCElCAfxsov8xxqViSEKuxd0RENZAzjlXwZ4ax3NUDS4u
-         VoGTnVOJcri1wIhFnW0YoZnnMEZvBNiq7W2kT2Mt5D5rryT1kokcBaa413unI+6fwHPa
-         C43UI6y5tbkJI0f0pw+BQTR+/tVDHxnF30qovTsY+nOoZV1kBy9DtujIMnjjB/keZghq
-         74hsfXp2UhAcVI9WTVxwV57aadn7k8YwiqVxWJiTI0Sj3g6OCL05I3vVQcS6wDoHsBqf
-         yALUgpj89y3R2cDnO9dekc/Dyq8+lLTLjjDLKjaRPFqAxXsnGpRsfRknr8RXWitWs3fp
-         mAcg==
-X-Gm-Message-State: AOAM532RpAfxHTuuoxPK/8Mwn6Yl87jT+jyzbo9nPUU9C1QR2uqYni4A
-        XjqQi3EGzQFOeAqCJfVQWoYowR+S0oCc5g==
-X-Google-Smtp-Source: ABdhPJySEEEQ5UYc975TUV8nc4RCp7vrGbxiujqH0R+l12ZmCuOCbDd4oFs7dKBTa48Rm1ACHE6dEA==
-X-Received: by 2002:a17:902:a389:: with SMTP id x9mr6633756pla.63.1594972296470;
-        Fri, 17 Jul 2020 00:51:36 -0700 (PDT)
+        bh=zNW9uGCCyuNVj0zzY42fxPcN6t0OrV/LrjNayMGPkQU=;
+        b=S22ovbVc4uqPpSyjdrySdLrw5NbTlTGOyQJvfjbIsOIecp8Enc2n9fc/euIysu2yqA
+         Vt5akG8YJHQTPKgfbpCziIq5DTDb7I2Rk799pmM5b/qdNHtB4/k78Shw5l/JihcNhT1T
+         x+CNfiuWKlTD34RyHZIGGyNphqieiun3uxW4cfbjpooRth0xcoOphvn+Wh3wTavwO9n8
+         ENloRdpNVMgV6oN5HTGfWg+iHe/YFw8eWAXMdZfw3SeFTBS5DGyJBppG1mj9RMu7riRf
+         5ByGxbOdKQWBoX3etLEglRU+ofPA+FpGDshZy8OnL9RviSRfBr+RTbiwCWlK7bzlSQZR
+         QZTg==
+X-Gm-Message-State: AOAM532TnnU2tC5Ma3z5fXeVvlqfT0qy4h+SPxaXcu8k13IPgjYsgmu6
+        uV8L8XXNE9njp+TDACCFLPI=
+X-Google-Smtp-Source: ABdhPJwD1SfN9j2JmbPCc+Vz3/Y96fIz7igGol5/BhSuBVM/yI1O17VPNMnGuhY7TLfAdCilMOLyyg==
+X-Received: by 2002:a17:902:10e:: with SMTP id 14mr6368688plb.297.1594972303853;
+        Fri, 17 Jul 2020 00:51:43 -0700 (PDT)
 Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id s68sm1924332pjb.38.2020.07.17.00.51.31
+        by smtp.gmail.com with ESMTPSA id s68sm1924332pjb.38.2020.07.17.00.51.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 00:51:36 -0700 (PDT)
+        Fri, 17 Jul 2020 00:51:43 -0700 (PDT)
 From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
 To:     Bjorn Helgaas <helgaas@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
@@ -59,9 +59,9 @@ Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
         linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1 2/3] sis-agp: use generic power management
-Date:   Fri, 17 Jul 2020 13:19:36 +0530
-Message-Id: <20200717074937.296192-3-vaibhavgupta40@gmail.com>
+Subject: [PATCH v1 3/3] via-agp: use generic power management
+Date:   Fri, 17 Jul 2020 13:19:37 +0530
+Message-Id: <20200717074937.296192-4-vaibhavgupta40@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
 References: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
@@ -92,62 +92,67 @@ Compile-tested only.
 
 Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- drivers/char/agp/sis-agp.c | 25 ++++++-------------------
- 1 file changed, 6 insertions(+), 19 deletions(-)
+ drivers/char/agp/via-agp.c | 25 +++++--------------------
+ 1 file changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/char/agp/sis-agp.c b/drivers/char/agp/sis-agp.c
-index 14909fc5d767..e2e62d5a8914 100644
---- a/drivers/char/agp/sis-agp.c
-+++ b/drivers/char/agp/sis-agp.c
-@@ -217,26 +217,14 @@ static void agp_sis_remove(struct pci_dev *pdev)
+diff --git a/drivers/char/agp/via-agp.c b/drivers/char/agp/via-agp.c
+index 87a92a044570..afa941df7d44 100644
+--- a/drivers/char/agp/via-agp.c
++++ b/drivers/char/agp/via-agp.c
+@@ -492,22 +492,11 @@ static void agp_via_remove(struct pci_dev *pdev)
  	agp_put_bridge(bridge);
  }
  
 -#ifdef CONFIG_PM
-+#define agp_sis_suspend NULL
++#define agp_via_suspend NULL
  
--static int agp_sis_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused agp_sis_resume(
-+	__attribute__((unused)) struct device *dev)
+-static int agp_via_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused agp_via_resume(struct device *dev)
  {
--	pci_save_state(pdev);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
+-	pci_save_state (pdev);
+-	pci_set_power_state (pdev, PCI_D3hot);
 -
 -	return 0;
 -}
 -
--static int agp_sis_resume(struct pci_dev *pdev)
+-static int agp_via_resume(struct pci_dev *pdev)
 -{
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
+-	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
 -
- 	return sis_driver.configure();
+-	pci_set_power_state (pdev, PCI_D0);
+-	pci_restore_state(pdev);
++	struct agp_bridge_data *bridge = dev_get_drvdata(dev);
+ 
+ 	if (bridge->driver == &via_agp3_driver)
+ 		return via_configure_agp3();
+@@ -517,8 +506,6 @@ static int agp_via_resume(struct pci_dev *pdev)
+ 	return 0;
  }
  
 -#endif /* CONFIG_PM */
 -
- static const struct pci_device_id agp_sis_pci_table[] = {
- 	{
- 		.class		= (PCI_CLASS_BRIDGE_HOST << 8),
-@@ -419,15 +407,14 @@ static const struct pci_device_id agp_sis_pci_table[] = {
+ /* must be the same order as name table above */
+ static const struct pci_device_id agp_via_pci_table[] = {
+ #define ID(x) \
+@@ -567,16 +554,14 @@ static const struct pci_device_id agp_via_pci_table[] = {
  
- MODULE_DEVICE_TABLE(pci, agp_sis_pci_table);
+ MODULE_DEVICE_TABLE(pci, agp_via_pci_table);
  
-+static SIMPLE_DEV_PM_OPS(agp_sis_pm_ops, agp_sis_suspend, agp_sis_resume);
-+
- static struct pci_driver agp_sis_pci_driver = {
- 	.name		= "agpgart-sis",
- 	.id_table	= agp_sis_pci_table,
- 	.probe		= agp_sis_probe,
- 	.remove		= agp_sis_remove,
++static SIMPLE_DEV_PM_OPS(agp_via_pm_ops, agp_via_suspend, agp_via_resume);
+ 
+ static struct pci_driver agp_via_pci_driver = {
+ 	.name		= "agpgart-via",
+ 	.id_table	= agp_via_pci_table,
+ 	.probe		= agp_via_probe,
+ 	.remove		= agp_via_remove,
 -#ifdef CONFIG_PM
--	.suspend	= agp_sis_suspend,
--	.resume		= agp_sis_resume,
+-	.suspend	= agp_via_suspend,
+-	.resume		= agp_via_resume,
 -#endif
-+	.driver.pm	= &agp_sis_pm_ops,
++	.driver.pm	= &agp_via_pm_ops,
  };
  
- static int __init agp_sis_init(void)
+ 
 -- 
 2.27.0
 
