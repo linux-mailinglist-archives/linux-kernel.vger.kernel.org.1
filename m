@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B57A2234C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FF92234C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgGQGiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S1728109AbgGQGiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgGQGiY (ORCPT
+        with ESMTP id S1726250AbgGQGip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:38:24 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18270C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 23:38:24 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b4so7858884qkn.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 23:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=d584XoPbDW7hlIkJtQT1npOx7x+pM42T6jax2r9SE5I=;
-        b=X9qBiCBA7FJW0TvN2azmUlAzK6pLaPLgqz81RORRVQTlEz5Ydt2XHGXAU2LkfgwsUM
-         yifW4ap7o770pgTkoMhWjmtfKJSbfZKP5yd6+u6o24TSkuloRA5i/UnK1Dl4qLc1U2ZX
-         qD9dZU71i6QncCF56h9QzQf971oUG7zB2yRTTlKQ6ETYsCpxk/Ap4guOavwwK5I4lcj8
-         w6jDiHC8+eVK0AmwMShC7uG6LIQlpH/cIjrkChJW/R9iRAtHA2bEL9V7Ujn8rt8eC9H3
-         dzfdbM6kGq/zocpRhHOIjKowhnHXNuEanFOH26G6I5g8BbOuq5Q5l9qadDRBbKoWNLQU
-         Qtwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=d584XoPbDW7hlIkJtQT1npOx7x+pM42T6jax2r9SE5I=;
-        b=nc5NAJlOAwP8T6uyDGFJYrQpLOxW6DXPHmnTJkd4Z2YlWvm44m8mgLDDJoEJaJccel
-         qS3Tmyw9vaK4GpqnH2VrRL5f36Blad9Y8GpRb/4+CKvZQL7HLqM3XzE9YP3PDXswA9oB
-         GIW2rWyVoD0Iby22UMCgRcPtwlOA8hx4AdP4r4aLILU2JEHi/ykzoTLjCZh/3w1x/gum
-         Fi+xPpm5ElV1HH73EbpiWtR9hznTcjRLfIi2sjuN6mc5LZuJfpO7Nm8j7tZ9kLVlcl6H
-         z/1GfvgJC4xCvf4lCcmFcFAEGkX0IIcZ/7ZacuQRWAVeNKeHAquc3JF5BPnYKqC+e7fi
-         SWiw==
-X-Gm-Message-State: AOAM5316HG3SpgMSsL+H9qniwYBWYQRBgKE46K51+y8nCO6UngvKBeso
-        QXgpZkx2KGz0wc8IFOUSFCo=
-X-Google-Smtp-Source: ABdhPJy3nlLH2vt89rYnGUKO+9HW9CMDIhDGa1KgfxgZ5gJD7TrR33GJxPUYHP1COIgvuZzdR0hp0Q==
-X-Received: by 2002:a37:b0c5:: with SMTP id z188mr7354683qke.412.1594967903336;
-        Thu, 16 Jul 2020 23:38:23 -0700 (PDT)
-Received: from dev.localdomain ([183.134.211.54])
-        by smtp.gmail.com with ESMTPSA id i26sm10043537qkh.14.2020.07.16.23.38.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Jul 2020 23:38:23 -0700 (PDT)
-From:   qianjun.kernel@gmail.com
-To:     tglx@linutronix.de, peterz@infradead.org, will@kernel.org,
-        luto@kernel.org
-Cc:     linux-kernel@vger.kernel.org, shaoyafang@didiglobal.com,
-        jun qian <qianjun.kernel@gmail.com>
-Subject: [RFC PATCH 1/1] Softirq:avoid large sched delay from the pending softirqs
-Date:   Fri, 17 Jul 2020 02:37:53 -0400
-Message-Id: <1594967873-29522-1-git-send-email-qianjun.kernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 17 Jul 2020 02:38:45 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6D1C061755;
+        Thu, 16 Jul 2020 23:38:45 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 364FCBC071;
+        Fri, 17 Jul 2020 06:38:41 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     dave@stgolabs.net, axboe@kernel.dk, linux-efi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] partitions/efi: Replace HTTP links with HTTPS ones
+Date:   Fri, 17 Jul 2020 08:38:35 +0200
+Message-Id: <20200717063835.68492-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jun qian <qianjun.kernel@gmail.com>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-When get the pending softirqs, it need to process all the pending
-softirqs in the while loop. If the processing time of each pending
-softirq is need more than 2 msec in this loop, or one of the softirq
-will running a long time, according to the original code logic, it
-will process all the pending softirqs without wakeuping ksoftirqd,
-which will cause a relatively large scheduling delay on the
-corresponding CPU, which we do not wish to see. The patch will check
-the total time to process pending softirq, if the time exceeds 2 ms
-we need to wakeup the ksofirqd to aviod large sched delay.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- kernel/softirq.c | 3 +++
- 1 file changed, 3 insertions(+)
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index c4201b7f..602d9fa 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -299,6 +299,9 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 		}
- 		h++;
- 		pending >>= softirq_bit;
-+
-+		if (time_after(jiffies, end) && need_resched())
-+			break;
- 	}
- 
- 	if (__this_cpu_read(ksoftirqd) == current)
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ block/partitions/efi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/partitions/efi.c b/block/partitions/efi.c
+index b64bfdd4326c..15b353d0cb4f 100644
+--- a/block/partitions/efi.c
++++ b/block/partitions/efi.c
+@@ -3,7 +3,7 @@
+  * EFI GUID Partition Table handling
+  *
+  * http://www.uefi.org/specs/
+- * http://www.intel.com/technology/efi/
++ * https://www.intel.com/technology/efi/
+  *
+  * efi.[ch] by Matt Domsch <Matt_Domsch@dell.com>
+  *   Copyright 2000,2001,2002,2004 Dell Inc.
 -- 
-1.8.3.1
+2.27.0
 
