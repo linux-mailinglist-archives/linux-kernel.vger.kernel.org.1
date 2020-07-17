@@ -2,159 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C4A223F0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7995D223F1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgGQPCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:02:45 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34851 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbgGQPCn (ORCPT
+        id S1727095AbgGQPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726351AbgGQPGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:02:43 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 21AD3C000F;
-        Fri, 17 Jul 2020 15:02:32 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 17:06:05 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugeniu Rosca <erosca@de.adit-jv.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        hien.dang.eb@renesas.com, michael.klein@renesas.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com, geert@linux-m68k.org,
-        horms@verge.net.au, uli+renesas@fpond.eu,
-        VenkataRajesh.Kalakodima@in.bosch.com, airlied@linux.ie,
-        daniel@ffwll.ch, koji.matsuoka.xm@renesas.com, muroya@ksk.co.jp,
-        Harsha.ManjulaMallikarjun@in.bosch.com, ezequiel@collabora.com,
-        seanpaul@chromium.org, linux-renesas-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        michael.dege@renesas.com, gotthard.voellmeke@renesas.com,
-        efriedrich@de.adit-jv.com, mrodin@de.adit-jv.com,
-        ChaitanyaKumar.Borah@in.bosch.com,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Subject: Re: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
-Message-ID: <20200717150605.e46btmozsbavmfdd@uno.localdomain>
-References: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
- <20200527071555.GA23912@lxhi-065.adit-jv.com>
- <20200605132900.on527xcggg6f6pil@uno.localdomain>
- <20200605134124.GA28734@lxhi-065.adit-jv.com>
- <20200605135315.xlph44pl7kvmt23a@uno.localdomain>
- <20200607024158.GD7339@pendragon.ideasonboard.com>
- <20200608094432.GA27063@lxhi-065.adit-jv.com>
- <20200612151209.xdaqimvpq7ysvu2q@uno.localdomain>
- <20200615141723.GA22692@lxhi-065.adit-jv.com>
+        Fri, 17 Jul 2020 11:06:30 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DA1C0619D2;
+        Fri, 17 Jul 2020 08:06:30 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id w2so6787821pgg.10;
+        Fri, 17 Jul 2020 08:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/55xejbSKs5P2qZfoxI33J7Lj9nDih8aJt+Pc7uME3w=;
+        b=L5K9EFCe1MPCuvD36c2gIhoIKa4A+0rKa1Gi9Hk62t0mYU7AYE/GnZ4/a8zwdmEfDe
+         Ikd3UzGXEYoHg46w9nROcTeIXoVBaJ/j4iQo6vv34QgCDi1Qrd0TRBy/40VCsYGQTAb+
+         ddfH1YWY0GhaBfBcI+3EI22VIBBfo4T7XLAUtiu8SoDWz4NYbaQ3CvzE10jGM30zp7uq
+         ko387szjjT9IIliX+ruAfmt37EEI+J1K6XUiutTYK48kHKMuTdiQDMSVUYvAyBXhjp7Z
+         GxqbAe2kyEz48+yYOYA4l2KON1GDXyDctOXkL/AjWhAUYUVWzlwNiNYH0iySsBUrMiNS
+         +ZAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/55xejbSKs5P2qZfoxI33J7Lj9nDih8aJt+Pc7uME3w=;
+        b=dNt1PGl0xyZWdsHBfPIgdPI1jTG0Gh3zZNsC4ZAku2cpFhVBh1RntejthSs04+zg20
+         C2R8VbGufxU+qI7RXWWq72co9nxAlBjcNOPGVe4bGtnvvp9ys/TxEWPAdw749PDJ2Hwl
+         sJFbJiegWHa44Ql2VqraeukBnjy42zwTej5f7CLbyVx49dHW8cxECplLgCqK9nHzL29e
+         ANL2kto5Q3S7mC3NzIXLgBMOYGywor7TI6ZzEsL7Rg1ppNEf2M2RLPHS+WTr9rbP8Gac
+         2rO99nJe1gH2iGMGUdkyxrIPFQuZMgaOwgzLTiEwmhvPRmek2ISp00oVw49ccNb5RXA4
+         xAVg==
+X-Gm-Message-State: AOAM530/xVlXd5tN6ozXeHsjAX4xkAIHXjv3HzcuHiGYu/kbU0VPD4DQ
+        cQYufxFxbfdNtWKFQ3dKndcnl+bR
+X-Google-Smtp-Source: ABdhPJzGLDOJwDXXJwn5K0ilD1hGIdyKv676ZxeyxRLhx+5muDSP2CJ7RmxWK8kgropg5bT2I+M+VQ==
+X-Received: by 2002:aa7:9422:: with SMTP id y2mr8627037pfo.211.1594998390253;
+        Fri, 17 Jul 2020 08:06:30 -0700 (PDT)
+Received: from localhost ([89.208.244.139])
+        by smtp.gmail.com with ESMTPSA id t73sm8144973pfc.78.2020.07.17.08.06.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Jul 2020 08:06:29 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 23:06:25 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     corbet@lwn.net, michal.simek@xilinx.com,
+        wsa+renesas@sang-engineering.com, linus.walleij@linaro.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH v3 1/2] drivers: provide devm_platform_request_irq()
+Message-ID: <20200717150625.GA26342@nuc8i5>
+References: <20200527142611.9006-1-zhengdejin5@gmail.com>
+ <20200717143030.GB25998@nuc8i5>
+ <20200717145946.GC3008378@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615141723.GA22692@lxhi-065.adit-jv.com>
+In-Reply-To: <20200717145946.GC3008378@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Eugeniu,
+On Fri, Jul 17, 2020 at 04:59:46PM +0200, Greg KH wrote:
+> On Fri, Jul 17, 2020 at 10:30:30PM +0800, Dejin Zheng wrote:
+> > On Wed, May 27, 2020 at 10:26:10PM +0800, Dejin Zheng wrote:
+> > Hi Jonathan, Greg, Rafael, Linus, Michal and Wolfram:
+> > 
+> > Could you help me review this patch if you have free time?
+> 
+> It's not anywhere in queue, sorry, please resend it?
+>
+Ok, I will resend it. Thanks very much!
 
-On Mon, Jun 15, 2020 at 04:17:23PM +0200, Eugeniu Rosca wrote:
-> Hi Jacopo,
->
-> On Fri, Jun 12, 2020 at 05:12:09PM +0200, Jacopo Mondi wrote:
-> > On Mon, Jun 08, 2020 at 11:44:32AM +0200, Eugeniu Rosca wrote:
-> > > FWIW, I seem to hit pre-existing issues in vanilla rcar-du,
-> > > while unplugging HDMI cable during a cyclic suspend-resume:
-> > >
-> > > HW: H3 ES2.0 Salvator-X
-> > > SW: renesas-drivers-2020-06-02-v5.7
-> > > .config: renesas_defconfig +CONFIG_PM_DEBUG +CONFIG_PM_ADVANCED_DEBUG
-> > > Use-case:
-> > >
-> > >   --------8<---------
-> > > $ cat s2ram.sh
-> > > modprobe i2c-dev
-> > > echo 9 > /proc/sys/kernel/printk
-> > > i2cset -f -y 7 0x30 0x20 0x0F
-> >
-> > According to
-> > https://elinux.org/R-Car/Boards/Salvator-X#Suspend-to-RAM
-> > this is not needed anymore
->
-> Good to know. Thanks for the useful remark.
->
-> > > echo 0 > /sys/module/suspend/parameters/pm_test_delay
-> > > echo core  > /sys/power/pm_test
-> > > echo deep > /sys/power/mem_sleep
-> > > echo 1 > /sys/power/pm_debug_messages
-> > > echo 0 > /sys/power/pm_print_times
-> > > echo mem > /sys/power/state
-> > >
-> > > $ while true; do sh s2ram.sh ; done
-> > > $ # unplug HDMI cable several times
-> >
-> > I tried unplugging an plugging the cable while the system was
-> > suspended and after resume but I was not able to reproduce anything.
->
-> Your comment sounds like you suspended the system once and resumed it
-> afterwards, while my description mentions "cyclic" :), meaning:
->
-> $ while true; do sh s2ram.sh; done
-> $ # connect-disconnect the hdmi display a couple of times
-> $ # NOTE: to avoid this manual step, I am thinking of a USB-controlled
->     HDMI switcher long-term
->
-> >
-> > Could you provide more precise instructions on how to reproduce this ?
-> > I.e. when to disconnect the cable to trigger the below error.
->
-> See above :)
->
-> BTW, using renesas-drivers-2020-06-02-v5.7 as base and performing the
-> use-case just described, I got today (with minimal effort):
->
-> [  459.321733] Enabling non-boot CPUs ...
-> [  459.331132] Detected PIPT I-cache on CPU1
-> [  459.331189] CPU1: Booted secondary processor 0x0000000001 [0x411fd073]
-> [  459.332312] CPU1 is up
-> [  459.345635] Detected PIPT I-cache on CPU2
-> [  459.345671] CPU2: Booted secondary processor 0x0000000002 [0x411fd073]
-> [  459.346624] CPU2 is up
-> [  459.359912] Detected PIPT I-cache on CPU3
-> [  459.359942] CPU3: Booted secondary processor 0x0000000003 [0x411fd073]
-> [  459.360918] CPU3 is up
-> [  459.374183] Detected VIPT I-cache on CPU4
-> [  459.374252] CPU4: Booted secondary processor 0x0000000100 [0x410fd034]
-> [  459.375875] cpufreq: cpufreq_online: CPU4: Running at unlisted freq: 1199999 KHz
-> [  459.394204] cpufreq: cpufreq_online: CPU4: Unlisted initial frequency changed to: 1200000 KHz
-> [  459.403879] CPU4 is up
-> [  459.406469] Detected VIPT I-cache on CPU5
-> [  459.406519] CPU5: Booted secondary processor 0x0000000101 [0x410fd034]
-> [  459.408520] CPU5 is up
-> [  459.421762] Detected VIPT I-cache on CPU6
-> [  459.421810] CPU6: Booted secondary processor 0x0000000102 [0x410fd034]
-> [  459.423831] CPU6 is up
-> [  459.437114] Detected VIPT I-cache on CPU7
-> [  459.437164] CPU7: Booted secondary processor 0x0000000103 [0x410fd034]
-> [  459.439258] CPU7 is up
-> [  459.456217] PM: noirq resume of devices complete after 3.878 msecs
-> [  459.471529] PM: early resume of devices complete after 8.590 msecs
-> [  469.726906] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:76:crtc-3] flip_done timed out
+BR,
+Dejin
 
-I've been able to reproduce this same issue, but I see that errors in
-drm_atomic_helper_wait_for_dependencies always follow a first failure
-in drm_atomic_helper_wait_for_flip_done
-
-Looking at the log what I see is that
-[  160.488762] PM: late suspend of devices complete after 10.509 msecs
-[  171.235584] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:75:crtc-1] flip_done timed out
-
-The 10 second elapsed there matches the timout in
-drm_atomic_helper_wait_for_flip_done and it seems the issue is related
-to the first atomic commit after resume not being able to succesfully
-receive a flip_done event, possibly as the HDMI connector has been
-disconnected while the system was suspending or suspended and the DRM
-state was not updated.
-
-Can you confirm you see the same failure sequence ?
-
-Thanks
-  j
+> thanks,
+> 
+> greg k-h
