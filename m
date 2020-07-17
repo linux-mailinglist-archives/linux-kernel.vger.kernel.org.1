@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567AA224118
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3A522412B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgGQQ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
+        id S1728259AbgGQQ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727787AbgGQQ5c (ORCPT
+        with ESMTP id S1726811AbgGQQ6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:57:32 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA61C0619D2;
-        Fri, 17 Jul 2020 09:57:32 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id q17so5695294pls.9;
-        Fri, 17 Jul 2020 09:57:32 -0700 (PDT)
+        Fri, 17 Jul 2020 12:58:14 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9135C0619D2;
+        Fri, 17 Jul 2020 09:58:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u5so5693588pfn.7;
+        Fri, 17 Jul 2020 09:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l8xDxA8kojCoOA0aKOLVl5EuXMDT6t6AAoB6hlYLn4c=;
-        b=W/Y+GxyhjM2mw5UaQFS5Np6o9mOvfHYzIpCF9QAUOtKGHjlByhrh7hqHa1+rWARPcB
-         wZvWtfOY970oJLrVq7++GMfYNCbglgc0uqwvkILMbIRV1ReEhj78KvcNZ5BSR5qi4NYm
-         GWCr4heAT73gHXOi3Qb9NrtvZtc1dH658Z4M2rAr6AK5NLzIX6ECFeDykTU2Pl0bdamv
-         ZGbDivldoTR6xTCEslnjwanx+n3qzVZQdLBAwHfthyvLw4mzL0pccpsRmTpy9URWn+QK
-         HgcdfssxXfWaOzML+LF5qPd+l7b2ExOA57XbcQK0lMbF5qFdftE5o7eOjqi6vKRGkssI
-         j3Mw==
+        bh=kTW/vU9qPmPKn2Z7Y8y2u+6RPfS4JOq4IXRD9sDOkEw=;
+        b=LIK+O5YRTH0+YYmEybGySPOV6j9XxXLC2+aJMdoS3bJoRVQRmPZc6Ciuuz5qhYFdaA
+         AloS0c51m8IaynD02KZhF/YxFkcPhhkes7bGhxZIJBUUUOK4IbcRqSkyjdRI7waNnJSu
+         ApaTIgiQXRw6M/HeIC7qk2MBkMWKBz2UvnQwb7ddxeiDi30tAydeg30G/luARMn0Ct23
+         LIKnvppASD4cnGAB32kuzfGPq7byC39/nIC1+oc+Os81eULlOH2vUh21KXAf+UI+HnEL
+         8iPzbQwbrENJ2E4N2fCyTcQAaDOlWBY5cHutIarjA01i2vQGXoRHyk675VKVElJhyRkd
+         3sMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=l8xDxA8kojCoOA0aKOLVl5EuXMDT6t6AAoB6hlYLn4c=;
-        b=tM2zLpwmC12wr8joiq0n8lkv63b10U96vWoLHPrX4Xq3+rGaG54KswzrmqlTQA8qFt
-         SWkdJFdDn1fXLO3shJGIj8LWoJ+zbeqhcBRN8SD/gBpxYRQcJuIO+FOtFWlk5uhzKcZc
-         2aprQQUwFCqlZH+kC7YzhFTbbbrOKsrI+d2qQMw6UNylzt4MpkmLDrNLXXN+VZi8mrsS
-         zhOyc5ABiKAH87mvI8EMxOhFbAbtFH3iM3NRsd4vIGjk9pJc3HUMCRypXrzf4/x6jqeW
-         SnbH5bMJWDILPczcpSrkSliATQWWDw0xlhQQGWgxckY1XzkAX3KDv6eXkuNIb65HfY21
-         g1QA==
-X-Gm-Message-State: AOAM533KHsuQYLpxoxWd+48K7IA50343ZqVfTUfJLypQ2ZO+Bgts8sXH
-        HueHwl3iL9E/F+FZhL3///E=
-X-Google-Smtp-Source: ABdhPJwQYmCmnOsUWnCWRIRCLhh5wVUlWnLAiBc9fUebbFncgMYxQYGvGrqUpmhxhoGVv4Le2iYmzw==
-X-Received: by 2002:a17:902:eb54:: with SMTP id i20mr8237614pli.183.1595005052114;
-        Fri, 17 Jul 2020 09:57:32 -0700 (PDT)
+        bh=kTW/vU9qPmPKn2Z7Y8y2u+6RPfS4JOq4IXRD9sDOkEw=;
+        b=F/utBM5MkzAYCXNUbPoXdKHrWe63bybyeER2pJ3D+TnlayqxgSGAZF06SG0oJ7VQdP
+         TIc78MNbW75KuJ+F2pA9/VCEnLJxNLzgag8NgomJhViGS0/dHzKVh9f5REOf4YT2wYFt
+         BPbNknoMnnR/F7XA2FHitIgjN7+PhgU9ketYtSAgYhFcnntA+cYNihw81RXv5qQ+PJKh
+         cGnNdrtBrNp5JLW8Uml6GD4P9VQhjMDYY68Bt4e3Qbne2Ioqbyr+3kidrZWduZYFuE0/
+         wRCb1rjsFFmUEuIXwDKZZsbN3V65MzkRDFnoMj/m4zJ073IkYpnuQ77Lvic/Rf81OQMH
+         M1WQ==
+X-Gm-Message-State: AOAM5332ii+T1Kyd8HAtn/Tg7nUJkwhX7nIMjZ1xQxLFOShDHIdEURBb
+        HdE/FiApEOYV7+UpVcK5ZlVGwmfZ
+X-Google-Smtp-Source: ABdhPJwp7YuDLAAWTOjsYPSUf0PF6prjtKgs0M5K4Sme12+cjSJrvh9vOQiH7T7JcxLNJCMirMGGnA==
+X-Received: by 2002:aa7:8f2a:: with SMTP id y10mr8517075pfr.182.1595005093463;
+        Fri, 17 Jul 2020 09:58:13 -0700 (PDT)
 Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 17sm3334257pjl.30.2020.07.17.09.57.27
+        by smtp.gmail.com with ESMTPSA id s14sm2475872pjl.14.2020.07.17.09.58.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 09:57:31 -0700 (PDT)
-Subject: Re: [PATCH 7/7] usb: bdc: Use devm_clk_get_optional()
+        Fri, 17 Jul 2020 09:58:12 -0700 (PDT)
+Subject: Re: [PATCH 5/7] usb: bdc: driver runs out of buffer descriptors on
+ large ADB transfers
 To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
 Cc:     devicetree@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Sasi Kumar <sasi.kumar@broadcom.com>
 References: <20200717152307.36705-1-alcooperx@gmail.com>
- <20200717152307.36705-8-alcooperx@gmail.com>
+ <20200717152307.36705-6-alcooperx@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6b52771f-addb-88b0-fca3-e22c6756c38c@gmail.com>
-Date:   Fri, 17 Jul 2020 09:57:24 -0700
+Message-ID: <5bc7603c-0e1f-762f-0d67-1c817c03c5ca@gmail.com>
+Date:   Fri, 17 Jul 2020 09:58:05 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200717152307.36705-8-alcooperx@gmail.com>
+In-Reply-To: <20200717152307.36705-6-alcooperx@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,17 +76,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 7/17/2020 8:23 AM, Al Cooper wrote:
-> From: Florian Fainelli <florian.fainelli@broadcom.com>
+> Version v1.0.40 of the Android host ADB software increased maximum
+> transfer sizes from 256K to 1M. Since the STB ADB gadget driver
+> requests only 16K at a time, the BDC driver ran out of buffer
+> descriptors (BDs) if the queuing happens faster than the incoming
+> 16K transfers. This issue is fixed by doubling the number of BDs
+> that can be queued so that the entire 1M request can be queued
+> without running out of buffers.
 > 
-> The BDC clock is optional and we may get an -EPROBE_DEFER error code
-> which would not be propagated correctly, fix this by using
-> devm_clk_get_optional().
-> 
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
 > Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Since you are carrying this patch on my behalf your Signed-off-by should
-also be present, if you don't mind, I would like my gmail.com address to
-be used here for consistency with all submissions done throughout my
-tenure at broadcom, thanks!
+You can certainly remove my SoB here, since you are carrying your own
+patch, thanks!
 -- 
 Florian
