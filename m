@@ -2,158 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5167D223DB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A854F223DBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgGQOGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54386 "EHLO mail.kernel.org"
+        id S1728032AbgGQOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:07:32 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11837 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727787AbgGQOGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:06:13 -0400
-Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0A6022B4E;
-        Fri, 17 Jul 2020 14:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594994773;
-        bh=Fl2lR7WbYLe47qb5l7WESN/wbmLy7CKCRvNeBhBlpZ0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ip9Xznm3IerK46dEC4VEgJl0LRzElbBZJYj/9qbgAuB25D0Hn7u9WMheAR9JxY7HZ
-         TiGuaWKm+8cDgrAWwOKA/emmJR+t7hGPnODGdjLMdA1ts4kddUlZ7Wm0yZcMH6PZnt
-         Z/OXhP8aW1QJQ1WT5hKls4Bf7mGCzAWCse8qwhXM=
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 10/12] timer: Spare timer softirq until next expiry
-Date:   Fri, 17 Jul 2020 16:05:49 +0200
-Message-Id: <20200717140551.29076-11-frederic@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200717140551.29076-1-frederic@kernel.org>
-References: <20200717140551.29076-1-frederic@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728014AbgGQOHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:07:30 -0400
+IronPort-SDR: lQ1heSK+8gJNNXgZge4L2wL0ZQD7YpemAje2QTM94EfU+CIh7a1YpN4T6RBpk1X9k22SqA9Q/V
+ 31vBsPajLQfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722819"
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="167722819"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:28 -0700
+IronPort-SDR: 1Uc6MtwBQKPfzMnO/Vl+fdhnOyRFJKJsusCQ1CW5cVOSYNUPqSCjDLbnh9JTtZNxL9hVx5jv0U
+ qZpys82RotPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="460856496"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:28 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V6 10/14] perf/x86/intel: Support per-thread RDPMC TopDown metrics
+Date:   Fri, 17 Jul 2020 07:05:50 -0700
+Message-Id: <20200717140554.22863-11-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
+References: <20200717140554.22863-1-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the core timer infrastructure doesn't depend anymore on
-periodic base->clk increments, even when the CPU is not in NO_HZ mode,
-we can delay the timer softirqs until we have actual timers to expire.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Some spurious softirqs can still remain since base->next_expiry doesn't
-keep track of canceled timers but we are still way ahead of the
-unconditional periodic softirqs (~15 times less of them with 1000 Hz
-and ~5 times less with 100 Hz).
+Starts from Ice Lake, the TopDown metrics are directly available as
+fixed counters and do not require generic counters. Also, the TopDown
+metrics can be collected per thread. Extend the RDPMC usage to support
+per-thread TopDown metrics.
 
-Tested-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Juri Lelli <juri.lelli@redhat.com>
+The RDPMC index of the PERF_METRICS will be output if RDPMC users ask
+for the RDPMC index of the metrics events.
+
+To support per thread RDPMC TopDown, the metrics and slots counters have
+to be saved/restored during the context switching.
+
+The last_period and period_left are not used in the counting mode. Use
+the fields for saved_metric and saved_slots.
+
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- kernel/time/timer.c | 49 ++++++++-------------------------------------
- 1 file changed, 8 insertions(+), 41 deletions(-)
+ arch/x86/events/core.c       |   5 +-
+ arch/x86/events/intel/core.c | 103 +++++++++++++++++++++++++++++------
+ include/linux/perf_event.h   |  29 ++++++----
+ 3 files changed, 108 insertions(+), 29 deletions(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 1be92b53b75f..4f78a7bff9e1 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1458,10 +1458,10 @@ static void expire_timers(struct timer_base *base, struct hlist_head *head)
- 	}
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index ace21b133015..c25dde095bca 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2264,7 +2264,10 @@ static int x86_pmu_event_idx(struct perf_event *event)
+ 	if (!(hwc->flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+ 		return 0;
+ 
+-	return hwc->event_base_rdpmc + 1;
++	if (is_metric_idx(hwc->idx))
++		return INTEL_PMC_FIXED_RDPMC_METRICS + 1;
++	else
++		return hwc->event_base_rdpmc + 1;
  }
  
--static int __collect_expired_timers(struct timer_base *base,
--				    struct hlist_head *heads)
-+static int collect_expired_timers(struct timer_base *base,
-+				  struct hlist_head *heads)
- {
--	unsigned long clk = base->clk;
-+	unsigned long clk = base->clk = base->next_expiry;
- 	struct hlist_head *vec;
- 	int i, levels = 0;
- 	unsigned int idx;
-@@ -1684,40 +1684,6 @@ void timer_clear_idle(void)
- 	 */
- 	base->is_idle = false;
+ static ssize_t get_attr_rdpmc(struct device *cdev,
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index cd622b69e882..dd3d9f3f2162 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2258,7 +2258,13 @@ static int icl_set_topdown_event_period(struct perf_event *event)
+ 	if (left == x86_pmu.max_period) {
+ 		wrmsrl(MSR_CORE_PERF_FIXED_CTR3, 0);
+ 		wrmsrl(MSR_PERF_METRICS, 0);
+-		local64_set(&hwc->period_left, 0);
++		hwc->saved_slots = 0;
++		hwc->saved_metric = 0;
++	}
++
++	if ((hwc->saved_slots) && is_slots_event(event)) {
++		wrmsrl(MSR_CORE_PERF_FIXED_CTR3, hwc->saved_slots);
++		wrmsrl(MSR_PERF_METRICS, hwc->saved_metric);
+ 	}
+ 
+ 	perf_event_update_userpage(event);
+@@ -2279,7 +2285,7 @@ static inline u64 icl_get_metrics_event_value(u64 metric, u64 slots, int idx)
+ 	return  mul_u64_u32_div(slots, val, 0xff);
  }
--
--static int collect_expired_timers(struct timer_base *base,
--				  struct hlist_head *heads)
--{
--	unsigned long now = READ_ONCE(jiffies);
--
--	/*
--	 * NOHZ optimization. After a long idle sleep we need to forward the
--	 * base to current jiffies. Avoid a loop by searching the bitfield for
--	 * the next expiring timer.
--	 */
--	if ((long)(now - base->clk) > 2) {
--		/*
--		 * If the next timer is ahead of time forward to current
--		 * jiffies, otherwise forward to the next expiry time:
--		 */
--		if (time_after(base->next_expiry, now)) {
--			/*
--			 * The call site will increment base->clk and then
--			 * terminate the expiry loop immediately.
--			 */
--			base->clk = now;
--			return 0;
--		}
--		base->clk = base->next_expiry;
--	}
--	return __collect_expired_timers(base, heads);
--}
--#else
--static inline int collect_expired_timers(struct timer_base *base,
--					 struct hlist_head *heads)
--{
--	return __collect_expired_timers(base, heads);
--}
- #endif
+ 
+-static void __icl_update_topdown_event(struct perf_event *event,
++static u64 icl_get_topdown_value(struct perf_event *event,
+ 				       u64 slots, u64 metrics)
+ {
+ 	int idx = event->hw.idx;
+@@ -2290,7 +2296,50 @@ static void __icl_update_topdown_event(struct perf_event *event,
+ 	else
+ 		delta = slots;
+ 
+-	local64_add(delta, &event->count);
++	return delta;
++}
++
++static void __icl_update_topdown_event(struct perf_event *event,
++				       u64 slots, u64 metrics,
++				       u64 last_slots, u64 last_metrics)
++{
++	u64 delta, last = 0;
++
++	delta = icl_get_topdown_value(event, slots, metrics);
++	if (last_slots)
++		last = icl_get_topdown_value(event, last_slots, last_metrics);
++
++	/*
++	 * The 8bit integer fraction of metric may be not accurate,
++	 * especially when the changes is very small.
++	 * For example, if only a few bad_spec happens, the fraction
++	 * may be reduced from 1 to 0. If so, the bad_spec event value
++	 * will be 0 which is definitely less than the last value.
++	 * Avoid update event->count for this case.
++	 */
++	if (delta > last) {
++		delta -= last;
++		local64_add(delta, &event->count);
++	}
++}
++
++static void update_saved_topdown_regs(struct perf_event *event,
++				      u64 slots, u64 metrics)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	struct perf_event *other;
++	int idx;
++
++	event->hw.saved_slots = slots;
++	event->hw.saved_metric = metrics;
++
++	for_each_set_bit(idx, cpuc->active_mask, INTEL_PMC_IDX_TD_BE_BOUND + 1) {
++		if (!is_topdown_idx(idx))
++			continue;
++		other = cpuc->events[idx];
++		other->hw.saved_slots = slots;
++		other->hw.saved_metric = metrics;
++	}
+ }
  
  /*
-@@ -1750,7 +1716,7 @@ static inline void __run_timers(struct timer_base *base)
- 	struct hlist_head heads[LVL_DEPTH];
- 	int levels;
+@@ -2304,6 +2353,7 @@ static u64 icl_update_topdown_event(struct perf_event *event)
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+ 	struct perf_event *other;
+ 	u64 slots, metrics;
++	bool reset = true;
+ 	int idx;
  
--	if (!time_after_eq(jiffies, base->clk))
-+	if (time_before(jiffies, base->next_expiry))
- 		return;
- 
- 	timer_base_lock_expiry(base);
-@@ -1763,7 +1729,8 @@ static inline void __run_timers(struct timer_base *base)
- 	 */
- 	base->must_forward_clk = false;
- 
--	while (time_after_eq(jiffies, base->clk)) {
-+	while (time_after_eq(jiffies, base->clk) &&
-+	       time_after_eq(jiffies, base->next_expiry)) {
- 
- 		levels = collect_expired_timers(base, heads);
- 		base->clk++;
-@@ -1798,12 +1765,12 @@ void run_local_timers(void)
- 
- 	hrtimer_run_queues();
- 	/* Raise the softirq only if required. */
--	if (time_before(jiffies, base->clk)) {
-+	if (time_before(jiffies, base->next_expiry)) {
- 		if (!IS_ENABLED(CONFIG_NO_HZ_COMMON))
- 			return;
- 		/* CPU is awake, so check the deferrable base. */
- 		base++;
--		if (time_before(jiffies, base->clk))
-+		if (time_before(jiffies, base->next_expiry))
- 			return;
+ 	/* read Fixed counter 3 */
+@@ -2318,25 +2368,45 @@ static u64 icl_update_topdown_event(struct perf_event *event)
+ 		if (!is_topdown_idx(idx))
+ 			continue;
+ 		other = cpuc->events[idx];
+-		__icl_update_topdown_event(other, slots, metrics);
++		__icl_update_topdown_event(other, slots, metrics,
++					   event ? event->hw.saved_slots : 0,
++					   event ? event->hw.saved_metric : 0);
  	}
- 	raise_softirq(TIMER_SOFTIRQ);
+ 
+ 	/*
+ 	 * Check and update this event, which may have been cleared
+ 	 * in active_mask e.g. x86_pmu_stop()
+ 	 */
+-	if (event && !test_bit(event->hw.idx, cpuc->active_mask))
+-		__icl_update_topdown_event(event, slots, metrics);
++	if (event && !test_bit(event->hw.idx, cpuc->active_mask)) {
++		__icl_update_topdown_event(event, slots, metrics,
++					   event->hw.saved_slots,
++					   event->hw.saved_metric);
+ 
+-	/*
+-	 * Software is recommended to periodically clear both registers
+-	 * in order to maintain accurate measurements, which is required for
+-	 * certain scenarios that involve sampling metrics at high rates.
+-	 * Software should always write fixed counter 3 before write to
+-	 * PERF_METRICS.
+-	 */
+-	wrmsrl(MSR_CORE_PERF_FIXED_CTR3, 0);
+-	wrmsrl(MSR_PERF_METRICS, 0);
++		/*
++		 * In x86_pmu_stop(), the event is cleared in active_mask first,
++		 * then drain the delta, which indicates context switch for
++		 * counting.
++		 * Save metric and slots for context switch.
++		 * Don't need to reset the PERF_METRICS and Fixed counter 3.
++		 * Because the values will be restored in next schedule in.
++		 */
++		update_saved_topdown_regs(event, slots, metrics);
++		reset = false;
++	}
++
++	if (reset) {
++		/*
++		 * Software is recommended to periodically clear both registers
++		 * in order to maintain accurate measurements, which is required
++		 * for certain scenarios that involve sampling metrics at high
++		 * rates. Software should always write fixed counter 3 before
++		 * write to PERF_METRICS.
++		 */
++		wrmsrl(MSR_CORE_PERF_FIXED_CTR3, 0);
++		wrmsrl(MSR_PERF_METRICS, 0);
++		if (event)
++			update_saved_topdown_regs(event, 0, 0);
++	}
+ 
+ 	return slots;
+ }
+@@ -3564,9 +3634,6 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 				return -EINVAL;
+ 
+ 			event->hw.flags |= PERF_X86_EVENT_TOPDOWN;
+-
+-			if (is_metric_event(event))
+-				event->hw.flags &= ~PERF_X86_EVENT_RDPMC_ALLOWED;
+ 		}
+ 	}
+ 
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 3b22db08b6fb..a26f3c9589b7 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -212,17 +212,26 @@ struct hw_perf_event {
+ 	 */
+ 	u64				sample_period;
+ 
+-	/*
+-	 * The period we started this sample with.
+-	 */
+-	u64				last_period;
++	union {
++		struct { /* Sampling */
++			/*
++			 * The period we started this sample with.
++			 */
++			u64				last_period;
+ 
+-	/*
+-	 * However much is left of the current period; note that this is
+-	 * a full 64bit value and allows for generation of periods longer
+-	 * than hardware might allow.
+-	 */
+-	local64_t			period_left;
++			/*
++			 * However much is left of the current period;
++			 * note that this is a full 64bit value and
++			 * allows for generation of periods longer
++			 * than hardware might allow.
++			 */
++			local64_t			period_left;
++		};
++		struct { /* Topdown events counting for context switch */
++			u64				saved_metric;
++			u64				saved_slots;
++		};
++	};
+ 
+ 	/*
+ 	 * State for throttling the event, see __perf_event_overflow() and
 -- 
-2.26.2
+2.17.1
 
