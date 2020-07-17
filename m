@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2E3223480
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7C4223484
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgGQG2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:28:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33200 "EHLO mail.kernel.org"
+        id S1726782AbgGQGaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:30:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:10212 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgGQG2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:28:49 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAD6E21744;
-        Fri, 17 Jul 2020 06:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594967329;
-        bh=/zDpcXferlVtWyvGBk0RCp/EESwPvxFdFmaWT7IB5mc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mGn1qhG01OHqEEHQJUEmSuu/sVsHpdMBOUDRld0QlkpUsFb/3GgPZE0v1HXL4MOss
-         SQafuUuYSS91Vd2p+yKKuMTKGVA0cE4/Jd5hrN52gyaFFA9lmL9DHqkXRZOmqzOh9l
-         BXjcHxfLYZELw3WeZyuKI6/fdZ+kFeV4tMPKAcBI=
-Date:   Fri, 17 Jul 2020 08:28:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: Re: [PATCH] [PATCH] Firmware security information in SYSFS
-Message-ID: <20200717062841.GA3238569@kroah.com>
-References: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
+        id S1726056AbgGQGaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:30:30 -0400
+IronPort-SDR: Cfx5WmuYM9d2CALIgsoPKeGdVAifmtHr4orAdr/19dKEZWDkAlDida8DQKwWMaHyh6CyenHfLa
+ 69yWP5H7coKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="137006242"
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="137006242"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 23:30:29 -0700
+IronPort-SDR: UstrEUAEOS5WbWF6+q1Dv4sbthHyr85FF7NRBvh50qLVkVm2uqWqeqVXa6CqDcG0sPfguSkryb
+ zufQbxwUEmqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="269458022"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Jul 2020 23:30:26 -0700
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+To:     broonie@kernel.org, robh@kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, daniel.schwierzeck@gmail.com,
+        hauke@hauke-m.de, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
+        qi-ming.wu@intel.com, Dilip Kota <eswara.kota@linux.intel.com>
+Subject: [PATCH v2 1/8] spi: lantiq: fix: Rx overflow error in full duplex mode
+Date:   Fri, 17 Jul 2020 14:27:50 +0800
+Message-Id: <efb650b0faa49a00788c4e0ca8ef7196bdba851d.1594957019.git.eswara.kota@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 07:36:27PM -0300, Daniel Gutson wrote:
-> +What:		/sys/kernel/firmware-security/bioswe
+In full duplex mode, rx overflow error is observed. To overcome the error,
+wait until the complete data got received and proceed further.
 
-Ick, I stopped reading right here.
+Fixes: 17f84b793c01 ("spi: lantiq-ssc: add support for Lantiq SSC SPI controller")
+Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+---
+ drivers/spi/spi-lantiq-ssc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-No, this is not where this belongs.
+diff --git a/drivers/spi/spi-lantiq-ssc.c b/drivers/spi/spi-lantiq-ssc.c
+index 1fd7ee53d4510..44600fb71c484 100644
+--- a/drivers/spi/spi-lantiq-ssc.c
++++ b/drivers/spi/spi-lantiq-ssc.c
+@@ -184,6 +184,7 @@ struct lantiq_ssc_spi {
+ 	unsigned int			tx_fifo_size;
+ 	unsigned int			rx_fifo_size;
+ 	unsigned int			base_cs;
++	unsigned int			fdx_tx_level;
+ };
+ 
+ static u32 lantiq_ssc_readl(const struct lantiq_ssc_spi *spi, u32 reg)
+@@ -481,6 +482,7 @@ static void tx_fifo_write(struct lantiq_ssc_spi *spi)
+ 	u32 data;
+ 	unsigned int tx_free = tx_fifo_free(spi);
+ 
++	spi->fdx_tx_level = 0;
+ 	while (spi->tx_todo && tx_free) {
+ 		switch (spi->bits_per_word) {
+ 		case 2 ... 8:
+@@ -509,6 +511,7 @@ static void tx_fifo_write(struct lantiq_ssc_spi *spi)
+ 
+ 		lantiq_ssc_writel(spi, data, LTQ_SPI_TB);
+ 		tx_free--;
++		spi->fdx_tx_level++;
+ 	}
+ }
+ 
+@@ -520,6 +523,13 @@ static void rx_fifo_read_full_duplex(struct lantiq_ssc_spi *spi)
+ 	u32 data;
+ 	unsigned int rx_fill = rx_fifo_level(spi);
+ 
++	/*
++	 * Wait until all expected data to be shifted in.
++	 * Otherwise, rx overrun may occur.
++	 */
++	while (rx_fill != spi->fdx_tx_level)
++		rx_fill = rx_fifo_level(spi);
++
+ 	while (rx_fill) {
+ 		data = lantiq_ssc_readl(spi, LTQ_SPI_RB);
+ 
+-- 
+2.11.0
 
-We already have /sys/firmware/, right?  And firmware-specific
-subdirectories below that.
-
-We also have /sys/devices/system/ and I think that would be a much
-better place for this, as it is easier to work with a real 'struct
-device' than a "raw" kobject any day.  Bonus is you get full support of
-userspace libraries when you do that, unlike when dealing with kobjects.
-
-Also, this really is a _SPECIFIC_ type of firmware that supports these
-features, right?  Why not call that out too?  This is not generic by any
-means.
-
-thanks,
-
-greg k-h
