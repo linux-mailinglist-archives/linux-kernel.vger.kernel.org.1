@@ -2,317 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D836D22311A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E47D223122
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgGQCRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 22:17:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8310 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726138AbgGQCRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 22:17:16 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5777E2397207D260FF2C;
-        Fri, 17 Jul 2020 10:17:12 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.91) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Jul 2020
- 10:17:02 +0800
-Subject: Re: [PATCH -next] scsi: hisi_sas: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     luojiaxing <luojiaxing@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Garry <john.garry@huawei.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200716084714.7872-1-miaoqinglang@huawei.com>
- <c3bc1f66-2eae-1f9b-58bf-7eacb25739e1@huawei.com>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <a02d6696-f23c-08d0-d29c-0cb136c63835@huawei.com>
-Date:   Fri, 17 Jul 2020 10:17:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726335AbgGQCW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 22:22:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37358 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgGQCWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 22:22:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82EB3AB76;
+        Fri, 17 Jul 2020 02:22:26 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liuyongqiang13@huawei.com
+References: <20200716090313.13216-1-miaoqinglang@huawei.com>
+ <a0f9b92b-d8f2-7c03-8c48-9e71e506361b@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH -next] bcache: Convert to DEFINE_SHOW_ATTRIBUTE
+Message-ID: <639a9561-2824-b668-42b3-b69f016f54e1@suse.de>
+Date:   Fri, 17 Jul 2020 10:22:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <c3bc1f66-2eae-1f9b-58bf-7eacb25739e1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <a0f9b92b-d8f2-7c03-8c48-9e71e506361b@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/7/16 20:39, luojiaxing 写道:
-> Hi, Qinglang
-> 
-> On 2020/7/16 16:47, Qinglang Miao wrote:
+On 2020/7/16 17:54, Coly Li wrote:
+> On 2020/7/16 17:03, Qinglang Miao wrote:
 >> From: Yongqiang Liu <liuyongqiang13@huawei.com>
 >>
+> 
+> Hi Qianlang and Yongqiang,
+> 
 >> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 >>
 >> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
 >> ---
->>   drivers/scsi/hisi_sas/hisi_sas_main.c | 137 ++------------------------
->>   1 file changed, 10 insertions(+), 127 deletions(-)
+>>  drivers/md/bcache/closure.c | 16 +++-------------
+>>  1 file changed, 3 insertions(+), 13 deletions(-)
 >>
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_main.c
->> index 852d2620e..f50b0c78f 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_main.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
->> @@ -2870,19 +2870,7 @@ static int hisi_sas_debugfs_global_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_global_open(struct inode *inode, struct 
->> file *filp)
+>> diff --git a/drivers/md/bcache/closure.c b/drivers/md/bcache/closure.c
+>> index 99222aa5d..37b9c5d49 100644
+>> --- a/drivers/md/bcache/closure.c
+>> +++ b/drivers/md/bcache/closure.c
+>> @@ -159,7 +159,7 @@ void closure_debug_destroy(struct closure *cl)
+>>  
+>>  static struct dentry *closure_debug;
+>>  
+>> -static int debug_seq_show(struct seq_file *f, void *data)
+>> +static int debug_show(struct seq_file *f, void *data)
+>>  {
+>>  	struct closure *cl;
+>>  
+>> @@ -188,17 +188,7 @@ static int debug_seq_show(struct seq_file *f, void *data)
+>>  	return 0;
+>>  }
+>>  
+>> -static int debug_seq_open(struct inode *inode, struct file *file)
 >> -{
->> -    return single_open(filp, hisi_sas_debugfs_global_show,
->> -               inode->i_private);
+>> -	return single_open(file, debug_seq_show, NULL);
 >> -}
 >> -
->> -static const struct file_operations hisi_sas_debugfs_global_fops = {
->> -    .open = hisi_sas_debugfs_global_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
 > 
+> Here NULL is sent to single_open(), in DEFINE_SHOW_ATTRIBUTE()
+> inode->i_private is sent into single_open(). I don't see the commit log
+> mentions or estimates such change.
 > 
-> I saw that your code is different from code in kernel 5.8-rc4, and it 
-> should be as follow:
-> 
-> static const struct file_operations hisi_sas_debugfs_global_fops = {
->      .open = hisi_sas_debugfs_global_open,
->      .read = seq_read,
->      .llseek = seq_lseek,
->      .release = single_release,
->      .owner = THIS_MODULE,
-> };
-> 
-Sorry I didn't mention it in commit log, but this patch is based on 
-linux-next where commit <4d4901c6d7> has switched over direct  seq_read 
-method calls to seq_read_iter. I can send a new patch based on  v5.8-rc 
-if you don't mind.
-> 
-> Plus, if we use this macro directly when we write this code, it really 
-> makes the code simpler. But if we accept the cleanup now,
-> 
-> we might need to consider evading compilation failures when we merge 
-> these code back to some older kernel (e.g kernel 4.14 for centOS 7.6).
-> 
-> I think this marco is introduced into kernel 4.16-rc2.
-> 
-Yes, you're right, the macro and commit <4d4901c6d7> need to be  applied 
-before this clean up patch. But I don't think this patch as well as 
-commit<4d4901c6d7> need to be merged back to older kernel.
-> 
-> So I don't see much additional benefit to us from this simplification. 
-> But this marco is quite helpful and I think I will use it somewhere else.
-> 
-> Thanks
-> 
-> Jiaxing
-> 
-Glad to know your opnions.
 
-Thanks.
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_global);
->>   static int hisi_sas_debugfs_axi_show(struct seq_file *s, void *p)
->>   {
->> @@ -2897,19 +2885,7 @@ static int hisi_sas_debugfs_axi_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_axi_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_axi_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_axi_fops = {
->> -    .open = hisi_sas_debugfs_axi_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_axi);
->>   static int hisi_sas_debugfs_ras_show(struct seq_file *s, void *p)
->>   {
->> @@ -2924,19 +2900,7 @@ static int hisi_sas_debugfs_ras_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_ras_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_ras_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_ras_fops = {
->> -    .open = hisi_sas_debugfs_ras_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_ras);
->>   static int hisi_sas_debugfs_port_show(struct seq_file *s, void *p)
->>   {
->> @@ -2951,18 +2915,7 @@ static int hisi_sas_debugfs_port_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_port_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_port_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_port_fops = {
->> -    .open = hisi_sas_debugfs_port_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_port);
->>   static void hisi_sas_show_row_64(struct seq_file *s, int index,
->>                    int sz, __le64 *ptr)
->> @@ -3019,18 +2972,7 @@ static int hisi_sas_debugfs_cq_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_cq_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_cq_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_cq_fops = {
->> -    .open = hisi_sas_debugfs_cq_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_cq);
->>   static void hisi_sas_dq_show_slot(struct seq_file *s, int slot, void 
->> *dq_ptr)
->>   {
->> @@ -3052,18 +2994,7 @@ static int hisi_sas_debugfs_dq_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_dq_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_dq_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_dq_fops = {
->> -    .open = hisi_sas_debugfs_dq_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_dq);
->>   static int hisi_sas_debugfs_iost_show(struct seq_file *s, void *p)
->>   {
->> @@ -3080,18 +3011,7 @@ static int hisi_sas_debugfs_iost_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_iost_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_iost_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_iost_fops = {
->> -    .open = hisi_sas_debugfs_iost_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost);
->>   static int hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void 
->> *p)
->>   {
->> @@ -3117,20 +3037,7 @@ static int 
->> hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_iost_cache_open(struct inode *inode,
->> -                        struct file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_iost_cache_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_iost_cache_fops = {
->> -    .open = hisi_sas_debugfs_iost_cache_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost_cache);
->>   static int hisi_sas_debugfs_itct_show(struct seq_file *s, void *p)
->>   {
->> @@ -3147,18 +3054,7 @@ static int hisi_sas_debugfs_itct_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_itct_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_itct_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_itct_fops = {
->> -    .open = hisi_sas_debugfs_itct_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct);
->>   static int hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void 
->> *p)
->>   {
->> @@ -3184,20 +3080,7 @@ static int 
->> hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_itct_cache_open(struct inode *inode,
->> -                        struct file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_itct_cache_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_itct_cache_fops = {
->> -    .open = hisi_sas_debugfs_itct_cache_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct_cache);
->>   static void hisi_sas_debugfs_create_files(struct hisi_hba *hisi_hba)
->>   {
+Still this change modifies original code logic, I need to know the exact
+effect before taking this patch.
+
 > 
-> .
+>> -static const struct file_operations debug_ops = {
+>> -	.owner		= THIS_MODULE,
+>> -	.open		= debug_seq_open,
+>> -	.read_iter		= seq_read_iter,
+> 
+> I doubt this patch applies to Linux v5.8-rc, this is how debug_ops is
+> defined in Linux v5.8-rc5,
+>
+
+I realize your patch is against linux-next, which is ahead of both
+linux-block and mainline tree. So this patch does not apply to
+linux-block tree, which is my upstream for bcache going to upstream.
+
+I suggest to generate the patch against latest mainline kernel, or
+linux-block branch for next merge window (for 5.9 it is branch
+remotes/origin/for-5.9/drivers).
+
+
+> 196 static const struct file_operations debug_ops = {
+> 197         .owner          = THIS_MODULE,
+> 198         .open           = debug_seq_open,
+> 199         .read           = seq_read,
+> 200         .release        = single_release
+> 201 };
+> 
+>> -	.release	= single_release
+>> -};
+>> +DEFINE_SHOW_ATTRIBUTE(debug);
+>>  
+>>  void  __init closure_debug_init(void)
+>>  {
+>> @@ -209,7 +199,7 @@ void  __init closure_debug_init(void)
+>>  		 * about this.
+>>  		 */
+>>  		closure_debug = debugfs_create_file(
+>> -			"closures", 0400, bcache_debug, NULL, &debug_ops);
+>> +				"closures", 0400, bcache_debug, NULL, &debug_fops);
+>>  }
+>>  #endif
+> 
+> Do you test your change with upstream kernel ? Or at least you should
+> try to apply and compile the patch with latest upstream kernel.
+
+I withdraw the above wrong word, the -next tag in patch subject was
+overlooked by me. Next time I will try to avoid such mistake.
+
+Coly Li
+
 
