@@ -2,166 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0C92243E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFE42243E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgGQTKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 15:10:36 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:58472 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728182AbgGQTKd (ORCPT
+        id S1728542AbgGQTKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 15:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgGQTK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:10:33 -0400
+        Fri, 17 Jul 2020 15:10:28 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1090FC0619D7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:10:26 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j4so12173596wrp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:10:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595013033; x=1626549033;
-  h=date:from:to:cc:message-id:references:mime-version:
-   content-transfer-encoding:in-reply-to:subject;
-  bh=JXEp3fu4ueKSPTL/aTTxogwWbfIdE4zKSLg5x2ylncA=;
-  b=qFWB9M0p4V9EPFUX9w3CtmL975Re8xUfeScpOkbW6oj2DTGFjPIHiIMR
-   GADrCHxJI1cPfotygfYbnRJ/COloPrZfb1ZMYfW/sFDnXT5cFzuud0rta
-   2eyL3KD/Cvwb7/O/h0iya5YppUjJHaaNB/F4sTcRYTLJgxf514RxfGnFB
-   8=;
-IronPort-SDR: B7g8C+O+44k2rWyS1+qLZ7Ril88L7euUS5PHylv/wSxXaBC1vnDAauj2J020dgzo+5pOznIGT3
- 9bsyqNana+Aw==
-X-IronPort-AV: E=Sophos;i="5.75,364,1589241600"; 
-   d="scan'208";a="42640067"
-Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend mode
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 17 Jul 2020 19:10:32 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id D73BFA20E1;
-        Fri, 17 Jul 2020 19:10:24 +0000 (UTC)
-Received: from EX13D08UEE003.ant.amazon.com (10.43.62.118) by
- EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 17 Jul 2020 19:10:09 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
- EX13D08UEE003.ant.amazon.com (10.43.62.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 17 Jul 2020 19:10:09 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Fri, 17 Jul 2020 19:10:09 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 3826A56980; Fri, 17 Jul 2020 19:10:09 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 19:10:09 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <jgross@suse.com>,
-        <linux-pm@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kamatam@amazon.com>, <sstabellini@kernel.org>,
-        <konrad.wilk@oracle.com>, <roger.pau@citrix.com>,
-        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
-        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
-        <eduval@amazon.com>, <sblbir@amazon.com>,
-        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
-Message-ID: <20200717191009.GA3387@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-References: <cover.1593665947.git.anchalag@amazon.com>
- <20200702182136.GA3511@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <50298859-0d0e-6eb0-029b-30df2a4ecd63@oracle.com>
- <20200715204943.GB17938@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com>
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=/3tZLNgSUaBUOYFtarysCRR7+220ug8Q6HlgI7Nzn9o=;
+        b=cCAmvlsUDJwZwJmRNK+H8fKklO9LVaNEl+TESiR0wM/9WOl4gqHrJeLLeokHptEi2Z
+         mfVfnI/DQ8lbV43KW3fF7PXHYTWvLqhPUhdCtFftcUTV+1kYZkNMZ9L6n2F4V2hhM24M
+         ygVUtqyThgYUVvXc2UchbsmG8Ns2cFz4iS3+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/3tZLNgSUaBUOYFtarysCRR7+220ug8Q6HlgI7Nzn9o=;
+        b=OsI8yEi8B+bh8wpjgdrJuOBZZeJlpQHe+qVJKwd214BynPmn36xbSqWcQFAA4HecTj
+         a58dmVJZQDeKbzdph12GFTBEfuvgCzv0BEGEnLv0aECjyu1dQmdXudzVQmJ9+WSwzwOj
+         VnCKO/XYuYTrkzZdJZXKNGxn3lJ8tU2DoXMDVyl8qWwAANF8fyZZ9AT0UpKqVgGdfa9k
+         8d50j9ZgM4IEMI+XZ3x9Y3Md0azr+Vjri9P9iOzFFMYIiaVPzFKZ8PPO7n4g8vBcuQeB
+         2doCWySEvgSuW7dxsxWTiQ1opyHEesQndUoJYIOdpGaMZBGvBmfW6cPmozfhImJblQ8G
+         tvGQ==
+X-Gm-Message-State: AOAM532jvUyoX9OIGIhz+YLaSsvS/VGOJZDBxPkpoEz3e6khy4kDQ2SF
+        Rk4oQ1VzUmSxaYAMVi1ky8Kk37Zel7CcsXSV+E3Jn2IRAc7K4dgxgE6El891nxWTaCjmE9gUxiN
+        pxW1KQyaSDzAwNmrgigW6Qv5+BDe/BkSMMNfVePHtAlc7nMFRw2Ot8eUpM0O3JXcAMHbWXugVrp
+        x9U2hJJYsM
+X-Google-Smtp-Source: ABdhPJyTAxDc4h0eRMxzqWDfGCUf8nSKoi7XGTE2dPrI2YcN6sHaJsCTxBwiuKYEbrxnK+MdFSrF2g==
+X-Received: by 2002:a5d:68cc:: with SMTP id p12mr11463924wrw.111.1595013024363;
+        Fri, 17 Jul 2020 12:10:24 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id c15sm15320664wme.23.2020.07.17.12.10.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 12:10:23 -0700 (PDT)
+Subject: Re: [PATCH 03/13] fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED
+ enum
+To:     Kees Cook <keescook@chromium.org>
+Cc:     stable@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        James Morris <jmorris@namei.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jessica Yu <jeyu@kernel.org>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Jones <pjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200717174309.1164575-1-keescook@chromium.org>
+ <20200717174309.1164575-4-keescook@chromium.org>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <8ee5f0f1-8eae-510a-a3bb-7420a3fca001@broadcom.com>
+Date:   Fri, 17 Jul 2020 12:10:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200717174309.1164575-4-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 05:18:08PM -0400, Boris Ostrovsky wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> On 7/15/20 4:49 PM, Anchal Agarwal wrote:
-> > On Mon, Jul 13, 2020 at 11:52:01AM -0400, Boris Ostrovsky wrote:
-> >> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> >>
-> >>
-> >>
-> >> On 7/2/20 2:21 PM, Anchal Agarwal wrote:
-> >>> +
-> >>> +bool xen_is_xen_suspend(void)
-> >>
-> >> Weren't you going to call this pv suspend? (And also --- is this suspend
-> >> or hibernation? Your commit messages and cover letter talk about fixing
-> >> hibernation).
-> >>
-> >>
-> > This is for hibernation is for pvhvm/hvm/pv-on-hvm guests as you may call it.
-> > The method is just there to check if "xen suspend" is in progress.
-> > I do not see "xen_suspend" differentiating between pv or hvm
-> > domain until later in the code hence, I abstracted it to xen_is_xen_suspend.
-> 
-> 
-> I meant "pv suspend" in the sense that this is paravirtual suspend, not
-> suspend for paravirtual guests. Just like pv drivers are for both pv and
-> hvm guests.
-> 
-> 
-> And then --- should it be pv suspend or pv hibernation?
-> 
->
-Ok so I think I am lot confused by this question. Here is what this
-function for, function xen_is_xen_suspend() just tells us whether 
-the guest is in "SHUTDOWN_SUSPEND" state or not. This check is needed
-for correct invocation of syscore_ops callbacks registered for guest's
-hibernation and for xenbus to invoke respective callbacks[suspend/resume
-vs freeze/thaw/restore].
-Since "shutting_down" state is defined static and is not directly available
-to other parts of the code, the function solves the purpose.
 
-I am having hard time understanding why this should be called pv
-suspend/hibernation unless you are suggesting something else?
-Am I missing your point here? 
-> 
-> >>> +{
-> >>> +     return suspend_mode == XEN_SUSPEND;
-> >>> +}
-> >>> +
-> >>
-> >> +static int xen_setup_pm_notifier(void)
-> >> +{
-> >> +     if (!xen_hvm_domain())
-> >> +             return -ENODEV;
-> >>
-> >> I forgot --- what did we decide about non-x86 (i.e. ARM)?
-> > It would be great to support that however, its  out of
-> > scope for this patch set.
-> > I’ll be happy to discuss it separately.
-> 
-> 
-> I wasn't implying that this *should* work on ARM but rather whether this
-> will break ARM somehow (because xen_hvm_domain() is true there).
-> 
-> 
-Ok makes sense. TBH, I haven't tested this part of code on ARM and the series
-was only support x86 guests hibernation.
-Moreover, this notifier is there to distinguish between 2 PM
-events PM SUSPEND and PM hibernation. Now since we only care about PM
-HIBERNATION I may just remove this code and rely on "SHUTDOWN_SUSPEND" state.
-However, I may have to fix other patches in the series where this check may
-appear and cater it only for x86 right?
-> 
-> >>
-> >> And PVH dom0.
-> > That's another good use case to make it work with however, I still
-> > think that should be tested/worked upon separately as the feature itself
-> > (PVH Dom0) is very new.
-> 
-> 
-> Same question here --- will this break PVH dom0?
-> 
-I haven't tested it as a part of this series. Is that a blocker here?
-> 
-Thanks,
-Anchal
-> -boris
-> 
-> 
+
+On 2020-07-17 10:42 a.m., Kees Cook wrote:
+> The "FIRMWARE_EFI_EMBEDDED" enum is a "where", not a "what". It
+> should not be distinguished separately from just "FIRMWARE", as this
+> confuses the LSMs about what is being loaded. Additionally, there was
+> no actual validation of the firmware contents happening.
+>
+> Fixes: e4c2c0ff00ec ("firmware: Add new platform fallback mechanism and firmware_request_platform()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+Acked-by: Scott Branden <scott.branden@broadcom.com>
+> ---
+> To aid in backporting, this change is made before moving
+> kernel_read_file() to separate header/source files.
+> ---
+>   drivers/base/firmware_loader/fallback_platform.c | 2 +-
+>   include/linux/fs.h                               | 3 +--
+>   2 files changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/firmware_loader/fallback_platform.c b/drivers/base/firmware_loader/fallback_platform.c
+> index 685edb7dd05a..6958ab1a8059 100644
+> --- a/drivers/base/firmware_loader/fallback_platform.c
+> +++ b/drivers/base/firmware_loader/fallback_platform.c
+> @@ -17,7 +17,7 @@ int firmware_fallback_platform(struct fw_priv *fw_priv, u32 opt_flags)
+>   	if (!(opt_flags & FW_OPT_FALLBACK_PLATFORM))
+>   		return -ENOENT;
+>   
+> -	rc = security_kernel_load_data(LOADING_FIRMWARE_EFI_EMBEDDED);
+> +	rc = security_kernel_load_data(LOADING_FIRMWARE);
+>   	if (rc)
+>   		return rc;
+>   
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 95fc775ed937..f50a35d54a61 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2993,11 +2993,10 @@ static inline void i_readcount_inc(struct inode *inode)
+>   #endif
+>   extern int do_pipe_flags(int *, int);
+>   
+> -/* This is a list of *what* is being read, not *how*. */
+> +/* This is a list of *what* is being read, not *how* nor *where*. */
+>   #define __kernel_read_file_id(id) \
+>   	id(UNKNOWN, unknown)		\
+>   	id(FIRMWARE, firmware)		\
+> -	id(FIRMWARE_EFI_EMBEDDED, firmware)	\
+>   	id(MODULE, kernel-module)		\
+>   	id(KEXEC_IMAGE, kexec-image)		\
+>   	id(KEXEC_INITRAMFS, kexec-initramfs)	\
+
