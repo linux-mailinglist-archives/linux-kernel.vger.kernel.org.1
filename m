@@ -2,102 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105C3223301
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF05223309
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgGQFgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 01:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        id S1725970AbgGQFpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 01:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgGQFgG (ORCPT
+        with ESMTP id S1725300AbgGQFpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:36:06 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE0C061755;
-        Thu, 16 Jul 2020 22:36:06 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o13so6159257pgf.0;
-        Thu, 16 Jul 2020 22:36:06 -0700 (PDT)
+        Fri, 17 Jul 2020 01:45:23 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA385C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:45:23 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 5so6027325oty.11
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eA3Lf6COMI1mRdEISSrMmP+BQVZuKaEAQpawnMHSLTY=;
-        b=s9HshUZktEiSYfzjp3zRVa2ZtVXIhp9xE3GxfylP5oCAwROIvMR+erownZINvvH/of
-         UPrFetK44e7NdjDw2rOMqCx8UV4LsypMjdIfAs3sUlWUqglGs33lbuqg72MhaZnjGNJW
-         9KbzLnjv5G9+fn+xFsKezsXh0nrb5REJrNvEvHUsSjGX04wC+IvevZsmBdcGyixNw+ka
-         ob8I4cyPom95ydUoO2eNyKqyUGIbUManMgN3fFTZuqM+fHIcJV68qSWgpABkHW/vdc0Y
-         qFbrPLw0ymet2ZbYoNIu5LsBZykJ0j12CYwIwJRHUVUPBhJCdMNYPEcj0hXPRyHmKk1k
-         hKZg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JHkdyRAcZkv1Vdi/CSUR9aW83f/Brxcwc8MUQ7kmTKI=;
+        b=pbgYazzaArA2nnQJoKycAuv1HgDXSO+TAsN+cjtFYjPGNKFEbzIACwyHf+sPwauUCX
+         vBMGHv7/ccm4+VDg5tof8NYSFES173qlMMod1wFvM3L38Gyv5PjDjYgkSCj+e7kJdkG8
+         eGnTzy2+7dzif4l85l+AFxBkzhyZZW+oL6Ss3Z/McHcZ27aEnyAKBPJ94QEeRRFll7xT
+         +IqwXpXL+Q0H6cXnE0wdTvd3RhPjWkIFR/4lYdZI+QMPOwXgiP9oKoKucoJAsCcO9k8c
+         EeOTHFmcdRr5WAouYtWnMDFN121P5F/dnD9FrAVV0TFUh9JE8eBdSo1TnjPH0jKCFFV/
+         YSlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eA3Lf6COMI1mRdEISSrMmP+BQVZuKaEAQpawnMHSLTY=;
-        b=C5KyAz4bkIIFVZgsyYt86LWEuJpRWTOTPrONeCheE48lsOjdOue9LApykV2fs43bVz
-         il9dpY6MwkgfT23QjDz6VnMDe6JRUsug1nW2prBltIPI5apWYBAGld8yOKYza90ZOo0d
-         H1ZQlSNnIOQgN82ykCw2P25A1NyykenNpwyP6/Bfu2KMS9rZUHc7YxUNwyIE5HPpenXZ
-         rfk4jnpIlRMhzH3rc15JJ+ulQ/67R5Tjzu4MDEGw/0fsqzJC6B4kWj4nVHTRcw0GnFa6
-         BLe8cE4GfzBRK6fPPWdJKFVrI7FOBweDEJHiOsZLkB90sXSvwtOHsdGsMh4Hjc/QJd5Y
-         fXKQ==
-X-Gm-Message-State: AOAM532U1ukgmnYKiuiXgDwO9MizonZjBKBhPRjogSp/sQXlvB0cDbAy
-        A9HP5OFPpUy4Fu6fnuajeuo=
-X-Google-Smtp-Source: ABdhPJz53Mm4B4QiZVs52GLL3rM/VzxKRz4dJGgO0eNfa/WdyxSl2yx/iWryf9N+jHARm7CezJ6Y4g==
-X-Received: by 2002:a65:5c43:: with SMTP id v3mr7127271pgr.214.1594964165758;
-        Thu, 16 Jul 2020 22:36:05 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id s14sm483511pjl.14.2020.07.16.22.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 22:36:04 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chen Yongzhi <yongzhi.chen@unisoc.com>
-Subject: [PATCH] power: supply: sc27xx: prevent adc * 1000 from overflow
-Date:   Fri, 17 Jul 2020 13:35:46 +0800
-Message-Id: <20200717053546.7981-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JHkdyRAcZkv1Vdi/CSUR9aW83f/Brxcwc8MUQ7kmTKI=;
+        b=SlZSlTPF0fYJ9f9OF0ojf/Duk5Os5+OGcB93OGmiu/IOG0UiDqSH5s9Ue27i4X/Jrl
+         tufRAs75UAag3D3Hqxn+Y6KrPt4QjzQ5LIC7YZXiwhG9qxNmVemOaec1WLafGL0Lqsa9
+         4pjK2G6YYEbp6hIZNop7K5h1aqQ+TUNDIjCzD23oHwfj3za9mfM1ENae8XZH532QFpYY
+         4EDxWScOH7WCrLao2hi5VNUCPkgMpikf/QyzX0Lw4a9KpFBEwhNKW7+pCJg64gPGwwdb
+         PJhOsUYK5+5r2sGBbiGKQEcPwaLk3abaF03AEOs+BOGPILEQF1wrU+29jVWZtbogBmOd
+         b5Jw==
+X-Gm-Message-State: AOAM532o1OzD9IPPQx5yWgAaHBMAOw7qKTpvS/HZJ/lMMMIfjlNdqDo3
+        jPHOA1U8E1CLtb+rCZNPH75Q55OrK8tdrYN9bG4=
+X-Google-Smtp-Source: ABdhPJxiyKw7Csu4IqifiSBr4IftmnIMA8UrFJtjTi0CrfVhwfFFjAU7z8vnrsqzKV4EY24AKbZRPrqme1N9Oys2gd8=
+X-Received: by 2002:a9d:7f06:: with SMTP id j6mr7355306otq.51.1594964722770;
+ Thu, 16 Jul 2020 22:45:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com> <20200717040958.70561-6-ravi.bangoria@linux.ibm.com>
+In-Reply-To: <20200717040958.70561-6-ravi.bangoria@linux.ibm.com>
+From:   Jordan Niethe <jniethe5@gmail.com>
+Date:   Fri, 17 Jul 2020 15:44:13 +1000
+Message-ID: <CACzsE9oE+OMnWEXvbZZbq35YzpSzCbBHWEJcjtCgkcq-YrABng@mail.gmail.com>
+Subject: Re: [PATCH v4 05/10] powerpc/dt_cpu_ftrs: Add feature for 2nd DAWR
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, mikey@neuling.org,
+        apopple@linux.ibm.com, Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
+        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
+        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Fri, Jul 17, 2020 at 2:10 PM Ravi Bangoria
+<ravi.bangoria@linux.ibm.com> wrote:
+>
+> Add new device-tree feature for 2nd DAWR. If this feature is present,
+> 2nd DAWR is supported, otherwise not.
+>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>  arch/powerpc/include/asm/cputable.h | 7 +++++--
+>  arch/powerpc/kernel/dt_cpu_ftrs.c   | 7 +++++++
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+> index e506d429b1af..3445c86e1f6f 100644
+> --- a/arch/powerpc/include/asm/cputable.h
+> +++ b/arch/powerpc/include/asm/cputable.h
+> @@ -214,6 +214,7 @@ static inline void cpu_feature_keys_init(void) { }
+>  #define CPU_FTR_P9_TLBIE_ERAT_BUG      LONG_ASM_CONST(0x0001000000000000)
+>  #define CPU_FTR_P9_RADIX_PREFETCH_BUG  LONG_ASM_CONST(0x0002000000000000)
+>  #define CPU_FTR_ARCH_31                        LONG_ASM_CONST(0x0004000000000000)
+> +#define CPU_FTR_DAWR1                  LONG_ASM_CONST(0x0008000000000000)
+>
+>  #ifndef __ASSEMBLY__
+>
+> @@ -497,14 +498,16 @@ static inline void cpu_feature_keys_init(void) { }
+>  #define CPU_FTRS_POSSIBLE      \
+>             (CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | CPU_FTRS_POWER8 | \
+>              CPU_FTR_ALTIVEC_COMP | CPU_FTR_VSX_COMP | CPU_FTRS_POWER9 | \
+> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
+> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
+> +            CPU_FTR_DAWR1)
+>  #else
+>  #define CPU_FTRS_POSSIBLE      \
+>             (CPU_FTRS_PPC970 | CPU_FTRS_POWER5 | \
+>              CPU_FTRS_POWER6 | CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | \
+>              CPU_FTRS_POWER8 | CPU_FTRS_CELL | CPU_FTRS_PA6T | \
+>              CPU_FTR_VSX_COMP | CPU_FTR_ALTIVEC_COMP | CPU_FTRS_POWER9 | \
+> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
+> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
+> +            CPU_FTR_DAWR1)
+Instead of putting CPU_FTR_DAWR1 into CPU_FTRS_POSSIBLE should it go
+into CPU_FTRS_POWER10?
+Then it will be picked up by CPU_FTRS_POSSIBLE.
+>  #endif /* CONFIG_CPU_LITTLE_ENDIAN */
+>  #endif
+>  #else
+> diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu_ftrs.c
+> index ac650c233cd9..c78cd3596ec4 100644
+> --- a/arch/powerpc/kernel/dt_cpu_ftrs.c
+> +++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+> @@ -574,6 +574,12 @@ static int __init feat_enable_mma(struct dt_cpu_feature *f)
+>         return 1;
+>  }
+>
+> +static int __init feat_enable_debug_facilities_v31(struct dt_cpu_feature *f)
+> +{
+> +       cur_cpu_spec->cpu_features |= CPU_FTR_DAWR1;
+> +       return 1;
+> +}
+> +
+>  struct dt_cpu_feature_match {
+>         const char *name;
+>         int (*enable)(struct dt_cpu_feature *f);
+> @@ -649,6 +655,7 @@ static struct dt_cpu_feature_match __initdata
+>         {"wait-v3", feat_enable, 0},
+>         {"prefix-instructions", feat_enable, 0},
+>         {"matrix-multiply-assist", feat_enable_mma, 0},
+> +       {"debug-facilities-v31", feat_enable_debug_facilities_v31, 0},
+Since all feat_enable_debug_facilities_v31() does is set
+CPU_FTR_DAWR1, if you just have:
+{"debug-facilities-v31", feat_enable, CPU_FTR_DAWR1},
+I think cpufeatures_process_feature() should set it in for you at this point:
+            if (m->enable(f)) {
+                cur_cpu_spec->cpu_features |= m->cpu_ftr_bit_mask;
+                break;
+            }
 
-The input parameter is int type, cause adc * 1000 could overflow.
-Change to use s64 to avoid this issue.
-
-Fixes: 195ca1703784 ("power: supply: Add Spreadtrum SC27XX fuel gauge unit driver")
-Signed-off-by: Chen Yongzhi <yongzhi.chen@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/power/supply/sc27xx_fuel_gauge.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/power/supply/sc27xx_fuel_gauge.c b/drivers/power/supply/sc27xx_fuel_gauge.c
-index be42e814ea34..a9838a2a673d 100644
---- a/drivers/power/supply/sc27xx_fuel_gauge.c
-+++ b/drivers/power/supply/sc27xx_fuel_gauge.c
-@@ -133,12 +133,12 @@ static const char * const sc27xx_charger_supply_name[] = {
- 	"sc2723_charger",
- };
- 
--static int sc27xx_fgu_adc_to_current(struct sc27xx_fgu_data *data, int adc)
-+static int sc27xx_fgu_adc_to_current(struct sc27xx_fgu_data *data, s64 adc)
- {
- 	return DIV_ROUND_CLOSEST(adc * 1000, data->cur_1000ma_adc);
- }
- 
--static int sc27xx_fgu_adc_to_voltage(struct sc27xx_fgu_data *data, int adc)
-+static int sc27xx_fgu_adc_to_voltage(struct sc27xx_fgu_data *data, s64 adc)
- {
- 	return DIV_ROUND_CLOSEST(adc * 1000, data->vol_1000mv_adc);
- }
--- 
-2.20.1
-
+>  };
+>
+>  static bool __initdata using_dt_cpu_ftrs;
+> --
+> 2.26.2
+>
