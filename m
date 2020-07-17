@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDDD22383A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D1D223842
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgGQJYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:24:37 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:44322 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbgGQJYc (ORCPT
+        id S1726633AbgGQJZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgGQJZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:24:32 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 25329B00FB;
-        Fri, 17 Jul 2020 17:24:31 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P26706T140360697231104S1594977862492603_;
-        Fri, 17 Jul 2020 17:24:30 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <175f3b53069089f01a550b4376c15a50>
-X-RL-SENDER: yifeng.zhao@rock-chips.com
-X-SENDER: zyf@rock-chips.com
-X-LOGIN-NAME: yifeng.zhao@rock-chips.com
-X-FST-TO: miquel.raynal@bootlin.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        heiko@sntech.de, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yifeng Zhao <zyf@rock-chips.com>,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Subject: [PATCH v8 4/8] arm64: dts: rockchip: Add NFC node for RK3308 SoC
-Date:   Fri, 17 Jul 2020 17:24:20 +0800
-Message-Id: <20200717092420.19798-5-yifeng.zhao@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717092420.19798-1-yifeng.zhao@rock-chips.com>
-References: <20200717092420.19798-1-yifeng.zhao@rock-chips.com>
+        Fri, 17 Jul 2020 05:25:19 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25830C061755;
+        Fri, 17 Jul 2020 02:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oh4+QZoZC7XJ5liIvD/prbetozs/+rcdlSei8EeQx8I=; b=kazs8KzUqKOCO/2D6mprbyvEnU
+        +fzslg8lr95LXVXM9aFdR5oVu7YU+jtZjZuUuNhtdMoijq35pApqNb0Kjpu2+qVjYJPMxBkMxwxwt
+        zJhrNYgoG+hopYMkGXql6VsXOH/lcfSxf6ew9w8rrvlgWZWbac4aHyF3rLfDTz9Z9EaOC5qqudxmp
+        MPUw2W8cUivp9Wp2v/EKMhTIHSccGcg5LfOOnbnhGaWNlBaW4Nt73aFJHO/KOx+DjkatJQ183jtX+
+        +ShtbR2b2ELtr1q+XxcZs8EPUhEs/rKmpIBEOk0TS2IxU4449Zsd/jtbWwQvb1sB85UrR0QJJ9Ss7
+        A65td5HQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jwMc8-00048L-Pk; Fri, 17 Jul 2020 09:25:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6906F300130;
+        Fri, 17 Jul 2020 11:25:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5316B29CF6F53; Fri, 17 Jul 2020 11:25:07 +0200 (CEST)
+Date:   Fri, 17 Jul 2020 11:25:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     ira.weiny@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V2 16/17] [dax|pmem]: Enable stray write protection
+Message-ID: <20200717092507.GE10769@hirez.programming.kicks-ass.net>
+References: <20200717072056.73134-1-ira.weiny@intel.com>
+ <20200717072056.73134-17-ira.weiny@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717072056.73134-17-ira.weiny@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yifeng Zhao <zyf@rock-chips.com>
+On Fri, Jul 17, 2020 at 12:20:55AM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Protecting against stray writes is particularly important for PMEM
+> because, unlike writes to anonymous memory, writes to PMEM persists
+> across a reboot.  Thus data corruption could result in permanent loss of
+> data.  Therefore, there is no option presented to the user.
+> 
+> Enable stray write protection by setting the flag in pgmap which
+> requests it.  Note if Zone Device Access Protection not be supported
+> this flag will have no affect.
 
-Add NAND FLASH Controller(NFC) node for RK3308 SoC.
-
-Signed-off-by: Yifeng Zhao <zyf@rock-chips.com>
-Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
----
-
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index 507c6353f842..dea63a649111 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -627,6 +627,21 @@
- 		status = "disabled";
- 	};
- 
-+	nfc: nand-controller@ff4b0000 {
-+		compatible = "rockchip,rk3308-nfc",
-+			     "rockchip,rv1108-nfc";
-+		reg = <0x0 0xff4b0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
-+		clock-names = "ahb", "nfc";
-+		assigned-clocks = <&cru SCLK_NANDC>;
-+		assigned-clock-rates = <150000000>;
-+		pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
-+			     &flash_rdn &flash_rdy &flash_wrn>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
-+
- 	cru: clock-controller@ff500000 {
- 		compatible = "rockchip,rk3308-cru";
- 		reg = <0x0 0xff500000 0x0 0x1000>;
--- 
-2.17.1
-
-
-
+The actual implementation is stray-access-protection, as noted ealier.
+This inconsisteny is throughout.
