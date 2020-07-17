@@ -2,311 +2,445 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7142232E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F0A2232FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgGQF2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 01:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45432 "EHLO
+        id S1726846AbgGQFec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 01:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgGQF2q (ORCPT
+        with ESMTP id S1726817AbgGQFeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:28:46 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED9FC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:28:46 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 17so15463515wmo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:28:46 -0700 (PDT)
+        Fri, 17 Jul 2020 01:34:31 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084B2C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:34:31 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ch3so5988325pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 22:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3R841zjQJ873CPLugpq+yROuqcowWRWOM1I9YnQC0yw=;
-        b=H3SECMdLBtoMFmBF8gwG7s68I1WI9g2z6KWf3uQwmopAlMDMBluxJ+IEfjBJ99v07N
-         /dKcpfxRDsYE5eMibCoLsQ315MiIT3MdOv4AxOaq/CGFZsyxa1xVF18O/WlhtHY7j4gp
-         rIcwEd9JNllTxFbyuIbucoyE0hI9NMONm+3mQbPi71qD4veRNfgQfrqn8EuFBlby/qll
-         kRzmBoJRsV0VuonT4YsYyNc8x1zazXe+/fu9Sr0NryKm0Bgo/QJ+I/sJSpD8dTHzvesy
-         XDUMDDtJoEsmjETrFP5jc3Fqyg3xnfOZDZc5D3aWo66R+BPcpISpS+Uv1tjuDxq38m5l
-         okYg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HSbDalZPjRkwQt5bjdOklQdrZBrmWYBLr8mKrcmfexY=;
+        b=Wsi70SRwet6twWATrmfs2iaD0RuSu+hPMJLQadAODAb2oObDnJCvaG2e4PBQ1ko+8T
+         zlE4415wVpECNselFJPzVB88TXV3TS3fBOxLPEJoRa9qWD03REQbRiyiliErWfWnvmaK
+         0ekqZAIuOwMt46x0NfJSnq1HsWDxY/4oC7R7S2PsVsV5sWL/X8Sf3yuT9LW+xCHHlrVI
+         CaCoBg5NddLD2IoCwtrORn00cRJikJsP4PURy/VRU0/PJIhTcNGOdwC/00XEF8Zofvd3
+         jiyKwOTE/nPA/jfgwrKnHW81Xe+ZwgckcJC+Izs1d5yWrypRGzsa2UvYvl32r/iAGk5M
+         /KVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3R841zjQJ873CPLugpq+yROuqcowWRWOM1I9YnQC0yw=;
-        b=twM46ai86DtDP3UYkwgT5MSvw26K1lJwfY1/r6q1i0g8J7JosEmLD67yDNNI1IPNu+
-         fTLg+J1RMG4QIaPbn8Lfn8J96xTPaHvV4yYlaGLXTF5waMlh8Zx+lccmcHxPTM1SZjzd
-         6HBNd5Q8VXQqexmoMrEjbYlB5pjUlk/jShDWnYNLC502YMA5wv0/HbydhnNgapIrXWpe
-         JH+Gf/FD0WsdBlHAy55Ik34C+ZmE7pzSRoF0NZ2v3oLxz/A9Mv2+x24G25lAyle+9TIK
-         ZJFUcykY/vVeo3S4/GxqCwUi2MlJSKL85cIxMvro609ck73vmemNqYzZ2XD/eg3IGQp2
-         l/4g==
-X-Gm-Message-State: AOAM531muj5V5fjoGNr8XYYHdIdCGs5uglWoUysqR+kvIzs5APiLa+5E
-        CPwUhEu8sARD08oPWoEW8NfZNw==
-X-Google-Smtp-Source: ABdhPJxvGoh8uftGdmqMg5u8XecWSwJcj4NaXq0/cWbuqhlLaZUM5md9QxgWeBOhWPoDygZC0p00kw==
-X-Received: by 2002:a1c:5453:: with SMTP id p19mr7244739wmi.41.1594963724692;
-        Thu, 16 Jul 2020 22:28:44 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9880:a643:3e69:6393? ([2a01:e34:ed2f:f020:9880:a643:3e69:6393])
-        by smtp.googlemail.com with ESMTPSA id x1sm12158853wrp.10.2020.07.16.22.28.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 22:28:44 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] clocksource/drivers: Add CLINT timer driver
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-References: <20200715071506.10994-1-anup.patel@wdc.com>
- <20200715071506.10994-3-anup.patel@wdc.com>
- <9a36824c-ef23-de47-b52c-bf680067be6c@linaro.org>
- <CAAhSdy3iurBWELjrjKr4mWdueZqw3xmf2e6AD_Km0PE+5TZHWQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <212eb026-e063-2b64-757b-9ca0e3f430bf@linaro.org>
-Date:   Fri, 17 Jul 2020 07:28:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HSbDalZPjRkwQt5bjdOklQdrZBrmWYBLr8mKrcmfexY=;
+        b=OhYycvpKPNakGmWg3D8C2yZ1nYKH6bRpl0jwqB9bnvMt+FuL21yJdv024Py6X2217H
+         kfg4v1O79Ahxt3+l7DEnzjmIoIKS+ZKuiXKwH2gV/+1bm06h8Afl96LpElHAtcd+EujS
+         Os16HTk8jp1Jj9I5fySjoGGYrau/HMcNbRg43Wc9e2SM9KuWyA6AJm0WsMSZ+TmX/yjz
+         r/MS0SCzF4tnAvs8U1w1vYyhGKfc7aTf21Q7d27NbnLJSbW8ctD4p6aguDt6SP+sUzOJ
+         PQwjtSDQT5pPTxQ+SgrA9g+UeU160Im137ri+4G7IXI33AFDbxzsgNERGIi+ta0i/AGB
+         IDbA==
+X-Gm-Message-State: AOAM532aWXFARhFzlnuNRbzIwRN6V9mv0BshdinDQRsP9BDDIImxSXAu
+        5K4bhEvVKS2+stfNtH0D3emRVw==
+X-Google-Smtp-Source: ABdhPJyWf0T2j4RZw72Fjjk12y1fgf62AurFJCb/HW1FnOf6N3QHTHV5OOGp+N+elL+tqN/ZFLxn+A==
+X-Received: by 2002:a17:902:c24a:: with SMTP id 10mr6674911plg.82.1594964070288;
+        Thu, 16 Jul 2020 22:34:30 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id r25sm2174951pgv.88.2020.07.16.22.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 22:34:29 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 22:32:27 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     agross@kernel.org, ohad@wizery.com, corbet@lwn.net,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] remoteproc: Add remoteproc character device
+ interface
+Message-ID: <20200717053227.GH2922385@builder.lan>
+References: <1594148870-27276-1-git-send-email-sidgup@codeaurora.org>
+ <1594148870-27276-2-git-send-email-sidgup@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhSdy3iurBWELjrjKr4mWdueZqw3xmf2e6AD_Km0PE+5TZHWQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594148870-27276-2-git-send-email-sidgup@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2020 07:21, Anup Patel wrote:
-> On Fri, Jul 17, 2020 at 2:57 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->>
->> Hi Anup,
->>
->>
->> On 15/07/2020 09:15, Anup Patel wrote:
->>> The TIME CSR and SBI calls are not available in RISC-V M-mode so we
->>> separate add CLINT driver for Linux RISC-V M-mode (i.e. RISC-V NoMMU
->>> kernel).
->>
->> The description is confusing, please reword it and give a bit more
->> information about the timer itself, especially, the IPI thing.
-> 
-> Okay, will update.
-> 
->>
->>> Signed-off-by: Anup Patel <anup.patel@wdc.com>
->>> ---
->>>  drivers/clocksource/Kconfig       |  10 ++
->>>  drivers/clocksource/Makefile      |   1 +
->>>  drivers/clocksource/timer-clint.c | 229 ++++++++++++++++++++++++++++++
->>>  include/linux/cpuhotplug.h        |   1 +
->>>  4 files changed, 241 insertions(+)
->>>  create mode 100644 drivers/clocksource/timer-clint.c
->>>
->>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
->>> index 91418381fcd4..eabcf1cfb0c0 100644
->>> --- a/drivers/clocksource/Kconfig
->>> +++ b/drivers/clocksource/Kconfig
->>> @@ -658,6 +658,16 @@ config RISCV_TIMER
->>>         is accessed via both the SBI and the rdcycle instruction.  This is
->>>         required for all RISC-V systems.
->>>
->>> +config CLINT_TIMER
->>> +     bool "Timer for the RISC-V platform"
->>> +     depends on GENERIC_SCHED_CLOCK && RISCV_M_MODE
->>> +     default y
->>> +     select TIMER_PROBE
->>> +     select TIMER_OF
->>> +     help
->>> +       This option enables the CLINT timer for RISC-V systems. The CLINT
->>> +       driver is usually used for NoMMU RISC-V systems.
->>
->> For the timer, we do silent option and let the platform config select
->> it. Please refer to other timer option below as reference.
-> 
-> Okay, I will use "default RISCV" instead of "default y" (just like other
-> timer Kconfig options).
+On Tue 07 Jul 12:07 PDT 2020, Siddharth Gupta wrote:
 
-Preferably, select it from the platform's Kconfig.
-
->>
->>>  config CSKY_MP_TIMER
->>>       bool "SMP Timer for the C-SKY platform" if COMPILE_TEST
->>>       depends on CSKY
->>> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
->>> index bdda1a2e4097..18e700e703a0 100644
->>> --- a/drivers/clocksource/Makefile
->>> +++ b/drivers/clocksource/Makefile
->>> @@ -87,6 +87,7 @@ obj-$(CONFIG_CLKSRC_ST_LPC)         += clksrc_st_lpc.o
->>>  obj-$(CONFIG_X86_NUMACHIP)           += numachip.o
->>>  obj-$(CONFIG_ATCPIT100_TIMER)                += timer-atcpit100.o
->>>  obj-$(CONFIG_RISCV_TIMER)            += timer-riscv.o
->>> +obj-$(CONFIG_CLINT_TIMER)            += timer-clint.o
->>>  obj-$(CONFIG_CSKY_MP_TIMER)          += timer-mp-csky.o
->>>  obj-$(CONFIG_GX6605S_TIMER)          += timer-gx6605s.o
->>>  obj-$(CONFIG_HYPERV_TIMER)           += hyperv_timer.o
->>> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
->>> new file mode 100644
->>> index 000000000000..bfc38bb5a589
->>> --- /dev/null
->>> +++ b/drivers/clocksource/timer-clint.c
->>> @@ -0,0 +1,229 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Copyright (C) 2020 Western Digital Corporation or its affiliates.
->>> + *
->>> + * Most of the M-mode (i.e. NoMMU) RISC-V systems usually have a
->>> + * CLINT MMIO timer device.
->>> + */
->>> +
->>> +#define pr_fmt(fmt) "clint: " fmt
->>> +#include <linux/bitops.h>
->>> +#include <linux/clocksource.h>
->>> +#include <linux/clockchips.h>
->>> +#include <linux/cpu.h>
->>> +#include <linux/delay.h>
->>> +#include <linux/module.h>
->>> +#include <linux/of_address.h>
->>> +#include <linux/sched_clock.h>
->>> +#include <linux/io-64-nonatomic-lo-hi.h>
->>> +#include <linux/interrupt.h>
->>> +#include <linux/of_irq.h>
->>> +#include <linux/smp.h>
->>> +
->>> +#define CLINT_IPI_OFF                0
->>> +#define CLINT_TIMER_CMP_OFF  0x4000
->>> +#define CLINT_TIMER_VAL_OFF  0xbff8
->>> +
->>> +/* CLINT manages IPI and Timer for RISC-V M-mode  */
->>> +static u32 __iomem *clint_ipi_base;
->>> +static u64 __iomem *clint_timer_cmp;
->>> +static u64 __iomem *clint_timer_val;
->>> +static unsigned long clint_timer_freq;
->>> +static unsigned int clint_timer_irq;
->>> +
->>> +static void clint_send_ipi(const struct cpumask *target)
->>> +{
->>> +     unsigned int cpu;
->>> +
->>> +     for_each_cpu(cpu, target)
->>> +             writel(1, clint_ipi_base + cpuid_to_hartid_map(cpu));
->>> +}
->>> +
->>> +static void clint_clear_ipi(void)
->>> +{
->>> +     writel(0, clint_ipi_base + cpuid_to_hartid_map(smp_processor_id()));
->>> +}
->>> +
->>> +static struct riscv_ipi_ops clint_ipi_ops = {
->>> +     .ipi_inject = clint_send_ipi,
->>> +     .ipi_clear = clint_clear_ipi,
->>> +};
->>> +
->>> +#ifdef CONFIG_64BIT
->>> +#define clint_get_cycles()   readq_relaxed(clint_timer_val)
->>> +#else
->>> +#define clint_get_cycles()   readl_relaxed(clint_timer_val)
->>> +#define clint_get_cycles_hi()        readl_relaxed(((u32 *)clint_timer_val) + 1)
->>> +#endif
->>> +
->>> +#ifdef CONFIG_64BIT
->>> +static u64 clint_get_cycles64(void)
->>> +{
->>> +     return clint_get_cycles();
->>> +}
->>> +#else /* CONFIG_64BIT */
->>> +static u64 clint_get_cycles64(void)
->>> +{
->>> +     u32 hi, lo;
->>> +
->>> +     do {
->>> +             hi = clint_get_cycles_hi();
->>> +             lo = clint_get_cycles();
->>> +     } while (hi != clint_get_cycles_hi());
->>> +
->>> +     return ((u64)hi << 32) | lo;
->>> +}
->>> +#endif /* CONFIG_64BIT */
->>> +static int clint_clock_next_event(unsigned long delta,
->>> +                                struct clock_event_device *ce)
->>> +{
->>> +     void __iomem *r = clint_timer_cmp +
->>> +                       cpuid_to_hartid_map(smp_processor_id());
->>> +
->>> +     csr_set(CSR_IE, IE_TIE);
->>> +     writeq_relaxed(clint_get_cycles64() + delta, r);
->>> +     return 0;
->>> +}
->>> +
->>> +static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
->>> +     .name                   = "clint_clockevent",
->>> +     .features               = CLOCK_EVT_FEAT_ONESHOT,
->>> +     .rating         = 100,
->>> +     .set_next_event = clint_clock_next_event,
->>> +};
->>> +
->>> +static u64 clint_rdtime(struct clocksource *cs)
->>> +{
->>> +     return readq_relaxed(clint_timer_val);
->>> +}
->>> +
->>> +static u64 notrace clint_sched_clock(void)
->>> +{
->>> +     return readq_relaxed(clint_timer_val);
->>> +}
->>> +
->>> +static struct clocksource clint_clocksource = {
->>> +     .name           = "clint_clocksource",
->>> +     .rating = 300,
->>> +     .mask           = CLOCKSOURCE_MASK(64),
->>> +     .flags          = CLOCK_SOURCE_IS_CONTINUOUS,
->>> +     .read           = clint_rdtime,
->>
->> What if !CONFIG_64BIT
+> Add the character device interface into remoteproc framework.
+> This interface can be used in order to boot/shutdown remote
+> subsystems and provides a basic ioctl based interface to implement
+> supplementary functionality. An ioctl call is implemented to enable
+> the shutdown on release feature which will allow remote processors to
+> be shutdown when the controlling userpsace application crashes or hangs.
 > 
-> The CLINT counter is 64bit for both 32bit and 64bit systems
-> but I should have used clint_get_cycles64() in clint_rdtime().
-> I will update it.
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> ---
+>  Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+>  drivers/remoteproc/Kconfig                         |   9 ++
+>  drivers/remoteproc/Makefile                        |   1 +
+>  drivers/remoteproc/remoteproc_cdev.c               | 146 +++++++++++++++++++++
+>  drivers/remoteproc/remoteproc_internal.h           |  28 ++++
+>  include/linux/remoteproc.h                         |   5 +
+>  include/uapi/linux/remoteproc_cdev.h               |  37 ++++++
+>  7 files changed, 227 insertions(+)
+>  create mode 100644 drivers/remoteproc/remoteproc_cdev.c
+>  create mode 100644 include/uapi/linux/remoteproc_cdev.h
 > 
->>
->>> +};
->>> +
->>> +static int clint_timer_starting_cpu(unsigned int cpu)
->>> +{
->>> +     struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
->>> +
->>> +     ce->cpumask = cpumask_of(cpu);
->>> +     clockevents_config_and_register(ce, clint_timer_freq, 200, ULONG_MAX);
->>
->> The function is not immune against registering the same clockevents. If
->> the CPU is hotplugged several times, this function will be called again
->> and again. Why not rely on a for_each_possible_cpu loop in the init
->> function ?
->>
->>> +     enable_percpu_irq(clint_timer_irq,
->>> +                       irq_get_trigger_type(clint_timer_irq));
->>
->> Why do you want to enable / disable the interrrupts ? The should be
->> already handle by the hotplug framework no ?
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 59472cd..2a19883 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -339,6 +339,7 @@ Code  Seq#    Include File                                           Comments
+>  0xB4  00-0F  linux/gpio.h                                            <mailto:linux-gpio@vger.kernel.org>
+>  0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-remoteproc@vger.kernel.org>
+>  0xB6  all    linux/fpga-dfl.h
+> +0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-remoteproc@vger.kernel.org>
+>  0xC0  00-0F  linux/usb/iowarrior.h
+>  0xCA  00-0F  uapi/misc/cxl.h
+>  0xCA  10-2F  uapi/misc/ocxl.h
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index c4d1731..652060f 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -14,6 +14,15 @@ config REMOTEPROC
+>  
+>  if REMOTEPROC
+>  
+> +config REMOTEPROC_CDEV
+> +	bool "Remoteproc character device interface"
+> +	help
+> +	  Say y here to have a character device interface for the remoteproc
+> +	  framework. Userspace can boot/shutdown remote processors through
+> +	  this interface.
+> +
+> +	  It's safe to say N if you don't want to use this interface.
+> +
+>  config IMX_REMOTEPROC
+>  	tristate "IMX6/7 remoteproc support"
+>  	depends on ARCH_MXC
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index e8b886e..311ae3f 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -9,6 +9,7 @@ remoteproc-y				+= remoteproc_debugfs.o
+>  remoteproc-y				+= remoteproc_sysfs.o
+>  remoteproc-y				+= remoteproc_virtio.o
+>  remoteproc-y				+= remoteproc_elf_loader.o
+> +obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
+>  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
+>  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
+>  obj-$(CONFIG_MTK_SCP)			+= mtk_scp.o mtk_scp_ipi.o
+> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+> new file mode 100644
+> index 0000000..8a0eb47
+> --- /dev/null
+> +++ b/drivers/remoteproc/remoteproc_cdev.c
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Character device interface driver for Remoteproc framework.
+> + *
+> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/cdev.h>
+> +#include <linux/fs.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/compat.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/uaccess.h>
+> +#include <uapi/linux/remoteproc_cdev.h>
+> +
+> +#include "remoteproc_internal.h"
+> +
+> +#define NUM_RPROC_DEVICES	64
+> +static dev_t rproc_major;
+> +
+> +static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_t len, loff_t *pos)
+> +{
+> +	struct rproc *rproc = container_of(filp->f_inode->i_cdev, struct rproc, char_dev);
+> +	int ret = 0;
+> +	char cmd[10];
+> +
+> +	if (!len || len > sizeof(cmd))
+> +		return -EINVAL;
+> +
+> +	ret = copy_from_user(cmd, buf, sizeof(cmd));
+
+I believe you should copy "len" bytes here, instead of 10.
+
+> +	if (ret)
+> +		return -EFAULT;
+> +
+> +	if (sysfs_streq(cmd, "start")) {
+> +		if (rproc->state == RPROC_RUNNING)
+> +			return -EBUSY;
+> +
+> +		ret = rproc_boot(rproc);
+> +		if (ret)
+> +			dev_err(&rproc->dev, "Boot failed:%d\n", ret);
+
+rproc_boot() of a child thereof has already told us why the boot failed,
+so please omit this print.
+
+> +	} else if (sysfs_streq(cmd, "stop")) {
+> +		if (rproc->state != RPROC_RUNNING)
+> +			return -EINVAL;
+> +
+> +		rproc_shutdown(rproc);
+> +	} else {
+> +		dev_err(&rproc->dev, "Unrecognized option\n");
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	return ret ? ret : len;
+> +}
+> +
+> +static long rproc_device_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+> +{
+> +	struct rproc *rproc = container_of(filp->f_inode->i_cdev, struct rproc, char_dev);
+> +	void __user *argp = compat_ptr(arg);
+> +	int ret;
+> +	int32_t param;
+> +
+> +	switch (ioctl) {
+> +	case RPROC_SET_SHUTDOWN_ON_RELEASE:
+> +		ret = copy_from_user(&param, argp, sizeof(int32_t));
+> +		if (ret) {
+> +			dev_err(&rproc->dev, "Data copy from userspace failed\n");
+
+Please skip the error message and just return EFAULT.
+
+> +			return -EFAULT;
+> +		}
+> +		mutex_lock(&rproc->lock);
+
+I don't see the reason for protecting this assignment. It can only race
+with other assignments and given that it's a native type it will have
+the last value written regardless.
+
+> +		rproc->cdev_put_on_release = param ? true : false;
+
+The idiomatic way to "normalize" a bool is foo = !!param;
+
+> +		mutex_unlock(&rproc->lock);
+> +		break;
+> +	case RPROC_GET_SHUTDOWN_ON_RELEASE:
+> +		mutex_lock(&rproc->lock);
+
+As above, I don't see that cdev_put_on_release will have an half-baked
+value, so should be fine to omit the locking here.
+
+> +		ret = copy_to_user(argp, &rproc->cdev_put_on_release, sizeof(bool));
+
+The documentation says that this is a signed 32-bit thing. So please do
+sizeof(something-obviously-32-bits), e.g. sizeof(int32_t) as above.
+
+> +		mutex_unlock(&rproc->lock);
+> +		if (ret) {
+> +			dev_err(&rproc->dev, "Data copy to userspace failed\n");
+
+As above, please don't print an error here, just return -EFAULT.
+
+> +			return -EFAULT;
+> +		}
+> +		break;
+> +	default:
+> +		dev_err(&rproc->dev, "Unsupported ioctl\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rproc_cdev_release(struct inode *inode, struct file *filp)
+> +{
+> +	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, char_dev);
+> +	bool release;
+> +
+> +	mutex_lock(&rproc->lock);
+
+It's not possible to race with the ioctl, as this function is called as
+the last open file descriptor is closed. So you can omit the lock here
+as well and just check cdev_put_on_release in the conditional, without a
+local variable.
+
+Regards,
+Bjorn
+
+> +	release = rproc->cdev_put_on_release;
+> +	mutex_unlock(&rproc->lock);
+> +
+> +	if (release && rproc->state == RPROC_RUNNING)
+> +		rproc_shutdown(rproc);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct file_operations rproc_fops = {
+> +	.write = rproc_cdev_write,
+> +	.compat_ioctl = rproc_device_ioctl,
+> +	.release = rproc_cdev_release,
+> +};
+> +
+> +int rproc_char_device_add(struct rproc *rproc)
+> +{
+> +	int ret;
+> +	dev_t cdevt;
+> +
+> +	cdev_init(&rproc->char_dev, &rproc_fops);
+> +	rproc->char_dev.owner = THIS_MODULE;
+> +
+> +	cdevt = MKDEV(rproc_major, rproc->index);
+> +	ret = cdev_add(&rproc->char_dev, cdevt, 1);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	rproc->dev.devt = cdevt;
+> +out:
+> +	return ret;
+> +}
+> +
+> +void rproc_char_device_remove(struct rproc *rproc)
+> +{
+> +	__unregister_chrdev(rproc_major, rproc->index, 1, "remoteproc");
+> +}
+> +
+> +void __init rproc_init_cdev(void)
+> +{
+> +	int ret;
+> +
+> +	ret = alloc_chrdev_region(&rproc_major, 0, NUM_RPROC_DEVICES, "remoteproc");
+> +	if (ret < 0)
+> +		pr_err("Failed to alloc rproc_cdev region, err %d\n", ret);
+> +}
+> +
+> +void __exit rproc_exit_cdev(void)
+> +{
+> +	unregister_chrdev_region(MKDEV(rproc_major, 0), NUM_RPROC_DEVICES);
+> +}
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index 4ba7cb5..f091ddc 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -47,6 +47,34 @@ extern struct class rproc_class;
+>  int rproc_init_sysfs(void);
+>  void rproc_exit_sysfs(void);
+>  
+> +#ifdef CONFIG_REMOTEPROC_CDEV
+> +void rproc_init_cdev(void);
+> +void rproc_exit_cdev(void);
+> +int rproc_char_device_add(struct rproc *rproc);
+> +void rproc_char_device_remove(struct rproc *rproc);
+> +#else
+> +static inline void rproc_init_cdev(void)
+> +{
+> +}
+> +
+> +static inline void rproc_exit_cdev(void)
+> +{
+> +}
+> +
+> +/*
+> + * The character device interface is an optional feature, if it is not enabled
+> + * the function should not return an error.
+> + */
+> +static inline int rproc_char_device_add(struct rproc *rproc)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void  rproc_char_device_remove(struct rproc *rproc)
+> +{
+> +}
+> +#endif
+> +
+>  void rproc_free_vring(struct rproc_vring *rvring);
+>  int rproc_alloc_vring(struct rproc_vdev *rvdev, int i);
+>  
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index e7b7bab..669cbfb 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -40,6 +40,7 @@
+>  #include <linux/virtio.h>
+>  #include <linux/completion.h>
+>  #include <linux/idr.h>
+> +#include <linux/cdev.h>
+>  #include <linux/of.h>
+>  
+>  /**
+> @@ -488,6 +489,8 @@ struct rproc_dump_segment {
+>   * @auto_boot: flag to indicate if remote processor should be auto-started
+>   * @dump_segments: list of segments in the firmware
+>   * @nb_vdev: number of vdev currently handled by rproc
+> + * @char_dev: character device of the rproc
+> + * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
+>   */
+>  struct rproc {
+>  	struct list_head node;
+> @@ -523,6 +526,8 @@ struct rproc {
+>  	int nb_vdev;
+>  	u8 elf_class;
+>  	u16 elf_machine;
+> +	struct cdev char_dev;
+> +	bool cdev_put_on_release;
+>  };
+>  
+>  /**
+> diff --git a/include/uapi/linux/remoteproc_cdev.h b/include/uapi/linux/remoteproc_cdev.h
+> new file mode 100644
+> index 0000000..c43768e
+> --- /dev/null
+> +++ b/include/uapi/linux/remoteproc_cdev.h
+> @@ -0,0 +1,37 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+> +/*
+> + * IOCTLs for Remoteproc's character device interface.
+> + *
+> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef _UAPI_REMOTEPROC_CDEV_H_
+> +#define _UAPI_REMOTEPROC_CDEV_H_
+> +
+> +#include <linux/ioctl.h>
+> +#include <linux/types.h>
+> +
+> +#define RPROC_MAGIC	0xB7
+> +
+> +/*
+> + * The RPROC_SET_SHUTDOWN_ON_RELEASE ioctl allows to enable/disable the shutdown of a remote
+> + * processor automatically when the controlling userpsace closes the char device interface.
+> + *
+> + * input parameter: integer
+> + *   0		: disable automatic shutdown
+> + *   other	: enable automatic shutdown
+> + */
+> +#define RPROC_SET_SHUTDOWN_ON_RELEASE _IOW(RPROC_MAGIC, 1, __s32)
+> +
+> +/*
+> + * The RPROC_GET_SHUTDOWN_ON_RELEASE ioctl gets information about whether the automatic shutdown of
+> + * a remote processor is enabled or disabled when the controlling userspace closes the char device
+> + * interface.
+> + *
+> + * output parameter: integer
+> + *   0		: automatic shutdown disable
+> + *   other	: automatic shutdown enable
+> + */
+> +#define RPROC_GET_SHUTDOWN_ON_RELEASE _IOR(RPROC_MAGIC, 2, __s32)
+> +
+> +#endif
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> The perCPU interrupts are not enabled by default. We have to
-> explicitly enable/disable perCPU interrupts in CPU hotplug callbacks.
-> 
-
-Isn't is possible to do that in the probe/init function ?
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
