@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18091223877
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA33D223882
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgGQJeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgGQJeQ (ORCPT
+        id S1726715AbgGQJfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:35:37 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55161 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725932AbgGQJfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:34:16 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE234C061755;
-        Fri, 17 Jul 2020 02:34:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G+DDgxlCayqTqkbq04dhgvzaNPWJG1ftzlKeUp8ZiFs=; b=J5mK0s4tYmqK6uzf1Ef8cazS/R
-        to9O6JMHWxqFx/Q73rJAgfpYCwgTaJ2p4J5jxdEO1zUSL7Q4VWYsXvU5iJzpQR2ZqKENNkHA9EXJr
-        ftW+mfAAxwQ0HjEBs1RO0M9ljr04qNOR8yuXhaTdKDLmU0XpO0pwG7bwgBFNDuapJ5HJ7u1Mkd+pS
-        cs/sgBSDcF/Dyb1pJETDT1yOY35LS/DK7+hqF+OFHaCvScr8WU5GtLwxRBallJ4KReWd7/F5srgru
-        lKtFmrRk7I9GXt8BOAWYoRmFymx51TOWhwZyWD7BZYyNmj+oPmp2nqUHzPk+UataRPkG6PLrUCiUk
-        ljYZR/SQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwMkl-00005B-TB; Fri, 17 Jul 2020 09:34:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C058C300130;
-        Fri, 17 Jul 2020 11:34:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B322929CF6F55; Fri, 17 Jul 2020 11:34:01 +0200 (CEST)
-Date:   Fri, 17 Jul 2020 11:34:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across
- exceptions
-Message-ID: <20200717093401.GG10769@hirez.programming.kicks-ass.net>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-18-ira.weiny@intel.com>
+        Fri, 17 Jul 2020 05:35:36 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=shile.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U3-7-os_1594978521;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:shile.zhang@linux.alibaba.com fp:SMTPD_---0U3-7-os_1594978521)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 17 Jul 2020 17:35:33 +0800
+From:   Shile Zhang <shile.zhang@linux.alibaba.com>
+To:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Jiang Liu <liuj97@gmail.com>
+Subject: [PATCH] virtio_ring: use alloc_pages_node for NUMA-aware allocation
+Date:   Fri, 17 Jul 2020 17:35:04 +0800
+Message-Id: <20200717093504.47794-1-shile.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717072056.73134-18-ira.weiny@intel.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:20:56AM -0700, ira.weiny@intel.com wrote:
-> +/* Define as macros to prevent conflict of inline and noinstr */
-> +#define idt_save_pkrs(state)
-> +#define idt_restore_pkrs(state)
+Use alloc_pages_node() allocate memory for vring queue with proper
+NUMA affinity.
 
-Use __always_inline
+Suggested-by: Jiang Liu <liuj97@gmail.com>
+Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 58b96baa8d48..ded82880281a 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -276,9 +276,11 @@ static void *vring_alloc_queue(struct virtio_device *vdev, size_t size,
+ 		return dma_alloc_coherent(vdev->dev.parent, size,
+ 					  dma_handle, flag);
+ 	} else {
+-		void *queue = alloc_pages_exact(PAGE_ALIGN(size), flag);
+-
+-		if (queue) {
++		void *queue = NULL;
++		struct page *page = alloc_pages_node(dev_to_node(&vdev->dev.parent),
++						     flag, get_order(size));
++		if (page) {
++			queue = page_address(page);
+ 			phys_addr_t phys_addr = virt_to_phys(queue);
+ 			*dma_handle = (dma_addr_t)phys_addr;
+ 
+@@ -308,7 +310,7 @@ static void vring_free_queue(struct virtio_device *vdev, size_t size,
+ 	if (vring_use_dma_api(vdev))
+ 		dma_free_coherent(vdev->dev.parent, size, queue, dma_handle);
+ 	else
+-		free_pages_exact(queue, PAGE_ALIGN(size));
++		free_pages((unsigned long)queue, get_order(size));
+ }
+ 
+ /*
+-- 
+2.24.0.rc2
+
