@@ -2,150 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23514223D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B2D223D7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgGQNzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:55:11 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:39399 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgGQNzI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:55:08 -0400
-Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1M27ix-1jyLZL49bF-002Vsh; Fri, 17 Jul 2020 15:55:07 +0200
-Received: by mail-qv1-f52.google.com with SMTP id ed14so4261995qvb.2;
-        Fri, 17 Jul 2020 06:55:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531ODp20DY28PbUj0yWR7rLEccpc5k8Ovz5CcAi35OHgcqR/9gD8
-        Tvvv1Fy9VKCD9+Zbm+HqK4SdN4v/sKAQSLPye4g=
-X-Google-Smtp-Source: ABdhPJx8LtIaLQvziKo3lourUrEUkUS4ZMZUlWIjb/0jYwIJLV5qk1IAswyVggaESYzsgRC5Y1NVn7LRruYETW4HxFQ=
-X-Received: by 2002:a0c:f802:: with SMTP id r2mr9068143qvn.197.1594994105686;
- Fri, 17 Jul 2020 06:55:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
- <CACRpkdYP4J+MZjxWUnkM-XGaMmFFZfMCfY13r7G6r2=v3F6zQw@mail.gmail.com>
- <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com>
- <DB3PR0402MB39167A4BB808A0679257DEF9F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CACRpkdbCVZaHqijqMck+jLAJuCAT31HA=9wwcV_EnQc=hsXLwg@mail.gmail.com>
- <20200717121436.GA2953399@kroah.com> <CAMuHMdWdaQ_jK1T_ErJ36pJbUUS3SFBcqQmyvtufaKha2C76Gg@mail.gmail.com>
- <20200717132101.GA2984939@kroah.com>
-In-Reply-To: <20200717132101.GA2984939@kroah.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Jul 2020 15:54:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3fwwx-2gQTXZ9dbko+DuLELGm=nKrYFXfwcJJOf0Xz5g@mail.gmail.com>
-Message-ID: <CAK8P3a3fwwx-2gQTXZ9dbko+DuLELGm=nKrYFXfwcJJOf0Xz5g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Anson Huang <anson.huang@nxp.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>, Jon Corbet <corbet@lwn.net>,
-        Olof Johansson <olof@lixom.net>,
-        Kevin Hilman <khilman@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:dEZrwx+hzGiTO58D77scQNmTcn4qBOJ4MxH9Pt6/XGIoFsCYPgx
- 8+8Z4oqNp0EXx8voOmSwoJLPt4yIRYSbema98zXDcFZfv44gguS59RhHC/ya+BWeCtQf/0a
- 6JHum5COraJZ+48BGLVoiz/b2W/SxC7DRMhVrgkUlhBIk+XN/0UaZWqxAvsA/jrwJLNNtTu
- u21KH88s+7Z/WD4Y2NvdQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T+04+9APdXo=:t1jJfhZF3ic/+H9We7UQqy
- Qv7PMTQSjEKLQ9zt7L9oPnutUjn92bqyPYD3EGItpRVHV8BuVHnJk+knywJI+DQwsnJNfdqR+
- 2Dv0/ttH/40MpY8NPGYKnjSPaQG0u7j76oZFyWLM7/hnvdHGyoO1MdD9pbBqYJqsI0nnp50d7
- ebBD1424kWkXyko5xVMrr3AnUXte7L9sSkXRK8dCbwzz3L0LbIIJYkxRkRkmunJoCI30TQFT5
- A+zWR8QNISc6+S3ZZyTfjUtDVAEVrKzQ8hxioaARllP+++KZvtrOh3Se8e9qeeHJw/ty/zzsz
- GAl/UOeq4tnZrX1oTmkQ01n3DyGLnMIyxDr5E5FP/Hm5tL1w0nd6OOrZdQ3V/AOgnUt2OWJET
- qFZcWSlQIH25VVbNOZFFW63AGwWFtS99F9Pi4M4bzLRPyrLQKzXEdG70CTczsqfb78bfgaGy1
- 8NyZRAzmU+3RQ+RZB0ygTDXTpDnIFF8SP84dopLVQnaHdWgDtNXXFp9/kiYhZTKo96ejesz9b
- SBBP5+zY02C4JsITREaZUBzlrl/PZBlu0c0snwmFuhKp82EBuU31MjOm+DM83R9WtidiypJl0
- EiQKpsb22Oh85iGS1W0nScYAzadPD8Iuk3t9dqRVW/fRkhMsikm/RGMz/Dtj4uah2YqUbmGdd
- hPUHWRkCkiDqRrHGKjbcwECPRVBt2uPhhKhVb8itKSkJtETIH0Pbqc4M3xGNY/rDw0KCG0z85
- aERgimF5OMx5YKbWPb9W0KrsL6o4QWZQfOsON0fzXMIRwpZC1/xfqNXByf6dFn3Lvh3IQUqUL
- tGmDQLPTzk7SlprMXch4LQU+xA5P4k7WHQkR1ShZj4NIoj1Qu4PQvfWen/LoibFmDzeNC7eeI
- 6ng9/YWmAETYF/rBDMuSWS6vUDmg0C5chGLA2Z84k0OOO7C2a8RXxiBdz1A7vtNkaApNcLATv
- 3Mjhgmu1DFrzzpQ8gL2dpKCj23Wzf1Qm1t4yyUYoZzLxxXOJ6+NXc
+        id S1726786AbgGQN6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:58:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726221AbgGQN6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 09:58:34 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 944A220734;
+        Fri, 17 Jul 2020 13:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594994313;
+        bh=Plz5TltdSn/IewUzgCiC3cN/jylVnKWqSCAhHiSo6lM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EctyEe6PrPzJ4u1JkQtW/nGvUCrpipoDf0/CPUxwhU2PXlKI4xD9lEEkG5EVwhyqw
+         k+ybzyL/f09T9OTjUTy+ndrnXIcO7yuf67ZS/TESVH+D5O+d/Qj2VAxvbsQ0oSFlW4
+         R6c3AHkVNVgFv0m/g/P3iQMRVWBpM6TPaa+qmyXQ=
+Date:   Fri, 17 Jul 2020 22:58:26 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 06/75] x86/insn: Make inat-tables.c suitable for
+ pre-decompression code
+Message-Id: <20200717225826.3b16e168de2a1573150e7952@kernel.org>
+In-Reply-To: <20200714120917.11253-7-joro@8bytes.org>
+References: <20200714120917.11253-1-joro@8bytes.org>
+        <20200714120917.11253-7-joro@8bytes.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 3:21 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> On Fri, Jul 17, 2020 at 02:27:43PM +0200, Geert Uytterhoeven wrote:
-> > Hi Greg,
-> >
-> > On Fri, Jul 17, 2020 at 2:14 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > Android is just finally pushing vendors to get their code upstream,
-> > > which is a good thing to see.  And building things as a module is an
-> > > even better thing as now it is finally allowing arm64 systems to be
-> > > built to support more than one specific hardware platform at runtime.
-> >
-> > Can you please stop spreading this FUD?
->
-> For many many SoCs today, this is not true.  Their drivers are required
-> to be built in and will not work as modules, as we are seeing the
-> patches try to fix.
+On Tue, 14 Jul 2020 14:08:08 +0200
+Joerg Roedel <joro@8bytes.org> wrote:
 
-There are two different points here:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> The inat-tables.c file has some arrays in it that contain pointers to
+> other arrays. These pointers need to be relocated when the kernel
+> image is moved to a different location.
+> 
+> The pre-decompression boot-code has no support for applying ELF
+> relocations, so initialize these arrays at runtime in the
+> pre-decompression code to make sure all pointers are correctly
+> initialized.
 
-a) having drivers as loadable modules: I think everyone agrees this
-is a good thing in general. Having more of them makes smaller kernels,
-which is good. arm64 is no different from arm32 and powerpc here,
-and probably a bit better than x86, which requires all platform specific
-core code (PC, numachip, UV, ScaleMP, ...) to be built-in.
+OK, This looks good to me.
 
-b) supporting multiple hardware platforms at runtime: this is totally
-unrelated to the platform specific drivers being loadable modules.
-arm64 is a little better here than arm32 and powerpc, which need more
-than one configuration to support all hardware, about the same as
-x86 or s390 and much better than most others that have to chose
-a machine at compile time.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-> > As I said before, Arm64 kernels have supported more than one specific
-> > hardware platform at runtime from the beginning of the arm64 port
-> > (assumed the needed platform support has been enabled in the kernel
-> >  config, of course).
-> > Even most arm32 kernels support this, since the introduction of the
-> > CONFIG_ARCH_MULTIPLATFORM option.  In fact every recently
-> > introduced arm32 platform is usually v7, and must conform to this.
-> > The sole exceptions are very old platforms, and the v4/v5/v6/v7 split
-> > due to architectural issues (the latter still support clusters of
-> > platforms in a single kernel).
->
-> I think the confusion here is that this really does not work well, if at
-> all, on most "high end" SoC chips due to the collection of different
-> things all of the vendors ship to their customers.  This is the work
-> that is trying to be fixed up here.
->
-> And look at the driver core work for many driver subsystems to be fixed
-> up just to get a single kernel image to work on multiple platforms.
-> Just because older ones did it, doesn't mean it actually works today :)
+Thank you,
 
-Can you give a specific example? The only problem I'm aware of for
-those SoCs is drivers being outside of the mainline kernel. Clearly
-having support for loadable modules helps SoC vendors because it
-allows them to support a new platform with an existing binary kernel
-by shipping third-party driver modules, but for stuff that is already
-in mainline, we could in theory support all hardware in a single gigantic
-binary kernel with no support for loadable modules at all.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/tools/gen-insn-attr-x86.awk       | 50 +++++++++++++++++++++-
+>  tools/arch/x86/tools/gen-insn-attr-x86.awk | 50 +++++++++++++++++++++-
+>  2 files changed, 98 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-insn-attr-x86.awk
+> index a42015b305f4..af38469afd14 100644
+> --- a/arch/x86/tools/gen-insn-attr-x86.awk
+> +++ b/arch/x86/tools/gen-insn-attr-x86.awk
+> @@ -362,6 +362,9 @@ function convert_operands(count,opnd,       i,j,imm,mod)
+>  END {
+>  	if (awkchecked != "")
+>  		exit 1
+> +
+> +	print "#ifndef __BOOT_COMPRESSED\n"
+> +
+>  	# print escape opcode map's array
+>  	print "/* Escape opcode map array */"
+>  	print "const insn_attr_t * const inat_escape_tables[INAT_ESC_MAX + 1]" \
+> @@ -388,6 +391,51 @@ END {
+>  		for (j = 0; j < max_lprefix; j++)
+>  			if (atable[i,j])
+>  				print "	["i"]["j"] = "atable[i,j]","
+> -	print "};"
+> +	print "};\n"
+> +
+> +	print "#else /* !__BOOT_COMPRESSED */\n"
+> +
+> +	print "/* Escape opcode map array */"
+> +	print "static const insn_attr_t *inat_escape_tables[INAT_ESC_MAX + 1]" \
+> +	      "[INAT_LSTPFX_MAX + 1];"
+> +	print ""
+> +
+> +	print "/* Group opcode map array */"
+> +	print "static const insn_attr_t *inat_group_tables[INAT_GRP_MAX + 1]"\
+> +	      "[INAT_LSTPFX_MAX + 1];"
+> +	print ""
+> +
+> +	print "/* AVX opcode map array */"
+> +	print "static const insn_attr_t *inat_avx_tables[X86_VEX_M_MAX + 1]"\
+> +	      "[INAT_LSTPFX_MAX + 1];"
+> +	print ""
+> +
+> +	print "static void inat_init_tables(void)"
+> +	print "{"
+> +
+> +	# print escape opcode map's array
+> +	print "\t/* Print Escape opcode map array */"
+> +	for (i = 0; i < geid; i++)
+> +		for (j = 0; j < max_lprefix; j++)
+> +			if (etable[i,j])
+> +				print "\tinat_escape_tables["i"]["j"] = "etable[i,j]";"
+> +	print ""
+> +
+> +	# print group opcode map's array
+> +	print "\t/* Print Group opcode map array */"
+> +	for (i = 0; i < ggid; i++)
+> +		for (j = 0; j < max_lprefix; j++)
+> +			if (gtable[i,j])
+> +				print "\tinat_group_tables["i"]["j"] = "gtable[i,j]";"
+> +	print ""
+> +	# print AVX opcode map's array
+> +	print "\t/* Print AVX opcode map array */"
+> +	for (i = 0; i < gaid; i++)
+> +		for (j = 0; j < max_lprefix; j++)
+> +			if (atable[i,j])
+> +				print "\tinat_avx_tables["i"]["j"] = "atable[i,j]";"
+> +
+> +	print "}"
+> +	print "#endif"
+>  }
+>  
+> diff --git a/tools/arch/x86/tools/gen-insn-attr-x86.awk b/tools/arch/x86/tools/gen-insn-attr-x86.awk
+> index a42015b305f4..af38469afd14 100644
+> --- a/tools/arch/x86/tools/gen-insn-attr-x86.awk
+> +++ b/tools/arch/x86/tools/gen-insn-attr-x86.awk
+> @@ -362,6 +362,9 @@ function convert_operands(count,opnd,       i,j,imm,mod)
+>  END {
+>  	if (awkchecked != "")
+>  		exit 1
+> +
+> +	print "#ifndef __BOOT_COMPRESSED\n"
+> +
+>  	# print escape opcode map's array
+>  	print "/* Escape opcode map array */"
+>  	print "const insn_attr_t * const inat_escape_tables[INAT_ESC_MAX + 1]" \
+> @@ -388,6 +391,51 @@ END {
+>  		for (j = 0; j < max_lprefix; j++)
+>  			if (atable[i,j])
+>  				print "	["i"]["j"] = "atable[i,j]","
+> -	print "};"
+> +	print "};\n"
+> +
+> +	print "#else /* !__BOOT_COMPRESSED */\n"
+> +
+> +	print "/* Escape opcode map array */"
+> +	print "static const insn_attr_t *inat_escape_tables[INAT_ESC_MAX + 1]" \
+> +	      "[INAT_LSTPFX_MAX + 1];"
+> +	print ""
+> +
+> +	print "/* Group opcode map array */"
+> +	print "static const insn_attr_t *inat_group_tables[INAT_GRP_MAX + 1]"\
+> +	      "[INAT_LSTPFX_MAX + 1];"
+> +	print ""
+> +
+> +	print "/* AVX opcode map array */"
+> +	print "static const insn_attr_t *inat_avx_tables[X86_VEX_M_MAX + 1]"\
+> +	      "[INAT_LSTPFX_MAX + 1];"
+> +	print ""
+> +
+> +	print "static void inat_init_tables(void)"
+> +	print "{"
+> +
+> +	# print escape opcode map's array
+> +	print "\t/* Print Escape opcode map array */"
+> +	for (i = 0; i < geid; i++)
+> +		for (j = 0; j < max_lprefix; j++)
+> +			if (etable[i,j])
+> +				print "\tinat_escape_tables["i"]["j"] = "etable[i,j]";"
+> +	print ""
+> +
+> +	# print group opcode map's array
+> +	print "\t/* Print Group opcode map array */"
+> +	for (i = 0; i < ggid; i++)
+> +		for (j = 0; j < max_lprefix; j++)
+> +			if (gtable[i,j])
+> +				print "\tinat_group_tables["i"]["j"] = "gtable[i,j]";"
+> +	print ""
+> +	# print AVX opcode map's array
+> +	print "\t/* Print AVX opcode map array */"
+> +	for (i = 0; i < gaid; i++)
+> +		for (j = 0; j < max_lprefix; j++)
+> +			if (atable[i,j])
+> +				print "\tinat_avx_tables["i"]["j"] = "atable[i,j]";"
+> +
+> +	print "}"
+> +	print "#endif"
+>  }
+>  
+> -- 
+> 2.27.0
+> 
 
-      Arnd
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
