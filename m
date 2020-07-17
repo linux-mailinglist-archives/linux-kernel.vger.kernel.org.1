@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3096C223D64
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3297223D75
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgGQNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
+        id S1727912AbgGQNzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgGQNyb (ORCPT
+        with ESMTP id S1726891AbgGQNye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:54:31 -0400
+        Fri, 17 Jul 2020 09:54:34 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DEAC0619D6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:32 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s10so11160571wrw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F60DC0619D8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:33 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a6so11236720wrm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Q0v3MpsT0EiR8b5Jx0N89c4SZ6k9ifhqdf8ekF4nSQ4=;
-        b=Lnb0CtVbWRFsYcq4I5p0F1kPtzqlpb6+B4HmHr3H+ScjOsj6hVQKmo+YIsjT/9/1Wb
-         Yy2UgzVEDRWavrWMKex3LUCcFe52iG62z/WvSEZ3zI6juSVZPj/pEqEXhfaMh3gIozlj
-         t7HNZjapNynHgojy1h7+YTFwv7Qum3LB6AZh/SMfJecVuhCDb/bMSGw8ZfBrXf59OnzV
-         lZiGC+oV1HLtzifxh7cQfiIOF4+ng7vsehMXUj6Q9InmFvkFup9vjes56JwEP1rkc5bM
-         WAUuYaXko7tWKb7ZE114QTBu1M2OSz72GYWTnkhCU/cozXoZHojS11ZFxsEZ3fmtGekd
-         nM6A==
+        bh=R5bZU73kxT5M1JMsvuGC6Lo9dJE8hXmdkV8EdjzvhWs=;
+        b=ZAC5kkaeD48hDzasHcMFBgI5ok3om/Ag5jSHoowWVEUw02KGIjIWhow3DY2EWpzj1k
+         xGIQfKuwkO6ETxRSTvlinnPUEMJh5/qXsllh3rX9yQQ5qtv6gB5OoR9meWBkVvG+GZFV
+         aJWhSVmI/c5AX1aCSjblRbbyZkqfNY8nX0kmHTI4kACCAYFjKYyHj9YMFXsOA0U2gl7k
+         JPPPn5HFtj+Aq3tDCoBEZqm00dLcmf8Me76bz9eW43D6ng60idi56pggV1F3MsRrKQe0
+         aYxadZEomTMoFaJKKr+DcDh6tNOFHztWuOeSlU+oyVZKjITYbEoH53/73ocvYz5aFLxK
+         WtKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q0v3MpsT0EiR8b5Jx0N89c4SZ6k9ifhqdf8ekF4nSQ4=;
-        b=r+uJSoH5YR8lzOmD3TsGE9xAuRZuqPQsw22KaLsW/KWTuyl6sewUX5cCJXK2YUXuQR
-         VBfzP2iIl19Ry2DRQE5vibzrdHkQ+u4DtrlNj3ef+Of7L8zJA1Qcw+4NSFYnj6ANQ7B9
-         KBZsmnCXNlXUnft/WlET94qXKVwK3z/eDpyVFxJKnCWGSuXqp59oQl0HKBFDrhS+Q1qa
-         d7FBcR2pI2h/zPoQP9Re4fCb1UXHk0hOcFv3kOMtVOv5uL1lwx1lOFDNOpFtvUFgnEXx
-         GlN2W9Ks/9HmBz6Xh8L4o+aA1Pwh1Q3kXSP+5UgRpjLWpWOKWAXQPeZXUnZCpodqzwDf
-         IlOg==
-X-Gm-Message-State: AOAM530l/ln9XngV/KoGubkD0BHmSBJLVf33t5bfxOxsJIgGVkg5oFFr
-        9oBgN4QZhPbTv6a8hDWo68lLVA==
-X-Google-Smtp-Source: ABdhPJyWncy34Npy4rilSJUIpPISij8gKpvR0Ke699A8H9i1pMrCUYIxVOaCspw8BGlBJb6OzBknuw==
-X-Received: by 2002:a5d:4f8b:: with SMTP id d11mr9770503wru.147.1594994070888;
-        Fri, 17 Jul 2020 06:54:30 -0700 (PDT)
+        bh=R5bZU73kxT5M1JMsvuGC6Lo9dJE8hXmdkV8EdjzvhWs=;
+        b=t58BmROcUebh3bx/IJU2IAVyr2IEpmx1h2LaWuo4yZ5/obrHVtD5lIxiDIFhd6maXm
+         noYO0prNu/DmTxokGzbtnC4jA0sAXc/Cdd/M11965KOvBfM3Lb3xp0AcQ9/bSnOEEqfm
+         sj8gpByy27Xk/QSwP2GXZDOP2PIX/wLSK6LsTd556+KHsIBo9SK0ZhnO45JkGHkWnqIW
+         oo4Ct+viCJu4q5gIRkbOHdmT71RuEZGj8jwp8fVunAfIUA44vUfiytRrPzX6X+YvvfJt
+         J9BiCi3plVFf7ap6LkGyE3wIIWwfyCzAi5k9VcfYJKern9tBIb8D3rPoOSzLAUy+eEL1
+         280g==
+X-Gm-Message-State: AOAM533x+1IPPkNmRiAxVOUU69aVR5Rpu5o7XqWfVpxGJf1SRbkSNgNV
+        q0qeQnF5TeOatKHt/lKCRwJtcpan3Y2ofg==
+X-Google-Smtp-Source: ABdhPJxG9WExdH+no7RsXepaf01G8y07Rip1YGVf8Z/0A+HGPnfCWJrwdTxKjFDyUGuQE69jroFN6Q==
+X-Received: by 2002:a5d:4607:: with SMTP id t7mr11203477wrq.251.1594994071957;
+        Fri, 17 Jul 2020 06:54:31 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
         by smtp.gmail.com with ESMTPSA id w128sm16118356wmb.19.2020.07.17.06.54.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 06:54:30 -0700 (PDT)
+        Fri, 17 Jul 2020 06:54:31 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Mika Westerberg <mika.westerberg@iki.fi>
-Subject: [PATCH v2 04/14] spi: spi-ep93xx: Fix API slippage
-Date:   Fri, 17 Jul 2020 14:54:14 +0100
-Message-Id: <20200717135424.2442271-5-lee.jones@linaro.org>
+        Kevin Hilman <khilman@baylibre.com>,
+        Beniamino Galvani <b.galvani@gmail.com>,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH v2 05/14] spi: spi-meson-spifc: Fix misdocumenting of 'dev' in 'struct meson_spifc'
+Date:   Fri, 17 Jul 2020 14:54:15 +0100
+Message-Id: <20200717135424.2442271-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717135424.2442271-1-lee.jones@linaro.org>
 References: <20200717135424.2442271-1-lee.jones@linaro.org>
@@ -66,33 +68,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ep93xx_spi_read_write() changed is parameters, but the function
-documentation was left unchanged.  Let's realign.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-ep93xx.c:227: warning: Function parameter or member 'master' not described in 'ep93xx_spi_read_write'
- drivers/spi/spi-ep93xx.c:227: warning: Excess function parameter 'espi' description in 'ep93xx_spi_read_write'
+ drivers/spi/spi-meson-spifc.c:80: warning: Function parameter or member 'dev' not described in 'meson_spifc'
 
-Cc: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Beniamino Galvani <b.galvani@gmail.com>
+Cc: linux-amlogic@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-ep93xx.c | 2 +-
+ drivers/spi/spi-meson-spifc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-ep93xx.c b/drivers/spi/spi-ep93xx.c
-index ae7c79a062084..aa676559d2738 100644
---- a/drivers/spi/spi-ep93xx.c
-+++ b/drivers/spi/spi-ep93xx.c
-@@ -214,7 +214,7 @@ static void ep93xx_do_read(struct spi_master *master)
- 
- /**
-  * ep93xx_spi_read_write() - perform next RX/TX transfer
-- * @espi: ep93xx SPI controller struct
-+ * @master: SPI master
-  *
-  * This function transfers next bytes (or half-words) to/from RX/TX FIFOs. If
-  * called several times, the whole transfer will be completed. Returns
+diff --git a/drivers/spi/spi-meson-spifc.c b/drivers/spi/spi-meson-spifc.c
+index c7b0399802913..8eca6f24cb799 100644
+--- a/drivers/spi/spi-meson-spifc.c
++++ b/drivers/spi/spi-meson-spifc.c
+@@ -70,7 +70,7 @@
+  * @master:	the SPI master
+  * @regmap:	regmap for device registers
+  * @clk:	input clock of the built-in baud rate generator
+- * @device:	the device structure
++ * @dev:	the device structure
+  */
+ struct meson_spifc {
+ 	struct spi_master *master;
 -- 
 2.25.1
 
