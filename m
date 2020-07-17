@@ -2,159 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2342F223F02
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4A6223F0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgGQPCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726351AbgGQPCD (ORCPT
+        id S1726944AbgGQPCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:02:42 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:50375 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbgGQPCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:02:03 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE457C0619D2;
-        Fri, 17 Jul 2020 08:02:02 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id j11so13037913ljo.7;
-        Fri, 17 Jul 2020 08:02:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vj0THxkooDRCDITDoMqnCXMjOzpdY/9P9Eqdw05OK34=;
-        b=hdnZHm8bQ27NGLjoAEe+1uO25eN/PNI7VSElQYNWPhPlc8jPq4tKeRf4fNyFn8ZDvx
-         9/dx2ZJ96awCrq88v0nhlSjzj493SBM8KPyQgrP2/XfmDO9okpVXwx2YH3qZSS0CmzRe
-         tl963gqGdzJkYkrLYHInABOyoHwyJb4atjwysl6/N0lcud2YhH75l3pNrGsI/EnT/E4j
-         qKGf0aPyM4H0/wg27JAL2Od2WUbyof85heAsQkJvR0/NTqvLZYcS0+9JEtqPaTm0HOqx
-         mzdyLQt/vg07TTg/5V1r9AjpqbxbLzEso6X7s1019Gy+uO23Xr4NBtsmrqB0AxGFh02y
-         mFLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vj0THxkooDRCDITDoMqnCXMjOzpdY/9P9Eqdw05OK34=;
-        b=CTFINH1aaDXoInauwWRcbomWWXGJYp1/nodLxQWn+dmDHMwpXeAoojeX6xfHlSq21N
-         HRivBtGblY6wsLquw+kO8cvXB1oz/s1220Ik+sJnUUbmTNF2P9xnPU9lmN/YNavVPcJy
-         XM8F/xSRVoQU/YTx7zTHsUqLq0VcX/akCyB+sugfjPnqVUI6E6nPnjmThuzL2Vb4E7qY
-         Hr3QllMAwUdwp8VoAGSBOUCUZlW5m++U+7yzERukMcYViFXBeEwCNQ3ohICgxRVMe8ut
-         r+pfz4AczHZFRKlQ89hpxUqky9tmCtIAOggHlcmsp/z96TLxmMgQygUvSdU/ADFDdI3k
-         Fl/g==
-X-Gm-Message-State: AOAM533lHpP7kd0gUwkjnM8+47TNjmiWRAFxL5zBQ9kR/2IiSAMAZVNn
-        8IxDeYnV/cTq3jWmJ3/PdsCyAe7X
-X-Google-Smtp-Source: ABdhPJyQ+WCihOlXt8PupgeNCC7ANZ6gdFcfhNDBl4mxjPolZLOSXDJiSWkHQhdjI0Pmd2yZHYxryg==
-X-Received: by 2002:a2e:8758:: with SMTP id q24mr4389912ljj.109.1594998120753;
-        Fri, 17 Jul 2020 08:02:00 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-76-4-184.pppoe.mtu-net.ru. [91.76.4.184])
-        by smtp.googlemail.com with ESMTPSA id u7sm2281772lfi.45.2020.07.17.08.01.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 08:01:59 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
- tegra_mipi_calibrate and tegra_mipi_wait
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
-        helen.koike@collabora.com
-Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
- <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
- <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
- <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
- <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
- <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
- <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
- <4690e682-8495-2327-87c7-c2f06a7a479d@nvidia.com>
- <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
- <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
- <550f1796-67ca-5856-223d-c68360243954@nvidia.com>
- <ca8f2184-de30-03ec-9caf-e20a22d96a77@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <080b30c7-1dce-dd2f-dd96-40f6e25da4d6@gmail.com>
-Date:   Fri, 17 Jul 2020 18:01:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 17 Jul 2020 11:02:41 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MGzDv-1k14aZ0OaR-00E6Xh for <linux-kernel@vger.kernel.org>; Fri, 17 Jul
+ 2020 17:02:40 +0200
+Received: by mail-qt1-f176.google.com with SMTP id e12so7815476qtr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 08:02:39 -0700 (PDT)
+X-Gm-Message-State: AOAM532iyuImKZX857atyFegtO1MrRtaHw6AA1Yr02pZ9N1IimyVfFCX
+        B7Md45MnXNZMcmRIMTEoO+43oSqnkv8ezW70CM8=
+X-Google-Smtp-Source: ABdhPJw+jkR1ZAGgh1sSuYoVe+8dXEsose3NhqP/U1dCU10EClW25qkMiRJSVIWA6aavZw99V6ZYfa5rPBfJ9wvOxMI=
+X-Received: by 2002:ac8:33d7:: with SMTP id d23mr10888281qtb.204.1594998158869;
+ Fri, 17 Jul 2020 08:02:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ca8f2184-de30-03ec-9caf-e20a22d96a77@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
+ <20200717062841.GA3238569@kroah.com> <CAK8P3a1yy7YyeJH5k40yAXb23y9siBnfuqixb76t3BK9Xh=uXQ@mail.gmail.com>
+ <CAFmMkTFLm9mw5-8Dj_7rhP2KBcLUoJ1WcQCJv5_k+QRsmJPxjg@mail.gmail.com>
+In-Reply-To: <CAFmMkTFLm9mw5-8Dj_7rhP2KBcLUoJ1WcQCJv5_k+QRsmJPxjg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 17 Jul 2020 17:02:22 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2Y0vy5WaPvVBQDqBb67pyZ0yPdYhEKA9=rgb80k5JyDQ@mail.gmail.com>
+Message-ID: <CAK8P3a2Y0vy5WaPvVBQDqBb67pyZ0yPdYhEKA9=rgb80k5JyDQ@mail.gmail.com>
+Subject: Re: [PATCH] [PATCH] Firmware security information in SYSFS
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:f/7ltY2DqhHT/+2nLnkzL9ERro1mcgzAf7S9QV6xnfMAG+iI34x
+ E2bJQlUed347gH9W8fNQB4ddJ2SP8IifthdZjBS46WUlXlK+RDZWxh6xa4EDnupODaMB7pb
+ pfLPXgqC8iKtCmr3wlUTz74nS20i/pVwGwY6b0NGQH7JbfN6pzcM8OXWMXr+8UCMFl9AXaV
+ 9/yeH3d40t7W4EP3A1nTw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gQP+mDqQXCU=:1/WpNEMfS54zPvvWM4S21M
+ zkwmmjCIkWNsF229L9wREIuDudwLRIsP+XWJf/tJLSdEGBK0G7DmiB8BJU8+yMjpM/c0OXx49
+ ZNsNC81MnMlBzZlSrR9o4vRbvkVgn8VzSa+nK94GTxAQRZJSK8EZfXHWIouSA/MEao66Dcrav
+ 72iXgxzMAV6Xp5ut7ng7ctdZM8J5JCcIkPlT48mLMP7W7yanpd2ZIo1m7ll054Qzgqnxqr3tN
+ VAB5fCQ26LG2IzsfhSHfiRMKQMSoXWakhdie4uxhuOOoi2hNvJ/rno/wFXZFvPa7lpJQXNII2
+ eLc3ViF84J+WC+eHDbZPq3p9GwYpikumr+maxYjSIkaLKl5UgPG8Q7/9HrXAqsICIBIeCu4Vw
+ v8jcyTbxOhcfF3jvZ4omioEuwVOB10iqq8qtkCNRPAqRMHYtaCdwCde3XdQO8Rf0QVCwSKeuA
+ h+kKmxW1hQTHSfxnuNefn9FDgcw56i5xW1a0c3mNNpt2gUVfoxKiV0hffOE6rjuW6IgQ11aA3
+ jowbMQ8ENqxf+gVflFBu4lHinaF/ceZOcmcwtglrUoAN7xzSux9xtiUtug2ggd63czZVYe9ql
+ mU9gYZeTZQ7odFzlXkJbli5NRfYSPBXtEwqTixzoLEpDrKsoAMaNVrGQg8kOkhXCuIogfzwzT
+ u7GGoEl51QiddgTgmK5mUCT0P9XMz7s1Is2K/kzmZipeYAyIF/+hjVUlAeVOHRMf674ea+i89
+ dNQNUN+w8lFT3JCjhgPRXTyopU/nwPlFB4sgjz3bvFm5yJQJPuP85hYm6dvm+nuGz6qv9xLsD
+ IfMC8d6UlL1vvQs9l86Boat625xdvxi/65YfNMBcpFZOwxTi42HfF1YUrxhxRad1SLH5uV++9
+ PxWZN/tyOx97QhzPgHDeHWInnHIaiytNlaAGbqGLOkV18Es3YvbbL/Nm754BYoHR6QGWayiDi
+ 1fj2zRn5SWc2VrOp2h3H2WoIMOsZ0eIHu0dwDKs2iqq6pwl2xPFRm
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.07.2020 07:46, Sowjanya Komatineni пишет:
-...
-> Looks like sequence posted in TRM need to be updated clearly for proper
-> MIPI CAL start and wait.
-> 
-> Correct steps should be like below
-> 
-> 1. Set up CSI registers for use case such as number of lanes, virtual 
-> channel, etc.
-> 2. Initialize and power up CSI CIL interface
-> 3. Program MIPI CAL bias pads, cal configs, cal control registers and
-> enable calibration start
-> 4. Power up camera through the I2C interface and start sensor streaming
-> through the I2C
-> 
-> Note: All sensors might not leave pads in LP-11 state as sensor may be
-> power down when not in use.
-> 
-> So start streaming prior to checking for calibration done status as
-> LP-11 -> HS transition happens during sensor stream and calibration
-> logic can apply results to pads and update done status,
-> 
-> 5. Wait for done signal from calibration logic
-> 
-> 6. perform frame capture thru VI
-> 7. Frame done, CSI goes back to stop state, LP11
-> 
-> Will work internally to correct sequence in TRM ...
+On Fri, Jul 17, 2020 at 4:46 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+> On Fri, Jul 17, 2020 at 11:41 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+>> > Also, this really is a _SPECIFIC_ type of firmware that supports these
+>> > features, right?  Why not call that out too?  This is not generic by any
+>> > means.
+>>
+>> As I suggested in my previous review, I wouldn't worry too much about
+>> the user interface at the start, but instead first work out how the hardware
+>> support fits in with the existing drivers and once that looks fine decide
+>> on how to export it to user space.
+>>
+>> I agree the  /sys/kernel/firmware-security/bioswe sounds like the wrong
+>> place, but I'm not sure if adding any other new directory in sysfs is
+>> much better. I think the most promising would be to have it on the
+>> sysfs directory for the device it refers to,
+>
+>
+> My idea is to have all the firmware security information together in the same place; this information comes from many devices.
+> This initial patch involves the SPI Controller, and I don't want to add more stuff until there
+> is a consensus.
+> So, do you have a suggestion where to put this information?
+> /sys/devices/system/firmware-security?
+> /sys/firmware/security?
+> other?
 
-Will be nice to have an updated TRM, thank you!
+I think it needs to be more specific than this. On a many machines
+there may be a dozens of things described as "firmware" of some
+sort, and even more things that relate to "security". You may also have
+to consider the problem that there may be multiple devices that
+want to register to this interface to export similar bits of information.
 
-Also, what about the auto-calibration? Isn't it needed to be enabled for
-CSI?
+In the two drivers you have changed, there is a device node, so
+the natural concept would be to either have attributes in that node,
+or a child device under it with a fixed set of attributes, which can
+then be referenced as a class device like
 
-> In mipi driver will update as below to have mipi clk enabled till
-> calibration status check is done.
-> 
-> Always tegra_mipi_wait() followes tegra_mipi_calibrate() in both DSI and
-> CSI. So below sequence should work good.
-> 
-> tegra_mipi_calibrate()
-> 
-> - clk_enable mipi cal
-> - program mipi cal registers (bias pads cfgs, mipi cal ctrl and trigger
-> calibration start)
-> 
-> tegra_mipi_wait()
-> - read mipi cal status and wait for active and done bits
-> - clk_disable mipi cal
+/sys/class/${NAME}/${NAME0} ->
+../../devices/ci0000:00/0000:00:01.1/0000:01:00.2/${NAME}
+/sys/devices/ci0000:00/0000:00:01.1/0000:01:00.2/${NAME}/${ATTRIBUTE}
 
+This is easy to implement, and easy to access from user space,
+if this works for you, the hardest part may be to decide on what to call it ;-)
 
-Maybe then it should be better to rename the functions like this:
-
-tegra_mipi_calibrate() -> tegra_mipi_start_calibration()
-tegra_mipi_wait()      -> tegra_mipi_finish_calibration().
-
-and there also should be tegra_mipi_cancel_calibration().
-
-
-Example:
-
-	tegra_mipi_start_calibration();
-
-	ret = v4l2_subdev_call(subdev, video, s_stream, on);
-	if (ret < 0) {
-		tegra_mipi_cancel_calibration();
-		goto err;
-	}
-
-	tegra_mipi_finish_calibration();
-
-
+     Arnd
