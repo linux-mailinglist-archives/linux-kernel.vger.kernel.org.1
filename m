@@ -2,63 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE4B22418B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD5B2241D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgGQRJS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Jul 2020 13:09:18 -0400
-Received: from mail1.bemta26.messagelabs.com ([85.158.142.4]:11261 "EHLO
-        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726205AbgGQRJR (ORCPT
+        id S1726411AbgGQRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgGQRbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:09:17 -0400
-Received: from [100.113.3.117] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-4.bemta.az-a.eu-central-1.aws.symcld.net id 91/F4-22706-B3BD11F5; Fri, 17 Jul 2020 17:09:15 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRWlGSWpSXmKPExsWi9LMqRtfytmC
-  8wblzuhaXd81hc2D0+LxJLoAxijUzLym/IoE1493WJywFuRWHnyxna2CM7WLk4hASeMooMaNv
-  FguEs41Rou/zc+YuRk4OZgE9iRtTp7CB2LwCghInZz5hgYhrSyxb+BqohgPIVpP42lUCEhYW4
-  JG43f+CCcQWEVCS+H6tmxGkhE1AReLC6yCQMIuAqsSJ1SBhTqBVshIzN55mgpjuKrF94QJWiL
-  iyRO/K9YwTGHlnITliFpIjZiE5YhbCEQsYWVYxWiYVZaZnlOQmZuboGhoY6BoaGusa6hqaGOk
-  lVukm6qWW6ian5pUUJQJl9RLLi/WKK3OTc1L08lJLNjECwzClkLFvB+PENx/0DjFKcjApifK2
-  rRKMF+JLyk+pzEgszogvKs1JLT7EKMPBoSTB+/8GUE6wKDU9tSItMwcYEzBpCQ4eJRHeiJtAa
-  d7igsTc4sx0iNQpRnuOu0/mLmLmuAcmdxydByQfrVqyiFmIJS8/L1VKHKJNAKQtozQPbigshi
-  8xykoJ8zIyMDAI8RSkFuVmlqDKv2IU52BUEuadCzKFJzOvBG73K6CzmIDO2viZF+SskkSElFQ
-  Dk2jzztv+VTIf7udvPcH+Yz3Xguiz/YLZ1aeV7CMN/jLFXO5xzyx6kM0deX7bednSpcEcypdU
-  mor2pF9ob1vnMSNQ/rvTLM7NvxvXfd48V6H/RqZGYECbY5aicHBcE6PclespOe/6k88pZCjIa
-  VV+dXv2KFQ/cXoLb3GX+SSmI1zRDGvKODJm/vdkzNKsefvSREJ9Y5uGcTTTn+VbYk943j8Vsf
-  BPw6XN774Ld3p/Y7kquVD9wbKg5o/l5jxPFgZKvL30c/rBBtmvJZv21azjF/9yM35dQPZh/yl
-  yiyu0vE7FvelwV5wovGWltxiT2LqZ+gUOx3aLJ7SX+MvJcrqLLvBb9KpJ8J56b+M53xYlluKM
-  REMt5qLiRABL4W73XAMAAA==
-X-Env-Sender: heart@vibrantmedia.com
-X-Msg-Ref: server-22.tower-232.messagelabs.com!1595005750!1126681!11
-X-Originating-IP: [34.249.122.92]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.50.2; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 6480 invoked from network); 17 Jul 2020 17:09:13 -0000
-Received: from mail.vibrantmedia.com (HELO mbx04.vibrant.corp) (34.249.122.92)
-  by server-22.tower-232.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 17 Jul 2020 17:09:13 -0000
-Received: from mbx03.vibrant.corp (10.1.128.21) by mbx04.vibrant.corp
- (10.1.129.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Fri, 17
- Jul 2020 17:09:08 +0000
-Received: from [213.32.33.253] (213.32.33.253) by mbx03.vibrant.corp
- (10.1.128.21) with Microsoft SMTP Server id 15.1.669.32 via Frontend
- Transport; Fri, 17 Jul 2020 17:09:07 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 17 Jul 2020 13:31:50 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC855C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:31:49 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a23so4142858pfk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XFgYMGoKiX49l1DrRRroifUSZDfK1GLfBiXM5ZME7LU=;
+        b=NTAIkpXZs3R0/tyj+kfF1UAEFf7YQPnRv/fOJXVKn9Wipmia8S6aiULGLOTUYLcpVK
+         Ka8rISkOqc5D2/28OFWffArLGdT5OolGAa50rYnPjTfeLh6DY6TQrfXq9aABDoFZiZoM
+         PcgMu24PPM4TsuQwT5TS1mTBugFnF9i8A+JDFumQnDKni0sSBR6EFgc5FMoFpvIPdh0f
+         JlsZuxDwOZDbGFyBHAQNKybPhUVmiijqXmuZ/XhjCKbW/YbuFPhEApvUZbFOX2FIb3hp
+         BIMs6J4XRuB6uFsgZ4+k7YpvCLCLkRbNwbJSpQD/IFsEqqnUYdFe6TkUD4zLeXPpAsnj
+         SAUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XFgYMGoKiX49l1DrRRroifUSZDfK1GLfBiXM5ZME7LU=;
+        b=J/3Ie6C/U1ljHq7moGx9M0Zk14PCEfkCLh07L+nX3OSF93sGKRRdLXPz5+eiR5fMtW
+         YwcOmcyA4KI+1Bw+YnGGHSynyImv1OmLPve6HQs1V1EA3j1d3y5gd+4S6bWmLwuMtu0E
+         68bTPl5dhd1P/BVFbaW681Ch58VtlV1sBhqOwULVah5EoF4dHfNrkdCfPZXct0hhTU5z
+         5+LbO/gNlaUY55UQfhc8vL1XmTNA2Kia+m9RsrmjyZQRcjs5CismC6VAh8nSFulEPsd6
+         TY+UikNrMFh7UF28I8Ysq82p8x+hKuiO434J6aAgpEn/qJJtGaE8gQ/WVuHk0rRLcGKs
+         eSjQ==
+X-Gm-Message-State: AOAM530vc8v3MIEO4U9dVR1ebDZvyCqV+pIOvpAbyoguEZwV5WNxxGJY
+        UGx4n288UBsiPEWglwk42wGWtv8guDxbW286k0YxWw==
+X-Google-Smtp-Source: ABdhPJwd7yuLIvXv9X95ZgUtHIgV5x0iHoSuVr+9QTRBIYv128h5R30OylV6OksETLfQ+2xSMCsFl6cVAFth72q8wLI=
+X-Received: by 2002:a05:6a00:15c7:: with SMTP id o7mr8670450pfu.51.1595007109035;
+ Fri, 17 Jul 2020 10:31:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: REP
-To:     <linux-kernel@vger.kernel.org>
-From:   ANDON <heart@vibrantmedia.com>
-Date:   Fri, 17 Jul 2020 18:01:26 -0700
-Reply-To: <info@skilsaws.org>
-Message-ID: <ee9a0266-1450-4ec9-b54b-9da787badf40@mbx03.vibrant.corp>
+References: <CGME20200716214531eucas1p2c173df09a6e00ef15dfae43ce8f1f9cd@eucas1p2.samsung.com>
+ <20200716214523.2924704-1-saravanak@google.com> <6b37125c-96f5-c59c-f170-934d68c9bed1@samsung.com>
+ <20200717163434.GA119309@roeck-us.net>
+In-Reply-To: <20200717163434.GA119309@roeck-us.net>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 17 Jul 2020 10:31:13 -0700
+Message-ID: <CAGETcx9quqtV9TeD8WEcLLijGeV+7hXqnyiMv7F8xo+vyF_7iw@mail.gmail.com>
+Subject: Re: [PATCH v2] driver core: Fix sleeping in invalid context during
+ device link deletion
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andon is seeking a motivated Company/Person representatives on part time basis with good salary structure.
+On Fri, Jul 17, 2020 at 9:34 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Fri, Jul 17, 2020 at 12:13:04AM +0200, Marek Szyprowski wrote:
+> > Hi Saravana,
+> >
+> > On 16.07.2020 23:45, Saravana Kannan wrote:
+> > > Marek and Guenter reported that commit 287905e68dd2 ("driver core:
+> > > Expose device link details in sysfs") caused sleeping/scheduling while
+> > > atomic warnings.
+> > >
+> > > BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+> > > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 12, name: kworker/0:1
+> > > 2 locks held by kworker/0:1/12:
+> > >    #0: ee8074a8 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x174/0x7dc
+> > >    #1: ee921f20 ((work_completion)(&sdp->work)){+.+.}-{0:0}, at: process_one_work+0x174/0x7dc
+> > > Preemption disabled at:
+> > > [<c01b10f0>] srcu_invoke_callbacks+0xc0/0x154
+> > > ----- 8< ----- SNIP
+> > > [<c064590c>] (device_del) from [<c0645c9c>] (device_unregister+0x24/0x64)
+> > > [<c0645c9c>] (device_unregister) from [<c01b10fc>] (srcu_invoke_callbacks+0xcc/0x154)
+> > > [<c01b10fc>] (srcu_invoke_callbacks) from [<c01493c4>] (process_one_work+0x234/0x7dc)
+> > > [<c01493c4>] (process_one_work) from [<c01499b0>] (worker_thread+0x44/0x51c)
+> > > [<c01499b0>] (worker_thread) from [<c0150bf4>] (kthread+0x158/0x1a0)
+> > > [<c0150bf4>] (kthread) from [<c0100114>] (ret_from_fork+0x14/0x20)
+> > > Exception stack(0xee921fb0 to 0xee921ff8)
+> > >
+> > > This was caused by the device link device being released in the context
+> > > of srcu_invoke_callbacks().  There is no need to wait till the RCU
+> > > callback to release the device link device.  So release the device
+> > > earlier and move the call_srcu() into the device release code. That way,
+> > > the memory will get freed only after the device is released AND the RCU
+> > > callback is called.
+> > >
+> > > Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+> > > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > ---
+> > >
+> > > v1->v2:
+> > > - Better fix
+> > > - Changed subject
+> > > - v1 is this patch https://lore.kernel.org/lkml/20200716050846.2047110-1-saravanak@google.com/
+> > >
+> > > Marek and Guenter,
+> > >
+> > > I reproduced the original issue and tested this fix. Seems to work for
+> > > me. Can you confirm?
+> >
+> > Confirmed, this one fixes the issue! :)
+> >
+> Same here.
+>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
+>
+> Guenter
+>
+> > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> >
+
+Thanks both.
+
+Greg, can you review this and pull this into driver-core-next too?
+
+-Saravana
