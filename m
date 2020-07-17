@@ -2,123 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A283224417
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A777022441F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgGQTTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 15:19:05 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44786 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727999AbgGQTTD (ORCPT
+        id S1728531AbgGQTTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 15:19:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59494 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728103AbgGQTTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:19:03 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 23F0320B4909;
-        Fri, 17 Jul 2020 12:19:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 23F0320B4909
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595013543;
-        bh=936Ej6PwFgQOfbt701DNQeezvUrKmHxPwTEHqq6hXKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f3Zr5ZsIOFvcx46qNgCltlwYHhR1HuHpLu7UBhvo7kY++ksbg3hh1nnnporsU+NLW
-         6ZaKBg0zGqm6Z6qYYUvNaKNFOKdve4DjJAdILc5lICYPNZ5BFLjafTv7O9Viqdfmyu
-         fmjlG458XsKqhcWkEZXTvjA1TlIxzc4ebD8SroSg=
-Date:   Fri, 17 Jul 2020 14:18:58 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Nayna <nayna@linux.vnet.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v3 06/12] ima: Fail rule parsing when the KEY_CHECK hook
- is combined with an invalid cond
-Message-ID: <20200717191858.GN3673@sequoia>
-References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
- <20200709061911.954326-7-tyhicks@linux.microsoft.com>
- <336cc947-1f70-0286-6506-6df3d1d23a1d@linux.vnet.ibm.com>
+        Fri, 17 Jul 2020 15:19:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595013592;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Du0bkJJuZiGwcsmmaS0iHcsLc6G/grfEoCnxuV98a2A=;
+        b=cVMA9O9qwqHTlXzQDlGJVKukO12bNaB5vECaAfRW4BNVIHX0N8cAgWEl5BKQkqQAmo4liZ
+        rLDoLycslYMZVjyzIf6hRsrjvz5T2B2ocYZote11NIK1OVuGCHuBLVNlV2uD1wUQRjQpy2
+        Fl/ba4KSQZ+rb6V9eYAfH+Zzv1E/Iiw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-Y3avddQfMs2FNuvtipfgOg-1; Fri, 17 Jul 2020 15:19:49 -0400
+X-MC-Unique: Y3avddQfMs2FNuvtipfgOg-1
+Received: by mail-qv1-f69.google.com with SMTP id l12so6103569qvu.21
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:19:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Du0bkJJuZiGwcsmmaS0iHcsLc6G/grfEoCnxuV98a2A=;
+        b=UKyd+icAPd31VoH5xA58YZrum5K/d4JjZVf/9JVeCs+IhigemtLHYNgg7xowREY+si
+         WM7oZeedH95jXSNIuC+gj+tFRR1f2Wc9sn3E3dmdwxmwMofN+3gp9DhIzgXcwjen97QX
+         3lbHqFZVwOjx3MgHsHtPBWZrdlnCBib22ze2ufCTpEVheNwqPEjsP23zz9PQ106qQR18
+         LrotXymH+/TK9S22dQs95r5PZMmayKHfs/ABpJA53GZ8ayILUcIbqdwX7YddtWpromcE
+         KDgF7fDI0JZ9qpHdnTUHyWKaJuH19braUGkU2ZAujEscMKLc0Z6lnbyY5qkTYftbOucE
+         g6Qg==
+X-Gm-Message-State: AOAM532+btHhbdDsdzIcK/IBWsquZjzbb2O+twP2MJuAHZnvPlZ+Sw7T
+        8zL0lAYBBLdPvgPnS45OVOM8sjMhttSzBOLXMCGEMc8QpNI3SHbKvIDeY9wM79cSDWYBx1fRM4H
+        1rLgmuf5YRrzRsnPqIMLPGPUm
+X-Received: by 2002:ac8:2a3d:: with SMTP id k58mr11996370qtk.265.1595013589360;
+        Fri, 17 Jul 2020 12:19:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyT0/KR3PO3o3z4CMqcsVwsJeewSBzu5ESSc3mYOvNJKWnWh8PK7bA6UyC//9un04gWCMUW8A==
+X-Received: by 2002:ac8:2a3d:: with SMTP id k58mr11996348qtk.265.1595013589062;
+        Fri, 17 Jul 2020 12:19:49 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id f41sm12423841qtk.55.2020.07.17.12.19.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 12:19:48 -0700 (PDT)
+Message-ID: <7bc7287b5cbac6535765b3490bd55da1e1cb4d07.camel@redhat.com>
+Subject: Re: [PATCH] RFC: ACPI / OSI: remove workarounds for hybrid graphics
+ laptops
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Karol Herbst <kherbst@redhat.com>, linux-acpi@vger.kernel.org
+Cc:     Alex Hung <alex.hung@canonical.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Date:   Fri, 17 Jul 2020 15:19:47 -0400
+In-Reply-To: <20200717190547.648604-1-kherbst@redhat.com>
+References: <20200717190547.648604-1-kherbst@redhat.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <336cc947-1f70-0286-6506-6df3d1d23a1d@linux.vnet.ibm.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-17 14:56:46, Nayna wrote:
-> 
-> On 7/9/20 2:19 AM, Tyler Hicks wrote:
-> > The KEY_CHECK function only supports the uid, pcr, and keyrings
-> > conditionals. Make this clear at policy load so that IMA policy authors
-> > don't assume that other conditionals are supported.
-> > 
-> > Fixes: 5808611cccb2 ("IMA: Add KEY_CHECK func to measure keys")
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> > ---
-> > 
-> > * v3
-> >    - Added Lakshmi's Reviewed-by
-> >    - Adjust for the indentation change introduced in patch #4
-> > * v2
-> >    - No change
-> > 
-> >   security/integrity/ima/ima_policy.c | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> > index 1c64bd6f1728..81da02071d41 100644
-> > --- a/security/integrity/ima/ima_policy.c
-> > +++ b/security/integrity/ima/ima_policy.c
-> > @@ -1023,6 +1023,13 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
-> >   		if (entry->action & ~(MEASURE | DONT_MEASURE))
-> >   			return false;
-> > 
-> > +		if (entry->flags & ~(IMA_FUNC | IMA_UID | IMA_PCR |
-> > +				     IMA_KEYRINGS))
-> > +			return false;
-> > +
-> > +		if (ima_rule_contains_lsm_cond(entry))
-> > +			return false;
-> > +
-> >   		break;
-> >   	default:
-> >   		return false;
-> 
-> Should there be a check for IMA_MEASURE_ASYMMETRIC_KEYS in Opt_keyrings in
-> ima_parse_rule() to return immediately if not enabled ?
+Hey-just wanted to give some additional context I think Karol missed here. It
+should be noted that since the last time me and Karol looked at reverting these,
+we've already fixed all of the nasty runtime PM (e.g. runtime D3) issues we
+could find. This includes the infamous one that was affecting nearly all of the
+nvidia pascal (+ some maxwell 2 and turing, it ended up being that the intel PCI
+bridge was the culprit) machines on the market. Right now I'm only aware of one
+major issue we have, which is the result of a recent PCI core change that we're
+already in the process of getting reverted:
 
-I didn't notice that "keyrings=" could be disabled at build time. I
-think you're right that something like what I have below would be a good idea.
+https://lkml.org/lkml/2020/7/16/1288
 
-@Lakshmi, do you agree?
+[if you do any testing of runtime PM, you may need to temporarily revert this
+patch to make things work]
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 81da02071d41..bd687560f88e 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -1212,6 +1212,11 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 		case Opt_keyrings:
- 			ima_log_string(ab, "keyrings", args[0].from);
- 
-+			if (!IS_ENABLED(CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS)) {
-+				result = -EINVAL;
-+				break;
-+			}
-+
- 			keyrings_len = strlen(args[0].from) + 1;
- 
- 			if ((entry->keyrings) ||
+So, really-runtime D3 is very much supported with nouveau. And we've put a _lot_
+of effort into making sure of that, and are happy to fix any issues you're still
+finding. It also works just fine in AMD, but if you're finding systems it
+doesn't work with amd on then please let the amdgpu folks know upstream so they
+can properly fix it. Otherwise, these ACPI workarounds are likely making the
+power consumption on these systems (for nouveau, amdgpu, and radeon)
+dramatically higher then it needs to be.
 
-Tyler
-
+On Fri, 2020-07-17 at 21:05 +0200, Karol Herbst wrote:
+> It's hard to figure out what systems are actually affected and right now I
+> don't see a good way of removing those...
 > 
-> Thanks & Regards,
+> But I'd like to see thos getting removed and drivers fixed instead (which
+> happened at least for nouveau).
 > 
->      - Nayna
+> And as mentioned before, I prefer people working on fixing issues instead
+> of spending time to add firmware level workarounds which are hard to know
+> to which systems they apply to, hard to remove and basically a big huge
+> pain to work with.
+> In the end I have no idea how to even figure out what systems are affected
+> and which not by this, so I have no idea how to even verify we can safely
+> remove this (which just means those are impossible to remove unless we risk
+> breaking systems, which again makes those supper annoying to deal with).
 > 
+> Also from the comments it's hard to get what those bits really do. Are they
+> just preventing runtime pm or do the devices are powered down when booting?
+> I am sure it's the former, still...
+> 
+> Please, don't do this again.
+> 
+> For now, those workaround prevent power savings on systems those workaround
+> applies to, which might be any so those should get removed asap and if
+> new issues arrise removing those please do a proper bug report and we can
+> look into it and come up with a proper fix (and keep this patch out until
+> we resolve all of those).
+> 
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> CC: Alex Hung <alex.hung@canonical.com>
+> CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> CC: Len Brown <lenb@kernel.org>
+> CC: Lyude Paul <lyude@redhat.com>
+> CC: linux-kernel@vger.kernel.org
+> CC: dri-devel@lists.freedesktop.org
+> CC: nouveau@lists.freedesktop.org
+> ---
+>  drivers/acpi/osi.c | 24 ------------------------
+>  1 file changed, 24 deletions(-)
+> 
+> diff --git a/drivers/acpi/osi.c b/drivers/acpi/osi.c
+> index 9f68538091384..d4405e1ca9b97 100644
+> --- a/drivers/acpi/osi.c
+> +++ b/drivers/acpi/osi.c
+> @@ -44,30 +44,6 @@ osi_setup_entries[OSI_STRING_ENTRIES_MAX] __initdata = {
+>  	{"Processor Device", true},
+>  	{"3.0 _SCP Extensions", true},
+>  	{"Processor Aggregator Device", true},
+> -	/*
+> -	 * Linux-Dell-Video is used by BIOS to disable RTD3 for NVidia graphics
+> -	 * cards as RTD3 is not supported by drivers now.  Systems with NVidia
+> -	 * cards will hang without RTD3 disabled.
+> -	 *
+> -	 * Once NVidia drivers officially support RTD3, this _OSI strings can
+> -	 * be removed if both new and old graphics cards are supported.
+> -	 */
+> -	{"Linux-Dell-Video", true},
+> -	/*
+> -	 * Linux-Lenovo-NV-HDMI-Audio is used by BIOS to power on NVidia's HDMI
+> -	 * audio device which is turned off for power-saving in Windows OS.
+> -	 * This power management feature observed on some Lenovo Thinkpad
+> -	 * systems which will not be able to output audio via HDMI without
+> -	 * a BIOS workaround.
+> -	 */
+> -	{"Linux-Lenovo-NV-HDMI-Audio", true},
+> -	/*
+> -	 * Linux-HPI-Hybrid-Graphics is used by BIOS to enable dGPU to
+> -	 * output video directly to external monitors on HP Inc. mobile
+> -	 * workstations as Nvidia and AMD VGA drivers provide limited
+> -	 * hybrid graphics supports.
+> -	 */
+> -	{"Linux-HPI-Hybrid-Graphics", true},
+>  };
+>  
+>  static u32 acpi_osi_handler(acpi_string interface, u32 supported)
+
