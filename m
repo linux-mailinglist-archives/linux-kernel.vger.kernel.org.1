@@ -2,115 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B52224327
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1392722432B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728159AbgGQSb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:31:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726322AbgGQSb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:31:58 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7E7E20759;
-        Fri, 17 Jul 2020 18:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595010717;
-        bh=YHFPycUTgsDF1UJGgyC7LWsiRop+4nEUMYmTmNXt6f0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uY9z5GFL5wr9rt4JseHttadmmmHwUKrbMZC7HgrilpDBbLcfMJ2gEvc+V/2fDE5eb
-         F5GgYkSlQGORe/913kjxedtpgOCqZlw2b6Kyim2kaNlGn/FNl35LVOk8YiJE7P9a+M
-         pgiizxg6DiK9ve2OxtLVmUGdWpfoYYOSFGSWrsWA=
-Date:   Fri, 17 Jul 2020 11:31:55 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Igor Russkikh <irusskikh@marvell.com>
-Cc:     Alexander Lobakin <alobakin@marvell.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Denis Bolotin <dbolotin@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
-        <QLogic-Storage-Upstream@cavium.com>, <netdev@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH net-next 10/13] qed: add support for new port
- modes
-Message-ID: <20200717113155.1a9234b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <27939848-7e83-2897-36f9-44f47d1bfb9c@marvell.com>
-References: <20200716115446.994-1-alobakin@marvell.com>
-        <20200716115446.994-11-alobakin@marvell.com>
-        <20200716181853.502dd619@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <27939848-7e83-2897-36f9-44f47d1bfb9c@marvell.com>
+        id S1726580AbgGQSeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:34:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32560 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbgGQSet (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 14:34:49 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HIWvmn053972;
+        Fri, 17 Jul 2020 14:34:40 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32autbkkau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 14:34:39 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06HIYcJf065521;
+        Fri, 17 Jul 2020 14:34:38 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32autbkk9x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 14:34:38 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HILB7I029041;
+        Fri, 17 Jul 2020 18:34:37 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 327529jyyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 18:34:37 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HIYahq52036090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 18:34:36 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 90460AE060;
+        Fri, 17 Jul 2020 18:34:36 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AB42DAE05F;
+        Fri, 17 Jul 2020 18:34:31 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.163.51.42])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Fri, 17 Jul 2020 18:34:31 +0000 (GMT)
+References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com> <159466085652.24747.2414199807974963385.stgit@hbathini.in.ibm.com> <87v9io8c13.fsf@morokweng.localdomain> <63d551a9-684b-768b-8b0f-2a0da68d7f11@linux.ibm.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Hari Bathini <hbathini@linux.ibm.com>
+Cc:     Pingfan Liu <piliu@redhat.com>, Nayna Jain <nayna@linux.ibm.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH v3 02/12] powerpc/kexec_file: mark PPC64 specific code
+In-reply-to: <63d551a9-684b-768b-8b0f-2a0da68d7f11@linux.ibm.com>
+Date:   Fri, 17 Jul 2020 15:34:27 -0300
+Message-ID: <87ft9quh1o.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_09:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 spamscore=100
+ priorityscore=1501 suspectscore=0 mlxscore=100 phishscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=-1000 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170129
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 13:49:33 +0300 Igor Russkikh wrote:
-> > ----------------------------------------------------------------------
-> > On Thu, 16 Jul 2020 14:54:43 +0300 Alexander Lobakin wrote:  
-> >> These ports ship on new boards revisions and are supported by newer
-> >> firmware versions.
-> >>
-> >> Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-> >> Signed-off-by: Igor Russkikh <irusskikh@marvell.com>  
-> > 
-> > What is the driver actually doing with them, tho?
-> > 
-> > Looks like you translate some firmware specific field to a driver
-> > specific field, but I can't figure out what part of the code cares
-> > about hw_info.port_mode  
-> 
-> Hi Jakub,
-> 
-> You are right, this info is never used/reported.
-> 
-> Alexander is extending already existing non used field with new values from
-> our latest hardware revisions.
-> 
-> I thought devlink info could be a good place to output such kind of information.
-> 
-> Thats basically a layout of *Physical* ports on device - quite useful info I
-> think.
-> 
-> Important thing is these ports may not be directly mapped to PCI PFs. So
-> reading `ethtool eth*` may not explain you the real device capabilities.
-> 
-> Do you think it makes sense adding such info to `devlink info` then?
 
-Devlink port has information about physical port, which don't have to
-map 1:1 to netdevs. It also has lanes and port splitting which you may
-want to report.
+Hari Bathini <hbathini@linux.ibm.com> writes:
 
+> On 16/07/20 7:19 am, Thiago Jung Bauermann wrote:
+>> 
+>> I didn't forget about this patch. I just wanted to see more of the
+>> changes before comenting on it.
+>> 
+>> Hari Bathini <hbathini@linux.ibm.com> writes:
+>> 
+>>> Some of the kexec_file_load code isn't PPC64 specific. Move PPC64
+>>> specific code from kexec/file_load.c to kexec/file_load_64.c. Also,
+>>> rename purgatory/trampoline.S to purgatory/trampoline_64.S in the
+>>> same spirit.
+>> 
+>> There's only a 64 bit implementation of kexec_file_load() so this is a
+>> somewhat theoretical exercise, but there's no harm in getting the code
+>> organized, so:
+>> 
+>> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+>> 
+>> I have just one question below.
+>
+> <snip>
+>
+>>> +/**
+>>> + * setup_new_fdt_ppc64 - Update the flattend device-tree of the kernel
+>>> + *                       being loaded.
+>>> + * @image:               kexec image being loaded.
+>>> + * @fdt:                 Flattened device tree for the next kernel.
+>>> + * @initrd_load_addr:    Address where the next initrd will be loaded.
+>>> + * @initrd_len:          Size of the next initrd, or 0 if there will be none.
+>>> + * @cmdline:             Command line for the next kernel, or NULL if there will
+>>> + *                       be none.
+>>> + *
+>>> + * Returns 0 on success, negative errno on error.
+>>> + */
+>>> +int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
+>>> +			unsigned long initrd_load_addr,
+>>> +			unsigned long initrd_len, const char *cmdline)
+>>> +{
+>>> +	int chosen_node, ret;
+>>> +
+>>> +	/* Remove memory reservation for the current device tree. */
+>>> +	ret = delete_fdt_mem_rsv(fdt, __pa(initial_boot_params),
+>>> +				 fdt_totalsize(initial_boot_params));
+>>> +	if (ret == 0)
+>>> +		pr_debug("Removed old device tree reservation.\n");
+>>> +	else if (ret != -ENOENT) {
+>>> +		pr_err("Failed to remove old device-tree reservation.\n");
+>>> +		return ret;
+>>> +	}
+>>> +
+>>> +	ret = setup_new_fdt(image, fdt, initrd_load_addr, initrd_len,
+>>> +			    cmdline, &chosen_node);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
+>>> +	if (ret)
+>>> +		pr_err("Failed to update device-tree with linux,booted-from-kexec\n");
+>>> +
+>>> +	return ret;
+>>> +}
+>> 
+>> For setup_purgatory_ppc64() you start with an empty function and build
+>> from there, but for setup_new_fdt_ppc64() you moved some code here. Is
+>> the code above 64 bit specific?
+>
+> Actually, I was not quiet sure if fdt updates like in patch 6 & patch 9 can be
+> done after setup_ima_buffer() call. If you can confirm, I will move them back
+> to setup_purgatory()
 
-For now please make sure to not include any dead code in your
-submissions (register defines etc. may be okay), perhaps try:
+Hari and I discussed this off-line and we came to the conclusion that
+theis code can be moved back to setup_new_fdt().
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-index d929556247a5..4bad836d0f74 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-@@ -4026,6 +4026,21 @@ static int qed_hw_get_nvm_info(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
- 	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_4X25G:
- 		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_4X25G;
- 		break;
-+	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_2X50G_R1:
-+	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_4X50G_R1:
-+	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_1X100G_R2:
-+	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_2X100G_R2:
-+	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_1X100G_R4:
-+		/* TODO: set port_mode when it's actually used */
-+		break;
- 	default:
- 		DP_NOTICE(p_hwfn, "Unknown port mode in 0x%08x\n", core_cfg);
- 		break;
-
-And see if it will pass the muster.
-
-Dead code makes it harder to review the patches.
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
