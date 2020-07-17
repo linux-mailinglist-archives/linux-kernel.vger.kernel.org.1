@@ -2,162 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4452231E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792412231D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgGQD7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
+        id S1726626AbgGQD5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726512AbgGQD64 (ORCPT
+        with ESMTP id S1726381AbgGQD5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:58:56 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0796C061755;
-        Thu, 16 Jul 2020 20:58:56 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x8so4860958plm.10;
-        Thu, 16 Jul 2020 20:58:56 -0700 (PDT)
+        Thu, 16 Jul 2020 23:57:34 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17A4C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 20:57:33 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id j18so12909285wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 20:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DRaWMxjlA+y9G9x8PTReSZmOggDcJdYbq3Dmt0Z1Wlg=;
-        b=L7uBE6cDRVMj0gHPJGOHTDiheKAZMJIZrfqbe00VOVr73uD1dK32hSHLBzu75ld5A+
-         Ai5h0vpfZWBpdF4SA7BpWBHNdDJdwXGXaH74ccr49lkrPvAjHPLRynhdvE264lupkpx0
-         uOy4IgUC98Eea9OqYKG7WdHC3U25kORnT7fwiIbjHv6DMpYc9oHkzsiSv2xSoPV32QNW
-         RCowtyc3gssZ40NB14OMin2AG3R5MK3JRGYAaUNeDoNrDyH62j/Mwb/uQ1zs9Sf01NaP
-         sPebEiexTuE+hAmVvTA2+QZi+dJRN/FcXKpRY5VaWvxlmopInSontbSzsOF/Q+Cvpk1v
-         2ClQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SzUcIHj1G4IHGMKYeYYU1OCDfXFqgR7DJ+soyCYtfRw=;
+        b=FMCoBnOJGQ+2cQL0atQyDmvYnxGGdvM4+yz3oA2EvBlhDR6WLkz/h3J7R5rJucv/xk
+         fQE0ZQt619rFxxCtoXrmyJ0nCLDlXhxgUpHJB9LJZZ4+Cr19sv1Pmc8yLs3EmAIS5pJw
+         ItgIP7WEOZ0T24/ZQNQE4mPlzDL5AadiEf4Hpdi7PHBMROlMwR1a1i361Q+77j1zxziv
+         I6kspplJ5NHDiB/tBuM5ka2NDwZn2T/+asEoPN3wbVuyO2Mg0KwVE1I/+kQ6exNNzuRq
+         Na85+934GqbfgbNEd00aiA19KXeqjMIgabTkB9ZhHQoUC6GT3XRNAR13RCLGy/hisnjd
+         DuYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DRaWMxjlA+y9G9x8PTReSZmOggDcJdYbq3Dmt0Z1Wlg=;
-        b=aieHs8hFBdDJnJB0cjFLaMVPvVuEXx1fMbDn1b8jejNLDdf5+spyhQzEki+WZapFbm
-         /T1ziD3HsMJh6/v228aB7rV4/t8OFUMIylu+Q6tciw4r2aEVXRCuNqYaeZOSGCI0YMSn
-         l+PKXFbbXmAB6ZOS8B88GwzXf+LaPIh3YE0soNSBA8MTqdG6GD4XxKto5sdZnKdPubbR
-         Lh055M/he0ThqO412pj92tZu3whvVkgVBsErseV65ZW3+vu+OZIJY9Uj6k8gl9ClSMk5
-         PgKkeBuZLTbAEozUq5NidA25QydM7B+bUHPwKWV7G+u/G/8NhES4Kqd4m8RFaVT6fuDn
-         aN5w==
-X-Gm-Message-State: AOAM5307qo6liv1J0YKn7YXqymlkPE2eZbSsxI7a7jICr5QSPfAHXmCH
-        hcIiDwbyJnNw3m43cA6i7BY=
-X-Google-Smtp-Source: ABdhPJz9RWNqG7kqo+L+MFtbo2hzekR4x6yLSqYQDRE2NFenzzMNtalvwVlrAFC3Z8cmn2EAqPWygQ==
-X-Received: by 2002:a17:90a:cc0f:: with SMTP id b15mr7949017pju.83.1594958336419;
-        Thu, 16 Jul 2020 20:58:56 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id v11sm6227907pgs.22.2020.07.16.20.58.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 20:58:55 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v2 6/6] tw68: use generic power management
-Date:   Fri, 17 Jul 2020 09:26:08 +0530
-Message-Id: <20200717035608.97254-7-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717035608.97254-1-vaibhavgupta40@gmail.com>
-References: <20200717035608.97254-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SzUcIHj1G4IHGMKYeYYU1OCDfXFqgR7DJ+soyCYtfRw=;
+        b=C7ejxVcXtNotgUdQIEzdcmIPnrIz7HGcbddN4Iw/KZCDUzegJmdJvTozIFPYr+IzO+
+         Qvistu21Nzvuv3ZuqJvA+nCQqMbsXozq2wwikMcY2fAbGzPL6Ez6I79VSrwr8OWUSNVl
+         wSXBy4My00SBIRaUwSn0za1Y0pbIqEJ4aRzSIuhHwBRRPsmLQonobPY3ioPYYeU4j/ce
+         1/tZ+G5bYd70y7OsS1FdOZDe2IJ8Bsl2VSl5lQisygiiGasHqKTGain4eKUlcg9F/2Js
+         n6QamFahv1iJ68vFvn11fWZyHftGZ8ezP47S9JxeLszNE2zuN1NXJDn/Lr2C/aANwZOJ
+         pw3A==
+X-Gm-Message-State: AOAM5336o+ggm9wplSvE/O3oU/LcohLEBFahtNHL/ef8je5ZCx7cjfuy
+        aQJzUR4RJUQa0Oex6FP759iypA==
+X-Google-Smtp-Source: ABdhPJyO6/RufqFu/qPL4dbdQxByfllRoEvhTfskX9CXW37bEP4ncIJb8PBn7psAWigr/9KcDK+2wA==
+X-Received: by 2002:a05:600c:4109:: with SMTP id j9mr6992647wmi.157.1594958252182;
+        Thu, 16 Jul 2020 20:57:32 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9880:a643:3e69:6393? ([2a01:e34:ed2f:f020:9880:a643:3e69:6393])
+        by smtp.googlemail.com with ESMTPSA id f14sm12543847wro.90.2020.07.16.20.57.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 20:57:31 -0700 (PDT)
+Subject: Re: [PATCH V2 2/2] arm64: imx: Select TPM driver by default
+To:     Anson Huang <Anson.Huang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, tglx@linutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+References: <1594178168-13007-1-git-send-email-Anson.Huang@nxp.com>
+ <1594178168-13007-2-git-send-email-Anson.Huang@nxp.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <84b4373a-3dea-5dd1-d661-1a66d1cf1da2@linaro.org>
+Date:   Fri, 17 Jul 2020 05:57:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <1594178168-13007-2-git-send-email-Anson.Huang@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With legacy PM, drivers themselves were responsible for managing the
-device's power states and takes care of register states.
+On 08/07/2020 05:16, Anson Huang wrote:
+> Select CLKSRC_IMX_TPM for ARCH_MXC by default.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> No change.
+> ---
+>  arch/arm64/Kconfig.platforms | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+> index 8dd05b2..c52b7a0 100644
+> --- a/arch/arm64/Kconfig.platforms
+> +++ b/arch/arm64/Kconfig.platforms
+> @@ -169,6 +169,7 @@ config ARCH_MXC
+>  	bool "ARMv8 based NXP i.MX SoC family"
+>  	select ARM64_ERRATUM_843419
+>  	select ARM64_ERRATUM_845719 if COMPAT
+> +	select CLKSRC_IMX_TPM
+>  	select IMX_GPCV2
+>  	select IMX_GPCV2_PM_DOMAINS
+>  	select PM
 
-After upgrading to the generic structure, PCI core will take care of
-required tasks and drivers should do only device-specific operations.
+Shall I take this patch also or just 1/2 ?
 
-The driver was invoking PCI helper functions like pci_save/restore_state()
-which is not recommended.
 
-Compile-Tested only.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/media/pci/tw68/tw68-core.c | 30 +++++++++++-------------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/media/pci/tw68/tw68-core.c b/drivers/media/pci/tw68/tw68-core.c
-index b45f3ffa3de5..065420b09250 100644
---- a/drivers/media/pci/tw68/tw68-core.c
-+++ b/drivers/media/pci/tw68/tw68-core.c
-@@ -359,10 +359,9 @@ static void tw68_finidev(struct pci_dev *pci_dev)
- 	v4l2_device_unregister(&dev->v4l2_dev);
- }
- 
--#ifdef CONFIG_PM
--
--static int tw68_suspend(struct pci_dev *pci_dev , pm_message_t state)
-+static int __maybe_unused tw68_suspend(struct device *dev_d)
- {
-+	struct pci_dev *pci_dev = to_pci_dev(dev_d);
- 	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
- 	struct tw68_dev *dev = container_of(v4l2_dev,
- 				struct tw68_dev, v4l2_dev);
-@@ -373,24 +372,19 @@ static int tw68_suspend(struct pci_dev *pci_dev , pm_message_t state)
- 
- 	synchronize_irq(pci_dev->irq);
- 
--	pci_save_state(pci_dev);
--	pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
- 	vb2_discard_done(&dev->vidq);
- 
- 	return 0;
- }
- 
--static int tw68_resume(struct pci_dev *pci_dev)
-+static int __maybe_unused tw68_resume(struct device *dev_d)
- {
--	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
-+	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev_d);
- 	struct tw68_dev *dev = container_of(v4l2_dev,
- 					    struct tw68_dev, v4l2_dev);
- 	struct tw68_buf *buf;
- 	unsigned long flags;
- 
--	pci_set_power_state(pci_dev, PCI_D0);
--	pci_restore_state(pci_dev);
--
- 	/* Do things that are done in tw68_initdev ,
- 		except of initializing memory structures.*/
- 
-@@ -408,19 +402,17 @@ static int tw68_resume(struct pci_dev *pci_dev)
- 
- 	return 0;
- }
--#endif
- 
- /* ----------------------------------------------------------- */
- 
-+static SIMPLE_DEV_PM_OPS(tw68_pm_ops, tw68_suspend, tw68_resume);
-+
- static struct pci_driver tw68_pci_driver = {
--	.name	  = "tw68",
--	.id_table = tw68_pci_tbl,
--	.probe	  = tw68_initdev,
--	.remove	  = tw68_finidev,
--#ifdef CONFIG_PM
--	.suspend  = tw68_suspend,
--	.resume   = tw68_resume
--#endif
-+	.name	   = "tw68",
-+	.id_table  = tw68_pci_tbl,
-+	.probe	   = tw68_initdev,
-+	.remove	   = tw68_finidev,
-+	.driver.pm = &tw68_pm_ops,
- };
- 
- module_pci_driver(tw68_pci_driver);
 -- 
-2.27.0
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
