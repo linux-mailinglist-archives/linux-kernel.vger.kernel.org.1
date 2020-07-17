@@ -2,83 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7186822423C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13245224251
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgGQRnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:43:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728030AbgGQRng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:43:36 -0400
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2A8A2173E;
-        Fri, 17 Jul 2020 17:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595007815;
-        bh=FlddXETDbcCI+jX+Y9DK4+rIepVuWv5hMCWZBOLVowY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=y5Pi2lIQnfdBOI//84bhdjQC3IY36B9tgfvuVgsGZFH1r7DPsQXC2SQz4ouUB9Ls2
-         xtaiOcZ2NF1EwIU/1DLWZrH854jy1zcG/o380BeunFx9u7Cu9OL/qVcg2nzb8gwBRv
-         laBOx6/Z5OWb/sdAmhjUYJ0Jx42F1aVVjhR+Pbqg=
-Received: by mail-oi1-f180.google.com with SMTP id r8so8658126oij.5;
-        Fri, 17 Jul 2020 10:43:35 -0700 (PDT)
-X-Gm-Message-State: AOAM530TMrPAeEJeJqnv2X2YoMe3YF8bbX47RDDj0Gv9VRjUAx1O6ArS
-        elCS83YHBz3/6MdJzuIvdqi85nEJL+jBqbBx9g==
-X-Google-Smtp-Source: ABdhPJxdEZTKZdDAtsUce5PttY07qOuwXdkHitKzJaeRFO0Ux7K7UV3QZV8Lp1Bc30tXd9ZMF4/9alh+Z0BcnZznP+o=
-X-Received: by 2002:aca:30d2:: with SMTP id w201mr8705283oiw.147.1595007815168;
- Fri, 17 Jul 2020 10:43:35 -0700 (PDT)
+        id S1728159AbgGQRoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:44:04 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:42415 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726786AbgGQRoC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 13:44:02 -0400
+Received: (qmail 1156982 invoked by uid 1000); 17 Jul 2020 13:44:00 -0400
+Date:   Fri, 17 Jul 2020 13:44:00 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, paulmck <paulmck@kernel.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
+Message-ID: <20200717174400.GA1156312@rowland.harvard.edu>
+References: <20200710015646.2020871-1-npiggin@gmail.com>
+ <1370747990.15974.1594915396143.JavaMail.zimbra@efficios.com>
+ <595582123.17106.1594925921537.JavaMail.zimbra@efficios.com>
+ <20200716212416.GA1126458@rowland.harvard.edu>
+ <1770378591.18523.1594993165391.JavaMail.zimbra@efficios.com>
+ <20200717145102.GC1147780@rowland.harvard.edu>
+ <1697220787.18880.1595000348405.JavaMail.zimbra@efficios.com>
+ <20200717161145.GA1150454@rowland.harvard.edu>
+ <12700909.18968.1595002969773.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-References: <20200702191322.2639681-1-helen.koike@collabora.com> <20200702191322.2639681-4-helen.koike@collabora.com>
-In-Reply-To: <20200702191322.2639681-4-helen.koike@collabora.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 17 Jul 2020 11:43:23 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLduaH=F0G8+15PM+1GGmKBjgn7ddP+__ACezLd+ivp5w@mail.gmail.com>
-Message-ID: <CAL_JsqLduaH=F0G8+15PM+1GGmKBjgn7ddP+__ACezLd+ivp5w@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] media: staging: dt-bindings: rkisp1: re-order properties
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     devicetree@vger.kernel.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
-        Johan Jonker <jbx6244@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12700909.18968.1595002969773.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 1:13 PM Helen Koike <helen.koike@collabora.com> wrote:
->
-> Organize properties order in dt-binbings to move it out of staging.
+On Fri, Jul 17, 2020 at 12:22:49PM -0400, Mathieu Desnoyers wrote:
+> ----- On Jul 17, 2020, at 12:11 PM, Alan Stern stern@rowland.harvard.edu wrote:
+> 
+> >> > I agree with Nick: A memory barrier is needed somewhere between the
+> >> > assignment at 6 and the return to user mode at 8.  Otherwise you end up
+> >> > with the Store Buffer pattern having a memory barrier on only one side,
+> >> > and it is well known that this arrangement does not guarantee any
+> >> > ordering.
+> >> 
+> >> Yes, I see this now. I'm still trying to wrap my head around why the memory
+> >> barrier at the end of membarrier() needs to be paired with a scheduler
+> >> barrier though.
+> > 
+> > The memory barrier at the end of membarrier() on CPU0 is necessary in
+> > order to enforce the guarantee that any writes occurring on CPU1 before
+> > the membarrier() is executed will be visible to any code executing on
+> > CPU0 after the membarrier().  Ignoring the kthread issue, we can have:
+> > 
+> >	CPU0			CPU1
+> >				x = 1
+> >				barrier()
+> >				y = 1
+> >	r2 = y
+> >	membarrier():
+> >	  a: smp_mb()
+> >	  b: send IPI		IPI-induced mb
+> >	  c: smp_mb()
+> >	r1 = x
+> > 
+> > The writes to x and y are unordered by the hardware, so it's possible to
+> > have r2 = 1 even though the write to x doesn't execute until b.  If the
+> > memory barrier at c is omitted then "r1 = x" can be reordered before b
+> > (although not before a), so we get r1 = 0.  This violates the guarantee
+> > that membarrier() is supposed to provide.
+> > 
+> > The timing of the memory barrier at c has to ensure that it executes
+> > after the IPI-induced memory barrier on CPU1.  If it happened before
+> > then we could still end up with r1 = 0.  That's why the pairing matters.
+> > 
+> > I hope this helps your head get properly wrapped.  :-)
+> 
+> It does help a bit! ;-)
+> 
+> This explains this part of the comment near the smp_mb at the end of membarrier:
+> 
+>          * Memory barrier on the caller thread _after_ we finished
+>          * waiting for the last IPI. [...]
+> 
+> However, it does not explain why it needs to be paired with a barrier in the
+> scheduler, clearly for the case where the IPI is skipped. I wonder whether this part
+> of the comment is factually correct:
+> 
+>          * [...] Matches memory barriers around rq->curr modification in scheduler.
 
-typo
+The reasoning is pretty much the same as above:
 
->
-> On top: compatible, reg and interrupts.
-> Then alphabetical order, then properties starting with '#'.
->
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->
-> ---
->
-> V2:
-> - this is a new patch in the series
-> ---
->  .../bindings/media/rockchip-isp1.yaml         | 32 +++++++++----------
->  1 file changed, 16 insertions(+), 16 deletions(-)
+	CPU0			CPU1
+				x = 1
+				barrier()
+				y = 1
+	r2 = y
+	membarrier():
+	  a: smp_mb()
+				switch to kthread (includes mb)
+	  b: read rq->curr == kthread
+				switch to user (includes mb)
+	  c: smp_mb()
+	r1 = x
 
-Acked-by: Rob Herring <robh@kernel.org>
+Once again, it is possible that x = 1 doesn't become visible to CPU0 
+until shortly before b.  But if c is omitted then "r1 = x" can be 
+reordered before b (to any time after a), so we can have r1 = 0.
+
+Here the timing requirement is that c executes after the first memory 
+barrier on CPU1 -- which is one of the ones around the rq->curr 
+modification.  (In fact, in this scenario CPU1's switch back to the user 
+process is irrelevant.)
+
+Alan Stern
