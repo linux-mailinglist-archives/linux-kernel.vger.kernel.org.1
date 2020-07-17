@@ -2,252 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFED22365E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D0B223694
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgGQH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:59:34 -0400
-Received: from mail-eopbgr70082.outbound.protection.outlook.com ([40.107.7.82]:37123
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1728346AbgGQIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:06:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8312 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726105AbgGQH7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:59:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hjwK6ihm6YK1QiRtTdMV2UYu4ctVtmpAkvtysJk3HQA=;
- b=VdqgXlIRrQunEIjTlvISFr9B5st4Ql8m+BF+TFsSTMuJEIA39XNteUc9FK1dDN655k+pPvaCG6R965xm0Sx2uCfEn9z6oV1xxAZlxjlRWAw9B0N5ggAigkxhL9U5JXqHMZFakFu8hwOeB454GCtGFlHgPzV9KEagn0bYVPgB9UM=
-Received: from AM5PR0101CA0007.eurprd01.prod.exchangelabs.com
- (2603:10a6:206:16::20) by VI1PR08MB3440.eurprd08.prod.outlook.com
- (2603:10a6:803:7c::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Fri, 17 Jul
- 2020 07:59:25 +0000
-Received: from AM5EUR03FT050.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:206:16:cafe::29) by AM5PR0101CA0007.outlook.office365.com
- (2603:10a6:206:16::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend
- Transport; Fri, 17 Jul 2020 07:59:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=bestguesspass
- action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM5EUR03FT050.mail.protection.outlook.com (10.152.17.47) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3195.18 via Frontend Transport; Fri, 17 Jul 2020 07:59:25 +0000
-Received: ("Tessian outbound 73b502bf693a:v62"); Fri, 17 Jul 2020 07:59:25 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 1b03c4195bc9e4d5
-X-CR-MTA-TID: 64aa7808
-Received: from 21672d42ed2f.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 98943E94-C0B2-4F88-874C-5D252BFE6894.1;
-        Fri, 17 Jul 2020 07:59:19 +0000
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 21672d42ed2f.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Fri, 17 Jul 2020 07:59:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iU9L+XIZMRGX0tyKqSzftN5B8D+vwscwVWO9NUmI1X3QNOWWBWtaU3isVxSAuCZZvEU/ov7vVmEalU9dhqfUA6ZWKXNbTL++pM+BGnOMjGzo1BgHBPOZQ1BUfsl+AUCd+c3triCIZouOnUjULnnpb3TnhB0QqgNc/oWKnM2p3LxERFJ2g/WAP4xVqzVMBOvtAeke5FURvXz7+h2imRUyUUGNn4YoddIJJKLlWOC7DlTDdq1Dbgyt+PrMWHoo+SdjrJ5/Tv64LV2j1nZJte8W5NdMjAzwBNBipN0Cn9od52luUSIocEmeFKenZkrJ7Iio/fFha2XXdi/aKyHWfci4/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hjwK6ihm6YK1QiRtTdMV2UYu4ctVtmpAkvtysJk3HQA=;
- b=DQHQwNNGy9SYSiflQqU3XGhGI7U5cuwDUj/PaVoLscNpDqLv8Yxuv4jscU57I5h29gQzoOLSruLi3d0RFTFypSf7HOjYnigrGF9Q9eKPLCYTXc4iZtGgDNt31eUpnbM2qcodxfdxkSLWMhh4rb4ECLzSQMK0qxVp70PeAobYENK8WljgZXt2cS3RiQ40K2gDzQOuAdPZGCyjDkuAC6Zr+IrKVfSsF+/QZ30/YpYNBjhlusO8mrDD23hUyTFsUugYDygN/HJ6VlIqq2nt+QXtbqcMN9MSIYH5r6JkHNfh0eJnHIRfD03w4vgDx1HtvqnBi35Eh9AGt8ASYTTsv6yM4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hjwK6ihm6YK1QiRtTdMV2UYu4ctVtmpAkvtysJk3HQA=;
- b=VdqgXlIRrQunEIjTlvISFr9B5st4Ql8m+BF+TFsSTMuJEIA39XNteUc9FK1dDN655k+pPvaCG6R965xm0Sx2uCfEn9z6oV1xxAZlxjlRWAw9B0N5ggAigkxhL9U5JXqHMZFakFu8hwOeB454GCtGFlHgPzV9KEagn0bYVPgB9UM=
-Authentication-Results-Original: ffwll.ch; dkim=none (message not signed)
- header.d=none;ffwll.ch; dmarc=none action=none header.from=arm.com;
-Received: from DB6PR0801MB1719.eurprd08.prod.outlook.com (2603:10a6:4:3a::18)
- by DB6PR0802MB2231.eurprd08.prod.outlook.com (2603:10a6:4:84::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Fri, 17 Jul
- 2020 07:59:17 +0000
-Received: from DB6PR0801MB1719.eurprd08.prod.outlook.com
- ([fe80::7d48:27e3:a154:17ef]) by DB6PR0801MB1719.eurprd08.prod.outlook.com
- ([fe80::7d48:27e3:a154:17ef%12]) with mapi id 15.20.3174.027; Fri, 17 Jul
- 2020 07:59:17 +0000
-Date:   Fri, 17 Jul 2020 15:59:11 +0800
-From:   "james qian wang (Arm Technology China)" <james.qian.wang@arm.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Mihail Atanassov <mihail.atanassov@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
-Subject: Re: [PATCH -next] drm/komeda: Convert to DEFINE_SHOW_ATTRIBUTE
-Message-ID: <20200717075911.GA79475@jamwan02-TSP300>
-References: <20200716090333.13334-1-miaoqinglang@huawei.com>
- <20200717064017.GA76612@jamwan02-TSP300>
- <CAKMK7uEpmhKok9Q3Rrg0v=1p7pv-wpV0Y3-k9GVav+Ad5Z4AkQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEpmhKok9Q3Rrg0v=1p7pv-wpV0Y3-k9GVav+Ad5Z4AkQ@mail.gmail.com>
-X-ClientProxiedBy: SG2PR06CA0126.apcprd06.prod.outlook.com
- (2603:1096:1:1d::28) To DB6PR0801MB1719.eurprd08.prod.outlook.com
- (2603:10a6:4:3a::18)
+        id S1726198AbgGQIGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:06:07 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DD773C5387197067B19F;
+        Fri, 17 Jul 2020 16:06:04 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Jul 2020 16:05:56 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <guohanjun@huawei.com>, <wangxiongfeng2@huawei.com>
+Subject: [PATCH] PCI/ASPM: add missing newline when printing parameter 'policy' by sysfs
+Date:   Fri, 17 Jul 2020 15:59:25 +0800
+Message-ID: <1594972765-10404-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (203.126.0.113) by SG2PR06CA0126.apcprd06.prod.outlook.com (2603:1096:1:1d::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Fri, 17 Jul 2020 07:59:16 +0000
-X-Originating-IP: [203.126.0.113]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e31e4cd9-85c5-4fae-9e97-08d82a2752db
-X-MS-TrafficTypeDiagnostic: DB6PR0802MB2231:|VI1PR08MB3440:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR08MB3440A0ECAE6678866032CD15B37C0@VI1PR08MB3440.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: 4YZqzeUG/5dv3AcnVECN99CY5FcFVrwRNd8xpGvF8PhXMoINZubNiTuAj3ekwCPpWv9biBQr2eecrivIHtoDQGn22NlZPktyvhsD4yUPPfGP2it930XhfxNMeEZpEakoJzY6pic9s1sgQHkYP8sgyzSRziMCEjyGJjgen5oJ/BrylEJLcjELk5MjqE/T54+dNNjdfJW/w2zBClQwhEwU5DiHfHcvYgARIOkL4DKUFa4A71ph9jDAsBGBpPohrr/Zdwq6OAE6Y+usWSU5bemROQktBCzCwEAfMJOwOfpIIMCz8UvF4CxJi0zNtzBXm1WtBOCDgYrdA7FcJd6jhr5faR3YnSPhCYA0E1DQ1iyEZczTv2bq/pLcqDHZYj8PTaZ/T39qap5O+deQ/90RSlg9sg==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0801MB1719.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(39860400002)(396003)(376002)(346002)(366004)(136003)(52116002)(6916009)(53546011)(478600001)(6666004)(9686003)(1076003)(316002)(8936002)(33716001)(26005)(5660300002)(6486002)(86362001)(66556008)(8676002)(6496006)(4326008)(956004)(54906003)(2906002)(83380400001)(66946007)(16526019)(966005)(33656002)(186003)(66476007)(83080400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: IoXICDR1K4KkujVBN39+18NJVzeyoUHNANVfvIGZAnm8WsQazLmG4GyRZ7Swgz28UDtHmgD80fVw1vvk14L8TbU2JP25j3gdKV3x43cxABF1LF35c6gVnkBQjFYZWOLFI9ZXCnPfO3sPYCvHuMPjgACh5cNYTiglMY94L/itWDHTBLrlp1cYrdQhcgG519mEDe0h5irpav3e2Fc07hLpJnnczHIoaWp+H9eQYzGAUgKLMZ3nFwxIcfpbU4Iv/r9PIlrv+1G+paXU+4NMZD9qF4f1qJibW73VRf7mLEA3WOA5DBuypaK0UaOXRYSSDqRWeDI+2VanE6S72V+8pgJfKl6FSLtMB6Ghx7DJiLVftnudNeK87tH0zsEO/PD4Bcs2ddYbXtyQmMSALifw4ZgUt24CmUCp52J8Hzs2foBnU5wK6/Xbxb4QXKQSMxK6d6bEDSWZMe9XTQmE6K1lX+X71cK5WcVHe3xlGbuNBRS2TjY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0802MB2231
-Original-Authentication-Results: ffwll.ch; dkim=none (message not signed)
- header.d=none;ffwll.ch; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT050.eop-EUR03.prod.protection.outlook.com
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(396003)(39860400002)(136003)(346002)(376002)(46966005)(2906002)(8936002)(86362001)(47076004)(966005)(82740400003)(478600001)(6666004)(4326008)(33716001)(54906003)(6496006)(6862004)(956004)(336012)(186003)(16526019)(6486002)(53546011)(1076003)(81166007)(70586007)(70206006)(8676002)(26005)(36906005)(316002)(9686003)(5660300002)(82310400002)(83080400001)(33656002)(356005)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Office365-Filtering-Correlation-Id-Prvs: fde948f9-fc8c-4d0f-2d7b-08d82a274dcf
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vul0clbtRMrJVZJqzby225KJInQXF+rOWrGFuj3v331Z2kloSOgffnrZDswE/1J2bTRUoNbObcb9OrM1CiN8XA0R05pO+xkBgj2D6hRmMC05DtDGKMMUM3LKLWEXvNjdNYjxPBwdb7VFfMudKMClwMNIys+3ELKHpxAgPQkldITanU0bWs9EshaBD/mq5EKETVV3wm1rQuBFufsH25wSmyVFdyJNOr4FLJhe/ThtID0ubF6nq7jYbQFhpO5YW5MUbAPF1W2jSrs7TCvZM/GgibvIB0zJXJCzpH0aW9fn26U8HwHKAsTkZEPde+hlcMSpjvEyDWJG7uBNZcKD43Vg/4aC25oZDl6U1WVZhhmnINsk5tlfPTFmBWVznb6zEmYfquhYKZJkW+JKnluJ8yLRde0BIJ9DggU+fLuaueViP0/rRCDfVbC5pRsVjBDQ/DVT+2LV0M5q7ZGLZRGM3BdaSkQaZ1RRorNzw8yZx7s0GCM=
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2020 07:59:25.4521
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e31e4cd9-85c5-4fae-9e97-08d82a2752db
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT050.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR08MB3440
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 09:06:57AM +0200, Daniel Vetter wrote:
-> On Fri, Jul 17, 2020 at 8:40 AM james qian wang (Arm Technology China)
-> <james.qian.wang@arm.com> wrote:
-> >
-> > On Thu, Jul 16, 2020 at 05:03:33PM +0800, Qinglang Miao wrote:
-> > > From: Liu Shixin <liushixin2@huawei.com>
-> > >
-> > > Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> > >
-> > > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> > > ---
-> > >  drivers/gpu/drm/arm/display/komeda/komeda_dev.c | 13 +------------
-> > >  1 file changed, 1 insertion(+), 12 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-> > > index 0246b2e94..4a10e6b9e 100644
-> > > --- a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-> > > +++ b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-> > > @@ -41,18 +41,7 @@ static int komeda_register_show(struct seq_file *sf, void *x)
-> > >       return 0;
-> > >  }
-> > >
-> > > -static int komeda_register_open(struct inode *inode, struct file *filp)
-> > > -{
-> > > -     return single_open(filp, komeda_register_show, inode->i_private);
-> > > -}
-> > > -
-> > > -static const struct file_operations komeda_register_fops = {
-> > > -     .owner          = THIS_MODULE,
-> > > -     .open           = komeda_register_open,
-> > > -     .read_iter              = seq_read_iter,
+When I cat ASPM parameter 'policy' by sysfs, it displays as follows.
+It's better to add a newline for easy reading.
 
--	.read		= seq_read,
-+	.read_iter		= seq_read_iter,
+[root@localhost ~]# cat /sys/module/pcie_aspm/parameters/policy
+[default] performance powersave powersupersave [root@localhost ~]#
 
-> > > -     .llseek         = seq_lseek,
-> > > -     .release        = single_release,
-> > > -};
-> > > +DEFINE_SHOW_ATTRIBUTE(komeda_register);
-> > >
-> >
-> > Hi Shixin & Qinglang
-> >
-> > Thanks for your patch.
-> >
-> > Reviewed-by: James Qian Wang <james.qian.wang@arm.com>
-> >
-> > Since your patch is not for drm-misc-next, so seems better
-> > to leave it to you to merge it. :)
-> 
-> I do think it's for drm-misc-next, what other tree would it be for?
-> Some people put -next in their patch tag to differentiate from -fixes,
-> so maintainers know what to do with the patch. It's also not part of a
-> series, hence I think this is on you to apply it.
-> 
-> Cheers, Daniel
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+---
+ drivers/pci/pcie/aspm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hi Daniel:
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index b17e5ff..253c30c 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -1182,6 +1182,7 @@ static int pcie_aspm_get_policy(char *buffer, const struct kernel_param *kp)
+ 			cnt += sprintf(buffer + cnt, "[%s] ", policy_str[i]);
+ 		else
+ 			cnt += sprintf(buffer + cnt, "%s ", policy_str[i]);
++	cnt += sprintf(buffer + cnt, "\n");
+ 	return cnt;
+ }
+ 
+-- 
+1.7.12.4
 
-I tried to apply this patch to drm-misc-next, but failed, and found
-this patch is actually based on linux-next, and the code base of
-linux-next is a little different with our drm-misc-next.
-and one of the difference is linux-next has a patch (call it patch-A):
-
-seq_file: switch over direct seq_read method calls to seq_read_iter
-https://lkml.org/lkml/2020/7/7/1267
-
-which changed code like below:
-
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-index 1d767473ba8a06..0246b2e94d8cbd 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-@@ -49,7 +49,7 @@ static int komeda_register_open(struct inode *inode, struct file *filp)
- static const struct file_operations komeda_register_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= komeda_register_open,
--	.read		= seq_read,
-+	.read_iter		= seq_read_iter,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
- };
-
-And these code will be deleted by this patch, if we merge this patch into
-drm-misc-next firstly before the patch-A, that may import a conflict when
-we merge our misc into upstreams.
-
-if we want it to be merged into drm-misc, I think we'd better to wait the
-upstream (the patch-A) has been synced back to drm-misc.
-
-And what's your opinion ?
-
-Thanks
-James
-
-> >
-> > Thanks
-> > James
-> >
-> > >  #ifdef CONFIG_DEBUG_FS
-> > >  static void komeda_debugfs_init(struct komeda_dev *mdev)
-> > > --
-> > > 2.17.1
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
-> 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
