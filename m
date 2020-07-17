@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F178422386D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D02223867
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgGQJb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:31:28 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:35474 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgGQJb1 (ORCPT
+        id S1726401AbgGQJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgGQJa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:31:27 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U2zo7Ok_1594978280;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2zo7Ok_1594978280)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Jul 2020 17:31:21 +0800
-Subject: Re: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
- split_huge_page()
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name
-Cc:     =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
-Date:   Fri, 17 Jul 2020 17:30:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Fri, 17 Jul 2020 05:30:59 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ED0C061755;
+        Fri, 17 Jul 2020 02:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8JE8Gvv4RB/gs/MAI8dbxdwbA+OZGm7MQq6LvUxR/fo=; b=hBV4cO6S9PgOZBlKCRjzAJL6no
+        Rw3QRuDlekzAwQ0JYQs5UINo17RGnHq2jRutA4fH/zxABb1BgsB+fCG80CtP39CHIN8CxAK3aLfje
+        Jq2TleBWWjxtrLhGevYeWUNSHyYLsQux8xKQ07MRbf3y0hXK87ujztGJ6Fru6vZHIKqGXKI/GYvQE
+        KulTU8LViEwzU7/jwhmNdZ8w+NcNaNvJsPrY9OmksMfz7yVDxHl+GRUoVJNqI6qXeL1QWF4MNCosl
+        RF63zB0pzpZ0dBXeCyXrSCuPZYugS/oNE/PbL4hiazMYViBVB5hFMqhlCt45WvfNb/rZX1ToQC1ks
+        tEQpBQ5A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jwMhX-0006wo-AQ; Fri, 17 Jul 2020 09:30:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 624C43003D8;
+        Fri, 17 Jul 2020 11:30:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4B38729CF6F54; Fri, 17 Jul 2020 11:30:41 +0200 (CEST)
+Date:   Fri, 17 Jul 2020 11:30:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     ira.weiny@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across
+ exceptions
+Message-ID: <20200717093041.GF10769@hirez.programming.kicks-ass.net>
+References: <20200717072056.73134-1-ira.weiny@intel.com>
+ <20200717072056.73134-18-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717072056.73134-18-ira.weiny@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 17, 2020 at 12:20:56AM -0700, ira.weiny@intel.com wrote:
+> +static void noinstr idt_save_pkrs(idtentry_state_t state)
 
-Add a VM_WARN_ON for tracking. and updated comments for the code.
-
-Thanks
-
----
-From f1381a1547625a6521777bf9235823d8fbd00dac Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Fri, 10 Jul 2020 16:54:37 +0800
-Subject: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
- split_huge_page()
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Split_huge_page() must start with PageLRU(head), and we are holding the
-lru_lock here. If the head was cleared lru bit unexpected, tracking it.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Mika Penttilä <mika.penttila@nextfour.com>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/huge_memory.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index d866b6e43434..28538444197b 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2348,15 +2348,19 @@ static void lru_add_page_tail(struct page *head, struct page *page_tail,
- 	VM_BUG_ON_PAGE(PageLRU(page_tail), head);
- 	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
- 
--	if (!list)
--		SetPageLRU(page_tail);
--
--	if (likely(PageLRU(head)))
--		list_add_tail(&page_tail->lru, &head->lru);
--	else if (list) {
-+	if (list) {
- 		/* page reclaim is reclaiming a huge page */
- 		get_page(page_tail);
- 		list_add_tail(&page_tail->lru, list);
-+	} else {
-+		/*
-+		 * Split start from PageLRU(head), and we are holding the
-+		 * lru_lock.
-+		 * Do a warning if the head's lru bit was cleared unexpected.
-+		 */
-+		VM_WARN_ON(!PageLRU(head));
-+		SetPageLRU(page_tail);
-+		list_add_tail(&page_tail->lru, &head->lru);
- 	}
- }
- 
--- 
-1.8.3.1
+noinstr goes in the same place you would normally put inline, that's
+before the return type, not after it.
 
