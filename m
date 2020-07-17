@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147B0223636
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A73223630
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgGQHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
+        id S1728075AbgGQHtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgGQHvR (ORCPT
+        with ESMTP id S1726105AbgGQHtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:51:17 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB43C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:17 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b9so5114936plx.6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nQMEtakU6xS8LBnA2yMRjtPGhopel0Omr+ZNCJgv3hU=;
-        b=M06rkvxqty8dn8IXzeesiv6KfkaAFIVggP51R9rAl8zPEtCRnkT+scKW4YTcilLGZX
-         /JZA+UUB/EqcnenwrIW8OeLn5QQtZk21VoSTL233t/D1lktszA69GRaJuwReqckn7FBF
-         5VssdRukZwyh2IVo+pR84jmH7uCEHqugT61PPrgzDWj7MPy9BrAMbFq8KpJcG+zOoz8c
-         vGBr2sQG2IxRTcFD/IhZrU8N+5PyoFSkjM9VXYNoJOLZ23hgZtk5vk9WHcT3vzggaXLM
-         KAc+Rso01VAjwlVkairTfNxO6gn2LxW384A2B/RQbcrzf61FHHNHJE66aMI8IdreSUnC
-         fsqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nQMEtakU6xS8LBnA2yMRjtPGhopel0Omr+ZNCJgv3hU=;
-        b=Kp39Ge04XsEzhNQI15RV1uYWdbixHLcC9dYL0PuKZmGtHJo+HDbxW8bMbDDaB8dVk9
-         5yHfXw0AtayFkz9QFuruvono+kbLsOoROy/kLdSmVhyHik/T3OuClnbRXjkRMPgYvkE/
-         XtrnkfOf7mNtHTOcp47pdlQtsVub5qyL7DiTJsI2E1SIaMhDoYujOLA/1d+I0kHfj5fX
-         zoU7prhWJ/QOV4Cumx8a1Y/PuRD75JT2/irF4Hi+MGwaoZBgpngSo96Z7b/hXd4IS8Nu
-         mlzdhABBbgye5YtA2TGoTjevgP0YWmu/YT1fvPYRil1/5V/QOT8cpGflkL44UDehajvz
-         WD8g==
-X-Gm-Message-State: AOAM531XwnrAmx8GklpuaBdc8zVvQcxDw6M7chnl3UU24H6IO4rVZd9/
-        BmHF7jbb83FyRZlzqtNm9YI=
-X-Google-Smtp-Source: ABdhPJy3FJKJvWW6pKyEqr3V2z6yNkYiEEfQX+1qxqgCABkkYLm6lyEyStcfQko+OoysKi3fGgdXKg==
-X-Received: by 2002:a17:90a:ac14:: with SMTP id o20mr8782433pjq.185.1594972277266;
-        Fri, 17 Jul 2020 00:51:17 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id s68sm1924332pjb.38.2020.07.17.00.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 00:51:16 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1 0/3] char: use generic power management
-Date:   Fri, 17 Jul 2020 13:19:34 +0530
-Message-Id: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 17 Jul 2020 03:49:46 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBAAC061755;
+        Fri, 17 Jul 2020 00:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=GxSH3WgRcAs4BQXGeagIES8YCdrXCuFUlM7hGjVh35Y=; b=pCij9v6b1c9DzBtrS1BYXlN1ZU
+        FbJTzahWrmUxhdKMMORQgOqP5gPLHXFbskUzmny1M2ZkQhnVdQ+w6WyCcIB7np1FHqGFAOvCupBTj
+        RfD0Q4hCeQybP0qlBa5zVmma+dBvjeesHZoiuzQtITsBNEgSBFhWnTTyif4c26CFzlMoKCciEF46G
+        3zc5rUO9YUl80ii83Hhcvjul89S4q/zalLNGiTDAG+Bedswam5XVk1AW5D/hsIJFBj0m5ZhMHVhCm
+        dAvUMV82Li3yjSP1F2MG0qieSY1coQ5SwVzFBNYthOYna6xj8VElsZS9VdFIHwKQOMTUnU2AMsXbM
+        8ixXfToA==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1jwL7f-00033F-1W; Fri, 17 Jul 2020 08:49:35 +0100
+Date:   Fri, 17 Jul 2020 08:49:35 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Matthew Hagan <mnhagan88@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        John Crispin <john@phrozen.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: net: dsa: qca8k: Add PORT0_PAD_CTRL
+ properties
+Message-ID: <20200717074934.GH23489@earth.li>
+References: <2e1776f997441792a44cd35a16f1e69f848816ce.1594668793.git.mnhagan88@gmail.com>
+ <ea0a35ed686e6dace77e25cb70a8f39fdd1ea8ad.1594668793.git.mnhagan88@gmail.com>
+ <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200716223822.yptldqqn36fbp2i7@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716223822.yptldqqn36fbp2i7@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux Kernel Mentee: Remove Legacy Power Management.
+On Fri, Jul 17, 2020 at 01:38:22AM +0300, Vladimir Oltean wrote:
+> On Thu, Jul 16, 2020 at 03:09:25PM -0700, Jakub Kicinski wrote:
+> > On Mon, 13 Jul 2020 21:50:26 +0100 Matthew Hagan wrote:
+> > > +- qca,sgmii-rxclk-falling-edge:	If present, sets receive clock phase to
+> > > +				falling edge.
+> > > +- qca,sgmii-txclk-falling-edge:	If present, sets transmit clock phase to
+> > > +				falling edge.
+> > 
+> > These are not something that other vendors may implement and therefore
+> > something we may want to make generic? Andrew?
+> > 
+> 
+> It was asked before whether this device uses source-synchronous clock
+> for SGMII or if it recovers the clock from the data stream. Just "pass"
+> was given for a response.
+> 
+> https://patchwork.ozlabs.org/project/netdev/patch/8ddd76e484e1bedd12c87ea0810826b60e004a65.1591380105.git.noodles@earth.li/
+> 
+> One can, in principle, tell easily by examining schematics. If the SGMII
+> is only connected via RX_P, RX_N, TX_P, TX_N (and optionally there might
+> be external reference clocks for the SERDES lanes, but these are not
+> part of the data connection itself), then the clock is recovered from
+> the serial data stream, and we have no idea what "SGMII delays" are.
+> 
+> If the schematic shows 2 extra clock signals, one in each transmit
+> direction, then this is, in Russell King's words, "a new world of RGMII
+> delay pain but for SGMII". In principle I would fully expect clock skews
+> to be necessary for any high-speed protocol with source-synchronous
+> clocking. The problem, really, is that we aren't ready to deal with this
+> properly. We aren't distinguishing "SGMII with clock" from "SGMII
+> without clock" in any way. We have no idea who else is using such a
+> thing. Depending on the magnitude of this new world, it may be wise to
+> let these bindings go in as-is, or do something more kernel-wide...
 
-The purpose of this patch series is to upgrade power management in char
-drivers. This has been done by upgrading .suspend() and .resume() callbacks.
+I don't have the schematic for the device I've been working with, but
+the switch data sheet just shows 2 differential pairs (input/output) for
+the SerDes Interface (whereas the RGMII interfaces *are* listed with
+their clocks).
 
-The upgrade makes sure that the involvement of PCI Core does not change the
-order of operations executed in a driver. Thus, does not change its behavior.
-
-In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
-helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
-pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
-their job.
-
-The conversion requires the removal of those function calls, change the
-callbacks' definition accordingly and make use of dev_pm_ops structure.
-
-All patches are compile-tested only.
-
-Test tools:
-    - Compiler: gcc (GCC) 10.1.0
-    - allmodconfig build: make -j$(nproc) W=1 all
-
-Vaibhav Gupta (3):
-  amd64-agp: use generic power management
-  sis-agp: use generic power management
-  via-agp: use generic power management
-
- drivers/char/agp/amd64-agp.c | 24 ++++++------------------
- drivers/char/agp/sis-agp.c   | 25 ++++++-------------------
- drivers/char/agp/via-agp.c   | 25 +++++--------------------
- 3 files changed, 17 insertions(+), 57 deletions(-)
+J.
 
 -- 
-2.27.0
-
+I just Fedexed my soul to hell. I'm *real* clever.
