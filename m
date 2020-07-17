@@ -2,112 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD2C223DBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD80F223DB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgGQOH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:07:29 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11830 "EHLO mga01.intel.com"
+        id S1727935AbgGQOGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727961AbgGQOHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:07:24 -0400
-IronPort-SDR: JXa0Zf7DPyTaEvjTPKlQQMKnzSsG0+f6BXaB9zq+e6WY5HCfOyQc7XsCaR3FUZE5wUrZCQOo4b
- /OHPDLX9bU9w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722781"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="167722781"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:23 -0700
-IronPort-SDR: CnrH57JSPy3UAae7GASgR1uVi/KVDmu8pqQUIk/9uDKnNMW0XJMI1hPlsuiJnnm1EgAxnDNFKI
- mP4lGuwaELsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="460856475"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:23 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V6 03/14] perf/x86/intel: Introduce the fourth fixed counter
-Date:   Fri, 17 Jul 2020 07:05:43 -0700
-Message-Id: <20200717140554.22863-4-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+        id S1726829AbgGQOGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:06:04 -0400
+Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DC9522BEB;
+        Fri, 17 Jul 2020 14:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594994763;
+        bh=Kn5+0H4zt1qLLnHxyowSOCVs51Y7nDbCOEsyxfENm34=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=A3LXclembE3geOajgRPe2bgJ1vI7KdFZitOa50VzU1vBnDeXxn+DUYuGoegrjfFvJ
+         MkyDrNWkNNcc/DnUFVfGHtd1LFpN6cVyBS3jZA48tTSzxQ8Iw2makMwgtenHE5Y4PP
+         BQt5yfZoS0nAi7TQPwuYkCTbi+G/LEOODMaBHYQs=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [PATCH 04/12] timer: Move trigger_dyntick_cpu() to enqueue_timer()
+Date:   Fri, 17 Jul 2020 16:05:43 +0200
+Message-Id: <20200717140551.29076-5-frederic@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200717140551.29076-1-frederic@kernel.org>
+References: <20200717140551.29076-1-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Consolidate the code by calling trigger_dyntick_cpu() from
+enqueue_timer() instead of calling it from all its callers.
 
-The fourth fixed counter, TOPDOWN.SLOTS, is introduced in Ice Lake to
-measure the level 1 TopDown events.
-
-Add MSR address and macros for the new fixed counter, which will be used
-in a later patch.
-
-Add comments to explain the event encoding rules for the fixed counters.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Juri Lelli <juri.lelli@redhat.com>
 ---
- arch/x86/include/asm/perf_event.h | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ kernel/time/timer.c | 61 +++++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 36 deletions(-)
 
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index fd3eba65337f..bac6c30c98cb 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -197,12 +197,24 @@ struct x86_pmu_capability {
-  */
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index a7a3cf737411..2af08a169564 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -533,30 +533,6 @@ static int calc_wheel_index(unsigned long expires, unsigned long clk,
+ 	return idx;
+ }
  
- /*
-- * All 3 fixed-mode PMCs are configured via this single MSR:
-+ * All the fixed-mode PMCs are configured via this single MSR:
-  */
- #define MSR_ARCH_PERFMON_FIXED_CTR_CTRL	0x38d
+-/*
+- * Enqueue the timer into the hash bucket, mark it pending in
+- * the bitmap and store the index in the timer flags.
+- */
+-static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+-			  unsigned int idx)
+-{
+-	hlist_add_head(&timer->entry, base->vectors + idx);
+-	__set_bit(idx, base->pending_map);
+-	timer_set_idx(timer, idx);
+-
+-	trace_timer_start(timer, timer->expires, timer->flags);
+-}
+-
+-static void
+-__internal_add_timer(struct timer_base *base, struct timer_list *timer,
+-		     unsigned long *bucket_expiry)
+-{
+-	unsigned int idx;
+-
+-	idx = calc_wheel_index(timer->expires, base->clk, bucket_expiry);
+-	enqueue_timer(base, timer, idx);
+-}
+-
+ static void
+ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
+ 		    unsigned long bucket_expiry)
+@@ -598,15 +574,31 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
+ 	wake_up_nohz_cpu(base->cpu);
+ }
  
- /*
-- * The counts are available in three separate MSRs:
-+ * There is no event-code assigned to the fixed-mode PMCs.
-+ *
-+ * For a fixed-mode PMC, which has an equivalent event on a general-purpose
-+ * PMC, the event-code of the equivalent event is used for the fixed-mode PMC,
-+ * e.g., Instr_Retired.Any and CPU_CLK_Unhalted.Core.
-+ *
-+ * For a fixed-mode PMC, which doesn't have an equivalent event, a
-+ * pseudo-encoding is used, e.g., CPU_CLK_Unhalted.Ref and TOPDOWN.SLOTS.
-+ * The pseudo event-code for a fixed-mode PMC must be 0x00.
-+ * The pseudo umask-code is 0x0X. The X indicates the index of the fixed
-+ * counter.
-+ *
-+ * The counts are available in separate MSRs:
-  */
+-static void
+-internal_add_timer(struct timer_base *base, struct timer_list *timer)
++/*
++ * Enqueue the timer into the hash bucket, mark it pending in
++ * the bitmap, store the index in the timer flags then wake up
++ * the target CPU if needed.
++ */
++static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
++			  unsigned int idx, unsigned long bucket_expiry)
+ {
+-	unsigned long bucket_expiry;
++	hlist_add_head(&timer->entry, base->vectors + idx);
++	__set_bit(idx, base->pending_map);
++	timer_set_idx(timer, idx);
  
- /* Instr_Retired.Any: */
-@@ -213,11 +225,16 @@ struct x86_pmu_capability {
- #define MSR_ARCH_PERFMON_FIXED_CTR1	0x30a
- #define INTEL_PMC_IDX_FIXED_CPU_CYCLES	(INTEL_PMC_IDX_FIXED + 1)
+-	__internal_add_timer(base, timer, &bucket_expiry);
++	trace_timer_start(timer, timer->expires, timer->flags);
+ 	trigger_dyntick_cpu(base, timer, bucket_expiry);
+ }
  
--/* CPU_CLK_Unhalted.Ref: */
-+/* CPU_CLK_Unhalted.Ref: event=0x00,umask=0x3 (pseudo-encoding) */
- #define MSR_ARCH_PERFMON_FIXED_CTR2	0x30b
- #define INTEL_PMC_IDX_FIXED_REF_CYCLES	(INTEL_PMC_IDX_FIXED + 2)
- #define INTEL_PMC_MSK_FIXED_REF_CYCLES	(1ULL << INTEL_PMC_IDX_FIXED_REF_CYCLES)
- 
-+/* TOPDOWN.SLOTS: event=0x00,umask=0x4 (pseudo-encoding) */
-+#define MSR_ARCH_PERFMON_FIXED_CTR3	0x30c
-+#define INTEL_PMC_IDX_FIXED_SLOTS	(INTEL_PMC_IDX_FIXED + 3)
-+#define INTEL_PMC_MSK_FIXED_SLOTS	(1ULL << INTEL_PMC_IDX_FIXED_SLOTS)
++static void internal_add_timer(struct timer_base *base, struct timer_list *timer)
++{
++	unsigned long bucket_expiry;
++	unsigned int idx;
 +
- /*
-  * We model BTS tracing as another fixed-mode PMC.
-  *
++	idx = calc_wheel_index(timer->expires, base->clk, &bucket_expiry);
++	enqueue_timer(base, timer, idx, bucket_expiry);
++}
++
+ #ifdef CONFIG_DEBUG_OBJECTS_TIMERS
+ 
+ static struct debug_obj_descr timer_debug_descr;
+@@ -1057,16 +1049,13 @@ __mod_timer(struct timer_list *timer, unsigned long expires, unsigned int option
+ 	/*
+ 	 * If 'idx' was calculated above and the base time did not advance
+ 	 * between calculating 'idx' and possibly switching the base, only
+-	 * enqueue_timer() and trigger_dyntick_cpu() is required. Otherwise
+-	 * we need to (re)calculate the wheel index via
+-	 * internal_add_timer().
++	 * enqueue_timer() is required. Otherwise we need to (re)calculate
++	 * the wheel index via internal_add_timer().
+ 	 */
+-	if (idx != UINT_MAX && clk == base->clk) {
+-		enqueue_timer(base, timer, idx);
+-		trigger_dyntick_cpu(base, timer, bucket_expiry);
+-	} else {
++	if (idx != UINT_MAX && clk == base->clk)
++		enqueue_timer(base, timer, idx, bucket_expiry);
++	else
+ 		internal_add_timer(base, timer);
+-	}
+ 
+ out_unlock:
+ 	raw_spin_unlock_irqrestore(&base->lock, flags);
 -- 
-2.17.1
+2.26.2
 
