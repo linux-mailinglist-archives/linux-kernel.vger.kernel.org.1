@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C82E22401A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44F7224017
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgGQQBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726351AbgGQQA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726901AbgGQQA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 17 Jul 2020 12:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726442AbgGQQA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:00:58 -0400
 Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.194.72])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D068206BE;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F9862076D;
         Fri, 17 Jul 2020 16:00:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1595001658;
-        bh=2ZbkrZccM4GRyeKL6L2cvwgpAuoXXOK43VqdE71mHdI=;
+        bh=N+frjeuLN/SOI5k+ZS13xE98hyoDAZmLGor2nqjZ138=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yY+WDOnJn57BkxkmLI/zXIHgVNyIueEkL1qmzCzjz6EXM9kj/vLVBnOmeI9+WhhwC
-         2AQAJOOnqG+Twne9wJOK4duq90eNzhI9yFHicouK22DDAXAD0fgu+hWAIRMGunipXw
-         ZQg+t/RfgdUGD5TVuS3hYRC/RMtr9nryBUSbknjg=
+        b=bmfnsO+r1r9lb0a6GFXSpvAz5gK3sHoUaE+eEsEGEHv9dM/vcwhgnKTU6kjenlETN
+         mT1RT7ewzQrUw9woDy8G92bLZ89DHyhO92LLQ6YzpBxUhD5t2qMHbMuTmpK35bHbIh
+         IoRgmDjmshEED0u4yVFYMWzuaoZFqQBiAdYq5bnI=
 Received: by wens.tw (Postfix, from userid 1000)
-        id 29FD45FD44; Sat, 18 Jul 2020 00:00:55 +0800 (CST)
+        id 36E3A5FD80; Sat, 18 Jul 2020 00:00:55 +0800 (CST)
 From:   Chen-Yu Tsai <wens@kernel.org>
 To:     Maxime Ripard <mripard@kernel.org>
 Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/8] ARM: dts: sunxi: bananapi-m2-plus-v1.2: Fix CPU supply voltages
-Date:   Sat, 18 Jul 2020 00:00:48 +0800
-Message-Id: <20200717160053.31191-4-wens@kernel.org>
+Subject: [PATCH v2 4/8] arm64: dts: allwinner: h5: Add clock to CPU cores
+Date:   Sat, 18 Jul 2020 00:00:49 +0800
+Message-Id: <20200717160053.31191-5-wens@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200717160053.31191-1-wens@kernel.org>
 References: <20200717160053.31191-1-wens@kernel.org>
@@ -45,39 +45,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chen-Yu Tsai <wens@csie.org>
 
-The Bananapi M2+ uses a GPIO line to change the effective resistance of
-the CPU supply regulator's feedback resistor network. The voltages
-described in the device tree were given directly by the vendor. This
-turns out to be slightly off compared to the real values.
+The ARM CPU cores are fed by the CPU clock from the CCU. Add a
+reference to the clock for each CPU core, along with the clock
+transition latency.
 
-The updated voltages are based on calculations of the feedback resistor
-network, and verified down to three decimal places with a multi-meter.
-
-Fixes: 6eeb4180d4b9 ("ARM: dts: sunxi: h3-h5: Add Bananapi M2+ v1.2 device trees")
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 ---
- arch/arm/boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi b/arch/arm/boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi
-index a628b5ee72b6..235994a4a2eb 100644
---- a/arch/arm/boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi
-+++ b/arch/arm/boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi
-@@ -16,12 +16,12 @@ reg_vdd_cpux: vdd-cpux {
- 		regulator-type = "voltage";
- 		regulator-boot-on;
- 		regulator-always-on;
--		regulator-min-microvolt = <1100000>;
--		regulator-max-microvolt = <1300000>;
-+		regulator-min-microvolt = <1108475>;
-+		regulator-max-microvolt = <1308475>;
- 		regulator-ramp-delay = <50>; /* 4ms */
- 		gpios = <&r_pio 0 1 GPIO_ACTIVE_HIGH>; /* PL1 */
- 		gpios-states = <0x1>;
--		states = <1100000 0>, <1300000 1>;
-+		states = <1108475 0>, <1308475 1>;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
+index 4462a68c0681..09523f6011c5 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
+@@ -13,6 +13,8 @@ cpu0: cpu@0 {
+ 			device_type = "cpu";
+ 			reg = <0>;
+ 			enable-method = "psci";
++			clocks = <&ccu CLK_CPUX>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
+ 
+ 		cpu1: cpu@1 {
+@@ -20,6 +22,8 @@ cpu1: cpu@1 {
+ 			device_type = "cpu";
+ 			reg = <1>;
+ 			enable-method = "psci";
++			clocks = <&ccu CLK_CPUX>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
+ 
+ 		cpu2: cpu@2 {
+@@ -27,6 +31,8 @@ cpu2: cpu@2 {
+ 			device_type = "cpu";
+ 			reg = <2>;
+ 			enable-method = "psci";
++			clocks = <&ccu CLK_CPUX>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
+ 
+ 		cpu3: cpu@3 {
+@@ -34,6 +40,8 @@ cpu3: cpu@3 {
+ 			device_type = "cpu";
+ 			reg = <3>;
+ 			enable-method = "psci";
++			clocks = <&ccu CLK_CPUX>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
  	};
- };
  
 -- 
 2.27.0
