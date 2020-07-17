@@ -2,79 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1057C2234F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BDA2234F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgGQGv6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Jul 2020 02:51:58 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:40187 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgGQGv5 (ORCPT
+        id S1727927AbgGQGx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:53:59 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:41598 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726656AbgGQGx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:51:57 -0400
-Received: from marcel-macbook.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
-        by mail.holtmann.org (Postfix) with ESMTPSA id E391ECED0F;
-        Fri, 17 Jul 2020 09:01:54 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [RFC PATCH v1 1/2] Bluetooth: queue ACL packets if no handle is
- found
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CALWDO_Vrn_pXMbkXifKFazha7BYPqLpCthqHOb9ZmVE3wDRMfA@mail.gmail.com>
-Date:   Fri, 17 Jul 2020 08:51:55 +0200
-Cc:     Archie Pusaka <apusaka@google.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F17D321B-DCD2-4A80-97EE-B4589FBFF406@holtmann.org>
-References: <20200627105437.453053-1-apusaka@google.com>
- <20200627185320.RFC.v1.1.Icea550bb064a24b89f2217cf19e35b4480a31afd@changeid>
- <91CFE951-262A-4E83-8550-25445AE84B5A@holtmann.org>
- <CAJQfnxFSfbUbPLVC-be41TqNXzr_6hLq2z=u521HL+BqxLHn_Q@mail.gmail.com>
- <7BBB55E0-FBD9-40C0-80D9-D5E7FC9F80D2@holtmann.org>
- <CALWDO_Vrn_pXMbkXifKFazha7BYPqLpCthqHOb9ZmVE3wDRMfA@mail.gmail.com>
-To:     Alain Michaud <alainmichaud@google.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Fri, 17 Jul 2020 02:53:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594968839; x=1626504839;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=UbdGYUcxs3f2PzsC5b1THW/4XAQ8PtwmIHoCMkMyeJk=;
+  b=Rrb7gJLlTejWNjHhxPf0sop+CiHL4c3KGpf8J4E8uAMjZRzUxzamTAwb
+   1ZuAZ5os1kKMFXUywS8kf1UPh7DHkmsRPiC8cbAXCy6QjejPmnDHiIscJ
+   KxhoVwG/LV1Te0LxdbJxjM/K06TVSumU7MtNkMNGmHKv2Q3IsF87AW8K5
+   Q=;
+IronPort-SDR: jTvzNbc6LpWJ1wdVACIj01E7k7YcB0jnHfAPb0ZjxcDFQlY+r7xF67ZzlciV069UlBFd+uFpyb
+ pV3oC7mKs+AQ==
+X-IronPort-AV: E=Sophos;i="5.75,362,1589241600"; 
+   d="scan'208";a="60527465"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 17 Jul 2020 06:53:51 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 7C722C1B5E;
+        Fri, 17 Jul 2020 06:53:48 +0000 (UTC)
+Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 17 Jul 2020 06:53:47 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.34) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 17 Jul 2020 06:53:30 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, Ian Rogers <irogers@google.com>,
+        <jolsa@redhat.com>, "Kirill A. Shutemov" <kirill@shutemov.name>,
+        <mark.rutland@arm.com>, Mel Gorman <mgorman@suse.de>,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, <rppt@kernel.org>,
+        <sblbir@amazon.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <linux-damon@amazon.com>,
+        Linux MM <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH v18 06/14] mm/damon: Implement callbacks for the virtual memory address spaces
+Date:   Fri, 17 Jul 2020 08:53:13 +0200
+Message-ID: <20200717065313.8870-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod7Cejryb6Pkh8Pktnv68MKm=OTUKbMe1Q0BjZgK1Q1RTw@mail.gmail.com> (raw)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.34]
+X-ClientProxiedBy: EX13D37UWA001.ant.amazon.com (10.43.160.61) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
+On Thu, 16 Jul 2020 17:46:54 -0700 Shakeel Butt <shakeelb@google.com> wrote:
 
-> >>> There is a possibility that an ACL packet is received before we
-> >>> receive the HCI connect event for the corresponding handle. If this
-> >>> happens, we discard the ACL packet.
-> >>> 
-> >>> Rather than just ignoring them, this patch provides a queue for
-> >>> incoming ACL packet without a handle. The queue is processed when
-> >>> receiving a HCI connection event. If 2 seconds elapsed without
-> >>> receiving the HCI connection event, assume something bad happened
-> >>> and discard the queued packet.
-> >>> 
-> >>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> >>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> >> 
-> >> so two things up front. I want to hide this behind a HCI_QUIRK_OUT_OF_ORDER_ACL that a transport driver has to set first. Frankly if this kind of out-of-order happens on UART or SDIO transports, then something is obviously going wrong. I have no plan to fix up after a fully serialized transport.
-> >> 
-> >> Secondly, if a transport sets HCI_QUIRK_OUT_OF_ORDER_ACL, then I want this off by default. You can enable it via an experimental setting. The reason here is that we have to make it really hard and fail as often as possible so that hardware manufactures and spec writers realize that something is fundamentally broken here.
-> I don't have any objection to making this explicit enable to non serialized transports.  However, I do wonder what the intention is around making this off by default.  We already know there is a race condition between the interupt and bulk endpoints over USB, so this can and does happen.  Hardware manufaturers can't relly do much about this other than trying to pull the interupt endpoint more often, but that's only a workaround, it can't avoid it all together.
+> On Mon, Jul 13, 2020 at 1:44 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > This commit introduces a reference implementation of the address space
+> > specific low level primitives for the virtual address space, so that
+> > users of DAMON can easily monitor the data accesses on virtual address
+> > spaces of specific processes by simply configuring the implementation to
+> > be used by DAMON.
+> >
+> > The low level primitives for the fundamental access monitoring are
+> > defined in two parts:
+> > 1. Identification of the monitoring target address range for the address
+> > space.
+> > 2. Access check of specific address range in the target space.
+> >
+> > The reference implementation for the virtual address space provided by
+> > this commit is designed as below.
+> >
+> > PTE Accessed-bit Based Access Check
+> > -----------------------------------
+> >
+> > The implementation uses PTE Accessed-bit for basic access checks.  That
+> > is, it clears the bit for next sampling target page and checks whether
+> > it set again after one sampling period.  To avoid disturbing other
+> > Accessed bit users such as the reclamation logic, the implementation
+> > adjusts the ``PG_Idle`` and ``PG_Young`` appropriately, as same to the
+> > 'Idle Page Tracking'.
+> >
+> > VMA-based Target Address Range Construction
+> > -------------------------------------------
+> >
+> > Only small parts in the super-huge virtual address space of the
+> > processes are mapped to physical memory and accessed.  Thus, tracking
+> > the unmapped address regions is just wasteful.  However, because DAMON
+> > can deal with some level of noise using the adaptive regions adjustment
+> > mechanism, tracking every mapping is not strictly required but could
+> > even incur a high overhead in some cases.  That said, too huge unmapped
+> > areas inside the monitoring target should be removed to not take the
+> > time for the adaptive mechanism.
+> >
+> > For the reason, this implementation converts the complex mappings to
+> > three distinct regions that cover every mapped area of the address
+> > space.  Also, the two gaps between the three regions are the two biggest
+> > unmapped areas in the given address space.  The two biggest unmapped
+> > areas would be the gap between the heap and the uppermost mmap()-ed
+> > region, and the gap between the lowermost mmap()-ed region and the stack
+> > in most of the cases.  Because these gaps are exceptionally huge in
+> > usual address spacees, excluding these will be sufficient to make a
+> > reasonable trade-off.  Below shows this in detail::
+> >
+> >     <heap>
+> >     <BIG UNMAPPED REGION 1>
+> >     <uppermost mmap()-ed region>
+> >     (small mmap()-ed regions and munmap()-ed regions)
+> >     <lowermost mmap()-ed region>
+> >     <BIG UNMAPPED REGION 2>
+> >     <stack>
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> [snip]
+> > +
+> > +static void damon_mkold(struct mm_struct *mm, unsigned long addr)
+> > +{
+> > +       pte_t *pte = NULL;
+> > +       pmd_t *pmd = NULL;
+> > +       spinlock_t *ptl;
+> > +
+> > +       if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
+> > +               return;
+> > +
+> > +       if (pte) {
+> > +               if (pte_young(*pte)) {
 > 
-> IMO, this seems like a legitimate fix at the host level and I don't see any obvious benefits to hide this fix under an experimental feature and make it more difficult for the customers and system integrators to discover.
+> Any reason for skipping mmu_notifier_clear_young()? Why exclude VMs as
+> DAMON's target applications?
 
-the problem is that this is not a fix. It is papering over a hole and at best a workaround with both eyes closed and hoping for the best. I am not looking forward for the first security researcher to figure out that they have a chance to inject an unencrypted packet since we are waiting 2 seconds for the USB transport to get its act together.
+Obviously my mistake, thank you for pointing this!  I will add the function
+call in the next spin.
 
-In addition, I think that Luiz attempt to align with the poll intervals inside the USB transport directly is a cleaner and more self-contained approach. It also reduces the window of opportunity for any attacker since we actually align the USB transport specific intervals with each other.
 
-Regards
+Thanks,
+SeongJae Park
 
-Marcel
-
+> 
+> > +                       clear_page_idle(pte_page(*pte));
+> > +                       set_page_young(pte_page(*pte));
+> > +               }
+> > +               *pte = pte_mkold(*pte);
+> > +               pte_unmap_unlock(pte, ptl);
+> > +               return;
+> > +       }
+> > +
