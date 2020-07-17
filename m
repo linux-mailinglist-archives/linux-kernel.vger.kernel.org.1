@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3D72240EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032732240F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgGQQ4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S1727876AbgGQQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgGQQ4P (ORCPT
+        with ESMTP id S1727788AbgGQQ4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:56:15 -0400
+        Fri, 17 Jul 2020 12:56:16 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27D9C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:14 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id j18so15952583wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECBCC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:15 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o2so18257492wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cyqL66bhaPo6pUJYftE+BouP+W8ifTKxcOtS6pP8tIA=;
-        b=bgDHQZAm1Y7zGqco6LHcPFImygLo/eaYHhgO4zR4uqMXJXBH/9/wUXvkgURQEgEcPf
-         vRFq3fHY/XmeaUh/vIQRfq1bADE7GHYiWQH+exNS6KTPZddIkQaaSOTeEE1bi7W2D1mY
-         VxSPWjFBYAHsExqDJeVWJD9VpQGNiY/CcKTKKEjWbytzE9T9GORFrOXAmRDKAUscog6q
-         vSo5MTT6YhP/nJK4HnudqudhwFB9qB4kRLz1I2/7IrgKaw858ntypQ4Hps0xQ8t6V+Ef
-         ySaRfcZdo60TpEiSnm9Cf26IdXLDFZ1NvK3lpAsBAF9Jmw26IZJc/czIvlbIyh/c7XP1
-         xz9g==
+        bh=plt40HpdQkbHvQwXOxo5if7eJzPHGlolB+ggPBJMqPY=;
+        b=J3pv3dEpGgwSpIhA8EtE+KYVOjgrt0YdOk9dunGzbdUkQbLEYxYoGZMXA/1+5Dsf6J
+         LAnr+hUnpEB7AeU8OqxnfF26WEuXm4lWDRmDeoL36lGILsADFMR1IdvzckJY3SYYlldF
+         mibf5B2agpVngiFAxjk+7s7m4/KAg4HlPudlDNLfPq99WLoEt87yffqOweAlSfAS4Lur
+         2FXPzVUcW/EXE7IGVR8sfgl4V7kWJPQDfJfT/YdlIKr2Hc744g9gwCSIJhZqkogyavXZ
+         E2HzHQB5DFaRVAv3VkczC5FPPAZ0IFvDeBTdDxXn+EMXhCNSx8CwhmhfIpZvHttn0fuI
+         m+cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cyqL66bhaPo6pUJYftE+BouP+W8ifTKxcOtS6pP8tIA=;
-        b=Fi9QYgUWYRQy90flb9DB8Ae8wga1nNhFnZOM3rkgYrNuQcbZKbH6hFP+Mno/eYsBo2
-         zbfUASMMcd2RPsR8QAl9c7psACC71EXPo210q+CSgUYuZ3mS+O5m3u/wDCeX6d1+HG9B
-         HIS7YaMtc21z6Ut7iJwIiKvDoV9hwW7J7mxJdJtOQz2YQkBR4cmIoJYeRwkP26JP3J3j
-         KYl8jk4wlQmmzQB6gXBDtUAaGIIM0qwqdiPvqvbLwwUcpbf1GxcKXxcDpti9mLGL8grh
-         DNbKrpi/nDAX2o+dKUJi6/2pRo3y0r8RjwrmfhmAIfu8bdN5U6ly+LAC51NBRMLgRCy6
-         d78Q==
-X-Gm-Message-State: AOAM530IiVPu2zrMK1BMKm8COoEaVjNutFMuEVFZLmJJRRyTU6cgv0pC
-        NeU3WCSOvJ2lnln+cnjVNgNJ+A==
-X-Google-Smtp-Source: ABdhPJzkOkfui+os8Qw2Xmd5y3cEYFZKIpsg38EFiEnyePI47o5q7jh1WVLfiLgGxOTQOSGbdLUnzQ==
-X-Received: by 2002:a1c:3b02:: with SMTP id i2mr9952906wma.24.1595004973487;
-        Fri, 17 Jul 2020 09:56:13 -0700 (PDT)
+        bh=plt40HpdQkbHvQwXOxo5if7eJzPHGlolB+ggPBJMqPY=;
+        b=PLl1fIZjc2OE5NXOnSheXVNDUn2tLOw8PltNcy7/Pr947dpHPkk977eYpofnARFGVz
+         O/YMsxHC1bT1ez1hE63oyIG4FGw41dWZ4pDNJTmPE82AxfdwEP1Ai4ka3KESvuxQXYLv
+         XPe6UtqqPbSlZvkUm5dkZjrS/WLiMWL/PB4BAUds4miAzRn6lxWgq253b+0aNRPXGnzL
+         QSiM7ofbEDVU/cGaRFFQQKQpm0Qf8Fbi8UeAUpfnpbLX6zJAggFqDX3RIRHqUpFmmBCy
+         sgxzqH51OlTb6nIsAOZ0YMWLzTMDpWRfUGAkDxNzozoWEPNSGExgue/Nxz0ST1AJZ7hQ
+         sZJg==
+X-Gm-Message-State: AOAM533XxYEhd/r0Jb5WZbxivP/4OZtoTl57jZ9mRhfKyE4JfBnbWhFM
+        5u3DGKJH11DsLw/33g4VJqXMMg==
+X-Google-Smtp-Source: ABdhPJyP6B7HseRg5kS7ZkPAzot7yMGjQw7JXKLcdP34P/c6n3iGcQGWvUN176x3H3wgk3Zx9jh1xQ==
+X-Received: by 2002:a1c:8117:: with SMTP id c23mr9735654wmd.157.1595004974509;
+        Fri, 17 Jul 2020 09:56:14 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.12
+        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 09:56:12 -0700 (PDT)
+        Fri, 17 Jul 2020 09:56:13 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 13/30] iio: adc: at91_adc: Fix 'bad line' warning
-Date:   Fri, 17 Jul 2020 17:55:21 +0100
-Message-Id: <20200717165538.3275050-14-lee.jones@linaro.org>
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 14/30] iio: adc: at91-sama5d2_adc: Struct kerneldoc titles need to start with 'struct '
+Date:   Fri, 17 Jul 2020 17:55:22 +0100
+Message-Id: <20200717165538.3275050-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717165538.3275050-1-lee.jones@linaro.org>
 References: <20200717165538.3275050-1-lee.jones@linaro.org>
@@ -70,34 +70,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All lines should start with ' *'.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/adc/at91_adc.c:160: warning: bad line:                         (Interruptions registers mostly)
+ drivers/iio/adc/at91-sama5d2_adc.c:360: warning: cannot understand function prototype: 'struct at91_adc_dma '
+ drivers/iio/adc/at91-sama5d2_adc.c:379: warning: cannot understand function prototype: 'struct at91_adc_touch '
 
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: Eugen Hristev <eugen.hristev@microchip.com>
 Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/adc/at91_adc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/at91-sama5d2_adc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-index 0368b6dc6d60a..c5ea75cd88fa8 100644
---- a/drivers/iio/adc/at91_adc.c
-+++ b/drivers/iio/adc/at91_adc.c
-@@ -157,7 +157,7 @@
-  * struct at91_adc_reg_desc - Various informations relative to registers
-  * @channel_base:	Base offset for the channel data registers
-  * @drdy_mask:		Mask of the DRDY field in the relevant registers
--			(Interruptions registers mostly)
-+ *			(Interruptions registers mostly)
-  * @status_register:	Offset of the Interrupt Status Register
-  * @trigger_register:	Offset of the Trigger setup register
-  * @mr_prescal_mask:	Mask of the PRESCAL field in the adc MR register
+diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+index 9abbbdcc74200..c7fe749419b28 100644
+--- a/drivers/iio/adc/at91-sama5d2_adc.c
++++ b/drivers/iio/adc/at91-sama5d2_adc.c
+@@ -347,7 +347,7 @@ struct at91_adc_trigger {
+ };
+ 
+ /**
+- * at91_adc_dma - at91-sama5d2 dma information struct
++ * struct at91_adc_dma - at91-sama5d2 dma information struct
+  * @dma_chan:		the dma channel acquired
+  * @rx_buf:		dma coherent allocated area
+  * @rx_dma_buf:		dma handler for the buffer
+@@ -369,7 +369,7 @@ struct at91_adc_dma {
+ };
+ 
+ /**
+- * at91_adc_touch - at91-sama5d2 touchscreen information struct
++ * struct at91_adc_touch - at91-sama5d2 touchscreen information struct
+  * @sample_period_val:		the value for periodic trigger interval
+  * @touching:			is the pen touching the screen or not
+  * @x_pos:			temporary placeholder for pressure computation
 -- 
 2.25.1
 
