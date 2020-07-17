@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4EB22374F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B5B223751
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgGQIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgGQIoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:44:39 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73190C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:44:39 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a6so10152950wrm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:44:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=9x6fTHZjafmueEMmRdi+LdlMzC2EII5ZkFzc9Fwx204=;
-        b=CcrWH877Ri20PNsFBMBPs4KP9jLSBxVMwMQejX+OakrhCpNGurKvg/YYuWyooyngHO
-         PGII9nSP3QITVgwaA4IMlURWO0b7gngGMwk2tXW0Z30dsgpHUZLhxbzH/rTNZ6LaErsg
-         7bkbz0aMZlBSeE8sWKk1eu+xm6tMvSYt1dz3W5nHlHPy0+YrsvYM20RZqDXAcgy0hIFY
-         IFcZv1BdkCGDXemcAcUKGgqaTS1rWgYSHbLZmWdaW+gVOH6Yvi9Ca51nI3rlF4f4cg4Q
-         4J6q5a2drV9N+LEkPNNOqAy8bOGoph8gzskNnKVVKah64U9qztXuUs/d7VCVkGxWUC63
-         2AiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=9x6fTHZjafmueEMmRdi+LdlMzC2EII5ZkFzc9Fwx204=;
-        b=GjIwttUeIHcOTFbYFRD5w8iBY9mfA+yDrebq6VnLEd3Hmwm+ukhVUv9aP0CLj/XWu3
-         ebrjNv7ULA4KukMh0G9HoQykh2sO9KLvAYmZ0OdhDV51cA6ZmHAM8y6pmXp/hR1xDueK
-         WeQTUh7T78qzaS9wmJTmF8qO+XH7yoJQr6KAndcmc+sgvxJ/GTbRvvuWo2TOFzEYCFrz
-         Gg521owS0t09hdC2/sQ7UpYxFFc0BJ0kbQHOHy58nnhv5Kr7btrsCSoVDlVKY3XUuurp
-         Kt15C+HK/GvQuz776M7LLUOwr3EZpbFxujcI/+ybXeTMLeC/UHYW3ukW3QONOCnV1N4+
-         aWFw==
-X-Gm-Message-State: AOAM531ZLS3lqCoyW8YKn430iA6P616zZ4RMmhTe/n1NDsS8OT1thcFe
-        iw38ULr4XNDL+9YStxwNbYSwEQ==
-X-Google-Smtp-Source: ABdhPJyovxSTvHHpc7ZiBtlMV3klZ1rwvUq3jT7v0dWg3bOYRkcwggR2do8xcR8ffqqZT8dB2S5bOA==
-X-Received: by 2002:adf:f311:: with SMTP id i17mr9496093wro.237.1594975477992;
-        Fri, 17 Jul 2020 01:44:37 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id k20sm12480834wmi.27.2020.07.17.01.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 01:44:35 -0700 (PDT)
-References: <20200717082242.130627-1-jingxiangfeng@huawei.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        khilman@baylibre.com, kuninori.morimoto.gx@renesas.com
-Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: meson: fixes the missed kfree() for axg_card_add_tdm_loopback
-In-reply-to: <20200717082242.130627-1-jingxiangfeng@huawei.com>
-Date:   Fri, 17 Jul 2020 10:44:35 +0200
-Message-ID: <1j7dv2sf7w.fsf@starbuckisacylon.baylibre.com>
+        id S1726201AbgGQIqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:46:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgGQIqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:46:23 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 255BF20691;
+        Fri, 17 Jul 2020 08:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594975583;
+        bh=aSTOwrsf1OoTmGFAxEAYLQB33noREJVm4joxNsHwJJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lma2rZauHo7sWrCEhYqla+A4EvPfjNNuawxIR/EPmU/HB+K8RnWoxUCr6vhlH5btM
+         vfRPFagdp7H/oMq+T3HQahlsqGgF+x4O/nzO0UEFpEuJPdujSvgMvWTeOGGs/oHXVM
+         ie6AY9FhSgTWvOXLoRMt6rfY2Agi+T8Ch9wyt9f8=
+Date:   Fri, 17 Jul 2020 14:16:18 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     "kishon@ti.com" <kishon@ti.com>,
+        "wsa+renesas@sang-engineering.com" <wsa+renesas@sang-engineering.com>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] phy: renesas: rcar-gen3-usb2: fix SError happen if
+ DEBUG_SHIRQ is enabled
+Message-ID: <20200717084618.GM82923@vkoul-mobl>
+References: <1594642288-9986-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200717063856.GH82923@vkoul-mobl>
+ <TY2PR01MB3692ED71A574F16848CD48ECD87C0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TY2PR01MB3692ED71A574F16848CD48ECD87C0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17-07-20, 08:16, Yoshihiro Shimoda wrote:
+> Hello Vinod,
+> 
+> > From: Vinod Koul, Sent: Friday, July 17, 2020 3:39 PM
+> > 
+> > hello Yoshihiro,
+> > 
+> > On 13-07-20, 21:11, Yoshihiro Shimoda wrote:
+> > 
+> > Please consider revising patch subject. It tell me you are fixing an
+> > error but it doesnt tell me what this patch is about :)
+> > 
+> > Perhpas :move irq registration to init" maybe a better title which
+> > describes the changes this patch brings in
+> 
+> Thank you for your suggestion! I also think your suggestion is better.
+> So, I will fix it.
+> 
+> <snip>
+> > > @@ -389,12 +390,39 @@ static void rcar_gen3_init_otg(struct rcar_gen3_chan *ch)
+> > >  	rcar_gen3_device_recognition(ch);
+> > >  }
+> > >
+> > > +static irqreturn_t rcar_gen3_phy_usb2_irq(int irq, void *_ch)
+> > > +{
+> > > +	struct rcar_gen3_chan *ch = _ch;
+> > > +	void __iomem *usb2_base = ch->base;
+> > > +	u32 status = readl(usb2_base + USB2_OBINTSTA);
+> > > +	irqreturn_t ret = IRQ_NONE;
+> > > +
+> > > +	if (status & USB2_OBINT_BITS) {
+> > > +		dev_vdbg(ch->dev, "%s: %08x\n", __func__, status);
+> > > +		writel(USB2_OBINT_BITS, usb2_base + USB2_OBINTSTA);
+> > > +		rcar_gen3_device_recognition(ch);
+> > > +		ret = IRQ_HANDLED;
+> > > +	}
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > >  static int rcar_gen3_phy_usb2_init(struct phy *p)
+> > >  {
+> > >  	struct rcar_gen3_phy *rphy = phy_get_drvdata(p);
+> > >  	struct rcar_gen3_chan *channel = rphy->ch;
+> > >  	void __iomem *usb2_base = channel->base;
+> > >  	u32 val;
+> > > +	int ret;
+> > > +
+> > > +	if (!rcar_gen3_is_any_rphy_initialized(channel) && channel->irq >= 0) {
+> > > +		INIT_WORK(&channel->work, rcar_gen3_phy_usb2_work);
+> > > +		ret = request_irq(channel->irq, rcar_gen3_phy_usb2_irq,
+> > > +				  IRQF_SHARED, dev_name(channel->dev), channel);
+> > > +		if (ret < 0)
+> > > +			dev_err(channel->dev, "No irq handler (%d)\n",
+> > > +				channel->irq);
+> > 
+> > This could be in a single line :)
+> 
+> Yes. We could be 80 over characters in a line now :)
+> I'll fix it.
+> 
+> > Should we continue on error here?
+> 
+> Hmm, maybe it's better if the request_irq() failed because
+> it can avoid unexpected behaviors. But, original code continued on error.
+> In this case, should I make a separated incremental patch to exit on error?
 
-On Fri 17 Jul 2020 at 10:22, Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
+Yes that would be better :), Always, a patch per change
 
-> axg_card_add_tdm_loopback() misses to call kfree() in an error path. We
-> can use devm_kasprintf() to fix the issue, also improve maintainability.
-> So use it instead.
->
-> Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-
-> ---
->  sound/soc/meson/axg-card.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-> index 89f7f64747cd..47f2d93224fe 100644
-> --- a/sound/soc/meson/axg-card.c
-> +++ b/sound/soc/meson/axg-card.c
-> @@ -116,7 +116,7 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
->  
->  	lb = &card->dai_link[*index + 1];
->  
-> -	lb->name = kasprintf(GFP_KERNEL, "%s-lb", pad->name);
-> +	lb->name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-lb", pad->name);
->  	if (!lb->name)
->  		return -ENOMEM;
-
+-- 
+~Vinod
