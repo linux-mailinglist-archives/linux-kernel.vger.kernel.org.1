@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032732240F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915A7224114
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgGQQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
+        id S1728180AbgGQQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727788AbgGQQ4Q (ORCPT
+        with ESMTP id S1727815AbgGQQ4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:56:16 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECBCC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id o2so18257492wmh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:15 -0700 (PDT)
+        Fri, 17 Jul 2020 12:56:17 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A344C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:17 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f18so11931952wrs.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=plt40HpdQkbHvQwXOxo5if7eJzPHGlolB+ggPBJMqPY=;
-        b=J3pv3dEpGgwSpIhA8EtE+KYVOjgrt0YdOk9dunGzbdUkQbLEYxYoGZMXA/1+5Dsf6J
-         LAnr+hUnpEB7AeU8OqxnfF26WEuXm4lWDRmDeoL36lGILsADFMR1IdvzckJY3SYYlldF
-         mibf5B2agpVngiFAxjk+7s7m4/KAg4HlPudlDNLfPq99WLoEt87yffqOweAlSfAS4Lur
-         2FXPzVUcW/EXE7IGVR8sfgl4V7kWJPQDfJfT/YdlIKr2Hc744g9gwCSIJhZqkogyavXZ
-         E2HzHQB5DFaRVAv3VkczC5FPPAZ0IFvDeBTdDxXn+EMXhCNSx8CwhmhfIpZvHttn0fuI
-         m+cw==
+        bh=u3fyiDGFdlbLNYGeR71nnz3VOwvLrObA2piXc/v38Go=;
+        b=WmxyBLdPFiTMIB9rmrspNDNftuqma7nAEm/9RcMOSzJjAD6D4inZeyskwPmwX//ID1
+         OShWYYXvlSNN4qj0U0acKpFl7lOtvjTsxso+bNYIMiLzRTdfLMGwxcGgpVzjS8IEpKUm
+         Xowpf4oECwAHxwFRyVWwGAevH72O9bR1DZ/huytShBk8GwpB947CDWPSNqFeS4MfQPqM
+         l/hX8yK68gPPR9uQogO9Xow2x3akFFCq42VLZ0RmTJzyYmFkbBd37ORm+y863MZshCgY
+         ZbsAXTLVmyhKDyocDIzGMAUUtGb98XbPdJx3c0uGTY+yRQ2nb+VTKGcX4CQ/AB0ri0xw
+         I3kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=plt40HpdQkbHvQwXOxo5if7eJzPHGlolB+ggPBJMqPY=;
-        b=PLl1fIZjc2OE5NXOnSheXVNDUn2tLOw8PltNcy7/Pr947dpHPkk977eYpofnARFGVz
-         O/YMsxHC1bT1ez1hE63oyIG4FGw41dWZ4pDNJTmPE82AxfdwEP1Ai4ka3KESvuxQXYLv
-         XPe6UtqqPbSlZvkUm5dkZjrS/WLiMWL/PB4BAUds4miAzRn6lxWgq253b+0aNRPXGnzL
-         QSiM7ofbEDVU/cGaRFFQQKQpm0Qf8Fbi8UeAUpfnpbLX6zJAggFqDX3RIRHqUpFmmBCy
-         sgxzqH51OlTb6nIsAOZ0YMWLzTMDpWRfUGAkDxNzozoWEPNSGExgue/Nxz0ST1AJZ7hQ
-         sZJg==
-X-Gm-Message-State: AOAM533XxYEhd/r0Jb5WZbxivP/4OZtoTl57jZ9mRhfKyE4JfBnbWhFM
-        5u3DGKJH11DsLw/33g4VJqXMMg==
-X-Google-Smtp-Source: ABdhPJyP6B7HseRg5kS7ZkPAzot7yMGjQw7JXKLcdP34P/c6n3iGcQGWvUN176x3H3wgk3Zx9jh1xQ==
-X-Received: by 2002:a1c:8117:: with SMTP id c23mr9735654wmd.157.1595004974509;
-        Fri, 17 Jul 2020 09:56:14 -0700 (PDT)
+        bh=u3fyiDGFdlbLNYGeR71nnz3VOwvLrObA2piXc/v38Go=;
+        b=AmPYneOzgSN/PTsTmjd9dEffuk9QX8fgZ/VLQh0SzMRRG+eIjRuW6685yOs6cjqJsj
+         UEZDhZFFHC7vzZ1JFCONvvH0lZxgWdvouzzr95Ku5lkrKJjM0nQ7de/+56OrO83QlPQr
+         0W32y1M4U2G+uP7aUn5aUQdqyxcyCzgIAMCfgJdqKcvPDOz2IxpJmf84McXK/HAsX/qA
+         Iju4tUsttQ6vC+Wr2bioOqocnqItME8YnpRC8X42yS+yNUIU8ZMWBffYncqGy1SNZSMr
+         5AaAB7agGDvQFUmAhmB75AxSm070P6sNtaJNcqQx99GFh/qL94bTaKLNrzaALAe/F1Fb
+         1KRQ==
+X-Gm-Message-State: AOAM532Zt6SlbgzfCrTLxL0g7uh1uZ8O36NwMualq6jhy+7cHu/YuZC3
+        IchCCb+PcqANFS9Wb5M+cIgSaQ==
+X-Google-Smtp-Source: ABdhPJyxGlgmwpdyXgtW7B3rqiCsiz02bfeSDBMqpGeL+5khgX6H2eUvHJBFwak6Kl9QbaLMkwZ5Sg==
+X-Received: by 2002:adf:ef46:: with SMTP id c6mr11237076wrp.34.1595004975766;
+        Fri, 17 Jul 2020 09:56:15 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.13
+        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 09:56:13 -0700 (PDT)
+        Fri, 17 Jul 2020 09:56:15 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 14/30] iio: adc: at91-sama5d2_adc: Struct kerneldoc titles need to start with 'struct '
-Date:   Fri, 17 Jul 2020 17:55:22 +0100
-Message-Id: <20200717165538.3275050-15-lee.jones@linaro.org>
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 15/30] iio: adc: cpcap-adc: Demote seemingly unintentional kerneldoc header
+Date:   Fri, 17 Jul 2020 17:55:23 +0100
+Message-Id: <20200717165538.3275050-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717165538.3275050-1-lee.jones@linaro.org>
 References: <20200717165538.3275050-1-lee.jones@linaro.org>
@@ -70,42 +67,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+None of the headers demoted here provide any descriptions.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/adc/at91-sama5d2_adc.c:360: warning: cannot understand function prototype: 'struct at91_adc_dma '
- drivers/iio/adc/at91-sama5d2_adc.c:379: warning: cannot understand function prototype: 'struct at91_adc_touch '
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'ato_in' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'atox_in' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'adc_ps_factor_in' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'atox_ps_factor_in' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'ato_out' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'atox_out' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'adc_ps_factor_out' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:100: warning: Function parameter or member 'atox_ps_factor_out' not described in 'cpcap_adc_ato'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_AD0' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_BATTP' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_VBUS' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_AD3' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_BPLUS_AD4' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_CHG_ISENSE' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_BATTI' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_USB_ID' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_AD8' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_AD9' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_LICELL' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_HV_BATTP' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_TSX1_AD12' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_TSX2_AD13' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_TSY1_AD14' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_TSY2_AD15' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_BATTP_PI16' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_BATTI_PI17' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:153: warning: Enum value 'CPCAP_ADC_CHANNEL_NUM' not described in enum 'cpcap_adc_channel'
+ drivers/iio/adc/cpcap-adc.c:165: warning: Enum value 'CPCAP_ADC_TIMING_IMM' not described in enum 'cpcap_adc_timing'
+ drivers/iio/adc/cpcap-adc.c:165: warning: Enum value 'CPCAP_ADC_TIMING_IN' not described in enum 'cpcap_adc_timing'
+ drivers/iio/adc/cpcap-adc.c:165: warning: Enum value 'CPCAP_ADC_TIMING_OUT' not described in enum 'cpcap_adc_timing'
 
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Eugen Hristev <eugen.hristev@microchip.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/adc/at91-sama5d2_adc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/adc/cpcap-adc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-index 9abbbdcc74200..c7fe749419b28 100644
---- a/drivers/iio/adc/at91-sama5d2_adc.c
-+++ b/drivers/iio/adc/at91-sama5d2_adc.c
-@@ -347,7 +347,7 @@ struct at91_adc_trigger {
+diff --git a/drivers/iio/adc/cpcap-adc.c b/drivers/iio/adc/cpcap-adc.c
+index 5086a337f4c9a..be638fcec03f6 100644
+--- a/drivers/iio/adc/cpcap-adc.c
++++ b/drivers/iio/adc/cpcap-adc.c
+@@ -82,7 +82,7 @@
+ 
+ #define CPCAP_ADC_MAX_RETRIES		5	/* Calibration */
+ 
+-/**
++/*
+  * struct cpcap_adc_ato - timing settings for cpcap adc
+  *
+  * Unfortunately no cpcap documentation available, please document when
+@@ -121,7 +121,7 @@ struct cpcap_adc {
+ 	bool done;
  };
  
- /**
-- * at91_adc_dma - at91-sama5d2 dma information struct
-+ * struct at91_adc_dma - at91-sama5d2 dma information struct
-  * @dma_chan:		the dma channel acquired
-  * @rx_buf:		dma coherent allocated area
-  * @rx_dma_buf:		dma handler for the buffer
-@@ -369,7 +369,7 @@ struct at91_adc_dma {
+-/**
++/*
+  * enum cpcap_adc_channel - cpcap adc channels
+  */
+ enum cpcap_adc_channel {
+@@ -152,7 +152,7 @@ enum cpcap_adc_channel {
+ 	CPCAP_ADC_CHANNEL_NUM,
  };
  
- /**
-- * at91_adc_touch - at91-sama5d2 touchscreen information struct
-+ * struct at91_adc_touch - at91-sama5d2 touchscreen information struct
-  * @sample_period_val:		the value for periodic trigger interval
-  * @touching:			is the pen touching the screen or not
-  * @x_pos:			temporary placeholder for pressure computation
+-/**
++/*
+  * enum cpcap_adc_timing - cpcap adc timing options
+  *
+  * CPCAP_ADC_TIMING_IMM seems to be immediate with no timings.
 -- 
 2.25.1
 
