@@ -2,298 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90345223DC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9877223DAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgGQOHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:07:35 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11841 "EHLO mga01.intel.com"
+        id S1727926AbgGQOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:06:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728048AbgGQOHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:07:34 -0400
-IronPort-SDR: swr7fvG7wN7+gFBo5qhLi4UirgCUX+1/paW7r7u7bFWluGi+57wMTdOoaSO0EMNgQMrVWSb3C1
- 6AqgSXKTWvdg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722841"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="167722841"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:31 -0700
-IronPort-SDR: wOmLc6V9uE13IbXx5YlhalBLh/yMi8qjxLLa2I89mbioWlUvKeeiq9aO9ABWUDBnriGiP4TL3V
- rW5CdIjmiPpw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="460856509"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:31 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-Subject: [PATCH V6 14/14] perf, tools: Add documentation for topdown metrics
-Date:   Fri, 17 Jul 2020 07:05:54 -0700
-Message-Id: <20200717140554.22863-15-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+        id S1727876AbgGQOGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:06:30 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22AFE2067D;
+        Fri, 17 Jul 2020 14:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594994790;
+        bh=idhd2mun2o3KTZfXKc7yxApyqOFeBVXhlYMrKvNie5U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KaQrFt+YhFkTXtEgafkFEb1WYvRfdZ4Kw0ki3VoubVwnrLGVDz8sU/1yskahu7eCy
+         7gQmmSH6lOqgTLjYUK+DloD0v5HMyHQie7V+qLc+Edn8y8RmecTmQSPolQQwRh4bK3
+         IUvtlU6lhpCZpunU3IsRYhQnTKqj0S8gGlEmwpSY=
+Date:   Fri, 17 Jul 2020 23:06:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 10/75] x86/insn: Add insn_has_rep_prefix() helper
+Message-Id: <20200717230622.5be651b71711368acbfe6bb0@kernel.org>
+In-Reply-To: <20200714120917.11253-11-joro@8bytes.org>
+References: <20200714120917.11253-1-joro@8bytes.org>
+        <20200714120917.11253-11-joro@8bytes.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+On Tue, 14 Jul 2020 14:08:12 +0200
+Joerg Roedel <joro@8bytes.org> wrote:
 
-Add some documentation how to use the topdown metrics in ring 3.
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Add a function to check whether an instruction has a REP prefix.
 
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/topdown.txt | 235 +++++++++++++++++++++++++++
- 1 file changed, 235 insertions(+)
- create mode 100644 tools/perf/Documentation/topdown.txt
+This looks good to me.
 
-diff --git a/tools/perf/Documentation/topdown.txt b/tools/perf/Documentation/topdown.txt
-new file mode 100644
-index 000000000000..e724d2af3b8d
---- /dev/null
-+++ b/tools/perf/Documentation/topdown.txt
-@@ -0,0 +1,235 @@
-+Using TopDown metrics in user space
-+-----------------------------------
-+
-+Intel CPUs (since Sandy Bridge and Silvermont) support a TopDown
-+methology to break down CPU pipeline execution into 4 bottlenecks:
-+frontend bound, backend bound, bad speculation, retiring.
-+
-+For more details on Topdown see [1][5]
-+
-+Traditionally this was implemented by events in generic counters
-+and specific formulas to compute the bottlenecks.
-+
-+perf stat --topdown implements this.
-+
-+Full Top Down includes more levels that can break down the
-+bottlenecks further. This is not directly implemented in perf,
-+but available in other tools that can run on top of perf,
-+such as toplev[2] or vtune[3]
-+
-+New Topdown features in Ice Lake
-+===============================
-+
-+With Ice Lake CPUs the TopDown metrics are directly available as
-+fixed counters and do not require generic counters. This allows
-+to collect TopDown always in addition to other events.
-+
-+% perf stat -a --topdown -I1000
-+#           time             counts unit events
-+     1.000854735     20,097,158,100      slots
-+     1.000854735         79,327,616      topdown-retiring          #      0.4% retiring
-+     1.000854735        157,932,715      topdown-bad-spec          #      0.8% bad speculation
-+     1.000854735         81,610,855      topdown-fe-bound          #      0.4% frontend bound
-+     1.000854735     19,778,286,903      topdown-be-bound          #     98.4% backend bound
-+     2.003623823     20,010,908,365      slots
-+     2.003623823         79,905,340      topdown-retiring          #      0.4% retiring
-+     2.003623823        158,405,024      topdown-bad-spec          #      0.8% bad speculation
-+     2.003623823         87,980,097      topdown-fe-bound          #      0.4% frontend bound
-+     2.003623823     19,684,617,888      topdown-be-bound          #     98.4% backend bound
-+     3.005828889     20,062,101,220      slots
-+     3.005828889         80,077,032      topdown-retiring          #      0.4% retiring
-+     3.005828889        158,682,921      topdown-bad-spec          #      0.8% bad speculation
-+     3.005828889         86,579,604      topdown-fe-bound          #      0.4% frontend bound
-+     3.005828889     19,736,761,649      topdown-be-bound          #     98.4% backend bound
-+...
-+
-+This also enables measuring TopDown per thread/process instead
-+of only per core.
-+
-+Using TopDown through RDPMC in applications on Ice Lake
-+======================================================
-+
-+For more fine grained measurements it can be useful to
-+access the new  directly from user space. This is more complicated,
-+but drastically lowers overhead.
-+
-+On Ice Lake, there is a new fixed counter 3: SLOTS, which reports
-+"pipeline SLOTS" (cycles multiplied by core issue width) and a
-+metric register that reports slots ratios for the different bottleneck
-+categories.
-+
-+The metrics counter is CPU model specific and is not be available
-+on older CPUs.
-+
-+Example code
-+============
-+
-+Library functions to do the functionality described below
-+is also available in libjevents [4]
-+
-+The application opens a perf_event file descriptor
-+and sets up fixed counter 3 (SLOTS) to start and
-+allow user programs to read the performance counters.
-+
-+Fixed counter 3 is mapped to a pseudo event event=0x00, umask=04,
-+so the perf_event_attr structure should be initialized with
-+{ .config = 0x0400, .type = PERF_TYPE_RAW }
-+
-+#include <linux/perf_event.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+
-+/* Provide own perf_event_open stub because glibc doesn't */
-+__attribute__((weak))
-+int perf_event_open(struct perf_event_attr *attr, pid_t pid,
-+		    int cpu, int group_fd, unsigned long flags)
-+{
-+	return syscall(__NR_perf_event_open, attr, pid, cpu, group_fd, flags);
-+}
-+
-+/* open slots counter file descriptor for current task */
-+struct perf_event_attr slots = {
-+	.type = PERF_TYPE_RAW,
-+	.size = sizeof(struct perf_event_attr),
-+	.config = 0x400,
-+	.exclude_kernel = 1,
-+};
-+
-+int fd = perf_event_open(&slots, 0, -1, -1, 0);
-+if (fd < 0)
-+	... error ...
-+
-+The RDPMC instruction (or _rdpmc compiler intrinsic) can now be used
-+to read slots and the topdown metrics at different points of the program:
-+
-+#include <stdint.h>
-+#include <x86intrin.h>
-+
-+#define RDPMC_FIXED	(1 << 30)	/* return fixed counters */
-+#define RDPMC_METRIC	(1 << 29)	/* return metric counters */
-+
-+#define FIXED_COUNTER_SLOTS		3
-+#define METRIC_COUNTER_TOPDOWN_L1	0
-+
-+static inline uint64_t read_slots(void)
-+{
-+	return _rdpmc(RDPMC_FIXED | FIXED_COUNTER_SLOTS);
-+}
-+
-+static inline uint64_t read_metrics(void)
-+{
-+	return _rdpmc(RDPMC_METRIC | METRIC_COUNTER_TOPDOWN_L1);
-+}
-+
-+Then the program can be instrumented to read these metrics at different
-+points.
-+
-+It's not a good idea to do this with too short code regions,
-+as the parallelism and overlap in the CPU program execution will
-+cause too much measurement inaccuracy. For example instrumenting
-+individual basic blocks is definitely too fine grained.
-+
-+Decoding metrics values
-+=======================
-+
-+The value reported by read_metrics() contains four 8 bit fields
-+that represent a scaled ratio that represent the Level 1 bottleneck.
-+All four fields add up to 0xff (= 100%)
-+
-+The binary ratios in the metric value can be converted to float ratios:
-+
-+#define GET_METRIC(m, i) (((m) >> (i*8)) & 0xff)
-+
-+#define TOPDOWN_RETIRING(val)	((float)GET_METRIC(val, 0) / 0xff)
-+#define TOPDOWN_BAD_SPEC(val)	((float)GET_METRIC(val, 1) / 0xff)
-+#define TOPDOWN_FE_BOUND(val)	((float)GET_METRIC(val, 2) / 0xff)
-+#define TOPDOWN_BE_BOUND(val)	((float)GET_METRIC(val, 3) / 0xff)
-+
-+and then converted to percent for printing.
-+
-+The ratios in the metric accumulate for the time when the counter
-+is enabled. For measuring programs it is often useful to measure
-+specific sections. For this it is needed to deltas on metrics.
-+
-+This can be done by scaling the metrics with the slots counter
-+read at the same time.
-+
-+Then it's possible to take deltas of these slots counts
-+measured at different points, and determine the metrics
-+for that time period.
-+
-+	slots_a = read_slots();
-+	metric_a = read_metrics();
-+
-+	... larger code region ...
-+
-+	slots_b = read_slots()
-+	metric_b = read_metrics()
-+
-+	# compute scaled metrics for measurement a
-+	retiring_slots_a = GET_METRIC(metric_a, 0) * slots_a
-+	bad_spec_slots_a = GET_METRIC(metric_a, 1) * slots_a
-+	fe_bound_slots_a = GET_METRIC(metric_a, 2) * slots_a
-+	be_bound_slots_a = GET_METRIC(metric_a, 3) * slots_a
-+
-+	# compute delta scaled metrics between b and a
-+	retiring_slots = GET_METRIC(metric_b, 0) * slots_b - retiring_slots_a
-+	bad_spec_slots = GET_METRIC(metric_b, 1) * slots_b - bad_spec_slots_a
-+	fe_bound_slots = GET_METRIC(metric_b, 2) * slots_b - fe_bound_slots_a
-+	be_bound_slots = GET_METRIC(metric_b, 3) * slots_b - be_bound_slots_a
-+
-+Later the individual ratios for the measurement period can be recreated
-+from these counts.
-+
-+	slots_delta = slots_b - slots_a
-+	retiring_ratio = (float)retiring_slots / slots_delta
-+	bad_spec_ratio = (float)bad_spec_slots / slots_delta
-+	fe_bound_ratio = (float)fe_bound_slots / slots_delta
-+	be_bound_ratio = (float)be_bound_slots / slota_delta
-+
-+	printf("Retiring %.2f%% Bad Speculation %.2f%% FE Bound %.2f%% BE Bound %.2f%%\n",
-+		retiring_ratio * 100.,
-+		bad_spec_ratio * 100.,
-+		fe_bound_ratio * 100.,
-+		be_bound_ratio * 100.);
-+
-+Resetting metrics counters
-+==========================
-+
-+Since the individual metrics are only 8bit they lose precision for
-+short regions over time because the number of cycles covered by each
-+fraction bit shrinks. So the counters need to be reset regularly.
-+
-+When using the kernel perf API the kernel resets on every read.
-+So as long as the reading is at reasonable intervals (every few
-+seconds) the precision is good.
-+
-+When using perf stat it is recommended to always use the -I option,
-+with no longer interval than a few seconds
-+
-+	perf stat -I 1000 --topdown ...
-+
-+For user programs using RDPMC directly the counter can
-+be reset explicitly using ioctl:
-+
-+	ioctl(perf_fd, PERF_EVENT_IOC_RESET, 0);
-+
-+This "opens" a new measurement period.
-+
-+A program using RDPMC for TopDown should schedule such a reset
-+regularly, as in every few seconds.
-+
-+Limits on Ice Lake
-+==================
-+
-+All the TopDown events must be in a group with SLOTS events.
-+
-+There is no sampling support for TopDown events.
-+Sampling read SLOTS and TopDown events is forbidden.
-+For example, perf record -e '{slots, topdown-retiring}:S'
-+
-+[1] https://software.intel.com/en-us/top-down-microarchitecture-analysis-method-win
-+[2] https://github.com/andikleen/pmu-tools/wiki/toplev-manual
-+[3] https://software.intel.com/en-us/intel-vtune-amplifier-xe
-+[4] https://github.com/andikleen/pmu-tools/tree/master/jevents
-+[5] https://sites.google.com/site/analysismethods/yasin-pubs
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+ 
+Thank you,
+
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/include/asm/insn-eval.h |  1 +
+>  arch/x86/lib/insn-eval.c         | 24 ++++++++++++++++++++++++
+>  2 files changed, 25 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
+> index f748f57f1491..a0f839aa144d 100644
+> --- a/arch/x86/include/asm/insn-eval.h
+> +++ b/arch/x86/include/asm/insn-eval.h
+> @@ -15,6 +15,7 @@
+>  #define INSN_CODE_SEG_OPND_SZ(params) (params & 0xf)
+>  #define INSN_CODE_SEG_PARAMS(oper_sz, addr_sz) (oper_sz | (addr_sz << 4))
+>  
+> +bool insn_has_rep_prefix(struct insn *insn);
+>  void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs);
+>  int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
+>  int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
+> diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+> index a8ac5c5e94f0..8ed9d645259c 100644
+> --- a/arch/x86/lib/insn-eval.c
+> +++ b/arch/x86/lib/insn-eval.c
+> @@ -53,6 +53,30 @@ static bool is_string_insn(struct insn *insn)
+>  	}
+>  }
+>  
+> +/**
+> + * insn_has_rep_prefix() - Determine if instruction has a REP prefix
+> + * @insn:	Instruction containing the prefix to inspect
+> + *
+> + * Returns:
+> + *
+> + * true if the instruction has a REP prefix, false if not.
+> + */
+> +bool insn_has_rep_prefix(struct insn *insn)
+> +{
+> +	int i;
+> +
+> +	insn_get_prefixes(insn);
+> +
+> +	for (i = 0; i < insn->prefixes.nbytes; i++) {
+> +		insn_byte_t p = insn->prefixes.bytes[i];
+> +
+> +		if (p == 0xf2 || p == 0xf3)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  /**
+>   * get_seg_reg_override_idx() - obtain segment register override index
+>   * @insn:	Valid instruction with segment override prefixes
+> -- 
+> 2.27.0
+> 
+
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
