@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F67223A43
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8A2223A4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgGQLV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 07:21:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40062 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgGQLV6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 07:21:58 -0400
-Date:   Fri, 17 Jul 2020 11:21:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594984915;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2N7cl9Uv5C2BfTmcs6AcgRYir7yXNppoUxiGa6sKO0s=;
-        b=pHFLMjCZfl8dEb9NJli+wvKsWOyJCm4uv+kwgNehGo494JrWm7LkJaMxkUnkSUcxRmGIIB
-        JFntO7z87LrNyfSAAx8PgSVrOv48yyZPg6ppZfnLm/4CJcvgn6fkBsyzHbd2NfeVC5U+rx
-        zyBCn0jK7Yao+8CfaPF0+0sQtNEFzFpw0gam9UkEkwmEbFbR56JmT0Zc9tc+yJZZ3S00Ou
-        fSmzhH30Yg1TW8xccuf/mFopvSGDpVX5mQHI7mxYzZsW71sk3DTNxuSOQygPNjvkOrmLkB
-        e6j3JQIo7ICRPonWYMYurHcA0CCIwA2Loh8wywrcusMQEhA0dZ3WzaUgOn0QtA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594984915;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2N7cl9Uv5C2BfTmcs6AcgRYir7yXNppoUxiGa6sKO0s=;
-        b=9SuBPK/vnOVHz/2gDXbIDl6CQbKZN0lMQ2VhrQHRA7+m65L5VQJolm6Ok2iM6aV88RZSN/
-        8ui1Oa/N0rtU8sDA==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: handle case of task_h_load() returning 0
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        <stable@vger.kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200710152426.16981-1-vincent.guittot@linaro.org>
-References: <20200710152426.16981-1-vincent.guittot@linaro.org>
+        id S1726635AbgGQLWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 07:22:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726238AbgGQLWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 07:22:08 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B94320734;
+        Fri, 17 Jul 2020 11:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594984927;
+        bh=4Ytl/sJApXV4/rt16Tz5YqZRmbwVqcvOPJ+WrmLBSIw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AfEOvqoSmBqSuZ3IGZrCNgaEKKyAJrLH9mU99LQvawWDxFCaTs78HCYeflnfPK61R
+         tJqGICRWpojrt4iXZhd8qKRhlYtLUGmPmXBEK+GAU3j/Kvof1igZFdi0/lE21Q0eL2
+         lZT/XLVFvff+JAIz+bdonDDX9JyTGaCqUDa72oro=
+Date:   Fri, 17 Jul 2020 12:21:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Cc:     alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v3 0/1] ASoC: fsl_asrc: always select different clocks
+Message-ID: <20200717112156.GA4316@sirena.org.uk>
+References: <20200716232000.GA27246@Asurada-Nvidia>
+ <20200717103857.31877-1-arnaud.ferraris@collabora.com>
 MIME-Version: 1.0
-Message-ID: <159498491467.4006.8575391976004781075.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3MwIy2ne0vdjdPXF"
+Content-Disposition: inline
+In-Reply-To: <20200717103857.31877-1-arnaud.ferraris@collabora.com>
+X-Cookie: No other warranty expressed or implied.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     01cfcde9c26d8555f0e6e9aea9d6049f87683998
-Gitweb:        https://git.kernel.org/tip/01cfcde9c26d8555f0e6e9aea9d6049f87683998
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Fri, 10 Jul 2020 17:24:26 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 16 Jul 2020 23:19:48 +02:00
+--3MwIy2ne0vdjdPXF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sched/fair: handle case of task_h_load() returning 0
+On Fri, Jul 17, 2020 at 12:38:56PM +0200, Arnaud Ferraris wrote:
+> This patch fixes the automatic clock selection so it always selects
+> distinct input and output clocks.
 
-task_h_load() can return 0 in some situations like running stress-ng
-mmapfork, which forks thousands of threads, in a sched group on a 224 cores
-system. The load balance doesn't handle this correctly because
-env->imbalance never decreases and it will stop pulling tasks only after
-reaching loop_max, which can be equal to the number of running tasks of
-the cfs. Make sure that imbalance will be decreased by at least 1.
+Please don't send new patches in reply to old ones, it buries things and
+makes it hard to keep track of what the current version of a series
+looks like.  Just send new versions as a completely new thread.
 
-misfit task is the other feature that doesn't handle correctly such
-situation although it's probably more difficult to face the problem
-because of the smaller number of CPUs and running tasks on heterogenous
-system.
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
-We can't simply ensure that task_h_load() returns at least one because it
-would imply to handle underflow in other places.
+--3MwIy2ne0vdjdPXF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: <stable@vger.kernel.org> # v4.4+
-Link: https://lkml.kernel.org/r/20200710152426.16981-1-vincent.guittot@linaro.org
----
- kernel/sched/fair.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 658aa7a..04fa8db 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4039,7 +4039,11 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
- 		return;
- 	}
- 
--	rq->misfit_task_load = task_h_load(p);
-+	/*
-+	 * Make sure that misfit_task_load will not be null even if
-+	 * task_h_load() returns 0.
-+	 */
-+	rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
- }
- 
- #else /* CONFIG_SMP */
-@@ -7638,7 +7642,14 @@ static int detach_tasks(struct lb_env *env)
- 
- 		switch (env->migration_type) {
- 		case migrate_load:
--			load = task_h_load(p);
-+			/*
-+			 * Depending of the number of CPUs and tasks and the
-+			 * cgroup hierarchy, task_h_load() can return a null
-+			 * value. Make sure that env->imbalance decreases
-+			 * otherwise detach_tasks() will stop only after
-+			 * detaching up to loop_max tasks.
-+			 */
-+			load = max_t(unsigned long, task_h_load(p), 1);
- 
- 			if (sched_feat(LB_MIN) &&
- 			    load < 16 && !env->sd->nr_balance_failed)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8RidAACgkQJNaLcl1U
+h9BABgf+McXrUIeMmHD9s/UnkWkyNJ4PKl5NQIIRBqxooaMsMM8EleOfLVIvm21q
+gpXLvv741e7NL5slM0lyEmbPOGkrOlQtAXqQRfjXrE058oe69xfZc81UBJyY/qGs
+6FHaHrv/I7t8Qi/P4omXIkWV7o8dYepW8bqoGmGaj+sWokZRH/2t+RtUhIqWGL/T
+h2GOGFLnNU62s0KhCin26ASw2lf+Yn7aiVPylMz985lOH+eRL6hCaCnWFEeeoeyC
+Ik2ICPmAdoqofYG6Nh1Su1w4hZC6gAhh8VheBeHjWoK5+6rJcRZ+uB1cWwSl458n
+kGpe9Jse9m2ZILav2E4WlGb5ncO4JA==
+=UqXD
+-----END PGP SIGNATURE-----
+
+--3MwIy2ne0vdjdPXF--
