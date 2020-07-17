@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7422D224372
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFF3224386
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgGQS46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
+        id S1728432AbgGQS5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbgGQS44 (ORCPT
+        with ESMTP id S1728410AbgGQS47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:56:56 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B135BC0619D2;
-        Fri, 17 Jul 2020 11:56:56 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id j10so8402882qtq.11;
-        Fri, 17 Jul 2020 11:56:56 -0700 (PDT)
+        Fri, 17 Jul 2020 14:56:59 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AB8C0619D2;
+        Fri, 17 Jul 2020 11:56:59 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id z63so9693956qkb.8;
+        Fri, 17 Jul 2020 11:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tHKyFBxmNx4T6rqbFUKdYrutI2dSkhcpOel2unUmdiA=;
-        b=n0J7Dd0X7kNphPD8MMfIho7qvpUIh6gTXlitkLHN1QhAhHSIdi6j2yS49H53t4fzN+
-         jgupJAEqubBqCtG/t4S082ZfXumVwC9cM3oQFFn/C7sXP4dt92z4fEfGKv80BpRyyH8p
-         oqh8JReW+HRmNSxVFpXkNwOTxgtw6tzXltgwBYvEOonEyH25WqyTYwhdD/B2M2A2sZcT
-         KTXH0eLB21cU3f8u59Ci2hZPQHfJ7ZIpJr249Yh55fLZbN9cGCgP8ZxQ8frYu5QHIjTI
-         xYLiG1ecNLgOY40AUHFEAjNUxxHMjYtkiZ30uS/0CHn2VhvHHuzWMuZcYx8Ys0CG05ll
-         YkZg==
+        bh=2Q+dOO3q6iVRsIzGKMNVG1hgYBtRW1kx4cuQ6hNcJRA=;
+        b=AB+adAIuWZBMr3RcCg2EpRB11SXJYyAyiBWlxFfkT8RbRV6H09jQaISAwzOWhfmYsD
+         McW107OWMDH+P+PJMvfxhIXdjfqFBS9jPRTiXOTKdMy+TvOZcaJXsFm1az0i0fwNB3il
+         6AWBgYFYB3rTemCRO6CakkRqTjGxa1y+4mZQZN4oGNvrGgQ7Ddy0sJl7bli8LEokRk7x
+         sblTBOuxtQ//jibOxTMvhvyW5DHcFMP6Lv5C3luDqXTvErxM3dnOUGGZN5S6AuYEvEeJ
+         Oex4Gp0XDdkEUhEZueV6Gzm7/QrGHXuc/qzNfCDAMQxb/sQWCss8RHF8B6Ga4V4ZG/fs
+         WJ/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tHKyFBxmNx4T6rqbFUKdYrutI2dSkhcpOel2unUmdiA=;
-        b=Fgp4adaKel7MnWtqv4zNYo60UOJx3YkuPVYgr5bsfTx1/5g8et6xw0eTuOTWR2zaPO
-         MSDNgj6Ui/J3v9E5J+V5F4QcUGqYaku7spFrUZ/xAaETE9PUp+u5eADYeQMH8CJdyJLj
-         OpSPZ01fbCnYd/RjHSEdO9JfVfbatAhylMcLHOf8p0OlsF87XGGf+7OB7vvUDyFBrRtr
-         OwLWnwCM1/jIGzdvXeQCMkMLlWtlWthsJF38NTN3TjPDq9LLqx+pQ7YXr1WAU6bA7FEP
-         6nVIrwHE3y6VjljB+Aw3cnZ2yk0+ylzwdO7GRKY8g4UBS5m+6ilXGGR8G2A25/Sq0KdG
-         ScaA==
-X-Gm-Message-State: AOAM5312SbjqyTwnjqjJ+JL64DqExxn8L8E7pq2+ye61P/1q/85Xq7MR
-        H4uhG9STayNW7F/wedIjREyVEwVi+i8=
-X-Google-Smtp-Source: ABdhPJy2xAv04ifTIuCD0JvUwBfTJQhfojB5AQTDulqbMlPjEQtA5dlLBK/iaeegoFFpvKC0kp4Rtw==
-X-Received: by 2002:ac8:311d:: with SMTP id g29mr11934964qtb.54.1595012215870;
-        Fri, 17 Jul 2020 11:56:55 -0700 (PDT)
+        bh=2Q+dOO3q6iVRsIzGKMNVG1hgYBtRW1kx4cuQ6hNcJRA=;
+        b=oqP/axIf5yqIR9EuP3C9TDhdfBg916ZjGvgqVK0psMA3nCd2ERjctpL1VYma3UMmKa
+         m9YWsfqHynQcKW6Pq7gViQEQYTQwJ8lApzW3j929ifFs58NgnX3DP8Ewf+zLbPCZhmvG
+         ybPuVzsqwrMHwH6vpS9yGm1Yv5nndIzyxCCZXtVmGkz5vZsZP+G2SqvzPsz9AuXl/+kR
+         lqQBO35GCVDdFXHvXhD29C7aiWmAWfeUTZ1ZtXftwWw2D3AfGpZHc+9MYK/obydKoC8b
+         3mQ4mgWumuIxUrOA4GtNSOVAsOZHWXRMnaX4xnP2MZ56pbUD23rDuDURq50ciF0RrW2F
+         t7Cw==
+X-Gm-Message-State: AOAM533hHGzBaNaZMuS/zG8zNbVvlHCKTJBTSn5VLPyGrYtp3DTk6DuI
+        wVZaBFlJUWqCRU5SGenSrm0=
+X-Google-Smtp-Source: ABdhPJxiUT6XT9+fYRRiXdETF63A9GlYLI2aH0vBxBWcoFCkuuhC+mkvOaMKNt3qyva81sgEv0oQ0w==
+X-Received: by 2002:a37:954:: with SMTP id 81mr10090485qkj.336.1595012218908;
+        Fri, 17 Jul 2020 11:56:58 -0700 (PDT)
 Received: from localhost.localdomain ([2804:18:7002:653c:f7ea:490a:10b0:ec39])
-        by smtp.gmail.com with ESMTPSA id r6sm11380097qtt.81.2020.07.17.11.56.53
+        by smtp.gmail.com with ESMTPSA id r6sm11380097qtt.81.2020.07.17.11.56.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 11:56:55 -0700 (PDT)
+        Fri, 17 Jul 2020 11:56:58 -0700 (PDT)
 From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 X-Google-Original-From: Daniel W. S. Almeida
 To:     corbet@lwn.net, mchehab@kernel.org
 Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 03/25] Documentation: amdgpu_vram_mgr_del: fix sphinx warnings
-Date:   Fri, 17 Jul 2020 15:56:02 -0300
-Message-Id: <20200717185624.2009393-3-dwlsalmeida@gmail.com>
+Subject: [PATCH 04/25] Documentation: amdgpu_gtt_mgr_del: fix sphinx warnings
+Date:   Fri, 17 Jul 2020 15:56:03 -0300
+Message-Id: <20200717185624.2009393-4-dwlsalmeida@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200717185624.2009393-1-dwlsalmeida@gmail.com>
 References: <20200717185624.2009393-1-dwlsalmeida@gmail.com>
@@ -71,29 +71,29 @@ From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 Fix the following warnings:
 
 warning: Excess function parameter 'tbo' description in
-'amdgpu_vram_mgr_del'
+'amdgpu_gtt_mgr_del'
 
 warning: Excess function parameter 'place' description in
-'amdgpu_vram_mgr_del'
+'amdgpu_gtt_mgr_del'
 
 Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 --
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index d399e58931705..97ad8ffe6c6c0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -407,8 +407,6 @@ static int amdgpu_vram_mgr_new(struct ttm_mem_type_manager *man,
-  * amdgpu_vram_mgr_del - free ranges
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+index 627104401e843..bc01a06546aaf 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+@@ -268,8 +268,6 @@ static int amdgpu_gtt_mgr_new(struct ttm_mem_type_manager *man,
+  * amdgpu_gtt_mgr_del - free ranges
   *
   * @man: TTM memory type manager
 - * @tbo: TTM BO we need this range for
 - * @place: placement flags and restrictions
   * @mem: TTM memory object
   *
-  * Free the allocated VRAM again.
+  * Free the allocated GTT again.
 -- 
 2.27.0
 
