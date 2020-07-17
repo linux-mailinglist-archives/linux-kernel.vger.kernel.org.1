@@ -2,69 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6B422433E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBC7224343
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgGQSiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgGQSiM (ORCPT
+        id S1728119AbgGQSkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:40:43 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49880 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726322AbgGQSkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:38:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE3EC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 11:38:12 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595011090;
+        Fri, 17 Jul 2020 14:40:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595011241;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=epzCBXg5qGcUfz87P+4zTdQJlxn0UPwHoqC1rhawI+4=;
-        b=kkZ15SlnVeAyM8KP28wI99EpmR25TiEo1o/GP3Z++FjeSUic/TRu8p3NAqkP5517rnE7lc
-        LMvco4TaXym9Wt0fhT/Y4eDrqblfetORQ5jIPFurRDN0W2lblI9BDdxREKgbDbLzzS4Wfu
-        q4AyPva3YdECri3KJT+KkDyG3dVANoKM4b8zjOv2F+qR16QDgymvIk9eZxbhPO3oqw2Avl
-        48rfrrz2OA+zrPiyzoyAkNQ0+NIvi8vTl5y2PANGb87/YsoPQ3QyGFiBXu9m53b9pGtdz1
-        KI0UW9hvl0ZRXZKXTIlrTXYV4iFp8YH1yjBS59gW4cR9FO46T9ggu+yoieHzfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595011090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=epzCBXg5qGcUfz87P+4zTdQJlxn0UPwHoqC1rhawI+4=;
-        b=0Nt3KUrpCBd404neVuL9guOuxvCq5t65zxuM0w8h9hphTZfoh6vSm0wvNN91BIQyvm9VgH
-        Rfe13kHJvvxoFlCw==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer timer handling to task_work
-In-Reply-To: <20200716225458.GL5523@worktop.programming.kicks-ass.net>
-References: <20200716201923.228696399@linutronix.de> <20200716202044.734067877@linutronix.de> <20200716225458.GL5523@worktop.programming.kicks-ass.net>
-Date:   Fri, 17 Jul 2020 20:38:10 +0200
-Message-ID: <87tuy6q965.fsf@nanos.tec.linutronix.de>
+        bh=loX3iNxnC34Mh5q85vIpxAcyIoCVZ/OKd+6NErIYBZY=;
+        b=Hx2jYpobPHoxgsywJd0cNh+bbJ1Ma4JIoX/84aHm4zBf19luxtb63tLWOymi37Is1ccOBc
+        qqCOCh+B43nasPOq5D0wjP2SLM0SH3oFlrj0A0GZB+21yTAo0iZxjiHvGb4FgiSW9GOdnf
+        6FI/Y5850zpFX1MsqVgQnvsc4IQczWM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-9d_YNwHZM0KEqKVjKlTnUQ-1; Fri, 17 Jul 2020 14:40:23 -0400
+X-MC-Unique: 9d_YNwHZM0KEqKVjKlTnUQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 535D5800468;
+        Fri, 17 Jul 2020 18:40:21 +0000 (UTC)
+Received: from localhost (ovpn-116-105.gru2.redhat.com [10.97.116.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 83F0760E3E;
+        Fri, 17 Jul 2020 18:40:20 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 15:40:19 -0300
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Cc:     zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v6] ima: move APPRAISE_BOOTPARAM dependency on
+ ARCH_POLICY to runtime
+Message-ID: <20200717184019.GI2984@glitch>
+References: <20200713164830.101165-1-bmeneg@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200713164830.101165-1-bmeneg@redhat.com>
+X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xQR6quUbZ63TTuTU"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Thu, Jul 16, 2020 at 10:19:26PM +0200, Thomas Gleixner wrote:
->> +static void __run_posix_cpu_timers(struct task_struct *tsk)
->> +{
->> +	struct posix_cputimers *pct = &tsk->posix_cputimers;
->> +
->> +	if (!test_and_set_bit(CPUTIMERS_WORK_SCHEDULED, &pct->flags))
->> +		task_work_add(tsk, &pct->task_work, true);
->
-> s/true/TWA_RESUME/g
->
-> see: e91b48162332 ("task_work: teach task_work_add() to do signal_wake_up()")
+--xQR6quUbZ63TTuTU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Duh, yes.
+On Mon, Jul 13, 2020 at 01:48:30PM -0300, Bruno Meneguele wrote:
+> The IMA_APPRAISE_BOOTPARAM config allows enabling different "ima_appraise=
+=3D"
+> modes - log, fix, enforce - at run time, but not when IMA architecture
+> specific policies are enabled. =A0This prevents properly labeling the
+> filesystem on systems where secure boot is supported, but not enabled on =
+the
+> platform. =A0Only when secure boot is actually enabled should these IMA
+> appraise modes be disabled.
+>=20
+> This patch removes the compile time dependency and makes it a runtime
+> decision, based on the secure boot state of that platform.
+>=20
+> Test results as follows:
+>=20
+> -> x86-64 with secure boot enabled
+>=20
+> [    0.015637] Kernel command line: <...> ima_policy=3Dappraise_tcb ima_a=
+ppraise=3Dfix
+> [    0.015668] ima: Secure boot enabled: ignoring ima_appraise=3Dfix boot=
+ parameter option
+>=20
+> -> powerpc with secure boot disabled
+>=20
+> [    0.000000] Kernel command line: <...> ima_policy=3Dappraise_tcb ima_a=
+ppraise=3Dfix
+> [    0.000000] Secure boot mode disabled
+>=20
+> -> Running the system without secure boot and with both options set:
+>=20
+> CONFIG_IMA_APPRAISE_BOOTPARAM=3Dy
+> CONFIG_IMA_ARCH_POLICY=3Dy
+>=20
+> Audit prompts "missing-hash" but still allow execution and, consequently,
+> filesystem labeling:
+>=20
+> type=3DINTEGRITY_DATA msg=3Daudit(07/09/2020 12:30:27.778:1691) : pid=3D4=
+976
+> uid=3Droot auid=3Droot ses=3D2
+> subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=3Dapprais=
+e_data
+> cause=3Dmissing-hash comm=3Dbash name=3D/usr/bin/evmctl dev=3D"dm-0" ino=
+=3D493150
+> res=3Dno
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: d958083a8f64 ("x86/ima: define arch_get_ima_policy() for x86")
+> Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
+> ---
+> v6:
+>   - explictly print the bootparam being ignored to the user (Mimi)
+> v5:
+>   - add pr_info() to inform user the ima_appraise=3D boot param is being
+> =09ignored due to secure boot enabled (Nayna)
+>   - add some testing results to commit log
+> v4:
+>   - instead of change arch_policy loading code, check secure boot state a=
+t
+> =09"ima_appraise=3D" parameter handler (Mimi)
+> v3:
+>   - extend secure boot arch checker to also consider trusted boot
+>   - enforce IMA appraisal when secure boot is effectively enabled (Nayna)
+>   - fix ima_appraise flag assignment by or'ing it (Mimi)
+> v2:
+>   - pr_info() message prefix correction
+>  security/integrity/ima/Kconfig        | 2 +-
+>  security/integrity/ima/ima_appraise.c | 6 ++++++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kcon=
+fig
+> index edde88dbe576..62dc11a5af01 100644
+> --- a/security/integrity/ima/Kconfig
+> +++ b/security/integrity/ima/Kconfig
+> @@ -232,7 +232,7 @@ config IMA_APPRAISE_REQUIRE_POLICY_SIGS
+> =20
+>  config IMA_APPRAISE_BOOTPARAM
+>  =09bool "ima_appraise boot parameter"
+> -=09depends on IMA_APPRAISE && !IMA_ARCH_POLICY
+> +=09depends on IMA_APPRAISE
+>  =09default y
+>  =09help
+>  =09  This option enables the different "ima_appraise=3D" modes
+> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/i=
+ma/ima_appraise.c
+> index a9649b04b9f1..28a59508c6bd 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -19,6 +19,12 @@
+>  static int __init default_appraise_setup(char *str)
+>  {
+>  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+> +=09if (arch_ima_get_secureboot()) {
+> +=09=09pr_info("Secure boot enabled: ignoring ima_appraise=3D%s boot para=
+meter option",
+> +=09=09=09str);
+> +=09=09return 1;
+> +=09}
+> +
+>  =09if (strncmp(str, "off", 3) =3D=3D 0)
+>  =09=09ima_appraise =3D 0;
+>  =09else if (strncmp(str, "log", 3) =3D=3D 0)
+> --=20
+> 2.26.2
+>=20
+
+Ping for review.
+
+Many thanks.
+
+--=20
+bmeneg=20
+PGP Key: http://bmeneg.com/pubkey.txt
+
+--xQR6quUbZ63TTuTU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8R8JMACgkQYdRkFR+R
+okMiPAf+Lawa+3mJ/dDC1Np/eBpA/UCMscxAKYRNlkGVChCpXeeXX1JV4M4CKHzu
+bmfws9NGfx4kw++hn8IeF86ypV3XhdKQyz7zQ6L4Rgmv08a/AE1msMRwwSMky9li
+n/Mh5HcYsfnLmGrLrSYjR/PTNqmz0WPgRCOSpFaTRcqTVKkUMJ8m83cwTe/5Avm9
+SmUyq80QY4AV4bJcedr1U+Ror8it5dHdtgy5bz0TPepRnhk/lE7Ro+mZE0e8N0R+
+3BiyCiYhUMD7E5LODlnMAWvbd/vEf3I0a0rYuQmxcauXs8HVI6j42A9Tmc/7PcDG
+EGRCFOvOOkQz6WddH1svTgptnLyGsA==
+=Ggbe
+-----END PGP SIGNATURE-----
+
+--xQR6quUbZ63TTuTU--
+
