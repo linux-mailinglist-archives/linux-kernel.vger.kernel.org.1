@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB3E223711
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C32223715
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgGQIcP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Jul 2020 04:32:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:55719 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726798AbgGQIcN (ORCPT
+        id S1726381AbgGQIdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:33:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38290 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725970AbgGQIdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:32:13 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-30-vOfOUf7XOJW9yv-pErlP7A-1; Fri, 17 Jul 2020 09:32:08 +0100
-X-MC-Unique: vOfOUf7XOJW9yv-pErlP7A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 17 Jul 2020 09:32:07 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 17 Jul 2020 09:32:07 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'js1304@gmail.com'" <js1304@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-team@lge.com" <kernel-team@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Naoya Horiguchi" <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH 1/4] mm/page_alloc: fix non cma alloc context
-Thread-Topic: [PATCH 1/4] mm/page_alloc: fix non cma alloc context
-Thread-Index: AQHWWmWbQrqMs3IygU6Uq8saGSVLGakLcr1w
-Date:   Fri, 17 Jul 2020 08:32:07 +0000
-Message-ID: <be55deff4ef1453983522d247bd36110@AcuMS.aculab.com>
-References: <1594789529-6206-1-git-send-email-iamjoonsoo.kim@lge.com>
-In-Reply-To: <1594789529-6206-1-git-send-email-iamjoonsoo.kim@lge.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 17 Jul 2020 04:33:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594974817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n6HQ4cRfKiCj6MVs/01fSUjQjB0YRcJewpfMhE5xrqw=;
+        b=CMZF3sTpM/qd2EhEroXqzA2yZOcTGEhucw8c4Z95QBO+8fZOCqq4979oPY3+l7c36UC9Hv
+        82GQiJn0HzjGxvLVMoOcvUeyteDOt2xRjOXj+ggMgNDH0/CeiIKlA5OoaoYagBhcozrY2T
+        26P3VR0B97MTynqYPSHrFnG09jlcb6E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-sKrxrS3ONJuKpSRaoS_KVQ-1; Fri, 17 Jul 2020 04:33:33 -0400
+X-MC-Unique: sKrxrS3ONJuKpSRaoS_KVQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 619C1800464;
+        Fri, 17 Jul 2020 08:33:31 +0000 (UTC)
+Received: from krava (unknown [10.40.192.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1CC1E10013D7;
+        Fri, 17 Jul 2020 08:33:28 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 10:33:28 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        kan.liang@linux.intel.com, len.brown@intel.com
+Subject: Re: [PATCH 1/3] perf/x86/rapl: Fix missing psys sysfs attributes
+Message-ID: <20200717083328.GA528602@krava>
+References: <20200716151859.6854-1-rui.zhang@intel.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716151859.6854-1-rui.zhang@intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: js1304@gmail.com
-> Sent: 15 July 2020 06:05
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On Thu, Jul 16, 2020 at 11:18:57PM +0800, Zhang Rui wrote:
+> This fixes a problem introduced by
+> commit 5fb5273a905c ("perf/x86/rapl: Use new MSR detection interface")
+> that perf event sysfs attributes for psys RAPL domain are missing.
 > 
-> Currently, preventing cma area in page allocation is implemented by using
-> current_gfp_context(). However, there are two problems of this
-> implementation.
-...
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 6416d08..cd53894 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-...
-> @@ -3693,6 +3691,16 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
->  	return alloc_flags;
->  }
+> Fixes: 5fb5273a905c ("perf/x86/rapl: Use new MSR detection interface")
+> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> ---
+>  arch/x86/events/rapl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> +static inline void current_alloc_flags(gfp_t gfp_mask,
-> +				unsigned int *alloc_flags)
-> +{
-> +	unsigned int pflags = READ_ONCE(current->flags);
-> +
-> +	if (!(pflags & PF_MEMALLOC_NOCMA) &&
-> +		gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> +		*alloc_flags |= ALLOC_CMA;
-> +}
-> +
+> diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+> index 0f2bf59f4354..51ff9a3618c9 100644
+> --- a/arch/x86/events/rapl.c
+> +++ b/arch/x86/events/rapl.c
+> @@ -665,7 +665,7 @@ static const struct attribute_group *rapl_attr_update[] = {
+>  	&rapl_events_pkg_group,
+>  	&rapl_events_ram_group,
+>  	&rapl_events_gpu_group,
+> -	&rapl_events_gpu_group,
+> +	&rapl_events_psys_group,
 
-I'd guess this would be easier to understand and probably generate
-better code if renamed and used as:
-	alloc_flags |= can_alloc_cma(gpf_mask);
+I did copy & paste but did not change to psys :-\
 
-Given it is a 'static inline' the compiler might end up
-generating the same code.
-If you needed to clear a flag doing:
-	alloc_flags = current_alloc_flags(gpf_mask, alloc_flags);
-is much better for non-inlined function.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-	David
+thanks,
+jirka
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+>  	NULL,
+>  };
+>  
+> -- 
+> 2.17.1
+> 
 
