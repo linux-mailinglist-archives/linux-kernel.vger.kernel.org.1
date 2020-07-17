@@ -2,104 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A18223CD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE0A223CD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgGQNgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:36:52 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:49488 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgGQNgw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:36:52 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HDafpT114516;
-        Fri, 17 Jul 2020 08:36:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594993002;
-        bh=nX35DTen3KepnW22tRHvoRm3iZKHpTmApYwnPsGvDLg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=eOLjwKsuO0vACSIstqm/OpUPdyBH7R3o26NlvnoNGxeYE+Q2p3CfvjJoojhsJijCa
-         kS8hjrNBGT+9e12rnK7RLLXLqRiIX+chbMdgxq3+W/j+PXnRiFATUnvO0XR/bWhI0c
-         TAEzHCyZvqcZ9athU78TV4ZSgxp/pCq+82G0FYsE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06HDafMS083455
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 08:36:41 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
- Jul 2020 08:36:41 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 17 Jul 2020 08:36:41 -0500
-Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HDaTLH019020;
-        Fri, 17 Jul 2020 08:36:37 -0500
-Subject: Re: [PATCH 7/7] arm64: defconfig: Enable AM654x SDHCI controller
-To:     Arnd Bergmann <arnd@arndb.de>, Tero Kristo <t-kristo@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        ARM-SoC Maintainers <soc@kernel.org>,
-        Nishanth Menon <nm@ti.com>
-References: <20200619125801.9530-1-faiz_abbas@ti.com>
- <20200619125801.9530-8-faiz_abbas@ti.com>
- <3ed03440-7fbd-6abc-8a15-67e7217e2c3d@ti.com>
- <2e50333c-5387-236f-3fb2-6d8014b224e0@ti.com>
- <CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com>
- <75cd485b-e3eb-19ee-ad1f-84cb04b0c807@ti.com>
- <933d7132-5d9f-89df-8dec-5d9f6d3e0eee@ti.com>
- <CAK8P3a3Uc1X9PY6OnxbgEyBVY1=sx1drW7JrGzcPv1KrXaK7aQ@mail.gmail.com>
-From:   Faiz Abbas <faiz_abbas@ti.com>
-Message-ID: <f603084a-64bd-bc1b-a516-5c8bdbc99d8b@ti.com>
-Date:   Fri, 17 Jul 2020 19:06:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726593AbgGQNhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:37:38 -0400
+Received: from cmta20.telus.net ([209.171.16.93]:59241 "EHLO cmta20.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726528AbgGQNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 09:37:37 -0400
+Received: from dougxps ([173.180.45.4])
+        by cmsmtp with SMTP
+        id wQYOju31CljNxwQYPjxByj; Fri, 17 Jul 2020 07:37:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1594993056; bh=MHXW2IkggcW3wyGFCI6PVWf/41xrTYo5/J9/J/sF8i0=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=1MgR/8V8KEFb7XBAbEGVVmYawYE5LVGWAiA9NYtugoJW8xyY9SURGb02IusXo+s4o
+         FEu0b3n6zewUewiyTkbh/Rp6ZCC7XScu42Arze2Ha29s3FFTU7wC8Ab5I8Qqq53Sks
+         o+//CdtcPdoiqQJxPYJcE+DaI0wkSxqLvP9gs+QYTLLuOpe00uvH4BQBdQw8pVEGEc
+         ko14uSLPxfQzjT2Z86CIElh7m8glpROQURE39qVuWPBnhaGcC7BzjRJDlSL0gVMPUQ
+         Kxwpu++5LpU6i+8PNfJVSje/K7a8EeQWOlVaQ1q4Z95/XioU7HPyzKcr/nxsYYJqZZ
+         3qqYoPYbmGCIw==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.3 cv=Z8aS40ZA c=1 sm=1 tr=0
+ a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=IkcTkHD0fZMA:10 a=aatUQebYAAAA:8
+ a=QyXUC8HyAAAA:8 a=gu6fZOg2AAAA:8 a=TWNXCyI2drZUM-DjKuIA:9 a=QEXdDO2ut3YA:10
+ a=-FEs8UIgK8oA:10 a=NWVoK91CQyQA:10 a=7715FyvI7WU-l6oqrZBK:22
+ a=2RSlZUUhi9gRBrsHwhhZ:22
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rafael@kernel.org>
+Cc:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        "'Linux Documentation'" <linux-doc@vger.kernel.org>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Peter Zijlstra'" <peterz@infradead.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'Giovanni Gherdovich'" <ggherdovich@suse.cz>,
+        "'Francisco Jerez'" <francisco.jerez.plata@intel.com>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>
+References: <3955470.QvD6XneCf3@kreacher> <000f01d65ae8$0c607990$25216cb0$@net> <CAJZ5v0jGbfqfqqoPLjneFD5HLb20Yv9p25juNTzaumL70iFogg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jGbfqfqqoPLjneFD5HLb20Yv9p25juNTzaumL70iFogg@mail.gmail.com>
+Subject: RE: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
+Date:   Fri, 17 Jul 2020 06:37:32 -0700
+Message-ID: <001201d65c3f$6e2371c0$4a6a5540$@net>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3Uc1X9PY6OnxbgEyBVY1=sx1drW7JrGzcPv1KrXaK7aQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Mailer: Microsoft Office Outlook 12.0
+Content-Language: en-ca
+Thread-Index: AdZbagHesCkVLO4tQcG7gYoT0bjwUwA0cV5w
+X-CMAE-Envelope: MS4wfOK9zJc8oTgw2q9HjxJyxrpliJRW0gTNup0SyBgPhQWTnu8gx/4AE2Ux4uI5fD09J4B26pOiuLd8QhzkXNzl6y5eTBArY0Wrx4xPdbkbtlUe1QatubJ3
+ t+vS6i1hK3AGIUzmWBJLKsnBgXKuK6RhAfcdgrtK/kgb0UfE5czIT8xpTbfOipfaaUoQXX9lkBW75ctL3ZfxtdmlnLkYqpF70bkgqmSqmkbQIBqyeuHbD2mH
+ TtDWG4NFfaJN5vqbEMi18AS+sBQ3PoCISPjpCrYBaorRzAlMNYp3KQY57FYiY+QfeX/kiCRfDZEZY7wB8dwRaY9fOMMm/LwUF3lzV3+ZceBRPapJ27IKRQTO
+ Ih6WPFL9kontzv4pECaV6bYeG61eyrhJX5twcoyRdaAwnDa9Yt530fxyl8VNfKwZHPASNV7LQLBOEO728Nbb5eVhTFcnS2HTxmDcDPo0Sz9tV9g8Lfk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tero,
+Hi Rafael,
 
-On 17/07/20 6:39 pm, Arnd Bergmann wrote:
-> On Fri, Jul 17, 2020 at 1:20 PM Tero Kristo <t-kristo@ti.com> wrote:
->> On 17/07/2020 11:38, Faiz Abbas wrote:
->>> On 16/07/20 11:58 pm, Arnd Bergmann wrote:
->>>> On Thu, Jul 16, 2020 at 3:25 PM Sekhar Nori <nsekhar@ti.com> wrote:
->>>> I tend to ignore individual patches to the defconfig file unless
->>>> they are sent to:soc@kernel.org. The best way to get them
->>>> included is to have the platform maintainers pick up the
->>>> changes and send them that way as a separate pull request
->>>> at the same time as sending any DT updates.
->>>>
->>>> The MAINTAINERS file lists Tero and Nishanth as maintainers
->>>> for the platform. If they want, I can apply this one directly, but in
->>>> the future, send it to them.
->>>>
->>>
->>> Thanks for clarifying Arnd. Tero, can you pick this up?
+Thank you for your reply.
+
+On 2020.07.16 05:08 Rafael J. Wysocki wrote:
+> On Wed, Jul 15, 2020 at 10:39 PM Doug Smythies <dsmythies@telus.net> wrote:
+>> On 2020.07.14 11:16 Rafael J. Wysocki wrote:
+>> >
+>> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> ...
+>> > Since the passive mode hasn't worked with HWP at all, and it is not going to
+>> > the default for HWP systems anyway, I don't see any drawbacks related to making
+>> > this change, so I would consider this as 5.9 material unless there are any
+>> > serious objections.
 >>
->> Ok, this topic has been bit unclear for me also, but if you say I can
->> pick the patches myself and send a pull request out, I can do that.
+>> Good point.
+
+Actually, for those users that default to passive mode upon boot,
+this would mean they would find themselves using this.
+Also, it isn't obvious, from the typical "what driver and what governor"
+inquiry.
+
+>> Some of the tests I do involve labour intensive post processing of data.
+>> I want to automate some of that work, and it will take time.
+>> We might be into the 5.9-rc series before I have detailed feedback.
+>>
+>> However, so far:
+>>
+>> Inverse impulse response test [1]:
+>>
+>> High level test, i5-9600K, HWP-passive (this patch), ondemand:
+>> 3101 tests. 0 failures. (GOOD)
+>>
+>> From [1], re-stated:
+>> > . High level: i5-9600K: 2453 tests, 60 failures, 2.45% fail rate. (HWP-active - powersave)
+>> > . Verify acpi-cpufreq/ondemand works fine: i5-9600K: 8975 tests. 0 failures.
+>>
+>> My version of that cool Alexander named pipe test [2] serialized workflow:
+>>
+>> HWP-passive (this patch), performance: PASS.
+>>
+>> From [2], re-stated, and also re-tested.
+>> HWP-disabled passive - performance: FAIL.
 > 
+> But I'm not quite sure how this is related to this patch?
 
-Patches 1-6 are being merged from mmc tree. You only need to pick up this patch.
+It isn't. The point being that it is different.
+But yes, that failure is because of our other discussion [3].
 
-Thanks,
-Faiz
+> 
+> This test would still fail without the patch if the kernel was started
+> with intel_pstate=passive in the kernel command line, wouldn't it.
+
+Yes.
+
+> 
+> > Although, I believe the issue to be EPB management, [3].
+> 
+> Well, that's kind of unexpected.
+> 
+> If this really is the case, then it looks like the effect of the EPB
+> setting on the processor is different depending on whether or not HWP
+> is enabled.
+> 
+>> And yes, I did see the reply to [3] that came earlier,
+>> And have now re-done the test, with the referenced patch added.
+>> It still is FAIL. I reply to the [3] thread, eventually.
+>>
+>> [1] https://marc.info/?l=linux-pm&m=159354421400342&w=2
+>> [2] https://marc.info/?l=linux-pm&m=159155067328641&w=2
+>> [3] https://marc.info/?l=linux-pm&m=159438804230744&w=2
+>>
+>> Kernel:
+>>
+>> b08284a541ad (HEAD -> k58rc5-doug) cpufreq: intel_pstate: Avoid enabling HWP if EPP is not supported
+>> 063fd7ccabfe cpufreq: intel_pstate: Implement passive mode with HWP enabled
+>> 730ccf5054e9 cpufreq: intel_pstate: Allow raw energy performance preference value
+>> bee36df01c68 cpufreq: intel_pstate: Allow enable/disable energy efficiency
+>> 199629d8200e cpufreq: intel_pstate: Fix active mode setting from command line
+>> 11ba468877bb (tag: v5.8-rc5, origin/master, origin/HEAD, master) Linux 5.8-rc5
+>>
+>> Rules for this work:
+>>
+>> . never use x86_energy_perf_policy.
+>> . For HWP disabled: never change from active to passive or via versa, but rather do it via boot.
+>> . after boot always check and reset the various power limit log bits that are set.
+>> . never compile the kernel (well, until after any tests), which will set those bits again.
+>> . never run prime95 high heat torture test, which will set those bits again.
+>> . try to never do anything else that will set those bits again.
+>>
+>> To be clear, I do allow changing governors within the context of the above rules.
+> 
+> Thanks for the feedback!
+
