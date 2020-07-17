@@ -2,68 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC132240B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E132240B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgGQQff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgGQQfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:35:34 -0400
-Received: from embeddedor (unknown [201.162.167.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A6D52065E;
-        Fri, 17 Jul 2020 16:35:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595003734;
-        bh=PKNDgQwBHU+u8iM5TGqJfeOToHbtv4pEScV52MFvHls=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TxrJ7MbTKKQV9fmTaapbzAMx82PP2hfF0FIoSt9LDMdPqIRlGudG3yJ01uwHmGhB5
-         xuciIdPKqVhf9uoQaTkLSkxE2QyoiinG9PwsMe82+8Nw2SmzMxRHklZNNC3nzAYXy2
-         G+ztodhuCgdH/qcjHxyaU5OuuUAgLzENA+9E9dEk=
-Date:   Fri, 17 Jul 2020 11:40:59 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jim Cromie <jim.cromie@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] watchdog: scx200_wdt: Use fallthrough pseudo-keyword
-Message-ID: <20200717164059.GA26947@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726359AbgGQQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726256AbgGQQma (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:42:30 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8953EC0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:42:28 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id j18so15886145wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=+3rxnetOPA9YeqWq4tADlvynk7eUReArYRmyXTONGkI=;
+        b=VV3akQYOc7tirLe5YfeKr+2LvlfDrzSZOXmAQ6ZPLWiskx350quVklFgQg0yJQkTYa
+         eS6EeYav3uMhjFijSpqhTEPwEuX0ujOTKH6b8/dMoxs0MnRXqtq9aCb8Jpu5DQzHRspq
+         OGOGm2ggyX0OpAm71tGlpf+ZJpzM5Rqk68pv9hB8KFxXXXW1mrUVJyb8CwfEEsvOY0NR
+         rOpFbW8mxW1B3EzOxyUXGWKqUGw7iLtFBtTDsykH8CJ56lkvXhGIXZM+E7/KUsRww/Pr
+         k9TOAU8+1ydhyIl8VlQIEBcRFyOT9LC5ToM626vYpnDUE5fRw5IwLhNpcUyfkU7jPNJV
+         FFZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+3rxnetOPA9YeqWq4tADlvynk7eUReArYRmyXTONGkI=;
+        b=FUy+PA3z5GxDJBnDdEQWozcpIq8r6mgIge5bftCc130DYZ7c0eG+ogYIlJZ/KcsG7E
+         ILxr6dzgb/4PL/WZAaB1OYH7dPvH8yFi88ZdYNSVVrBy16OTID+3QXD1GFwyUN4ifMrZ
+         r7eY89WEWn7jQ6llvb7USZVLoUEcPp4mqjrj899nDdoWZWx+4kBZTRwhtL+yHTBEHF7b
+         zEOYeAAxofIzpXhHhYMssye8Eyal2YYOhNuEaDr/EhvJe4RbXKyqq7kVMb03GgtgFTMa
+         WIOejv+nJPZqGFglomMM6y6l98pIdQTMt+r8MMWC6c/r1Si87PDYgdcEO7H7AXB7e+CR
+         YFaA==
+X-Gm-Message-State: AOAM533jlXNBkkC5PlddfbSYeNcIRNHdt68ihiKkAWSXehYlOjPTJXQc
+        fjefGD3IIOCSXkU6oVzNo+a6xw==
+X-Google-Smtp-Source: ABdhPJz6ibl3EXJPZE9ZoeRR4tBj19Pijs9Q+8UEKUdJsN/HGgnGq9Ng0zgSSx9CCXPYISOa2oVzBA==
+X-Received: by 2002:a1c:4183:: with SMTP id o125mr10113012wma.101.1595004145968;
+        Fri, 17 Jul 2020 09:42:25 -0700 (PDT)
+Received: from localhost.localdomain (lns-bzn-59-82-252-131-168.adsl.proxad.net. [82.252.131.168])
+        by smtp.gmail.com with ESMTPSA id q5sm15312610wrp.60.2020.07.17.09.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 09:42:25 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        m.szyprowski@samsung.com, amit.kucheria@linaro.org
+Subject: [PATCH 1/2] thermal: netlink: Improve the initcall ordering
+Date:   Fri, 17 Jul 2020 18:42:16 +0200
+Message-Id: <20200717164217.18819-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+The initcalls like to play joke. In our case, the thermal-netlink
+initcall is called after the thermal-core initcall but this one sends
+a notification before the former is initialzed. No issue was spotted,
+but it could lead to a memory corruption, so instead of relying on the
+core_initcall for the thermal-netlink, let's initialize directly from
+the thermal-core init routine, so we have full control of the init
+ordering.
 
-[1] https://www.kernel.org/doc/html/v5.7-rc7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- drivers/watchdog/scx200_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thermal/thermal_core.c    | 4 ++++
+ drivers/thermal/thermal_netlink.c | 3 +--
+ drivers/thermal/thermal_netlink.h | 6 ++++++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/scx200_wdt.c b/drivers/watchdog/scx200_wdt.c
-index c94098acb78f..7b5e18323f3f 100644
---- a/drivers/watchdog/scx200_wdt.c
-+++ b/drivers/watchdog/scx200_wdt.c
-@@ -186,7 +186,7 @@ static long scx200_wdt_ioctl(struct file *file, unsigned int cmd,
- 		margin = new_margin;
- 		scx200_wdt_update_margin();
- 		scx200_wdt_ping();
--		/* Fall through */
-+		fallthrough;
- 	case WDIOC_GETTIMEOUT:
- 		if (put_user(margin, p))
- 			return -EFAULT;
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 25ef29123f72..c2e7d7aaa354 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -1581,6 +1581,10 @@ static int __init thermal_init(void)
+ {
+ 	int result;
+ 
++	result = thermal_netlink_init();
++	if (result)
++		goto error;
++
+ 	mutex_init(&poweroff_lock);
+ 	result = thermal_register_governors();
+ 	if (result)
+diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
+index dd0a3b889674..42eace7401da 100644
+--- a/drivers/thermal/thermal_netlink.c
++++ b/drivers/thermal/thermal_netlink.c
+@@ -641,8 +641,7 @@ static struct genl_family thermal_gnl_family __ro_after_init = {
+ 	.n_mcgrps	= ARRAY_SIZE(thermal_genl_mcgrps),
+ };
+ 
+-static int __init thermal_netlink_init(void)
++int __init thermal_netlink_init(void)
+ {
+ 	return genl_register_family(&thermal_gnl_family);
+ }
+-core_initcall(thermal_netlink_init);
+diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
+index 0ec28d105da5..828d1dddfa98 100644
+--- a/drivers/thermal/thermal_netlink.h
++++ b/drivers/thermal/thermal_netlink.h
+@@ -6,6 +6,7 @@
+ 
+ /* Netlink notification function */
+ #ifdef CONFIG_THERMAL_NETLINK
++int __init thermal_netlink_init(void);
+ int thermal_notify_tz_create(int tz_id, const char *name);
+ int thermal_notify_tz_delete(int tz_id);
+ int thermal_notify_tz_enable(int tz_id);
+@@ -23,6 +24,11 @@ int thermal_notify_cdev_delete(int cdev_id);
+ int thermal_notify_tz_gov_change(int tz_id, const char *name);
+ int thermal_genl_sampling_temp(int id, int temp);
+ #else
++static inline int thermal_netlink_init(void)
++{
++	return 0;
++}
++
+ static inline int thermal_notify_tz_create(int tz_id, const char *name)
+ {
+ 	return 0;
 -- 
-2.27.0
+2.17.1
 
