@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A59E2240D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709B1224128
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgGQQyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
+        id S1726962AbgGQQ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726221AbgGQQyM (ORCPT
+        with ESMTP id S1726221AbgGQQ4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:54:12 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC24C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:54:12 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p20so11540411ejd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:54:12 -0700 (PDT)
+        Fri, 17 Jul 2020 12:56:00 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C0DC0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:55:59 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 22so15958586wmg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:55:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S/tcpiEgnv1Vg5/I/OqgwYTF2aG01fzIys/jsiwnsBI=;
-        b=V08GEdlJqw4cSc4CYRXDay4U2O0xjmQgoh0OxThxGSd8zlyBOJCSG0LvDkG+BS5q1U
-         WQv0Rec190mcxfeNnx9LuXQbIcPLoGhH9X8bLpMg7FMUa8CJ4BFRAVr21oo/Ux4WjiXV
-         XQP26ElmfuVKTXFD2k5+sr7XL8I08MHgj8irONWZb+auOwjrSAvavYNSxJaAwRtE+8rV
-         44qJWazIJ97dD/JSmF3tSb5TPixZ3QkjOHRwMoYqP2y9Yrp9oLo51Wc+hHjAOh1KK9S2
-         PQSr2dtMbPXRDKC1aEq87RcfJ3uV/RCo9mYd7hZGPLwFVaPb4Z3ZGA6AC1NARDnv5O43
-         rNGA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fLkc9nPCuFBlzzdiW7QaC6+VUWcbfx+wZE7RZ/DJmNs=;
+        b=sFPByDNA5iYDcZYuDfV45s4PhocxhrjliSkzVTpwzkpMoIJAC+Ow7ygouOnOQC05Fk
+         UXof8K/SHdq9efQWfx79WDIdIGG7i3OmiIALVQr5Nh3pvDjdTVMuAGHVZgfiJlRfAvUQ
+         /D6G5t/utAdZYH8VmsuOb0k5eBhQwdcvubu1hsT7byxwSm6vfttnDQE1F+cW3zYabv5k
+         Y1H5tQZB/pqQcrpgoyd0QuxAowJXUZqHDMgF9+OzyVTHjafWt3j3Exkzm5K2o85Ni0Pn
+         BD0IYGGRUFqUPpr4Z/ClpIz8oR50UQyWK3UFQQoh8NPaCYM/C/Alruk3FmmNg5+Rrbgj
+         tVFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S/tcpiEgnv1Vg5/I/OqgwYTF2aG01fzIys/jsiwnsBI=;
-        b=dC4JN+HdQyh54gDAjc8JzIGq405aILbDD1RruedGWoTJ9tsgSDPxMfPw7Pl6ZdCqeP
-         oo5YoEj0xptj1sWYBxAkGV3bYCDmkuponeMThwqNus2a5ltZxq9dUjl5BHyoyaoPrKIH
-         AYLW5dL/n/9S9/ApitZsCb5Q3Mj8hWBaDGpBrnW6+EDrMJC0mcM9aaYquaMSBnMJ2Mgt
-         ylWwktIj+3a9hHlbg75e/Y4XMd4UMpu5bPznlve9sdtcRRGRwMAFQbElknq2/Gc/6B2z
-         zDcu9pBCTPMusUGQFWIVAV8PckjNER41YUk0Ag651jt6G839OIBJGDXIFt/a8195KTql
-         c8dA==
-X-Gm-Message-State: AOAM531F2QYICHbeSfz+cp9fms2IEaXVtusdYM6DX2Qlv2K78pULde5c
-        jtRvppr9aE3NWOpLam7nDN8NyhPgVwDec4UANwheyQ==
-X-Google-Smtp-Source: ABdhPJxeMxUiEad3F5pqF1zmMQCX7DX5YW7te/oFGx5apYjlR/tGaK2csLBqusCu4S1I2ioC55TIZ0IM57TEY9PInGA=
-X-Received: by 2002:a17:906:1751:: with SMTP id d17mr9220665eje.140.1595004850955;
- Fri, 17 Jul 2020 09:54:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fLkc9nPCuFBlzzdiW7QaC6+VUWcbfx+wZE7RZ/DJmNs=;
+        b=U20BbrQHyZOLs1IHE52ml0Tzy6PIwyzJ1r65doeX/yZhr66m0e7PG5/+DO90vf8fO3
+         8wIEDlwHFLWbSlCpnRGKSMay5X+mlQsMkyyYkXQFwSycd//NDQMlrGOakKMaFtcMM9UF
+         c3vcGbiqDbKGR4OjvE+V0j/53Fo/O1WbbG3CfE6xuhPQEpx2EEKhKIznGFyl/ps5CdWe
+         j2Zx5mISsB4GxeUccwjQI4GxCOoti1rtQaNNHrrvvKvZOe0nPE5JecMzNNKRdjoCuY65
+         Ui8mXzYaYtVdC5ml79iBlWo7Pqd4ea1O8LC6bfAG42j6fGT6+PpXJ6gyd5fqlfgVJPoy
+         IDeA==
+X-Gm-Message-State: AOAM530+48t/q+Lz3HeXd1tCnCwTETG7um5M+hOM9BfHb4odKmx/HWyS
+        rEVRC4pB4QlnkoVbxZEYQ2bi2Q==
+X-Google-Smtp-Source: ABdhPJxlRLyTEBRgP66TpNStZ4Vf90Rbo/XRmlXZaoAy3SRK+ONsTDWdNXHOBfZIS1TD/U04dGJsbg==
+X-Received: by 2002:a7b:c116:: with SMTP id w22mr9872360wmi.97.1595004958202;
+        Fri, 17 Jul 2020 09:55:58 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.167.94])
+        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 09:55:57 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/30] Second batch of W=1 fixes for IIO
+Date:   Fri, 17 Jul 2020 17:55:08 +0100
+Message-Id: <20200717165538.3275050-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200716144927.7193-1-nsaenzjulienne@suse.de>
-In-Reply-To: <20200716144927.7193-1-nsaenzjulienne@suse.de>
-From:   Eric Anholt <eric@anholt.net>
-Date:   Fri, 17 Jul 2020 09:54:00 -0700
-Message-ID: <CADaigPWN9fJS2YB3Ly3bBTj8ur=F8_Li+hBzbDuSN0ig3mOiiA@mail.gmail.com>
-Subject: Re: [PATCH] drm/v3d: Use platform_get_irq_optional() to get optional IRQs
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Dave Emett <david.emett@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 7:51 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> Aside from being more correct, the non optional version of the function
-> prints an error when failing to find the IRQ.
->
-> Fixes: eea9b97b4504 ("drm/v3d: Add support for V3D v4.2")
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
->  drivers/gpu/drm/v3d/v3d_irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/v3d/v3d_irq.c b/drivers/gpu/drm/v3d/v3d_irq.c
-> index c88686489b88..0be2eb7876be 100644
-> --- a/drivers/gpu/drm/v3d/v3d_irq.c
-> +++ b/drivers/gpu/drm/v3d/v3d_irq.c
-> @@ -217,7 +217,7 @@ v3d_irq_init(struct v3d_dev *v3d)
->                 V3D_CORE_WRITE(core, V3D_CTL_INT_CLR, V3D_CORE_IRQS);
->         V3D_WRITE(V3D_HUB_INT_CLR, V3D_HUB_IRQS);
->
-> -       irq1 = platform_get_irq(v3d_to_pdev(v3d), 1);
-> +       irq1 = platform_get_irq_optional(v3d_to_pdev(v3d), 1);
->         if (irq1 == -EPROBE_DEFER)
->                 return irq1;
->         if (irq1 > 0) {
-> --
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Reviewed-by: Eric Anholt <eric@anholt.net>
+Only a couple left after this.  I'll sort those next week.
+
+Lee Jones (30):
+  iio: adc: ti_am335x_adc: Remove a couple of unused 'read' variables
+  iio: adc: twl4030-madc: Remove set but unused variables 'len'
+  iio: adc: twl4030-madc: Fix misnamed struct attribute
+  iio: magnetometer: hmc5843: 'hmc5843_pm_ops' is unused in 1 of 3 files
+    including hmc5843_core.h
+  iio: adc: twl6030-gpadc: Fix some misdocumentation and formatting
+    issues
+  iio: dac: ltc2632: Fix formatting in kerneldoc struct header
+  iio: light: si1145: Demote obvious misuse of kerneldoc to standard
+    comment blocks
+  iio: resolver: ad2s1200: Change ordering of compiler attribute macro
+  iio: temperature: mlx90632: Function parameter descriptions must match
+    exactly
+  iio: light: us5182d: Fix formatting in kerneldoc function block
+  iio: adc: ad799x: Demote seemingly unintentional kerneldoc header
+  iio: dac: ad5504: Fix formatting errors and demote non-compliant
+    kerneldoc
+  iio: adc: at91_adc: Fix 'bad line' warning
+  iio: adc: at91-sama5d2_adc: Struct kerneldoc titles need to start with
+    'struct '
+  iio: adc: cpcap-adc: Demote seemingly unintentional kerneldoc header
+  iio: accel: sca3000: Fix 2 misspellings and demote nonconforming
+    kerneldocs
+  iio: gyro: adxrs450: Change ordering of compiler attribute macro
+  iio: gyro: fxas21002c: Move 'fxas21002c_reg_fields' to the only file
+    its used
+  iio: imu: st_lsm6dsx: st_lsm6dsx: Reorder 'inline' declaration
+  iio: adc: max1363: Fix kerneldoc attribute formatting for 'lock'
+  iio: adc: max9611: Demote obvious misuse of kerneldoc to standard
+    comment blocks
+  iio: adc: mcp320x: Change ordering of compiler attribute macro
+  iio: adc: palmas_gpadc: Demote non-conforming kerneldoc header
+  iio: imu: inv_mpu6050: inv_mpu_core: Demote obvious misuse of
+    kerneldoc to standard comment blocks
+  iio: imu: inv_mpu6050: inv_mpu_ring: Demote seemingly unintentional
+    kerneldoc header
+  iio: adc: qcom-pm8xxx-xoadc: Demote standard comment block and supply
+    missing description
+  iio: magnetometer: ak8974: Add description for ak8974's 'scan'
+    attribute
+  iio: imu: st_lsm6dsx: st_lsm6dsx_shub: Demote obvious misuse of
+    kerneldoc to standard comment blocks
+  iio: imu: st_lsm6dsx: st_lsm6dsx: Mark 'st_lsm6dsx_accel_ext_info' as
+    __maybe_unused
+  iio: adc: rockchip_saradc: Demote Demote seemingly unintentional
+    kerneldoc header
+
+ drivers/iio/accel/sca3000.c                  | 12 ++--
+ drivers/iio/adc/ad799x.c                     |  2 +-
+ drivers/iio/adc/at91-sama5d2_adc.c           |  4 +-
+ drivers/iio/adc/at91_adc.c                   |  2 +-
+ drivers/iio/adc/cpcap-adc.c                  |  6 +-
+ drivers/iio/adc/max1363.c                    |  2 +-
+ drivers/iio/adc/max9611.c                    |  4 +-
+ drivers/iio/adc/mcp320x.c                    |  2 +-
+ drivers/iio/adc/palmas_gpadc.c               |  3 +-
+ drivers/iio/adc/qcom-pm8xxx-xoadc.c          |  3 +-
+ drivers/iio/adc/rockchip_saradc.c            |  2 +-
+ drivers/iio/adc/ti_am335x_adc.c              |  8 +--
+ drivers/iio/adc/twl4030-madc.c               | 14 ++---
+ drivers/iio/adc/twl6030-gpadc.c              |  4 +-
+ drivers/iio/dac/ad5504.c                     |  7 +--
+ drivers/iio/dac/ltc2632.c                    |  6 +-
+ drivers/iio/gyro/adxrs450.c                  |  2 +-
+ drivers/iio/gyro/fxas21002c.h                | 66 --------------------
+ drivers/iio/gyro/fxas21002c_core.c           | 66 ++++++++++++++++++++
+ drivers/iio/imu/inv_mpu6050/inv_mpu_core.c   | 14 ++---
+ drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c   |  2 +-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h      |  5 +-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c |  8 +--
+ drivers/iio/light/si1145.c                   |  6 +-
+ drivers/iio/light/us5182d.c                  |  8 +--
+ drivers/iio/magnetometer/ak8974.c            |  1 +
+ drivers/iio/magnetometer/hmc5843.h           |  6 +-
+ drivers/iio/resolver/ad2s1200.c              |  2 +-
+ drivers/iio/temperature/mlx90632.c           |  4 +-
+ 29 files changed, 136 insertions(+), 135 deletions(-)
+
+-- 
+2.25.1
+
