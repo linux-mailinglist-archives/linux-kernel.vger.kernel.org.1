@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626E5223834
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9C8223847
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgGQJWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgGQJWy (ORCPT
+        id S1726798AbgGQJZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:25:37 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:50945 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgGQJZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:22:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7602CC061755;
-        Fri, 17 Jul 2020 02:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0cWzT9ttoeeT27mu1yXKQJtQPYAF2pim+h1ybnpSsI0=; b=tZ375G7K0Kic3bBHbECJdHyToB
-        uofgKiBUdoGtRF0xWh2CTpH+grA6Ohxha9q/zMVCYJsZ31MyH13ZzHquYmLTMtFkwr1GW1OOiFznY
-        9UoxGQU4GQIbjTQoPKhd0i+8kmco42C/+8qDBDHOuzLHdfOc/SUOfe/Q0SOs955+k/NuDM7mOfCvp
-        2EoKAMwVL2rR+PKu16gnz/myd9zqlnSxGPYaSmlZTStTPyMlEysCRoP2w/acV4OYOOuM/HRszIVFj
-        nGIjib9d+s9AkFAR84zQJKNmb+ZLvM196KiL3tpkkG3NYDtuiGcfPF3KXl8/PfVDurMcJrjstthhR
-        FwwipBWA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwMZn-0007Sc-TL; Fri, 17 Jul 2020 09:22:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 759913003D8;
-        Fri, 17 Jul 2020 11:22:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6588829CF6F4C; Fri, 17 Jul 2020 11:22:43 +0200 (CEST)
-Date:   Fri, 17 Jul 2020 11:22:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 14/17] dax: Stray write protection for
- dax_direct_access()
-Message-ID: <20200717092243.GD10769@hirez.programming.kicks-ass.net>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-15-ira.weiny@intel.com>
+        Fri, 17 Jul 2020 05:25:36 -0400
+X-Originating-IP: 90.65.108.121
+Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 930011BF235;
+        Fri, 17 Jul 2020 09:23:54 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 11:23:54 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        bbrezillon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 06/19] clk: at91: sam9x60-pll: check fcore against ranges
+Message-ID: <20200717092354.GO3428@piout.net>
+References: <1594812267-6697-1-git-send-email-claudiu.beznea@microchip.com>
+ <1594812267-6697-7-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200717072056.73134-15-ira.weiny@intel.com>
+In-Reply-To: <1594812267-6697-7-git-send-email-claudiu.beznea@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:20:53AM -0700, ira.weiny@intel.com wrote:
+On 15/07/2020 14:24:14+0300, Claudiu Beznea wrote:
+> According to datasheet the range of 600-1200MHz is for the the
 
-> --- a/drivers/dax/super.c
-> +++ b/drivers/dax/super.c
-> @@ -30,12 +30,14 @@ static DEFINE_SPINLOCK(dax_host_lock);
->  
->  int dax_read_lock(void)
->  {
-> +	dev_access_enable();
->  	return srcu_read_lock(&dax_srcu);
->  }
->  EXPORT_SYMBOL_GPL(dax_read_lock);
->  
->  void dax_read_unlock(int id)
->  {
-> +	dev_access_disable();
->  	srcu_read_unlock(&dax_srcu, id);
->  }
->  EXPORT_SYMBOL_GPL(dax_read_unlock);
+the is repeated here
 
-This is inconsistently ordered.
+> frequency generated by the fractional part of the PLL (namely
+> Fcorepllck according to datasheet). With this in mind the output
+> range of the PLL itself (fractional + div), taking into account
+> that the diverder is 8 bits wide, is 600/256-1200Hz=2.3-1200MHz.
+> 
+
+divider
+
+> Fixes: a436c2a447e59 ("clk: at91: add sam9x60 PLL driver")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  drivers/clk/at91/clk-sam9x60-pll.c | 12 +++++++++++-
+>  drivers/clk/at91/sam9x60.c         |  2 +-
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/at91/clk-sam9x60-pll.c b/drivers/clk/at91/clk-sam9x60-pll.c
+> index dfb91c190bd1..00f2afd6e9b6 100644
+> --- a/drivers/clk/at91/clk-sam9x60-pll.c
+> +++ b/drivers/clk/at91/clk-sam9x60-pll.c
+> @@ -21,6 +21,9 @@
+>  #define UPLL_DIV		2
+>  #define PLL_MUL_MAX		(FIELD_GET(PMC_PLL_CTRL1_MUL_MSK, UINT_MAX) + 1)
+>  
+> +#define FCORE_MIN		(600000000)
+> +#define FCORE_MAX		(1200000000)
+> +
+>  #define PLL_MAX_ID		1
+>  
+>  struct sam9x60_pll {
+> @@ -169,6 +172,7 @@ static long sam9x60_pll_get_best_div_mul(struct sam9x60_pll *pll,
+>  	unsigned long bestdiv = 0;
+>  	unsigned long bestmul = 0;
+>  	unsigned long bestfrac = 0;
+> +	unsigned long long fcore = 0;
+
+maybe it would be best to go for u64 here as this is what you cast into
+later.
+
+>  
+>  	if (rate < characteristics->output[0].min ||
+>  	    rate > characteristics->output[0].max)
+> @@ -213,6 +217,11 @@ static long sam9x60_pll_get_best_div_mul(struct sam9x60_pll *pll,
+>  				remainder = rate - tmprate;
+>  		}
+>  
+> +		fcore = parent_rate * (tmpmul + 1) +
+> +			((u64)parent_rate * tmpfrac >> 22);
+> +		if (fcore < FCORE_MIN || fcore > FCORE_MAX)
+> +			continue;
+> +
+>  		/*
+>  		 * Compare the remainder with the best remainder found until
+>  		 * now and elect a new best multiplier/divider pair if the
+> @@ -232,7 +241,8 @@ static long sam9x60_pll_get_best_div_mul(struct sam9x60_pll *pll,
+>  	}
+>  
+>  	/* Check if bestrate is a valid output rate  */
+> -	if (bestrate < characteristics->output[0].min ||
+> +	if (fcore < FCORE_MIN || fcore > FCORE_MAX ||
+> +	    bestrate < characteristics->output[0].min ||
+>  	    bestrate > characteristics->output[0].max)
+>  		return -ERANGE;
+>  
+> diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
+> index 3e20aa68259f..633891b98d43 100644
+> --- a/drivers/clk/at91/sam9x60.c
+> +++ b/drivers/clk/at91/sam9x60.c
+> @@ -22,7 +22,7 @@ static const struct clk_master_layout sam9x60_master_layout = {
+>  };
+>  
+>  static const struct clk_range plla_outputs[] = {
+> -	{ .min = 300000000, .max = 600000000 },
+> +	{ .min = 2343750, .max = 1200000000 },
+>  };
+>  
+>  static const struct clk_pll_characteristics plla_characteristics = {
+> -- 
+> 2.7.4
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
