@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5C722375F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4EB22374F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgGQIvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:51:17 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54168 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725970AbgGQIvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:51:17 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 937D9A3AC8D0FF4393C1;
-        Fri, 17 Jul 2020 16:51:14 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 17 Jul 2020 16:51:03 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <john.garry@huawei.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <guohanjun@huawei.com>, <wangxiongfeng2@huawei.com>
-Subject: [PATCH v2] scsi: scsi_transport_sas: add missing newline when printing 'enable' by sysfs
-Date:   Fri, 17 Jul 2020 16:44:32 +0800
-Message-ID: <1594975472-12486-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1726046AbgGQIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgGQIoj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:44:39 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73190C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:44:39 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a6so10152950wrm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=9x6fTHZjafmueEMmRdi+LdlMzC2EII5ZkFzc9Fwx204=;
+        b=CcrWH877Ri20PNsFBMBPs4KP9jLSBxVMwMQejX+OakrhCpNGurKvg/YYuWyooyngHO
+         PGII9nSP3QITVgwaA4IMlURWO0b7gngGMwk2tXW0Z30dsgpHUZLhxbzH/rTNZ6LaErsg
+         7bkbz0aMZlBSeE8sWKk1eu+xm6tMvSYt1dz3W5nHlHPy0+YrsvYM20RZqDXAcgy0hIFY
+         IFcZv1BdkCGDXemcAcUKGgqaTS1rWgYSHbLZmWdaW+gVOH6Yvi9Ca51nI3rlF4f4cg4Q
+         4J6q5a2drV9N+LEkPNNOqAy8bOGoph8gzskNnKVVKah64U9qztXuUs/d7VCVkGxWUC63
+         2AiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=9x6fTHZjafmueEMmRdi+LdlMzC2EII5ZkFzc9Fwx204=;
+        b=GjIwttUeIHcOTFbYFRD5w8iBY9mfA+yDrebq6VnLEd3Hmwm+ukhVUv9aP0CLj/XWu3
+         ebrjNv7ULA4KukMh0G9HoQykh2sO9KLvAYmZ0OdhDV51cA6ZmHAM8y6pmXp/hR1xDueK
+         WeQTUh7T78qzaS9wmJTmF8qO+XH7yoJQr6KAndcmc+sgvxJ/GTbRvvuWo2TOFzEYCFrz
+         Gg521owS0t09hdC2/sQ7UpYxFFc0BJ0kbQHOHy58nnhv5Kr7btrsCSoVDlVKY3XUuurp
+         Kt15C+HK/GvQuz776M7LLUOwr3EZpbFxujcI/+ybXeTMLeC/UHYW3ukW3QONOCnV1N4+
+         aWFw==
+X-Gm-Message-State: AOAM531ZLS3lqCoyW8YKn430iA6P616zZ4RMmhTe/n1NDsS8OT1thcFe
+        iw38ULr4XNDL+9YStxwNbYSwEQ==
+X-Google-Smtp-Source: ABdhPJyovxSTvHHpc7ZiBtlMV3klZ1rwvUq3jT7v0dWg3bOYRkcwggR2do8xcR8ffqqZT8dB2S5bOA==
+X-Received: by 2002:adf:f311:: with SMTP id i17mr9496093wro.237.1594975477992;
+        Fri, 17 Jul 2020 01:44:37 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id k20sm12480834wmi.27.2020.07.17.01.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 01:44:35 -0700 (PDT)
+References: <20200717082242.130627-1-jingxiangfeng@huawei.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        khilman@baylibre.com, kuninori.morimoto.gx@renesas.com
+Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: meson: fixes the missed kfree() for axg_card_add_tdm_loopback
+In-reply-to: <20200717082242.130627-1-jingxiangfeng@huawei.com>
+Date:   Fri, 17 Jul 2020 10:44:35 +0200
+Message-ID: <1j7dv2sf7w.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I cat sysfs file 'enable' below 'sas_phy', it displays as follows.
-It's better to add a newline for easy reading.
 
-[root@localhost ~]# cat /sys/devices/pci0000:00/0000:00:0d.0/0000:0f:00.0/host3/phy-3:2/sas_phy/phy-3:2/enable
-1[root@localhost ~]#
+On Fri 17 Jul 2020 at 10:22, Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
+> axg_card_add_tdm_loopback() misses to call kfree() in an error path. We
+> can use devm_kasprintf() to fix the issue, also improve maintainability.
+> So use it instead.
+>
+> Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
----
-v1 -> v2:
-	modify commit subject.
-	add Reviewed-by tag.
----
- drivers/scsi/scsi_transport_sas.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
 
-diff --git a/drivers/scsi/scsi_transport_sas.c b/drivers/scsi/scsi_transport_sas.c
-index 182fd25..e443dee 100644
---- a/drivers/scsi/scsi_transport_sas.c
-+++ b/drivers/scsi/scsi_transport_sas.c
-@@ -563,7 +563,7 @@ static ssize_t do_sas_phy_enable(struct device *dev,
- {
- 	struct sas_phy *phy = transport_class_to_phy(dev);
- 
--	return snprintf(buf, 20, "%d", phy->enabled);
-+	return snprintf(buf, 20, "%d\n", phy->enabled);
- }
- 
- static DEVICE_ATTR(enable, S_IRUGO | S_IWUSR, show_sas_phy_enable,
--- 
-1.7.12.4
+> ---
+>  sound/soc/meson/axg-card.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+> index 89f7f64747cd..47f2d93224fe 100644
+> --- a/sound/soc/meson/axg-card.c
+> +++ b/sound/soc/meson/axg-card.c
+> @@ -116,7 +116,7 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
+>  
+>  	lb = &card->dai_link[*index + 1];
+>  
+> -	lb->name = kasprintf(GFP_KERNEL, "%s-lb", pad->name);
+> +	lb->name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-lb", pad->name);
+>  	if (!lb->name)
+>  		return -ENOMEM;
 
