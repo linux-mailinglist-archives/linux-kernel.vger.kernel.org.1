@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E9D2232E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904062232EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgGQF0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 01:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgGQF0C (ORCPT
+        id S1726603AbgGQF3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 01:29:12 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:32352 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725807AbgGQF3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:26:02 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44F4C061755;
-        Thu, 16 Jul 2020 22:26:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Fri, 17 Jul 2020 01:29:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594963750; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=i8A0E8a2z78hKyFSZ9dVksXzxjSeAeTRmWqajuDnE6o=;
+ b=Z1iAOD711O+HVB6eaMmZNPl/wNSXL21cwOy2XsTjOYeXlXONIctSO04yw7Uc06Wq7R+n5Wjq
+ 9euew92mTd9GRciIPDXeZm+v7SSueo3Z362D8tTtkbbnuilS/VHfSTy2lXmsxY/Yvg7ZM4AW
+ 6/gEcF1ALJc7TdPlVWzdQW4Jywc=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n19.prod.us-east-1.postgun.com with SMTP id
+ 5f1136f003c8596cdb2b2152 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 05:28:16
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54654C433CB; Fri, 17 Jul 2020 05:28:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B7KN65K28z9sRR;
-        Fri, 17 Jul 2020 15:25:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594963560;
-        bh=LbMvc5Iklk5Xyio7B6Dc+w1qLyJXPJQeJsnn4jpFg6Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HSs0Kgl9Ta8tvTHe1BgLFTd26tXH473RBtQnTuMJip+2hTgbOqhFvIajhjWyILvAF
-         g+EguwyXjq0+GhXfUoV/0j1GM+DaGaBSxkZCOmGNX7PLr4sgF3RsftUYTwQIQwgLOi
-         fhnXKyCAMTV9PitJ4MNxcU/v7n6fpOWTmumDIaZMfcmFkeNbXVXlVKUJi6ysLan6JI
-         FMo+eMIND3AvXNbCn39S89ng9qYc/49CiVFsLn7GTkx0gs3bG8JBQgWGtgFDGcZl1m
-         KUno5e80DQIsubaqIYgJdIWvYtYmsh25MIcy1vxNO+Bycmt5gLddFPnoUR3GE91njm
-         Vso4KK27is2Kg==
-Date:   Fri, 17 Jul 2020 15:25:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: linux-next: manual merge of the kvm tree with the tip tree
-Message-ID: <20200717152557.49ca6764@canb.auug.org.au>
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C465FC433C6;
+        Fri, 17 Jul 2020 05:28:14 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 17 Jul 2020 10:58:14 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com,
+        linux-remoteproc-owner@vger.kernel.org
+Subject: Re: [PATCH 3/3] remoteproc: qcom_q6v5_mss: Update MBA log info
+In-Reply-To: <20200717045935.GD2922385@builder.lan>
+References: <20200716123630.21892-1-sibis@codeaurora.org>
+ <20200716123630.21892-4-sibis@codeaurora.org>
+ <20200717045935.GD2922385@builder.lan>
+Message-ID: <24c1d9990fb393c4c04c26b416d70f82@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020-07-17 10:29, Bjorn Andersson wrote:
+> On Thu 16 Jul 05:36 PDT 2020, Sibi Sankar wrote:
+> 
+>> Update MBA text logs location/size in IMEM to aid tools extract
+>> them after ramdump collection.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>>  drivers/remoteproc/qcom_q6v5_mss.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c 
+>> b/drivers/remoteproc/qcom_q6v5_mss.c
+>> index 4ddf084b2c6fc..539594ab955f1 100644
+>> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+>> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+>> @@ -932,6 +932,9 @@ static int q6v5_mba_load(struct q6v5 *qproc)
+>>  	if (ret)
+>>  		goto reclaim_mba;
+>> 
+>> +	if (qproc->has_mba_logs)
+>> +		qcom_pil_info_store("mba", qproc->mba_phys, MBA_LOG_SIZE);
+> 
+> Is there a reason why we don't unconditionally write this to the PIL
+> info? And why it shouldn't be mba_size?
 
-Hi all,
+MBA text logs of size specified are the
+only things extracted from MBA region by
+the postmortem tools (the tool assumes
+that the entire region is text). The MBA
+log feature was only added to SC7180 MSS
+firmware.
 
-Today's linux-next merge of the kvm tree got a conflict in:
+> 
+> Regards,
+> Bjorn
+> 
+>> +
+>>  	ret = q6v5_rmb_mba_wait(qproc, 0, 5000);
+>>  	if (ret == -ETIMEDOUT) {
+>>  		dev_err(qproc->dev, "MBA boot timed out\n");
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
 
-  arch/x86/kernel/kvm.c
-
-between commit:
-
-  b037b09b9058 ("x86/entry: Rename idtentry_enter/exit_cond_rcu() to idtent=
-ry_enter/exit()")
-
-from the tip tree and commit:
-
-  b1d405751cd5 ("KVM: x86: Switch KVM guest to using interrupts for page re=
-ady APF delivery")
-
-from the kvm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/kernel/kvm.c
-index 3f78482d9496,d9995931ea18..000000000000
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@@ -232,18 -235,13 +235,13 @@@ EXPORT_SYMBOL_GPL(kvm_read_and_reset_ap
- =20
-  noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
-  {
-- 	u32 reason =3D kvm_read_and_reset_apf_flags();
-+ 	u32 flags =3D kvm_read_and_reset_apf_flags();
- -	bool rcu_exit;
- +	idtentry_state_t state;
- =20
-- 	switch (reason) {
-- 	case KVM_PV_REASON_PAGE_NOT_PRESENT:
-- 	case KVM_PV_REASON_PAGE_READY:
-- 		break;
-- 	default:
-+ 	if (!flags)
-  		return false;
-- 	}
- =20
- -	rcu_exit =3D idtentry_enter_cond_rcu(regs);
- +	state =3D idtentry_enter(regs);
-  	instrumentation_begin();
- =20
-  	/*
-
---Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8RNmUACgkQAVBC80lX
-0GyLnAf+JEDs0FjozNrM0bFizJ/eK1Z66gfGFZ/26fWbMM5oot3q2R6YP2+D+g5Z
-VIoed+WHh1aHeXrrN3nKtGP+Z8NpuiIx3HKa1Tu9dCroEgHUS/xdz3eZ5Jf/MlF3
-yFxY1GxOtoAp4WT9n2hVA07V6CLvf2Y/x/rueS2rDE8PODZdWdQHaaBR/++a1DWU
-UEOyDXs/Kic6xHj9jhggqkYOxIIk0V1TrCkh42x0p1pxh0P4NwVUUSl/55N0e6Lq
-nPqD5CQZEkHLswKgD/r3EzMqEub+oA1tZhWpFueNwwj+KZ5G9e0Qkc7Xirr5LBDI
-RBo0ONnFW19DoPMZtuj/2Jb0GzWZzQ==
-=S/OY
------END PGP SIGNATURE-----
-
---Sig_/uTbsuNq/+Q2QD.tf4=F9Ue7--
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
