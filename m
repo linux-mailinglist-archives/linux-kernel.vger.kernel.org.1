@@ -2,56 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D7B224504
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790E2224507
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgGQUPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:15:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726771AbgGQUPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:15:42 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5E4E2074B;
-        Fri, 17 Jul 2020 20:15:40 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 16:15:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Gregory Herrero <gregory.herrero@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] recordmcount: only record relocation of type
- R_AARCH64_CALL26 on arm64.
-Message-ID: <20200717161538.39edfa46@oasis.local.home>
-In-Reply-To: <20200717200119.GP17377@ltoracle>
-References: <20200717143338.19302-1-gregory.herrero@oracle.com>
-        <20200717133003.025f2096@oasis.local.home>
-        <20200717200119.GP17377@ltoracle>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728785AbgGQUPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgGQUPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 16:15:52 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DC1C0619D2;
+        Fri, 17 Jul 2020 13:15:52 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id f5so14034830ljj.10;
+        Fri, 17 Jul 2020 13:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pGSWJ5XYOtcYSjTY3+CBpiz/oD76kPsZM5XqQ8FWvSY=;
+        b=BELLA6N91lnpbdhxonBdgZmBUyrDCvC+AJuWnPbHUjorHWWAiYkP/evijphwa/OX1x
+         YeFlbj6YB5jlGA/fsG/t+r03EL6zRuUjHLPrBtgqliVc7Hd9kL4rYdr0C3PditKj8WBy
+         qAIuJOUr1KOxGJ734crwoBgzpRjKccfHFkAk5Dynfw+Bqi8Ae+vDAP1u5zpLn8PloLNy
+         bfobdnrO2RCG5JyFcQeu0iE5lMepTDkksou970p948VIyFmMq8eEzGQFjw933huhS91P
+         g0jg8ne/+S8kSRtZEaAt57hxW3iSdfrAPuIpMlNqmLEo4rd1yJdBj//WhGUt8tp1T2FY
+         GHpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pGSWJ5XYOtcYSjTY3+CBpiz/oD76kPsZM5XqQ8FWvSY=;
+        b=oiaznSb1W9hlYpkz2GFghp8kFqh/7kaqJcN4VDgWX0/Dw9WXOz/JT8Oj0JIX+5expL
+         yK+g2Onz1U+57FF7NukA6wArorPKmxnG2d+z3KLc0Po0G89hq3DjzLPHUK+ayHa4ZlRR
+         t7x6WTu+IuCFYOR1EP5Jo5cfs5gpz3W0AV8GcffGegwY9tW5nYuKJXas3FnlaLDHEqE2
+         zocQiriOL8jmAg2euF6hUn5cEr7pCrzStljBF0w48GFk0yCSqd/KdX9O0o8MDcFGCNeL
+         s3FTltcuuEnMQMPd8L854cGTaGzGgmnrm5e3Zx2F9HX6ia9rjRPGD8XjnR3q8rn9gyDW
+         oXgQ==
+X-Gm-Message-State: AOAM530jMLrFovQA1wp+QDRVcXQkbsP27W9deSuw/n8D8+8nFdKGGDZJ
+        Y5RFixXTn9njYkLQBYkFfswbKHOj
+X-Google-Smtp-Source: ABdhPJzGg/3QGq9nWf3y7/hzCu0T7c59zBG7m6H4CCp7NGUQevFAgTUsL9a8rwWlbc2nt1kxemJEcA==
+X-Received: by 2002:a2e:978d:: with SMTP id y13mr4982584lji.227.1595016950819;
+        Fri, 17 Jul 2020 13:15:50 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-76-4-184.pppoe.mtu-net.ru. [91.76.4.184])
+        by smtp.googlemail.com with ESMTPSA id g142sm2056988lfd.41.2020.07.17.13.15.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 13:15:50 -0700 (PDT)
+Subject: Re: [PATCH v4] clk: tegra: pll: Improve PLLM enable-state detection
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200709172057.13951-1-digetx@gmail.com>
+ <997361b8-4466-cdf0-beeb-eedcbeb48597@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e713d98b-deab-f0e5-6224-6c1f13a37b46@gmail.com>
+Date:   Fri, 17 Jul 2020 23:15:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <997361b8-4466-cdf0-beeb-eedcbeb48597@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 22:01:19 +0200
-Gregory Herrero <gregory.herrero@oracle.com> wrote:
+17.07.2020 19:55, Jon Hunter пишет:
+...
+> I have tested this on Jetson TK1 using u-boot to verify the behaviour
+> and it does indeed work as described here. I have also ran it through
+> the automated testing we have for Tegra and see no immediate issue.
+> Therefore ...
+> 
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> 
+> Thanks!
+> Jon
 
-> Thanks Steve.
-> Should I send a V2 to add 'Cc: stable@vger.kernel.org' in the commit
-> description or can someone take care of it when adding the commit to
-> the tree?
-
-If I was taking it, I would simply add the Cc: stable@vger.kernel.org
-to the commit log, and no resend would be needed.
-
-It's up to the ARM64 maintainers to decide in this case.
-
-Cheers,
-
--- Steve
+Awesome, thank you!
