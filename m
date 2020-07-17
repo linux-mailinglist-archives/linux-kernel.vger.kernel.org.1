@@ -2,122 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70036223206
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753F922320B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgGQESv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:18:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35238 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725807AbgGQESv (ORCPT
+        id S1726768AbgGQEUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:20:06 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33341 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgGQEUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:18:51 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06H4IRsY125396;
-        Fri, 17 Jul 2020 00:18:42 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 329r21chj8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 00:18:41 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06H4IfVc126964;
-        Fri, 17 Jul 2020 00:18:41 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 329r21ch61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 00:18:41 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06H4An6u008164;
-        Fri, 17 Jul 2020 04:17:32 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 327527k6bk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 04:17:32 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06H4G6LP28049780
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 04:16:06 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 870D85205A;
-        Fri, 17 Jul 2020 04:17:29 +0000 (GMT)
-Received: from [9.102.1.129] (unknown [9.102.1.129])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 50F8052057;
-        Fri, 17 Jul 2020 04:17:26 +0000 (GMT)
-Subject: Re: [PATCH v3 06/12] ppc64/kexec_file: restrict memory usage of kdump
- kernel
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Pingfan Liu <piliu@redhat.com>, Petr Tesarik <ptesarik@suse.cz>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
- <159466091925.24747.6840028682768745598.stgit@hbathini.in.ibm.com>
- <87365s9ysj.fsf@morokweng.localdomain>
- <baa29ea9-7698-a7e8-e5a4-c9f842e1fcc8@linux.ibm.com>
- <875zance3n.fsf@morokweng.localdomain>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-Message-ID: <f1e6f1d4-5052-ce6a-747f-bb821987b75a@linux.ibm.com>
-Date:   Fri, 17 Jul 2020 09:47:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 17 Jul 2020 00:20:05 -0400
+Received: by mail-io1-f72.google.com with SMTP id a12so5712066ioo.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:20:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=j3PfTK/pr4L9iYESodCey/qnyjNi8Dw657O6Mf+Zg20=;
+        b=GO7YLB01wrwyBgTdIAISisfdqj2ZfigPaRI7hwTl8eOngS8ME2cdBvKrVJZ+WNK9ke
+         +t9/KHJwAHA97z1QTc0MiKqh9Q/6JLldcbW+hKrtLuuEqHKI8lmiyDGhZ6d/0/uvEHjm
+         VtuV1HEwz7SbB0g5vO9reDERaDoTTJrXQg37m/wsNHL3KN4xuXOBp+Enasyt2iZb5pxE
+         Ky76aahEYI5nMJNX5Q9wDILpQd97oJ9LHa8a21egh+d52NeCi7oAjWNkVARbsJZmqBHb
+         w432zanr1kdYOlxArsRi+8PsC5hPKNWZJWV3VQB9OMqF8G/r4rjWkJThDv7zsV6AAmDD
+         CTBQ==
+X-Gm-Message-State: AOAM532OYIaB09HpbpIaWTCa4hfndPoQMinwSh78h9x/Tc7O5Vby9xNk
+        dgFto8f0Mr4zQISz/T78a4IJ6LcrsiRLE0GbkASlvNN3/qW0
+X-Google-Smtp-Source: ABdhPJw4xwEhl32rilyRDk1xXUs9He2nKD1ic8BW/rpDuSPhQLS4k36SMiiZktAg7h2AcmcBDhCU1OoPlc3a6bevTEdbZc6L7EZA
 MIME-Version: 1.0
-In-Reply-To: <875zance3n.fsf@morokweng.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 lowpriorityscore=0
- bulkscore=0 adultscore=0 spamscore=100 mlxscore=100 phishscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 impostorscore=0
- mlxlogscore=-1000 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007170025
+X-Received: by 2002:a6b:8e56:: with SMTP id q83mr7806086iod.61.1594959604449;
+ Thu, 16 Jul 2020 21:20:04 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 21:20:04 -0700
+In-Reply-To: <000000000000264c6305a9c74d9b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a787b205aa9b7863@google.com>
+Subject: Re: INFO: rcu detected stall in tipc_release
+From:   syzbot <syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com>
+To:     bp@alien8.de, davem@davemloft.net, fweisbec@gmail.com,
+        hpa@zytor.com, jmaloy@redhat.com, jmattson@google.com,
+        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, tuong.t.lien@dektech.com.au,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit 5e9eeccc58f3e6bcc99b929670665d2ce047e9c9
+Author: Tuong Lien <tuong.t.lien@dektech.com.au>
+Date:   Wed Jun 3 05:06:01 2020 +0000
 
-On 17/07/20 3:33 am, Thiago Jung Bauermann wrote:
-> 
-> Hari Bathini <hbathini@linux.ibm.com> writes:
-> 
->> On 16/07/20 4:22 am, Thiago Jung Bauermann wrote:
->>>
->>> Hari Bathini <hbathini@linux.ibm.com> writes:
->>>
+    tipc: fix NULL pointer dereference in streaming
 
-<snip>
- 
->>>> +	 * each representing a memory range.
->>>> +	 */
->>>> +	ranges = (len >> 2) / (n_mem_addr_cells + n_mem_size_cells);
->>>> +
->>>> +	for (i = 0; i < ranges; i++) {
->>>> +		base = of_read_number(prop, n_mem_addr_cells);
->>>> +		prop += n_mem_addr_cells;
->>>> +		end = base + of_read_number(prop, n_mem_size_cells) - 1;
->>
->> prop is not used after the above.
->>
->>> You need to `prop += n_mem_size_cells` here.
->>
->> But yeah, adding it would make it look complete in some sense..
-> 
-> Isn't it used in the next iteration of the loop?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14641620900000
+start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16641620900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12641620900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=3654c027d861c6df4b06
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12948233100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11344c05100000
 
-Memory@XXX/reg typically has only one range. I was looking at it
-from that perspective which is not right. Will update.
+Reported-by: syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com
+Fixes: 5e9eeccc58f3 ("tipc: fix NULL pointer dereference in streaming")
 
-Thanks
-Hari
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
