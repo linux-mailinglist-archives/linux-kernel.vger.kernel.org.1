@@ -2,66 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3275D2243CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6999B2243BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 21:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgGQTF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 15:05:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47754 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727978AbgGQTFz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:05:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595012753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QA04z49XQxRpsbQtr5ADLmijNDZoNbT33TpqwbOswEA=;
-        b=QwAi6GdhyOKd5pVegToESPBTVpgfeDu0qXJFgurV5v7tw/qFfwZrXt1Dds1xDlVXbKhHVn
-        hEInuVRuMa7fnBd6roCa1JKGvAh99tBzYd9mz4x5FTvByP6h1kcQ+fd2Ux3SdRnh7JY6uL
-        HKcRpC6GMQ9Nml9/MUvk+e1mofF2NjA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-3gQw-uaoM3W0qwUX7qEACw-1; Fri, 17 Jul 2020 15:05:52 -0400
-X-MC-Unique: 3gQw-uaoM3W0qwUX7qEACw-1
-Received: by mail-ej1-f69.google.com with SMTP id h26so6359286ejb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 12:05:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QA04z49XQxRpsbQtr5ADLmijNDZoNbT33TpqwbOswEA=;
-        b=PYg5x/PjZJKTaQg2Fy3sZo8W5P8GLO2m1e4wYUNeXaVTDJc6JxBRayTIKYmvyNKT5n
-         i3NTlpr8sTflQtBVDjbRtOho8f8oBK6rY6/XM5TpfOsPhaArhjJ6s6Ok2EA7n7tbWdEz
-         cmdjxOTMDTonH7M/wR7Hel75skZiHZ4ENcva+x1kNdu7ntcoR+20koLUUuLv9dz8Bnkv
-         /Z5Spuai7NEa/vptY1VxAOg+/qX61DlUc3UT9+PEPLXXv26bJv+VycWs346ZdufXiHtz
-         wVd7tFXEm5TcEcfDIH42X8o+sfVHSimbUS6UvtYelq7a7JL5Vxcwz3T/5qEGN6kI0sST
-         slKA==
-X-Gm-Message-State: AOAM5337P3smJUtQi0zJRzGS0642WkWU3vghREqoCZiBBBJmCtFvkLt/
-        tfJPeLv0lecSVsxNJh2RYHspAmUNMCvXGLZmKCTbWLeMLEirxBVNNDgbyjPHpbL2iFY2os1wr6R
-        UpEOoOc9/PtrrxnGwI9sQtsWy
-X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr9659944ejb.115.1595012750737;
-        Fri, 17 Jul 2020 12:05:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxawMnEihhU00mwwY2KMXzPnp583S5oS9vU4nqqnr6E/4WlXYRDH2z1ZDUEgvDfZKxqw/acwg==
-X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr9659924ejb.115.1595012750517;
-        Fri, 17 Jul 2020 12:05:50 -0700 (PDT)
-Received: from kherbst.pingu.com ([2a02:8308:b0be:6900:482c:9537:40:83ba])
-        by smtp.gmail.com with ESMTPSA id 92sm9030732edg.78.2020.07.17.12.05.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 12:05:49 -0700 (PDT)
-From:   Karol Herbst <kherbst@redhat.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     Karol Herbst <kherbst@redhat.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Lyude Paul <lyude@redhat.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-Subject: [PATCH] RFC: ACPI / OSI: remove workarounds for hybrid graphics laptops
-Date:   Fri, 17 Jul 2020 21:05:47 +0200
-Message-Id: <20200717190547.648604-1-kherbst@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728435AbgGQTFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 15:05:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:11407 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727999AbgGQTFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 15:05:22 -0400
+IronPort-SDR: fVk7DX8tnNnQIRFDJlFgMXIf0QU8QnE56OBDCYaEUh4jEr4xXjbKgApAMDyeOl2KbnXVPtc2Vp
+ GvaDhYRujbEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="234510616"
+X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; 
+   d="scan'208";a="234510616"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 12:05:18 -0700
+IronPort-SDR: ijTFcsgqK1Nvhl8u5LJ9eqkZ0S2wDKAiespaes2OVRIevFuvKcTaZZoETZX8kgMRZYFuAxjal5
+ rwWR2DQC0Y8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; 
+   d="scan'208";a="486550100"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2020 12:05:18 -0700
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id 1493C5804BB;
+        Fri, 17 Jul 2020 12:05:18 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     lee.jones@linaro.org, david.e.box@linux.intel.com,
+        dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
+        alexander.h.duyck@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH V4 0/3] Intel Platform Monitoring Technology
+Date:   Fri, 17 Jul 2020 12:06:17 -0700
+Message-Id: <20200717190620.29821-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200714062323.19990-1-david.e.box@linux.intel.com>
+References: <20200714062323.19990-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,80 +49,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's hard to figure out what systems are actually affected and right now I
-don't see a good way of removing those...
+Intel Platform Monitoring Technology (PMT) is an architecture for
+enumerating and accessing hardware monitoring capabilities on a device.
+With customers increasingly asking for hardware telemetry, engineers not
+only have to figure out how to measure and collect data, but also how to
+deliver it and make it discoverable. The latter may be through some device
+specific method requiring device specific tools to collect the data. This
+in turn requires customers to manage a suite of different tools in order to
+collect the differing assortment of monitoring data on their systems.  Even
+when such information can be provided in kernel drivers, they may require
+constant maintenance to update register mappings as they change with
+firmware updates and new versions of hardware. PMT provides a solution for
+discovering and reading telemetry from a device through a hardware agnostic
+framework that allows for updates to systems without requiring patches to
+the kernel or software tools.
 
-But I'd like to see thos getting removed and drivers fixed instead (which
-happened at least for nouveau).
+PMT defines several capabilities to support collecting monitoring data from
+hardware. All are discoverable as separate instances of the PCIE Designated
+Vendor extended capability (DVSEC) with the Intel vendor code. The DVSEC ID
+field uniquely identifies the capability. Each DVSEC also provides a BAR
+offset to a header that defines capability-specific attributes, including
+GUID, feature type, offset and length, as well as configuration settings
+where applicable. The GUID uniquely identifies the register space of any
+monitor data exposed by the capability. The GUID is associated with an XML
+file from the vendor that describes the mapping of the register space along
+with properties of the monitor data. This allows vendors to perform
+firmware updates that can change the mapping (e.g. add new metrics) without
+requiring any changes to drivers or software tools. The new mapping is
+confirmed by an updated GUID, read from the hardware, which software uses
+with a new XML.
 
-And as mentioned before, I prefer people working on fixing issues instead
-of spending time to add firmware level workarounds which are hard to know
-to which systems they apply to, hard to remove and basically a big huge
-pain to work with.
-In the end I have no idea how to even figure out what systems are affected
-and which not by this, so I have no idea how to even verify we can safely
-remove this (which just means those are impossible to remove unless we risk
-breaking systems, which again makes those supper annoying to deal with).
+The current capabilities defined by PMT are Telemetry, Watcher, and
+Crashlog.  The Telemetry capability provides access to a continuous block
+of read only data. The Watcher capability provides access to hardware
+sampling and tracing features. Crashlog provides access to device crash
+dumps.  While there is some relationship between capabilities (Watcher can
+be configured to sample from the Telemetry data set) each exists as stand
+alone features with no dependency on any other. The design therefore splits
+them into individual, capability specific drivers. MFD is used to create
+platform devices for each capability so that they may be managed by their
+own driver. The PMT architecture is (for the most part) agnostic to the
+type of device it can collect from. Devices nodes are consequently generic
+in naming, e.g. /dev/telem<n> and /dev/smplr<n>. Each capability driver
+creates a class to manage the list of devices supporting it.  Software can
+determine which devices support a PMT feature by searching through each
+device node entry in the sysfs class folder. It can additionally determine
+if a particular device supports a PMT feature by checking for a PMT class
+folder in the device folder.
 
-Also from the comments it's hard to get what those bits really do. Are they
-just preventing runtime pm or do the devices are powered down when booting?
-I am sure it's the former, still...
+This patch set provides support for the PMT framework, along with support
+for Telemetry on Tiger Lake.
 
-Please, don't do this again.
+Changes from V3:
+ 	- Write out full acronym for DVSEC in PCI patch commit message and
+	  add 'Designated' to comments
+	- remove unused variable caught by kernel test robot <lkp@intel.com>
+	- Add required Co-developed-by signoffs, noted by Andy
+	- Allow access using new CAP_PERFMON capability as suggested by
+	  Alexey Bundankov
+	- Fix spacing in Kconfig, noted by Randy
+	- Other style changes and fixups suggested by Andy
 
-For now, those workaround prevent power savings on systems those workaround
-applies to, which might be any so those should get removed asap and if
-new issues arrise removing those please do a proper bug report and we can
-look into it and come up with a proper fix (and keep this patch out until
-we resolve all of those).
+Changes from V2:
+	- In order to handle certain HW bugs from the telemetry capability
+	  driver, create a single platform device per capability instead of
+	  a device per entry. Add the entry data as device resources and
+	  let the capability driver manage them as a set allowing for
+	  cleaner HW bug resolution.
+	- Handle discovery table offset bug in intel_pmt.c
+	- Handle overlapping regions in intel_pmt_telemetry.c
+	- Add description of sysfs class to testing ABI.
+	- Don't check size and count until confirming support for the PMT
+	  capability to avoid bailing out when we need to skip it.
+	- Remove unneeded header file. Move code to the intel_pmt.c, the
+	  only place where it's needed.
+	- Remove now unused platform data.
+	- Add missing header files types.h, bits.h.
+	- Rename file name and build options from telem to telemetry.
+	- Code cleanup suggested by Andy S.
+	- x86 mailing list added.
 
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-CC: Alex Hung <alex.hung@canonical.com>
-CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC: Len Brown <lenb@kernel.org>
-CC: Lyude Paul <lyude@redhat.com>
-CC: linux-kernel@vger.kernel.org
-CC: dri-devel@lists.freedesktop.org
-CC: nouveau@lists.freedesktop.org
----
- drivers/acpi/osi.c | 24 ------------------------
- 1 file changed, 24 deletions(-)
+Changes from V1:
+	- In the telemetry driver, set the device in device_create() to
+	  the parent PCI device (the monitoring device) for clear
+	  association in sysfs. Was set before to the platform device
+	  created by the PCI parent.
+	- Move telem struct into driver and delete unneeded header file.
+	- Start telem device numbering from 0 instead of 1. 1 was used
+	  due to anticipated changes, no longer needed.
+	- Use helper macros suggested by Andy S.
+	- Rename class to pmt_telemetry, spelling out full name
+	- Move monitor device name defines to common header
+	- Coding style, spelling, and Makefile/MAINTAINERS ordering fixes
 
-diff --git a/drivers/acpi/osi.c b/drivers/acpi/osi.c
-index 9f68538091384..d4405e1ca9b97 100644
---- a/drivers/acpi/osi.c
-+++ b/drivers/acpi/osi.c
-@@ -44,30 +44,6 @@ osi_setup_entries[OSI_STRING_ENTRIES_MAX] __initdata = {
- 	{"Processor Device", true},
- 	{"3.0 _SCP Extensions", true},
- 	{"Processor Aggregator Device", true},
--	/*
--	 * Linux-Dell-Video is used by BIOS to disable RTD3 for NVidia graphics
--	 * cards as RTD3 is not supported by drivers now.  Systems with NVidia
--	 * cards will hang without RTD3 disabled.
--	 *
--	 * Once NVidia drivers officially support RTD3, this _OSI strings can
--	 * be removed if both new and old graphics cards are supported.
--	 */
--	{"Linux-Dell-Video", true},
--	/*
--	 * Linux-Lenovo-NV-HDMI-Audio is used by BIOS to power on NVidia's HDMI
--	 * audio device which is turned off for power-saving in Windows OS.
--	 * This power management feature observed on some Lenovo Thinkpad
--	 * systems which will not be able to output audio via HDMI without
--	 * a BIOS workaround.
--	 */
--	{"Linux-Lenovo-NV-HDMI-Audio", true},
--	/*
--	 * Linux-HPI-Hybrid-Graphics is used by BIOS to enable dGPU to
--	 * output video directly to external monitors on HP Inc. mobile
--	 * workstations as Nvidia and AMD VGA drivers provide limited
--	 * hybrid graphics supports.
--	 */
--	{"Linux-HPI-Hybrid-Graphics", true},
- };
- 
- static u32 acpi_osi_handler(acpi_string interface, u32 supported)
+David E. Box (3):
+  PCI: Add defines for Designated Vendor-Specific Extended Capability
+  mfd: Intel Platform Monitoring Technology support
+  platform/x86: Intel PMT Telemetry capability driver
+
+ .../ABI/testing/sysfs-class-pmt_telemetry     |  46 ++
+ MAINTAINERS                                   |   6 +
+ drivers/mfd/Kconfig                           |  10 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/intel_pmt.c                       | 215 +++++++++
+ drivers/platform/x86/Kconfig                  |  10 +
+ drivers/platform/x86/Makefile                 |   1 +
+ drivers/platform/x86/intel_pmt_telemetry.c    | 448 ++++++++++++++++++
+ include/uapi/linux/pci_regs.h                 |   5 +
+ 9 files changed, 742 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_telemetry
+ create mode 100644 drivers/mfd/intel_pmt.c
+ create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
+
 -- 
-2.26.2
+2.20.1
 
