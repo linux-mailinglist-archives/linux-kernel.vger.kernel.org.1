@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBDA223D9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF48223DA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgGQOEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:04:39 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29344 "EHLO
+        id S1727001AbgGQOFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:05:33 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28829 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726893AbgGQOEg (ORCPT
+        by vger.kernel.org with ESMTP id S1726675AbgGQOFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:04:36 -0400
+        Fri, 17 Jul 2020 10:05:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594994675;
+        s=mimecast20190719; t=1594994731;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RPasInMPBQhfNqDDCSClEwKnR8yJcnj0gbkGKH+IRS8=;
-        b=OP7mVcVAUlVoII1FJ6HUXdYwoo23W6YcLuVgYz3SGPN/OVa6q53Q+Wh0HHlBfga0vubNUk
-        nm6YfEEYqwYp1k93bkD/Vq+IUxWfjwIw9eA3b6oNdZGaH0fvrZJjK7d2aKYuX97tEJjnHH
-        Se538EfGfDhZH3YUxSVnG90Iv0IuYqs=
+        bh=C/lQ3vRdbtpZD9qapzymRha97VMv2A/d7HdoKx/dG3o=;
+        b=UnE98u9hbf3+YtVBfKUJOugoMgoJjIN748Yj9mcBh6kO8Sv3ZhwKPtpk/boR/Iz7Y/mDGK
+        c3KZ+TW/br4D4ZasJ2nT3i3L0QhsrZwiSe4tJ3sERBnB5IrTniSovLmwf7ByHYxUuQREbA
+        u0WzpnHzeSs+q8GdG7FPGhBWot6r/Pc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-RcK2A-9mM22zz-CDwjqxRg-1; Fri, 17 Jul 2020 10:04:33 -0400
-X-MC-Unique: RcK2A-9mM22zz-CDwjqxRg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-317-rydC_LwtPriSHU_3ZM-HHg-1; Fri, 17 Jul 2020 10:05:29 -0400
+X-MC-Unique: rydC_LwtPriSHU_3ZM-HHg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24D3A18A1DE5;
-        Fri, 17 Jul 2020 14:04:32 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-118-144.rdu2.redhat.com [10.10.118.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 74C2A1EA;
-        Fri, 17 Jul 2020 14:04:31 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>
-Subject: [PATCH 2/2] x86/stacktrace: Fix reliable check for empty user task stacks
-Date:   Fri, 17 Jul 2020 09:04:26 -0500
-Message-Id: <f136a4e5f019219cbc4f4da33b30c2f44fa65b84.1594994374.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1594994374.git.jpoimboe@redhat.com>
-References: <cover.1594994374.git.jpoimboe@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63AFF18A1DE1;
+        Fri, 17 Jul 2020 14:05:28 +0000 (UTC)
+Received: from starship (unknown [10.35.206.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CEA551002397;
+        Fri, 17 Jul 2020 14:05:26 +0000 (UTC)
+Message-ID: <681fa44e57531c81bef628f8a16a14098abdf2c2.camel@redhat.com>
+Subject: Re: [PATCH v1] device property: Avoid NULL pointer dereference in
+ device_get_next_child_node()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 17 Jul 2020 17:05:25 +0300
+In-Reply-To: <20200716182747.54929-1-andriy.shevchenko@linux.intel.com>
+References: <20200716182747.54929-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a user task's stack is empty, or if it only has user regs, ORC
-reports it as a reliable empty stack.  But arch_stack_walk_reliable()
-incorrectly treats it as unreliable.
+On Thu, 2020-07-16 at 21:27 +0300, Andy Shevchenko wrote:
+> When we have no primary fwnode or when it's a software node, we may end up
+> in the situation when fwnode is a NULL pointer. There is no point to look for
+> secondary fwnode in such case. Add a necessary check to a condition.
+> 
+> Fixes: 114dbb4fa7c4 ("drivers property: When no children in primary, try secondary")
+> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-That happens because the only success path for user tasks is inside the
-loop, which only iterates on non-empty stacks.  Generally, a user task
-must end in a user regs frame, but an empty stack is an exception to
-that rule.
+Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-Thanks to commit 71c95825289f ("x86/unwind/orc: Fix error handling in
-__unwind_start()"), unwind_start() now sets state->error appropriately.
-So now for both ORC and FP unwinders, unwind_done() and !unwind_error()
-always means the end of the stack was successfully reached.  So the
-success path for kthreads is no longer needed -- it can also be used for
-empty user tasks.
+Best regards,
+	Maxim Levitsky
 
-Reported-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- arch/x86/kernel/stacktrace.c | 5 -----
- 1 file changed, 5 deletions(-)
+> ---
+>  drivers/base/property.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index 1e6d75e65938..d58aa98fe964 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -721,7 +721,7 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+>  		return next;
+>  
+>  	/* When no more children in primary, continue with secondary */
+> -	if (!IS_ERR_OR_NULL(fwnode->secondary))
+> +	if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
+>  		next = fwnode_get_next_child_node(fwnode->secondary, child);
+>  
+>  	return next;
 
-diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
-index 6ad43fc44556..2fd698e28e4d 100644
---- a/arch/x86/kernel/stacktrace.c
-+++ b/arch/x86/kernel/stacktrace.c
-@@ -58,7 +58,6 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 			 * or a page fault), which can make frame pointers
- 			 * unreliable.
- 			 */
--
- 			if (IS_ENABLED(CONFIG_FRAME_POINTER))
- 				return -EINVAL;
- 		}
-@@ -81,10 +80,6 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 	if (unwind_error(&state))
- 		return -EINVAL;
- 
--	/* Success path for non-user tasks, i.e. kthreads and idle tasks */
--	if (!(task->flags & (PF_KTHREAD | PF_IDLE)))
--		return -EINVAL;
--
- 	return 0;
- }
- 
--- 
-2.25.4
 
