@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027AF223FE4
+	by mail.lfdr.de (Postfix) with ESMTP id 70561223FE5
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgGQPsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:48:10 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40576 "EHLO inva020.nxp.com"
+        id S1726845AbgGQPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:48:11 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:60286 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726233AbgGQPsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726322AbgGQPsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Jul 2020 11:48:09 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A2ABC1A09CA;
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E7B47200999;
         Fri, 17 Jul 2020 17:48:07 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 92B921A026D;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D9F6120097A;
         Fri, 17 Jul 2020 17:48:07 +0200 (CEST)
 Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 597FF205C8;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id A028E20466;
         Fri, 17 Jul 2020 17:48:07 +0200 (CEST)
 From:   Ioana Ciornei <ioana.ciornei@nxp.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc:     laurentiu.tudor@nxp.com, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 1/3] bus: fsl-mc: add missing device types
-Date:   Fri, 17 Jul 2020 18:47:58 +0300
-Message-Id: <20200717154800.17169-2-ioana.ciornei@nxp.com>
+Subject: [PATCH 2/3] bus: fsl-mc: use raw spin lock to serialize mc cmds
+Date:   Fri, 17 Jul 2020 18:47:59 +0300
+Message-Id: <20200717154800.17169-3-ioana.ciornei@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200717154800.17169-1-ioana.ciornei@nxp.com>
 References: <20200717154800.17169-1-ioana.ciornei@nxp.com>
@@ -35,118 +35,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MC bus has different types of devices that can be discovered on the
-bus. Add the missing device types.
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
+Replace the spinlock that serializes the MC commands with a raw
+spinlock. This is needed for the RT kernel because there are MC
+commands sent in interrupt context.
+
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
- drivers/bus/fsl-mc/fsl-mc-bus.c | 30 ++++++++++++++++++++++++++++++
- include/linux/fsl/mc.h          | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 60 insertions(+)
+ drivers/bus/fsl-mc/mc-io.c  | 2 +-
+ drivers/bus/fsl-mc/mc-sys.c | 4 ++--
+ include/linux/fsl/mc.h      | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
-index 40526da5c6a6..ee1873438e97 100644
---- a/drivers/bus/fsl-mc/fsl-mc-bus.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
-@@ -201,6 +201,31 @@ struct device_type fsl_mc_bus_dpseci_type = {
- };
- EXPORT_SYMBOL_GPL(fsl_mc_bus_dpseci_type);
+diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
+index 6ae48ad80409..a30b53f1d87d 100644
+--- a/drivers/bus/fsl-mc/mc-io.c
++++ b/drivers/bus/fsl-mc/mc-io.c
+@@ -82,7 +82,7 @@ int __must_check fsl_create_mc_io(struct device *dev,
+ 	mc_io->portal_phys_addr = mc_portal_phys_addr;
+ 	mc_io->portal_size = mc_portal_size;
+ 	if (flags & FSL_MC_IO_ATOMIC_CONTEXT_PORTAL)
+-		spin_lock_init(&mc_io->spinlock);
++		raw_spin_lock_init(&mc_io->spinlock);
+ 	else
+ 		mutex_init(&mc_io->mutex);
  
-+struct device_type fsl_mc_bus_dpdmux_type = {
-+	.name = "fsl_mc_bus_dpdmux"
-+};
-+EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdmux_type);
-+
-+struct device_type fsl_mc_bus_dpdcei_type = {
-+	.name = "fsl_mc_bus_dpdcei"
-+};
-+EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdcei_type);
-+
-+struct device_type fsl_mc_bus_dpaiop_type = {
-+	.name = "fsl_mc_bus_dpaiop"
-+};
-+EXPORT_SYMBOL_GPL(fsl_mc_bus_dpaiop_type);
-+
-+struct device_type fsl_mc_bus_dpci_type = {
-+	.name = "fsl_mc_bus_dpci"
-+};
-+EXPORT_SYMBOL_GPL(fsl_mc_bus_dpci_type);
-+
-+struct device_type fsl_mc_bus_dpdmai_type = {
-+	.name = "fsl_mc_bus_dpdmai"
-+};
-+EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdmai_type);
-+
- static struct device_type *fsl_mc_get_device_type(const char *type)
- {
- 	static const struct {
-@@ -217,6 +242,11 @@ static struct device_type *fsl_mc_get_device_type(const char *type)
- 		{ &fsl_mc_bus_dpmac_type, "dpmac" },
- 		{ &fsl_mc_bus_dprtc_type, "dprtc" },
- 		{ &fsl_mc_bus_dpseci_type, "dpseci" },
-+		{ &fsl_mc_bus_dpdmux_type, "dpdmux" },
-+		{ &fsl_mc_bus_dpdcei_type, "dpdcei" },
-+		{ &fsl_mc_bus_dpaiop_type, "dpaiop" },
-+		{ &fsl_mc_bus_dpci_type, "dpci" },
-+		{ &fsl_mc_bus_dpdmai_type, "dpdmai" },
- 		{ NULL, NULL }
- 	};
- 	int i;
+diff --git a/drivers/bus/fsl-mc/mc-sys.c b/drivers/bus/fsl-mc/mc-sys.c
+index 3221a7fbaf0a..85a0225db522 100644
+--- a/drivers/bus/fsl-mc/mc-sys.c
++++ b/drivers/bus/fsl-mc/mc-sys.c
+@@ -251,7 +251,7 @@ int mc_send_command(struct fsl_mc_io *mc_io, struct fsl_mc_command *cmd)
+ 		return -EINVAL;
+ 
+ 	if (mc_io->flags & FSL_MC_IO_ATOMIC_CONTEXT_PORTAL)
+-		spin_lock_irqsave(&mc_io->spinlock, irq_flags);
++		raw_spin_lock_irqsave(&mc_io->spinlock, irq_flags);
+ 	else
+ 		mutex_lock(&mc_io->mutex);
+ 
+@@ -287,7 +287,7 @@ int mc_send_command(struct fsl_mc_io *mc_io, struct fsl_mc_command *cmd)
+ 	error = 0;
+ common_exit:
+ 	if (mc_io->flags & FSL_MC_IO_ATOMIC_CONTEXT_PORTAL)
+-		spin_unlock_irqrestore(&mc_io->spinlock, irq_flags);
++		raw_spin_unlock_irqrestore(&mc_io->spinlock, irq_flags);
+ 	else
+ 		mutex_unlock(&mc_io->mutex);
+ 
 diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
-index 2b5f8366dbe1..cdb03aca2aef 100644
+index cdb03aca2aef..a428c61ead6e 100644
 --- a/include/linux/fsl/mc.h
 +++ b/include/linux/fsl/mc.h
-@@ -433,6 +433,11 @@ extern struct device_type fsl_mc_bus_dpmcp_type;
- extern struct device_type fsl_mc_bus_dpmac_type;
- extern struct device_type fsl_mc_bus_dprtc_type;
- extern struct device_type fsl_mc_bus_dpseci_type;
-+extern struct device_type fsl_mc_bus_dpdmux_type;
-+extern struct device_type fsl_mc_bus_dpdcei_type;
-+extern struct device_type fsl_mc_bus_dpaiop_type;
-+extern struct device_type fsl_mc_bus_dpci_type;
-+extern struct device_type fsl_mc_bus_dpdmai_type;
+@@ -339,7 +339,7 @@ struct fsl_mc_io {
+ 		 * This field is only meaningful if the
+ 		 * FSL_MC_IO_ATOMIC_CONTEXT_PORTAL flag is set
+ 		 */
+-		spinlock_t spinlock;	/* serializes mc_send_command() */
++		raw_spinlock_t spinlock; /* serializes mc_send_command() */
+ 	};
+ };
  
- static inline bool is_fsl_mc_bus_dprc(const struct fsl_mc_device *mc_dev)
- {
-@@ -454,6 +459,11 @@ static inline bool is_fsl_mc_bus_dpsw(const struct fsl_mc_device *mc_dev)
- 	return mc_dev->dev.type == &fsl_mc_bus_dpsw_type;
- }
- 
-+static inline bool is_fsl_mc_bus_dpdmux(const struct fsl_mc_device *mc_dev)
-+{
-+	return mc_dev->dev.type == &fsl_mc_bus_dpdmux_type;
-+}
-+
- static inline bool is_fsl_mc_bus_dpbp(const struct fsl_mc_device *mc_dev)
- {
- 	return mc_dev->dev.type == &fsl_mc_bus_dpbp_type;
-@@ -484,6 +494,26 @@ static inline bool is_fsl_mc_bus_dpseci(const struct fsl_mc_device *mc_dev)
- 	return mc_dev->dev.type == &fsl_mc_bus_dpseci_type;
- }
- 
-+static inline bool is_fsl_mc_bus_dpdcei(const struct fsl_mc_device *mc_dev)
-+{
-+	return mc_dev->dev.type == &fsl_mc_bus_dpdcei_type;
-+}
-+
-+static inline bool is_fsl_mc_bus_dpaiop(const struct fsl_mc_device *mc_dev)
-+{
-+	return mc_dev->dev.type == &fsl_mc_bus_dpaiop_type;
-+}
-+
-+static inline bool is_fsl_mc_bus_dpci(const struct fsl_mc_device *mc_dev)
-+{
-+	return mc_dev->dev.type == &fsl_mc_bus_dpci_type;
-+}
-+
-+static inline bool is_fsl_mc_bus_dpdmai(const struct fsl_mc_device *mc_dev)
-+{
-+	return mc_dev->dev.type == &fsl_mc_bus_dpdmai_type;
-+}
-+
- /*
-  * Data Path Buffer Pool (DPBP) API
-  * Contains initialization APIs and runtime control APIs for DPBP
 -- 
 2.25.1
 
