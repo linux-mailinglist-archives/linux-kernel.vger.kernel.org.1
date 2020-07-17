@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8CB222FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 02:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4816222FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 02:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgGQANo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 20:13:44 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17694 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgGQANn (ORCPT
+        id S1726234AbgGQAUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 20:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbgGQAUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 20:13:43 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f10ed2a0000>; Thu, 16 Jul 2020 17:13:30 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 16 Jul 2020 17:13:42 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 16 Jul 2020 17:13:42 -0700
-Received: from [10.2.163.115] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Jul
- 2020 00:13:42 +0000
-Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
- tegra_mipi_calibrate and tegra_mipi_wait
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
- <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
- <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
- <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
- <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
- <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
- <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
- <4690e682-8495-2327-87c7-c2f06a7a479d@nvidia.com>
- <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
- <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <550f1796-67ca-5856-223d-c68360243954@nvidia.com>
-Date:   Thu, 16 Jul 2020 17:16:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 16 Jul 2020 20:20:04 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606F2C061755;
+        Thu, 16 Jul 2020 17:20:04 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id p205so8343637iod.8;
+        Thu, 16 Jul 2020 17:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2FerGNFZKniOyRFjaMMBJDlV2XPDBsl8JaLwC0gfi7o=;
+        b=f+wrzPk6yzAFgWypM0ttm/bz88d9IaZzRis5kK0Eg82y3tF0dYe+k5a4N/iohJ+icy
+         fEthlTkf5JQC8a7kxhlUo4255wTDwmqU6lgIMBKiZ9gr4Z2xnWvSV2ERS6YkpEmAdL8I
+         dHDO752UplWksHQed6DBxtBpHktstX55MpMHNGhY/cp+J5vzeLeHCnMvKklU5fS0jt18
+         nPp49+DQKOwQZkz46FVTUGy7h/umw2sj/fjz+agmH43PwHR69CcuAq3sntZ9P2CWgUaX
+         D2XGBWyL3c0BBsyUmhDo/AyYb2Q+jNNwFSpSCOLPTVK7tB4lTPGrkReUPqbMh9SBoUaA
+         /14w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2FerGNFZKniOyRFjaMMBJDlV2XPDBsl8JaLwC0gfi7o=;
+        b=XQ3kwtS8jZAZ9pok03lggWMwcWaC3CszDocQCo9lAeQ3bQRKJ6F3bveNNjM2TR1r5y
+         +jVx1tPd1dSeYKoMKw/c+2ZB4hlM8uQqw3ATnbP5p2ta0sclTWRMyacbnpiV4XFs+F9k
+         wRWFr7E3q+QIHnW9I8YzwEdRfz93Bw2LBS1K903fj4BW0F0HE8TA/MhWnWLmYUZfXSWY
+         lel5sjVZ7CPpEWls5U3WrdNxWcmO+8TA0OJpDrAenSSGLPWcZGoN+6WE7UNe7RBfWH3K
+         XY5wk7T/nPhoZYJjoSlLFbETRZI3FNQgzpKk3hMHJP2Lw1BIpryCMbcPjv8J5AmJdszn
+         GQnA==
+X-Gm-Message-State: AOAM530ABMdvo4iIMkApIfd4C+vhIZYYao6aXEHi0ZNr8gJRGLShRvDF
+        kgG+76kXh+N/wsU2/Z+BWYojKpN8hGIDySXO9vI=
+X-Google-Smtp-Source: ABdhPJzJta5CGSAocN1NwUPeSiy2NdfZZdS1injlrEqZEkECIvwcAMeclHWbF2u2vMwrP7iKeAvo69aMuoNmmRi2bfQ=
+X-Received: by 2002:a5d:9c0e:: with SMTP id 14mr7033701ioe.109.1594945203608;
+ Thu, 16 Jul 2020 17:20:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594944810; bh=e7ciQ4M92aTObzkBjwwPlQaDpWhA7HRPJ/6w40ZehNc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=WHizPbkQ+yVcMQTr9kKLr6aNEkD238+xGSp8HgIi2sSnVUg9MxaoGtbDY8fIbNvyS
-         RhV/V/OuY0b+wfxVAH0zmHdnfwRJdKBiyxlHnYtfEEMQTUZSidNuv6x1Ugs8hQcIsq
-         NX1386HljzoK/AfSty9dRp0E9ximbjLg5IIAvkLtAZBjG5Pq2FCbZ8vXWC2raC35yr
-         sFtLuvF22WBtFhabnEl2FgkllXC/VkWdhMi0a+FryT7/YyXG42esC0HIURzHZTLHjB
-         iJT58Xat81wJz70tf0o2AiSKcX0HWgL3tdU15n3KmvQT0FKFiHWFpnLi2gMYF0thIZ
-         q1U02be5hzP1A==
+References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
+ <20200712131003.23271-2-madhuparnabhowmik10@gmail.com> <20200712160856.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
+In-Reply-To: <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
+From:   Dexuan-Linux Cui <dexuan.linux@gmail.com>
+Date:   Thu, 16 Jul 2020 17:19:52 -0700
+Message-ID: <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     madhuparnabhowmik10@gmail.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
+        frextrite@gmail.com, lkft-triage@lists.linaro.org,
+        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/16/20 4:47 PM, Dmitry Osipenko wrote:
-> 17.07.2020 02:09, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 7/16/20 4:06 PM, Sowjanya Komatineni wrote:
->>> On 7/16/20 4:01 PM, Dmitry Osipenko wrote:
->>>> 17.07.2020 01:49, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>>> What keeps MIPI clock enabled after completion of the
->>>>>> tegra_mipi_calibrate() invocation?
->>>>> MIPI clock is disabled at end of tegra_mipi_calibrate and is re-enabl=
-ed
->>>>> during tegra_mipi_wait.
->>>>>
->>>>> I think I should fix this to keep the clock enabled till calibration
->>>>> results are latched.
->>>>>
->>>>> All consumers of tegra_mipi_calibrate() will call tegra_mipi_wait().
->>>>>
->>>>> So will remove clk_disable mipi clk at end of tegra_mipi_calibrate()
->>>>> and
->>>>> clk_enable mipi_clk at beginning of tegra_mipi_wait()
->>>> Isn't it possible to perform the calibration after enabling CSI and
->>>> before of starting the sensor streaming?
->>> Currently this is what I am doing. Triggering calibration start during
->>> CSI receiver being ready and then sensor streaming will happen where
->>> internal MIPI CAL detects for LP -> HS transition and applies results
->>> to pads. So checking for calibration results after sensor stream is
->>> enabled
->> 1. Calling tegra_mipi_calibrate() during CSI streaming where CSI pads
->> are enabled and receiver is kept ready
->>
->> 2. Start Sensor stream
->>
->> 3. Calling tegra_mipi_wait() to check for MIPI Cal status.
->>
->> So as mipi cal clk need to be kept enabled till 3rd step, we can enable
->> clock during tegra_mipi_calibrate() and leave it enabled and disable it
->> in tegra_mipi_wait after status check.
->  From TRM:
+On Thu, Jul 16, 2020 at 7:47 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> The following sequence is recommended for capturing a single frame:
+> On Sun, 12 Jul 2020 at 21:39, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Sun, Jul 12, 2020 at 06:40:03PM +0530, madhuparnabhowmik10@gmail.com wrote:
+> > > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > >
+> > > Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
+> > > as it also checkes if the right lock is held.
+> > > Using hlist_for_each_entry_rcu() with a condition argument will not
+> > > report the cases where a SRCU protected list is traversed using
+> > > rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
+> > >
+> > > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> >
+> > I queued both for testing and review, thank you!
+> >
+> > In particular, this one needs an ack by the maintainer.
+> >
+> >                                                         Thanx, Paul
+> >
+> > >  arch/x86/kvm/mmu/page_track.c | 6 ++++--
+> > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+> > > index a7bcde34d1f2..a9cd17625950 100644
+> > > --- a/arch/x86/kvm/mmu/page_track.c
+> > > +++ b/arch/x86/kvm/mmu/page_track.c
+> > > @@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
+> > >               return;
+> > >
+> > >       idx = srcu_read_lock(&head->track_srcu);
+> > > -     hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
+> > > +     hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
+> > > +                             srcu_read_lock_held(&head->track_srcu))
 >
-> 1. Set up CSI registers for use case such as number of lanes, virtual
-> channel, etc.
-> 2. Initialize and power up CSI interface
-> 3. Wait for initialization time or done signal from calibration logic
-> 4. Power up camera through the I2C interface
-> 5. All CSI data and clock lanes are in stop state, LP11
-> 6. Initiate frame capture through the I2C
-> 7. Frame done, CSI goes back to stop state, LP11
+> x86 build failed on linux -next 20200716.
 >
-> Hence, is it really necessary to perform the manual calibration?
+> arch/x86/kvm/mmu/page_track.c: In function 'kvm_page_track_write':
+> include/linux/rculist.h:727:30: error: left-hand operand of comma
+> expression has no effect [-Werror=unused-value]
+>   for (__list_check_srcu(cond),     \
+>                               ^
+> arch/x86/kvm/mmu/page_track.c:232:2: note: in expansion of macro
+> 'hlist_for_each_entry_srcu'
+>   hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~
+> arch/x86/kvm/mmu/page_track.c: In function 'kvm_page_track_flush_slot':
+> include/linux/rculist.h:727:30: error: left-hand operand of comma
+> expression has no effect [-Werror=unused-value]
+>   for (__list_check_srcu(cond),     \
+>                               ^
+> arch/x86/kvm/mmu/page_track.c:258:2: note: in expansion of macro
+> 'hlist_for_each_entry_srcu'
+>   hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> make[3]: *** [arch/x86/kvm/mmu/page_track.o] Error 1
+>
+> build link,
+> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-lkft/815/consoleText
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 
-done signal from calibration logic will happen only when it sees LP to=20
-HS transition as thats when calibration results are applied to pads and=20
-then done signal is set.
+Hi, we're seeing the same building failure with the latest linux-next tree.
 
-Also MIPI Pads calibration need to be done on every power off/on. So=20
-need to do calibration and trigger it along with CSI receiver=20
-programming to keep it ready and then need to check/wait for status only=20
-after sensor stream happens as thats where LP->HS transition happen.
-
+Thanks,
+Dexuan
