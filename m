@@ -2,206 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B821E223E06
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4B6223E0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgGQO1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
+        id S1726442AbgGQOag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgGQO1k (ORCPT
+        with ESMTP id S1726079AbgGQOaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:27:40 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D76C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:27:40 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id o1so5518799plk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:27:40 -0700 (PDT)
+        Fri, 17 Jul 2020 10:30:35 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C76DC0619D2;
+        Fri, 17 Jul 2020 07:30:35 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ls15so6606016pjb.1;
+        Fri, 17 Jul 2020 07:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z0oSgdwYRPiokDQMgtgcehr0uyxaEp6VXyiWo3WZ3mk=;
-        b=pN/uIpUQtdL/QX2u1vow40HFw9Jpqi9umoP7RVtwB1HKdKqe3jhXx+rkK1xuLfh/cR
-         Cu8fnM5QSVYf6EBPdO5jUFAyHp2rKjHgvCP4rdYAKzJV0VcXJTL0Dt32kC2cNayLLknn
-         FrzuMFJtWxyOlO770mGdl2mRCv68fzkrepNuJDT5n9uOFS9RhuVg9nTcu+KGx/7Ep1Ai
-         KJf3wznPfnyPgMB1axmu8ZawNzB/p11LRf7dRfouE9mj0DuFGAmBbVjw9nXLR1hGE913
-         C0xfTK7hxBkqNX9QqvTjJjANYnFwvEp7VEw7MXk3w/TQqregR7oUV36F8vOjkuYU41eq
-         T+Vg==
+         :content-disposition:in-reply-to:user-agent;
+        bh=yaYi6h5B07rG4qeTioPMA8wvtoyirSTqGxPbp9nZgr0=;
+        b=NXVxk+YlNj2Eam6zrVgjF0M4+RBDbyoBR9TVuKV9iKiNEXXMbsznnDpgzHmNo0QVkk
+         FvVN2zikv8iZiT65/2RSrVb2MZlMnV4Q+prItsKSqekuu8t4y8FButbsVMyVT4IVYhxX
+         Kg5RW9MLCQzrsvBSqVI+sh+cBOzrpqNodI10vi+DpAWRdCsJyw5g482am//xgazEFb2X
+         ueUFfFJGPBhv92/tFMZgllhWDDfR9DHK5A4ixDGPQPZ0a6hTaETMowE888FbWutWhqiX
+         biH7n/ngAM8Gn6jl7hJ4OwLSX524YJXshUEh/UvKycGJmWxAGFUsTl8Z6IsUNuVCRLw1
+         vlEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z0oSgdwYRPiokDQMgtgcehr0uyxaEp6VXyiWo3WZ3mk=;
-        b=S0PQFT3iQZ8JqmZGFDSbOqToNTDzR8tcAek74HgfgV6ix4+aUbp/4nq6c1ueEJ/TEK
-         LhNZFGDa6YnQ4OrilQ1z1WuYi7lolm2CXXnilVD68meiB/3RLOAUSGwaYYXw5es29MJX
-         IK55COZjNIR8IgCRO5xUj3SHflxu8G5riMRH/osRlswQ11mgKXNrnUtFILGgRmnb2yPd
-         38bTYVQvPagEVr13fo5us0Nuw+27hw9nhHFcVa2Y4Qggnt+B21Hg3s2aR1utH2q4hIA6
-         h8COMmp2Z10JKJ1Ip4WoblSXhcLUn+6qZDv3d8M5mhmJWqw4JBFm/+Cisxa/jwqaEOcu
-         bXLw==
-X-Gm-Message-State: AOAM532f45UrBwZCcsJjBmLMUyx9ZWrZZjajZPiGH3aEm3leYw8GGRzZ
-        kl6rlPNm34J679JQa5Et7UcGO0D1UzE=
-X-Google-Smtp-Source: ABdhPJz5B2CfEFDNa9gbTWp7S8Dg2/n5apKLILDmg1zlRTRPJhTzN5MIwHKm7ez+TR7YPlo1Frp0hQ==
-X-Received: by 2002:a17:90a:ab96:: with SMTP id n22mr10314994pjq.52.1594996059456;
-        Fri, 17 Jul 2020 07:27:39 -0700 (PDT)
-Received: from mail.google.com ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id a2sm8036656pfg.120.2020.07.17.07.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 07:27:38 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 22:27:27 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 07/17] perf ftrace: add option '--inherit' to trace
- children processes
-Message-ID: <20200717142727.qg6pmql73secc5xp@mail.google.com>
-References: <20200711124035.6513-1-changbin.du@gmail.com>
- <20200711124035.6513-8-changbin.du@gmail.com>
- <CAM9d7cgBeHW_Ot2nfBAzbV73gNKiOzp7K5KoTO=V4k=MGrZS6Q@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yaYi6h5B07rG4qeTioPMA8wvtoyirSTqGxPbp9nZgr0=;
+        b=OftskObNsnVWVSzdt/iw2fxsmN6ZTppyR9OyDjfNTNN3kc5P3pmoUcBJdQj8wm3wBh
+         fYS5kU0+o01Ty1Ew5d3aFOW5I9iD4I7LRbglzI26qCHKTq8olzHslnbXoQiht7RtF9r9
+         Bt7hHrGkbYkVK+hqIAdcHVY44ZyNb9cOKOtDVtZ/zwV7cUdt8yw+i0SNCBIdSDmXFAtR
+         BjLmaCOD561uG0rgKTb+lxnhg1N7vrPi1W6dSwK0S24hAZ+RSnoDHs81enFnPU71Sw0R
+         Rf705zcB/JA61C0EMIiPRuEJMplx0LKaQ+PKWy5/WnsCB+PazCviT181YCMtme7q16F9
+         NU8g==
+X-Gm-Message-State: AOAM530Ya1GEDbj+yJmfBvbOarZ2Cj7iyCOc0l7LaiBzwKZ9d+vT45M2
+        E8YchoxLt00NCNUWJ6f8AkA=
+X-Google-Smtp-Source: ABdhPJwDrmJiLhA2SZTMj3XfHOsOUgrx43kJPrUeWY8fwYz+3Bagj07sK2ZvjRzGhbroviQYMv7sTQ==
+X-Received: by 2002:a17:902:547:: with SMTP id 65mr7767642plf.191.1594996234764;
+        Fri, 17 Jul 2020 07:30:34 -0700 (PDT)
+Received: from localhost ([89.208.244.139])
+        by smtp.gmail.com with ESMTPSA id y19sm7946672pgj.35.2020.07.17.07.30.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Jul 2020 07:30:34 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 22:30:30 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        michal.simek@xilinx.com, wsa+renesas@sang-engineering.com,
+        linus.walleij@linaro.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH v3 1/2] drivers: provide devm_platform_request_irq()
+Message-ID: <20200717143030.GB25998@nuc8i5>
+References: <20200527142611.9006-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cgBeHW_Ot2nfBAzbV73gNKiOzp7K5KoTO=V4k=MGrZS6Q@mail.gmail.com>
+In-Reply-To: <20200527142611.9006-1-zhengdejin5@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 10:59:56AM +0900, Namhyung Kim wrote:
-> On Sat, Jul 11, 2020 at 9:42 PM Changbin Du <changbin.du@gmail.com> wrote:
-> >
-> > This adds an option '--inherit' to allow us trace children
-> > processes spawned by our target.
-> >
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> >
-> > ---
-> > v2: option name '--trace-children' -> '--inherit'.
-> > ---
-> >  tools/perf/Documentation/perf-ftrace.txt |  3 ++
-> >  tools/perf/builtin-ftrace.c              | 38 ++++++++++++++++++++++++
-> >  2 files changed, 41 insertions(+)
-> >
-> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-> > index 98fe01d354d1..fd632bd9b2c1 100644
-> > --- a/tools/perf/Documentation/perf-ftrace.txt
-> > +++ b/tools/perf/Documentation/perf-ftrace.txt
-> > @@ -61,6 +61,9 @@ OPTIONS
-> >         Set the size of per-cpu tracing buffer, <size> is expected to
-> >         be a number with appended unit character - B/K/M/G.
-> >
-> > +--inherit::
-> > +       Trace children processes spawned by our target.
-> > +
-> >  -T::
-> >  --trace-funcs=::
-> >         Only trace functions given by the argument.  Multiple functions
-> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> > index 887e78b23a82..4efaa7b6a906 100644
-> > --- a/tools/perf/builtin-ftrace.c
-> > +++ b/tools/perf/builtin-ftrace.c
-> > @@ -39,6 +39,7 @@ struct perf_ftrace {
-> >         struct list_head        nograph_funcs;
-> >         int                     graph_depth;
-> >         unsigned long           percpu_buffer_size;
-> > +       bool                    inherit;
-> >  };
-> >
-> >  struct filter_entry {
-> > @@ -177,9 +178,27 @@ static int write_tracing_file_int(const char *name, int value)
-> >         return 0;
-> >  }
-> >
-> > +static int write_tracing_option_file(const char *name, const char *val)
-> > +{
-> > +       char *file;
-> > +       int ret;
-> > +
-> > +       if (asprintf(&file, "options/%s", name) < 0)
-> > +               return -1;
-> > +
-> > +       ret = __write_tracing_file(file, val, false);
-> > +       free(file);
-> > +       return ret;
-> > +}
-> > +
-> >  static int reset_tracing_cpu(void);
-> >  static void reset_tracing_filters(void);
-> >
-> > +static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
-> > +{
-> > +       write_tracing_option_file("function-fork", "0");
-> > +}
-> > +
-> >  static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
-> >  {
-> >         if (write_tracing_file("tracing_on", "0") < 0)
-> > @@ -198,6 +217,7 @@ static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
-> >                 return -1;
-> >
-> >         reset_tracing_filters();
-> > +       reset_tracing_options(ftrace);
-> >         return 0;
-> >  }
-> >
-> > @@ -336,6 +356,17 @@ static int set_tracing_percpu_buffer_size(struct perf_ftrace *ftrace)
-> >         return 0;
-> >  }
-> >
-> > +static int set_tracing_trace_inherit(struct perf_ftrace *ftrace)
-> > +{
-> > +       if (!ftrace->inherit)
-> > +               return 0;
-> > +
-> > +       if (write_tracing_option_file("function-fork", "1") < 0)
-> > +               return -1;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
-> >  {
-> >         char *trace_file;
-> > @@ -405,6 +436,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
-> >                 goto out_reset;
-> >         }
-> >
-> > +       if (set_tracing_trace_inherit(ftrace) < 0) {
-> > +               pr_err("failed to set tracing option function-fork\n");
-> > +               goto out_reset;
-> > +       }
-> 
-> Can we have set_tracing_options() here instead to make
-> the __cmd_ftrace() shorter?  It'd set other options added later.
-> It's also symmetric to reset_tracing_options().
->
-I appended a patch to do this. Thanks for your suggestion.
+On Wed, May 27, 2020 at 10:26:10PM +0800, Dejin Zheng wrote:
+Hi Jonathan, Greg, Rafael, Linus, Michal and Wolfram:
 
-> Thanks
-> Namhyung
-> 
-> > +
-> >         if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
-> >                 pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
-> >                 goto out_reset;
-> > @@ -599,6 +635,8 @@ int cmd_ftrace(int argc, const char **argv)
-> >                     "Max depth for function graph tracer"),
-> >         OPT_CALLBACK('m', "buffer-size", &ftrace.percpu_buffer_size, "size",
-> >                      "size of per cpu buffer", parse_buffer_size),
-> > +       OPT_BOOLEAN(0, "inherit", &ftrace.inherit,
-> > +                   "trace children processes"),
-> >         OPT_END()
-> >         };
-> >
-> > --
-> > 2.25.1
-> >
+Could you help me review this patch if you have free time?
+Thank you very very much!
 
--- 
-Cheers,
-Changbin Du
+BR,
+Dejin
+> It will call devm_request_irq() after platform_get_irq() function
+> in many drivers, sometimes, it is not right for the error handling
+> of these two functions in some drivers. so provide this function
+> to simplify the driver.
+> 
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: Wolfram Sang <wsa@the-dreams.de>
+> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> ---
+> v2 -> v3:
+> 	- add devm_platform_request_irq() to devres.rst by Grygorii's
+> 	  suggestion.
+> v1 -> v2:
+> 	- The patch content has not changed. just resend it by this discussion:
+> 	  https://patchwork.ozlabs.org/project/linux-i2c/patch/20200520144821.8069-1-zhengdejin5@gmail.com/
+> 
+ 
