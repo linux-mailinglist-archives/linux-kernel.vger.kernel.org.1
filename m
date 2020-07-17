@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDF52237AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409492237BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgGQJE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:04:59 -0400
+        id S1726763AbgGQJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:05:14 -0400
 Received: from mga14.intel.com ([192.55.52.115]:64984 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726229AbgGQJE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726530AbgGQJE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Jul 2020 05:04:58 -0400
-IronPort-SDR: fbk8fznuG35YCLotEVygdYDu9Q/Wjd7PBVQpNCHN8QJoO/0B0H243yYkdmUAyj6Q2XbxDt1EWg
- PukNIDXSK2Yg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="148719424"
+IronPort-SDR: YDKGW3RE9atmu8ZOf8OPhita2hqmmkgzq5+zyTYsQ5NzhUrUkV8G4m7ZVZWEb5RAcdj/wZGdQd
+ 0wIjILgNeQnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="148719445"
 X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="148719424"
+   d="scan'208";a="148719445"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 02:04:39 -0700
-IronPort-SDR: oxDGWDPvJWNBre7UxazejGNTcp7NVQeVN2tR4A2KrErWJ6rvDc82RqTLUErslqQ9ThFK9ZSBb6
- IceIci2bcDxQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 02:04:44 -0700
+IronPort-SDR: kJMfeIN5E2kVzc7EFlALbeDhG9wsl9q+G0DtFpHKrmToBZSsQmks1lAy0YEV4+N7hIdAO3d6+Q
+ 1FKa+YVBPTVQ==
 X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="460786012"
+   d="scan'208";a="460786052"
 Received: from enaessen-mobl1.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.251.86.9])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 02:04:35 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 02:04:40 -0700
 From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
 To:     linux-arm-kernel@lists.infradead.org, SoC Team <soc@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
         "Paul J. Murphy" <paul.j.murphy@intel.com>,
         "Paul J. Murphy" <paul.j.murphy@linux.intel.com>,
         Dinh Nguyen <dinguyen@kernel.org>
-Subject: [PATCH v4 1/5] arm64: Add config for Keem Bay SoC
-Date:   Fri, 17 Jul 2020 10:04:10 +0100
-Message-Id: <20200717090414.313530-2-daniele.alessandrelli@linux.intel.com>
+Subject: [PATCH v4 2/5] dt-bindings: arm: Add Keem Bay bindings
+Date:   Fri, 17 Jul 2020 10:04:11 +0100
+Message-Id: <20200717090414.313530-3-daniele.alessandrelli@linux.intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200717090414.313530-1-daniele.alessandrelli@linux.intel.com>
 References: <20200717090414.313530-1-daniele.alessandrelli@linux.intel.com>
@@ -53,31 +53,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-Add ARCH_KEEMBAY configuration option to support Intel Movidius SoC
-code-named Keem Bay.
+Document Intel Movidius SoC code-named Keem Bay, along with the Keem Bay
+EVM board.
 
 Reviewed-by: Dinh Nguyen <dinguyen@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 ---
- arch/arm64/Kconfig.platforms | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../bindings/arm/intel,keembay.yaml           | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/intel,keembay.yaml
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 8dd05b2a925c..95c1b9042009 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -121,6 +121,11 @@ config ARCH_HISI
- 	help
- 	  This enables support for Hisilicon ARMv8 SoC family
- 
-+config ARCH_KEEMBAY
-+	bool "Keem Bay SoC"
-+	help
-+	  This enables support for Intel Movidius SoC code-named Keem Bay.
+diff --git a/Documentation/devicetree/bindings/arm/intel,keembay.yaml b/Documentation/devicetree/bindings/arm/intel,keembay.yaml
+new file mode 100644
+index 000000000000..4d925785f504
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/intel,keembay.yaml
+@@ -0,0 +1,19 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/intel,keembay.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- config ARCH_MEDIATEK
- 	bool "MediaTek SoC Family"
- 	select ARM_GIC
++title: Keem Bay platform device tree bindings
++
++maintainers:
++  - Paul J. Murphy <paul.j.murphy@intel.com>
++  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++
++properties:
++  compatible:
++    items:
++      - enum:
++        - intel,keembay-evm
++      - const: intel,keembay
++...
 -- 
 2.26.2
 
