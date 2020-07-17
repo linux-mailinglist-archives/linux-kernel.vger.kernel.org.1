@@ -2,119 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B5B223751
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B777A223761
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbgGQIqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgGQIqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:46:23 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 255BF20691;
-        Fri, 17 Jul 2020 08:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594975583;
-        bh=aSTOwrsf1OoTmGFAxEAYLQB33noREJVm4joxNsHwJJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lma2rZauHo7sWrCEhYqla+A4EvPfjNNuawxIR/EPmU/HB+K8RnWoxUCr6vhlH5btM
-         vfRPFagdp7H/oMq+T3HQahlsqGgF+x4O/nzO0UEFpEuJPdujSvgMvWTeOGGs/oHXVM
-         ie6AY9FhSgTWvOXLoRMt6rfY2Agi+T8Ch9wyt9f8=
-Date:   Fri, 17 Jul 2020 14:16:18 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     "kishon@ti.com" <kishon@ti.com>,
-        "wsa+renesas@sang-engineering.com" <wsa+renesas@sang-engineering.com>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] phy: renesas: rcar-gen3-usb2: fix SError happen if
- DEBUG_SHIRQ is enabled
-Message-ID: <20200717084618.GM82923@vkoul-mobl>
-References: <1594642288-9986-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <20200717063856.GH82923@vkoul-mobl>
- <TY2PR01MB3692ED71A574F16848CD48ECD87C0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+        id S1726429AbgGQIv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:51:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7779 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725970AbgGQIv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:51:29 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6FF65E2A077F0E7EE8A1;
+        Fri, 17 Jul 2020 16:51:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Jul 2020 16:51:12 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <john.garry@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH] drivers/perf: Prevent forced unbinding of PMU drivers
+Date:   Fri, 17 Jul 2020 16:49:23 +0800
+Message-ID: <1594975763-32966-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TY2PR01MB3692ED71A574F16848CD48ECD87C0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-07-20, 08:16, Yoshihiro Shimoda wrote:
-> Hello Vinod,
-> 
-> > From: Vinod Koul, Sent: Friday, July 17, 2020 3:39 PM
-> > 
-> > hello Yoshihiro,
-> > 
-> > On 13-07-20, 21:11, Yoshihiro Shimoda wrote:
-> > 
-> > Please consider revising patch subject. It tell me you are fixing an
-> > error but it doesnt tell me what this patch is about :)
-> > 
-> > Perhpas :move irq registration to init" maybe a better title which
-> > describes the changes this patch brings in
-> 
-> Thank you for your suggestion! I also think your suggestion is better.
-> So, I will fix it.
-> 
-> <snip>
-> > > @@ -389,12 +390,39 @@ static void rcar_gen3_init_otg(struct rcar_gen3_chan *ch)
-> > >  	rcar_gen3_device_recognition(ch);
-> > >  }
-> > >
-> > > +static irqreturn_t rcar_gen3_phy_usb2_irq(int irq, void *_ch)
-> > > +{
-> > > +	struct rcar_gen3_chan *ch = _ch;
-> > > +	void __iomem *usb2_base = ch->base;
-> > > +	u32 status = readl(usb2_base + USB2_OBINTSTA);
-> > > +	irqreturn_t ret = IRQ_NONE;
-> > > +
-> > > +	if (status & USB2_OBINT_BITS) {
-> > > +		dev_vdbg(ch->dev, "%s: %08x\n", __func__, status);
-> > > +		writel(USB2_OBINT_BITS, usb2_base + USB2_OBINTSTA);
-> > > +		rcar_gen3_device_recognition(ch);
-> > > +		ret = IRQ_HANDLED;
-> > > +	}
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  static int rcar_gen3_phy_usb2_init(struct phy *p)
-> > >  {
-> > >  	struct rcar_gen3_phy *rphy = phy_get_drvdata(p);
-> > >  	struct rcar_gen3_chan *channel = rphy->ch;
-> > >  	void __iomem *usb2_base = channel->base;
-> > >  	u32 val;
-> > > +	int ret;
-> > > +
-> > > +	if (!rcar_gen3_is_any_rphy_initialized(channel) && channel->irq >= 0) {
-> > > +		INIT_WORK(&channel->work, rcar_gen3_phy_usb2_work);
-> > > +		ret = request_irq(channel->irq, rcar_gen3_phy_usb2_irq,
-> > > +				  IRQF_SHARED, dev_name(channel->dev), channel);
-> > > +		if (ret < 0)
-> > > +			dev_err(channel->dev, "No irq handler (%d)\n",
-> > > +				channel->irq);
-> > 
-> > This could be in a single line :)
-> 
-> Yes. We could be 80 over characters in a line now :)
-> I'll fix it.
-> 
-> > Should we continue on error here?
-> 
-> Hmm, maybe it's better if the request_irq() failed because
-> it can avoid unexpected behaviors. But, original code continued on error.
-> In this case, should I make a separated incremental patch to exit on error?
+Forcefully unbinding PMU drivers during perf sampling will lead to
+a kernel panic, because the perf upper-layer framework call a NULL
+pointer in this situation.
 
-Yes that would be better :), Always, a patch per change
+To solve this issue, "suppress_bind_attrs" should be set to true, so
+that bind/unbind can be disabled via sysfs and prevent unbinding PMU
+drivers during perf sampling.
 
--- 
-~Vinod
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+---
+ drivers/perf/arm-cci.c                        | 1 +
+ drivers/perf/arm-ccn.c                        | 1 +
+ drivers/perf/arm_dsu_pmu.c                    | 1 +
+ drivers/perf/arm_smmuv3_pmu.c                 | 1 +
+ drivers/perf/arm_spe_pmu.c                    | 1 +
+ drivers/perf/fsl_imx8_ddr_perf.c              | 1 +
+ drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c | 1 +
+ drivers/perf/hisilicon/hisi_uncore_hha_pmu.c  | 1 +
+ drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c  | 1 +
+ drivers/perf/qcom_l2_pmu.c                    | 1 +
+ drivers/perf/qcom_l3_pmu.c                    | 1 +
+ drivers/perf/thunderx2_pmu.c                  | 1 +
+ drivers/perf/xgene_pmu.c                      | 1 +
+ 13 files changed, 13 insertions(+)
+
+diff --git a/drivers/perf/arm-cci.c b/drivers/perf/arm-cci.c
+index 1b8e337..87c4be9 100644
+--- a/drivers/perf/arm-cci.c
++++ b/drivers/perf/arm-cci.c
+@@ -1718,6 +1718,7 @@ static struct platform_driver cci_pmu_driver = {
+ 	.driver = {
+ 		   .name = DRIVER_NAME,
+ 		   .of_match_table = arm_cci_pmu_matches,
++		   .suppress_bind_attrs = true,
+ 		  },
+ 	.probe = cci_pmu_probe,
+ 	.remove = cci_pmu_remove,
+diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
+index d50edef..7b7d23f 100644
+--- a/drivers/perf/arm-ccn.c
++++ b/drivers/perf/arm-ccn.c
+@@ -1545,6 +1545,7 @@ static struct platform_driver arm_ccn_driver = {
+ 	.driver = {
+ 		.name = "arm-ccn",
+ 		.of_match_table = arm_ccn_match,
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = arm_ccn_probe,
+ 	.remove = arm_ccn_remove,
+diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+index 518d060..96ed93c 100644
+--- a/drivers/perf/arm_dsu_pmu.c
++++ b/drivers/perf/arm_dsu_pmu.c
+@@ -757,6 +757,7 @@ static struct platform_driver dsu_pmu_driver = {
+ 	.driver = {
+ 		.name	= DRVNAME,
+ 		.of_match_table = of_match_ptr(dsu_pmu_of_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = dsu_pmu_device_probe,
+ 	.remove = dsu_pmu_device_remove,
+diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+index 90caba56..4cdb35d 100644
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -860,6 +860,7 @@ static void smmu_pmu_shutdown(struct platform_device *pdev)
+ static struct platform_driver smmu_pmu_driver = {
+ 	.driver = {
+ 		.name = "arm-smmu-v3-pmcg",
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = smmu_pmu_probe,
+ 	.remove = smmu_pmu_remove,
+diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+index d80f487..e51ddb6 100644
+--- a/drivers/perf/arm_spe_pmu.c
++++ b/drivers/perf/arm_spe_pmu.c
+@@ -1226,6 +1226,7 @@ static struct platform_driver arm_spe_pmu_driver = {
+ 	.driver	= {
+ 		.name		= DRVNAME,
+ 		.of_match_table	= of_match_ptr(arm_spe_pmu_of_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe	= arm_spe_pmu_device_probe,
+ 	.remove	= arm_spe_pmu_device_remove,
+diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
+index 2aed2d9..397540a 100644
+--- a/drivers/perf/fsl_imx8_ddr_perf.c
++++ b/drivers/perf/fsl_imx8_ddr_perf.c
+@@ -707,6 +707,7 @@ static struct platform_driver imx_ddr_pmu_driver = {
+ 	.driver         = {
+ 		.name   = "imx-ddr-pmu",
+ 		.of_match_table = imx_ddr_pmu_dt_ids,
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe          = ddr_perf_probe,
+ 	.remove         = ddr_perf_remove,
+diff --git a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
+index 71587f1..5e3645c 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
+@@ -419,6 +419,7 @@ static struct platform_driver hisi_ddrc_pmu_driver = {
+ 	.driver = {
+ 		.name = "hisi_ddrc_pmu",
+ 		.acpi_match_table = ACPI_PTR(hisi_ddrc_pmu_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = hisi_ddrc_pmu_probe,
+ 	.remove = hisi_ddrc_pmu_remove,
+diff --git a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
+index c199de7..5eb8168 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
+@@ -431,6 +431,7 @@ static struct platform_driver hisi_hha_pmu_driver = {
+ 	.driver = {
+ 		.name = "hisi_hha_pmu",
+ 		.acpi_match_table = ACPI_PTR(hisi_hha_pmu_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = hisi_hha_pmu_probe,
+ 	.remove = hisi_hha_pmu_remove,
+diff --git a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
+index 567d7e6..3e8b5ea 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
+@@ -421,6 +421,7 @@ static struct platform_driver hisi_l3c_pmu_driver = {
+ 	.driver = {
+ 		.name = "hisi_l3c_pmu",
+ 		.acpi_match_table = ACPI_PTR(hisi_l3c_pmu_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = hisi_l3c_pmu_probe,
+ 	.remove = hisi_l3c_pmu_remove,
+diff --git a/drivers/perf/qcom_l2_pmu.c b/drivers/perf/qcom_l2_pmu.c
+index 21d6991..4da37f6 100644
+--- a/drivers/perf/qcom_l2_pmu.c
++++ b/drivers/perf/qcom_l2_pmu.c
+@@ -1028,6 +1028,7 @@ static struct platform_driver l2_cache_pmu_driver = {
+ 	.driver = {
+ 		.name = "qcom-l2cache-pmu",
+ 		.acpi_match_table = ACPI_PTR(l2_cache_pmu_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = l2_cache_pmu_probe,
+ 	.remove = l2_cache_pmu_remove,
+diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
+index 656e830..9ddb577 100644
+--- a/drivers/perf/qcom_l3_pmu.c
++++ b/drivers/perf/qcom_l3_pmu.c
+@@ -814,6 +814,7 @@ static struct platform_driver qcom_l3_cache_pmu_driver = {
+ 	.driver = {
+ 		.name = "qcom-l3cache-pmu",
+ 		.acpi_match_table = ACPI_PTR(qcom_l3_cache_pmu_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = qcom_l3_cache_pmu_probe,
+ };
+diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
+index 51b31d6..aac9823 100644
+--- a/drivers/perf/thunderx2_pmu.c
++++ b/drivers/perf/thunderx2_pmu.c
+@@ -1017,6 +1017,7 @@ static struct platform_driver tx2_uncore_driver = {
+ 	.driver = {
+ 		.name		= "tx2-uncore-pmu",
+ 		.acpi_match_table = ACPI_PTR(tx2_uncore_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = tx2_uncore_probe,
+ 	.remove = tx2_uncore_remove,
+diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+index 46ee680..edac28c 100644
+--- a/drivers/perf/xgene_pmu.c
++++ b/drivers/perf/xgene_pmu.c
+@@ -1975,6 +1975,7 @@ static struct platform_driver xgene_pmu_driver = {
+ 		.name		= "xgene-pmu",
+ 		.of_match_table = xgene_pmu_of_match,
+ 		.acpi_match_table = ACPI_PTR(xgene_pmu_acpi_match),
++		.suppress_bind_attrs = true,
+ 	},
+ };
+
+--
+2.7.4
+
