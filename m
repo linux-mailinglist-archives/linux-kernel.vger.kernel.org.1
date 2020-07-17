@@ -2,354 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08D62239F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792A52239FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgGQLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 07:04:38 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:38982 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726801AbgGQLEh (ORCPT
+        id S1726892AbgGQLEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 07:04:45 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:33406 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgGQLEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 07:04:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594983875; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=0DmSjSPRq4xd/aP1wnIbOfBMiq8D4Hd2kw25xMXQkrE=;
- b=TC0KLPb22RQIDuZFyi3MjoFvCFmpW04mEhotrFjbggSVojzG4U3PAm9mTBZv6gT3CgemUCfh
- Zt7rdh/GvWuQIs4Y0ie9yJ0tkzUD7AoLi6HXfcGwWIhdgqTDSAO+igb3TLxY50yPQ1mMAuNe
- 2U6UGSGNTR33W5EwvtfmDFnOGjk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n16.prod.us-east-1.postgun.com with SMTP id
- 5f118596d3d65084227a09f4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 11:03:50
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A5428C43391; Fri, 17 Jul 2020 11:03:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F024C433C9;
-        Fri, 17 Jul 2020 11:03:48 +0000 (UTC)
+        Fri, 17 Jul 2020 07:04:43 -0400
+Received: by mail-ed1-f66.google.com with SMTP id h28so7349560edz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 04:04:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NwO9ooKVAyiPOOXEnU9bXuMrqYv/InVTMqk9eon28Ew=;
+        b=SR5YA6ogytSY8AIA4245VdS6xuBSz2VlF5rt1ROnJtOvYKj0iG4KdQVH9mqDMUgi0f
+         l9RnbDAPXHFJ+tVQMwss/36DoPZGSf32zg6XTCuK3aPrC6b/b9PcHUlxYfuQUifs09rY
+         oX55ODWiD7kwVWKBkbiD0pEburnXojZ2JpTqeZOTfBxUEUklmX85Db2vd30b+rF+8Azc
+         fzWbCPqKQY1EOl5mH+O0lfV/n5oNw02ciaPG6KXACzQ00Q1KLti0VjrgrwDqSbz2gb9I
+         DEv21sVMcoi8iPuRxbLVPhERbIq7jnMrX8505EFYJUYO8O/Y0Q3l1AthYiAsh17eaDxR
+         saZw==
+X-Gm-Message-State: AOAM531oiTREZiIy8g7HqGVZHIvmr7yRdUdZuUwUhYQUWgapp1VIiYIG
+        bVnN32VDSCkjCGf4GscszKvn6F+q
+X-Google-Smtp-Source: ABdhPJx61tEnahDVqdXy6ZzdBlNacQlTeSwEdtYAaf0QtVHZ8WMqCe+TIC+e7hUdsBnNoUkTIrIDIw==
+X-Received: by 2002:a50:fc88:: with SMTP id f8mr8795222edq.314.1594983880523;
+        Fri, 17 Jul 2020 04:04:40 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id v11sm7622129eja.113.2020.07.17.04.04.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 04:04:39 -0700 (PDT)
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>, christian@brauner.io,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
+Date:   Fri, 17 Jul 2020 13:04:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 17 Jul 2020 16:33:48 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        sibis@codearora.org, tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, linux-remoteproc-owner@vger.kernel.org
-Subject: Re: [PATCH v8 4/5] remoteproc: Add inline coredump functionality
-In-Reply-To: <1594938035-7327-5-git-send-email-rishabhb@codeaurora.org>
-References: <1594938035-7327-1-git-send-email-rishabhb@codeaurora.org>
- <1594938035-7327-5-git-send-email-rishabhb@codeaurora.org>
-Message-ID: <522fc74e07dec26e398f238bd233c778@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-17 03:50, Rishabh Bhatnagar wrote:
-> The current coredump implementation uses vmalloc area to copy
-> all the segments. But this might put strain on low memory targets
-> as the firmware size sometimes is in tens of MBs. The situation
-> becomes worse if there are multiple remote processors undergoing
-> recovery at the same time. This patch adds inline coredump
-> functionality that avoids extra memory usage. This requires
-> recovery to be halted until data is read by userspace and free
-> function is called.
+On 17. 07. 20, 12:45, Jiri Slaby wrote:
+> Hi,
 > 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> the strace testsuite triggers this on 5.8-rc4 and -rc5 both on x86_64
+> and i586:
 
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+make check needs -jsomething, running is sequentially (-j1) doesn't
+trigger it. After the error, I cannot run anything. Like ps to find out
+what test caused the crash...
 
-> Tested-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  drivers/remoteproc/remoteproc_coredump.c | 156 
-> +++++++++++++++++++++++++++----
->  include/linux/remoteproc.h               |  16 ++++
->  2 files changed, 154 insertions(+), 18 deletions(-)
+5.7 was fine.
+
+>> kernel BUG at kernel/signal.c:1917!
+>> invalid opcode: 0000 [#1] SMP NOPTI 
+>> CPU: 7 PID: 18367 Comm: filter-unavaila Not tainted 5.8.0-rc4-3.g2cd7849-default #1 openSUSE Tumbleweed (unreleased)
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+>> RIP: 0010:do_notify_parent+0x239/0x270 
+>> Code: d1 e8 41 89 c5 41 83 e5 01 48 8b 95 28 05 00 00 45 31 c0 4c 89 f6 44 89 e7 b9 01 00 00 00 e8 ce f2 ff ff e9 5b ff ff ff 0f 0b <0f> 0b 48 39 bf 50 05 00 00 75 17 48 8b 97 c0 05 00 00 48 8d 87 c0
+>> RSP: 0018:ffffa05400f93d00 EFLAGS: 00010002
+>> RAX: 0000000000000008 RBX: ffff9024ebb6dd00 RCX: 00000000000102f9
+>> RDX: 0000000000000000 RSI: 0000000000000011 RDI: ffff9024ebb6dd00
+>> RBP: ffff9024ebb6dd00 R08: 0000000000000000 R09: 000000000000000d
+>> R10: 00007f7813000000 R11: ffffc2690721ae80 R12: 0000000000000000
+>> R13: 0000000000000000 R14: 0000000000000009 R15: 0000000000000000
+>> FS:  00007f7812ffc700(0000) GS:ffff902537dc0000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007f9c246a4a10 CR3: 00000001eba7c000 CR4: 00000000000406e0
+>> Call Trace:
+>>  exit_notify+0x1c0/0x1f0 
+>>  do_exit+0x234/0x430
+>>  do_group_exit+0x33/0xa0 
+>>  get_signal+0x171/0x640
+>>  do_signal+0x2a/0x1c0
+>>  exit_to_usermode_loop+0x89/0x110
+>>  __prepare_exit_to_usermode+0x92/0xd0
+>>  do_syscall_64+0x59/0xd0 
+>>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> RIP: 0033:0x7f78149db992
+>> Code: Bad RIP value.
+>> RSP: 002b:00007f7812ffbed0 EFLAGS: 00000293 ORIG_RAX: 0000000000000022
+>> RAX: fffffffffffffdfe RBX: 0000000000000000 RCX: 00007f78149db992
+>> RDX: 0000000000000001 RSI: 0000558a4e07e033 RDI: 0000000000000000
+>> RBP: 0000000000000000 R08: 0000000000000000 R09: 00007f7812ffc700
+>> R10: 00007f7812ffc9d0 R11: 0000000000000293 R12: 0000000000000000
+>> R13: 00007ffe4853b4bf R14: 00007ffe4853b4c0 R15: 00007f7812ffc700
+>> Modules linked in: ata_generic ata_piix qemu_fw_cfg e1000 nls_iso8859_1 nls_cp437 vfat fat virtio_blk virtio_mmio xfs btrfs blake2b_generic xor raid6_pq libcrc32c crc32c_intel reiserfs squashfs fuse dm_snapshot dm_bufio dm_crypt dm_mod binfmt_misc loop sg virtio_rng
+>> ---[ end trace 364c3385f192fee3 ]---
 > 
-> diff --git a/drivers/remoteproc/remoteproc_coredump.c
-> b/drivers/remoteproc/remoteproc_coredump.c
-> index 390f563..bb15a29 100644
-> --- a/drivers/remoteproc/remoteproc_coredump.c
-> +++ b/drivers/remoteproc/remoteproc_coredump.c
-> @@ -5,6 +5,7 @@
->   * Copyright (c) 2020, The Linux Foundation. All rights reserved.
->   */
+> Any ideas?
 > 
-> +#include <linux/completion.h>
->  #include <linux/devcoredump.h>
->  #include <linux/device.h>
->  #include <linux/kernel.h>
-> @@ -12,6 +13,12 @@
->  #include "remoteproc_internal.h"
->  #include "remoteproc_elf_helpers.h"
+> thanks,
 > 
-> +struct rproc_coredump_state {
-> +	struct rproc *rproc;
-> +	void *header;
-> +	struct completion dump_done;
-> +};
-> +
->  /**
->   * rproc_coredump_cleanup() - clean up dump_segments list
->   * @rproc: the remote processor handle
-> @@ -115,12 +122,110 @@ int rproc_coredump_set_elf_info(struct rproc
-> *rproc, u8 class, u16 machine)
->  }
->  EXPORT_SYMBOL(rproc_coredump_set_elf_info);
-> 
-> +static void rproc_coredump_free(void *data)
-> +{
-> +	struct rproc_coredump_state *dump_state = data;
-> +
-> +	vfree(dump_state->header);
-> +	complete(&dump_state->dump_done);
-> +}
-> +
-> +static void *rproc_coredump_find_segment(loff_t user_offset,
-> +					 struct list_head *segments,
-> +					 size_t *data_left)
-> +{
-> +	struct rproc_dump_segment *segment;
-> +
-> +	list_for_each_entry(segment, segments, node) {
-> +		if (user_offset < segment->size) {
-> +			*data_left = segment->size - user_offset;
-> +			return segment;
-> +		}
-> +		user_offset -= segment->size;
-> +	}
-> +
-> +	*data_left = 0;
-> +	return NULL;
-> +}
-> +
-> +static void rproc_copy_segment(struct rproc *rproc, void *dest,
-> +			       struct rproc_dump_segment *segment,
-> +			       size_t offset, size_t size)
-> +{
-> +	void *ptr;
-> +
-> +	if (segment->dump) {
-> +		segment->dump(rproc, segment, dest, offset, size);
-> +	} else {
-> +		ptr = rproc_da_to_va(rproc, segment->da + offset, size);
-> +		if (!ptr) {
-> +			dev_err(&rproc->dev,
-> +				"invalid copy request for segment %pad with offset %zu and size 
-> %zu)\n",
-> +				&segment->da, offset, size);
-> +			memset(dest, 0xff, size);
-> +		} else {
-> +			memcpy(dest, ptr, size);
-> +		}
-> +	}
-> +}
-> +
-> +static ssize_t rproc_coredump_read(char *buffer, loff_t offset, size_t 
-> count,
-> +				   void *data, size_t header_sz)
-> +{
-> +	size_t seg_data, bytes_left = count;
-> +	ssize_t copy_sz;
-> +	struct rproc_dump_segment *seg;
-> +	struct rproc_coredump_state *dump_state = data;
-> +	struct rproc *rproc = dump_state->rproc;
-> +	void *elfcore = dump_state->header;
-> +
-> +	/* Copy the vmalloc'ed header first. */
-> +	if (offset < header_sz) {
-> +		copy_sz = memory_read_from_buffer(buffer, count, &offset,
-> +						  elfcore, header_sz);
-> +
-> +		return copy_sz;
-> +	}
-> +
-> +	/*
-> +	 * Find out the segment memory chunk to be copied based on offset.
-> +	 * Keep copying data until count bytes are read.
-> +	 */
-> +	while (bytes_left) {
-> +		seg = rproc_coredump_find_segment(offset - header_sz,
-> +						  &rproc->dump_segments,
-> +						  &seg_data);
-> +		/* EOF check */
-> +		if (!seg) {
-> +			dev_info(&rproc->dev, "Ramdump done, %lld bytes read",
-> +				 offset);
-> +			break;
-> +		}
-> +
-> +		copy_sz = min_t(size_t, bytes_left, seg_data);
-> +
-> +		rproc_copy_segment(rproc, buffer, seg, seg->size - seg_data,
-> +				   copy_sz);
-> +
-> +		offset += copy_sz;
-> +		buffer += copy_sz;
-> +		bytes_left -= copy_sz;
-> +	}
-> +
-> +	return count - bytes_left;
-> +}
-> +
->  /**
->   * rproc_coredump() - perform coredump
->   * @rproc:	rproc handle
->   *
->   * This function will generate an ELF header for the registered 
-> segments
-> - * and create a devcoredump device associated with rproc.
-> + * and create a devcoredump device associated with rproc. Based on the
-> + * coredump configuration this function will directly copy the 
-> segments
-> + * from device memory to userspace or copy segments from device memory 
-> to
-> + * a separate buffer, which can then be read by userspace.
-> + * The first approach avoids using extra vmalloc memory. But it will 
-> stall
-> + * recovery flow until dump is read by userspace.
->   */
->  void rproc_coredump(struct rproc *rproc)
->  {
-> @@ -130,11 +235,13 @@ void rproc_coredump(struct rproc *rproc)
->  	size_t data_size;
->  	size_t offset;
->  	void *data;
-> -	void *ptr;
->  	u8 class = rproc->elf_class;
->  	int phnum = 0;
-> +	struct rproc_coredump_state dump_state;
-> +	enum rproc_dump_mechanism dump_conf = rproc->dump_conf;
-> 
-> -	if (list_empty(&rproc->dump_segments))
-> +	if (list_empty(&rproc->dump_segments) ||
-> +	    dump_conf == RPROC_COREDUMP_DISABLED)
->  		return;
-> 
->  	if (class == ELFCLASSNONE) {
-> @@ -144,7 +251,14 @@ void rproc_coredump(struct rproc *rproc)
-> 
->  	data_size = elf_size_of_hdr(class);
->  	list_for_each_entry(segment, &rproc->dump_segments, node) {
-> -		data_size += elf_size_of_phdr(class) + segment->size;
-> +		/*
-> +		 * For default configuration buffer includes headers & segments.
-> +		 * For inline dump buffer just includes headers as segments are
-> +		 * directly read from device memory.
-> +		 */
-> +		data_size += elf_size_of_phdr(class);
-> +		if (dump_conf == RPROC_COREDUMP_DEFAULT)
-> +			data_size += segment->size;
-> 
->  		phnum++;
->  	}
-> @@ -183,23 +297,29 @@ void rproc_coredump(struct rproc *rproc)
->  		elf_phdr_set_p_flags(class, phdr, PF_R | PF_W | PF_X);
->  		elf_phdr_set_p_align(class, phdr, 0);
-> 
-> -		if (segment->dump) {
-> -			segment->dump(rproc, segment, data + offset, 0, segment->size);
-> -		} else {
-> -			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
-> -			if (!ptr) {
-> -				dev_err(&rproc->dev,
-> -					"invalid coredump segment (%pad, %zu)\n",
-> -					&segment->da, segment->size);
-> -				memset(data + offset, 0xff, segment->size);
-> -			} else {
-> -				memcpy(data + offset, ptr, segment->size);
-> -			}
-> -		}
-> +		if (dump_conf == RPROC_COREDUMP_DEFAULT)
-> +			rproc_copy_segment(rproc, data + offset, segment, 0,
-> +					   segment->size);
-> 
->  		offset += elf_phdr_get_p_filesz(class, phdr);
->  		phdr += elf_size_of_phdr(class);
->  	}
-> +	if (dump_conf == RPROC_COREDUMP_DEFAULT) {
-> +		dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
-> +		return;
-> +	}
-> +
-> +	/* Initialize the dump state struct to be used by rproc_coredump_read 
-> */
-> +	dump_state.rproc = rproc;
-> +	dump_state.header = data;
-> +	init_completion(&dump_state.dump_done);
-> +
-> +	dev_coredumpm(&rproc->dev, NULL, &dump_state, data_size, GFP_KERNEL,
-> +		      rproc_coredump_read, rproc_coredump_free);
-> 
-> -	dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
-> +	/*
-> +	 * Wait until the dump is read and free is called. Data is freed
-> +	 * by devcoredump framework automatically after 5 minutes.
-> +	 */
-> +	wait_for_completion(&dump_state.dump_done);
->  }
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index eb08139..38d037d 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -435,6 +435,20 @@ enum rproc_crash_type {
->  };
-> 
->  /**
-> + * enum rproc_dump_mechanism - Coredump options for core
-> + * @RPROC_COREDUMP_DEFAULT:	Copy dump to separate buffer and carry on 
-> with
-> +				recovery
-> + * @RPROC_COREDUMP_INLINE:	Read segments directly from device memory. 
-> Stall
-> +				recovery until all segments are read
-> + * @RPROC_COREDUMP_DISABLED:	Don't perform any dump
-> + */
-> +enum rproc_dump_mechanism {
-> +	RPROC_COREDUMP_DEFAULT,
-> +	RPROC_COREDUMP_INLINE,
-> +	RPROC_COREDUMP_DISABLED,
-> +};
-> +
-> +/**
->   * struct rproc_dump_segment - segment info from ELF header
->   * @node:	list node related to the rproc segment list
->   * @da:		device address of the segment
-> @@ -466,6 +480,7 @@ struct rproc_dump_segment {
->   * @dev: virtual device for refcounting and common remoteproc behavior
->   * @power: refcount of users who need this rproc powered up
->   * @state: state of the device
-> + * @dump_conf: Currently selected coredump configuration
->   * @lock: lock which protects concurrent manipulations of the rproc
->   * @dbg_dir: debugfs directory of this rproc device
->   * @traces: list of trace buffers
-> @@ -499,6 +514,7 @@ struct rproc {
->  	struct device dev;
->  	atomic_t power;
->  	unsigned int state;
-> +	enum rproc_dump_mechanism dump_conf;
->  	struct mutex lock;
->  	struct dentry *dbg_dir;
->  	struct list_head traces;
+
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+js
