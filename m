@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5372237FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23C922380A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgGQJRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgGQJRb (ORCPT
+        id S1726559AbgGQJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:18:21 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:57631 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbgGQJSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:17:31 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9DCC061755;
-        Fri, 17 Jul 2020 02:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pcQ0H1o6p26C2vKLZMF/SJZnMQU+q3kwcSeFrBwvG4U=; b=1GK9EL0Mygx6wkzcHli7MajxZJ
-        9bdhJlSKGlg4PMmK23HdyR74DFHwv0hwspiU36sq/NpoEbxvPgpHX+8UyWNxtplg/0VsSXxHCiPB3
-        vFRbTtyHpuDavKAh5w7zgL1ghadeqPivAdZCXA0naaJhiCuhyiecFBb+pzLL7zWi9zOvxepXMvaQN
-        ntvXivnC5cIE5QyoWA0OpNwPZQrVkbCA07py36E1hxi0uGtUkzP/EmssVu2Q7jz/ZEso4gZGV7W+F
-        m5QxMYoo9/iJWWSIgBtc57v9llapUacsJoD8uETqbubjS8m9fifXpugMechsC7FZGC8PNVM2D9NmB
-        Pjg04+Jw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwMUc-0002bP-4T; Fri, 17 Jul 2020 09:17:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 163AB3003D8;
-        Fri, 17 Jul 2020 11:17:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0035129CF6F50; Fri, 17 Jul 2020 11:17:18 +0200 (CEST)
+        Fri, 17 Jul 2020 05:18:20 -0400
+Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 8015C100030;
+        Fri, 17 Jul 2020 09:17:18 +0000 (UTC)
 Date:   Fri, 17 Jul 2020 11:17:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 12/17] memremap: Add zone device access protection
-Message-ID: <20200717091718.GA10769@hirez.programming.kicks-ass.net>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-13-ira.weiny@intel.com>
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        bbrezillon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 08/19] clk: at91: sam9x60: fix main rc oscillator
+ frequency
+Message-ID: <20200717091718.GN3428@piout.net>
+References: <1594812267-6697-1-git-send-email-claudiu.beznea@microchip.com>
+ <1594812267-6697-9-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200717072056.73134-13-ira.weiny@intel.com>
+In-Reply-To: <1594812267-6697-9-git-send-email-claudiu.beznea@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:20:51AM -0700, ira.weiny@intel.com wrote:
-> +void dev_access_disable(void)
-> +{
-> +	unsigned long flags;
-> +
-> +	if (!static_branch_unlikely(&dev_protection_static_key))
-> +		return;
-> +
-> +	local_irq_save(flags);
-> +	current->dev_page_access_ref--;
-> +	if (current->dev_page_access_ref == 0)
+On 15/07/2020 14:24:16+0300, Claudiu Beznea wrote:
+> Main RC oscillator frequency is 12MHz according to datasheet
+> (chapter 27.2).
+> 
+> Fixes: 01e2113de9a52 ("clk: at91: add sam9x60 pmc driver")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-	if (!--current->dev_page_access_ref)
+For the record I got that value from:
+https://github.com/linux4sam/linux-at91/blob/c5fcb086200dc3b2e4a2b306778c6c7283d95755/arch/arm/boot/dts/sam9x60.dtsi#L701
 
-> +		pks_update_protection(dev_page_pkey, PKEY_DISABLE_ACCESS);
-> +	local_irq_restore(flags);
-> +}
-> +EXPORT_SYMBOL_GPL(dev_access_disable);
-> +
-> +void dev_access_enable(void)
-> +{
-> +	unsigned long flags;
-> +
-> +	if (!static_branch_unlikely(&dev_protection_static_key))
-> +		return;
-> +
-> +	local_irq_save(flags);
-> +	/* 0 clears the PKEY_DISABLE_ACCESS bit, allowing access */
-> +	if (current->dev_page_access_ref == 0)
-> +		pks_update_protection(dev_page_pkey, 0);
-> +	current->dev_page_access_ref++;
+> ---
+>  drivers/clk/at91/sam9x60.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
+> index 633891b98d43..c8703d2a0886 100644
+> --- a/drivers/clk/at91/sam9x60.c
+> +++ b/drivers/clk/at91/sam9x60.c
+> @@ -189,7 +189,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+>  	if (!sam9x60_pmc)
+>  		return;
+>  
+> -	hw = at91_clk_register_main_rc_osc(regmap, "main_rc_osc", 24000000,
+> +	hw = at91_clk_register_main_rc_osc(regmap, "main_rc_osc", 12000000,
+>  					   50000000);
+>  	if (IS_ERR(hw))
+>  		goto err_free;
+> -- 
+> 2.7.4
+> 
 
-	if (!current->dev_page_access_ref++)
-
-> +	local_irq_restore(flags);
-> +}
-> +EXPORT_SYMBOL_GPL(dev_access_enable);
-
-
-Also, you probably want something like:
-
-static __always_inline devm_access_disable(void)
-{
-	if (static_branch_unlikely(&dev_protection_static_key))
-		__devm_access_disable();
-}
-
-static __always_inline devm_access_enable(void)
-{
-	if (static_branch_unlikely(&dev_protection_static_key))
-		__devm_access_enable();
-}
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
