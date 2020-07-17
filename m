@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C16F22316D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CAE22316F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgGQDEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:04:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:51486 "EHLO mga11.intel.com"
+        id S1727829AbgGQDEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:04:52 -0400
+Received: from mga07.intel.com ([134.134.136.100]:27257 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727794AbgGQDEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:04:44 -0400
-IronPort-SDR: fbUKdYMor8OIpdxylk/VEjvivC4rdkzIvjvSGbvB0O3KhNhiywtUEgMtU3BS0N9+qsjWawv13h
- EbhENyni1Fdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147518870"
+        id S1726333AbgGQDEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 23:04:50 -0400
+IronPort-SDR: frDmIyvt8bPd8Bu1l1sgSEV1fJFbP5AxUDFHNtzsL9FmxkTAXN9YCs3ftYXPFn6ZJXpK3TkFSz
+ Ni8R8aBkK7zg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="214253048"
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="147518870"
+   d="scan'208";a="214253048"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:41 -0700
-IronPort-SDR: VQEGZ2WgVvFJE1FAmFphcFmUPHlC3Zi5pgB/QjwWTUVIJhHf0bLL/vTztbgy7nArbBSXvvN+95
- dbpfEO2xa2YQ==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:47 -0700
+IronPort-SDR: uOu7cDqrL7+h5l+5Fn+h1S/hkwpsAu3mNfFB15mMGo34p9NETnRqPy7GMfFMXihLf5C3f6k9GL
+ 0dvnImOzaUIQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="286686881"
+   d="scan'208";a="286686891"
 Received: from pgerasim-mobl1.ccr.corp.intel.com (HELO localhost) ([10.249.34.31])
-  by orsmga006.jf.intel.com with ESMTP; 16 Jul 2020 20:04:36 -0700
+  by orsmga006.jf.intel.com with ESMTP; 16 Jul 2020 20:04:43 -0700
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH v4 2/7] kprobes: Use lock_modules() and unlock_modules()
-Date:   Fri, 17 Jul 2020 06:04:16 +0300
-Message-Id: <20200717030422.679972-3-jarkko.sakkinen@linux.intel.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH v4 3/7] vmalloc: Add text_alloc() and text_free()
+Date:   Fri, 17 Jul 2020 06:04:17 +0300
+Message-Id: <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
 References: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
@@ -50,55 +48,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use lock_modules() and unlock_modules() in order to remove compile time
-dependency to the module subsystem.
+Introduce functions for allocating memory for dynamic trampolines, such
+as kprobes. An arch can promote the availability of these functions with
+CONFIG_ARCH_HAS_TEXT_ALLOC. Provide default/fallback implementation
+wrapping module_alloc() and module_memfree().
 
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- kernel/kprobes.c            | 4 ++--
- kernel/trace/trace_kprobe.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/linux/vmalloc.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 2e97febeef77..4e46d96d4e16 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -564,7 +564,7 @@ static void kprobe_optimizer(struct work_struct *work)
- 	cpus_read_lock();
- 	mutex_lock(&text_mutex);
- 	/* Lock modules while optimizing kprobes */
--	mutex_lock(&module_mutex);
-+	lock_modules();
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 0221f852a7e1..e981436e30b6 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -9,6 +9,7 @@
+ #include <asm/page.h>		/* pgprot_t */
+ #include <linux/rbtree.h>
+ #include <linux/overflow.h>
++#include <linux/moduleloader.h>
  
- 	/*
- 	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
-@@ -589,7 +589,7 @@ static void kprobe_optimizer(struct work_struct *work)
- 	/* Step 4: Free cleaned kprobes after quiesence period */
- 	do_free_cleaned_kprobes();
+ #include <asm/vmalloc.h>
  
--	mutex_unlock(&module_mutex);
-+	unlock_modules();
- 	mutex_unlock(&text_mutex);
- 	cpus_read_unlock();
+@@ -249,4 +250,26 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+ int register_vmap_purge_notifier(struct notifier_block *nb);
+ int unregister_vmap_purge_notifier(struct notifier_block *nb);
  
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index aefb6065b508..710ec6a6aa8f 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -122,9 +122,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
- 	if (!p)
- 		return true;
- 	*p = '\0';
--	mutex_lock(&module_mutex);
-+	lock_modules();
- 	ret = !!find_module(tk->symbol);
--	mutex_unlock(&module_mutex);
-+	unlock_modules();
- 	*p = ':';
- 
- 	return ret;
++#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
++/*
++ * Allocate memory to be used for dynamic trampoline code.
++ */
++void *text_alloc(unsigned long size);
++
++/*
++ * Free memory returned from text_alloc().
++ */
++void text_free(void *region);
++#else
++static inline void *text_alloc(unsigned long size)
++{
++	return module_alloc(size);
++}
++
++static inline void text_free(void *region)
++{
++	module_memfree(region);
++}
++#endif
++
+ #endif /* _LINUX_VMALLOC_H */
 -- 
 2.25.1
 
