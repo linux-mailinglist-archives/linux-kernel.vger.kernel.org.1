@@ -2,192 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11942231C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D702231CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgGQDs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:48:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:16067 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgGQDsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:48:25 -0400
-IronPort-SDR: 0mGteuQBK11w5jB/7bF5Ww0yqqzhvUYesDGrEUQ2a3a0PsmerWdfsVJwW8JVWUlX9LERdAhv7j
- tvUXaCWaaRFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="137651416"
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="137651416"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:48:25 -0700
-IronPort-SDR: NyAb9wrrfK6uhpTyX+qCdqMXauju3AylmZ3ASSkTPKK5QZBeYp2MhnogYfAHlzVR+jAFbocl69
- bbizmYC3RzxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="325327814"
-Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Jul 2020 20:48:24 -0700
-Received: from orsmsx151.amr.corp.intel.com (10.22.226.38) by
- ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Jul 2020 20:48:24 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- ORSMSX151.amr.corp.intel.com (10.22.226.38) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Jul 2020 20:48:24 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
- by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Jul 2020 20:48:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ERG+INepxEunj1N4u8dLzRhOq/KM39BkOax5usJmxR/zBRDrr2nSMdAJm0AOmkHBRDajQ/5wuyprk+y2xqN0tWrJsvJU3Terg+YulwX6ideJIg22yE6/byKb7whxVRm5xhIjhbD0KoQiH+8a6Jvk6Nut67hzKuSY2sZB2rQSeeZMelkFMGxdUhMrE0Y6i/oSDKe/QVcN0fw0fxIGaWxPUtciW7R7pwu0QJDq0pb0oP9otHGdPiD2TdzukleatgpWJpKOGECXCeUV1JHPe7382xZ1i4ueYNkHVVDOvoCzhUudfhtibF9slTIr9Pm09PrUzfIwCHuPjuGhBfgBuIFq0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rVzMD9iaQgFoxdTxbYxBv9KtyZEDG50ZobKOm9Oy4wY=;
- b=YYX4XADtxNhCTmilsGa4E5WSXh50XLHHwnCpMOH8ki5avP8Wq9MB9kuM2BvRm/u34od9EnLF5iZnThgW6p4Bo1AAQVQs4nqIl9tJzmjuliQugEU12NdvZZLPusZ5gsrhpQLz6RnGzQWuiJUbHQX/ngYpHoBt8Ba81lEjRSXEvv4NXLHkKWd2bKo0fAbY47aYf7X9e6Vb0DNvUZiGpx/mWZUXcVfhS+pvZKBYaFZEvwPnE5Z1X/zpU1LZSOLv9KEcQbmenK+pdpFwHamXqqONOX3vqdEn4H9HQF3rTHMQ+Ox7bBWkPdQi/Nce8rYmXHyHPp3dLfqEHf2r2HlFX8Z+oA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rVzMD9iaQgFoxdTxbYxBv9KtyZEDG50ZobKOm9Oy4wY=;
- b=D3XQ476xCyOiK6MvIRnCt4gtOOraWYgq0gYilGQIuLWo7Y+dMFVRQ22iUDSYPUPxEU5obOIlUgyFqZAO3Z4SBNZ7JvqV14KwhcHkkw4Abiwx1E8OTXoTUUy1l0PkDyD+KECeqgMjFEhiyY4rgz2jejT9+8OB6lVoIdlL9vZiF08=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB4219.namprd11.prod.outlook.com (2603:10b6:5:14e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Fri, 17 Jul
- 2020 03:48:22 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a%4]) with mapi id 15.20.3174.026; Fri, 17 Jul 2020
- 03:48:22 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     Tom Rix <trix@redhat.com>, "Xu, Yilun" <yilun.xu@intel.com>,
-        "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: RE: [PATCH 0/2] Modularization of DFL private feature drivers
-Thread-Topic: [PATCH 0/2] Modularization of DFL private feature drivers
-Thread-Index: AQHWWmrEJgXA6z6VKkSElM9m2kDwiKkK0kaAgABMTyA=
-Date:   Fri, 17 Jul 2020 03:48:22 +0000
-Message-ID: <DM6PR11MB38194C448ECCF1E6BF386D3F857C0@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <1594791498-14495-1-git-send-email-yilun.xu@intel.com>
- <0c7c63b8-5444-2deb-9fed-18956a5ad938@redhat.com>
-In-Reply-To: <0c7c63b8-5444-2deb-9fed-18956a5ad938@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1e5c8c22-1247-41c3-3a62-08d82a04408f
-x-ms-traffictypediagnostic: DM6PR11MB4219:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB4219E43758C79FCF6739AE8D857C0@DM6PR11MB4219.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FECI5F6QTaj+4LNuG9npmZSdlUDmyOXuv6UUw60/SWbXwuu5QVHRaG/pnA3+kvwT/HQ/2dHLhEyZyVNOjgFVl+pE79cuvuzl+pxqv63dvkVs+xEm2zVB9/c4ZTknC4unNs1wOg4W6X+4WVElLp2rUCrL5kQc5qPMaK8tFohkkTNxFt1iKs2HfFsTaDHXyWSIbP3yeS/NrDHo0mFUVkZnc099clyChxV/iHIbbJCZl5Kjpi//FtXKupgUFyzNN+5f8ZzOfXgQBSpuN6iv3A2B8Uleof9sPeyRLDPMniXhOUcl/a373c/ir/+PggYK7+WbmsN2jmEBciyeUpOml9+thg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(396003)(376002)(366004)(346002)(55016002)(9686003)(66446008)(478600001)(8676002)(316002)(110136005)(71200400001)(8936002)(2906002)(66476007)(66946007)(76116006)(66556008)(54906003)(4326008)(64756008)(53546011)(26005)(86362001)(7696005)(6506007)(52536014)(33656002)(83380400001)(5660300002)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Mzprnqfqa02T77dM0eEtN+URyVjMzF1kdKDkR2FnTz8DBWdXKdcZIjXV0N5KBk6SugTCYZIHIKvTdbXOPhN1U2DTuTfLzpTn/SryXuCgrbgDlybfYZ5gqJ33tHqwW/74NnDBAco9r5Lpd/0jbQ2y0yb5ScsZgwZXI02SeJ0jo8B/1/izuFW6vv+Tdw6ypgvtCtbtqXwU3+9d6tkHV4/GZmXlkCZXzFYY1Gtprz5dpb/j7qFXNvbLlzUdtP6dYzkK3tXcbazpXEGwRJnNxN2wH5Ymf/OktTSXkTUdF6oCqsSVLLbXz/JRAsojbuHFdSL1YD6+OCk3lGQOTqP/D7Pr/QZepxrQ0Q2/QI3O9u4LIZlY4JdRReEZIpQMnZH4+wlLqUi+0hCHfQ5d3GS0Zg6c96MuhxKcNSeI0R4t2W5vOON0QJeElKe117Jvjuc6j+undHFwx9X7Qe4DRxSfw/YTO4Si4+tN0vvRYbA7h/hNvGPUd4JyfBCNFU2hVAR0HCJ+
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727817AbgGQDuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726691AbgGQDuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 23:50:51 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F751C061755;
+        Thu, 16 Jul 2020 20:50:51 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id d18so9039614ion.0;
+        Thu, 16 Jul 2020 20:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=rJqfg7KqVjvQTDncsEVFZgFc61wUL7psisx7MkuYgY4=;
+        b=GowoZdA/YcFgQiIuiSFaE4rd+S5pPZD+UyL42jgSJ48KaiEy3OSPZtFaUAAOry9Q2w
+         ciLiOBp4OSh+V31ZH+0ZyAA+MLrAz4pkrgEtEmBrXSt47qlwgDOc77e9wzt74X/bhwJp
+         0xCwjO+16FtFHxVbfcnPYe0lmmeHihzXZDxHIVsCpyxNEPEGOjgZjtAeN/wxHDPwqAfT
+         8/EnyJkimap/nx0iJQIMopsp2GMiVkdK924bxSTNxqVhahJ3zx8SoZ9b4S3S2PQYKgoo
+         oCYyoZfPqkDswPeuUNxrqf2teftvvJiA1mxq4NQ+1EMC+NafUaXOhEHEmZHRID4QWXnP
+         H2Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=rJqfg7KqVjvQTDncsEVFZgFc61wUL7psisx7MkuYgY4=;
+        b=tOK5MGlJTsy6V8xcgiv+jYAwUIuK4Q2O14pu47Wdkds4ZsVdVN5FMD/VKIBEdbfu8y
+         rPzDsZ6kSh8VYCzIorWIsJ0PavgzXCH6BD783wgyqjah1tyKTXPygCkn6Z8RMj6ODF7f
+         Q7xchIZEGbOM9rh3e9ZTOhDYQoFwRcW1xs/ZCHaVJBkFde2A9CUPTwsOaX89C/5FpNJD
+         /Hf9AZcaADxl5qXmJ6kcKAFI3+u/gXOuO9rrXL0TY4FvWftkqnbvkmSQPRxUWucDfBfs
+         +rEFSNZIuq4xWmwdb2Za3brCZxD/bytI7lQbgUcaGiwJ+3oOOYM4VtkT4RurzVs55Zhf
+         FSeg==
+X-Gm-Message-State: AOAM5327oTDCa+ZmMYShb/EBB1CujGgI26TZJpEmC2KX8IDbuQ7v4O9r
+        /4/x0jiaSB+FwDr49oUsOueNMEZk09RJYg==
+X-Google-Smtp-Source: ABdhPJz8DvSm/452IBOrteV7MPrevU+HifRqCKsUKCNRjyqMIwHA1TPSoVUFpIltJ89pxfNZC6uYwA==
+X-Received: by 2002:a02:5e88:: with SMTP id h130mr8961458jab.116.1594957850716;
+        Thu, 16 Jul 2020 20:50:50 -0700 (PDT)
+Received: from QianNUC ([2601:249:4300:c41:9c1d:d627:49f3:7b4])
+        by smtp.gmail.com with ESMTPSA id v13sm3719758iox.12.2020.07.16.20.50.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 Jul 2020 20:50:50 -0700 (PDT)
+From:   <qianshangshu.1997@gmail.com>
+To:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>
+Cc:     <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <SJ0PR07MB7584B6DC5998006092D4D8859C7C0@SJ0PR07MB7584.namprd07.prod.outlook.com> <SJ0PR07MB7584416FB7A07FD506B8237F9C7C0@SJ0PR07MB7584.namprd07.prod.outlook.com>
+In-Reply-To: <SJ0PR07MB7584416FB7A07FD506B8237F9C7C0@SJ0PR07MB7584.namprd07.prod.outlook.com>
+Subject: PROBLEM: [e1000e] 10% throughput drop on I219-LM after the buffer overrun fix even with TSO&GSO disabled
+Date:   Thu, 16 Jul 2020 23:50:48 -0400
+Message-ID: <001a01d65bed$7556fc20$6004f460$@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e5c8c22-1247-41c3-3a62-08d82a04408f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2020 03:48:22.3249
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fhqgu73pqWB5IjUl4HD+nMY7Isq0Rti0Ujy6qDzceVpLhcM2MR+xe5YyGopcUHLHVVSnew73bEroXyUDT7Uc5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4219
-X-OriginatorOrg: intel.com
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdZb5g/mXp6i3XZRRzSXQldaZE1+VAABUlEAAABshXA=
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIDAvMl0gTW9kdWxhcml6YXRpb24gb2YgREZMIHByaXZhdGUg
-ZmVhdHVyZSBkcml2ZXJzDQo+IA0KPiBHZW5lcmFsbHkgaSB0aGluayB0aGlzIGlzIGEgZ29vZCBh
-cHByb2FjaC4NCj4gDQo+IEhvd2V2ZXIgSSBkbyBoYXZlIGNvbmNlcm4uDQo+IA0KPiBUaGUgZmVh
-dHVyZV9pZCBpbiBkZmwgaXMgbWFnaWMgbnVtYmVyLCBzaW1pbGFyIHRvIHBjaSBpZCBidXQgd2l0
-aG91dCBhIHZlbmRvcg0KPiBpZC4NCj4gDQo+IElzIGl0IHBvc3NpYmxlIHRvIGFkZCBzb21ldGhp
-bmcgbGlrZSBhIHZlbmRvciBpZCBzbyBkaWZmZXJlbnQgdmVuZG9ycyB3b3VsZA0KPiBub3QgaGF2
-ZSB0byBiZSBzbyBjYXJlZnVsIHRvIHVzZSBhIHVuaXF1ZSBpZCA/DQoNCkhpIFRvbSwNCg0KVGhh
-bmtzIGZvciB0aGUgY29tbWVudHMuDQoNCkhlcmUgaXMgb25seSBvbmUgZmllbGQgZGVmaW5lZCBp
-biBzcGVjLCB0aGF0IGlzIGZlYXR1cmUgaWQgdG8gZGlzdGluZ3Vpc2ggb25lDQpmZWF0dXJlIHdp
-dGggYW5vdGhlciBvbmUuIFRoZXJlIGlzIG5vIHZlbmRvciBpZCBoZXJlIEkgdGhpbmssIGFuZCBz
-ZXZlcmFsDQpjYXJkcyBhcmUgdXNpbmcgdGhpcyBmb3Igbm93IGFuZCBzZWVtcyBub3QgcG9zc2li
-bGUgdG8gY2hhbmdlIERGSCBmb3JtYXQNCmZvciB0aGVzZSBwcm9kdWN0cy4gOiAoDQoNCkkgZnVs
-bHkgdW5kZXJzdGFuZCB0aGUgY29uY2VybiBpcyB0aGUgZmVhdHVyZSBpZCBtYW5hZ2VtZW50LCBh
-bmQgcG90ZW50aWFsDQpjb25mbGljdHMgdGhlcmUgZnJvbSBkaWZmZXJlbnQgdmVuZG9ycy4gT25l
-IHBvc3NpYmxlIG1ldGhvZCB0byByZXNvbHZlIHRoaXMNCmlzIG1hbmFnaW5nIHRoZSBpZHMgaW4g
-YSBwdWJsaWMgcGxhY2UgKHdlYj8gT3IganVzdCB0aGUgZHJpdmVyIGhlYWRlciBmaWxlIGZvcg0K
-ZmVhdHVyZSBpZCBkZWZpbml0aW9uKSwgYWxsIHZlbmRvcnMgY2FuIHJlcXVlc3Qgc29tZSBmZWF0
-dXJlIGlkcywgYW5kIG90aGVyDQpwZW9wbGUgY2FuIHNlZSB3aGljaCBmZWF0dXJlIGlkcyBoYXZl
-IGJlZW4gdXNlZCBzbyB0aGF0IHRoZXkgY2FuIGF2b2lkDQp1c2luZyBjb25mbGljdCBvbmVzIHdp
-dGggb3RoZXIgcGVvcGxlLg0KDQpBbmQgaW4gdGhlIGxhdGVyIHZlcnNpb24gREZILCB0aGlzIGZl
-YXR1cmUgaWQgd2lsbCBiZSByZXBsYWNlZCB3aXRoIEdVSUQNCkkgdGhpbmssIHNvIGl0IGNhbiBy
-ZXNvbHZlIHRoZSBjb25mbGljdCBwcm9ibGVtcyBmcm9tIGRpZmZlcmVudCB2ZW5kb3JzPw0KQnV0
-IG5vdywgd2Ugc3RpbGwgbmVlZCB0byBoYW5kbGUgdGhlIGV4aXN0aW5nIG9uZXMuIDogKQ0KDQpU
-aGFua3MNCkhhbw0KDQo+IA0KPiBUaGlzIHRvdWNoZXMgc29tZSBvZiB0aGUgbWF0Y2hpbmcgZnVu
-Y3Rpb24gb2YgdGhlIGJ1cyBvcHMuwqAgQ291bGQgdGhlcmUgYmUgYQ0KPiB3YXkgZm9yIGJ1cyBv
-cHMgdG8gYmUgdXNlZCBzbyB0aGF0IHRoZXJlIGNvdWxkIGJlIG11bHRpcGxlIG1hdGNoaW5nDQo+
-IGZ1bmN0aW9uLsKgIE1heWJlIHRoZSBvbmUgaW4gMDAwMiBhcyBhIGRlZmF1bHQgc28gdXNlcnMg
-Y291bGQgb3ZlcnJpZGUgaXQgPw0KPiANCj4gVGhlIHVzZSBjYXNlIEkgYW0gd29ycnlpbmcgYWJv
-dXQgaXMgYW4gT0VNLsKgIFRoZSBPRU0gdXNlcyBhbiB1bmNsYWltZWQNCj4gZmVhdHVyZV9pZCBh
-bmQgc3VwcGxpZXMgdGhlaXIgb3duIHBsYXRmb3JtIGRldmljZSBkZXZpY2UgZHJpdmVyIHRvIG1h
-dGNoIHRoZQ0KPiBmZWF0dXJlX2lkLsKgIEJ1dCBzb21lIGxhdGVyIHZlcnNpb24gb2YgdGhlIGtl
-cm5lbCBjbGFpbXMgdGhpcyBmZWF0dXJlX2lkIGFuZA0KPiB0aGUgT0VNJ3MgZHJpdmVyIG5vIGxv
-bmdlciB3b3JrcyBhbmQgc2luY2UgdGhlIHZhbHVlIGNvbWVzIGZyb20gcGNpIGNvbmZpZw0KPiBz
-cGFjZSBpdCBpcyBkaWZmaWN1bHQgdG8gY2hhbmdlLg0KPiANCj4gU28gbG9va2luZyBmb3Igc29t
-ZXRoaW5nIGxpa2UNCj4gDQo+IHJlZ2lzdGVyX2ZlYXR1cmVfbWF0Y2hlcigoKmJ1c19tYXRjaCko
-c3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QNCj4gZGV2aWNlX2RyaXZlciAqZHJ2KSkNCj4gDQo+
-IHN0YXRpYyBpbnQgZGZsX2J1c19tYXRjaF9kZWZhdWx0KHN0cnVjdCBkZXZpY2UgKmRldiwgc3Ry
-dWN0IGRldmljZV9kcml2ZXIgKmRydikNCj4gew0KPiDCoMKgwqAgc3RydWN0IGRmbF9kZXZpY2Ug
-KmRmbF9kZXYgPSB0b19kZmxfZGV2KGRldik7DQo+IMKgwqDCoCBzdHJ1Y3QgZGZsX2RyaXZlciAq
-ZGZsX2RydiA9IHRvX2RmbF9kcnYoZHJ2KTsNCj4gwqDCoMKgIGNvbnN0IHN0cnVjdCBkZmxfZGV2
-aWNlX2lkICppZF9lbnRyeSA9IGRmbF9kcnYtPmlkX3RhYmxlOw0KPiANCj4gwqDCoMKgIHdoaWxl
-IChpZF9lbnRyeS0+ZmVhdHVyZV9pZCkgew0KPiDCoMKgwqAgwqDCoMKgIGlmIChkZmxfbWF0Y2hf
-b25lX2RldmljZShpZF9lbnRyeSwgZGZsX2RldikpIHsNCj4gwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-ZGZsX2Rldi0+aWRfZW50cnkgPSBpZF9lbnRyeTsNCj4gwqDCoMKgIMKgwqDCoCDCoMKgwqAgcmV0
-dXJuIDE7DQo+IMKgwqDCoCDCoMKgwqAgfQ0KPiDCoMKgwqAgwqDCoMKgIGlkX2VudHJ5Kys7DQo+
-IMKgwqDCoCB9DQo+IA0KPiDCoMKgwqAgcmV0dXJuIDA7DQo+IH0NCj4gDQo+IHJlZ2lzdGVyX2Zl
-YXR1cmVfbWF0Y2hlcigmZGZsX2J1c19tYXRjaF9kZWZhdWx0KQ0KPiANCj4gc3RhdGljIGludCBk
-ZmxfYnVzX21hdGNoKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZV9kcml2ZXIgKmRy
-dikNCj4gew0KPiANCj4gwqDCoMKgIHN0cnVjdCBkZmxfZGV2aWNlICpkZmxfZGV2ID0gdG9fZGZs
-X2RldihkZXYpOw0KPiDCoMKgwqAgc3RydWN0IGRmbF9kcml2ZXIgKmRmbF9kcnYgPSB0b19kZmxf
-ZHJ2KGRydik7DQo+IMKgwqDCoCBjb25zdCBzdHJ1Y3QgZGZsX2RldmljZV9pZCAqaWRfZW50cnkg
-PSBkZmxfZHJ2LT5pZF90YWJsZTsNCj4gDQo+IMKgwqDCoCB3aGlsZSAoaWRfZW50cnktPmZlYXR1
-cmVfaWQpIHsNCj4gDQo+IMKgwqDCoCDCoMKgwqAgbWF0Y2hlciA9IExvb3Agb3ZlciBtYXRjaGVy
-cygpDQo+IA0KPiDCoMKgwqAgwqDCoMKgIGlmIChtYXRjaGVyKGRldiwgZHJ2KSkgew0KPiDCoMKg
-wqAgwqDCoMKgwqDCoMKgwqAgZGZsX2Rldi0+aWRfZW50cnkgPSBpZF9lbnRyeTsNCj4gwqDCoMKg
-IMKgwqDCoMKgwqDCoMKgIHJldHVybiAxOw0KPiDCoMKgwqDCoMKgwqDCoCB9DQo+IMKgwqDCoCDC
-oMKgwqAgaWRfZW50cnkrKzsNCj4gwqDCoMKgIH0NCj4gDQo+IMKgwqDCoCByZXR1cm4gMDsNCj4g
-fQ0KPiANCj4gT3IgbWF5YmUgdXNlIHNvbWUgb2YgdGhlIHVudXNlZCBiaXRzIGluIHRoZSBkZmwg
-aGVhZGVyIHRvIGFkZCBhIHNlY29uZA0KPiB2ZW5kb3ItbGlrZSBpZCBhbmQgY2hhbmdlIGV4aXN0
-aW5nIG1hdGNoZXIgdG8gbG9vayBmZWF0dXJlX2lkIGFuZA0KPiB2ZW5kb3JfbGlrZV9pZC4NCj4g
-DQo+IFRvbQ0KPiANCj4gDQo+IA0KPiBPbiA3LzE0LzIwIDEwOjM4IFBNLCBYdSBZaWx1biB3cm90
-ZToNCj4gPiBUaGlzIHBhdGNoc2V0IG1ha2VzIGl0IHBvc3NpYmxlIHRvIGRldmVsb3AgaW5kZXBl
-bmRlbnQgZHJpdmVyIG1vZHVsZXMNCj4gPiBmb3IgREZMIHByaXZhdGUgZmVhdHVyZXMuIEl0IGFs
-c28gaGVscHMgdG8gbGV2ZXJhZ2UgZXhpc3Rpbmcga2VybmVsDQo+ID4gZHJpdmVycyB0byBlbmFi
-bGUgc29tZSBJUCBibG9ja3MgaW4gREZMLg0KPiA+DQo+ID4gWHUgWWlsdW4gKDIpOg0KPiA+ICAg
-ZnBnYTogZGZsOiBtYXAgZmVhdHVyZSBtbWlvIHJlc291cmNlcyBpbiB0aGVpciBvd24gZmVhdHVy
-ZSBkcml2ZXJzDQo+ID4gICBmcGdhOiBkZmw6IGNyZWF0ZSBhIGRmbCBidXMgdHlwZSB0byBzdXBw
-b3J0IERGTCBkZXZpY2VzDQo+ID4NCj4gPiAgRG9jdW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNm
-cy1idXMtZGZsIHwgIDE1ICsrDQo+ID4gIGRyaXZlcnMvZnBnYS9kZmwtcGNpLmMgICAgICAgICAg
-ICAgICAgICB8ICAyMSArLQ0KPiA+ICBkcml2ZXJzL2ZwZ2EvZGZsLmMgICAgICAgICAgICAgICAg
-ICAgICAgfCA0MzUgKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0NCj4gPiAgZHJpdmVy
-cy9mcGdhL2RmbC5oICAgICAgICAgICAgICAgICAgICAgIHwgIDkxICsrKysrKy0NCj4gPiAgNCBm
-aWxlcyBjaGFuZ2VkLCA0OTIgaW5zZXJ0aW9ucygrKSwgNzAgZGVsZXRpb25zKC0pDQo+ID4gIGNy
-ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWJ1cy1kZmwN
-Cj4gPg0KDQo=
+[1.] One line summary of the problem:
+
+[e1000e] 10% throughput drop on I219-LM after the buffer overrun fix even
+with TSO&GSO disabled
+
+[2.] Full description of the problem/report:
+
+With e1000e 3.6.2-k and 3.8.4-NAPI driver, which include the fix for the
+buffer overrun problem
+(https://github.com/torvalds/linux/commit/b10effb92e272051dd1ec0d7be56bf9ca8
+5ab927, discussion: https://www.spinics.net/lists/netdev/msg460589.html),
+I219-LM network card have a 10% throughput drop in the iperf3 test (with TSO
+and GSO disabled) compared with the driver without such patch, and the
+client is initiating the stream in such test (iperf3 client mode without -R
+option). If the server is initiating the stream (with -R option in iperf3
+client mode), the performance is not impacted.
+
+That is to say, disabling TSO and GSO as suggested in that patch still have
+performance impact on the TCP stream, and the throughput drops about 10%.
+
+I tried to rollback the patch introduced to fix the buffer overrun problem
+in the 3.8.4-NAPI driver, with TSO and GSO enabled, iperf3 test still cannot
+max out my 1Gbps uplink. However, with TSO and GSO disabled, 1Gbps uplink
+can be fully saturated.
+
+I'll attach iperf3 test results for all these situations later in this
+email.
+
+[3.] Keywords
+
+Network driver, e1000e
+
+[4.] Kernel information
+[4.1.] Kernel version (from /proc/version):
+
+Linux version 5.4.0-31-generic (buildd@lgw01-amd64-059) (gcc version 9.3.0
+(Ubuntu 9.3.0-10ubuntu2)) #35-Ubuntu SMP Thu May 7 20:20:34 UTC 2020
+
+[4.2.] Kernel .config file:
+
+https://kernel.ubuntu.com/~kernel-ppa/config/focal/linux/5.4.0-31.35/amd64-c
+onfig.flavour.generic
+
+[5.] Most recent kernel version which did not have the bug:
+
+V4.14.2
+
+[6.] Environment
+
+00:1f.6 Ethernet controller: Intel Corporation Ethernet Connection (2)
+I219-LM (rev 31) 
+
+driver: e1000e
+version: 3.2.6-k
+firmware-version: 0.8-4
+expansion-rom-version:
+bus-info: 0000:00:1f.6
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: no
+
+iperf3:
+iperf 3.7 (cJSON 1.5.2)
+Linux Hetzner 5.4.0-31-generic #35-Ubuntu SMP Thu May 7 20:20:34 UTC 2020
+x86_64 Optional features available: CPU affinity setting, IPv6 flow label,
+SCTP, TCP congestion algorithm setting, sendfile / zerocopy, socket pacing,
+authentication
+
+[X.] Other notes, patches, fixes, workarounds:
+
+3.6.2-k w/ TSO & GSO
+
+iperf3 -c bouygues.iperf.fr -d -P 5
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   120 MBytes   101 Mbits/sec    0             sender
+[  5]   0.00-10.02  sec   119 MBytes  99.4 Mbits/sec
+receiver
+[  7]   0.00-10.00  sec   120 MBytes   101 Mbits/sec    0             sender
+[  7]   0.00-10.02  sec   119 MBytes  99.4 Mbits/sec
+receiver
+[  9]   0.00-10.00  sec   120 MBytes   101 Mbits/sec    0             sender
+[  9]   0.00-10.02  sec   119 MBytes  99.4 Mbits/sec
+receiver
+[ 11]   0.00-10.00  sec   120 MBytes   101 Mbits/sec    0             sender
+[ 11]   0.00-10.02  sec   119 MBytes  99.5 Mbits/sec
+receiver
+[ 13]   0.00-10.00  sec   120 MBytes   101 Mbits/sec    0             sender
+[ 13]   0.00-10.02  sec   119 MBytes  99.5 Mbits/sec
+receiver
+[SUM]   0.00-10.00  sec   601 MBytes   504 Mbits/sec    0             sender
+[SUM]   0.00-10.02  sec   594 MBytes   497 Mbits/sec
+receiver
+
+iperf3 -c bouygues.iperf.fr -d -P 5 -R
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.02  sec   351 MBytes   293 Mbits/sec  134             sender
+[  5]   0.00-10.00  sec   344 MBytes   289 Mbits/sec
+receiver
+[  7]   0.00-10.02  sec   204 MBytes   171 Mbits/sec  331             sender
+[  7]   0.00-10.00  sec   201 MBytes   168 Mbits/sec
+receiver
+[  9]   0.00-10.02  sec   174 MBytes   146 Mbits/sec  226             sender
+[  9]   0.00-10.00  sec   171 MBytes   144 Mbits/sec
+receiver
+[ 11]   0.00-10.02  sec   177 MBytes   148 Mbits/sec  226             sender
+[ 11]   0.00-10.00  sec   173 MBytes   145 Mbits/sec
+receiver
+[ 13]   0.00-10.02  sec   164 MBytes   138 Mbits/sec  229             sender
+[ 13]   0.00-10.00  sec   161 MBytes   135 Mbits/sec
+receiver
+[SUM]   0.00-10.02  sec  1.04 GBytes   896 Mbits/sec  1146
+sender
+[SUM]   0.00-10.00  sec  1.03 GBytes   881 Mbits/sec
+receiver
+
+3.6.2-k w/o TSO & GSO
+
+iperf3 -c bouygues.iperf.fr -d -P 5
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   190 MBytes   159 Mbits/sec    0             sender
+[  5]   0.00-10.02  sec   188 MBytes   157 Mbits/sec
+receiver
+[  7]   0.00-10.00  sec   190 MBytes   160 Mbits/sec    0             sender
+[  7]   0.00-10.02  sec   188 MBytes   157 Mbits/sec
+receiver
+[  9]   0.00-10.00  sec   191 MBytes   160 Mbits/sec    0             sender
+[  9]   0.00-10.02  sec   188 MBytes   158 Mbits/sec
+receiver
+[ 11]   0.00-10.00  sec   190 MBytes   160 Mbits/sec    0             sender
+[ 11]   0.00-10.02  sec   188 MBytes   158 Mbits/sec
+receiver
+[ 13]   0.00-10.00  sec   191 MBytes   160 Mbits/sec    0             sender
+[ 13]   0.00-10.02  sec   188 MBytes   157 Mbits/sec
+receiver
+[SUM]   0.00-10.00  sec   953 MBytes   799 Mbits/sec    0             sender
+[SUM]   0.00-10.02  sec   940 MBytes   787 Mbits/sec
+receiver
+
+iperf3 -c bouygues.iperf.fr -d -P 5 -R
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.02  sec   256 MBytes   214 Mbits/sec  128             sender
+[  5]   0.00-10.00  sec   252 MBytes   211 Mbits/sec
+receiver
+[  7]   0.00-10.02  sec   238 MBytes   199 Mbits/sec  119             sender
+[  7]   0.00-10.00  sec   234 MBytes   196 Mbits/sec
+receiver
+[  9]   0.00-10.02  sec   166 MBytes   139 Mbits/sec  207             sender
+[  9]   0.00-10.00  sec   162 MBytes   136 Mbits/sec
+receiver
+[ 11]   0.00-10.02  sec   222 MBytes   186 Mbits/sec  316             sender
+[ 11]   0.00-10.00  sec   219 MBytes   184 Mbits/sec
+receiver
+[ 13]   0.00-10.02  sec   225 MBytes   189 Mbits/sec  138             sender
+[ 13]   0.00-10.00  sec   222 MBytes   186 Mbits/sec
+receiver
+[SUM]   0.00-10.02  sec  1.08 GBytes   927 Mbits/sec  908             sender
+[SUM]   0.00-10.00  sec  1.06 GBytes   913 Mbits/sec
+receiver
+
+3.8.4-NAPI w/ TSO & GSO
+
+iperf3 -c bouygues.iperf.fr -d -P 5
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   120 MBytes   100 Mbits/sec    0             sender
+[  5]   0.00-10.02  sec   117 MBytes  97.5 Mbits/sec
+receiver
+[  7]   0.00-10.00  sec   115 MBytes  96.4 Mbits/sec    0             sender
+[  7]   0.00-10.02  sec   114 MBytes  95.1 Mbits/sec
+receiver
+[  9]   0.00-10.00  sec   118 MBytes  98.9 Mbits/sec    0             sender
+[  9]   0.00-10.02  sec   117 MBytes  97.6 Mbits/sec
+receiver
+[ 11]   0.00-10.00  sec   118 MBytes  99.3 Mbits/sec    0             sender
+[ 11]   0.00-10.02  sec   117 MBytes  97.5 Mbits/sec
+receiver
+[ 13]   0.00-10.00  sec   118 MBytes  99.3 Mbits/sec    0             sender
+[ 13]   0.00-10.02  sec   116 MBytes  97.5 Mbits/sec
+receiver
+[SUM]   0.00-10.00  sec   589 MBytes   494 Mbits/sec    0             sender
+[SUM]   0.00-10.02  sec   580 MBytes   485 Mbits/sec
+receiver
+
+iperf3 -c bouygues.iperf.fr -d -P 5 -R
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.02  sec   289 MBytes   241 Mbits/sec  187             sender
+[  5]   0.00-10.00  sec   282 MBytes   236 Mbits/sec
+receiver
+[  7]   0.00-10.02  sec   355 MBytes   297 Mbits/sec  324             sender
+[  7]   0.00-10.00  sec   350 MBytes   293 Mbits/sec
+receiver
+[  9]   0.00-10.02  sec   144 MBytes   121 Mbits/sec  239             sender
+[  9]   0.00-10.00  sec   141 MBytes   118 Mbits/sec
+receiver
+[ 11]   0.00-10.02  sec   136 MBytes   113 Mbits/sec  286             sender
+[ 11]   0.00-10.00  sec   133 MBytes   111 Mbits/sec
+receiver
+[ 13]   0.00-10.02  sec   188 MBytes   157 Mbits/sec  156             sender
+[ 13]   0.00-10.00  sec   185 MBytes   155 Mbits/sec
+receiver
+[SUM]   0.00-10.02  sec  1.09 GBytes   930 Mbits/sec  1192
+sender
+[SUM]   0.00-10.00  sec  1.06 GBytes   914 Mbits/sec
+receiver
+
+3.8.4-NAPI w/o TSO & GSO
+
+iperf3 -c bouygues.iperf.fr -d -P 5
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   194 MBytes   163 Mbits/sec    0             sender
+[  5]   0.00-10.02  sec   192 MBytes   160 Mbits/sec
+receiver
+[  7]   0.00-10.00  sec   194 MBytes   163 Mbits/sec    0             sender
+[  7]   0.00-10.02  sec   192 MBytes   160 Mbits/sec
+receiver
+[  9]   0.00-10.00  sec   195 MBytes   163 Mbits/sec    0             sender
+[  9]   0.00-10.02  sec   192 MBytes   160 Mbits/sec
+receiver
+[ 11]   0.00-10.00  sec   195 MBytes   163 Mbits/sec    0             sender
+[ 11]   0.00-10.02  sec   192 MBytes   160 Mbits/sec
+receiver
+[ 13]   0.00-10.00  sec   195 MBytes   163 Mbits/sec    0             sender
+[ 13]   0.00-10.02  sec   192 MBytes   161 Mbits/sec
+receiver
+[SUM]   0.00-10.00  sec   973 MBytes   816 Mbits/sec    0             sender
+[SUM]   0.00-10.02  sec   958 MBytes   802 Mbits/sec
+receiver
+
+iperf3 -c bouygues.iperf.fr -d -P 5 -R
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.02  sec   499 MBytes   418 Mbits/sec  1208
+sender
+[  5]   0.00-10.00  sec   487 MBytes   409 Mbits/sec
+receiver
+[  7]   0.00-10.02  sec   149 MBytes   125 Mbits/sec  262             sender
+[  7]   0.00-10.00  sec   146 MBytes   122 Mbits/sec
+receiver
+[  9]   0.00-10.02  sec   158 MBytes   132 Mbits/sec  199             sender
+[  9]   0.00-10.00  sec   154 MBytes   129 Mbits/sec
+receiver
+[ 11]   0.00-10.02  sec   179 MBytes   149 Mbits/sec  209             sender
+[ 11]   0.00-10.00  sec   175 MBytes   147 Mbits/sec
+receiver
+[ 13]   0.00-10.02  sec   128 MBytes   107 Mbits/sec  386             sender
+[ 13]   0.00-10.00  sec   125 MBytes   105 Mbits/sec
+receiver
+[SUM]   0.00-10.02  sec  1.09 GBytes   931 Mbits/sec  2264
+sender
+[SUM]   0.00-10.00  sec  1.06 GBytes   912 Mbits/sec
+receiver
+
+3.8.4-NAPI w/ TSO & GSO (Without buffer overrun patch)
+
+iperf3 -c bouygues.iperf.fr -d -P 5
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   204 MBytes   171 Mbits/sec    0             sender
+[  5]   0.00-10.02  sec   201 MBytes   169 Mbits/sec
+receiver
+[  7]   0.00-10.00  sec   203 MBytes   170 Mbits/sec    0             sender
+[  7]   0.00-10.02  sec   201 MBytes   168 Mbits/sec
+receiver
+[  9]   0.00-10.00  sec   205 MBytes   172 Mbits/sec    0             sender
+[  9]   0.00-10.02  sec   202 MBytes   169 Mbits/sec
+receiver
+[ 11]   0.00-10.00  sec   204 MBytes   171 Mbits/sec    0             sender
+[ 11]   0.00-10.02  sec   201 MBytes   169 Mbits/sec
+receiver
+[ 13]   0.00-10.00  sec   204 MBytes   171 Mbits/sec    0             sender
+[ 13]   0.00-10.02  sec   200 MBytes   168 Mbits/sec
+receiver
+[SUM]   0.00-10.00  sec  1019 MBytes   855 Mbits/sec    0             sender
+[SUM]   0.00-10.02  sec  1006 MBytes   842 Mbits/sec
+receiver
+
+iperf3 -c bouygues.iperf.fr -d -P 5 -R
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.02  sec   281 MBytes   235 Mbits/sec  128             sender
+[  5]   0.00-10.00  sec   277 MBytes   232 Mbits/sec
+receiver
+[  7]   0.00-10.02  sec   267 MBytes   223 Mbits/sec  154             sender
+[  7]   0.00-10.00  sec   263 MBytes   221 Mbits/sec
+receiver
+[  9]   0.00-10.02  sec   170 MBytes   142 Mbits/sec  154             sender
+[  9]   0.00-10.00  sec   166 MBytes   139 Mbits/sec
+receiver
+[ 11]   0.00-10.02  sec   161 MBytes   135 Mbits/sec  211             sender
+[ 11]   0.00-10.00  sec   158 MBytes   132 Mbits/sec
+receiver
+[ 13]   0.00-10.02  sec   219 MBytes   183 Mbits/sec  116             sender
+[ 13]   0.00-10.00  sec   216 MBytes   181 Mbits/sec
+receiver
+[SUM]   0.00-10.02  sec  1.07 GBytes   919 Mbits/sec  763             sender
+[SUM]   0.00-10.00  sec  1.05 GBytes   906 Mbits/sec
+receiver
+
+3.8.4-NAPI w/o TSO & GSO (Without buffer overrun patch)
+
+iperf3 -c bouygues.iperf.fr -d -P 5
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   220 MBytes   184 Mbits/sec    0             sender
+[  5]   0.00-10.02  sec   218 MBytes   182 Mbits/sec
+receiver
+[  7]   0.00-10.00  sec   220 MBytes   185 Mbits/sec    0             sender
+[  7]   0.00-10.02  sec   217 MBytes   182 Mbits/sec
+receiver
+[  9]   0.00-10.00  sec   216 MBytes   182 Mbits/sec    0             sender
+[  9]   0.00-10.02  sec   213 MBytes   179 Mbits/sec
+receiver
+[ 11]   0.00-10.00  sec   220 MBytes   185 Mbits/sec    0             sender
+[ 11]   0.00-10.02  sec   218 MBytes   182 Mbits/sec
+receiver
+[ 13]   0.00-10.00  sec   221 MBytes   185 Mbits/sec    0             sender
+[ 13]   0.00-10.02  sec   218 MBytes   182 Mbits/sec
+receiver
+[SUM]   0.00-10.00  sec  1.07 GBytes   920 Mbits/sec    0             sender
+[SUM]   0.00-10.02  sec  1.06 GBytes   907 Mbits/sec
+receiver
+
+iperf3 -c bouygues.iperf.fr -d -P 5 -R
+
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.02  sec   259 MBytes   217 Mbits/sec   67             sender
+[  5]   0.00-10.00  sec   255 MBytes   214 Mbits/sec
+receiver
+[  7]   0.00-10.02  sec   256 MBytes   214 Mbits/sec  168             sender
+[  7]   0.00-10.00  sec   252 MBytes   212 Mbits/sec
+receiver
+[  9]   0.00-10.02  sec   260 MBytes   217 Mbits/sec  189             sender
+[  9]   0.00-10.00  sec   256 MBytes   215 Mbits/sec
+receiver
+[ 11]   0.00-10.02  sec   165 MBytes   138 Mbits/sec  237             sender
+[ 11]   0.00-10.00  sec   161 MBytes   135 Mbits/sec
+receiver
+[ 13]   0.00-10.02  sec   172 MBytes   144 Mbits/sec  220             sender
+[ 13]   0.00-10.00  sec   169 MBytes   142 Mbits/sec
+receiver
+[SUM]   0.00-10.02  sec  1.08 GBytes   930 Mbits/sec  881             sender
+[SUM]   0.00-10.00  sec  1.07 GBytes   917 Mbits/sec
+receiver
+
