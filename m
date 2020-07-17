@@ -2,133 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9877223DAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4445223DC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgGQOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:06:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbgGQOGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:06:30 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22AFE2067D;
-        Fri, 17 Jul 2020 14:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594994790;
-        bh=idhd2mun2o3KTZfXKc7yxApyqOFeBVXhlYMrKvNie5U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KaQrFt+YhFkTXtEgafkFEb1WYvRfdZ4Kw0ki3VoubVwnrLGVDz8sU/1yskahu7eCy
-         7gQmmSH6lOqgTLjYUK+DloD0v5HMyHQie7V+qLc+Edn8y8RmecTmQSPolQQwRh4bK3
-         IUvtlU6lhpCZpunU3IsRYhQnTKqj0S8gGlEmwpSY=
-Date:   Fri, 17 Jul 2020 23:06:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 10/75] x86/insn: Add insn_has_rep_prefix() helper
-Message-Id: <20200717230622.5be651b71711368acbfe6bb0@kernel.org>
-In-Reply-To: <20200714120917.11253-11-joro@8bytes.org>
-References: <20200714120917.11253-1-joro@8bytes.org>
-        <20200714120917.11253-11-joro@8bytes.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728086AbgGQOHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:07:41 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:15748 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728024AbgGQOHd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:07:33 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HDwpKW000599;
+        Fri, 17 Jul 2020 16:07:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=UW3rbA8OJgX+g0s4DvALs82Ib6sW0QAompQ4HrbLoA4=;
+ b=FugniGd0sXUH9rPLRG4V2d6FLBDARZSG+rKAkvQGvhF/N3T3mwHZSlxU9jlQJybKA18N
+ Wsu9a9C9tfNv0UJmmLU3NXGCSzwQPOn5GjX5vRma0kp5tlr/iv1TA7bukI0DXjcJUMoV
+ aV57S1KwHTAbDgQLPiWOhOJudu3UpiKM6Xs/GlBrM71domnutXS5JGohinVGsIQkvILB
+ gNpncIAmrget5miAAxEXkrcefnVSotAgb/qv0cO5Rpk9ecpi3Zp4NN+KbjZrNA8lYBmh
+ xIIDEcAZnVH5vhBPJj3U2G6i7ekL1jrDyLHOj1zHAukAeijKaLNvVbRY9iP7+ulCzykq kg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 327cyvge09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 16:07:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 23DAC10002A;
+        Fri, 17 Jul 2020 16:07:18 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 074102BC7AA;
+        Fri, 17 Jul 2020 16:07:18 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 17 Jul 2020 16:07:17
+ +0200
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>, <marex@denx.de>,
+        <alexandre.torgue@st.com>
+Subject: [PATCH v2] irqchip/stm32-exti: map direct event to irq parent
+Date:   Fri, 17 Jul 2020 16:07:17 +0200
+Message-ID: <20200717140717.29606-1-alexandre.torgue@st.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG7NODE2.st.com (10.75.127.20) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_06:2020-07-17,2020-07-17 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 14:08:12 +0200
-Joerg Roedel <joro@8bytes.org> wrote:
+EXTI lines are mainly used to wake-up system from CStop low power mode.
+Currently, if a device wants to use a EXTI (direct) line as wakeup line,
+it has to declare 2 interrupts:
+ - one for EXTI used to wake-up system (with dedicated_wake_irq api).
+ - one for GIC used to get the wake up reason inside the concerned IP.
 
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> Add a function to check whether an instruction has a REP prefix.
+This split is not really needed as each EXTI line is actually "linked " to
+a GIC. So to avoid this useless double interrupt management in each
+wake-up driver, this patch lets the STM32 EXTI driver abstract it by
+mapping each EXTI line to his corresponding GIC.
 
-This looks good to me.
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+
+Changes since v1:
+
+ - Fix warning reported by test robot.
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index faa8482c8246..732b04a121b6 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -42,6 +42,7 @@ struct stm32_exti_bank {
+ struct stm32_desc_irq {
+ 	u32 exti;
+ 	u32 irq_parent;
++	struct irq_chip *chip;
+ };
  
-Thank you,
-
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/include/asm/insn-eval.h |  1 +
->  arch/x86/lib/insn-eval.c         | 24 ++++++++++++++++++++++++
->  2 files changed, 25 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
-> index f748f57f1491..a0f839aa144d 100644
-> --- a/arch/x86/include/asm/insn-eval.h
-> +++ b/arch/x86/include/asm/insn-eval.h
-> @@ -15,6 +15,7 @@
->  #define INSN_CODE_SEG_OPND_SZ(params) (params & 0xf)
->  #define INSN_CODE_SEG_PARAMS(oper_sz, addr_sz) (oper_sz | (addr_sz << 4))
->  
-> +bool insn_has_rep_prefix(struct insn *insn);
->  void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs);
->  int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
->  int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
-> diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-> index a8ac5c5e94f0..8ed9d645259c 100644
-> --- a/arch/x86/lib/insn-eval.c
-> +++ b/arch/x86/lib/insn-eval.c
-> @@ -53,6 +53,30 @@ static bool is_string_insn(struct insn *insn)
->  	}
->  }
->  
-> +/**
-> + * insn_has_rep_prefix() - Determine if instruction has a REP prefix
-> + * @insn:	Instruction containing the prefix to inspect
-> + *
-> + * Returns:
-> + *
-> + * true if the instruction has a REP prefix, false if not.
-> + */
-> +bool insn_has_rep_prefix(struct insn *insn)
-> +{
-> +	int i;
-> +
-> +	insn_get_prefixes(insn);
-> +
-> +	for (i = 0; i < insn->prefixes.nbytes; i++) {
-> +		insn_byte_t p = insn->prefixes.bytes[i];
-> +
-> +		if (p == 0xf2 || p == 0xf3)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  /**
->   * get_seg_reg_override_idx() - obtain segment register override index
->   * @insn:	Valid instruction with segment override prefixes
-> -- 
-> 2.27.0
-> 
-
-
+ struct stm32_exti_drv_data {
+@@ -166,27 +167,41 @@ static const struct stm32_exti_bank *stm32mp1_exti_banks[] = {
+ 	&stm32mp1_exti_b3,
+ };
+ 
++static struct irq_chip stm32_exti_h_chip;
++static struct irq_chip stm32_exti_h_chip_direct;
++
+ static const struct stm32_desc_irq stm32mp1_desc_irq[] = {
+-	{ .exti = 0, .irq_parent = 6 },
+-	{ .exti = 1, .irq_parent = 7 },
+-	{ .exti = 2, .irq_parent = 8 },
+-	{ .exti = 3, .irq_parent = 9 },
+-	{ .exti = 4, .irq_parent = 10 },
+-	{ .exti = 5, .irq_parent = 23 },
+-	{ .exti = 6, .irq_parent = 64 },
+-	{ .exti = 7, .irq_parent = 65 },
+-	{ .exti = 8, .irq_parent = 66 },
+-	{ .exti = 9, .irq_parent = 67 },
+-	{ .exti = 10, .irq_parent = 40 },
+-	{ .exti = 11, .irq_parent = 42 },
+-	{ .exti = 12, .irq_parent = 76 },
+-	{ .exti = 13, .irq_parent = 77 },
+-	{ .exti = 14, .irq_parent = 121 },
+-	{ .exti = 15, .irq_parent = 127 },
+-	{ .exti = 16, .irq_parent = 1 },
+-	{ .exti = 65, .irq_parent = 144 },
+-	{ .exti = 68, .irq_parent = 143 },
+-	{ .exti = 73, .irq_parent = 129 },
++	{ .exti = 0, .irq_parent = 6, .chip = &stm32_exti_h_chip },
++	{ .exti = 1, .irq_parent = 7, .chip = &stm32_exti_h_chip },
++	{ .exti = 2, .irq_parent = 8, .chip = &stm32_exti_h_chip },
++	{ .exti = 3, .irq_parent = 9, .chip = &stm32_exti_h_chip },
++	{ .exti = 4, .irq_parent = 10, .chip = &stm32_exti_h_chip },
++	{ .exti = 5, .irq_parent = 23, .chip = &stm32_exti_h_chip },
++	{ .exti = 6, .irq_parent = 64, .chip = &stm32_exti_h_chip },
++	{ .exti = 7, .irq_parent = 65, .chip = &stm32_exti_h_chip },
++	{ .exti = 8, .irq_parent = 66, .chip = &stm32_exti_h_chip },
++	{ .exti = 9, .irq_parent = 67, .chip = &stm32_exti_h_chip },
++	{ .exti = 10, .irq_parent = 40, .chip = &stm32_exti_h_chip },
++	{ .exti = 11, .irq_parent = 42, .chip = &stm32_exti_h_chip },
++	{ .exti = 12, .irq_parent = 76, .chip = &stm32_exti_h_chip },
++	{ .exti = 13, .irq_parent = 77, .chip = &stm32_exti_h_chip },
++	{ .exti = 14, .irq_parent = 121, .chip = &stm32_exti_h_chip },
++	{ .exti = 15, .irq_parent = 127, .chip = &stm32_exti_h_chip },
++	{ .exti = 16, .irq_parent = 1, .chip = &stm32_exti_h_chip },
++	{ .exti = 19, .irq_parent = 3, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 21, .irq_parent = 31, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 22, .irq_parent = 33, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 23, .irq_parent = 72, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 24, .irq_parent = 95, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 25, .irq_parent = 107, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 30, .irq_parent = 52, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 47, .irq_parent = 93, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 54, .irq_parent = 135, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 61, .irq_parent = 100, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 65, .irq_parent = 144, .chip = &stm32_exti_h_chip },
++	{ .exti = 68, .irq_parent = 143, .chip = &stm32_exti_h_chip },
++	{ .exti = 70, .irq_parent = 62, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 73, .irq_parent = 129, .chip = &stm32_exti_h_chip },
+ };
+ 
+ static const struct stm32_exti_drv_data stm32mp1_drv_data = {
+@@ -196,22 +211,23 @@ static const struct stm32_exti_drv_data stm32mp1_drv_data = {
+ 	.irq_nr = ARRAY_SIZE(stm32mp1_desc_irq),
+ };
+ 
+-static int stm32_exti_to_irq(const struct stm32_exti_drv_data *drv_data,
+-			     irq_hw_number_t hwirq)
++static const struct
++stm32_desc_irq *stm32_exti_get_desc(const struct stm32_exti_drv_data *drv_data,
++				    irq_hw_number_t hwirq)
+ {
+-	const struct stm32_desc_irq *desc_irq;
++	const struct stm32_desc_irq *desc = NULL;
+ 	int i;
+ 
+ 	if (!drv_data->desc_irqs)
+-		return -EINVAL;
++		return NULL;
+ 
+ 	for (i = 0; i < drv_data->irq_nr; i++) {
+-		desc_irq = &drv_data->desc_irqs[i];
+-		if (desc_irq->exti == hwirq)
+-			return desc_irq->irq_parent;
++		desc = &drv_data->desc_irqs[i];
++		if (desc->exti == hwirq)
++			break;
+ 	}
+ 
+-	return -EINVAL;
++	return desc;
+ }
+ 
+ static unsigned long stm32_exti_pending(struct irq_chip_generic *gc)
+@@ -628,30 +644,47 @@ static struct irq_chip stm32_exti_h_chip = {
+ 	.irq_set_affinity	= IS_ENABLED(CONFIG_SMP) ? stm32_exti_h_set_affinity : NULL,
+ };
+ 
++static struct irq_chip stm32_exti_h_chip_direct = {
++	.name			= "stm32-exti-h-direct",
++	.irq_eoi		= irq_chip_eoi_parent,
++	.irq_ack		= irq_chip_ack_parent,
++	.irq_mask		= irq_chip_mask_parent,
++	.irq_unmask		= irq_chip_unmask_parent,
++	.irq_retrigger		= irq_chip_retrigger_hierarchy,
++	.irq_set_type		= irq_chip_set_type_parent,
++	.irq_set_wake		= stm32_exti_h_set_wake,
++	.flags			= IRQCHIP_MASK_ON_SUSPEND,
++	.irq_set_affinity	= IS_ENABLED(CONFIG_SMP) ? irq_chip_set_affinity_parent : NULL,
++};
++
+ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+ 				     unsigned int virq,
+ 				     unsigned int nr_irqs, void *data)
+ {
+ 	struct stm32_exti_host_data *host_data = dm->host_data;
+ 	struct stm32_exti_chip_data *chip_data;
++	const struct stm32_desc_irq *desc;
+ 	struct irq_fwspec *fwspec = data;
+ 	struct irq_fwspec p_fwspec;
+ 	irq_hw_number_t hwirq;
+-	int p_irq, bank;
++	int bank;
+ 
+ 	hwirq = fwspec->param[0];
+ 	bank  = hwirq / IRQS_PER_BANK;
+ 	chip_data = &host_data->chips_data[bank];
+ 
+-	irq_domain_set_hwirq_and_chip(dm, virq, hwirq,
+-				      &stm32_exti_h_chip, chip_data);
+ 
+-	p_irq = stm32_exti_to_irq(host_data->drv_data, hwirq);
+-	if (p_irq >= 0) {
++	desc = stm32_exti_get_desc(host_data->drv_data, hwirq);
++	if (!desc)
++		return -EINVAL;
++
++	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, desc->chip,
++				      chip_data);
++	if (desc->irq_parent) {
+ 		p_fwspec.fwnode = dm->parent->fwnode;
+ 		p_fwspec.param_count = 3;
+ 		p_fwspec.param[0] = GIC_SPI;
+-		p_fwspec.param[1] = p_irq;
++		p_fwspec.param[1] = desc->irq_parent;
+ 		p_fwspec.param[2] = IRQ_TYPE_LEVEL_HIGH;
+ 
+ 		return irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
