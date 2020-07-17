@@ -2,17 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC672244C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4CA2244D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgGQUAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:00:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42876 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728455AbgGQUAT (ORCPT
+        id S1728874AbgGQUAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728706AbgGQUAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:00:19 -0400
-Date:   Fri, 17 Jul 2020 20:00:17 -0000
+        Fri, 17 Jul 2020 16:00:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A461C0619D3;
+        Fri, 17 Jul 2020 13:00:20 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 20:00:18 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1595016018;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iiCwFg3+N6w7BgpdTC3q2ig2n6Ttjqwxdvx7BMmCOTI=;
-        b=mWMyhw3irWKrJQMcsJ17rI7OffZMX6rHm+NpCUknrBQ8qlyDl9t4HOkeJnj9k2wSmdpjtp
-        9YuAb000ENiV/Sd/AVPRtMBUvdsE3rGzKej3DWHyBK/K5UVoUJTveF/12b91qT2dsnkiub
-        BAlwSyS4NZuKEx3GwypSmkRcCV4/ojJe5UXxYh+vWjYPyae8fGdxBfZKRTWd+9IS2EeoMz
-        ED9SfL9z0IZRnO5YpJQN96ccp1MwLtSvOpmQU6MoFsmvmJBCd9Y5+75i287ntAFUdwDl3r
-        h8oLO4ow5PbCoC1In9QhKPCo9GxWL5LP6hYo54wQe7erl5kHTHTuwRHz84vY2g==
+        bh=e8QqEG+PWyeIGUj5BJtNnFr39d87l3yaNX9PcbAJX6Q=;
+        b=nLge1KFxpVMwY/jQWfdAq4OnC4Bdb66oj2PGJEinzE1eA26VCxzgJs02U+7/hFH4xX44c1
+        szFE0akDGJ1q/52B+Y6GTn8/D1qnfPGwavNCjBV7CwWzX9HIyKMv2x+p6qgZ6MF9K1Xp1H
+        +1u+bMFpNV3jOYEt6vwDa8H8UeWIN5i+Th+myK9UTzKCvz3ZIavlC/KII+92wy1EK5NLD2
+        yg+9iETsjZhxR9hPN6OpTwCBkJBO5xvoPVNBDizEUajE6I6s5PepOk7wrNrNSCompL80jX
+        +CooLHQEN75I68ySnUiIBR6LERJcyCA1MJ6r2xuKZdR3ptryrvOeA9vavKFZXA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1595016018;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iiCwFg3+N6w7BgpdTC3q2ig2n6Ttjqwxdvx7BMmCOTI=;
-        b=MbZM+uXcW+VogFrsLD+6jSpBS2HFSzALwL7bZ8YzCso2dAdpdR55TeoxlImhYMfqxCuaIH
-        HhAPV8uH+yUm1ZDw==
+        bh=e8QqEG+PWyeIGUj5BJtNnFr39d87l3yaNX9PcbAJX6Q=;
+        b=I+vrNoGXfNKWZ6NZNLtpHjiCDGpdCigFBznssAXsHdzBOaugbdhqZC6/afLjTAUuj+SmLp
+        Eqz8v8z8bZdiUWBg==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timers: Reuse next expiry cache after nohz exit
+Subject: [tip: timers/core] timers: Always keep track of next expiry
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200717140551.29076-9-frederic@kernel.org>
-References: <20200717140551.29076-9-frederic@kernel.org>
+In-Reply-To: <20200717140551.29076-8-frederic@kernel.org>
+References: <20200717140551.29076-8-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <159501601744.4006.18407986100047143357.tip-bot2@tip-bot2>
+Message-ID: <159501601807.4006.17647187108834721042.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,52 +62,128 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     90d52f65f303091be17b5f4ffab7090b2064b4a1
-Gitweb:        https://git.kernel.org/tip/90d52f65f303091be17b5f4ffab7090b2064b4a1
+Commit-ID:     dc2a0f1fb2a06df09f5094f29aea56b763aa7cca
+Gitweb:        https://git.kernel.org/tip/dc2a0f1fb2a06df09f5094f29aea56b763aa7cca
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Fri, 17 Jul 2020 16:05:47 +02:00
+AuthorDate:    Fri, 17 Jul 2020 16:05:46 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Fri, 17 Jul 2020 21:55:23 +02:00
 
-timers: Reuse next expiry cache after nohz exit
+timers: Always keep track of next expiry
 
-Now that the next expiry it tracked unconditionally when a timer is added,
-this information can be reused on a tick firing after exiting nohz.
+So far next expiry was only tracked while the CPU was in nohz_idle mode
+in order to cope with missing ticks that can't increment the base->clk
+periodically anymore.
+
+This logic is going to be expanded beyond nohz in order to spare timer
+softirqs so do it unconditionally.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juri Lelli <juri.lelli@redhat.com>
-Link: https://lkml.kernel.org/r/20200717140551.29076-9-frederic@kernel.org
+Link: https://lkml.kernel.org/r/20200717140551.29076-8-frederic@kernel.org
 
 ---
- kernel/time/timer.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ kernel/time/timer.c | 42 +++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 76fd964..13f48ee 100644
+index 9abc417..76fd964 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -1706,13 +1706,11 @@ static int collect_expired_timers(struct timer_base *base,
- 	 * the next expiring timer.
+@@ -544,8 +544,7 @@ static int calc_wheel_index(unsigned long expires, unsigned long clk,
+ }
+ 
+ static void
+-trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
+-		    unsigned long bucket_expiry)
++trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+ {
+ 	if (!is_timers_nohz_active())
+ 		return;
+@@ -565,23 +564,8 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
+ 	 * timer is not deferrable. If the other CPU is on the way to idle
+ 	 * then it can't set base->is_idle as we hold the base lock:
  	 */
- 	if ((long)(now - base->clk) > 2) {
--		unsigned long next = __next_timer_interrupt(base);
+-	if (!base->is_idle)
+-		return;
 -
- 		/*
- 		 * If the next timer is ahead of time forward to current
- 		 * jiffies, otherwise forward to the next expiry time:
- 		 */
--		if (time_after(next, now)) {
-+		if (time_after(base->next_expiry, now)) {
- 			/*
- 			 * The call site will increment base->clk and then
- 			 * terminate the expiry loop immediately.
-@@ -1720,7 +1718,7 @@ static int collect_expired_timers(struct timer_base *base,
- 			base->clk = now;
- 			return 0;
- 		}
--		base->clk = next;
-+		base->clk = base->next_expiry;
+-	/*
+-	 * Check whether this is the new first expiring timer. The
+-	 * effective expiry time of the timer is required here
+-	 * (bucket_expiry) instead of timer->expires.
+-	 */
+-	if (time_after_eq(bucket_expiry, base->next_expiry))
+-		return;
+-
+-	/*
+-	 * Set the next expiry time and kick the CPU so it can reevaluate the
+-	 * wheel:
+-	 */
+-	base->next_expiry = bucket_expiry;
+-	wake_up_nohz_cpu(base->cpu);
++	if (base->is_idle)
++		wake_up_nohz_cpu(base->cpu);
+ }
+ 
+ /*
+@@ -592,12 +576,26 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer,
+ static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+ 			  unsigned int idx, unsigned long bucket_expiry)
+ {
++
+ 	hlist_add_head(&timer->entry, base->vectors + idx);
+ 	__set_bit(idx, base->pending_map);
+ 	timer_set_idx(timer, idx);
+ 
+ 	trace_timer_start(timer, timer->expires, timer->flags);
+-	trigger_dyntick_cpu(base, timer, bucket_expiry);
++
++	/*
++	 * Check whether this is the new first expiring timer. The
++	 * effective expiry time of the timer is required here
++	 * (bucket_expiry) instead of timer->expires.
++	 */
++	if (time_before(bucket_expiry, base->next_expiry)) {
++		/*
++		 * Set the next expiry time and kick the CPU so it
++		 * can reevaluate the wheel:
++		 */
++		base->next_expiry = bucket_expiry;
++		trigger_dyntick_cpu(base, timer);
++	}
+ }
+ 
+ static void internal_add_timer(struct timer_base *base, struct timer_list *timer)
+@@ -1493,7 +1491,6 @@ static int __collect_expired_timers(struct timer_base *base,
+ 	return levels;
+ }
+ 
+-#ifdef CONFIG_NO_HZ_COMMON
+ /*
+  * Find the next pending bucket of a level. Search from level start (@offset)
+  * + @clk upwards and if nothing there, search from start of the level
+@@ -1585,6 +1582,7 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 	return next;
+ }
+ 
++#ifdef CONFIG_NO_HZ_COMMON
+ /*
+  * Check, if the next hrtimer event is before the next timer wheel
+  * event:
+@@ -1790,6 +1788,7 @@ static inline void __run_timers(struct timer_base *base)
+ 
+ 		levels = collect_expired_timers(base, heads);
+ 		base->clk++;
++		base->next_expiry = __next_timer_interrupt(base);
+ 
+ 		while (levels--)
+ 			expire_timers(base, heads + levels);
+@@ -2042,6 +2041,7 @@ static void __init init_timer_cpu(int cpu)
+ 		base->cpu = cpu;
+ 		raw_spin_lock_init(&base->lock);
+ 		base->clk = jiffies;
++		base->next_expiry = base->clk + NEXT_TIMER_MAX_DELTA;
+ 		timer_base_init_expiry_lock(base);
  	}
- 	return __collect_expired_timers(base, heads);
  }
