@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D62C2240BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C1B2240C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgGQQoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:44:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33816 "EHLO mail.kernel.org"
+        id S1726668AbgGQQri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:47:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgGQQoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:44:55 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726221AbgGQQrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:47:37 -0400
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA8B72067D;
-        Fri, 17 Jul 2020 16:44:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CDC220717
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 16:47:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595004294;
-        bh=mPWcubb+1OOeRzCC8UaJsYvbCOgciE/eu3GRXnDMqn4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E6RAlCz9b+Ikt9EraXleXTwMUVyhK00b2BBD5ALr+iMoIYV53B34WuB8VKq6DFXad
-         ZPXsKEzSTLAyLHubdD/H5Jaky24B5gXj6AmsXwAW8pMAXlSO9sSbIoccfpwWEhYglY
-         PDSmIYTEkuADK47QgPZsut6sBttMgxzxwAX2HK3I=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C8B9740482; Fri, 17 Jul 2020 13:44:52 -0300 (-03)
-Date:   Fri, 17 Jul 2020 13:44:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 03/17] perf ftrace: add option -t/--tid to filter by
- thread id
-Message-ID: <20200717164452.GD712240@kernel.org>
-References: <20200711124035.6513-1-changbin.du@gmail.com>
- <20200711124035.6513-4-changbin.du@gmail.com>
- <20200716153630.GD374956@kernel.org>
- <20200717132650.i32oovllal22b35i@mail.google.com>
+        s=default; t=1595004456;
+        bh=4BXVUwtR/tkd2z02CT+MvIFZaGvYQkEZE2YjNF5AhjE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fKmneDpBAiITP5CNK0MU5sUVxFhx7WYh/i+VAwD5D0MAlhGc3diiywNdx5o2yTtW5
+         H+KLhFy3VdMnFpNiHW/jKjEh0atBDcYJOyKo54ET6m8avkAbC/kJ/pDhU6bjFhG2Dz
+         zRoLQFMLgSMhJVFRgmv5YPh33uYSvFZtuULsnZR4=
+Received: by mail-wm1-f43.google.com with SMTP id q15so15928090wmj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:47:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530orocKbP3UeO3zG55yidWylczxKkAnn8PqbzX+oVZzK12mNP3h
+        RTOONhHu1kzdOl5GTyBydqma3pYY/wbMlLYMHJlR7Q==
+X-Google-Smtp-Source: ABdhPJzXM6ShO9QunQ6h1oW3pXO/VsXg1+/b+5o5yRSKhYi7CtcrXGrAtQNL19genjr5cg0ReKqPfIacxdEL/vO0zWk=
+X-Received: by 2002:a7b:c09a:: with SMTP id r26mr10027972wmh.176.1595004455229;
+ Fri, 17 Jul 2020 09:47:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717132650.i32oovllal22b35i@mail.google.com>
-X-Url:  http://acmel.wordpress.com
+References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <s5hlfjnzvu7.wl-tiwai@suse.de>
+In-Reply-To: <s5hlfjnzvu7.wl-tiwai@suse.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 17 Jul 2020 09:47:23 -0700
+X-Gmail-Original-Message-ID: <CALCETrWmK-b6apB57mp8oaSRNpcSLdoCFAXEp4EF-9LSUDNFBA@mail.gmail.com>
+Message-ID: <CALCETrWmK-b6apB57mp8oaSRNpcSLdoCFAXEp4EF-9LSUDNFBA@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] [PATCH v3] CodingStyle: Inclusive Terminology
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 17, 2020 at 09:26:50PM +0800, Changbin Du escreveu:
-> On Thu, Jul 16, 2020 at 12:36:30PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Sat, Jul 11, 2020 at 08:40:21PM +0800, Changbin Du escreveu:
-> > > +++ b/tools/perf/Documentation/perf-ftrace.txt
-> > > @@ -38,6 +38,10 @@ OPTIONS
-> > >  --pid=::
-> > >  	Trace on existing process id (comma separated list).
+On Mon, Jul 13, 2020 at 1:02 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 08 Jul 2020 20:14:27 +0200,
+> Dan Williams wrote:
+> >
+> > +Recommended replacements for 'blacklist/whitelist' are:
+> > +    'denylist / allowlist'
+> > +    'blocklist / passlist'
+>
+> I started looking through the tree now and noticed there are lots of
+> patterns like "whitelisted" or "blacklisted".  How can the words fit
+> for those?  Actually, there are two cases like:
+>
+> - Foo is blacklisted
+> - Allow to load the non-whitelisted cards
+>
+> Currently I'm replacing the former with "Foo is in denylist", but not
+> sure about the latter case.  I thought Kees mentioned about this, but
+> don't remember the proposal...
 
-> > > +-t::
-> > > +--tid=::
-> > > +	Trace on existing thread id (comma separated list).
+Hmm.  In these cases, we're trying to convey one of two things.  A
+given device/platform/CPU/whatever could be known to be problematic
+and thus disallowed, or we could have a policy that we generally don't
+trust hardware but we have specific reason to believe that this
+particular hardware is okay.  After doing a highly scientific sampling
+of a few cases, some of these are indeed lists and some are not.
 
-> > Humm, I just  tried:
+If we're going to look for new words for these concepts, perhaps we
+shouldn't focus on the *list* aspect -- after all, that's just a
+rather popular implementation detail, but it's not the core concept
+we're trying to express.  As an example case, we have a horrible
+concept in which some Intel CPUs support a form of memory failure
+recovery, and there is no enumeration mechanism.  Instead, there's a
+list (sigh).  So we could say "your CPU is whitelisted for
+such-and-such," which at least gets the idea across, but saying "your
+CPU is allowlisted for such-and-such" seems like a stretch.  It's not
+that we have a policy to allow things on the list -- it's that we
+think that CPUs not on the list simply don't have the relevant
+capability.
 
-> > [root@five ~]# yes > /dev/null &
-> > [1] 18265
-> > [root@five ~]# perf ftrace --tid 18265
-> > ^C[root@five ~]#
+Here are some brainstormed ideas:
 
-> > After waiting for a while, nothing, what am I doing wrong?
+ - Such-and-such feature is quirked off.  (Or disabled due to a quirk.)
 
-> I got it wrong. Currently ftrace only can filter by pid. If the pid is not
-> the main thread it won't work.
- 
-> So this patch makes no sense. will drop this.
+ - Your device is not on the known-good list.
 
-I think you could alternatively keep it but inform the user that this
-target, available to other perf commands, isn't available for ftrace as
-it doesn't support it, this way when the user goes from:
+ - Your device is not known-good.  It might work anyway -- to try it,
+set such-and-such option.
 
-perf trace|top|record|script|report --tid 1234
+ - Your device is known bad.
 
-to:
+ - Your device is busted and we think you should pressure the
+manufacturer to fix it.
 
-perf ftrace --tid 1234
+ - Your device is too old and no longer supported.
 
-He gets a message like:
+ - Seriously, you're trying to use an 80386 on a modern kernel?  No
+thanks.  We think it's neat that you still have one that works,
+though.
 
-ERROR: 'ftrace' doesn't support the --tid target, try with --pid
+ - (Specifically for modules and not part of the Linux kernel tree)
+disable_autoload instead of blacklist, perhaps?
 
-And that would be more useful, provides an explanation as why that
-target can't be used and suggests an alternative.
-
-- Arnaldo
+Part of my point is that we use blacklist and whitelist to mean
+various things, and I don't think we should try to invent a couple of
+new catch-all terms to replace them.  Perhaps replacing these words
+could be an opportunity to come up with better descriptions at the
+same time.
