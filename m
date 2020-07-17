@@ -2,161 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993C52244CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362B22244DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbgGQUAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:00:38 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64636 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728442AbgGQUAd (ORCPT
+        id S1728913AbgGQUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgGQUAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:00:33 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HJWejB000636;
-        Fri, 17 Jul 2020 16:00:23 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32aurbp35e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 16:00:23 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06HJWfw6000844;
-        Fri, 17 Jul 2020 16:00:22 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32aurbp345-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 16:00:22 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HJfp9V015856;
-        Fri, 17 Jul 2020 20:00:20 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 327527y1vn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 20:00:20 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HK0HWS25625038
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 20:00:17 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CB8811C069;
-        Fri, 17 Jul 2020 20:00:17 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 34F8711C04C;
-        Fri, 17 Jul 2020 20:00:14 +0000 (GMT)
-Received: from [9.102.22.153] (unknown [9.102.22.153])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Jul 2020 20:00:13 +0000 (GMT)
-Subject: Re: [PATCH v3 03/12] powerpc/kexec_file: add helper functions for
- getting memory ranges
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Pingfan Liu <piliu@redhat.com>, Petr Tesarik <ptesarik@suse.cz>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
- <159466087136.24747.16494497863685481495.stgit@hbathini.in.ibm.com>
- <874kq98xo4.fsf@morokweng.localdomain>
- <0684ed3d-0dde-8dce-f12c-72ef86bc91f9@linux.ibm.com>
-Message-ID: <1b09c0e4-54c9-7dd6-4402-81c9d1ba3ee0@linux.ibm.com>
-Date:   Sat, 18 Jul 2020 01:30:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 17 Jul 2020 16:00:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C50C0619D2;
+        Fri, 17 Jul 2020 13:00:19 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 20:00:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595016016;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jATrqxhUtqYR6OlE2GurgkH26s0KlH3ySB+uK19l9nQ=;
+        b=vpxY3VeMkYixYGR2DVobj7DweC8tUG661CXneptRONewYsitIgAalr6bJsrREfMawy9E7Z
+        5qBkINdeXkB/pWBHurgVUUrkq6aDHWtJ//wojWIHlf9Jco31/47q1wi5DC7NvG8SbXZHG0
+        b7Q+snuM73QDfFXYmUCyL008zvduJIEy8M2+P5LQFXcCDdMwjYwpiT7NIk3RKERNrKa9ul
+        v8sHP0xrZKypSNxWEstukjRW8kAPBqNFSvw5o7FYRd8jf8EIGqK41clRDHhCedZ8RlORrQ
+        ZkP1bttsii4OGKgHuRhN91ZQSlFJfmsK4C6MjYYChTk3al4pF4ek+Zi+cBXdmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595016016;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jATrqxhUtqYR6OlE2GurgkH26s0KlH3ySB+uK19l9nQ=;
+        b=k2WOH3T49Rd+cGbOSUN4RxnJbIwXYapKSaiwRoxufvw2/c/ZsJ8Veq7l0ZNdULgyUoj/ms
+        Nz89Od0LU+9n05Bg==
+From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] timers: Spare timer softirq until next expiry
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200717140551.29076-11-frederic@kernel.org>
+References: <20200717140551.29076-11-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0684ed3d-0dde-8dce-f12c-72ef86bc91f9@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <159501601624.4006.1826782394608982623.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-17_09:2020-07-17,2020-07-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 mlxscore=100
- adultscore=0 mlxlogscore=-1000 suspectscore=0 clxscore=1015 bulkscore=0
- spamscore=100 phishscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007170131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the timers/core branch of tip:
 
+Commit-ID:     d4f7dae87096dfe722bf32aa82076ece1063746c
+Gitweb:        https://git.kernel.org/tip/d4f7dae87096dfe722bf32aa82076ece1063746c
+Author:        Frederic Weisbecker <frederic@kernel.org>
+AuthorDate:    Fri, 17 Jul 2020 16:05:49 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 17 Jul 2020 21:55:24 +02:00
 
-On 17/07/20 10:02 am, Hari Bathini wrote:
-> 
-> 
-> On 15/07/20 5:19 am, Thiago Jung Bauermann wrote:
->>
->> Hello Hari,
->>
->> Hari Bathini <hbathini@linux.ibm.com> writes:
->>
->>> In kexec case, the kernel to be loaded uses the same memory layout as
->>> the running kernel. So, passing on the DT of the running kernel would
->>> be good enough.
->>>
->>> But in case of kdump, different memory ranges are needed to manage
->>> loading the kdump kernel, booting into it and exporting the elfcore
->>> of the crashing kernel. The ranges are exlude memory ranges, usable
->>
->> s/exlude/exclude/
->>
->>> memory ranges, reserved memory ranges and crash memory ranges.
->>>
->>> Exclude memory ranges specify the list of memory ranges to avoid while
->>> loading kdump segments. Usable memory ranges list the memory ranges
->>> that could be used for booting kdump kernel. Reserved memory ranges
->>> list the memory regions for the loading kernel's reserve map. Crash
->>> memory ranges list the memory ranges to be exported as the crashing
->>> kernel's elfcore.
->>>
->>> Add helper functions for setting up the above mentioned memory ranges.
->>> This helpers facilitate in understanding the subsequent changes better
->>> and make it easy to setup the different memory ranges listed above, as
->>> and when appropriate.
->>>
->>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
->>> Tested-by: Pingfan Liu <piliu@redhat.com>
->>
-> 
-> <snip>
-> 
->>> +/**
->>> + * add_reserved_ranges - Adds "/reserved-ranges" regions exported by f/w
->>> + *                       to the given memory ranges list.
->>> + * @mem_ranges:          Range list to add the memory ranges to.
->>> + *
->>> + * Returns 0 on success, negative errno on error.
->>> + */
->>> +int add_reserved_ranges(struct crash_mem **mem_ranges)
->>> +{
->>> +	int i, len, ret = 0;
->>> +	const __be32 *prop;
->>> +
->>> +	prop = of_get_property(of_root, "reserved-ranges", &len);
->>> +	if (!prop)
->>> +		return 0;
->>> +
->>> +	/*
->>> +	 * Each reserved range is an (address,size) pair, 2 cells each,
->>> +	 * totalling 4 cells per range.
->>
->> Can you assume that, or do you need to check the #address-cells and
->> #size-cells properties of the root node?
-> 
-> Taken from early_reserve_mem_dt() which did not seem to care.
-> Should we be doing any different here?
+timers: Spare timer softirq until next expiry
 
-On second thoughts, wouldn't hurt to be extra cautious. Will use
-#address-cells & #size-cells to parse reserved-ranges.
+Now that the core timer infrastructure doesn't depend anymore on
+periodic base->clk increments, even when the CPU is not in NO_HZ mode,
+timer softirqs can be skipped until there are timers to expire.
 
-Thanks
-Hari
+Some spurious softirqs can still remain since base->next_expiry doesn't
+keep track of canceled timers but this still reduces the number of softirqs
+significantly: ~15 times less for HZ=1000 and ~5 times less for HZ=100.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
+Link: https://lkml.kernel.org/r/20200717140551.29076-11-frederic@kernel.org
+
+---
+ kernel/time/timer.c | 49 +++++++-------------------------------------
+ 1 file changed, 8 insertions(+), 41 deletions(-)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 1be92b5..4f78a7b 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1458,10 +1458,10 @@ static void expire_timers(struct timer_base *base, struct hlist_head *head)
+ 	}
+ }
+ 
+-static int __collect_expired_timers(struct timer_base *base,
+-				    struct hlist_head *heads)
++static int collect_expired_timers(struct timer_base *base,
++				  struct hlist_head *heads)
+ {
+-	unsigned long clk = base->clk;
++	unsigned long clk = base->clk = base->next_expiry;
+ 	struct hlist_head *vec;
+ 	int i, levels = 0;
+ 	unsigned int idx;
+@@ -1684,40 +1684,6 @@ void timer_clear_idle(void)
+ 	 */
+ 	base->is_idle = false;
+ }
+-
+-static int collect_expired_timers(struct timer_base *base,
+-				  struct hlist_head *heads)
+-{
+-	unsigned long now = READ_ONCE(jiffies);
+-
+-	/*
+-	 * NOHZ optimization. After a long idle sleep we need to forward the
+-	 * base to current jiffies. Avoid a loop by searching the bitfield for
+-	 * the next expiring timer.
+-	 */
+-	if ((long)(now - base->clk) > 2) {
+-		/*
+-		 * If the next timer is ahead of time forward to current
+-		 * jiffies, otherwise forward to the next expiry time:
+-		 */
+-		if (time_after(base->next_expiry, now)) {
+-			/*
+-			 * The call site will increment base->clk and then
+-			 * terminate the expiry loop immediately.
+-			 */
+-			base->clk = now;
+-			return 0;
+-		}
+-		base->clk = base->next_expiry;
+-	}
+-	return __collect_expired_timers(base, heads);
+-}
+-#else
+-static inline int collect_expired_timers(struct timer_base *base,
+-					 struct hlist_head *heads)
+-{
+-	return __collect_expired_timers(base, heads);
+-}
+ #endif
+ 
+ /*
+@@ -1750,7 +1716,7 @@ static inline void __run_timers(struct timer_base *base)
+ 	struct hlist_head heads[LVL_DEPTH];
+ 	int levels;
+ 
+-	if (!time_after_eq(jiffies, base->clk))
++	if (time_before(jiffies, base->next_expiry))
+ 		return;
+ 
+ 	timer_base_lock_expiry(base);
+@@ -1763,7 +1729,8 @@ static inline void __run_timers(struct timer_base *base)
+ 	 */
+ 	base->must_forward_clk = false;
+ 
+-	while (time_after_eq(jiffies, base->clk)) {
++	while (time_after_eq(jiffies, base->clk) &&
++	       time_after_eq(jiffies, base->next_expiry)) {
+ 
+ 		levels = collect_expired_timers(base, heads);
+ 		base->clk++;
+@@ -1798,12 +1765,12 @@ void run_local_timers(void)
+ 
+ 	hrtimer_run_queues();
+ 	/* Raise the softirq only if required. */
+-	if (time_before(jiffies, base->clk)) {
++	if (time_before(jiffies, base->next_expiry)) {
+ 		if (!IS_ENABLED(CONFIG_NO_HZ_COMMON))
+ 			return;
+ 		/* CPU is awake, so check the deferrable base. */
+ 		base++;
+-		if (time_before(jiffies, base->clk))
++		if (time_before(jiffies, base->next_expiry))
+ 			return;
+ 	}
+ 	raise_softirq(TIMER_SOFTIRQ);
