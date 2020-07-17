@@ -2,64 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5A52232D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882712232CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 07:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgGQFOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 01:14:23 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52776 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgGQFOX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:14:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U2ysU8P_1594962854;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ysU8P_1594962854)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Jul 2020 13:14:16 +0800
-Subject: Re: [PATCH v16 05/22] mm/thp: move lru_add_page_tail func to
- huge_memory.c
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-6-git-send-email-alex.shi@linux.alibaba.com>
- <924c187c-d4cb-4458-9a71-63f79e0a66c8@linux.alibaba.com>
- <20200716131706.h6c5nob4somfmegp@box>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <045c70c7-e4e4-c1d1-b066-c359ef9f15a5@linux.alibaba.com>
-Date:   Fri, 17 Jul 2020 13:13:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726333AbgGQFOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 01:14:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:23513 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgGQFOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 01:14:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594962845; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=NpxTil8JCWes0+2Pepn4rr9f/VI4zSITIqSFlcRAvsE=; b=dm9+pvzshbhd0K8lwVykcymr4gm/Tm+b+46AG0kAIy1MIZ9kOXp30lnQQQp5hRTgq3EZcXjn
+ VwKb1//NGDmrBD4bq0cv3N8xwFhMXnElMAyl8BXtemS5Znzl2GR3BHyH7dxXAqb09JkOpK8C
+ l2d1POujKQy7sCUsSQ94bim+Ul8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5f11339c8e36ecda306db6fc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 05:14:04
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F23AC43391; Fri, 17 Jul 2020 05:14:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.225.150] (unknown [137.97.45.199])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C87DC433C9;
+        Fri, 17 Jul 2020 05:13:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C87DC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: media: venus: Add an optional power
+ domain for perf voting
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     stanimir.varbanov@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org
+References: <1594878139-3402-1-git-send-email-rnayak@codeaurora.org>
+ <1594878139-3402-2-git-send-email-rnayak@codeaurora.org>
+ <20200716234310.GH1218486@builder.lan>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <0f0ae5f5-b03e-0fd3-865f-b80472fb7a21@codeaurora.org>
+Date:   Fri, 17 Jul 2020 10:43:57 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200716131706.h6c5nob4somfmegp@box>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200716234310.GH1218486@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-ÔÚ 2020/7/16 ÏÂÎç9:17, Kirill A. Shutemov Ð´µÀ:
-> On Thu, Jul 16, 2020 at 04:59:48PM +0800, Alex Shi wrote:
->> Hi Kirill & Matthew,
+On 7/17/2020 5:13 AM, Bjorn Andersson wrote:
+> On Wed 15 Jul 22:42 PDT 2020, Rajendra Nayak wrote:
+> 
+>> Add an optional power domain which when specified can be used for
+>> setting the performance state of Venus.
 >>
->> Is there any concern from for the THP involved patches?
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>> This is a resend of https://lore.kernel.org/patchwork/patch/1241077/
+>>
+>>   Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml    | 6 +++++-
+>>   Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml | 6 +++++-
+>>   2 files changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
+>> index 55f2d67..1e8675b 100644
+>> --- a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
+>> +++ b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
+>> @@ -25,12 +25,16 @@ properties:
+>>       maxItems: 1
+>>   
+>>     power-domains:
+>> -    maxItems: 2
+>> +    minItems: 2
+>> +    maxItems: 3
+>>   
+>>     power-domain-names:
+>> +    minItems: 2
+>> +    maxItems: 3
+>>       items:
+>>         - const: venus
+>>         - const: vcodec0
+>> +      - const: opp-pd
 > 
-> It is mechanical move. I don't see a problem.
+> In line with Rob's question, the "opp power-domain" seems like a
+> software construct, wouldn't this be better named e.g. "cx"?
+
+The reason I chose to call it 'opp-pd' was to signify its the domain
+that supports scaling (performance state) and not something that's just
+turned on/off. I am fine calling it cx if that makes it look more 'real'
+
 > 
+> Regards,
+> Bjorn
+> 
+>>   
+>>     clocks:
+>>       maxItems: 5
+>> diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
+>> index 157dff8..437286d 100644
+>> --- a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
+>> +++ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
+>> @@ -25,13 +25,17 @@ properties:
+>>       maxItems: 1
+>>   
+>>     power-domains:
+>> -    maxItems: 3
+>> +    minItems: 3
+>> +    maxItems: 4
+>>   
+>>     power-domain-names:
+>> +    minItems: 3
+>> +    maxItems: 4
+>>       items:
+>>         - const: venus
+>>         - const: vcodec0
+>>         - const: vcodec1
+>> +      - const: opp-pd
+>>   
+>>     clocks:
+>>       maxItems: 7
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
 
-Many thanks! Kirill,
-
-Do you mind to give a reviewed-by?
-
-And rre they ok for patch 6th,7th and 14th?
-
-Thanks a lot!
-Alex
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
