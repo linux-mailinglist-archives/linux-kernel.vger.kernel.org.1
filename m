@@ -2,184 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85647223E0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6463D223E1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgGQOcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbgGQOci (ORCPT
+        id S1726463AbgGQOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:34:59 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42804 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbgGQOe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:32:38 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6FDC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:32:38 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id lx13so11109892ejb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zW8Tx5F9J8OHnFWh/HH8a3bm9XWpmViZ4XegdyqY93E=;
-        b=jtQUJdXblGi/ryS3Z6ju0NFNquil2t7oPz+mOIhqRlB4n+GfCiVVFAt70VBEuVEOem
-         cPhV/I5KS+5BsUt7ORCFroCirTq5B5yUvVKEMue3guU8lcD2N5dTh/MxIJK5U52DB5hW
-         zjsODvitaaWNmUA4vh1bWfvs0gJmBas/XDonDhN9kLnbFY0TwUVVi9Te1XV0iaOVKG/0
-         6qZO9eBqXauhvJS+buYBg6K54EUu7JI19FodzDRNpFYeGhK/SHRQbxxbYaNTvnArQOkW
-         AhD4ngtgayXc8OeJSgQiHBnOGgt6uxlfcTkElwzfr3sm9mr6QnDsxRU/Vif4CImCz5Rw
-         XoAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zW8Tx5F9J8OHnFWh/HH8a3bm9XWpmViZ4XegdyqY93E=;
-        b=rlOAPOfZrqY/nMnuqdUCXd8A12WCV60W0bvJed29CeiHLKwLXEXOPlJufLya1JTUku
-         eGbDBLfBUrzv4iG8AtPKJo/AZsA09dunB4POr3njzfhiQYX5uEcpk6rNQ6T3zP8/mF1b
-         j1/KM/052fZvSam6IJi2u3hgzwaGtn5q0p0ZjXir2ucOkE3cw/ruL2IGV+L2OYnwnCZe
-         Pp6oKWaX0UrqfnkWL3zHPp3khwRbp8uNpL+LED44MLIyqF5mG9W2wQDL93HQgsaOIPwW
-         seIpKgkwSSAhdhTI/7K8DUhMH+rgWTdxZvytnccG5Vp72jkSfsQal2uv++qz+bYFjtVQ
-         I/wA==
-X-Gm-Message-State: AOAM530YtOaI7OXyuTSKf4zCEnzePpG+i3zHQ7b/CO6Fldb7F2L8bs+M
-        Gj3Xu9nTp42Eq859nBrSge/TAbkeVNTkknFge1E8SA==
-X-Google-Smtp-Source: ABdhPJz41kh9hSIhYD17HeWveunMqSPLym8stDGAavsGB1Z7MZ1iLP/s0rm/f8zSOq7UO1YjQjTwaiiMKoIgd5jKgiE=
-X-Received: by 2002:a17:907:41dc:: with SMTP id og20mr9208765ejb.183.1594996356749;
- Fri, 17 Jul 2020 07:32:36 -0700 (PDT)
+        Fri, 17 Jul 2020 10:34:58 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HEXhD0033219;
+        Fri, 17 Jul 2020 14:34:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=sC82X1Ql6Y+RsP6ymT7mIIOgEdvX7Xx89bBouH4vdWA=;
+ b=JPQxJ9YLMSqNwkV8Rj+V9TNkk7ZrUA0Q5oZEDxGcZ4nFsg3idI0nMP6c3NplFmyYiMK+
+ ZVfF6fQcWYQWKD3tsEoFlkFEVD7VIH+XEUriVJCm5ets2E2H1AcuJhNni0R7i5Srgl6Z
+ XmWcdzu7CnU0F/GTgsALhswC2zWW5RLobM8kyFvC7nNpCksWHeMv4EzW2ne7HWvpMvOW
+ K6B4YSR6DmHUiS8J5Fx4CTWzNJIpmedXb6RXzwEqan03XiJpr9h3UikSIP+0jzyY+Sem
+ BhWMI5VA/emzIxqrP4+zgg/NDsUQlBxbOsneliea50eH5ca4NjZzG/2EY77Yfs4uhhTH Ew== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3275cmqk6f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Jul 2020 14:34:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HEXsXb113559;
+        Fri, 17 Jul 2020 14:34:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 32bbk0g0b0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Jul 2020 14:34:30 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06HEYTxn114997;
+        Fri, 17 Jul 2020 14:34:29 GMT
+Received: from localhost.localdomain (dhcp-10-175-216-252.vpn.oracle.com [10.175.216.252])
+        by userp3020.oracle.com with ESMTP id 32bbk0g09m-1;
+        Fri, 17 Jul 2020 14:34:29 +0000
+From:   gregory.herrero@oracle.com
+To:     linux-kernel@vger.kernel.org
+Cc:     rostedt@goodmis.org, stable@vger.kernel.org,
+        Gregory Herrero <gregory.herrero@oracle.com>
+Subject: [PATCH] recordmcount: only record relocation of type R_AARCH64_CALL26 on arm64.
+Date:   Fri, 17 Jul 2020 16:33:38 +0200
+Message-Id: <20200717143338.19302-1-gregory.herrero@oracle.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200716170914.3623060-1-yuhsuan@chromium.org>
- <CABXOdTffo_PoFytXTR0DthRgxrp9SLkTrg2Wp6dMDXXj060KFw@mail.gmail.com> <f53d5f7b-6d9a-af68-7a48-fbb411625336@collabora.com>
-In-Reply-To: <f53d5f7b-6d9a-af68-7a48-fbb411625336@collabora.com>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Fri, 17 Jul 2020 07:32:25 -0700
-Message-ID: <CABXOdTf2x4zK9n0WN2djLxCbfQynF4p5v_opwB-DsEyRnRAd4g@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: cros_ec_codec: Reset I2S RX when probing
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Benson Leung <bleung@chromium.org>,
-        ALSA development <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007170107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 10:47 AM Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
->
-> Hi,
->
-> On 16/7/20 19:23, Guenter Roeck wrote:
-> > On Thu, Jul 16, 2020 at 10:09 AM Yu-Hsuan Hsu <yuhsuan@chromium.org> wrote:
-> >>
-> >> It is not guaranteed that I2S RX is disabled when the kernel booting.
-> >> For example, if the kernel crashes while it is enabled, it will keep
-> >> enabled until the next time EC reboots. Reset I2S RX when probing to
-> >> fix this issue.
-> >>
-> >> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-> >> ---
-> >>  drivers/platform/chrome/cros_ec_proto.c        | 7 ++++++-
-> >>  include/linux/platform_data/cros_ec_commands.h | 1 +
-> >>  sound/soc/codecs/cros_ec_codec.c               | 9 +++++++++
-> >>  3 files changed, 16 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-> >> index 3e745e0fe092c..2c60690d7147c 100644
-> >> --- a/drivers/platform/chrome/cros_ec_proto.c
-> >> +++ b/drivers/platform/chrome/cros_ec_proto.c
-> >> @@ -572,7 +572,12 @@ int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
-> >>                 return -ENOTSUPP;
-> >>         } else if (msg->result != EC_RES_SUCCESS) {
-> >>                 dev_dbg(ec_dev->dev, "Command result (err: %d)\n", msg->result);
-> >> -               return -EPROTO;
-> >> +               switch (msg->result) {
-> >> +               case EC_RES_INVALID_PARAM:
-> >> +                       return -EINVAL;
-> >
-> > As we have learned, this may impact other callers of
-> > cros_ec_cmd_xfer_status() which only accept -EPROTO as error return
-> > value. In addition to that, the code is odd:
-> >
-> >     if (msg->result == EC_RES_INVALID_VERSION) {
-> >         ...
-> >     } else if (msg->result != EC_RES_SUCCESS) {
-> >         switch (msg->result) {
-> >         ....
-> >         }
-> >     }
-> >
->
-> Ack, this is odd.
->
-> > I really dislike the notion of changing error return values of
-> > cros_ec_cmd_xfer_status() one by one. That can only cause ongoing
-> > trouble with callers expecting specific error return codes (as we have
-> > already seen).
-> >
->
-> Hmm, that's a good point. Ok.
->
-> Let's apply the Guenter's patch that maps the errors *and* fix the callers of
-> cros_ec_cmd_xfer_status which only accept -EPROTO (there are few).
->
-> Yu-Hsuan, can you take care of this and send a patch series with all the
-> required patches? If not, I can work on this next week.
->
+From: Gregory Herrero <gregory.herrero@oracle.com>
 
-I can look into it as well. Let me know - I don't want to duplicate work.
+Currently, if a section has a relocation to '_mcount' symbol, a new
+__mcount_loc entry will be added whatever the relocation type is.
+This is problematic when a relocation to '_mcount' is in the middle of a
+section and is not a call for ftrace use.
 
-Guenter
+Such relocation could be generated with below code for example:
+    bool is_mcount(unsigned long addr)
+    {
+        return (target == (unsigned long) &_mcount);
+    }
 
-> Thanks,
->   Enric
->
-> > Guenter
-> >
-> >> +               default:
-> >> +                       return -EPROTO;
-> >> +               }
-> >>         }
-> >>
-> >>         return ret;
-> >> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-> >> index 69210881ebac8..11ce917ca924c 100644
-> >> --- a/include/linux/platform_data/cros_ec_commands.h
-> >> +++ b/include/linux/platform_data/cros_ec_commands.h
-> >> @@ -4598,6 +4598,7 @@ enum ec_codec_i2s_rx_subcmd {
-> >>         EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
-> >>         EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
-> >>         EC_CODEC_I2S_RX_SET_BCLK = 0x4,
-> >> +       EC_CODEC_I2S_RX_RESET = 0x5,
-> >>         EC_CODEC_I2S_RX_SUBCMD_COUNT,
-> >>  };
-> >>
-> >> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-> >> index f23956cf4ed84..b5ff30b7f1aa8 100644
-> >> --- a/sound/soc/codecs/cros_ec_codec.c
-> >> +++ b/sound/soc/codecs/cros_ec_codec.c
-> >> @@ -1034,6 +1034,15 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
-> >>         }
-> >>         priv->ec_capabilities = r.capabilities;
-> >>
-> >> +       /* Reset EC codec I2S RX. */
-> >> +       p.cmd = EC_CODEC_I2S_RX_RESET;
-> >> +       ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-> >> +                                  (uint8_t *)&p, sizeof(p), NULL, 0);
-> >> +       if (ret == -EINVAL)
-> >> +               dev_info(dev, "Missing reset command. Please update your EC firmware.\n");
-> >> +       else if (ret)
-> >> +               dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-> >> +
-> >>         platform_set_drvdata(pdev, priv);
-> >>
-> >>         ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
-> >> --
-> >> 2.27.0.389.gc38d7665816-goog
-> >>
+With this snippet of code, ftrace will try to patch the mcount location
+generated by this code on module load and fail with:
+
+    Call trace:
+     ftrace_bug+0xa0/0x28c
+     ftrace_process_locs+0x2f4/0x430
+     ftrace_module_init+0x30/0x38
+     load_module+0x14f0/0x1e78
+     __do_sys_finit_module+0x100/0x11c
+     __arm64_sys_finit_module+0x28/0x34
+     el0_svc_common+0x88/0x194
+     el0_svc_handler+0x38/0x8c
+     el0_svc+0x8/0xc
+    ---[ end trace d828d06b36ad9d59 ]---
+    ftrace failed to modify
+    [<ffffa2dbf3a3a41c>] 0xffffa2dbf3a3a41c
+     actual:   66:a9:3c:90
+    Initializing ftrace call sites
+    ftrace record flags: 2000000
+     (0)
+    expected tramp: ffffa2dc6cf66724
+
+So Limit the relocation type to R_AARCH64_CALL26 as in perl version of
+recordmcount.
+
+Fixes: ed60453fa8f8 ("ARM: 6511/1: ftrace: add ARM support for C version of recordmcount")
+Signed-off-by: Gregory Herrero <gregory.herrero@oracle.com>
+---
+ scripts/recordmcount.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
+index 7225107a9aaf..e59022b3f125 100644
+--- a/scripts/recordmcount.c
++++ b/scripts/recordmcount.c
+@@ -434,6 +434,11 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
+ 	return 1;
+ }
+ 
++static int arm64_is_fake_mcount(Elf64_Rel const *rp)
++{
++	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
++}
++
+ /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
+  * http://techpubs.sgi.com/library/manuals/4000/007-4658-001/pdf/007-4658-001.pdf
+  * We interpret Table 29 Relocation Operation (Elf64_Rel, Elf64_Rela) [p.40]
+@@ -547,6 +552,7 @@ static int do_file(char const *const fname)
+ 		make_nop = make_nop_arm64;
+ 		rel_type_nop = R_AARCH64_NONE;
+ 		ideal_nop = ideal_nop4_arm64;
++		is_fake_mcount64 = arm64_is_fake_mcount;
+ 		break;
+ 	case EM_IA_64:	reltype = R_IA64_IMM64; break;
+ 	case EM_MIPS:	/* reltype: e_class    */ break;
+-- 
+2.27.0
+
