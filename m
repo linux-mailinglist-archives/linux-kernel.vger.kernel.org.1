@@ -2,125 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C1B2240C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4722240C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgGQQri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:47:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgGQQrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:47:37 -0400
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CDC220717
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 16:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595004456;
-        bh=4BXVUwtR/tkd2z02CT+MvIFZaGvYQkEZE2YjNF5AhjE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fKmneDpBAiITP5CNK0MU5sUVxFhx7WYh/i+VAwD5D0MAlhGc3diiywNdx5o2yTtW5
-         H+KLhFy3VdMnFpNiHW/jKjEh0atBDcYJOyKo54ET6m8avkAbC/kJ/pDhU6bjFhG2Dz
-         zRoLQFMLgSMhJVFRgmv5YPh33uYSvFZtuULsnZR4=
-Received: by mail-wm1-f43.google.com with SMTP id q15so15928090wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:47:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530orocKbP3UeO3zG55yidWylczxKkAnn8PqbzX+oVZzK12mNP3h
-        RTOONhHu1kzdOl5GTyBydqma3pYY/wbMlLYMHJlR7Q==
-X-Google-Smtp-Source: ABdhPJzXM6ShO9QunQ6h1oW3pXO/VsXg1+/b+5o5yRSKhYi7CtcrXGrAtQNL19genjr5cg0ReKqPfIacxdEL/vO0zWk=
-X-Received: by 2002:a7b:c09a:: with SMTP id r26mr10027972wmh.176.1595004455229;
- Fri, 17 Jul 2020 09:47:35 -0700 (PDT)
+        id S1726715AbgGQQtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726221AbgGQQtP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:49:15 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B98C0619D2;
+        Fri, 17 Jul 2020 09:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=u0JM6c08RReApxGswkP2r77YhwJHKkc2EjdJzkbnHXQ=; b=PYmVXrd42CrpgcWrj/QV0Y8W9l
+        Lkohjch9CFGyMhjEMptbgC9m9JrcRkK7fBu48xqCS0dAClLeLwWCRUR1ACgtaRbvRWftg19e0rVi6
+        dEU7TiYrdL2FL57rtThihxKSVgSRJdGNKCumUwKexTHzme02lSzYyA8CiEk1JnDDiUfpD7DgIxMs9
+        nbvHLH62K7v8Ma6ibkurMeO/X71qUFiRz2iY89380cqL4xVd97H9EJPRVzyGZgqjlC+FyAszRrA3U
+        c9rqLZC9E+aOONJ0p4uQk83/2RfXeiA+5wB0OElMbYGHl2fFqmjItphGSTYkHTqluxszY1UpJS/40
+        dN5YQS1Q==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jwTXp-0008Qz-V4; Fri, 17 Jul 2020 16:49:10 +0000
+Subject: Re: linux-next: Tree for Jul 17 (drivers/rtc/rtc-ds1374.o)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Scott Wood <scottwood@freescale.com>
+References: <20200717214036.67fa5379@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d36fac01-2a7b-c3f1-84ef-3a1560d18790@infradead.org>
+Date:   Fri, 17 Jul 2020 09:49:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
- <s5hlfjnzvu7.wl-tiwai@suse.de>
-In-Reply-To: <s5hlfjnzvu7.wl-tiwai@suse.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 17 Jul 2020 09:47:23 -0700
-X-Gmail-Original-Message-ID: <CALCETrWmK-b6apB57mp8oaSRNpcSLdoCFAXEp4EF-9LSUDNFBA@mail.gmail.com>
-Message-ID: <CALCETrWmK-b6apB57mp8oaSRNpcSLdoCFAXEp4EF-9LSUDNFBA@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [PATCH v3] CodingStyle: Inclusive Terminology
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200717214036.67fa5379@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 1:02 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Wed, 08 Jul 2020 20:14:27 +0200,
-> Dan Williams wrote:
-> >
-> > +Recommended replacements for 'blacklist/whitelist' are:
-> > +    'denylist / allowlist'
-> > +    'blocklist / passlist'
->
-> I started looking through the tree now and noticed there are lots of
-> patterns like "whitelisted" or "blacklisted".  How can the words fit
-> for those?  Actually, there are two cases like:
->
-> - Foo is blacklisted
-> - Allow to load the non-whitelisted cards
->
-> Currently I'm replacing the former with "Foo is in denylist", but not
-> sure about the latter case.  I thought Kees mentioned about this, but
-> don't remember the proposal...
+On 7/17/20 4:40 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20200716:
+> 
+> New tree: init
+> Changed tree: dmi (from quilt to git)
+> 
+> My fixes tree contains:
+> 
+>   dbf24e30ce2e ("device_cgroup: Fix RCU list debugging warning")
+> 
+> I revreted 3 commits from the powerpc tree due to reported run time
+> problems.
+> 
+> The sound tree gained a semantic conflict against the dma-mapping tree.
+> 
+> The security tree still had its build failure for which I applied a patch.
+> 
+> The tip tree still had one build failure for which I reverted a commit.
+> It also gained a conflict against the crypto tree
+> 
+> The kvm tree gained a conflict and a semantic conflict against the
+> tip tree.
+> 
+> The dmaengine tree gained conflicts against the wireless-drivers-next
+> and Linus' trees.
+> 
+> The pinctrl tree gained a build failure so I used the version from
+> next-20200716.
+> 
+> The set_fs tree gained a conflict against the powerpc tree.
+> 
+> The init tree gained a conflict against the block tre.
+> 
+> The akpm-current tree gained conflicts against the crypto and tip trees.
+> It also gained a build failure for which I applied a patch.
+> 
+> Non-merge commits (relative to Linus' tree): 8001
+>  8717 files changed, 441636 insertions(+), 169176 deletions(-)
+> 
+> ----------------------------------------------------------------------------
+> 
+> I have created today's linux-next tree at
+> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+> are tracking the linux-next tree using git, you should not use "git pull"
+> to do so as that will try to merge the new linux-next release with the
+> old one.  You should use "git fetch" and checkout or reset to the new
+> master.
+> 
+> You can see which trees have been included by looking in the Next/Trees
+> file in the source.  There are also quilt-import.log and merge.log
+> files in the Next directory.  Between each merge, the tree was built
+> with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+> multi_v7_defconfig for arm and a native build of tools/perf. After
+> the final fixups (if any), I do an x86_64 modules_install followed by
+> builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+> ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+> and sparc64 defconfig and htmldocs. And finally, a simple boot test
+> of the powerpc pseries_le_defconfig kernel in qemu (with and without
+> kvm enabled).
+> 
+> Below is a summary of the state of the merge.
+> 
+> I am currently merging 325 trees (counting Linus' and 83 trees of bug
+> fix patches pending for the current merge release).
+> 
+> Stats about the size of the tree over time can be seen at
+> http://neuling.org/linux-next-size.html .
+> 
+> Status of my local build tests will be at
+> http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+> advice about cross compilers/configs that work, we are always open to add
+> more builds.
+> 
+> Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+> Gortmaker for triage and bug fixes.
+> 
 
-Hmm.  In these cases, we're trying to convey one of two things.  A
-given device/platform/CPU/whatever could be known to be problematic
-and thus disallowed, or we could have a policy that we generally don't
-trust hardware but we have specific reason to believe that this
-particular hardware is okay.  After doing a highly scientific sampling
-of a few cases, some of these are indeed lists and some are not.
+on x86_64:
+# CONFIG_WATCHDOG is not set
 
-If we're going to look for new words for these concepts, perhaps we
-shouldn't focus on the *list* aspect -- after all, that's just a
-rather popular implementation detail, but it's not the core concept
-we're trying to express.  As an example case, we have a horrible
-concept in which some Intel CPUs support a form of memory failure
-recovery, and there is no enumeration mechanism.  Instead, there's a
-list (sigh).  So we could say "your CPU is whitelisted for
-such-and-such," which at least gets the idea across, but saying "your
-CPU is allowlisted for such-and-such" seems like a stretch.  It's not
-that we have a policy to allow things on the list -- it's that we
-think that CPUs not on the list simply don't have the relevant
-capability.
+ld: drivers/rtc/rtc-ds1374.o: in function `ds1374_probe':
+rtc-ds1374.c:(.text+0x736): undefined reference to `watchdog_init_timeout'
+ld: rtc-ds1374.c:(.text+0x77e): undefined reference to `devm_watchdog_register_device'
 
-Here are some brainstormed ideas:
 
- - Such-and-such feature is quirked off.  (Or disabled due to a quirk.)
-
- - Your device is not on the known-good list.
-
- - Your device is not known-good.  It might work anyway -- to try it,
-set such-and-such option.
-
- - Your device is known bad.
-
- - Your device is busted and we think you should pressure the
-manufacturer to fix it.
-
- - Your device is too old and no longer supported.
-
- - Seriously, you're trying to use an 80386 on a modern kernel?  No
-thanks.  We think it's neat that you still have one that works,
-though.
-
- - (Specifically for modules and not part of the Linux kernel tree)
-disable_autoload instead of blacklist, perhaps?
-
-Part of my point is that we use blacklist and whitelist to mean
-various things, and I don't think we should try to invent a couple of
-new catch-all terms to replace them.  Perhaps replacing these words
-could be an opportunity to come up with better descriptions at the
-same time.
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
