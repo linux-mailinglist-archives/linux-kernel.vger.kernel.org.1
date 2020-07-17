@@ -2,117 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06235223B08
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D4D223B0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgGQMBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 08:01:17 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:35533 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgGQMBR (ORCPT
+        id S1726830AbgGQMBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 08:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgGQMB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 08:01:17 -0400
-Received: by mail-lj1-f194.google.com with SMTP id q4so12350934lji.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:01:15 -0700 (PDT)
+        Fri, 17 Jul 2020 08:01:29 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47179C08C5C0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:01:29 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e8so12317972ljb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ub697sVNwFF1cayMFoyuXRD/DoOaqjni0fvqH97Bh1w=;
+        b=IHn/oQ3biBmtQTO5y7w6n8hxo4+QzjCMbkZ1yYDEmlK1IiEezprP1XH4WeAHB2zkHe
+         hmdMyuTF1dqBdEUsXKFaqlfCQVn0rz3kdGh01jVdAMYMlh8dKckB6QiQb+Z3J9IEWpov
+         Wj/tGt7StMejsVMfR63BSFLTj5vywd40zL2bAOryUkVHWuWJ2eGzJnYPRamRGxAo69hT
+         l/EBIEEBX5eEqhjV4NKVn0aFVGQfI23mg+z0Q5NeiwOXlcFeOln4x5woeIRnF1hj6X3y
+         RdMs52IyAVdBgTN7DeAzbCTCQrAMFhghih+fFuQ+cuBiRZ0Oo5JJF3eXDGk91tNE4Hqk
+         CfaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=PIGshzdtQhBbB3HFdyOsLZ2f6sGVhYTv8qekjEAe6Mc=;
-        b=sLrWXzPEA+XEExtbxSUJMt7ddnkXXtuUo8b820AhCfjyaoSIV01qL6yhZbKObDHSu9
-         hjHZOxNoGkfPTQivFvKBBR2kLqHvXHUrpqQNSRtjxCSUfMkSqhQFRp0BZkX8dhtoqlD1
-         RB3rFnEtmyZDfFEeMOINzw0GNQX/Q3UilJ+pHF9D1GkXJ7KZgvJShZmBx9bnSwqesOP4
-         tSNBouob/ZAJxbu+ZhcMBOg9mQ6v5SzhDIFFPbRPab7sIxv7iOx3Cz9e7rhu86wg8zY0
-         oEDIp0RsuEwHUBObXZTrVCVU3A4BJsAUjuTpO75t0HmXEQzjF7KdBIF9FYR6WaQrRDtw
-         pvgA==
-X-Gm-Message-State: AOAM533sbR0HzDeiI3Wftyst7Tz0iGu88oPvNpJQbtmLFd3SRqRLqoWV
-        XkiKJHMKMYNWaFRg5oSCOWk=
-X-Google-Smtp-Source: ABdhPJx5cWTwu0ovlYAo2vYsCOdJcAo2JkYme62hvSjqPX8hUz807Wd9UOs3gSWUes4pRBwREOyggg==
-X-Received: by 2002:a2e:b4d0:: with SMTP id r16mr4552055ljm.332.1594987274724;
-        Fri, 17 Jul 2020 05:01:14 -0700 (PDT)
-Received: from [10.68.32.147] (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.gmail.com with ESMTPSA id y21sm1046054lff.34.2020.07.17.05.01.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 05:01:14 -0700 (PDT)
-Reply-To: efremov@linux.com
-Subject: Re: [PATCH v2 0/4] Update memdup_user.cocci
-To:     Julia Lawall <Julia.Lawall@lip6.fr>
-Cc:     linux-kernel@vger.kernel.org, cocci@systeme.lip6.fr
-References: <20200608150038.223747-1-efremov@linux.com>
-From:   Denis Efremov <efremov@linux.com>
-Autocrypt: addr=efremov@linux.com; keydata=
- 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
-Message-ID: <5832f5b1-5f9a-9b52-5edf-249be2860dbd@linux.com>
-Date:   Fri, 17 Jul 2020 15:01:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ub697sVNwFF1cayMFoyuXRD/DoOaqjni0fvqH97Bh1w=;
+        b=VcIoLECd2TfQRXhldPuw1wUvu8uGnEx1mrYtp0lWZC1YjQCPLR/qP5pWRpeTe4DDTx
+         iNcz2Ql6rSYdwFQcynAxncpyAFXCHc6snIH1PDUXG/rMNaKJZj9iyOJRK3J322i0fiaN
+         jlV0CVKaqr1qcBeJsS7W8xJ/SeYVIL52P/cqCkFU8IySPck0HQxOBBkHl9HUB+Zy0TXj
+         pbUX3MEJJKIFfhc1z6JZOdturwFGPZZXAeSwsiHHywdDYmJ5KsVfq4NeUFP8kTGt6bng
+         1Wp2plgf+B70LGVnSRFK5NbJaERQ7pNVai0wzWXlPStOKYxeruX9gxrbtUf9uiPVhZTC
+         A9nw==
+X-Gm-Message-State: AOAM5335kmWyVHs5eBH+8yGCvhHBc6WeSdnBXjDUt4ZrFi4fYwa+syvw
+        ESwMciy+ME4LS/pVXgZB07HVUC2uaJqCv37rDWAFDg==
+X-Google-Smtp-Source: ABdhPJx85nks8yaHQQYuyBdwuRKFsp37cc6OWGOcSWI/V0vNVyp7ufOAVlF+nDIW3hoBpajbiNi0N+nPII8MvmaiPNY=
+X-Received: by 2002:a2e:7a1a:: with SMTP id v26mr4129807ljc.104.1594987287043;
+ Fri, 17 Jul 2020 05:01:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200608150038.223747-1-efremov@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
+ <CACRpkdYP4J+MZjxWUnkM-XGaMmFFZfMCfY13r7G6r2=v3F6zQw@mail.gmail.com>
+ <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com> <DB3PR0402MB39167A4BB808A0679257DEF9F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB39167A4BB808A0679257DEF9F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Jul 2020 14:01:16 +0200
+Message-ID: <CACRpkdbCVZaHqijqMck+jLAJuCAT31HA=9wwcV_EnQc=hsXLwg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
+To:     Anson Huang <anson.huang@nxp.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Adam Ford <aford173@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>, Jon Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?
+Greg, John,
 
-On 6/8/20 6:00 PM, Denis Efremov wrote:
-> Add GFP_USER to the allocation flags and handle vmemdup_user().
-> The third patch supresses memdup_user(), vmemdup_user() functions
-> detection. Last patch is a proof of concept for the rule selfchecking.
-> Gives the ability to detect that an open-coded pattern in a function
-> definition that we search for in the kernel sources changed.
-> 
-> Denis Efremov (4):
->   coccinelle: api: extend memdup_user transformation with GFP_USER
->   coccinelle: api: extend memdup_user rule with vmemdup_user()
->   coccinelle: api: filter out memdup_user definitions
->   coccinelle: api: add selfcheck for memdup_user rule
-> 
->  scripts/coccinelle/api/memdup_user.cocci | 106 ++++++++++++++++++++++-
->  1 file changed, 103 insertions(+), 3 deletions(-)
-> 
+we need some guidance here. See below.
+
+On Thu, Jul 16, 2020 at 4:38 PM Anson Huang <anson.huang@nxp.com> wrote:
+> [Me]
+> > On Wed, Jul 15, 2020 at 4:44 AM Anson Huang <anson.huang@nxp.com>
+
+> > > I tried to replace the subsys_initcall() with
+> > > module_platform_driver(), but met issue about "
+> > > register_syscore_ops(&mxc_gpio_syscore_ops);" which is called in
+> > > gpio_mxc_init() function, this function should be called ONLY once,
+> > > moving it to .probe function is NOT working, so we may need to keep the
+> > > gpio_mxc_init(), that is another reason that we may need to keep
+> > > subsys_initcall()?
+> >
+> > This looks a bit dangerous to keep like this while allowing this code to be used
+> > from a module.
+> >
+> > What happens if you insmod and rmmod this a few times, really?
+> > How is this tested?
+> >
+> > This is not really modularized if that isn't working, just that modprobing once
+> > works isn't real modularization IMO, it seems more like a quick and dirty way
+> > to get Androids GKI somewhat working with the module while not properly
+> > making the module a module.
+> >
+> > You need input from the driver maintainers on how to handle this.
+>
+> As far as I know, some general/critical modules are NOT supporting rmmod, like
+> clk, pinctrl, gpio etc., and I am NOT sure whether Android GKI need to support
+> rmmod for these system-wide-used module, I will ask them for more detail about
+> this.
+>
+> The requirement I received is to support loadable module, but so far no hard requirement
+> to support module remove for gpio driver, so, is it OK to add it step by step, and this patch
+> series ONLY to support module build and one time modprobe?
+
+While I am a big fan of the Android GKI initiative this needs to be aligned
+with the Linux core maintainers, so let's ask Greg. I am also paging
+John Stultz on this: he is close to this action.
+
+They both know the Android people very well.
+
+So there is a rationale like this going on: in order to achieve GKI goals
+and have as much as possible of the Linux kernel stashed into loadable
+kernel modules, it has been elevated to modus operandi amongst
+the developers pushing this change that it is OK to pile up a load of
+modules that cannot ever be unloaded.
+
+This is IIUC regardless of whether all consumers of the module are
+actually gone: it would be OK to say make it impossible to rmmod
+a clk driver even of zero clocks from that driver is in use. So it is not
+dependency-graph problem, it is a "load once, never remove" approach.
+
+This rationale puts me as subsystem maintainer in an unpleasant spot:
+it is really hard to tell case-to-case whether that change really is a
+technical advantage for the kernel per se or whether it is done for the
+greater ecosystem of Android.
+
+Often I would say it makes it possible to build a smaller kernel vmlinux
+so OK that is an advantage. On the other hand I have an inkling that I
+should be pushing developers to make sure that rmmod works.
+
+As a minimum requirement I would expect this to be marked by
+
+struct device_driver {
+   (...)
+    /* This module absolutely cannot be unbound */
+   .suppress_bind_attrs = true;
+};
+
+So that noone would be able to try to unbind this (could even be an
+attack vector!)
+
+What is our broader reasoning when it comes to this? (I might have
+missed some mail thread here.)
+
+Yours,
+Linus Walleij
