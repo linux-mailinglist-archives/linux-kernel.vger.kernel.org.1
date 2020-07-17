@@ -2,134 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FA5223DC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFF8223DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgGQOII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:08:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11830 "EHLO mga01.intel.com"
+        id S1727817AbgGQOGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:06:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727969AbgGQOH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:07:26 -0400
-IronPort-SDR: pCPqOp+L8zyIZj/Mm3AR3enXFotUBuR1GieClsvFMznMS1NEJ/uVhRp4olkHvzTH1mdC4FC/iR
- xxOy0/EQUoTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722799"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="167722799"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:25 -0700
-IronPort-SDR: klQPCNxU4nA66QsgoSNHXZOeMN8bTgLYTTeaUHeFQbrcBlc7mWBkNNkAE5JK/X314VxbhlY3+/
- A+VBLsPArstw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="460856484"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:25 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V6 06/14] perf/x86/intel: Use switch in intel_pmu_disable/enable_event
-Date:   Fri, 17 Jul 2020 07:05:46 -0700
-Message-Id: <20200717140554.22863-7-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+        id S1727078AbgGQOGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:06:10 -0400
+Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B53952173E;
+        Fri, 17 Jul 2020 14:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594994769;
+        bh=KCcPPdKEH7TZv/b20jwChJ48+CoMV41+fAighwT9/FI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bffwOgcNPE1mh9UvYE6wjuqYPpwe1hL7v6mX6bxH62tA0Rnv2IleiswPpaXO+q9HV
+         a3Vnef85Iu0rMiVlQ9S1JP1SbiwcwOrOunHsfN0nZxIO+0EIy7VZn3T2LnqKrPR8Wi
+         tzvLA+dACQ5YILGJfyP0S9fIluHZgR8yOGik7IOk=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [PATCH 08/12] timer: Reuse next expiry cache after nohz exit
+Date:   Fri, 17 Jul 2020 16:05:47 +0200
+Message-Id: <20200717140551.29076-9-frederic@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200717140551.29076-1-frederic@kernel.org>
+References: <20200717140551.29076-1-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Now that we track the next expiry unconditionally when a timer is added,
+we can reuse that information on a tick firing after exiting nohz.
 
-Many items are checked in the intel_pmu_disable/enable_event. More items
-will be added later, e.g. perf metrics events.
-
-Use switch, which is more efficient, to replace the if-else.
-
-If the idx is invalid, print a warning.
-
-For the case INTEL_PMC_IDX_FIXED_BTS in intel_pmu_disable_event, don't
-need to check the event->attr.precise_ip. Use return for the case.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Juri Lelli <juri.lelli@redhat.com>
 ---
- arch/x86/events/intel/core.c | 36 ++++++++++++++++++++++++++++--------
- 1 file changed, 28 insertions(+), 8 deletions(-)
+ kernel/time/timer.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index ac1408fe1aee..2b1701c08f46 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2180,17 +2180,28 @@ static void intel_pmu_disable_event(struct perf_event *event)
- 	struct hw_perf_event *hwc = &event->hw;
- 	int idx = hwc->idx;
- 
--	if (idx < INTEL_PMC_IDX_FIXED) {
-+	switch (idx) {
-+	case 0 ... INTEL_PMC_IDX_FIXED - 1:
- 		intel_clear_masks(event, idx);
- 		x86_pmu_disable_event(event);
--	} else if (idx < INTEL_PMC_IDX_FIXED_BTS) {
-+		break;
-+	case INTEL_PMC_IDX_FIXED ... INTEL_PMC_IDX_FIXED_BTS - 1:
- 		intel_clear_masks(event, idx);
- 		intel_pmu_disable_fixed(event);
--	} else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
-+		break;
-+	case INTEL_PMC_IDX_FIXED_BTS:
- 		intel_pmu_disable_bts();
- 		intel_pmu_drain_bts_buffer();
--	} else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
-+		return;
-+	case INTEL_PMC_IDX_FIXED_VLBR:
- 		intel_clear_masks(event, idx);
-+		break;
-+	default:
-+		intel_clear_masks(event, idx);
-+		pr_warn("Failed to disable the event with invalid index %d\n",
-+			idx);
-+		return;
-+	}
- 
- 	/*
- 	 * Needs to be called after x86_pmu_disable_event,
-@@ -2262,18 +2273,27 @@ static void intel_pmu_enable_event(struct perf_event *event)
- 	if (unlikely(event->attr.precise_ip))
- 		intel_pmu_pebs_enable(event);
- 
--	if (idx < INTEL_PMC_IDX_FIXED) {
-+	switch (idx) {
-+	case 0 ... INTEL_PMC_IDX_FIXED - 1:
- 		intel_set_masks(event, idx);
- 		__x86_pmu_enable_event(hwc, ARCH_PERFMON_EVENTSEL_ENABLE);
--	} else if (idx < INTEL_PMC_IDX_FIXED_BTS) {
-+		break;
-+	case INTEL_PMC_IDX_FIXED ... INTEL_PMC_IDX_FIXED_BTS - 1:
- 		intel_set_masks(event, idx);
- 		intel_pmu_enable_fixed(event);
--	} else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
-+		break;
-+	case INTEL_PMC_IDX_FIXED_BTS:
- 		if (!__this_cpu_read(cpu_hw_events.enabled))
- 			return;
- 		intel_pmu_enable_bts(hwc->config);
--	} else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
-+		break;
-+	case INTEL_PMC_IDX_FIXED_VLBR:
- 		intel_set_masks(event, idx);
-+		break;
-+	default:
-+		pr_warn("Failed to enable the event with invalid index %d\n",
-+			idx);
-+	}
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 76fd9644638b..13f48ee708aa 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1706,13 +1706,11 @@ static int collect_expired_timers(struct timer_base *base,
+ 	 * the next expiring timer.
+ 	 */
+ 	if ((long)(now - base->clk) > 2) {
+-		unsigned long next = __next_timer_interrupt(base);
+-
+ 		/*
+ 		 * If the next timer is ahead of time forward to current
+ 		 * jiffies, otherwise forward to the next expiry time:
+ 		 */
+-		if (time_after(next, now)) {
++		if (time_after(base->next_expiry, now)) {
+ 			/*
+ 			 * The call site will increment base->clk and then
+ 			 * terminate the expiry loop immediately.
+@@ -1720,7 +1718,7 @@ static int collect_expired_timers(struct timer_base *base,
+ 			base->clk = now;
+ 			return 0;
+ 		}
+-		base->clk = next;
++		base->clk = base->next_expiry;
+ 	}
+ 	return __collect_expired_timers(base, heads);
  }
- 
- static void intel_pmu_add_event(struct perf_event *event)
 -- 
-2.17.1
+2.26.2
 
