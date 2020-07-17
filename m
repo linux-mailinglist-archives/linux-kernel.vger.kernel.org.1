@@ -2,220 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CE7223C46
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C03223C48
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgGQNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:21:06 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:56530 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgGQNVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:21:03 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HDKtsM052680;
-        Fri, 17 Jul 2020 08:20:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594992055;
-        bh=eGWgXhUwUeAtpANP9pM9jKJOBsp9KaRGdWRkWGuXPjI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=f+tGfC0vOdpwXSN/aSL2JaPNHF0GloI+o/IuHETZ+lnF4Zv2eYctDSCmJ/P+VZcEP
-         XLVbsLF5Q6oA2j6a001m5cQc8DuBB6JBzXa2nfca28BBNljOGfyqfI1+/3c8B79ifH
-         QWSGGVIriY2LL/heIizd/JGLD8THqwhOMpR6B30U=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06HDKtPs018243
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 08:20:55 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
- Jul 2020 08:20:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 17 Jul 2020 08:20:54 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HDKrvc107830;
-        Fri, 17 Jul 2020 08:20:54 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <dmaengine@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH next v2 6/6] dmaengine: ti: k3-udma: Switch to k3_ringacc_request_rings_pair
-Date:   Fri, 17 Jul 2020 16:20:19 +0300
-Message-ID: <20200717132019.20427-7-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717132019.20427-1-grygorii.strashko@ti.com>
-References: <20200717132019.20427-1-grygorii.strashko@ti.com>
+        id S1726873AbgGQNVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:21:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgGQNVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 09:21:11 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DD8F2064B;
+        Fri, 17 Jul 2020 13:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594992071;
+        bh=7S1J9y8itEN5wvEhbpYW+BZkO1zoG1KjirrP9G0+mZY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yQngermH9mwpKC/FUGsAks4v6MfDXijifC+rDmR27Bt6uhDtFOYjJ2KSY5xs7PeLr
+         RfxRmMNyPT6WW1A8tPdegeS76iTpyS6LyOD1PJPCiz7Jnu+WKTl78eVBCrY3ZKe49Z
+         0DU/8yLX/miSAt6IDhdsQd3CEUqZzadR49zfo1Nw=
+Date:   Fri, 17 Jul 2020 15:21:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Anson Huang <anson.huang@nxp.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Adam Ford <aford173@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>, Jon Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Kevin Hilman <khilman@baylibre.com>
+Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
+Message-ID: <20200717132101.GA2984939@kroah.com>
+References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
+ <CACRpkdYP4J+MZjxWUnkM-XGaMmFFZfMCfY13r7G6r2=v3F6zQw@mail.gmail.com>
+ <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com>
+ <DB3PR0402MB39167A4BB808A0679257DEF9F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CACRpkdbCVZaHqijqMck+jLAJuCAT31HA=9wwcV_EnQc=hsXLwg@mail.gmail.com>
+ <20200717121436.GA2953399@kroah.com>
+ <CAMuHMdWdaQ_jK1T_ErJ36pJbUUS3SFBcqQmyvtufaKha2C76Gg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWdaQ_jK1T_ErJ36pJbUUS3SFBcqQmyvtufaKha2C76Gg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Fri, Jul 17, 2020 at 02:27:43PM +0200, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Fri, Jul 17, 2020 at 2:14 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > Android is just finally pushing vendors to get their code upstream,
+> > which is a good thing to see.  And building things as a module is an
+> > even better thing as now it is finally allowing arm64 systems to be
+> > built to support more than one specific hardware platform at runtime.
+> 
+> Can you please stop spreading this FUD?
 
-We only request ring pairs via K3 DMA driver, switch to use the new
-k3_ringacc_request_rings_pair() to simplify the code.
+For many many SoCs today, this is not true.  Their drivers are required
+to be built in and will not work as modules, as we are seeing the
+patches try to fix.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/dma/ti/k3-udma-glue.c | 42 +++++++++++------------------------
- drivers/dma/ti/k3-udma.c      | 34 +++++++++-------------------
- 2 files changed, 24 insertions(+), 52 deletions(-)
+> As I said before, Arm64 kernels have supported more than one specific
+> hardware platform at runtime from the beginning of the arm64 port
+> (assumed the needed platform support has been enabled in the kernel
+>  config, of course).
+> Even most arm32 kernels support this, since the introduction of the
+> CONFIG_ARCH_MULTIPLATFORM option.  In fact every recently
+> introduced arm32 platform is usually v7, and must conform to this.
+> The sole exceptions are very old platforms, and the v4/v5/v6/v7 split
+> due to architectural issues (the latter still support clusters of
+> platforms in a single kernel).
 
-diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
-index 64c8955e0cf1..c888ae4fec96 100644
---- a/drivers/dma/ti/k3-udma-glue.c
-+++ b/drivers/dma/ti/k3-udma-glue.c
-@@ -271,20 +271,12 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
- 	atomic_set(&tx_chn->free_pkts, cfg->txcq_cfg.size);
- 
- 	/* request and cfg rings */
--	tx_chn->ringtx = k3_ringacc_request_ring(tx_chn->common.ringacc,
--						 tx_chn->udma_tchan_id, 0);
--	if (!tx_chn->ringtx) {
--		ret = -ENODEV;
--		dev_err(dev, "Failed to get TX ring %u\n",
--			tx_chn->udma_tchan_id);
--		goto err;
--	}
--
--	tx_chn->ringtxcq = k3_ringacc_request_ring(tx_chn->common.ringacc,
--						   -1, 0);
--	if (!tx_chn->ringtxcq) {
--		ret = -ENODEV;
--		dev_err(dev, "Failed to get TXCQ ring\n");
-+	ret =  k3_ringacc_request_rings_pair(tx_chn->common.ringacc,
-+					     tx_chn->udma_tchan_id, -1,
-+					     &tx_chn->ringtx,
-+					     &tx_chn->ringtxcq);
-+	if (ret) {
-+		dev_err(dev, "Failed to get TX/TXCQ rings %d\n", ret);
- 		goto err;
- 	}
- 
-@@ -587,22 +579,16 @@ static int k3_udma_glue_cfg_rx_flow(struct k3_udma_glue_rx_channel *rx_chn,
- 	}
- 
- 	/* request and cfg rings */
--	flow->ringrx = k3_ringacc_request_ring(rx_chn->common.ringacc,
--					       flow_cfg->ring_rxq_id, 0);
--	if (!flow->ringrx) {
--		ret = -ENODEV;
--		dev_err(dev, "Failed to get RX ring\n");
-+	ret =  k3_ringacc_request_rings_pair(rx_chn->common.ringacc,
-+					     flow_cfg->ring_rxq_id,
-+					     flow_cfg->ring_rxfdq0_id,
-+					     &flow->ringrxfdq,
-+					     &flow->ringrx);
-+	if (ret) {
-+		dev_err(dev, "Failed to get RX/RXFDQ rings %d\n", ret);
- 		goto err_rflow_put;
- 	}
- 
--	flow->ringrxfdq = k3_ringacc_request_ring(rx_chn->common.ringacc,
--						  flow_cfg->ring_rxfdq0_id, 0);
--	if (!flow->ringrxfdq) {
--		ret = -ENODEV;
--		dev_err(dev, "Failed to get RXFDQ ring\n");
--		goto err_ringrx_free;
--	}
--
- 	ret = k3_ringacc_ring_cfg(flow->ringrx, &flow_cfg->rx_cfg);
- 	if (ret) {
- 		dev_err(dev, "Failed to cfg ringrx %d\n", ret);
-@@ -673,8 +659,6 @@ static int k3_udma_glue_cfg_rx_flow(struct k3_udma_glue_rx_channel *rx_chn,
- 
- err_ringrxfdq_free:
- 	k3_ringacc_ring_free(flow->ringrxfdq);
--
--err_ringrx_free:
- 	k3_ringacc_ring_free(flow->ringrx);
- 
- err_rflow_put:
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 6c879a734360..49d0d3af6311 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -1418,17 +1418,12 @@ static int udma_alloc_tx_resources(struct udma_chan *uc)
- 	if (ret)
- 		return ret;
- 
--	uc->tchan->t_ring = k3_ringacc_request_ring(ud->ringacc,
--						    uc->tchan->id, 0);
--	if (!uc->tchan->t_ring) {
--		ret = -EBUSY;
--		goto err_tx_ring;
--	}
--
--	uc->tchan->tc_ring = k3_ringacc_request_ring(ud->ringacc, -1, 0);
--	if (!uc->tchan->tc_ring) {
-+	ret = k3_ringacc_request_rings_pair(ud->ringacc, uc->tchan->id, -1,
-+					    &uc->tchan->t_ring,
-+					    &uc->tchan->tc_ring);
-+	if (ret) {
- 		ret = -EBUSY;
--		goto err_txc_ring;
-+		goto err_ring;
- 	}
- 
- 	memset(&ring_cfg, 0, sizeof(ring_cfg));
-@@ -1447,10 +1442,9 @@ static int udma_alloc_tx_resources(struct udma_chan *uc)
- err_ringcfg:
- 	k3_ringacc_ring_free(uc->tchan->tc_ring);
- 	uc->tchan->tc_ring = NULL;
--err_txc_ring:
- 	k3_ringacc_ring_free(uc->tchan->t_ring);
- 	uc->tchan->t_ring = NULL;
--err_tx_ring:
-+err_ring:
- 	udma_put_tchan(uc);
- 
- 	return ret;
-@@ -1499,16 +1493,11 @@ static int udma_alloc_rx_resources(struct udma_chan *uc)
- 
- 	rflow = uc->rflow;
- 	fd_ring_id = ud->tchan_cnt + ud->echan_cnt + uc->rchan->id;
--	rflow->fd_ring = k3_ringacc_request_ring(ud->ringacc, fd_ring_id, 0);
--	if (!rflow->fd_ring) {
--		ret = -EBUSY;
--		goto err_rx_ring;
--	}
--
--	rflow->r_ring = k3_ringacc_request_ring(ud->ringacc, -1, 0);
--	if (!rflow->r_ring) {
-+	ret = k3_ringacc_request_rings_pair(ud->ringacc, fd_ring_id, -1,
-+					    &rflow->fd_ring, &rflow->r_ring);
-+	if (ret) {
- 		ret = -EBUSY;
--		goto err_rxc_ring;
-+		goto err_ring;
- 	}
- 
- 	memset(&ring_cfg, 0, sizeof(ring_cfg));
-@@ -1533,10 +1522,9 @@ static int udma_alloc_rx_resources(struct udma_chan *uc)
- err_ringcfg:
- 	k3_ringacc_ring_free(rflow->r_ring);
- 	rflow->r_ring = NULL;
--err_rxc_ring:
- 	k3_ringacc_ring_free(rflow->fd_ring);
- 	rflow->fd_ring = NULL;
--err_rx_ring:
-+err_ring:
- 	udma_put_rflow(uc);
- err_rflow:
- 	udma_put_rchan(uc);
--- 
-2.17.1
+I think the confusion here is that this really does not work well, if at
+all, on most "high end" SoC chips due to the collection of different
+things all of the vendors ship to their customers.  This is the work
+that is trying to be fixed up here.
 
+And look at the driver core work for many driver subsystems to be fixed
+up just to get a single kernel image to work on multiple platforms.
+Just because older ones did it, doesn't mean it actually works today :)
+
+thanks,
+
+greg k-h
