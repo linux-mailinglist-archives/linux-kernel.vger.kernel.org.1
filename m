@@ -2,253 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9650223BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37555223BEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgGQNDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S1726696AbgGQNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgGQNDJ (ORCPT
+        with ESMTP id S1726386AbgGQNHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:03:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94ADC061755;
-        Fri, 17 Jul 2020 06:03:08 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594990987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K67oesJG2nf2tuwx/U+5a5ylEwqGnasVmEPnOhGf1MA=;
-        b=yUWrVUlWYt5L6J1zJGlMSoDUEeenk9WdAxLpAQL4rlrkm2ro6YsH/GzL0sy5ne7PhD/poK
-        owreXWjU5n2WFnC8w34NQ1ZCGpSEAFCo14ukpLS9igkhE2F19QIVnJV7m3P37AWdOgJy51
-        poJ3ZrRNygrl4kDVirbpyiO4qEOldOa+DkWBe9wxPRivWj04rKMCwzPLh4xgv/cxDSF87O
-        fjetTkkmQybPvY/KoxLE9XFk4cu7yLOd1WazBNC6nP1WxYMj2m7UfAf4+da2d0OtWEP8f0
-        pfZlY7dyabJE2dl1XVifxvBdtjMcsFH7M57tDWrT30nJ+ilrE/gyBwcvp20cFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594990987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K67oesJG2nf2tuwx/U+5a5ylEwqGnasVmEPnOhGf1MA=;
-        b=Jtmdaz5zQ5M5bd+/nFtueKXuEHZ3fbzSRqIIqDF1d/JPtYIY2chJkpGIEWChjtF/SiTwo/
-        KDLeiBjt/XoTc4Cw==
-To:     Dexuan Cui <decui@microsoft.com>, mingo@redhat.com,
-        rdunlap@infradead.org, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        peterz@infradead.org, allison@lohutok.net,
-        alexios.zavras@intel.com, gregkh@linuxfoundation.org,
-        decui@microsoft.com, namit@vmware.com, mikelley@microsoft.com,
-        longli@microsoft.com
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [RESEND][PATCH v3] x86/apic/flat64: Add back the early_param("apic", parse_apic)
-In-Reply-To: <20200626182106.57219-1-decui@microsoft.com>
-References: <20200626182106.57219-1-decui@microsoft.com>
-Date:   Fri, 17 Jul 2020 15:03:06 +0200
-Message-ID: <87mu3ys391.fsf@nanos.tec.linutronix.de>
+        Fri, 17 Jul 2020 09:07:35 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA12C08C5DB
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:07:34 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q4so12610526lji.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:07:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=a1qhOLKVmgbDxWR7DsBGPKppiVIcs98dPPN7Z4vRK7U=;
+        b=ZcpCVdZKMBTqfoayJtQADEX4zVTHWV2yxNakXh3yLSNrzebl3aH9tjryPIXyI3pz6I
+         E2E3jnn6/nLLS3nE0S8SBL5EhIZybuDyrLJ8SHFAg3d1SuO6BRbnY4H8ODY14ZMIU6aa
+         bmcXjLAzlncoRVHBH7XYqCt9t74/Qwj97l1fL/lhjkcXd/1k+4HwapoaSSbtq8rreAwQ
+         WqOP7vcgpQxfnV7i318A74jitSFLb1wO1WK01FmDR/P5sCd/VDuBBd+k8ePw7372X/j7
+         NIMH0Ym89cWouqdU8y2johbuaT26g3FYSTo0/3PXJ0Rfvj5tHrIEK1PSDeOM+hO3S/s6
+         CNNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=a1qhOLKVmgbDxWR7DsBGPKppiVIcs98dPPN7Z4vRK7U=;
+        b=lz5xTH7885hc83VzuDGADh8g7fzvUSMMmZAu5ckguydw3l1WPYSYCNEWTwrDPwhHy4
+         zEsfHXVbBCWqVkb8EquZPoh5+Gv7zrUQQKMqimOwaBcXtx7XjjaBl5SpOJWm7P5aXka5
+         VaRylE2my1IVwDASf+/YpG4FH8o4QebReo+4wGMBkMR96k94bsmvzr6hizjdmtm0Grvu
+         xcgJA0tqhotgRoxxIr/GqefZoPJ1PP/cFyiRd+bFbPR9u811YMxHdsek4PloqiOAkhMS
+         r+KXg68V8Wau2ElJGFWrhdWoo4l2zaFUDlLJXtH7VSpqswBCjrVcMvr+FAF9ezInouie
+         zXag==
+X-Gm-Message-State: AOAM533A50jKrARAuEDO8WDyIqFH9KeivqVES79OnvpZl3/UPjh29hIZ
+        8jBmmCZPHFKpRYWyxqmFGwHyRQ==
+X-Google-Smtp-Source: ABdhPJzV0BbOtpw7WhJztEZ51jWAX1HJ1JFIJz6hmBPOoJG/oR+b2KfjYZfEVEra0G7K6n1rrFZL3Q==
+X-Received: by 2002:a2e:8047:: with SMTP id p7mr4660529ljg.414.1594991252832;
+        Fri, 17 Jul 2020 06:07:32 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id k25sm1651300ljk.87.2020.07.17.06.07.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 06:07:31 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 15:07:30 +0200
+From:   Niklas <niklas.soderlund@ragnatech.se>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH 17/20] dt-bindings: media: renesas,vin: Add R8A774E1
+ support
+Message-ID: <20200717130730.GA3976796@oden.dyn.berto.se>
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594919915-5225-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dexuan Cui <decui@microsoft.com> writes:
+Hi Lad,
 
-What has the early param to do with apic/flat64?
+Thanks for your work.
 
-> parse_apic() allows the user to try a different APIC driver than the
-> default one that's automatically chosen. It works for X86-32, but
-> doesn't work for X86-64 because it was removed in 2009 for X86-64 by
-> commit 7b38725318f4 ("x86: remove subarchitecture support code"),
-> whose changelog doesn't explicitly describe the removal for X86-64.
+On 2020-07-16 18:18:32 +0100, Lad Prabhakar wrote:
+> Document support for the VIN module in the Renesas RZ/G2H (R8A774E1) SoC.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-Well, the patches leading to this had the clear intent to simplify the
-whole APIC code and the removal of that command line override was part
-of that cleanup. Up to now nothing needed it at all.
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
-> The patch adds back the functionality for X86-64. The intent is mainly
+> ---
+>  Documentation/devicetree/bindings/media/renesas,vin.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/renesas,vin.yaml b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> index 53c0a7238bac..4e0de280c1e5 100644
+> --- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> +++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> @@ -40,6 +40,7 @@ properties:
+>                - renesas,vin-r8a774a1 # RZ/G2M
+>                - renesas,vin-r8a774b1 # RZ/G2N
+>                - renesas,vin-r8a774c0 # RZ/G2E
+> +              - renesas,vin-r8a774e1 # RZ/G2H
+>                - renesas,vin-r8a7778  # R-Car M1
+>                - renesas,vin-r8a7779  # R-Car H1
+>                - renesas,vin-r8a7795  # R-Car H3
+> -- 
+> 2.17.1
+> 
 
-git grep 'This patch' Documentation/process 
-
-> to work around an APIC emulation bug in Hyper-V in the case of kdump:
-> currently Hyper-V does not honor the disabled state of the local APICs,
-> so all the IOAPIC-based interrupts may not be delivered to the correct
-> virtual CPU, if the logical-mode APIC driver is used (the kdump
-> kernel usually uses the logical-mode APIC driver, since typically
-> only 1 CPU is active). Luckily the kdump issue can be worked around by
-> forcing the kdump kernel to use physical mode, before the fix to Hyper-V
-> becomes widely available.
-
-This is just another proof that virtualization creates more problems
-than it solves.
-
-> The current algorithm of choosing an APIC driver is:
->
-> 1. The global pointer "struct apic *apic" has a default value, i.e
-> "apic_default" on X86-32, and "apic_flat" on X86-64.
->
-> 2. If the early_param "apic=" is specified, parse_apic() is called and
-> the pointer "apic" is changed if a matching APIC driver is found.
->
-> 3. default_acpi_madt_oem_check() calls the acpi_madt_oem_check() method
-> of all APIC drivers, which may override the "apic" pointer.
->
-> 4. default_setup_apic_routing() may override the "apic" pointer, e.g.
-> by calling the probe() method of all APIC drivers. Note: refer to the
-> order of the APIC drivers specified in arch/x86/kernel/apic/Makefile.
-
-What's the 'current algorithm'? #2 is not in use on 64bit currently.
-
-And looking at 32bit then the above decription is wrong. Once a command
-line parameter is specified and matched then #3 and #4 do not override
-anything. See the probe code in 32 bit.
-
-> On Hyper-V, when a Linux VM has <= 8 virtual CPUs, if we use
-> "apic=physical flat", sending IPIs to multiple vCPUs is still fast because
-> Linux VM uses the para-virtualized IPI hypercalls: see hv_apic_init().
-
-And this is relevant because?
-
-> The patch adds the __init tag for flat_acpi_madt_oem_check() and
-> physflat_acpi_madt_oem_check() to avoid a warning seen with "make W=1":
-> flat_acpi_madt_oem_check() accesses cmdline_apic, which has a __initdata
-> tag.
-
-And both function have pointers stored in the corresponding apic
-structs, i.e. after init these pointers become dangling. No...
-
-Aside of that the only function which accesses cmdline_apic is
-flat_acpi_madt_oem_check() according to the patch below.
-
-> Fixes: 7b38725318f4 ("x86: remove subarchitecture support code")
-
-This fixes tag is blantantly wrong. You want to add:
-
-Fixes: Broken hypervisor
-
-When this mess was removed hyperv still wore diapers.
-
->  			Format: { quiet (default) | verbose | debug }
->  			Change the amount of debugging information output
->  			when initialising the APIC and IO-APIC components.
-> -			For X86-32, this can also be used to specify an APIC
-> -			driver name.
-> +			This can also be used to specify an APIC driver name.
->  			Format: apic=driver_name
-> -			Examples: apic=bigsmp
-> +			Examples:
-> +			  On X86-32:  apic=bigsmp
-> +			  On X86-64: "apic=physical flat"
-> +			  Note: the available driver names depend on the
-> +			  architecture and the kernel config; the setting may
-> +			  be overridden by the acpi_madt_oem_check() and probe()
-> +			  methods of other APIC drivers.
-
-Which is wrong because that's not true for 32bit.
-
-> @@ -2855,13 +2855,10 @@ static int __init apic_set_verbosity(char *arg)
->  		apic_verbosity = APIC_DEBUG;
->  	else if (strcmp("verbose", arg) == 0)
->  		apic_verbosity = APIC_VERBOSE;
-> -#ifdef CONFIG_X86_64
-> -	else {
-> -		pr_warn("APIC Verbosity level %s not recognised"
-> -			" use apic=verbose or apic=debug\n", arg);
-> -		return -EINVAL;
-> -	}
-> -#endif
-> +
-> +	/* Ignore unrecognized verbosity level setting. */
-> +
-> +	pr_info("APIC Verbosity level is %d\n", apic_verbosity);
-
-We need that printk on every boot because?
-
->  
->  	return 0;
->  }
-> diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
-> index 7862b152a052..da8f3640453f 100644
-> --- a/arch/x86/kernel/apic/apic_flat_64.c
-> +++ b/arch/x86/kernel/apic/apic_flat_64.c
-> @@ -23,9 +23,34 @@ static struct apic apic_flat;
->  struct apic *apic __ro_after_init = &apic_flat;
->  EXPORT_SYMBOL_GPL(apic);
->  
-> -static int flat_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
-> +static int cmdline_apic __initdata;
-> +static int __init parse_apic(char *arg)
->  {
-> -	return 1;
-> +	struct apic **drv;
-> +
-> +	if (!arg)
-> +		return -EINVAL;
-> +
-> +	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++) {
-> +		if (!strcmp((*drv)->name, arg)) {
-> +			apic = *drv;
-> +			cmdline_apic = 1;
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	/* Parsed again by __setup for debug/verbose */
-> +	return 0;
-> +}
-> +early_param("apic", parse_apic);
-
-We surely need yet another copy of the code in probe_32.c
-
-> +static int __init flat_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
-> +{
-> +	if (!cmdline_apic)
-> +		return 1;
-> +
-> +	return apic == &apic_flat;
-
-Comments are overrated...
-
->  }
->  
->  /*
-> @@ -157,7 +182,7 @@ static struct apic apic_flat __ro_after_init = {
->   * We cannot use logical delivery in this case because the mask
->   * overflows, so use physical mode.
->   */
-> -static int physflat_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
-> +static int __init physflat_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
->  {
-
-See above ...
-
-But why do you need all this if it is only relevant for a crash dump
-kernel? Can't this be simply cured by using 'nolapic' on the kernel
-command line?
-
-Even if you must have the local apic for whatever reason in the kdump
-kernel then this can be completely done w/o command line hackery simply
-because its only required for the mshypervers + kdump case.
-
-Thanks,
-
-        tglx
----
---- a/arch/x86/kernel/apic/apic_flat_64.c
-+++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -176,6 +176,13 @@ static int physflat_acpi_madt_oem_check(
- 		return 1;
- 	}
- #endif
-+	/*
-+	 * Workaround for a bug in the MS hypervisor which fails to reset
-+	 * the APIC properly when a kernel crash jumps into the kdump
-+	 * kernel.
-+	 */
-+	if (hypervisor_is_type(X86_HYPER_MS_HYPERV) && is_kdump_kernel())
-+		return 1;
- 
- 	return 0;
- }
+-- 
+Regards,
+Niklas Söderlund
