@@ -2,30 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B96223503
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688E5223505
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgGQG5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:57:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38446 "EHLO mx2.suse.de"
+        id S1727912AbgGQG6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:58:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41352 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbgGQG5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:57:37 -0400
+        id S1726113AbgGQG6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:58:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7E10AAD1E;
-        Fri, 17 Jul 2020 06:57:40 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 08:57:35 +0200
-Message-ID: <s5hzh7yk4rk.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 50480AD32;
+        Fri, 17 Jul 2020 06:58:36 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 08:58:31 +0200
+Message-ID: <s5hy2nik4q0.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Kaige Li <likaige@loongson.cn>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Xuefeng Li <lixuefeng@loongson.cn>,
         Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Fix headset mic on Loongson platform
-In-Reply-To: <1594954292-1703-1-git-send-email-likaige@loongson.cn>
+Subject: Re: [PATCH 2/2] ALSA: hda: Add support for Loongson 7A1000 controller
+In-Reply-To: <1594954292-1703-2-git-send-email-likaige@loongson.cn>
 References: <1594954292-1703-1-git-send-email-likaige@loongson.cn>
+        <1594954292-1703-2-git-send-email-likaige@loongson.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -36,25 +37,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 04:51:31 +0200,
+On Fri, 17 Jul 2020 04:51:32 +0200,
 Kaige Li wrote:
 > 
-> Add pin quirks to enable use of the headset mic on Loongson platform.
+> Add the new PCI ID 0x0014 0x7a07 to support Loongson 7A1000 controller.
 > 
 > Signed-off-by: Kaige Li <likaige@loongson.cn>
-> @@ -7654,6 +7663,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
->  	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
->  	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MACH-WX9", ALC256_FIXUP_HUAWEI_MACH_WX9_PINS),
-> +	SND_PCI_QUIRK(0x10ec, 0x0269, "Loongson HDA", ALC269_FIXUP_LOONGSON_HDA),
 
-This is basically Realtek ALC269 codec itself, so putting this here
-may hit with many other machines.
+Applied this one.  Thanks.
 
-Doesn't it has any proper PCI or codec SSID?  The lack of them usually
-means a bug of BIOS.
-
-
-thanks,
 
 Takashi
