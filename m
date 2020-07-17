@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3E02231F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E2C2231F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgGQELd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:11:33 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4684 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgGQELc (ORCPT
+        id S1726932AbgGQELw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgGQELw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:11:32 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06H41uws063746;
-        Fri, 17 Jul 2020 00:11:14 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqune42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 00:11:14 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06H41uSK063825;
-        Fri, 17 Jul 2020 00:11:13 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqune3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 00:11:13 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06H4AvtA008173;
-        Fri, 17 Jul 2020 04:11:11 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 327527k694-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 04:11:11 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06H49jBT65798626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 04:09:45 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20A45AE051;
-        Fri, 17 Jul 2020 04:11:08 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36AE9AE045;
-        Fri, 17 Jul 2020 04:11:04 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.41.4])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Jul 2020 04:11:04 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au, mikey@neuling.org
-Cc:     ravi.bangoria@linux.ibm.com, apopple@linux.ibm.com,
-        paulus@samba.org, npiggin@gmail.com, christophe.leroy@c-s.fr,
-        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
-        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
-        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
-        jniethe5@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        Fri, 17 Jul 2020 00:11:52 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA27C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:11:52 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b6so9542812wrs.11
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rvR6cE24nxWQvXGdr9bGR9ZG+XTVZS068TlSRdO5TQM=;
+        b=zCfJfUaiQ3/FZ/3nr1m3bjl9N4yIO4cRS9Pf35oDuNvsV78ximJhzcTCr9DX5zUsG0
+         Os9dViTz3WvBphCVNQzHpVKDzCCBZOM7gxS8FzAa4BS0pq3adPwzXD2wSxgS5dEMWrGO
+         J9LxKnUbA54Gaq+IY8IeLGMpNToJj+P/HZfmgP80/eR6uQ2SxFJ8eLZBXOf9eHsdvmLV
+         u1yL3Olvte+k91OP4xymYCP6v+hJfGMBz2gAWVLYD3w8oHsBZhtZSUdEAlOMqFvTpyqL
+         veRuFk/ZRon8C5r0tmqqRf8KdPjufP8JfJup34Vz2MWM3umPNSGvtp7q14dVNwLTAxSY
+         TcLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rvR6cE24nxWQvXGdr9bGR9ZG+XTVZS068TlSRdO5TQM=;
+        b=JGRA158sOfjWlFOTAV68p0ADtNMoJHNpo20dcZ6G0wJR61OH5ncKls3+j1fe0LpXBC
+         mJfp/ERiD3Dd1NQj+VIcG7eEtRMseNF0YnQZh7sZrTjMGre6hvf3gwVBvRKMqV9BhQP5
+         QJ9RJJ2KOCnGh0QWicTwidjzFpQlFrgBaqkUB3pEE7dTF1uIQ8mlRAe/aCYgtIGAnzDd
+         p9gS05WtAUULbrQI8V/YfaW+503zwZ67G0HfAw/5ecFCTyirPq0JkpMQ92PF9mwwbVAx
+         O1SfPc+Uqrgmwaeq1BV8OJb+w0HASMtGpK9gtdZkM/61FwcbHloSKbcmMAD8tjnN4qzS
+         xBjA==
+X-Gm-Message-State: AOAM531SGDvGCmDPSNrdIvTNXf76BQ2Fwnnwli7LG41drAciSNKK/Hpq
+        MKM7/2mV6S/HCRL7fkBdpvwkCyS1DD8=
+X-Google-Smtp-Source: ABdhPJyZ+FCZHyPWQI9nbcU9ocxqOY9fSXxQIfjAHptr2vHaW4FfXg/xj5JaVcqx5a8vUsb0jpxAmQ==
+X-Received: by 2002:adf:e48f:: with SMTP id i15mr7806083wrm.327.1594959110412;
+        Thu, 16 Jul 2020 21:11:50 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9880:a643:3e69:6393? ([2a01:e34:ed2f:f020:9880:a643:3e69:6393])
+        by smtp.googlemail.com with ESMTPSA id 22sm12746716wmb.11.2020.07.16.21.11.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 21:11:49 -0700 (PDT)
+Subject: Re: [PATCH v6 0/9] clocksource/drivers/timer-atmel-tcb: add sama5d2
+ support
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 10/10] powerpc/watchpoint: Remove 512 byte boundary
-Date:   Fri, 17 Jul 2020 09:39:58 +0530
-Message-Id: <20200717040958.70561-11-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com>
-References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com>
+References: <20200710230813.1005150-1-alexandre.belloni@bootlin.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6684b8d6-e3d2-ac2b-57d6-016e789ed5a7@linaro.org>
+Date:   Fri, 17 Jul 2020 06:11:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200710230813.1005150-1-alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1015 phishscore=0 spamscore=100
- impostorscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxscore=100 mlxlogscore=-1000 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007170025
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Power10 has removed 512 bytes boundary from match criteria. i.e. The watch
-range can cross 512 bytes boundary.
+On 11/07/2020 01:08, Alexandre Belloni wrote:
+> Hello,
+> 
+> This series mainly adds sama5d2 support where we need to avoid using
+> clock index 0 because that clock is never enabled by the driver.
+> 
+> There is also a rework of the 32khz clock handling so it is not used for
+> clockevents on 32 bit counter because the increased rate improves the
+> resolution and doesn't have any drawback with that counter width. This
+> replaces a patch that has been carried in the linux-rt tree for a while.
+> 
+> Changes in v6:
+>  - Added final Rob's Reviewed by, based on:
+>    https://lore.kernel.org/linux-arm-kernel/20200709210543.GA884561@bogus/
+>  - fixed the clockevent periodic rate
 
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- arch/powerpc/kernel/hw_breakpoint.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Applied, thanks
 
-diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
-index c55e67bab271..1f4a1efa0074 100644
---- a/arch/powerpc/kernel/hw_breakpoint.c
-+++ b/arch/powerpc/kernel/hw_breakpoint.c
-@@ -418,8 +418,9 @@ static int hw_breakpoint_validate_len(struct arch_hw_breakpoint *hw)
- 
- 	if (dawr_enabled()) {
- 		max_len = DAWR_MAX_LEN;
--		/* DAWR region can't cross 512 bytes boundary */
--		if (ALIGN_DOWN(start_addr, SZ_512) != ALIGN_DOWN(end_addr - 1, SZ_512))
-+		/* DAWR region can't cross 512 bytes boundary on p10 predecessors */
-+		if (!cpu_has_feature(CPU_FTR_ARCH_31) &&
-+		    (ALIGN_DOWN(start_addr, SZ_512) != ALIGN_DOWN(end_addr - 1, SZ_512)))
- 			return -EINVAL;
- 	} else if (IS_ENABLED(CONFIG_PPC_8xx)) {
- 		/* 8xx can setup a range without limitation */
 -- 
-2.26.2
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
