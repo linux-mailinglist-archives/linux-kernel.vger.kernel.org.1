@@ -2,213 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D719224024
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C87224029
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgGQQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:05:24 -0400
-Received: from mout.web.de ([212.227.15.14]:32801 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726233AbgGQQFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:05:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1595001915;
-        bh=IXSBqWZE7pE8IG9SsTMiiZ0y4wKidBcIctGlOhcTNuw=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=i4IFI01yWPkDINO6OoW+03rO9waaBUv18duTjejHxD5Q1z+Sf2hSd3r7sEeZkpOLm
-         09J/ZOcaC2gTEpFDsqCtKjKo+9KUJmAwD1CIwrCrdAiYgyOZJ3h+X186FymMeXmXy5
-         5FJ+j9VYEU5mjsTelC4tkus6lwR/2I6p0GrqqIco=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.15.38]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MP3CC-1kCtoF0i2m-00PJmV; Fri, 17
- Jul 2020 18:05:15 +0200
-To:     Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] coccinelle: api: add kzfree script
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <dedf7ce9-b0db-735e-f73b-83d0c292eb5d@web.de>
-Date:   Fri, 17 Jul 2020 18:05:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726696AbgGQQHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:07:35 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:47445 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726401AbgGQQHd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:07:33 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id E7D4A5C00BF;
+        Fri, 17 Jul 2020 12:07:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 17 Jul 2020 12:07:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=6DLIkOkmfCpJPK8xXRWeO1VQ0hA
+        XMrDZ2b/tFUBo/H8=; b=JMcIaecU/8eE79yKZtA21XJkSbpC5qKiVutsO+mB4k2
+        yGaSFmcjh8EHenQwxLQEu9yq9nYr635ud2DeCbdZpyfeBrX2AVaoH5eDqGLLfW7R
+        Ryvgao9AaWBobtTA18ch6aiB5idcV69a5lP+jG2Lj8+DFpdpZ7YoLykD4OBvb5YZ
+        Pd+3kCwbwXbGnbvWLijAmBwdUrS8GkSETlPz/3ukcJ0rG1HGtXEZj6NTKGry3p1R
+        FYxXWioeNqg0hf0+ZZ3/TAbGgBQS5MIdwrEFGWWCZgG3iGsbSmY0p1lSJduiUKiy
+        7WSgeFxsU3C1HFY93wegig66dv/3O92v4gYYvHwUHEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=6DLIkO
+        kmfCpJPK8xXRWeO1VQ0hAXMrDZ2b/tFUBo/H8=; b=F1qFXgkEAWi4iOOi2SpWr4
+        in2yF1gUI8JnMt3RNs8KagWOpTF79TOoAWpiAlJRzamEqjIJGk5NBsUP8rM7tS7f
+        ZOkubIqgDG7YeWJUxno0zrQEnVh5Q63IqjyiegUTeClDWfubIa2HTrQRzAwg6jdC
+        cayv2OyPORtl5AwooCPDomlxlMkLjE0MEeQDXu+cwhClFEPIpCrYZ9K7XLh764mF
+        ZC810zBNYlpmug13yBn9R+icgc85BRGmQHd6QSGZAtbujDWCxcscK9tsot8W5y6x
+        RsN3U6IyCELUyk600cJ50DCWu1KiOEVrdyp91i9m9hZPmdlLTmhcoJueLKUveGIA
+        ==
+X-ME-Sender: <xms:wcwRX7-o5KWymJvRTpTFHSeZxeSwRITgZIn8mI8CrbHP2enUFZ2o2w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrfeejgddtiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:wcwRX3uPAYwn5A8M5tPDdAK2ZOFcCVVoi2FxHr5kAnV5bqpbVyQ0tA>
+    <xmx:wcwRX5DxVuruDEa0zPTRfsHqbacgzkRoz-ekmrarzyr8d_2O3Mn0Kw>
+    <xmx:wcwRX3emr7nvu80eQiRE-K1WZxT9z-c4mAS2pqhnKhccBwg-C2P5Cw>
+    <xmx:w8wRX1ryLFJGdcZSc2yhqpXi6tXn5IfxBwVqd4Brkqb4Od_Q5dEj0A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 457C8328005A;
+        Fri, 17 Jul 2020 12:07:29 -0400 (EDT)
+Date:   Fri, 17 Jul 2020 18:07:27 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     robh+dt@kernel.org, wens@csie.org, tiny.windzz@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] dt-bindings: gpio: =?utf-8?Q?sunxi=EF=BC=9Acreat?=
+ =?utf-8?Q?e?= a DT header for Allwinner pin controller
+Message-ID: <20200717160727.e6y5htg4sjd7bezi@gilmour.lan>
+References: <20200715115412.2544-1-frank@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pKIFLkCMfXOR3B7TE46iyvM/kz/6zP9oIH2IWKSNZ4WBJo2kqd+
- jGPkIGX2lqp2B9NeaRoAkDrHz2SVrclEXESX7lap4wQ5H5PXUZMoDTTfjOIn2xP0nG0+a3H
- eiCse1vMx+/IdKEUNEX3oa2xjIy8wEyfBsH2JOGbyGU0NOfdEzA/A8uyqcY6zckrnfM3orC
- 7p6wgUeBM+WTbVgKVHg1g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DF7btZ07Dac=:O2dZaojWPdey47X0drF8Ae
- Nd1Ga62Bx6VSHLQAak+1iUT1sVj/eWoOAry29J1VA07k569X9wWPlFAs8sOK+AbKzPOYQ+2gA
- ILDS4FXYpi4/UkabmPobSeEg3TNtUbweO5GKaDBC6ULDLq6jNIl0cozFjCdsnRa6f5MJtsIZr
- CxJJWCcRQcuQmicrd9XhcKYvf8/TQl5xMUdC0A8gw5PX+jUu+G2cDprYA9TNhMLqMAOmsaRBC
- rBrndjbqmmbY/2lbSxh0IeAcnn3thQdYylgHFwcr0u6Tjgk2kjzWI1tLiB44ncQuxT2UbXozS
- YQgJ9RL8/wLFsTmvfMjdVS5VhiE1JPZuefg6OtUoQK56Xs4t1RI2fLrfkWygTMlqX+6NWghFK
- EvZcXzeKVHPwS3SYPDcePHq8jfQo5iZUFooI36B06zPnkwq8gcDVUA9ld90F1whFY1JOEXq3j
- qfAteP9Au0D+ms/pcZZ1gdI/JCw7WBJ3P4fB47/itH8t4iWg4vkJMa/zL8pwyR015Lgetz1oM
- oY6rTmHcp8cO567i35GvKb2D1MLjZ6mNC/TPQkOUj2iSZToHc/TwVkehnd4dE1GPC092XlTFp
- JWzqp5UclpMngiWqwxTef20U9y6UE0Eyt0+QlpOfe0iJl3qrA4C/JNgQMXwflGuDwNnVHxsS3
- MLzYdaU5MgDq6z8pTyHoujO1MqTA8j7NDMhno+Tb0mWDLRH1od1y+QOCxalGPzgalvBhENn/j
- LT1v+1ENQiIKYhnDhnekcxniO0zweyrrdibvM78iK/qhgmAUUDqrTfrut8cMyCA6+yAhhYgJn
- v0AdSUIYdSENI5QBxhgtahMy9YEAnmy4TtvNB/cUwPvzJRtauVFPvB811Eq9VKD94YJhVTvAD
- CmyRB/t7JV8g1Y5f8jKiCI9GXEqXxgfZOaRgGZPSKds0e72Sk0iUkSRr5+IV5BzMoFre9yTXM
- rFkdOOQzZZOSQqP0GHlP9nOnpIcQyPubxnq/e4SxA7A3VsMjpVKobqdsoYp63yX5AOH/toH/C
- t3NVM2rArUWp/LD9Xplk/xeQCPqhPu68PCR1jtnkrKyBvhORRCM/2vaFNneDCkuuXSwt0/Umu
- THJr20ae3dGPnePbBpqQeuSRKZ/2PDzdkb09vp0HxPmfPrLmxiHAXo0IfPf+z1P4Jl9bh6CYD
- zkQZ1nWotvh6j7U3csMJtuQ3PlH4lHvGZ27zqY1XLPFR5Q9x22TOpneu5AI6yKi4ddu5jmSLz
- KVvp0jCgqQaVMFu7UyHOYQGh3O13d77au1kNLtA==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="g4g5nqohehjztih7"
+Content-Disposition: inline
+In-Reply-To: <20200715115412.2544-1-frank@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I dare to repeat previous patch review aspects once more.
-https://lore.kernel.org/cocci/a316f076-1686-25d8-18fe-1bbc0cf9a701@web.de/
 
-=E2=80=A6
-> +virtual context
-> +virtual patch
-> +virtual org
-> +virtual report
+--g4g5nqohehjztih7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-+virtual context, patch, org, report
+Hi!
 
-Is such a SmPL code variant more succinct?
+On Wed, Jul 15, 2020 at 07:54:12PM +0800, Frank Lee wrote:
+> From: Yangtao Li <frank@allwinnertech.com>
+>=20
+> The sunxi gpio binding defines a few custom cells for its gpio specifier.
+> Provide bank name for those.
+>=20
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
 
+Thanks for working on this, I wanted to do it at some point but it kept
+getting pushed further into my todo list.
 
-=E2=80=A6
-> +if (...)
-> +  \(memset@ok\|memzero_explicit@ok\)(...);
+> ---
+>  include/dt-bindings/gpio/sunxi-gpio.h | 29 +++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>  create mode 100644 include/dt-bindings/gpio/sunxi-gpio.h
+>=20
+> diff --git a/include/dt-bindings/gpio/sunxi-gpio.h b/include/dt-bindings/=
+gpio/sunxi-gpio.h
+> new file mode 100644
+> index 000000000000..c692b4360da6
+> --- /dev/null
+> +++ b/include/dt-bindings/gpio/sunxi-gpio.h
 
-Would you like to tolerate any extra source code around such a function ca=
-ll
-in an if branch?
+So generally we've been using the compatible name as the file name. You
+should follow that convention too, and since it was added with the A10,
+using the A10 compatible.
 
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * GPIO definitions for Allwinner SoCs
+> + *
+> + * Copyright (C) 2020 Yangtao Li <frank@allwinnertech.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_SUNXI_GPIO_H
+> +#define _DT_BINDINGS_SUNXI_GPIO_H
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/* pio */
+> +#define PA	0
+> +#define PB	1
+> +#define PC	2
+> +#define PD	3
+> +#define PE	4
+> +#define PF	5
+> +#define PG	6
+> +#define PH	7
+> +#define PI	8
+> +
+> +/* r-pio */
+> +#define PL	0
+> +#define PM	1
+> +#define PN	2
+> +
+> +#endif /* _DT_BINDINGS_SUNXI_GPIO_H */
 
-=E2=80=A6
-> +(
-> +* memset@m((T)E, 0, ...);
-> +|
-> +* memzero_explicit@m((T)E, ...);
-> +)
-=E2=80=A6
+Maybe we can go one step further and use a macro to have something like
+PIN(A, 12) ?
 
-I suggest to move a semicolon.
+Maxime
 
-+(
-+*memset@m((T)E, 0, ...)
-+|
-+*memzero_explicit@m((T)E, ...)
-+);
+--g4g5nqohehjztih7
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-=E2=80=A6
-> +- \(kfree\|vfree\|kvfree\)(E);
-> ++ kvfree_sensitive(E, size);
-=E2=80=A6
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXxHMvwAKCRDj7w1vZxhR
+xZe7AP4nQk5JlNsOhlZTUs0MH0jwyCEnPkq2g+L9nrus/9DyhwEAmd2oehdBu15l
+snwOPbBnvRy1RNcmSaPZpc/OO2hwcg0=
+=ucxT
+-----END PGP SIGNATURE-----
 
-Would you like to increase the precision a bit for the change specificatio=
-n?
-
-+-\(kfree\|vfree\|kvfree\)
-++kvfree_sensitive
-+ (E
-++ , size
-+ );
-
-
-=E2=80=A6
-> +(
-> +- kfree(E);
-> ++ kzfree(E);
-> +|
-> +- \(vfree\|kvfree\)(E);
-> ++ kvfree_sensitive(E, size);
-> +)
-=E2=80=A6
-
-+(
-+-kfree
-++kzfree
-+      (E)
-+|
-+-\(vfree\|kvfree\)
-++kvfree_sensitive
-+ (E
-++ , size
-+ )
-+);
-
-
-=E2=80=A6
-> +// TODO: uncomment when kfree_sensitive will be merged.
-> +// Only this case is commented out because developers
-> +// may not like patches like this since kzfree uses memset
-> +// internally (not memzero_explicit).
-
-Will this information trigger any further clarification?
-
-
-=E2=80=A6
-> +coccilib.org.print_todo(p[0],
-> +  "WARNING: opportunity for kzfree/kvfree_sensitive")
-
-I propose to align the second function parameter.
-
-+coccilib.org.print_todo(p[0],
-+                        "WARNING: opportunity for kzfree/kvfree_sensitive=
-")
-
-
-Regards,
-Markus
+--g4g5nqohehjztih7--
