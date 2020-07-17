@@ -2,22 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367D8223981
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42600223982
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgGQKjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 06:39:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56032 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgGQKjT (ORCPT
+        id S1726210AbgGQKkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 06:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgGQKkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 06:39:19 -0400
+        Fri, 17 Jul 2020 06:40:20 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B857FC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 03:40:20 -0700 (PDT)
 Received: from xps.home (unknown [IPv6:2a01:e35:2fb5:1510:c567:382e:1974:9868])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: aferraris)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B51C92A536F;
-        Fri, 17 Jul 2020 11:39:17 +0100 (BST)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CDB8B2A5C77;
+        Fri, 17 Jul 2020 11:40:18 +0100 (BST)
 From:   Arnaud Ferraris <arnaud.ferraris@collabora.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Timur Tabi <timur@kernel.org>,
@@ -27,36 +30,83 @@ Cc:     Timur Tabi <timur@kernel.org>,
         Shengjiu Wang <shengjiu.wang@gmail.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: [PATCH v3 0/1] ASoC: fsl_asrc: always select different clocks
-Date:   Fri, 17 Jul 2020 12:38:56 +0200
-Message-Id: <20200717103857.31877-1-arnaud.ferraris@collabora.com>
+        kernel@collabora.com,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Subject: [PATCH v3 1/1] ASoC: fsl_asrc: make sure the input and output clocks are different
+Date:   Fri, 17 Jul 2020 12:38:58 +0200
+Message-Id: <20200717103857.31877-2-arnaud.ferraris@collabora.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200716232000.GA27246@Asurada-Nvidia>
+In-Reply-To: <20200717103857.31877-1-arnaud.ferraris@collabora.com>
 References: <20200716232000.GA27246@Asurada-Nvidia>
+ <20200717103857.31877-1-arnaud.ferraris@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the automatic clock selection so it always selects
-distinct input and output clocks.
+The current clock selection algorithm might select the same clock for
+both input and output when, for instance, the output sample rate is a
+multiple of the input rate.
 
-v2 -> v3:
-- Update code comment, fix formatting and add more detailed explanations
-  in commit message
+In that case, both selectable clocks will be multiples of both the input
+and output sample rates, and therefore the first of these clocks will be
+selected for both input and output, leading to miscalculation of the
+dividers for either the input or output side.
 
-v1 -> v2:
-- compare clock indexes (and not the location in the clock table) to
-  make sure input and output clocks are different
+Example:
+  Input uses clock A (512kHz) and has a sample rate of 8kHz
+  Output uses clock B (1024kHz) and has a sample rate of 16kHz
 
- Arnaud Ferraris(1):
-   ASoC: fsl_asrc: make sure the input and output clocks are different
+  In this case, the algorithm will select clock A for both input and
+  output: the input divider will therefore be calculated properly
+  (512 / 8 => 64), but the output divider's value will be only half
+  the expected value (512 / 16 => 32 instead of 1024 / 16 => 64).
 
+This patch makes sure it always selects distinct input and output
+clocks.
+
+Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+---
  sound/soc/fsl/fsl_asrc.c | 16 ++++++++++------
  1 file changed, 10 insertions(+), 6 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 02c81d2e34ad..de10c208d3c8 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -608,8 +608,8 @@ static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
+ {
+ 	struct fsl_asrc_pair_priv *pair_priv = pair->private;
+ 	struct asrc_config *config = pair_priv->config;
+-	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
+-	int clk_rate, clk_index;
++	int rate[2], select_clk[2], clk_index[2]; /* Array size 2 means IN and OUT */
++	int clk_rate;
+ 	int i = 0, j = 0;
+ 
+ 	rate[IN] = in_rate;
+@@ -618,11 +618,15 @@ static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
+ 	/* Select proper clock source for internal ratio mode */
+ 	for (j = 0; j < 2; j++) {
+ 		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
+-			clk_index = asrc_priv->clk_map[j][i];
+-			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
+-			/* Only match a perfect clock source with no remainder */
++			clk_index[j] = asrc_priv->clk_map[j][i];
++			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index[j]]);
++			/*
++			 * Only match a perfect clock source with no remainder
++			 * and make sure the input & output clocks are different
++			 */
+ 			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
+-			    (clk_rate % rate[j]) == 0)
++			    (clk_rate % rate[j]) == 0 &&
++			    (j == 0 || clk_index[j] != clk_index[j - 1]))
+ 				break;
+ 		}
+ 
+-- 
+2.27.0
 
