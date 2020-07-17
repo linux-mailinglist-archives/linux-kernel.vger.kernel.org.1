@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5180A2238E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DAC2238E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 12:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgGQKDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 06:03:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgGQKDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 06:03:44 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 847C12076A;
-        Fri, 17 Jul 2020 10:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594980224;
-        bh=AjmrtslKmwX/6PMA4+8pzIsPlXZYlwjTJ2i/lkpv7EI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0HOWqPq7Xb6a4IP4VN2D6+4wU2bfE7MkxqiblCPE/mlCsFKsb1nHocBy0S6ckTenx
-         vjcn55OkAGmZtsR2bQgTQ8loJ3UMMFEBNzJglNPAzMuIwrGvp12AJiLpv2XOpkvd2A
-         10Af/T/FlmIlYB+IMR60aNjx+i8kzW7XFA+Q/SmI=
-Date:   Fri, 17 Jul 2020 11:03:38 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Krishna Reddy <vdumpa@nvidia.com>
-Cc:     joro@8bytes.org, robin.murphy@arm.com, robh+dt@kernel.org,
-        treding@nvidia.com, jonathanh@nvidia.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, yhsu@nvidia.com, snikam@nvidia.com,
-        praithatha@nvidia.com, talho@nvidia.com, bbiswas@nvidia.com,
-        mperttunen@nvidia.com, nicolinc@nvidia.com, bhuntsman@nvidia.com,
-        nicoleotsuka@gmail.com
-Subject: Re: [PATCH v10 0/5] NVIDIA ARM SMMU Implementation
-Message-ID: <20200717100337.GA8673@willie-the-truck>
-References: <20200708050017.31563-1-vdumpa@nvidia.com>
- <20200713135020.GD2739@willie-the-truck>
+        id S1726386AbgGQKEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 06:04:31 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:54571 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbgGQKEa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 06:04:30 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id wNE8jCJmcNPeYwNEBja7Z4; Fri, 17 Jul 2020 12:04:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1594980268; bh=rrZ6Dtj/k5lf5p9V9FIJUPXXEPZN0uR6pQNpSBVg45Y=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=wA7Qvoi8nWloIJsE98VyNHRVU2WLjBRP/jHSCC0jO2T96QWQZITYYxN/CPjJKlpkW
+         HXOjhp/doImZf0ewWfxWtEXfTT+3LkTliD6T7Yd0FyloZE196LrbZuxrWADb6RJDEY
+         1omqL6l2U5RnwCWoab5GF7nHVP5GKtqacUmMysUa5meYXeQkSn2SR7OSaoSDjCPmT2
+         9aHGTq6HRWQxF8TO1gcbJeRrhkOixGAkEZu2ABpcq0F3XL+d2cJ8vBftC/MKcZmapb
+         XWicqRNsRRa2dGV+xMQg+zkVjRIoLd5r/o2rOYS7Y0YDlvvXsJxFqyVB560CmDuAgc
+         LRgm+DNno2MKw==
+Subject: Re: [PATCH 3/3] media: Add support for the AM/FM radio chip KT0913
+ from KT Micro.
+To:     Joe Perches <joe@perches.com>,
+        Santiago Hormazabal <santiagohssl@gmail.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-kernel@vger.kernel.org
+References: <20200717004441.116248-1-santiagohssl@gmail.com>
+ <20200717004441.116248-4-santiagohssl@gmail.com>
+ <b8cb9dbf-2a81-6a12-c754-e524f42a0574@xs4all.nl>
+ <9bd42f458908eedd810c5e8805f997997763d32a.camel@perches.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <234961cc-f783-475c-d3db-69720a7da010@xs4all.nl>
+Date:   Fri, 17 Jul 2020 12:04:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713135020.GD2739@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9bd42f458908eedd810c5e8805f997997763d32a.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJs/gkRtd76okay0EWfgoAD0FciTSEHoyRVPjO3MEwaRjuc8U7lRy9Zt7i+Cjwci9G8RvFYG6RwM8zsP1GIHWBZY2/By70bHpjbCUGIy+/o31u6CmFRe
+ WmkH5Zx+ZkcQnlbUQ82YNl1c6LBA2rOjBNEwsaAsLDLIBRzAVfSuj3Ee68BMD0skFhfVEI2DC3THynN/epxt/u+bz385VgLcGJauk8sTo4PQxGKSRLzTfhUb
+ Bof+Pk5XKAXA+DNLLSlXIo8MGo8e6HlqnxYcP9AHvlbkMm4k8Kb45J09ej96XBhkQCoc0WwOlV8WWjLkDGtogySnARbvg6vp1LiXLREza1JFl8KkrG8oOD6u
+ 0et+8avlUP6mSus8O/GvPzWtTc39QA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 02:50:20PM +0100, Will Deacon wrote:
-> On Tue, Jul 07, 2020 at 10:00:12PM -0700, Krishna Reddy wrote:
-> > Changes in v10:
-> > Perform SMMU base ioremap before calling implementation init.
-> > Check for Global faults across both ARM MMU-500s during global interrupt.
-> > Check for context faults across all contexts of both ARM MMU-500s during context fault interrupt.
-> > Add new DT binding nvidia,smmu-500 for NVIDIA implementation.
+On 17/07/2020 11:51, Joe Perches wrote:
+> On Fri, 2020-07-17 at 11:29 +0200, Hans Verkuil wrote:
+>> It's standard linux codingstyle to use lowercase for hex numbers.
+>> Can you change that throughout the source for the next version?
 > 
-> Please repost based on my SMMU queue, as this doesn't currently apply.
+> Is there a standard?  It's not in coding-style.rst.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-joerg/arm-smmu/updates
+> While I prefer lowercase too, it seems the kernel has
+> only ~2:1 preference for lowercase to uppercase hex.
+> 
+> $ git grep -ohP '\b0[xX][0-9a-f]+\b' | grep [a-f] | wc -l
+> 1149833
+> $ git grep -ohP '\b0[xX][0-9A-F]+\b' | grep [A-F] | wc -l
+> 575781
+> 
+> 
 
-Any update on this, please? It would be a shame to miss 5.9 now that the
-patches look alright.
+Well, it's indeed not a standard for the kernel as a whole, but certainly
+for drivers/media:
 
-Will
+$ git grep -ohP '\b0[xX][0-9a-f]+\b' drivers/media/ | grep [a-f] | wc -l
+109272
+$ git grep -ohP '\b0[xX][0-9A-F]+\b' drivers/media/ | grep [A-F] | wc -l
+22392
+
+The media subsystem has a 5:1 preference for lowercase. And uppercase is
+mostly found in older drivers.
+
+Still, I really prefer lowercase over uppercase, especially in new drivers.
+
+Regards,
+
+	Hans
