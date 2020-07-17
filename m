@@ -2,103 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB77224209
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CAA22420E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgGQRkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728042AbgGQRkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:40:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgGQRkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Jul 2020 13:40:02 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:53002 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgGQRkB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:40:01 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06HHdvJr050812;
-        Fri, 17 Jul 2020 12:39:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595007597;
-        bh=q+uV5H8PhIiItB099rfL6+xnCZi5MWUbsygzwPOLpns=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=ELSpKX3JiFn29aHn8ntqRY7V8tydy4hG0vuz78jLKUnnNA8VVoNIkwv4cmXlbBWWT
-         LEWSymz3xNVsiNgYmsBR0d2N8O31YI/IZUKZpRmaQEOvBnICui7RagiZgZ0hoWj8re
-         88NyRckoKzbpY79bDkB8zeTRDryev4H1gJbbNb8g=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06HHdvQQ061694
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 12:39:57 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 17
- Jul 2020 12:39:57 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 17 Jul 2020 12:39:57 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06HHdsIY017474;
-        Fri, 17 Jul 2020 12:39:55 -0500
-Subject: Re: [PATCH 1/2 v2] net: hsr: fix incorrect lsdu size in the tag of
- HSR frames for small frames
-To:     Murali Karicheri <m-karicheri2@ti.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <nsekhar@ti.com>,
-        <vinicius.gomes@intel.com>
-References: <20200717145510.30433-1-m-karicheri2@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <0e064d93-546d-e999-e36a-499d37137ba4@ti.com>
-Date:   Fri, 17 Jul 2020 20:39:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200717145510.30433-1-m-karicheri2@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Subject: Re: [GIT PULL] overlayfs fixes for 5.8-rc6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595007601;
+        bh=TH2Fb3gNyU4J9bGpnlHrZm7ZQjonUvKvpKhYXb7z+iw=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=qyxOFWYRbq1LFP6TYMPXucC2rEnDgF1GujjYgyejTK9Peas4UMK+aam+0waVEtT9Z
+         3b6C0Q3GWgyQslsTJyB4qQNQ56FbV9b+dN9joOrLe2M4hvGn/I2vGJo/zGzqxgs4D+
+         8QKL+WfhvLWVLG4atyPQkIDJIWdOwqPnwJZKf1WU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200717115237.GD6171@miu.piliscsaba.redhat.com>
+References: <20200717115237.GD6171@miu.piliscsaba.redhat.com>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200717115237.GD6171@miu.piliscsaba.redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git
+ tags/ovl-fixes-5.8-rc6
+X-PR-Tracked-Commit-Id: 4518dfcf761e3c44632855abcf433236cf7ab6c6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 44fea37378bf735de63263d558763ce50fca05ef
+Message-Id: <159500760166.14528.4179344717566879349.pr-tracker-bot@kernel.org>
+Date:   Fri, 17 Jul 2020 17:40:01 +0000
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 17 Jul 2020 13:55:30 +0200:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-fixes-5.8-rc6
 
-On 17/07/2020 17:55, Murali Karicheri wrote:
-> For small Ethernet frames with size less than minimum size 66 for HSR
-> vs 60 for regular Ethernet frames, hsr driver currently doesn't pad the
-> frame to make it minimum size. This results in incorrect LSDU size being
-> populated in the HSR tag for these frames. Fix this by padding the frame
-> to the minimum size applicable for HSR.
-> 
-> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-> ---
->   no change from original version
->   Sending this bug fix ahead of PRP patch series as per comment
->   net/hsr/hsr_forward.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
->   Sending this bug fix ahead of PRP patch series as per comment
-> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
-> index ed13760463de..e42fd356f073 100644
-> --- a/net/hsr/hsr_forward.c
-> +++ b/net/hsr/hsr_forward.c
-> @@ -127,6 +127,9 @@ static void hsr_fill_tag(struct sk_buff *skb, struct hsr_frame_info *frame,
->   	int lane_id;
->   	int lsdu_size;
->   
-> +	/* pad to minimum packet size which is 60 + 6 (HSR tag) */
-> +	skb_put_padto(skb, ETH_ZLEN + HSR_HLEN);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/44fea37378bf735de63263d558763ce50fca05ef
 
-It may fail.
-And i worry that it might be not the right place to do that
-(if packet is small it will be called for every copy of the packet).
-May be it has to be done once when packet enters LRE device?
-
-> +
->   	if (port->type == HSR_PT_SLAVE_A)
->   		lane_id = 0;
->   	else
-> 
+Thank you!
 
 -- 
-Best regards,
-grygorii
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
