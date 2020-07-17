@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EF2224224
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE45224272
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgGQRnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        id S1728401AbgGQRol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgGQRnP (ORCPT
+        with ESMTP id S1727837AbgGQRnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Jul 2020 13:43:15 -0400
 Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06563C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:43:14 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so6888461pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:43:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670F9C0619D9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:43:15 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t15so6754773pjq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wV1gvV23mO4MSWHgMeM+r7999nuQAFQGTkfq3zyvhrU=;
-        b=TkI+hwhyWG7WZvnJTwRRMikLIXphh/PU89bCIE8P6SFs0SaHpCf4VAcMkSYIWejrmC
-         UHjYj/pWqealOdMvuvGnbGyDGiR092Y/coL6eRwohd6FSkw/1x0lTSsWwdlxAmTbJF9z
-         MG+bnlBW3Pz3hPqkiZYjpkgP2T6E3WFs4nd00=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wrxYLXP2oheEEaGsKNp0stRrknyVueRaJu8i8kSptew=;
+        b=Vmebw9xzyFrFLgnwLQyPbu9sUxIvT3iz/LZhlggPZzdK8yi/sNJp1ISZhzAODP/aQq
+         DA1aJsmMOF5WM3+KxOc/jJOdCUMwDEegiUHYTk5QHuuuSDkU5ULxP6uWFu0Zgzte/hrz
+         inlXJ3TzZ7dygl/RRmbqjrIF3idceAZR9MaU4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wV1gvV23mO4MSWHgMeM+r7999nuQAFQGTkfq3zyvhrU=;
-        b=c5Prjf+GBUIbV+MP9+R41TMnOr4KXK0dfVGWaYs5nCknQyyriT8R8BNDTKnGmvCXoq
-         jsFgvN2vlLcSrs+eLmhqdD+jqvAStDm29xAAyuFkhprKq+nBzzT2TI2Jr0pvObjcprDN
-         JwfBBAMhnjjRGXuWfD+8BIDpqPusS9nlGz/XjdtTRq9DXzJ/4/ik6PIqhfF0iXSUUgES
-         lA+bFPuq6t8Ad5tyRdaiKbkn8Iq0KsEOcrw/bBgObiPXGwArzirlgTmIwgze16Y86lM4
-         374LlMiObX4VseFwkM2jrHoCtKATbXm7GurLkYysEuoLytob31/2KuJePBbeGkeo75LD
-         kGEg==
-X-Gm-Message-State: AOAM5318nF2cPt7a8eeFdXKaDDUEpfE+zFMN9JclYMS73sB5yuTcEETw
-        vRq4ZSwb9yXExZBV8AChuxZGfQ==
-X-Google-Smtp-Source: ABdhPJxKZBG7RqgWoCxDb3CWPD97sCGFFzSrqXIIWjriKiDJA4WPNj/7bJe6bdbUYimvfgj8GzzH+g==
-X-Received: by 2002:a17:90b:1386:: with SMTP id hr6mr10767858pjb.93.1595007794310;
-        Fri, 17 Jul 2020 10:43:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wrxYLXP2oheEEaGsKNp0stRrknyVueRaJu8i8kSptew=;
+        b=hJS2djZMvAiQY3ePnqqCbmgq+HGhJLGK4xd7Ocx1pfPlCD5KUsldVbLpgjkouNJyW4
+         omzPtWZRpzIT2Jm7SZNsW3YN9JPqLeGrBo+ojMo5QLwb5RLZWVUmh/KGsm3QEAQWImVg
+         T79aRl7AdiOy0qQhM0FxkwFVxLtXugPd2Z+9bTHWiiZWwY3DRUZkWHp7EfDL5clE1KKu
+         ZykfRllXV4e911NMKGyiR86Qe8+P17lALib4+vpIZW/1WxTBrDLpHlf8LtBRnBGO/vEI
+         epb7WIYsluGt2eRAC3N4ryF9scLligftfNwJ5Nzvx8RlB4K3+5WYu+MsFDNQVUKbc1xE
+         ZwCw==
+X-Gm-Message-State: AOAM532ESTZLweNOfB7ZiNCoZaQ2So9lGZsNhKm2yrxoDKdmOoNkV1UD
+        DmPjVdH6bfOQhX1FetNoYLYcpQ==
+X-Google-Smtp-Source: ABdhPJwUg0XMxYDUbRjKGsYc4z6GZTjsdq+bfOADQJjU8WjIWVN4iFhFlTSQL5o2BTwLAVb1iIGijw==
+X-Received: by 2002:a17:90a:9f4a:: with SMTP id q10mr11275946pjv.139.1595007795012;
+        Fri, 17 Jul 2020 10:43:15 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 21sm8245611pfu.124.2020.07.17.10.43.12
+        by smtp.gmail.com with ESMTPSA id d9sm8187840pfd.133.2020.07.17.10.43.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 17 Jul 2020 10:43:13 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Kees Cook <keescook@chromium.org>,
+Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
         Mimi Zohar <zohar@linux.ibm.com>,
         Matthew Wilcox <willy@infradead.org>,
         James Morris <jmorris@namei.org>,
@@ -77,10 +77,12 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 00/13] Introduce partial kernel_read_file() support
-Date:   Fri, 17 Jul 2020 10:42:55 -0700
-Message-Id: <20200717174309.1164575-1-keescook@chromium.org>
+Subject: [PATCH 01/13] firmware_loader: EFI firmware loader must handle pre-allocated buffer
+Date:   Fri, 17 Jul 2020 10:42:56 -0700
+Message-Id: <20200717174309.1164575-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200717174309.1164575-1-keescook@chromium.org>
+References: <20200717174309.1164575-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -88,68 +90,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The EFI platform firmware fallback would clobber any pre-allocated
+buffers. Instead, correctly refuse to reallocate when too small (as
+already done in the sysfs fallback), or perform allocation normally
+when needed.
 
-Here's my attempt at clearing the path to partial read support in
-kernel_read_file(), which fixes a number of issues along the way. I'm
-still fighting with the firmware test suite (it doesn't seem to pass
-for me even in stock v5.7... ?) But I don't want to block Scott's work[1]
-any this week, so here's the series as it is currently.
+Fixes: e4c2c0ff00ec ("firmware: Add new platform fallback mechanism and firm ware_request_platform()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+To aid in backporting, this change is made before moving
+kernel_read_file() to separate header/source files.
+---
+ drivers/base/firmware_loader/fallback_platform.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-The primary difference to Scott's approach is to avoid adding a new set of
-functions and just adapt the existing APIs to deal with "offset". Also,
-the fixes for the enum are first in the series so they can be backported
-without the header file relocation.
-
-I'll keep poking at the firmware tests...
-
--Kees
-
-[1] https://lore.kernel.org/lkml/202007161415.10D015477@keescook/
-
-Kees Cook (12):
-  firmware_loader: EFI firmware loader must handle pre-allocated buffer
-  fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER enum
-  fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
-  fs/kernel_read_file: Split into separate source file
-  fs/kernel_read_file: Remove redundant size argument
-  fs/kernel_read_file: Switch buffer size arg to size_t
-  fs/kernel_read_file: Add file_size output argument
-  LSM: Introduce kernel_post_load_data() hook
-  firmware_loader: Use security_post_load_data()
-  module: Call security_kernel_post_load_data()
-  LSM: Add "contents" flag to kernel_read_file hook
-  fs/kernel_file_read: Add "offset" arg for partial reads
-
-Scott Branden (1):
-  fs/kernel_read_file: Split into separate include file
-
- drivers/base/firmware_loader/fallback.c       |   8 +-
- .../base/firmware_loader/fallback_platform.c  |  12 +-
- drivers/base/firmware_loader/main.c           |  13 +-
- fs/Makefile                                   |   3 +-
- fs/exec.c                                     | 132 +-----------
- fs/kernel_read_file.c                         | 189 ++++++++++++++++++
- include/linux/fs.h                            |  39 ----
- include/linux/ima.h                           |  19 +-
- include/linux/kernel_read_file.h              |  55 +++++
- include/linux/lsm_hook_defs.h                 |   6 +-
- include/linux/lsm_hooks.h                     |  12 ++
- include/linux/security.h                      |  19 +-
- kernel/kexec.c                                |   2 +-
- kernel/kexec_file.c                           |  18 +-
- kernel/module.c                               |  24 ++-
- security/integrity/digsig.c                   |   8 +-
- security/integrity/ima/ima_fs.c               |   9 +-
- security/integrity/ima/ima_main.c             |  58 ++++--
- security/integrity/ima/ima_policy.c           |   1 +
- security/loadpin/loadpin.c                    |  17 +-
- security/security.c                           |  26 ++-
- security/selinux/hooks.c                      |   8 +-
- 22 files changed, 432 insertions(+), 246 deletions(-)
- create mode 100644 fs/kernel_read_file.c
- create mode 100644 include/linux/kernel_read_file.h
-
+diff --git a/drivers/base/firmware_loader/fallback_platform.c b/drivers/base/firmware_loader/fallback_platform.c
+index cdd2c9a9f38a..685edb7dd05a 100644
+--- a/drivers/base/firmware_loader/fallback_platform.c
++++ b/drivers/base/firmware_loader/fallback_platform.c
+@@ -25,7 +25,10 @@ int firmware_fallback_platform(struct fw_priv *fw_priv, u32 opt_flags)
+ 	if (rc)
+ 		return rc; /* rc == -ENOENT when the fw was not found */
+ 
+-	fw_priv->data = vmalloc(size);
++	if (fw_priv->data && size > fw_priv->allocated_size)
++		return -ENOMEM;
++	if (!fw_priv->data)
++		fw_priv->data = vmalloc(size);
+ 	if (!fw_priv->data)
+ 		return -ENOMEM;
+ 
 -- 
 2.25.1
 
