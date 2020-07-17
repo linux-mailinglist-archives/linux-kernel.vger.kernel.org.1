@@ -2,127 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4276522370E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE4822370A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 10:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgGQIcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 04:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgGQIcF (ORCPT
+        id S1726563AbgGQIcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 04:32:05 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:4798 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgGQIcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Jul 2020 04:32:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8523FC061755;
-        Fri, 17 Jul 2020 01:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aFEt+zFPrqVQGAdO3RJf1KxQLYdEhDO70E3sDQSJR2I=; b=NAYUD0tRwLcD1cWPXKXDszQUPy
-        mQzEmJYNmsTd4lPHX0AEaiE3az4Ot3sQ1ZvLDIGE13hX9Jds8cRERVdr2DZSyWJCpE2VqUEPt5ZYc
-        UjvbCMB4kO2sPJdqTsOkgLUOWdAj27RrCTe3SXW5tLnHhIl8mollSFClH0NO7VHqMdTGAGGAocUrH
-        2ogmG9mWgV1L/V+N84VlhdwEt8XBL7mlLDgkK1KYxpvPnnf8ru+JrOz6xl85frfohw2XVDowK+lgc
-        vdjzRVIpa0KpwRU73+hsFhpGtg1CnBKfr0INMSg3CozV6pnzHBI4oK/qNaYP9/i6oBIS69HJA2ptL
-        S2yGqBiw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwLmQ-0004NK-L1; Fri, 17 Jul 2020 08:31:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A33083003D8;
-        Fri, 17 Jul 2020 10:31:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9580929CF6F49; Fri, 17 Jul 2020 10:31:40 +0200 (CEST)
-Date:   Fri, 17 Jul 2020 10:31:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 04/17] x86/pks: Preserve the PKRS MSR on context
- switch
-Message-ID: <20200717083140.GW10769@hirez.programming.kicks-ass.net>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-5-ira.weiny@intel.com>
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="36478205"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 17 Jul 2020 16:32:02 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(195203:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 17 Jul 2020 16:32:01 +0800 (CST)
+Received: from 192.168.33.11
+        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2484:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 17 Jul 2020 16:31:59 +0800 (CST)
+From:   "jingle" <jingle.wu@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
+        "'linux-input'" <linux-input@vger.kernel.org>,
+        "'phoenix'" <phoenix@emc.com.tw>,
+        "'josh.chen'" <josh.chen@emc.com.tw>,
+        "'kai.heng.feng'" <kai.heng.feng@canonical.com>
+References: <20200714105641.15151-1-jingle.wu@emc.com.tw> <20200716053912.GB1665100@dtor-ws> <1594880123.69588.jingle.wu@emc.com.tw> <20200717012719.GC1665100@dtor-ws> <20200717061010.GD1665100@dtor-ws> 
+In-Reply-To: 
+Subject: RE: [PATCH 2/2] Input: elan_i2c - Modify the IAP related functio n for page sizes 128, 512 bytes.
+Date:   Fri, 17 Jul 2020 16:31:58 +0800
+Message-ID: <002c01d65c14$bccb9c10$3662d430$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717072056.73134-5-ira.weiny@intel.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQIjNBmL5Bem/gD5U/Wevzos9rHsvgFMELwpAblpFq8B/K6BpwFpUkutqD5gC9CAAANZoA==
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1mYTU0OTRmZC1jODA3LTExZWEtODE5YS1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcZmE1NDk0ZmYtYzgwNy0xMWVhLTgxOWEtZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSIzNTY0IiB0PSIxMzIzOTQ0ODMxODg1NTA4NzciIGg9IkpxQjdpaXJjaFZQSDZMUFpUdjhudUFZZ2xvdz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:20:43AM -0700, ira.weiny@intel.com wrote:
+Hi Dmitry:
 
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index f362ce0d5ac0..d69250a7c1bf 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -42,6 +42,7 @@
->  #include <asm/spec-ctrl.h>
->  #include <asm/io_bitmap.h>
->  #include <asm/proto.h>
-> +#include <asm/pkeys_internal.h>
->  
->  #include "process.h"
->  
-> @@ -184,6 +185,36 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
->  	return ret;
->  }
->  
-> +/*
-> + * NOTE: We wrap pks_init_task() and pks_sched_in() with
-> + * CONFIG_ARCH_HAS_SUPERVISOR_PKEYS because using IS_ENABLED() fails
-> + * due to the lack of task_struct->saved_pkrs in this configuration.
-> + * Furthermore, we place them here because of the complexity introduced by
-> + * header conflicts introduced to get the task_struct definition in the pkeys
-> + * headers.
-> + */
+1. 
 
-I don't see anything much useful in that comment.
+In this function elan_get_fwinfo().
 
-> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> +DECLARE_PER_CPU(u32, pkrs_cache);
-> +static inline void pks_init_task(struct task_struct *tsk)
-> +{
-> +	/* New tasks get the most restrictive PKRS value */
-> +	tsk->thread.saved_pkrs = INIT_PKRS_VALUE;
-> +}
-> +static inline void pks_sched_in(void)
-> +{
-> +	u64 current_pkrs = current->thread.saved_pkrs;
-> +
-> +	/* Only update the MSR when current's pkrs is different from the MSR. */
-> +	if (this_cpu_read(pkrs_cache) == current_pkrs)
-> +		return;
-> +
-> +	write_pkrs(current_pkrs);
++static int elan_get_fwinfo(u16 ic_type, u8 iap_version, u8 pattern,
++			   u16 *validpage_count, u32 *signature_address,
++			   u16 *page_size)
+ {
+-	switch (ic_type) {
++	u16 type = pattern >= 0x01 ? ic_type : iap_version;
++
++	switch (type) {
 
-Should we write that like:
+This iap_version in pattern0 is read from this command
+ETP_I2C_IAP_VERSION_CMD_OLD ,it is not from this command
+ETP_I2C_IAP_VERSION.
+So u16 type = pattern >= 0x01 ? ic_type : iap_version; <- wrong
 
-	/*
-	 * PKRS is only temporarily changed during specific code paths.
-	 * Only a preemption during these windows away from the default
-	 * value would require updating the MSR.
-	 */
-	if (unlikely(this_cpu_read(pkrs_cache) != current_pkrs))
-		write_pkrs(current_pkrs);
+2. In this "static int elan_i2c_prepare_fw_update(struct i2c_client *client,
+u16 ic_type, u8 iap_version)" function.
+The ic is old pattern must be modify correct ic_type. (cmd is
+ETP_I2C_IAP_VERSION)
 
-?
+THANKS
 
-> +}
-> +#else
-> +static inline void pks_init_task(struct task_struct *tsk) { }
-> +static inline void pks_sched_in(void) { }
-> +#endif
+
+-----Original Message-----
+From: jingle [mailto:jingle.wu@emc.com.tw] 
+Sent: Friday, July 17, 2020 4:20 PM
+To: 'Dmitry Torokhov'
+Cc: 'linux-kernel'; 'linux-input'; 'phoenix'; 'josh.chen'; 'kai.heng.feng'
+Subject: RE: [PATCH 2/2] Input: elan_i2c - Modify the IAP related functio n
+for page sizes 128, 512 bytes.
+
+Hi Dmitry:
+
+In this "static int elan_i2c_prepare_fw_update(struct i2c_client *client,
+u16 ic_type, u8 iap_version)" function If IC is old_pattern, it must be
+modified to iap_version
+	-> u16 type = pattern >= 0x01 ? ic_type : iap_version;
+
+Thanks
+
+-----Original Message-----
+From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com]
+Sent: Friday, July 17, 2020 2:10 PM
+To: jingle.wu
+Cc: linux-kernel; linux-input; phoenix; josh.chen; kai.heng.feng
+Subject: Re: [PATCH 2/2] Input: elan_i2c - Modify the IAP related functio n
+for page sizes 128, 512 bytes.
+
+On Thu, Jul 16, 2020 at 06:27:19PM -0700, Dmitry Torokhov wrote:
+> Hi Jingle,
+> 
+> On Thu, Jul 16, 2020 at 02:15:23PM +0800, jingle.wu wrote:
+> > HI Dmitry:
+> > 
+> > Just to confirm, the older devices (I assume that pattern 0 means
+> > older)  have version command that is numerically higher than the one 
+> > for the  newer (pattern >= 1) devices?
+> > 
+> > >> Yes, Pattern 1, 2 are newer devices.
+> > 
+> > > @@ -324,7 +342,14 @@ static int elan_i2c_get_sm_version(struct
+i2c_client *client,
+> > >  			return error;
+> > >  		}
+> > >  		*version = val[0];
+> > > -		*ic_type = val[1];
+> > > +
+> > > +		error = elan_i2c_read_cmd(client, ETP_I2C_IAP_VERSION_CMD,
+val);
+> > > +		if (error) {
+> > > +			dev_err(&client->dev, "failed to get ic type: %d\n",
+> > > +				error);
+> > > +			return error;
+> > > +		}
+> > 
+> > Could you please tell me why this chunk is needed?
+> > >> Modify the old pattern IC firmware read the correct ic_type.
+> > 
+> > In the elan_i2c_core.c, move this code to elan_i2c_i2c.c. 
+> > static int elan_query_device_info(struct elan_tp_data *data) {
+> > 	.....
+> > 	if (data->pattern == 0x01)
+> > 		ic_type = data->ic_type;
+> > 	else
+> > 		ic_type = data->iap_version;
+> > 	.....
+> > 	return 0;
+> > }
+> 
+> I am concerned that unconditionally substituting iap_version for 
+> ic_type for "pattern 0" devices will break check in
+> elan_check_ASUS_special_fw() as it operates on the ic_type returned by 
+> ETP_I2C_OSM_VERSION_CMD and not iap_version.
+
+I split the firmware handling code into a few patches and uploaded it to a
+new elan-i2c branch:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git elan-i2c
+
+Please take a look and let me know if I messed it up or not. I will be
+looking at the new packet format next.
+
+Thanks.
+
+--
+Dmitry
+
