@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F54223B4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E99D223B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbgGQMWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 08:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgGQMWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 08:22:21 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726221AbgGQM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 08:27:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26950 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726056AbgGQM07 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 08:26:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594988818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KP6z2JAFlKJzeK81Po09Cqg+RcRw4LyY6eOEY43EWjw=;
+        b=X6fk95IqSOpa3dI8GKA17UoM2nPPubrZ/QhpI9utntJMKGQhSHtwtZatHt637p+ehR2dsT
+        xcdKBlgUOrgDayE+U9h5Kn+8IHXZHaGMqMWj7F4FtX9t2gdUDvf/Ju+LcT1XTk7BMiyNGp
+        A9XJDuA2NhqMNE19FNpVn//S0o9mEdI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-c78cKYkwPoeOQHF-2z6eZA-1; Fri, 17 Jul 2020 08:26:56 -0400
+X-MC-Unique: c78cKYkwPoeOQHF-2z6eZA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB91820684;
-        Fri, 17 Jul 2020 12:22:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594988540;
-        bh=J1Qt3Lw28H9tRlMCjTFWuJ09Pp5bPH/VYq8pbZMeEGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LZg5ba3M7HTo/BL5R2W6pSAW7PllQcfqW8aFdAOarRZ7DLNXyk5Oj0PHLN+VCQX2h
-         q3uf68VE9AUxzajSmsN202GOx4mTbFJmPs5YIy9ULnckxHYoKrFfB3QD4iuNza9Ben
-         A8KTxVxAzC3bjpYziEm0coq8ezKTAhI/fuiSabdk=
-Date:   Fri, 17 Jul 2020 13:22:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-can@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
-Subject: Re: [PATCH 14/20] dt-bindings: spi: renesas,sh-msiof: Add r8a774e1
- support
-Message-ID: <20200717122209.GF4316@sirena.org.uk>
-References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594811350-14066-15-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200717115915.GD4316@sirena.org.uk>
- <CA+V-a8sxtan=8NCpEryT9NzOqkPRyQBa-ozYNHvi8goaOJQ24w@mail.gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 438B4100AA2A;
+        Fri, 17 Jul 2020 12:26:55 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.199])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1CE5C79502;
+        Fri, 17 Jul 2020 12:26:52 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 17 Jul 2020 14:26:54 +0200 (CEST)
+Date:   Fri, 17 Jul 2020 14:26:51 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200717122651.GA6067@redhat.com>
+References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+ <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3yNHWXBV/QO9xKNm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+V-a8sxtan=8NCpEryT9NzOqkPRyQBa-ozYNHvi8goaOJQ24w@mail.gmail.com>
-X-Cookie: No other warranty expressed or implied.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/17, Jiri Slaby wrote:
+>
+> On 17. 07. 20, 12:45, Jiri Slaby wrote:
+> > Hi,
+> >
+> > the strace testsuite triggers this on 5.8-rc4 and -rc5 both on x86_64
+> > and i586:
+>
+> make check needs -jsomething, running is sequentially (-j1) doesn't
+> trigger it. After the error, I cannot run anything. Like ps to find out
+> what test caused the crash...
 
---3yNHWXBV/QO9xKNm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Strange... I'll try to reproduce but I can't do this till Monday.
 
-On Fri, Jul 17, 2020 at 01:15:13PM +0100, Lad, Prabhakar wrote:
-> On Fri, Jul 17, 2020 at 12:59 PM Mark Brown <broonie@kernel.org> wrote:
+Meanwhile, could you try the patch below? It needs CONFIG_DEBUG_ATOMIC_SLEEP.
 
-> > On Wed, Jul 15, 2020 at 12:09:04PM +0100, Lad Prabhakar wrote:
-> > > Document RZ/G2H (R8A774E1) SoC bindings.
+Oleg.
 
-> > Please in future could you split things like this up into per subsystem
-> > serieses?  That's a more normal approach and avoids the huge threads and
-> > CC lists.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index ee22ec78fd6d..84782843eb1c 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1914,7 +1914,9 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
+ 	BUG_ON(sig == -1);
+ 
+  	/* do_notify_parent_cldstop should have been called instead.  */
+- 	BUG_ON(task_is_stopped_or_traced(tsk));
++ 	WARN(task_is_stopped_or_traced(tsk),
++ 		"exist with state=%ld set at %pS",
++ 		tsk->state, (void*)tsk->task_state_change);
+ 
+ 	BUG_ON(!tsk->ptrace &&
+ 	       (tsk->group_leader != tsk || !thread_group_empty(tsk)));
+@@ -2214,6 +2216,7 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
+ 		preempt_enable_no_resched();
+ 		freezable_schedule();
+ 		cgroup_leave_frozen(true);
++		WARN_ON(current->state);
+ 	} else {
+ 		/*
+ 		 * By the time we got the lock, our tracer went away.
+@@ -2393,6 +2396,7 @@ static bool do_signal_stop(int signr)
+ 		/* Now we don't run again until woken by SIGCONT or SIGKILL */
+ 		cgroup_enter_frozen();
+ 		freezable_schedule();
++		WARN_ON(current->state);
+ 		return true;
+ 	} else {
+ 		/*
 
-> Sorry for doing this, In future I shall keep that in mind. (Wanted to
-> get in most patches for RZ/G2H in V5.9 window)
-
-If anything sending things as a big series touching lots of subsystems
-can slow things down as people figure out dependencies and who's going
-to actually apply things.
-
---3yNHWXBV/QO9xKNm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8Rl/AACgkQJNaLcl1U
-h9DhTAgAgzuxfwIeWNm0FDyt+K9Mfz5di6xytCvItNaaahcI/Ct9HEQCGPpgG+SN
-OegozumTbxf+HvdgEgg2JsMqKfoCid7/F/M/ywb24/SqHnpgIIKBA7U6bRF2PGMW
-JHXG/oHSBd5yyV6xurj6YfaJidh9KJO5afRb8yisffI8ge1n+X7F2GQZyWke45cp
-Ojag6elp7xYrRwC3ylAp2exRsoSw5SXYwqM4CNkrDEiXq1dKeePsm2vuxf6FmE4n
-WclrCd+/9oWAk7dIoJTBX4BxBudcZlk25Y55Q6GyA/bbGMBWef1vWvUNasjQef0d
-e/mSTsDdN+0RD9lg1rJ0RqtyHnDPhw==
-=mPyM
------END PGP SIGNATURE-----
-
---3yNHWXBV/QO9xKNm--
