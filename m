@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643C3223800
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48466223815
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgGQJSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S1726780AbgGQJTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgGQJSL (ORCPT
+        with ESMTP id S1726238AbgGQJTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:18:11 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5683DC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 02:18:11 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o18so10003666eje.7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 02:18:11 -0700 (PDT)
+        Fri, 17 Jul 2020 05:19:00 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94A7C061755;
+        Fri, 17 Jul 2020 02:19:00 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e90so6418395ote.1;
+        Fri, 17 Jul 2020 02:19:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ABtoKcunWta1zPd9OAU4HivGakSrvH6t7PoGrVg1IHw=;
-        b=xR7/TE9+zWjcsvx6d03jd1AgLl1RxCF+57iDGUw8QqO8NNJiU5y/1PDhMHyK6SBPD0
-         Tu9kE2ltrVcgIGDsEFYeGOdvGGs9gXhWrY0fvfmRtJuRWzhuLiSsJxij8VwijPfHjTPS
-         3aRzO2LOdNynO+M1Cxqg8LEaNT7+cWaMS9ZleuZy42uIKF7zbE+VVsfyNZHqDLg2WCO5
-         2IhHaXOEiidwv/4zssU9rGm6ibTKTyOzBFUfh4ZlLc65xFj4ZNu5VWofuJadgyUIYj5C
-         Y93p7sEtG5rh/7aWXf9IEREZyDETtvRRffJXB7kNBwNCJiHJc9kale3U3Oqjmxgbkhyq
-         rtqQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gLc/sXnHRqOoFTO4DitwMjah/zdKxSzcKB3wEkyAsl4=;
+        b=gzqHiKAhW3YEq6pFZ4XNLdc4l48OMUN12VNYCfNaufpcqn3PiMXV1FzSxbE4kBbPUP
+         nMGdsnGMy10DwD+XWxlLs48KZiyqB9kxUaVXaRm1E5VhFpFokttFwn3TFdjD7A5XBCP4
+         LyN4cSu1O4VjK2AkPeYpb6G/U72mrfi+lYAvstvr+roFFJIZoAnQ8s3XvTBcJ5yDNL9F
+         P2r/2AkpbwclBow1dPCBHyA9s7xcHnosZqWU80OakedbhAFYPV2rLpYTHplDscW6NBkU
+         08cxat2Gb19Erzu1a1c+UsaAgy8jRYvQHi54wAtPljkANPzIRz3jVHYn2nmLq5NJiIbN
+         V7Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ABtoKcunWta1zPd9OAU4HivGakSrvH6t7PoGrVg1IHw=;
-        b=JCiWj+2aPqwpdji8NxzdMqg++kboWkXJ6VfsGLYvn2Cl+7NslwjX71LqMcc4dWrbJz
-         KjhYmznA81B/myldkfma3lR7WI2NRXttFo8GR+I+CksxOcf0On3a+tsBWcd+GZZw1Hq1
-         JLtk1woghAW+5aqknFG7Yp3guRKz8xFf9K9X4yd9Kke9oTf7r/gy0mGRVam0V3Sb//YE
-         MTTUSF2+enzNRnTH2+7sMQ7fAwDV0YohBLICpRNnm3AYOqXp7sQSKciKEs+LDkoDNZoy
-         iudeOHvEE9N7O3UX6MqJICYT97XAZTaPPsiNF6PXD3a3pxSVX01//VNzOSeXf32To+CG
-         vPHg==
-X-Gm-Message-State: AOAM5320Gw13nn/OsaNk0WFVLWL/U0tlNd0zVngKQZSH+m3wvmMA+gwN
-        whmxFtNTvNwk+dTuWdAkDG4ywA==
-X-Google-Smtp-Source: ABdhPJwKJni/XUuyRKR8S/sAchcIII3C/3Gdc/GCPUNVX6T8sPkuUFzqwgJFnhzYtCojkw18DlkE7Q==
-X-Received: by 2002:a17:907:426c:: with SMTP id nx20mr7604495ejb.548.1594977490002;
-        Fri, 17 Jul 2020 02:18:10 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([81.246.10.41])
-        by smtp.gmail.com with ESMTPSA id p4sm7541372eji.123.2020.07.17.02.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 02:18:08 -0700 (PDT)
-Subject: Re: [MPTCP] [PATCH 05/22] net: remove
- compat_sock_common_{get,set}sockopt
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Chas Williams <3chas3@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, mptcp@lists.01.org
-References: <20200717062331.691152-1-hch@lst.de>
- <20200717062331.691152-6-hch@lst.de>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <203f5f41-1de0-575e-864b-53a9412d97f6@tessares.net>
-Date:   Fri, 17 Jul 2020 11:18:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gLc/sXnHRqOoFTO4DitwMjah/zdKxSzcKB3wEkyAsl4=;
+        b=k1JqXo5cY2SP8fTWk3qHG4mZg9SM1LrGO5BTXuMwag92MyA2Z0+Gcncqsk79DPnZ6N
+         YqeGb07y31yWAcKpFef6m1Zo9nnkrqe0K+dMA04CCszx3NW4TSaWno8B94mV3YwjiHtR
+         T+z5JOl/mOCJeA391uLxANJ0HdKuC9PSSPIGAlV6qWGVhxkq78/TjSYRFqOE5zRAWlY1
+         Hy5/5PaCU64MUvTd+fp1qjpCpQgBfJYyGYVzoLo16PVPc7L1Zes4kQ7RCvtsCf1swBm5
+         xr7TLHPOxNunJv9Q2qS/h7yvca9gqqRyTa6lwOzb+6UEGRAUFgKihSgRWO4a7d6XNpfB
+         XcIA==
+X-Gm-Message-State: AOAM532Hyi8OWhO1GQivytxuC1gu4REsWABYZ91kpxj063AmbBX3HmVV
+        o1hqbx5dUeJ+dOHrbJ7akEsFgp4N30VDgFC458VDESWgKiQ=
+X-Google-Smtp-Source: ABdhPJydHgtFc6+LYSdGKzcX0voXmBdnN1kxxM566RYPvi/tFWswt+A4ojSvBjJme3Q/iy96zMAoqK6SbNj20eM9VLQ=
+X-Received: by 2002:a9d:5e18:: with SMTP id d24mr7773734oti.88.1594977540071;
+ Fri, 17 Jul 2020 02:19:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200717062331.691152-6-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <1593004330-5039-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1593004330-5039-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200717083620.GD1027@bug>
+In-Reply-To: <20200717083620.GD1027@bug>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 17 Jul 2020 10:18:33 +0100
+Message-ID: <CA+V-a8vBM9LKE51TEVX5auU6y07sube6Uowg6mVmd7GQTNTQQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/11] arm64: dts: renesas: hihope-common: Separate out
+ Rev.2.0 specific into hihope-common-rev2.dtsi file
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Hi Pavel,
 
-On 17/07/2020 08:23, Christoph Hellwig wrote:
-> Add the compat handling to sock_common_{get,set}sockopt instead,
-> keyed of in_compat_syscall().  This allow to remove the now unused
-> ->compat_{get,set}sockopt methods from struct proto_ops.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   include/linux/net.h      |  6 ------
->   include/net/sock.h       |  4 ----
->   net/core/sock.c          | 30 ++++++------------------------
->   net/mptcp/protocol.c     |  6 ------
-
-Thank you for looking at that!
-
-For MPTCP-related code:
-
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+On Fri, Jul 17, 2020 at 9:36 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> Can we have node names consistent with other systems?
+>
+> > +     leds {
+> > +             compatible = "gpio-leds";
+> > +
+> > +             bt_active_led {
+> > +                     label = "blue:bt";
+> > +                     gpios = <&gpio7  0 GPIO_ACTIVE_HIGH>;
+> > +                     linux,default-trigger = "hci0-power";
+> > +                     default-state = "off";
+> > +             };
+> > +
+> > +             wlan_active_led {
+> > +                     label = "yellow:wlan";
+> > +                     gpios = <&gpio7  1 GPIO_ACTIVE_HIGH>;
+> > +                     linux,default-trigger = "phy0tx";
+> > +                     default-state = "off";
+> > +             };
+> > +     };
+>
+Could you please point me to an example system which you are referring to?
 
 Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+--Prabhakar Lad
+
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
