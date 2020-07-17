@@ -2,139 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DE4224288
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2819C22427D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgGQRsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        id S1726557AbgGQRrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgGQRsE (ORCPT
+        with ESMTP id S1726232AbgGQRrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:48:04 -0400
+        Fri, 17 Jul 2020 13:47:19 -0400
 Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2942CC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:48:04 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a21so11722521ejj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:48:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70906C0619D2;
+        Fri, 17 Jul 2020 10:47:19 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id lx13so11765699ejb.4;
+        Fri, 17 Jul 2020 10:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ouPoIbaznwUvpvUZ+d9Lmd0+7ZlkFrw9Vubc0luuMm4=;
-        b=T6HKmBM9wpL/nF5N2IowQkS/pBz5KcI4emAgAF/8bejb3Rhx2qwrGgob1UjZiG3w7S
-         sV6mfszfROVCaEu8RGIpZ4VkI2TfV76l3kRAt5KhIYLORviINuEzJTcBZun0PPQ+17yC
-         sL7ngdlkBSr0haa/a+I8w89hJ7YH96WrmJqjEEQ0IghXlJVhpi5weKEIajlkG6ys7hyd
-         bZmMEpFCkEu4wbXN27ODtK768/E5FhwvDDArao/vNYiIfxrf2lW3myBzMBQ5v233gbff
-         d1eBjiTWMO6Gs1QkbbmCsFdWavwcujwbbYY4NlsshvUcQAPvgs23KuSHpFcZHhwd9zi3
-         jBBQ==
+        bh=MCHMQCyaGiFmiAEOZCGJJ9+ZHHBfKYMD4ndLx0utt+k=;
+        b=kL6cSQaA7ZAVb822SFcAn7jM2Z6R7qPL+QjfpbvzDVzuf+tomRxqOFWAJ20xTDf1tY
+         2rbaQqrOLOC/Bo8gmXu2gTHqxX6Qo4NB57ye5M0qR6u6UtQM5s8N+0UVlh9tLUyFdjL/
+         Eyj8QpTzQ9BBM2QPHD6E8YuSF8JTRCENbiVEYnryF8HkLcdFxrbD313fC06dlQ2mRqAv
+         YMyf04NxtyDacYtALlkVvz5xR1aGACID1vGMZI0WQsm1aXahrqOuctfNzpptlK/1atPw
+         h5zCqVW2HBLNE64+8ZJPcJqL5mjo3EtLkUTKyOAKfciGLTj114RioK73jR5iAjg69Lsb
+         XMdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ouPoIbaznwUvpvUZ+d9Lmd0+7ZlkFrw9Vubc0luuMm4=;
-        b=IKHatP6jDHRLrWAzIH2fLBL+/HdH/moHgEF1KQEkFoNloMFmHqtlFKJ0o5V+nBxJ45
-         UNx7y2SNA/D5Eu22ckfbJGv1e/5llSWA7gJo7d3WVchugZ38n1W7+1E+N/Bwa31TbD+R
-         84prQXlMw9wAIzslsSFenxfyKEFqZ9L2HtyAu1VRhkGyJKPjIM5fC3j7+OjdoBvDpFQ6
-         DctlUejfJDtBP4f2WWb4Nnbgtb8zUjf29JFhn0C2qlRiRr4EXo8h7BTlrVB7uqTwgt6n
-         sCNAQ30i6UWlbViYOub9OPFOcRW4FjJjWpEooMv1BumtShkZHLqTH7/fwfEk9RlkAQuk
-         jMzQ==
-X-Gm-Message-State: AOAM532dCLlPvDgxmNWCtrFZ4d5ktP9ybA3Y6+yh6kPB1eAjlxMAccPM
-        bJhGaaK4+9tksDl2SJSz0/D12ztG8cNi2+hCC4hEwA==
-X-Google-Smtp-Source: ABdhPJxAkNoEdvBMsNoiwT/xtC3KzAJM3mngqfnMyotl0K4+5QQM9nsSc91iJTIh6/lQ8mnSCUp3b+j2mW212gFA81Q=
-X-Received: by 2002:a17:906:6959:: with SMTP id c25mr9393908ejs.375.1595008082575;
- Fri, 17 Jul 2020 10:48:02 -0700 (PDT)
+        bh=MCHMQCyaGiFmiAEOZCGJJ9+ZHHBfKYMD4ndLx0utt+k=;
+        b=hWeNo40xfimkQScjsbQcKWfOJWmCiFY3qqPMWI2yWQo4qkl8u30Xp9hpBlg1hc4Pv6
+         bhbph/AobDa3CmSDZMK1njoeI2SYOhHca9/Ur/SfBdARwUqdworZ0OqzscWyxgalyHp9
+         v69c4DaP5nFUzWTQoVw3c3iy9dx39p3rsqnze+vxwVD9oy3GMgkOYmd9NjI6k70yP+SD
+         9Pq8tz8TUJHszKj8PzsqJuBePvH5fOqlJyTtk+RWBBErjsQBys8rCQa09lKE2kI76qvX
+         NCoAYiPQ3WUwtEUwcXI/3DqZS2I3fweHYZ3plbcWiXv/HZO1nGaMjdf6Bn8RjIbWsxJ1
+         ppig==
+X-Gm-Message-State: AOAM531/s+tADcbPsPMX4w7CBL9y7AmDX3NmLjvBtv69e0RfqxWQiwMq
+        TdtOZ+Z8ZH1aXFeyeYTVikDqozaU/1+w1mw1MJI=
+X-Google-Smtp-Source: ABdhPJwtmM5I9XsUxydmrAjDhrNrNvfs/8okO6i9fpHQnBYs8v9G4H73wAYeFtCw/gPwg6HQpmgc6UytC/0WnR2RsRo=
+X-Received: by 2002:a17:906:7c54:: with SMTP id g20mr9931963ejp.460.1595008037981;
+ Fri, 17 Jul 2020 10:47:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200624203200.78870-5-samitolvanen@google.com> <20200624212737.GV4817@hirez.programming.kicks-ass.net>
- <20200624214530.GA120457@google.com> <20200625074530.GW4817@hirez.programming.kicks-ass.net>
- <20200625161503.GB173089@google.com> <20200625200235.GQ4781@hirez.programming.kicks-ass.net>
- <20200625224042.GA169781@google.com> <20200626112931.GF4817@hirez.programming.kicks-ass.net>
- <CABCJKucSM7gqWmUtiBPbr208wB0pc25afJXc6yBQzJDZf4LSWA@mail.gmail.com> <20200717133645.7816c0b6@oasis.local.home>
-In-Reply-To: <20200717133645.7816c0b6@oasis.local.home>
-From:   Sami Tolvanen <samitolvanen@google.com>
+References: <1594292674-15632-1-git-send-email-rnayak@codeaurora.org> <1594292674-15632-4-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1594292674-15632-4-git-send-email-rnayak@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
 Date:   Fri, 17 Jul 2020 10:47:51 -0700
-Message-ID: <CABCJKuda0AFCZ-1J2NTLc-M0xax007a9u-fzOoxmU2z60jvzbA@mail.gmail.com>
-Subject: Re: [RFC][PATCH] objtool,x86_64: Replace recordmcount with objtool
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Matt Helsley <mhelsley@vmware.com>
+Message-ID: <CAF6AEGvioVKKSN-UP35OfJcfUXeHy34Y6w2eM_FZU+zpTaRE7A@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] arm64: dts: sdm845: Add DSI and MDP OPP tables and power-domains
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Sean Paul <sean@poorly.run>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:36 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Jul 9, 2020 at 4:05 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
 >
-> On Fri, 17 Jul 2020 10:28:13 -0700
-> Sami Tolvanen <samitolvanen@google.com> wrote:
+> Add the OPP tables for DSI and MDP based on the perf state/clk
+> requirements, and add the power-domains property to specify the
+> scalable power domain.
 >
-> > On Fri, Jun 26, 2020 at 4:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Jun 25, 2020 at 03:40:42PM -0700, Sami Tolvanen wrote:
-> > >
-> > > > > Not boot tested, but it generates the required sections and they look
-> > > > > more or less as expected, ymmv.
-> > >
-> > > > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > > > > index a291823f3f26..189575c12434 100644
-> > > > > --- a/arch/x86/Kconfig
-> > > > > +++ b/arch/x86/Kconfig
-> > > > > @@ -174,7 +174,6 @@ config X86
-> > > > >     select HAVE_EXIT_THREAD
-> > > > >     select HAVE_FAST_GUP
-> > > > >     select HAVE_FENTRY                      if X86_64 || DYNAMIC_FTRACE
-> > > > > -   select HAVE_FTRACE_MCOUNT_RECORD
-> > > > >     select HAVE_FUNCTION_GRAPH_TRACER
-> > > > >     select HAVE_FUNCTION_TRACER
-> > > > >     select HAVE_GCC_PLUGINS
-> > > >
-> > > > This breaks DYNAMIC_FTRACE according to kernel/trace/ftrace.c:
-> > > >
-> > > >   #ifndef CONFIG_FTRACE_MCOUNT_RECORD
-> > > >   # error Dynamic ftrace depends on MCOUNT_RECORD
-> > > >   #endif
-> > > >
-> > > > And the build errors after that seem to confirm this. It looks like we might
-> > > > need another flag to skip recordmcount.
-> > >
-> > > Hurm, Steve, how you want to do that?
-> >
-> > Steven, did you have any thoughts about this? Moving recordmcount to
-> > an objtool pass that knows about call sites feels like a much cleaner
-> > solution than annotating kernel code to avoid unwanted relocations.
-> >
->
-> Bah, I started to reply to this then went to look for details, got
-> distracted, forgot about it, my laptop crashed (due to a zoom call),
-> and I lost the email I was writing (haven't looked in the drafts
-> folder, but my idea about this has changed since anyway).
->
-> So the problem is that we process mcount references in other areas and
-> that confuses the ftrace modification portion?
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
 
-Correct.
+Tested-by: Rob Clark <robdclark@gmail.com>
 
-> Someone just submitted a patch for arm64 for this:
+Bjorn, the two driver patches are queued up in msm-next, I assume
+you'll pickup the two dt patches?
+
+BR,
+-R
+
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 59 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
 >
-> https://lore.kernel.org/r/20200717143338.19302-1-gregory.herrero@oracle.com
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index fee50d9..3efdd70 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -3296,6 +3296,35 @@
+>                         #power-domain-cells = <1>;
+>                 };
 >
-> Is that what you want?
-
-That looks like the same issue, but we need to fix this on x86 instead.
-
-Sami
+> +               dsi_opp_table: dsi-opp-table {
+> +                       compatible = "operating-points-v2";
+> +
+> +                       opp-19200000 {
+> +                               opp-hz = /bits/ 64 <19200000>;
+> +                               required-opps = <&rpmhpd_opp_min_svs>;
+> +                       };
+> +
+> +                       opp-180000000 {
+> +                               opp-hz = /bits/ 64 <180000000>;
+> +                               required-opps = <&rpmhpd_opp_low_svs>;
+> +                       };
+> +
+> +                       opp-275000000 {
+> +                               opp-hz = /bits/ 64 <275000000>;
+> +                               required-opps = <&rpmhpd_opp_svs>;
+> +                       };
+> +
+> +                       opp-328580000 {
+> +                               opp-hz = /bits/ 64 <328580000>;
+> +                               required-opps = <&rpmhpd_opp_svs_l1>;
+> +                       };
+> +
+> +                       opp-358000000 {
+> +                               opp-hz = /bits/ 64 <358000000>;
+> +                               required-opps = <&rpmhpd_opp_nom>;
+> +                       };
+> +               };
+> +
+>                 mdss: mdss@ae00000 {
+>                         compatible = "qcom,sdm845-mdss";
+>                         reg = <0 0x0ae00000 0 0x1000>;
+> @@ -3340,6 +3369,8 @@
+>                                                   <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
+>                                 assigned-clock-rates = <300000000>,
+>                                                        <19200000>;
+> +                               operating-points-v2 = <&mdp_opp_table>;
+> +                               power-domains = <&rpmhpd SDM845_CX>;
+>
+>                                 interrupt-parent = <&mdss>;
+>                                 interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -3364,6 +3395,30 @@
+>                                                 };
+>                                         };
+>                                 };
+> +
+> +                               mdp_opp_table: mdp-opp-table {
+> +                                       compatible = "operating-points-v2";
+> +
+> +                                       opp-19200000 {
+> +                                               opp-hz = /bits/ 64 <19200000>;
+> +                                               required-opps = <&rpmhpd_opp_min_svs>;
+> +                                       };
+> +
+> +                                       opp-171428571 {
+> +                                               opp-hz = /bits/ 64 <171428571>;
+> +                                               required-opps = <&rpmhpd_opp_low_svs>;
+> +                                       };
+> +
+> +                                       opp-344000000 {
+> +                                               opp-hz = /bits/ 64 <344000000>;
+> +                                               required-opps = <&rpmhpd_opp_svs_l1>;
+> +                                       };
+> +
+> +                                       opp-430000000 {
+> +                                               opp-hz = /bits/ 64 <430000000>;
+> +                                               required-opps = <&rpmhpd_opp_nom>;
+> +                                       };
+> +                               };
+>                         };
+>
+>                         dsi0: dsi@ae94000 {
+> @@ -3386,6 +3441,8 @@
+>                                               "core",
+>                                               "iface",
+>                                               "bus";
+> +                               operating-points-v2 = <&dsi_opp_table>;
+> +                               power-domains = <&rpmhpd SDM845_CX>;
+>
+>                                 phys = <&dsi0_phy>;
+>                                 phy-names = "dsi";
+> @@ -3450,6 +3507,8 @@
+>                                               "core",
+>                                               "iface",
+>                                               "bus";
+> +                               operating-points-v2 = <&dsi_opp_table>;
+> +                               power-domains = <&rpmhpd SDM845_CX>;
+>
+>                                 phys = <&dsi1_phy>;
+>                                 phy-names = "dsi";
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
