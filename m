@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770B92240FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EE2224105
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgGQQ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S1728098AbgGQQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgGQQ42 (ORCPT
+        with ESMTP id S1727971AbgGQQ43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:56:28 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6F8C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:28 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o8so15945334wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:28 -0700 (PDT)
+        Fri, 17 Jul 2020 12:56:29 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C18C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:29 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q15so15968193wmj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:56:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TkOYSGltdOXnfd+0tERuVE54MScMlmkqbTAm2yNvNuQ=;
-        b=DTRhBaRQRjcS7sPkr9Rcnr/ZtOhPRL+7IF+l/wRBS2gE9kpSsDvBNkY1IN5u5fqxqB
-         o5GtUs99QqTzB+GPfDYrOO/z73yzT80INXtnSU7PmyKIFScL028ddBUUfEcTsKIho0tB
-         d9ZDQnCAz0Y79xLwcfKFME9mVwP+k3/Jpvt3I5obTkR0VZJWPtkreuwFZWKrig3QYEof
-         cYw432EsBY3NSGuvktvzvG1iM4ODBUnX667Lwi5H/+NtBEON8qqnvJEqV1b4l6eOz/4D
-         kcid0oyZblGB0+CHV+G8Tjwau5JZO1Iaz7fA2wYm00DWcdxEzJt5TXiHOMpFAokVG397
-         tHvA==
+        bh=HA5KB0sL+kEMYPMfqRb/LMvZqE0HiKOu7GwHruCFgr8=;
+        b=XYmAwbiceHH7jCfIcdW9ZdUBAKaLcD2MIwfgwFhIF7hoj781v/vZfidaXkIS3u7G/z
+         LGK74R9BA+p931oPHmCKsFSQT/9Le7zJsVIhecUcsFC3tF3GBhERnuo7AyNPoGTshMuN
+         DvxMvtHNy064UBqjC3eGlTL7HyKl7Bw6EZ+dnsddW0ngKs3QrZWGWFx/x4LmYlmcHggg
+         6p9spcXFsX+7E4AKzyakXst+lzt/e0Bk8hH9Tocpwujhjs5dc7pXZEDF6LosYeMn2sMP
+         uBmlAekKAF1qAeKtkvXIml7kAyT6CmKgxkCpTSF4/rqD+df0W9nWcoP+ROzG25xOlX39
+         M6Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TkOYSGltdOXnfd+0tERuVE54MScMlmkqbTAm2yNvNuQ=;
-        b=JMi2QK06PvmnFKv2pVVsCIfPG43KiHvNardMwr3567twT3cFRgIhgGJPJi7MOoDidv
-         U/aVYPdXnEsvoTt0x/aPVDAQ5uYbBd0NluIGeIxQTsuIrLDZ7JLCytsjMgZHgOxjWsiH
-         9OdIWfedDb1EtZb/MEaNryESJ4UvrIUIboZ/gV6L+BQZq4/cQSG2CpLiSP8NfQ+BTPNS
-         wQ4QHDNfvauWbxdpIIP0xqZNFmstfei152LHGRFhelFtXACsuPWCNz9Oy96+Tj/CipvJ
-         vuaUru3ZMqC+6Hpwbh00gCPH0FxylAhNLTmPdy+jfLje+NAb13+CMID6pL6Fi5UHh9+S
-         z85g==
-X-Gm-Message-State: AOAM533kI9tMN6eFLEPpfF42xaAp2dVJpdpwEgeteyBTpR6BHZa27Sgv
-        jCTmbPfK5VIHTNlOUpZ2bKSpBw==
-X-Google-Smtp-Source: ABdhPJxDjfQUnVh6/KkbozE7NYDq+1TjlinAums8GsbsNOoTvRInXHpBx5zHQFNjp3F29RMu3UBUOw==
-X-Received: by 2002:a1c:2602:: with SMTP id m2mr10750323wmm.50.1595004987141;
-        Fri, 17 Jul 2020 09:56:27 -0700 (PDT)
+        bh=HA5KB0sL+kEMYPMfqRb/LMvZqE0HiKOu7GwHruCFgr8=;
+        b=AywPLAi7aRzGdTQSwDh5kqMvz38pdMiNTFOYwxeGJO4Ev+ala/B704c4Pz4PHRnfqT
+         Ro5p7h5/qMbXuHWp25eZ8UoalxPVtcDOsw/3vbsk0NA8g4KxXK8TZsHmY2ISX8WeJnCD
+         1CGlTdueCt/iXGVGIqj383IRpF4Vn8bhEPcS5/EQibKLl5DzT06w0+WOUJcsF40acLCl
+         V+FJmys4Z4dTy8sSEcXWh6HjPW5C27upu/hQRoc1UECsmylQ6c2p5k6jsSCaURu06ezh
+         OCMdUroot+5eHANWK1Xn4Ro/+hVbp9vueP9ruhCbNQak+77AURGvbJP8A84ZzhFdDH8o
+         asfg==
+X-Gm-Message-State: AOAM531yJVzRH7xkqN0/QrWFYoaaXIAXsS4S2CCG3iO82dMQuS8L3RPN
+        UfZt+AVNPZggvQr7HAW247FILQ==
+X-Google-Smtp-Source: ABdhPJwk96D/etDyzrzif8dB+/0xJfCPzpvzLJ6j9vx1QxRMZQs/rb8F3g2zzaRoqCFrli23m0pveg==
+X-Received: by 2002:a1c:4b09:: with SMTP id y9mr10556037wma.46.1595004988192;
+        Fri, 17 Jul 2020 09:56:28 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.26
+        by smtp.gmail.com with ESMTPSA id k4sm14941516wrp.86.2020.07.17.09.56.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 09:56:26 -0700 (PDT)
+        Fri, 17 Jul 2020 09:56:27 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH 26/30] iio: adc: qcom-pm8xxx-xoadc: Demote standard comment block and supply missing description
-Date:   Fri, 17 Jul 2020 17:55:34 +0100
-Message-Id: <20200717165538.3275050-27-lee.jones@linaro.org>
+        Samu Onkalo <samu.p.onkalo@nokia.com>
+Subject: [PATCH 27/30] iio: magnetometer: ak8974: Add description for ak8974's 'scan' attribute
+Date:   Fri, 17 Jul 2020 17:55:35 +0100
+Message-Id: <20200717165538.3275050-28-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717165538.3275050-1-lee.jones@linaro.org>
 References: <20200717165538.3275050-1-lee.jones@linaro.org>
@@ -70,46 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc is only suitable for documenting functions and struct/enums.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_INTERNAL' description in 'PM8XXX_CHANNEL_INTERNAL'
- drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_125V' description in 'PM8XXX_CHANNEL_INTERNAL'
- drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_INTERNAL_2' description in 'PM8XXX_CHANNEL_INTERNAL'
- drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_MUXOFF' description in 'PM8XXX_CHANNEL_INTERNAL'
- drivers/iio/adc/qcom-pm8xxx-xoadc.c:412: warning: Function parameter or member 'variant' not described in 'pm8xxx_xoadc'
+ drivers/iio/magnetometer/ak8974.c:200: warning: Function parameter or member 'scan' not described in 'ak8974'
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org
+Cc: Samu Onkalo <samu.p.onkalo@nokia.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/adc/qcom-pm8xxx-xoadc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/iio/magnetometer/ak8974.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iio/adc/qcom-pm8xxx-xoadc.c b/drivers/iio/adc/qcom-pm8xxx-xoadc.c
-index c599ffa45a04c..cd5fa30e77df4 100644
---- a/drivers/iio/adc/qcom-pm8xxx-xoadc.c
-+++ b/drivers/iio/adc/qcom-pm8xxx-xoadc.c
-@@ -120,7 +120,7 @@
- #define ADC_ARB_USRP_DATA0			0x19D
- #define ADC_ARB_USRP_DATA1			0x19C
- 
--/**
-+/*
-  * Physical channels which MUST exist on all PM variants in order to provide
-  * proper reference points for calibration.
-  *
-@@ -388,6 +388,7 @@ struct pm8xxx_chan_info {
-  * struct pm8xxx_xoadc - state container for the XOADC
-  * @dev: pointer to device
-  * @map: regmap to access registers
-+ * @variant: XOADC variant characteristics
-  * @vref: reference voltage regulator
-  * characteristics of the channels, and sensible default settings
-  * @nchans: number of channels, configured by the device tree
+diff --git a/drivers/iio/magnetometer/ak8974.c b/drivers/iio/magnetometer/ak8974.c
+index 91c39352fba26..4d6d8b699f037 100644
+--- a/drivers/iio/magnetometer/ak8974.c
++++ b/drivers/iio/magnetometer/ak8974.c
+@@ -180,6 +180,7 @@
+  * @drdy_irq: uses the DRDY IRQ line
+  * @drdy_complete: completion for DRDY
+  * @drdy_active_low: the DRDY IRQ is active low
++ * @scan: timestamps
+  */
+ struct ak8974 {
+ 	struct i2c_client *i2c;
 -- 
 2.25.1
 
