@@ -2,143 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B0D224055
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3A622406E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgGQQMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46020 "EHLO mail.kernel.org"
+        id S1726811AbgGQQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:17:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:43376 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgGQQMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:12:39 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BAAD2070E;
-        Fri, 17 Jul 2020 16:12:35 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 12:12:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Linux-trace Users <linux-trace-users@vger.kernel.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Yordan Karadzhov <y.karadz@gmail.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Changbin Du <changbin.du@gmail.com>,
-        Patrick McLean <chutzpah@gentoo.org>,
-        Josh Boyer <jwboyer@fedoraproject.org>,
-        Clark Williams <williams@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        John Kacur <jkacur@redhat.com>, Tony Jones <tonyj@suse.de>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Wagner <wagi@monom.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Josef Bacik <jbacik@fb.com>, troyengel@gmail.com,
-        Behan Webster <behanw@converseincode.com>
-Subject: [ANNOUNCE] trace-cmd 2.9
-Message-ID: <20200717121233.5d0d131c@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726104AbgGQQR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:17:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A864B142F;
+        Fri, 17 Jul 2020 09:17:27 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB4FF3F68F;
+        Fri, 17 Jul 2020 09:17:25 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 17:17:23 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Oliver Neukum <oneukum@suse.de>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Dirk Behme <dirk.behme@de.bosch.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH 4.14 105/136] usb/ehci-platform: Set PM runtime as active
+ on resume
+Message-ID: <20200717161639.37ptgbolborimcvs@e107158-lin.cambridge.arm.com>
+References: <20200623195303.601828702@linuxfoundation.org>
+ <20200623195308.955410923@linuxfoundation.org>
+ <20200709070023.GA18414@lxhi-065.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200709070023.GA18414@lxhi-065.adit-jv.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm happy to announce that after over a year, we finally are able to
-release trace-cmd version 2.9!
+Hi Eugeniu
 
+On 07/09/20 09:00, Eugeniu Rosca wrote:
+> Hello everyone,
+> 
+> Cc: linux-renesas-soc
+> Cc: linux-pm
 
-Features and user visible updates since 2.8:
+[...]
 
- - git hash is now visible in trace-cmd --version output
+> After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+> Set PM runtime as active on resume") into downstream v4.14.x, we started
+> to consistently experience below panic [1] on every second s2ram of
+> R-Car H3 Salvator-X Renesas reference board.
+> 
+> After some investigations, we concluded the following:
+>  - the issue does not exist in vanilla v5.8-rc4+
+>  - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>    of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>    link support"). Getting evidence for that is easy. Reverting
+>    987351e1ea7772 in vanilla leads to a similar backtrace [2].
+> 
+> Questions:
+>  - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>    link support") to v4.14.187 looks challenging enough, so probably not
+>    worth it. Anybody to contradict this?
+>  - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>    should the following three v4.14.186 commits be reverted on v4.14.x?
+>    * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>    * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>    * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
 
- - Build: python-dir can be specified on the command line for python
-   location.
+Thanks for investigating this.
 
- - Build: NO_UDIS86 on make command line to disable udisc86.
+Alan, Greg, do you have any ideas?
 
- - Build: All headers needed by kernelshark installed.
+Let me know if there's anything I can help with.
 
- - Added --proc-map to trace-cmd record.
-   Records the /proc/<pid>/maps of the traced file.
-   Used for seeing where page_faults happen (trace-cruncher can use it)
+Thanks
 
- - Add --user to trace-cmd record, to allow to suid to another user to
-   execute the command also on the command line. Useful as trace-cmd needs
-   to be run as root to start the tracing, but when root should not be used
-   as the application being traced.
-
- - Build: Install path of plugins have changed:
-                   ~/.traceevent/plugins/ --> ~/.local/lib/traceevent/plugins/
-   (install_prefix)/lib/trace-cmd/plugins --> (install_prefix)/lib/traceevent/plugins
-
- - trace-cmd reset will now clear the tracing_cpumask file.
-
- - ** NEW ** trace-cmd clear
-   Clear the trace file.
-
- - ** NEW ** trace-cmd agent
-   Can be run on a guest, which will listen on a vsock for commands.
-   trace-cmd report -A Gust <options for guest>
-   Will connect to the guest agent and have the agent run tracing commands
-   sending the data back to the host. See man pages for more details.
-   (note, the synchronization of time stamps is not yet available,
-    that will be coming in the next release of trace-cmd).
-
- - ** NEW ** trace-cmd setup-guest
-   Sets up fifos for a guest and host communications instead of vsocks.
-
- - Add --cmdline_size option to trace-cmd record.
-   Changes the number of process names that are saved in the cache while
-   tracing.
-
- - ** NEW ** trace-cmd dump
-   Dumps out raw data of the trace.dat file.
-
- - Build: New: make test
-   Builds and runs various unit tests.
-
- - More information from trace-cmd stat.
-
- - trace-cmd reset will now clear the error log.
-
- - Add option '-s' to trace-cmd list.
-   This will list the available systems (not events).
-
- - Recording will now stop if -P is on the command line of trace-cmd record
-   and those processes all exit.
-
- - trace-cmd start can now run commands.
-   This is useful when -F and -c are specified on the command line.
-   New "--fork" command line to have trace-cmd not wait for the command to
-   finish before exiting.
-
- - ** New ** trace-cmd set command.
-   Used to set or unset options without messing with other ftrace options.
-
-Plus many fixes and infrastructure improvements.
-Changes are also made to set up having libtraceevent, libtracefs and
-kernelshark be moved into their own git repositories.
-
-We plan on working more more aggressively on the libraries and the tool
-set, such that 3.0 wont take a year to be released.
-
-For more information please visit: https://trace-cmd.org
-
-If you would like to contribute, check out the above web site for where
-we do our development, and feel free to contact us on how to get
-involved.
-
-Enjoy,
-
--- Steve
+--
+Qais Yousef
