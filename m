@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B583822435D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE55D224362
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgGQSxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgGQSxA (ORCPT
+        id S1728335AbgGQSxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:53:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35840 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726205AbgGQSxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:53:00 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE4BC0619D2;
-        Fri, 17 Jul 2020 11:53:00 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 3271FBC063;
-        Fri, 17 Jul 2020 18:52:54 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        wsa@kernel.org, wahrenst@gmx.net, ardb@kernel.org,
-        chris.brandt@renesas.com, andriy.shevchenko@linux.intel.com,
-        grandmaster@al2klimov.de, linux-i2c@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: bcm2835: Replace HTTP links with HTTPS ones
-Date:   Fri, 17 Jul 2020 20:52:47 +0200
-Message-Id: <20200717185247.81988-1-grandmaster@al2klimov.de>
+        Fri, 17 Jul 2020 14:53:46 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HIVHEl037705;
+        Fri, 17 Jul 2020 14:53:17 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32b61kug3n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 14:53:17 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06HIh3JB111602;
+        Fri, 17 Jul 2020 14:53:16 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32b61kug3a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 14:53:16 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HIeEDH002740;
+        Fri, 17 Jul 2020 18:53:14 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 329nmyk7a3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 18:53:14 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HIrCtW14942478
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 18:53:12 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E88D15204E;
+        Fri, 17 Jul 2020 18:53:11 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.74.95])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 18EC952050;
+        Fri, 17 Jul 2020 18:53:07 +0000 (GMT)
+From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, benh@kernel.crashing.org,
+        paulus@samba.org, mikey@neuling.org, ego@linux.vnet.ibm.com,
+        svaidy@linux.ibm.com, psampat@linux.ibm.com,
+        pratik.r.sampat@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] powernv/idle: Power9 idle cleanup
+Date:   Sat, 18 Jul 2020 00:23:03 +0530
+Message-Id: <20200717185306.60607-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Spam-Level: ******
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spam: Yes
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_09:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 impostorscore=0 mlxlogscore=600
+ spamscore=0 clxscore=1015 suspectscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007170128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+v2: https://lkml.org/lkml/2020/7/10/28
+Changelog v2-->v3:
+1. Based on comments from Nicholas Piggin, introducing a cleanup patch
+   in which, instead of checking for CPU_FTR_ARCH_300 check for
+   PVR_POWER9 to allow for a finer granularity of checks where one
+   processor generation can have multiple ways to handling idle
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+2. Removed saving-restoring DAWR, DAWRX patch for P10 systems. Based on
+   discussions it has become evident that checks based on PVR is the way
+   to go; however, P10 PVR is yet to up-stream hence shelving this patch
+   for later.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+Pratik Rajesh Sampat (3):
+  powerpc/powernv/idle: Replace CPU features checks with PVR checks
+  powerpc/powernv/idle: Rename pnv_first_spr_loss_level variable
+  powerpc/powernv/idle: Exclude mfspr on HID1,4,5 on P9 and above
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+ arch/powerpc/platforms/powernv/idle.c | 38 +++++++++++++--------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- drivers/i2c/busses/i2c-bcm2835.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-bcm2835.c
-index d9b86fcc3825..5dc519516292 100644
---- a/drivers/i2c/busses/i2c-bcm2835.c
-+++ b/drivers/i2c/busses/i2c-bcm2835.c
-@@ -392,7 +392,7 @@ static const struct i2c_algorithm bcm2835_i2c_algo = {
- 
- /*
-  * The BCM2835 was reported to have problems with clock stretching:
-- * http://www.advamation.com/knowhow/raspberrypi/rpi-i2c-bug.html
-+ * https://www.advamation.com/knowhow/raspberrypi/rpi-i2c-bug.html
-  * https://www.raspberrypi.org/forums/viewtopic.php?p=146272
-  */
- static const struct i2c_adapter_quirks bcm2835_i2c_quirks = {
 -- 
-2.27.0
+2.25.4
 
