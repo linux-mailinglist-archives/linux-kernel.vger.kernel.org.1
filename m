@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6118E22450B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A980224502
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbgGQURa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728183AbgGQUR2 (ORCPT
+        id S1728669AbgGQUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:15:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42952 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgGQUPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:17:28 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688FBC0619D4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 13:17:28 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 207so5924813pfu.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 13:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iywrvyPBUDOgHRTdq53ACuS34hQViRNteLGcc1mvGYA=;
-        b=ZzQEnJsNJiKD1+yaEqf4xcmZtSkJVW4gUh/WVumhUke25claBLvOg39F57AjX/yF+t
-         IvyVWmqsEW1BG1/7ICm+lb5tIZHbhj6w4nT+BPSJ6CibQrPdK+8W8oAm9ZV7+CSh3o1L
-         9SBC3nq8OLCaa+A3fSH2QIaFY3KBeCMeHL73w5dOYvvE1PpkBGOCFRx8y6ZlQ31K2kAi
-         ZxpJ9UEIW9v0vrZQNDYA2jBFcqpLUTC5ham8evExg5OaVhsyNcwqAZTR3fjV6lHUUC3g
-         enqTg+ha9FChfUqjoDjg6uCiikxsYcZBbiKoKMsgyjIjrKE6ubdCgM7ABH06BNxm421j
-         xWGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iywrvyPBUDOgHRTdq53ACuS34hQViRNteLGcc1mvGYA=;
-        b=cuq6tyhml8dmTn7wkLFid7uhSm0Ab/aSVsUgH+RnvZLEacrBJDkDLEZfLXHqVDuxoX
-         WVzMkQ7OHqi0f+UKb45HcrC/oobl7rGrhLMrUWy27jIX57IdMuLQ7FgugMtx044ABwJB
-         +Lc1s/BJ5TZjmmLYqra/OLQ/GOeQLDRMXdusfQ2vKKv5RPStHFHALte8rHBOvZZ0RRRJ
-         N/7XNX/gR8N18WPP8LfLyFwrl6ZvOi2dO2Gx+3Fmkp9Utu3+OKfPGlGIXkAahYGsFXWs
-         y2WOCU90jnPAp5UNcylksv5dVXmRNOHorMzzgl2qKtsiQz86mlm4GMNW5lMeucU2XnNF
-         gZJw==
-X-Gm-Message-State: AOAM532a/uR5vNx1/CXrjJo9OFAn3q5VHUG5r1/FturDojHH1O6QF7+/
-        Cnb6X5N/rDbMuff1eZZDZRnikw==
-X-Google-Smtp-Source: ABdhPJz7Sa8W0Soyk0M+slHFD6+b0FyIRfrfoarpP+teJuhSDo13gE34xXY80gmRSxgao04OxKIvOg==
-X-Received: by 2002:a63:c150:: with SMTP id p16mr10228264pgi.141.1595017047679;
-        Fri, 17 Jul 2020 13:17:27 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id w12sm3084248pjb.18.2020.07.17.13.17.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 13:17:26 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 13:15:25 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 26/30] iio: adc: qcom-pm8xxx-xoadc: Demote standard
- comment block and supply missing description
-Message-ID: <20200717201525.GK388985@builder.lan>
-References: <20200717165538.3275050-1-lee.jones@linaro.org>
- <20200717165538.3275050-27-lee.jones@linaro.org>
+        Fri, 17 Jul 2020 16:15:36 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595016935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRr/bKkS7/U/6PsK6K4fGaOQKjxoGqV1/oWizy/cOuM=;
+        b=eYf4efJLxfwui+MVHDpTy8jq6eCnUI4+IQiXhuXrDc4H0ue1Al5tBX1sJ4qLQ4wKQqH1u2
+        956eMEIeLHrk4AfWY5YdKGxN9t86NZq3LOzOQFAsm6RnPo+CGISWOc2KlRkaUn2M/19rH4
+        PYVIYHad73Ryn5glPiK5I8Ua8CBz3nnmTYEgdtkKVwdTzgktOGxwDnX6z7GNL5dRIPnJqy
+        r/HqCXNvaIeqpARi2Kz1dBDslRlnKL4CiEdmkZBbw8zK9Ji5leH8jWEX9kH0weXqiDfItp
+        SSCH6bjrJ4+kfEzJotJE4V3qfD2igHia1mhyVz2S0soBzGh56xAFUglkAE79eA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595016935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRr/bKkS7/U/6PsK6K4fGaOQKjxoGqV1/oWizy/cOuM=;
+        b=D4hS5as4Ya+T4lxgDZSTebQLTY2wKeMIwZFGGYs735Ikk9vClgh/patDA2HRNIR53PLoWD
+        EXoAABBo5bb3KHCg==
+To:     Muchun Song <songmuchun@bytedance.com>, peterz@infradead.org,
+        mingo@kernel.org, bigeasy@linutronix.de, namit@vmware.com
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH RESEND] smp: Fix a potential usage of stale nr_cpus
+In-Reply-To: <20200716070457.53255-1-songmuchun@bytedance.com>
+References: <20200716070457.53255-1-songmuchun@bytedance.com>
+Date:   Fri, 17 Jul 2020 22:15:34 +0200
+Message-ID: <87k0z1rj89.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717165538.3275050-27-lee.jones@linaro.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17 Jul 09:55 PDT 2020, Lee Jones wrote:
+Muchun,
 
-> Kerneldoc is only suitable for documenting functions and struct/enums.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_INTERNAL' description in 'PM8XXX_CHANNEL_INTERNAL'
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_125V' description in 'PM8XXX_CHANNEL_INTERNAL'
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_INTERNAL_2' description in 'PM8XXX_CHANNEL_INTERNAL'
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c:133: warning: Excess function parameter 'PM8XXX_CHANNEL_MUXOFF' description in 'PM8XXX_CHANNEL_INTERNAL'
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c:412: warning: Function parameter or member 'variant' not described in 'pm8xxx_xoadc'
-> 
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Muchun Song <songmuchun@bytedance.com> writes:
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> The get_option() maybe return 0, it means that the nr_cpus is
+> not initialized.
 
+Good catch, but see below.
+
+> Then we will use the stale nr_cpus to initialize
+
+We use nothing. Please describe your changes in technical neutral
+language.
+
+> the nr_cpu_ids. So fix it.
+
+'So fix it.' is not much valuable information. What about:
+
+    Check the return value to prevent this.
+
+Hmm?
+
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > ---
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/qcom-pm8xxx-xoadc.c b/drivers/iio/adc/qcom-pm8xxx-xoadc.c
-> index c599ffa45a04c..cd5fa30e77df4 100644
-> --- a/drivers/iio/adc/qcom-pm8xxx-xoadc.c
-> +++ b/drivers/iio/adc/qcom-pm8xxx-xoadc.c
-> @@ -120,7 +120,7 @@
->  #define ADC_ARB_USRP_DATA0			0x19D
->  #define ADC_ARB_USRP_DATA1			0x19C
+>  kernel/smp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index 472c2b274c65..2a9a04acf123 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -634,8 +634,7 @@ static int __init nrcpus(char *str)
+>  {
+>  	int nr_cpus;
 >  
-> -/**
-> +/*
->   * Physical channels which MUST exist on all PM variants in order to provide
->   * proper reference points for calibration.
->   *
-> @@ -388,6 +388,7 @@ struct pm8xxx_chan_info {
->   * struct pm8xxx_xoadc - state container for the XOADC
->   * @dev: pointer to device
->   * @map: regmap to access registers
-> + * @variant: XOADC variant characteristics
->   * @vref: reference voltage regulator
->   * characteristics of the channels, and sensible default settings
->   * @nchans: number of channels, configured by the device tree
-> -- 
-> 2.25.1
-> 
+> -	get_option(&str, &nr_cpus);
+> -	if (nr_cpus > 0 && nr_cpus < nr_cpu_ids)
+> +	if (get_option(&str, &nr_cpus) && nr_cpus > 0 && nr_cpus < nr_cpu_ids)
+>  		nr_cpu_ids = nr_cpus;
+>  
+>  	return 0;
+
+get_option() can return 0 - 3:
+
+ *      0 - no int in string
+ *      1 - int found, no subsequent comma
+ *      2 - int found including a subsequent comma
+ *      3 - hyphen found to denote a range
+
+For this parameter exists only one valid format: '1 - int found, no comma',
+right?
+
+So why fixing it just half and why returning '0' aka success if the
+parameter is bogus?
+
+Thanks,
+
+        tglx
