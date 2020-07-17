@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408F022316B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C16F22316D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgGQDEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:04:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:64377 "EHLO mga09.intel.com"
+        id S1727819AbgGQDEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:04:46 -0400
+Received: from mga11.intel.com ([192.55.52.93]:51486 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726974AbgGQDEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:04:36 -0400
-IronPort-SDR: lgIBqWgI8828t/dvo+l+giqKDcHjwtWVQh5b//pjZFxkTotF0UgABoXPLvUdQItm6GfW7WHXW/
- 7/pVBGRMdSSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="150911880"
+        id S1727794AbgGQDEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 23:04:44 -0400
+IronPort-SDR: fbUKdYMor8OIpdxylk/VEjvivC4rdkzIvjvSGbvB0O3KhNhiywtUEgMtU3BS0N9+qsjWawv13h
+ EbhENyni1Fdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147518870"
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="150911880"
+   d="scan'208";a="147518870"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:34 -0700
-IronPort-SDR: MVIEKgMVVFLb0tEnRCpp1hJSuDHZ5wku/OVBAfa6T4aB0KP6SVsOOeC5iqf+FrP0NT/HTR88lU
- 6Me0OiSfKEMw==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:41 -0700
+IronPort-SDR: VQEGZ2WgVvFJE1FAmFphcFmUPHlC3Zi5pgB/QjwWTUVIJhHf0bLL/vTztbgy7nArbBSXvvN+95
+ dbpfEO2xa2YQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="286686856"
+   d="scan'208";a="286686881"
 Received: from pgerasim-mobl1.ccr.corp.intel.com (HELO localhost) ([10.249.34.31])
-  by orsmga006.jf.intel.com with ESMTP; 16 Jul 2020 20:04:32 -0700
+  by orsmga006.jf.intel.com with ESMTP; 16 Jul 2020 20:04:36 -0700
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH v4 1/7] module: Add lock_modules() and unlock_modules()
-Date:   Fri, 17 Jul 2020 06:04:15 +0300
-Message-Id: <20200717030422.679972-2-jarkko.sakkinen@linux.intel.com>
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: [PATCH v4 2/7] kprobes: Use lock_modules() and unlock_modules()
+Date:   Fri, 17 Jul 2020 06:04:16 +0300
+Message-Id: <20200717030422.679972-3-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
 References: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
@@ -46,52 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add wrapper functions for acquiring module_mutex so that the locking can
-be implicitly compiled out when CONFIG_MODULES is not enabled.
+Use lock_modules() and unlock_modules() in order to remove compile time
+dependency to the module subsystem.
 
 Cc: Andi Kleen <ak@linux.intel.com>
-Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- include/linux/module.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ kernel/kprobes.c            | 4 ++--
+ kernel/trace/trace_kprobe.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 2e6670860d27..8850b9692b8f 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -705,6 +705,16 @@ static inline bool is_livepatch_module(struct module *mod)
- bool is_module_sig_enforced(void);
- void set_module_sig_enforced(void);
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 2e97febeef77..4e46d96d4e16 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -564,7 +564,7 @@ static void kprobe_optimizer(struct work_struct *work)
+ 	cpus_read_lock();
+ 	mutex_lock(&text_mutex);
+ 	/* Lock modules while optimizing kprobes */
+-	mutex_lock(&module_mutex);
++	lock_modules();
  
-+static inline void lock_modules(void)
-+{
-+	mutex_lock(&module_mutex);
-+}
-+
-+static inline void unlock_modules(void)
-+{
-+	mutex_unlock(&module_mutex);
-+}
-+
- #else /* !CONFIG_MODULES... */
+ 	/*
+ 	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
+@@ -589,7 +589,7 @@ static void kprobe_optimizer(struct work_struct *work)
+ 	/* Step 4: Free cleaned kprobes after quiesence period */
+ 	do_free_cleaned_kprobes();
  
- static inline struct module *__module_address(unsigned long addr)
-@@ -852,6 +862,14 @@ void *dereference_module_function_descriptor(struct module *mod, void *ptr)
- 	return ptr;
- }
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	mutex_unlock(&text_mutex);
+ 	cpus_read_unlock();
  
-+static inline void lock_modules(void)
-+{
-+}
-+
-+static inline void unlock_modules(void)
-+{
-+}
-+
- #endif /* CONFIG_MODULES */
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index aefb6065b508..710ec6a6aa8f 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -122,9 +122,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 	if (!p)
+ 		return true;
+ 	*p = '\0';
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	ret = !!find_module(tk->symbol);
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	*p = ':';
  
- #ifdef CONFIG_SYSFS
+ 	return ret;
 -- 
 2.25.1
 
