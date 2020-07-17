@@ -2,222 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795542240A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D099322409F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgGQQei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726221AbgGQQeh (ORCPT
+        id S1726928AbgGQQbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:31:23 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14198 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgGQQbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:34:37 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B937C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:34:37 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g67so6917167pgc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 09:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Xw5eUX+MZ+bmcxQAKtDsuHQZ6yCgppTetd7vLvUz4qs=;
-        b=loUAgXR6TgzfZfK9rM7DllDJbsul8EaR/UfI289vyS+nfis33rOQM5fYJEX4ITh0r4
-         SHTPYHTZ+jQnNL7+LhJieY47o4O1Uu12pI9K8IBR0fE/TtrBKEooKJAa3hcMGZaQkLmu
-         OJwNAKc/9pbRWZssGyri77mh15eAMwx+lAAtfg4Py9ifUZUKVCWyoTl6hthSbCB+kPy/
-         142CVWThboigtcBKdn+ExxA/zZvOZw0CNNmt6FVjVliMK2uBDrgs0Nhc+H9bqRByfPE3
-         c6+oeh5PPKnTiMX8JSHSakyUVC0nSi97uvWqs7aIMbGKdYtNodDXbX/R1Zb91J24DuMY
-         2c4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Xw5eUX+MZ+bmcxQAKtDsuHQZ6yCgppTetd7vLvUz4qs=;
-        b=qu6ivoV+2R4DmrkhlobQ7jVYX2iNG0ZRABGFCQxTnMTMqiVKGVSY1+u8aOuY26Dyuu
-         dIF+z37lYRjSVSyg5iixdXtJWYyr/S4Xb71wdxZjIDsej3b3jZ7Lm10PvVj0RvDQ+dBU
-         rGC1LEsMBGT4U5svEgyY3FlKMVKNFObco6IF8FkEKzaZqZ98pDURu14wubdZPwgc0soj
-         mYkm1kkduFvktD3bXy91NxaI6+bxHpR5DUtcIgrQI3Pxx817saaCJC0wDP46SmtwI+hP
-         P186+gCNUclI4wXBcBXlIFXPliD3kmtqPsCYasYCQbkorQguqTFQo67bOHWSpA36HBVT
-         u4fQ==
-X-Gm-Message-State: AOAM533rH6lCdgDC3eqR6sMgBjeSOaCpQrQCjOm2Vlba80vQw0JxZDE3
-        BtHmSV/YJ5t0erav+mE5RglFn608
-X-Google-Smtp-Source: ABdhPJxtVgIRwUHKaHolsuYZn26bW06h3oCTLbMEEc9ZNfz/0/VTsKIld8nkywxmECR2BbL7DR0HOA==
-X-Received: by 2002:a63:e241:: with SMTP id y1mr9621578pgj.410.1595003677157;
-        Fri, 17 Jul 2020 09:34:37 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g26sm8128562pfq.205.2020.07.17.09.34.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Jul 2020 09:34:36 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 09:34:34 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] driver core: Fix sleeping in invalid context during
- device link deletion
-Message-ID: <20200717163434.GA119309@roeck-us.net>
-References: <CGME20200716214531eucas1p2c173df09a6e00ef15dfae43ce8f1f9cd@eucas1p2.samsung.com>
- <20200716214523.2924704-1-saravanak@google.com>
- <6b37125c-96f5-c59c-f170-934d68c9bed1@samsung.com>
+        Fri, 17 Jul 2020 12:31:21 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f11d24c0000>; Fri, 17 Jul 2020 09:31:08 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 17 Jul 2020 09:31:20 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 17 Jul 2020 09:31:20 -0700
+Received: from [10.2.163.115] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Jul
+ 2020 16:31:19 +0000
+Subject: Re: [RFC PATCH v3 00/18] Support for Tegra video capture from
+ external sensor
+To:     Hans Verkuil <hverkuil@xs4all.nl>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <sakari.ailus@iki.fi>,
+        <robh+dt@kernel.org>, <helen.koike@collabora.com>
+CC:     <digetx@gmail.com>, <sboyd@kernel.org>,
+        <gregkh@linuxfoundation.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>
+References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
+ <f03bdb89-df7c-e9e8-1512-d57e5d2332bf@xs4all.nl>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <d258fb56-14f6-a091-64e9-48294073c696@nvidia.com>
+Date:   Fri, 17 Jul 2020 09:34:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b37125c-96f5-c59c-f170-934d68c9bed1@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <f03bdb89-df7c-e9e8-1512-d57e5d2332bf@xs4all.nl>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595003468; bh=yHkAbVmveigBgWN5g2qJ6mxal/nHFMai6eEstw6Vm4U=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=jFnPaH3vijuYRfgrxR8CBIGCMTpkBXeiP/agYn44BC0THpWe3sGQEbt28na/8wAog
+         k1v4X+bsCcrt0pKIef+a5VFwfrmbwO7HJ+bchAt+QjhMBsxlbRH2l1F1qYMVmjbxhu
+         XBm/XMyre4BDS1NzCUo3nlsJJjmzcgrmBpeXssGBS4k0lza2F+bPVhoXTOsZx9Eb3M
+         OpKnEBjKM1LExw0yAfTgw5jlwbNBO54ZvG4NGArMke9EVB3zW/YDZZBhPVDlAGg7F/
+         wBJyPovHPVtNS5cwNeYOHE5qZUOFUdgymNQkCrAWomKZIyvYGUhi5mlXiNIG2EKVlG
+         ngj/MwN6jNBAg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:13:04AM +0200, Marek Szyprowski wrote:
-> Hi Saravana,
-> 
-> On 16.07.2020 23:45, Saravana Kannan wrote:
-> > Marek and Guenter reported that commit 287905e68dd2 ("driver core:
-> > Expose device link details in sysfs") caused sleeping/scheduling while
-> > atomic warnings.
-> >
-> > BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
-> > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 12, name: kworker/0:1
-> > 2 locks held by kworker/0:1/12:
-> >    #0: ee8074a8 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x174/0x7dc
-> >    #1: ee921f20 ((work_completion)(&sdp->work)){+.+.}-{0:0}, at: process_one_work+0x174/0x7dc
-> > Preemption disabled at:
-> > [<c01b10f0>] srcu_invoke_callbacks+0xc0/0x154
-> > ----- 8< ----- SNIP
-> > [<c064590c>] (device_del) from [<c0645c9c>] (device_unregister+0x24/0x64)
-> > [<c0645c9c>] (device_unregister) from [<c01b10fc>] (srcu_invoke_callbacks+0xcc/0x154)
-> > [<c01b10fc>] (srcu_invoke_callbacks) from [<c01493c4>] (process_one_work+0x234/0x7dc)
-> > [<c01493c4>] (process_one_work) from [<c01499b0>] (worker_thread+0x44/0x51c)
-> > [<c01499b0>] (worker_thread) from [<c0150bf4>] (kthread+0x158/0x1a0)
-> > [<c0150bf4>] (kthread) from [<c0100114>] (ret_from_fork+0x14/0x20)
-> > Exception stack(0xee921fb0 to 0xee921ff8)
-> >
-> > This was caused by the device link device being released in the context
-> > of srcu_invoke_callbacks().  There is no need to wait till the RCU
-> > callback to release the device link device.  So release the device
-> > earlier and move the call_srcu() into the device release code. That way,
-> > the memory will get freed only after the device is released AND the RCU
-> > callback is called.
-> >
-> > Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
-> > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >
-> > v1->v2:
-> > - Better fix
-> > - Changed subject
-> > - v1 is this patch https://lore.kernel.org/lkml/20200716050846.2047110-1-saravanak@google.com/
-> >
-> > Marek and Guenter,
-> >
-> > I reproduced the original issue and tested this fix. Seems to work for
-> > me. Can you confirm?
-> 
-> Confirmed, this one fixes the issue! :)
-> 
-Same here.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+On 7/17/20 3:54 AM, Hans Verkuil wrote:
+> Hi Sowjanya,
+>
+> On 15/07/2020 06:20, Sowjanya Komatineni wrote:
+>> This series adds support for video capture from external camera sensor t=
+o
+>> Tegra video driver.
+>>
+>> Jetson TX1 has camera expansion connector and supports custom camera mod=
+ule
+>> designed as per TX1 design specification.
+>>
+>> This series also enables camera capture support for Jetson Nano which ha=
+s
+>> Raspberry PI camera header.
+>>
+>> This series is tested with IMX219 camera sensor.
+>>
+>> This series include,
+>>
+>> VI I2C related fixes
+>> - Camera sensor programming happens through VI I2C which is on host1x bu=
+s.
+>> - These patches includes device tree and I2C driver fixes for VI I2C.
+>>
+>> Tegra video driver updates
+>> - TPG Vs Non-TPG based on Kconfig
+>> - Support for external sensor video capture based on device graph from D=
+T.
+>> - Support for selection ioctl operations
+>> - Tegra MIPI CSI pads calibration
+>> - CSI T-CLK and T-HS settle time computation based on clock rates.
+>>
+>> Host1x driver updates
+>> - Adds API to allow creating mipi device for specific device node.
+>> - Splits MIPI pads calibrate start and waiting for calibration to be don=
+e.
+>>
+>> Device tree updates
+>> - Adds camera connector 2V8, 1V8, 1V2 regulator supplies to Jetson TX1 D=
+T.
+>> - Enabled VI and CSI support in Jetson Nano DT.
+> I'm doing a bit of stress testing with:
+>
+> while true; do v4l2-ctl --stream-mmap --stream-count=3D1; done
+>
+> and I see that the imx274 has often streaming failures:
+>
+> [  172.025144] IMX274 8-001a: s_stream failed
+> [  179.025192] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 3132 =3D 870 (2 bytes)
+> [  179.033575] IMX274 8-001a: s_stream failed
+> [  226.525378] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 3130 =3D 878 (2 bytes)
+> [  226.533761] IMX274 8-001a: s_stream failed
+> [  227.029325] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 30f6 =3D 107 (2 bytes)
+> [  227.037758] IMX274 8-001a: s_stream failed
+> [  247.025218] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 30f6 =3D 107 (2 bytes)
+> [  247.033658] IMX274 8-001a: s_stream failed
+> [  293.025517] IMX274 8-001a: s_stream failed
+> [  309.024727] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 30e0 =3D 0 (2 bytes)
+> [  309.032969] IMX274 8-001a: s_stream failed
+> [  309.529506] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 30f8 =3D 11d2 (3 bytes)
+> [  309.538103] IMX274 8-001a: imx274_set_frame_length error =3D -121
+> [  309.544102] IMX274 8-001a: imx274_set_frame_interval error =3D -121
+> [  309.550243] IMX274 8-001a: s_stream failed
+> [  314.025561] IMX274 8-001a: s_stream failed
+> [  329.025586] IMX274 8-001a: s_stream failed
+> [  340.529567] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 303a =3D f0c (2 bytes)
+> [  340.538009] IMX274 8-001a: s_stream failed
+> [  347.525627] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 30f6 =3D 107 (2 bytes)
+> [  347.534008] IMX274 8-001a: s_stream failed
+> [  365.033640] IMX274 8-001a: s_stream failed
+> [  437.525788] IMX274 8-001a: imx274_write_mbreg : i2c bulk write failed,=
+ 3038 =3D c (2 bytes)
+> [  437.533997] IMX274 8-001a: s_stream failed
+> [  456.029780] IMX274 8-001a: s_stream failed
+> [  472.025862] IMX274 8-001a: s_stream failed
+> [  498.025861] IMX274 8-001a: s_stream failed
+> [  500.025905] IMX274 8-001a: s_stream failed
+>
+> where v4l2-ctl returns:
+>
+>                  VIDIOC_STREAMON returned -1 (Remote I/O error)
+>
+> I don't see this with the imx219.
+>
+> I also see this occasionally:
+>
+> [Fri Jul 17 12:51:42 2020] video4linux video1: failed to run capture star=
+t kthread: -4
+>
+> Something is not stable here.
+>
+> Regards,
+>
+> 	Hans
 
-Guenter
+Hi Hans,
 
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> > Thanks,
-> > Saravana
-> >
-> >   drivers/base/core.c | 45 +++++++++++++++++++++++++++------------------
-> >   1 file changed, 27 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 5373ddd029f6..ec16b97d45ed 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -306,10 +306,34 @@ static struct attribute *devlink_attrs[] = {
-> >   };
-> >   ATTRIBUTE_GROUPS(devlink);
-> >   
-> > +static void device_link_free(struct device_link *link)
-> > +{
-> > +	while (refcount_dec_not_one(&link->rpm_active))
-> > +		pm_runtime_put(link->supplier);
-> > +
-> > +	put_device(link->consumer);
-> > +	put_device(link->supplier);
-> > +	kfree(link);
-> > +}
-> > +
-> > +#ifdef CONFIG_SRCU
-> > +static void __device_link_free_srcu(struct rcu_head *rhead)
-> > +{
-> > +	device_link_free(container_of(rhead, struct device_link, rcu_head));
-> > +}
-> > +
-> >   static void devlink_dev_release(struct device *dev)
-> >   {
-> > -	kfree(to_devlink(dev));
-> > +	struct device_link *link = to_devlink(dev);
-> > +
-> > +	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
-> >   }
-> > +#else
-> > +static void devlink_dev_release(struct device *dev)
-> > +{
-> > +	device_link_free(to_devlink(dev));
-> > +}
-> > +#endif
-> >   
-> >   static struct class devlink_class = {
-> >   	.name = "devlink",
-> > @@ -730,22 +754,7 @@ static void device_link_add_missing_supplier_links(void)
-> >   	mutex_unlock(&wfs_lock);
-> >   }
-> >   
-> > -static void device_link_free(struct device_link *link)
-> > -{
-> > -	while (refcount_dec_not_one(&link->rpm_active))
-> > -		pm_runtime_put(link->supplier);
-> > -
-> > -	put_device(link->consumer);
-> > -	put_device(link->supplier);
-> > -	device_unregister(&link->link_dev);
-> > -}
-> > -
-> >   #ifdef CONFIG_SRCU
-> > -static void __device_link_free_srcu(struct rcu_head *rhead)
-> > -{
-> > -	device_link_free(container_of(rhead, struct device_link, rcu_head));
-> > -}
-> > -
-> >   static void __device_link_del(struct kref *kref)
-> >   {
-> >   	struct device_link *link = container_of(kref, struct device_link, kref);
-> > @@ -758,7 +767,7 @@ static void __device_link_del(struct kref *kref)
-> >   
-> >   	list_del_rcu(&link->s_node);
-> >   	list_del_rcu(&link->c_node);
-> > -	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
-> > +	device_unregister(&link->link_dev);
-> >   }
-> >   #else /* !CONFIG_SRCU */
-> >   static void __device_link_del(struct kref *kref)
-> > @@ -773,7 +782,7 @@ static void __device_link_del(struct kref *kref)
-> >   
-> >   	list_del(&link->s_node);
-> >   	list_del(&link->c_node);
-> > -	device_link_free(link);
-> > +	device_unregister(&link->link_dev);
-> >   }
-> >   #endif /* !CONFIG_SRCU */
-> >   
-> 
-> Best regards
-> -- 
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
-> 
+Running the same single frame continuous loop for more than 2 hours now=20
+and I don't see any failure.
+
+Above failure shows i2c bulk writes to IMX274 failure due to which=20
+s_stream also failed.
+
+Not sure if its due to i2c mux in the path to sensor on your module=20
+causing some issue when there is more i2c write traffic as we are doing=20
+single stream in continuous loop. Also IMX219 does not show on your side=20
+so something specific to IMX274 setup probably.
+
+
+Regarding kthread_run failure where kthread_run() returned -EINTR during=20
+capture start thread, I always see this happen at the point of stopping=20
+the continuous single stream while loop by pressing ctrl+c after few=20
+loops of execution.
+
+while true; do v4l2-ctl --stream-mmap --stream-count=3D1; done
+
+when we stop loop with ctrl+c, v4l2-ctl terminates but loop does not=20
+terminate immediately and probably SIGKILLed=C2=A0 is seen prior to complet=
+e.
+
+Using below can help to terminate loop as well when we stop ctrl-c and=20
+with this I don't see any repro of EINTR error from kthread_run when run=20
+in infinite loop.
+
+while true; do ./v4l2-ctl --stream-mmap --stream-count=3D1 || break; done
+
+
+
+>>
+>> Delta between patch versions:
+>>
+>> [v3]:	Includes v2 feedback
+>> 	- Uses separate helper function for retrieving remote csi subdevice
+>> 	  and source subdevice.
+>> 	- Added check for presence of subdevice ops set/get_selection
+>> 	- dropped vb2_queue_release from driver and using
+>> 	  vb2_video_unregister_device instead of video_unregister_device.
+>> 	- video device register should happen in the last after all video
+>> 	  device related setup is done in the driver. This is being addressed
+>> 	  in below RFC patch. Once proper implementation of this is available
+>> 	  will update Tegra video driver to use split APIs and do all setup
+>> 	  prior to device register. Added this as TODO in the driver.
+>> 	  https://www.spinics.net/lists/linux-media/msg172761.html
+>>
+>> 	Note:
+>> 	Patch-0012 has compilation dependency on
+>> 	https://patchwork.kernel.org/patch/11659521/
+>>
+>>
+>> [v2]:	Includes below changes based on v1 feedback
+>> 	- dt-binding document and the driver update for device graph to use
+>> 	  separate ports for sink endpoint and source endpoint for csi.
+>> 	- Use data-lanes endpoint property for csi.
+>> 	- Update tegra_mipi_request() to take device node pointer argument
+>> 	  rather than adding extra API.
+>> 	- Remove checking for clk pointer before clk_disable.
+>>
+>>
+>> Sowjanya Komatineni (18):
+>>    dt-bindings: i2c: tegra: Document Tegra210 VI I2C clocks and
+>>      power-domains
+>>    arm64: tegra: Add missing clocks and power-domains to Tegra210 VI I2C
+>>    i2c: tegra: Don't mark VI I2C as IRQ safe runtime PM
+>>    i2c: tegra: Remove NULL pointer check before
+>>      clk_enable/disable/prepare/unprepare
+>>    i2c: tegra: Fix the error path in tegra_i2c_runtime_resume
+>>    i2c: tegra: Fix runtime resume to re-init VI I2C
+>>    i2c: tegra: Avoid tegra_i2c_init_dma() for Tegra210 vi i2c
+>>    media: tegra-video: Fix channel format alignment
+>>    media: tegra-video: Enable TPG based on kernel config
+>>    media: tegra-video: Update format lookup to offset based
+>>    dt-bindings: tegra: Update VI and CSI bindings with port info
+>>    media: tegra-video: Add support for external sensor capture
+>>    media: tegra-video: Add support for selection ioctl ops
+>>    gpu: host1x: mipi: Update tegra_mipi_request() to be node based
+>>    gpu: host1x: mipi: Use readl_relaxed_poll_timeout in tegra_mipi_wait
+>>    gpu: host1x: mipi: Split tegra_mipi_calibrate and tegra_mipi_wait
+>>    media: tegra-video: Add CSI MIPI pads calibration
+>>    media: tegra-video: Compute settle times based on the clock rate
+>>
+>>   .../display/tegra/nvidia,tegra20-host1x.txt        |  92 ++-
+>>   .../devicetree/bindings/i2c/nvidia,tegra20-i2c.txt |  19 +-
+>>   arch/arm64/boot/dts/nvidia/tegra210.dtsi           |   6 +
+>>   drivers/gpu/drm/tegra/dsi.c                        |   9 +-
+>>   drivers/gpu/host1x/mipi.c                          |  37 +-
+>>   drivers/i2c/busses/i2c-tegra.c                     | 101 +--
+>>   drivers/staging/media/tegra-video/Kconfig          |   7 +
+>>   drivers/staging/media/tegra-video/csi.c            | 247 ++++++-
+>>   drivers/staging/media/tegra-video/csi.h            |   8 +
+>>   drivers/staging/media/tegra-video/tegra210.c       |  25 +-
+>>   drivers/staging/media/tegra-video/vi.c             | 793 +++++++++++++=
+++++++--
+>>   drivers/staging/media/tegra-video/vi.h             |  25 +-
+>>   drivers/staging/media/tegra-video/video.c          |  23 +-
+>>   include/linux/host1x.h                             |   4 +-
+>>   14 files changed, 1242 insertions(+), 154 deletions(-)
+>>
