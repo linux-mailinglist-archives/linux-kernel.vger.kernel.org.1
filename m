@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A732224564
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D5F224569
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgGQUw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:52:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46328 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgGQUw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:52:56 -0400
-IronPort-SDR: ccA0VIC++hRfB2yVjVzT0UNATUk+loJD2acJHKdhTFZ4OKGwpEK+F83LJq+fQWDJm9Ked4c9Mb
- kMNsLfgJyHVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="137785235"
-X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; 
-   d="scan'208";a="137785235"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 13:52:55 -0700
-IronPort-SDR: 690U0n6opbZ/Ur7zkVu//anEQ7MRj2sHCRzWpKkvX0jU9VzxrjihvaQr+xK5iBUfhEQqvlrfq5
- HGUS8jcEky3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; 
-   d="scan'208";a="326947980"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga007.jf.intel.com with ESMTP; 17 Jul 2020 13:52:55 -0700
-Date:   Fri, 17 Jul 2020 13:52:55 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 02/17] x86/fpu: Refactor
- arch_set_user_pkey_access() for PKS support
-Message-ID: <20200717205254.GQ3008823@iweiny-DESK2.sc.intel.com>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-3-ira.weiny@intel.com>
- <20200717085442.GX10769@hirez.programming.kicks-ass.net>
+        id S1726665AbgGQUx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgGQUx0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 16:53:26 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3011C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 13:53:25 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id x62so8693195qtd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 13:53:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z0lyHoK43hN4cDd36fR30aBsfsjpWFSili5oOrrjQGw=;
+        b=JMp4YhPhX2BOIq5T9z/+RqMxUO9j8D3Vzgaod/I5xxCSsAubANIyH7vgHDnFaQ7UyR
+         lgg6q8PlVeb5rzoUIG5Uhp5mHjClldmmfBUguGZ5CbY7DT9aw6uSzB/r5Sj9aNK6cZRR
+         45uQ8QF6e2Ivb/qotjjT5SKXPBf7ajM/e2JtXrss1BbphJpTIOFTQU6D58E2OhW3x+Ej
+         tTchcGIQA+S9pnkAqz/gPJ/0o/F4yJccT4p1XLXws5qcGp7e9bzk44ZejxMBIfdQMpKp
+         zDm37LpIl/knod+bmBLeLxS6V7+3LpraNiSdUQGHoKBpVxGiqh+APPzNxDE6LPxRqqes
+         zEGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z0lyHoK43hN4cDd36fR30aBsfsjpWFSili5oOrrjQGw=;
+        b=LQldIrZ+HV4P1mPYr3T9x/wPwArevy5yZskLwJOjE9yoUID0ht0kOnBENLT6owKLkx
+         0f7S3X/ECk4KEnDxh1EAyc6BoKPRfDWrxmNW/3BvyU7VIF7Aj43G+Bhn+GZ3ND/N6oXR
+         cBiV2XXaBFo0/lIYY9mfoqJer00v8ggl0svLAlarRdoj4Crs6FK9rUmP/4o3SK14xWpT
+         jcKgyCZcjvswGA20g46IJuyPeI+P7gxEvu5DWAxJDTmo2nj3hzPBPmW/5qjBO99eo7AX
+         /E7X5qliJwfibAiRgddLubQWlG3xJonVy2pl7sR/0Vj2hPWKQAHuinwwFB9rC9O7sKRt
+         B6ZQ==
+X-Gm-Message-State: AOAM532ErQn8vYBn32QJRhGlfUuzUBEhljD1KdVpgk4APWnBLQDqzIJl
+        ciCQ0Z7NyTXxx87DLX/t58BFmzIJYic=
+X-Google-Smtp-Source: ABdhPJwpSsm++s0Zuf+nkOJqYeeWPyr6Sm7eiS8p/5vaiD45aJ1mGeGKgmx+4o5e6uNxzOLn9xImKA==
+X-Received: by 2002:ac8:478f:: with SMTP id k15mr12526417qtq.287.1595019204907;
+        Fri, 17 Jul 2020 13:53:24 -0700 (PDT)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id d14sm10576733qkl.9.2020.07.17.13.53.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 13:53:24 -0700 (PDT)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/1] scale loop device lock
+Date:   Fri, 17 Jul 2020 16:53:21 -0400
+Message-Id: <20200717205322.127694-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717085442.GX10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:54:42AM +0200, Peter Zijlstra wrote:
-> On Fri, Jul 17, 2020 at 12:20:41AM -0700, ira.weiny@intel.com wrote:
-> > +/*
-> > + * Get a new pkey register value from the user values specified.
-> > + *
-> > + * Kernel users use the same flags as user space:
-> > + *     PKEY_DISABLE_ACCESS
-> > + *     PKEY_DISABLE_WRITE
-> > + */
-> > +u32 get_new_pkr(u32 old_pkr, int pkey, unsigned long init_val)
-> > +{
-> > +	int pkey_shift = (pkey * PKR_BITS_PER_PKEY);
-> > +	u32 new_pkr_bits = 0;
-> > +
-> > +	/* Set the bits we need in the register:  */
-> > +	if (init_val & PKEY_DISABLE_ACCESS)
-> > +		new_pkr_bits |= PKR_AD_BIT;
-> > +	if (init_val & PKEY_DISABLE_WRITE)
-> > +		new_pkr_bits |= PKR_WD_BIT;
-> > +
-> > +	/* Shift the bits in to the correct place: */
-> > +	new_pkr_bits <<= pkey_shift;
-> > +
-> > +	/* Mask off any old bits in place: */
-> > +	old_pkr &= ~((PKR_AD_BIT | PKR_WD_BIT) << pkey_shift);
-> > +
-> > +	/* Return the old part along with the new part: */
-> > +	return old_pkr | new_pkr_bits;
-> > +}
-> 
-> This is unbelievable junk...
-> 
-> How about something like:
-> 
-> u32 update_pkey_reg(u32 pk_reg, int pkey, unsigned int flags)
-> {
-> 	int pkey_shift = pkey * PKR_BITS_PER_PKEY;
-> 
-> 	pk_reg &= ~(((1 << PKR_BITS_PER_PKEY) - 1) << pkey_shift);
-> 
-> 	if (flags & PKEY_DISABLE_ACCESS)
-> 		pk_reg |= PKR_AD_BIT << pkey_shift;
-> 	if (flags & PKEY_DISABLE_WRITE)
-> 		pk_reg |= PKR_WD_BIT << pkey_shift;
-> 
-> 	return pk_reg;
-> }
-> 
-> Then we at least have a little clue wtf the thing does.. Yes I started
-> with a rename and then got annoyed at the implementation too.
+In our environment we are using systemd portable containers in
+squashfs formats, convert them into loop device, and mount.
 
-On the code I think this is fair.  I've also updated the calling function to be
-a bit cleaner as well.
-
-However, I think the name 'update' is a bit misleading.  Here is the new
-calling code:
-
-...
-        pkru = read_pkru();
-	pkru = update_pkey_reg(pkru, pkey, init_val);
-	write_pkru(pkru);
+NAME                      MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+loop5                       7:5    0  76.4M  0 loop
+`-BaseImageM1908          252:3    0  76.4M  1 crypt /BaseImageM1908
+loop6                       7:6    0    20K  0 loop
+`-test_launchperf20       252:17   0   1.3M  1 crypt /app/test_launchperf20
+loop7                       7:7    0    20K  0 loop
+`-test_launchperf18       252:4    0   1.5M  1 crypt /app/test_launchperf18
+loop8                       7:8    0     8K  0 loop
+`-test_launchperf8        252:25   0    28K  1 crypt app/test_launchperf8
+loop9                       7:9    0   376K  0 loop
+`-test_launchperf14       252:29   0  45.7M  1 crypt /app/test_launchperf14
+loop10                      7:10   0    16K  0 loop
+`-test_launchperf4        252:11   0   968K  1 crypt app/test_launchperf4
+loop11                      7:11   0   1.2M  0 loop
+`-test_launchperf17       252:26   0 150.4M  1 crypt /app/test_launchperf17
+loop12                      7:12   0    36K  0 loop
+`-test_launchperf19       252:13   0   3.3M  1 crypt /app/test_launchperf19
+loop13                      7:13   0     8K  0 loop
 ...
 
+We have over 50 loop devices which are mounted  during boot.
 
-I think it is odd to have a function called update_pkey_reg() called right
-before a write_pkru().  Can we call this update_pkey_value?  or just 'val'?
-Because write_pkru() actually updates the register.
+We observed contentions around loop_ctl_mutex.
 
-Thanks for the review,
-Ira
+The sample contentions stacks:
+
+Contention 1:
+__blkdev_get()
+   bdev->bd_disk->fops->open()
+      lo_open()
+         mutex_lock_killable(&loop_ctl_mutex); <- contention
+
+Contention 2:
+__blkdev_put()
+   disk->fops->release()
+      lo_release()
+         mutex_lock(&loop_ctl_mutex); <- contention
+
+With total time waiting for loop_ctl_mutex ~18.8s during boot (across 8
+CPUs) on our machine (69 loop devices): 2.35s per CPU.
+
+Scaling this lock eliminates this contention entirly, and improves the boot
+performance by 2s on our machine.
+
+Pavel Tatashin (1):
+  loop: scale loop device by introducing per device lock
+
+ drivers/block/loop.c | 86 ++++++++++++++++++++++++--------------------
+ drivers/block/loop.h |  1 +
+ 2 files changed, 48 insertions(+), 39 deletions(-)
+
+-- 
+2.25.1
 
