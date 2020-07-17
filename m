@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEE7223F8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9851223F97
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 17:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgGQPZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 11:25:12 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:35170 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgGQPZM (ORCPT
+        id S1726627AbgGQPaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 11:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgGQPaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:25:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594999511; x=1626535511;
-  h=from:to:cc:subject:date:message-id:content-id:
-   content-transfer-encoding:mime-version;
-  bh=G75k//OFjohU38ZgosvGO5q8OosY9IuKew7WVhx6Up0=;
-  b=PJ51StK5n5n5riZrPRdrzzapaPbfapbNVDZziuPhAB16s83gqH/3Njk3
-   lHCRLd5AYa4SY3mnzVN3tJ1gVRakT+gJl7yM0PbFAXYlMxqpuvKcrfR/i
-   BPCIaXV9Nq8o1T9wdvgE7m1OJo7HA/wa/CuM+dIPzReCzBc7YShM+MjyN
-   E=;
-IronPort-SDR: e1//RxWVXOsjAC65SEGU+2scnm0JZMIo9PmeGqu5BZ40eJge8dvUXtQP4wXhIddTnkvYQT8Csp
- G3oOG+K11Mog==
-X-IronPort-AV: E=Sophos;i="5.75,362,1589241600"; 
-   d="scan'208";a="52415837"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-f273de60.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 17 Jul 2020 15:25:09 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-f273de60.us-east-1.amazon.com (Postfix) with ESMTPS id 32E86A261C;
-        Fri, 17 Jul 2020 15:25:07 +0000 (UTC)
-Received: from EX13D21UWB002.ant.amazon.com (10.43.161.177) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 17 Jul 2020 15:25:06 +0000
-Received: from EX13D02UWC001.ant.amazon.com (10.43.162.243) by
- EX13D21UWB002.ant.amazon.com (10.43.161.177) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 17 Jul 2020 15:25:06 +0000
-Received: from EX13D02UWC001.ant.amazon.com ([10.43.162.243]) by
- EX13D02UWC001.ant.amazon.com ([10.43.162.243]) with mapi id 15.00.1497.006;
- Fri, 17 Jul 2020 15:25:06 +0000
-From:   "Saidi, Ali" <alisaidi@amazon.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>,
-        Ali Saidi <aliaidi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] genirq/affinity: Handle affinity setting on inactive
- interrupts correctly
-Thread-Topic: [PATCH] genirq/affinity: Handle affinity setting on inactive
- interrupts correctly
-Thread-Index: AQHWXE5yOF+Kj67jZUWJl7gBhLLD9A==
-Date:   Fri, 17 Jul 2020 15:25:05 +0000
-Message-ID: <BBA90891-8A4A-4A39-BF51-13EECDE414F1@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.161.34]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <84714F54C0845F43865AFD07549EBBE3@amazon.com>
-Content-Transfer-Encoding: base64
+        Fri, 17 Jul 2020 11:30:16 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA62C0619D2;
+        Fri, 17 Jul 2020 08:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=u0q4qCWNv+qhE3ZrdRgzxfegk6XFeYyskQE8fOwRrRs=; b=SggPwLXPaF9DbxaOh0Zz/ED/P0
+        6gGiwOd2aUZmcH8TeJ6sct16sXyqz48zefFf2DfupKuLBLJojH900LWWGxhSxVAy2sARrGwWcy8wH
+        jDLrEdl0NXk2QgfW8TbtMaXRWrsYrwusbL1lGvgvaG0uMaYBAlRYr0VgwsFZoQpsQriF2SsFn5JtS
+        Qf6FjTErWY8Xx4qdJXtxVBYT6WYwWUVkymSpHpVEN0866rVKg/kuR+D1v/X/J/VAiV6sdAKkvaRN0
+        QPRYBbqsfp/7Ce1tybB0g4fTb5YX7hc4Tc9+Y0BSPB2k+DRRLzwDq2mk+ltrZ/j+2GOnZqW6Gsmi6
+        wNHWnKEg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jwSJQ-0002zB-DK; Fri, 17 Jul 2020 15:30:12 +0000
+Subject: Re: mmotm 2020-07-16-22-52 uploaded (net: IPVS)
+To:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>, lvs-devel@vger.kernel.org
+References: <20200717055300.ObseZH9Vs%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <88196a8a-2778-0324-8005-d63bfee86c4e@infradead.org>
+Date:   Fri, 17 Jul 2020 08:30:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200717055300.ObseZH9Vs%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQrvu79PbiA3LzE3LzIwLCA5OjAwIEFNLCAiVGhvbWFzIEdsZWl4bmVyIiA8dGdseEBsaW51dHJv
-bml4LmRlPiB3cm90ZToNCg0KICAgIFNldHRpbmcgaW50ZXJydXB0IGFmZmluaXR5IG9uIGluYWN0
-aXZlIGludGVycnVwdHMgaXMgaW5jb25zaXN0ZW50IHdoZW4NCiAgICBoaWVyYXJjaGljYWwgaXJx
-IGRvbWFpbnMgYXJlIGVuYWJsZWQuIFRoZSBjb3JlIGNvZGUgc2hvdWxkIGp1c3Qgc3RvcmUgdGhl
-DQogICAgYWZmaW5pdHkgYW5kIG5vdCBjYWxsIGludG8gdGhlIGlycSBjaGlwIGRyaXZlciBmb3Ig
-aW5hY3RpdmUgaW50ZXJydXB0cw0KICAgIGJlY2F1c2UgdGhlIGNoaXAgZHJpdmVycyBtYXkgbm90
-IGJlIGluIGEgc3RhdGUgdG8gaGFuZGxlIHN1Y2ggcmVxdWVzdHMuDQoNCiAgICBYODYgaGFzIGEg
-aGFja3kgd29ya2Fyb3VuZCBmb3IgdGhhdCBidXQgYWxsIG90aGVyIGlycSBjaGlwcyBoYXZlIG5v
-dCB3aGljaA0KICAgIGNhdXNlcyBwcm9ibGVtcyBlLmcuIG9uIEdJQyBWMyBJVFMuDQoNCiAgICBJ
-bnN0ZWFkIG9mIGFkZGluZyBtb3JlIHVnbHkgaGFja3MgYWxsIG92ZXIgdGhlIHBsYWNlLCBzb2x2
-ZSB0aGUgcHJvYmxlbSBpbg0KICAgIHRoZSBjb3JlIGNvZGUuIElmIHRoZSBhZmZpbml0eSBpcyBz
-ZXQgb24gYW4gaW5hY3RpdmUgaW50ZXJydXB0IHRoZW46DQoNCiAgICAgICAgLSBTdG9yZSBpdCBp
-biB0aGUgaXJxIGRlc2NyaXB0b3JzIGFmZmluaXR5IG1hc2sNCiAgICAgICAgLSBVcGRhdGUgdGhl
-IGVmZmVjdGl2ZSBhZmZpbml0eSB0byByZWZsZWN0IHRoYXQgc28gdXNlciBzcGFjZSBoYXMNCiAg
-ICAgICAgICBhIGNvbnNpc3RlbnQgdmlldw0KICAgICAgICAtIERvbid0IGNhbGwgaW50byB0aGUg
-aXJxIGNoaXAgZHJpdmVyDQoNCiAgICBUaGlzIGlzIHRoZSBjb3JlIGVxdWl2YWxlbnQgb2YgdGhl
-IFg4NiB3b3JrYXJvdW5kIGFuZCB3b3JrcyBjb3JyZWN0bHkNCiAgICBiZWNhdXNlIHRoZSBhZmZp
-bml0eSBzZXR0aW5nIGlzIGVzdGFibGlzaGVkIGluIHRoZSBpcnEgY2hpcCB3aGVuIHRoZQ0KICAg
-IGludGVycnVwdCBpcyBhY3RpdmF0ZWQgbGF0ZXIgb24uDQoNCiAgICBOb3RlLCB0aGF0IHRoaXMg
-aXMgb25seSBlZmZlY3RpdmUgd2hlbiBoaWVyYXJjaGljYWwgaXJxIGRvbWFpbnMgYXJlIGVuYWJs
-ZWQNCiAgICBieSB0aGUgYXJjaGl0ZWN0dXJlLiBEb2luZyBpdCB1bmNvbmRpdGlvbmFsbHkgd291
-bGQgYnJlYWsgbGVnYWN5IGlycSBjaGlwDQogICAgaW1wbGVtZW50YXRpb25zLg0KDQogICAgRm9y
-IGhpZXJhcmNoaWFsIGlycSBkb21haW5zIHRoaXMgd29ya3MgY29ycmVjdGx5IGFzIG5vbmUgb2Yg
-dGhlIGRyaXZlcnMgY2FuDQogICAgaGF2ZSBhIGRlcGVuZGVuY3kgb24gYWZmaW5pdHkgc2V0dGlu
-ZyBpbiBpbmFjdGl2ZSBzdGF0ZSBieSBkZXNpZ24uDQoNCiAgICBSZW1vdmUgdGhlIFg4NiB3b3Jr
-YXJvdW5kIGFzIGl0IGlzIG5vdCBsb25nZXIgcmVxdWlyZWQuDQoNCiAgICBGaXhlczogMDJlZGVl
-MTUyZDZlICgieDg2L2FwaWMvdmVjdG9yOiBJZ25vcmUgc2V0X2FmZmluaXR5IGNhbGwgZm9yIGlu
-YWN0aXZlIGludGVycnVwdHMiKQ0KICAgIFJlcG9ydGVkLWJ5OiBBbGkgU2FpZGkgPGFsaXNhaWRp
-QGFtYXpvbi5jb20+DQogICAgU2lnbmVkLW9mZi1ieTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxp
-bnV0cm9uaXguZGU+DQogICAgQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCiAgICBMaW5rOiBo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjAwNTI5MDE1NTAxLjE1NzcxLTEtYWxpc2FpZGlA
-YW1hem9uLmNvbQ0KICAgIC0tLQ0KICAgIA0KDQpUZXN0ZWQgb24gYW4gYXJtNjQgc3lzdGVtIHRo
-YXQgb3JpZ2luYWxseSBleHBlcmllbmNlZCB0aGUgaXNzdWUgYW5kIGNvdWxkbid0IHJlcHJvZHVj
-ZSBpdCB3aXRoIHRoaXMgcGF0Y2guDQpUZXN0ZWQtYnk6IEFsaSBTYWlkaSA8YWxpc2FpZGlAYW1h
-em9uLmNvbT4NCg0KVGhhbmtzLA0KQWxpDQoNCg0K
+On 7/16/20 10:53 PM, Andrew Morton wrote:
+> The mm-of-the-moment snapshot 2020-07-16-22-52 has been uploaded to
+> 
+>    http://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> http://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+
+(also in linux-next)
+
+Many of these errors:
+
+In file included from ../net/netfilter/ipvs/ip_vs_conn.c:37:0:
+../include/net/ip_vs.h: In function ‘ip_vs_enqueue_expire_nodest_conns’:
+../include/net/ip_vs.h:1536:61: error: parameter name omitted
+ static inline void ip_vs_enqueue_expire_nodest_conns(struct netns_ipvs) {}
+                                                             ^~~~~~~~~~
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
