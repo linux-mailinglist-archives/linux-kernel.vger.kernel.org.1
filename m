@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC27223AF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5D7223AF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 13:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgGQL72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 07:59:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbgGQL70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 07:59:26 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C01032065D;
-        Fri, 17 Jul 2020 11:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594987166;
-        bh=IBC0fxfS9D7A/ESzV86wlZOweut+yTh9ShR/uTQtWsM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l3he7Zb25ylwXTM+e0bCR6vU9eGg6EbkNVm+2ZjuZJklUHo0TgJywhDGe6XZm1pB+
-         WWjgpTpBmhJVa9E5E8uFYvmf/cGv3uAUeOHIgU3RcuPY82Yneo4mqNrDBHWDWUxM15
-         DmmiA+K8Q86iYdDD1GMBM4uHo9m9kYvctKGCRmLw=
-Date:   Fri, 17 Jul 2020 12:59:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 14/20] dt-bindings: spi: renesas,sh-msiof: Add r8a774e1
- support
-Message-ID: <20200717115915.GD4316@sirena.org.uk>
-References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594811350-14066-15-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726945AbgGQL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 07:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbgGQL7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 07:59:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD13C061755;
+        Fri, 17 Jul 2020 04:59:33 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 82400561;
+        Fri, 17 Jul 2020 13:59:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1594987170;
+        bh=xF/xJDcrJipLnK8pks8U4NEnx0RCjMwVlmOA23tAZic=;
+        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
+        b=bs6rAoV6BK4ecPn9HeLWpIPYWoRyZhJH3ys2/JX9rqA2Q+HFY+fPejaVP0R03ydRi
+         aNv2668HBWSTzbGZW04M7fvnHlZxDyB5k+hnoQwdpu6+68A4VXS4Q/czvnkXIRRy9K
+         Yr4Jzey15aObbdba6elVp4NZSjn6odTNPxOZgrBQ=
+Subject: Re: [PATCH 1/5] media/media-device.h: drop duplicated word in comment
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+References: <20200714220553.20294-1-rdunlap@infradead.org>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <6df0dd2e-b33a-ae7a-6584-58a6be7c1675@ideasonboard.com>
+Date:   Fri, 17 Jul 2020 12:59:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EP0wieDxd4TSJjHq"
-Content-Disposition: inline
-In-Reply-To: <1594811350-14066-15-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Cookie: No other warranty expressed or implied.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200714220553.20294-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/07/2020 23:05, Randy Dunlap wrote:
+> Delete the doubled word "the" in a comment.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-media@vger.kernel.org
 
---EP0wieDxd4TSJjHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-On Wed, Jul 15, 2020 at 12:09:04PM +0100, Lad Prabhakar wrote:
-> Document RZ/G2H (R8A774E1) SoC bindings.
+> ---
+>  include/media/media-device.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20200714.orig/include/media/media-device.h
+> +++ linux-next-20200714/include/media/media-device.h
+> @@ -128,7 +128,7 @@ struct media_device_ops {
+>   *
+>   * Use-case: find tuner entity connected to the decoder
+>   * entity and check if it is available, and activate the
+> - * the link between them from @enable_source and deactivate
+> + * link between them from @enable_source and deactivate
+>   * from @disable_source.
+>   *
+>   * .. note::
+> 
 
-Please in future could you split things like this up into per subsystem
-serieses?  That's a more normal approach and avoids the huge threads and
-CC lists.
-
---EP0wieDxd4TSJjHq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8RkpIACgkQJNaLcl1U
-h9C49gf/eW/cjPlYI1cbSfRXBxXem11Bis/Eyf7JldTeF1+MuH3As7rZdLb/Echg
-mYjYxsQ/gYm2DjC32f3rK+qY8Enzqz3k2jl7qJZ8R+pPEtfW9+ZrDHFAUyuE/Bwb
-sG+qKb/lwZ3KgqIO85RfL9b5WGktXWg26M182qVbBIZTGYRysCksSaUN6fxSKfwN
-icZD/vNKlJ9tJcfFxsjKl37Ti8ipK6ht46YI880NPw/lVkl7aFbJOsHY3LHW2JkR
-qTH281KenQZDUUXHaIqusmXvyMhns1zbIhsZxaZ9txJFNZX43TK1krvBVznJYK20
-K3YSdEJoHNWVwjPSdMbWIO1iOR9SSQ==
-=3N6n
------END PGP SIGNATURE-----
-
---EP0wieDxd4TSJjHq--
