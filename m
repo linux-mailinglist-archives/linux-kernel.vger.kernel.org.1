@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7E22241BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574D82241C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgGQR0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:26:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58410 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726232AbgGQR0i (ORCPT
+        id S1727794AbgGQR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbgGQR0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:26:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595006796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHG39auNHRE1WZtPTrj7HBCLgjL3HfRMERmH4ZoBnBw=;
-        b=W7blFMyO/81VaPmCdFVCHuytUzbnAqP34nr7DEzzPpDeyQHEZlWwn6wsDOp2x0s9VwfCeb
-        OsGbU+wC7qjSPG1wNkXGoibQOpNB4Au83gpb45QKjaP9JC6ATT8rLfYgI1Cct2S06NklDa
-        qYg6+pyXwPfI4Akjvuw9uzLzqpDV9kY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-rN1OUrIHMpWAgGDMvhUJZw-1; Fri, 17 Jul 2020 13:26:32 -0400
-X-MC-Unique: rN1OUrIHMpWAgGDMvhUJZw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A417107ACCA;
-        Fri, 17 Jul 2020 17:26:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.199])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A934319724;
-        Fri, 17 Jul 2020 17:26:29 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 17 Jul 2020 19:26:31 +0200 (CEST)
-Date:   Fri, 17 Jul 2020 19:26:28 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer
- timer handling to task_work
-Message-ID: <20200717172627.GC6067@redhat.com>
-References: <20200716201923.228696399@linutronix.de>
- <20200716202044.734067877@linutronix.de>
+        Fri, 17 Jul 2020 13:26:46 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA821C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:26:45 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id y10so11690752eje.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=63MZNPvz8EW4KsR8LWHec1O5GR5AWyh8POSHZLqGwV4=;
+        b=U8c8sRjmduxvLQrhL8vfIl1OOtN7c7Aydb6ToIPbE77TqYycjS7I9FBHNwXaDrWfz/
+         rj5ICKejSoCsPEwlUWg0h3Qe6b36QNyLnZQPBnqL1LqcuDY3ksoKeiNDIztC3eVBxERo
+         e9YxYMQy5q3aE1uYGGbrtplma69che5iMP8nMtzcZTrnressIuxlcL/sa/mpfAxCOc7U
+         2a5n21DyBmxaYtxeezKJsjFLyGEMYpGPKtdHFplEHi69XnWjHiFzP5NQMuiWNijpf8AL
+         EWoj78oB1k3Mhy0+axypT057YtfcS2WD+caiV8Pzz7XaGx2gHxayNKqZ5vqjpzFz0tnm
+         NGTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=63MZNPvz8EW4KsR8LWHec1O5GR5AWyh8POSHZLqGwV4=;
+        b=eFoQ1J3/tRFxay2zqtG2KgkXzj7YmMB8ymaR/TaBEvNWfFfGxhvPdRmq/w6oirPqtN
+         sPnWD2dy1E4GcJbq1BsYtw5uz/ytKHRPkonADY5vmnU+tcpahxH9wh0v2DCXZ9F9c25E
+         IzN+wUHDPgI5HFjTRhaRayO0GrSPIuz7X8LUmnPgm6M7rhMa/pVWBFrevS+bOfwgTezD
+         dk1GYIR39lgPR+JhSRJNva14fZVoCMEZyOh05XqwCN/UN0a5JW0oevQ07WlYK8gmJRt+
+         RC5gciYjA5xqd/IKojsgbfutoQJCKsMrni22R7lLmj7E5F9KauWXiWrmO7x1m3bAph1v
+         1Y3g==
+X-Gm-Message-State: AOAM531X5wAoHE+ZAwKEnTrdiNynhoTna6zfI/HFcz0cuYl1IYC0ZqzM
+        /ajT+fXp3bmBnCBYgDq9d2yyZCaNhEXHvKDDSJQ=
+X-Google-Smtp-Source: ABdhPJxYvEIN+bPqc8gzAdpMxXkbwTgpoAGH/6klFyCcvUvr75l6jBRAyuOhc/Qg2pW0NI2MzjQ8unojODVu40a6eiw=
+X-Received: by 2002:a17:907:1059:: with SMTP id oy25mr10245827ejb.90.1595006804638;
+ Fri, 17 Jul 2020 10:26:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716202044.734067877@linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: by 2002:a17:906:8411:0:0:0:0 with HTTP; Fri, 17 Jul 2020 10:26:44
+ -0700 (PDT)
+Reply-To: drharunabello4@gmail.com
+From:   Dr Haruna Bello <hanaaeldaw92@gmail.com>
+Date:   Fri, 17 Jul 2020 10:26:44 -0700
+Message-ID: <CAC93_nAuHeEn=87EBqT75ewy7=ExuyNq7e82eQBTj+ejzbETew@mail.gmail.com>
+Subject: Good day Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks correct to me, but I forgot everything about posix-timers.c
+-- 
 
-this obviously means that the expired timer won't fire until the
-task returns to user-mode but probably we don't care.
+Good day Dear
 
-One cosmetic nit below,
+I have a project of $18.5 Million Us Dollars which I will like you to
+support me
+so that the fund will be transfer to your bank account.
+Please if you are capable reply back to me so that i will give more
+details about this
+project.
 
-On 07/16, Thomas Gleixner wrote:
->
-> +#ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
-> +void posix_cpu_timers_work(struct callback_head *work);
-> +
-> +static inline void posix_cputimer_init_work(struct posix_cputimers *pct)
-> +{
-> +	pct->task_work.func = posix_cpu_timers_work;
-
-init_task_work() ?
-
-> +}
-> +#else
-> +static inline void posix_cputimer_init_work(struct posix_cputimers *pct) { }
-> +#endif
-> +
->  static inline void posix_cputimers_init(struct posix_cputimers *pct)
->  {
->  	memset(pct, 0, sizeof(*pct));
->  	pct->bases[0].nextevt = U64_MAX;
->  	pct->bases[1].nextevt = U64_MAX;
->  	pct->bases[2].nextevt = U64_MAX;
-> +	posix_cputimer_init_work(pct);
->  }
-
-And I can't resist. I know this is a common practice, please ignore, but to me
-
-	static inline void posix_cputimers_init(struct posix_cputimers *pct)
-	{
-		memset(pct, 0, sizeof(*pct));
-		pct->bases[0].nextevt = U64_MAX;
-		pct->bases[1].nextevt = U64_MAX;
-		pct->bases[2].nextevt = U64_MAX;
-	#ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
-		init_task_work(&pct->task_work, posix_cpu_timers_work);
-	#endif
-	}
-
-looks better than 2 posix_cputimer_init_work() definitions above.
-
-Note also that signal_struct->posix_cputimers.task_work is never used, perhaps
-it would be better to move this task_work into task_struct? This way we do not
-even need to change posix_cputimers_init(), we call simply initialize
-init_task.posix_task_work.
-
-Oleg.
-
+Thank you I am waiting to hear from you
