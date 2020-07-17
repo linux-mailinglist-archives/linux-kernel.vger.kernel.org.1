@@ -2,119 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340882241D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586AA2241C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgGQRaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgGQRaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:30:06 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2914D2074B;
-        Fri, 17 Jul 2020 17:30:05 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 13:30:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     gregory.herrero@oracle.com
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] recordmcount: only record relocation of type
- R_AARCH64_CALL26 on arm64.
-Message-ID: <20200717133003.025f2096@oasis.local.home>
-In-Reply-To: <20200717143338.19302-1-gregory.herrero@oracle.com>
-References: <20200717143338.19302-1-gregory.herrero@oracle.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727903AbgGQR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726668AbgGQR1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 13:27:25 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99941C0619D2;
+        Fri, 17 Jul 2020 10:27:24 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f2so11959893wrp.7;
+        Fri, 17 Jul 2020 10:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uv/mehhqSy3DaoKMUHPQC+Xg+wYizrO+P1oEDPd1R5Y=;
+        b=kVZwjpajXWhE3Tq9GOL4jqxnYJRO/FK2GgA1oiuf6uPwe3ilTYUd/lypogr2w1FeTh
+         7CKsOxRqgLV+9kX3EcRSUAt30lIVsC8Q80ilT6qsf/dlwYx6FO0/j571sY+82fx/LrN1
+         mN9i4tfWOkCKpg7CBEhefo/WM8z0K0pOQV4ugNnzGILBtnLPn4/kWKHdxk73vDRTuJiH
+         BIOK/Mtfnjndb2DLRmo8K23JCcDwWm/4u/Wdn95S34wRy/DpoDTle3nRWcglWq+JPLtw
+         nAmHPjjQNRrFDjZPYrs0NWyLbin3Ex8oRhyKG578JBjetfCFHetuWZ7v9cxWcOKXzwk2
+         8aAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uv/mehhqSy3DaoKMUHPQC+Xg+wYizrO+P1oEDPd1R5Y=;
+        b=hg30df7w1A1OCWOjvBQBlc8Fma1UDkYTKcq2D1cF6ECwOJsKUtjjqIsX+qwP5jpIHi
+         1oH7BMyZtqYPeN1QTw+jeCIv7iLLsN8SvEUbVzHBtJPUPkgDDVpqotzfCrf4feKq1CAN
+         rAsPHWM+ACLLN/WGIYrwJ7daqELO1Q6juqH7bfmwYGB5EZKR2lx6oD0H2V4yQ2tOfVGA
+         Zx2Xjb9WYnx0of3glS2fjSeoY1xn+sCPzuXfhX4NdsBmVdNyMGJqHNw0RDBuKXizMEre
+         ppa92HHA9RD8OFgjZ/HrbyglJ6k3C18pEgvm9ANGxSh6pOEolAmLvVScRGnNVXl2cO/8
+         b66w==
+X-Gm-Message-State: AOAM532uQQeoWOLaFbEO4Xqko8M3fHYpoYFZkBaDY3+9ZyxgaKaj+bNW
+        VjwOmdSBc0yINqivsvJp1neiJ4l3tkQ=
+X-Google-Smtp-Source: ABdhPJzuWUhay96eHMlekR318s1wqVyttXpYIA4Tx9T9DkN1wUZXOq9L0CiquPlDvdCkiIjEj26QoQ==
+X-Received: by 2002:adf:e801:: with SMTP id o1mr11618071wrm.54.1595006843074;
+        Fri, 17 Jul 2020 10:27:23 -0700 (PDT)
+Received: from [10.230.191.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 33sm17001764wri.16.2020.07.17.10.27.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 10:27:22 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: bcmgenet: fix error returns in
+ bcmgenet_probe()
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1594973982-27988-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Doug Berger <opendmb@gmail.com>
+Message-ID: <8bdd1465-fcaf-4946-3ee9-baeec765247d@gmail.com>
+Date:   Fri, 17 Jul 2020 10:30:18 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1594973982-27988-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 16:33:38 +0200
-gregory.herrero@oracle.com wrote:
-
-> From: Gregory Herrero <gregory.herrero@oracle.com>
+On 7/17/2020 1:19 AM, Zhang Changzhong wrote:
+> The driver forgets to call clk_disable_unprepare() in error path after
+> a success calling for clk_prepare_enable().
 > 
-> Currently, if a section has a relocation to '_mcount' symbol, a new
-> __mcount_loc entry will be added whatever the relocation type is.
-> This is problematic when a relocation to '_mcount' is in the middle of a
-> section and is not a call for ftrace use.
+> Fix to goto err_clk_disable if clk_prepare_enable() is successful.
 > 
-> Such relocation could be generated with below code for example:
->     bool is_mcount(unsigned long addr)
->     {
->         return (target == (unsigned long) &_mcount);
->     }
-> 
-> With this snippet of code, ftrace will try to patch the mcount location
-> generated by this code on module load and fail with:
-> 
->     Call trace:
->      ftrace_bug+0xa0/0x28c
->      ftrace_process_locs+0x2f4/0x430
->      ftrace_module_init+0x30/0x38
->      load_module+0x14f0/0x1e78
->      __do_sys_finit_module+0x100/0x11c
->      __arm64_sys_finit_module+0x28/0x34
->      el0_svc_common+0x88/0x194
->      el0_svc_handler+0x38/0x8c
->      el0_svc+0x8/0xc
->     ---[ end trace d828d06b36ad9d59 ]---
->     ftrace failed to modify
->     [<ffffa2dbf3a3a41c>] 0xffffa2dbf3a3a41c
->      actual:   66:a9:3c:90
->     Initializing ftrace call sites
->     ftrace record flags: 2000000
->      (0)
->     expected tramp: ffffa2dc6cf66724
-> 
-> So Limit the relocation type to R_AARCH64_CALL26 as in perl version of
-> recordmcount.
-> 
-
-I'd rather have this go through the arm64 tree, as they can test it
-better than I can.
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
-
-> Fixes: ed60453fa8f8 ("ARM: 6511/1: ftrace: add ARM support for C version of recordmcount")
-> Signed-off-by: Gregory Herrero <gregory.herrero@oracle.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 > ---
->  scripts/recordmcount.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  drivers/net/ethernet/broadcom/genet/bcmgenet.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-> index 7225107a9aaf..e59022b3f125 100644
-> --- a/scripts/recordmcount.c
-> +++ b/scripts/recordmcount.c
-> @@ -434,6 +434,11 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
->  	return 1;
->  }
->  
-> +static int arm64_is_fake_mcount(Elf64_Rel const *rp)
-> +{
-> +	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
-> +}
-> +
->  /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
->   * http://techpubs.sgi.com/library/manuals/4000/007-4658-001/pdf/007-4658-001.pdf
->   * We interpret Table 29 Relocation Operation (Elf64_Rel, Elf64_Rela) [p.40]
-> @@ -547,6 +552,7 @@ static int do_file(char const *const fname)
->  		make_nop = make_nop_arm64;
->  		rel_type_nop = R_AARCH64_NONE;
->  		ideal_nop = ideal_nop4_arm64;
-> +		is_fake_mcount64 = arm64_is_fake_mcount;
->  		break;
->  	case EM_IA_64:	reltype = R_IA64_IMM64; break;
->  	case EM_MIPS:	/* reltype: e_class    */ break;
+> diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+> index ee84a26..23df6f2 100644
+> --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+> +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+> @@ -4016,7 +4016,7 @@ static int bcmgenet_probe(struct platform_device *pdev)
+>  	if (err)
+>  		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+>  	if (err)
+> -		goto err;
+> +		goto err_clk_disable;
+Please split this clause out as a separate pull-request with this fixes tag:
+Fixes: 99d55638d4b0 ("net: bcmgenet: enable NETIF_F_HIGHDMA flag")
 
+>  
+>  	/* Mii wait queue */
+>  	init_waitqueue_head(&priv->wq);
+> @@ -4028,14 +4028,14 @@ static int bcmgenet_probe(struct platform_device *pdev)
+>  	if (IS_ERR(priv->clk_wol)) {
+>  		dev_dbg(&priv->pdev->dev, "failed to get enet-wol clock\n");
+>  		err = PTR_ERR(priv->clk_wol);
+> -		goto err;
+> +		goto err_clk_disable;
+>  	}
+>  
+>  	priv->clk_eee = devm_clk_get_optional(&priv->pdev->dev, "enet-eee");
+>  	if (IS_ERR(priv->clk_eee)) {
+>  		dev_dbg(&priv->pdev->dev, "failed to get enet-eee clock\n");
+>  		err = PTR_ERR(priv->clk_eee);
+> -		goto err;
+> +		goto err_clk_disable;
+>  	}
+>  
+>  	/* If this is an internal GPHY, power it on now, before UniMAC is
+> 
+Please split these changes into a pull-request with fixes tag:
+Fixes: c80d36ff63a5 ("net: bcmgenet: Use devm_clk_get_optional() to get
+the clocks")
+
+Resubmit the pull-requests with [PATCH net].
+That will make them easier to apply to stable branches.
+
+Otherwise:
+Acked-by: Doug Berger <opendmb@gmail.com>
+
+Thanks!
