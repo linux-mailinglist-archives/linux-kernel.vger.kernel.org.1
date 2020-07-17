@@ -2,93 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355AB22428D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86C0224293
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgGQRsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgGQRsa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:48:30 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AB7C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:48:29 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l2so18511663wmf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5cA5RUvmio3ClfgI8pU8wP7vKSaKk9ymiyczHiblSGI=;
-        b=UJ82aaZ4PJK8DnGxDFuapcONUWsOBY4gwWplow/60/Zk2yXslUz9HCaPjWO+Km5nKC
-         27vfnD952Rb/9LSYSZOL02rQnrSnJaK1IwSwmE/rX2/ln1d4/fFEbSNhxTiC+EOs1ncU
-         NnK44j2uDxeNyoYTQtYB2cZqLPuF4QPR7Bg7vkLkr2yoZvhMNf+wTLkojOlmr+xcWTVn
-         ZdgntFQnkGBIBWbSnwueqHT4tjrr8V+jnPTtwx3QRfyvEutVRHQcaXCxGJH1NSc5s6iy
-         BntSWida+dRK+0gBvTvmEQ1apQxLxX653kDCCWPaLlix1Twrr2qLZuUNhb4tkFfX6Cxp
-         HVnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5cA5RUvmio3ClfgI8pU8wP7vKSaKk9ymiyczHiblSGI=;
-        b=WcxGtblNbQUnisgH6qqZ2GPS3jz9bOSWQxkQoaDB5VAqiyN8wTp9mnNgbCBB2EElQg
-         O6n4WSqNOqTjPehM0ApMabT07yChqkgoqvWG6Egu616VpCTw+h0FVG6u7QWwQnQZHkm0
-         8/0InuIO+WYqWLG1mMRkbSTYR8DBzaYUsry2tJIiNMZYA4+PPBJwE0sZughW8Ynt6bLR
-         VlAXK2CtwL2myBdVspvvlJrUPbakEyV53aBh93MN0T5m82Xl6udZGkgJCvcJyRJ/t09f
-         KSKmyp5QYovRtpECPlpMTt4iJY3XBzCnsF2WlfqHMXfmtG4yWt2kkMA/YZBaQi3gGgZk
-         5rnA==
-X-Gm-Message-State: AOAM533uQZAq2DUtqEsC6LtEct6bY8DITPgQHtoZUUrmv7GVJcuaNPoy
-        HiU5Ch2CuvCIUoc4Vp3p6wkpN/WBUsg=
-X-Google-Smtp-Source: ABdhPJyWMku0BhtQCMKfPdwWx2yy2ByNeIqXqO791I/1KbbAS5AmVGrTO2Xbjy3zaxaCCCEHxjDZ+g==
-X-Received: by 2002:a05:600c:2511:: with SMTP id d17mr10745367wma.127.1595008108118;
-        Fri, 17 Jul 2020 10:48:28 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:45c9:b95c:ccef:aae6? ([2a01:e34:ed2f:f020:45c9:b95c:ccef:aae6])
-        by smtp.googlemail.com with ESMTPSA id l15sm15314927wro.33.2020.07.17.10.48.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 10:48:27 -0700 (PDT)
-Subject: Re: [PATCH] net: genetlink: Move initialization to core_initcall
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, jiri@mellanox.com, xiyou.wangcong@gmail.com,
-        johannes.berg@intel.com, mkubecek@suse.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200715074120.8768-1-daniel.lezcano@linaro.org>
- <3ab741d2-2d44-fbcb-709d-c89d2b0c3649@linaro.org>
- <20200717.103439.774880145467935567.davem@davemloft.net>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <059ad7df-b555-a08d-1f81-5fcb31e2e21e@linaro.org>
-Date:   Fri, 17 Jul 2020 19:48:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728047AbgGQRtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:49:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726463AbgGQRtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 13:49:22 -0400
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77EAA2173E;
+        Fri, 17 Jul 2020 17:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595008161;
+        bh=6czVMdZhaHo+tKToD45mSau37/5Ee2rAARvEgfpux50=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yhxZkgPa/TfqOP6176TD0H4j5knKc+Ru46LYNv7AfRnabvyYjEz++pYZlTh8evncI
+         HWfQ7eXaGWOKv+9zVEA7vb31QRcs8qj/DMd4cxooUAV0kdus5Ax7PbV1+S78TKK2Go
+         5eqtwQidvEKHV0cjK2vJ/UhPeIXURf04myyR04Do=
+Received: by mail-oi1-f181.google.com with SMTP id 12so8679783oir.4;
+        Fri, 17 Jul 2020 10:49:21 -0700 (PDT)
+X-Gm-Message-State: AOAM531EuWIWz+R9zRujiNd4fTMRg2sDpPlM2E4nfxzMlf+HUrdl8nnj
+        roIVDczu89ufGzz7IDO6BlCMr1xRWUEJZNqvTA==
+X-Google-Smtp-Source: ABdhPJwNhRmnLbtxUv/aDJg/oVt29At2larGRwaEpFyhGA+N34UOSp3eR1o00QSQMJ1CApxxPymPcPTPy2uXJpX31Y0=
+X-Received: by 2002:aca:30d2:: with SMTP id w201mr8720870oiw.147.1595008160791;
+ Fri, 17 Jul 2020 10:49:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200717.103439.774880145467935567.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200702191322.2639681-1-helen.koike@collabora.com> <20200702191322.2639681-6-helen.koike@collabora.com>
+In-Reply-To: <20200702191322.2639681-6-helen.koike@collabora.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 17 Jul 2020 11:49:05 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKHG4HgcpWvh_qnHPAkaGCd7Q8APk2ai_QxjUQhvd5APg@mail.gmail.com>
+Message-ID: <CAL_JsqKHG4HgcpWvh_qnHPAkaGCd7Q8APk2ai_QxjUQhvd5APg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/9] media: staging: rkisp1: remove unecessary clocks
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     devicetree@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "heiko@sntech.de" <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
+        Johan Jonker <jbx6244@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Eddie Cai <eddie.cai.linux@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2020 19:34, David Miller wrote:
-> From: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Date: Wed, 15 Jul 2020 09:43:00 +0200
-> 
->> if you agree with this change, is it possible I merge it through the
->> thermal tree in order to fix the issue ?
-> 
-> No problem:
-> 
-> Acked-by: David S. Miller <davem@davemloft.net>
+On Thu, Jul 2, 2020 at 1:13 PM Helen Koike <helen.koike@collabora.com> wrote:
+>
+> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
+> hclk_isp, thus we can remove parents from the list.
 
-Thanks!
+But it looks like it is the wrap clocks you are removing.
 
+>
+> Also, for the isp0, we only need the ISP clock, ACLK and HCLK.
+> In the future we'll need a pixel clock for RK3288 and RK3399, and a JPEG
+> clock for RK3288.
+>
+> So with the goal to cleanup the dt-bindings and remove it from staging,
+> simplify clock names to isp, aclk and hclk.
+>
+> For reference, this is the isp clock topology on RK3399:
+>
+>  xin24m
+>     pll_npll
+>        npll
+>           clk_isp1
+>           clk_isp0
+>     pll_cpll
+>        cpll
+>           aclk_isp1
+>              aclk_isp1_noc
+>              hclk_isp1
+>                 aclk_isp1_wrapper
+>                 hclk_isp1_noc
+>           aclk_isp0
+>              hclk_isp1_wrapper
+>              aclk_isp0_wrapper
+>              aclk_isp0_noc
+>              hclk_isp0
+>                 hclk_isp0_wrapper
+>                 hclk_isp0_noc
+>  pclkin_isp1_wrapper
+>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+>
+> ---
+>
+> Changes in V4:
+> - update binding according to suggestion by Robin Murphy
+> on https://patchwork.kernel.org/patch/11475007/
+>
+> Changes in V3:
+> - this is a new patch in the series
+> ---
+>  .../bindings/media/rockchip-isp1.yaml         | 30 +++++++++----------
+>  drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 ++---
+>  2 files changed, 17 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+> index 4d111ef2e89c7..f10c53d008748 100644
+> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+> @@ -24,20 +24,20 @@ properties:
+>      maxItems: 1
+>
+>    clocks:
+> -    items:
+> -      - description: ISP clock
+> -      - description: ISP AXI clock clock
+> -      - description: ISP AXI clock  wrapper clock
+> -      - description: ISP AHB clock clock
+> -      - description: ISP AHB wrapper clock
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+This is the correct way to describe multiple clocks.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> +    maxItems: 5
+
+Now the 4th and 5th clock are undefined.
+
+> +    minItems: 3
+> +    description:
+> +      ISP clock
+> +      ISP AXI clock
+> +      ISP AHB clock
+>
+>    clock-names:
+> +    maxItems: 5
+
+This should not be more than the number of entries in 'items'.
+
+> +    minItems: 3
+>      items:
+> -      - const: clk_isp
+> -      - const: aclk_isp
+> -      - const: aclk_isp_wrap
+> -      - const: hclk_isp
+> -      - const: hclk_isp_wrap
+> +      - const: isp
+> +      - const: aclk
+> +      - const: hclk
+>
+>    iommus:
+>      maxItems: 1
+> @@ -135,11 +135,9 @@ examples:
+>              reg = <0x0 0xff910000 0x0 0x4000>;
+>              interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH 0>;
+>              clocks = <&cru SCLK_ISP0>,
+> -                     <&cru ACLK_ISP0>, <&cru ACLK_ISP0_WRAPPER>,
+> -                     <&cru HCLK_ISP0>, <&cru HCLK_ISP0_WRAPPER>;
+> -            clock-names = "clk_isp",
+> -                          "aclk_isp", "aclk_isp_wrap",
+> -                          "hclk_isp", "hclk_isp_wrap";
+> +                     <&cru ACLK_ISP0_WRAPPER>,
+> +                     <&cru HCLK_ISP0_WRAPPER>;
+> +            clock-names = "isp", "aclk", "hclk";
+>              iommus = <&isp0_mmu>;
+>              phys = <&dphy>;
+>              phy-names = "dphy";
+> diff --git a/drivers/staging/media/rkisp1/rkisp1-dev.c b/drivers/staging/media/rkisp1/rkisp1-dev.c
+> index f38801fea10d9..175ac25fe99fa 100644
+> --- a/drivers/staging/media/rkisp1/rkisp1-dev.c
+> +++ b/drivers/staging/media/rkisp1/rkisp1-dev.c
+> @@ -406,11 +406,9 @@ static irqreturn_t rkisp1_isr(int irq, void *ctx)
+>  }
+>
+>  static const char * const rk3399_isp_clks[] = {
+> -       "clk_isp",
+> -       "aclk_isp",
+> -       "hclk_isp",
+> -       "aclk_isp_wrap",
+> -       "hclk_isp_wrap",
+> +       "isp",
+> +       "aclk",
+> +       "hclk",
+>  };
+>
+>  static const struct rkisp1_match_data rk3399_isp_clk_data = {
+> --
+> 2.26.0
+>
