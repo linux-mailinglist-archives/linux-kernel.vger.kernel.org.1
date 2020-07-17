@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23E6223B1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A562223B23
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgGQMGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 08:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgGQMGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 08:06:21 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CBBC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:06:21 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id s9so12266020ljm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LJR0i6k7cO0ZZMPI9z4MOM+krNnMR1fBcC0/4RFxoRc=;
-        b=aabBGO/8gdwSRkA/BTM3UdLB2r8u3KjxQfPB0aFML2rV2ttywdWnH96KH8Qq8+gwjk
-         qRzYI7lSm4R0yDFu54T/gxVFsYj84X17IVGB7iNgU3E8MuVhBiV+x5SymzPAhd6Fc0y2
-         GEL8k/lj8gVhMb7CshyoECk/icp7txJXkBXD5U54sL1C+DWvjnp9+BCYWzV69XsLeY8O
-         QRjDqd3wDlNx5SVGzMEZIuuFpIiDeoew8GJ02t33OzSEcpxOtbSWKR4bviqGQq1PaID0
-         1VOPixmOcBSH8zngj6epCfWITMdLCksuL8lTYXPhxaZ8PPdqHxc+g7qSXpa2QNpqloHx
-         Z08g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LJR0i6k7cO0ZZMPI9z4MOM+krNnMR1fBcC0/4RFxoRc=;
-        b=gTbSIRRe8NRAn+bsl5RVqlfRu/Ct8/EsfIh5qzWTQ43zTRmB6YTqFVymE3GxsO7P21
-         oyjw3aYxT68nEpzM+AwvbvacZsLnQ2D6HxuwAPUElUAI/qxcOqQkrwWWdbmb0Ztz5P22
-         sdvhYPub7CSMCmuAUbDQ1mOLDxuxDh46Wghz3KvbeamWeNHgC7di1ccy1q0MoyJyOIpv
-         qD7nXBw3VMSbZ8dhrhhk2N9PE/o/0a7ELY2fvkYpjl/YS8LiT9egvu90atstj6eRupBi
-         n36ZTSbu+yQh6VmLXU2viHVYsFD2sViNTAUsuYtxwMXu2qH3af/LZVDIVJ6YfNEz8CIz
-         wjCQ==
-X-Gm-Message-State: AOAM533BabbZYOFKqyWO2rfuLsdqumc0T6xcbiRa/troKjWohMi+vtjP
-        7CIqk0AaDmVJ+oILUVwqqlOF35xD0PRD2fPXa75bUQ==
-X-Google-Smtp-Source: ABdhPJzM5ABK4ZPfUhITf86CQcHTzH09tokmVlULmlOslvOaUvuycksIQdKNexusQpjUZ7Pg1QWEtnYM7wvpKL6m+hA=
-X-Received: by 2002:a2e:9a4d:: with SMTP id k13mr4643357ljj.283.1594987579348;
- Fri, 17 Jul 2020 05:06:19 -0700 (PDT)
+        id S1726232AbgGQMLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 08:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726059AbgGQMLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 08:11:17 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78ACD20684;
+        Fri, 17 Jul 2020 12:11:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594987877;
+        bh=SM9pIqkwHsZoqbdzaqeC6yp+KV1bCcBYMudp0X0KOLw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uhTW3gqJ5bZvoMfEWzYsddz60gssaUrfoVqBbYH59a9/VtPkqVj/lmn3g+Ym9r6T4
+         ZSlCIDuN2hyUB5UbeZoHYzeEmmAW7VLGEa6mq9cDIxQmVYBGtrdaPkPrCamhqyQ6Qj
+         e9PRRqIrBIDiZTXkklffx4y3U0K39lbgsJcndV4o=
+Date:   Fri, 17 Jul 2020 13:11:05 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v2 2/3] regmap: spi-avmm: start with the last SOP on phy
+ rx buffer parsing
+Message-ID: <20200717121105.GE4316@sirena.org.uk>
+References: <1594896174-18826-1-git-send-email-yilun.xu@intel.com>
+ <1594896174-18826-3-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-References: <20200716212109.GA17525@embeddedor>
-In-Reply-To: <20200716212109.GA17525@embeddedor>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 17 Jul 2020 14:06:08 +0200
-Message-ID: <CACRpkdYXFOOv8yh+wMKSZ_7E2oXXXZZO2b9C-jLJN055mLdSzA@mail.gmail.com>
-Subject: Re: [PATCH][next] pinctrl: lpc18xx: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="T6xhMxlHU34Bk0ad"
+Content-Disposition: inline
+In-Reply-To: <1594896174-18826-3-git-send-email-yilun.xu@intel.com>
+X-Cookie: No other warranty expressed or implied.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 11:15 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
 
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1].
->
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+--T6xhMxlHU34Bk0ad
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Patch applied.
+On Thu, Jul 16, 2020 at 06:42:53PM +0800, Xu Yilun wrote:
+> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>=20
+> This patch works around a bug in the SPI Slave to Avalon Master bridge.
+> The SPI slave will send an unexpected extra SOP in the following case.
 
-Yours,
-Linus Walleij
+This is fixing a bug introduced in patch 1 - just send a version of
+patch 1 that works, don't incrementally fix it.
+
+--T6xhMxlHU34Bk0ad
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8RlVkACgkQJNaLcl1U
+h9D4HAf/fupAOOvRf5rJW5/OHDc8uSimJBvXiLjpkyrkSNoJD7+QVXxBqpMmCRrI
+5a9GByP6pZysHOju1TWkpNDnceLavQJ8ZsCStQlkzm15/PSEJZ+wrGtUtAjY1qGg
+NPhaGLtS0kpS8NswSyDLBfJOOVvsHZEu0dIN3XMW9ZkTXFoM169IrN7irspP2GXV
+WVAMI+onD3jO3DknJpDz5c6FS5cNhRzP8JmgC5VgP71A/VKm4jhJPBzfzB4iFO5r
+LjBp06qwEBRsfAKTwlUMbb05AvI0igFuUsUcSmyhpcUmDw07FJPQdJw+kJvi/OOJ
+bfJPCb9aiJrg2nvIbETllZixdU1X2w==
+=fRvS
+-----END PGP SIGNATURE-----
+
+--T6xhMxlHU34Bk0ad--
