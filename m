@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B852F223033
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FA0223038
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgGQBJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 21:09:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56044 "EHLO mail.kernel.org"
+        id S1726867AbgGQBKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 21:10:22 -0400
+Received: from mx.socionext.com ([202.248.49.38]:6309 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726401AbgGQBJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 21:09:44 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76A68207BC;
-        Fri, 17 Jul 2020 01:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594948183;
-        bh=YgKWBSEhMz+NBsILDChvn58XB6zvrCT46NsLfN2Wlvs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G1B1dSdQxJSbAwQbKGWfetCMby9xFfC7p/pGY5CWr4Okt2I0vXrAgr6WRzjFNORXB
-         AdjvdYH6Mh/eFqHoyigXwYxQzusAMPqLZff6rZXhrpCGImdP+F/cOm77Ia3K0zKOKw
-         LI2qL2r2VXGG7bboN3eJbgOSfNKleZ6O5z6D5FDQ=
-Date:   Thu, 16 Jul 2020 18:09:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Paolo Pisati <paolo.pisati@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] selftests: net: ip_defrag: modprobe missing
- nf_defrag_ipv6 support
-Message-ID: <20200716180942.2c52ecd1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200716155114.72625-1-paolo.pisati@canonical.com>
-References: <20200716155114.72625-1-paolo.pisati@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726394AbgGQBKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 21:10:21 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 17 Jul 2020 10:10:19 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 9C3A3180117;
+        Fri, 17 Jul 2020 10:10:18 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 17 Jul 2020 10:10:18 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id 3A0A61A0509;
+        Fri, 17 Jul 2020 10:10:18 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        "Andrew F . Davis" <afd@ti.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH] dma-buf: heaps: Introduce dma_heap_add_cma() for non-default CMA heap
+Date:   Fri, 17 Jul 2020 10:10:08 +0900
+Message-Id: <1594948208-4739-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020 17:51:14 +0200 Paolo Pisati wrote:
-> Fix ip_defrag.sh when CONFIG_NF_DEFRAG_IPV6=m:
-> 
-> $ sudo ./ip_defrag.sh
-> + set -e
-> + mktemp -u XXXXXX
-> + readonly NETNS=ns-rGlXcw
-> + trap cleanup EXIT
-> + setup
-> + ip netns add ns-rGlXcw
-> + ip -netns ns-rGlXcw link set lo up
-> + ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_high_thresh=9000000
-> + ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_low_thresh=7000000
-> + ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_time=1
-> + ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_high_thresh=9000000
-> + ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_low_thresh=7000000
-> + ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_time=1
-> + ip netns exec ns-rGlXcw sysctl -w net.netfilter.nf_conntrack_frag6_high_thresh=9000000
-> + cleanup
-> + ip netns del ns-rGlXcw
-> 
-> $ ls -la /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
-> ls: cannot access '/proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh': No such file or directory
-> 
-> $ sudo modprobe nf_defrag_ipv6
-> $ ls -la /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
-> -rw-r--r-- 1 root root 0 Jul 14 12:34 /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
-> 
-> Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
+Current dma-buf heaps can handle only default CMA. This introduces
+dma_heap_add_cma() function to attach CMA heaps that belongs to a device.
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+At first, the driver calls of_reserved_mem_device_init() to set
+memory-region property associated with reserved-memory defined as CMA
+to the device. And when the driver calls this dma_heap_add_cma(),
+the CMA will be added to dma-buf heaps.
+
+For example, prepare CMA node named "linux,cma@10000000" and
+specify the node for memory-region property. After the above calls
+in the driver, a device file "/dev/dma_heap/linux,cma@10000000"
+associated with the CMA become available as dma-buf heaps.
+
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+---
+ drivers/dma-buf/heaps/cma_heap.c | 12 ++++++++++++
+ include/linux/dma-heap.h         |  9 +++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 626cf7f..5d2442e 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -162,6 +162,18 @@ static int __add_cma_heap(struct cma *cma, void *data)
+ 	return 0;
+ }
+ 
++/* add device CMA heap to dmabuf heaps */
++int dma_heap_add_cma(struct device *dev)
++{
++	struct cma *cma = dev_get_cma_area(dev);
++
++	if (!cma)
++		return -ENOMEM;
++
++	return __add_cma_heap(cma, NULL);
++}
++EXPORT_SYMBOL_GPL(dma_heap_add_cma);
++
+ static int add_default_cma_heap(void)
+ {
+ 	struct cma *default_cma = dev_get_cma_area(NULL);
+diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+index 454e354..16bec7d 100644
+--- a/include/linux/dma-heap.h
++++ b/include/linux/dma-heap.h
+@@ -56,4 +56,13 @@ void *dma_heap_get_drvdata(struct dma_heap *heap);
+  */
+ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info);
+ 
++#ifdef CONFIG_DMABUF_HEAPS_CMA
++/**
++ * dma_heap_add_cma - adds a device CMA heap to dmabuf heaps
++ * @dev:	device with a CMA heap to register
++ */
++int dma_heap_add_cma(struct device *dev);
++
++#endif /* CONFIG_DMABUF_HEAPS_CMA */
++
+ #endif /* _DMA_HEAPS_H */
+-- 
+2.7.4
+
