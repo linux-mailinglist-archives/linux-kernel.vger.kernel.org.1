@@ -2,230 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D22C22387C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F178422386D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgGQJfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:35:24 -0400
-Received: from proxima.lasnet.de ([78.47.171.185]:53924 "EHLO
-        proxima.lasnet.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgGQJfX (ORCPT
+        id S1726465AbgGQJb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:31:28 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:35474 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbgGQJb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:35:23 -0400
-X-Greylist: delayed 522 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Jul 2020 05:35:19 EDT
-Received: from localhost.localdomain (p200300e9d737160bc31b0c5d63306033.dip0.t-ipconnect.de [IPv6:2003:e9:d737:160b:c31b:c5d:6330:6033])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: stefan@datenfreihafen.org)
-        by proxima.lasnet.de (Postfix) with ESMTPSA id B77EDC0617;
-        Fri, 17 Jul 2020 11:26:35 +0200 (CEST)
-Subject: Re: [PATCH 05/22] net: remove compat_sock_common_{get,set}sockopt
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Chas Williams <3chas3@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, mptcp@lists.01.org
-References: <20200717062331.691152-1-hch@lst.de>
- <20200717062331.691152-6-hch@lst.de>
-From:   Stefan Schmidt <stefan@datenfreihafen.org>
-Message-ID: <52d031f9-70c2-89c1-941f-c8187a6a2b68@datenfreihafen.org>
-Date:   Fri, 17 Jul 2020 11:26:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Fri, 17 Jul 2020 05:31:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U2zo7Ok_1594978280;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2zo7Ok_1594978280)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 17 Jul 2020 17:31:21 +0800
+Subject: Re: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
+ split_huge_page()
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name
+Cc:     =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
+Date:   Fri, 17 Jul 2020 17:30:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200717062331.691152-6-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
 
-On 17.07.20 08:23, Christoph Hellwig wrote:
-> Add the compat handling to sock_common_{get,set}sockopt instead,
-> keyed of in_compat_syscall().  This allow to remove the now unused
-> ->compat_{get,set}sockopt methods from struct proto_ops.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   include/linux/net.h      |  6 ------
->   include/net/sock.h       |  4 ----
->   net/core/sock.c          | 30 ++++++------------------------
->   net/dccp/ipv4.c          |  4 ----
->   net/dccp/ipv6.c          |  2 --
->   net/ieee802154/socket.c  |  8 --------
->   net/ipv4/af_inet.c       |  6 ------
->   net/ipv6/af_inet6.c      |  4 ----
->   net/ipv6/ipv6_sockglue.c | 12 ++----------
->   net/ipv6/raw.c           |  2 --
->   net/l2tp/l2tp_ip.c       |  4 ----
->   net/l2tp/l2tp_ip6.c      |  2 --
->   net/mptcp/protocol.c     |  6 ------
->   net/phonet/socket.c      |  8 --------
->   net/sctp/ipv6.c          |  2 --
->   net/sctp/protocol.c      |  4 ----
->   16 files changed, 8 insertions(+), 96 deletions(-)
-> 
-> diff --git a/include/linux/net.h b/include/linux/net.h
-> index 016a9c5faa3479..858ff1d981540d 100644
-> --- a/include/linux/net.h
-> +++ b/include/linux/net.h
-> @@ -165,12 +165,6 @@ struct proto_ops {
->   				      int optname, char __user *optval, unsigned int optlen);
->   	int		(*getsockopt)(struct socket *sock, int level,
->   				      int optname, char __user *optval, int __user *optlen);
-> -#ifdef CONFIG_COMPAT
-> -	int		(*compat_setsockopt)(struct socket *sock, int level,
-> -				      int optname, char __user *optval, unsigned int optlen);
-> -	int		(*compat_getsockopt)(struct socket *sock, int level,
-> -				      int optname, char __user *optval, int __user *optlen);
-> -#endif
->   	void		(*show_fdinfo)(struct seq_file *m, struct socket *sock);
->   	int		(*sendmsg)   (struct socket *sock, struct msghdr *m,
->   				      size_t total_len);
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 4bf8841651486d..1fd7cf5fc7516c 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1744,10 +1744,6 @@ int sock_common_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
->   			int flags);
->   int sock_common_setsockopt(struct socket *sock, int level, int optname,
->   				  char __user *optval, unsigned int optlen);
-> -int compat_sock_common_getsockopt(struct socket *sock, int level,
-> -		int optname, char __user *optval, int __user *optlen);
-> -int compat_sock_common_setsockopt(struct socket *sock, int level,
-> -		int optname, char __user *optval, unsigned int optlen);
->   
->   void sk_common_release(struct sock *sk);
->   
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index e085df79482520..018404d1762682 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -3199,23 +3199,14 @@ int sock_common_getsockopt(struct socket *sock, int level, int optname,
->   {
->   	struct sock *sk = sock->sk;
->   
-> -	return sk->sk_prot->getsockopt(sk, level, optname, optval, optlen);
-> -}
-> -EXPORT_SYMBOL(sock_common_getsockopt);
-> -
->   #ifdef CONFIG_COMPAT
-> -int compat_sock_common_getsockopt(struct socket *sock, int level, int optname,
-> -				  char __user *optval, int __user *optlen)
-> -{
-> -	struct sock *sk = sock->sk;
-> -
-> -	if (sk->sk_prot->compat_getsockopt != NULL)
-> +	if (in_compat_syscal() && sk->sk_prot->compat_getsockopt)
->   		return sk->sk_prot->compat_getsockopt(sk, level, optname,
->   						      optval, optlen);
-> +#endif
->   	return sk->sk_prot->getsockopt(sk, level, optname, optval, optlen);
->   }
-> -EXPORT_SYMBOL(compat_sock_common_getsockopt);
-> -#endif
-> +EXPORT_SYMBOL(sock_common_getsockopt);
->   
->   int sock_common_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
->   			int flags)
-> @@ -3240,23 +3231,14 @@ int sock_common_setsockopt(struct socket *sock, int level, int optname,
->   {
->   	struct sock *sk = sock->sk;
->   
-> -	return sk->sk_prot->setsockopt(sk, level, optname, optval, optlen);
-> -}
-> -EXPORT_SYMBOL(sock_common_setsockopt);
-> -
->   #ifdef CONFIG_COMPAT
-> -int compat_sock_common_setsockopt(struct socket *sock, int level, int optname,
-> -				  char __user *optval, unsigned int optlen)
-> -{
-> -	struct sock *sk = sock->sk;
-> -
-> -	if (sk->sk_prot->compat_setsockopt != NULL)
-> +	if (in_compat_syscall() && sk->sk_prot->compat_setsockopt)
->   		return sk->sk_prot->compat_setsockopt(sk, level, optname,
->   						      optval, optlen);
-> +#endif
->   	return sk->sk_prot->setsockopt(sk, level, optname, optval, optlen);
->   }
-> -EXPORT_SYMBOL(compat_sock_common_setsockopt);
-> -#endif
-> +EXPORT_SYMBOL(sock_common_setsockopt);
->   
->   void sk_common_release(struct sock *sk)
->   {
-> diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
-> index a7e989919c5307..316cc5ac0da72b 100644
-> --- a/net/dccp/ipv4.c
-> +++ b/net/dccp/ipv4.c
-> @@ -999,10 +999,6 @@ static const struct proto_ops inet_dccp_ops = {
->   	.recvmsg	   = sock_common_recvmsg,
->   	.mmap		   = sock_no_mmap,
->   	.sendpage	   = sock_no_sendpage,
-> -#ifdef CONFIG_COMPAT
-> -	.compat_setsockopt = compat_sock_common_setsockopt,
-> -	.compat_getsockopt = compat_sock_common_getsockopt,
-> -#endif
->   };
->   
->   static struct inet_protosw dccp_v4_protosw = {
-> diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
-> index 650187d688519c..b50f85a72cd5fc 100644
-> --- a/net/dccp/ipv6.c
-> +++ b/net/dccp/ipv6.c
-> @@ -1083,8 +1083,6 @@ static const struct proto_ops inet6_dccp_ops = {
->   	.sendpage	   = sock_no_sendpage,
->   #ifdef CONFIG_COMPAT
->   	.compat_ioctl	   = inet6_compat_ioctl,
-> -	.compat_setsockopt = compat_sock_common_setsockopt,
-> -	.compat_getsockopt = compat_sock_common_getsockopt,
->   #endif
->   };
->   
-> diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
-> index d93d4531aa9bc5..94ae9662133e30 100644
-> --- a/net/ieee802154/socket.c
-> +++ b/net/ieee802154/socket.c
-> @@ -423,10 +423,6 @@ static const struct proto_ops ieee802154_raw_ops = {
->   	.recvmsg	   = sock_common_recvmsg,
->   	.mmap		   = sock_no_mmap,
->   	.sendpage	   = sock_no_sendpage,
-> -#ifdef CONFIG_COMPAT
-> -	.compat_setsockopt = compat_sock_common_setsockopt,
-> -	.compat_getsockopt = compat_sock_common_getsockopt,
-> -#endif
->   };
->   
->   /* DGRAM Sockets (802.15.4 dataframes) */
-> @@ -986,10 +982,6 @@ static const struct proto_ops ieee802154_dgram_ops = {
->   	.recvmsg	   = sock_common_recvmsg,
->   	.mmap		   = sock_no_mmap,
->   	.sendpage	   = sock_no_sendpage,
-> -#ifdef CONFIG_COMPAT
-> -	.compat_setsockopt = compat_sock_common_setsockopt,
-> -	.compat_getsockopt = compat_sock_common_getsockopt,
-> -#endif
+Add a VM_WARN_ON for tracking. and updated comments for the code.
 
-For the ieee802154 part:
+Thanks
 
-Acked-by: Stefan Schmidt <stefan@datenfreihafen.org>
+---
+From f1381a1547625a6521777bf9235823d8fbd00dac Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Fri, 10 Jul 2020 16:54:37 +0800
+Subject: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
+ split_huge_page()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-regards
-Stefan Schmidt
+Split_huge_page() must start with PageLRU(head), and we are holding the
+lru_lock here. If the head was cleared lru bit unexpected, tracking it.
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mika Penttilä <mika.penttila@nextfour.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/huge_memory.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index d866b6e43434..28538444197b 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2348,15 +2348,19 @@ static void lru_add_page_tail(struct page *head, struct page *page_tail,
+ 	VM_BUG_ON_PAGE(PageLRU(page_tail), head);
+ 	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
+ 
+-	if (!list)
+-		SetPageLRU(page_tail);
+-
+-	if (likely(PageLRU(head)))
+-		list_add_tail(&page_tail->lru, &head->lru);
+-	else if (list) {
++	if (list) {
+ 		/* page reclaim is reclaiming a huge page */
+ 		get_page(page_tail);
+ 		list_add_tail(&page_tail->lru, list);
++	} else {
++		/*
++		 * Split start from PageLRU(head), and we are holding the
++		 * lru_lock.
++		 * Do a warning if the head's lru bit was cleared unexpected.
++		 */
++		VM_WARN_ON(!PageLRU(head));
++		SetPageLRU(page_tail);
++		list_add_tail(&page_tail->lru, &head->lru);
+ 	}
+ }
+ 
+-- 
+1.8.3.1
+
