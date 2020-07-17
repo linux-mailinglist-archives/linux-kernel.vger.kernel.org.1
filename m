@@ -2,158 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C423223297
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25656223299
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgGQEqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:46:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17610 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725864AbgGQEqo (ORCPT
+        id S1726873AbgGQErF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgGQErF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:46:44 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06H4Voo3143975;
-        Fri, 17 Jul 2020 00:46:35 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqup48t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 00:46:35 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06H4WMEl145082;
-        Fri, 17 Jul 2020 00:46:35 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqup486-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 00:46:34 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06H4Uhtg011264;
-        Fri, 17 Jul 2020 04:46:32 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 328rbqsxx8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 04:46:32 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06H4kTdd43909294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 04:46:30 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DBD4352280;
-        Fri, 17 Jul 2020 04:46:29 +0000 (GMT)
-Received: from [9.102.1.129] (unknown [9.102.1.129])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D3ACF5227A;
-        Fri, 17 Jul 2020 04:46:26 +0000 (GMT)
-Subject: Re: [PATCH v3 02/12] powerpc/kexec_file: mark PPC64 specific code
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Pingfan Liu <piliu@redhat.com>, Nayna Jain <nayna@linux.ibm.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
- <159466085652.24747.2414199807974963385.stgit@hbathini.in.ibm.com>
- <87v9io8c13.fsf@morokweng.localdomain>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-Message-ID: <63d551a9-684b-768b-8b0f-2a0da68d7f11@linux.ibm.com>
-Date:   Fri, 17 Jul 2020 10:16:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 17 Jul 2020 00:47:05 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F70C061755;
+        Thu, 16 Jul 2020 21:47:04 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B7JW62mKtz9sRW;
+        Fri, 17 Jul 2020 14:46:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594961221;
+        bh=oWCQWQTnYs63n2+4mU4tRGhEi0v9vBwzy4mhYDlLzps=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iQ2hIQwVLN+ppQzJbVnKC6uriZjC7QqgkxHAEoqIh0fmFFDhbtf7Jb+ol2sUiSifj
+         knTnZj110bd4oQuy/ACTs0Qt1JDInuJ0lSKNj/fh4m5H/YHs1sJpprb/uO37cdQwyT
+         ANJigPuKeyQAC3OaF5ePGeHwV2rd3FEUQbANJ+v0+kyOGsdOkXDEiYNAG5S/hntDs2
+         /Qo2918at39ql2GmR8R6IPX5f1729epafO0mmHPhCX2W+GvbMzu7npU2REoD2Yil+G
+         WW1f1xAvXW5fdHbk64OGwfvguS6S4RlFlUG1VYvBjzE3kEcGP+OhzMrNuhOpdEu4dH
+         jfQeeFS7IwjSQ==
+Date:   Fri, 17 Jul 2020 14:46:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: linux-next: manual merge of the tip tree with the crypto tree
+Message-ID: <20200717144656.4bdbf81f@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <87v9io8c13.fsf@morokweng.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1015 phishscore=0 spamscore=100
- impostorscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxscore=100 mlxlogscore=-1000 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007170029
+Content-Type: multipart/signed; boundary="Sig_/qFh0fIP7XemDn+0mQcZbzqg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/qFh0fIP7XemDn+0mQcZbzqg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 16/07/20 7:19 am, Thiago Jung Bauermann wrote:
-> 
-> I didn't forget about this patch. I just wanted to see more of the
-> changes before comenting on it.
-> 
-> Hari Bathini <hbathini@linux.ibm.com> writes:
-> 
->> Some of the kexec_file_load code isn't PPC64 specific. Move PPC64
->> specific code from kexec/file_load.c to kexec/file_load_64.c. Also,
->> rename purgatory/trampoline.S to purgatory/trampoline_64.S in the
->> same spirit.
-> 
-> There's only a 64 bit implementation of kexec_file_load() so this is a
-> somewhat theoretical exercise, but there's no harm in getting the code
-> organized, so:
-> 
-> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> 
-> I have just one question below.
+Today's linux-next merge of the tip tree got a conflict in:
 
-<snip>
+  arch/x86/include/asm/inst.h
 
->> +/**
->> + * setup_new_fdt_ppc64 - Update the flattend device-tree of the kernel
->> + *                       being loaded.
->> + * @image:               kexec image being loaded.
->> + * @fdt:                 Flattened device tree for the next kernel.
->> + * @initrd_load_addr:    Address where the next initrd will be loaded.
->> + * @initrd_len:          Size of the next initrd, or 0 if there will be none.
->> + * @cmdline:             Command line for the next kernel, or NULL if there will
->> + *                       be none.
->> + *
->> + * Returns 0 on success, negative errno on error.
->> + */
->> +int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->> +			unsigned long initrd_load_addr,
->> +			unsigned long initrd_len, const char *cmdline)
->> +{
->> +	int chosen_node, ret;
->> +
->> +	/* Remove memory reservation for the current device tree. */
->> +	ret = delete_fdt_mem_rsv(fdt, __pa(initial_boot_params),
->> +				 fdt_totalsize(initial_boot_params));
->> +	if (ret == 0)
->> +		pr_debug("Removed old device tree reservation.\n");
->> +	else if (ret != -ENOENT) {
->> +		pr_err("Failed to remove old device-tree reservation.\n");
->> +		return ret;
->> +	}
->> +
->> +	ret = setup_new_fdt(image, fdt, initrd_load_addr, initrd_len,
->> +			    cmdline, &chosen_node);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
->> +	if (ret)
->> +		pr_err("Failed to update device-tree with linux,booted-from-kexec\n");
->> +
->> +	return ret;
->> +}
-> 
-> For setup_purgatory_ppc64() you start with an empty function and build
-> from there, but for setup_new_fdt_ppc64() you moved some code here. Is
-> the code above 64 bit specific?
+between commit:
 
-Actually, I was not quiet sure if fdt updates like in patch 6 & patch 9 can be
-done after setup_ima_buffer() call. If you can confirm, I will move them back
-to setup_purgatory()
+  d7866e503bdc ("crypto: x86 - Remove include/asm/inst.h")
 
-Thanks
-Hari
+from the crypto tree and commit:
+
+  eaad981291ee ("x86/entry/64: Introduce the FIND_PERCPU_BASE macro")
+
+from the tip tree.
+
+I fixed it up (I brought the file back but removed what the crypto tree
+no longer needed - see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+I think if the crypto tree brought back this file as well (even without
+the RDPID macro, it would make this conflict much more manageable.
+
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * Generate .byte code for some instructions not supported by old
+ * binutils.
+ */
+#ifndef X86_ASM_INST_H
+#define X86_ASM_INST_H
+
+#ifdef __ASSEMBLY__
+
+#define REG_NUM_INVALID		100
+
+#define REG_TYPE_R32		0
+#define REG_TYPE_R64		1
+#define REG_TYPE_XMM		2
+#define REG_TYPE_INVALID	100
+
+	.macro R32_NUM opd r32
+	\opd =3D REG_NUM_INVALID
+	.ifc \r32,%eax
+	\opd =3D 0
+	.endif
+	.ifc \r32,%ecx
+	\opd =3D 1
+	.endif
+	.ifc \r32,%edx
+	\opd =3D 2
+	.endif
+	.ifc \r32,%ebx
+	\opd =3D 3
+	.endif
+	.ifc \r32,%esp
+	\opd =3D 4
+	.endif
+	.ifc \r32,%ebp
+	\opd =3D 5
+	.endif
+	.ifc \r32,%esi
+	\opd =3D 6
+	.endif
+	.ifc \r32,%edi
+	\opd =3D 7
+	.endif
+#ifdef CONFIG_X86_64
+	.ifc \r32,%r8d
+	\opd =3D 8
+	.endif
+	.ifc \r32,%r9d
+	\opd =3D 9
+	.endif
+	.ifc \r32,%r10d
+	\opd =3D 10
+	.endif
+	.ifc \r32,%r11d
+	\opd =3D 11
+	.endif
+	.ifc \r32,%r12d
+	\opd =3D 12
+	.endif
+	.ifc \r32,%r13d
+	\opd =3D 13
+	.endif
+	.ifc \r32,%r14d
+	\opd =3D 14
+	.endif
+	.ifc \r32,%r15d
+	\opd =3D 15
+	.endif
+#endif
+	.endm
+
+	.macro R64_NUM opd r64
+	\opd =3D REG_NUM_INVALID
+#ifdef CONFIG_X86_64
+	.ifc \r64,%rax
+	\opd =3D 0
+	.endif
+	.ifc \r64,%rcx
+	\opd =3D 1
+	.endif
+	.ifc \r64,%rdx
+	\opd =3D 2
+	.endif
+	.ifc \r64,%rbx
+	\opd =3D 3
+	.endif
+	.ifc \r64,%rsp
+	\opd =3D 4
+	.endif
+	.ifc \r64,%rbp
+	\opd =3D 5
+	.endif
+	.ifc \r64,%rsi
+	\opd =3D 6
+	.endif
+	.ifc \r64,%rdi
+	\opd =3D 7
+	.endif
+	.ifc \r64,%r8
+	\opd =3D 8
+	.endif
+	.ifc \r64,%r9
+	\opd =3D 9
+	.endif
+	.ifc \r64,%r10
+	\opd =3D 10
+	.endif
+	.ifc \r64,%r11
+	\opd =3D 11
+	.endif
+	.ifc \r64,%r12
+	\opd =3D 12
+	.endif
+	.ifc \r64,%r13
+	\opd =3D 13
+	.endif
+	.ifc \r64,%r14
+	\opd =3D 14
+	.endif
+	.ifc \r64,%r15
+	\opd =3D 15
+	.endif
+#endif
+	.endm
+
+	.macro XMM_NUM opd xmm
+	\opd =3D REG_NUM_INVALID
+	.ifc \xmm,%xmm0
+	\opd =3D 0
+	.endif
+	.ifc \xmm,%xmm1
+	\opd =3D 1
+	.endif
+	.ifc \xmm,%xmm2
+	\opd =3D 2
+	.endif
+	.ifc \xmm,%xmm3
+	\opd =3D 3
+	.endif
+	.ifc \xmm,%xmm4
+	\opd =3D 4
+	.endif
+	.ifc \xmm,%xmm5
+	\opd =3D 5
+	.endif
+	.ifc \xmm,%xmm6
+	\opd =3D 6
+	.endif
+	.ifc \xmm,%xmm7
+	\opd =3D 7
+	.endif
+	.ifc \xmm,%xmm8
+	\opd =3D 8
+	.endif
+	.ifc \xmm,%xmm9
+	\opd =3D 9
+	.endif
+	.ifc \xmm,%xmm10
+	\opd =3D 10
+	.endif
+	.ifc \xmm,%xmm11
+	\opd =3D 11
+	.endif
+	.ifc \xmm,%xmm12
+	\opd =3D 12
+	.endif
+	.ifc \xmm,%xmm13
+	\opd =3D 13
+	.endif
+	.ifc \xmm,%xmm14
+	\opd =3D 14
+	.endif
+	.ifc \xmm,%xmm15
+	\opd =3D 15
+	.endif
+	.endm
+
+	.macro REG_TYPE type reg
+	R32_NUM reg_type_r32 \reg
+	R64_NUM reg_type_r64 \reg
+	XMM_NUM reg_type_xmm \reg
+	.if reg_type_r64 <> REG_NUM_INVALID
+	\type =3D REG_TYPE_R64
+	.elseif reg_type_r32 <> REG_NUM_INVALID
+	\type =3D REG_TYPE_R32
+	.elseif reg_type_xmm <> REG_NUM_INVALID
+	\type =3D REG_TYPE_XMM
+	.else
+	\type =3D REG_TYPE_INVALID
+	.endif
+	.endm
+
+	.macro PFX_OPD_SIZE
+	.byte 0x66
+	.endm
+
+	.macro PFX_REX opd1 opd2 W=3D0
+	.if ((\opd1 | \opd2) & 8) || \W
+	.byte 0x40 | ((\opd1 & 8) >> 3) | ((\opd2 & 8) >> 1) | (\W << 3)
+	.endif
+	.endm
+
+	.macro MODRM mod opd1 opd2
+	.byte \mod | (\opd1 & 7) | ((\opd2 & 7) << 3)
+	.endm
+
+.macro RDPID opd
+	REG_TYPE rdpid_opd_type \opd
+	.if rdpid_opd_type =3D=3D REG_TYPE_R64
+	R64_NUM rdpid_opd \opd
+	.else
+	R32_NUM rdpid_opd \opd
+	.endif
+	.byte 0xf3
+	.if rdpid_opd > 7
+	PFX_REX rdpid_opd 0
+	.endif
+	.byte 0x0f, 0xc7
+	MODRM 0xc0 rdpid_opd 0x7
+.endm
+#endif
+
+#endif
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qFh0fIP7XemDn+0mQcZbzqg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8RLUAACgkQAVBC80lX
+0GzX5wf/bMv33RnMLoOXbHMcGzegM54nfMV2XRxB1jQXtVhccQYfPJgPnVxePZvu
+2vsg9kX3IzyMNhH7NTWEEit5TJD7zYtjiOFT3F2GyXUXm2dRSAUrMwhInhp8pMXi
+vmjkNpqtLYTuOd8y5FdxQ63SFTzfrZYx6flm3LqijqhjeEAtPnZf7KXkgNXYc+XM
+X7AGFG5opT2Kj+XmshK+wY6a8rPMMx6ePeuDLcgcEYS4Ptci7w1vWietL4D9+OGZ
+Ap5QEep6IiNPznAme91cjpSbCRHno1U80h/To2mnIeSGZA963zyuiwex19SGh47x
+XxUh2t1mETrz5xEo6wF6+zXnH02Y2g==
+=rH1W
+-----END PGP SIGNATURE-----
+
+--Sig_/qFh0fIP7XemDn+0mQcZbzqg--
