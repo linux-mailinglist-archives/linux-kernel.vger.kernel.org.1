@@ -2,284 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4509F222FD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 02:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8CB222FC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 02:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgGQAQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 20:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgGQAQa (ORCPT
+        id S1726200AbgGQANo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 20:13:44 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17694 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgGQANn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 20:16:30 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217EEC08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 17:16:30 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o13so5791505pgf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 17:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jlkntRV846aUEo1Gl28BULv9E1NJaLJ91w5u0IdGAqY=;
-        b=OiQXSDCWqV8zDFUYVBAxlH0S9CUnxu5iNny+Dixx/cJuAc+BjwJxXZk2NeYdMn/4JM
-         po5lfGXXIcu237rEjN9QS6alFZsksWl0OsLnUjjmyoaa2VSLFxdsx9c0wclqDlpeCrG+
-         HRYy2HNZYiYfhM2z1JteVTx0DOTm7aLn3aPGOp6Yk9NTjXrXsTnLwm+GzAFBMlrvxdCO
-         5WvH2VytlFQke6xH+sVsHW2uCY9veYAsGGSk8znuUpUCJso0sxiUmXUosE/WnKW05fVp
-         9FfENWzbuDXCv41HbdfGyWbqsblDV4Cjq1n/ZcglHrIDq1Ec1+Wt0ywHHY9bNqrHZcHq
-         rA8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jlkntRV846aUEo1Gl28BULv9E1NJaLJ91w5u0IdGAqY=;
-        b=F3fyObrwDLpMt8dBNn2RamdOGV5OpmXXt2VQYHACVcUvwAZx1GWxNuxy1Au4whdwc0
-         Te3PQFGd8mo0dgEV04SJjLYXwcOayHPjj2Sdb9mj7bhCC0NJUPSrQc/vK2gpo7CxMYss
-         LUv5x/p+NU32nuovRrLMAmsuBIcacPH80WtoyNEN7almYlmg6F9tTlRbzTSAqHcUw97J
-         cFL4FKD35EGWrq/o5WMSyeOTSOHaObW75fo4W8WipEy5YWsr/+C5GG+gSx0IpItcrrwS
-         9W7D6+tL9bxIU9skGps65YJEMo9I3p+btLv7+4shbeic4ndpUbzZQB5qSrXTR588j77T
-         1bJQ==
-X-Gm-Message-State: AOAM530V0mszs9nHfDt6t77NgHghg4E1mAiZNijVJX95mhrVRM96YPP4
-        9m75gq9fUDbmIjwSb0PwJhHglg==
-X-Google-Smtp-Source: ABdhPJyOw+rZ5tyQFkUplkrS1otZKw4EmrIzCvAXE7cq7d57IJm0Q+MOF5/GsoqJxLnC2KC8CmI1AQ==
-X-Received: by 2002:a63:d40d:: with SMTP id a13mr6437251pgh.225.1594944989377;
-        Thu, 16 Jul 2020 17:16:29 -0700 (PDT)
-Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id r7sm6211950pgu.51.2020.07.16.17.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 17:16:28 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v2 5/5] iommu/arm-smmu: Setup identity domain for boot mappings
-Date:   Thu, 16 Jul 2020 17:16:19 -0700
-Message-Id: <20200717001619.325317-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200717001619.325317-1-bjorn.andersson@linaro.org>
-References: <20200717001619.325317-1-bjorn.andersson@linaro.org>
+        Thu, 16 Jul 2020 20:13:43 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f10ed2a0000>; Thu, 16 Jul 2020 17:13:30 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 16 Jul 2020 17:13:42 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 16 Jul 2020 17:13:42 -0700
+Received: from [10.2.163.115] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Jul
+ 2020 00:13:42 +0000
+Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
+ tegra_mipi_calibrate and tegra_mipi_wait
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
+        <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
+ <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
+ <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
+ <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
+ <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
+ <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
+ <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
+ <4690e682-8495-2327-87c7-c2f06a7a479d@nvidia.com>
+ <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
+ <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <550f1796-67ca-5856-223d-c68360243954@nvidia.com>
+Date:   Thu, 16 Jul 2020 17:16:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594944810; bh=e7ciQ4M92aTObzkBjwwPlQaDpWhA7HRPJ/6w40ZehNc=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=WHizPbkQ+yVcMQTr9kKLr6aNEkD238+xGSp8HgIi2sSnVUg9MxaoGtbDY8fIbNvyS
+         RhV/V/OuY0b+wfxVAH0zmHdnfwRJdKBiyxlHnYtfEEMQTUZSidNuv6x1Ugs8hQcIsq
+         NX1386HljzoK/AfSty9dRp0E9ximbjLg5IIAvkLtAZBjG5Pq2FCbZ8vXWC2raC35yr
+         sFtLuvF22WBtFhabnEl2FgkllXC/VkWdhMi0a+FryT7/YyXG42esC0HIURzHZTLHjB
+         iJT58Xat81wJz70tf0o2AiSKcX0HWgL3tdU15n3KmvQT0FKFiHWFpnLi2gMYF0thIZ
+         q1U02be5hzP1A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With many Qualcomm platforms not having functional S2CR BYPASS a
-temporary IOMMU domain, without translation, needs to be allocated in
-order to allow these memory transactions.
 
-Unfortunately the boot loader uses the first few context banks, so
-rather than overwriting a active bank the last context bank is used and
-streams are diverted here during initialization.
+On 7/16/20 4:47 PM, Dmitry Osipenko wrote:
+> 17.07.2020 02:09, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> On 7/16/20 4:06 PM, Sowjanya Komatineni wrote:
+>>> On 7/16/20 4:01 PM, Dmitry Osipenko wrote:
+>>>> 17.07.2020 01:49, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>>> What keeps MIPI clock enabled after completion of the
+>>>>>> tegra_mipi_calibrate() invocation?
+>>>>> MIPI clock is disabled at end of tegra_mipi_calibrate and is re-enabl=
+ed
+>>>>> during tegra_mipi_wait.
+>>>>>
+>>>>> I think I should fix this to keep the clock enabled till calibration
+>>>>> results are latched.
+>>>>>
+>>>>> All consumers of tegra_mipi_calibrate() will call tegra_mipi_wait().
+>>>>>
+>>>>> So will remove clk_disable mipi clk at end of tegra_mipi_calibrate()
+>>>>> and
+>>>>> clk_enable mipi_clk at beginning of tegra_mipi_wait()
+>>>> Isn't it possible to perform the calibration after enabling CSI and
+>>>> before of starting the sensor streaming?
+>>> Currently this is what I am doing. Triggering calibration start during
+>>> CSI receiver being ready and then sensor streaming will happen where
+>>> internal MIPI CAL detects for LP -> HS transition and applies results
+>>> to pads. So checking for calibration results after sensor stream is
+>>> enabled
+>> 1. Calling tegra_mipi_calibrate() during CSI streaming where CSI pads
+>> are enabled and receiver is kept ready
+>>
+>> 2. Start Sensor stream
+>>
+>> 3. Calling tegra_mipi_wait() to check for MIPI Cal status.
+>>
+>> So as mipi cal clk need to be kept enabled till 3rd step, we can enable
+>> clock during tegra_mipi_calibrate() and leave it enabled and disable it
+>> in tegra_mipi_wait after status check.
+>  From TRM:
+>
+> The following sequence is recommended for capturing a single frame:
+>
+> 1. Set up CSI registers for use case such as number of lanes, virtual
+> channel, etc.
+> 2. Initialize and power up CSI interface
+> 3. Wait for initialization time or done signal from calibration logic
+> 4. Power up camera through the I2C interface
+> 5. All CSI data and clock lanes are in stop state, LP11
+> 6. Initiate frame capture through the I2C
+> 7. Frame done, CSI goes back to stop state, LP11
+>
+> Hence, is it really necessary to perform the manual calibration?
 
-This also performs the readback of SMR registers for the Qualcomm
-platform, to trigger the mechanism.
+done signal from calibration logic will happen only when it sees LP to=20
+HS transition as thats when calibration results are applied to pads and=20
+then done signal is set.
 
-This is based on prior work by Thierry Reding and Laurentiu Tudor.
-
-Tested-by: John Stultz <john.stultz@linaro.org>
-Tested-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
-
-Changes since v1:
-- Rebased to avoid conflict
-- Picked up tested-by
-
- drivers/iommu/arm-smmu-qcom.c | 11 +++++
- drivers/iommu/arm-smmu.c      | 79 +++++++++++++++++++++++++++++++++--
- drivers/iommu/arm-smmu.h      |  3 ++
- 3 files changed, 89 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
-index 10eb024981d1..147af11049eb 100644
---- a/drivers/iommu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm-smmu-qcom.c
-@@ -26,6 +26,7 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- {
- 	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
-+	u32 smr;
- 	u32 reg;
- 	int i;
- 
-@@ -56,6 +57,16 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- 		}
- 	}
- 
-+	for (i = 0; i < smmu->num_mapping_groups; i++) {
-+		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
-+
-+		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-+			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
-+			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
-+			smmu->smrs[i].valid = true;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 08a650fe02e3..69bd8ee03516 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -652,7 +652,8 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
- }
- 
- static int arm_smmu_init_domain_context(struct iommu_domain *domain,
--					struct arm_smmu_device *smmu)
-+					struct arm_smmu_device *smmu,
-+					bool boot_domain)
- {
- 	int irq, start, ret = 0;
- 	unsigned long ias, oas;
-@@ -770,6 +771,15 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 		ret = -EINVAL;
- 		goto out_unlock;
- 	}
-+
-+	/*
-+	 * Use the last context bank for identity mappings during boot, to
-+	 * avoid overwriting in-use bank configuration while we're setting up
-+	 * the new mappings.
-+	 */
-+	if (boot_domain)
-+		start = smmu->num_context_banks - 1;
-+
- 	ret = __arm_smmu_alloc_bitmap(smmu->context_map, start,
- 				      smmu->num_context_banks);
- 	if (ret < 0)
-@@ -1149,7 +1159,10 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct arm_smmu_master_cfg *cfg;
- 	struct arm_smmu_device *smmu;
-+	bool free_identity_domain = false;
-+	int idx;
- 	int ret;
-+	int i;
- 
- 	if (!fwspec || fwspec->ops != &arm_smmu_ops) {
- 		dev_err(dev, "cannot attach to SMMU, is it on the same bus?\n");
-@@ -1174,7 +1187,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 		return ret;
- 
- 	/* Ensure that the domain is finalised */
--	ret = arm_smmu_init_domain_context(domain, smmu);
-+	ret = arm_smmu_init_domain_context(domain, smmu, false);
- 	if (ret < 0)
- 		goto rpm_put;
- 
-@@ -1190,9 +1203,33 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 		goto rpm_put;
- 	}
- 
-+	/* Decrement use counter for any references to the identity domain */
-+	mutex_lock(&smmu->stream_map_mutex);
-+	if (smmu->identity) {
-+		struct arm_smmu_domain *identity = to_smmu_domain(smmu->identity);
-+
-+		for_each_cfg_sme(cfg, fwspec, i, idx) {
-+			if (smmu->s2crs[idx].cbndx == identity->cfg.cbndx) {
-+				smmu->num_identity_masters--;
-+				if (smmu->num_identity_masters == 0)
-+					free_identity_domain = true;
-+			}
-+		}
-+	}
-+	mutex_unlock(&smmu->stream_map_mutex);
-+
- 	/* Looks ok, so add the device to the domain */
- 	ret = arm_smmu_domain_add_master(smmu_domain, cfg, fwspec);
- 
-+	/*
-+	 * The last stream map to reference the identity domain has been
-+	 * overwritten, so it's now okay to free it.
-+	 */
-+	if (free_identity_domain) {
-+		arm_smmu_domain_free(smmu->identity);
-+		smmu->identity = NULL;
-+	}
-+
- 	/*
- 	 * Setup an autosuspend delay to avoid bouncing runpm state.
- 	 * Otherwise, if a driver for a suspended consumer device
-@@ -1922,17 +1959,51 @@ static int arm_smmu_device_cfg_probe(struct arm_smmu_device *smmu)
- 
- static int arm_smmu_setup_identity(struct arm_smmu_device *smmu)
- {
-+	struct device *dev = smmu->dev;
-+	int cbndx = 0xff;
-+	int type = S2CR_TYPE_BYPASS;
-+	int ret;
- 	int i;
- 
-+	if (smmu->qcom_bypass_quirk) {
-+		/* Create a IDENTITY domain to use for all inherited streams */
-+		smmu->identity = arm_smmu_domain_alloc(IOMMU_DOMAIN_IDENTITY);
-+		if (!smmu->identity) {
-+			dev_err(dev, "failed to create identity domain\n");
-+			return -ENOMEM;
-+		}
-+
-+		smmu->identity->pgsize_bitmap = smmu->pgsize_bitmap;
-+		smmu->identity->type = IOMMU_DOMAIN_IDENTITY;
-+		smmu->identity->ops = &arm_smmu_ops;
-+
-+		ret = arm_smmu_init_domain_context(smmu->identity, smmu, true);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to initialize identity domain: %d\n", ret);
-+			return ret;
-+		}
-+
-+		type = S2CR_TYPE_TRANS;
-+		cbndx = to_smmu_domain(smmu->identity)->cfg.cbndx;
-+	}
-+
- 	for (i = 0; i < smmu->num_mapping_groups; i++) {
- 		if (smmu->smrs[i].valid) {
--			smmu->s2crs[i].type = S2CR_TYPE_BYPASS;
-+			smmu->s2crs[i].type = type;
- 			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
--			smmu->s2crs[i].cbndx = 0xff;
-+			smmu->s2crs[i].cbndx = cbndx;
- 			smmu->s2crs[i].count++;
-+
-+			smmu->num_identity_masters++;
- 		}
- 	}
- 
-+	/* If no mappings where found, free the identiy domain again */
-+	if (smmu->identity && !smmu->num_identity_masters) {
-+		arm_smmu_domain_free(smmu->identity);
-+		smmu->identity = NULL;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index bcd160d01c53..37257ede86fa 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -321,6 +321,9 @@ struct arm_smmu_device {
- 	/* IOMMU core code handle */
- 	struct iommu_device		iommu;
- 
-+	struct iommu_domain		*identity;
-+	unsigned int			num_identity_masters;
-+
- 	bool				qcom_bypass_quirk;
- };
- 
--- 
-2.26.2
+Also MIPI Pads calibration need to be done on every power off/on. So=20
+need to do calibration and trigger it along with CSI receiver=20
+programming to keep it ready and then need to check/wait for status only=20
+after sensor stream happens as thats where LP->HS transition happen.
 
