@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEFF223625
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D148B223629
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgGQHqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726141AbgGQHqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:46:50 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AA9C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:46:50 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id q198so7992648qka.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 00:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p1NZQG4oEUmz0+3wGuzHtIVKKrGOlXRqs3faFoSCavU=;
-        b=KmAcPyW22oZTklkSOJdP9sECeg8GNajPulowq4jdUx80ZzgXmYSx7Pgit5PSlF5KGo
-         68leyRdN5oEI9gwYP4wAD6wUqSZ1wbIVYc4gkHIQT2vQwT2MYmO1QwDheD+Gs6r7h/cy
-         fOezCazJFpNCAZwNI1TlcG5Aj09BZVDBVkwBwkwc7TTjvsplIVjgA9/PDR15fFIbI29I
-         N+LKElnxxLOdnFcZajoj7zDDKx0jvtxJ/e51bGTR9WygigcFYg/9Z+OApin3nFME1skS
-         /Mc16DeMkYBD0CgLts6+1b7MsvqCcKv5pLhU3WTo0Ki85bs5zr89DkvUrLg1jMKa/Cd4
-         ovUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p1NZQG4oEUmz0+3wGuzHtIVKKrGOlXRqs3faFoSCavU=;
-        b=ihLB06H975U9s6v4aPrmT6dvGxoVDstHrD4Ymkmn0w8PQqOnC3FkU1RG/Z3PqiF8QO
-         AlsYnNRkvgwJufk67iRDtcT2meAVKa+2Xlbp7T8/t1nOnS1V+b71FDcyTAPBrQR0XSw/
-         J9L8E7cGtdENC+9iqial6tTilUbacsZUooqcKsI5suCQDFVX/oofipELRJ18Vys6uQfp
-         CINU5qZvOsvA3Yc5DKP5sgTCDChhxQow7Suyb9KABksP0rLi1KLXfJ9RZ3cuKQ3gH5/v
-         TnNjrY20BQIchbKfCKjLxyZKMr1DCGi3BgI6+JHrMEN3xXd1QX7qwgwd0hA37lpiIP/S
-         75wg==
-X-Gm-Message-State: AOAM5327Kf9nYDGyeIEtFIdHyuFYEgplwC2DTPyfjLNipKUsb9zFJbnz
-        vxnrc+B50CxkgXMMZ2VPiZThhqtAmlQBtB/zsTxrzw==
-X-Google-Smtp-Source: ABdhPJzKwZp67n8bEinZ+vfbtHSzjOCHp6TG9fY7EVHJC3NPWwu94kDQSMYoR4vJEAxftZUAsKRRbPxLNr7pKNwW6Bs=
-X-Received: by 2002:a05:620a:a1b:: with SMTP id i27mr7768542qka.429.1594972009242;
- Fri, 17 Jul 2020 00:46:49 -0700 (PDT)
+        id S1728144AbgGQHsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:48:24 -0400
+Received: from mout.web.de ([212.227.15.4]:39509 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726113AbgGQHsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 03:48:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1594972073;
+        bh=+jAVd+UX68jUT+2oR9S7FcHqkLrZpVCaT82gokx+Rcw=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=eCfh26Fc7YnfIZXxupwN8uBbV5BidpnafacVVzUrJWer+6JOGHcxx3tCBSRGKVRs6
+         JBQLNHDoWLyRiQ0zf8ImMStnuuABpSATOothCZsTfxg0cnh7PSt8uBuqeoI/uP6Tai
+         MLRSJaufL2k0e1LxZraYY41QInSQS8w75URvsN2M=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.15.38]) by smtp.web.de (mrweb004
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0LzVMw-1ksAXb1exG-014o9T; Fri, 17
+ Jul 2020 09:47:53 +0200
+To:     Wang Hai <wanghai38@huawei.com>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Cuissard <cuissard@marvell.com>,
+        Samuel Ortiz <sameo@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2] nfc: nci: add missed destroy_workqueue in
+ nci_register_device
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <26e73d0c-4afb-2c14-d411-6d14c5007419@web.de>
+Date:   Fri, 17 Jul 2020 09:47:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <1594789529-6206-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594789529-6206-2-git-send-email-iamjoonsoo.kim@lge.com> <20200715082401.GC5451@dhcp22.suse.cz>
-In-Reply-To: <20200715082401.GC5451@dhcp22.suse.cz>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Fri, 17 Jul 2020 16:46:38 +0900
-Message-ID: <CAAmzW4P+KXn2e1pU+_+Y6NqDt1-081hCyKNsqbiwfF=FADLzxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] mm/gup: restrict CMA region by using allocation scope API
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SNBOSr3KtQINfvryLfP45T95NQn0FpUadD7LwVjbTXNoFR6UpZj
+ dT6XUXyQsIpQ1u/hDUGaWPFbuJKGN7nLcCZfeOadEGvUTricp04QZOB9ofC3Nu41p44PyuA
+ UALSvgwR2DcXVUOdGURJk3O/gjnoft3mgkE3qscDwFiHRbX27jutDW1B925FKlL/XBd11Fy
+ ghP7U9ZDZJXcRcvp536uA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vqV731jQUJU=:+tV5G3MNwGSp0xi+SQKcZe
+ wFEJgI2pDVRwG7XqZLzCAiLYGCjPL6k7fjVDKy8xSqZT5QqI1lMMrarCSo6k2l2GsVeiis0rU
+ MgkYzt0/6i2+X4YkyXoL31ncZ0i3se8+dEq2ga63yt7mB/8Hv7nijhDAgbjYTkBmFOFI00puj
+ K1G6p8V0Gf4ZCqShVBcZF7TZBqH0DyzK7Le4VSH1Xv1oqcVxHrqUF/IV1007eSWkPgeHLG3hd
+ 415TM2vTyce1JQTdwAgv9pGKF8+QxnA/jQc7ksX6OQEjK0e3IMyhukpH51JJKWJaifw/UmRTh
+ vjW3gv3MEMVYVOUgiQPBVhoTAbpebWXtik8mQXTCnPInTuBHB3jprLpd6RNg+QWaOWX8LTH2f
+ 1aq6NZ/SJJAvnnvJ/CtZSMgkhZD6GWG109f4VW5NqoRLn7etbdj59Gu9soCzXocNZEmhxPa+V
+ rYmLoJ2TyOaIdXejwZhz3k22Gq4UgeLuJNp/fiIO1l5vM+GDSWTlfScDpZEPfUYWGWttwVjlg
+ TH4SX5AlaUxT0KDCnhQQSmf4boq9x+X9NPEUXwAJK5bXb192pJGTCUEPd13K09HN85KP1uGqG
+ BUa8Z0pHC63ZqW0S38wompMZa0RuFHFMkzXnwDXbuJAkk5kEs67cIJn0Lrmysfd8xN7QkZatL
+ P4kEcQ/8BkGdbxojtCCTLW4PgwzDLViygNyOcDTv3CaYSBWQPwgq8Y/qLHmybDFUyAFNBaAot
+ ARm2Cnz1+kdSjD3SYHCzFT10C5DNEcvLEu2ZzBpkA5nrIurrE9gQ+YT2KBcO7R76avfPsfXkU
+ 5cqzEgFs3ZprUH45em+0bzpyVDRAmxU1VRvtqfDcnTzBr6T4letx0dRRsmiaceQDXwxvmr1V+
+ t0dIytyLJGRorPk+JNkA3C/mPg1TV+l4wQ2Tnhc6LYj/a3CzzeFT4SgyaOYeEXYZjtzvq9712
+ RM1N7gTnuIW8wqwYQvhifeBF8JPpIX+TV1C1LbjCSq23imaUeMPp5NcphdqLAcBHjK61x84yy
+ 81o7u1R/36SVlPIj+uQ8Al7cI27evS/D7hfvPCOnsCzi48R+9CaFqKd5tqdwcBM+0uN1Mf5T/
+ meCLUDzTbkqCpLbb61jL8eY1vNqxdzNaWkd1mm+xGrk3HbA3uk0eqE7W8UOOJ2gX1n9sErtCG
+ 7YnSqwziM1SLqB6Y2ZwlQRV5pVsywf9B1NFAB95XDbcN4yG8rM62IAN7RRrlGmLB3OLtj1K8i
+ rXXX+pBJ05FeYiiOIYWvbXvJ1BqA4ZvEHJDYR0Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 7=EC=9B=94 15=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 5:24, M=
-ichal Hocko <mhocko@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> When nfc_register_device fails in nci_register_device,
+> destroy_workqueue() shouled be called to destroy ndev->tx_wq.
+
+Would an other imperative wording be preferred for the commit message?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?id=3Df8456690ba8eb18ea4714e6855=
+4e242a04f65cff#n151
+
+
+=E2=80=A6
+> +++ b/net/nfc/nci/core.c
+> @@ -1228,10 +1228,13 @@  int nci_register_device(struct nci_dev *ndev)
 >
-> On Wed 15-07-20 14:05:27, Joonsoo Kim wrote:
-> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> >
-> > We have well defined scope API to exclude CMA region.
-> > Use it rather than manipulating gfp_mask manually. With this change,
-> > we can now use __GFP_MOVABLE for gfp_mask and the ZONE_MOVABLE is also
-> > searched by page allocator. For hugetlb, gfp_mask is redefined since
-> > it has a regular allocation mask filter for migration target.
-> >
-> > Note that this can be considered as a fix for the commit 9a4e9f3b2d73
-> > ("mm: update get_user_pages_longterm to migrate pages allocated from
-> > CMA region"). However, "Fixes" tag isn't added here since it is just
-> > suboptimal but it doesn't cause any problem.
+>  	rc =3D nfc_register_device(ndev->nfc_dev);
+>  	if (rc)
+> -		goto destroy_rx_wq_exit;
+> +		goto destroy_tx_wq_exit;
 >
-> But it is breaking the contract that the longterm pins never end up in a
-> cma managed memory. So I think Fixes tag is really due. I am not sure
-> about stable backport. If the patch was the trivial move of
-
-Previous implementation is correct since longterm pins never end up in a CM=
-A
-managed memory with that implementation. It's just a different and suboptim=
-al
-implementation to exclude the CMA area. This is why I don't add the "Fixes"
-tag on the patch.
-
-> memalloc_nocma_restore then it would be probably worth it because it is
-> trivial to review and backport. I suspect that longterm pins in CMA
-> regions would cause hard to debug issues where CMA memory will not be
-> available. But I am not really sure this is a real problem considering
-> how many long term pin users we have and I have also no idea whether
-> those are usually used along with CMA users.
+>  	goto exit;
 >
-> Anyway I think it would really be much better to isolate the
-> memalloc_nocma_restore and have it first in the series. The reword of
+> +destroy_tx_wq_exit:
+> +	destroy_workqueue(ndev->tx_wq);
+=E2=80=A6
 
-Unfortunately, it's not possible to place it first in the series since
-memalloc_nocma_XXX API has a bug that could return the CMA area even if
-scope is set up. It is fixed on the first patch in this series.
 
-> the __GFP_MOVABLE functionality is orthogonal.
+How do you think about to use the following source code variant
+for this function implementation?
 
-My logic is that, we basically assume that using __GFP_MOVABLE is possible
-in migration target allocation. And, it was necessarily cleared in
-order to exclude
-the CMA area. Now, we use the other method to exclude the CMA area so
-__GFP_MOVABLE is added like usual. If you think that it deserves to be
-a separate patch, I will do it on the next version.
+	if (!rc)
+		goto exit;
 
-> Btw __GFP_NOWARN change is not documented.
+	destroy_workqueue(ndev->tx_wq);
 
-Will document it.
 
-Thanks.
+Regards,
+Markus
