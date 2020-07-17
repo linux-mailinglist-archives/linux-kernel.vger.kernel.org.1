@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574D82241C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA4C2241C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgGQR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        id S1727822AbgGQR21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgGQR0q (ORCPT
+        with ESMTP id S1726463AbgGQR20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:26:46 -0400
+        Fri, 17 Jul 2020 13:28:26 -0400
 Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA821C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:26:45 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id y10so11690752eje.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:26:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38571C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:28:26 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ga4so11665367ejb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 10:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=63MZNPvz8EW4KsR8LWHec1O5GR5AWyh8POSHZLqGwV4=;
-        b=U8c8sRjmduxvLQrhL8vfIl1OOtN7c7Aydb6ToIPbE77TqYycjS7I9FBHNwXaDrWfz/
-         rj5ICKejSoCsPEwlUWg0h3Qe6b36QNyLnZQPBnqL1LqcuDY3ksoKeiNDIztC3eVBxERo
-         e9YxYMQy5q3aE1uYGGbrtplma69che5iMP8nMtzcZTrnressIuxlcL/sa/mpfAxCOc7U
-         2a5n21DyBmxaYtxeezKJsjFLyGEMYpGPKtdHFplEHi69XnWjHiFzP5NQMuiWNijpf8AL
-         EWoj78oB1k3Mhy0+axypT057YtfcS2WD+caiV8Pzz7XaGx2gHxayNKqZ5vqjpzFz0tnm
-         NGTQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7JTqB5slGWNqmPcHQg0gX2jPDhSmZshqLrbRwDwrvQQ=;
+        b=qkRGYkOMW6VaoakdKRVaH5aUrXdmDg5t9er9/Vce66oxkl7UQqyWYOlRwXYeCpY3wW
+         oGZLkqSMQcsYzJrQM1bl4jbPOH2ds+18vciyXIQPsIh7FHOEiWMHb+FbQPOAzmUtYx0d
+         jAFb5ZBiJf1OgEZsVfnTqp9/tGZUXdX3DMpkRciQc7dzdFZjMmS+H+DJQfvlr/CrsaXE
+         bH5rENTcwdmpjUlk5dB0JCsW5u+aaktYFW19sQYPYsWpe/3Pe/7RQhyb4jz0/LEW2lX3
+         sL4OLuZO05Zi99C6TpMJZ+BigM//cBFejkcKoMvjeBR4jPKuIlKROtzMLgdkDvKya0hC
+         pOsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=63MZNPvz8EW4KsR8LWHec1O5GR5AWyh8POSHZLqGwV4=;
-        b=eFoQ1J3/tRFxay2zqtG2KgkXzj7YmMB8ymaR/TaBEvNWfFfGxhvPdRmq/w6oirPqtN
-         sPnWD2dy1E4GcJbq1BsYtw5uz/ytKHRPkonADY5vmnU+tcpahxH9wh0v2DCXZ9F9c25E
-         IzN+wUHDPgI5HFjTRhaRayO0GrSPIuz7X8LUmnPgm6M7rhMa/pVWBFrevS+bOfwgTezD
-         dk1GYIR39lgPR+JhSRJNva14fZVoCMEZyOh05XqwCN/UN0a5JW0oevQ07WlYK8gmJRt+
-         RC5gciYjA5xqd/IKojsgbfutoQJCKsMrni22R7lLmj7E5F9KauWXiWrmO7x1m3bAph1v
-         1Y3g==
-X-Gm-Message-State: AOAM531X5wAoHE+ZAwKEnTrdiNynhoTna6zfI/HFcz0cuYl1IYC0ZqzM
-        /ajT+fXp3bmBnCBYgDq9d2yyZCaNhEXHvKDDSJQ=
-X-Google-Smtp-Source: ABdhPJxYvEIN+bPqc8gzAdpMxXkbwTgpoAGH/6klFyCcvUvr75l6jBRAyuOhc/Qg2pW0NI2MzjQ8unojODVu40a6eiw=
-X-Received: by 2002:a17:907:1059:: with SMTP id oy25mr10245827ejb.90.1595006804638;
- Fri, 17 Jul 2020 10:26:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7JTqB5slGWNqmPcHQg0gX2jPDhSmZshqLrbRwDwrvQQ=;
+        b=MV6HI8bil1N6Rz2Q1VTmEPrdWHfwsDfYnw05Dalhpuw2uT9fw2RNb5zXSRMtLjfX/g
+         3Qm67pfJVb/alf/n10EYEnmvd4c60fQR41tejdo4ZSYgXBlcL91NUFVMIh4drK55tgR0
+         dQwP1TdURYkmoEGbOm0+qYJyO/JzVjg81oVznX5w+tfjHA+hXY2nlqHHefhKoUupTprv
+         IGcRgFMDWcqmgDWft517E3O+nVBrDiwnUN2Fq7rXCaeu9tWw1NH50nfcymkvdNYpiT3J
+         7Zjqr/aNgIs75RHgle+t591N6bG6D5IBX6z98KkXYFQ3TvJh4LmNKuv6J8O23NoNW+cS
+         5k4A==
+X-Gm-Message-State: AOAM530xXhqDXVEKP+UEPBrF6mE6h5VD+SkQWtJ92ZQljqTb8MH067uY
+        6x6QBGL5zopaU0qMooYJxzICijmLi1D0Lz4z3DdC8A==
+X-Google-Smtp-Source: ABdhPJzlaBMxTWwrZe4YERy10lN7ECFDWF6Vu5QVaYVW+Htu2uWuMYN38XkknSqycX+o/PgPMS9zy6pkp2BhDOPkYdc=
+X-Received: by 2002:a17:906:eb93:: with SMTP id mh19mr9298900ejb.552.1595006904583;
+ Fri, 17 Jul 2020 10:28:24 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a17:906:8411:0:0:0:0 with HTTP; Fri, 17 Jul 2020 10:26:44
- -0700 (PDT)
-Reply-To: drharunabello4@gmail.com
-From:   Dr Haruna Bello <hanaaeldaw92@gmail.com>
-Date:   Fri, 17 Jul 2020 10:26:44 -0700
-Message-ID: <CAC93_nAuHeEn=87EBqT75ewy7=ExuyNq7e82eQBTj+ejzbETew@mail.gmail.com>
-Subject: Good day Dear
-To:     undisclosed-recipients:;
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200624203200.78870-5-samitolvanen@google.com> <20200624212737.GV4817@hirez.programming.kicks-ass.net>
+ <20200624214530.GA120457@google.com> <20200625074530.GW4817@hirez.programming.kicks-ass.net>
+ <20200625161503.GB173089@google.com> <20200625200235.GQ4781@hirez.programming.kicks-ass.net>
+ <20200625224042.GA169781@google.com> <20200626112931.GF4817@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200626112931.GF4817@hirez.programming.kicks-ass.net>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 17 Jul 2020 10:28:13 -0700
+Message-ID: <CABCJKucSM7gqWmUtiBPbr208wB0pc25afJXc6yBQzJDZf4LSWA@mail.gmail.com>
+Subject: Re: [RFC][PATCH] objtool,x86_64: Replace recordmcount with objtool
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Matt Helsley <mhelsley@vmware.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Fri, Jun 26, 2020 at 4:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Jun 25, 2020 at 03:40:42PM -0700, Sami Tolvanen wrote:
+>
+> > > Not boot tested, but it generates the required sections and they look
+> > > more or less as expected, ymmv.
+>
+> > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > > index a291823f3f26..189575c12434 100644
+> > > --- a/arch/x86/Kconfig
+> > > +++ b/arch/x86/Kconfig
+> > > @@ -174,7 +174,6 @@ config X86
+> > >     select HAVE_EXIT_THREAD
+> > >     select HAVE_FAST_GUP
+> > >     select HAVE_FENTRY                      if X86_64 || DYNAMIC_FTRACE
+> > > -   select HAVE_FTRACE_MCOUNT_RECORD
+> > >     select HAVE_FUNCTION_GRAPH_TRACER
+> > >     select HAVE_FUNCTION_TRACER
+> > >     select HAVE_GCC_PLUGINS
+> >
+> > This breaks DYNAMIC_FTRACE according to kernel/trace/ftrace.c:
+> >
+> >   #ifndef CONFIG_FTRACE_MCOUNT_RECORD
+> >   # error Dynamic ftrace depends on MCOUNT_RECORD
+> >   #endif
+> >
+> > And the build errors after that seem to confirm this. It looks like we might
+> > need another flag to skip recordmcount.
+>
+> Hurm, Steve, how you want to do that?
 
-Good day Dear
+Steven, did you have any thoughts about this? Moving recordmcount to
+an objtool pass that knows about call sites feels like a much cleaner
+solution than annotating kernel code to avoid unwanted relocations.
 
-I have a project of $18.5 Million Us Dollars which I will like you to
-support me
-so that the fund will be transfer to your bank account.
-Please if you are capable reply back to me so that i will give more
-details about this
-project.
-
-Thank you I am waiting to hear from you
+Sami
