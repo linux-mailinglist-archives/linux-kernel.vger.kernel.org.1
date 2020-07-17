@@ -2,141 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3709223E85
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AC2223E8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgGQOqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:46:24 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:28207 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726198AbgGQOqY (ORCPT
+        id S1726429AbgGQOsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:48:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:52801 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgGQOs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:46:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594997183; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=+bOQoMlayiU8zaVsun4ZAjjXcdS6Du8WzvCubqCAKxo=; b=UvDf7R8JjH4vYmfcy0MATKtVKVxfrQm/QGwgmVV20I8e9aGsbDshOyf4Y9FXqimh+2dWQGpt
- xcfI4nZLHwFpRLa3F61JmjFSEgHK7kE/OavVs4tWLxARE6kftCHp6h46Q1M1L9puzKxXINPy
- B01er3Ej+q6AXzI7PUZExCmIBB0=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5f11b9b4427cd55766cfc9a4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 14:46:12
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CCE4DC433CA; Fri, 17 Jul 2020 14:46:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3593C433C6;
-        Fri, 17 Jul 2020 14:46:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3593C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Fri, 17 Jul 2020 08:46:07 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-Subject: Re: [PATCH v2] drm: msm: a6xx: fix gpu failure after system resume
-Message-ID: <20200717144607.GA16703@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-References: <1594996458-15529-1-git-send-email-akhilpo@codeaurora.org>
+        Fri, 17 Jul 2020 10:48:29 -0400
+Received: from mail-qt1-f178.google.com ([209.85.160.178]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MUl4z-1kMbVr2E53-00QkxK for <linux-kernel@vger.kernel.org>; Fri, 17 Jul
+ 2020 16:48:26 +0200
+Received: by mail-qt1-f178.google.com with SMTP id j10so7769140qtq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:48:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532fMUsm5a4dluc6dFQX+tkYx7ogpU0AE2wgJCtnHPFkCkEXyEAq
+        KHaul4rr4rKBqmx2VaC7a9kTTDhIu/93x2iZFH0=
+X-Google-Smtp-Source: ABdhPJydQsPw4SiioCuxhNcixkYPSWMwyS3lcBB0SHVk4eRFINTHXayFSR41dX2ugUkkcZeAgbyJtgwGwm9+YcdHsTM=
+X-Received: by 2002:ac8:2b98:: with SMTP id m24mr10840018qtm.7.1594997305357;
+ Fri, 17 Jul 2020 07:48:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594996458-15529-1-git-send-email-akhilpo@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
+In-Reply-To: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 17 Jul 2020 16:48:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2miOXUESw+ayiEzAZ07NcieztVMEY31wUgrkD2tBAtDg@mail.gmail.com>
+Message-ID: <CAK8P3a2miOXUESw+ayiEzAZ07NcieztVMEY31wUgrkD2tBAtDg@mail.gmail.com>
+Subject: Re: [PATCH] [PATCH] Firmware security information in SYSFS
+To:     Daniel Gutson <daniel.gutson@eclypsium.com>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Y15CeUDDR3n/zN/hWqhVNMaWLrQLdLhuiw1zysYkWn3grGd2ML8
+ FAjjCrVufncXDPps1MEOKyVwL6s/4JvGpUXOQmkR+eqfXxUf9zeLNjiau1SMM3KNwft9aaX
+ AnQks19xUZ99sBwMh+Fhk5qgs38yDJ7ugdCICz1bPlizVSX92kMHbCQZMDgiGYuWI6jT9za
+ kwzVeUOvuCjiLqlKQnOkQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IFi9cgwujf0=:qYENg35n0W82/3fDPzlth3
+ knCbi8ToGJUsmg3KLbpL+f6sQtWNWOuswQsEtAVjLaCFZaeuvYtGNK43uQMm2LU82hGCtc0Iw
+ OWERsZ6rBHjpAJ1UOOcffzpNm9dSd2IDqp8ImDaN+3NVuNHUi8yHFHuxMERRtJnPMh4wzpSZV
+ Ti9NHWfswUnyj/clnhBsEXgl96VIQruvl98fz6uDV+l16ctureuNfJY3LF6InO7Iv6lPMbM+m
+ 36lhBNWQoGt4Iak63NUW/s2uw/9+lgWiN2nSJBRwYPkL37wlw4ChKnxYn6RAL1zU2klJkXoet
+ MZrCSOnIBHSbuaZxgyeZjUYY4dMcQhTVbWQLUDt3otWaNHXTx9KgdeBJrgSvD7v/CX6cJFGt8
+ cwJEWtbT96lQKiG/jKDkFIywkZ8jNNxOwyUK9oM8EYu6xoG2Db59HaapmNXEjKgWtMlpRlYTl
+ iSBbnIB1t/EpF+f37VmmVFzX9B6RuUHjKAFEEAc4hGMW3ei305U0GSS4YpnPBgaD/lGktltop
+ 9IMhz0GRNZP5FGbnI6odCCJkvzaCaxFBVVt+JZvNEn4K1bpKz70drLGatlDsz7qSK8DDdkjwd
+ 0Aywe25SRzDAaup2ICpQWismHS99XncztnVTssEUMIgGXuETaTfpTd5Ez7+g6Z3aYmbrh05wX
+ aniIHmQKr9KjltdxikC/rD7MIkAOrOzkZa3kNfitMdYNmvGZlxfrXTQl/KSBerOufyf2D8XaM
+ 4b7VeQs7NwQqJOwo4towFO7QSF8VqNuH2b9ssh7WmthlL79BlqmO24JsVPg0Ic2RV8ux3StpY
+ F9IqkHbai4vfmepTiEZ/+ntbrKu7k6iPUxtgTI1xtpoWhVH6uBASBwd8P+4q1USAQC0Z5B5Or
+ Q5htdXXcWwcv8GUNi14Kp1rJ14l8WYhpQJByldKHAYlDtBEduoG2vwW4TRl385+qJqpvcvvuE
+ otZZid2hAsv89O60jRGvlru5yk0AZ/tEFYU1EoUjPsbOS+sQuEvEB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 08:04:18PM +0530, Akhil P Oommen wrote:
-> On targets where GMU is available, GMU takes over the ownership of GX GDSC
-> during its initialization. So, move the refcount-get on GX PD before we
-> initialize the GMU. This ensures that nobody can collapse the GX GDSC
-> once GMU owns the GX GDSC. This patch fixes some GMU OOB errors seen
-> during GPU wake up during a system resume.
+On Fri, Jul 17, 2020 at 12:36 AM Daniel Gutson
+<daniel.gutson@eclypsium.com> wrote:
+>
 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> Reported-by: Matthias Kaehlcke <mka@chromium.org>
-> Tested-by: Matthias Kaehlcke <mka@chromium.org>
-
-The Signed-off-by needs to be at the end but I think Rob can do that for you.
-
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-
-> ---
-> Changes from v1:
-> - Reworded the commit text
-> - Added Reported-by & Tested-by tags
-> 
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index 21e77d6..1d33020 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -854,10 +854,19 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
->  	/* Turn on the resources */
->  	pm_runtime_get_sync(gmu->dev);
->  
-> +	/*
-> +	 * "enable" the GX power domain which won't actually do anything but it
-> +	 * will make sure that the refcounting is correct in case we need to
-> +	 * bring down the GX after a GMU failure
-> +	 */
-> +	if (!IS_ERR_OR_NULL(gmu->gxpd))
-> +		pm_runtime_get_sync(gmu->gxpd);
+> +static ssize_t internal_callback(struct kobject *kobj,
+> +                                struct kobj_attribute *attr, char *buf)
+> +{
+> +       struct firmware_security_data *fwsd =
+> +               container_of(attr, struct firmware_security_data, kobj_attr);
+> +       return fwsd->callback(buf, fwsd->private_data);
+> +}
 > +
->  	/* Use a known rate to bring up the GMU */
->  	clk_set_rate(gmu->core_clk, 200000000);
->  	ret = clk_bulk_prepare_enable(gmu->nr_clocks, gmu->clocks);
->  	if (ret) {
-> +		pm_runtime_put(gmu->gxpd);
->  		pm_runtime_put(gmu->dev);
->  		return ret;
->  	}
-> @@ -903,19 +912,12 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
->  	else
->  		a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
->  
-> -	/*
-> -	 * "enable" the GX power domain which won't actually do anything but it
-> -	 * will make sure that the refcounting is correct in case we need to
-> -	 * bring down the GX after a GMU failure
-> -	 */
-> -	if (!IS_ERR_OR_NULL(gmu->gxpd))
-> -		pm_runtime_get(gmu->gxpd);
-> -
->  out:
->  	/* On failure, shut down the GMU to leave it in a good state */
->  	if (ret) {
->  		disable_irq(gmu->gmu_irq);
->  		a6xx_rpmh_stop(gmu);
-> +		pm_runtime_put(gmu->gxpd);
->  		pm_runtime_put(gmu->dev);
->  	}
->  
-> -- 
-> 2.7.4
-> 
+> +int register_firmware_security_data_callback(
+> +       const char *name, ssize_t (*callback)(char *buf, void *private_data),
+> +       void *private_data)
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Why do you have a callback interface here? I would have expected
+all the data to be static during the kernel run time, so just passing the
+information here would make it much simpler.
+
+> +static ssize_t cnl_read_field(char *buf, struct pci_dev *pdev, u32 mask)
+> +{
+> +       u32 bcr;
+> +
+> +       if (pci_read_config_dword(pdev, BCR, &bcr) != PCIBIOS_SUCCESSFUL)
+> +               return -EIO;
+> +
+> +       return sprintf(buf, "%d\n", (int)!!(bcr & mask));
+> +}
+> +
+> +static ssize_t cnl_wpd_firmware_security_callbacks(char *buf,
+> +                                                  void *private_data)
+> +{
+> +       return cnl_read_field(buf, (struct pci_dev *)private_data, BCR_WPD);
+> +}
+> +
+> +static ssize_t cnl_ble_firmware_security_callbacks(char *buf,
+> +                                                  void *private_data)
+> +{
+> +       return cnl_read_field(buf, (struct pci_dev *)private_data, BCR_BLE);
+> +}
+> +
+> +static ssize_t cnl_smm_bwp_firmware_security_callbacks(char *buf,
+> +                                                      void *private_data)
+> +{
+> +       return cnl_read_field(buf, (struct pci_dev *)private_data, BCR_SMM_BWP);
+> +}
+> +
+> +static void register_firmware_security_data_callbacks(struct pci_dev *pdev)
+> +{
+> +       register_firmware_security_data_callback(
+> +               "bioswe", &cnl_wpd_firmware_security_callbacks, pdev);
+> +       register_firmware_security_data_callback(
+> +               "ble", &cnl_ble_firmware_security_callbacks, pdev);
+> +       register_firmware_security_data_callback(
+> +               "smm_bwp", &cnl_smm_bwp_firmware_security_callbacks, pdev);
+> +}
+
+All of this should probably become a single function that reads the
+registers and then passes the contents into whatever common function
+you have that makes them visible to user space.
+
+> @@ -76,7 +119,7 @@ static const struct pci_device_id intel_spi_pci_ids[] = {
+>         { PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
+>         { PCI_VDEVICE(INTEL, 0xa324), (unsigned long)&cnl_info },
+>         { PCI_VDEVICE(INTEL, 0xa3a4), (unsigned long)&bxt_info },
+> -       { },
+> +       {},
+>  };
+...
+>  #include "intel-spi.h"
+>
+> @@ -48,17 +49,17 @@
+>
+>  #define FADDR                          0x08
+>  #define DLOCK                          0x0c
+> -#define FDATA(n)                       (0x10 + ((n) * 4))
+> +#define FDATA(n)                       (0x10 + ((n)*4))
+>
+>  #define FRACC                          0x50
+>
+> -#define FREG(n)                                (0x54 + ((n) * 4))
+> +#define FREG(n)                                (0x54 + ((n)*4))
+>  #define FREG_BASE_MASK                 0x3fff
+>  #define FREG_LIMIT_SHIFT               16
+>  #define FREG_LIMIT_MASK                        (0x03fff << FREG_LIMIT_SHIFT)
+>
+
+Accidental whitespace change, please skip these changes?
+
+> @@ -161,7 +164,8 @@ struct intel_spi {
+>
+>  static bool writeable;
+>  module_param(writeable, bool, 0);
+> -MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
+> +MODULE_PARM_DESC(writeable,
+> +                "Enable write access to SPI flash chip (default=0)");
+>
+>  static void intel_spi_dump_regs(struct intel_spi *ispi)
+>  {
+
+This looks like a useful change, but it should be a separate patch.
+
+> @@ -179,8 +183,8 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
+>         dev_dbg(ispi->dev, "DLOCK=0x%08x\n", readl(ispi->base + DLOCK));
+>
+>         for (i = 0; i < 16; i++)
+> -               dev_dbg(ispi->dev, "FDATA(%d)=0x%08x\n",
+> -                       i, readl(ispi->base + FDATA(i)));
+> +               dev_dbg(ispi->dev, "FDATA(%d)=0x%08x\n", i,
+> +                       readl(ispi->base + FDATA(i)));
+>
+>         dev_dbg(ispi->dev, "FRACC=0x%08x\n", readl(ispi->base + FRACC));
+>
+> @@ -220,9 +224,8 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
+>                 base = value & PR_BASE_MASK;
+>
+>                 dev_dbg(ispi->dev, " %02d base: 0x%08x limit: 0x%08x [%c%c]\n",
+> -                        i, base << 12, (limit << 12) | 0xfff,
+> -                        value & PR_WPE ? 'W' : '.',
+> -                        value & PR_RPE ? 'R' : '.');
+> +                       i, base << 12, (limit << 12) | 0xfff,
+> +                       value & PR_WPE ? 'W' : '.', value & PR_RPE ? 'R' : '.');
+>         }
+>
+>         dev_dbg(ispi->dev, "Flash regions:\n");
+
+More whitespace changes.
+
+       Arnd
