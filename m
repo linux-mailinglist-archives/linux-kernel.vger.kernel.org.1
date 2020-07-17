@@ -2,164 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BC92244E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3050D2244E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 22:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgGQUHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 16:07:20 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57558 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgGQUHU (ORCPT
+        id S1728916AbgGQUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 16:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgGQUCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 16:07:20 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HJw2mh135643;
-        Fri, 17 Jul 2020 20:06:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=ctTlbJg6ZsvK6tf/ANMaIi1kDEh6xWj554sF+ck6xvA=;
- b=ohShRxZT1kMFsvCZr7g+i5MCaD5NT7OmprvTKFm8MSTbB0XkjAWeVriSNrqLVTU26Is/
- Wp1MthGTXlXy6rrlTwTs//erGW9Zj1sIzzQF1IayOlyhImZbLqRJLnxxydzo8RXIO+Fn
- 9ZHxqZ4fvkKjXosFS/UZsSBsXlSFZ5+DYtLaJNilYSSkRVySUda4zI3o7KyXhljgkyc6
- hhwm00VZZDs4Wkyp8tI9N60Ae9jAzK0rFLdh2tOkuwAPkKLyZTBtowOQiTqT14s2et7R
- kt0ogTyJdgDSqs2keHGINrcH3rmNXIzEHaRWigIbdjQdnBChNMZGj78I3YwieyT+frQx ng== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 327s65yjrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Jul 2020 20:06:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HK6OT5091616;
-        Fri, 17 Jul 2020 20:06:39 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 32bjj9r9tk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 20:06:34 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06HK1MJe004735;
-        Fri, 17 Jul 2020 20:01:22 GMT
-Received: from localhost (/10.175.216.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 Jul 2020 13:01:22 -0700
-Date:   Fri, 17 Jul 2020 22:01:19 +0200
-From:   Gregory Herrero <gregory.herrero@oracle.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] recordmcount: only record relocation of type
- R_AARCH64_CALL26 on arm64.
-Message-ID: <20200717200119.GP17377@ltoracle>
-References: <20200717143338.19302-1-gregory.herrero@oracle.com>
- <20200717133003.025f2096@oasis.local.home>
+        Fri, 17 Jul 2020 16:02:08 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE725C0619D2;
+        Fri, 17 Jul 2020 13:02:07 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z15so12285113wrl.8;
+        Fri, 17 Jul 2020 13:02:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QG3TuhYote73k/U/yKrq52X8lFEjdBrRQFB2lYTw5+k=;
+        b=eDW8kYcTFzlD8cyyAdIPMU+koKRP3yAJHaX2IZUK69MSgHEiN01CLFJFk4vnf0I4vJ
+         FCXSjDFqq8Cve4EUW6uXBaXxxe8ZWYQ5dodnJc3jwqwrxggL/3/8GN3JNO/lkYlHwHps
+         LnTlCMZBqCHtGcj9hiQTPPB8ua72rc4wAmB942mVA71a9AdJgW5Bgp+Qj+W+wDqNRyNt
+         os/MLA214XjCLHoC4ZEuwgGwK07KkmVil5kC2iPLOCw9+K6bM0PDaoNSRwyRJhHcMqrz
+         Cev2fcHCW/wSvBPSM0lO9tBAfJL+P44HbxITZJqgCCG+pI1Wq6A9MWXkMNVar9TIvPdH
+         rQSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QG3TuhYote73k/U/yKrq52X8lFEjdBrRQFB2lYTw5+k=;
+        b=l6Gcjh8TETQTzGP+Ud3gbF4a6wNVhbswV3fiSxzlJm1sdhNYKCgw0Jho8iWjhZrKJR
+         KIgy3MepfDKKwMFAFE38RXjByWPg8nSm/hHsQMk+avin8kH4PN0f1GuaMHcV+N4eVP9b
+         ft6ScQEdQ/00uMgWaV5uvWoRBgk6vbILDF2en4QB+qy+7m6uBG3BDis5DKE9qwm2775O
+         gh3W09fwC5XpxHbE1oULiwMio+eDiqelzv+ngQM0duNa5q4PjWVj/+OQJ1LAVT1cnWih
+         8voZHuHl6mtX3m9XcmgPCCy7QsCbEoGU7XvL05R8ZJbwNXlHqPB90R/mATw94ACIeDos
+         6mKg==
+X-Gm-Message-State: AOAM531LYWo4aAs7ARKRKjZNbfKNNFUDlMfRvhK9BamfJ3ZbA504zqmF
+        F5D/X5Q+7xxfXRdwAzQAX93ZoZf5
+X-Google-Smtp-Source: ABdhPJxTt19Jk+Xfs9t9m5b+deLwUats7rSLs/EHp3W76etVfwbpmKLH71jWVp0Lk6HEFfOT8wwFVA==
+X-Received: by 2002:a5d:6288:: with SMTP id k8mr11381440wru.373.1595016126084;
+        Fri, 17 Jul 2020 13:02:06 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h5sm17018118wrc.97.2020.07.17.13.02.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jul 2020 13:02:05 -0700 (PDT)
+Subject: Re: [PATCH 2/2] dt-bindings: net: dsa: qca8k: Add PORT0_PAD_CTRL
+ properties
+To:     Matthew Hagan <mnhagan88@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        John Crispin <john@phrozen.org>,
+        Jonathan McDowell <noodles@earth.li>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+References: <2e1776f997441792a44cd35a16f1e69f848816ce.1594668793.git.mnhagan88@gmail.com>
+ <ea0a35ed686e6dace77e25cb70a8f39fdd1ea8ad.1594668793.git.mnhagan88@gmail.com>
+ <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200716223236.GA1314837@lunn.ch>
+ <c86c4da0-a740-55cc-33dd-7a91e36c7738@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <50179386-08d4-9162-195e-35ca903452e1@gmail.com>
+Date:   Fri, 17 Jul 2020 13:02:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717133003.025f2096@oasis.local.home>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9685 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=100 malwarescore=0 suspectscore=0
- spamscore=100 adultscore=0 phishscore=0 mlxscore=100 mlxlogscore=-1000
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007170135
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9685 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=100 adultscore=0 malwarescore=0
- phishscore=0 mlxscore=100 priorityscore=1501 lowpriorityscore=0
- spamscore=100 clxscore=1011 bulkscore=0 mlxlogscore=-1000 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007170135
+In-Reply-To: <c86c4da0-a740-55cc-33dd-7a91e36c7738@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 01:30:03PM -0400, Steven Rostedt wrote:
-> On Fri, 17 Jul 2020 16:33:38 +0200
-> gregory.herrero@oracle.com wrote:
-> 
-> > From: Gregory Herrero <gregory.herrero@oracle.com>
-> > 
-> > Currently, if a section has a relocation to '_mcount' symbol, a new
-> > __mcount_loc entry will be added whatever the relocation type is.
-> > This is problematic when a relocation to '_mcount' is in the middle of a
-> > section and is not a call for ftrace use.
-> > 
-> > Such relocation could be generated with below code for example:
-> >     bool is_mcount(unsigned long addr)
-> >     {
-> >         return (target == (unsigned long) &_mcount);
-> >     }
-> > 
-> > With this snippet of code, ftrace will try to patch the mcount location
-> > generated by this code on module load and fail with:
-> > 
-> >     Call trace:
-> >      ftrace_bug+0xa0/0x28c
-> >      ftrace_process_locs+0x2f4/0x430
-> >      ftrace_module_init+0x30/0x38
-> >      load_module+0x14f0/0x1e78
-> >      __do_sys_finit_module+0x100/0x11c
-> >      __arm64_sys_finit_module+0x28/0x34
-> >      el0_svc_common+0x88/0x194
-> >      el0_svc_handler+0x38/0x8c
-> >      el0_svc+0x8/0xc
-> >     ---[ end trace d828d06b36ad9d59 ]---
-> >     ftrace failed to modify
-> >     [<ffffa2dbf3a3a41c>] 0xffffa2dbf3a3a41c
-> >      actual:   66:a9:3c:90
-> >     Initializing ftrace call sites
-> >     ftrace record flags: 2000000
-> >      (0)
-> >     expected tramp: ffffa2dc6cf66724
-> > 
-> > So Limit the relocation type to R_AARCH64_CALL26 as in perl version of
-> > recordmcount.
-> > 
-> 
-> I'd rather have this go through the arm64 tree, as they can test it
-> better than I can.
-> 
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> -- Steve
-> 
-Thanks Steve.
-Should I send a V2 to add 'Cc: stable@vger.kernel.org' in the commit
-description or can someone take care of it when adding the commit to
-the tree?
 
-Thanks,
-Greg
 
+On 7/17/2020 12:26 PM, Matthew Hagan wrote:
 > 
-> > Fixes: ed60453fa8f8 ("ARM: 6511/1: ftrace: add ARM support for C version of recordmcount")
-> > Signed-off-by: Gregory Herrero <gregory.herrero@oracle.com>
-> > ---
-> >  scripts/recordmcount.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-> > index 7225107a9aaf..e59022b3f125 100644
-> > --- a/scripts/recordmcount.c
-> > +++ b/scripts/recordmcount.c
-> > @@ -434,6 +434,11 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
-> >  	return 1;
-> >  }
-> >  
-> > +static int arm64_is_fake_mcount(Elf64_Rel const *rp)
-> > +{
-> > +	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
-> > +}
-> > +
-> >  /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
-> >   * http://techpubs.sgi.com/library/manuals/4000/007-4658-001/pdf/007-4658-001.pdf
-> >   * We interpret Table 29 Relocation Operation (Elf64_Rel, Elf64_Rela) [p.40]
-> > @@ -547,6 +552,7 @@ static int do_file(char const *const fname)
-> >  		make_nop = make_nop_arm64;
-> >  		rel_type_nop = R_AARCH64_NONE;
-> >  		ideal_nop = ideal_nop4_arm64;
-> > +		is_fake_mcount64 = arm64_is_fake_mcount;
-> >  		break;
-> >  	case EM_IA_64:	reltype = R_IA64_IMM64; break;
-> >  	case EM_MIPS:	/* reltype: e_class    */ break;
 > 
+> On 16/07/2020 23:32, Andrew Lunn wrote:
+>> On Thu, Jul 16, 2020 at 03:09:25PM -0700, Jakub Kicinski wrote:
+>>> On Mon, 13 Jul 2020 21:50:26 +0100 Matthew Hagan wrote:
+>>>> Add names and decriptions of additional PORT0_PAD_CTRL properties.
+>>>>
+>>>> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+>>>> ---
+>>>>  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 8 ++++++++
+>>>>  1 file changed, 8 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+>>>> index ccbc6d89325d..3d34c4f2e891 100644
+>>>> --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+>>>> +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+>>>> @@ -13,6 +13,14 @@ Optional properties:
+>>>>  
+>>>>  - reset-gpios: GPIO to be used to reset the whole device
+>>>>  
+>>>> +Optional MAC configuration properties:
+>>>> +
+>>>> +- qca,exchange-mac0-mac6:	If present, internally swaps MAC0 and MAC6.
+>>>
+>>> Perhaps we can say a little more here?
+>>>
+>>>> +- qca,sgmii-rxclk-falling-edge:	If present, sets receive clock phase to
+>>>> +				falling edge.
+>>>> +- qca,sgmii-txclk-falling-edge:	If present, sets transmit clock phase to
+>>>> +				falling edge.
+>>>
+>>> These are not something that other vendors may implement and therefore
+>>> something we may want to make generic? Andrew?
+>>
+>> I've never seen any other vendor implement this. Which to me makes me
+>> think this is a vendor extension, to Ciscos vendor extension of
+>> 1000BaseX.
+>>
+>> Matthew, do you have a real use cases of these? I don't see a DT patch
+>> making use of them. And if you do, what is the PHY on the other end
+>> which also allows you to invert the clocks?
+>>
+> The use case I am working on is the Cisco Meraki MX65 which requires bit
+> 18 set (qca,sgmii-txclk-falling-edge). On the other side is a BCM58625
+> SRAB with ports 4 and 5 in SGMII mode. There is no special polarity
+> configuration set on this side though I do have very limited info on
+> what is available. The settings I have replicate the vendor
+> configuration extracted from the device.
+
+The only polarity change that I am aware of on the BCM58625 side is to
+allow for the TXDP/TXDN to be swapped, this is achieved by setting bit 5
+in the TX_ACONTROL0 register (block address is 0x8060), that does look
+different than what this is controlling though.
+-- 
+Florian
