@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A00223124
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B827022312B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgGQCXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 22:23:36 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56970 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726130AbgGQCXg (ORCPT
+        id S1726429AbgGQC2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 22:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726141AbgGQC2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 22:23:36 -0400
-X-UUID: 0e995b4dbbcd4983b6ebcb8e91aef537-20200717
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ck3sKpk8p4f4/TOJbf/gg/voKPhUDfRj/uAbUdAGxzo=;
-        b=mP4CFlFt1QPU1wt4CZPAVpfEzNjtBPxMQA0gwtXiNPC9Bvl27PyeUalefEfoq3nmdnLB+sXinmLknP9wO2uBPgBHdxR0MJ9AiGZaPNGSX3GKbAQdm03picrnsFP9E8foVzkLYam0HN7wz/Bza6ZbnYy183QSf+IeK7KuFEIBGxk=;
-X-UUID: 0e995b4dbbcd4983b6ebcb8e91aef537-20200717
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1693347659; Fri, 17 Jul 2020 10:23:33 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Jul 2020 10:23:30 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Jul 2020 10:23:26 +0800
-From:   <chuanjia.liu@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <linux-pci@vger.kernel.org>
-CC:     Ryder Lee <ryder.lee@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <yong.wu@mediatek.com>,
-        <srv_heupstream@mediatek.com>, <jianjun.wang@mediatek.com>
-Subject: [PATCH v3 0/4] Split PCIe node to comply with hardware design
-Date:   Fri, 17 Jul 2020 10:22:19 +0800
-Message-ID: <20200717022223.1437-1-chuanjia.liu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 16 Jul 2020 22:28:03 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA78CC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 19:28:03 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y2so8800592ioy.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 19:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EwKnezkZmfj9xSK2I7Np/Cq9fStgMNgGCEPRKMrkZgg=;
+        b=pK0YzL/+VoEc9RbtIE4MAdPH6e/eRtYLdOsJ17ftSBoq+EC7O8ZhuWfsLPHDHrum2c
+         5+/6iKaTc+7nr4WpOApibTRbkHGe67pbIy8Wr8MnLqmdzldYIWQ562489SNqWGEXg9sY
+         9PKj0RH4KB0YBotDm5jyoBdsmTFucgtBrylogM0a6D0j4aN2ELWDR6ifYCaz2NAkIzc9
+         bGCLyqe7OTJWxYM1QZfHDFZ7dMasGvjiROrF1ROv4JeULqBTb+YNS4XkUsgX3Sk8oF6+
+         dcja/vjVwcoPV2z1wGuwyo0FqBycG2HWV16BSgJIobQhXbSgx7diq1588VJuQ/8AFOcO
+         yIoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EwKnezkZmfj9xSK2I7Np/Cq9fStgMNgGCEPRKMrkZgg=;
+        b=a69JRuG76WmXxCncTkUPicvl0HB6mga/dhq2REZmAPOr7gW0WC9dY9h2aI7BvztxS9
+         LKxel+xkmFSVQ+qqJfrdFUrqWKZIFJlAnKWD39lz/02XlGuwO5xyKrQSBnPpmvDJqU3I
+         ravONPPn1RjZenJNP6xO7eFFMLs5ZLPymN5gPM91zPErBi7l5LXHqS3pc5WtOcqeoeQM
+         44tu9w5NtfsKxK95CTma0/E+cJzBU+rjv/Gu5ozxrPT2m09PTE8W6VgTQfZKRLDc8Um5
+         kaxjBt+k/4HnbKj72IUMM6nrT1O9Qc1rPuKMHRv0N4M9sWZdbmFUcpq9u08PbcguuiRI
+         YwPg==
+X-Gm-Message-State: AOAM5318tlrxsz3UNXmuxqt5KcRPBmLbqBWXghkifFHfPmT0JDy8TBnT
+        z3VKmBRKPouZerzal4sleSf6oY/ZoPM6A/JfNVenEg==
+X-Google-Smtp-Source: ABdhPJwA/sVne09DkT+LeHF8Jc0F1elpnQ4UzEIOk1KUc0aKKTxI2tLk0/2H+Qv+UAbF+LC1ffXV/3jL+0/3EGvt9Ws=
+X-Received: by 2002:a6b:d301:: with SMTP id s1mr7361674iob.146.1594952882572;
+ Thu, 16 Jul 2020 19:28:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
+In-Reply-To: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Fri, 17 Jul 2020 10:27:51 +0800
+Message-ID: <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
+Subject: Re: Speaker pops with max98357a on rk3399-gru-kevin since v5.7
+To:     Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlcmUgYXJlIHR3byBpbmRlcGVuZGVudCBQQ0llIGNvbnRyb2xsZXJzIGluIE1UMjcxMi9NVDc2
-MjIgcGxhdGZvcm0sDQphbmQgZWFjaCBvZiB0aGVtIHNob3VsZCBjb250YWluIGFuIGluZGVwZW5k
-ZW50IE1TSSBkb21haW4uDQoNCkluIGN1cnJlbnQgYXJjaGl0ZWN0dXJlLCBNU0kgZG9tYWluIHdp
-bGwgYmUgaW5oZXJpdGVkIGZyb20gdGhlIHJvb3QNCmJyaWRnZSwgYW5kIGFsbCBvZiB0aGUgZGV2
-aWNlcyB3aWxsIHNoYXJlIHRoZSBzYW1lIE1TSSBkb21haW4uDQpIZW5jZSB0aGF0LCB0aGUgUENJ
-ZSBkZXZpY2VzIHdpbGwgbm90IHdvcmsgcHJvcGVybHkgaWYgdGhlIGlycSBudW1iZXINCndoaWNo
-IHJlcXVpcmVkIGlzIG1vcmUgdGhhbiAzMi4NCg0KU3BsaXQgdGhlIFBDSWUgbm9kZSBmb3IgTVQy
-NzEyL01UNzYyMiBwbGF0Zm9ybSB0byBmaXggTVNJIGlzc3VlIGFuZA0KY29tcGx5IHdpdGggdGhl
-IGhhcmR3YXJlIGRlc2lnbi4NCg0KY2hhbmdlIG5vdGU6DQogIHYzOnJlYmFzZSBmb3IgNS44LXJj
-MS4gT25seSBjb2xsZWN0IGFjayBvZiBSeWRlciwgTm8gY29kZSBjaGFuZ2UuDQogIHYyOmNoYW5n
-ZSB0aGUgYWxsb2NhdGlvbiBvZiBtdDI3MTIgUENJZSBNTUlPIHNwYWNlIGR1ZSB0byB0aGUNCiAg
-ICAgYWxsb2NhdGlvbiBzaXplIGlzIG5vdCByaWdodCBpbiB2MS4NCg0KY2h1YW5qaWEubGl1ICg0
-KToNCiAgZHQtYmluZGluZ3M6IFBDSTogTWVkaWF0ZWs6IFVwZGF0ZSBQQ0llIGJpbmRpbmcNCiAg
-UENJOiBtZWRpYXRlazogVXNlIHJlZ21hcCB0byBnZXQgc2hhcmVkIHBjaWUtY2ZnIGJhc2UNCiAg
-YXJtNjQ6IGR0czogbWVkaWF0ZWs6IFNwbGl0IFBDSWUgbm9kZSBmb3IgTVQyNzEyL01UNzYyMg0K
-ICBBUk06IGR0czogbWVkaWF0ZWs6IFVwZGF0ZSBtdDc2MjkgUENJZSBub2RlDQoNCi4uLi9iaW5k
-aW5ncy9wY2kvbWVkaWF0ZWstcGNpZS1jZmcueWFtbCAgICAgICB8ICAzOCArKysrKw0KLi4uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUudHh0IHwgMTQ0ICsrKysrKysrKysr
-LS0tLS0tLQ0KYXJjaC9hcm0vYm9vdC9kdHMvbXQ3NjI5LXJmYi5kdHMgICAgICAgICAgICAgIHwg
-ICAzICstDQphcmNoL2FybS9ib290L2R0cy9tdDc2MjkuZHRzaSAgICAgICAgICAgICAgICAgfCAg
-MjMgKy0tDQphcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210MjcxMmUuZHRzaSAgICAgfCAg
-NzUgKysrKystLS0tDQouLi4vZHRzL21lZGlhdGVrL210NzYyMi1iYW5hbmFwaS1icGktcjY0LmR0
-cyAgfCAgMTYgKy0NCmFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLXJmYjEuZHRz
-ICB8ICAgNiArLQ0KYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaSAgICAg
-IHwgIDY4ICsrKysrKy0tLQ0KZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLmMg
-ICAgICAgIHwgIDI1ICsrLQ0KOSBmaWxlcyBjaGFuZ2VkLCAyNTggaW5zZXJ0aW9ucygrKSwgMTQw
-IGRlbGV0aW9ucygtKQ0KY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9wY2kvbWVkaWF0ZWstcGNpZS1jZmcueWFtbA0KDQotLSANCjIuMjUuMQ0K
+On Thu, Jul 16, 2020 at 7:49 PM Alper Nebi Yasak
+<alpernebiyasak@gmail.com> wrote:
+> I have been getting "pop" sounds from the speaker on my rk3399-gru-kevin
+> for a while, and bisected it to 128f825aeab7 ("ASoC: max98357a: move
+> control of SD_MODE to DAPM"), but looks like the pops were somewhat
+> expected:
 
+I am not convinced the pop comes from 128f825aeab7.
+
+> As of v5.8-rc5 I'm still getting the speaker pops. More info below, but
+> not all pops coincide with "set sdmode" messages, and vice versa.
+> Reverting that commit stops the pops, but then the "Speakers Switch" can
+> no longer mute the speakers.
+
+(I don't have a rk3399-gru-kevin so I got another test machine with MAX98357A.)
+(I was testing with and without an audio server.)
+Observations:
+- I can hear the pop either with or without 128f825aeab7 (with and
+without sdmode-delay).
+- The pop noise is not always.  Higher probability after stopping
+playback than before starting.
+- As you also mentioned, the pop noise is not directly related to
+SD_MODE transition.
