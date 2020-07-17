@@ -2,118 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D064C22430E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A62224315
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 20:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgGQSVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 14:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
+        id S1728054AbgGQSYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 14:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgGQSVZ (ORCPT
+        with ESMTP id S1726104AbgGQSYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 14:21:25 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CB1C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 11:21:24 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id l17so11376802iok.7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 11:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=3BZIZFFWoflh+aCDXlOZJ2oTKuNvfj+cVytvkYsY/sw=;
-        b=i+B1FN5sfEO2JO9mjOHGAiDaKC/nW0OgUp/t1+69iSYVjdeyNRltLCBtFwhn4ddP2a
-         zOJVCdAdngjvA78h9yJHASGP7gJfhkfDYdcLGIOCeCNKiluR5J9tHzkIAx8km7j/A+xO
-         Hoo5NFdS2nXai3EJFSgi/hu9Xd1UcPkuCgco9YBa65IazvlkXrijzalxxD6dxeEIbflU
-         IQHyZ/wR6oocqbmgOIQNepjp8DNeovmr+lFHb+G0a7fRMF8QoLWDVvUYD2K8T54YcwoR
-         LTRw3yglABzPs7FUue1Ab4g0+i8JIh2wkKWs02114SqmHVqVi9VLXSsx7GKhEGcvD147
-         6xiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=3BZIZFFWoflh+aCDXlOZJ2oTKuNvfj+cVytvkYsY/sw=;
-        b=ogZJy5tIdjqRc/q+E5EQJr1MHF5v/uos91hLJhYWeQ5sb6BVv4yNnlWYGamDG+3seh
-         xf26C8GIQzIMjCiM4oNLut7ZxcDf+EAj655upWyqIx1i4HC1/Jx1vQqme9foQUCEYj9R
-         B+kZy4XjwpuiXDgC3spLW5U6ftX1MpXdV7cqVHueKvwb/PZFtLzddWimSNPjej5+ywEG
-         gNciiB6c9JBJVBGuBNq9oassg5vc5IoPyXR+mije90iVJaNmYrvkS828E6Gfc6szSvIW
-         LwY8d15XZNV8tvHUdEx7v6/roWMG2Qqt75ZTdEeVHxxUqoQOGMoxVJnFgZqRVEzVoTMG
-         5CRw==
-X-Gm-Message-State: AOAM533gG/9FD9JyAkSq1nb4XkZZrQmD2URRBiO+bm3QqInHPet7uFi0
-        tAVpG/+PgCyTP79pEcfwH29Xb64W3c9L9mIkPLk=
-X-Google-Smtp-Source: ABdhPJy4YkCpGbclYNUSLg9DK7bhX6/BwVjEl5UosNsBMzslhwjwMHZlLBYZ7I2+xBw3oxYA+REgm2aHqgHNwwSJeKk=
-X-Received: by 2002:a5e:9309:: with SMTP id k9mr10687234iom.135.1595010084329;
- Fri, 17 Jul 2020 11:21:24 -0700 (PDT)
+        Fri, 17 Jul 2020 14:24:55 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC13C0619D2;
+        Fri, 17 Jul 2020 11:24:54 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 120AEBC070;
+        Fri, 17 Jul 2020 18:24:44 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     rjw@rjwysocki.net, lenb@kernel.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, dave.jiang@intel.com,
+        ira.weiny@intel.com, sakari.ailus@linux.intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] ACPI: Replace HTTP links with HTTPS ones
+Date:   Fri, 17 Jul 2020 20:24:36 +0200
+Message-Id: <20200717182436.75214-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200714023836.2310569-1-nivedita@alum.mit.edu>
- <20200715004133.1430068-1-nivedita@alum.mit.edu> <20200717134654.GA3187880@rani.riverdale.lan>
- <CAKwvOdnTbatx8VB-rJSzyFPwfYnkMYK28yLBn1G+hUu8dyfYRA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnTbatx8VB-rJSzyFPwfYnkMYK28yLBn1G+hUu8dyfYRA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 17 Jul 2020 20:21:12 +0200
-Message-ID: <CA+icZUUxE=+yq-NPitRBwJ-92cqEP6TXdf=kRiLTN09UQUAi2Q@mail.gmail.com>
-Subject: Re: [PATCH v5 0/7] x86/boot: Remove run-time relocations from
- compressed kernel
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 8:17 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Jul 17, 2020 at 6:46 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > On Tue, Jul 14, 2020 at 08:41:26PM -0400, Arvind Sankar wrote:
-> > > The compressed kernel currently contains bogus run-time relocations in
-> > > the startup code in head_{32,64}.S, which are generated by the linker,
-> > > but must not actually be processed at run-time.
-> > >
-> > > This generates warnings when linking with the BFD linker, and errors
-> > > with LLD, which defaults to erroring on run-time relocations in read-only
-> > > sections. It also requires the -z noreloc-overflow hack for the 64-bit
-> > > kernel, which prevents us from linking it as -pie on an older BFD linker
-> > > (<= 2.26) or on LLD, because the locations that are to be apparently
-> > > relocated are only 32-bits in size and so cannot really have
-> > > R_X86_64_RELATIVE relocations.
-> > >
-> > > This series aims to get rid of these relocations. I've build- and
-> > > boot-tested with combinations of clang/gcc-10 with lld/bfd-2.34, and
-> > > gcc-4.9.0 with bfd-2.24, skipping clang on 32-bit because it currently
-> > > has other issues [0].
-> > >
-> >
-> > Hi Thomas, Ingo, Borislav, would you be able to take a look over this
-> > series in time for 5.9?
->
-> Hi Arvind, thanks for the series; I'm behind on testing.  When I try
-> to apply this series on top of linux-next, I get a collision in
-> drivers/firmware/efi/libstub/Makefile:27 when applying "0002
-> x86/boot/compressed: Force hidden visibility for all symbol
-> references". Would you mind refreshing the series to avoid that
-> collision?
->
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I guess taking a Linux-next release as a new base is not a good idea.
-With the next Linux-next release... new troubles.
-Please, keep the base on recent Linux v5.8-rcX.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-- Sedat -
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ .../firmware-guide/acpi/DSD-properties-rules.rst       |  4 ++--
+ .../firmware-guide/acpi/dsd/data-node-references.rst   |  4 ++--
+ Documentation/firmware-guide/acpi/dsd/graph.rst        | 10 +++++-----
+ Documentation/firmware-guide/acpi/dsd/leds.rst         |  6 +++---
+ Documentation/firmware-guide/acpi/lpit.rst             |  2 +-
+ drivers/acpi/Kconfig                                   |  2 +-
+ drivers/acpi/nfit/nfit.h                               |  2 +-
+ 7 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/firmware-guide/acpi/DSD-properties-rules.rst b/Documentation/firmware-guide/acpi/DSD-properties-rules.rst
+index 4306f29b6103..8b2d8d0864c2 100644
+--- a/Documentation/firmware-guide/acpi/DSD-properties-rules.rst
++++ b/Documentation/firmware-guide/acpi/DSD-properties-rules.rst
+@@ -96,5 +96,5 @@ contents.
+ References
+ ==========
+ 
+-.. [1] http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+-.. [2] http://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf
++.. [1] https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
++.. [2] https://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf
+diff --git a/Documentation/firmware-guide/acpi/dsd/data-node-references.rst b/Documentation/firmware-guide/acpi/dsd/data-node-references.rst
+index febccbc5689d..9b17dc77d18c 100644
+--- a/Documentation/firmware-guide/acpi/dsd/data-node-references.rst
++++ b/Documentation/firmware-guide/acpi/dsd/data-node-references.rst
+@@ -85,9 +85,9 @@ References
+ ==========
+ 
+ [1] Hierarchical Data Extension UUID For _DSD.
+-<http://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf>,
++<https://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf>,
+ referenced 2018-07-17.
+ 
+ [2] Device Properties UUID For _DSD.
+-<http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf>,
++<https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf>,
+ referenced 2016-10-04.
+diff --git a/Documentation/firmware-guide/acpi/dsd/graph.rst b/Documentation/firmware-guide/acpi/dsd/graph.rst
+index 1a6ce7afba5e..7072db801aeb 100644
+--- a/Documentation/firmware-guide/acpi/dsd/graph.rst
++++ b/Documentation/firmware-guide/acpi/dsd/graph.rst
+@@ -154,23 +154,23 @@ References
+ ==========
+ 
+ [1] _DSD (Device Specific Data) Implementation Guide.
+-    http://www.uefi.org/sites/default/files/resources/_DSD-implementation-guide-toplevel-1_1.htm,
++    https://www.uefi.org/sites/default/files/resources/_DSD-implementation-guide-toplevel-1_1.htm,
+     referenced 2016-10-03.
+ 
+-[2] Devicetree. http://www.devicetree.org, referenced 2016-10-03.
++[2] Devicetree. https://www.devicetree.org, referenced 2016-10-03.
+ 
+ [3] Documentation/devicetree/bindings/graph.txt
+ 
+ [4] Device Properties UUID For _DSD.
+-    http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf,
++    https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf,
+     referenced 2016-10-04.
+ 
+ [5] Hierarchical Data Extension UUID For _DSD.
+-    http://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf,
++    https://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf,
+     referenced 2016-10-04.
+ 
+ [6] Advanced Configuration and Power Interface Specification.
+-    http://www.uefi.org/sites/default/files/resources/ACPI_6_1.pdf,
++    https://www.uefi.org/sites/default/files/resources/ACPI_6_1.pdf,
+     referenced 2016-10-04.
+ 
+ [7] _DSD Device Properties Usage Rules.
+diff --git a/Documentation/firmware-guide/acpi/dsd/leds.rst b/Documentation/firmware-guide/acpi/dsd/leds.rst
+index 946efe2b2936..aba1e9abfeeb 100644
+--- a/Documentation/firmware-guide/acpi/dsd/leds.rst
++++ b/Documentation/firmware-guide/acpi/dsd/leds.rst
+@@ -90,7 +90,7 @@ where
+ References
+ ==========
+ 
+-[1] Device tree. <URL:http://www.devicetree.org>, referenced 2019-02-21.
++[1] Device tree. <URL:https://www.devicetree.org>, referenced 2019-02-21.
+ 
+ [2] Advanced Configuration and Power Interface Specification.
+     <URL:https://uefi.org/sites/default/files/resources/ACPI_6_3_final_Jan30.pdf>,
+@@ -101,11 +101,11 @@ References
+ [4] Documentation/devicetree/bindings/media/video-interfaces.txt
+ 
+ [5] Device Properties UUID For _DSD.
+-    <URL:http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf>,
++    <URL:https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf>,
+     referenced 2019-02-21.
+ 
+ [6] Hierarchical Data Extension UUID For _DSD.
+-    <URL:http://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf>,
++    <URL:https://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf>,
+     referenced 2019-02-21.
+ 
+ [7] Documentation/firmware-guide/acpi/dsd/data-node-references.rst
+diff --git a/Documentation/firmware-guide/acpi/lpit.rst b/Documentation/firmware-guide/acpi/lpit.rst
+index aca928fab027..37922a903573 100644
+--- a/Documentation/firmware-guide/acpi/lpit.rst
++++ b/Documentation/firmware-guide/acpi/lpit.rst
+@@ -7,7 +7,7 @@ Low Power Idle Table (LPIT)
+ To enumerate platform Low Power Idle states, Intel platforms are using
+ “Low Power Idle Table” (LPIT). More details about this table can be
+ downloaded from:
+-http://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
++https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
+ 
+ Residencies for each low power state can be read via FFH
+ (Function fixed hardware) or a memory mapped interface.
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index ce2730d61a8f..16d7ca99ddbe 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -32,7 +32,7 @@ menuconfig ACPI
+ 	  Linux support for ACPI is based on Intel Corporation's ACPI
+ 	  Component Architecture (ACPI CA).  For more information on the
+ 	  ACPI CA, see:
+-	  <http://acpica.org/>
++	  <https://acpica.org/>
+ 
+ 	  ACPI is an open industry specification originally co-developed by
+ 	  Hewlett-Packard, Intel, Microsoft, Phoenix, and Toshiba. Currently,
+diff --git a/drivers/acpi/nfit/nfit.h b/drivers/acpi/nfit/nfit.h
+index f5525f8bb770..a303f0123394 100644
+--- a/drivers/acpi/nfit/nfit.h
++++ b/drivers/acpi/nfit/nfit.h
+@@ -16,7 +16,7 @@
+ /* ACPI 6.1 */
+ #define UUID_NFIT_BUS "2f10e7a4-9e91-11e4-89d3-123b93f75cba"
+ 
+-/* http://pmem.io/documents/NVDIMM_DSM_Interface-V1.6.pdf */
++/* https://pmem.io/documents/NVDIMM_DSM_Interface-V1.6.pdf */
+ #define UUID_NFIT_DIMM "4309ac30-0d11-11e4-9191-0800200c9a66"
+ 
+ /* https://github.com/HewlettPackard/hpe-nvm/blob/master/Documentation/ */
+-- 
+2.27.0
+
