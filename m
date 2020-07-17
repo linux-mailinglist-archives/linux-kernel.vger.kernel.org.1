@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DF522336A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B229122336F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgGQGKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:10:49 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:40840 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgGQGKt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:10:49 -0400
-Received: by mail-ej1-f66.google.com with SMTP id o18so9542442eje.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 23:10:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SHN9xF1KUVsYmDolf6cwDeEWhx9LYQGmOBxF5+idG4g=;
-        b=hrERJ0lGaRlZ3YObXSkt9zGbbbTIa+BiE1TW3kVnS2iRrRaDfXPra5dA4t2HZhruBk
-         2SuX0voarV2/6gcshGjDxtcM8G+ohOsL8RmqxMUwuJwYDBaHX8diuoMeWCkMKiF78ANZ
-         30pf7surqd3iSM3aHUO+GBiS8hgvRac+9Ez4oESZPeKHRbkufcYZHDCMRTkR/1mXL79K
-         wiyEYdJWSj1lGTalyeoXkY3eMEk0udgJUh1ip8ruFsLS8Fp9ezPhrTJBgHkzW6V693lZ
-         9l9DteHp3E2/0jUBITkTf7kYLQnCZD1w2+FDTReBF0Kjhkjg4S6jrAIhYETr1ch3oBhb
-         +aKg==
-X-Gm-Message-State: AOAM531+CYbHQBbbD2iAxuqWLjf+MZ91GkMe+ATU6SWThWf5xreSfG+R
-        72m+iPeW4aNsX3Gvl+rYLLtHztlK
-X-Google-Smtp-Source: ABdhPJxITh33yCD0YussRqgbYsRJkCoe3NR8Hq/HrYL3577lkUaBYm4OQOYTBnUuAY3TWZjVNqW4bg==
-X-Received: by 2002:a17:906:430b:: with SMTP id j11mr7070912ejm.270.1594966246977;
-        Thu, 16 Jul 2020 23:10:46 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id o21sm7023192eja.37.2020.07.16.23.10.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 23:10:46 -0700 (PDT)
-Subject: Re: [PATCH][next] tty: Avoid the use of one-element arrays
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200716180858.GA30115@embeddedor>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <f8aa0762-4af2-54a2-c9e8-8023a4b7aed5@kernel.org>
-Date:   Fri, 17 Jul 2020 08:10:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200716180858.GA30115@embeddedor>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
+        id S1726843AbgGQGL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:11:58 -0400
+Received: from mail-eopbgr750047.outbound.protection.outlook.com ([40.107.75.47]:32456
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726083AbgGQGL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:11:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ycrziu/tu6zm4491+SHMSxVgtIvvpvLFn/66nU3Dz0DmdznxtJpw+3uteg/dlAuZtRDu+xtD108HHXy0SAW1blYpw4EyrytuyPjKgmR4PujqpbhWYwLorRgTUxaPE59gaKxl0AM5nyKI03FgnT/VEpYzCFNSWwL1Cyl9oMaDdybS/2s5L/9/EfXi38lhdZJ141AWDEzEzaPuqQ0PuYxoYs8XY6YVtk3YqjdYGKRLNYvZj1Ctduj6KDV/h7QCsX91ljCNJ8Mx/SxXFIhUlU8OsyhepIAb6blpXEslPsAH40e7Vftt9QwAKVMcdppPG/2iwj82CQYMbwifuF3ezdflMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vj+GMt0lTj5sBZBbcb7yrCc2xF77yuP+AooJWV+0LaQ=;
+ b=FA70UdR2vOtvLlPAYfSgEXQAh0mPeDaEYrLMthEfx/ZYxjpRFpmyvIAx5kWMixpFhVHvlM+JZ1+aDp5lo7KivelrskmhQqSgR1hJjipTMKFhrUZ91tsanMIxp40BFB/S6K2rUHArQ8BKd2XPgWCpPj+L470Hi6VuPCnyTaGzvAhy4tTcGE27PNasvv0WCM2/TkFCOREjQP8MCOpOpL3erxoyVK5mln3rtiLdUtlQJtChl8SH1+gNctQ/XQVhGemwNbe/6S5fjHzFbkKRtRed83fwsmlJQIgEoBIPI8BJVG59R1clhUjD7JVkk0zhNzxCL615NfoV8WF3TQ5TCa4R8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vj+GMt0lTj5sBZBbcb7yrCc2xF77yuP+AooJWV+0LaQ=;
+ b=hC9dG0Z3LLMRsG8VrCvtMtnyc+6nbp4CB8MROMcJSCp2hr0jGBQOi6o1v6yu+4X58cHN2NX+0bDFcTytZfcwGEONMVcMmKXNA86/ojybZQOWQZ9h6TjkUZ6lNmh9peTgfnFzFIw8ZnDsfPCJfHUO3eEWNZSvosBEJL3jXVmRI0I=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+ by BYAPR03MB3576.namprd03.prod.outlook.com (2603:10b6:a02:b7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Fri, 17 Jul
+ 2020 06:11:54 +0000
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::b5cc:ca6b:3c25:a99c]) by BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::b5cc:ca6b:3c25:a99c%4]) with mapi id 15.20.3174.026; Fri, 17 Jul 2020
+ 06:11:54 +0000
+Date:   Fri, 17 Jul 2020 14:11:38 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/i915: Don't force IOSF_MBI
+Message-ID: <20200717141138.4a4289ac@xhacker.debian>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYCPR01CA0007.jpnprd01.prod.outlook.com (2603:1096:405::19)
+ To BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TYCPR01CA0007.jpnprd01.prod.outlook.com (2603:1096:405::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Fri, 17 Jul 2020 06:11:51 +0000
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45efa254-dc19-4e49-3b7f-08d82a184d50
+X-MS-TrafficTypeDiagnostic: BYAPR03MB3576:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB357673F838F711E52C034653ED7C0@BYAPR03MB3576.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1468;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6C0spUt0lBSj1j8KvWH4Eu0sd5LEyXfQ6vWQEt3+7FaWAHzhOqeCvxXnpiBh1wVZa7o0RdVKI5/cck2SDBkDhiDrlsD7BQDBJN0/Z++TUwmdqVRhBMbfTiWssV+QB+HEOSbKGep9RxnP1YZiCjE31yngOT996ZQd8ZiZjXgZm0izYHJaZe8QnCtuQuCYb7mqpognhHdtzddAwiFQGHgm+Alklf3H61AbaGykhcqgHNF33w7Hksn8WwInGcPG/GU0200sLInG+vkTnTj+8t8ZXcoB5jFVRMeETFyEVPY70i/AZSJULvbJey2Anq2tx/Lr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(5660300002)(26005)(8936002)(8676002)(186003)(16526019)(4744005)(2906002)(66946007)(66556008)(66476007)(4326008)(83380400001)(52116002)(498600001)(6506007)(86362001)(9686003)(7696005)(956004)(110136005)(55016002)(1076003)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 4eOlGmbsE2F+YazQX9X6IvWxR2lwYK3IQc21fWcBOdiQdjwx7BT61XO8yMYbuT+fl6513V6hnTfb1/UD73MjTmp8h7NbUNbNVxwU3h2qm0S8lb1jkG0Ec78dd70RqAV8gz6WGqqye8GaXjildYss7uZTwp/J9m03UZjuIjoUr2tOj7pSyzzQWVHykwJPPULENjDVR/pa9BnrEQzOjR5bATkHyeOYEehMysOR61tDpr9s1cisFhCHsFRIDFpkV2+M4V6ERDhu68AqIX5Szz+PqI0vz0rNzJSMgMizjkQdS2IHfYgKwIlMV/bQ2K7DJdvYDT5MxWkFcDGgHJ7DfbJqtScrY019F/Fg3CiPsiGflr69jeA/fMNtiU0qVgZp4oNQ2sbBLgUcpPxZNqyQ9s6WJ+7tRgNu9Su2FcwcM3sZMH+6S6prr9FGxmkjWvKHK0JIAflC17h6YeqIeceprbDA3BPo85lgydWgWeeOBfE4Pysr8l/bLjShJPWZ82PfU0lE
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45efa254-dc19-4e49-3b7f-08d82a184d50
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3573.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2020 06:11:54.2247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iY0vHVPZdUFRTf7KEBxtYs0y1C2DtfgZZmH9RaMkipU8LJWP7rLWQXDeAJ2AzxiSJceE6UMAXEY+Wk3yYpgrvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3576
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16. 07. 20, 20:08, Gustavo A. R. Silva wrote:
-> One-element arrays are being deprecated[1]. Replace the one-element arrays
-> with simple value types 'char reserved_char' and 'compat_int_t reserved'[2],
-> once it seems these are just placeholders for alignment.
-> 
-> Also, while there, use the preferred form for passing a size of a struct.
-> The alternative form where struct name is spelled out hurts readability
-> and introduces an opportunity for a bug when the variable type is changed
-> but the corresponding sizeof that is passed as argument is not.
-> 
-> Lastly, fix the checkpatch.pl warnings below:
-> 
-> ERROR: code indent should use tabs where possible
-> +        char    reserved_char;$
-> 
-> WARNING: please, no spaces at the start of a line
-> +        char    reserved_char;$
-> 
-> ERROR: code indent should use tabs where possible
-> +        compat_int_t    reserved;$
-> 
-> WARNING: please, no spaces at the start of a line
-> +        compat_int_t    reserved;$
+The i915 doesn't depend on IOSF_MBI, asm/iosf_mbi.h already defines
+isof_mbi_* APIs when ISOF_MBI is disabled.
 
-May I ask you to send a follow-up patch to fix the whole structure's
-indentation?
+Don't force IOSF_MBI to allow disabling IOSF_MBI for non SoC platforms.
 
-> [1] https://github.com/KSPP/linux/issues/79
-> [2] https://github.com/KSPP/linux/issues/86
-> 
-> Tested-by: kernel test robot <lkp@intel.com>
-> Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/0-day/tty-20200716.md
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/gpu/drm/i915/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
-
-thanks,
+diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+index 9afa5c4a6bf0..b76874989292 100644
+--- a/drivers/gpu/drm/i915/Kconfig
++++ b/drivers/gpu/drm/i915/Kconfig
+@@ -21,7 +21,6 @@ config DRM_I915
+ 	select ACPI_VIDEO if ACPI
+ 	select ACPI_BUTTON if ACPI
+ 	select SYNC_FILE
+-	select IOSF_MBI
+ 	select CRC32
+ 	select SND_HDA_I915 if SND_HDA_CORE
+ 	select CEC_CORE if CEC_NOTIFIER
 -- 
-js
-suse labs
+2.28.0.rc0
+
