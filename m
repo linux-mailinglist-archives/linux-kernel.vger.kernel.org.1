@@ -2,186 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841B8223283
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C423223297
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgGQEnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:43:14 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4767 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgGQEnN (ORCPT
+        id S1726798AbgGQEqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:46:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17610 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725864AbgGQEqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:43:13 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f112c250000>; Thu, 16 Jul 2020 21:42:13 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 16 Jul 2020 21:43:12 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 16 Jul 2020 21:43:12 -0700
-Received: from [10.2.163.115] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Jul
- 2020 04:43:11 +0000
-Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
- tegra_mipi_calibrate and tegra_mipi_wait
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
- <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
- <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
- <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
- <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
- <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
- <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
- <4690e682-8495-2327-87c7-c2f06a7a479d@nvidia.com>
- <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
- <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
- <550f1796-67ca-5856-223d-c68360243954@nvidia.com>
-Message-ID: <ca8f2184-de30-03ec-9caf-e20a22d96a77@nvidia.com>
-Date:   Thu, 16 Jul 2020 21:46:14 -0700
+        Fri, 17 Jul 2020 00:46:44 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06H4Voo3143975;
+        Fri, 17 Jul 2020 00:46:35 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqup48t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 00:46:35 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06H4WMEl145082;
+        Fri, 17 Jul 2020 00:46:35 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqup486-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 00:46:34 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06H4Uhtg011264;
+        Fri, 17 Jul 2020 04:46:32 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 328rbqsxx8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 04:46:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06H4kTdd43909294
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 04:46:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBD4352280;
+        Fri, 17 Jul 2020 04:46:29 +0000 (GMT)
+Received: from [9.102.1.129] (unknown [9.102.1.129])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D3ACF5227A;
+        Fri, 17 Jul 2020 04:46:26 +0000 (GMT)
+Subject: Re: [PATCH v3 02/12] powerpc/kexec_file: mark PPC64 specific code
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     Pingfan Liu <piliu@redhat.com>, Nayna Jain <nayna@linux.ibm.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>
+References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
+ <159466085652.24747.2414199807974963385.stgit@hbathini.in.ibm.com>
+ <87v9io8c13.fsf@morokweng.localdomain>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <63d551a9-684b-768b-8b0f-2a0da68d7f11@linux.ibm.com>
+Date:   Fri, 17 Jul 2020 10:16:25 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <550f1796-67ca-5856-223d-c68360243954@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87v9io8c13.fsf@morokweng.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594960933; bh=zrJPrkEaMilEsiEvCxFcP2qbAQOtnirImXULU2ZGxhw=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=royn2/PPV0tG+o3uz3podazpaSg+TPlkllbRFPolMwQkBGDlcwzbqOPcUlvl6bpUu
-         VW92u//W+t9T+V5jjotKTA3QnS+R+qe+DDZ7NZxmMtZc7CGa4GPchtE+V5g7cHNRd1
-         XA6ZKE+tkkAfQuGk7P4CnaSBOcTpuEVRLxAIyKUWgd32J7DNdgAC17TEw1ElcHLsD2
-         TBxxCZ6eSTN/eQdCdMWeT64mo77pSxVZ3S0k8yvfnzkB3IEBAnEF679u1HObAcSImA
-         fsoM/ZtUwjFZ7V582xtQHiNYnJJkN+azdHxpMn/QgnhyOyCh5w8hr2PPFLYl1ll5bL
-         e/7PfBjBNmoyQ==
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 malwarescore=0
+ bulkscore=0 adultscore=0 clxscore=1015 phishscore=0 spamscore=100
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ mlxscore=100 mlxlogscore=-1000 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170029
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/16/20 5:16 PM, Sowjanya Komatineni wrote:
->
-> On 7/16/20 4:47 PM, Dmitry Osipenko wrote:
->> 17.07.2020 02:09, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> On 7/16/20 4:06 PM, Sowjanya Komatineni wrote:
->>>> On 7/16/20 4:01 PM, Dmitry Osipenko wrote:
->>>>> 17.07.2020 01:49, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>>>> What keeps MIPI clock enabled after completion of the
->>>>>>> tegra_mipi_calibrate() invocation?
->>>>>> MIPI clock is disabled at end of tegra_mipi_calibrate and is=20
->>>>>> re-enabled
->>>>>> during tegra_mipi_wait.
->>>>>>
->>>>>> I think I should fix this to keep the clock enabled till calibration
->>>>>> results are latched.
->>>>>>
->>>>>> All consumers of tegra_mipi_calibrate() will call tegra_mipi_wait().
->>>>>>
->>>>>> So will remove clk_disable mipi clk at end of tegra_mipi_calibrate()
->>>>>> and
->>>>>> clk_enable mipi_clk at beginning of tegra_mipi_wait()
->>>>> Isn't it possible to perform the calibration after enabling CSI and
->>>>> before of starting the sensor streaming?
->>>> Currently this is what I am doing. Triggering calibration start during
->>>> CSI receiver being ready and then sensor streaming will happen where
->>>> internal MIPI CAL detects for LP -> HS transition and applies results
->>>> to pads. So checking for calibration results after sensor stream is
->>>> enabled
->>> 1. Calling tegra_mipi_calibrate() during CSI streaming where CSI pads
->>> are enabled and receiver is kept ready
->>>
->>> 2. Start Sensor stream
->>>
->>> 3. Calling tegra_mipi_wait() to check for MIPI Cal status.
->>>
->>> So as mipi cal clk need to be kept enabled till 3rd step, we can enable
->>> clock during tegra_mipi_calibrate() and leave it enabled and disable it
->>> in tegra_mipi_wait after status check.
->> =C2=A0From TRM:
->>
->> The following sequence is recommended for capturing a single frame:
->>
->> 1. Set up CSI registers for use case such as number of lanes, virtual
->> channel, etc.
->> 2. Initialize and power up CSI interface
->> 3. Wait for initialization time or done signal from calibration logic
->> 4. Power up camera through the I2C interface
->> 5. All CSI data and clock lanes are in stop state, LP11
->> 6. Initiate frame capture through the I2C
->> 7. Frame done, CSI goes back to stop state, LP11
->>
->> Hence, is it really necessary to perform the manual calibration?
->
-> done signal from calibration logic will happen only when it sees LP to=20
-> HS transition as thats when calibration results are applied to pads=20
-> and then done signal is set.
->
-> Also MIPI Pads calibration need to be done on every power off/on. So=20
-> need to do calibration and trigger it along with CSI receiver=20
-> programming to keep it ready and then need to check/wait for status=20
-> only after sensor stream happens as thats where LP->HS transition happen.
->
-Looks like sequence posted in TRM need to be updated clearly for proper=20
-MIPI CAL start and wait.
 
-Correct steps should be like below
+On 16/07/20 7:19 am, Thiago Jung Bauermann wrote:
+> 
+> I didn't forget about this patch. I just wanted to see more of the
+> changes before comenting on it.
+> 
+> Hari Bathini <hbathini@linux.ibm.com> writes:
+> 
+>> Some of the kexec_file_load code isn't PPC64 specific. Move PPC64
+>> specific code from kexec/file_load.c to kexec/file_load_64.c. Also,
+>> rename purgatory/trampoline.S to purgatory/trampoline_64.S in the
+>> same spirit.
+> 
+> There's only a 64 bit implementation of kexec_file_load() so this is a
+> somewhat theoretical exercise, but there's no harm in getting the code
+> organized, so:
+> 
+> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> 
+> I have just one question below.
 
-1. Set up CSI registers for use case such as number of lanes, virtual=C2=A0=
-=20
-channel, etc.
-2. Initialize and power up CSI CIL interface
-3. Program MIPI CAL bias pads, cal configs, cal control registers and=20
-enable calibration start
-4. Power up camera through the I2C interface and start sensor streaming=20
-through the I2C
+<snip>
 
-Note: All sensors might not leave pads in LP-11 state as sensor may be=20
-power down when not in use.
+>> +/**
+>> + * setup_new_fdt_ppc64 - Update the flattend device-tree of the kernel
+>> + *                       being loaded.
+>> + * @image:               kexec image being loaded.
+>> + * @fdt:                 Flattened device tree for the next kernel.
+>> + * @initrd_load_addr:    Address where the next initrd will be loaded.
+>> + * @initrd_len:          Size of the next initrd, or 0 if there will be none.
+>> + * @cmdline:             Command line for the next kernel, or NULL if there will
+>> + *                       be none.
+>> + *
+>> + * Returns 0 on success, negative errno on error.
+>> + */
+>> +int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
+>> +			unsigned long initrd_load_addr,
+>> +			unsigned long initrd_len, const char *cmdline)
+>> +{
+>> +	int chosen_node, ret;
+>> +
+>> +	/* Remove memory reservation for the current device tree. */
+>> +	ret = delete_fdt_mem_rsv(fdt, __pa(initial_boot_params),
+>> +				 fdt_totalsize(initial_boot_params));
+>> +	if (ret == 0)
+>> +		pr_debug("Removed old device tree reservation.\n");
+>> +	else if (ret != -ENOENT) {
+>> +		pr_err("Failed to remove old device-tree reservation.\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = setup_new_fdt(image, fdt, initrd_load_addr, initrd_len,
+>> +			    cmdline, &chosen_node);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
+>> +	if (ret)
+>> +		pr_err("Failed to update device-tree with linux,booted-from-kexec\n");
+>> +
+>> +	return ret;
+>> +}
+> 
+> For setup_purgatory_ppc64() you start with an empty function and build
+> from there, but for setup_new_fdt_ppc64() you moved some code here. Is
+> the code above 64 bit specific?
 
-So start streaming prior to checking for calibration done status as=20
-LP-11 -> HS transition happens during sensor stream and calibration=20
-logic can apply results to pads and update done status,
-
-5. Wait for done signal from calibration logic
-
-6. perform frame capture thru VI
-7. Frame done, CSI goes back to stop state, LP11
-
-Will work internally to correct sequence in TRM ...
-
-
-In mipi driver will update as below to have mipi clk enabled till=20
-calibration status check is done.
-
-Always tegra_mipi_wait() followes tegra_mipi_calibrate() in both DSI and=20
-CSI. So below sequence should work good.
-
-tegra_mipi_calibrate()
-
-- clk_enable mipi cal
-- program mipi cal registers (bias pads cfgs, mipi cal ctrl and trigger=20
-calibration start)
-
-tegra_mipi_wait()
-- read mipi cal status and wait for active and done bits
-- clk_disable mipi cal
+Actually, I was not quiet sure if fdt updates like in patch 6 & patch 9 can be
+done after setup_ima_buffer() call. If you can confirm, I will move them back
+to setup_purgatory()
 
 Thanks
-
-Sowjanya
-
+Hari
