@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2D8223131
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB4B223143
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 04:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgGQCbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 22:31:14 -0400
-Received: from mail-eopbgr150054.outbound.protection.outlook.com ([40.107.15.54]:12164
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726229AbgGQCbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 22:31:13 -0400
+        id S1726828AbgGQCpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 22:45:07 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:49024 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726138AbgGQCpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 22:45:06 -0400
+X-Greylist: delayed 404 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 22:45:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1594953903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZOXT610xczuOMpe++wIVTdx9sxYYLDgMkXvZBCXftKU=;
+        b=fhiXFHpTMeGRVqHlA0YMs12wNs7lmcVl+aIpsTsIHk1HyJrF7SJGhsTvLHbDhlewCsDRw9
+        OwHgCIFZXjo0OQcf3TWgGKIga1P5nTzOWQKSD+rH8SktfUnpNs/xqI+F+hVHfgouS5w9gS
+        qT8xiNRcDF75igZmU9g2cRHux08jV3w=
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01lp2053.outbound.protection.outlook.com [104.47.0.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-20-Xea-ARSePESLYEeLgbWDgA-1; Fri, 17 Jul 2020 04:38:17 +0200
+X-MC-Unique: Xea-ARSePESLYEeLgbWDgA-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KjnkHpzEBIi5WzhZl2RgXd/0GlkZ8exMVVebT7Ge62lnla+LDKCSXyONo15FZGb7rCQBkIa/tv6V9bWkwD9umgp60cca+pylK3d8y/zS5b61a6J8UCBIclFO3/07lmFBsvVhfZV2kMhrWqEWZIaEYpVOv4vTxacWCYN+pbcY09UEIaKgwZM8kRyNMEqYdd9DzO/wsyadqWJWKITqZVvLzlGSEe8Bp2TQwDpQqI5hx9hzG9nou/XuSxoBOoAQt6zPOxp04g2sNrqITISDhhrCmBW6sAqSEFXe9TGBp3VN7dgSwEJ7p2MY+zBe9ibL7IZ0QJ2pQBzzNZrcZUItDI7ExA==
+ b=dyLXA6rlv1gCzRPi3gAoqGJ07w8NqQ57wwW5s8bIOx0rSut9o+xqB1vvUezKaklmtzt30IZ2RNvjZwqwTjEqMAJOnGnSJun61/0aNrPRWkqokYqyRznhiSi6/9FDdliY6OHXrCfyO2E2Rvf8IZ7xCvgpwKLJ27ZopERmhNYmYbQw3h0lE9KtOoBWwk0yQRURn6OCsGD1W6PywiOiEbsptvzFSowoNGG+iCETOxoOXs5NoLBowUv+glKTfcBnWueZrvGNCQB+cBxsv7ta2ae31mfOBiSXcR/lndTjWLjjK5l1p1zEgcxHs/xkiYPn29C5kriVGHpCitLNNgrQVLRb5Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tsPLI7RyxD/DARATxe+uRlR+KEIu4J+qi/xfai2lFX0=;
- b=nsG4m+I+5yGXm12NtthymIfPa3PMZ0v81FR++6Ty1+w+rULJQEsF2tuaQNJ4tDjGKYE2TSI7hIOUlzpfxJSfwIyBVSvKjMMiMoQpKqyETvJl72ZaUNYOcVwvEUWkPQedU6pd/R/Ij/+YImHFZJDOJJ/V6A9CP3QepUYEoG5egzQ/y4uA1aXkyD+iAVu4xhmYHi44tCs/AVXRJ5jv9Quvm4s2xbE4giHm6tYH8jJpJCpsABaT9FdcogpAc79cw38PkFqhj/4B/rARzn6uMu91t+ToPCx6xExyZ28TeRiE/vX6ZJXrmLKBZhcdOzmr9TsSRqhApVeRxsP2Tzg4zWq4fw==
+ bh=ZOXT610xczuOMpe++wIVTdx9sxYYLDgMkXvZBCXftKU=;
+ b=doDIczDBbMUS5qqj/NtB8Dk5hCT3oOe2F2JIzIRh72SfHeUEkidF4Mh1tXGlxYfaPqkE0vMypCs93A/ZhK3AKzayrZ7Vxm0haBYibWieYHAfTMERomx7Itugd6Rs8OHQYNhDG2sYTDIzmQ1h4wm2l4Dus3ti091uCQxfKIim/EvA6lk/gASgsk0WZxE2DWQ6dXx/M7KBeFopcb7NhpC4GEHqjtVHiWaMP0GKlsruYO86rIgQz6QTxg3dzmlWGEfhM/5Gl9G4RbHnw7HLgMyPjSzz4U15i0AG2YbllPHYt6tZ6uoTpGz/NaEcNRpshhbT+D0+/UV01Bwd4RnLubyONw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tsPLI7RyxD/DARATxe+uRlR+KEIu4J+qi/xfai2lFX0=;
- b=Jk+W8BOZggUxGzbQZSFvq4a5hbCN8gfsJT4HnIkItNAVrQpgOeO0Op72LKEDfeDufhfgjGllQ4SRvsMmk+TBbWf9sS6TYD70NnWJgqbDzd9vhP4qkBEdkjDP3sPR7J2y7rXO1iWxPieX5tcNNoSnZi5+4ThGZ5L+q6ljj/yaEa4=
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
- by AM6PR04MB5813.eurprd04.prod.outlook.com (2603:10a6:20b:ab::33) with
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: fasheh.com; dkim=none (message not signed)
+ header.d=none;fasheh.com; dmarc=none action=none header.from=suse.com;
+Received: from HE1PR0402MB3514.eurprd04.prod.outlook.com (2603:10a6:7:83::19)
+ by HE1PR0401MB2297.eurprd04.prod.outlook.com (2603:10a6:3:23::25) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Fri, 17 Jul
- 2020 02:31:09 +0000
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::1101:adaa:ee89:af2a]) by AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::1101:adaa:ee89:af2a%3]) with mapi id 15.20.3174.026; Fri, 17 Jul 2020
- 02:31:09 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Philippe Schenker <philippe.schenker@toradex.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: ci-hdrc-usb2: add property
- disable-runtime-pm
-Thread-Topic: [PATCH v2 1/3] dt-bindings: usb: ci-hdrc-usb2: add property
- disable-runtime-pm
-Thread-Index: AQHWWfIOX6WrPbWACU6caDfv2RVZEqkKmaoAgAB3GQA=
-Date:   Fri, 17 Jul 2020 02:31:09 +0000
-Message-ID: <20200717023108.GA17070@b29397-desktop>
-References: <20200714151822.250783-1-philippe.schenker@toradex.com>
- <20200716192452.GA2699629@bogus>
-In-Reply-To: <20200716192452.GA2699629@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 99216192-2a61-4614-6515-08d829f9775f
-x-ms-traffictypediagnostic: AM6PR04MB5813:
-x-microsoft-antispam-prvs: <AM6PR04MB5813BFA14DD278FED59351048B7C0@AM6PR04MB5813.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: w8Kl+9G7xME97RP4zKVrIci8PhuzYYfJLFlA7BIqRXjzFEgkLG4TY+mFfB2zdnya2+ZgpHAqW3yoSllK8I2ouBsqu3FEt1fac1gfr8XxYjnlPr9qfnE2/nu+5qYvJnl3mhkf187fRHO+HXhcxV1Iw0WTdMmMIsu+9r7QhMkJsOFW71+cFlf/8y6D3ZxBsIP1HBjT0ZMjG0k0yqSOqI9n3O0Ti1L2ADCEZhibISqVmuUyt1EY8qob26RgjRCamSKsY94U+fNbjYJOlVyhznFuRc4Ru6+eezrfQfbCdg5LkuG1W+hIPwiRQAxRSOcNo/MvIqRsMY0xMyKpbSbwx4cioQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(366004)(39860400002)(136003)(376002)(396003)(346002)(54906003)(83380400001)(44832011)(33656002)(33716001)(186003)(5660300002)(4326008)(1076003)(8936002)(66446008)(64756008)(66556008)(6916009)(2906002)(8676002)(478600001)(66476007)(26005)(76116006)(66946007)(91956017)(86362001)(71200400001)(6506007)(316002)(6486002)(53546011)(9686003)(6512007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: CR4VYfakJJ5mx1hhSUx4ei67zXRlHVsAofkXilgJRCI8s/RSFa/WJvo0GsivmtWJXLlbARdXy7ueD4qHHXW0GlhQz5fZuf23Xr66OsuLaTVN/hNBwZpKHwfTUOTq2vSUBJFmzptrvXFwPKp96bdUAmfjxw9c+PdZEZ7qRTcwMKA7FxX6sWFUjElX3kKnzviUT9w6DvRDVPNLj6KPgoPXo+uKXwl5JZ1MAJtF6UhCwCq1Vnx3hT+0c1xleJL+D/2lXqgc28QlwqO5ix3USK61Pmjh64I17yd4lc+eXhCeA7KnqnbXE9tbN5DVBndYFCZNh1YuCz27AqhP7lPjMiXVJeOeIQCRuKFCxJy+iDgGtuPPI9yZt8WEepx1DmMLG/+EHO2NfZxoRkamzMF3yhCrHAv3XobwgvHyDtdJxb1C/NC8cUHoozwWVVDQFiQ4RAaWNYjN146ewQ80zlozd1TWZO5WKQw+Mc86itYg0G98HPM=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <CC0CC7ED8FC97B4E95BE667F252BACE3@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23; Fri, 17 Jul
+ 2020 02:38:16 +0000
+Received: from HE1PR0402MB3514.eurprd04.prod.outlook.com
+ ([fe80::80b2:e0fa:5159:1470]) by HE1PR0402MB3514.eurprd04.prod.outlook.com
+ ([fe80::80b2:e0fa:5159:1470%7]) with mapi id 15.20.3195.022; Fri, 17 Jul 2020
+ 02:38:16 +0000
+From:   Gang He <ghe@suse.com>
+To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com
+Cc:     Gang He <ghe@suse.com>, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, akpm@linux-foundation.org
+Subject: [PATCH] ocfs2: fix remounting needed after setfacl command
+Date:   Fri, 17 Jul 2020 10:37:51 +0800
+Message-Id: <20200717023751.9922-1-ghe@suse.com>
+X-Mailer: git-send-email 2.12.3
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR06CA0009.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::21) To HE1PR0402MB3514.eurprd04.prod.outlook.com
+ (2603:10a6:7:83::19)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ghe-pc.suse.asia (60.251.47.115) by HK2PR06CA0009.apcprd06.prod.outlook.com (2603:1096:202:2e::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3195.18 via Frontend Transport; Fri, 17 Jul 2020 02:38:12 +0000
+X-Mailer: git-send-email 2.12.3
+X-Originating-IP: [60.251.47.115]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d30ae6d7-c0e8-4e32-b997-08d829fa74ef
+X-MS-TrafficTypeDiagnostic: HE1PR0401MB2297:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1PR0401MB2297413C3597406D8A920F63CF7C0@HE1PR0401MB2297.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wgZ4czrAnKlZTS4dTI4YRmlucmgAJsNSii/AztrnKNm4QJq0hWrnVoK1l0eqtLjPq2ckPM1wZ+5bn8hafJJunr6ZjRTXX4tuVrdKJk1cglp4QVQ5YDMaT17fxtLoyFGCj31RNvC9oZlGzAj7z9VNweYTXxoCDuPkH5tMsC1aJFCZqR/9B+hmjv87otUft7vwiDc8aS1vFW4KM94Z88rDkrVLAxfY6FN/ac++jUJieKoXA6a71a5+XhsJpwEx/luYWZAYtGqYs/vIMzCHt+bdTYHh0K3UJudgg+I3N6BZOHq5pV389Ld8mH0C+qtIk6mb+nEwt1xO84UbKUTQLtq5c8E0NGABzWNWXco1y26A2vC2o2uvIT7+u+2HKULTnaw2
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3514.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(39860400002)(376002)(346002)(396003)(6486002)(1076003)(4326008)(26005)(66946007)(86362001)(66556008)(66476007)(6512007)(5660300002)(52116002)(8676002)(16526019)(316002)(186003)(4744005)(478600001)(2906002)(6506007)(8936002)(6666004)(36756003)(2616005)(956004)(55236004)(16060500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 8tfoRQ9WhgRoi5dE8zZsXptgJ/N+U4y45piIC8yvYh9asWK3ZPiNdVWzevuuZRniENeWFGsgAxfoZzKCUXUuaGEGLXSZYH2nT4GKfhiQZoZVzUnUaAIRh03/x73XXtypBrkU9BTexx0PqUhxTMaVnZEmGjVjeQ7YGkTnxVy0lap6MJ7kmMDe6RFbE8Fi5HvHJTi7JyRxkgVbsxofyG1uWZD0e9XNOgq4Udk33CRftxG1cxyzxy/cKmQ7j3NHPLeYb0T5OnuN055Z3g+CZacdGCdI2hlI75zHhx1AcX/Z7QCj5KZ7Bbcy6eTcjU7xmeFQB67Feg2HsNATavK8oK38zcjO4u34BwYwxHB4p3ytZ9jUK3TQ8nUGKAzj+/FgolVK5vsPIVyHQFCR8HtZoA7cdrJAzS1UzUUK15z3cxjRIgY7NgPId/bbtCF5Ao4dlC2rShMVOoRGW71fp6Mm05C5hTNb5rin4uBxApcIJ+7yKTI=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d30ae6d7-c0e8-4e32-b997-08d829fa74ef
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3514.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7157.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99216192-2a61-4614-6515-08d829f9775f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2020 02:31:09.7528
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2020 02:38:15.9272
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wO9z0tiSGvIekG35Qf1/AaXrxUAkkYbh1wBGIOXnq2Sni2dfa3Bb4O/gVq8IRuVUUdsYW4cljKPlnUsiiZ2oRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5813
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xEC5grSgCIlCxeCX5jtiLJHCcjvbESlObMF1fu6c6mRVZigFV2UogDqd4WbipPqe
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0401MB2297
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-07-16 13:24:52, Rob Herring wrote:
-> On Tue, Jul 14, 2020 at 05:18:20PM +0200, Philippe Schenker wrote:
-> > Chipidea depends on some hardware signals to be there in order
-> > for runtime-pm to work well. Add the possibility to disable runtime
-> > power management that is necessary for certain boards.
->=20
-> This is why we have SoC specific compatible strings. Use that.
+When use setfacl command to change a file's acl, the user cannot
+get the latest acl information from the file via getfacl command,
+until remounting the file system.
+e.g.
+setfacl -m u:ivan:rw /ocfs2/ivan
+getfacl /ocfs2/ivan
+getfacl: Removing leading '/' from absolute path names
+file: ocfs2/ivan
+owner: root
+group: root
+user::rw-
+group::r--
+mask::r--
+other::r--
 
-It is a board design limitation, not SoC's. To support USB low power
-mode for device mode, either VBUS connects to SoC, or VBUS connect to
-GPIO, or VBUS connect to Type-C IC, but none of the design is used
-at that board. So the USB can't enter low power mode for that board,
-otherwise, the USB controller can't be woken up since no any interrupts
-will occur if USB cable (host at other side) connects to the connector.
+The latest acl record("u:ivan:rw") cannot be returned via getfacl
+command until remounting.
 
-Peter
->=20
-> >=20
-> > Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
-> > ---
-> >=20
-> > Changes in v2: None
-> >=20
-> >  Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt | 1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt b/D=
-ocumentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
-> > index 51376cbe5f3d..67a31df13e69 100644
-> > --- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
-> > +++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
-> > @@ -90,6 +90,7 @@ Optional properties:
-> >    case, the "idle" state needs to pull down the data and strobe pin
-> >    and the "active" state needs to pull up the strobe pin.
-> >  - pinctrl-n: alternate pin modes
-> > +- disable-runtime-pm: This disables the runtime power management.
->=20
-> This is a Linux feature, not h/w description or config.
->=20
-> > =20
-> >  i.mx specific properties
-> >  - fsl,usbmisc: phandler of non-core register device, with one
-> > --=20
-> > 2.27.0
-> >=20
+Signed-off-by: Gang He <ghe@suse.com>
+---
+ fs/ocfs2/acl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---=20
+diff --git a/fs/ocfs2/acl.c b/fs/ocfs2/acl.c
+index bb981ec76456..7b07f5df3a29 100644
+--- a/fs/ocfs2/acl.c
++++ b/fs/ocfs2/acl.c
+@@ -256,6 +256,8 @@ static int ocfs2_set_acl(handle_t *handle,
+ 		ret = ocfs2_xattr_set(inode, name_index, "", value, size, 0);
+ 
+ 	kfree(value);
++	if (!ret)
++		set_cached_acl(inode, type, acl);
+ 
+ 	return ret;
+ }
+-- 
+2.12.3
 
-Thanks,
-Peter Chen=
