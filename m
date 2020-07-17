@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6606A223D5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3096C223D64
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 15:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgGQNyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 09:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
+        id S1727075AbgGQNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 09:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726932AbgGQNya (ORCPT
+        with ESMTP id S1726090AbgGQNyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 09:54:30 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBF1C0619D5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:31 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a6so11236579wrm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:31 -0700 (PDT)
+        Fri, 17 Jul 2020 09:54:31 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DEAC0619D6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:32 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so11160571wrw.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 06:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vKemoWjqR6g96Xgsgirmftjm/E0sdVIsOFgpktr/D0I=;
-        b=KkJ58wTNLjFEfso6eafu7XHSWYDgIT2QpWO7ZoFkscH8T9bz8ZmXHL/FjjlmZ89szi
-         SaFxtVC+zwUMaS9y7ToZr9FGXrgGE9lajWTHriEwPcmteH93rS1qRDvL4YRUgyiwqVjY
-         j2XI/cb69GWiMEVGLVZJpYOnN7mJxmtOVxzdc5xq7P1QqsKa5UyRwAwgxwGNN4SMhZ9c
-         TqcG0zsLXsFS6Z54kAMk4BtYeysJM7Og48NOlrTAwXyP4f1nYDQ2Co2a33Si6aDn5C8r
-         t84r0SBiYXp9Hn5nQINc7//3xnye6zTLmDHLpUWGwXf2nG1a/uQpGh81nFfjKIfX3oCe
-         TMVA==
+        bh=Q0v3MpsT0EiR8b5Jx0N89c4SZ6k9ifhqdf8ekF4nSQ4=;
+        b=Lnb0CtVbWRFsYcq4I5p0F1kPtzqlpb6+B4HmHr3H+ScjOsj6hVQKmo+YIsjT/9/1Wb
+         Yy2UgzVEDRWavrWMKex3LUCcFe52iG62z/WvSEZ3zI6juSVZPj/pEqEXhfaMh3gIozlj
+         t7HNZjapNynHgojy1h7+YTFwv7Qum3LB6AZh/SMfJecVuhCDb/bMSGw8ZfBrXf59OnzV
+         lZiGC+oV1HLtzifxh7cQfiIOF4+ng7vsehMXUj6Q9InmFvkFup9vjes56JwEP1rkc5bM
+         WAUuYaXko7tWKb7ZE114QTBu1M2OSz72GYWTnkhCU/cozXoZHojS11ZFxsEZ3fmtGekd
+         nM6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vKemoWjqR6g96Xgsgirmftjm/E0sdVIsOFgpktr/D0I=;
-        b=DKd9p0lAtjGMsMsjTevMzO3V8m1ITps1ZuObJJr93zi+QHcweIv7iOXbdQgadMJbmo
-         +sYYGNFVnddvC2wP7RgTo5U64En2p3WgLj0QT0aOFdikDoCKa5L8s0Vhblm/45mT5JU4
-         g7cmAJ4xpanhCpCiVhTbpoIGKNLEyYSnVt2KevaBMyjBVUHNCDkn3TQlsBhz7H+4PsC4
-         v0QG4PxRkrTvVheElVQvvqaEcgmDDZe3zqiZVpqJNRYU82J6BKyH9HrNj/YQi3nQKL+8
-         TG2Ac1+4WzKwgnRU76KEUsjvh1E+Q5E2jNjWbWdDAZFzQHcKCkYEtpf9XW4v4xYOvBzZ
-         gB3g==
-X-Gm-Message-State: AOAM531h7KUSfWcQWRRn/CDfmBpRC/Dto+Al0KCn4aP2E9kgy138bnSQ
-        F+95wRuonpHXLvx9lh11vRkCIA==
-X-Google-Smtp-Source: ABdhPJyScPf7JwQtEZvA5sD1ShLQoa/+KNAe8xTjYnMg0F86HrLTvwwPzQtxX+Mk4a1wGK3SMbuJaQ==
-X-Received: by 2002:adf:e44c:: with SMTP id t12mr11315545wrm.103.1594994069964;
-        Fri, 17 Jul 2020 06:54:29 -0700 (PDT)
+        bh=Q0v3MpsT0EiR8b5Jx0N89c4SZ6k9ifhqdf8ekF4nSQ4=;
+        b=r+uJSoH5YR8lzOmD3TsGE9xAuRZuqPQsw22KaLsW/KWTuyl6sewUX5cCJXK2YUXuQR
+         VBfzP2iIl19Ry2DRQE5vibzrdHkQ+u4DtrlNj3ef+Of7L8zJA1Qcw+4NSFYnj6ANQ7B9
+         KBZsmnCXNlXUnft/WlET94qXKVwK3z/eDpyVFxJKnCWGSuXqp59oQl0HKBFDrhS+Q1qa
+         d7FBcR2pI2h/zPoQP9Re4fCb1UXHk0hOcFv3kOMtVOv5uL1lwx1lOFDNOpFtvUFgnEXx
+         GlN2W9Ks/9HmBz6Xh8L4o+aA1Pwh1Q3kXSP+5UgRpjLWpWOKWAXQPeZXUnZCpodqzwDf
+         IlOg==
+X-Gm-Message-State: AOAM530l/ln9XngV/KoGubkD0BHmSBJLVf33t5bfxOxsJIgGVkg5oFFr
+        9oBgN4QZhPbTv6a8hDWo68lLVA==
+X-Google-Smtp-Source: ABdhPJyWncy34Npy4rilSJUIpPISij8gKpvR0Ke699A8H9i1pMrCUYIxVOaCspw8BGlBJb6OzBknuw==
+X-Received: by 2002:a5d:4f8b:: with SMTP id d11mr9770503wru.147.1594994070888;
+        Fri, 17 Jul 2020 06:54:30 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id w128sm16118356wmb.19.2020.07.17.06.54.29
+        by smtp.gmail.com with ESMTPSA id w128sm16118356wmb.19.2020.07.17.06.54.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 06:54:29 -0700 (PDT)
+        Fri, 17 Jul 2020 06:54:30 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v2 03/14] spi: spi-davinci: Fix a few kerneldoc misspellings and API slippages
-Date:   Fri, 17 Jul 2020 14:54:13 +0100
-Message-Id: <20200717135424.2442271-4-lee.jones@linaro.org>
+        linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Mika Westerberg <mika.westerberg@iki.fi>
+Subject: [PATCH v2 04/14] spi: spi-ep93xx: Fix API slippage
+Date:   Fri, 17 Jul 2020 14:54:14 +0100
+Message-Id: <20200717135424.2442271-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717135424.2442271-1-lee.jones@linaro.org>
 References: <20200717135424.2442271-1-lee.jones@linaro.org>
@@ -65,53 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ep93xx_spi_read_write() changed is parameters, but the function
+documentation was left unchanged.  Let's realign.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-davinci.c:249: warning: Function parameter or member 'dspi' not described in 'davinci_spi_get_prescale'
- drivers/spi/spi-davinci.c:249: warning: Function parameter or member 'max_speed_hz' not described in 'davinci_spi_get_prescale'
- drivers/spi/spi-davinci.c:249: warning: Excess function parameter 'maxspeed_hz' description in 'davinci_spi_get_prescale'
- drivers/spi/spi-davinci.c:719: warning: Function parameter or member 'data' not described in 'dummy_thread_fn'
- drivers/spi/spi-davinci.c:719: warning: Excess function parameter 'context_data' description in 'dummy_thread_fn'
- drivers/spi/spi-davinci.c:735: warning: Function parameter or member 'data' not described in 'davinci_spi_irq'
- drivers/spi/spi-davinci.c:735: warning: Excess function parameter 'context_data' description in 'davinci_spi_irq'
+ drivers/spi/spi-ep93xx.c:227: warning: Function parameter or member 'master' not described in 'ep93xx_spi_read_write'
+ drivers/spi/spi-ep93xx.c:227: warning: Excess function parameter 'espi' description in 'ep93xx_spi_read_write'
 
+Cc: Mika Westerberg <mika.westerberg@iki.fi>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-davinci.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/spi/spi-ep93xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-davinci.c b/drivers/spi/spi-davinci.c
-index f50c0c79cbdfa..818f2b22875d2 100644
---- a/drivers/spi/spi-davinci.c
-+++ b/drivers/spi/spi-davinci.c
-@@ -236,7 +236,8 @@ static void davinci_spi_chipselect(struct spi_device *spi, int value)
+diff --git a/drivers/spi/spi-ep93xx.c b/drivers/spi/spi-ep93xx.c
+index ae7c79a062084..aa676559d2738 100644
+--- a/drivers/spi/spi-ep93xx.c
++++ b/drivers/spi/spi-ep93xx.c
+@@ -214,7 +214,7 @@ static void ep93xx_do_read(struct spi_master *master)
  
  /**
-  * davinci_spi_get_prescale - Calculates the correct prescale value
-- * @maxspeed_hz: the maximum rate the SPI clock can run at
-+ * @dspi: the controller data
-+ * @max_speed_hz: the maximum rate the SPI clock can run at
+  * ep93xx_spi_read_write() - perform next RX/TX transfer
+- * @espi: ep93xx SPI controller struct
++ * @master: SPI master
   *
-  * This function calculates the prescale value that generates a clock rate
-  * less than or equal to the specified maximum.
-@@ -710,7 +711,7 @@ static int davinci_spi_bufs(struct spi_device *spi, struct spi_transfer *t)
- /**
-  * dummy_thread_fn - dummy thread function
-  * @irq: IRQ number for this SPI Master
-- * @context_data: structure for SPI Master controller davinci_spi
-+ * @data: structure for SPI Master controller davinci_spi
-  *
-  * This is to satisfy the request_threaded_irq() API so that the irq
-  * handler is called in interrupt context.
-@@ -723,7 +724,7 @@ static irqreturn_t dummy_thread_fn(s32 irq, void *data)
- /**
-  * davinci_spi_irq - Interrupt handler for SPI Master Controller
-  * @irq: IRQ number for this SPI Master
-- * @context_data: structure for SPI Master controller davinci_spi
-+ * @data: structure for SPI Master controller davinci_spi
-  *
-  * ISR will determine that interrupt arrives either for READ or WRITE command.
-  * According to command it will do the appropriate action. It will check
+  * This function transfers next bytes (or half-words) to/from RX/TX FIFOs. If
+  * called several times, the whole transfer will be completed. Returns
 -- 
 2.25.1
 
