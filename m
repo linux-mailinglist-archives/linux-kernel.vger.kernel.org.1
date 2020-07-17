@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35981223DB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35755223DC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727950AbgGQOGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgGQOGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:06:42 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19DAC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:06:42 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id u12so7629640qth.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n79cHK14c7WjGW54arM/ZzG9LDrpbEmQtp+ZnZq2Zbs=;
-        b=qxLVFWXSBzVOgf0tOJdWkvaseXUBniTV5HupaHUiI4U2q4+aKRnmX/dWQymX2rzAta
-         nmX64UvqolTMSaA6zGeFgV62hyOFfo+CUdQH907lPcyzIfdf4W/6vSzpjr8KMiYL12A8
-         0XIkhTLOFVpsLJlzvXMV8fFPmDcgKCPmOo1+z6QpFOw871JW6iZxC2Z/l6zrFDLf4SYx
-         wUr6ze4nrOSNMemZ+zk+W4LXhsmVkSb/D7dg7nxa1kJXm/dRWzdT7zlKJ7Jr88xgw66R
-         uV/BW3GSzlEydiJagiv4eWwsaaMnW2OaFNdIq9YE7cVOG6yHtiZgFOqFDJmb6likQmW5
-         445A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n79cHK14c7WjGW54arM/ZzG9LDrpbEmQtp+ZnZq2Zbs=;
-        b=rky/W6GbbCEpPpdy63Wq9w1vyr1dp5+/+rUJp1CjGEjwfJe9Ogu0dnz+h7IllGMIQ4
-         nWZOB4RYj0a6rhncWMSou7nv7Qtc1KEhCkCHVMW6DqfcGS/J1D7F9P+Q6rrZ/8M16c1p
-         fydf7wz/pb6q9Xw0FmN8xt9MbAUJOaVp8lmqCa7QjSqxYUlsae6FOkIbA1iLxyXus+58
-         wP/YtpuQq5Uhe3lm+pLH0YYoMDJHOpjZJGcTjm1ZLia7jZpm8aLEGo8tQdZRu1iv6CaV
-         tOsPReW7AOD3P61JGDPyq4Bn/O0WbkpganhKnxn2TtxsiGScUEgzJbtcjIWENpIWkj/t
-         LtJg==
-X-Gm-Message-State: AOAM533Jey8Qg2o+vwF36fvBqYMdWK/9b9Y6EjjGSX2sMbPQVL0bnoKq
-        2XZU3Lgn7fQxXNtuC2GTw3HolQ==
-X-Google-Smtp-Source: ABdhPJx3MCZgwWOSpwWP7h0UDqwBEhWJ0YHnBmdUpDipf7AvrZ/96DipyQUxQJD1KzzlUfi8TGV0hw==
-X-Received: by 2002:aed:2e07:: with SMTP id j7mr10972924qtd.338.1594994801450;
-        Fri, 17 Jul 2020 07:06:41 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:be7d])
-        by smtp.gmail.com with ESMTPSA id 15sm9849064qkm.93.2020.07.17.07.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 07:06:40 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 10:05:47 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     js1304@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v6 5/6] mm/swap: implement workingset detection for
- anonymous LRU
-Message-ID: <20200717140547.GB265107@cmpxchg.org>
-References: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592371583-30672-6-git-send-email-iamjoonsoo.kim@lge.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592371583-30672-6-git-send-email-iamjoonsoo.kim@lge.com>
+        id S1728135AbgGQOIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:08:04 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11837 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727986AbgGQOH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:07:27 -0400
+IronPort-SDR: xjOEaVRL5FsZQMjz/eMiXbzDKtEgsqgAe1y6wuUPHYvD6vDaqhGPz7g0ZM4wP+taXdNXpUyT9r
+ 5zS+hyg7ZzXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722810"
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="167722810"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:27 -0700
+IronPort-SDR: 3LRflFszD+gkChtUTjMXPL/544T4lv2YGa31DrlHoexqkXL6VBkWy72U3XUHNWgQuQZzDCG6Et
+ ytVAatouC4vg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="460856491"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:26 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V6 08/14] perf/x86: Add a macro for RDPMC offset of fixed counters
+Date:   Fri, 17 Jul 2020 07:05:48 -0700
+Message-Id: <20200717140554.22863-9-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
+References: <20200717140554.22863-1-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 02:26:22PM +0900, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> This patch implements workingset detection for anonymous LRU.
-> All the infrastructure is implemented by the previous patches so this patch
-> just activates the workingset detection by installing/retrieving
-> the shadow entry.
-> 
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+The RDPMC base offset of fixed counters is hard-code. Use a meaningful
+name to replace the magic number to improve the readability of the code.
+
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/core.c            | 3 ++-
+ arch/x86/include/asm/perf_event.h | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 8aa7da80f5d6..ace21b133015 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1158,7 +1158,8 @@ static inline void x86_assign_hw_event(struct perf_event *event,
+ 		hwc->config_base = MSR_ARCH_PERFMON_FIXED_CTR_CTRL;
+ 		hwc->event_base = MSR_ARCH_PERFMON_FIXED_CTR0 +
+ 				(idx - INTEL_PMC_IDX_FIXED);
+-		hwc->event_base_rdpmc = (idx - INTEL_PMC_IDX_FIXED) | 1<<30;
++		hwc->event_base_rdpmc = (idx - INTEL_PMC_IDX_FIXED) |
++					INTEL_PMC_FIXED_RDPMC_BASE;
+ 		break;
+ 
+ 	default:
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index 8870eb1c3b17..84bfb9d1f948 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -196,6 +196,9 @@ struct x86_pmu_capability {
+  * Fixed-purpose performance events:
+  */
+ 
++/* RDPMC offset for Fixed PMCs */
++#define INTEL_PMC_FIXED_RDPMC_BASE		(1 << 30)
++
+ /*
+  * All the fixed-mode PMCs are configured via this single MSR:
+  */
+-- 
+2.17.1
+
