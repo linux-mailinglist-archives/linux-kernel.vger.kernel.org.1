@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC68223E7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9CD223E7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgGQOnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:43:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgGQOnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:43:20 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41B7E22B4D;
-        Fri, 17 Jul 2020 14:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594996999;
-        bh=kfIT860OGYjpsG+nnhvbf8g/TLaZHhOpaJXIoOPMX4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CtmQXYemaxq5EZM3qammzH9eXI+H3tIAZbwTf1FIOvkKux2il9kBx8+m0GP3sZGVJ
-         yiyiFCcl0C04iZ8omtucXb3T4HxWEcBwG9Vq94CCPlfzmb8UATfR9ys9FrqWQCz0aP
-         tdactR5dpsJmLPN0Y4uFVqZbHsv8hZ4i3nc6+Sgk=
-Date:   Fri, 17 Jul 2020 10:43:18 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lyude Paul <lyude@redhat.com>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Patrick Volkerding <volkerdi@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        stable@vger.kernel.org
-Subject: Re: nouveau regression with 5.7 caused by "PCI/PM: Assume ports
- without DLL Link Active train links in 100 ms"
-Message-ID: <20200717144318.GP2722994@sasha-vm>
-References: <CACO55tuA+XMgv=GREf178NzTLTHri4kyD5mJjKuDpKxExauvVg@mail.gmail.com>
- <20200716235440.GA675421@bjorn-Precision-5520>
- <CACO55tuVJHjEbsW657ToczN++_iehXA8pimPAkzc=NOnx4Ztnw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CACO55tuVJHjEbsW657ToczN++_iehXA8pimPAkzc=NOnx4Ztnw@mail.gmail.com>
+        id S1726891AbgGQOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:44:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22688 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726198AbgGQOo0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:44:26 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HEUmGP056868;
+        Fri, 17 Jul 2020 10:43:59 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32b61k6jhm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 10:43:58 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HEeAsW001138;
+        Fri, 17 Jul 2020 14:43:58 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02dal.us.ibm.com with ESMTP id 32752a5vre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 14:43:58 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HEhsdp2425390
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 14:43:55 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 878AB78060;
+        Fri, 17 Jul 2020 14:43:56 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9E9D78067;
+        Fri, 17 Jul 2020 14:43:53 +0000 (GMT)
+Received: from [153.66.254.194] (unknown [9.85.141.100])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 17 Jul 2020 14:43:53 +0000 (GMT)
+Message-ID: <1594997031.3344.27.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 0/5] mm: extend memfd with ability to create
+ "secret" memory areas
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Pavel Machek <pavel@ucw.cz>, Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christopher Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Idan Yaniv <idan.yaniv@ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, Mike Rapoport <rppt@linux.ibm.com>
+Date:   Fri, 17 Jul 2020 07:43:51 -0700
+In-Reply-To: <20200717083601.GB1027@bug>
+References: <20200706172051.19465-1-rppt@kernel.org>
+         <20200717083601.GB1027@bug>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_06:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 lowpriorityscore=0
+ spamscore=100 clxscore=1011 bulkscore=0 mlxlogscore=-1000 adultscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
+ mlxscore=100 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007170103
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 02:43:52AM +0200, Karol Herbst wrote:
->On Fri, Jul 17, 2020 at 1:54 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->>
->> [+cc Sasha -- stable kernel regression]
->> [+cc Patrick, Kai-Heng, LKML]
->>
->> On Fri, Jul 17, 2020 at 12:10:39AM +0200, Karol Herbst wrote:
->> > On Tue, Jul 7, 2020 at 9:30 PM Karol Herbst <kherbst@redhat.com> wrote:
->> > >
->> > > Hi everybody,
->> > >
->> > > with the mentioned commit Nouveau isn't able to load firmware onto the
->> > > GPU on one of my systems here. Even though the issue doesn't always
->> > > happen I am quite confident this is the commit breaking it.
->> > >
->> > > I am still digging into the issue and trying to figure out what
->> > > exactly breaks, but it shows up in different ways. Either we are not
->> > > able to boot the engines on the GPU or the GPU becomes unresponsive.
->> > > Btw, this is also a system where our runtime power management issue
->> > > shows up, so maybe there is indeed something funky with the bridge
->> > > controller.
->> > >
->> > > Just pinging you in case you have an idea on how this could break Nouveau
->> > >
->> > > most of the times it shows up like this:
->> > > nouveau 0000:01:00.0: acr: AHESASC binary failed
->> > >
->> > > Sometimes it works at boot and fails at runtime resuming with random
->> > > faults. So I will be investigating a bit more, but yeah... I am super
->> > > sure the commit triggered this issue, no idea if it actually causes
->> > > it.
->> >
->> > so yeah.. I reverted that locally and never ran into issues again.
->> > Still valid on latest 5.7. So can we get this reverted or properly
->> > fixed? This breaks runtime pm for us on at least some hardware.
->>
->> Yeah, that stinks.  We had another similar report from Patrick:
->>
->>   https://lore.kernel.org/r/CAErSpo5sTeK_my1dEhWp7aHD0xOp87+oHYWkTjbL7ALgDbXo-Q@mail.gmail.com
->>
->> Apparently the problem is ec411e02b7a2 ("PCI/PM: Assume ports without
->> DLL Link Active train links in 100 ms"), which Patrick found was
->> backported to v5.4.49 as 828b192c57e8, and you found was backported to
->> v5.7.6 as afaff825e3a4.
->>
->> Oddly, Patrick reported that v5.7.7 worked correctly, even though it
->> still contains afaff825e3a4.
->>
->> I guess in the absence of any other clues we'll have to revert it.
->> I hate to do that because that means we'll have slow resume of
->> Thunderbolt-connected devices again, but that's better than having
->> GPUs completely broken.
->>
->> Could you and Patrick open bugzilla.kernel.org reports, attach dmesg
->> logs and "sudo lspci -vv" output, and add the URLs to Kai-Heng's
->> original report at https://bugzilla.kernel.org/show_bug.cgi?id=206837
->> and to this thread?
->>
->> There must be a way to fix the slow resume problem without breaking
->> the GPUs.
->>
->
->I wouldn't be surprised if this is related to the Intel bridge we
->check against for Nouveau.. I still have to check on another laptop
->with the same bridge our workaround was required as well but wouldn't
->be surprised if it shows the same problem. Will get you the
->information from both systems tomorrow then.
+On Fri, 2020-07-17 at 10:36 +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > This is a second version of "secret" mappings implementation backed
+> > by a file descriptor. 
+> > 
+> > The file descriptor is created using memfd_create() syscall with a
+> > new MFD_SECRET flag. The file descriptor should be configured using
+> > ioctl() to define the desired protection and then mmap() of the fd
+> > will create a "secret" memory mapping. The pages in that mapping
+> > will be marked as not present in the direct map and will have
+> > desired protection bits set in the user page table. For instance,
+> > current implementation allows uncached mappings.
+> > 
+> > Hiding secret memory mappings behind an anonymous file allows
+> > (ab)use of the page cache for tracking pages allocated for the
+> > "secret" mappings as well as using address_space_operations for
+> > e.g. page migration callbacks.
+> > 
+> > The anonymous file may be also used implicitly, like hugetlb files,
+> > to implement mmap(MAP_SECRET) and use the secret memory areas with
+> > "native" mm ABIs.
+> 
+> I believe unix userspace normally requires mappings to be... well...
+> protected from other users. How is this "secret" thing different? How
+> do you explain the difference to userland programmers?
 
-I take it that ec411e02b7a2 will be reverted upstream?
+That's true in the normal case, but for the container cloud the threat
+model we're considering is a hostile other tenant trying to trick the
+kernel into giving them access to your mappings.  In the FOSDEM talk we
+did about this:
 
--- 
-Thanks,
-Sasha
+https://fosdem.org/2020/schedule/event/kernel_address_space_isolation/
+
+We demonstrated the case where the hostile tenant obtained host root
+and then tried to get access via ptrace.  The point being that pushing
+the pages out of the direct map means that even root can't get access
+to the secret by any means the OS provides.  If you want to play with
+this yourself, we have a userspace library:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git/
+
+It does two things: the first is act as a preloader for openssl to
+redirect all the OPENSSL_malloc calls to secret memory meaning any
+secret keys get automatically protected this way and the other thing it
+does is expose the API to the user who needs it.  I anticipate that a
+lot of the use cases would be like the openssl one: many toolkits that
+deal with secret keys already have special handling for the memory to
+try to give them greater protection, so this would simply be pluggable
+into the toolkits without any need for user application modification.
+
+James
+
