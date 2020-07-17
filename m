@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149E6223B1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23E6223B1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 14:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgGQMFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 08:05:44 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20210 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726040AbgGQMFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 08:05:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594987542; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=hPWgjh6Z31+8mVshXFtGOQtuU1a/Lut0EMPEI8zc8j4=; b=o6/UxmOQ6p6mpE1KvcN5GF6f5czE38yknUDBqqZJwVwFgwUlOmJLxS4k7LIBGSmLwUtsMU6u
- BzaNAHtAvV/U3PoVuD00U9ieglQBVMefl0GZVD27fpuKLQ56pSZzXbmAZGMk9ejQ9JnKqqHH
- QPNevdojJt1HVnIGvmt3I/Cvi1M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
- 5f119414166c1c54948c54e5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 12:05:40
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8807C43395; Fri, 17 Jul 2020 12:05:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22D79C433C6;
-        Fri, 17 Jul 2020 12:05:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22D79C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Ajay Singh <ajay.kathat@microchip.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: linux-next: manual merge of the dmaengine tree with the wireless-drivers-next and Linus' trees
-References: <20200717165336.312dcf09@canb.auug.org.au>
-Date:   Fri, 17 Jul 2020 15:05:34 +0300
-In-Reply-To: <20200717165336.312dcf09@canb.auug.org.au> (Stephen Rothwell's
-        message of "Fri, 17 Jul 2020 16:53:36 +1000")
-Message-ID: <87tuy673e9.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726418AbgGQMGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 08:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbgGQMGV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 08:06:21 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CBBC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:06:21 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so12266020ljm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 05:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LJR0i6k7cO0ZZMPI9z4MOM+krNnMR1fBcC0/4RFxoRc=;
+        b=aabBGO/8gdwSRkA/BTM3UdLB2r8u3KjxQfPB0aFML2rV2ttywdWnH96KH8Qq8+gwjk
+         qRzYI7lSm4R0yDFu54T/gxVFsYj84X17IVGB7iNgU3E8MuVhBiV+x5SymzPAhd6Fc0y2
+         GEL8k/lj8gVhMb7CshyoECk/icp7txJXkBXD5U54sL1C+DWvjnp9+BCYWzV69XsLeY8O
+         QRjDqd3wDlNx5SVGzMEZIuuFpIiDeoew8GJ02t33OzSEcpxOtbSWKR4bviqGQq1PaID0
+         1VOPixmOcBSH8zngj6epCfWITMdLCksuL8lTYXPhxaZ8PPdqHxc+g7qSXpa2QNpqloHx
+         Z08g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LJR0i6k7cO0ZZMPI9z4MOM+krNnMR1fBcC0/4RFxoRc=;
+        b=gTbSIRRe8NRAn+bsl5RVqlfRu/Ct8/EsfIh5qzWTQ43zTRmB6YTqFVymE3GxsO7P21
+         oyjw3aYxT68nEpzM+AwvbvacZsLnQ2D6HxuwAPUElUAI/qxcOqQkrwWWdbmb0Ztz5P22
+         sdvhYPub7CSMCmuAUbDQ1mOLDxuxDh46Wghz3KvbeamWeNHgC7di1ccy1q0MoyJyOIpv
+         qD7nXBw3VMSbZ8dhrhhk2N9PE/o/0a7ELY2fvkYpjl/YS8LiT9egvu90atstj6eRupBi
+         n36ZTSbu+yQh6VmLXU2viHVYsFD2sViNTAUsuYtxwMXu2qH3af/LZVDIVJ6YfNEz8CIz
+         wjCQ==
+X-Gm-Message-State: AOAM533BabbZYOFKqyWO2rfuLsdqumc0T6xcbiRa/troKjWohMi+vtjP
+        7CIqk0AaDmVJ+oILUVwqqlOF35xD0PRD2fPXa75bUQ==
+X-Google-Smtp-Source: ABdhPJzM5ABK4ZPfUhITf86CQcHTzH09tokmVlULmlOslvOaUvuycksIQdKNexusQpjUZ7Pg1QWEtnYM7wvpKL6m+hA=
+X-Received: by 2002:a2e:9a4d:: with SMTP id k13mr4643357ljj.283.1594987579348;
+ Fri, 17 Jul 2020 05:06:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200716212109.GA17525@embeddedor>
+In-Reply-To: <20200716212109.GA17525@embeddedor>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Jul 2020 14:06:08 +0200
+Message-ID: <CACRpkdYXFOOv8yh+wMKSZ_7E2oXXXZZO2b9C-jLJN055mLdSzA@mail.gmail.com>
+Subject: Re: [PATCH][next] pinctrl: lpc18xx: Use fallthrough pseudo-keyword
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Vladimir Zapolskiy <vz@mleia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+On Thu, Jul 16, 2020 at 11:15 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
 
-> Today's linux-next merge of the dmaengine tree got a conflict in:
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1].
 >
->   MAINTAINERS
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 >
-> between commit:
->
->   5625f965d764 ("wilc1000: move wilc driver out of staging")
->
-> from the wireless-drivers-next tree, commit:
->
->   6e701c299469 ("MAINTAINERS: merge entries for felix and ocelot drivers")
->
-> from Linus' tree and commit:
->
->   c3846c4cce15 ("MAINTAINERS: dmaengine: Microchip: add Tudor Ambarus
-> as co-maintainer")
->
-> from the dmaengine tree.
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I think this is trivial enough that Linus can take care of it without
-any extra actions. Thanks for the report.
+Patch applied.
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Yours,
+Linus Walleij
