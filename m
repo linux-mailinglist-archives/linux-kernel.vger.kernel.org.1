@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325612237A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9503C2237C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 11:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgGQJEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 05:04:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55306 "EHLO mx2.suse.de"
+        id S1726399AbgGQJGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 05:06:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59048 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726229AbgGQJEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:04:54 -0400
+        id S1726000AbgGQJGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 05:06:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1F71CB132;
-        Fri, 17 Jul 2020 09:04:57 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 11:04:52 +0200 (CEST)
+        by mx2.suse.de (Postfix) with ESMTP id D5983B132;
+        Fri, 17 Jul 2020 09:06:35 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 11:06:31 +0200 (CEST)
 From:   Miroslav Benes <mbenes@suse.cz>
 To:     Mark Brown <broonie@kernel.org>
 cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -30,11 +30,10 @@ cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] stacktrace: Remove reliable argument from
- arch_stack_walk() callback
-In-Reply-To: <20200715202821.12220-2-broonie@kernel.org>
-Message-ID: <alpine.LSU.2.21.2007171103070.21694@pobox.suse.cz>
-References: <20200715202821.12220-1-broonie@kernel.org> <20200715202821.12220-2-broonie@kernel.org>
+Subject: Re: [PATCH 3/3] arm64: stacktrace: Convert to ARCH_STACKWALK
+In-Reply-To: <20200716162022.GD5105@sirena.org.uk>
+Message-ID: <alpine.LSU.2.21.2007171105250.21694@pobox.suse.cz>
+References: <20200715202821.12220-1-broonie@kernel.org> <20200715202821.12220-4-broonie@kernel.org> <alpine.LSU.2.21.2007161342290.3958@pobox.suse.cz> <20200716162022.GD5105@sirena.org.uk>
 User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,18 +42,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020, Mark Brown wrote:
+On Thu, 16 Jul 2020, Mark Brown wrote:
 
-> Currently the callback passed to arch_stack_walk() has an argument called
-> reliable passed to it to indicate if the stack entry is reliable, a comment
-> says that this is used by some printk() consumers. However in the current
-> kernel none of the arch_stack_walk() implementations ever set this flag to
-> true and the only callback implementation we have is in the generic
-> stacktrace code which ignores the flag. It therefore appears that this
-> flag is redundant so we can simplify and clarify things by removing it.
+> On Thu, Jul 16, 2020 at 01:56:13PM +0200, Miroslav Benes wrote:
+> > On Wed, 15 Jul 2020, Mark Brown wrote:
+> 
+> > > -void save_stack_trace(struct stack_trace *trace)
+> > > -{
+> > > -	__save_stack_trace(current, trace, 0);
+> > > +	walk_stackframe(task, &frame, consume_entry, cookie);
+> > >  }
+> 
+> > just an idea for further improvement (and it might be a matter of taste). 
+> 
+> Yeah, there's some more stuff that can be done - the reason I'm looking
+> at this code is to do reliable stack trace which is going to require at
+> least some changes to the actual unwinder, this just seemed like a
+> useful block moving things forwards in itself and I particularly wanted
+> feedback on patch 1.
 
-Correct. I dug around and it seems it was the case even when it was 
-introduced. So I wonder about the comment. I don't remember the details, 
-maybe Thomas or someone else does. But the patch looks correct.
+Understood. Reliable stack traces would be an important step for live 
+patching on arm64, so I am looking forward to seeing that.
 
+Thanks
 Miroslav
