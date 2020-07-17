@@ -2,111 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2B1223E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B214223E2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgGQOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:36:58 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11639 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726198AbgGQOgz (ORCPT
+        id S1727115AbgGQOhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbgGQOhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:36:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594996615; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=NnSb7TJWGqQpSkl7k2UjULzlt0I9AkBaZ3dCnmY8dCM=; b=B8umfgkoioJ//ho+nFxfiKEBkLCFENG8MuI7Uly8u6O9Ytf9RApKpQ+Ily1XkgusPfzAH18n
- gKL2prFBr7XWqXuxDMFnYw+SFLopwh/TQG2NLOSCiyVaNAtrC8JFWQVoojQHFYfJX7ZvyVxs
- t4srjkKDfX6oE2YJBSEKc6Vn6MI=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f11b76bc9bd2efa2e1a5984 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Jul 2020 14:36:27
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A6EC1C433CA; Fri, 17 Jul 2020 14:36:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.9] (unknown [59.99.219.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD85EC433C6;
-        Fri, 17 Jul 2020 14:36:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD85EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH] drm: msm: a6xx: fix gpu failure after system resume
-To:     Rob Clark <robdclark@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Jonathan <jonathan@marek.ca>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-References: <1594733130-398-1-git-send-email-akhilpo@codeaurora.org>
- <20200714171036.GS3191083@google.com>
- <CAF6AEGsvbnWiFXQUFR+k-CLJ2CsCEoiVVE8pGVq0X0=VHE3hHA@mail.gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <a466103a-7f70-468c-c8d3-16b59ae8b3d5@codeaurora.org>
-Date:   Fri, 17 Jul 2020 20:06:17 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 17 Jul 2020 10:37:46 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C81AC0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:37:46 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id o1so5529789plk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 07:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=djkMUkZcrMKQIRHk66rYevNXyQYjoTPBJqAUtrmCrFU=;
+        b=g28D7FQzNyPK4ef5SAVJaHJHdJqSXGqw7D2MNGI9kV7fAGg4gJZvLPcH76AoGrRapG
+         7rjRbaWSLoxixYUmTvf/Lm2e2xDL7w7wMpb8Xu0DMZknYbMZuMs+cnp+0V+OuB8Z1e5S
+         jGLE8zVeOCdpPQ1SUegfeXJA+lEKhlFul5PIGJtxqbO/YrRQRqdedgzBcwtot0msXwxb
+         d8P76U9LvQhkcAwS5frcKnbEFGs5BRfVGquti+mEHb065xsLMWLbMH8GiPHsC2jwTUPA
+         /9hijo9GTuPGx4JoZIHtx1Dej1dGmjolfoUtAoarx4xVy6GsvJ/WlcIh13M6ADsDKYVe
+         eKRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=djkMUkZcrMKQIRHk66rYevNXyQYjoTPBJqAUtrmCrFU=;
+        b=NPnFGWDaKIPhYIKXTJ7KorD+8RrkQB0K75K/1rVL6siGe/Yo76iDgXHTcbKaO8wfad
+         nSbnupF8VYOHQ3SCoiFhobpgA+WGriorE+f0Prs2290xevaetlm3/Sj/Nw/SVOjmoUTS
+         dD9IVdcDI2rpR+0iYMguTTNnGgYUO4iBCTYnchfO8tE2dIOB5CmGASx9lAIaXjhQSxAN
+         rdR8tOH5TgdIaTvzwdWcpOVrJqZWNZXsEk+1v5GLc0Fkf8dulXtWPmNXmpKoNgxfV4Oz
+         3seoXeFxiX7Pwg8fkoH9y1WxBhH18kHI0sVla7FkUScXxafaQgXkOQQUKyi3izI+jJMi
+         7mhA==
+X-Gm-Message-State: AOAM533IQgipYzPEraEiN+i6wgRgo3JLNhv50j912bH3Trr2ML5bNP2c
+        vJqx5fRKJ+srQqNsPC7aBgNElV7cYQU=
+X-Google-Smtp-Source: ABdhPJxf9h8u/OnrPpPPxpvWngV78hieodJx88f3H90lJsGG6MOfQ+YBiyxsa47roy5ww6Fz44S5eA==
+X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr10580110pjv.58.1594996665750;
+        Fri, 17 Jul 2020 07:37:45 -0700 (PDT)
+Received: from vultr.guest ([149.248.10.52])
+        by smtp.gmail.com with ESMTPSA id a68sm3214689pje.35.2020.07.17.07.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 07:37:45 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH v6 07/17] perf: util: add general function to parse sublevel options
+Date:   Fri, 17 Jul 2020 22:36:18 +0800
+Message-Id: <20200717143628.47721-8-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200717143628.47721-1-changbin.du@gmail.com>
+References: <20200717143628.47721-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGsvbnWiFXQUFR+k-CLJ2CsCEoiVVE8pGVq0X0=VHE3hHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/2020 12:12 AM, Rob Clark wrote:
-> On Tue, Jul 14, 2020 at 10:10 AM Matthias Kaehlcke <mka@chromium.org> wrote:
->>
->> On Tue, Jul 14, 2020 at 06:55:30PM +0530, Akhil P Oommen wrote:
->>> On targets where GMU is available, GMU takes over the ownership of GX GDSC
->>> during its initialization. So, take a refcount on the GX PD on behalf of
->>> GMU before we initialize it. This makes sure that nobody can collapse the
->>> GX GDSC once GMU owns the GX GDSC. This patch fixes some weird failures
->>> during GPU wake up during system resume.
->>>
->>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>
->> I went through a few dozen suspend/resume cycles on SC7180 and didn't run
->> into the kernel panic that typically occurs after a few iterations without
->> this patch.
->>
->> Reported-by: Matthias Kaehlcke <mka@chromium.org>
->> Tested-by: Matthias Kaehlcke <mka@chromium.org>
->>
->> On which tree is this patch based on? I had to apply it manually because
->> 'git am' is unhappy when I try to apply it:
->>
->>    error: sha1 information is lacking or useless (drivers/gpu/drm/msm/adreno/a6xx_gmu.c).
->>    error: could not build fake ancestor
->>
->> Both upstream and drm-msm are in my remotes and synced, so I suspect it's
->> some private tree. Please make sure to base patches on the corresponding
->> maintainer tree or upstream, whichs makes life easier for maintainers,
->> testers and reviewers.
-> 
-> I've run into the same issue frequently :-(
-> 
-> BR,
-> -R
-> 
-Sorry, I was using msm-next brand as the base, but had the opp-next 
-branch merged too inadvertently.
+This factors out a general function perf_parse_sublevel_options() to parse
+sublevel options. The 'sublevel' options is something like the '--debug'
+options which allow more sublevel options.
 
--Akhil
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+
+---
+v2: add util/parse-sublevel-options.c
+---
+ tools/perf/util/Build                    |  1 +
+ tools/perf/util/debug.c                  | 61 ++++++---------------
+ tools/perf/util/parse-sublevel-options.c | 70 ++++++++++++++++++++++++
+ tools/perf/util/parse-sublevel-options.h | 11 ++++
+ 4 files changed, 99 insertions(+), 44 deletions(-)
+ create mode 100644 tools/perf/util/parse-sublevel-options.c
+ create mode 100644 tools/perf/util/parse-sublevel-options.h
+
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 8d18380ecd10..e86607ada0b5 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -117,6 +117,7 @@ endif
+ perf-y += parse-branch-options.o
+ perf-y += dump-insn.o
+ perf-y += parse-regs-options.o
++perf-y += parse-sublevel-options.o
+ perf-y += term.o
+ perf-y += help-unknown-cmd.o
+ perf-y += mem-events.o
+diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
+index adb656745ecc..5cda5565777a 100644
+--- a/tools/perf/util/debug.c
++++ b/tools/perf/util/debug.c
+@@ -20,6 +20,7 @@
+ #include "target.h"
+ #include "ui/helpline.h"
+ #include "ui/ui.h"
++#include "util/parse-sublevel-options.h"
+ 
+ #include <linux/ctype.h>
+ 
+@@ -173,65 +174,37 @@ void trace_event(union perf_event *event)
+ 		     trace_event_printer, event);
+ }
+ 
+-static struct debug_variable {
+-	const char *name;
+-	int *ptr;
+-} debug_variables[] = {
+-	{ .name = "verbose",		.ptr = &verbose },
+-	{ .name = "ordered-events",	.ptr = &debug_ordered_events},
+-	{ .name = "stderr",		.ptr = &redirect_to_stderr},
+-	{ .name = "data-convert",	.ptr = &debug_data_convert },
+-	{ .name = "perf-event-open",	.ptr = &debug_peo_args },
++static struct sublevel_option debug_opts[] = {
++	{ .name = "verbose",		.value_ptr = &verbose },
++	{ .name = "ordered-events",	.value_ptr = &debug_ordered_events},
++	{ .name = "stderr",		.value_ptr = &redirect_to_stderr},
++	{ .name = "data-convert",	.value_ptr = &debug_data_convert },
++	{ .name = "perf-event-open",	.value_ptr = &debug_peo_args },
+ 	{ .name = NULL, }
+ };
+ 
+ int perf_debug_option(const char *str)
+ {
+-	struct debug_variable *var = &debug_variables[0];
+-	char *vstr, *s = strdup(str);
+-	int v = 1;
+-
+-	vstr = strchr(s, '=');
+-	if (vstr)
+-		*vstr++ = 0;
+-
+-	while (var->name) {
+-		if (!strcmp(s, var->name))
+-			break;
+-		var++;
+-	}
+-
+-	if (!var->name) {
+-		pr_err("Unknown debug variable name '%s'\n", s);
+-		free(s);
+-		return -1;
+-	}
++	int ret;
+ 
+-	if (vstr) {
+-		v = atoi(vstr);
+-		/*
+-		 * Allow only values in range (0, 10),
+-		 * otherwise set 0.
+-		 */
+-		v = (v < 0) || (v > 10) ? 0 : v;
+-	}
++	ret = perf_parse_sublevel_options(str, debug_opts);
++	if (ret)
++		return ret;
+ 
+-	if (quiet)
+-		v = -1;
++	/* Allow only verbose value in range (0, 10), otherwise set 0. */
++	verbose = (verbose < 0) || (verbose > 10) ? 0 : verbose;
+ 
+-	*var->ptr = v;
+-	free(s);
+ 	return 0;
+ }
+ 
+ int perf_quiet_option(void)
+ {
+-	struct debug_variable *var = &debug_variables[0];
++	struct sublevel_option *opt = &debug_opts[0];
+ 
+ 	/* disable all debug messages */
+-	while (var->name) {
+-		*var->ptr = -1;
+-		var++;
++	while (opt->name) {
++		*opt->value_ptr = -1;
++		opt++;
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/perf/util/parse-sublevel-options.c b/tools/perf/util/parse-sublevel-options.c
+new file mode 100644
+index 000000000000..a841d17ffd57
+--- /dev/null
++++ b/tools/perf/util/parse-sublevel-options.c
+@@ -0,0 +1,70 @@
++#include <stdlib.h>
++#include <stdint.h>
++#include <string.h>
++#include <stdio.h>
++
++#include "util/debug.h"
++#include "util/parse-sublevel-options.h"
++
++static int parse_one_sublevel_option(const char *str,
++				     struct sublevel_option *opts)
++{
++	struct sublevel_option *opt = opts;
++	char *vstr, *s = strdup(str);
++	int v = 1;
++
++	if (!s) {
++		pr_err("no memory\n");
++		return -1;
++	}
++
++	vstr = strchr(s, '=');
++	if (vstr)
++		*vstr++ = 0;
++
++	while (opt->name) {
++		if (!strcmp(s, opt->name))
++			break;
++		opt++;
++	}
++
++	if (!opt->name) {
++		pr_err("Unknown option name '%s'\n", s);
++		free(s);
++		return -1;
++	}
++
++	if (vstr)
++		v = atoi(vstr);
++
++	*opt->value_ptr = v;
++	free(s);
++	return 0;
++}
++
++/* parse options like --foo a=<n>,b,c... */
++int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts)
++{
++	char *s = strdup(str);
++	char *p = NULL;
++	int ret;
++
++	if (!s) {
++		pr_err("no memory\n");
++		return -1;
++	}
++
++	p = strtok(s, ",");
++	while (p) {
++		ret = parse_one_sublevel_option(p, opts);
++		if (ret) {
++			free(s);
++			return ret;
++		}
++
++		p = strtok(NULL, ",");
++	}
++
++	free(s);
++	return 0;
++}
+diff --git a/tools/perf/util/parse-sublevel-options.h b/tools/perf/util/parse-sublevel-options.h
+new file mode 100644
+index 000000000000..9b9efcc2aaad
+--- /dev/null
++++ b/tools/perf/util/parse-sublevel-options.h
+@@ -0,0 +1,11 @@
++#ifndef _PERF_PARSE_SUBLEVEL_OPTIONS_H
++#define _PERF_PARSE_SUBLEVEL_OPTIONS_H
++
++struct sublevel_option {
++	const char *name;
++	int *value_ptr;
++};
++
++int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts);
++
++#endif
+\ No newline at end of file
+-- 
+2.25.1
+
