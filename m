@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6F1223DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FCC223DCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgGQOGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:06:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54092 "EHLO mail.kernel.org"
+        id S1728170AbgGQOIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:08:12 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11825 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgGQOGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:06:00 -0400
-Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 640582173E;
-        Fri, 17 Jul 2020 14:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594994760;
-        bh=MgaohWzGrt7HuiOM3koqYgYCQEle+96fHdhMFvnhnms=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hyhOeGGfUyZhSbIA5c+Qh9AE3FNqqGN0yofZMpbobZ75AMY0frWGd7Yp89nNMV1I4
-         LE6lGMOFpiB8XihMUPossXou9D/x/3Hy0O4AtCl2C+pJbgJ8dXyui2IPZc1gOtVNKF
-         PudUXBGYNnXTW2z9mokNOwETkKBv1slnW4HwPRcI=
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 02/12] timer: Preserve higher bits of expiration on index calculation
-Date:   Fri, 17 Jul 2020 16:05:41 +0200
-Message-Id: <20200717140551.29076-3-frederic@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200717140551.29076-1-frederic@kernel.org>
-References: <20200717140551.29076-1-frederic@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727932AbgGQOHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 10:07:23 -0400
+IronPort-SDR: hAhLJLqH+sb/+u2I0IsWL0Ucatslb3TRJdrxclnolQbElAwwGW8S/poVVmr9qjuNrY76K/mPwk
+ LRg/IUPFwamA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="167722777"
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="167722777"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 07:07:22 -0700
+IronPort-SDR: LrUZU2x3uBruCrcHtg9rR+dIV9foOtx0aqC79PdYn3EO5e22wHvVhJ5FDOIjhuTka3RhdGrta0
+ NrOFIYL5/r+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
+   d="scan'208";a="460856469"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by orsmga005.jf.intel.com with ESMTP; 17 Jul 2020 07:07:22 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V6 02/14] perf/x86/intel: Name the global status bit in NMI handler
+Date:   Fri, 17 Jul 2020 07:05:42 -0700
+Message-Id: <20200717140554.22863-3-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200717140554.22863-1-kan.liang@linux.intel.com>
+References: <20200717140554.22863-1-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The higher bits of the timer expiration are cropped while calling
-calc_index() due to the implicit cast from unsigned long to unsigned int.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-This loss shouldn't have consequences on the current code since all the
-computation to calculate the index is done on the lower 32 bits.
+Magic numbers are used in the current NMI handler for the global status
+bit. Use a meaningful name to replace the magic numbers to improve the
+readability of the code.
 
-However we are preparing to return the actual bucket expiration from
-calc_index() in order to properly fix base->next_expiry updates.
-Preserving the higher bits is a requirement to achieve that.
+Remove a Tab for all GLOBAL_STATUS_* and INTEL_PMC_IDX_FIXED_BTS macros
+to reduce the length of the line.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- kernel/time/timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/intel/core.c      |  4 ++--
+ arch/x86/include/asm/perf_event.h | 22 ++++++++++++----------
+ 2 files changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index df1ff803acc4..bcdc3045138d 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -487,7 +487,7 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
-  * Helper function to calculate the array index for a given expiry
-  * time.
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 50963472ee85..ac1408fe1aee 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2389,7 +2389,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+ 	/*
+ 	 * PEBS overflow sets bit 62 in the global status register
+ 	 */
+-	if (__test_and_clear_bit(62, (unsigned long *)&status)) {
++	if (__test_and_clear_bit(GLOBAL_STATUS_BUFFER_OVF_BIT, (unsigned long *)&status)) {
+ 		u64 pebs_enabled = cpuc->pebs_enabled;
+ 
+ 		handled++;
+@@ -2410,7 +2410,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+ 	/*
+ 	 * Intel PT
+ 	 */
+-	if (__test_and_clear_bit(55, (unsigned long *)&status)) {
++	if (__test_and_clear_bit(GLOBAL_STATUS_TRACE_TOPAPMI_BIT, (unsigned long *)&status)) {
+ 		handled++;
+ 		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
+ 			perf_guest_cbs->handle_intel_pt_intr))
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index 0c1b13720525..fd3eba65337f 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -225,16 +225,18 @@ struct x86_pmu_capability {
+  * values are used by actual fixed events and higher values are used
+  * to indicate other overflow conditions in the PERF_GLOBAL_STATUS msr.
   */
--static inline unsigned calc_index(unsigned expires, unsigned lvl)
-+static inline unsigned calc_index(unsigned long expires, unsigned lvl)
- {
- 	expires = (expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl);
- 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
+-#define INTEL_PMC_IDX_FIXED_BTS				(INTEL_PMC_IDX_FIXED + 16)
+-
+-#define GLOBAL_STATUS_COND_CHG				BIT_ULL(63)
+-#define GLOBAL_STATUS_BUFFER_OVF			BIT_ULL(62)
+-#define GLOBAL_STATUS_UNC_OVF				BIT_ULL(61)
+-#define GLOBAL_STATUS_ASIF				BIT_ULL(60)
+-#define GLOBAL_STATUS_COUNTERS_FROZEN			BIT_ULL(59)
+-#define GLOBAL_STATUS_LBRS_FROZEN_BIT			58
+-#define GLOBAL_STATUS_LBRS_FROZEN			BIT_ULL(GLOBAL_STATUS_LBRS_FROZEN_BIT)
+-#define GLOBAL_STATUS_TRACE_TOPAPMI			BIT_ULL(55)
++#define INTEL_PMC_IDX_FIXED_BTS			(INTEL_PMC_IDX_FIXED + 16)
++
++#define GLOBAL_STATUS_COND_CHG			BIT_ULL(63)
++#define GLOBAL_STATUS_BUFFER_OVF_BIT		62
++#define GLOBAL_STATUS_BUFFER_OVF		BIT_ULL(GLOBAL_STATUS_BUFFER_OVF_BIT)
++#define GLOBAL_STATUS_UNC_OVF			BIT_ULL(61)
++#define GLOBAL_STATUS_ASIF			BIT_ULL(60)
++#define GLOBAL_STATUS_COUNTERS_FROZEN		BIT_ULL(59)
++#define GLOBAL_STATUS_LBRS_FROZEN_BIT		58
++#define GLOBAL_STATUS_LBRS_FROZEN		BIT_ULL(GLOBAL_STATUS_LBRS_FROZEN_BIT)
++#define GLOBAL_STATUS_TRACE_TOPAPMI_BIT		55
++#define GLOBAL_STATUS_TRACE_TOPAPMI		BIT_ULL(GLOBAL_STATUS_TRACE_TOPAPMI_BIT)
+ 
+ /*
+  * We model guest LBR event tracing as another fixed-mode PMC like BTS.
 -- 
-2.26.2
+2.17.1
 
