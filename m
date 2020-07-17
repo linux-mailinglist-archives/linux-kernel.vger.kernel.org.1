@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B643224142
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B55224162
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgGQRAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:00:42 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:21061 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726938AbgGQRAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:00:32 -0400
-X-IronPort-AV: E=Sophos;i="5.75,362,1589209200"; 
-   d="scan'208";a="52419821"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 18 Jul 2020 02:00:30 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9500D40061A0;
-        Sat, 18 Jul 2020 02:00:28 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 1/2] pinctrl: sh-pfc: r8a7790: Add USB1 PWEN pin and group
-Date:   Fri, 17 Jul 2020 18:00:24 +0100
-Message-Id: <1595005225-11519-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595005225-11519-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1595005225-11519-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1728285AbgGQRBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 13:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728183AbgGQRB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 13:01:28 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBD9E207DD;
+        Fri, 17 Jul 2020 17:01:26 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 13:01:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 03/17] perf ftrace: add option -t/--tid to filter by
+ thread id
+Message-ID: <20200717130124.54e85349@oasis.local.home>
+In-Reply-To: <20200717132650.i32oovllal22b35i@mail.google.com>
+References: <20200711124035.6513-1-changbin.du@gmail.com>
+        <20200711124035.6513-4-changbin.du@gmail.com>
+        <20200716153630.GD374956@kernel.org>
+        <20200717132650.i32oovllal22b35i@mail.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add USB1 PWEN pin and group for USB1 interface.
+On Fri, 17 Jul 2020 21:26:50 +0800
+Changbin Du <changbin.du@gmail.com> wrote:
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/pinctrl/sh-pfc/pfc-r8a7790.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+> On Thu, Jul 16, 2020 at 12:36:30PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Sat, Jul 11, 2020 at 08:40:21PM +0800, Changbin Du escreveu:  
+> > > This allows us to trace single thread instead of the whole process.
+> > > 
+> > > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > > ---
+> > >  tools/perf/Documentation/perf-ftrace.txt | 4 ++++
+> > >  tools/perf/builtin-ftrace.c              | 2 ++
+> > >  2 files changed, 6 insertions(+)
+> > > 
+> > > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
+> > > index d79560dea19f..e204bf6d50d8 100644
+> > > --- a/tools/perf/Documentation/perf-ftrace.txt
+> > > +++ b/tools/perf/Documentation/perf-ftrace.txt
+> > > @@ -38,6 +38,10 @@ OPTIONS
+> > >  --pid=::
+> > >  	Trace on existing process id (comma separated list).
+> > >  
+> > > +-t::
+> > > +--tid=::
+> > > +	Trace on existing thread id (comma separated list).
+> > > +  
+> > 
+> > 
+> > Humm, I just  tried:
+> > 
+> > [root@five ~]# yes > /dev/null &
+> > [1] 18265
+> > [root@five ~]# perf ftrace --tid 18265
+> > ^C[root@five ~]#
+> > 
+> > After waiting for a while, nothing, what am I doing wrong?
+> >  
+> I got it wrong. Currently ftrace only can filter by pid. If the pid is not
+> the main thread it won't work.
 
-diff --git a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-index f524401fec5f..39ba1e7cc1c3 100644
---- a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-+++ b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-@@ -3611,6 +3611,13 @@ static const unsigned int usb1_pins[] = {
- static const unsigned int usb1_mux[] = {
- 	USB1_PWEN_MARK, USB1_OVC_MARK,
- };
-+static const unsigned int usb1_pwen_pins[] = {
-+	/* PWEN */
-+	RCAR_GP_PIN(5, 20),
-+};
-+static const unsigned int usb1_pwen_mux[] = {
-+	USB1_PWEN_MARK,
-+};
- /* - USB2 ------------------------------------------------------------------- */
- static const unsigned int usb2_pins[] = {
- 	/* PWEN, OVC */
-@@ -3939,7 +3946,7 @@ static const unsigned int vin3_clk_mux[] = {
- };
- 
- static const struct {
--	struct sh_pfc_pin_group common[289];
-+	struct sh_pfc_pin_group common[290];
- 	struct sh_pfc_pin_group automotive[1];
- } pinmux_groups = {
- 	.common = {
-@@ -4193,6 +4200,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(usb0),
- 		SH_PFC_PIN_GROUP(usb0_ovc_vbus),
- 		SH_PFC_PIN_GROUP(usb1),
-+		SH_PFC_PIN_GROUP(usb1_pwen),
- 		SH_PFC_PIN_GROUP(usb2),
- 		VIN_DATA_PIN_GROUP(vin0_data, 24),
- 		VIN_DATA_PIN_GROUP(vin0_data, 20),
-@@ -4640,6 +4648,7 @@ static const char * const usb0_groups[] = {
- 
- static const char * const usb1_groups[] = {
- 	"usb1",
-+	"usb1_pwen",
- };
- 
- static const char * const usb2_groups[] = {
--- 
-2.17.1
+Wait what?
 
+The "pid" for ftrace is really a "task id" which is a thread id.
+
+[root@bxtest ~]# yes > /dev/null &
+[1] 6799
+[root@bxtest ~]# trace-cmd record -e all -P 6799
+Hit Ctrl^C to stop recording
+^CCPU 0: 3573031 events lost
+CPU0 data recorded at offset=0x838000
+    627675136 bytes in size
+CPU1 data recorded at offset=0x25ed1000
+    0 bytes in size
+CPU2 data recorded at offset=0x25ed1000
+    0 bytes in size
+CPU3 data recorded at offset=0x25ed1000
+    0 bytes in size
+CPU4 data recorded at offset=0x25ed1000
+    0 bytes in size
+CPU5 data recorded at offset=0x25ed1000
+    0 bytes in size
+CPU6 data recorded at offset=0x25ed1000
+    0 bytes in size
+CPU7 data recorded at offset=0x25ed1000
+    0 bytes in size
+[root@bxtest ~]# trace-cmd report | head 
+CPU 1 is empty
+CPU 2 is empty
+CPU 3 is empty
+CPU 4 is empty
+CPU 5 is empty
+CPU 6 is empty
+CPU 7 is empty
+cpus=8
+             yes-6799  [000] 67825.580902: sys_exit:             NR 1 = 8192
+             yes-6799  [000] 67825.580903: sys_exit_write:       0x2000
+
+
+What's different about tid vs pid?
+
+-- Steve
+
+
+
+> 
+> So this patch makes no sense. will drop this.
+> 
