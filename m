@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C27223ECD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA962223ECA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 16:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgGQOvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 10:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
+        id S1728047AbgGQOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 10:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726932AbgGQOvL (ORCPT
+        with ESMTP id S1727033AbgGQOvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 10:51:11 -0400
+        Fri, 17 Jul 2020 10:51:13 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591DAC0619D3;
-        Fri, 17 Jul 2020 07:51:11 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 14:51:08 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD95C0619D4;
+        Fri, 17 Jul 2020 07:51:12 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 14:51:09 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594997468;
+        s=2020; t=1594997470;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GJsMPyh/Aby7qDbkuThyZTG+iITkW2gT99ZUJztWGzQ=;
-        b=oTG89801CPbglnHqYt4STPjHjgHsC4ARUB0oyRo9NBN+uvMVO8T5t1TTba6xTCPTc3Y+2+
-        b3Ck4T59cqNgEJzg5goDi9OWlE7TsLXYGkwut0uWAj/bxoybX7wA7QvleXUtCEDpGrlZ87
-        ikd4MAAAjC+HyGlVrs2UWTyaZ/V7eoLHyxpZaO6DjAJr7mewM6byfhRMGpnfsv+enfYmPy
-        pP1u3rRGry3L1nSTnLxlyatnGUBA1/QuNCIHTcec5Pb//JvOmclEK6OVU3a46Zgf08Cxfj
-        H8E7quW2MPimmIGXpEc2pwSD6L/7nfmziNLqcyoLRs+91Cmvh0Oob3LS9lP3rg==
+        bh=sCV66bIWbj9bW/e9Rm/WFb+wjxpmEEgN/5RGLVTClm0=;
+        b=1f5yPvRb55wGM8RifZ8GNwkDXCdztVx5RqF8j/K+T+S+o1eyAFG+hPFxDtyA7MlIZkiqYz
+        ELLGmhFyp9FQUFYUDqkvP6gcZB8hmwGPutdxjQAgTI6a9OT41ZW7QPQ9uFOMe4Y54uvjKw
+        bbuu55099KRzyA5BDHfBXOi0kv4fDFLUbcg7h9rMW/va7rPrJzw4HghXAK9oUI6UQCXO3v
+        STr702bQkF5BvXNXClDv8YnDgy+5PSoSs8FzEv51UdKal8HLRksMDjfZgNOkeuwc4SHXVF
+        Tzrr0Ysz7IHr17b16b97E6KNDaKjPknEKRbom/Dna3y4+6k9esZh90Dm73KNJg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594997468;
+        s=2020e; t=1594997470;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GJsMPyh/Aby7qDbkuThyZTG+iITkW2gT99ZUJztWGzQ=;
-        b=Gjmy4gNkL9PKxQkmxyeU3qWp6H+rSYjuXWVgABKvMQb0Pkcrnyw8aAPFZgaGsLYPXumnyR
-        I06s5PGpe15kK0AA==
+        bh=sCV66bIWbj9bW/e9Rm/WFb+wjxpmEEgN/5RGLVTClm0=;
+        b=ketaDGn4H9IPsa8VxEIMY3VqRcjOrJg8i+E6rUgDZX13LgQAjBC/Jecd+VQ0elEdpEP7N7
+        viIhIRyGCEpowcCg==
 From:   "tip-bot2 for steve.wahl@hpe.com" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/efi: Delete SGI UV1 detection.
+Subject: [tip: x86/platform] x86/platform/uv: Remove vestigial mention of UV1
+ platform from bios header
 Cc:     Steve Wahl <steve.wahl@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200713212955.667726896@hpe.com>
-References: <20200713212955.667726896@hpe.com>
+In-Reply-To: <20200713212955.435951508@hpe.com>
+References: <20200713212955.435951508@hpe.com>
 MIME-Version: 1.0
-Message-ID: <159499746829.4006.2590649991808612730.tip-bot2@tip-bot2>
+Message-ID: <159499746948.4006.1353014005142720587.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,72 +63,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/platform branch of tip:
 
-Commit-ID:     cadde2379f0c64f00bb17834c7095a90595255b0
-Gitweb:        https://git.kernel.org/tip/cadde2379f0c64f00bb17834c7095a90595255b0
+Commit-ID:     5d662537510e09512e842b41352f8ad0427c1fe9
+Gitweb:        https://git.kernel.org/tip/5d662537510e09512e842b41352f8ad0427c1fe9
 Author:        steve.wahl@hpe.com <steve.wahl@hpe.com>
-AuthorDate:    Mon, 13 Jul 2020 16:30:04 -05:00
+AuthorDate:    Mon, 13 Jul 2020 16:30:02 -05:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 17 Jul 2020 16:47:47 +02:00
+CommitterDate: Fri, 17 Jul 2020 16:47:46 +02:00
 
-x86/efi: Delete SGI UV1 detection.
+x86/platform/uv: Remove vestigial mention of UV1 platform from bios header
 
-As a part of UV1 platform removal, don't try to recognize the platform
-through DMI to set the EFI_UV1_MEMMAP bit.
+Remove UV1 reference as UV1 is not longer supported by HPE.
 
 Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Link: https://lkml.kernel.org/r/20200713212955.667726896@hpe.com
+Link: https://lkml.kernel.org/r/20200713212955.435951508@hpe.com
 
 ---
- arch/x86/platform/efi/quirks.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+ arch/x86/include/asm/uv/bios.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index a5a469c..d627f55 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -558,16 +558,6 @@ out:
- 	return ret;
- }
+diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
+index 2fcc3ac..70050d0 100644
+--- a/arch/x86/include/asm/uv/bios.h
++++ b/arch/x86/include/asm/uv/bios.h
+@@ -72,7 +72,7 @@ struct uv_gam_range_entry {
+ };
  
--static const struct dmi_system_id sgi_uv1_dmi[] __initconst = {
--	{ NULL, "SGI UV1",
--		{	DMI_MATCH(DMI_PRODUCT_NAME,	"Stoutland Platform"),
--			DMI_MATCH(DMI_PRODUCT_VERSION,	"1.0"),
--			DMI_MATCH(DMI_BIOS_VENDOR,	"SGI.COM"),
--		}
--	},
--	{ } /* NULL entry stops DMI scanning */
--};
--
- void __init efi_apply_memmap_quirks(void)
- {
- 	/*
-@@ -579,17 +569,6 @@ void __init efi_apply_memmap_quirks(void)
- 		pr_info("Setup done, disabling due to 32/64-bit mismatch\n");
- 		efi_memmap_unmap();
- 	}
--
--	/* UV2+ BIOS has a fix for this issue.  UV1 still needs the quirk. */
--	if (dmi_check_system(sgi_uv1_dmi)) {
--		if (IS_ENABLED(CONFIG_X86_UV)) {
--			set_bit(EFI_UV1_MEMMAP, &efi.flags);
--		} else {
--			pr_warn("EFI runtime disabled, needs CONFIG_X86_UV=y on UV1\n");
--			clear_bit(EFI_RUNTIME_SERVICES, &efi.flags);
--			efi_memmap_unmap();
--		}
--	}
- }
- 
- /*
-@@ -723,8 +702,6 @@ void efi_recover_from_page_fault(unsigned long phys_addr)
- 
- 	/*
- 	 * Make sure that an efi runtime service caused the page fault.
--	 * "efi_mm" cannot be used to check if the page fault had occurred
--	 * in the firmware context because the UV1 memmap doesn't use efi_pgd.
- 	 */
- 	if (efi_rts_work.efi_rts_id == EFI_NONE)
- 		return;
+ #define	UV_SYSTAB_SIG			"UVST"
+-#define	UV_SYSTAB_VERSION_1		1	/* UV1/2/3 BIOS version */
++#define	UV_SYSTAB_VERSION_1		1	/* UV2/3 BIOS version */
+ #define	UV_SYSTAB_VERSION_UV4		0x400	/* UV4 BIOS base version */
+ #define	UV_SYSTAB_VERSION_UV4_1		0x401	/* + gpa_shift */
+ #define	UV_SYSTAB_VERSION_UV4_2		0x402	/* + TYPE_NVRAM/WINDOW/MBOX */
