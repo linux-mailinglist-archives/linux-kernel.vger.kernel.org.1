@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B91223047
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C3B223042
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgGQBUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 21:20:11 -0400
-Received: from mga18.intel.com ([134.134.136.126]:48121 "EHLO mga18.intel.com"
+        id S1726817AbgGQBTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 21:19:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726238AbgGQBUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 21:20:10 -0400
-IronPort-SDR: cwYvtUxT2QoE8tW8DkEZkI4VQNXRrylE+K7fN8ZSDrrIVxxvm20n+fhvZZvXMIrtYSmjl/7xNx
- O5YftnQ1kC1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="136980128"
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="136980128"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 18:20:10 -0700
-IronPort-SDR: DYKAK33VRoLIioAqsUIF1mjJoZdZfFn9W+1ZGu5cn72wUx+lyz2k2iLsFdLUdhSQA0oXfV5CXp
- 2G/8hxQxyBVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="460677441"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by orsmga005.jf.intel.com with ESMTP; 16 Jul 2020 18:20:06 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v5 5/5] iommu/vt-d: Check UAPI data processed by IOMMU
- core
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <1594925117-64892-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1594925117-64892-6-git-send-email-jacob.jun.pan@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <d04f35ff-8921-a3af-ea6d-b8b9cbc929bf@linux.intel.com>
-Date:   Fri, 17 Jul 2020 09:15:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726238AbgGQBS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 21:18:59 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97E1A2076D;
+        Fri, 17 Jul 2020 01:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594948739;
+        bh=NonWiGdMXBcYO7bWSPT/d0+vLEuL6p0OznyGZ4JRNg8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wLNSbKJuXu2gU44Wip5RB1t3arpafQeXwPErwULlOi53l4EKzKsjmcyHpxpxWlvtf
+         godzagC2Xsf1gJmcMJnKm833izrEo/4f4EV0loz6FPIr55Szw9JKA32EdunA4UhEg5
+         LSMIJI1UgY/ry/F3+Rz4ERu0RfeN3cgTLjK9CGRs=
+Date:   Thu, 16 Jul 2020 18:18:57 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alobakin@marvell.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        Denis Bolotin <denis.bolotin@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <GR-everest-linux-l2@marvell.com>,
+        <QLogic-Storage-Upstream@cavium.com>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next 10/13] qed: add support for new port modes
+Message-ID: <20200716181853.502dd619@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200716115446.994-11-alobakin@marvell.com>
+References: <20200716115446.994-1-alobakin@marvell.com>
+        <20200716115446.994-11-alobakin@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <1594925117-64892-6-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/20 2:45 AM, Jacob Pan wrote:
-> IOMMU generic layer already does sanity checks UAPI data for version
-> match and argsz range under generic information.
-> Remove the redundant version check from VT-d driver and check for vendor
-> specific data size.
+On Thu, 16 Jul 2020 14:54:43 +0300 Alexander Lobakin wrote:
+> These ports ship on new boards revisions and are supported by newer
+> firmware versions.
 > 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+> Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+What is the driver actually doing with them, tho?
 
-Best regards,
-baolu
+Looks like you translate some firmware specific field to a driver
+specific field, but I can't figure out what part of the code cares
+about hw_info.port_mode
 
-> ---
->   drivers/iommu/intel/iommu.c | 3 +--
->   drivers/iommu/intel/svm.c   | 7 +++++--
->   2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index f3a6ca88cf95..5e80484f0537 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -5383,8 +5383,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
->   	int ret = 0;
->   	u64 size = 0;
->   
-> -	if (!inv_info || !dmar_domain ||
-> -	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-> +	if (!inv_info || !dmar_domain)
->   		return -EINVAL;
->   
->   	if (!dev || !dev_is_pci(dev))
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index 713b3a218483..55ea11e9c0f5 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -240,8 +240,11 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
->   	if (WARN_ON(!iommu) || !data)
->   		return -EINVAL;
->   
-> -	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
-> -	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-> +	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-> +		return -EINVAL;
-> +
-> +	/* IOMMU core ensures argsz is more than the start of the union */
-> +	if (data->argsz < offsetofend(struct iommu_gpasid_bind_data, vendor.vtd))
->   		return -EINVAL;
->   
->   	if (!dev_is_pci(dev))
-> 
+> diff --git a/drivers/net/ethernet/qlogic/qed/qed.h b/drivers/net/ethernet/qlogic/qed/qed.h
+> index 6a1d12da7910..63fcbd5a295a 100644
+> --- a/drivers/net/ethernet/qlogic/qed/qed.h
+> +++ b/drivers/net/ethernet/qlogic/qed/qed.h
+> @@ -257,6 +257,11 @@ enum QED_PORT_MODE {
+>  	QED_PORT_MODE_DE_1X25G,
+>  	QED_PORT_MODE_DE_4X25G,
+>  	QED_PORT_MODE_DE_2X10G,
+> +	QED_PORT_MODE_DE_2X50G_R1,
+> +	QED_PORT_MODE_DE_4X50G_R1,
+> +	QED_PORT_MODE_DE_1X100G_R2,
+> +	QED_PORT_MODE_DE_2X100G_R2,
+> +	QED_PORT_MODE_DE_1X100G_R4,
+>  };
+>  
+>  enum qed_dev_cap {
+> diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
+> index d929556247a5..4bad836d0f74 100644
+> --- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
+> +++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
+> @@ -4026,6 +4026,21 @@ static int qed_hw_get_nvm_info(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
+>  	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_4X25G:
+>  		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_4X25G;
+>  		break;
+> +	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_2X50G_R1:
+> +		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_2X50G_R1;
+> +		break;
+> +	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_4X50G_R1:
+> +		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_4X50G_R1;
+> +		break;
+> +	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_1X100G_R2:
+> +		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_1X100G_R2;
+> +		break;
+> +	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_2X100G_R2:
+> +		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_2X100G_R2;
+> +		break;
+> +	case NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_1X100G_R4:
+> +		p_hwfn->hw_info.port_mode = QED_PORT_MODE_DE_1X100G_R4;
+> +		break;
+>  	default:
+>  		DP_NOTICE(p_hwfn, "Unknown port mode in 0x%08x\n", core_cfg);
+>  		break;
+> diff --git a/drivers/net/ethernet/qlogic/qed/qed_hsi.h b/drivers/net/ethernet/qlogic/qed/qed_hsi.h
+> index a4a845579fd2..debc55923251 100644
+> --- a/drivers/net/ethernet/qlogic/qed/qed_hsi.h
+> +++ b/drivers/net/ethernet/qlogic/qed/qed_hsi.h
+> @@ -13015,6 +13015,11 @@ struct nvm_cfg1_glob {
+>  #define NVM_CFG1_GLOB_NETWORK_PORT_MODE_1X25G			0xd
+>  #define NVM_CFG1_GLOB_NETWORK_PORT_MODE_4X25G			0xe
+>  #define NVM_CFG1_GLOB_NETWORK_PORT_MODE_2X10G			0xf
+> +#define NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_2X50G_R1		0x11
+> +#define NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_4X50G_R1		0x12
+> +#define NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_1X100G_R2		0x13
+> +#define NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_2X100G_R2		0x14
+> +#define NVM_CFG1_GLOB_NETWORK_PORT_MODE_AHP_1X100G_R4		0x15
+>  
+>  	u32							e_lane_cfg1;
+>  	u32							e_lane_cfg2;
+
