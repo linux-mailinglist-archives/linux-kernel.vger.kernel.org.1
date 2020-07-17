@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C03E22401C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A2F22400C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 18:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgGQQB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 12:01:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40662 "EHLO mail.kernel.org"
+        id S1726984AbgGQQA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 12:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgGQQA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726381AbgGQQA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Jul 2020 12:00:58 -0400
 Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.194.72])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C5D3204EA;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D3922074B;
         Fri, 17 Jul 2020 16:00:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1595001658;
-        bh=HCMMe4fMnT5S7T6Y9hA0e8QN+UlZn1sl4i+208DYvE8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=S53KSg/dyvjJKWabCVGGpfh7QsjKPd9eC320JUlH221vVIoge3owNoT+VBdWR1Sio
-         epLG1hlpJ7tO2DbT2Hpdu+NNG8lp8MTqfR4GGUTOSuOz7DbUx+oMLKJ0p3tEsw9xPT
-         L8Hw143Fu01YyMZWYIgNJRolKXsFKAhKGR2Nyw/E=
+        bh=rnYHb0s5js4ByiGzI4bA3XnakDr668Pyp1YPTOtvpj4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XP+NZaUj6lIZ4nobsZ5aoYm9T8hb6JXjDCrmaF9zv1Yhh/EDMXHMc2+a18Ly87rnY
+         hqYI1QAz5hqyhwEqrhF+vJqbNWSL20Ld/ROxwRLWs6VJ/dOydh150ZDrwxZEuN+Qgf
+         SbVaDaXNQeeiJBcC6MU1L+WXVm9h/W77bDBiC4+Y=
 Received: by wens.tw (Postfix, from userid 1000)
-        id 0CE4B5FC63; Sat, 18 Jul 2020 00:00:55 +0800 (CST)
+        id 1617F5F81B; Sat, 18 Jul 2020 00:00:55 +0800 (CST)
 From:   Chen-Yu Tsai <wens@kernel.org>
 To:     Maxime Ripard <mripard@kernel.org>
 Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/8] arm64: dts: allwinner: h5: Enable CPU DVFS (cpufreq)
-Date:   Sat, 18 Jul 2020 00:00:45 +0800
-Message-Id: <20200717160053.31191-1-wens@kernel.org>
+Subject: [PATCH v2 1/8] ARM: dts: sunxi: libretech-all-h3-cc: Add regulator supply to all CPU cores
+Date:   Sat, 18 Jul 2020 00:00:46 +0800
+Message-Id: <20200717160053.31191-2-wens@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200717160053.31191-1-wens@kernel.org>
+References: <20200717160053.31191-1-wens@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -43,86 +45,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chen-Yu Tsai <wens@csie.org>
 
-Hi everyone,
+The device tree currently only assigns the a supply for the first CPU
+core, when in reality the regulator supply is shared by all four cores.
+This might cause an issue if the implementation does not realize the
+sharing of the supply.
 
-This is v2 of my Allwinner H5 SoC cpufreq support series from way
-back [1]. The series enables DVFS for the CPU cores (aka cpufreq)
-on the Allwinner H5 SoC. The OPP table was taken from Armbian, with
-minor tweaks to the maximum voltage to account for slightly increased
-voltage on some of the boards.
+Assign the same regulator supply to the remaining CPU cores to address
+this.
 
-In this version, the OPP table and tie in to the CPU cores has been
-split out into a separate file, like what was done for the H6. The
-patches adding CPU regulator supplies for all the boards that I don't
-have have been removed. The series now only enables cpufreq for Libre
-Computer ALL-H3-CC and ALL-H5-CC, and Bananapi M2+ v1.2.
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+ arch/arm/boot/dts/sunxi-libretech-all-h3-cc.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-For the original Bananapi M2+, if I add the fixed regulator with the
-enable pin, it ends up causing some sort of glitch or lock up on the
-v1.2, which includes the original dts file. Since I haven't been able
-to sort it out yet, I've left it out for now.
-
-Patch 1 assigns the CPU regulator supply to all the CPU cores on the
-Libre Computer ALL-H3-CC.
-
-Patch 2 assigns the CPU regulator supply to all the CPU cores on the
-Bananapi M2+ v1.2.
-
-Patch 3 fixes the voltages specified for the GPIO-controlled regulator
-on the Bananapi M2+ v1.2. The voltages are slightly higher than what
-was originally written.
-
-Patch 4 ties the CPU clock to the CPU cores.
-
-Patch 5 adds trip points and cooling maps to the CPU thermal zones.
-
-Patch 6 adds the OPP table, based on the one from Armbian.
-
-Patch 7 hooks up the CPU regulator supply for the Libre Computer
-ALL-H3-CC H5 variant, and by extension, the ALL-H5-CC.
-
-Patch 8 hooks up the CPU regulator supply for the Bananapi M2+ v1.2.
-
-Changes since v1:
-
-  - Re-ordered patches
-  - Added patches to set regulator supply for all CPU cores
-  - Added thermal trip points and cooling maps
-  - OPP table and assignment split into separate file
-  - Added patches to tie in OPP table file for the boards I have
-
-Please have a look.
-
-
-Regards
-ChenYu
-
-
-[1] https://patchwork.kernel.org/cover/10787869/
-
-
-Chen-Yu Tsai (8):
-  ARM: dts: sunxi: libretech-all-h3-cc: Add regulator supply to all CPU
-    cores
-  ARM: dts: sunxi: bananapi-m2-plus-v1.2: Add regulator supply to all
-    CPU cores
-  ARM: dts: sunxi: bananapi-m2-plus-v1.2: Fix CPU supply voltages
-  arm64: dts: allwinner: h5: Add clock to CPU cores
-  arm64: dts: allwinner: h5: Add trip and cooling maps to CPU thermal
-    zones
-  arm64: dts: allwinner: h5: Add CPU Operating Performance Points table
-  arm64: dts: allwinner: h5: libretech-all-h3-cc: Tie in CPU OPPs
-  arm64: dts: allwinner: h5: bananapi-m2-plus-v1.2: Tie in CPU OPPs
-
- .../boot/dts/sunxi-bananapi-m2-plus-v1.2.dtsi | 18 ++++-
- .../boot/dts/sunxi-libretech-all-h3-cc.dtsi   | 12 +++
- .../sun50i-h5-bananapi-m2-plus-v1.2.dts       |  1 +
- .../boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi | 79 +++++++++++++++++++
- .../sun50i-h5-libretech-all-h3-cc.dts         |  1 +
- arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi  | 38 +++++++++
- 6 files changed, 146 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
-
+diff --git a/arch/arm/boot/dts/sunxi-libretech-all-h3-cc.dtsi b/arch/arm/boot/dts/sunxi-libretech-all-h3-cc.dtsi
+index 19b3b23cfaa8..c44fd726945a 100644
+--- a/arch/arm/boot/dts/sunxi-libretech-all-h3-cc.dtsi
++++ b/arch/arm/boot/dts/sunxi-libretech-all-h3-cc.dtsi
+@@ -128,6 +128,18 @@ &cpu0 {
+ 	cpu-supply = <&reg_vdd_cpux>;
+ };
+ 
++&cpu1 {
++	cpu-supply = <&reg_vdd_cpux>;
++};
++
++&cpu2 {
++	cpu-supply = <&reg_vdd_cpux>;
++};
++
++&cpu3 {
++	cpu-supply = <&reg_vdd_cpux>;
++};
++
+ &de {
+ 	status = "okay";
+ };
 -- 
 2.27.0
 
