@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF2C22335B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA03223365
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 08:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgGQGGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 02:06:55 -0400
-Received: from mga03.intel.com ([134.134.136.65]:49732 "EHLO mga03.intel.com"
+        id S1726426AbgGQGJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 02:09:37 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:60090 "EHLO mail5.wrs.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgGQGGz (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 02:06:55 -0400
-IronPort-SDR: eZh1oPQR0rLjrA0I4kzMRbjAjxfIzX20B3k5yAnGPn65BAq54aOxF68d6V+QLhsRZxoM4iXQHs
- H0C0JFdwxVEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="149529434"
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="149529434"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 23:06:54 -0700
-IronPort-SDR: ptPEv6rJ2eJvTWc5xj8k8WqCMpUnD7bRj4njTtJb0dquww5TJ7sejdQdyiJ3h0pMeieGmmZntn
- OU4RTCI4rIHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="318674249"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Jul 2020 23:06:52 -0700
-Subject: Re: [PATCH 0/2] Update CascadelakeX and SkylakeX events list
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, kan.liang@intel.com,
-        "Jin, Yao" <yao.jin@intel.com>
-References: <20200603021818.27028-1-yao.jin@linux.intel.com>
- <911b4132-d1a1-f3c4-a2ed-2fcfe9a28fc6@linux.intel.com>
- <CAP-5=fW3OCuVkQ8csYfHXj5c_pCSY5-6vDrj2r=MNDZmpo0f8g@mail.gmail.com>
- <c7edd282-f58a-4efe-5961-6c1369b6b77b@linux.intel.com>
- <20200616193856.GC6393@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <681a333b-e4dc-9481-715e-a65a34e10f83@linux.intel.com>
-Date:   Fri, 17 Jul 2020 14:06:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725904AbgGQGJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:09:37 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 06H68dvf000744
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Thu, 16 Jul 2020 23:09:10 -0700
+Received: from pek-lpggp3.wrs.com (128.224.153.76) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.40) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
+ 23:08:53 -0700
+From:   Liwei Song <liwei.song@windriver.com>
+To:     Len Brown <lenb@kernel.org>, <linux-pm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <liwei.song@windriver.com>
+Subject: [PATCH] tools/power turbostat: call pread64 in kernel directly
+Date:   Fri, 17 Jul 2020 14:08:49 +0800
+Message-ID: <20200717060849.12469-1-liwei.song@windriver.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200616193856.GC6393@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+with 32-bit rootfs, the offset may out of range when set it
+to 0xc0010299, define it as "unsigned long long" type and
+call pread64 directly in kernel.
 
-On 6/17/2020 3:38 AM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Jun 16, 2020 at 02:27:40PM +0800, Jin, Yao escreveu:
->> On 6/16/2020 2:16 PM, Ian Rogers wrote:
->>> On Mon, Jun 15, 2020 at 6:00 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
->>>> Can I get an ACK for this patchset?
->>>> On 6/3/2020 10:18 AM, Jin Yao wrote:
->>>>> This patchset updates CascadelakeX events to v1.08 and
->>>>> updates SkylakeX events to v1.21.
-> 
->>>>> The events have been tested on CascadelakeX and SkylakeX
->>>>> servers with latest perf/core branch.
-> 
->>> could you rebase this on Arnaldo's tmp.perf/core tree?
->>> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/core
->>> I tried using git am but get:
->>> Applying: perf vendor events: Update CascadelakeX events to v1.08
->>> error: patch fragment without header at line 279: @@ -213,14 +220,14 @@
->>> error: could not build fake ancestor
->>> Patch failed at 0001 perf vendor events: Update CascadelakeX events to v1.08
->>>
->>> Thanks,
->>> Ian
->>>
->>
->> The patchset are applied OK on perf/core branch.
->>
->> As far as I understand, the patch for posting should be based on perf/core branch, is it right?
-> 
-> Sorry, I've been testing with using tmp.perf/core as a way to more
-> quickly make available what I've processed, before I test it thoroughly
-> both with container builds and with manual testing, so the bleeding edge
-> is there, perf/core becoming a bit more stable, as I'll try not to
-> rebase it like before.
-> 
-> - Arnaldo
-> 
+Signed-off-by: Liwei Song <liwei.song@windriver.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Can this event update be accepted?
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 33b370865d16..4c5cdfcb5721 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -33,6 +33,7 @@
+ #include <sys/capability.h>
+ #include <errno.h>
+ #include <math.h>
++#include <sys/syscall.h>
+ 
+ char *proc_stat = "/proc/stat";
+ FILE *outf;
+@@ -381,11 +382,11 @@ int get_msr_fd(int cpu)
+ 	return fd;
+ }
+ 
+-int get_msr(int cpu, off_t offset, unsigned long long *msr)
++int get_msr(int cpu, unsigned long long offset, unsigned long long *msr)
+ {
+ 	ssize_t retval;
+ 
+-	retval = pread(get_msr_fd(cpu), msr, sizeof(*msr), offset);
++	retval = syscall(SYS_pread64, get_msr_fd(cpu), msr, sizeof(*msr), offset);
+ 
+ 	if (retval != sizeof *msr)
+ 		err(-1, "cpu%d: msr offset 0x%llx read failed", cpu, (unsigned long long)offset);
+-- 
+2.17.1
 
-Thanks
-Jin Yao
