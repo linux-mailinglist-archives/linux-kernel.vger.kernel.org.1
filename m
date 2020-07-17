@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5078C22320E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FFB223225
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 06:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgGQEVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 00:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
+        id S1726673AbgGQEYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 00:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgGQEVC (ORCPT
+        with ESMTP id S1725936AbgGQEYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 00:21:02 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6440BC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:21:02 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f2so9573018wrp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:21:02 -0700 (PDT)
+        Fri, 17 Jul 2020 00:24:11 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B8BC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:24:11 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 18so5972823otv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 21:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vTU0fD0RqPTAMbppUiAJYQhElhFYod+EUa58MhwuRFg=;
-        b=ACzxgl8pWNw1qfxqU9+pYlrS4eR6a5e8McuQW2jb5q8hduM5b3kyZe5bs9+gGa8hL1
-         5FJtj/j+394vgNFHlQM2BW4bLEdoCF+hvyq4FnPvtaN4aX3i/NZ8W7szbOj6dDzcvx8M
-         105ReGcsasNaMMmppOs7r6YbsWyMAXlUhgWkN0PKnHnMLoleD5ljIbnU2JNlI0VNQ6hn
-         0mfgfFQO4eCe7L2o9yREBsMif2/QjWS24jxf0p8dmO/28uBfwiLo92hRfocfz8JAjyPN
-         G9AmS9LCbInhyHoihQp3JbZwc63+NvyBXrabUky7sSWI9WzW4HcpKbe0p9kw0VocDwoa
-         fN9Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fYRhNeJyMfpc078wL/j31HurR5nJxYBJf2WPWtqv67M=;
+        b=Kh1uw69RH6AnDF+LGaQL/TlfB/OoFmyUPwbfUkO50aMlcjf5CR/uR2PYWm7tPKN3fV
+         jR7mdlp9am3bRba3SEs4mJ98wUxBm4j2ANKGObN41QYgd+VRpQW4DhrruTPnYQ3z3glV
+         OY5crlzGJJfGYp25p7IlnG4R7X17m+302T7QWNmLhESiLM4WbYkDMX2KCYfgRGhkjRuJ
+         3t0kqv/fHJB1zQf2vfXSNrkDp/YM2LsW2XiRDXXq2zu7YrIoAu+G2Ill1BAKf03VcY/i
+         /5olQ54IGuE99Z71PV7RCYsBFnoPJGHOYD32Q1XVFWl21dG2i54dvNwZZMKgR2jKspFb
+         2S2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vTU0fD0RqPTAMbppUiAJYQhElhFYod+EUa58MhwuRFg=;
-        b=s97aKM0rAJ1D40loN7uwOPbxBY1WT/STun9TzflRu9lYH2Cla5uDHmnlOAev6Vl6PL
-         YlIGETG1TCdH+QQv4kxXSM2PkJOcgEX2YBq67skreGst6BQMJ+GlOaR8fZD+PMP8A5wk
-         DIZ5XkfiVrXtVl0hmF1AFCdoNux+A079kxHjS/2AwXQa4WgTDRLeXPHp9khHsfvzPlmi
-         sxJI9NHXdaHJ9gk/bpBH0cnrMoMyLudKreL4/RPHiRFITTiuRrvJYRcpmSt85qfabcNn
-         JegEpMqkyhxCAcqT/BAHq+wBj/8TxEg7OvXoFIX1fAat50H9FMbh6Vm8lNnj7VQBJ//y
-         NrnA==
-X-Gm-Message-State: AOAM530dt1y0SRY549zMCt1btPAlIuTDwnOrFFqU+DY2dLMpMhh86+eX
-        VaqdkMq8X3SdkdHRDuJgO/xSNQ==
-X-Google-Smtp-Source: ABdhPJwec3DisLdAS02+fUE6IczMefzHYliDuu268Dl6qCiJz8+nAomftZcYkwgKg4V15D7Jeop8BA==
-X-Received: by 2002:adf:dd83:: with SMTP id x3mr9050111wrl.292.1594959660912;
-        Thu, 16 Jul 2020 21:21:00 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9880:a643:3e69:6393? ([2a01:e34:ed2f:f020:9880:a643:3e69:6393])
-        by smtp.googlemail.com with ESMTPSA id 138sm7175510wmb.1.2020.07.16.21.20.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 21:21:00 -0700 (PDT)
-Subject: Re: [PATCH v6 2/2] clocksource: Ingenic: Add support for the Ingenic
- X1000 OST.
-To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, linux-kernel@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org, tglx@linutronix.de,
-        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-References: <20200710170259.29028-1-zhouyanjie@wanyeetech.com>
- <20200710170259.29028-3-zhouyanjie@wanyeetech.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <dd01a117-265a-e64b-5871-22f0f752834a@linaro.org>
-Date:   Fri, 17 Jul 2020 06:20:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fYRhNeJyMfpc078wL/j31HurR5nJxYBJf2WPWtqv67M=;
+        b=WEPL46opaGTw/R4nCiwgj+vZwyFnsAzu3xRnwxETuj+f2GeN6UyJ1lkhMSfJQ/HUIU
+         aoR+yOA95WJ+Ah11kc6x68YFf4RdLe2RWG3IwHT7meN7IhDoAQxQW0X8m9aR16VBorBa
+         j4AZZPz/EUJd2HpyNUWTs4LkOvBg05ZgMp+hKkHgUyb542J5ekx/QvmKxndcUfsD0EOj
+         1FXinJHXP2rvK1usiDNyO8KCVB4zrzfatBfM+LAzPDo0b0B/ZZQ6AqbIka7uAZ/vOXT0
+         jI3dmsZjcrJ2yyMBn749JO7ImBvXeQoD4T4cPfx4AwNZkA9Nt3GGiuGBHr1QlM23hu3s
+         FfXg==
+X-Gm-Message-State: AOAM530CiS2zQ+EdVukJMZyr9xeAeHdsSVql8Kc+mLJVINmPpLpIhl4D
+        x0z+1jNyPcoHnV3UfUd3bwA8C7+5RstPWsWiyZQ=
+X-Google-Smtp-Source: ABdhPJy9Qve7h79FN/Grjt90XmaceRcsY/1aZcCD1+74wKOmBXvf2VJ15Vwm0aB6fQ4xmUck1IdK6oqrCnN+I8ERfv0=
+X-Received: by 2002:a9d:6a12:: with SMTP id g18mr7790181otn.155.1594959850557;
+ Thu, 16 Jul 2020 21:24:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200710170259.29028-3-zhouyanjie@wanyeetech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com> <20200717040958.70561-5-ravi.bangoria@linux.ibm.com>
+In-Reply-To: <20200717040958.70561-5-ravi.bangoria@linux.ibm.com>
+From:   Jordan Niethe <jniethe5@gmail.com>
+Date:   Fri, 17 Jul 2020 14:23:03 +1000
+Message-ID: <CACzsE9py0x7wFyG-FgjK-cF8L02OQyOKbqDzP6agFt-Dxc4ejg@mail.gmail.com>
+Subject: Re: [PATCH v4 04/10] powerpc/watchpoint: Enable watchpoint
+ functionality on power10 guest
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, mikey@neuling.org,
+        apopple@linux.ibm.com, Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
+        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
+        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/2020 19:02, 周琰杰 (Zhou Yanjie) wrote:
-> X1000 and SoCs after X1000 (such as X1500 and X1830) had a separate
-> OST, it no longer belongs to TCU. This driver will register both a
-> clocksource and a sched_clock to the system.
-> 
-> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-> Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+On Fri, Jul 17, 2020 at 2:10 PM Ravi Bangoria
+<ravi.bangoria@linux.ibm.com> wrote:
+>
+> CPU_FTR_DAWR is by default enabled for host via CPU_FTRS_DT_CPU_BASE
+> (controlled by CONFIG_PPC_DT_CPU_FTRS). But cpu-features device-tree
+> node is not PAPR compatible and thus not yet used by kvm or pHyp
+> guests. Enable watchpoint functionality on power10 guest (both kvm
+> and powervm) by adding CPU_FTR_DAWR to CPU_FTRS_POWER10. Note that
+> this change does not enable 2nd DAWR support.
+>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+I ran the ptrace-hwbreak selftest successfully within a power10 kvm guest.
+Tested-by: Jordan Niethe <jniethe5@gmail.com>
 > ---
-> 
-> Notes:
->     v1->v2:
->     Fix compile warnings.
->     Reported-by: kernel test robot <lkp@intel.com>
->     
->     v2->v3:
->     No change.
->     
->     v3->v4:
->     1.Rename "ost" to "sysost"
->     1.Remove unrelated changes.
->     2.Remove ost_clock_parent enum.
->     3.Remove ost->percpu_timer_channel/ost->global_timer_channel.
->     4.Set up independent .recalc_rate/.set_rate for percpu/global timer.
->     5.No longer call functions in variable declarations.
->     
->     v4->v5:
->     Use "of_io_request_and_map()" instead "of_iomap()".
->     Suggested-by: Paul Cercueil <paul@crapouillou.net>
->     
->     v5->v6:
->     No change.
-> 
->  drivers/clocksource/Kconfig          |  11 +
->  drivers/clocksource/Makefile         |   1 +
->  drivers/clocksource/ingenic-sysost.c | 539 +++++++++++++++++++++++++++++++++++
->  3 files changed, 551 insertions(+)
->  create mode 100644 drivers/clocksource/ingenic-sysost.c
-> 
-> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> index 91418381fcd4..1bca8b8fb30f 100644
-> --- a/drivers/clocksource/Kconfig
-> +++ b/drivers/clocksource/Kconfig
-> @@ -696,6 +696,17 @@ config INGENIC_TIMER
->  	help
->  	  Support for the timer/counter unit of the Ingenic JZ SoCs.
->  
-> +config INGENIC_SYSOST
-> +	bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
-
-We usually use silent options and let the platform's Kconfig enable it.
-We show up the option only when COMPILE_TEST is enabled.
-
-Is there a reason to do it differently?
-
-> +	default MACH_INGENIC
-> +	depends on MIPS || COMPILE_TEST
-> +	depends on COMMON_CLK
-> +	select MFD_SYSCON
-> +	select TIMER_OF
-> +	select IRQ_DOMAIN
-> +	help
-> +	  Support for the SYSOST of the Ingenic X Series SoCs.
-> +
-
-[ ... ]
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>  arch/powerpc/include/asm/cputable.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+> index bac2252c839e..e506d429b1af 100644
+> --- a/arch/powerpc/include/asm/cputable.h
+> +++ b/arch/powerpc/include/asm/cputable.h
+> @@ -478,7 +478,7 @@ static inline void cpu_feature_keys_init(void) { }
+>             CPU_FTR_CFAR | CPU_FTR_HVMODE | CPU_FTR_VMX_COPY | \
+>             CPU_FTR_DBELL | CPU_FTR_HAS_PPR | CPU_FTR_ARCH_207S | \
+>             CPU_FTR_TM_COMP | CPU_FTR_ARCH_300 | CPU_FTR_PKEY | \
+> -           CPU_FTR_ARCH_31)
+> +           CPU_FTR_ARCH_31 | CPU_FTR_DAWR)
+>  #define CPU_FTRS_CELL  (CPU_FTR_LWSYNC | \
+>             CPU_FTR_PPCAS_ARCH_V2 | CPU_FTR_CTRL | \
+>             CPU_FTR_ALTIVEC_COMP | CPU_FTR_MMCRA | CPU_FTR_SMT | \
+> --
+> 2.26.2
+>
