@@ -2,216 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E8F22352E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A1E223533
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 09:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgGQHIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 03:08:31 -0400
-Received: from mga02.intel.com ([134.134.136.20]:36926 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726101AbgGQHIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:08:30 -0400
-IronPort-SDR: yIc4xkx85TF5KR0K8DfLBF7tNl6w+IUcoFOJ9FDmDzB887CdC0CGWJkVmmPWYbhC6uk7cvlBRM
- f8LqQbfiim7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="137664825"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="137664825"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 00:08:28 -0700
-IronPort-SDR: fhOBdzG86+gARNolwMZFaSNvO6ChWtQP6LEbbUWndAkZevRCJs73gP8ROphpT7NooCtfPZwhvq
- IDpeyNosBRNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; 
-   d="scan'208";a="318687860"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Jul 2020 00:08:28 -0700
-Received: from [10.249.224.34] (abudanko-mobl.ccr.corp.intel.com [10.249.224.34])
-        by linux.intel.com (Postfix) with ESMTP id A029058066D;
-        Fri, 17 Jul 2020 00:08:25 -0700 (PDT)
-Subject: [PATCH v12 15/15] perf record: introduce --control fd:ctl-fd[,ack-fd]
- options
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <8d91c3a0-3db4-0a7a-ae13-299adb444bd6@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <8dc01e1a-3a80-3f67-5385-4bc7112b0dd3@linux.intel.com>
-Date:   Fri, 17 Jul 2020 10:08:23 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726945AbgGQHKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 03:10:24 -0400
+Received: from lonlinode-sdnproxy-1.icoremail.net ([139.162.193.133]:23832
+        "HELO lonlinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S1726166AbgGQHKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 03:10:23 -0400
+Received: from localhost.localdomain (unknown [218.77.105.7])
+        by c1app1 (Coremail) with SMTP id AQINCgDnhpnKThFfx6ivAQ--.31076S2;
+        Fri, 17 Jul 2020 15:10:03 +0800 (CST)
+From:   Qiu Wenbo <qiuwenbo@phytium.com.cn>
+To:     Evan Quan <evan.quan@amd.com>, amd-gfx@lists.freedesktop.org
+Cc:     Qiu Wenbo <qiuwenbo@phytium.com.cn>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chen Wandun <chenwandun@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, yu kuai <yukuai3@huawei.com>,
+        Eric Huang <JinHuiEric.Huang@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/powerplay: fix a crash when overclocking Vega M
+Date:   Fri, 17 Jul 2020 15:09:57 +0800
+Message-Id: <20200717070958.41489-1-qiuwenbo@phytium.com.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <8d91c3a0-3db4-0a7a-ae13-299adb444bd6@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQINCgDnhpnKThFfx6ivAQ--.31076S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr47Cw1UZF48WFWUJFyxKrg_yoW8CFWrpF
+        93GrZ0vw15JFZrAFyxAF4rWFn7ZwnrZa4rKryUG390vw12qrW09FyDAFySgrW8Ga97Jr43
+        Kw47Z345JFsakrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUjE1v3UUUUU==
+X-Originating-IP: [218.77.105.7]
+X-CM-SenderInfo: 5tlx4vhqerq15k1wx33pof0zgofq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Avoid kernel crash when vddci_control is SMU7_VOLTAGE_CONTROL_NONE and
+vddci_voltage_table is empty. It has been tested on Intel Hades Canyon
+(i7-8809G).
 
-Introduce --control fd:ctl-fd[,ack-fd] options to pass open file
-descriptors numbers from command line. Extend perf-record.txt file
-with --control fd:ctl-fd[,ack-fd] options description. Document
-possible usage model introduced by --control fd:ctl-fd[,ack-fd]
-options by providing example bash shell script.
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208489
+Fixes: ac7822b0026f ("drm/amd/powerplay: add smumgr support for VEGAM (v2)")
+Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
 ---
- tools/perf/Documentation/perf-record.txt | 39 ++++++++++++++++++++++++
- tools/perf/builtin-record.c              | 37 ++++++++++++++++++++++
- tools/perf/util/record.h                 |  2 ++
- 3 files changed, 78 insertions(+)
+ drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index a84376605805..3f72d8e261f3 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -627,6 +627,45 @@ option. The -e option and this one can be mixed and matched.  Events
- can be grouped using the {} notation.
- endif::HAVE_LIBPFM[]
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
+index 3da71a088b92..0ecc18b55ffb 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
+@@ -644,9 +644,6 @@ static int vegam_get_dependency_volt_by_clk(struct pp_hwmgr *hwmgr,
  
-+--control fd:ctl-fd[,ack-fd]
-+Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
-+'disable': disable events). Measurements can be started with events disabled using
-+--delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
-+to synchronize with the controlling process. Example of bash shell script to enable and
-+disable events during measurements:
-+
-+#!/bin/bash
-+
-+ctl_dir=/tmp/
-+
-+ctl_fifo=${ctl_dir}perf_ctl.fifo
-+test -p ${ctl_fifo} && unlink ${ctl_fifo}
-+mkfifo ${ctl_fifo}
-+exec {ctl_fd}<>${ctl_fifo}
-+
-+ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
-+test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
-+mkfifo ${ctl_ack_fifo}
-+exec {ctl_fd_ack}<>${ctl_ack_fifo}
-+
-+perf record -D -1 -e cpu-cycles -a               \
-+            --control fd:${ctl_fd},${ctl_fd_ack} \
-+            -- sleep 30 &
-+perf_pid=$!
-+
-+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
-+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
-+
-+exec {ctl_fd_ack}>&-
-+unlink ${ctl_ack_fifo}
-+
-+exec {ctl_fd}>&-
-+unlink ${ctl_fifo}
-+
-+wait -n ${perf_pid}
-+exit $?
-+
-+
- SEE ALSO
- --------
- linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 632e61fe70bd..0718aa71b4ba 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1749,6 +1749,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		perf_evlist__start_workload(rec->evlist);
- 	}
+ 	/* sclk is bigger than max sclk in the dependence table */
+ 	*voltage |= (dep_table->entries[i - 1].vddc * VOLTAGE_SCALE) << VDDC_SHIFT;
+-	vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
+-			(dep_table->entries[i - 1].vddc -
+-					(uint16_t)VDDC_VDDCI_DELTA));
  
-+	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
-+		goto out_child;
+ 	if (SMU7_VOLTAGE_CONTROL_NONE == data->vddci_control)
+ 		*voltage |= (data->vbios_boot_state.vddci_bootup_value *
+@@ -654,8 +651,13 @@ static int vegam_get_dependency_volt_by_clk(struct pp_hwmgr *hwmgr,
+ 	else if (dep_table->entries[i - 1].vddci)
+ 		*voltage |= (dep_table->entries[i - 1].vddci *
+ 				VOLTAGE_SCALE) << VDDC_SHIFT;
+-	else
++	else {
++		vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
++				(dep_table->entries[i - 1].vddc -
++						(uint16_t)VDDC_VDDCI_DELTA));
 +
- 	if (opts->initial_delay) {
- 		pr_info(EVLIST_DISABLED_MSG);
- 		if (opts->initial_delay > 0) {
-@@ -1895,6 +1898,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		record__synthesize_workload(rec, true);
- 
- out_child:
-+	evlist__finalize_ctlfd(rec->evlist);
- 	record__mmap_read_all(rec, true);
- 	record__aio_mmap_read_sync(rec);
- 
-@@ -2244,6 +2248,33 @@ static int record__parse_mmap_pages(const struct option *opt,
- 	return ret;
- }
- 
-+static int parse_control_option(const struct option *opt,
-+				const char *str,
-+				int unset __maybe_unused)
-+{
-+	char *comma = NULL, *endptr = NULL;
-+	struct record_opts *config = (struct record_opts *)opt->value;
-+
-+	if (strncmp(str, "fd:", 3))
-+		return -EINVAL;
-+
-+	config->ctl_fd = strtoul(&str[3], &endptr, 0);
-+	if (endptr == &str[3])
-+		return -EINVAL;
-+
-+	comma = strchr(str, ',');
-+	if (comma) {
-+		if (endptr != comma)
-+			return -EINVAL;
-+
-+		config->ctl_fd_ack = strtoul(comma + 1, &endptr, 0);
-+		if (endptr == comma + 1 || *endptr != '\0')
-+			return -EINVAL;
+ 		*voltage |= (vddci * VOLTAGE_SCALE) << VDDCI_SHIFT;
 +	}
-+
-+	return 0;
-+}
-+
- static void switch_output_size_warn(struct record *rec)
- {
- 	u64 wakeup_size = evlist__mmap_size(rec->opts.mmap_pages);
-@@ -2380,6 +2411,8 @@ static struct record record = {
- 		},
- 		.mmap_flush          = MMAP_FLUSH_DEFAULT,
- 		.nr_threads_synthesize = 1,
-+		.ctl_fd              = -1,
-+		.ctl_fd_ack          = -1,
- 	},
- 	.tool = {
- 		.sample		= process_sample_event,
-@@ -2581,6 +2614,10 @@ static struct option __record_options[] = {
- 		"libpfm4 event selector. use 'perf list' to list available events",
- 		parse_libpfm_events_option),
- #endif
-+	OPT_CALLBACK(0, "control", &record.opts, "fd:ctl-fd[,ack-fd]",
-+		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events).\n"
-+		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.",
-+		      parse_control_option),
- 	OPT_END()
- };
  
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index da138dcb4d34..4cb72a478af1 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -70,6 +70,8 @@ struct record_opts {
- 	int	      mmap_flush;
- 	unsigned int  comp_level;
- 	unsigned int  nr_threads_synthesize;
-+	int	      ctl_fd;
-+	int	      ctl_fd_ack;
- };
- 
- extern const char * const *record_usage;
+ 	if (SMU7_VOLTAGE_CONTROL_NONE == data->mvdd_control)
+ 		*mvdd = data->vbios_boot_state.mvdd_bootup_value * VOLTAGE_SCALE;
 -- 
-2.24.1
-
+2.27.0
 
