@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2EA224910
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 07:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7491F224913
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 07:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgGRFpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 01:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
+        id S1726943AbgGRFrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 01:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgGRFpL (ORCPT
+        with ESMTP id S1726377AbgGRFri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 01:45:11 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE52CC0619D2;
-        Fri, 17 Jul 2020 22:45:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id 88so2880130wrh.3;
-        Fri, 17 Jul 2020 22:45:10 -0700 (PDT)
+        Sat, 18 Jul 2020 01:47:38 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A70C0619D2;
+        Fri, 17 Jul 2020 22:47:38 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id p205so12552554iod.8;
+        Fri, 17 Jul 2020 22:47:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=3oYWHEmLW5s7KbA+l575vtPAkEWPi2PPTZYrMFMNqDQ=;
-        b=rl90+3WwRZrv/R9/B5pJfTLLA76r1jpsCq5y/2hvR3rfIgQQtX72aqr4C6jru4K2U2
-         z9i9D6dmVSJkFJJRGe2PW1BrfewDTXF4ST7Z16K6Lqw3HU3Aafq5U2UxBTNfNzAybxs4
-         vkT8nXzXkd7PBTrmPIH0rAcBRkduxh3z7Md9yaf4MAMd+g2656B7Sb66MVPSULdp8s5v
-         mZPGOm89Fis2QPrOhskoZYeo3ZT9Qd+0nYQQXu+nyVSVvVJhkbXYso7gv+AJ2wzKkBMr
-         oyAsR70Htl9MiM66aqQnoLlF9LJ8QBgxjmdh4rbWkoQwarn9lsfyeywWx1vUNQhZ1tWs
-         BWNQ==
+        bh=PfMs+d/8rTE+DczufHJcceGTZEwuJydHZFIhdNSBBA8=;
+        b=tZEuFSnzOKQNapUURfRPWVJlMGLxwDsc4jXnrSjXLGBfCvGcdp02PlJzyzbWL+dF+I
+         E4qVcG/Rlm+QMeRneEgs6jE0OgLfeBw+DVmu5V7PJRgBXw98TjxGLqCppUf95oqhL64E
+         B6ZA7pztL+9zIF8GDAEsm1+20D+2Di3ITfyd9j2FmT9pC/wiBoiMHAxeVhiV2FrjxxPl
+         svTx7ET5DMcSr8rED/xMCU+g6bCm2KDH9HqFQ9VgLt6mwm3SDtQ+Z1qe55mqdYLOS2h9
+         66+7yI/tO3Zxdj7b4byEhSWMEi/2EwOxTAcXbhEUnJejoVHbzlBomcufa2sBoi15m3f7
+         Rnyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3oYWHEmLW5s7KbA+l575vtPAkEWPi2PPTZYrMFMNqDQ=;
-        b=Bm0GA+FBvGrH2RC+oOchyht4QVmD7NzcnxkVjg2rhUDM81O2dUFo/cz3J3PCW2Wegj
-         vMQt8s6CiOGsmSWvqav3i4Zo+vsxTUABqHu4NnYQkC9eINezWOi9xXve3xvLEPzmql3x
-         R3Nw8GKgjvaBrnFwh303xtt0P14Xb7+bBasbMQkHQ6dUESY2XMqW81tfCxd5QzhuJdXM
-         M+wvku+YVtvPWHjOv9vWO8IJVFM5S4ev/MHZfsIKJSWGy+hrExrJouaCKDKlRcOplgAq
-         qQX2DQMB4HpasTmHb89iOAE3S6vrpF4Ooiwv1Pd4Yjtt8nka40UnAo78vTZJ9XrmKR3x
-         G5/w==
-X-Gm-Message-State: AOAM530rtm0HftSLzoJl3IUehAQMNQSp3CNJHUuGHXCVE5tjSz8BG+07
-        1F9UrJi3ZNVsOLIGRLfKzD3W/9d/
-X-Google-Smtp-Source: ABdhPJyaiTeH7lXyaFaxsJ1ijc2hXhd94evVQetqFIWG5Q8KwT+medqxNHw8dGjRnsXqi+3Q5EOgQg==
-X-Received: by 2002:a5d:6a90:: with SMTP id s16mr13075188wru.8.1595051109672;
-        Fri, 17 Jul 2020 22:45:09 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id d13sm18735481wrn.61.2020.07.17.22.45.07
+        bh=PfMs+d/8rTE+DczufHJcceGTZEwuJydHZFIhdNSBBA8=;
+        b=OInwT7t5/o7BI3xxvsEz4U2mxM3dsQTXRgbIWjggwRzv2SlQxjUjw0WNwXwX/DOQHn
+         VzHopHMvhPisThMPKRy4BoW/vIIfZy+Fe5w0F5NitwJy4TJo9rrlMzqiMo5YvhshmqIY
+         Y0HWhpJ6bC3rIKD1xqtjGgwd/nayKvYyMISaTbSm4aZKSDCAsv/v4tKzkh7f8XTDgQd1
+         pSdaRuifjLebD/8LxMo0BMKT6/wCcwKkIUyTD1c9OVdLid9JeSnzxQ64FbMLmhElWMLG
+         JQcwX4drJB2O2vRJfT2toBNqh/HrCZpDsU7YV4kUJHL8D7l6ufqpDQD4UW1AaZT4VN8I
+         QGSA==
+X-Gm-Message-State: AOAM533e1oODvQ4ty5ApSMZx66GQrNM/X+oVjfxlZ3ucqwmbTHuYGa+A
+        2gL3+KJzPI01mTJCFQyjF1HveFsjYXA=
+X-Google-Smtp-Source: ABdhPJwmz9PHgLFVxAiR8ICQT3HOsuOshxUJ0WFWXkZT30fBjDH8pGlL70enm1kjAc+Wp58AwhZBSg==
+X-Received: by 2002:a6b:f911:: with SMTP id j17mr12389586iog.96.1595051257928;
+        Fri, 17 Jul 2020 22:47:37 -0700 (PDT)
+Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [160.94.145.20])
+        by smtp.googlemail.com with ESMTPSA id e16sm5852663iow.37.2020.07.17.22.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 22:45:09 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] arm64: dts: meson: update spifc node name on Khadas VIM3/VIM3L
-Date:   Sat, 18 Jul 2020 05:45:05 +0000
-Message-Id: <20200718054505.4165-1-christianshewitt@gmail.com>
+        Fri, 17 Jul 2020 22:47:37 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     emamd001@umn.edu, Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: [PATCH] mt76: mt76u: add missing release on skb in __mt76x02u_mcu_send_msg
+Date:   Sat, 18 Jul 2020 00:47:26 -0500
+Message-Id: <20200718054727.13009-1-navid.emamdoost@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VIM3/VIM3L Boards use w25q128 not w25q32 - this is a cosmetic change
-only - the device probes fine with the current device-tree.
+In the implementation of __mt76x02u_mcu_send_msg() the skb is consumed
+all execution paths except one. Release skb before returning if
+test_bit() fails.
 
-Fixes: 0e1610e726d3 ("arm64: dts: khadas-vim3: add SPIFC controller node")
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt76x02_usb_mcu.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 27408c10a811..6b75157265e1 100644
---- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-@@ -360,7 +360,7 @@
- 	pinctrl-0 = <&nor_pins>;
- 	pinctrl-names = "default";
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_usb_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76x02_usb_mcu.c
+index a30bb536fc8a..e43d13d7c988 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76x02_usb_mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76x02_usb_mcu.c
+@@ -87,8 +87,10 @@ __mt76x02u_mcu_send_msg(struct mt76_dev *dev, struct sk_buff *skb,
+ 	u32 info;
+ 	int ret;
  
--	w25q32: spi-flash@0 {
-+	w25q128: spi-flash@0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		compatible = "winbond,w25q128fw", "jedec,spi-nor";
+-	if (test_bit(MT76_REMOVED, &dev->phy.state))
+-		return 0;
++	if (test_bit(MT76_REMOVED, &dev->phy.state)) {
++		ret = 0;
++		goto out;
++	}
+ 
+ 	if (wait_resp) {
+ 		seq = ++dev->mcu.msg_seq & 0xf;
+@@ -111,6 +113,7 @@ __mt76x02u_mcu_send_msg(struct mt76_dev *dev, struct sk_buff *skb,
+ 	if (wait_resp)
+ 		ret = mt76x02u_mcu_wait_resp(dev, seq);
+ 
++out:
+ 	consume_skb(skb);
+ 
+ 	return ret;
 -- 
 2.17.1
 
