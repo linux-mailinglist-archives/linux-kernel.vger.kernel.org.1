@@ -2,128 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586AA2241C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE4B22418B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 19:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgGQR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 13:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726668AbgGQR1Z (ORCPT
+        id S1727782AbgGQRJS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Jul 2020 13:09:18 -0400
+Received: from mail1.bemta26.messagelabs.com ([85.158.142.4]:11261 "EHLO
+        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726205AbgGQRJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 13:27:25 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99941C0619D2;
-        Fri, 17 Jul 2020 10:27:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f2so11959893wrp.7;
-        Fri, 17 Jul 2020 10:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Uv/mehhqSy3DaoKMUHPQC+Xg+wYizrO+P1oEDPd1R5Y=;
-        b=kVZwjpajXWhE3Tq9GOL4jqxnYJRO/FK2GgA1oiuf6uPwe3ilTYUd/lypogr2w1FeTh
-         7CKsOxRqgLV+9kX3EcRSUAt30lIVsC8Q80ilT6qsf/dlwYx6FO0/j571sY+82fx/LrN1
-         mN9i4tfWOkCKpg7CBEhefo/WM8z0K0pOQV4ugNnzGILBtnLPn4/kWKHdxk73vDRTuJiH
-         BIOK/Mtfnjndb2DLRmo8K23JCcDwWm/4u/Wdn95S34wRy/DpoDTle3nRWcglWq+JPLtw
-         nAmHPjjQNRrFDjZPYrs0NWyLbin3Ex8oRhyKG578JBjetfCFHetuWZ7v9cxWcOKXzwk2
-         8aAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Uv/mehhqSy3DaoKMUHPQC+Xg+wYizrO+P1oEDPd1R5Y=;
-        b=hg30df7w1A1OCWOjvBQBlc8Fma1UDkYTKcq2D1cF6ECwOJsKUtjjqIsX+qwP5jpIHi
-         1oH7BMyZtqYPeN1QTw+jeCIv7iLLsN8SvEUbVzHBtJPUPkgDDVpqotzfCrf4feKq1CAN
-         rAsPHWM+ACLLN/WGIYrwJ7daqELO1Q6juqH7bfmwYGB5EZKR2lx6oD0H2V4yQ2tOfVGA
-         Zx2Xjb9WYnx0of3glS2fjSeoY1xn+sCPzuXfhX4NdsBmVdNyMGJqHNw0RDBuKXizMEre
-         ppa92HHA9RD8OFgjZ/HrbyglJ6k3C18pEgvm9ANGxSh6pOEolAmLvVScRGnNVXl2cO/8
-         b66w==
-X-Gm-Message-State: AOAM532uQQeoWOLaFbEO4Xqko8M3fHYpoYFZkBaDY3+9ZyxgaKaj+bNW
-        VjwOmdSBc0yINqivsvJp1neiJ4l3tkQ=
-X-Google-Smtp-Source: ABdhPJzuWUhay96eHMlekR318s1wqVyttXpYIA4Tx9T9DkN1wUZXOq9L0CiquPlDvdCkiIjEj26QoQ==
-X-Received: by 2002:adf:e801:: with SMTP id o1mr11618071wrm.54.1595006843074;
-        Fri, 17 Jul 2020 10:27:23 -0700 (PDT)
-Received: from [10.230.191.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 33sm17001764wri.16.2020.07.17.10.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 10:27:22 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: bcmgenet: fix error returns in
- bcmgenet_probe()
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1594973982-27988-1-git-send-email-zhangchangzhong@huawei.com>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <8bdd1465-fcaf-4946-3ee9-baeec765247d@gmail.com>
-Date:   Fri, 17 Jul 2020 10:30:18 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 17 Jul 2020 13:09:17 -0400
+Received: from [100.113.3.117] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-4.bemta.az-a.eu-central-1.aws.symcld.net id 91/F4-22706-B3BD11F5; Fri, 17 Jul 2020 17:09:15 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRWlGSWpSXmKPExsWi9LMqRtfytmC
+  8wblzuhaXd81hc2D0+LxJLoAxijUzLym/IoE1493WJywFuRWHnyxna2CM7WLk4hASeMooMaNv
+  FguEs41Rou/zc+YuRk4OZgE9iRtTp7CB2LwCghInZz5hgYhrSyxb+BqohgPIVpP42lUCEhYW4
+  JG43f+CCcQWEVCS+H6tmxGkhE1AReLC6yCQMIuAqsSJ1SBhTqBVshIzN55mgpjuKrF94QJWiL
+  iyRO/K9YwTGHlnITliFpIjZiE5YhbCEQsYWVYxWiYVZaZnlOQmZuboGhoY6BoaGusa6hqaGOk
+  lVukm6qWW6ian5pUUJQJl9RLLi/WKK3OTc1L08lJLNjECwzClkLFvB+PENx/0DjFKcjApifK2
+  rRKMF+JLyk+pzEgszogvKs1JLT7EKMPBoSTB+/8GUE6wKDU9tSItMwcYEzBpCQ4eJRHeiJtAa
+  d7igsTc4sx0iNQpRnuOu0/mLmLmuAcmdxydByQfrVqyiFmIJS8/L1VKHKJNAKQtozQPbigshi
+  8xykoJ8zIyMDAI8RSkFuVmlqDKv2IU52BUEuadCzKFJzOvBG73K6CzmIDO2viZF+SskkSElFQ
+  Dk2jzztv+VTIf7udvPcH+Yz3Xguiz/YLZ1aeV7CMN/jLFXO5xzyx6kM0deX7bednSpcEcypdU
+  mor2pF9ob1vnMSNQ/rvTLM7NvxvXfd48V6H/RqZGYECbY5aicHBcE6PclespOe/6k88pZCjIa
+  VV+dXv2KFQ/cXoLb3GX+SSmI1zRDGvKODJm/vdkzNKsefvSREJ9Y5uGcTTTn+VbYk943j8Vsf
+  BPw6XN774Ld3p/Y7kquVD9wbKg5o/l5jxPFgZKvL30c/rBBtmvJZv21azjF/9yM35dQPZh/yl
+  yiyu0vE7FvelwV5wovGWltxiT2LqZ+gUOx3aLJ7SX+MvJcrqLLvBb9KpJ8J56b+M53xYlluKM
+  REMt5qLiRABL4W73XAMAAA==
+X-Env-Sender: heart@vibrantmedia.com
+X-Msg-Ref: server-22.tower-232.messagelabs.com!1595005750!1126681!11
+X-Originating-IP: [34.249.122.92]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.50.2; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 6480 invoked from network); 17 Jul 2020 17:09:13 -0000
+Received: from mail.vibrantmedia.com (HELO mbx04.vibrant.corp) (34.249.122.92)
+  by server-22.tower-232.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 17 Jul 2020 17:09:13 -0000
+Received: from mbx03.vibrant.corp (10.1.128.21) by mbx04.vibrant.corp
+ (10.1.129.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Fri, 17
+ Jul 2020 17:09:08 +0000
+Received: from [213.32.33.253] (213.32.33.253) by mbx03.vibrant.corp
+ (10.1.128.21) with Microsoft SMTP Server id 15.1.669.32 via Frontend
+ Transport; Fri, 17 Jul 2020 17:09:07 +0000
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <1594973982-27988-1-git-send-email-zhangchangzhong@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: REP
+To:     <linux-kernel@vger.kernel.org>
+From:   ANDON <heart@vibrantmedia.com>
+Date:   Fri, 17 Jul 2020 18:01:26 -0700
+Reply-To: <info@skilsaws.org>
+Message-ID: <ee9a0266-1450-4ec9-b54b-9da787badf40@mbx03.vibrant.corp>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/2020 1:19 AM, Zhang Changzhong wrote:
-> The driver forgets to call clk_disable_unprepare() in error path after
-> a success calling for clk_prepare_enable().
-> 
-> Fix to goto err_clk_disable if clk_prepare_enable() is successful.
-> 
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  drivers/net/ethernet/broadcom/genet/bcmgenet.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-> index ee84a26..23df6f2 100644
-> --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-> +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-> @@ -4016,7 +4016,7 @@ static int bcmgenet_probe(struct platform_device *pdev)
->  	if (err)
->  		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
->  	if (err)
-> -		goto err;
-> +		goto err_clk_disable;
-Please split this clause out as a separate pull-request with this fixes tag:
-Fixes: 99d55638d4b0 ("net: bcmgenet: enable NETIF_F_HIGHDMA flag")
-
->  
->  	/* Mii wait queue */
->  	init_waitqueue_head(&priv->wq);
-> @@ -4028,14 +4028,14 @@ static int bcmgenet_probe(struct platform_device *pdev)
->  	if (IS_ERR(priv->clk_wol)) {
->  		dev_dbg(&priv->pdev->dev, "failed to get enet-wol clock\n");
->  		err = PTR_ERR(priv->clk_wol);
-> -		goto err;
-> +		goto err_clk_disable;
->  	}
->  
->  	priv->clk_eee = devm_clk_get_optional(&priv->pdev->dev, "enet-eee");
->  	if (IS_ERR(priv->clk_eee)) {
->  		dev_dbg(&priv->pdev->dev, "failed to get enet-eee clock\n");
->  		err = PTR_ERR(priv->clk_eee);
-> -		goto err;
-> +		goto err_clk_disable;
->  	}
->  
->  	/* If this is an internal GPHY, power it on now, before UniMAC is
-> 
-Please split these changes into a pull-request with fixes tag:
-Fixes: c80d36ff63a5 ("net: bcmgenet: Use devm_clk_get_optional() to get
-the clocks")
-
-Resubmit the pull-requests with [PATCH net].
-That will make them easier to apply to stable branches.
-
-Otherwise:
-Acked-by: Doug Berger <opendmb@gmail.com>
-
-Thanks!
+Andon is seeking a motivated Company/Person representatives on part time basis with good salary structure.
