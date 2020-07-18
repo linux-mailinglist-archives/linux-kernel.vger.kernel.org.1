@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B00E224988
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BD822496E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729221AbgGRG6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
+        id S1728904AbgGRG5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729132AbgGRG6G (ORCPT
+        with ESMTP id S1725983AbgGRG5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:58:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72ECC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:58:05 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id b6so13213666wrs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:58:05 -0700 (PDT)
+        Sat, 18 Jul 2020 02:57:46 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F102DC0619D2;
+        Fri, 17 Jul 2020 23:57:45 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id o2so20541535wmh.2;
+        Fri, 17 Jul 2020 23:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TjgzLnntMqyR4iw5HYm5Wn13YkqCTneXtgN6zeUHap4=;
-        b=r72XjXYGJjf/KxWyAu0wVQikYmQ2VwI9NGj6g3nIE9OaYb8RV3SBjMyRky+Cho90Xe
-         cOKWmg4gzZJJTc6nLhNNi15qjiXSEUgNrjBwO6H3v3Y3CfozuBEKa2HQoAPBu5KpgcnC
-         K5bv1E3iXmB4y7KExMH8IbsfQ0agBH/XSz27WkaloayNrbKA05gbXvz1Ow6NTJ2oldJY
-         UjVhVbEo2D7t5k1dpXnisUFa37DslfxyO/6YcMpPvwqgzpbEDowyx1wASHBE/C0sWJG6
-         3cZ3gqQWEU/C3VydulDz+Io+EhBqZsDE/xUDF5ztfvcrFGVdUGP/Yrs5G5M0S6xZyUQn
-         mlvw==
+        h=from:to:cc:subject:date:message-id;
+        bh=pyjWDtKMxx4/68tXkVpiBJVCOhw66qo2kRjsgA+vwPA=;
+        b=ZuEcNv5k9Z0KZbqh/KPRDsLCM6yeWEL+b4iJp7dXRBzCc45ij1G8/u9fz4MMuhdKlW
+         7ZX6kuFpXr6FvTWUzPkCzngLws8K0HaiMUods4h4UAvvJSwzX/jX2Z68ccUJkNp6WLQo
+         VjrgzgnmVezt0s0zwXHJyAQJ3mtPUjGOrz9hsh9B3Hiiq4G8T84q7kmcpQFy6gBTBWvC
+         81udRbRsiHE03035wEkE6B/LeF26HHAM7+5tS05cwZQYRJWmFDq9YQVX8Y0WZ6phS6RI
+         EOhrO/0Cf6zhSc1hiO8u2eTaGS1gKc8eZU/iV22M5PJegqCQUrYVO8eYEIaFRGf9XMRF
+         cl6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TjgzLnntMqyR4iw5HYm5Wn13YkqCTneXtgN6zeUHap4=;
-        b=NGZV89gK1LBJB6iUY/r8lszBF8w+sSXKLTlje38P9T1dIkjwlgsavfwmAbv74Zx4mg
-         KtR2SeA34Xfm22P1n1lhfO8jYui8A5WdEFC5yIscs8dPTEQ/ihsodlOYgfGUtjcT7z9p
-         gBrnedIF3GeOgEIndTJtUfu3Wxvp+T9R8L590KQIjljAcZLwHrI/uK7rEmDPDhbZ2uMf
-         lAjgD5sNH5OOUN9Sf49MZ7oaoL/fGaXglPJGuRibRmJATkfnmN/nt2TO2itxU1mO5i7c
-         lnxyVwBzUQWIkh68g3cDaGOqNeMQU5uUqG3VAi0yf+QORvbDHC6X02ihSoO1vpNhvxbi
-         jNXg==
-X-Gm-Message-State: AOAM5323CkrKyERbncuQivneeMe+wzKEZImZzeMtfQnYXaDAXIlXrf3r
-        fi0+CyYpWEaEcH9QeHLprH5Lb81+
-X-Google-Smtp-Source: ABdhPJxr09Wle5letJhcuWVOT+IwP/rPKtKvkpvcjIDD2+ZMra8NjiVc9MN+EncWhfdTcNPjmeDJdQ==
-X-Received: by 2002:a5d:55c9:: with SMTP id i9mr128080wrw.31.1595055484444;
-        Fri, 17 Jul 2020 23:58:04 -0700 (PDT)
-Received: from localhost.localdomain (dslb-002-204-142-170.002.204.pools.vodafone-ip.de. [2.204.142.170])
-        by smtp.gmail.com with ESMTPSA id 32sm409015wrn.86.2020.07.17.23.58.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pyjWDtKMxx4/68tXkVpiBJVCOhw66qo2kRjsgA+vwPA=;
+        b=th2wDo4NydX10xF/xAaB/XAJso9JDSkcZtKuDx+P+TRus57/87q3kq78FsXyTC6qsl
+         KmXhgbjl4FkIfDgDSACcd8XCpqQEbgPZ2UXtobzhwP6SCK4OCO+Da5Zg51SjjixpKu8l
+         DTp9aDHWO9z14O3Uubc87zqNieLBPM61chNX3IEST9COZWYO9raZvIIyHhzJmHm9s3ma
+         tWIhakSURSJ1fbBVm6myOqkDM+O3xUd6tq3PdQXX5zdL5nqbCxIpT0tzUEpylv3y8QQF
+         b1rzpZ5wzeOlItQQNUeyDZczWgzW8m5Ptw3XhQ0YLrSsPutyvorhIRrc6u9MA0oaci6U
+         4LlQ==
+X-Gm-Message-State: AOAM531J0RnTrv3PHG6E8AcD8OkRHVelU7N8K3HFww53t1MpePN714ck
+        IkMV6lSToerbmEuzykJd/PE=
+X-Google-Smtp-Source: ABdhPJxMqh5d+Cifnno+A3aQ3358AxXfuypnLtn+XMRwXlPwY9BWTNOeBgzdyhXgVDCffOKXu1KJzg==
+X-Received: by 2002:a7b:c185:: with SMTP id y5mr12983342wmi.85.1595055464539;
+        Fri, 17 Jul 2020 23:57:44 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id x5sm18749191wmg.2.2020.07.17.23.57.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 23:58:03 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8188eu: clear tabstop style issues
-Date:   Sat, 18 Jul 2020 08:55:14 +0200
-Message-Id: <20200718065514.16289-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 17 Jul 2020 23:57:43 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH 00/12] arm64: dts: meson: add more GX soundcards
+Date:   Sat, 18 Jul 2020 06:57:27 +0000
+Message-Id: <20200718065739.7802-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clear tabstop style issues reported by checkpatch.
-WARNING: Statements should start on a tabstop
+From: chewitt <christianshewitt@gmail.com>
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8188eu/core/rtw_ioctl_set.c    | 2 +-
- drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c | 2 +-
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+This series adds basic support for LPCM audio over HDMI and S/PDIF
+interfaces to GXBB/GXL/GXM devices without support. I'm sure audio
+support can be extended in places (some devices have internal DACs
+and headphone hardware) but this gets the HDMI port working as a
+minimum capability.
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c b/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
-index fa88e8b2852d..26e5193cfd6c 100644
---- a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
-@@ -343,7 +343,7 @@ u8 rtw_set_802_11_infrastructure_mode(struct adapter *padapter,
- 		    *pold_state == Ndis802_11IBSS) {
- 			if (check_fwstate(pmlmepriv, _FW_LINKED))
- 				rtw_indicate_disconnect(padapter); /* will clr Linked_state; before this function, we must have checked whether  issue dis-assoc_cmd or not */
--	       }
-+		}
- 
- 		*pold_state = networktype;
- 
-diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
-index 740004d71a15..2baef9a285c0 100644
---- a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
-@@ -145,7 +145,7 @@ void rtw_hal_set_odm_var(struct adapter *Adapter, enum hal_odm_variable eVariabl
- 			} else {
- 				DBG_88E("### Clean STA_(%d) info\n", psta->mac_id);
- 				ODM_CmnInfoPtrArrayHook(podmpriv, ODM_CMNINFO_STA_STATUS, psta->mac_id, NULL);
--		       }
-+			}
- 		}
- 		break;
- 	case HAL_ODM_P2P_STATE:
-diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-index 5e6f7f0ed009..2e83d24fcb09 100644
---- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-@@ -811,7 +811,7 @@ static int rtw_wx_set_pmkid(struct net_device *dev,
- 				psecuritypriv->PMKIDList[j].bUsed = false;
- 				break;
- 			}
--	       }
-+		}
- 	} else if (pPMK->cmd == IW_PMKSA_FLUSH) {
- 		DBG_88E("[rtw_wx_set_pmkid] IW_PMKSA_FLUSH!\n");
- 		memset(&psecuritypriv->PMKIDList[0], 0x00, sizeof(struct rt_pmkid_list) * NUM_PMKID_CACHE);
+I have personally tested with the khadas-vim2, odroid-c2, and both
+wetek devices as I have them, and there are positive forum reports
+from users with vega-s95 and some no-name P20X box devices.
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+
+Christian Hewitt (12):
+  arm64: dts: meson: add audio playback to a95x
+  arm64: dts: meson: add audio playback to khadas-vim2
+  arm64: dts: meson: add audio playback to nanopi-k2
+  arm64: dts: meson: add audio playback to nexbox-a1
+  arm64: dts: meson: add audio playback to odroid-c2
+  arm64: dts: meson: add audio playback to p201
+  arm64: dts: meson: add audio playback to p200
+  arm64: dts: meson: add audio playback to p212-s905x dtsi
+  arm64: dts: meson: add audio playback to rbox-pro
+  arm64: dts: meson: add audio playback to vega-s95 dtsi
+  arm64: dts: meson: add audio playback to wetek-hub
+  arm64: dts: meson: add audio playback to wetek-play2
+
+ .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 40 ++++++++++
+ .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 ++++++++++
+ .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 ++++++++++
+ .../boot/dts/amlogic/meson-gxbb-p200.dts      | 61 ++++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-p201.dts      | 40 ++++++++++
+ .../boot/dts/amlogic/meson-gxbb-vega-s95.dtsi | 61 ++++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 ++++++++++
+ .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 ++++++++++++++
+ .../dts/amlogic/meson-gxl-s905x-p212.dtsi     | 40 ++++++++++
+ .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 +++++++++-
+ .../boot/dts/amlogic/meson-gxm-nexbox-a1.dts  | 80 +++++++++++++++++++
+ .../boot/dts/amlogic/meson-gxm-rbox-pro.dts   | 80 +++++++++++++++++++
+ 12 files changed, 624 insertions(+), 3 deletions(-)
+
 -- 
-2.27.0
+2.17.1
 
