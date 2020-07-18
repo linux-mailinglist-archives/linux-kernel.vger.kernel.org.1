@@ -2,226 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BBA224B9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA761224BAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgGRNmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 09:42:39 -0400
-Received: from out28-172.mail.aliyun.com ([115.124.28.172]:48825 "EHLO
-        out28-172.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726574AbgGRNmi (ORCPT
+        id S1727060AbgGROGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:06:03 -0400
+Received: from m15114.mail.126.com ([220.181.15.114]:58765 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726611AbgGROGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 09:42:38 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0743647|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0734282-0.00625248-0.920319;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03278;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.I3vAArz_1595079751;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I3vAArz_1595079751)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Sat, 18 Jul 2020 21:42:32 +0800
-Subject: Re: [PATCH v6 2/2] clocksource: Ingenic: Add support for the Ingenic
- X1000 OST.
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, tglx@linutronix.de, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-References: <20200710170259.29028-1-zhouyanjie@wanyeetech.com>
- <20200710170259.29028-3-zhouyanjie@wanyeetech.com>
- <dd01a117-265a-e64b-5871-22f0f752834a@linaro.org>
- <f0dd2ea5-0627-35cf-5a58-aaff0bcb22cd@wanyeetech.com>
- <9c64bc35-c043-6e4b-cfc3-50f19e4cb315@linaro.org>
- <512ODQ.64YN0BEY1JJG@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <096c8788-3c50-3eae-1c8e-c0c7487b00af@wanyeetech.com>
-Date:   Sat, 18 Jul 2020 21:42:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
-MIME-Version: 1.0
-In-Reply-To: <512ODQ.64YN0BEY1JJG@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Sat, 18 Jul 2020 10:06:03 -0400
+X-Greylist: delayed 2067 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Jul 2020 10:05:34 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=+amZxSkpaPypl7S/BB
+        uMS43KAmapgCGLbADtQmMNmIU=; b=a1k3Xi0lsO1K2GRFtDo/ic08FjRs9t7nTW
+        DwslJ8eQw91bwFptXF4QO83gJ5Hbn1ENxtjOQ3O5ILoDM6kbMPeVuyFGzX4KfbXP
+        U5hVLZw0dtcBgmg37OTxizb7kZWl85GOW4J1PJ02x0k+i2OU2nDsygo4jyaSoHw0
+        C0tJsRgjs=
+Received: from 192.168.137.249 (unknown [112.10.74.162])
+        by smtp7 (Coremail) with SMTP id DsmowAB3KBDj+BJfSO3mHQ--.56553S3;
+        Sat, 18 Jul 2020 21:28:05 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     tytso@mit.edu, jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] jbd2: check bh2jh() before accessing it
+Date:   Sat, 18 Jul 2020 09:28:03 -0400
+Message-Id: <1595078883-8647-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DsmowAB3KBDj+BJfSO3mHQ--.56553S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZrW8ArW7Gw1rWw1fWw18uFg_yoW7JryUpr
+        y5G348urWvvFnxZr1kJF45CrWUXw1FyayUGw1I9r1v9a1UGw1ftFW5JFs8Ga4DZFsxC3W2
+        qr4DXws5Kw1UtaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j3fHUUUUUU=
+X-Originating-IP: [112.10.74.162]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi3AVlpFpD-NvKkAAAs8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Paul and Daniel,
+We met a crash issue when testing nbd device on kernel 4.14.0-115,
+the scenario of the issue is "nbd device disconnected before unmounting
+ext4 filesystem".
+The call trace of the crash as below:
+[346961.426274] block nbd2: Connection timed out
+[346961.426943] EXT4-fs warning (device nbd2): ext4_end_bio:323: I/O error 10 writing to inode 5768758
+			(offset 155926528 size 8192 starting block 8998070)
+[346961.426957] Aborting journal on device nbd2-8.
+[346961.427027] EXT4-fs error (device nbd2) in __ext4_new_inode:927: Readonly filesystem
+ ... ...
+[346961.437288] Buffer I/O error on dev nbd2, logical block 13139968, lost sync page write
+[346961.437878] JBD2: Error -5 detected when updating journal superblock for nbd2-8.
+[346961.438478] BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
+[346961.452495] RIP: 0010:jbd2_journal_grab_journal_head+0x1e/0x40 [jbd2]  <== crash code offset is 0x1e(30)
+[346961.453457] RSP: 0018:ffffc9000ffbbca8 EFLAGS: 00010206
+[346961.454414] RAX: 0000000000000000 RBX: ffff881dafe04960 RCX: ffff881aee5b0ac8
+[346961.455378] RDX: ffff881df7768690 RSI: ffff88100a5e9800 RDI: ffff880a22593d40
+[346961.456360] RBP: ffffc9000ffbbca8 R08: ffff881dafe04960 R09: 000000018040001c
+[346961.457332] R10: 000000002fe92601 R11: ffff88202fe90700 R12: ffff88100a5e9800
+[346961.458302] R13: 0000000000000000 R14: ffff880a22593d40 R15: ffff881dafe04960
+[346961.459269] FS:  0000000000000000(0000) GS:ffff88103e5c0000(0000) knlGS:0000000000000000
+[346961.460250] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[346961.461216] CR2: 0000000000000008 CR3: 0000000001c09004 CR4: 00000000007606e0
+[346961.462201] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[346961.463164] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[346961.465047] Call Trace:
+[346961.465981]  __jbd2_journal_insert_checkpoint+0x28/0x80 [jbd2]
+[346961.466907]  jbd2_journal_commit_transaction+0x1185/0x1a20 [jbd2]
+[346961.467862]  ? lock_timer_base+0x7d/0xa0
+[346961.468794]  kjournald2+0xd2/0x260 [jbd2]
+[346961.469717]  ? remove_wait_queue+0x60/0x60
+[346961.470630]  kthread+0x109/0x140
+[346961.471533]  ? commit_timeout+0x10/0x10 [jbd2]
+[346961.472438]  ? kthread_park+0x60/0x60
+[346961.473521]  ? do_syscall_64+0x182/0x1b0
+[346961.474546]  ret_from_fork+0x25/0x30
 
-在 2020/7/18 下午9:12, Paul Cercueil 写道:
-> Hi Daniel,
->
-> Le ven. 17 juil. 2020 à 10:02, Daniel Lezcano 
-> <daniel.lezcano@linaro.org> a écrit :
->> On 17/07/2020 08:13, Zhou Yanjie wrote:
->>>  Hi Daniel,
->>>
->>>  在 2020/7/17 下午12:20, Daniel Lezcano 写道:
->>>>  On 10/07/2020 19:02, 周琰杰 (Zhou Yanjie) wrote:
->>>>>  X1000 and SoCs after X1000 (such as X1500 and X1830) had a separate
->>>>>  OST, it no longer belongs to TCU. This driver will register both a
->>>>>  clocksource and a sched_clock to the system.
->>>>>
->>>>>  Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
->>>>>  Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
->>>>>  Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
->>>>>  Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->>>>>  Reviewed-by: Paul Cercueil <paul@crapouillou.net>
->>>>>  ---
->>>>>
->>>>>  Notes:
->>>>>       v1->v2:
->>>>>       Fix compile warnings.
->>>>>       Reported-by: kernel test robot <lkp@intel.com>
->>>>>            v2->v3:
->>>>>       No change.
->>>>>            v3->v4:
->>>>>       1.Rename "ost" to "sysost"
->>>>>       1.Remove unrelated changes.
->>>>>       2.Remove ost_clock_parent enum.
->>>>>       3.Remove ost->percpu_timer_channel/ost->global_timer_channel.
->>>>>       4.Set up independent .recalc_rate/.set_rate for percpu/global
->>>>>  timer.
->>>>>       5.No longer call functions in variable declarations.
->>>>>            v4->v5:
->>>>>       Use "of_io_request_and_map()" instead "of_iomap()".
->>>>>       Suggested-by: Paul Cercueil <paul@crapouillou.net>
->>>>>            v5->v6:
->>>>>       No change.
->>>>>
->>>>>    drivers/clocksource/Kconfig          |  11 +
->>>>>    drivers/clocksource/Makefile         |   1 +
->>>>>    drivers/clocksource/ingenic-sysost.c | 539
->>>>>  +++++++++++++++++++++++++++++++++++
->>>>>    3 files changed, 551 insertions(+)
->>>>>    create mode 100644 drivers/clocksource/ingenic-sysost.c
->>>>>
->>>>>  diff --git a/drivers/clocksource/Kconfig 
->>>>> b/drivers/clocksource/Kconfig
->>>>>  index 91418381fcd4..1bca8b8fb30f 100644
->>>>>  --- a/drivers/clocksource/Kconfig
->>>>>  +++ b/drivers/clocksource/Kconfig
->>>>>  @@ -696,6 +696,17 @@ config INGENIC_TIMER
->>>>>        help
->>>>>          Support for the timer/counter unit of the Ingenic JZ SoCs.
->>>>>    +config INGENIC_SYSOST
->>>>>  +    bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
->>>>  We usually use silent options and let the platform's Kconfig 
->>>> enable it.
->>>>  We show up the option only when COMPILE_TEST is enabled.
->>>>
->>>>  Is there a reason to do it differently?
->>>
->>>
->>>  Do you mean
->>>
->>>  bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
->>>
->>>  or
->>>
->>>  default MACH_INGENIC ?
->>
->> Both, no default here.
->>
->> eg.
->>
->> bool "Clocksource/timer using the SYSOST in Ingenic X SoCs" if 
->> COMPILE_TEST
->>
->> and
->>
->> in arch/mips/Kconfig in the config MACH_INGENIC section :
->>
->> ...
->> select INGENIC_SYSOST
->> ...
->
-> Disagreed. That's not how we do things on MIPS. Selecting MACH_INGENIC 
-> means "this kernel will support Ingenic SoCs", but not that it will 
-> only support these. Hence the depends on MIPS / default MACH_INGENIC.
->
-> As for the select INGENIC_SYSOST, this driver only applies to a few 
-> SoCs, I certainly don't want it to be force-enabled. I don't even wait 
-> it to be force-enabled on X1000, since it is optional there too.
->
-> Cheers,
-> -Paul
+Analysis of the crash code as below:
+struct journal_head *jbd2_journal_grab_journal_head(struct buffer_head *bh)
+{
+        struct journal_head *jh = NULL;
 
+        jbd_lock_bh_journal_head(bh);
+        if (buffer_jbd(bh)) {
+                jh = bh2jh(bh); <== jh is NULL (bh->b_private = NULL)
+                jh->b_jcount++; <== crash here!!!
+				    b_jcount offset in 'struct journal_head' is 0x8
+        }
+        jbd_unlock_bh_journal_head(bh);
+        return jh;
+}
 
-If we still need to keep the "default MACH_INGENIC", then Daniel can 
-directly apply the v6 version.
+crash> dis -l jbd2_journal_grab_journal_head
+0xffffffffa00b6050 <jbd2_journal_grab_journal_head>:    nopl   0x0(%rax,%rax,1) [FTRACE NOP]
+0xffffffffa00b6055 <jbd2_journal_grab_journal_head+5>:  push   %rbp
+0xffffffffa00b6056 <jbd2_journal_grab_journal_head+6>:  mov    %rsp,%rbp
+0xffffffffa00b6059 <jbd2_journal_grab_journal_head+9>:  lock btsl $0x18,(%rdi)
+0xffffffffa00b605e <jbd2_journal_grab_journal_head+14>: jb     0xffffffffa00b6079 <jbd2_journal_grab_journal_head+41>
+0xffffffffa00b6060 <jbd2_journal_grab_journal_head+16>: mov    (%rdi),%rax
+0xffffffffa00b6063 <jbd2_journal_grab_journal_head+19>: test   $0x20000,%eax
+0xffffffffa00b6068 <jbd2_journal_grab_journal_head+24>: je     0xffffffffa00b6087 <jbd2_journal_grab_journal_head+55>
+0xffffffffa00b606a <jbd2_journal_grab_journal_head+26>: mov    0x40(%rdi),%rax  <== jh is NULL(b_private's offset in 'struct buffer_head' is 0x40)
+0xffffffffa00b606e <jbd2_journal_grab_journal_head+30>: addl   $0x1,0x8(%rax)  <== "jh->b_jcount++" crash!!!
 
-If we need to use the silent options, maybe we can enable them 
-separately according to 
-MACH_JZ4740/MACH_JZ4770/MACH_JZ4780/MACH_X1000/MACH_X1830.
+According to the logical in above code, buffer_head has an attached
+journal_head("buffer_jbd(bh)" is true), but buffer_head doesn't record
+it(bh->b_private is NULL).
+So testing if "buffer_jbd(bh)" is true can't guarantee "bh->b_private"
+is not NULL under the abnormal test case.
 
-In fact, I think X1000 and X1830 need to enable this driver in most 
-cases, because the current test has found that use TCU to provide 
-clocksource and clockevent will cause data loss/error when transmitting 
-data through spi or ethernet. And these errors no longer appear after 
-using OST.
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+---
+ fs/jbd2/journal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks and best regards!
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index e494443..cb661d4 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2535,7 +2535,7 @@ struct journal_head *jbd2_journal_grab_journal_head(struct buffer_head *bh)
+ 	struct journal_head *jh = NULL;
+ 
+ 	jbd_lock_bh_journal_head(bh);
+-	if (buffer_jbd(bh)) {
++	if (buffer_jbd(bh) && bh2jh(bh)) {
+ 		jh = bh2jh(bh);
+ 		jh->b_jcount++;
+ 	}
+-- 
+1.8.3.1
 
-
->
->>
->>>  This driver has some origins from "INGENIC_TIMER" driver and
->>>  "INGENIC_OST" driver.
->>>  Early Ingenic processors used TCU (timer/counter unit, has 6 or 8
->>>  generic timer channels) to provide clocksource and clockevent (both 
->>> with
->>>  only 16bit precision). This part of the processor can only use
->>>  "INGENIC_TIMER" driver.
->>>
->>>  Later processors provide an independent 32bit or 64bit timer channel
->>>  (still under TCU, known as ost channel, this channel can not generate
->>>  interrupt) to provid higher precision clocksource. The "INGENIC_OST"
->>>  driver is for this channel. These processors can use "INGENIC_TIMER"
->>>  driver, but using "INGENIC_OST" driver to provide higher precision
->>>  clocksource would be a better choice (clockevent still needs to be
->>>  provided by generic timer channel of TCU, and still 16bit precision).
->>>
->>>  And the recent processors provide a SYSOST components, it is 
->>> independent
->>>  from TCU, including a 64bit timer channel for clocksource and a 32bit
->>>  timer channel for clockevent. Although these processors can also use
->>>  "INGENIC_TIMER" driver, but the better choice is completely 
->>> independent
->>>  use of "INGENIC_SYSOST" driver to provide higher precision clocksource
->>>  and clockevent.
->>
->> Ok, the rating should do the job then.
->>
->> Thanks for the explanation.
->>
->>>  You may have already noticed that this independent SYSOST component is
->>>  like an upgraded and streamlined TCU, which only retains one generic
->>>  timer channel that can generate interrupts, upgrade it from 16bit to
->>>  32bit, and then retain the 64bit ost channel. so the driver code and
->>>  Kconfig code of this patch is largely referenced
->>>  "INGENIC_TIMER" driver and "INGENIC_OST" driver.
->>>
->>>  Thanks and best regards!
->>>
->>>>>  +    default MACH_INGENIC
->>>>>  +    depends on MIPS || COMPILE_TEST
->>>>>  +    depends on COMMON_CLK
->>>>>  +    select MFD_SYSCON
->>>>>  +    select TIMER_OF
->>>>>  +    select IRQ_DOMAIN
->>>>>  +    help
->>>>>  +      Support for the SYSOST of the Ingenic X Series SoCs.
->>>>>  +
->>>>  [ ... ]
->>>>
->>>>
->>
->>
->> -- 
->> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
->>
->> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
->> <http://twitter.com/#!/linaroorg> Twitter |
->> <http://www.linaro.org/linaro-blog/> Blog
->
