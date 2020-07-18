@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CE0224D49
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22570224D50
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbgGRRRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 13:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
+        id S1728333AbgGRRXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 13:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgGRRRR (ORCPT
+        with ESMTP id S1727926AbgGRRXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 13:17:17 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E12C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:17:16 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a9so2345628pjd.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:17:16 -0700 (PDT)
+        Sat, 18 Jul 2020 13:23:37 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EED9C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:23:37 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s189so8219710pgc.13
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=x9/2xXqwMMIu02V9Vx1i6FLVJT0HyPCTnfOosfXOgaE=;
-        b=ZmYPJrBUjNKjox4NeljunjKcZnnBt381R+Y3talOfWMy350/GqtfWzR+C/0U5VL655
-         43SRvWcRjhK+5Mi/BEiOLCbTWf5Wu3G0hqZx5KPtfn9E9IaCJrMMnl1XyxSh79vSFcTP
-         9VzUagMa36hnuLwHjTAbCOQVNEhkEmV77yV2LB2WouQ4ecnWJgVJLGETFa/ElAHeUE26
-         H3xABIR+F8PswuSXDNENHnFy7B0XnW4QvowXg3TbSNg7vyhZpX5UClydnK2haFsnP93g
-         Cuhmw3SsOEyFckbVyg+1uV7gl9N3cZNy7um3aP+3k0UuqKO3wktU0eGUMav8D9677/6p
-         8seg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HcAfWAuJs7AnNRSRiy1oRmYmT0Pdkox9ao1uD5Mkx/Y=;
+        b=bPWyxXN1h5W20gdA0xK4HiU6GdVqO7ebCxVKv/03F7Eslhe8nhI1NzX/aujdjP6Rox
+         5yvEoXivKhEiAbamNsQOJxUCMrZh9rTqqplKu8CcUo67FpJJDHI/dq99hxulvEKpOk/j
+         UyOpIMZXhrQ/57rfjN0PS950oJWPNHKIjjqI5DIlK/kji2llpmjLZ83y40KbckMFnDq0
+         dnBLavB7dA5j0+LWh68SXr6moLXt6YvgIyDSMevXlgEuX2qIh2+KXcKXHSGD9Nqg6IMx
+         9Cd1Rm6DZoqrivpcrxjp8O/A8EXCIfFvq2l/wwk6ITipgFSFwjawn+TqD5ND5gOj78IG
+         XqJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x9/2xXqwMMIu02V9Vx1i6FLVJT0HyPCTnfOosfXOgaE=;
-        b=JGigLFCBcBRoAelOZYQkqH6LwSlbD5D/Pt4ZtOKAqFfwh+R+3sR/ol0/s3Xg2c7K6A
-         HmgGvPVZpCyP2D39vkTTxmTjspu7/Qzk5haxr/KYEMAkMp9rWSIl6EPthtyLJmVKEYYs
-         pgof853jqb6XqlF27LOMgBa+lHLH5dASqsdC0xLOeZBZXDVAFlhdLLXi1a09BLop3SyY
-         ac5zlO0UOyT7rbMpwz9+E2UOAIwuNjSlLdJ7znKt83+YKcLnuocuAf3qHPTqareE1lXU
-         9/PluclMGJq1i5DiD9xHAXNGMxxeA20xFex3zifELKWMvg27Qtr2i+mncHeCC4gRcRKt
-         9Wbw==
-X-Gm-Message-State: AOAM531uUE/BOtG44x9DJYu0B6QPZvFqN5VqlqHvojl4u8QcxHByp3bw
-        UoWnDSBwh5Qmt3rWOVIjetk=
-X-Google-Smtp-Source: ABdhPJzA3RY/xQJRaNa31hOIDeekxbCxvMbScjxAzsMkHADaeWF07zK6Wn7kuGT9XTzSZOBRC47OSA==
-X-Received: by 2002:a17:90b:24a:: with SMTP id fz10mr15055235pjb.36.1595092636134;
-        Sat, 18 Jul 2020 10:17:16 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d18sm6080726pjv.25.2020.07.18.10.17.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 18 Jul 2020 10:17:15 -0700 (PDT)
-Date:   Sat, 18 Jul 2020 10:17:14 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     iommu@lists.linux-foundation.org,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 3/5] dma-mapping: make support for dma ops optional
-Message-ID: <20200718171714.GA237687@roeck-us.net>
-References: <20200708152449.316476-1-hch@lst.de>
- <20200708152449.316476-4-hch@lst.de>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HcAfWAuJs7AnNRSRiy1oRmYmT0Pdkox9ao1uD5Mkx/Y=;
+        b=ntAnVpPoa93kLQY55FJEnIXYp0ntMGnki4bm9pNB8cY5cz+rIJ2SisbplP7tWDG2el
+         PeI7n6V10/CB9H1AXr4qIWcMjrHOGbUgbIQowYqVqco6pHnJzz0YMpoIctUdbg5kgzPG
+         lRcoSAC+BSIHEJ01IvxPMu5xM5C0FZ+TSrdNPC380mj4utonnRxNYMcCyZFhyKe1Gy7H
+         YftgJK6W4rwDcw2LN4KIw3KcVK01vGNbzSdfKoNYdmogrSD4SxskT1wX7islbDnvMtdL
+         +ePfG1lSL05xjFnga2w7AXkKJWx7GQXRsf2sWaQkscUHtVGFdaRU5Bitb8FGaf+4MFN0
+         BaEQ==
+X-Gm-Message-State: AOAM532ahrBiHgPa33C9Up2BFUv+biMcTEQgrbUgGxMb+CydJghQDjJ7
+        hlOVlSV7gherCeONGVM1Kf4m93usMuw=
+X-Google-Smtp-Source: ABdhPJzgMIaNsupHLN9mrwUkeIirNGygTkZHn+ssWWxkmgekHUpklVBeI7PFsnj5KE5n7seJQVZFtA==
+X-Received: by 2002:a63:7357:: with SMTP id d23mr13162695pgn.393.1595093016518;
+        Sat, 18 Jul 2020 10:23:36 -0700 (PDT)
+Received: from saurav ([203.109.108.46])
+        by smtp.gmail.com with ESMTPSA id q20sm10903991pfn.111.2020.07.18.10.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 10:23:35 -0700 (PDT)
+Date:   Sat, 18 Jul 2020 22:53:30 +0530
+From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
+To:     Ian Abbott <abbotti@mev.co.uk>, gregkh@linuxfoundation.org
+Cc:     hsweeten@visionengravers.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] Staging: comedi: driver: Remove condition with no effect
+Message-ID: <20200718172330.GA27103@saurav>
+References: <20200712070628.GA18340@saurav>
+ <20200713133438.GA3122574@kroah.com>
+ <7653a794-d5ed-5d9f-95af-745a88769092@mev.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708152449.316476-4-hch@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <7653a794-d5ed-5d9f-95af-745a88769092@mev.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 05:24:47PM +0200, Christoph Hellwig wrote:
-> Avoid the overhead of the dma ops support for tiny builds that only
-> use the direct mapping.
+On Mon, Jul 13, 2020 at 02:41:19PM +0100, Ian Abbott wrote:
+> On 13/07/2020 14:34, Greg KH wrote:
+> > On Sun, Jul 12, 2020 at 12:36:28PM +0530, Saurav Girepunje wrote:
+> > > Remove below warning in das1800.c
+> > > WARNING: possible condition with no effect (if == else)
+> > > 
+> > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> > > ---
+> > >   drivers/staging/comedi/drivers/das1800.c | 6 ------
+> > >   1 file changed, 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/comedi/drivers/das1800.c b/drivers/staging/comedi/drivers/das1800.c
+> > > index f16aa7e9f4f3..7ab72e83d3d0 100644
+> > > --- a/drivers/staging/comedi/drivers/das1800.c
+> > > +++ b/drivers/staging/comedi/drivers/das1800.c
+> > > @@ -1299,12 +1299,6 @@ static int das1800_attach(struct comedi_device *dev,
+> > >   			outb(DAC(i), dev->iobase + DAS1800_SELECT);
+> > >   			outw(0, dev->iobase + DAS1800_DAC);
+> > >   		}
+> > > -	} else if (board->id == DAS1800_ID_AO) {
+> > > -		/*
+> > > -		 * 'ao' boards have waveform analog outputs that are not
+> > > -		 * currently supported.
+> > > -		 */
+> > > -		s->type		= COMEDI_SUBD_UNUSED;
+> > 
+> > What gave that warning?  The comment should show you why this is good to
+> > keep as-is, right?
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-For ppc:pmac32_defconfig and other configurations, this patch results in:
-
-Error log:
-drivers/macintosh/macio_asic.c: In function 'macio_add_one_device':
-drivers/macintosh/macio_asic.c:393:16: error: 'struct device' has no member named 'dma_ops'
-  393 |  dev->ofdev.dev.dma_ops = chip->lbus.pdev->dev.dma_ops;
-      |                ^
-drivers/macintosh/macio_asic.c:393:47: error: 'struct device' has no member named 'dma_ops'
-  393 |  dev->ofdev.dev.dma_ops = chip->lbus.pdev->dev.dma_ops;
-      |                                               ^
-
-Bisect log attached.
-
-Guenter
-
----
-# bad: [aab7ee9f8ff0110bfcd594b33dc33748dc1baf46] Add linux-next specific files for 20200717
-# good: [11ba468877bb23f28956a35e896356252d63c983] Linux 5.8-rc5
-git bisect start 'HEAD' 'v5.8-rc5'
-# bad: [4d55a7a1298d197755c1a0f4512f56917e938a83] Merge remote-tracking branch 'crypto/master'
-git bisect bad 4d55a7a1298d197755c1a0f4512f56917e938a83
-# bad: [49485850238eb3fc72aac951e47e33e367aafbab] Merge remote-tracking branch 'hid/for-next'
-git bisect bad 49485850238eb3fc72aac951e47e33e367aafbab
-# bad: [4406fe306759d700f2b2aa8adf890a7d7ef064ae] Merge remote-tracking branch 'tegra/for-next'
-git bisect bad 4406fe306759d700f2b2aa8adf890a7d7ef064ae
-# bad: [27f18f0e00ed1f15ee55d479216c874561b6b70a] Merge remote-tracking branch 'arm-soc/for-next'
-git bisect bad 27f18f0e00ed1f15ee55d479216c874561b6b70a
-# good: [a23a793b03f465cf2222fa29e7f81d732a6f6fdf] Merge remote-tracking branch 'usb-chipidea-fixes/ci-for-usb-stable'
-git bisect good a23a793b03f465cf2222fa29e7f81d732a6f6fdf
-# good: [05d94a2de41e8d9840d9749d553febdcf99cb0e5] Merge branch 'arm/drivers' into for-next
-git bisect good 05d94a2de41e8d9840d9749d553febdcf99cb0e5
-# good: [5fef5dc17f097794288acb098ccc80eb91142bf4] Merge branch 'for-next/mte' into for-next/core
-git bisect good 5fef5dc17f097794288acb098ccc80eb91142bf4
-# good: [3c7f84b2248457030a903813e4af71d80141d663] Merge remote-tracking branch 'fpga-fixes/fixes'
-git bisect good 3c7f84b2248457030a903813e4af71d80141d663
-# bad: [88ff79e455afa3ac90739da27e24f655a965e3cf] Merge remote-tracking branch 'dma-mapping/for-next'
-git bisect bad 88ff79e455afa3ac90739da27e24f655a965e3cf
-# good: [7c4d50d4973b40c53ef6c592b41b0473127e6762] kbuild: do not export LDFLAGS_vmlinux
-git bisect good 7c4d50d4973b40c53ef6c592b41b0473127e6762
-# good: [c45db534668104ed5112ed371526db6096ac5742] Merge remote-tracking branch 'kbuild/for-next'
-git bisect good c45db534668104ed5112ed371526db6096ac5742
-# bad: [249542813648f7a278895ad25674d3e147f49ad6] dma-mapping: make support for dma ops optional
-git bisect bad 249542813648f7a278895ad25674d3e147f49ad6
-# good: [b4174173005972f8f6497883d08d87e0aba1b604] dma-mapping: inline the fast path dma-direct calls
-git bisect good b4174173005972f8f6497883d08d87e0aba1b604
-# first bad commit: [249542813648f7a278895ad25674d3e147f49ad6] dma-mapping: make support for dma ops optional
+> One option is to move the comment into the '} else {' part that follows this
+> part.
+> 
+> -- 
+> -=( Ian Abbott <abbotti@mev.co.uk> || Web: www.mev.co.uk )=-
+> -=( MEV Ltd. is a company registered in England & Wales. )=-
+> -=( Registered number: 02862268.  Registered address:    )=-
+> -=( 15 West Park Road, Bramhall, STOCKPORT, SK7 3JZ, UK. )=-
+@gregkh : Got the warning using coccinelle. 
+@Ian: Yes, we can move comment to else part.
