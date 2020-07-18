@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4FD224756
+	by mail.lfdr.de (Postfix) with ESMTP id D7877224757
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 02:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgGRAGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 20:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S1728803AbgGRAGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 20:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727981AbgGRAGp (ORCPT
+        with ESMTP id S1727981AbgGRAGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 20:06:45 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12F5C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:06:45 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id a25so7985339pfl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:06:45 -0700 (PDT)
+        Fri, 17 Jul 2020 20:06:48 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7201CC0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:06:48 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id m81so13320228ybf.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:06:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=DKGRFKWlyGqgvFuZLsoVKcLXRUmmTtOYHyvcndsSP+U=;
-        b=eaB2T02EB8g0y1xZXeHPi2mGLg8poIqpVgJ7BZUCLc/EEq3S9kRsfSNNVOCKuDD0Tp
-         x74rVZSROfJKsOJm9ugF+T1Hp/iX0XD+d22Er6E2Ibg96Ah5e8rAy3JrWpf9H2Z7OG+d
-         YfBGYGnHBr3s3ccaS/U13rr/1gTn2YsvYde1+xHImpDp53KqpLwJSlZ2wApaMUKIJsf3
-         crIVaak6JWU7DHb9Yi5DC8e+5EFRBpqVcvzTXx4P24HIAMBgrJPX7czTcaMGSWVzUDhV
-         MEo1D+Pw+zcwU39+Qrp+uVsSPuLqyQXoE6/DNJ8WbV/EYVgi81q5pq3cK0C/DF/L+LlF
-         vZRw==
+        bh=9lliIP397BkHUMIYOIiz1lmKlM09rTtKqti3dJZq5NI=;
+        b=Pc3OXUSRMtC51Xe5/XMfqVgGHTzqEztWThvDswR20yBvK4q20Xw3ZNE+8dkR19OmDD
+         gDksFj5HOd268anWSSimT3Gn9d+v7SfcYJjjCEJY6k3KED8/Qg0cUFL25Q3MLk3u6WzP
+         6SQOsdECq3m8nfn4B/G+qcw93FKsucGX6KBj42CnWiZKaOz2sMFI1iIBqIg8B/YnRj6U
+         VozP0QbaLKiXIdIxryY+7xaJJEGEd8+z9ZmQZXSjBMWae0vTANsynMnqxGRMmmAY2Nz7
+         y01D9HdzUEov/4to4JpMNjFHQb5ZWpIPNEGfCjmvUCtCL/gSUXe19cgBOBtkE/HRrupU
+         dKKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=DKGRFKWlyGqgvFuZLsoVKcLXRUmmTtOYHyvcndsSP+U=;
-        b=PUQoaStQWOI/OBFnGW0U2Zpp9v+0SVDQTebEuIRU0eVAi15oJ369mdMd7iNyOt84bo
-         mQjnnpZgmySvR14wn16x/S7AR5/UiAcPbVRKCt+M9nE05wa8WsmyLI48oX60NCZvm2oY
-         IShiEFwtGqJTci31qKD5LUSLfdwcmoJWSAWZibofL9+EfQfXuDcjc/Gp8t0qTW8AuemE
-         DpK5z1JQiZm6alWCYUtjHqH8DdBBI+4XwpAqMgZE+kc2Kcu6X+SAqnoFhb2BU0q9UHAD
-         R0OL+ooqtKRnQ/yhRVvZI5TPj5sEHHsRRaUzbniLh1o/O5F3XGDUi6SmUJi70YUihlyP
-         GvGA==
-X-Gm-Message-State: AOAM530T44ptCceXjAXgP74x7nd4thvrbfQn1o5nkAt0zOYk7K7HwK4h
-        7XVle31lChkSjEJkw53jBcTFHfjLPajDM0A=
-X-Google-Smtp-Source: ABdhPJw0Oq4D37hE7WRVSZZsPHqDRMN/reFgLscACQLoMocTAkUGaDa91/twwV300uYzLONkac+Q5pfdV9Natf0=
-X-Received: by 2002:a17:90a:32cb:: with SMTP id l69mr11006149pjb.205.1595030805133;
- Fri, 17 Jul 2020 17:06:45 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 17:06:35 -0700
+        bh=9lliIP397BkHUMIYOIiz1lmKlM09rTtKqti3dJZq5NI=;
+        b=FEuTXODZhIzUSknPHKnof2JxAMlMyfWBKV8tFiBkDLo8PdSVP8nyeWiJch5YKJgvtt
+         KPAUD886at+abnIMw0rDJKv77Hmf374EothyutDsDCvhe3ZxwRc5pL5HvIvCSIkQ++EO
+         ap5sIgu+xkGxq5vU2lqosAuVwrRoLK0PQjZWntkiNMBxA9dZpb3q36in/zmB0gXMwwN8
+         YSLNi//UMlO8Cb94EPaW5JOeuT4OdDmad22xjXsJbd0FVDvf5bhB3u1+vyY7I6KzzSH2
+         85ogCbKdEXgBIqtU2y465UNr67TH9DgbB3y8uX9yWGC/tvupCCG1/9HeDMGknsijy+UY
+         UvBA==
+X-Gm-Message-State: AOAM531nR4kmi0BaayLJD2q52zWEAomhiGYyYzWqG5clxNo59gDo/Lxy
+        XuHH1t7VF+b4sRm0mkyeTDLBHtYaLunNvLc=
+X-Google-Smtp-Source: ABdhPJzaoGGT2QOhK85hcWY30M8zasDny3EJDQN0UI4RBnyRl5EEGtO+6Y9IPCYksqge9OpTXg7V9ykOWjui2KA=
+X-Received: by 2002:a25:abc5:: with SMTP id v63mr17904281ybi.148.1595030807668;
+ Fri, 17 Jul 2020 17:06:47 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 17:06:36 -0700
 In-Reply-To: <20200718000637.3632841-1-saravanak@google.com>
-Message-Id: <20200718000637.3632841-3-saravanak@google.com>
+Message-Id: <20200718000637.3632841-4-saravanak@google.com>
 Mime-Version: 1.0
 References: <20200718000637.3632841-1-saravanak@google.com>
 X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v3 2/4] irqchip/qcom-pdc: Switch to using IRQCHIP_PLATFORM_DRIVER
- helper macros
+Subject: [PATCH v3 3/4] irqchip/mtk-sysirq: Convert to a platform driver
 From:   Saravana Kannan <saravanak@google.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
@@ -72,52 +71,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch the driver to use the helper macros. In addition to reducing the
-number of lines, this also adds module unload protection (if the driver
-is compiled as a module) by switching from module_platform_driver to
-builtin_platform_driver.
+This driver can work as a platform driver. So covert it to a platform
+driver.
 
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/irqchip/qcom-pdc.c | 26 +++-----------------------
- 1 file changed, 3 insertions(+), 23 deletions(-)
+ drivers/irqchip/irq-mtk-sysirq.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index 5b624e3295e4..c1c5dfad57cc 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -432,28 +432,8 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
+diff --git a/drivers/irqchip/irq-mtk-sysirq.c b/drivers/irqchip/irq-mtk-sysirq.c
+index 6ff98b87e5c0..7299c5ab4d10 100644
+--- a/drivers/irqchip/irq-mtk-sysirq.c
++++ b/drivers/irqchip/irq-mtk-sysirq.c
+@@ -231,4 +231,6 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
+ 	kfree(chip_data);
  	return ret;
  }
- 
--static int qcom_pdc_probe(struct platform_device *pdev)
--{
--	struct device_node *np = pdev->dev.of_node;
--	struct device_node *parent = of_irq_find_parent(np);
--
--	return qcom_pdc_init(np, parent);
--}
--
--static const struct of_device_id qcom_pdc_match_table[] = {
--	{ .compatible = "qcom,pdc" },
--	{}
--};
--MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
--
--static struct platform_driver qcom_pdc_driver = {
--	.probe = qcom_pdc_probe,
--	.driver = {
--		.name = "qcom-pdc",
--		.of_match_table = qcom_pdc_match_table,
--		.suppress_bind_attrs = true,
--	},
--};
--module_platform_driver(qcom_pdc_driver);
-+IRQCHIP_PLATFORM_DRIVER_BEGIN(qcom_pdc)
-+IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
-+IRQCHIP_PLATFORM_DRIVER_END(qcom_pdc)
- MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
- MODULE_LICENSE("GPL v2");
+-IRQCHIP_DECLARE(mtk_sysirq, "mediatek,mt6577-sysirq", mtk_sysirq_of_init);
++IRQCHIP_PLATFORM_DRIVER_BEGIN(mtk_sysirq)
++IRQCHIP_MATCH("mediatek,mt6577-sysirq", mtk_sysirq_of_init)
++IRQCHIP_PLATFORM_DRIVER_END(mtk_sysirq)
 -- 
 2.28.0.rc0.105.gf9edc3c819-goog
 
