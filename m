@@ -2,41 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D40E224D08
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452B2224CFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgGRQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 12:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726346AbgGRQaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 12:30:14 -0400
-Received: from 151.80.89.196 (unknown [IPv6:2001:41d0:303:46d2::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36508C0619D2;
-        Sat, 18 Jul 2020 09:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=click; d=offenline.biz;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID;
- bh=WrCb5nGko31fd5GUgjGBj5htdBM=;
- b=6N71k5xG5PyoiVngaOD9chOD/0GkwhKZ91ZkNqcFa3fY7suVU/8QYw/ABnPSRg7Zi5ocgvii2iDM
-   V9/LMjHNtZcxA2Pj0cKDXmHQte5MlnvPJooGxYGYOU4p1eWIvn8J/JF4CG9biQhABJU35vybDX5P
-   ghK31lLAwQqtw4UJIxA=
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1727819AbgGRQYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 12:24:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726604AbgGRQYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 12:24:10 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0150720734;
+        Sat, 18 Jul 2020 16:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595089449;
+        bh=km2mzwtZ+FjNhtaMQXEWg0EuxYlrDbyzGAdxsGPwbwA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jqNDWhd3xFmC2b0tXUdXJ+AsInllep5JA5RNocblgXsd5dYIBfk8+dsh/L9QtLvr6
+         PxfXaJqz2AzdvusBty/jfjCgQXcEKmdIAyUNDx2kZTWPlS0ugCCv6BBH8z0iOnvY87
+         dDkXVwEogi7zB+ISmYgs1VjILf79dte4Umo1ONJs=
+Date:   Sat, 18 Jul 2020 19:23:59 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 3/7] vmalloc: Add text_alloc() and text_free()
+Message-ID: <20200718162359.GA2919062@kernel.org>
+References: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
+ <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Why continued silence 2
-To:     Recipients <info@lee.org>
-From:   "convy" <info@lee.org>
-Date:   Sat, 18 Jul 2020 17:22:51 +0100
-Reply-To: convy442121@gmail.com
-Message-ID: <0.0.9A.5EE.1D65D1FFA298BBA.0@151.80.89.196>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Did you receive my previous email regarding your family inheritance?
-Reply strictly through: convy0090@gmail.com
-Best Regards,
-Ruben CONVY
+On Fri, Jul 17, 2020 at 06:04:17AM +0300, Jarkko Sakkinen wrote:
+> Introduce functions for allocating memory for dynamic trampolines, such
+> as kprobes. An arch can promote the availability of these functions with
+> CONFIG_ARCH_HAS_TEXT_ALLOC. Provide default/fallback implementation
+> wrapping module_alloc() and module_memfree().
+> 
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  include/linux/vmalloc.h | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 0221f852a7e1..e981436e30b6 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -9,6 +9,7 @@
+>  #include <asm/page.h>		/* pgprot_t */
+>  #include <linux/rbtree.h>
+>  #include <linux/overflow.h>
+> +#include <linux/moduleloader.h>
+>  
+>  #include <asm/vmalloc.h>
+>  
+> @@ -249,4 +250,26 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+>  int register_vmap_purge_notifier(struct notifier_block *nb);
+>  int unregister_vmap_purge_notifier(struct notifier_block *nb);
+>  
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +/*
+> + * Allocate memory to be used for dynamic trampoline code.
+> + */
+> +void *text_alloc(unsigned long size);
+> +
+> +/*
+> + * Free memory returned from text_alloc().
+> + */
+> +void text_free(void *region);
+> +#else
+> +static inline void *text_alloc(unsigned long size)
+> +{
+> +	return module_alloc(size);
+> +}
+> +
+> +static inline void text_free(void *region)
+> +{
+> +	module_memfree(region);
+> +}
+
+Using module_alloc() as the default implementation of generic
+text_alloc() does not sound right to me.
+
+I would suggest rename module_alloc() to text_alloc() on x86, as Peter
+proposed and then add text_alloc_kprobes() that can be overridden by the
+architectures. x86 could use text_alloc(), arm64 vmalloc() with options
+of their choice and the fallback would remain module_alloc(). Something
+like (untested) patch below:
+
+
+From 928b6903e76ebf5790fc415f9eed390e400e5bc3 Mon Sep 17 00:00:00 2001
+From: Mike Rapoport <rppt@linux.ibm.com>
+Date: Sat, 18 Jul 2020 19:13:02 +0300
+Subject: [PATCH] kprobes: introduce text_alloc_kprobes() and
+ text_free_kprobes()
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/Kconfig                       |  5 ++++-
+ arch/arm64/Kconfig                 |  1 +
+ arch/arm64/kernel/probes/kprobes.c | 10 ++++++++--
+ arch/x86/Kconfig                   |  3 ++-
+ arch/x86/kernel/kprobes/core.c     |  9 ++++-----
+ include/linux/kprobes.h            | 17 +++++++++++++++--
+ kernel/kprobes.c                   |  8 ++++----
+ 7 files changed, 38 insertions(+), 15 deletions(-)
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 8cc35dc556c7..c0589b3b3225 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -61,7 +61,7 @@ config OPROFILE_NMI_TIMER
+ 
+ config KPROBES
+ 	bool "Kprobes"
+-	depends on MODULES
++	depends on MODULES || HAVE_KPROBES_TEXT_ALLOC
+ 	depends on HAVE_KPROBES
+ 	select KALLSYMS
+ 	help
+@@ -186,6 +186,9 @@ config HAVE_IOREMAP_PROT
+ config HAVE_KPROBES
+ 	bool
+ 
++config HAVE_KPROBES_TEXT_ALLOC
++	bool
++
+ config HAVE_KRETPROBES
+ 	bool
+ 
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 66dc41fd49f2..abc0538b13ef 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -177,6 +177,7 @@ config ARM64
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_KPROBES
++	select HAVE_KPROBES_TEXT_ALLOC
+ 	select HAVE_KRETPROBES
+ 	select HAVE_GENERIC_VDSO
+ 	select IOMMU_DMA if IOMMU_SUPPORT
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 5290f17a4d80..fac8c6020040 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -118,13 +118,19 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ 	return 0;
+ }
+ 
+-void *alloc_insn_page(void)
++void *text_alloc_kprobes(unsigned long size)
+ {
+-	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
++	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+ 			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+ 			NUMA_NO_NODE, __builtin_return_address(0));
+ }
+ 
++void text_free_kprobes(void *mem)
++{
++	lockdep_assert_irqs_enabled();
++	vfree(mem);
++}
++
+ /* arm kprobe: install breakpoint in text */
+ void __kprobes arch_arm_kprobe(struct kprobe *p)
+ {
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 883da0abf779..d08b92f91531 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -190,6 +190,7 @@ config X86
+ 	select HAVE_KERNEL_XZ
+ 	select HAVE_KPROBES
+ 	select HAVE_KPROBES_ON_FTRACE
++	select HAVE_KPROBES_TEXT_ALLOC
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+ 	select HAVE_KRETPROBES
+ 	select HAVE_KVM
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index ada39ddbc922..a3e8f01c62d4 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -418,12 +418,11 @@ static int prepare_boost(kprobe_opcode_t *buf, struct kprobe *p,
+ 	return len;
+ }
+ 
+-/* Make page to RO mode when allocate it */
+-void *alloc_insn_page(void)
++void *text_alloc_kprobes(unsigned long size)
+ {
+ 	void *page;
+ 
+-	page = module_alloc(PAGE_SIZE);
++	page = text_alloc(size);
+ 	if (!page)
+ 		return NULL;
+ 
+@@ -444,9 +443,9 @@ void *alloc_insn_page(void)
+ }
+ 
+ /* Recover page to RW mode before releasing it */
+-void free_insn_page(void *page)
++void text_free_kprobes(void *page)
+ {
+-	module_memfree(page);
++	text_free(page);
+ }
+ 
+ static int arch_copy_kprobe(struct kprobe *p)
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 6adf90f248d7..dbc9c71d4ec4 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -27,6 +27,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/mutex.h>
+ #include <linux/ftrace.h>
++#include <linux/moduleloader.h>
+ #include <asm/kprobes.h>
+ 
+ #ifdef CONFIG_KPROBES
+@@ -374,8 +375,20 @@ int enable_kprobe(struct kprobe *kp);
+ 
+ void dump_kprobe(struct kprobe *kp);
+ 
+-void *alloc_insn_page(void);
+-void free_insn_page(void *page);
++#ifdef CONFIG_HAVE_KPROBES_TEXT_ALLOC
++void *text_alloc_kprobes(unsigned long size);
++void text_free_kprobes(void *page);
++#else
++static inline void *text_alloc_kprobes(unsigned long size)
++{
++	return module_alloc(size);
++}
++
++static inline void text_free_kprobes(void *page)
++{
++	module_memfree(page);
++}
++#endif
+ 
+ #else /* !CONFIG_KPROBES: */
+ 
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 2e97febeef77..c4f107682250 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -109,14 +109,14 @@ enum kprobe_slot_state {
+ 	SLOT_USED = 2,
+ };
+ 
+-void __weak *alloc_insn_page(void)
++static void *alloc_insn_page(void)
+ {
+-	return module_alloc(PAGE_SIZE);
++	return text_alloc_kprobes(PAGE_SIZE);
+ }
+ 
+-void __weak free_insn_page(void *page)
++static void free_insn_page(void *page)
+ {
+-	module_memfree(page);
++	text_free_kprobes(page);
+ }
+ 
+ struct kprobe_insn_cache kprobe_insn_slots = {
+-- 
+2.26.2
+
+
+> +#endif
+> +
+>  #endif /* _LINUX_VMALLOC_H */
+> -- 
+> 2.25.1
+> 
+
+-- 
+Sincerely yours,
+Mike.
