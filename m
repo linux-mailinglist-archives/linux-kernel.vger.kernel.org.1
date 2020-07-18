@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FB4224C44
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 17:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B113224C47
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 17:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgGRPIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 11:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgGRPIQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 11:08:16 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB735C0619D2;
-        Sat, 18 Jul 2020 08:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+RnjnSg97VRVKcHoMSxOG0EgfEJNic76KFl9cOGSwKk=; b=a2QK1vxwa8FyJw0fbents0zYc
-        C2Jpn8DLVDecCT9sFPlXcDpmYUyWdwjY8evl8JiBuoPSdgVlGq+TGOnS2xEqXxKeUXCkihRZGIlkV
-        uaxPFVf8AE+xDK0pm4U7Db+//2HJ3BpzfssRyP9rieSnMa1w+zT9driTurxlXpqhmDEoV1PNkk3Rh
-        RaEVV52MeZrfyPawCyO7kAF5+d2/UnkA600MfBoOEavPoI3iwW2dIZiigq7Bgh1YzCQJH2fz/zlyT
-        19P2yICoMX6YD6ybHxYkbPneYsZ0JlU1tXCrAwCfbEFJyn545kEo9BHpgmq0Wgdf6audicKttZk5p
-        jqGpE1TMA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41112)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jwoRc-0001fg-Td; Sat, 18 Jul 2020 16:08:08 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jwoRZ-00031g-JG; Sat, 18 Jul 2020 16:08:05 +0100
-Date:   Sat, 18 Jul 2020 16:08:05 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     John Crispin <john@phrozen.org>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: net: dsa: qca8k: Add PORT0_PAD_CTRL
- properties
-Message-ID: <20200718150805.GR1551@shell.armlinux.org.uk>
-References: <2e1776f997441792a44cd35a16f1e69f848816ce.1594668793.git.mnhagan88@gmail.com>
- <ea0a35ed686e6dace77e25cb70a8f39fdd1ea8ad.1594668793.git.mnhagan88@gmail.com>
- <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <ac7f5f39-9f83-64c0-d8d5-9ea059619f67@gmail.com>
- <53851852-0efe-722e-0254-8652cdfea8fc@phrozen.org>
- <20200718132011.GQ1551@shell.armlinux.org.uk>
- <20200718144435.GA1375379@lunn.ch>
+        id S1726828AbgGRPJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 11:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726155AbgGRPJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 11:09:25 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B03812067D;
+        Sat, 18 Jul 2020 15:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595084965;
+        bh=JEeQ6EAJdaIpOY15yE8+2poMV0kARRFf/ZiGMh4qNLM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GyJDid9F+uZJehWRKqkaXT9HYU2HjP0UKPhiMKMhSoPyH3c9KsylM4JHI3iuZLaSb
+         T37x3pyOcipBZq/4CrQeEtiKSu0z95XDtbI9AOFxoaeiLp0Ej0+s/rvUSqR994CzpQ
+         7FOi5urFmmWq+38N+u2TEVLe78W8tDagTvjTHgtg=
+Date:   Sat, 18 Jul 2020 16:09:20 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Stefan Popa <stefan.popa@analog.com>
+Subject: Re: [PATCH 23/30] iio: dac: ad5758: Move and fix-up kerneldoc
+ header and demote unworthy kerneldoc
+Message-ID: <20200718160920.2f67428c@archlinux>
+In-Reply-To: <20200716135928.1456727-24-lee.jones@linaro.org>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-24-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200718144435.GA1375379@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 04:44:35PM +0200, Andrew Lunn wrote:
-> On Sat, Jul 18, 2020 at 02:20:11PM +0100, Russell King - ARM Linux admin wrote:
-> > On Fri, Jul 17, 2020 at 10:44:19PM +0200, John Crispin wrote:
-> > > in regards to the sgmii clk skew. I never understood the electrics fully I
-> > > am afraid, but without the patch it simply does not work. my eletcric foo is
-> > > unfortunately is not sufficient to understand the "whys" I am afraid.
-> > 
-> > Do you happen to know what frequency the clock is?  Is it 1.25GHz or
-> > 625MHz?  It sounds like it may be 1.25GHz if the edge is important.
+On Thu, 16 Jul 2020 14:59:21 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> Kerneldoc headers need to come directly before the function/struct
+> that they are documenting.  Also fix some missing descriptions and
+> misspellings.
 > 
-> I'm also a bit clueless when it comes to these systems.
+> Fixes the following W=1 kernel build warning(s):
 > 
-> I thought the clock was embedded into the SERDES signal? You recover
-> it from the signal?
+>  drivers/iio/dac/ad5758.c:111: warning: Function parameter or member 'reg' not described in 'ad5758_range'
+>  drivers/iio/dac/ad5758.c:111: warning: Function parameter or member 'min' not described in 'ad5758_range'
+>  drivers/iio/dac/ad5758.c:111: warning: Function parameter or member 'max' not described in 'ad5758_range'
+>  drivers/iio/dac/ad5758.c:122: warning: Function parameter or member 'gpio_reset' not described in 'ad5758_state'
+>  drivers/iio/dac/ad5758.c:122: warning: Function parameter or member 'd32' not described in 'ad5758_state'
+>  drivers/iio/dac/ad5758.c:137: warning: cannot understand function prototype: 'enum ad5758_output_range '
+> 
+> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> Cc: Stefan Popa <stefan.popa@analog.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Applied to the togreg branch of iio.git and pushed out as testing.  Plenty
+of time to add tags or changes if anyone else reviews.
 
-Indeed it is.  An external clock can be used to avoid needing clock
-recovery in the SERDES receiver.
+Thanks,
 
-For example, with the 88E1111, it only accepts the datastream from
-the MAC with no provision for a separate clock, but it can be
-configured to generate a 625MHz clock for the data stream to the MAC
-if required.
+Jonathan
 
-Being 625MHz (half the data rate), both edges of the clock are used,
-with a delay to help avoid the metastability hazard I previously
-described at the receiver.
+> ---
+>  drivers/iio/dac/ad5758.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iio/dac/ad5758.c b/drivers/iio/dac/ad5758.c
+> index 475646c82b40e..c34740d2c89a1 100644
+> --- a/drivers/iio/dac/ad5758.c
+> +++ b/drivers/iio/dac/ad5758.c
+> @@ -92,24 +92,24 @@
+>  
+>  #define AD5758_FULL_SCALE_MICRO	65535000000ULL
+>  
+> +struct ad5758_range {
+> +	int reg;
+> +	int min;
+> +	int max;
+> +};
+> +
+>  /**
+>   * struct ad5758_state - driver instance specific data
+>   * @spi:	spi_device
+>   * @lock:	mutex lock
+> + * @gpio_reset:	gpio descriptor for the reset line
+>   * @out_range:	struct which stores the output range
+>   * @dc_dc_mode:	variable which stores the mode of operation
+>   * @dc_dc_ilim:	variable which stores the dc-to-dc converter current limit
+>   * @slew_time:	variable which stores the target slew time
+>   * @pwr_down:	variable which contains whether a channel is powered down or not
+> - * @data:	spi transfer buffers
+> + * @d32:	spi transfer buffers
+>   */
+> -
+> -struct ad5758_range {
+> -	int reg;
+> -	int min;
+> -	int max;
+> -};
+> -
+>  struct ad5758_state {
+>  	struct spi_device *spi;
+>  	struct mutex lock;
+> @@ -122,7 +122,7 @@ struct ad5758_state {
+>  	__be32 d32[3];
+>  };
+>  
+> -/**
+> +/*
+>   * Output ranges corresponding to bits [3:0] from DAC_CONFIG register
+>   * 0000: 0 V to 5 V voltage range
+>   * 0001: 0 V to 10 V voltage range
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
