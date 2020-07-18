@@ -2,286 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB42224BE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B091224BE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgGROiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727819AbgGROit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:38:49 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1DBC0619D4
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:38:49 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id a11so9721701ilk.0
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IVlh6YnMnB6ms9DYNLLrhP4IKFwjKNlr9OHw1qgPMms=;
-        b=DQN1vFGdosicPuoOT1fjenFLcsLZ0Sc3Y6MQ4wUGWHg9qInhvc/HYsjXjTC+FAliej
-         AxkiZpz1WflNaxdEGgic0BQQBoi2Xk7lCx1dYdB1RdidAu8YsqZ7L0m1rbvJTYjznLz0
-         Lha8DLlYBUojE2kWLC024EzDMgdOy2mB8hVURiljTfDP9RjB04yflc/9J44omhiJ4Ssb
-         ga4eCkJ3IcIk2Av3QOO4Sa1hk8Mmv0mPml+ZD/lordPugUtJtYgQRfSnOvH8xXzVBzwB
-         l+feUIXqizyjjA+fOL/Rvo2BT7V/EkyEhsw1Ty9Fb6q0M5x8nRnGDzwuQphUqSS6a2xR
-         G7gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IVlh6YnMnB6ms9DYNLLrhP4IKFwjKNlr9OHw1qgPMms=;
-        b=gW3J7gdTWSpA3FqFKyK/GzjKLQzhVGzW5magXCcL0K8BdAdQ71rXJRzSOR0J/auqci
-         ZK5TzTpZOBQaNi84QTjYlmSTEMy5quWDiYRJ7398FO82KYbzDVcYWUJyuHFRniXVhacq
-         iHS8VpVa9rrm0wci5rycPBSVH7Vjtgu1IR/R2uZJQbiNAJmxQBu3vhyLT6EZCaW36GxK
-         dvlZdzQjbRdH5wDJ/6GT7x1R+c2U+MFyQDX0MSwjGcFX1I7g/8mQ4ZnHH5jxhuDNisrL
-         CRwAugOgrDGCgRn14zDA2gfktrWv6CJZlC94MAKn8zmNyLH1QnmewPjE4u5fX4Yo/N9d
-         JkCQ==
-X-Gm-Message-State: AOAM531faseE4aLrOBOajDN1A/IYkELH9FcOUCySpIByeHprXu+Tm2T1
-        nghUvqcBF6D6ewX3Dr2/USiHMn0=
-X-Google-Smtp-Source: ABdhPJydSr7e1ucbrjMsptSLlSvZ/dBdkcLBH5WCJROg2E8psXFtPql9XaHtoPudbcCh9x8qoQbGYA==
-X-Received: by 2002:a92:52:: with SMTP id 79mr13679537ila.59.1595083128206;
-        Sat, 18 Jul 2020 07:38:48 -0700 (PDT)
-Received: from localhost.localdomain (174-084-153-250.res.spectrum.com. [174.84.153.250])
-        by smtp.gmail.com with ESMTPSA id 5sm5888610ion.7.2020.07.18.07.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2020 07:38:47 -0700 (PDT)
-From:   Brian Gerst <brgerst@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 3/3] x86: Clean up do_fast_syscall_32() tests
-Date:   Sat, 18 Jul 2020 10:38:39 -0400
-Message-Id: <20200718143839.194960-4-brgerst@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200718143839.194960-1-brgerst@gmail.com>
-References: <20200718143839.194960-1-brgerst@gmail.com>
+        id S1728009AbgGROjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:39:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727819AbgGROjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 10:39:15 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BE5220684;
+        Sat, 18 Jul 2020 14:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595083154;
+        bh=BnlatMn5uJqDSL7prgKupwRyysyX9jNEbeM2XXw8yYc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ioEZ5jbR/U0zAmI+t1CmUie4Ch9ux5SZrWigH+ehVvJNABPrVuqAExPTkJ2BHt7OM
+         KoMeCg+EK1wQJ27z/Dv0X2E0IN10S8aH1XgquPBrDEprxr0R3nkoBfo0HM0CwTv35u
+         E8TXW+Q30AZ56DenzcjGwiXua7ZSHjN2WXa9pfCE=
+Date:   Sat, 18 Jul 2020 15:39:10 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Subject: Re: [PATCH 09/30] iio: dummy: iio_simple_dummy: Demote unworthy
+ kerneldocs and correct misspelling
+Message-ID: <20200718153910.71fcdb36@archlinux>
+In-Reply-To: <20200716135928.1456727-10-lee.jones@linaro.org>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-10-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reorganize the tests for SYSEXITS/SYSRETL, cleaning up comments and merging
-native and compat code.
+On Thu, 16 Jul 2020 14:59:07 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/entry/common.c          | 85 ++++++++++++++------------------
- arch/x86/entry/entry_32.S        |  6 +--
- arch/x86/entry/entry_64_compat.S | 13 ++---
- arch/x86/include/asm/segment.h   |  1 +
- arch/x86/include/asm/syscall.h   |  2 +-
- 5 files changed, 48 insertions(+), 59 deletions(-)
+> File header comments are not good candidates for kerneldoc.  Neither
+> are generic comment blocks.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/iio/dummy/iio_simple_dummy.c:26: warning: cannot understand function prototype: 'const struct config_item_type iio_dummy_type = '
+>  drivers/iio/dummy/iio_simple_dummy.c:564: warning: Function parameter or member 'name' not described in 'iio_dummy_probe'
+>  drivers/iio/dummy/iio_simple_dummy.c:564: warning: Excess function parameter 'index' description in 'iio_dummy_probe'
+>  drivers/iio/dummy/iio_simple_dummy.c:700: warning: cannot understand function prototype: 'const struct iio_sw_device_ops iio_dummy_device_ops = '
+> 
+Misspelling is an interesting way of describing that part.  I changed
+it to "wrong parameter in docs".
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index bdb4c15b8610e..df1497fa554b8 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -500,10 +500,24 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
- 	exit_to_user_mode();
- }
- 
-+/* Returns true to return using SYSEXIT/SYSRETL, or false to return using IRET */
- static bool __do_fast_syscall_32(struct pt_regs *regs)
- {
-+	/*
-+	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
-+	 * convention.  Adjust regs so it looks like we entered using int80.
-+	 */
-+	unsigned long landing_pad = (unsigned long)current->mm->context.vdso +
-+					vdso_image_32.sym_int80_landing_pad;
- 	int res;
- 
-+	/*
-+	 * SYSENTER loses EIP, and even SYSCALL32 needs us to skip forward
-+	 * so that 'regs->ip -= 2' lands back on an int $0x80 instruction.
-+	 * Fix it up.
-+	 */
-+	regs->ip = landing_pad;
-+
- 	/* Fetch EBP from where the vDSO stashed it. */
- 	if (IS_ENABLED(CONFIG_X86_64)) {
- 		/*
-@@ -522,34 +536,39 @@ static bool __do_fast_syscall_32(struct pt_regs *regs)
- 		regs->ax = -EFAULT;
- 		local_irq_disable();
- 		__prepare_exit_to_usermode(regs);
-+		/* Keep it simple: use IRET. */
- 		return false;
- 	}
- 
- 	/* Now this is just like a normal syscall. */
- 	do_syscall_32_irqs_on(regs);
-+
-+	/* XEN PV guests always use IRET path */
-+	if (static_cpu_has(X86_FEATURE_XENPV))
-+		return false;
-+
-+	/* CS and SS must match values set in MSR_STAR */
-+	if (unlikely(regs->cs != __USER32_CS || regs->ss != __USER_DS))
-+		return false;
-+
-+	/* EIP must point to the VDSO landing pad */
-+	if (unlikely(regs->ip != landing_pad))
-+		return false;
-+
-+	/* The TF, RF, and VM flags must be restored with IRET */
-+	if (unlikely(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)))
-+		return false;
-+
-+	/* Return with SYSEXIT/SYSRETL */
- 	return true;
- }
- 
--/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
--__visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
-+__visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
- {
--	/*
--	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
--	 * convention.  Adjust regs so it looks like we entered using int80.
--	 */
--	unsigned long landing_pad = (unsigned long)current->mm->context.vdso +
--					vdso_image_32.sym_int80_landing_pad;
- 	bool success;
- 
- 	check_user_regs(regs);
- 
--	/*
--	 * SYSENTER loses EIP, and even SYSCALL32 needs us to skip forward
--	 * so that 'regs->ip -= 2' lands back on an int $0x80 instruction.
--	 * Fix it up.
--	 */
--	regs->ip = landing_pad;
--
- 	enter_from_user_mode();
- 	instrumentation_begin();
- 
-@@ -559,42 +578,10 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 	instrumentation_end();
- 	exit_to_user_mode();
- 
--	/* If it failed, keep it simple: use IRET. */
--	if (!success)
--		return 0;
--
--#ifdef CONFIG_X86_64
--	/*
--	 * Opportunistic SYSRETL: if possible, try to return using SYSRETL.
--	 * SYSRETL is available on all 64-bit CPUs, so we don't need to
--	 * bother with SYSEXIT.
--	 *
--	 * Unlike 64-bit opportunistic SYSRET, we can't check that CX == IP,
--	 * because the ECX fixup above will ensure that this is essentially
--	 * never the case.
--	 */
--	return regs->cs == __USER32_CS && regs->ss == __USER_DS &&
--		regs->ip == landing_pad &&
--		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF)) == 0;
--#else
--	/*
--	 * Opportunistic SYSEXIT: if possible, try to return using SYSEXIT.
--	 *
--	 * Unlike 64-bit opportunistic SYSRET, we can't check that CX == IP,
--	 * because the ECX fixup above will ensure that this is essentially
--	 * never the case.
--	 *
--	 * We don't allow syscalls at all from VM86 mode, but we still
--	 * need to check VM, because we might be returning from sys_vm86.
--	 */
--	return regs->cs == __USER_CS && regs->ss == __USER_DS &&
--		regs->ip == landing_pad &&
--		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
--#endif
-+	return success;
- }
- 
--/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
--__visible noinstr long do_SYSENTER_32(struct pt_regs *regs)
-+__visible noinstr bool do_SYSENTER_32(struct pt_regs *regs)
- {
- 	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
- 	regs->sp = regs->bp;
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index 2d0bd5d5f0328..24979fc747df0 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -965,9 +965,9 @@ SYM_FUNC_START(entry_SYSENTER_32)
- 
- 	movl	%esp, %eax
- 	call	do_SYSENTER_32
--	/* XEN PV guests always use IRET path */
--	ALTERNATIVE "testl %eax, %eax; jz .Lsyscall_32_done", \
--		    "jmp .Lsyscall_32_done", X86_FEATURE_XENPV
-+
-+	testb	%al, %al
-+	jz	.Lsyscall_32_done
- 
- 	STACKLEAK_ERASE
- 
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 541fdaf640453..d8ac70ebb5f9e 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -137,9 +137,10 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
- 
- 	movq	%rsp, %rdi
- 	call	do_SYSENTER_32
--	/* XEN PV guests always use IRET path */
--	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
--		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-+
-+	testb	%al, %al
-+	jz	swapgs_restore_regs_and_return_to_usermode
-+
- 	jmp	sysret32_from_system_call
- 
- .Lsysenter_fix_flags:
-@@ -252,9 +253,9 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_after_hwframe, SYM_L_GLOBAL)
- 
- 	movq	%rsp, %rdi
- 	call	do_fast_syscall_32
--	/* XEN PV guests always use IRET path */
--	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
--		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-+
-+	testb	%al, %al
-+	jz	swapgs_restore_regs_and_return_to_usermode
- 
- 	/* Opportunistic SYSRET */
- sysret32_from_system_call:
-diff --git a/arch/x86/include/asm/segment.h b/arch/x86/include/asm/segment.h
-index 6669164abadcb..da29d2cfeee83 100644
---- a/arch/x86/include/asm/segment.h
-+++ b/arch/x86/include/asm/segment.h
-@@ -135,6 +135,7 @@
- #define __KERNEL_DS			(GDT_ENTRY_KERNEL_DS*8)
- #define __USER_DS			(GDT_ENTRY_DEFAULT_USER_DS*8 + 3)
- #define __USER_CS			(GDT_ENTRY_DEFAULT_USER_CS*8 + 3)
-+#define __USER32_CS			__USER_CS
- #define __ESPFIX_SS			(GDT_ENTRY_ESPFIX_SS*8)
- 
- /* segment for calling fn: */
-diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-index 766f9b9736185..e3e2f255bdb67 100644
---- a/arch/x86/include/asm/syscall.h
-+++ b/arch/x86/include/asm/syscall.h
-@@ -162,7 +162,7 @@ static inline int syscall_get_arch(struct task_struct *task)
- 
- bool do_syscall_64(unsigned long nr, struct pt_regs *regs);
- void do_int80_syscall_32(struct pt_regs *regs);
--long do_fast_syscall_32(struct pt_regs *regs);
-+bool do_fast_syscall_32(struct pt_regs *regs);
- 
- #endif	/* CONFIG_X86_32 */
- 
--- 
-2.26.2
+Applied.
+
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/iio/dummy/iio_simple_dummy.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/dummy/iio_simple_dummy.c b/drivers/iio/dummy/iio_simple_dummy.c
+> index 6cb02299a2152..be66b26373723 100644
+> --- a/drivers/iio/dummy/iio_simple_dummy.c
+> +++ b/drivers/iio/dummy/iio_simple_dummy.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * Copyright (c) 2011 Jonathan Cameron
+>   *
+>   * A reference industrial I/O driver to illustrate the functionality available.
+> @@ -553,7 +553,7 @@ static int iio_dummy_init_device(struct iio_dev *indio_dev)
+>  
+>  /**
+>   * iio_dummy_probe() - device instance probe
+> - * @index: an id number for this instance.
+> + * @name: name of this instance.
+>   *
+>   * Arguments are bus type specific.
+>   * I2C: iio_dummy_probe(struct i2c_client *client,
+> @@ -687,7 +687,7 @@ static int iio_dummy_remove(struct iio_sw_device *swd)
+>  
+>  	return 0;
+>  }
+> -/**
+> +/*
+>   * module_iio_sw_device_driver() -  device driver registration
+>   *
+>   * Varies depending on bus type of the device. As there is no device
 
