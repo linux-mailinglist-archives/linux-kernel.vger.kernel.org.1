@@ -2,160 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A9E224985
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A75C22498C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 09:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgGRG6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        id S1728853AbgGRHBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 03:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbgGRG6N (ORCPT
+        with ESMTP id S1725920AbgGRHBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:58:13 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BFFC0619D3;
-        Fri, 17 Jul 2020 23:58:11 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f7so13262797wrw.1;
-        Fri, 17 Jul 2020 23:58:11 -0700 (PDT)
+        Sat, 18 Jul 2020 03:01:50 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C084C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 00:01:50 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id h16so9158479ilj.11
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 00:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1gIivsKhrs5B4E2eM/SXdSVH3UTq3Ox3b3pPitMs8zM=;
-        b=JIvb2Ngqnjk847TFxnaUZHKhchB8YfVtdu/CTHONMKczeOW8Le0mBfXZDoBYduxujB
-         lTAIwDhYvrjH+Um9LwOxUH5mkHPSGWYRULG0+9+2mucvkp/5p/mdmhaJOHBcrvqNKMSZ
-         xmIFrQEAA/FMLCGEZpQLUvRZrp+Jtslprw1QlZ+mHzVcit9c+ecHYD6BCHXBxImZALwy
-         m6Iw7MCdMPUbaiyNAiGRvKoqKA+FZkanTdd+/KbTTRp8v2fspqCYTYBa3Jp6ijLCZYJk
-         eFtr3EttuKnBPd7OvYPdQZ51rWiu+uIOxN9Mn2XNmiNgGX0OczdUmeNp2GYZsmHMcvis
-         cVtg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=G3+2PMnjGfEPvKZwINap3pBMr0humQvV1EidfwRspkE=;
+        b=MGJgRmWLI/yCr8L+tTPNBdz7aXETmcq/KuTunrZ7MM/RtVNbtM1kVzV2Ocj4Le9g4R
+         5rjvV3vNi0OOKH/d4BmvhSdYpupHCj7CITrBg0hsbQDnKqb32b26cxc9nJZR2Mh8yJld
+         aZsoqC9bNDTbtwph9s/uTlb6IgpSsCdwnRbC14zcBhc4gB1+BrpB9QS9CDhCleHkUM58
+         f9p9ijMCel6H73XyuWjHQEXc5j7fCmZImBbiTjNITo8HZ6L/IZbiRSge/1AEjoXvczwj
+         SkTpJeGAAK/C0ZO07Och/SiAhNAz2S8G0l2leyyjqEWwKE9vdFwC9dckTG5ypMe8T2WJ
+         6nCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=1gIivsKhrs5B4E2eM/SXdSVH3UTq3Ox3b3pPitMs8zM=;
-        b=DjA4VPvKKxaihyIrD6fb9pHGwt3U293L96UEDJ7wZCn++2MRd7HmxW95LapKjjb6nH
-         dfuk3xy8xlL3OTfn9vdaWiSoiuIfD7zSy3DvxnLXHRX4A2vrZc2XX6zasjZdM6HqNwjP
-         Pn8sCbTqsrR4Fg5i0fyu3+Zszp+wqf5r5Cs/K8imWfc8DkYtbi9ASgjjKtD8uT70gfrV
-         78GWllsrUzuFZh7Nfdz8LAB0XTtUCeWFHNObwTo3DqEUTQ0Dxdrq4YPmAnx7yRP4lPEo
-         pCezKKH5RUNnuHDDwjEnbfWHbJu+AwOLdrdMUIH9EkWghHH/86STyM/Ravh5J3qgCDCs
-         RVgA==
-X-Gm-Message-State: AOAM532rnOShJstZiV4FyWNC4YI3XZfye20FR4rJ9pLWGchcA1R4K47A
-        hHRyHhYDkMtzGqAxLeUOr+Q=
-X-Google-Smtp-Source: ABdhPJxEIE/fyCFRu3RRxgW1mThwfcZwyiNFLjxzNHyGDN6C7wSEse0IChWCM1AhE9sSWWyDdWzz3g==
-X-Received: by 2002:a5d:5490:: with SMTP id h16mr14399637wrv.394.1595055490357;
-        Fri, 17 Jul 2020 23:58:10 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id x5sm18749191wmg.2.2020.07.17.23.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 23:58:09 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH 12/12] arm64: dts: meson: add audio playback to wetek-play2
-Date:   Sat, 18 Jul 2020 06:57:39 +0000
-Message-Id: <20200718065739.7802-13-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200718065739.7802-1-christianshewitt@gmail.com>
-References: <20200718065739.7802-1-christianshewitt@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=G3+2PMnjGfEPvKZwINap3pBMr0humQvV1EidfwRspkE=;
+        b=Hy97+WPOV7EGZpz4gmYc/p3EKhCnkDAMIoImSRYQbRyF34dNbrHN8fOSTRmlQaCT72
+         YtybdIb4U4drUmwA5dyUwcqVQieVIUfQOfysZCSh6w65XZ2HalydjyudHMc9j210vfYs
+         tJ5tRb30vqXc7HMPfAQLIPGbpHF7x7HdXSPE0GpOPNIZEU7WYXk7zyOaHwd5MXmZnI3W
+         MNyBz36/LAgcrNRdpmRxE7vPLDSN/tEv5mrtL6SRVvF93BXx4spiXrfJiqWtkZfIxvro
+         d/OLPbh+yDyv29n9dkAfeq51XjKqcw2K1Zt8Eftdl5afU8g35dW4agvQesIMo6Hr2xkP
+         LYMA==
+X-Gm-Message-State: AOAM533jvWBY6z/W03O/0iM/TLMf0ihwAiZAaJmhn36PewDXDV7j5m+Q
+        7HwB6lz19J4teXu7O4XHb459kErA4EgbueDWcXo=
+X-Google-Smtp-Source: ABdhPJzTdaUqfX6+DaVwna/a0uUxxpGuzkBXrND8TM0hx5x6k9cgR93I8MQu8Mk3vTUr/s7NdsZ/VqeVaDP9Z1ETbmc=
+X-Received: by 2002:a92:8b11:: with SMTP id i17mr13130616ild.212.1595055709714;
+ Sat, 18 Jul 2020 00:01:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714023836.2310569-1-nivedita@alum.mit.edu>
+ <20200715004133.1430068-1-nivedita@alum.mit.edu> <20200717134654.GA3187880@rani.riverdale.lan>
+ <CAKwvOdnTbatx8VB-rJSzyFPwfYnkMYK28yLBn1G+hUu8dyfYRA@mail.gmail.com> <CAMj1kXGeSFXnuO7Y94pyBU9qfSgtsLvMoCZSfDk476BBs2ejcw@mail.gmail.com>
+In-Reply-To: <CAMj1kXGeSFXnuO7Y94pyBU9qfSgtsLvMoCZSfDk476BBs2ejcw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 18 Jul 2020 09:01:40 +0200
+Message-ID: <CA+icZUUmMLGm+EhaMak6TmusJVufd_wEKzwSOMF4MVdxYKr1xQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] x86/boot: Remove run-time relocations from
+ compressed kernel
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support limited to HDMI i2s and SPDIF (LPCM).
+On Sat, Jul 18, 2020 at 7:45 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Fri, 17 Jul 2020 at 21:17, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Jul 17, 2020 at 6:46 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > On Tue, Jul 14, 2020 at 08:41:26PM -0400, Arvind Sankar wrote:
+> > > > The compressed kernel currently contains bogus run-time relocations in
+> > > > the startup code in head_{32,64}.S, which are generated by the linker,
+> > > > but must not actually be processed at run-time.
+> > > >
+> > > > This generates warnings when linking with the BFD linker, and errors
+> > > > with LLD, which defaults to erroring on run-time relocations in read-only
+> > > > sections. It also requires the -z noreloc-overflow hack for the 64-bit
+> > > > kernel, which prevents us from linking it as -pie on an older BFD linker
+> > > > (<= 2.26) or on LLD, because the locations that are to be apparently
+> > > > relocated are only 32-bits in size and so cannot really have
+> > > > R_X86_64_RELATIVE relocations.
+> > > >
+> > > > This series aims to get rid of these relocations. I've build- and
+> > > > boot-tested with combinations of clang/gcc-10 with lld/bfd-2.34, and
+> > > > gcc-4.9.0 with bfd-2.24, skipping clang on 32-bit because it currently
+> > > > has other issues [0].
+> > > >
+> > >
+> > > Hi Thomas, Ingo, Borislav, would you be able to take a look over this
+> > > series in time for 5.9?
+> >
+> > Hi Arvind, thanks for the series; I'm behind on testing.  When I try
+> > to apply this series on top of linux-next, I get a collision in
+> > drivers/firmware/efi/libstub/Makefile:27 when applying "0002
+> > x86/boot/compressed: Force hidden visibility for all symbol
+> > references". Would you mind refreshing the series to avoid that
+> > collision?
+>
+> That is not the right way to deal with conflicts against -next.
+>
+> This series targets the -tip tree, and applies fine against it. If you
+> want to apply it on some other tree and test it, that is fine, and
+> highly appreciated, but 'refreshing' the series against -next means it
+> no longer applies to -tip, and may be based on unidentified conflict
+> resolutions performed by Stephen that the maintainers will have to
+> deal with.
+>
+> Boris, Ingo, Thomas,
+>
+> Mind taking v5 of this series? (With Nick's Tested-by) I think these
+> patches have been simmering long enough. Do note there is a conflict
+> against the kbuild tree, but the resolution should be straightforward.
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
+Agreed with that approach.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts
-index 2ab8a3d10079..f2562c7de67c 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts
-@@ -8,11 +8,19 @@
- 
- #include "meson-gxbb-wetek.dtsi"
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/sound/meson-aiu.h>
- 
- / {
- 	compatible = "wetek,play2", "amlogic,meson-gxbb";
- 	model = "WeTek Play 2";
- 
-+	spdif_dit: audio-codec-0 {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
-+		status = "okay";
-+		sound-name-prefix = "DIT";
-+	};
-+
- 	leds {
- 		led-wifi {
- 			label = "wetek-play:wifi-status";
-@@ -39,6 +47,59 @@
- 			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_LOW>;
- 		};
- 	};
-+
-+	sound {
-+		compatible = "amlogic,gx-sound-card";
-+		model = "GXBB-WETEK-PLAY2";
-+		assigned-clocks = <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>,
-+				  <&clkc CLKID_MPLL2>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-+			dai-format = "i2s";
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
-+			};
-+		};
-+
-+		dai-link-3 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
-+
-+			codec-0 {
-+				sound-dai = <&spdif_dit>;
-+			};
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
-+
-+			codec-0 {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+};
-+
-+&aiu {
-+	status = "okay";
-+	pinctrl-0 = <&spdif_out_y_pins>;
-+	pinctrl-names = "default";
- };
- 
- &i2c_A {
--- 
-2.17.1
+v5 misses also my credits - Tested-by for the whole series is sufficient.
 
+- Sedat -
