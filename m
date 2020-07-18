@@ -2,108 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991E8224BDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73CF224BD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgGROfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:35:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726574AbgGROfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:35:30 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40FDB2076A;
-        Sat, 18 Jul 2020 14:35:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595082929;
-        bh=B3NvPtqwN2+3k+yupeNBxRXoUdbSS71z1vEVfZCahuQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EoFemmf2MiA5ycOpsGr9Cs4LSR+3tf3HBT3JsJ9+YpQxkmr3MF0axmeS7pam8FgW0
-         HO4dptQBhZl7LbHjqDODIHAjAt3F6bVW0XJ7Q4NolSlHHR0HN/T7vwAhospdPqcHqO
-         voK9kCdlAnxEFLmAk1HeZwBjvvs1oN8ZVJsdcCaM=
-Date:   Sat, 18 Jul 2020 15:35:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Patrick Vasseur <patrick.vasseur@c-s.fr>
-Subject: Re: [PATCH 06/30] iio: adc: ad7923: Demote obvious misuse of
- kerneldoc to standard comment blocks
-Message-ID: <20200718153525.24e68167@archlinux>
-In-Reply-To: <20200716135928.1456727-7-lee.jones@linaro.org>
-References: <20200716135928.1456727-1-lee.jones@linaro.org>
-        <20200716135928.1456727-7-lee.jones@linaro.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727839AbgGROf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgGROf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 10:35:29 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3096BC0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:35:29 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x138so5970405ybg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
+        b=BSHMDTWXlHY4dFaAaeyU6JcCNJrJneby7ZD8rwUaMos7m0PJwGS2g3U7c6Ivd69sCn
+         ynwI+++J18wvre+9GVbr8274upIi/cgAUd7QRb9AhSNQyoN2iaUJSy5werEvGgzf6xiW
+         IyRdL7IPph7ZN1lricM7JwMWTgD7Zi1VLKd2y39KuPCQAbQqUoCojSb83G0xWwB6G7Jg
+         rDHemGPzatKGLc5dORlodl8Rb1985QlHP6KX4Np+71UFS6I84Jazk/Bd1vQe0BIyk5ZT
+         TK3EFk8sv0FFlV3Tem57I2Ars4NKN/XEZWSLH8FnQF1DJToeZkTEABgE4eQOAPTs67Op
+         fmdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
+        b=DJFxpA1W/JdAhc6Go5P9oo/oAqhpzR9IhDIQ+P8gVnGRn22WBgMZaTf9eWWYWsXC6y
+         pSrShvMrbp05nNrgu09t9bKFGZKxkmu1v2dnz27uTU4SnToS3i+bgtZIfeAQzvG4e1d3
+         QrpSqXaOVbuRalszHqCfn48gW8iACbv1+bGB82tg3peAaH8ZbdyGwPyhIF8Rg6E0Ltrk
+         9ZuUWXuwPQFzDgfw5qVfL41rRe3p6GgznFd9WHr7PZLoQHjmpjXOc2fbp2dyiQlyomnC
+         ZROHjWp8Bpc3X615DMv1ZNu8TtztyFRFC7omv4MYcrBprwWPrQ+Skmll5mNCloS52Sxw
+         8VOQ==
+X-Gm-Message-State: AOAM5322MU8LPMgfHVfhdE+eMNsLghz6QHzKtAiXjuovUAN+6wdyMfct
+        TGDDPmQZZaW6/abrMspRDfBaDlNF/35conO3s1A=
+X-Google-Smtp-Source: ABdhPJzp9vN/VIcgJAMhhACrRY30xb60MroAHqtpTIdg2G2QZhqGF+lNt1AZDFJ6biyuYfybbhapDCMkWqI4e+BWqWU=
+X-Received: by 2002:a25:32d6:: with SMTP id y205mr21758520yby.182.1595082928301;
+ Sat, 18 Jul 2020 07:35:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a25:3401:0:0:0:0:0 with HTTP; Sat, 18 Jul 2020 07:35:27
+ -0700 (PDT)
+Reply-To: michellegoodman45@gmail.com
+From:   Shayma <shaymamarwan08@gmail.com>
+Date:   Sat, 18 Jul 2020 14:35:27 +0000
+Message-ID: <CA+HOoT0YAfBFckravz7Sj_0vzL+VEqVpSvuQsXfBr0qjqOQ6kQ@mail.gmail.com>
+Subject: From Michelle
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020 14:59:04 +0100
-Lee Jones <lee.jones@linaro.org> wrote:
-
-> No attempt has been made to document either of the demoted functions here
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/iio/adc/ad7923.c:159: warning: Function parameter or member 'indio_dev' not described in 'ad7923_update_scan_mode'
->  drivers/iio/adc/ad7923.c:159: warning: Function parameter or member 'active_scan_mask' not described in 'ad7923_update_scan_mode'
->  drivers/iio/adc/ad7923.c:202: warning: Function parameter or member 'irq' not described in 'ad7923_trigger_handler'
->  drivers/iio/adc/ad7923.c:202: warning: Function parameter or member 'p' not described in 'ad7923_trigger_handler'
-> 
-> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-> Cc: Patrick Vasseur <patrick.vasseur@c-s.fr>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Both functions are static and hence don't need to be kernel-doc based,
-hence agree this is the best 'fix'.
-
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to play with it.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/adc/ad7923.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7923.c b/drivers/iio/adc/ad7923.c
-> index 1d124c87c6ace..2a11bc7fdb567 100644
-> --- a/drivers/iio/adc/ad7923.c
-> +++ b/drivers/iio/adc/ad7923.c
-> @@ -151,9 +151,9 @@ static const struct ad7923_chip_info ad7923_chip_info[] = {
->  	},
->  };
->  
-> -/**
-> +/*
->   * ad7923_update_scan_mode() setup the spi transfer buffer for the new scan mask
-> - **/
-> + */
->  static int ad7923_update_scan_mode(struct iio_dev *indio_dev,
->  				   const unsigned long *active_scan_mask)
->  {
-> @@ -192,12 +192,12 @@ static int ad7923_update_scan_mode(struct iio_dev *indio_dev,
->  	return 0;
->  }
->  
-> -/**
-> +/*
->   * ad7923_trigger_handler() bh of trigger launched polling to ring buffer
->   *
->   * Currently there is no option in this driver to disable the saving of
->   * timestamps within the ring.
-> - **/
-> + */
->  static irqreturn_t ad7923_trigger_handler(int irq, void *p)
->  {
->  	struct iio_poll_func *pf = p;
-
+Hallo, ich hoffe du hast meine Nachricht erhalten.
+Ich brauche schnelle Reaktionen
+Danke
+Michelle
