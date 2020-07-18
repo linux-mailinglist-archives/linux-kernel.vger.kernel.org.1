@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064C5224B3F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 14:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732FB224B85
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgGRMzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 08:55:12 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7782 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726532AbgGRMzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 08:55:11 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 28884130209C09D2155B;
-        Sat, 18 Jul 2020 20:55:07 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Sat, 18 Jul 2020
- 20:55:01 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <ap420073@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] net: hsr: remove redundant null check
-Date:   Sat, 18 Jul 2020 20:53:38 +0800
-Message-ID: <20200718125338.52424-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+        id S1726998AbgGRN2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 09:28:55 -0400
+Received: from m15111.mail.126.com ([220.181.15.111]:52017 "EHLO
+        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgGRN2y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 09:28:54 -0400
+X-Greylist: delayed 1852 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Jul 2020 09:28:53 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=Nrs0U0+MFKKRAAU9Nt
+        Id3jHpjc4smynpnfde3x7aSUk=; b=BgxXTonA7plPDAUC85Kp910v4oOh1gXwiG
+        nrfars58K54KDSPLGQahbSaxqr27wAbgYbLPAJ/OcN2VKT9NM1Pw6DZLtS/88COm
+        UhBiflNDqTDlplijWcwzdQEvSg1M3KTyZ2VUaG6Z9xVe7VwAj/C0I7LcGx1MIVxG
+        UBNthTK2g=
+Received: from 192.168.137.249 (unknown [112.10.74.162])
+        by smtp1 (Coremail) with SMTP id C8mowAAnFFrD8RJfJrTAHg--.49366S3;
+        Sat, 18 Jul 2020 20:57:41 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     tytso@mit.edu, jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] jbd2: fix incorrect code style
+Date:   Sat, 18 Jul 2020 08:57:37 -0400
+Message-Id: <1595077057-8048-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: C8mowAAnFFrD8RJfJrTAHg--.49366S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXF4fXw1UJw45AFyktF4ktFb_yoW5XrWfpw
+        1Utry8urW0vryUAa4vqF48GFWYgrWSyFW7KrsrC3WktanxGFnIvryIyF4DA3yqqFZ5W3W7
+        AFy8t397Cw4vkwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jiVyxUUUUU=
+X-Originating-IP: [112.10.74.162]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi9AVlpFpD+9igGwAAsx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because kfree_skb already checked NULL skb parameter,
-so the additional checks are unnecessary, just remove them.
+Remove unnecessary blank.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
 ---
- net/hsr/hsr_forward.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/jbd2/journal.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
-index ed13760463de..92c8ad75200b 100644
---- a/net/hsr/hsr_forward.c
-+++ b/net/hsr/hsr_forward.c
-@@ -367,10 +367,8 @@ void hsr_forward_skb(struct sk_buff *skb, struct hsr_port *port)
- 		port->dev->stats.tx_bytes += skb->len;
- 	}
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index e494443..5eccf8c 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1285,7 +1285,7 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
+  * superblock as being NULL to prevent the journal destroy from writing
+  * back a bogus superblock.
+  */
+-static void journal_fail_superblock (journal_t *journal)
++static void journal_fail_superblock(journal_t *journal)
+ {
+ 	struct buffer_head *bh = journal->j_sb_buffer;
+ 	brelse(bh);
+@@ -1815,7 +1815,7 @@ int jbd2_journal_destroy(journal_t *journal)
  
--	if (frame.skb_hsr)
--		kfree_skb(frame.skb_hsr);
--	if (frame.skb_std)
--		kfree_skb(frame.skb_std);
-+	kfree_skb(frame.skb_hsr);
-+	kfree_skb(frame.skb_std);
- 	return;
  
- out_drop:
+ /**
+- *int jbd2_journal_check_used_features () - Check if features specified are used.
++ *int jbd2_journal_check_used_features() - Check if features specified are used.
+  * @journal: Journal to check.
+  * @compat: bitmask of compatible features
+  * @ro: bitmask of features that force read-only mount
+@@ -1825,7 +1825,7 @@ int jbd2_journal_destroy(journal_t *journal)
+  * features.  Return true (non-zero) if it does.
+  **/
+ 
+-int jbd2_journal_check_used_features (journal_t *journal, unsigned long compat,
++int jbd2_journal_check_used_features(journal_t *journal, unsigned long compat,
+ 				 unsigned long ro, unsigned long incompat)
+ {
+ 	journal_superblock_t *sb;
+@@ -1860,7 +1860,7 @@ int jbd2_journal_check_used_features (journal_t *journal, unsigned long compat,
+  * all of a given set of features on this journal.  Return true
+  * (non-zero) if it can. */
+ 
+-int jbd2_journal_check_available_features (journal_t *journal, unsigned long compat,
++int jbd2_journal_check_available_features(journal_t *journal, unsigned long compat,
+ 				      unsigned long ro, unsigned long incompat)
+ {
+ 	if (!compat && !ro && !incompat)
+@@ -1882,7 +1882,7 @@ int jbd2_journal_check_available_features (journal_t *journal, unsigned long com
+ }
+ 
+ /**
+- * int jbd2_journal_set_features () - Mark a given journal feature in the superblock
++ * int jbd2_journal_set_features() - Mark a given journal feature in the superblock
+  * @journal: Journal to act on.
+  * @compat: bitmask of compatible features
+  * @ro: bitmask of features that force read-only mount
+@@ -1893,7 +1893,7 @@ int jbd2_journal_check_available_features (journal_t *journal, unsigned long com
+  *
+  */
+ 
+-int jbd2_journal_set_features (journal_t *journal, unsigned long compat,
++int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
+ 			  unsigned long ro, unsigned long incompat)
+ {
+ #define INCOMPAT_FEATURE_ON(f) \
 -- 
-2.17.1
+1.8.3.1
 
