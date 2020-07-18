@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB0E22496B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEAD224957
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgGRGvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbgGRGvN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:51:13 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5BDC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:51:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so7481474pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=F4H/ElZZ4sihq4Yns/hOmCv5Nr8HG3u3hNrN0OJ1/Hw=;
-        b=o+w06+08v61QtTYAKZM55o1vn6pvQM8+uKMEM2BLgxy5oe9Baepuv6i8DS30MaNDaD
-         XB7G8fJjQVJkm5H00/Bpyy1y61dYm6RUqulyD+Rc4XLEhFkLZpH2l+OKhRIyfrDiDQKL
-         G99Hw9cI4hjh9qvbT9aSQ1od4Yk0FBEwbhp8fkwAC6Wn2dK2y2OxcKdSo/K89lh2hg59
-         /vMv8L5iB1f/fnOZ6G+JN6H8GEbVW7kEAyITQbn/yBBNTDbr7fvHQaifsnLlXJeR9kVq
-         Vu4S+l992sccj7qDPDLWQGkZlJkTJ+VFxlsZTYHYzbbtyT0eIBjYpvgilxDRGgC7T5CY
-         YB8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F4H/ElZZ4sihq4Yns/hOmCv5Nr8HG3u3hNrN0OJ1/Hw=;
-        b=lauuQmEExRu19+6+ATzi3B7VE10zZAFHWnl09ukbx/iXrTny0TPHyds/cCe89eZVwF
-         bcwxWbzSe2pt5tu1X0/X6iIQZ5ux0A4i5poBdZqOkbBiB1CCJnMLKd+3DVQfYG2kyDXv
-         AaXcfT8dZ6tiZT1mRTkUGZBZIvDUAD/uq1XPcczuLlTWjkPbH98uauVKsdjeVmfjjlKI
-         stTa+HmzzNka02X6/uez2utdRW5iCkIV+L+R6n0OsXEjISDPJfYLZFyKP6F1lei3QfQl
-         +AAfoOom8mZUc0d9lCFd0NAj/C9mzbENLvJaRJHQ4lqfzzwRagW/pwSz9I6bSaR6ch1P
-         wc/Q==
-X-Gm-Message-State: AOAM531arwjyBilnjRugH62YKWO35vkCw/DURKn9H8xU7YfKHcV85GK5
-        zaHZ2W6nP9wS2soQ1/OOrG8=
-X-Google-Smtp-Source: ABdhPJwTAAJOvgFf5Mm7j5IWOU/8eQNhjAdZ4Lf3j6TJV1mxWGNuxyhgrCLheoKVrmC+/77vE6Qb6w==
-X-Received: by 2002:a17:90b:3683:: with SMTP id mj3mr13220992pjb.91.1595055072592;
-        Fri, 17 Jul 2020 23:51:12 -0700 (PDT)
-Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id q10sm10422781pfk.86.2020.07.17.23.51.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 23:51:11 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v7 18/18] perf ftrace: add change log
-Date:   Sat, 18 Jul 2020 14:48:26 +0800
-Message-Id: <20200718064826.9865-19-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200718064826.9865-1-changbin.du@gmail.com>
-References: <20200718064826.9865-1-changbin.du@gmail.com>
+        id S1728889AbgGRGsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:48:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725983AbgGRGso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 02:48:44 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CA1E2074B;
+        Sat, 18 Jul 2020 06:48:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595054923;
+        bh=AYcf4lCF4uqguLe3tllnR/0HNedkP2GPCOoNk6kdXq4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SzQqCtxba1xFIIIvASbEPoSm8uKUPvcTsYCF08xgeOAFsM1n37aU3T2Edip4A2nzJ
+         CU+iMPW8QwLrZzG92ye0FAOVYNrRhKlQFZ+Nu/i5fYon2Zp2ChL+kPgh5T8perZpXg
+         h2fMTjQPOk4AvBH+L1lUqkn67kWog1I5y8T9XdAY=
+Date:   Sat, 18 Jul 2020 08:48:41 +0200
+From:   gregkh <gregkh@linuxfoundation.org>
+To:     "Eads, Gage" <gage.eads@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Topel, Bjorn" <bjorn.topel@intel.com>
+Subject: Re: [PATCH 04/20] dlb2: add device ioctl layer and first 4 ioctls
+Message-ID: <20200718064841.GC245355@kroah.com>
+References: <20200712134331.8169-1-gage.eads@intel.com>
+ <20200712134331.8169-5-gage.eads@intel.com>
+ <CAK8P3a2OmSPGNghM+Y9ThH7hgKJKVSKRPaSPN17gUVRUh_o3bQ@mail.gmail.com>
+ <SN6PR11MB2574F33CF9C422517B3C13CFF67C0@SN6PR11MB2574.namprd11.prod.outlook.com>
+ <CAK8P3a09C6-auonW9jw30z_CijLgT+LkWfYowYoVdrwSzNGWKg@mail.gmail.com>
+ <SN6PR11MB257499106855871ACD053253F67C0@SN6PR11MB2574.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR11MB257499106855871ACD053253F67C0@SN6PR11MB2574.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a change log after previous enhancements.
+On Fri, Jul 17, 2020 at 08:05:08PM +0000, Eads, Gage wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > Sent: Friday, July 17, 2020 1:57 PM
+> > To: Eads, Gage <gage.eads@intel.com>
+> > Cc: linux-kernel@vger.kernel.org; gregkh <gregkh@linuxfoundation.org>;
+> > Karlsson, Magnus <magnus.karlsson@intel.com>; Topel, Bjorn
+> > <bjorn.topel@intel.com>
+> > Subject: Re: [PATCH 04/20] dlb2: add device ioctl layer and first 4 ioctls
+> > 
+> > On Fri, Jul 17, 2020 at 8:19 PM Eads, Gage <gage.eads@intel.com> wrote:
+> > 
+> > > > A plain copy_from_user() in place of this function should be fine.
+> > >
+> > > This function also validates the user size arg to prevent buffer overflow;
+> > centralizing it here avoids the case where a programmer accidentally forgets
+> > the check in an ioctl handler (and reduces code duplication). If it's alright with
+> > you, I'll keep the function but drop the dev_err() prints.
+> > 
+> > Once you use a 'switch(cmd)' statement in the top ioctl handler, the data
+> > structure size will be fixed, so there is no way the argument size can go wrong.
+> > 
+> 
+> Ah, understood. Will fix in v2.
+> 
+> > > >
+> > > > > +/* [7:0]: device revision, [15:8]: device version */ #define
+> > > > > +DLB2_SET_DEVICE_VERSION(ver, rev) (((ver) << 8) | (rev))
+> > > > > +
+> > > > > +static int dlb2_ioctl_get_device_version(struct dlb2_dev *dev,
+> > > > > +                                        unsigned long user_arg,
+> > > > > +                                        u16 size) {
+> > > > > +       struct dlb2_get_device_version_args arg;
+> > > > > +       struct dlb2_cmd_response response;
+> > > > > +       int ret;
+> > > > > +
+> > > > > +       dev_dbg(dev->dlb2_device, "Entering %s()\n", __func__);
+> > > > > +
+> > > > > +       response.status = 0;
+> > > > > +       response.id = DLB2_SET_DEVICE_VERSION(2, DLB2_REV_A0);
+> > > > > +
+> > > > > +       ret = dlb2_copy_from_user(dev, user_arg, size, &arg, sizeof(arg));
+> > > > > +       if (ret)
+> > > > > +               return ret;
+> > > > > +
+> > > > > +       ret = dlb2_copy_resp_to_user(dev, arg.response,
+> > > > > + &response);
+> > > >
+> > > > Better avoid any indirect pointers. As you always return a constant
+> > > > here, I think the entire ioctl command can be removed until you
+> > > > actually need it. If you have an ioctl command that needs both input
+> > > > and output, use _IOWR() to define it and put all arguments into the same
+> > structure.
+> > >
+> > > Ok, I'll merge the response structure into the ioctl structure (here and
+> > elsewhere).
+> > >
+> > > Say I add this command later: without driver versioning, how would
+> > > user-space know in advance whether the command is supported?
+> > > It could attempt the command and interpret -ENOTTY as "unsupported",
+> > > but that strikes me as an inelegant way to reverse-engineer the version.
+> > 
+> > There is not really a driver "version" once the driver is upstream, the concept
+> > doesn't really make sense here when arbitrary patches can get backported
+> > from the latest kernel into whatever the user is running.
+> > 
+> 
+> "Driver interface version" is the better term for what I'm trying to accomplish here. Any backports would have to be done in such a way that the interface version is honored, but if that can't be reasonably expected...then I agree, versioning is unworkable.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- tools/perf/builtin-ftrace.c | 1 +
- 1 file changed, 1 insertion(+)
+There is no such thing as a "driver interface version", sorry, that is
+not going to be workable at all.
 
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 4551d4d4bcc5..9213fb9777c4 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -3,6 +3,7 @@
-  * builtin-ftrace.c
-  *
-  * Copyright (c) 2013  LG Electronics,  Namhyung Kim <namhyung@kernel.org>
-+ * Copyright (c) 2020  Changbin Du <changbin.du@gmail.com>, significant enhancement.
-  */
- 
- #include "builtin.h"
--- 
-2.25.1
+thanks,
 
+greg k-h
