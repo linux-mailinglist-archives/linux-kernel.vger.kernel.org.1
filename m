@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E04224B2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 14:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41016224B30
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 14:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgGRMcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 08:32:20 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:53360 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726566AbgGRMcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 08:32:20 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1jwm0m-0004fW-J7; Sat, 18 Jul 2020 14:32:16 +0200
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] hwmon: (drivetemp) Avoid SCT usage on Toshiba DT01ACA family drives
-Date:   Sat, 18 Jul 2020 14:32:10 +0200
-Message-Id: <0cb2e7022b66c6d21d3f189a12a97878d0e7511b.1595075458.git.mail@maciej.szmigiero.name>
-X-Mailer: git-send-email 2.27.0
+        id S1727010AbgGRMdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 08:33:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8324 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726566AbgGRMdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 08:33:55 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 75F173633CE5EAE1F994;
+        Sat, 18 Jul 2020 20:33:49 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Sat, 18 Jul 2020
+ 20:33:47 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <aacraid@microsemi.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] scsi: dpt_i2o: remove some not needed memset
+Date:   Sat, 18 Jul 2020 20:32:24 +0800
+Message-ID: <20200718123224.1202-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been observed that Toshiba DT01ACA family drives have
-WRITE FPDMA QUEUED command timeouts and sometimes just freeze until
-power-cycled under heavy write loads when their temperature is getting
-polled in SCT mode. The SMART mode seems to be fine, though.
+Fixes coccicheck warning:
 
-Let's make sure we don't use SCT mode for these drives then.
+./drivers/scsi/dpt_i2o.c:3070:11-29: WARNING:
+ dma_alloc_coherent use in sys_tbl already zeroes out memory, so memset is not needed
+./drivers/scsi/dpt_i2o.c:2780:10-28: WARNING:
+ dma_alloc_coherent use in status already zeroes out memory, so memset is not needed
+./drivers/scsi/dpt_i2o.c:2834:20-38: WARNING:
+ dma_alloc_coherent use in pHba -> reply_pool already zeroes out memory, so memset is not needed
+./drivers/scsi/dpt_i2o.c:1328:10-28: WARNING:
+ dma_alloc_coherent use in status already zeroes out memory, so memset is not needed
 
-While only the 3 TB model was actually caught exhibiting the problem let's
-play safe here to avoid data corruption and extend the ban to the whole
-family.
-
-Fixes: 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives with temperature sensors")
-Cc: stable@vger.kernel.org
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
+ drivers/scsi/dpt_i2o.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Notes:
-    This behavior was observed on two different DT01ACA3 drives.
-    
-    Usually, a series of queued WRITE FPDMA QUEUED commands just time out,
-    but sometimes the whole drive freezes. Merely disconnecting and
-    reconnecting SATA interface cable then does not unfreeze the drive.
-    
-    One has to disconnect and reconnect the drive power connector for the
-    drive to be detected again (suggesting the drive firmware itself has
-    crashed).
-    
-    This only happens when the drive temperature is polled very often (like
-    every second), so occasional SCT usage via smartmontools is probably
-    safe.
-    
-    Changes from v1:
-    'SCT blacklist' -> 'SCT avoid models'
-    
-    Changes from v2:
-    * Switch to prefix matching and use it to match the DT01ACAx family,
-    
-    * Use "!" instead of "== 0",
-    
-    * Add a comment about the contents of the "model" field.
-
- drivers/hwmon/drivetemp.c | 43 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
-
-diff --git a/drivers/hwmon/drivetemp.c b/drivers/hwmon/drivetemp.c
-index 0d4f3d97ffc6..72c760373957 100644
---- a/drivers/hwmon/drivetemp.c
-+++ b/drivers/hwmon/drivetemp.c
-@@ -285,6 +285,42 @@ static int drivetemp_get_scttemp(struct drivetemp_data *st, u32 attr, long *val)
- 	return err;
- }
+diff --git a/drivers/scsi/dpt_i2o.c b/drivers/scsi/dpt_i2o.c
+index 0497ef6a9453..f654ad8a3d69 100644
+--- a/drivers/scsi/dpt_i2o.c
++++ b/drivers/scsi/dpt_i2o.c
+@@ -1331,7 +1331,6 @@ static s32 adpt_i2o_reset_hba(adpt_hba* pHba)
+ 		printk(KERN_ERR"IOP reset failed - no free memory.\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(status,0,4);
  
-+static const char * const sct_avoid_models[] = {
-+/*
-+ * These drives will have WRITE FPDMA QUEUED command timeouts and sometimes just
-+ * freeze until power-cycled under heavy write loads when their temperature is
-+ * getting polled in SCT mode. The SMART mode seems to be fine, though.
-+ *
-+ * While only the 3 TB model (DT01ACA3) was actually caught exhibiting the
-+ * problem let's play safe here to avoid data corruption and ban the whole
-+ * DT01ACAx family.
-+
-+ * The models from this array are prefix-matched.
-+ */
-+	"TOSHIBA DT01ACA",
-+};
-+
-+static bool drivetemp_sct_avoid(struct drivetemp_data *st)
-+{
-+	struct scsi_device *sdev = st->sdev;
-+	unsigned int ctr;
-+
-+	if (!sdev->model)
-+		return false;
-+
-+	/*
-+	 * The "model" field contains just the raw SCSI INQUIRY response
-+	 * "product identification" field, which has a width of 16 bytes.
-+	 * This field is space-filled, but is NOT NULL-terminated.
-+	 */
-+	for (ctr = 0; ctr < ARRAY_SIZE(sct_avoid_models); ctr++)
-+		if (!strncmp(sdev->model, sct_avoid_models[ctr],
-+			     strlen(sct_avoid_models[ctr])))
-+			return true;
-+
-+	return false;
-+}
-+
- static int drivetemp_identify_sata(struct drivetemp_data *st)
- {
- 	struct scsi_device *sdev = st->sdev;
-@@ -326,6 +362,13 @@ static int drivetemp_identify_sata(struct drivetemp_data *st)
- 	/* bail out if this is not a SATA device */
- 	if (!is_ata || !is_sata)
- 		return -ENODEV;
-+
-+	if (have_sct && drivetemp_sct_avoid(st)) {
-+		dev_notice(&sdev->sdev_gendev,
-+			   "will avoid using SCT for temperature monitoring\n");
-+		have_sct = false;
-+	}
-+
- 	if (!have_sct)
- 		goto skip_sct;
+ 	msg[0]=EIGHT_WORD_MSG_SIZE|SGL_OFFSET_0;
+ 	msg[1]=I2O_CMD_ADAPTER_RESET<<24|HOST_TID<<12|ADAPTER_TID;
+@@ -2784,7 +2783,6 @@ static s32 adpt_i2o_init_outbound_q(adpt_hba* pHba)
+ 			pHba->name);
+ 		return -ENOMEM;
+ 	}
+-	memset(status, 0, 4);
  
+ 	writel(EIGHT_WORD_MSG_SIZE| SGL_OFFSET_6, &msg[0]);
+ 	writel(I2O_CMD_OUTBOUND_INIT<<24 | HOST_TID<<12 | ADAPTER_TID, &msg[1]);
+@@ -2838,7 +2836,6 @@ static s32 adpt_i2o_init_outbound_q(adpt_hba* pHba)
+ 		printk(KERN_ERR "%s: Could not allocate reply pool\n", pHba->name);
+ 		return -ENOMEM;
+ 	}
+-	memset(pHba->reply_pool, 0 , pHba->reply_fifo_size * REPLY_FRAME_SIZE * 4);
+ 
+ 	for(i = 0; i < pHba->reply_fifo_size; i++) {
+ 		writel(pHba->reply_pool_pa + (i * REPLY_FRAME_SIZE * 4),
+@@ -3073,7 +3070,6 @@ static int adpt_i2o_build_sys_table(void)
+ 		printk(KERN_WARNING "SysTab Set failed. Out of memory.\n");	
+ 		return -ENOMEM;
+ 	}
+-	memset(sys_tbl, 0, sys_tbl_len);
+ 
+ 	sys_tbl->num_entries = hba_count;
+ 	sys_tbl->version = I2OVERSION;
+-- 
+2.17.1
+
