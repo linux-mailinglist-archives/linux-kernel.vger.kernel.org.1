@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34645224B68
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BFD224B6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgGRNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 09:17:16 -0400
-Received: from smtprelay0030.hostedemail.com ([216.40.44.30]:36496 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726566AbgGRNRP (ORCPT
+        id S1726962AbgGRNTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 09:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgGRNTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 09:17:15 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 84C0D181D207A;
-        Sat, 18 Jul 2020 13:17:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:2894:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:7264:7903:7904:8957:10004:10400:10471:10848:11026:11473:11657:11658:11914:12043:12048:12295:12296:12297:12438:12555:12663:12683:12740:12760:12895:12986:13018:13019:13255:13439:14096:14097:14659:14721:21080:21324:21451:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: crib79_62139b626f13
-X-Filterd-Recvd-Size: 3809
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 18 Jul 2020 13:17:13 +0000 (UTC)
-Message-ID: <560eeb7388164e58ac0e47277fe2aec798c45a5c.camel@perches.com>
-Subject: Re: [PATCH 4/4] staging: rtl8188eu: include: placed constant on the
- right side of the test in comparisons
-From:   Joe Perches <joe@perches.com>
-To:     B K Karthik <bkkarthik@pesu.pes.edu>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sat, 18 Jul 2020 06:17:12 -0700
-In-Reply-To: <20200718091857.quzs5sqvkjzngd6k@pesu-pes-edu>
-References: <20200718091857.quzs5sqvkjzngd6k@pesu-pes-edu>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Sat, 18 Jul 2020 09:19:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5CEC0619D2;
+        Sat, 18 Jul 2020 06:19:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a14so6773220pfi.2;
+        Sat, 18 Jul 2020 06:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=bW56Dq/EZQ7Q0OxXWw3lSP4NAzICRQndu6/ZLfdw/eU=;
+        b=lJpYIhhryLyntBJ0OGcZIbxju01m3oYcIhETi0dMSh5uePg0c0Q+y+BLuEvQ9ZQowu
+         2dFUjjhy24tQmuib5A/VMpjqurNaRbmiHGbpbt3kPgg0VN2XeNLXVq3tauUsAik4uIMg
+         4BwK7L8XSTIdcyRmoui4tpu9cydMpK8YEU0CLnVIaatENE+Y9kDNfcTxd9sGll45+g8P
+         6YIC1Pol3Eid2XdSikbBdAJMMAEOX/+ja48Z/JSgLjeG+UdoWcqSnm6A0j5OhK70ugZo
+         hMwXxSjYLVFsP1Hc/hHCTs+QzA3BxHPAJRByUTBHwZ2CQsD0sJNRZ7Hg7WlAsEVBBJlZ
+         Prmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=bW56Dq/EZQ7Q0OxXWw3lSP4NAzICRQndu6/ZLfdw/eU=;
+        b=hh32COq+6DbzqPfz8KrWYXIDivtuTs164wMXaM5rRfuc6TO4RNIuYqwCHAKPbitrVk
+         8YMgLMO26uEjZnGw0y9zlBgw/xTjYMMq59CcFMku/7UjpLzliPtCTGEdx8vI24cstLXY
+         oClg/10M7/qAJ1hZr6F3GQ2Hz30rkkB8ng04NpL1hNkcGzz+ysq9JPKyw3b4/EeysYPr
+         IgIg6okhlvkSA5VqrJIttDlfO28dopccW6JNHn12XYPGnipIph0oy93UqyY4swjlHzL7
+         e0wzguJ76PXzY9RZHfo1q/DbdhDK4E4ySc1TLkYMoeEXAPHkStwx5Eryoo/YaSJBZBu7
+         ACWA==
+X-Gm-Message-State: AOAM531FHqTyIounwjkje728saSgjT7DwOUQYRcZhlx4GTmzsDHaD+s8
+        JDKf/6MrTzQLTUHKH0WzZGs=
+X-Google-Smtp-Source: ABdhPJxceziaeE//any/1Ek+Lh/N/UukPxOOP9stjgcSoj2QsLa6Jau86qLHgQMAmF+rFxE81qUTKQ==
+X-Received: by 2002:a63:5619:: with SMTP id k25mr12218506pgb.139.1595078349459;
+        Sat, 18 Jul 2020 06:19:09 -0700 (PDT)
+Received: from blackclown ([103.88.82.25])
+        by smtp.gmail.com with ESMTPSA id 129sm10446524pfv.161.2020.07.18.06.19.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 18 Jul 2020 06:19:08 -0700 (PDT)
+Date:   Sat, 18 Jul 2020 18:48:56 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] staging: rts5208: rtsx: Replace depracated MSI API
+Message-ID: <20200718131856.GA10837@blackclown>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-07-18 at 05:18 -0400, B K Karthik wrote:
-> placed constant on the right side of the test
-> to fix warnings issued by checkpatch
-[]
-> diff --git a/drivers/staging/rtl8188eu/include/wifi.h b/drivers/staging/rtl8188eu/include/wifi.h
-[]
-> @@ -326,7 +326,7 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
->  
->  static inline int IsFrameTypeCtrl(unsigned char *pframe)
->  {
-> -	if (WIFI_CTRL_TYPE == GetFrameType(pframe))
-> +	if (GetFrameType(pframe) == WIFI_CTRL_TYPE)
->  		return true;
->  	else
->  		return false;
 
-Always try to improve code instead of merely shutting
-up checkpatch warnings.
+--a8Wt8u1KmwUX3Y2C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This function should likely be written:
+Replace depracated pci_enable_msi with pci_alloc_irq_vectors.
 
-static inline bool IsFrameTypeCtrl(unsigned char *pframe)
-{
-	return GetFrameType(pframe) == WIFI_CTRL_TYPE;
-}
-
-and given it's used only once, it might be expanded
-in that place and removed altogether.
-
-Something like:
-
-(and the memcmp below could be ether_addr_equal instead
- but I'm too lazy to find out if the addresses are both
- guaranteed to be __aligned(2) which is likely)
-
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
- drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c | 8 +++++---
- drivers/staging/rtl8188eu/include/wifi.h        | 7 -------
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ drivers/staging/rts5208/rtsx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c b/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c
-index 7d0135fde795..a2994f9ecbde 100644
---- a/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c
-+++ b/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c
-@@ -144,10 +144,12 @@ void update_recvframe_phyinfo_88e(struct recv_frame *precvframe,
- 
- 	wlanhdr = precvframe->pkt->data;
- 
--	pkt_info.bPacketMatchBSSID = ((!IsFrameTypeCtrl(wlanhdr)) &&
--		!pattrib->icv_err && !pattrib->crc_err &&
-+	pkt_info.bPacketMatchBSSID =
-+		GetFrameType(wlanhdr) != WIFI_CTRL_TYPE &&
-+		!pattrib->icv_err &&
-+		!pattrib->crc_err &&
- 		!memcmp(get_hdr_bssid(wlanhdr),
--		 get_bssid(&padapter->mlmepriv), ETH_ALEN));
-+			get_bssid(&padapter->mlmepriv), ETH_ALEN);
- 
- 	pkt_info.bPacketToSelf = pkt_info.bPacketMatchBSSID &&
- 				 (!memcmp(get_da(wlanhdr),
-diff --git a/drivers/staging/rtl8188eu/include/wifi.h b/drivers/staging/rtl8188eu/include/wifi.h
-index 791f287a546d..3998d5633860 100644
---- a/drivers/staging/rtl8188eu/include/wifi.h
-+++ b/drivers/staging/rtl8188eu/include/wifi.h
-@@ -324,13 +324,6 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
- 	return sa;
- }
- 
--static inline int IsFrameTypeCtrl(unsigned char *pframe)
--{
--	if (WIFI_CTRL_TYPE == GetFrameType(pframe))
--		return true;
--	else
--		return false;
--}
- /*-----------------------------------------------------------------------------
- 			Below is for the security related definition
- ------------------------------------------------------------------------------*/
+diff --git a/drivers/staging/rts5208/rtsx.c b/drivers/staging/rts5208/rtsx.c
+index e28e162d004e..adc80e766412 100644
+--- a/drivers/staging/rts5208/rtsx.c
++++ b/drivers/staging/rts5208/rtsx.c
+@@ -310,7 +310,7 @@ static int __maybe_unused rtsx_resume(struct device *de=
+v_d)
+ 	pci_set_master(pci);
+=20
+ 	if (chip->msi_en) {
+-		if (pci_enable_msi(pci) < 0)
++		if (pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_MSI) < 0)
+ 			chip->msi_en =3D 0;
+ 	}
+=20
+@@ -881,7 +881,7 @@ static int rtsx_probe(struct pci_dev *pci,
+ 	dev_info(&pci->dev, "pci->irq =3D %d\n", pci->irq);
+=20
+ 	if (dev->chip->msi_en) {
+-		if (pci_enable_msi(pci) < 0)
++		if (pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_MSI) < 0)
+ 			dev->chip->msi_en =3D 0;
+ 	}
+=20
+--=20
+2.17.1
 
 
+--a8Wt8u1KmwUX3Y2C
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8S9sAACgkQ+gRsbIfe
+747zJhAAnYwOribTqVdCoKelWsg/J1bRcpu3igKxafUf9i6Jdyk+XmaL4ZtRFsG4
+Gc5EQT8o6bhufzzW+We8doUAjusxMIpEBL4+TzN0vK0YdmNeN/Ebi8Be6JmsGa8U
+BEedBfiYtT6jVuRC2AdquNK3XJ3U4+8FXkSfG0NuGhwViwks0TzQHOAZJCxuS5Cq
++XFhBNXpjK8E+IOXOFKEUB1cngLfwYKOZopITObQO182b7NND2yWLR5U7TLJlBHX
+rE8Nv3Ie7On89qoXSfDUrYNZ7jHok9FRO3K5D2L7v7Uzdcy9JoarwG9cwN3nsWXy
+A1l40jF8ctR+VhukddlrMs6cl/lGoIX3j6oBW/rm7MuW/TgLRnefZLKi9ffAmq5s
+29JyX9k2ZuqyWUcuXkSLxri/hzqGzKv66Zg4QeeKjPVdNWc1Lg15zAtiXnkLT2j9
+coiA8+9d6FfPonwPsYHxwxtMK+BYxUtnAzfbII3uIBHB0av6GVpjjgSIaMvsPcRZ
+R/XnG4XO8zqXyttXxJqzS82BhGvVUvEbtSK/wdqbMeYGrX/4HGjMv6wA4TrCU5wH
+2t0J/yEE+timKORy0b00Q7paKNTrKO4fiYE3yEg48AHFNzjOIOmuPOJDffX/9imb
+4RkGNUBQLqgvUr8fMvzhqmH2yL39UnGW9j50TBnwfXH0GetHv/o=
+=PY3U
+-----END PGP SIGNATURE-----
+
+--a8Wt8u1KmwUX3Y2C--
