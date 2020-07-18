@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FC022491F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 07:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB054224922
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 07:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgGRFyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 01:54:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
+        id S1728552AbgGRFye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 01:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726377AbgGRFyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 01:54:12 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728045AbgGRFyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 01:54:33 -0400
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0139207FB;
-        Sat, 18 Jul 2020 05:54:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B58AC208E4;
+        Sat, 18 Jul 2020 05:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595051652;
-        bh=7tj0coF0LM+/VMFkugJPQNZQ4IPbTxLOCHXhOrSJqAY=;
-        h=Date:From:Cc:Subject:In-Reply-To:References:From;
-        b=DMAsgOdbE5S+/snFh2fLr9vtfPqyP/vp0lnwJW1CI2VHKury2pA4DUzMmnHeDDWJ3
-         WVxj32rIi08omQDlDtE5PuS1Cx4+3fw0xRU3eV76cWasmwj+YwF/+GUC5FnSJuIxSZ
-         t6hOLOuQWHuG3NUYgp7Mw4My71LeguU2aBTrbnrY=
-Date:   Sat, 18 Jul 2020 07:54:07 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonas Karlman <jonas@kwiboo.se>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Subject: Re: [PATCH 1/3] media: rkvdec: Fix H264 scaling list order
-Message-ID: <20200718075407.765551bb@coco.lan>
-In-Reply-To: <2630e1bb0948c3134c6f22ad275ae27cc6023532.1595048742.git.mchehab+huawei@kernel.org>
-References: <2630e1bb0948c3134c6f22ad275ae27cc6023532.1595048742.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1595051672;
+        bh=bPNSxVMfse13AvxGlLLZIw7R+pi4nVlMn0Jl7sLXFpM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BzPhhErGy2FBuNLHaD1AgUbWThJJkAreGMkQSuRHrnNiDKdDBd5Qmm48rf3w0fMKa
+         8GsCQV3sFR0g8wedaR1rVs+8UQ1fYeC1NPCpap+i5alVmWykSAeZ07N2lEvlOgA0lc
+         67g7KUgwvKQuN2NLYI53l1bwKdZ3Xv8bHry+4hZo=
+Received: by mail-oi1-f182.google.com with SMTP id w17so9870260oie.6;
+        Fri, 17 Jul 2020 22:54:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533g1RvbBEBT7ojOkhNfFGoOqX4LWdV1rHijAUUjUaG23rM+6rZp
+        vF4I7ue+NWZAoWu+1FR+Mgu2G/xUEFi/1++vTnk=
+X-Google-Smtp-Source: ABdhPJzZ4NEtZfmmbnS+DfeLeAQt/womAFEBD7627IvgU9OJ3LHDBrAHbhh/sf/h/5YmTI3PYH2HhZbTKN3cyX0ygYM=
+X-Received: by 2002:aca:d643:: with SMTP id n64mr10242000oig.33.1595051671965;
+ Fri, 17 Jul 2020 22:54:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200709132807.32232-1-ardb@kernel.org>
+In-Reply-To: <20200709132807.32232-1-ardb@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 18 Jul 2020 08:54:20 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXGHDS7PnuPsCnHWGDFdtcaJUuXboZUZQwowzw0LfrQ+pw@mail.gmail.com>
+Message-ID: <CAMj1kXGHDS7PnuPsCnHWGDFdtcaJUuXboZUZQwowzw0LfrQ+pw@mail.gmail.com>
+Subject: Re: [GIT PULL] EFI fixes for v5.8-rc
+To:     linux-efi <linux-efi@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 18 Jul 2020 07:05:54 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+On Thu, 9 Jul 2020 at 16:28, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> The following changes since commit 2a55280a3675203496d302463b941834228b9875:
+>
+>   efi/libstub: arm: Print CPU boot mode and MMU state at boot (2020-06-17 15:29:11 +0200)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git tags/efi-urgent-for-v5.8-rc4
+>
+> for you to fetch changes up to 769e0fe1171e95d90ea5a2d6d0b2bdc7d5d2e7b2:
+>
+>   efi: Revert "efi/x86: Fix build with gcc 4" (2020-07-09 10:14:29 +0300)
+>
+> ----------------------------------------------------------------
+> EFI fixes for v5.8-rc4:
+> - Fix the layering violation in the use of the EFI runtime services
+>   availability mask in users of the 'efivars' abstraction
+> - Revert build fix for GCC v4.8 which is no longer supported
+> - Some fixes for build issues found by Atish while working on RISC-V support
+> - Avoid --whole-archive when linking the stub on arm64
+> - Some x86 EFI stub cleanups from Arvind
+>
+> ----------------------------------------------------------------
+> Ard Biesheuvel (2):
+>       efi/efivars: Expose RT service availability via efivars abstraction
+>       efi: Revert "efi/x86: Fix build with gcc 4"
+>
+> Arvind Sankar (2):
+>       efi/x86: Remove unused variables
+>       efi/x86: Only copy upto the end of setup_header
+>
+> Atish Patra (2):
+>       efi/libstub: Fix gcc error around __umoddi3 for 32 bit builds
+>       efi/libstub: Move the function prototypes to header file
+>
+> Masahiro Yamada (1):
+>       efi/libstub/arm64: link stub lib.a conditionally
+>
+>  arch/arm64/Makefile                       |  2 +-
+>  drivers/firmware/efi/efi-pstore.c         |  5 +----
+>  drivers/firmware/efi/efi.c                | 12 ++++++++----
+>  drivers/firmware/efi/efivars.c            |  5 +----
+>  drivers/firmware/efi/libstub/Makefile     |  3 +--
+>  drivers/firmware/efi/libstub/alignedmem.c |  2 +-
+>  drivers/firmware/efi/libstub/efi-stub.c   | 17 -----------------
+>  drivers/firmware/efi/libstub/efistub.h    | 16 ++++++++++++++++
+>  drivers/firmware/efi/libstub/x86-stub.c   |  8 ++++----
+>  drivers/firmware/efi/vars.c               |  6 ++++++
+>  fs/efivarfs/super.c                       |  6 +++---
+>  include/linux/efi.h                       |  1 +
+>  12 files changed, 43 insertions(+), 40 deletions(-)
 
-> From: Jonas Karlman <jonas@kwiboo.se>
-> 
-> The Rockchip Video Decoder driver is expecting that the values in a
-> scaling list are in zig-zag order and applies the inverse scanning process
-> to get the values in matrix order.
-> 
-> Commit 0b0393d59eb4 ("media: uapi: h264: clarify expected
-> scaling_list_4x4/8x8 order") clarified that the values in the scaling list
-> should already be in matrix order.
-> 
-> Fix this by removing the reordering and change to use two memcpy.
-
-Please ignore this one. This patch is already merged, and it is
-not related to the 2 atomisp patches on this short series.
-
-Thanks,
-Mauro
+Ping?
