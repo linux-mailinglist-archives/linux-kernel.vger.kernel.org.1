@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378C022475A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 02:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DAB22475C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 02:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgGRAGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 20:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728793AbgGRAGu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 20:06:50 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA93DC0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:06:50 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 8so8878124pjk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:06:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=cSGrpEWuKSVf97iW7EL4KZRFYPfb7+inZKxBuLQuvAE=;
-        b=oFBiOJFotgQsYiohUpKbkZXbMk0anIOETUAPGMRKbKBtkpfPEd8xLg6XTAXbyZcfoi
-         BwNvvIaw6/t2CBTYGbvsBkLGxWK6++vWST3Aj1KHKgiLKceg0RQ/9jN9Ao2iWcVkzj7h
-         2Q0AYvvuyzQfl95ZIplngHYn1lLuX9YOT4GvpS3gMS4mvYXyjnqEy+kxckIutRo4ELHv
-         PD8Cy2kj4InW3oDPlbSPrZZ65B1YVO/rND51vigqVYZQjN2CHT4NeULpOgwFAekw8cce
-         JpLLDWTXvh8nLo3nGfEzbkbAHILC+wrXQ/qljDHEhrL2d39+3a69ylcOh6DBU7A+ud7z
-         0n3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cSGrpEWuKSVf97iW7EL4KZRFYPfb7+inZKxBuLQuvAE=;
-        b=Bs1FGRqCUwKxTZbCVvmHiyEIPCofBSG2qtnJ1pECvK5kYa7VRd+VoUpFa8DV52FPuX
-         LcJBhDRnwEKZzdBG2udc1WWwoEu7nmOJqLzTPuXHOisXxmUSROE/sMnL2+f+o0Eop3vR
-         Znt+zyWeBuMOjJONbkm2LVVa9/OHpEV/NsIsetcfg0q2n5TrqjZ28BffezmY7y1I6tgR
-         NZgA4lk5HA5PbcKYUo8CpJi1SOBKclSoyvM0JdzDJNyK458UyK0A4vPD+XCRQRnPenim
-         mcr3lsZ6KUdb8v4jIy9ejytBY7BmgmJPuuCQu4ueChSGgkBy3+Ie9CN6JBwIikPrFP/R
-         AaeA==
-X-Gm-Message-State: AOAM533nr6GbtvOT2mLZxUq1/h/3QpqSWSaE7aQYMcadcY4P5hYkShro
-        ZSpHXbFyhzvWw6wnieB5rCCqPQHi/iD4GcA=
-X-Google-Smtp-Source: ABdhPJzKJZr8KDd4Yo0Wm5lo4eKhPkLN/TRhN4fCypWCbhR0OyB2ssX8VqDuXN35b/Dzh+f6roB+vXsTyHzgnyQ=
-X-Received: by 2002:a63:7d16:: with SMTP id y22mr10135672pgc.136.1595030810200;
- Fri, 17 Jul 2020 17:06:50 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 17:06:37 -0700
-In-Reply-To: <20200718000637.3632841-1-saravanak@google.com>
-Message-Id: <20200718000637.3632841-5-saravanak@google.com>
-Mime-Version: 1.0
-References: <20200718000637.3632841-1-saravanak@google.com>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v3 4/4] irqchip/mtk-cirq: Convert to a platform driver
-From:   Saravana Kannan <saravanak@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>,
-        Hanks Chen <hanks.chen@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728410AbgGRANA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 20:13:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727946AbgGRANA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 20:13:00 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C18C520768;
+        Sat, 18 Jul 2020 00:12:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595031179;
+        bh=6U990pCrqx8gF6az8xcughhGYyeg5SgkZ15i21TePlc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=yoIF14ITjXcQAKyJR8qBJ+VnsYRCwcHRgk0ySLlYAHyhDb17CruZQZJHiMzxYfLYv
+         Tibk3rxtm5JiGHKxsHN0hAsylHTl2kKVVDs0aJzcIZJj5pkmSNzXyZHWjra9Mzw3FF
+         T1Fy4GNLH5f8r60NTY29YCBd7U6pP5XlA8FqiALQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A6BB035231DA; Fri, 17 Jul 2020 17:12:59 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 17:12:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     madhuparnabhowmik10@gmail.com,
+        Dexuan-Linux Cui <dexuan.linux@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
+        frextrite@gmail.com, lkft-triage@lists.linaro.org,
+        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
+Message-ID: <20200718001259.GY9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
+ <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
+ <20200712160856.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
+ <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
+ <20200717170747.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver can work as a platform driver. So covert it to a platform
-driver.
+On Sat, Jul 18, 2020 at 12:35:12AM +0530, Naresh Kamboju wrote:
+> Hi Paul,
+> 
+> > I am not seeing this here.
+> 
+> Do you notice any warnings while building linux next master
+> for x86_64 architecture ?
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/irqchip/irq-mtk-cirq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Idiot here was failing to enable building of KVM.  With that, I do see
+the error.  The patch resolves it for me.  Does it help for you?
 
-diff --git a/drivers/irqchip/irq-mtk-cirq.c b/drivers/irqchip/irq-mtk-cirq.c
-index 69ba8ce3c178..62a61275aaa3 100644
---- a/drivers/irqchip/irq-mtk-cirq.c
-+++ b/drivers/irqchip/irq-mtk-cirq.c
-@@ -295,4 +295,6 @@ static int __init mtk_cirq_of_init(struct device_node *node,
- 	return ret;
- }
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index de9385b..f8633d3 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+ #define __list_check_rcu(dummy, cond, extra...)				\
+ 	({ check_arg_count_one(extra); })
  
--IRQCHIP_DECLARE(mtk_cirq, "mediatek,mtk-cirq", mtk_cirq_of_init);
-+IRQCHIP_PLATFORM_DRIVER_BEGIN(mtk_cirq)
-+IRQCHIP_MATCH("mediatek,mtk-cirq", mtk_cirq_of_init)
-+IRQCHIP_PLATFORM_DRIVER_END(mtk_cirq)
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
-
+-#define __list_check_srcu(cond) true
++#define __list_check_srcu(cond) ({ })
+ #endif
+ 
+ /*
