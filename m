@@ -2,166 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E628224D56
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D6F224D5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgGRR0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 13:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgGRR0X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 13:26:23 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB85C0619D3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:26:23 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id p3so8250459pgh.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JKvc2+QCsfjHrJGTDylUQ0qlHg6awaCDIxeDgNldnWM=;
-        b=e6iarfdIlJjoE2XZcMhUL5lLhSWV7WqOnkJcOXcw+n/JqWvzQ2cf/fCFcavs8os+Lo
-         JEpoggS44iw45PMBUyGPmStXa9r4dE9emLZZmhBqUpNVzoVQFm42zHncy9/S22oN5nUq
-         nObZG4jXxDUVEg1Bv4MTvMraLsdwXWgsyHKb3FDl9ss4ycNn1tujOZUVuW6l8cHOUPsg
-         lclNAtjzDCU1Uu/0+4Uj6ljk0rLuO0RJZz5wold/Lq67xrG56Ek1HgQB8pMWXwD3wbRc
-         C5qFhOrD/t0/gCiNR+dT1UnENazdP5eVFfIoTSnutxkXZzN4M6aCiY7btouFQe/zq+Ei
-         XLKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JKvc2+QCsfjHrJGTDylUQ0qlHg6awaCDIxeDgNldnWM=;
-        b=YZyYFskfAJCI8TAdpujEM/FwduQZzxbbGCIaU4c+lNLgzfrc1VRGUy5AD1qDmZ/kEm
-         S+MpScwzwyrI0BK+givKGWh7/Q/ea2231z/ggO/zSAq9O7u9r8HF9+FdQoHOPrAYKCw1
-         ig3nKaEZC5kvyO6q/JN6YvF0ynPkIMObbP9+xXHJDtwasUUA+kQGG7DaDe97m2RXHPft
-         2xFP/lgOJiEHYgHiF2rCCnNJOOY34NCRO73H65Fjw1+lGnfNvnmfdGYsc/dZRJmAKfnv
-         YXCUsojB5hWIDhGIp+Y/FFljr6K939DeyOkQxewhZm9b3bw+rbfHUwnA8Sw55K4t9et/
-         DPUg==
-X-Gm-Message-State: AOAM531Ol+HJhwovTHnrgtqZZ/CJR5YX2ibuvP7y+xp1LNcE3UGQo7ak
-        Jr548qV2oCD2Z8yGPyRCoQ4T
-X-Google-Smtp-Source: ABdhPJzTVguVkvmw0iuDXIhid0BN8vdgC6wRgnQ9ZMv2+o7ApvRtCeJrtP6fE/o2zc0dHtLZBOV+uw==
-X-Received: by 2002:aa7:8edc:: with SMTP id b28mr12883482pfr.230.1595093182660;
-        Sat, 18 Jul 2020 10:26:22 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:641d:175c:d9be:f98c:dadf:a60b])
-        by smtp.gmail.com with ESMTPSA id d9sm10631001pgv.45.2020.07.18.10.26.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 18 Jul 2020 10:26:21 -0700 (PDT)
-Date:   Sat, 18 Jul 2020 22:56:15 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Amit Singh Tomar <amittomer25@gmail.com>
-Cc:     andre.przywara@arm.com, afaerber@suse.de, robh+dt@kernel.org,
-        cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 10/10] arm64: dts: actions: Add uSD support for
- Cubieboard7
-Message-ID: <20200718172615.GB3331@Mani-XPS-13-9360>
-References: <1595063974-24228-1-git-send-email-amittomer25@gmail.com>
- <1595063974-24228-11-git-send-email-amittomer25@gmail.com>
+        id S1728418AbgGRRba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 13:31:30 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:45592 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726648AbgGRRb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 13:31:29 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id B9C92FB03;
+        Sat, 18 Jul 2020 19:31:26 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id N14d5shIaMI1; Sat, 18 Jul 2020 19:31:25 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id B4BC842576; Sat, 18 Jul 2020 19:31:24 +0200 (CEST)
+Date:   Sat, 18 Jul 2020 19:31:24 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Samuel Holland <samuel@sholland.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Fix st7703 panel initialization failures
+Message-ID: <20200718173124.GA88021@bogon.m.sigxcpu.org>
+References: <20200716123753.3552425-1-megous@megous.com>
+ <20200716140843.GA359122@bogon.m.sigxcpu.org>
+ <20200716143209.ud6ote4q545bo2c7@core.my.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1595063974-24228-11-git-send-email-amittomer25@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200716143209.ud6ote4q545bo2c7@core.my.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 02:49:34PM +0530, Amit Singh Tomar wrote:
-> This commit adds uSD support for Cubieboard7 board based on Actions Semi
-> S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
-> added yet, fixed regulator has been used as a regulator node.
+Hi,
+On Thu, Jul 16, 2020 at 04:32:09PM +0200, Ondřej Jirman wrote:
+> Hi Guido,
 > 
-> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
-> ---
-> Changes since v5:
-> 	* Removed the Fixed regulators as these are 
-> 	  not needed.
-
-I just asked you to remove the unused (ie. unreferenced fixed regulators) but
-you seem to have removed sd_vcc which was supplied to uSD :/ How can the uSD
-card work without a power supply? Forget the fact that the regulator was enabled
-by bootloader but you are not properly describing it in DT here. The idea is to
-model the actual hardware in DT and if you are not able to model the regulator
-using PMIC then use fixed-regulator. Hope this makes it clear!
-
-Thanks,
-Mani
-
-> Changes since v4:
->         * No change.
-> Changes since v3:
->         * No change.
-> Changes since v2:
->         * No change.
-> Changes since v1:
->         * No change.
-> Changes since RFC:
->         * No change.
-> ---
->  arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 22 ++++++++++++++++++++++
->  arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
->  2 files changed, 23 insertions(+)
+> On Thu, Jul 16, 2020 at 04:08:43PM +0200, Guido Günther wrote:
+> > Hi Ondrej,
+> > On Thu, Jul 16, 2020 at 02:37:51PM +0200, Ondrej Jirman wrote:
+> > > When extending the driver for xbd599 panel support I tried to do minimal
+> > > changes and keep the existing initialization timing.
+> > > 
+> > > It turned out that it's not good enough and the existing init sequence
+> > > is too aggressive and doesn't follow the specification. On PinePhone
+> > > panel is being powered down/up during suspend/resume and with current
+> > > timings this frequently leads to corrupted display.
+> > 
+> > Given the amount of ST7703 look alikes i don't think you can go by the
+> > datasheet and hope not to break other panels. The current sleeps cater
+> > for the rocktech panel (which suffered from similar issues you describe
+> > when we took other parameters) so you need to make those panel specific.
 > 
-> diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-> index 63e375cd9eb4..eaaf8f876203 100644
-> --- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-> +++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-> @@ -13,6 +13,7 @@
->  
->  	aliases {
->  		serial3 = &uart3;
-> +		mmc0 = &mmc0;
->  	};
->  
->  	chosen {
-> @@ -81,6 +82,14 @@
->  			bias-pull-up;
->  		};
->  	};
-> +
-> +	mmc0_default: mmc0_default {
-> +		pinmux {
-> +			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
-> +				 "sd0_cmd_mfp", "sd0_clk_mfp";
-> +			function = "sd0";
-> +		};
-> +	};
->  };
->  
->  &timer {
-> @@ -90,3 +99,16 @@
->  &uart3 {
->  	status = "okay";
->  };
-> +
-> +/* uSD */
-> +&mmc0 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mmc0_default>;
-> +	cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
-> +	no-sdio;
-> +	no-mmc;
-> +	no-1-8-v;
-> +	bus-width = <4>;
-> +};
-> +
-> diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-> index 9ed88aafc2da..ba498cf9217d 100644
-> --- a/arch/arm64/boot/dts/actions/s700.dtsi
-> +++ b/arch/arm64/boot/dts/actions/s700.dtsi
-> @@ -4,6 +4,7 @@
->   */
->  
->  #include <dt-bindings/clock/actions,s700-cmu.h>
-> +#include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/power/owl-s700-powergate.h>
->  #include <dt-bindings/reset/actions,s700-reset.h>
-> -- 
-> 2.7.4
+> It should work on rocktech too. The patch mostly increases/reorders the delays
+> slightly, to match the controller documentation. I don't see a reason to
+> complicate the driver with per panel special delays, unless these patches don't
+> work on your panel.
+
+That's why i brought it up. It breaks the rocktech panel on
+blank/unblank loops where it just stays blank and then starts hitting
+DSI command timeouts.
+Cheers,
+ -- Guido
+
+> 
+> The init sequence is still suboptimal, and doesn't follow the kernel docs
+> completely, even after these patches. Controller spec also talks about adding
+> some delay before enabling the backlight to avoid visual glitches.
+> 
+> Which is what enable callback is documented to be for. Currently part of the
+> initialization that belongs to prepare callback is also done in enable callback.
+> 
+> I see the glitch (small vertical shift of the image on powerup), but personally
+> don't care much to introduce even more delays to the driver, just for the
+> cosmetic issue.
+> 
+> regards,
+> 	o.
+> 
+> > Cheers,
+> >  -- Guido
+> > 
+> > > 
+> > > This patch series fixes the problems.
+> > > 
+> > > The issue was reported by Samuel Holland.
+> > > 
+> > > Relevant screenshots from the datasheet:
+> > > 
+> > >   Power on timing: https://megous.com/dl/tmp/35b72e674ce0ca27.png
+> > >   Power off timing: https://megous.com/dl/tmp/dea195517106ff17.png
+> > >   More optimal reset on poweron: https://megous.com/dl/tmp/a9e5caf14e1b0dc6.png
+> > >   Less optimal reset on poweron: https://megous.com/dl/tmp/246761039283c4cf.png
+> > >   Datasheet: https://megous.com/dl/tmp/ST7703_DS_v01_20160128.pdf
+> > > 
+> > > Please take a look.
+> > > 
+> > > thank you and regards,
+> > >   Ondrej Jirman
+> > > 
+> > > Ondrej Jirman (2):
+> > >   drm/panel: st7703: Make the sleep exit timing match the spec
+> > >   drm/panel: st7703: Fix the power up sequence of the panel
+> > > 
+> > >  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 29 ++++++++++---------
+> > >  1 file changed, 15 insertions(+), 14 deletions(-)
+> > > 
+> > > -- 
+> > > 2.27.0
+> > > 
 > 
