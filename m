@@ -2,502 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACF3224A7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 12:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B2C224A7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 12:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgGRJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 05:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgGRJ5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 05:57:36 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F89CC0619D2;
-        Sat, 18 Jul 2020 02:57:36 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a14so6626945pfi.2;
-        Sat, 18 Jul 2020 02:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f1LOZp5JlzkmUbPeyK+AOPbtRtPHkw4Fri+hBp79l4E=;
-        b=MCRCqn9lVjazk2tH5HwpFZ3/BSrnqin99DexBMzdZTFiI/pGNeDl2Dp1Y6N4rgWP1Q
-         SVhB1v+fIXrDoo6zuAUCIH4fkCB+b93yMuq8psqSA48nJrjYYDyzfAAg1NZSSeFCcx9w
-         h8fq7i0ZrsjvE+T6sGD9ehdMvFkf5oDoBr7ZAZDqZ1RVft1rbv6xW8sTyC0M4vkuN+1y
-         5gi+v4kGlcn/QGmTB/Ps6ZWTSpojjEZoABXcCJ4MR/0IuNF/1/nLM6ui/j/AhHDlTl4Y
-         ToNFlo4l0t07yckBjbff5tz18LSwiQhSr5B23VIgUr3smZLmGPw9uLnN8SJjPx6HXL00
-         stWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f1LOZp5JlzkmUbPeyK+AOPbtRtPHkw4Fri+hBp79l4E=;
-        b=IbcsvkV7t5jBhYr1FbsGj4GsL7zCJZwIE9kKTioombw7MAkTlSFZB6ggKQn4aARqhK
-         RUMrylZUNHlJC2R12vzYLDKvGRKtQO+Y/uQi2jo467NW3k3UO6SGpio97BLioIjcyfru
-         J6I0SLaD3pocSPxFqEbd/5rhRiyrS916XB+K36f0UVVAmmfLwD38cbRGBfOgesgcsHk4
-         B+9fXqJBbXTylq45K/gcTIxl/xieFVZkV4AQIWHU0ldivg7JDdTT+u9S8IDsuc/IPeqC
-         lbgNU5aApiRxoo1gEOpvNHkyBJiz0eTf67r782cmFYwgFn5My9TQi7iLVuBBEyXaabj6
-         SQUw==
-X-Gm-Message-State: AOAM531uzHLhM6LiTYXHtZ3Zn6NQjPKXIRgL9by98nXn+AumJt+l5sWB
-        3xPXO4a5rX6rm1FqE2PB+8A=
-X-Google-Smtp-Source: ABdhPJyFZ2s76luE3gMN3so6bUPjtIJQCnsr/mzREBif6Finz0nRHydcITkUbIYgtz1678mJQki9Mg==
-X-Received: by 2002:a62:7f55:: with SMTP id a82mr11389773pfd.61.1595066255879;
-        Sat, 18 Jul 2020 02:57:35 -0700 (PDT)
-Received: from blackclown ([103.88.82.25])
-        by smtp.gmail.com with ESMTPSA id h18sm10252353pfr.186.2020.07.18.02.57.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 18 Jul 2020 02:57:35 -0700 (PDT)
-Date:   Sat, 18 Jul 2020 15:27:21 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com
-Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] scsi: megaraid: Remove remaining pci-dma-compat wrapper
- APIs.
-Message-ID: <a4372635a7500dcc23d6a30ada74e0f875814f11.1595066170.git.usuraj35@gmail.com>
-References: <55829944e20fb558dd3a42f11bfef42b7095e3cd.1595066170.git.usuraj35@gmail.com>
+        id S1726685AbgGRKAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 06:00:39 -0400
+Received: from verein.lst.de ([213.95.11.211]:41577 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726232AbgGRKAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 06:00:39 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2B7CC68AFE; Sat, 18 Jul 2020 12:00:36 +0200 (CEST)
+Date:   Sat, 18 Jul 2020 12:00:35 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 16/23] initramfs: simplify clean_rootfs
+Message-ID: <20200718100035.GA8856@lst.de>
+References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-17-hch@lst.de> <CGME20200717205549eucas1p13fca9a8496836faa71df515524743648@eucas1p1.samsung.com> <7f37802c-d8d9-18cd-7394-df51fa785988@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <55829944e20fb558dd3a42f11bfef42b7095e3cd.1595066170.git.usuraj35@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7f37802c-d8d9-18cd-7394-df51fa785988@samsung.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 17, 2020 at 10:55:48PM +0200, Marek Szyprowski wrote:
+> Hi Christoph,
+> 
+> On 14.07.2020 21:04, Christoph Hellwig wrote:
+> > Just use d_genocide instead of iterating through the root directory with
+> > cumbersome userspace-like APIs.  This also ensures we actually remove files
+> > that are not direct children of the root entry, which the old code failed
+> > to do.
+> >
+> > Fixes: df52092f3c97 ("fastboot: remove duplicate unpack_to_rootfs()")
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 
+> This patch breaks initrd support ;-(
+> 
+> I use initrd to deploy kernel modules on my test machines. It was 
+> automatically mounted on /initrd. /lib/modules is just a symlink to 
+> /initrd. I know that initrd support is marked as deprecated, but it 
+> would be really nice to give people some time to update their machines 
+> before breaking the stuff.
 
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks like your setup did rely on the /dev/ notes from the built-in
+initramfs to be preserved.
 
-The legacy API wrappers in include/linux/pci-dma-compat.h
-should go away as it creates unnecessary midlayering
-for include/linux/dma-mapping.h APIs, instead use dma-mapping.h
-APIs directly.
+Can you comment out the call to d_genocide?  It seems like for your
+the fact that clean_rootfs didn't actually clean up was a feature and
+not a bug.
 
-The patch has been generated with the coccinelle script below
-and has been hand modified to replace GFP_ with correct flags based on
-the context.
+I guess the old, pre-2008 code also wouldn't have worked for you in
+that case.
 
-Compile-tested.
-
-@@@@
-- PCI_DMA_BIDIRECTIONAL
-+ DMA_BIDIRECTIONAL
-
-@@@@
-- PCI_DMA_TODEVICE
-+ DMA_TO_DEVICE
-
-@@@@
-- PCI_DMA_FROMDEVICE
-+ DMA_FROM_DEVICE
-
-@@@@
-- PCI_DMA_NONE
-+ DMA_NONE
-
-@@ expression E1, E2, E3; @@
-- pci_alloc_consistent(E1, E2, E3)
-+ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
-
-@@ expression E1, E2, E3; @@
-- pci_zalloc_consistent(E1, E2, E3)
-+ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_free_consistent(E1, E2, E3, E4)
-+ dma_free_coherent(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_map_single(E1, E2, E3, E4)
-+ dma_map_single(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_single(E1, E2, E3, E4)
-+ dma_unmap_single(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4, E5; @@
-- pci_map_page(E1, E2, E3, E4, E5)
-+ dma_map_page(&E1->dev, E2, E3, E4, E5)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_page(E1, E2, E3, E4)
-+ dma_unmap_page(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_map_sg(E1, E2, E3, E4)
-+ dma_map_sg(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_sg(E1, E2, E3, E4)
-+ dma_unmap_sg(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_single_for_cpu(E1, E2, E3, E4)
-+ dma_sync_single_for_cpu(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_single_for_device(E1, E2, E3, E4)
-+ dma_sync_single_for_device(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_sg_for_cpu(E1, E2, E3, E4)
-+ dma_sync_sg_for_cpu(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_sg_for_device(E1, E2, E3, E4)
-+ dma_sync_sg_for_device(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2; @@
-- pci_dma_mapping_error(E1, E2)
-+ dma_mapping_error(&E1->dev, E2)
-
-@@ expression E1, E2; @@
-- pci_set_consistent_dma_mask(E1, E2)
-+ dma_set_coherent_mask(&E1->dev, E2)
-
-@@ expression E1, E2; @@
-- pci_set_dma_mask(E1, E2)
-+ dma_set_mask(&E1->dev, E2)
-
-Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
----
- drivers/scsi/megaraid.c | 125 +++++++++++++++++++++-------------------
- 1 file changed, 65 insertions(+), 60 deletions(-)
-
-diff --git a/drivers/scsi/megaraid.c b/drivers/scsi/megaraid.c
-index 16bcdffeab37..ed06aafeeedc 100644
---- a/drivers/scsi/megaraid.c
-+++ b/drivers/scsi/megaraid.c
-@@ -2355,7 +2355,8 @@ proc_show_pdrv(struct seq_file *m, adapter_t *adapter=
-, int channel)
- 	}
-=20
-=20
--	scsi_inq =3D pci_alloc_consistent(pdev, 256, &scsi_inq_dma_handle);
-+	scsi_inq =3D dma_alloc_coherent(&pdev->dev, 256, &scsi_inq_dma_handle,
-+				      GFP_KERNEL);
- 	if( scsi_inq =3D=3D NULL ) {
- 		seq_puts(m, "memory not available for scsi inq.\n");
- 		goto free_inquiry;
-@@ -2428,7 +2429,7 @@ proc_show_pdrv(struct seq_file *m, adapter_t *adapter=
-, int channel)
- 	}
-=20
- free_pci:
--	pci_free_consistent(pdev, 256, scsi_inq, scsi_inq_dma_handle);
-+	dma_free_coherent(&pdev->dev, 256, scsi_inq, scsi_inq_dma_handle);
- free_inquiry:
- 	mega_free_inquiry(inquiry, dma_handle, pdev);
- free_pdev:
-@@ -2548,8 +2549,8 @@ proc_show_rdrv(struct seq_file *m, adapter_t *adapter=
-, int start, int end )
- 			raid_inq.logdrv_info.num_ldrv;
- 	}
-=20
--	disk_array =3D pci_alloc_consistent(pdev, array_sz,
--			&disk_array_dma_handle);
-+	disk_array =3D dma_alloc_coherent(&pdev->dev, array_sz,
-+					&disk_array_dma_handle, GFP_KERNEL);
-=20
- 	if( disk_array =3D=3D NULL ) {
- 		seq_puts(m, "memory not available.\n");
-@@ -2668,8 +2669,8 @@ proc_show_rdrv(struct seq_file *m, adapter_t *adapter=
-, int start, int end )
- 	}
-=20
- free_pci:
--	pci_free_consistent(pdev, array_sz, disk_array,
--			disk_array_dma_handle);
-+	dma_free_coherent(&pdev->dev, array_sz, disk_array,
-+			  disk_array_dma_handle);
- free_inquiry:
- 	mega_free_inquiry(inquiry, dma_handle, pdev);
- free_pdev:
-@@ -2887,9 +2888,9 @@ mega_init_scb(adapter_t *adapter)
-=20
- 		scb->idx =3D i;
-=20
--		scb->sgl64 =3D pci_alloc_consistent(adapter->dev,
--				sizeof(mega_sgl64) * adapter->sglen,
--				&scb->sgl_dma_addr);
-+		scb->sgl64 =3D dma_alloc_coherent(&adapter->dev->dev,
-+						sizeof(mega_sgl64) * adapter->sglen,
-+						&scb->sgl_dma_addr, GFP_KERNEL);
-=20
- 		scb->sgl =3D (mega_sglist *)scb->sgl64;
-=20
-@@ -2899,9 +2900,9 @@ mega_init_scb(adapter_t *adapter)
- 			return -1;
- 		}
-=20
--		scb->pthru =3D pci_alloc_consistent(adapter->dev,
--				sizeof(mega_passthru),
--				&scb->pthru_dma_addr);
-+		scb->pthru =3D dma_alloc_coherent(&adapter->dev->dev,
-+						sizeof(mega_passthru),
-+						&scb->pthru_dma_addr, GFP_KERNEL);
-=20
- 		if( !scb->pthru ) {
- 			dev_warn(&adapter->dev->dev, "RAID: Can't allocate passthru\n");
-@@ -2909,9 +2910,9 @@ mega_init_scb(adapter_t *adapter)
- 			return -1;
- 		}
-=20
--		scb->epthru =3D pci_alloc_consistent(adapter->dev,
--				sizeof(mega_ext_passthru),
--				&scb->epthru_dma_addr);
-+		scb->epthru =3D dma_alloc_coherent(&adapter->dev->dev,
-+						 sizeof(mega_ext_passthru),
-+						 &scb->epthru_dma_addr, GFP_KERNEL);
-=20
- 		if( !scb->epthru ) {
- 			dev_warn(&adapter->dev->dev,
-@@ -3151,9 +3152,9 @@ megadev_ioctl(struct file *filep, unsigned int cmd, u=
-nsigned long arg)
- 		if( uioc.uioc_rmbox[0] =3D=3D MEGA_MBOXCMD_PASSTHRU ) {
- 			/* Passthru commands */
-=20
--			pthru =3D pci_alloc_consistent(pdev,
--					sizeof(mega_passthru),
--					&pthru_dma_hndl);
-+			pthru =3D dma_alloc_coherent(&pdev->dev,
-+						   sizeof(mega_passthru),
-+						   &pthru_dma_hndl, GFP_KERNEL);
-=20
- 			if( pthru =3D=3D NULL ) {
- 				free_local_pdev(pdev);
-@@ -3171,9 +3172,9 @@ megadev_ioctl(struct file *filep, unsigned int cmd, u=
-nsigned long arg)
- 			if( copy_from_user(pthru, upthru,
- 						sizeof(mega_passthru)) ) {
-=20
--				pci_free_consistent(pdev,
--						sizeof(mega_passthru), pthru,
--						pthru_dma_hndl);
-+				dma_free_coherent(&pdev->dev,
-+						  sizeof(mega_passthru),
-+						  pthru, pthru_dma_hndl);
-=20
- 				free_local_pdev(pdev);
-=20
-@@ -3184,15 +3185,16 @@ megadev_ioctl(struct file *filep, unsigned int cmd,=
- unsigned long arg)
- 			 * Is there a data transfer
- 			 */
- 			if( pthru->dataxferlen ) {
--				data =3D pci_alloc_consistent(pdev,
--						pthru->dataxferlen,
--						&data_dma_hndl);
-+				data =3D dma_alloc_coherent(&pdev->dev,
-+							  pthru->dataxferlen,
-+							  &data_dma_hndl,
-+							  GFP_KERNEL);
-=20
- 				if( data =3D=3D NULL ) {
--					pci_free_consistent(pdev,
--							sizeof(mega_passthru),
--							pthru,
--							pthru_dma_hndl);
-+					dma_free_coherent(&pdev->dev,
-+							  sizeof(mega_passthru),
-+							  pthru,
-+							  pthru_dma_hndl);
-=20
- 					free_local_pdev(pdev);
-=20
-@@ -3257,13 +3259,13 @@ megadev_ioctl(struct file *filep, unsigned int cmd,=
- unsigned long arg)
-=20
- freemem_and_return:
- 			if( pthru->dataxferlen ) {
--				pci_free_consistent(pdev,
--						pthru->dataxferlen, data,
--						data_dma_hndl);
-+				dma_free_coherent(&pdev->dev,
-+						  pthru->dataxferlen, data,
-+						  data_dma_hndl);
- 			}
-=20
--			pci_free_consistent(pdev, sizeof(mega_passthru),
--					pthru, pthru_dma_hndl);
-+			dma_free_coherent(&pdev->dev, sizeof(mega_passthru),
-+					  pthru, pthru_dma_hndl);
-=20
- 			free_local_pdev(pdev);
-=20
-@@ -3276,8 +3278,10 @@ megadev_ioctl(struct file *filep, unsigned int cmd, =
-unsigned long arg)
- 			 * Is there a data transfer
- 			 */
- 			if( uioc.xferlen ) {
--				data =3D pci_alloc_consistent(pdev,
--						uioc.xferlen, &data_dma_hndl);
-+				data =3D dma_alloc_coherent(&pdev->dev,
-+							  uioc.xferlen,
-+							  &data_dma_hndl,
-+							  GFP_KERNEL);
-=20
- 				if( data =3D=3D NULL ) {
- 					free_local_pdev(pdev);
-@@ -3297,9 +3301,9 @@ megadev_ioctl(struct file *filep, unsigned int cmd, u=
-nsigned long arg)
- 				if( copy_from_user(data, (char __user *)(unsigned long) uxferaddr,
- 							uioc.xferlen) ) {
-=20
--					pci_free_consistent(pdev,
--							uioc.xferlen,
--							data, data_dma_hndl);
-+					dma_free_coherent(&pdev->dev,
-+							  uioc.xferlen, data,
-+							  data_dma_hndl);
-=20
- 					free_local_pdev(pdev);
-=20
-@@ -3320,9 +3324,9 @@ megadev_ioctl(struct file *filep, unsigned int cmd, u=
-nsigned long arg)
-=20
- 			if( rval ) {
- 				if( uioc.xferlen ) {
--					pci_free_consistent(pdev,
--							uioc.xferlen, data,
--							data_dma_hndl);
-+					dma_free_coherent(&pdev->dev,
-+							  uioc.xferlen, data,
-+							  data_dma_hndl);
- 				}
-=20
- 				free_local_pdev(pdev);
-@@ -3342,9 +3346,8 @@ megadev_ioctl(struct file *filep, unsigned int cmd, u=
-nsigned long arg)
- 			}
-=20
- 			if( uioc.xferlen ) {
--				pci_free_consistent(pdev,
--						uioc.xferlen, data,
--						data_dma_hndl);
-+				dma_free_coherent(&pdev->dev, uioc.xferlen,
-+						  data, data_dma_hndl);
- 			}
-=20
- 			free_local_pdev(pdev);
-@@ -4010,8 +4013,8 @@ mega_internal_dev_inquiry(adapter_t *adapter, u8 ch, =
-u8 tgt,
- 	 */
- 	if( make_local_pdev(adapter, &pdev) !=3D 0 ) return -1;
-=20
--	pthru =3D pci_alloc_consistent(pdev, sizeof(mega_passthru),
--			&pthru_dma_handle);
-+	pthru =3D dma_alloc_coherent(&pdev->dev, sizeof(mega_passthru),
-+				   &pthru_dma_handle, GFP_KERNEL);
-=20
- 	if( pthru =3D=3D NULL ) {
- 		free_local_pdev(pdev);
-@@ -4047,8 +4050,8 @@ mega_internal_dev_inquiry(adapter_t *adapter, u8 ch, =
-u8 tgt,
-=20
- 	rval =3D mega_internal_command(adapter, &mc, pthru);
-=20
--	pci_free_consistent(pdev, sizeof(mega_passthru), pthru,
--			pthru_dma_handle);
-+	dma_free_coherent(&pdev->dev, sizeof(mega_passthru), pthru,
-+			  pthru_dma_handle);
-=20
- 	free_local_pdev(pdev);
-=20
-@@ -4273,8 +4276,10 @@ megaraid_probe_one(struct pci_dev *pdev, const struc=
-t pci_device_id *id)
- 	/*
- 	 * Allocate buffer to issue internal commands.
- 	 */
--	adapter->mega_buffer =3D pci_alloc_consistent(adapter->dev,
--		MEGA_BUFFER_SIZE, &adapter->buf_dma_handle);
-+	adapter->mega_buffer =3D dma_alloc_coherent(&adapter->dev->dev,
-+						  MEGA_BUFFER_SIZE,
-+						  &adapter->buf_dma_handle,
-+						  GFP_KERNEL);
- 	if (!adapter->mega_buffer) {
- 		dev_warn(&pdev->dev, "out of RAM\n");
- 		goto out_host_put;
-@@ -4433,10 +4438,10 @@ megaraid_probe_one(struct pci_dev *pdev, const stru=
-ct pci_device_id *id)
-=20
- 	/* Set the Mode of addressing to 64 bit if we can */
- 	if ((adapter->flag & BOARD_64BIT) && (sizeof(dma_addr_t) =3D=3D 8)) {
--		pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+		dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
- 		adapter->has_64bit_addr =3D 1;
- 	} else  {
--		pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 		adapter->has_64bit_addr =3D 0;
- 	}
- 	=09
-@@ -4475,15 +4480,15 @@ megaraid_probe_one(struct pci_dev *pdev, const stru=
-ct pci_device_id *id)
- 	return 0;
-=20
-  out_free_mbox:
--	pci_free_consistent(adapter->dev, sizeof(mbox64_t),
--			adapter->una_mbox64, adapter->una_mbox64_dma);
-+	dma_free_coherent(&adapter->dev->dev, sizeof(mbox64_t),
-+			  adapter->una_mbox64, adapter->una_mbox64_dma);
-  out_free_irq:
- 	free_irq(adapter->host->irq, adapter);
-  out_free_scb_list:
- 	kfree(adapter->scb_list);
-  out_free_cmd_buffer:
--	pci_free_consistent(adapter->dev, MEGA_BUFFER_SIZE,
--			adapter->mega_buffer, adapter->buf_dma_handle);
-+	dma_free_coherent(&adapter->dev->dev, MEGA_BUFFER_SIZE,
-+			  adapter->mega_buffer, adapter->buf_dma_handle);
-  out_host_put:
- 	scsi_host_put(host);
-  out_iounmap:
-@@ -4557,11 +4562,11 @@ megaraid_remove_one(struct pci_dev *pdev)
- 	sprintf(buf, "hba%d", adapter->host->host_no);
- 	remove_proc_subtree(buf, mega_proc_dir_entry);
-=20
--	pci_free_consistent(adapter->dev, MEGA_BUFFER_SIZE,
--			adapter->mega_buffer, adapter->buf_dma_handle);
-+	dma_free_coherent(&adapter->dev->dev, MEGA_BUFFER_SIZE,
-+			  adapter->mega_buffer, adapter->buf_dma_handle);
- 	kfree(adapter->scb_list);
--	pci_free_consistent(adapter->dev, sizeof(mbox64_t),
--			adapter->una_mbox64, adapter->una_mbox64_dma);
-+	dma_free_coherent(&adapter->dev->dev, sizeof(mbox64_t),
-+			  adapter->una_mbox64, adapter->una_mbox64_dma);
-=20
- 	scsi_host_put(host);
- 	pci_disable_device(pdev);
---=20
-2.17.1
-
-
---8t9RHnE3ZwKMSgU+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8Sx4AACgkQ+gRsbIfe
-747BJxAApNzcHFpUfSPpJKu+/Rgn4CS7hLkYj9ucuAfkSZMrhQ460rSaO9gPHRv9
-wOlyYFxI6jDn/g0s3Vee5IxOEIT+6U7NeRQz+U4Tj351Sg7Pwz7o7OymLEoBKpo0
-OsCr6vAFMjzuSQEW0DgyV0xUGgYk0c5kcfhyyf/6OM+J5VLGglqlInThd38PvPWx
-S6Ms7NcoOLCOX9nyniSxbOwCLFD1ctVYoKcHk8nyZX4+alV9EgeA+ViJuXdlVLP1
-Kh6zF4dVZaRMN1myw0Sfs1/GpKBCT28nDttAEoRnbBfy0WZwrnrFhKO0Jhqxf7Sl
-LKA7EjFxqNFPVvbC45f1PzN4/2rU9OYBbvpaMlB5RQ4V8HxSKPD6f3vtr2PBMigX
-Lx2FoEtgMTjX5f2vY6wxeJdTmFen8AxJjBEHAscU0Js8AO6P1k5J4mdLcfAvNvP7
-1hH28oRd26v5b3aBTtymScoYgktdzkr8DDL2x7ZJ/79qfTA52qkdaX/qWg09eIKF
-ln0oqPiMBxdbrUP8mv8MfGSaoMo++Pzs+2GjCTRq7+YF3QlbGogEgEILCm1dX1A7
-RsHe1rhVer2eGu8TLxprPivMs+VxAqu6bArnrkyRsmTweYsRs7YUHI9d5JiPHlMV
-Km8vEdmW8H3Oh4b2/DCYlZzRTs4aFzDkSxOAr4NOLj0xyeAJQ3E=
-=2cms
------END PGP SIGNATURE-----
-
---8t9RHnE3ZwKMSgU+--
+> 
+> Here is the log:
+> 
+> Kernel image @ 0x40007fc0 [ 0x000000 - 0x6dd9c8 ]
+> ## Flattened Device Tree blob at 41000000
+>     Booting using the fdt blob at 0x41000000
+>     Loading Ramdisk to 4de3c000, end 50000000 ... OK
+>     Loading Device Tree to 4de2d000, end 4de3b206 ... OK
+> 
+> Starting kernel ...
+> 
+> [    0.000000] Booting Linux on physical CPU 0x900
+> ...
+> 
+> [    0.000000] Kernel command line: root=PARTLABEL=rootfs rootwait 
+> console=tty1 console=ttySAC2,115200n8 earlycon rootdelay=2
+> ...
+> 
+> [    1.853631] Trying to unpack rootfs image as initramfs...
+> [    1.858661] rootfs image is not initramfs (invalid magic at start of 
+> compressed archive); looks like an initrd
+> ...
+> [    2.204776] Freeing initrd memory: 34576K
+> 
+> ...
+> 
+> [    4.635360] Warning: unable to open an initial console.
+> [    4.640706] Waiting 2 sec before mounting root device...
+> ...
+> [    6.776007] Failed to create /dev/root: -2
+> [    6.778989] VFS: Cannot open root device "PARTLABEL=rootfs" or 
+> unknown-block(179,6): error -2
+> [    6.787200] Please append a correct "root=" boot option; here are the 
+> available partitions:
+> [    6.795693] 0100           65536 ram0
+> [    6.795697]  (driver?)
+> [    6.801459] 0101           65536 ram1
+> [    6.801462]  (driver?)
+> [    6.807532] 0102           65536 ram2
+> [    6.807535]  (driver?)
+> [    6.813674] 0103           65536 ram3
+> [    6.813677]  (driver?)
+> [    6.819760] 0104           65536 ram4
+> [    6.819763]  (driver?)
+> [    6.832610] 0105           65536 ram5
+> [    6.832613]  (driver?)
+> [    6.848685] 0106           65536 ram6
+> [    6.848688]  (driver?)
+> [    6.864590] 0107           65536 ram7
+> [    6.864593]  (driver?)
+> [    6.880504] 0108           65536 ram8
+> [    6.880507]  (driver?)
+> [    6.896248] 0109           65536 ram9
+> [    6.896251]  (driver?)
+> [    6.911828] 010a           65536 ram10
+> [    6.911831]  (driver?)
+> [    6.927447] 010b           65536 ram11
+> [    6.927450]  (driver?)
+> [    6.942976] 010c           65536 ram12
+> [    6.942979]  (driver?)
+> [    6.958190] 010d           65536 ram13
+> [    6.958193]  (driver?)
+> [    6.973205] 010e           65536 ram14
+> [    6.973208]  (driver?)
+> [    6.988105] 010f           65536 ram15
+> [    6.988108]  (driver?)
+> [    7.002897] b300        15388672 mmcblk0
+> [    7.002901]  driver: mmcblk
+> [    7.018061]   b301            8192 mmcblk0p1 
+> 654b73ea-7c04-c24d-9642-2a186649605c
+> [    7.018064]
+> [    7.035359]   b302           61440 mmcblk0p2 
+> 7ef6fb83-0d6c-8c44-826b-ad11df290e0c
+> [    7.035362]
+> [    7.052589]   b303          102400 mmcblk0p3 
+> 34883856-7d52-d548-a196-718efbd06876
+> [    7.052592]
+> [    7.069744]   b304          153600 mmcblk0p4 
+> 8d4410d0-a4ff-c447-abb9-73350dcdd2d6
+> [    7.069747]
+> [    7.086888]   b305         1572864 mmcblk0p5 
+> 485c2c17-a9e8-9c45-bb68-e0748a2bb1f1
+> [    7.086890]
+> [    7.103991]   b306         3072000 mmcblk0p6 
+> 7fb2bbf3-e064-2343-b169-e69c18dbb43e
+> [    7.103993]
+> [    7.121290]   b307        10413039 mmcblk0p7 
+> b0ee9150-6b6a-274b-9ec3-703d29072555
+> [    7.121292]
+> [    7.138722] Kernel panic - not syncing: VFS: Unable to mount root fs 
+> on unknown-block(179,6)
+> [    7.151482] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
+> 5.8.0-rc5-00064-g38d014f6d446 #8823
+> [    7.164026] Hardware name: Samsung Exynos (Flattened Device Tree)
+> [    7.174556] [<c011188c>] (unwind_backtrace) from [<c010d27c>] 
+> (show_stack+0x10/0x14)
+> [    7.186799] [<c010d27c>] (show_stack) from [<c05182e4>] 
+> (dump_stack+0xbc/0xe8)
+> [    7.198533] [<c05182e4>] (dump_stack) from [<c01272e0>] 
+> (panic+0x128/0x354)
+> [    7.210002] [<c01272e0>] (panic) from [<c1001580>] 
+> (mount_block_root+0x1a8/0x240)
+> [    7.221961] [<c1001580>] (mount_block_root) from [<c1001738>] 
+> (mount_root+0x120/0x13c)
+> [    7.234325] [<c1001738>] (mount_root) from [<c10018ac>] 
+> (prepare_namespace+0x158/0x194)
+> [    7.246751] [<c10018ac>] (prepare_namespace) from [<c0ab7684>] 
+> (kernel_init+0x8/0x118)
+> [    7.259086] [<c0ab7684>] (kernel_init) from [<c0100114>] 
+> (ret_from_fork+0x14/0x20)tatic void __init populate_initrd_image(char *err)
+> 
+> Best regards
+> -- 
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+---end quoted text---
