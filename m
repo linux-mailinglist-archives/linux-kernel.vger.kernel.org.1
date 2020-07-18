@@ -2,82 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0C7224BF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A33A224BFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgGROnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:43:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47370 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726775AbgGROm7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:42:59 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595083377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=robvEvPfTGacPLLxfjqEcu14s1gI/E9Po46qbTLNH9U=;
-        b=f4c+55hWWUCG3ELBCMrjgWLE2gsZhHBDVa/JvAlkChgE2cV8SZer9ivxhUTMz53HiVDUyZ
-        vQxr02bZojUUNnLGyj5yDINRDU0AuoxkBkNh7s+x9YqeaEIjN2yyzcBniVqKjA4/H3OTg4
-        G7bOjhEAIl6yopkDvxGkh7ejY1LoGMNlK6ugEmtdDUS8m71nsZ2QwZGURU3BgbaXEOB/q3
-        7/vtwA7ecPr7TgEfyDe5XLK2VEvuGD+koJff8GRSuDfroDr8H/OOfxLi7WzgKkT3u5LbQ6
-        DBBDWq+nXG069WVNdnVRpNTQYgIrpaee5qEjvRY7g5xhjHaOPAagrndMxAAvOA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595083377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=robvEvPfTGacPLLxfjqEcu14s1gI/E9Po46qbTLNH9U=;
-        b=HygpJuHRIGXxBEU/34gMJCGzgTpx8GS6bRIRReV1UJ/TVLQ+RV5oSW53bVibyTWZqwS9DH
-        7Cls6AERIWr8EPAA==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] printk: reimplement LOG_CONT handling
-In-Reply-To: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
-References: <20200717234818.8622-1-john.ogness@linutronix.de> <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
-Date:   Sat, 18 Jul 2020 16:48:55 +0206
-Message-ID: <87blkcanps.fsf@jogness.linutronix.de>
+        id S1727851AbgGROop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:44:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42656 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726574AbgGROoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 10:44:44 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jwo4p-005lvq-12; Sat, 18 Jul 2020 16:44:35 +0200
+Date:   Sat, 18 Jul 2020 16:44:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     John Crispin <john@phrozen.org>,
+        Matthew Hagan <mnhagan88@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: net: dsa: qca8k: Add PORT0_PAD_CTRL
+ properties
+Message-ID: <20200718144435.GA1375379@lunn.ch>
+References: <2e1776f997441792a44cd35a16f1e69f848816ce.1594668793.git.mnhagan88@gmail.com>
+ <ea0a35ed686e6dace77e25cb70a8f39fdd1ea8ad.1594668793.git.mnhagan88@gmail.com>
+ <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ac7f5f39-9f83-64c0-d8d5-9ea059619f67@gmail.com>
+ <53851852-0efe-722e-0254-8652cdfea8fc@phrozen.org>
+ <20200718132011.GQ1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200718132011.GQ1551@shell.armlinux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-17, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> Make sure you test the case of "fast concurrent readers". The last
-> time we did things like this, it was a disaster, because a concurrent
-> reader would see and return the _incomplete_ line, and the next entry
-> was still being generated on another CPU.
->
-> The reader would then decide to return that incomplete line, because
-> it had something.
->
-> And while in theory this could then be handled properly in user space,
-> in practice it wasn't. So you'd see a lot of logging tools that would
-> then report all those continuations as separate log events.
->
-> Which is the whole point of LOG_CONT - for that *not* to happen.
+On Sat, Jul 18, 2020 at 02:20:11PM +0100, Russell King - ARM Linux admin wrote:
+> On Fri, Jul 17, 2020 at 10:44:19PM +0200, John Crispin wrote:
+> > in regards to the sgmii clk skew. I never understood the electrics fully I
+> > am afraid, but without the patch it simply does not work. my eletcric foo is
+> > unfortunately is not sufficient to understand the "whys" I am afraid.
+> 
+> Do you happen to know what frequency the clock is?  Is it 1.25GHz or
+> 625MHz?  It sounds like it may be 1.25GHz if the edge is important.
 
-I expect this is handled correctly since the reader is not given any
-parts until a full line is ready, but I will put more focus on testing
-this to make sure. Thanks for the regression and testing tips.
+I'm also a bit clueless when it comes to these systems.
 
-> So this is just a heads-up that I will not pull something that breaks
-> LOG_CONT because it thinks "user space can handle it". No. User space
-> does not handle it, and we need to handle it for the user.
+I thought the clock was embedded into the SERDES signal? You recover
+it from the signal?
 
-Understood. Petr and Sergey are also strict about this. We are making a
-serious effort to avoid breaking things for userspace.
+Florian, does the switch have a separate clock input/output?
 
-John Ogness
+   Andrew
