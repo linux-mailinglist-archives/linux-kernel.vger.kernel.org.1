@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C425A224B96
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB59224B99
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgGRNfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 09:35:03 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:46842 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726569AbgGRNfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 09:35:03 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 2AD8BBC070;
-        Sat, 18 Jul 2020 13:34:58 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     gregkh@linuxfoundation.org, jslaby@suse.com, corbet@lwn.net,
-        nico@fluxnic.net, sam@ravnborg.org, lukas@wunner.de,
-        ebiggers@google.com, nivedita@alum.mit.edu,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] tty: vt: Replace HTTP links with HTTPS ones
-Date:   Sat, 18 Jul 2020 15:34:52 +0200
-Message-Id: <20200718133452.24290-1-grandmaster@al2klimov.de>
+        id S1727837AbgGRNgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 09:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgGRNgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 09:36:43 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD0BC0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 06:36:43 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u185so6796836pfu.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 06:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=hf1JlkYLKT1Z4ZHTIAJh4Na1qYAPsAkz6yljdjIDt2o=;
+        b=bEGsFDVFOa/GO/5dvpcQ3fnipAJp3/sVkjMbf3aLVvV8oGwggcXOvPkVWzNYHVm2zG
+         nvTY7VuRHwtUEXJ6QQPBkY4/pnJ76Rd8TQ2upkpObuL8XXVMKmxzrIJYG3AtzqL5FS8y
+         n+POXa9uGk5BddZTYrl14aZDSu0fnKYFkfFf0HVwxgRxDbU5HmseHF2LhWVZTr7OKj5K
+         HDm5mPq/APcpGCxmNUICfYFcs8u6tkM/xq/KpEx1vwN8ZoAjhhHGE6SYykrjpG2GVpIy
+         e8scs4rwExsnhqO29GtYjmhhUzHw9gi+OLRYIOtAK/cPqjnntOLvSdGJ5DmLIOEhpXmC
+         G8bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=hf1JlkYLKT1Z4ZHTIAJh4Na1qYAPsAkz6yljdjIDt2o=;
+        b=dje+y6M420emn1NW24XIIVF/wKeJ7jyhjDCCB74pDorjtXAfh1y9Bd+Qh8MhDNDnR0
+         Z9v++xjkYT3g6uULbacrcaNDXOShBnKIXYLq36veZKHZXTeolLpRuXVWCdvCN6dLL1lb
+         te/pRSxBprVWcQX7s+CyGSLDus0m6heFNZrzUMuByddyOzD0ZvA4/ulJEFl1sXXJAleN
+         iUfUYgEzNUowDra4YepxczH8Se/Uq+bsWXswxkp2npw1w6YGyNDTGCf4j9W1dU8rPxVe
+         uqRctchtg7LmCR/S82doZNFo+xpkxQJ9Hk6Tw53qt8oYtRulpgmLTL7PyqGO417jMb+U
+         nOMQ==
+X-Gm-Message-State: AOAM530YZvxVR1oNc5S4tht9QwVes6LOYSwSg6+hehTA39bBOjyEnRLy
+        Lazkksnc4wA8MyDQdRXDVEFhGwPnWGq7Cg==
+X-Google-Smtp-Source: ABdhPJy4LoGIB/Dskjj5ges98ogVIQLWn5k29RGdbXVt3GaSg15jfcqzNFbu+J6NHP3Ou6ZRJwr7ow==
+X-Received: by 2002:a65:67d9:: with SMTP id b25mr12728135pgs.311.1595079403038;
+        Sat, 18 Jul 2020 06:36:43 -0700 (PDT)
+Received: from blackclown ([103.88.82.25])
+        by smtp.gmail.com with ESMTPSA id m140sm10610952pfd.195.2020.07.18.06.36.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 18 Jul 2020 06:36:42 -0700 (PDT)
+Date:   Sat, 18 Jul 2020 19:06:29 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: kpc2000: Replace depracated MSI API.
+Message-ID: <20200718133629.GA12522@blackclown>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Replace depracated pci_enable_msi with pci_alloc_irq_vectors.
+
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+ drivers/staging/kpc2000/kpc2000/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+diff --git a/drivers/staging/kpc2000/kpc2000/core.c b/drivers/staging/kpc20=
+00/kpc2000/core.c
+index 358d7b2f4ad1..bf21cdc5546f 100644
+--- a/drivers/staging/kpc2000/kpc2000/core.c
++++ b/drivers/staging/kpc2000/kpc2000/core.c
+@@ -440,7 +440,7 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
+ 	dev_dbg(&pcard->pdev->dev,
+ 		"Using DMA mask %0llx\n", dma_get_mask(PCARD_TO_DEV(pcard)));
+=20
+-	err =3D pci_enable_msi(pcard->pdev);
++	err =3D pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_MSI);
+ 	if (err < 0)
+ 		goto err_release_dma;
+=20
+--=20
+2.17.1
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
 
- If you apply the patch, please let me know.
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
 
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8S+twACgkQ+gRsbIfe
+747C9w/+N/0Qx9ZzK/dQGEasiWXA8l34Sqz1DL3FNxdPoCWAOC/zgQclA4BQWrF/
+hhfOcTJWPN7BbZigR57pWzHdAw2mCnHGFwS1IsWlY8UadYlHK6G5zkP8cxf0W9m4
+IKf550lcnd2D3Q3PUI9oZIfO+lBe5f+2mc9nagcP2PSxJbcv2xMp7CTFA/NPz/Lh
+BRL3bIxUodVdKu1X7GTwCR1OhqT8SY8Smyi5r2pp7QvPvIAk4FgyY78n4yBBGkvk
+KDmu46uHVHqn2JMzYvKPR3l32OeXsLVMtlABnpSGeO20RVWIZUmsEb215NYYTG+Q
+vpWv0+JkhsBZJrW5BcaCRj0dZ4KaVqJ4iHR9t77ZbGuu66BMw2szenbddiKfm8ls
++skEdCMsZjC6kH9RiRa7i/+6RueTr6rWu915ty+pRCEyLCsO1XDmZVVMGhkj2gnr
+W9EDcOzYFcHbH0WobOzyBnvD8iVCeXowjYKDZgLMCO5VUknCIKauaQOmi4is13w1
+Cgv1RQJK3IzZ3xmZcdaHt3BPcDrZe3KKgLORYUwTMxJ2Ba/FvDpDQeRi8t4CFMW1
+6JJP+arDwU4ygwnI5nxeLshbIktS03LaxVz1zNtlLDJY/3EGDJMN3Q3JkpsWvNsH
+NS+9kn6ELPx+PWYlM40Ggo0gBt/pL7JzrCNR8OuEFbPcemKdJZM=
+=zo+Z
+-----END PGP SIGNATURE-----
 
- Documentation/driver-api/serial/n_gsm.rst | 2 +-
- drivers/tty/vt/vt.c                       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/driver-api/serial/n_gsm.rst b/Documentation/driver-api/serial/n_gsm.rst
-index 286e7ff4d2d9..87dfcd54a96b 100644
---- a/Documentation/driver-api/serial/n_gsm.rst
-+++ b/Documentation/driver-api/serial/n_gsm.rst
-@@ -5,7 +5,7 @@ GSM 0710 tty multiplexor HOWTO
- This line discipline implements the GSM 07.10 multiplexing protocol
- detailed in the following 3GPP document:
- 
--	http://www.3gpp.org/ftp/Specs/archive/07_series/07.10/0710-720.zip
-+	https://www.3gpp.org/ftp/Specs/archive/07_series/07.10/0710-720.zip
- 
- This document give some hints on how to use this driver with GPRS and 3G
- modems connected to a physical serial port.
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 48a8199f7845..df8a25fabedf 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -2530,7 +2530,7 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
- 
- /* is_double_width() is based on the wcwidth() implementation by
-  * Markus Kuhn -- 2007-05-26 (Unicode 5.0)
-- * Latest version: http://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c
-+ * Latest version: https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c
-  */
- struct interval {
- 	uint32_t first;
--- 
-2.27.0
-
+--LQksG6bCIzRHxTLp--
