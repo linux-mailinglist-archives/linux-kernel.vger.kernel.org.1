@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF395224D5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659CA224D5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgGRRmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 13:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbgGRRmt (ORCPT
+        id S1727103AbgGRRoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 13:44:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41585 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgGRRoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 13:42:49 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5467C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:42:48 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b30so5428772lfj.12
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GiY4+QiT/AY/Z/a8K8W0oYps875PzAtQx8Asj6Q1aPg=;
-        b=FM+3ch1bDzhsiXNk+T+LOrHD4qkMShboABLic2xzn+DKHMi9Cgt2kWfMijpega0ALy
-         JQOhddwsoTpnDE/eexxgbiNkVKH9MQ+fSTpjlS2vysSTAT+7EO9kqxZg+1gtIEYIjgfu
-         Yt2hjqDc5MP/2HjiXc67Jpa/06la4Hw8kgZiw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GiY4+QiT/AY/Z/a8K8W0oYps875PzAtQx8Asj6Q1aPg=;
-        b=DgsYhZILvLuIQzEMc2yBdi9W+jY2n0m+Sna2lJiQiUdsUg1ZHZszQhL0DmUffNLw/J
-         ThpdyxaC5gQeaV49PEmL6uGxxvmbDgUCUqtq3QaiqfqDAwcurAxwe82X04bgz56p8PoW
-         6rusyZkLIqiNw3b48HJyEbhOgUIFoTw7+/jblkQv1oJfrjTQhiR0TlZU6p43cw81zjOE
-         WZD9ZBIcGqTwWG0P4+ly6LzVJSg9SNAX1X9hoIs3DkZkCLzyQHJ6usUZtbTzjGO0gtp8
-         Ywcd/Vsj8PjU44hN9fvmKC1XbjXzXbQvcOaA7F5G+0IZgx6UaTgchSjP6YU9HI44oGxN
-         8UQA==
-X-Gm-Message-State: AOAM531n4I8OxVIehXk/1g/nXzrInt3zoX2osjVngucY+YBQW9hyGnhs
-        hzqd8S/AT1MnpwRJ13TkfFTXpUMfCvU=
-X-Google-Smtp-Source: ABdhPJzXqXMRI4SKqOB+O98Len/0QycmrwaA2/r4OzxFBXPIpN6ug2VlSDP+P6krqPICWJlG9DxtdQ==
-X-Received: by 2002:a19:228a:: with SMTP id i132mr5894610lfi.178.1595094166479;
-        Sat, 18 Jul 2020 10:42:46 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id h26sm2293263ljb.78.2020.07.18.10.42.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Jul 2020 10:42:45 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id o4so7730012lfi.7
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:42:44 -0700 (PDT)
-X-Received: by 2002:ac2:4422:: with SMTP id w2mr6995326lfl.152.1595094164495;
- Sat, 18 Jul 2020 10:42:44 -0700 (PDT)
+        Sat, 18 Jul 2020 13:44:54 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jwqtF-0003Va-3p; Sat, 18 Jul 2020 17:44:49 +0000
+Date:   Sat, 18 Jul 2020 19:44:48 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, christian@brauner.io,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+ <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
+ <20200717122651.GA6067@redhat.com>
+ <20200717124017.GB6067@redhat.com>
+ <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
 MIME-Version: 1.0
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
- <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com> <87blkcanps.fsf@jogness.linutronix.de>
-In-Reply-To: <87blkcanps.fsf@jogness.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 18 Jul 2020 10:42:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgX9Q+en5j8EmYkhxEx8H0EzHhx5WqPGui7KNiV7=ZK-w@mail.gmail.com>
-Message-ID: <CAHk-=wgX9Q+en5j8EmYkhxEx8H0EzHhx5WqPGui7KNiV7=ZK-w@mail.gmail.com>
-Subject: Re: [PATCH 0/4] printk: reimplement LOG_CONT handling
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200718171406.GB16791@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 7:43 AM John Ogness <john.ogness@linutronix.de> wrote:
->
-> I expect this is handled correctly since the reader is not given any
-> parts until a full line is ready, but I will put more focus on testing
-> this to make sure.
+On Sat, Jul 18, 2020 at 07:14:07PM +0200, Oleg Nesterov wrote:
+> On 07/18, Jiri Slaby wrote:
+> >
+> > On 17. 07. 20, 14:40, Oleg Nesterov wrote:
+> > >
+> > > please see the updated patch below, lets check ptrace_unfreeze() too.
+> >
+> > Sure, dmesg attached.
+> 
+> Thanks a lot!
+> 
+> But I am totally confused...
+> 
+> > [   94.513944] ------------[ cut here ]------------
+> > [   94.513985] do not call blocking ops when !TASK_RUNNING; state=8 set at [<000000002fe279e9>] ptrace_check_attach+0xbf/0x110
+> 
+> OK, so the ptracer has already did the TASK_TRACED -> __TASK_TRACED change in
+> ptrace_freeze_traced(),
+> 
+> > [   94.514019] WARNING: CPU: 16 PID: 34171 at kernel/sched/core.c:6881 __might_sleep+0x6c/0x70
+> > [   94.514020] Modules linked in: ata_generic(E) pata_acpi(E) crc32_pclmul(E) qemu_fw_cfg(E) ata_piix(E) e1000(E) nls_iso8859_1(E) nls_cp437(E) vfat(E) fat(E) virtio_blk(E) virtio_mmio(E) xfs(E) btrfs(E) blake2b_generic(E) xor(E) raid6_pq(E) libcrc32c(E) crc32c_intel(E) reiserfs(E) squashfs(E) fuse(E) dm_snapshot(E) dm_bufio(E) dm_crypt(E) dm_mod(E) binfmt_misc(E) loop(E) sg(E) virtio_rng(E)
+> > [   94.514082] CPU: 16 PID: 34171 Comm: strace Tainted: G            E     5.8.0-rc5-100.g55927f9-default #1 openSUSE Tumbleweed (unreleased)
+> > [   94.514084] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-0-ga698c89-rebuilt.suse.com 04/01/2014
+> > [   94.514087] RIP: 0010:__might_sleep+0x6c/0x70
+> > [   94.514090] Code: 41 5c 41 5d e9 25 ff ff ff 48 8b 90 68 1a 00 00 48 8b 70 10 48 c7 c7 10 45 70 8f c6 05 4f a9 68 01 01 48 89 d1 e8 7a bb fc ff <0f> 0b eb c8 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41 55 49 89 fd
+> > [   94.514092] RSP: 0018:ffff9ffa4ba1be00 EFLAGS: 00010286
+> > [   94.514093] RAX: 0000000000000000 RBX: ffff8dc82b503e00 RCX: 0000000000000489
+> > [   94.514094] RDX: 0000000000000001 RSI: 0000000000000096 RDI: 0000000000000247
+> > [   94.514095] RBP: ffffffff8f6ffa6b R08: 0000000000000004 R09: 0000000000000489
+> > [   94.514095] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000039
+> > [   94.514096] R13: 0000000000000000 R14: 0000000000000001 R15: ffff8dc82b5045e4
+> > [   94.514098] FS:  00007fa00f1f9240(0000) GS:ffff8dcb0c000000(0000) knlGS:0000000000000000
+> > [   94.514099] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   94.514100] CR2: 0000557b53d25877 CR3: 00000004ca490005 CR4: 0000000000360ee0
+> > [   94.514103] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [   94.514104] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [   94.514105] Call Trace:
+> > [   94.514821]  ptrace_stop+0x1a9/0x300
+> 
+> This is already wrong. But
+> 
+> 	Where does this __might_sleep() come from ??? I ses no blocking calls
+> 	in ptrace_stop(). Not to mention it is called with ->siglock held and
+> 	right after this lock is dropped we take tasklist_lock.
+> 
+> 	How this connects to the debugging patch I sent? Did you see this warning
+> 	without that patch?
+> 	
+> 
+> > [   94.514888] WARNING: CPU: 16 PID: 34171 at kernel/signal.c:2219 ptrace_stop+0x1d8/0x300
+> ...
+> > [   94.514899] RIP: 0010:ptrace_stop+0x1d8/0x300
+> 
+> This is WARN_ON(current->state) added to ptrace_stop(), this can explain
+> BUG_ON() in do_notify_parent() you reported.
+> 
+> So, the tracee returns from schedule() with ->state != TASK_RUNNING ???
+> This must not be possible.
+> 
+> OK, perhaps task->state was changed by ptrace_unfreeze_traced()? this can
+> only happen if it races with ttwu(__TASK_TRACED) without ->siglock held,
+> nobody should do this.
+> 
+> Strange.
 
-Yeah, the patches looked fine, but I only scanned them, and just
-wanted to make sure.
+I have tried to reproduce this with an vanilla upstream 5.8-rc4 and the
+strace test-suite with
 
-Over the years, we've gotten printk wrong so many times that I get a
-bit paranoid. Things can look fine on the screen, but then have odd
-line breaks in the logs. Or vice versa. Or work fine on some machine,
-but consistently show some race on another.
+make check -j4
 
-And some of the more complex features are hardly ever actually used -
-I'm not sure the optional message context (aka dictionary) is ever
-actually used.
+and I wasn't able to after multiple retries. Jiri, just to make sure
+this is upstream 5.8-rc4 without any additional patches?
+Anything special required to reproduce this in the way you run strace
+and so on?
 
-Yes, all the "dev_printk()" helpers fill it in with the device
-information (create_syslog_header()), and you _can_ use them if you
-know about them (ie
-
-    journalctl -b _KERNEL_SUBSYSTEM=pci_bus
-
-but I sometimes wonder how many people use all this complexity. And
-how many people even know about it..)
-
-So there are hidden things in there that can easily break *subtly* and
-then take ages for people to notice, because while some are very
-obvious indeed ("why is my module list message broken up into a
-hundred lines?") others might be things people aren't even aware of.
-
-Maybe a lot of system tools use those kernel dictionaries. Maybe it
-would break immediately. I just sometimes wonder...
-
-                 Linus
+Christian
