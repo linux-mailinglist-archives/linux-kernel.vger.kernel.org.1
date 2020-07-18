@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3C3224DC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 22:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050CE224DC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 22:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgGRUEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 16:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S1727992AbgGRUKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 16:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgGRUEF (ORCPT
+        with ESMTP id S1727042AbgGRUKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 16:04:05 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD49C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 13:04:04 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g10so9264766wmc.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 13:04:04 -0700 (PDT)
+        Sat, 18 Jul 2020 16:10:46 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF07C0619D2;
+        Sat, 18 Jul 2020 13:10:46 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q2so1008640qkc.8;
+        Sat, 18 Jul 2020 13:10:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=n3wmalXMf5RKdLRLN2Edh3BeBHa7ZnwIzM8k1DA3s8I=;
-        b=ne7cdRDd09qgXdnFVUb/lT9/BuqLGPItDxnLgkv7cX0/mvBii4cFfQbmUZLzduYq/6
-         7s1F2WyE0DfQdHL9LRQ3w+SXHJZHudNgSrNlzDzP6rNJVSjGmKzqkI0Okiuh1Y+MpAwj
-         NOo2VKijv3w4EBiZs6GIergq/76K2S6aj4xlGGQB9eggoNxVZO+Y2caT2sDVd+7wGMiF
-         jcqsOSGE9J4OynScE+4OO7H5XAMbqzrYH9KsFHsTBBu2zV4zWyV+kB3KnmwwKwGStaWL
-         GGLgHQ3Cd92TSwOhiXTxdAPm3D9TlxnMdwux/3IzID6gVlKnkJ/GZIq5+HvTUbjxpHGm
-         cUaQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfCfI9Ry75jIS0L/AMZU07uS7wzGWMcWBCKEzsuKDmw=;
+        b=BJfohwtAWZYl+V/uOHQpuI6c80rvv4c/VWAzTk7/5Cwaeov80khoFC6+OIuRNT15ei
+         FCwDNd3ketUB2X2JE/zpWPJdZaNhK4id8NP/bLUbkC5hAMlfv1yVLDIxr6m2MpETrdmT
+         jlsJkhkBru5VOIwwhpEouIJtA4TT54TwBazZd8fOmavtS+U5dO8udi0q3omo9Srp76Lh
+         ZbugOIaW7bPnKYOu1hcWg4codNGrglaYtaHiN0dojjd8JSggp5XHmfvMtjweZyK7riND
+         ARgGklsTKQAYn+TM+M254/VB4w4brQbuy0v+NAgZ3SZalap4xr68tx+e61TGICYdIT4m
+         9tNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=n3wmalXMf5RKdLRLN2Edh3BeBHa7ZnwIzM8k1DA3s8I=;
-        b=eipG8mMt1FTiaLiEPwTotqitMtgHKCLAGcwMz3e+2RLyHiTGU3uKvmzQU8wBNkVZ8G
-         kCR0Hk5eIg1Ne1+GYAwPpCwNgTfjfUtR3l77Pj8EwUDWBM+y2BD7LbG+ujg9jeDaowrt
-         uS8xT4s4rLFPqt4vMYvuK4D3fIVlBY9Ht2cMudcn0ZoyDOdwp1LZbfnsaItw/Pwnsofs
-         xDEBiscZ9chjXmorKi23hzK59e2S6jCM87TYCDl5kdzX5XAVDg8cKI7vgkuOQrPAAK4S
-         4dDGLWktci8co9oDip1a09gqJakT0IMdMQDtdYvbXjHAKoRLoL/d/dYrHe7c+jKPVASv
-         K59w==
-X-Gm-Message-State: AOAM531flf9mMqLw8NTtv6QHu8OZJ73uWkBGjv5uCvxgbFkPngtZfdFs
-        ovY7k7z0SzfAnRdO47nMZQ==
-X-Google-Smtp-Source: ABdhPJwdcwx43GlqCWVegzP07sgYkGwTpgWjf7cAPhoMDjs2HHlSuCYvAXYz9Ut+qF6WP+Sx7f3KlQ==
-X-Received: by 2002:a1c:6a13:: with SMTP id f19mr15709913wmc.106.1595102643612;
-        Sat, 18 Jul 2020 13:04:03 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:810b:f40:e00:922b:34ff:fe38:6455])
-        by smtp.googlemail.com with ESMTPSA id l15sm21073826wro.33.2020.07.18.13.04.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfCfI9Ry75jIS0L/AMZU07uS7wzGWMcWBCKEzsuKDmw=;
+        b=LUMZEHFGqOn1y6Y+NKQ2lQzIMHLZ0MoYLN5w30uNbxHFp1idG/AOebrj31KFbybPmV
+         Dzj73LTuz03HUjR4hlNA0WxTvgbsgyiOliQ1SIoBnhkNc4Xz9OivFsqMgtjAOYA6UwyN
+         zISXQQC35xlPtocrRZRYvBo+MyirSV9FIP2t1Hdaddia75gKCaE1JQRjfzl7ix70z0de
+         Gcz7NeanssmUtg19XH7HvojO8cEbkNfsVgFcNDz1iMhAv4xgDPddHeNFFM83L1R4qjin
+         wwDRhuvdIk/Z8yGBl2e2dwid7DGIAa2fEqJ6drpaLK1gWZms1cFYqbAM0YJIxh7uVytY
+         Ob3A==
+X-Gm-Message-State: AOAM533Z0yWvoGJUtBIIrGG9jNCa/R+reBkkXxUGu6mqHyVDtjAetPbc
+        Q2WTByQ/eqes+6DIg7TeQJ4=
+X-Google-Smtp-Source: ABdhPJxSg+ZIn5RKcVAYAYCk2vFVoyC3hKZRN4xqtTX769Xev4mHOCrXI+AgMs37AA7VtTV3up+i5g==
+X-Received: by 2002:a37:9b01:: with SMTP id d1mr15314073qke.65.1595103045341;
+        Sat, 18 Jul 2020 13:10:45 -0700 (PDT)
+Received: from atris.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id l3sm14436287qtn.69.2020.07.18.13.10.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2020 13:04:03 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner=20?= <heiko@sntech.de>
-Cc:     Alex Bee <knaerzche@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] drm: rockchip: use overlay windows as such
-Date:   Sat, 18 Jul 2020 22:03:23 +0200
-Message-Id: <20200718200323.3559-6-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200718200323.3559-1-knaerzche@gmail.com>
-References: <20200718200323.3559-1-knaerzche@gmail.com>
+        Sat, 18 Jul 2020 13:10:44 -0700 (PDT)
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     liambeguin@gmail.com, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v1 1/1] parisc: add support for cmpxchg on u8 pointers
+Date:   Sat, 18 Jul 2020 16:10:21 -0400
+Message-Id: <20200718201021.23918-1-liambeguin@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As stated in the comment for rk3288_vop_win_data windows
-that are supposed to be an overlay window are missused as HWC windows
-due to the missing implementation of that window type in VOP driver.
+The kernel test bot reported[1] that using set_mask_bits on a u8 causes
+the following issue on parisc:
 
-This is also true for RK3036, RK3126, RK3188 and RK3228 VOPs which
-all have at least one dedicated HWC window (which are currently not
-definded in the driver).
-Since all of the mentioned VOPs have only one overlay window and all
-of them support alpha blending now it should be used as such, since
-this gives a much wider usage-perspective for them.
+	hppa-linux-ld: drivers/phy/ti/phy-tusb1210.o: in function `tusb1210_probe':
+	>> (.text+0x2f4): undefined reference to `__cmpxchg_called_with_bad_pointer'
+	>> hppa-linux-ld: (.text+0x324): undefined reference to `__cmpxchg_called_with_bad_pointer'
+	hppa-linux-ld: (.text+0x354): undefined reference to `__cmpxchg_called_with_bad_pointer'
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Add support for cmpxchg on u8 pointers.
+
+[1] https://lore.kernel.org/patchwork/patch/1272617/#1468946
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Liam Beguin <liambeguin@gmail.com>
 ---
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/parisc/include/asm/cmpxchg.h |  2 ++
+ arch/parisc/lib/bitops.c          | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index f2f9a9af39e3..756c580f206a 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -131,7 +131,7 @@ static const struct vop_win_data rk3036_vop_win_data[] = {
- 	{ .base = 0x00, .phy = &rk3036_win0_data,
- 	  .type = DRM_PLANE_TYPE_PRIMARY },
- 	{ .base = 0x00, .phy = &rk3036_win1_data,
--	  .type = DRM_PLANE_TYPE_CURSOR },
-+	  .type = DRM_PLANE_TYPE_OVERLAY },
- };
+Hi,
+
+This was reported by the kernel test bot on an architecture I can't
+really test on. I was only able to make sure this builds, nothing more.
+
+Should I also add __cmpxchg_u8 in the cmpxchg_local switch case?
+
+There are one or two minor cleanups we can do around that patch, but
+because of my limited testing options, I kept the changes to a minimum.
+
+If there's interest, I can include these in follow up patches:
+- update __cmpxchg_u32 to use u32 instead of unsigned int for
+  consistency
+- add support for __cmpxchg_u16
+
+Thanks,
+Liam
+
+diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
+index ab5c215cf46c..068958575871 100644
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -60,6 +60,7 @@ extern void __cmpxchg_called_with_bad_pointer(void);
+ extern unsigned long __cmpxchg_u32(volatile unsigned int *m, unsigned int old,
+ 				   unsigned int new_);
+ extern u64 __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new_);
++extern u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new_);
  
- static const int rk3036_vop_intrs[] = {
-@@ -200,7 +200,7 @@ static const struct vop_win_data rk3126_vop_win_data[] = {
- 	{ .base = 0x00, .phy = &rk3036_win0_data,
- 	  .type = DRM_PLANE_TYPE_PRIMARY },
- 	{ .base = 0x00, .phy = &rk3126_win1_data,
--	  .type = DRM_PLANE_TYPE_CURSOR },
-+	  .type = DRM_PLANE_TYPE_OVERLAY },
- };
- 
- static const struct vop_data rk3126_vop = {
-@@ -543,7 +543,7 @@ static const struct vop_win_data rk3188_vop_win_data[] = {
- 	{ .base = 0x00, .phy = &rk3188_win0_data,
- 	  .type = DRM_PLANE_TYPE_PRIMARY },
- 	{ .base = 0x00, .phy = &rk3188_win1_data,
--	  .type = DRM_PLANE_TYPE_CURSOR },
-+	  .type = DRM_PLANE_TYPE_OVERLAY },
- };
- 
- static const int rk3188_vop_intrs[] = {
-@@ -980,7 +980,7 @@ static const struct vop_win_data rk3228_vop_win_data[] = {
- 	{ .base = 0x00, .phy = &rk3288_win01_data,
- 	  .type = DRM_PLANE_TYPE_PRIMARY },
- 	{ .base = 0x40, .phy = &rk3288_win01_data,
--	  .type = DRM_PLANE_TYPE_CURSOR },
-+	  .type = DRM_PLANE_TYPE_OVERLAY },
- };
- 
- static const struct vop_data rk3228_vop = {
+ /* don't worry...optimizer will get rid of most of this */
+ static inline unsigned long
+@@ -71,6 +72,7 @@ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
+ #endif
+ 	case 4: return __cmpxchg_u32((unsigned int *)ptr,
+ 				     (unsigned int)old, (unsigned int)new_);
++	case 1: return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
+ 	}
+ 	__cmpxchg_called_with_bad_pointer();
+ 	return old;
+diff --git a/arch/parisc/lib/bitops.c b/arch/parisc/lib/bitops.c
+index 70ffbcf889b8..2e4d1f05a926 100644
+--- a/arch/parisc/lib/bitops.c
++++ b/arch/parisc/lib/bitops.c
+@@ -79,3 +79,15 @@ unsigned long __cmpxchg_u32(volatile unsigned int *ptr, unsigned int old, unsign
+ 	_atomic_spin_unlock_irqrestore(ptr, flags);
+ 	return (unsigned long)prev;
+ }
++
++u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new)
++{
++	unsigned long flags;
++	u8 prev;
++
++	_atomic_spin_lock_irqsave(ptr, flags);
++	if ((prev = *ptr) == old)
++		*ptr = new;
++	_atomic_spin_unlock_irqrestore(ptr, flags);
++	return prev;
++}
+
+base-commit: 6cf7ccba29dcf39ab27630c383a3844078a6d5cd
 -- 
-2.17.1
+2.27.0
 
