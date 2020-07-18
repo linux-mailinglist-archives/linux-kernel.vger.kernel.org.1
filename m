@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAED82249A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 09:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A51E2249A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 09:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729061AbgGRHUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 03:20:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:46035 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726672AbgGRHUK (ORCPT
+        id S1728975AbgGRHZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 03:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgGRHZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 03:20:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595056808;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RRfV+030OZkI3mkNTShBE54pKgPBKNhenrspYRndL2o=;
-        b=TtkM157+FNS1ZhfUyXh0tvs2oY/i0piDjoGCQDBBZzBX15U9X+y6B/qPIXugiBOURAeVOY
-        VmYFDdoBsmlqteQ8P2jBJ5/7mtPFPE0Rv/YC9a0mlr9y8x0wu6PeQGiawiD7xl4BdXV42W
-        b/HqP/Q2it65C3Q9evvNeu0wR1pkVvU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-tlUefK-ENLeSOEMpVYwcQg-1; Sat, 18 Jul 2020 03:20:06 -0400
-X-MC-Unique: tlUefK-ENLeSOEMpVYwcQg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E27A107ACCA;
-        Sat, 18 Jul 2020 07:20:05 +0000 (UTC)
-Received: from f32-m1.lan (ovpn-112-21.phx2.redhat.com [10.3.112.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1938C6FEF7;
-        Sat, 18 Jul 2020 07:20:04 +0000 (UTC)
-Date:   Sat, 18 Jul 2020 00:20:03 -0700
-From:   Kevin Buettner <kevinb@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-Subject: [PATCH] copy_xstate_to_kernel: Fix typo which caused GDB regression
-Message-ID: <20200718002003.6e0a2aef@f32-m1.lan>
-Organization: Red Hat
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Sat, 18 Jul 2020 03:25:38 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1770CC0619D2;
+        Sat, 18 Jul 2020 00:25:38 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z15so13254825wrl.8;
+        Sat, 18 Jul 2020 00:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dKmmlTkJ/UK1rBdA5rLoQaKVO8RXmU6FeHJYL7jfrss=;
+        b=hULWg5e/Woha7mtNXrFt49+AHIYkexrt8rcI6w4zndMhKK47SrMHwi6pnrPAyK1Psu
+         kCLBz0xef4+bP40lXPyUiS5WCoAC/P2bsQweER7fSNS3iHXe9kxASVFcHgE6yOCB2wxj
+         GvEicGY4ef1tPo0UCkKgF2VctGxdbcE1RQ4VX/rMZm+NisDTDuonBBo6fDXCrdDVYXPB
+         vHIx/Qynek5hbd+rdZZBoGwnFej38me6BkyN5vgkDBrHIta2+avlzsV9PkWOVkJFT1xD
+         Pyq/9ZL1sKhbDPbzzwoUFVmQ5smIKvh9Z7KZ/73QJ7pkVnrcx+n3416O+y3AjFdBf0UN
+         WXsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dKmmlTkJ/UK1rBdA5rLoQaKVO8RXmU6FeHJYL7jfrss=;
+        b=hg17IFN/Kgcmw1DH/TbXswEPfMTSaF7YncfCvFpnZJyutvhH3o3d70VgS0p7f3UN7u
+         tuSGPpAR65rAGxoho9jIDsX2bheHKNP2t3b9EDfkF4++YEiWNRL62U0rBgl7eNCGTTsK
+         6qrkRCe3C5QRSdZSCBFCsMBPPp3mNrf1JZ7I0Qy70xs/OLBCc/NjJBxoUJfW7xy8ZRgR
+         sVJfJkPV2f9+3htt49K95UB4SAQ6LTQ3ub5h4vnXb0t9WyyexIo3VAxB8bOeKB7pMBnQ
+         XPLWtHNmoT6uuXwkKEBAjbu1czAB8fTo23yPENtNamFFBPB9JZMZrM02CTgDaIhIJzT7
+         qPow==
+X-Gm-Message-State: AOAM532w0w9WYSPajDz6fZELpDJQQYTYBVn2s3UH8ryGbigteolpZmbL
+        bSXslhoCppfx0dGaCI3YTs0=
+X-Google-Smtp-Source: ABdhPJz6pZ2GZOEtBjMTXW3ONHReL3SZ/nRUksYF8p5JqWsqUrczP2SwHKfQ+DWsmLkyh+WFUFUZgA==
+X-Received: by 2002:a05:6000:d0:: with SMTP id q16mr14502799wrx.166.1595057136678;
+        Sat, 18 Jul 2020 00:25:36 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id c7sm19550192wrq.58.2020.07.18.00.25.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 00:25:36 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH 0/2] arm64: dts: meson: add more SM1 soundcards
+Date:   Sat, 18 Jul 2020 07:25:30 +0000
+Message-Id: <20200718072532.8427-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes a regression encountered while running the
-gdb.base/corefile.exp test in GDB's test suite.
+This series adds basic support for LPCM audio over HDMI interfaces
+to the Khadas VIM3L (reusing the same config as the VIM3) and the
+HardKernel ODROID-C4 devices. I'm sure support can be extended to
+include other hardware but this gets the HDMI port working as a
+minimum capability. I have personally tested with both devices.
 
-In my testing, the typo prevented the sw_reserved field of struct
-fxregs_state from being output to the kernel XSAVES area.  Thus the
-correct mask corresponding to XCR0 was not present in the core file
-for GDB to interrogate, resulting in the following behavior:
+Christian Hewitt (2):
+  arm64: dts: meson: add audio playback to odroid-c4
+  arm64: dts: meson: add audio playback to khadas-vim3l
 
-[kev@f32-1 gdb]$ ./gdb -q testsuite/outputs/gdb.base/corefile/corefile testsuite/outputs/gdb.base/corefile/corefile.core
-Reading symbols from testsuite/outputs/gdb.base/corefile/corefile...
-[New LWP 232880]
+ .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 88 +++++++++++++++++++
+ .../boot/dts/amlogic/meson-sm1-odroid-c4.dts  | 88 +++++++++++++++++++
+ 2 files changed, 176 insertions(+)
 
-warning: Unexpected size of section `.reg-xstate/232880' in core file.
-
-With the typo fixed, the test works again as expected.
-
-Signed-off-by: Kevin Buettner <kevinb@redhat.com>
----
- arch/x86/kernel/fpu/xstate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 6a54e83d5589..9cf40a7ff7ae 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1022,7 +1022,7 @@ int copy_xstate_to_kernel(void *kbuf, struct xregs_state *xsave, unsigned int of
- 		copy_part(offsetof(struct fxregs_state, st_space), 128,
- 			  &xsave->i387.st_space, &kbuf, &offset_start, &count);
- 	if (header.xfeatures & XFEATURE_MASK_SSE)
--		copy_part(xstate_offsets[XFEATURE_MASK_SSE], 256,
-+		copy_part(xstate_offsets[XFEATURE_SSE], 256,
- 			  &xsave->i387.xmm_space, &kbuf, &offset_start, &count);
- 	/*
- 	 * Fill xsave->i387.sw_reserved value for ptrace frame:
 -- 
-2.26.2
-
+2.17.1
 
