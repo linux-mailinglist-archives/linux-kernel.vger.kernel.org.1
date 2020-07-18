@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5EA224A09
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 11:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F95224A0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 11:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgGRJM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 05:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgGRJM4 (ORCPT
+        id S1726510AbgGRJOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 05:14:12 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:50181 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgGRJOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 05:12:56 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069CFC0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 02:12:56 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id v8so12833325iox.2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 02:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=Gz/Iodq7QQ+u5+jLBoM1X53Pr/7b/Xez5QU/4Op6Pi2ylCIXO6tgDflDBBPkRlaWNk
-         ZTNg89DZWy+4mYrVyr1HLv2yT9uQgEX8jSTvI+zEvo/qljbJIzEXpSf60dCjSnNiSd25
-         CUCZjFiVnyVPjE/T54tzWJfAmjCep2dvV94CnpydOBxtOyE4lJUU4BqWRaSkXWfY6YIr
-         9GetuXherrb1KBBD8VlOAMejgEwGwy3FPB1vNDkX/AEEceEemLc9xIGqD8B2X1SVJMRx
-         iVhHcyv1KhdCfOfSPn4LAnm4OzTbUYvHXdSwMTpNUjtRrHcVtbsAIPRUzzg2THGHy3Rw
-         z0bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=o0TFoQFBXK/VUYKy3yX8TBQgh2qeC4xMNdlU7kzgEYiWJDjgpzKejeXjQjdagX1rKJ
-         vAZY4f7BOfKdlNytGuhrtrJBQ9RjhGbEsbYvwFCSdD22cP9dP/1hIQrc3jFXVHCROT9A
-         XuQjfYqk0TDwP53iSCxN48AcWxJJFHQeS5jI9ea/XgJSZe0L0jQYxFMgUjc3p+WnYwzJ
-         1N/Dc16EFg8iXpvnP5sXjwqfK1DESUZ6wWBPxzVO5U/Fm0D6Z/GZXjSOMg7vNgWKydNk
-         lb8Qa1NXtKVCJUe3CxwlzXcU2/yqaE2zKjbJKZCm5ozbQtvcCmdPIw07aEOttPSOLNVf
-         db1w==
-X-Gm-Message-State: AOAM5326HiWtYYl0NbhaYNiU4GJigKtM8gzBm/qqrZgOOMwFntNR1sTf
-        pjgYW2h9lyU+p6+J5XS83jbRBOxlLCbjoBkzpYQ=
-X-Google-Smtp-Source: ABdhPJyRKFqDU3GTU+dvU/24qQxtKdH0+ab2S2+VLFuXBubLWIu5z3kdEJAn+80ib75HvDLYjwDVn6APXTGSbuis+Ss=
-X-Received: by 2002:a05:6602:2207:: with SMTP id n7mr13229889ion.162.1595063575477;
- Sat, 18 Jul 2020 02:12:55 -0700 (PDT)
+        Sat, 18 Jul 2020 05:14:10 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1N0F9t-1kjr9k2unf-00xI7j for <linux-kernel@vger.kernel.org>; Sat, 18 Jul
+ 2020 11:14:07 +0200
+Received: by mail-qk1-f180.google.com with SMTP id b185so10992021qkg.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 02:14:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5321a/2r8aJtkLcvLZ39YWucxXyzESGS32NAr+b/LJvr4qVG5Wqn
+        cwPeYJfMYL5KlicDXYcOfItpM2HCssictb18Idg=
+X-Google-Smtp-Source: ABdhPJxwe+rAXwuvo5qNMMmdZVywOMqejAp891L6qgqpIBl7oiKJsK6nUyLJwXrhbK4R1O2B1G5OJHYrTQLcWCrrZmc=
+X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr12589219qko.138.1595063646520;
+ Sat, 18 Jul 2020 02:14:06 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:13ab:0:0:0:0 with HTTP; Sat, 18 Jul 2020 02:12:55
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   michelle goodman <goodmanmichelle700@gmail.com>
-Date:   Sat, 18 Jul 2020 09:12:55 +0000
-Message-ID: <CAL=4yxeCi3n6g40AKjYM8yGX+Q6ivETF=8mYcDens8OiB7PVjQ@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
+References: <20200624035920.835571-1-natechancellor@gmail.com>
+ <1bbb6956-d9de-e0c8-5b45-20b6fecc2189@infradead.org> <CAKwvOd=5nE6fkwp8iw0JqwQFp5KcUaC7RyEf2L6+tkbp9smsvg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=5nE6fkwp8iw0JqwQFp5KcUaC7RyEf2L6+tkbp9smsvg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 18 Jul 2020 11:13:50 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1JjQCB9HdRE6chvA5ekOGWUVpSDdPkgqQ+RGz=y06ong@mail.gmail.com>
+Message-ID: <CAK8P3a1JjQCB9HdRE6chvA5ekOGWUVpSDdPkgqQ+RGz=y06ong@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/boot: Use address-of operator on section symbols
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Geoff Levand <geoff@infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Joel Stanley <joel@jms.id.au>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ZNDyoXfM9nSFTM+fJ1104zZS881vGPIyhKtH1wdgdVM7KQYjPMR
+ t4vvxVCorLCuWcC5dUZ7AHuwO2tS/XrgpG4uWZg/U6gqKrnOUZ5MTL4t5CZpJR8xG9FmTRJ
+ +Z5HX3QPgxnmP7DXNzXUrklXgIsAZdwtVJMWock/hKOxUTWkyr/VdQilTkyoeXSjyfnN96g
+ uAOEO83PLuwxd3CLVxzmQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B+RHoLKUfkk=:QRbFY4KCXidUn+mS50TbyO
+ 6bZulDVTAbyh14Fn6K8UMWTDaR4fNb5iQQuT6+Bgz/3qYHZ0LDl9Ooc4U/duBabXHxUrrYLZp
+ GBkq8moqxrcNaF8Huo17Ge44NEymXRWiHWrLJ+QV2ruh6kG5h0ZdDrgqxWSgipjupmhRFKjog
+ W+Vc4jlsfZiZ2PfGF4iqesRnRmleyRHWTKrR10I7/XOT1GrlS+OHGqf08YJQGppGVQlT4NIpK
+ IsfmZGL6DFoSAmm5vqEjZNhaMWWvWBy1bGACgu2ow2DhNv1TGn8lRS0JXDEb6jck8AFO2s2yO
+ MGqVmpuE9MxBzpel44eXnUXxkz35Ptu7uwIABLBO0Z4tD7FcrHSNxsUQ70Mp8M9cqGdulwcI1
+ 5ict4le0SRytQMSmPQM/w8baEQ7ulU/m6EIQZt5IoPGKSkoGvniBKI0QBcA22PfI+NFT+tAa3
+ YHfRUcSu5PUVP1wv2Qqk4YlGMYOaaCtzQgoPrmvMc7eeSGZ1AA0VcKaOeQpczonKcc+XKJNWR
+ wfwCGTCl0UxVhfcnoCpF0zrAvawTKBhAjPH8EwG5eCW2N4lSo54WxvjKWj5M5xLyNYYTZJdSP
+ gdFSaL6XB7exQa91QauzN1CgrBIBaVZUObPJPSVjgAMXctDmVCxeQNu8D8FGRcLeP/Rmtz+KU
+ HGFZeXf/m0uKoyX3RC7tUBCdN9M0kx64gE5qgR3PtWd2fekPNngl9qHrmx/yx3lA8PZh/Uj8T
+ DXiGioEzdRWdEvHOTRzKu0VPPtXz1YTvzaIdb3LJicSEDTa34P25wWvnoXK2963NJQwm/pcDy
+ CrTiec4iRZiUOMp4g2QeGwXSZz9X0F3ax+yI1elqzEHa6cU+t60eeXqctxqQT/1JuXXdXULDf
+ La9f/9ZktEkowwUjUYaDIedLsyL4lOHnIadFaYSMXNdjmN8j+OzdGHK7BpZvrYFYOe9AWylRu
+ hauIwSQrw0NQcaUpWJOFR2PHGGupY3FGN8IjJs/5PeWZAbMgpGBup
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Danke
-Michelle
+On Thu, Jun 25, 2020 at 6:32 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Wed, Jun 24, 2020 at 6:19 PM Geoff Levand <geoff@infradead.org> wrote:
+> >
+> > Hi Nathan,
+> >
+> > On 6/23/20 8:59 PM, Nathan Chancellor wrote:
+> > > These are not true arrays, they are linker defined symbols, which are
+> > > just addresses.  Using the address of operator silences the warning
+> > > and does not change the resulting assembly with either clang/ld.lld
+> > > or gcc/ld (tested with diff + objdump -Dr).
+> >
+> > Thanks for your patch.  I tested this patch applied to v5.8-rc2 on a
+> > PS3 and it seems OK.
+>
+> PS3?  Folks still have ones that can boot Linux?  Those ****ers took
+> my Yellow Dog Linux away from me; I enjoyed depositing that settlement
+> check!  Hopefully by now, folks have figured out how to roll back the
+> system firmware?
+
+I still have the PS3 from Hong Kong with original 1.5 (IIRC) firmware
+that I demoed at LCA2006. Haven't booted it in at least 12 years, and
+never used it for games or movies other than the free "Casino Royale"
+they sent everyone.
+
+      Arnd
