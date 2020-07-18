@@ -2,187 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28ADB224E0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 23:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7917224E12
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 23:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbgGRVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 17:08:52 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:48267 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbgGRVIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 17:08:52 -0400
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 60014240005;
-        Sat, 18 Jul 2020 21:08:48 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Tomasz Nowicki <tn@semihalf.com>, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        hannah@marvell.com
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        devicetree@vger.kernel.org, catalin.marinas@arm.com,
-        nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
-        mw@semihalf.com, Tomasz Nowicki <tn@semihalf.com>
-Subject: Re: [PATCH v4 4/4] arm64: dts: marvell: add SMMU support
-In-Reply-To: <20200715070649.18733-5-tn@semihalf.com>
-References: <20200715070649.18733-1-tn@semihalf.com> <20200715070649.18733-5-tn@semihalf.com>
-Date:   Sat, 18 Jul 2020 23:08:48 +0200
-Message-ID: <87k0z0350f.fsf@FE-laptop>
+        id S1728059AbgGRVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 17:12:51 -0400
+Received: from v6.sk ([167.172.42.174]:37910 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726863AbgGRVMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 17:12:50 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id 4557560D3C;
+        Sat, 18 Jul 2020 21:12:49 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lubomir Rintel <lkundrak@v3.sk>
+Subject: [PATCH] dt-bindings: misc: Convert olpc,xo1.75-ec to json-schema
+Date:   Sat, 18 Jul 2020 23:12:44 +0200
+Message-Id: <20200718211244.187938-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tomasz Nowicki <tn@semihalf.com> writes:
+Convert the OLPC XO-1.75 Embedded Controller binding to DT schema format
+using json-schema.
 
-> From: Marcin Wojtas <mw@semihalf.com>
->
-> Add IOMMU node for Marvell AP806 based SoCs together with platform
-> and PCI device Stream ID mapping.
->
-> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-> Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+---
+Hi,
 
-Applied on mvebu/dt64
+please consider enqueueing this patch for 5.9. It is a straightforward
+conversion of the olpc,xo1.75-ec binding doc to YAML.
 
-Thanks,
+It applies on top of v5.8-rc4 (where a fix into olpc,xo1.75-ec.txt
+landed).
 
-Gregory
-> ---
->  arch/arm64/boot/dts/marvell/armada-7040.dtsi  | 28 +++++++++++++
->  arch/arm64/boot/dts/marvell/armada-8040.dtsi  | 40 +++++++++++++++++++
->  arch/arm64/boot/dts/marvell/armada-ap80x.dtsi | 18 +++++++++
->  3 files changed, 86 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/marvell/armada-7040.dtsi b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
-> index 47247215770d..7a3198cd7a07 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-7040.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
-> @@ -14,3 +14,31 @@
->  	compatible = "marvell,armada7040", "marvell,armada-ap806-quad",
->  		     "marvell,armada-ap806";
->  };
-> +
-> +&smmu {
-> +	status = "okay";
-> +};
-> +
-> +&cp0_pcie0 {
-> +	iommu-map =
-> +		<0x0   &smmu 0x480 0x20>,
-> +		<0x100 &smmu 0x4a0 0x20>,
-> +		<0x200 &smmu 0x4c0 0x20>;
-> +	iommu-map-mask = <0x031f>;
-> +};
-> +
-> +&cp0_sata0 {
-> +	iommus = <&smmu 0x444>;
-> +};
-> +
-> +&cp0_sdhci0 {
-> +	iommus = <&smmu 0x445>;
-> +};
-> +
-> +&cp0_usb3_0 {
-> +	iommus = <&smmu 0x440>;
-> +};
-> +
-> +&cp0_usb3_1 {
-> +	iommus = <&smmu 0x441>;
-> +};
-> diff --git a/arch/arm64/boot/dts/marvell/armada-8040.dtsi b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-> index 7699b19224c2..79e8ce59baa8 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-> @@ -15,6 +15,18 @@
->  		     "marvell,armada-ap806";
->  };
->  
-> +&smmu {
-> +	status = "okay";
-> +};
-> +
-> +&cp0_pcie0 {
-> +	iommu-map =
-> +		<0x0   &smmu 0x480 0x20>,
-> +		<0x100 &smmu 0x4a0 0x20>,
-> +		<0x200 &smmu 0x4c0 0x20>;
-> +	iommu-map-mask = <0x031f>;
-> +};
-> +
->  /* The RTC requires external oscillator. But on Aramda 80x0, the RTC clock
->   * in CP master is not connected (by package) to the oscillator. So
->   * disable it. However, the RTC clock in CP slave is connected to the
-> @@ -23,3 +35,31 @@
->  &cp0_rtc {
->  	status = "disabled";
->  };
-> +
-> +&cp0_sata0 {
-> +	iommus = <&smmu 0x444>;
-> +};
-> +
-> +&cp0_sdhci0 {
-> +	iommus = <&smmu 0x445>;
-> +};
-> +
-> +&cp0_usb3_0 {
-> +	iommus = <&smmu 0x440>;
-> +};
-> +
-> +&cp0_usb3_1 {
-> +	iommus = <&smmu 0x441>;
-> +};
-> +
-> +&cp1_sata0 {
-> +	iommus = <&smmu 0x454>;
-> +};
-> +
-> +&cp1_usb3_0 {
-> +	iommus = <&smmu 0x450>;
-> +};
-> +
-> +&cp1_usb3_1 {
-> +	iommus = <&smmu 0x451>;
-> +};
-> diff --git a/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi b/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-> index 7f9b9a647717..12e477f1aeb9 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-> @@ -56,6 +56,24 @@
->  			compatible = "simple-bus";
->  			ranges = <0x0 0x0 0xf0000000 0x1000000>;
->  
-> +			smmu: iommu@5000000 {
-> +				compatible = "marvell,ap806-smmu-500", "arm,mmu-500";
-> +				reg = <0x100000 0x100000>;
-> +				dma-coherent;
-> +				#iommu-cells = <1>;
-> +				#global-interrupts = <1>;
-> +				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> +				status = "disabled";
-> +			};
-> +
->  			gic: interrupt-controller@210000 {
->  				compatible = "arm,gic-400";
->  				#interrupt-cells = <3>;
-> -- 
-> 2.17.1
->
+Thanks
+Lubo
 
+ .../bindings/misc/olpc,xo1.75-ec.txt          | 23 --------
+ .../bindings/misc/olpc,xo1.75-ec.yaml         | 52 +++++++++++++++++++
+ 2 files changed, 52 insertions(+), 23 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt
+ create mode 100644 Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+
+diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt
+deleted file mode 100644
+index 2d7cdf19a0d0f..0000000000000
+--- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt
++++ /dev/null
+@@ -1,23 +0,0 @@
+-OLPC XO-1.75 Embedded Controller
+-
+-Required properties:
+-- compatible: Should be "olpc,xo1.75-ec".
+-- cmd-gpios: gpio specifier of the CMD pin
+-
+-The embedded controller requires the SPI controller driver to signal readiness
+-to receive a transfer (that is, when TX FIFO contains the response data) by
+-strobing the ACK pin with the ready signal. See the "ready-gpios" property of the
+-SSP binding as documented in:
+-<Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml>.
+-
+-Example:
+-	&ssp3 {
+-		spi-slave;
+-		ready-gpios = <&gpio 125 GPIO_ACTIVE_HIGH>;
+-
+-		slave {
+-			compatible = "olpc,xo1.75-ec";
+-			spi-cpha;
+-			cmd-gpios = <&gpio 155 GPIO_ACTIVE_HIGH>;
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+new file mode 100644
+index 0000000000000..e75d77beec6a3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++# Copyright (C) 2019,2020 Lubomir Rintel <lkundrak@v3.sk>
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/misc/olpc,xo1.75-ec.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OLPC XO-1.75 Embedded Controller bindings
++
++description: |
++  This binding describes the Embedded Controller acting as a SPI bus master
++  on a OLPC XO-1.75 laptop computer.
++
++  The embedded controller requires the SPI controller driver to signal
++  readiness to receive a transfer (that is, when TX FIFO contains the
++  response data) by strobing the ACK pin with the ready signal. See the
++  "ready-gpios" property of the SSP binding as documented in:
++  <Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml>.
++
++maintainers:
++  - Lubomir Rintel <lkundrak@v3.sk>
++
++properties:
++  compatible:
++    const: olpc,xo1.75-ec
++
++  cmd-gpios:
++    description: GPIO uspecifier of the CMD pin
++    maxItems: 1
++
++required:
++  - compatible
++  - cmd-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++      spi-slave;
++      ready-gpios = <&gpio 125 GPIO_ACTIVE_HIGH>;
++
++      slave {
++        compatible = "olpc,xo1.75-ec";
++        spi-cpha;
++        cmd-gpios = <&gpio 155 GPIO_ACTIVE_HIGH>;
++      };
++    };
++
++...
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.26.2
+
