@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E328224AE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 13:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F52224AE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 13:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgGRLJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 07:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgGRLJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 07:09:08 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCFFC0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 04:09:08 -0700 (PDT)
+        id S1726873AbgGRLMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 07:12:22 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:46600 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726507AbgGRLMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 07:12:21 -0400
 Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id E6C44BC069;
-        Sat, 18 Jul 2020 11:09:04 +0000 (UTC)
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 214F8BC073;
+        Sat, 18 Jul 2020 11:12:15 +0000 (UTC)
 From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] ASoC: ti: Replace HTTP links with HTTPS ones
-Date:   Sat, 18 Jul 2020 13:08:57 +0200
-Message-Id: <20200718110857.11520-1-grandmaster@al2klimov.de>
+Subject: [PATCH] ASoC: fsl: Replace HTTP links with HTTPS ones
+Date:   Sat, 18 Jul 2020 13:12:09 +0200
+Message-Id: <20200718111209.11760-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
 Authentication-Results: smtp.al2klimov.de;
         auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,34 +68,38 @@ Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
  If you apply the patch, please let me know.
 
 
- sound/soc/ti/udma-pcm.c | 2 +-
- sound/soc/ti/udma-pcm.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/imx-audmix.c | 4 ++--
+ sound/soc/fsl/imx-audmux.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/ti/udma-pcm.c b/sound/soc/ti/udma-pcm.c
-index 39830caaaf7c..2ff0f518aba5 100644
---- a/sound/soc/ti/udma-pcm.c
-+++ b/sound/soc/ti/udma-pcm.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-+ *  Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com
-  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
+index e09b45de0efd..96980cb0497f 100644
+--- a/sound/soc/fsl/imx-audmix.c
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -6,8 +6,8 @@
+  * License. You may obtain a copy of the GNU General Public License
+  * Version 2 or later at the following locations:
+  *
+- * http://www.opensource.org/licenses/gpl-license.html
+- * http://www.gnu.org/copyleft/gpl.html
++ * https://www.opensource.org/licenses/gpl-license.html
++ * https://www.gnu.org/copyleft/gpl.html
   */
  
-diff --git a/sound/soc/ti/udma-pcm.h b/sound/soc/ti/udma-pcm.h
-index 54111e7312c1..9ed588fd79b9 100644
---- a/sound/soc/ti/udma-pcm.h
-+++ b/sound/soc/ti/udma-pcm.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- *  Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
-+ *  Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com
-  */
+ #include <linux/module.h>
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 3ce85a43e08f..25c18b9e348f 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -5,7 +5,7 @@
+ // Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
+ //
+ // Initial development of this code was funded by
+-// Phytec Messtechnik GmbH, http://www.phytec.de
++// Phytec Messtechnik GmbH, https://www.phytec.de
  
- #ifndef __UDMA_PCM_H__
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
 -- 
 2.27.0
 
