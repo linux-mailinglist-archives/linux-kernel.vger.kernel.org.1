@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3A8224978
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7D522497A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgGRG56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
+        id S1729076AbgGRG6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729010AbgGRG5y (ORCPT
+        with ESMTP id S1729030AbgGRG54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:57:54 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61102C0619D2;
-        Fri, 17 Jul 2020 23:57:54 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q15so17758976wmj.2;
-        Fri, 17 Jul 2020 23:57:54 -0700 (PDT)
+        Sat, 18 Jul 2020 02:57:56 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0DCC0619D2;
+        Fri, 17 Jul 2020 23:57:56 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g75so17733672wme.5;
+        Fri, 17 Jul 2020 23:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1krktBPS100MfXZ+pc+c++ZJjlsjSR2xUu8yCpuZMDY=;
-        b=MxnpCgiutKDScYhaBSLciizrJAJTJFBr/z8JYY0P+RZ9GzgwghrgNFNaK07MDeEVIO
-         go4TQe+V7RxkyR8z14sUvYAvDojXvhpsKSm9bCl01e305F4dSK2ORKh4vT781h5YU9cj
-         fbQgwezKw96kyZ2O+6mrFEh/UgB1rW1NM8ioBXzfbtxQrE59TCdrcR2A5YN/QOWx/6hL
-         fDDWUPFnWETz9S1Anlrno57q/ch+Bef82ry89P26ZxR8ZWiZvz7jTdy+xyPA8eWqSQQd
-         mneR/5ai/AVUPC3PDw2PZEg95Fuo6fOeCmrhq6+lXSbXGTI9J/qAN96LnBS+nXKmJQCo
-         XKMQ==
+        bh=6vYF1uN6y1MEmfx/aSCmf3xT19pRJOVeWursMQGhdC8=;
+        b=r9q4k/1UmOpnNBFOhm8kzTNUat2F0iPzWuggKmToYGhPmp4mQRg8S0msDjtyjs+qYm
+         b4DwLCCVNLlFSgL3gQ52FWkH69J6TOE2SPbhNNgvV9q+JEWpU8a5cxRzIT6sW/nbALXX
+         QI291noBxQ43LnnDHCvUmvSie9eHV73krHsCkYf8YeNxYxnTOJCG3OFEuH0bHKTOpk9u
+         Vzh9JWpKWOoKIz5p4BpUnEtMsqVt6MJ3Pi09bpg8xiOqwpH8UGv+uagQIDNi0NjwVRM7
+         wv+pRjtzGbD327/2zzmCwMTfDwaCJ67CzeNnT0370VkOlPMd2Ps+MSQzYLpSvUHYEO4J
+         2PVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=1krktBPS100MfXZ+pc+c++ZJjlsjSR2xUu8yCpuZMDY=;
-        b=MB12HM0lmqgtWkiO2anh0NKzpZA4+lkU13VXY0K8K6VtDNW0p9QSUHXMYEIrrrEjft
-         Mj6gd2Ux8MZ+BpWvzp2oJNYPGc2UfQVHWPH7l2B3Q5xxbkWx5w+7s7JxkrHJ5+u+D8Cq
-         wboib8ZaDIRGDnnI10+Qw/LGm1X2wXlABRNDlVJaVlTjTmRZUZC7nJfD0nKJRBilYvgi
-         2sDfbOSMQyeHOdbFaWviaN/furfuIszOiq3/gDO1xwdVMwpinlJ1xFsWNMrM8bi6uir+
-         ahCK4g17PTBHbdAuvxfOXrxiscbpET3FvWIkuzglTN88Fh+OzxxIP9QWBw/1rKAz2xIC
-         jk9g==
-X-Gm-Message-State: AOAM531Gq9kMZwjQnkTYCGIPNX99Y0PX5Z99B74csC1r69xJ8nJVlwm2
-        Urj7YMNnzpbK6IVPxVd0FpKhs1Fn
-X-Google-Smtp-Source: ABdhPJynB0P8pI+h9iCmq/dMiqpiyDbX2abpYL1dqoXORL7MYzIRgWhjk8zdE4npMk9SNvrzyP4JWQ==
-X-Received: by 2002:a1c:e90d:: with SMTP id q13mr12857564wmc.187.1595055473119;
-        Fri, 17 Jul 2020 23:57:53 -0700 (PDT)
+        bh=6vYF1uN6y1MEmfx/aSCmf3xT19pRJOVeWursMQGhdC8=;
+        b=infjwM69fHwHBuoh6rI/VcdAr6XA2vCNbn3V1NoLs/CUUkBDB7BpPWbKxJdwz8H0+F
+         +JzYuvecwVknGU9eF7ZcbwKafMXzvG1fY6mdEK/+4nqhQcMQfwulwXJmukV4cf4cAkVA
+         WJUgEG42s5tAq5G9M2GKYvQIMv1tC8vpB3K5M6ESRmvD4pIgjCt/Cdv9NBqh62JEv1eB
+         LHLsasnGw5jNFdAg0E3ixfrG8jwzyjmuXNgz/c++BWvsOK7FNyODnrvdDLnChJCxTo1o
+         9Ibq0M4l/W95ulllsFaVBm80DRZHtx8mt7S1g5qSHq7ijuxDQvVyN3XlgJ7S6vGjx5yK
+         ajrw==
+X-Gm-Message-State: AOAM532NCsnqS546Ytj6vKTigeHgm2qnqtjdkvpU5sqF6B9/rMLhMeqU
+        iybV/KJGFn+fXp940Y9g5OA=
+X-Google-Smtp-Source: ABdhPJxdylbi50zUlqb1YYOa/Ff6SMhJbfn7P8x62EDO+8C6uMeUywN98DVmiDvFARfD4Pn7nGRWdA==
+X-Received: by 2002:a1c:2183:: with SMTP id h125mr13322903wmh.83.1595055475237;
+        Fri, 17 Jul 2020 23:57:55 -0700 (PDT)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id x5sm18749191wmg.2.2020.07.17.23.57.51
+        by smtp.gmail.com with ESMTPSA id x5sm18749191wmg.2.2020.07.17.23.57.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 23:57:52 -0700 (PDT)
+        Fri, 17 Jul 2020 23:57:54 -0700 (PDT)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -54,9 +54,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH 04/12] arm64: dts: meson: add audio playback to nexbox-a1
-Date:   Sat, 18 Jul 2020 06:57:31 +0000
-Message-Id: <20200718065739.7802-5-christianshewitt@gmail.com>
+Subject: [PATCH 05/12] arm64: dts: meson: add audio playback to odroid-c2
+Date:   Sat, 18 Jul 2020 06:57:32 +0000
+Message-Id: <20200718065739.7802-6-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200718065739.7802-1-christianshewitt@gmail.com>
 References: <20200718065739.7802-1-christianshewitt@gmail.com>
@@ -65,71 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support is limited to HDMI i2s and SPDIF (LPCM).
+Add initial audio support limited to HDMI i2s.
 
 Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 ---
- .../boot/dts/amlogic/meson-gxm-nexbox-a1.dts  | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
+ .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-index 83eca3af44ce..faca6fafc164 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-@@ -10,6 +10,7 @@
- /dts-v1/;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
+index 70fcfb7b0683..9d8c919c6e19 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
+@@ -9,6 +9,7 @@
  
- #include "meson-gxm.dtsi"
+ #include "meson-gxbb.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
 +#include <dt-bindings/sound/meson-aiu.h>
  
  / {
- 	compatible = "nexbox,a1", "amlogic,s912", "amlogic,meson-gxm";
-@@ -24,11 +25,37 @@
- 		stdout-path = "serial0:115200n8";
- 	};
- 
-+	spdif_dit: audio-codec-0 {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
-+		status = "okay";
-+		sound-name-prefix = "DIT";
-+	};
-+
- 	memory@0 {
- 		device_type = "memory";
- 		reg = <0x0 0x0 0x0 0x80000000>;
- 	};
- 
-+	vddio_ao18: regulator-vddio_ao18 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO18";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	hdmi_5v: regulator-hdmi-5v {
-+		compatible = "regulator-fixed";
-+
-+		regulator-name = "HDMI_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+
-+		gpio = <&gpio GPIOH_3 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
- 	vddio_boot: regulator-vddio-boot {
- 		compatible = "regulator-fixed";
- 		regulator-name = "VDDIO_BOOT";
-@@ -75,6 +102,59 @@
+ 	compatible = "hardkernel,odroid-c2", "amlogic,meson-gxbb";
+@@ -172,6 +173,45 @@
  			};
  		};
  	};
 +
 +	sound {
 +		compatible = "amlogic,gx-sound-card";
-+		model = "GXM-NEXBOX-A1";
++		model = "GXBB-ODROID-C2";
 +		assigned-clocks = <&clkc CLKID_MPLL0>,
 +				  <&clkc CLKID_MPLL1>,
 +				  <&clkc CLKID_MPLL2>;
@@ -144,10 +106,6 @@ index 83eca3af44ce..faca6fafc164 100644
 +		};
 +
 +		dai-link-1 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
-+		};
-+
-+		dai-link-2 {
 +			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
 +			dai-format = "i2s";
 +			mclk-fs = <256>;
@@ -157,15 +115,7 @@ index 83eca3af44ce..faca6fafc164 100644
 +			};
 +		};
 +
-+		dai-link-3 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
-+
-+			codec-0 {
-+				sound-dai = <&spdif_dit>;
-+			};
-+		};
-+
-+		dai-link-4 {
++		dai-link-2 {
 +			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
 +
 +			codec-0 {
@@ -177,8 +127,6 @@ index 83eca3af44ce..faca6fafc164 100644
 +
 +&aiu {
 +	status = "okay";
-+	pinctrl-0 = <&spdif_out_h_pins>;
-+	pinctrl-names = "default";
  };
  
  &cec_AO {
