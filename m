@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294F3224D26
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F79A224D28
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgGRQvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 12:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
+        id S1728145AbgGRQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 12:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgGRQv3 (ORCPT
+        with ESMTP id S1728121AbgGRQvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 12:51:29 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF02CC0619D2;
-        Sat, 18 Jul 2020 09:51:29 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l6so11557988qkc.6;
-        Sat, 18 Jul 2020 09:51:29 -0700 (PDT)
+        Sat, 18 Jul 2020 12:51:33 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DC1C0619D2;
+        Sat, 18 Jul 2020 09:51:33 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c139so11557758qkg.12;
+        Sat, 18 Jul 2020 09:51:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lIGof6uhpVZKmwpXjgyNaJcaBa8FLlzcFqyZDPjbpOc=;
-        b=FHaO/NxHUOFcOqsNLqkObDHrJ8NKtxIFBDdP7zoImnujezq0cfyHkpz4CvGR+iBlNu
-         tKr6ljahu9FVRmldf82wqWgjTTrVZk9C+rVGr2NG9e4zBsNLrzsaGGXDMvMfoF2dzLSK
-         tM3Dl/26+BRVZjJMg2iDIDcJaYoZ1aAFIKenaLkMo6s70zPo6ehETtiAH92tYo1Qh2Vb
-         5gVH8aUlLKgyhkyFRdyAVM/RSJ4ggLNTbHEDzTxtf/VoK8Bcsr/SgooMA/Qr9pr3Fu0C
-         ei0Y8yrA8iK3G/rM5HGkYqk5xNcuWI2yZaFNN4MLl8grVxvVb19hilzgbADagMztdknS
-         y0ug==
+        bh=hqR7nLeOqkrR3dVNUU/FhC4bdCZMzx2L+6QAslHtlsQ=;
+        b=DFjF8NYGokKEuca5gVne/BU6ev+jAXmZC8vkvF40trG8KBCQj2IuitF8i2dKhnc4el
+         8ebIO8K5+Io8YIMTM3QOH1Ty9pvqDyCR7PmZOjhx13RLl+SWZyxj7KXmryF79XcTpWqv
+         Y3RIuMtMJz9cGZsgQwIsXjVLGEsb0pjPk6z9mdhDPmN0waF9DrOOwQHxhgCpQSyPkTSN
+         j0oSSaStmJZRkPc1RXed+l1BUPjlFjO/6cHQbAXUZKTQOrT9R/MYY0STG1zX2qm3SAxT
+         cu+OxqW5DcrKd9EjXurKLKAeO4XG8U8PbTW3WHIBQ/qatGnNK77Xz+IOU6QLWzzY2xGj
+         SYhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lIGof6uhpVZKmwpXjgyNaJcaBa8FLlzcFqyZDPjbpOc=;
-        b=dSZq97GQCbapVGOn2j+wgJO3OSzUFIpclSAjlo2Twda+HJ8ggLRnjEbwT2x/HtnUSV
-         nGxkojOVTOCjCPOyTkFlrVuWGFxqi4VqsD/QBtposGp0LrDsRny6uEpe2pFckMozxkZ0
-         RZNEo7eprgEDZVQ9L2wIeCD6mNQpKkMoMNnyqpRfLZiQHSBXozYuGnNmvK795xPzYv2F
-         SgbTFvPFD830YmUeZ2rvK+iDhomtcAG6zFJglneHCEZi5Hkuvfj/8AQzjYksdDlrweHl
-         In4z2C/jEqAK6H52ND+p8vKpdQxDgGIsT/Rt8BGYgldmppRoe0uu+8XBf/vfn6rwLKX/
-         a4WA==
-X-Gm-Message-State: AOAM531tLFTv3KTD+geB0/eUkwZ1TTs89W45PjmTcFRfw6E8PPIjPSVO
-        RZXPPCqYCWD+gshqm4awSNM=
-X-Google-Smtp-Source: ABdhPJwAyyLQgydCgRLXXu7r8kcxHE/psJ0c6rdQ+7sbtq2ogG+Z9LOekUBi78aoG+v7Vt+7MIPiow==
-X-Received: by 2002:a05:620a:40c1:: with SMTP id g1mr14360069qko.391.1595091088912;
-        Sat, 18 Jul 2020 09:51:28 -0700 (PDT)
+        bh=hqR7nLeOqkrR3dVNUU/FhC4bdCZMzx2L+6QAslHtlsQ=;
+        b=nwKjwf7uGjdeQ1Y2gKteg3G5wYomxvFnZgP25ll3M++sLtX8bR06gHBLNEKPudMnAM
+         x1Czhgflvvam7pZrpxwjytL4wJm3e12jo2OPK0Pr11QN5I3C/Mxz7vNnELFGnYFzZNMA
+         epAc5WhZVsq048fKuYioR2+KV1iCCDe2VV+Q+IpkJTXFuhb71hAtPzZswYqowewd2zDJ
+         K3vwAzUHnxqH1ifYqzSjoERP5U6n/f9CXyU4X5i7LQrUhcEZ1ItaiqFlSmNLg4lqcNFL
+         nu3+NKLUGJlcDYzoZw7zv/YM7KFVYuoy5RkxSNdx7Q7nCNRyoWxdxuX50Fx4zXto/ioz
+         YTkA==
+X-Gm-Message-State: AOAM532LluyBY/dZKJdD5/k3TZwU9GqE4oJWeG5Uo5b+G/zPqUVD+zwq
+        Oeu5utVchAaHaqzrd4lgUZ16wk4IW7c=
+X-Google-Smtp-Source: ABdhPJx4OBz50AX++OUHQwarmICKgScFdPYbfGjT3BFeP61zcQz8/KYLgD5oBuXSokDMzyM+ceEzeQ==
+X-Received: by 2002:a37:9d82:: with SMTP id g124mr13978054qke.456.1595091092872;
+        Sat, 18 Jul 2020 09:51:32 -0700 (PDT)
 Received: from localhost.localdomain ([2804:18:602d:16d:d038:1a92:190d:65d2])
-        by smtp.gmail.com with ESMTPSA id q5sm15361801qtf.12.2020.07.18.09.51.25
+        by smtp.gmail.com with ESMTPSA id q5sm15361801qtf.12.2020.07.18.09.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2020 09:51:28 -0700 (PDT)
+        Sat, 18 Jul 2020 09:51:32 -0700 (PDT)
 From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 X-Google-Original-From: Daniel W. S. Almeida
-To:     corbet@lwn.net, pbonzini@redhat.com
+To:     corbet@lwn.net, jens.wiklander@linaro.org
 Cc:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: [PATCH] docs: kvm/api.rst: Fix indentation
-Date:   Sat, 18 Jul 2020 13:50:57 -0300
-Message-Id: <20200718165107.625847-3-dwlsalmeida@gmail.com>
+        op-tee@lists.trustedfirmware.org
+Subject: [PATCH] docs: staging/tee.rst: convert into definition list
+Date:   Sat, 18 Jul 2020 13:50:58 -0300
+Message-Id: <20200718165107.625847-4-dwlsalmeida@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200718165107.625847-1-dwlsalmeida@gmail.com>
 References: <20200718165107.625847-1-dwlsalmeida@gmail.com>
@@ -71,26 +71,47 @@ From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 
 Fix the following warnings:
 
-WARNING: Definition list ends without a blank line; unexpected unindent
+tee.rst:65: WARNING: Unexpected indentation.
+
+tee.rst:69: WARNING: Block quote ends without a
+blank line; unexpected unindent.
+
+By switching to the 'definition list' syntax.
 
 Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 ---
- Documentation/virt/kvm/api.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/staging/tee.rst | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index cdfd981553111..7f24af2760ccd 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4340,7 +4340,7 @@ Errors:
-   #define KVM_STATE_NESTED_VMX_SMM_GUEST_MODE	0x00000001
-   #define KVM_STATE_NESTED_VMX_SMM_VMXON	0x00000002
+diff --git a/Documentation/staging/tee.rst b/Documentation/staging/tee.rst
+index 62e8ba64d04f9..4d4b5f8896032 100644
+--- a/Documentation/staging/tee.rst
++++ b/Documentation/staging/tee.rst
+@@ -61,13 +61,17 @@ represented as a device identified via Universally Unique Identifier (UUID) and
+ client drivers register a table of supported device UUIDs.
  
--#define KVM_STATE_VMX_PREEMPTION_TIMER_DEADLINE 0x00000001
-+  #define KVM_STATE_VMX_PREEMPTION_TIMER_DEADLINE 0x00000001
+ TEE bus infrastructure registers following APIs:
+--  match(): iterates over the client driver UUID table to find a corresponding
+-   match for device UUID. If a match is found, then this particular device is
+-   probed via corresponding probe API registered by the client driver. This
+-   process happens whenever a device or a client driver is registered with TEE
+-   bus.
+--  uevent(): notifies user-space (udev) whenever a new device is registered on
+-   TEE bus for auto-loading of modularized client drivers.
++
++match():
++  iterates over the client driver UUID table to find a corresponding
++  match for device UUID. If a match is found, then this particular device is
++  probed via corresponding probe API registered by the client driver. This
++  process happens whenever a device or a client driver is registered with TEE
++  bus.
++
++uevent():
++  notifies user-space (udev) whenever a new device is registered on
++  TEE bus for auto-loading of modularized client drivers.
  
-   struct kvm_vmx_nested_state_hdr {
- 	__u64 vmxon_pa;
+ TEE bus device enumeration is specific to underlying TEE implementation, so it
+ is left open for TEE drivers to provide corresponding implementation.
 -- 
 2.27.0
 
