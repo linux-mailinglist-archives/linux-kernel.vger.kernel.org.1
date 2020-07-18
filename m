@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA0222495E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AB822495F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgGRGtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        id S1729051AbgGRGtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgGRGtW (ORCPT
+        with ESMTP id S1725983AbgGRGtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:49:22 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D90C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:49:21 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so1840946pjd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:49:21 -0700 (PDT)
+        Sat, 18 Jul 2020 02:49:33 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8C5C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:49:32 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id l6so6333970plt.7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 23:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MNrpaoZVGEfTNw615GzyXCuvGdypRr0hU2eDJlGIah0=;
-        b=QEmSHaqWmNgy+oLlqon+Bh+c9XN4y+cnjTOcb61rivJ5RGfpqVBpR0x/NdKa9zCWDc
-         iyjCPbD3O2/b2GHr8WQQM3gkYzV6g1z3TyMtWUqaqI5I/IIDqlTWDwEM9woKCLD8ZF08
-         9LYm6HXTVof4VOQHHVzcKCOw8E/cia1EB2hZ+VqOH+WQHZZ76dunuwmPNNNVCU5SzgOd
-         WkEYDI4irSj7PveDCTv49EIDtr0JdtwlJTv8eHUQ6JfJj4AZBzHoaDlRTo5tssO8D5Qo
-         nlw4U+9D0XecgS/UZOSvPUwuQOv4CBNeJ2j/+8QJElhL3v+v410obDm1UCziOLVONtcY
-         hWPw==
+        bh=djkMUkZcrMKQIRHk66rYevNXyQYjoTPBJqAUtrmCrFU=;
+        b=dIh/O46L2zX706Dx3QIBN+rKzeESYO1x7VngX1po8htPtVdxH442NiYGuk6jjISIrc
+         Q/aUsQ6IJoPBZeM6BpXbOabB1JK50joBX1zCZh08xP0sb2cv+TZoAno6oclbOYHXiWKB
+         YjorH7RSw6a1fVrtqZfHlhK1LHC1luPS/K7kcS0e8XPQVk5qSrseLWvmL/aOsAeUUDGh
+         3CXoGQ/3bgfZmWgY0dLnU7UWbVv8frQUcpjUT2zs1fa/ZRb9ID+nuDTAAp47P2rNUkNW
+         TSwe8VEdm1uSGC13oQ9DqnT1RBbSz8zw0yRp11bb2UfRXPuZfZoWEQcFwyjr0qWNeT/m
+         fdng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MNrpaoZVGEfTNw615GzyXCuvGdypRr0hU2eDJlGIah0=;
-        b=jk7b0l1xeHYgRq2xKHQrxBV7UDpbxdTV0LhIsIoy3n1rTAGuAyX92eDQyWq0Afo7Ma
-         dV6NnTxSKGkk1Z5+V0DuiIS0g4rFvz//v52u/Z5Zhn34GEm1T6JMAu3vuOY/0morME2T
-         2gvoJjSGS6laUojKkhgQZU1gqK/Aj96CRulvsxA4KADK52D5LJvwqchabt9Xomn48RP7
-         8u7qBcq09meLD+y+41vSBA/EFBTs2ZItEVlTi65Me3UuxLNCJkvC77rN80RjrqiRElZf
-         DxJe2mHcCvhGE8LsivSgrhlPIaq0MmS7DJMhnd2WnrE2cV8r2nNpLB9QzqDZiuzL1/oW
-         55iA==
-X-Gm-Message-State: AOAM531FGLEKzdpBpzkwnyuXFnauQOXDPFukLWJkat319TnpJs2rdWvd
-        cM/O/UgbotKLMaj2MM85okM=
-X-Google-Smtp-Source: ABdhPJzvYC3a0FMdfEK1542JnyZmVG8ToGNEA5tzQxvu0Cy1a0mxXcCYhmV6VHXljiLlfGkVxVQeqg==
-X-Received: by 2002:a17:90a:b009:: with SMTP id x9mr6256667pjq.136.1595054961526;
-        Fri, 17 Jul 2020 23:49:21 -0700 (PDT)
+        bh=djkMUkZcrMKQIRHk66rYevNXyQYjoTPBJqAUtrmCrFU=;
+        b=mZkfIsUttMWeAAlI+AxNxqWgYGvzlhVCM5rReCAon0luOpchfPmliCkCNQBZaJPSfr
+         oYvxkgB40hQxigpKLsAh3VkDcy6Is4JV/AYysrzRV9W/60oYmhXyi6Y5go/yh58aR+tH
+         ErwtTCP+Ef24RRlUZKVo3giZ4WO7E+ZJQ4Zf068tJYgK1avCyFk7aALnGwnFGVXFvDyw
+         FmUnWWjNnCJtmDXFFnm4HRTX4Qq7cfkB7h/S9qpgCwqnf9viO6/d9Ruo+rMs6opt7FZB
+         UUdocUd8FH8z9a/+PDPea5ujQfSUxM4i47yoq1BvacyWxboVv9I9GhP8jqYE08M08dXn
+         ezJQ==
+X-Gm-Message-State: AOAM533PM9AHOWSjwigza68XhdifdfFdH/zI9eb8iPdUltfjuUrruvt4
+        D3mL6FskqFQ5xsIg9EtNZvRSPfLwvEM=
+X-Google-Smtp-Source: ABdhPJxrw1HXm9x6U+mnlum3aSq4z3/cDwKZTetVpGFNyOPcbgj/cesamPBK+pN7oD4gTEl/zVy3cA==
+X-Received: by 2002:a17:902:be0e:: with SMTP id r14mr10267237pls.309.1595054972458;
+        Fri, 17 Jul 2020 23:49:32 -0700 (PDT)
 Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id q10sm10422781pfk.86.2020.07.17.23.49.16
+        by smtp.gmail.com with ESMTPSA id q10sm10422781pfk.86.2020.07.17.23.49.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 23:49:20 -0700 (PDT)
+        Fri, 17 Jul 2020 23:49:31 -0700 (PDT)
 From:   Changbin Du <changbin.du@gmail.com>
 To:     Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -56,9 +56,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v7 06/18] perf ftrace: add option '--inherit' to trace children processes
-Date:   Sat, 18 Jul 2020 14:48:14 +0800
-Message-Id: <20200718064826.9865-7-changbin.du@gmail.com>
+Subject: [PATCH v7 07/18] perf: util: add general function to parse sublevel options
+Date:   Sat, 18 Jul 2020 14:48:15 +0800
+Message-Id: <20200718064826.9865-8-changbin.du@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200718064826.9865-1-changbin.du@gmail.com>
 References: <20200718064826.9865-1-changbin.du@gmail.com>
@@ -69,119 +69,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an option '--inherit' to allow us trace children
-processes spawned by our target.
+This factors out a general function perf_parse_sublevel_options() to parse
+sublevel options. The 'sublevel' options is something like the '--debug'
+options which allow more sublevel options.
 
 Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
 ---
-v2: option name '--trace-children' -> '--inherit'.
+v2: add util/parse-sublevel-options.c
 ---
- tools/perf/Documentation/perf-ftrace.txt |  3 ++
- tools/perf/builtin-ftrace.c              | 38 ++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ tools/perf/util/Build                    |  1 +
+ tools/perf/util/debug.c                  | 61 ++++++---------------
+ tools/perf/util/parse-sublevel-options.c | 70 ++++++++++++++++++++++++
+ tools/perf/util/parse-sublevel-options.h | 11 ++++
+ 4 files changed, 99 insertions(+), 44 deletions(-)
+ create mode 100644 tools/perf/util/parse-sublevel-options.c
+ create mode 100644 tools/perf/util/parse-sublevel-options.h
 
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index dcac0d75a0e5..3eee073a7042 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -57,6 +57,9 @@ OPTIONS
- 	Set the size of per-cpu tracing buffer, <size> is expected to
- 	be a number with appended unit character - B/K/M/G.
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 8d18380ecd10..e86607ada0b5 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -117,6 +117,7 @@ endif
+ perf-y += parse-branch-options.o
+ perf-y += dump-insn.o
+ perf-y += parse-regs-options.o
++perf-y += parse-sublevel-options.o
+ perf-y += term.o
+ perf-y += help-unknown-cmd.o
+ perf-y += mem-events.o
+diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
+index adb656745ecc..5cda5565777a 100644
+--- a/tools/perf/util/debug.c
++++ b/tools/perf/util/debug.c
+@@ -20,6 +20,7 @@
+ #include "target.h"
+ #include "ui/helpline.h"
+ #include "ui/ui.h"
++#include "util/parse-sublevel-options.h"
  
-+--inherit::
-+	Trace children processes spawned by our target.
-+
- -T::
- --trace-funcs=::
- 	Only trace functions given by the argument.  Multiple functions
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 6ce626a2d0d1..765ebd56e05f 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -39,6 +39,7 @@ struct perf_ftrace {
- 	struct list_head	nograph_funcs;
- 	int			graph_depth;
- 	unsigned long		percpu_buffer_size;
-+	bool			inherit;
+ #include <linux/ctype.h>
+ 
+@@ -173,65 +174,37 @@ void trace_event(union perf_event *event)
+ 		     trace_event_printer, event);
+ }
+ 
+-static struct debug_variable {
+-	const char *name;
+-	int *ptr;
+-} debug_variables[] = {
+-	{ .name = "verbose",		.ptr = &verbose },
+-	{ .name = "ordered-events",	.ptr = &debug_ordered_events},
+-	{ .name = "stderr",		.ptr = &redirect_to_stderr},
+-	{ .name = "data-convert",	.ptr = &debug_data_convert },
+-	{ .name = "perf-event-open",	.ptr = &debug_peo_args },
++static struct sublevel_option debug_opts[] = {
++	{ .name = "verbose",		.value_ptr = &verbose },
++	{ .name = "ordered-events",	.value_ptr = &debug_ordered_events},
++	{ .name = "stderr",		.value_ptr = &redirect_to_stderr},
++	{ .name = "data-convert",	.value_ptr = &debug_data_convert },
++	{ .name = "perf-event-open",	.value_ptr = &debug_peo_args },
+ 	{ .name = NULL, }
  };
  
- struct filter_entry {
-@@ -180,9 +181,27 @@ static int write_tracing_file_int(const char *name, int value)
- 	return 0;
- }
- 
-+static int write_tracing_option_file(const char *name, const char *val)
-+{
-+	char *file;
-+	int ret;
-+
-+	if (asprintf(&file, "options/%s", name) < 0)
-+		return -1;
-+
-+	ret = __write_tracing_file(file, val, false);
-+	free(file);
-+	return ret;
-+}
-+
- static int reset_tracing_cpu(void);
- static void reset_tracing_filters(void);
- 
-+static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
-+{
-+	write_tracing_option_file("function-fork", "0");
-+}
-+
- static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
+ int perf_debug_option(const char *str)
  {
- 	if (write_tracing_file("tracing_on", "0") < 0)
-@@ -201,6 +220,7 @@ static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
- 		return -1;
+-	struct debug_variable *var = &debug_variables[0];
+-	char *vstr, *s = strdup(str);
+-	int v = 1;
+-
+-	vstr = strchr(s, '=');
+-	if (vstr)
+-		*vstr++ = 0;
+-
+-	while (var->name) {
+-		if (!strcmp(s, var->name))
+-			break;
+-		var++;
+-	}
+-
+-	if (!var->name) {
+-		pr_err("Unknown debug variable name '%s'\n", s);
+-		free(s);
+-		return -1;
+-	}
++	int ret;
  
- 	reset_tracing_filters();
-+	reset_tracing_options(ftrace);
+-	if (vstr) {
+-		v = atoi(vstr);
+-		/*
+-		 * Allow only values in range (0, 10),
+-		 * otherwise set 0.
+-		 */
+-		v = (v < 0) || (v > 10) ? 0 : v;
+-	}
++	ret = perf_parse_sublevel_options(str, debug_opts);
++	if (ret)
++		return ret;
+ 
+-	if (quiet)
+-		v = -1;
++	/* Allow only verbose value in range (0, 10), otherwise set 0. */
++	verbose = (verbose < 0) || (verbose > 10) ? 0 : verbose;
+ 
+-	*var->ptr = v;
+-	free(s);
  	return 0;
  }
  
-@@ -339,6 +359,17 @@ static int set_tracing_percpu_buffer_size(struct perf_ftrace *ftrace)
- 	return 0;
- }
+ int perf_quiet_option(void)
+ {
+-	struct debug_variable *var = &debug_variables[0];
++	struct sublevel_option *opt = &debug_opts[0];
  
-+static int set_tracing_trace_inherit(struct perf_ftrace *ftrace)
+ 	/* disable all debug messages */
+-	while (var->name) {
+-		*var->ptr = -1;
+-		var++;
++	while (opt->name) {
++		*opt->value_ptr = -1;
++		opt++;
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/perf/util/parse-sublevel-options.c b/tools/perf/util/parse-sublevel-options.c
+new file mode 100644
+index 000000000000..a841d17ffd57
+--- /dev/null
++++ b/tools/perf/util/parse-sublevel-options.c
+@@ -0,0 +1,70 @@
++#include <stdlib.h>
++#include <stdint.h>
++#include <string.h>
++#include <stdio.h>
++
++#include "util/debug.h"
++#include "util/parse-sublevel-options.h"
++
++static int parse_one_sublevel_option(const char *str,
++				     struct sublevel_option *opts)
 +{
-+	if (!ftrace->inherit)
-+		return 0;
++	struct sublevel_option *opt = opts;
++	char *vstr, *s = strdup(str);
++	int v = 1;
 +
-+	if (write_tracing_option_file("function-fork", "1") < 0)
++	if (!s) {
++		pr_err("no memory\n");
 +		return -1;
++	}
 +
++	vstr = strchr(s, '=');
++	if (vstr)
++		*vstr++ = 0;
++
++	while (opt->name) {
++		if (!strcmp(s, opt->name))
++			break;
++		opt++;
++	}
++
++	if (!opt->name) {
++		pr_err("Unknown option name '%s'\n", s);
++		free(s);
++		return -1;
++	}
++
++	if (vstr)
++		v = atoi(vstr);
++
++	*opt->value_ptr = v;
++	free(s);
 +	return 0;
 +}
 +
- static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- {
- 	char *trace_file;
-@@ -408,6 +439,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- 		goto out_reset;
- 	}
- 
-+	if (set_tracing_trace_inherit(ftrace) < 0) {
-+		pr_err("failed to set tracing option function-fork\n");
-+		goto out_reset;
++/* parse options like --foo a=<n>,b,c... */
++int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts)
++{
++	char *s = strdup(str);
++	char *p = NULL;
++	int ret;
++
++	if (!s) {
++		pr_err("no memory\n");
++		return -1;
 +	}
 +
- 	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
- 		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
- 		goto out_reset;
-@@ -600,6 +636,8 @@ int cmd_ftrace(int argc, const char **argv)
- 		    "Max depth for function graph tracer"),
- 	OPT_CALLBACK('m', "buffer-size", &ftrace.percpu_buffer_size, "size",
- 		     "size of per cpu buffer", parse_buffer_size),
-+	OPT_BOOLEAN(0, "inherit", &ftrace.inherit,
-+		    "trace children processes"),
- 	OPT_END()
- 	};
- 
++	p = strtok(s, ",");
++	while (p) {
++		ret = parse_one_sublevel_option(p, opts);
++		if (ret) {
++			free(s);
++			return ret;
++		}
++
++		p = strtok(NULL, ",");
++	}
++
++	free(s);
++	return 0;
++}
+diff --git a/tools/perf/util/parse-sublevel-options.h b/tools/perf/util/parse-sublevel-options.h
+new file mode 100644
+index 000000000000..9b9efcc2aaad
+--- /dev/null
++++ b/tools/perf/util/parse-sublevel-options.h
+@@ -0,0 +1,11 @@
++#ifndef _PERF_PARSE_SUBLEVEL_OPTIONS_H
++#define _PERF_PARSE_SUBLEVEL_OPTIONS_H
++
++struct sublevel_option {
++	const char *name;
++	int *value_ptr;
++};
++
++int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts);
++
++#endif
+\ No newline at end of file
 -- 
 2.25.1
 
