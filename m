@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B15F224DBD
+	by mail.lfdr.de (Postfix) with ESMTP id 97DC2224DBE
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 22:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgGRUDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 16:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
+        id S1728092AbgGRUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 16:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgGRUDq (ORCPT
+        with ESMTP id S1726798AbgGRUDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 16:03:46 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0829C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 13:03:46 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id 88so4010800wrh.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 13:03:46 -0700 (PDT)
+        Sat, 18 Jul 2020 16:03:52 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEF5C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 13:03:52 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 22so18781512wmg.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 13:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=e9LVKzcKKE6KucRCr2Robwz6yGdDbDVXBxug85I0dco=;
-        b=JuQsA+QXDag3MJEgFG3rsFkOpM4Bhb/3DNCULylpWsANJwn4NA6dd3s147xo7s3ey4
-         CFhsKGGd5G2FRuoiud12C7dQrOZ72rJ6oovlAyT9etUiHZ0OWXOmaueNe9+4npveWsrT
-         moweQEz4L/kRQlpYWt6FNBL5LkEeEs6AbuiyGpUYVnm6+MsVxv60FIrQjZ2YhdEpi/eQ
-         OUrBITlGULUJPme1h5xXXxpilsCgsnJGyaw0zwjmGMT2Bfdrsrk/zGuVNLXGuh+4kl3H
-         El3o8cv9EgC9eaE//1JJDwfdQt66/Q0L7cJRi5d3RvMIKlV1Qds+r253cIdnHBLLZUQP
-         dkYg==
+        bh=WoXFd0SV1/eqOnBq17jLxZ1E6FRJYzbrzrT0wsL/bTc=;
+        b=tQ66ff1lLYZag32k5qkE2SZoAAjv8UkJZhytRTvdENmozmF4WUkJST6u9iOJRFzB5l
+         hKTV/0yMr2gZih9mnWD3dr7Q/LVzCjNL7XbDrDaHRfsorJ8ZMCTamOuJZpKdAtYOEfSA
+         prMlYUX1w7bm+OUaFr6Fl1jIl723J6oaLAqNWeLps9co51ppFzFX8Tsd9GiXOGf8h2CV
+         Yg2hEImkW+NAqLMjXqBt1sqW06ttBcizxlYPWwMCZdQfrNccniGxAJ9UPlbONXpkH/bo
+         HQSh2SZxsIPk7my30BMf41vfoHdZZA+DBNd1klWLCXI+8rq1Qd/BXmW2MeYuvkv0qfCM
+         htxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=e9LVKzcKKE6KucRCr2Robwz6yGdDbDVXBxug85I0dco=;
-        b=jEUIDoZ9yaNRbjGOKFY4K43SC2vl0iygXg4Zk6gBTcv6F73AO9lsTEskHugEe1oaPg
-         LAmIQDYGfGvYS7z0veIuwdmyUUEEPGQIapCO0y/BCjoIgU1AqhpJJn36T2uiTeWmLEXA
-         Hw9NOT06tiBrMTXFAQlgYBpGyML8UEY4UridrwygCpncYbK+loR57H/QZr021dOtul8N
-         TCjVR7GH63uEOKZcICnLGyjJs0hq7DjmyWcc19aDkIwgDtWgw3osmgZ0erQjREOysdmc
-         Z0o/y8Xzo0yxIoezOwVV/fGLhV1JhvlJykMhlNuF+GHzHzY/nTaBDfMm5Z0UqYab6kXG
-         5nsg==
-X-Gm-Message-State: AOAM533MOLvDpGwNN3VgoRa27O/kLr0rr/RnaYkm5wfgVDo0k+fpUT/8
-        71WTo8M017pyDbrlO5QxzA==
-X-Google-Smtp-Source: ABdhPJy3upfHRf43wWELUIEzg31WQ4xhbjXcEWGM7mHkoHhDeFXRX0C4Y41yOPT/ghAcnDRL/vL+UQ==
-X-Received: by 2002:adf:ee05:: with SMTP id y5mr16157748wrn.185.1595102625416;
-        Sat, 18 Jul 2020 13:03:45 -0700 (PDT)
+        bh=WoXFd0SV1/eqOnBq17jLxZ1E6FRJYzbrzrT0wsL/bTc=;
+        b=tSc8MtHe8ukEo/YOVv+IcmfQDddWC1HPMDzwR3I8GZoSytiCJCOpjg5mOR9HyXQUDH
+         fIGmRIsl23lAqUBvtGPvvZFxksgSjeGjFA0x4Az7u/lVGVLJ5EM6xpZvlviRLKv+qf/t
+         O5/ciukIpQwqeNOEWPpKP7Briiqr3ag4ydkBG99OP9IdOLbhNwXJYz2jgDX/Q6Ijll/K
+         ruqvoN/LDe/LqMhYtaeWayYbqV7Jw7pPRv4bXpGGHikTt7Lde3F9gHNTBLwYnwvlDIRy
+         W1VwEpi1oOCeYN2qTvzRQX9axtbshedjNCbV9eDL741D9/yllOo4Zcao9PPXkA/yvrgV
+         7tgA==
+X-Gm-Message-State: AOAM533RyKImC48FDgD1HpnvcUFMQHszCLBH7bmQITcKfcIaPsUmFs+t
+        FPkWNNGfWQilVmvhDPxadA==
+X-Google-Smtp-Source: ABdhPJxsgMlbapRvQL6kbwNdmqeoS3ATi3VifOxmbtRfh2u4yxlMDxYRuBI3wpfEHIRgQ6BxT3goSw==
+X-Received: by 2002:a7b:c7d2:: with SMTP id z18mr15109002wmk.149.1595102631460;
+        Sat, 18 Jul 2020 13:03:51 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:810b:f40:e00:922b:34ff:fe38:6455])
-        by smtp.googlemail.com with ESMTPSA id l15sm21073826wro.33.2020.07.18.13.03.44
+        by smtp.googlemail.com with ESMTPSA id l15sm21073826wro.33.2020.07.18.13.03.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2020 13:03:44 -0700 (PDT)
+        Sat, 18 Jul 2020 13:03:51 -0700 (PDT)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Sandy Huang <hjc@rock-chips.com>,
         =?UTF-8?q?Heiko=20St=C3=BCbner=20?= <heiko@sntech.de>
@@ -55,9 +55,9 @@ Cc:     Alex Bee <knaerzche@gmail.com>, David Airlie <airlied@linux.ie>,
         dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] drm: rockchip: add scaling for RK3036 win1
-Date:   Sat, 18 Jul 2020 22:03:19 +0200
-Message-Id: <20200718200323.3559-2-knaerzche@gmail.com>
+Subject: [PATCH 2/5] drm: rockchip: add missing registers for RK3188
+Date:   Sat, 18 Jul 2020 22:03:20 +0200
+Message-Id: <20200718200323.3559-3-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200718200323.3559-1-knaerzche@gmail.com>
 References: <20200718200323.3559-1-knaerzche@gmail.com>
@@ -66,49 +66,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds register definitions needed to make scaling work on
-RK3036's win1.
+This patch adds dither_up, dsp_lut_en, data_blank and dsp_data_swap
+registers to enable their respective functionality for RK3188's VOP.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index 80053d91a301..b046910129fb 100644
+index b046910129fb..971a6bda7458 100644
 --- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
 +++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -77,15 +77,20 @@ static const uint64_t format_modifiers_win_lite[] = {
- 	DRM_FORMAT_MOD_INVALID,
+@@ -512,6 +512,10 @@ static const struct vop_common rk3188_common = {
+ 	.dither_down_en = VOP_REG(RK3188_DSP_CTRL0, 0x1, 11),
+ 	.dither_down_mode = VOP_REG(RK3188_DSP_CTRL0, 0x1, 10),
+ 	.dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x3, 24),
++	.dither_up = VOP_REG(RK3188_DSP_CTRL0, 0x1, 9),
++	.dsp_lut_en = VOP_REG(RK3188_SYS_CTRL, 0x1, 28),
++	.data_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 25),
++	.dsp_data_swap = VOP_REG(RK3188_DSP_CTRL1, 0x1f, 26),
  };
  
--static const struct vop_scl_regs rk3036_win_scl = {
-+static const struct vop_scl_regs rk3036_win0_scl = {
- 	.scale_yrgb_x = VOP_REG(RK3036_WIN0_SCL_FACTOR_YRGB, 0xffff, 0x0),
- 	.scale_yrgb_y = VOP_REG(RK3036_WIN0_SCL_FACTOR_YRGB, 0xffff, 16),
- 	.scale_cbcr_x = VOP_REG(RK3036_WIN0_SCL_FACTOR_CBR, 0xffff, 0x0),
- 	.scale_cbcr_y = VOP_REG(RK3036_WIN0_SCL_FACTOR_CBR, 0xffff, 16),
- };
- 
-+static const struct vop_scl_regs rk3036_win1_scl = {
-+	.scale_yrgb_x = VOP_REG(RK3036_WIN1_SCL_FACTOR_YRGB, 0xffff, 0x0),
-+	.scale_yrgb_y = VOP_REG(RK3036_WIN1_SCL_FACTOR_YRGB, 0xffff, 16),
-+};
-+
- static const struct vop_win_phy rk3036_win0_data = {
--	.scl = &rk3036_win_scl,
-+	.scl = &rk3036_win0_scl,
- 	.data_formats = formats_win_full,
- 	.nformats = ARRAY_SIZE(formats_win_full),
- 	.format_modifiers = format_modifiers_win_full,
-@@ -102,6 +107,7 @@ static const struct vop_win_phy rk3036_win0_data = {
- };
- 
- static const struct vop_win_phy rk3036_win1_data = {
-+	.scl = &rk3036_win1_scl,
- 	.data_formats = formats_win_lite,
- 	.nformats = ARRAY_SIZE(formats_win_lite),
- 	.format_modifiers = format_modifiers_win_lite,
+ static const struct vop_win_data rk3188_vop_win_data[] = {
 -- 
 2.17.1
 
