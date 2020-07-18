@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A6F224A82
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 12:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1762224A8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 12:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgGRKCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 06:02:51 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:59602 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgGRKCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 06:02:50 -0400
+        id S1726647AbgGRKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 06:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgGRKIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 06:08:19 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D742C0619D2;
+        Sat, 18 Jul 2020 03:08:19 -0700 (PDT)
 Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 7543CBC053;
-        Sat, 18 Jul 2020 10:02:46 +0000 (UTC)
+        by smtp.al2klimov.de (Postfix) with ESMTPA id EFE58BC07E;
+        Sat, 18 Jul 2020 10:08:14 +0000 (UTC)
 From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     stas.yakovlev@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        corbet@lwn.net, kvalo@codeaurora.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     jacmet@sunsite.dk, gregkh@linuxfoundation.org, jslaby@suse.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] ipw2x00: Replace HTTP links with HTTPS ones
-Date:   Sat, 18 Jul 2020 12:02:40 +0200
-Message-Id: <20200718100240.98593-1-grandmaster@al2klimov.de>
+Subject: [PATCH] tty: serial: uartlite: Replace HTTP links with HTTPS ones
+Date:   Sat, 18 Jul 2020 12:08:07 +0200
+Message-Id: <20200718100807.983-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Spam-Level: ******
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
 Authentication-Results: smtp.al2klimov.de;
         auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -66,45 +67,22 @@ Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
  If you apply the patch, please let me know.
 
 
- Documentation/networking/device_drivers/intel/ipw2100.rst | 2 +-
- drivers/net/wireless/intel/ipw2x00/Kconfig                | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/serial/uartlite.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/device_drivers/intel/ipw2100.rst b/Documentation/networking/device_drivers/intel/ipw2100.rst
-index d54ad522f937..883e96355799 100644
---- a/Documentation/networking/device_drivers/intel/ipw2100.rst
-+++ b/Documentation/networking/device_drivers/intel/ipw2100.rst
-@@ -78,7 +78,7 @@ such, if you are interested in deploying or shipping a driver as part of
- solution intended to be used for purposes other than development, please
- obtain a tested driver from Intel Customer Support at:
+diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
+index 7dbd0c471d92..09379db613d8 100644
+--- a/drivers/tty/serial/uartlite.c
++++ b/drivers/tty/serial/uartlite.c
+@@ -32,7 +32,7 @@
+  * Register definitions
+  *
+  * For register details see datasheet:
+- * http://www.xilinx.com/support/documentation/ip_documentation/opb_uartlite.pdf
++ * https://www.xilinx.com/support/documentation/ip_documentation/opb_uartlite.pdf
+  */
  
--http://www.intel.com/support/wireless/sb/CS-006408.htm
-+https://www.intel.com/support/wireless/sb/CS-006408.htm
- 
- 1. Introduction
- ===============
-diff --git a/drivers/net/wireless/intel/ipw2x00/Kconfig b/drivers/net/wireless/intel/ipw2x00/Kconfig
-index d00386915a9d..f3e09b630d8b 100644
---- a/drivers/net/wireless/intel/ipw2x00/Kconfig
-+++ b/drivers/net/wireless/intel/ipw2x00/Kconfig
-@@ -28,7 +28,7 @@ config IPW2100
- 	  You will also very likely need the Wireless Tools in order to
- 	  configure your card:
- 
--	  <http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html>.
-+	  <https://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html>.
- 
- 	  It is recommended that you compile this driver as a module (M)
- 	  rather than built-in (Y). This driver requires firmware at device
-@@ -90,7 +90,7 @@ config IPW2200
- 	  You will also very likely need the Wireless Tools in order to
- 	  configure your card:
- 
--	  <http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html>.
-+	  <https://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html>.
- 
- 	  It is recommended that you compile this driver as a module (M)
- 	  rather than built-in (Y). This driver requires firmware at device
+ #define ULITE_RX		0x00
 -- 
 2.27.0
 
