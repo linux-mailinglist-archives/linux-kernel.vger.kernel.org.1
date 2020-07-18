@@ -2,80 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AEC224952
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55B1224955
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgGRGpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:45:54 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:23447 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725983AbgGRGpy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:45:54 -0400
-X-IronPort-AV: E=Sophos;i="5.75,366,1589234400"; 
-   d="scan'208";a="460283661"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Jul 2020 08:45:52 +0200
-Date:   Sat, 18 Jul 2020 08:45:51 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [v2 1/4] coccinelle: api: extend memdup_user transformation with
- GFP_USER
-In-Reply-To: <0b9f2c58-e124-22d2-d91d-62a6e831c880@web.de>
-Message-ID: <alpine.DEB.2.22.394.2007180841520.2538@hadrien>
-References: <0b9f2c58-e124-22d2-d91d-62a6e831c880@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1728506AbgGRGq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:46:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725983AbgGRGq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 02:46:26 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B20D2074B;
+        Sat, 18 Jul 2020 06:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595054786;
+        bh=cQVAtXCp05Y5pu1NLBnjCDHoEK5RO8u7KrRXc0+x69c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mf59OVyrh5LrVxT/XtprL0bF7QFKAHLsXz9/fCDE8J4du6gB/aXFEklFa6DZF5ecV
+         8rFLE06B20SmX68R5WXeY9fNJ5cHq396D5HoGnNLHVCG6spSqz3CzbTzc8SxjdmzyU
+         VHxNXHH6P0pl31Uy2TgfQwjEBeL95hpB4yiudHEc=
+Date:   Sat, 18 Jul 2020 08:46:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Eads, Gage" <gage.eads@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Topel, Bjorn" <bjorn.topel@intel.com>
+Subject: Re: [PATCH 01/20] dlb2: add skeleton for DLB 2.0 driver
+Message-ID: <20200718064623.GA245355@kroah.com>
+References: <20200712134331.8169-1-gage.eads@intel.com>
+ <20200712134331.8169-2-gage.eads@intel.com>
+ <20200712155631.GB186665@kroah.com>
+ <SN6PR11MB25742456A7DA3C99F88FA77FF67C0@SN6PR11MB2574.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR11MB25742456A7DA3C99F88FA77FF67C0@SN6PR11MB2574.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 17, 2020 at 06:19:14PM +0000, Eads, Gage wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Sunday, July 12, 2020 10:57 AM
+> > To: Eads, Gage <gage.eads@intel.com>
+> > Cc: linux-kernel@vger.kernel.org; arnd@arndb.de; Karlsson, Magnus
+> > <magnus.karlsson@intel.com>; Topel, Bjorn <bjorn.topel@intel.com>
+> > Subject: Re: [PATCH 01/20] dlb2: add skeleton for DLB 2.0 driver
+> > 
+> > On Sun, Jul 12, 2020 at 08:43:12AM -0500, Gage Eads wrote:
+> > > +config INTEL_DLB2
+> > > +       tristate "Intel(R) Dynamic Load Balancer 2.0 Driver"
+> > > +       depends on 64BIT && PCI && X86
+> > 
+> > Why just that platform?  What about CONFIG_TEST for everything else?
+> 
+> This device will only appear on an x86 platform. CONFIG_COMPILE_TEST won't work, since the driver uses the x86-only function iosubmit_cmds512().
 
+Please wrap your lines correctly...
 
-On Sat, 18 Jul 2020, Markus Elfring wrote:
+Anyway, there is no config option for that function that you can trigger
+off of?
 
-> > Applied.
->
-> Do you care for patch review concerns according to this SmPL script adjustment?
->
-> * https://lore.kernel.org/cocci/5c0dae88-e172-3ba6-f86c-d1a6238bb4c4@web.de/
->   https://lkml.org/lkml/2020/6/9/568
+> > > +       help
+> > > +         This driver supports the Intel(R) Dynamic Load Balancer 2.0 (DLB 2.0)
+> > > +         device.
+> > 
+> > Are you sure you need the (R) in Kconfig texts everywhere?
+> 
+> The second is probably overkill. Just the first one is required.
 
-This one it complete nonsense.
+Really?  I would just drop it.  Unless you get a signed-off-by from a
+lawyer saying it is required :)
 
->
-> * https://lore.kernel.org/cocci/c3464cad-e567-9ef5-b4e3-a01e3b11120b@web.de/
->   https://lkml.org/lkml/2020/6/8/637
+> > And a bit more info here would be nice, as no one knows if they have this or
+> > not, right?
+> 
+> Intel hasn't yet announced more information that I can include here. For now, "lspci -d 8086:2710" will tell the user if this device is present.
 
-This on is indeed a problem.  I think it was not detected in testing,
-because in the current kernel the rule never applies.  But Denis, in
+That's fine, but we can't take a 1 sentance help text, that means
+nothing.
 
--  to = \(kmalloc\|kzalloc\)
-                (size,\(GFP_KERNEL\|GFP_USER\|
-                      \(GFP_KERNEL\|GFP_USER\)|__GFP_NOWARN\));
+> > > --- /dev/null
+> > > +++ b/drivers/misc/dlb2/dlb2_hw_types.h
+> > > @@ -0,0 +1,29 @@
+> > > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+> > 
+> > Why dual licensed?  I thought that Intel told me they were not going to do
+> > that anymore for any kernel code going forward as it was just such a pain and
+> > never actually helped anything.  Has that changed?
+> > 
+> 
+> The driver is mostly GPLv2-only, but a subset constitutes a "hardware access library" that is almost completely OS-independent. "almost" because it has calls to non-GPL symbols like kmalloc() and kfree(). This dual-licensed portion can be ported to other environments that need the more permissive BSD license.
 
-you do indeed need to put - in front of the second and third lines as
-well.
+Then put that "OS independant" part as a separate file, with a separate
+license.  You all know how to do this properly, don't mix this stuff up.
 
-Markus, if you would limit your comments to suggesting SmPL code that is
-actually correct, ie that you have tested, and 2) stop suggesting stupid
-things over and over like that putting all of the virtual declarations on
-the same line would save space (it does, but who cares), then I would take
-your suggestions more seriously.
+But even then, I would drop such a library as that's not going to make a
+good Linux driver, we do not like, or need, such things in the kernel.
 
-julia
+> For the broader policy question, Intel's open source team will get back to you on this.
 
-> Regards,
-> Markus
->
+Wonderful, when will that happen?
+
+thanks,
+
+greg k-h
