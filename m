@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E727224C41
+	by mail.lfdr.de (Postfix) with ESMTP id A7DAD224C42
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 17:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgGRPII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728010AbgGRPII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 18 Jul 2020 11:08:08 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:39218 "EHLO gloria.sntech.de"
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgGRPIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726175AbgGRPIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Jul 2020 11:08:07 -0400
-Received: from x2f7f83e.dyn.telefonica.de ([2.247.248.62] helo=phil.sntech)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jwoRY-0007el-C9; Sat, 18 Jul 2020 17:08:04 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/7] ARM: dts: rockchip: Radxa Rock Pi N8 initial support
-Date:   Sat, 18 Jul 2020 17:08:02 +0200
-Message-Id: <159508486383.16292.5716289936157540708.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200715083418.112003-1-jagan@amarulasolutions.com>
-References: <20200715083418.112003-1-jagan@amarulasolutions.com>
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A98412067D;
+        Sat, 18 Jul 2020 15:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595084887;
+        bh=EgGB+ugeIQQwLzSLmGioU4i2h2QENrkT5BGNqVLjjow=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WMUuIEteR/3UF9zmCrn26mhUOitjFBpZCNZF3mfhSa6GTokRz6JAQL+DMUg2LQkdL
+         qlZJpUH3GrIYePq15SQBSQEQwqUWBXLPFAerkgyjiC+BzdXu9wXBwaNvehYbIUfyfK
+         9WRfTlYamjjns9gfEP8Nqb9hfxQirR7OBTPyddHE=
+Date:   Sat, 18 Jul 2020 16:08:02 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH 22/30] iio: dac: ad5755: Fix kerneldoc attribute
+ formatting for 'lock'
+Message-ID: <20200718160802.55ca2232@archlinux>
+In-Reply-To: <20200716135928.1456727-23-lee.jones@linaro.org>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-23-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020 14:04:11 +0530, Jagan Teki wrote:
-> Rock Pi N8 is a Rockchip RK3288 based SBC, which has
-> - VMARC RK3288 SOM (as per SMARC standard) from Vamrs.
-> - Compatible carrier board from Radxa.
+On Thu, 16 Jul 2020 14:59:20 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> Kerneldoc expects attributes/parameters to be in '@*.: ' format.
 > 
-> VMARC RK3288 SOM need to mount on top of dalang carrier
-> board for making Rock PI N8 SBC.
+> Fixes the following W=1 kernel build warning(s):
 > 
-> [...]
+>  drivers/iio/dac/ad5755.c:105: warning: Function parameter or member 'lock' not described in 'ad5755_state'
+> 
+> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Applied. Thanks,
 
-Applied, thanks!
+J
 
-[1/7] ARM: dts: rockchip: dalang-carrier: Move i2c nodes into SOM
-      commit: c2f343510d99ab53b46bdfeb184cb48f622e6943
-[2/7] arm64: dts: rk3399pro: vmarc-som: Fix sorting nodes, properties
-      commit: 3047b384a74090f09b994298eb5c40986275233a
-[3/7] arm64: dts: rk3399pro: vmarc-som: Move supply regulators into Carrier
-      commit: 4a3ca113c0f3a2ce33e51fc6a48a121b2d707d4f
-[4/7] arm64: dts: rk3399pro: vmarc-som: Move common properties into Carrier
-      commit: a66bd94d0eac017e4846658750acaca2937555bb
-[5/7] dt-bindings: arm: rockchip: Add Rock Pi N8 binding
-      commit: 09ee4794270f0010c6397163f033f883f5bff1aa
-[6/7] ARM: dts: rockchip: Add VMARC RK3288 SOM initial support
-      commit: b8c564d4fa76b1314a10585eea8e97b8c621a77a
-[7/7] ARM: dts: rockchip: Add Radxa Rock Pi N8 initial support
-      commit: afd9eb88041409e0f311730f23e8fe6921e74cb8
+> ---
+>  drivers/iio/dac/ad5755.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/dac/ad5755.c b/drivers/iio/dac/ad5755.c
+> index 7723bd313fc6e..bee4ed0ce91a8 100644
+> --- a/drivers/iio/dac/ad5755.c
+> +++ b/drivers/iio/dac/ad5755.c
+> @@ -82,7 +82,7 @@ struct ad5755_chip_info {
+>   * @pwr_down:	bitmask which contains  hether a channel is powered down or not
+>   * @ctrl:	software shadow of the channel ctrl registers
+>   * @channels:	iio channel spec for the device
+> - * @lock	lock to protect the data buffer during SPI ops
+> + * @lock:	lock to protect the data buffer during SPI ops
+>   * @data:	spi transfer buffers
+>   */
+>  struct ad5755_state {
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
