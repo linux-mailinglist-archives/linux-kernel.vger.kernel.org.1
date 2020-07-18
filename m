@@ -2,63 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D404C2249E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 10:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647AA2249EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 10:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgGRIiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 04:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
+        id S1726670AbgGRIkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 04:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726221AbgGRIiT (ORCPT
+        with ESMTP id S1726232AbgGRIkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 04:38:19 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD735C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 01:38:18 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id u6so3579941uau.8
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 01:38:18 -0700 (PDT)
+        Sat, 18 Jul 2020 04:40:07 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC1DC0619D3
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 01:40:06 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b25so15254624ljp.6
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 01:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=BaShHMhO9DaW15j5FlEyMpmomNmJk0Vbafk9toQgCzjsXhvcoDqI0oCJLmmCP0gbd6
-         LvDf1hFRzucWyg54JAV8gpWcGlwtaECgjnmUYYEeNvgAAgpRY4z+IkGnmTOB53UAVgGf
-         BkQliKpWlSeyhsDMqF1On1cCnz9Q8sF2GDf66YHQZfwPewRjbOSTdVpfGAfNrGUW/RNR
-         k/f39jrd3Lb2kCddzbgglhdoaI1Wa0gwDWrzITOXOdXMQ4VbmuHz7uarRsfoI9fDk9lV
-         2NI53/zhwmqNc7mZvrwRejbTDQffUgnKu2kAodlPoaDHdLq0F0fi2ffebCLFcLvMNrOU
-         AClA==
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=grHudVuxTrujFcMeBbNEzFtggMnTeKfPICDDWvNm5qQ=;
+        b=JxoOm75VPiSO3PvPhBOYKhjkYBPSzOkEGNvBKzzVHYb9Rjpd/2lw8isqYnFTqXaE21
+         C+3CgK+K5piqQQKYelN5pmjLyYxqfc5aAi0ULmEU0tzBzcQGldVFhG63xZeEbru+b2c5
+         7kXb1Htwvi29RZbiOF+DtZw68CeC9tM32rQ4yyzttv9Gfu0We7eglDXlTwOoWSHj7iaG
+         uFdKHbZ4suTw2Kj1YExnw/5V9FAso4O5mejSjADC/gVT0AAkQZ+Rc2Jyl0rPZXgwLOzm
+         A8yMggODuGPwRx4MTTd/izM2d1i01Iv5Xdj7Z4nCrMtmW+0gIqCPyKiutLZojfM6ClVd
+         Ui0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=nfhuJ1NgQdZH+i+TeasKVcKxWQY1rThbDfYMKfOjxGRV13FRGSghLzAIicxWnSRTKK
-         4M658MfN4fwh4Z+kbzp77RZcqoUlR6HZStznWo3Bi8TfV+VS/6fM6aDetuhcME3DjTWh
-         UBHjHpiQVle4/ED0nHZ/S4112J/0jmuIe4yayfMpVZpm7l44xGkHPFZu8vAys/WMBR1U
-         ySnKN0ZBlKuukRnepYTE9EhnmawdJiFR+9zbdmlzT2FOmqlr9C2k/XFN6qlnluhqKg8A
-         AhW1VkKv1zwrKlW+FMK9N2Ip3HTL2L6jiBhFYLKD72RZ/FBMqGSKHSXo/uKT7Dr/fNgd
-         iC0A==
-X-Gm-Message-State: AOAM5310Yq6s0OzsTQSytMmZSitn6XvWqYLoHyIll7JLNNuSbmk9zKH7
-        EF6OyjvFwureABvLehpuCrIyAgcQM0DC7GMncf8=
-X-Google-Smtp-Source: ABdhPJwxQXErdlqHFM2ouLm1Q/qSQ8axzesEiB3e0jhrDSXw5DxKizrFqyMru5y+ttHcVHwOHiG5QJoiouCVvpet46c=
-X-Received: by 2002:ab0:38:: with SMTP id 53mr9733996uai.82.1595061497960;
- Sat, 18 Jul 2020 01:38:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=grHudVuxTrujFcMeBbNEzFtggMnTeKfPICDDWvNm5qQ=;
+        b=UuSR6Xy8Wc+C+xcrcMfUgFfIudKiW7zD7aPRY/51009i0/0lFSRdjie9nz/Ba/1RoQ
+         ZCUlCkncLUgWacUMATrI/volL4WQoDywxO0B1EL9Mqegt6m91GpYc4tXbCo3yKSlsGFf
+         chFVVXtWs/6o8FuM7LtE5FqG7Ri5t1/vnV8R0SIRVLeio9/fcsRsjoCUUu6bO6yRA9oM
+         YUmZyp2cZ8+okecxcSQZgJYF8a7xbYTOPEXi4UbiWN5ouuoqesBVa1poEHvShWuecqSK
+         H0+zyGGZNAkCJyO6Cvwc6naBSdlBCAsXMIMiXj9QKh125XuuKeyBSh5+HFFvL9SDIOMN
+         hCtA==
+X-Gm-Message-State: AOAM532PTCxoj67k6RzJPRYQsU+xYgIIc9qam8R1bB+1rIDEMpGQnD4L
+        Qv37Z2juD8N5RtitMKdlQExs21GK2p/l6Q==
+X-Google-Smtp-Source: ABdhPJywOSyHHy2bJZqi1NPJYnFaaf9Tq+T0dfJMvzvTJxykDZd2Oa2LCdCG8Yl4tfAw3QfOH7Ll9w==
+X-Received: by 2002:a05:651c:217:: with SMTP id y23mr6450848ljn.447.1595061604957;
+        Sat, 18 Jul 2020 01:40:04 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:42e3:6011:c93:75dd:e99a:5259? ([2a00:1fa0:42e3:6011:c93:75dd:e99a:5259])
+        by smtp.gmail.com with ESMTPSA id e9sm2083043ljn.61.2020.07.18.01.40.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Jul 2020 01:40:04 -0700 (PDT)
+Subject: Re: [PATCH v7 3/5] MIPS: Ingenic: Let the Kconfig of platform enable
+ the clocksource driver.
+To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, daniel.lezcano@linaro.org,
+        tsbogend@alpha.franken.de, robh+dt@kernel.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, tglx@linutronix.de,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
+References: <20200717165947.56158-1-zhouyanjie@wanyeetech.com>
+ <20200717165947.56158-4-zhouyanjie@wanyeetech.com>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <4903f4ba-6ecb-5c38-aa5a-4f20bd473124@cogentembedded.com>
+Date:   Sat, 18 Jul 2020 11:39:59 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a05:6102:802:0:0:0:0 with HTTP; Sat, 18 Jul 2020 01:38:17
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   MICHELLE GOODMAN <sarahluo125@gmail.com>
-Date:   Sat, 18 Jul 2020 08:38:17 +0000
-Message-ID: <CACxHpbWKhsUpmZk+U21oZuAnLniuye_WOyGvv0G_pmAQ4r_fjQ@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200717165947.56158-4-zhouyanjie@wanyeetech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Danke
-Michelle
+Hello!
+
+On 17.07.2020 19:59, 周琰杰 (Zhou Yanjie) wrote:
+
+> The previous clocksource patch in this series ([2/3]) has remove
+
+   Removed.
+
+> "default MACH_INGENIC" and make option silent, so we need to
+
+   Made?
+
+> enable the corresponding driver in the platform's Kconfig.
+> 
+> Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+> 
+> Notes:
+>      v7:
+>      New patch.
+> 
+>   arch/mips/jz4740/Kconfig | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/mips/jz4740/Kconfig b/arch/mips/jz4740/Kconfig
+> index 6c065dcaeff8..5ad60998702e 100644
+> --- a/arch/mips/jz4740/Kconfig
+> +++ b/arch/mips/jz4740/Kconfig
+> @@ -36,27 +36,34 @@ endchoice
+>   config MACH_JZ4740
+>   	bool
+>   	select SYS_HAS_CPU_MIPS32_R1
+> +    select INGENIC_TIMER
+
+    Please use tab instead of spaces here an below.
+
+[...]
+
+MBR, Sergei
