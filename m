@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17842224831
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 05:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F040224833
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 05:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgGRDEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 23:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
+        id S1728890AbgGRDFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 23:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgGRDEK (ORCPT
+        with ESMTP id S1726262AbgGRDFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 23:04:10 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD175C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 20:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=7RUTSYbxVy6xT6xvpnV+itvZ5yKCz5OATkrmrwQ0Q8M=; b=BILag9ywRcnycQlUa9wZ+kBpv3
-        nrm6vDjOdI71kAqgp4sGvi98p/tTueXBaf2xxjCy1zoW7cR3jhG4x+ngNwqCE/7GetjKGXPftYU/H
-        vVnmDbKXga0SliMkib9wyWY5/66rO82AXKjOkirz3P+O0ensca0fvRigmHuJl9KRUnz3QsnvletBp
-        j74tx2Y/MrAeAABIZZTXni9IgmPztidqyGucU1y9oAd8f6BSsb2XyH7f5Raj6cZiU88T5X/tod3ZG
-        G+1bABvp8+bM8ypeN7Voe8qsW9bR4F7ohVr5XIILhppLyeLQ8cHKcmUbyMOIATAl6Eh2QRb/gjHAX
-        jkWoIqzw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwd8v-0007bb-Ms; Sat, 18 Jul 2020 03:04:06 +0000
-To:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] highmem: linux/highmem.h: fix duplicated words in a
- comment
-Message-ID: <ad605959-0083-4794-8d31-6b073300dd6f@infradead.org>
-Date:   Fri, 17 Jul 2020 20:04:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Fri, 17 Jul 2020 23:05:44 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53146C0619D2;
+        Fri, 17 Jul 2020 20:05:44 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p3so7565027pgh.3;
+        Fri, 17 Jul 2020 20:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1wY0lal+lBgSmtXPjk/0h/AXiG5Km+JSOehkqiKj28I=;
+        b=aL9xO1U5+1oyS5EnVLEdspMbDxMd+nLGaK6RVt2ZFIpZ5qGzllCK6p77x05aefD5Cp
+         XHATfOVMIMjq6tuKT6aHzlMZPAo6bnu0lACoyO/Iinn7b1N+HiAsAcOe/TWFDPX6z0kE
+         FwA3Q++xo87lUdOgKp8TPe6UsIQs83DxPTsRwpQerUtKS0O+bsG9B4gMYx6AGylYPJz1
+         UgIfGajInIE5YL/ffByhi7ABWfZxrjYvyyD56iH2yXab5wR2vW15A6REX3kGwXW9nhqW
+         QHk+lDEEutbo/lHTcd35FIuf8TwloVeCyvubnvS7K95TWYae8xX5sLnuWTrrAFNRQbg/
+         RK7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1wY0lal+lBgSmtXPjk/0h/AXiG5Km+JSOehkqiKj28I=;
+        b=Gt90d03RHiH1Isbq15uSuqaVjmc8O+qTdPZG+miMhkdqOSSYeXOQrwIljDNjOvw26+
+         DJWZQPDOAcDiJSnOkzYBcSV8DBjuPGbrYqCTUWdtAt1QIQqh5gjzvRgeunMypmCnYT8M
+         kV4qRjjnganeZYpthhrssEqHPYZHayWoIxIQ4GkGLqoEo/bjd10F3IuXNusZsLsoYiH2
+         wfcUZ8ZQS0butpThxcSNr8VeHwVgL5MWAteABsTLZOJbk+ygXEHAWaNhRWc1y640CVBE
+         IwD2MMStsrGrAfRtmGkKPJRDRXgEEul3wxfpxIK8kBHJHMTEQaLoa5O78LZN7jnOoRRr
+         NJGQ==
+X-Gm-Message-State: AOAM533oCbdenCBEf8sQLjPXtrwpnp02khO6dGowgQiaeFpirVa+tADP
+        orliT7WYXQQEpOn2VCrt0LVsfKuu
+X-Google-Smtp-Source: ABdhPJwD94kw0od1hhhoEN3xhoTw28B7cYDkEhzQRA34kmHvLYDu2rQaFLz5gE5NxSdQPhRWAR1m6w==
+X-Received: by 2002:a62:dd91:: with SMTP id w139mr10616214pff.40.1595041543329;
+        Fri, 17 Jul 2020 20:05:43 -0700 (PDT)
+Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id c9sm617331pjr.35.2020.07.17.20.05.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 20:05:42 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 0/4] net: dsa: Setup dsa_netdev_ops
+Date:   Fri, 17 Jul 2020 20:05:29 -0700
+Message-Id: <20200718030533.171556-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi David, Jakub,
 
-Change the doubled word "is" in a comment to "it is".
+This patch series addresses the overloading of a DSA CPU/management
+interface's netdev_ops for the purpose of providing useful information
+from the switch side.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
----
-v2: instead of dropping one "is", change to "it is" [thanks Willy]
+Up until now we had duplicated the existing netdev_ops structure and
+added specific function pointers to return information of interest. Here
+we have a more controlled way of doing this by involving the specific
+netdev_ops function pointers that we want to be patched, which is easier
+for auditing code in the future. As a byproduct we can now maintain
+netdev_ops pointer comparisons which would be failing before (no known
+in tree problems because of that though).
 
- include/linux/highmem.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Let me know if this approach looks reasonable to you and we might do the
+same with our ethtool_ops overloading as well.
 
---- linux-next-20200714.orig/include/linux/highmem.h
-+++ linux-next-20200714/include/linux/highmem.h
-@@ -73,7 +73,7 @@ static inline void kunmap(struct page *p
-  * no global lock is needed and because the kmap code must perform a global TLB
-  * invalidation when the kmap pool wraps.
-  *
-- * However when holding an atomic kmap is is not legal to sleep, so atomic
-+ * However when holding an atomic kmap it is not legal to sleep, so atomic
-  * kmaps are appropriate for short, tight code paths only.
-  *
-  * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
+Thanks!
+
+Florian Fainelli (4):
+  net: Wrap ndo_do_ioctl() to prepare for DSA stacked ops
+  net: dsa: Add wrappers for overloaded ndo_ops
+  net: Call into DSA netdevice_ops wrappers
+  net: dsa: Setup dsa_netdev_ops
+
+ include/net/dsa.h    | 42 ++++++++++++++++++++++++++++++++++-
+ net/core/dev.c       |  5 +++++
+ net/core/dev_ioctl.c | 29 ++++++++++++++++++------
+ net/dsa/master.c     | 52 +++++++++++---------------------------------
+ 4 files changed, 81 insertions(+), 47 deletions(-)
+
+-- 
+2.25.1
 
