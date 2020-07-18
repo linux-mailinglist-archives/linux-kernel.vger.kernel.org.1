@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3DD224987
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A9E224985
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgGRG6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        id S1729201AbgGRG6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729158AbgGRG6J (ORCPT
+        with ESMTP id S1729162AbgGRG6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:58:09 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7654FC0619D2;
-        Fri, 17 Jul 2020 23:58:09 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f18so13287590wrs.0;
-        Fri, 17 Jul 2020 23:58:09 -0700 (PDT)
+        Sat, 18 Jul 2020 02:58:13 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BFFC0619D3;
+        Fri, 17 Jul 2020 23:58:11 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f7so13262797wrw.1;
+        Fri, 17 Jul 2020 23:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+sbzGxZrB59pV6U+pYub8QGMoi1y6WlUsM0RAR+NpTo=;
-        b=MLVfAbEEt8OAz+5SAcw5V9iCQGbToqL+cmlSIIL8EpSA5td5CPH+5VRKLJ1yqXeMNK
-         SzgM3CMnrxFlqh42qGcDI48MkYDTAgACq+2sa/8OcFzSi097xlhleH7JcH25pC/h55QB
-         RS81OLa3zJ8ip/sWEf6dYPZBbdEylZpZjwDebRMra5YFEgliCzfnerO5rY8hvyMaRaqN
-         89DZCM2CS71AcUqH43J+kAeuGlS/jc+O7SIle0NI5gmVQb892V5Xentb5B5s7Qta3tQL
-         jGNXwoamC+JYy85rOlDgOAs+AEGuK+t6p4cYBtSLMAsDV+gO3ITZrbxyLInK1DRfLow+
-         tIJA==
+        bh=1gIivsKhrs5B4E2eM/SXdSVH3UTq3Ox3b3pPitMs8zM=;
+        b=JIvb2Ngqnjk847TFxnaUZHKhchB8YfVtdu/CTHONMKczeOW8Le0mBfXZDoBYduxujB
+         lTAIwDhYvrjH+Um9LwOxUH5mkHPSGWYRULG0+9+2mucvkp/5p/mdmhaJOHBcrvqNKMSZ
+         xmIFrQEAA/FMLCGEZpQLUvRZrp+Jtslprw1QlZ+mHzVcit9c+ecHYD6BCHXBxImZALwy
+         m6Iw7MCdMPUbaiyNAiGRvKoqKA+FZkanTdd+/KbTTRp8v2fspqCYTYBa3Jp6ijLCZYJk
+         eFtr3EttuKnBPd7OvYPdQZ51rWiu+uIOxN9Mn2XNmiNgGX0OczdUmeNp2GYZsmHMcvis
+         cVtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=+sbzGxZrB59pV6U+pYub8QGMoi1y6WlUsM0RAR+NpTo=;
-        b=RHJgZW54H84WJMalQhffmi/BL2//I0t05oq1mFe45OJ9h4J7JHxlXU4lbI7Mpf2Ann
-         GVctVLuLgqZPiWmYTzOtV9ylJVcjXvFAsaMX/aSKWgGgKQ6d3CKtXk0vD65eN7CwuE9f
-         ekm6xiel1TTDEUiurfsQGPskhktomj4pU93gR8NIsbdtkC9Ntc/EhV5gsKpKC4dwu8md
-         jj75wbfMUEQ5+W+hhHCV44agY1AbrO58jyQIYYle0iio1iNdzSZT15veqEV8TNWaxqbi
-         FteGzVrYc82ug5ykWLHZnrunZFCHbVpaprUU6siHolVTaA8KeoEznS9f4/3RZUGkx2jP
-         fJ+Q==
-X-Gm-Message-State: AOAM531+T7raE7tYVS7S8M1BpTUy06wtu85mY3lrsXMC31SJ4+y7bBBv
-        Oj1TBdQB0NXNKGU+VUkgh5s=
-X-Google-Smtp-Source: ABdhPJzzF7AVveOnVICfgyrqrnbw/GMJl08joyt9cIy/Hji+DY2GExCAGi3oh67Ji1N4fp8pOjJmyw==
-X-Received: by 2002:a5d:68c7:: with SMTP id p7mr14296531wrw.16.1595055488234;
-        Fri, 17 Jul 2020 23:58:08 -0700 (PDT)
+        bh=1gIivsKhrs5B4E2eM/SXdSVH3UTq3Ox3b3pPitMs8zM=;
+        b=DjA4VPvKKxaihyIrD6fb9pHGwt3U293L96UEDJ7wZCn++2MRd7HmxW95LapKjjb6nH
+         dfuk3xy8xlL3OTfn9vdaWiSoiuIfD7zSy3DvxnLXHRX4A2vrZc2XX6zasjZdM6HqNwjP
+         Pn8sCbTqsrR4Fg5i0fyu3+Zszp+wqf5r5Cs/K8imWfc8DkYtbi9ASgjjKtD8uT70gfrV
+         78GWllsrUzuFZh7Nfdz8LAB0XTtUCeWFHNObwTo3DqEUTQ0Dxdrq4YPmAnx7yRP4lPEo
+         pCezKKH5RUNnuHDDwjEnbfWHbJu+AwOLdrdMUIH9EkWghHH/86STyM/Ravh5J3qgCDCs
+         RVgA==
+X-Gm-Message-State: AOAM532rnOShJstZiV4FyWNC4YI3XZfye20FR4rJ9pLWGchcA1R4K47A
+        hHRyHhYDkMtzGqAxLeUOr+Q=
+X-Google-Smtp-Source: ABdhPJxEIE/fyCFRu3RRxgW1mThwfcZwyiNFLjxzNHyGDN6C7wSEse0IChWCM1AhE9sSWWyDdWzz3g==
+X-Received: by 2002:a5d:5490:: with SMTP id h16mr14399637wrv.394.1595055490357;
+        Fri, 17 Jul 2020 23:58:10 -0700 (PDT)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id x5sm18749191wmg.2.2020.07.17.23.58.06
+        by smtp.gmail.com with ESMTPSA id x5sm18749191wmg.2.2020.07.17.23.58.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 23:58:07 -0700 (PDT)
+        Fri, 17 Jul 2020 23:58:09 -0700 (PDT)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -54,9 +54,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH 11/12] arm64: dts: meson: add audio playback to wetek-hub
-Date:   Sat, 18 Jul 2020 06:57:38 +0000
-Message-Id: <20200718065739.7802-12-christianshewitt@gmail.com>
+Subject: [PATCH 12/12] arm64: dts: meson: add audio playback to wetek-play2
+Date:   Sat, 18 Jul 2020 06:57:39 +0000
+Message-Id: <20200718065739.7802-13-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200718065739.7802-1-christianshewitt@gmail.com>
 References: <20200718065739.7802-1-christianshewitt@gmail.com>
@@ -65,30 +65,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial audio support limited to HDMI i2s.
+Add initial support limited to HDMI i2s and SPDIF (LPCM).
 
 Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 ---
- .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 +++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts
-index 83b985bb015e..0c1570153842 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts
-@@ -7,10 +7,50 @@
- /dts-v1/;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts
+index 2ab8a3d10079..f2562c7de67c 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-play2.dts
+@@ -8,11 +8,19 @@
  
  #include "meson-gxbb-wetek.dtsi"
+ #include <dt-bindings/input/input.h>
 +#include <dt-bindings/sound/meson-aiu.h>
  
  / {
- 	compatible = "wetek,hub", "amlogic,meson-gxbb";
- 	model = "WeTek Hub";
+ 	compatible = "wetek,play2", "amlogic,meson-gxbb";
+ 	model = "WeTek Play 2";
+ 
++	spdif_dit: audio-codec-0 {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dit";
++		status = "okay";
++		sound-name-prefix = "DIT";
++	};
++
+ 	leds {
+ 		led-wifi {
+ 			label = "wetek-play:wifi-status";
+@@ -39,6 +47,59 @@
+ 			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_LOW>;
+ 		};
+ 	};
 +
 +	sound {
 +		compatible = "amlogic,gx-sound-card";
-+		model = "GXBB-WETEK-HUB";
++		model = "GXBB-WETEK-PLAY2";
 +		assigned-clocks = <&clkc CLKID_MPLL0>,
 +				  <&clkc CLKID_MPLL1>,
 +				  <&clkc CLKID_MPLL2>;
@@ -103,6 +118,10 @@ index 83b985bb015e..0c1570153842 100644
 +		};
 +
 +		dai-link-1 {
++			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
++		};
++
++		dai-link-2 {
 +			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
 +			dai-format = "i2s";
 +			mclk-fs = <256>;
@@ -112,7 +131,15 @@ index 83b985bb015e..0c1570153842 100644
 +			};
 +		};
 +
-+		dai-link-2 {
++		dai-link-3 {
++			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
++
++			codec-0 {
++				sound-dai = <&spdif_dit>;
++			};
++		};
++
++		dai-link-4 {
 +			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
 +
 +			codec-0 {
@@ -124,9 +151,11 @@ index 83b985bb015e..0c1570153842 100644
 +
 +&aiu {
 +	status = "okay";
++	pinctrl-0 = <&spdif_out_y_pins>;
++	pinctrl-names = "default";
  };
  
- &ir {
+ &i2c_A {
 -- 
 2.17.1
 
