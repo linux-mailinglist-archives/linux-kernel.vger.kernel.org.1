@@ -2,219 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19376224B66
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34645224B68
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 15:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgGRNMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 09:12:54 -0400
-Received: from crapouillou.net ([89.234.176.41]:45830 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726566AbgGRNMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 09:12:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595077971; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lwtrMVGsN8PxkJfANGzcJA7Rjlb0vvZkOcvOhQ+zmhs=;
-        b=JbxblSYfshTN2xRtlSX3kNeZAFF/lSbpQzokbBLp/s40f1O/L8GYhIB+1uCpKVxGZJyMc8
-        7DWEKDfdDuUoQNI0TusHLke+6pJBpazkFN+1T77yQgZPBvY2SQBZtt3blf4dvwXLUDdNOA
-        dEKNpL7WtdKIZkz8z/35r70YhfzCJ/U=
-Date:   Sat, 18 Jul 2020 15:12:41 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v6 2/2] clocksource: Ingenic: Add support for the Ingenic
- X1000 OST.
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, tglx@linutronix.de, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Message-Id: <512ODQ.64YN0BEY1JJG@crapouillou.net>
-In-Reply-To: <9c64bc35-c043-6e4b-cfc3-50f19e4cb315@linaro.org>
-References: <20200710170259.29028-1-zhouyanjie@wanyeetech.com>
-        <20200710170259.29028-3-zhouyanjie@wanyeetech.com>
-        <dd01a117-265a-e64b-5871-22f0f752834a@linaro.org>
-        <f0dd2ea5-0627-35cf-5a58-aaff0bcb22cd@wanyeetech.com>
-        <9c64bc35-c043-6e4b-cfc3-50f19e4cb315@linaro.org>
+        id S1726777AbgGRNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 09:17:16 -0400
+Received: from smtprelay0030.hostedemail.com ([216.40.44.30]:36496 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726566AbgGRNRP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 09:17:15 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 84C0D181D207A;
+        Sat, 18 Jul 2020 13:17:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:2894:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:7264:7903:7904:8957:10004:10400:10471:10848:11026:11473:11657:11658:11914:12043:12048:12295:12296:12297:12438:12555:12663:12683:12740:12760:12895:12986:13018:13019:13255:13439:14096:14097:14659:14721:21080:21324:21451:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: crib79_62139b626f13
+X-Filterd-Recvd-Size: 3809
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 18 Jul 2020 13:17:13 +0000 (UTC)
+Message-ID: <560eeb7388164e58ac0e47277fe2aec798c45a5c.camel@perches.com>
+Subject: Re: [PATCH 4/4] staging: rtl8188eu: include: placed constant on the
+ right side of the test in comparisons
+From:   Joe Perches <joe@perches.com>
+To:     B K Karthik <bkkarthik@pesu.pes.edu>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Sat, 18 Jul 2020 06:17:12 -0700
+In-Reply-To: <20200718091857.quzs5sqvkjzngd6k@pesu-pes-edu>
+References: <20200718091857.quzs5sqvkjzngd6k@pesu-pes-edu>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Sat, 2020-07-18 at 05:18 -0400, B K Karthik wrote:
+> placed constant on the right side of the test
+> to fix warnings issued by checkpatch
+[]
+> diff --git a/drivers/staging/rtl8188eu/include/wifi.h b/drivers/staging/rtl8188eu/include/wifi.h
+[]
+> @@ -326,7 +326,7 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
+>  
+>  static inline int IsFrameTypeCtrl(unsigned char *pframe)
+>  {
+> -	if (WIFI_CTRL_TYPE == GetFrameType(pframe))
+> +	if (GetFrameType(pframe) == WIFI_CTRL_TYPE)
+>  		return true;
+>  	else
+>  		return false;
 
-Le ven. 17 juil. 2020 =C3=A0 10:02, Daniel Lezcano=20
-<daniel.lezcano@linaro.org> a =C3=A9crit :
-> On 17/07/2020 08:13, Zhou Yanjie wrote:
->>  Hi Daniel,
->>=20
->>  =E5=9C=A8 2020/7/17 =E4=B8=8B=E5=8D=8812:20, Daniel Lezcano =E5=86=99=
-=E9=81=93:
->>>  On 10/07/2020 19:02, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) wrote:
->>>>  X1000 and SoCs after X1000 (such as X1500 and X1830) had a=20
->>>> separate
->>>>  OST, it no longer belongs to TCU. This driver will register both a
->>>>  clocksource and a sched_clock to the system.
->>>>=20
->>>>  Tested-by: =E5=91=A8=E6=AD=A3 (Zhou Zheng) <sernia.zhou@foxmail.com>
->>>>  Co-developed-by: =E6=BC=86=E9=B9=8F=E6=8C=AF (Qi Pengzhen) <aric.pzqi=
-@ingenic.com>
->>>>  Signed-off-by: =E6=BC=86=E9=B9=8F=E6=8C=AF (Qi Pengzhen) <aric.pzqi@i=
-ngenic.com>
->>>>  Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@=
-wanyeetech.com>
->>>>  Reviewed-by: Paul Cercueil <paul@crapouillou.net>
->>>>  ---
->>>>=20
->>>>  Notes:
->>>>       v1->v2:
->>>>       Fix compile warnings.
->>>>       Reported-by: kernel test robot <lkp@intel.com>
->>>>            v2->v3:
->>>>       No change.
->>>>            v3->v4:
->>>>       1.Rename "ost" to "sysost"
->>>>       1.Remove unrelated changes.
->>>>       2.Remove ost_clock_parent enum.
->>>>       3.Remove ost->percpu_timer_channel/ost->global_timer_channel.
->>>>       4.Set up independent .recalc_rate/.set_rate for percpu/global
->>>>  timer.
->>>>       5.No longer call functions in variable declarations.
->>>>            v4->v5:
->>>>       Use "of_io_request_and_map()" instead "of_iomap()".
->>>>       Suggested-by: Paul Cercueil <paul@crapouillou.net>
->>>>            v5->v6:
->>>>       No change.
->>>>=20
->>>>    drivers/clocksource/Kconfig          |  11 +
->>>>    drivers/clocksource/Makefile         |   1 +
->>>>    drivers/clocksource/ingenic-sysost.c | 539
->>>>  +++++++++++++++++++++++++++++++++++
->>>>    3 files changed, 551 insertions(+)
->>>>    create mode 100644 drivers/clocksource/ingenic-sysost.c
->>>>=20
->>>>  diff --git a/drivers/clocksource/Kconfig=20
->>>> b/drivers/clocksource/Kconfig
->>>>  index 91418381fcd4..1bca8b8fb30f 100644
->>>>  --- a/drivers/clocksource/Kconfig
->>>>  +++ b/drivers/clocksource/Kconfig
->>>>  @@ -696,6 +696,17 @@ config INGENIC_TIMER
->>>>        help
->>>>          Support for the timer/counter unit of the Ingenic JZ SoCs.
->>>>    +config INGENIC_SYSOST
->>>>  +    bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
->>>  We usually use silent options and let the platform's Kconfig=20
->>> enable it.
->>>  We show up the option only when COMPILE_TEST is enabled.
->>>=20
->>>  Is there a reason to do it differently?
->>=20
->>=20
->>  Do you mean
->>=20
->>  bool "Clocksource/timer using the SYSOST in Ingenic X SoCs"
->>=20
->>  or
->>=20
->>  default MACH_INGENIC ?
->=20
-> Both, no default here.
->=20
-> eg.
->=20
-> bool "Clocksource/timer using the SYSOST in Ingenic X SoCs" if=20
-> COMPILE_TEST
->=20
-> and
->=20
-> in arch/mips/Kconfig in the config MACH_INGENIC section :
->=20
-> ...
-> select INGENIC_SYSOST
-> ...
+Always try to improve code instead of merely shutting
+up checkpatch warnings.
 
-Disagreed. That's not how we do things on MIPS. Selecting MACH_INGENIC=20
-means "this kernel will support Ingenic SoCs", but not that it will=20
-only support these. Hence the depends on MIPS / default MACH_INGENIC.
+This function should likely be written:
 
-As for the select INGENIC_SYSOST, this driver only applies to a few=20
-SoCs, I certainly don't want it to be force-enabled. I don't even wait=20
-it to be force-enabled on X1000, since it is optional there too.
+static inline bool IsFrameTypeCtrl(unsigned char *pframe)
+{
+	return GetFrameType(pframe) == WIFI_CTRL_TYPE;
+}
 
-Cheers,
--Paul
+and given it's used only once, it might be expanded
+in that place and removed altogether.
 
->=20
->>  This driver has some origins from "INGENIC_TIMER" driver and
->>  "INGENIC_OST" driver.
->>  Early Ingenic processors used TCU (timer/counter unit, has 6 or 8
->>  generic timer channels) to provide clocksource and clockevent (both=20
->> with
->>  only 16bit precision). This part of the processor can only use
->>  "INGENIC_TIMER" driver.
->>=20
->>  Later processors provide an independent 32bit or 64bit timer channel
->>  (still under TCU, known as ost channel, this channel can not=20
->> generate
->>  interrupt) to provid higher precision clocksource. The "INGENIC_OST"
->>  driver is for this channel. These processors can use "INGENIC_TIMER"
->>  driver, but using "INGENIC_OST" driver to provide higher precision
->>  clocksource would be a better choice (clockevent still needs to be
->>  provided by generic timer channel of TCU, and still 16bit=20
->> precision).
->>=20
->>  And the recent processors provide a SYSOST components, it is=20
->> independent
->>  from TCU, including a 64bit timer channel for clocksource and a=20
->> 32bit
->>  timer channel for clockevent. Although these processors can also use
->>  "INGENIC_TIMER" driver, but the better choice is completely=20
->> independent
->>  use of "INGENIC_SYSOST" driver to provide higher precision=20
->> clocksource
->>  and clockevent.
->=20
-> Ok, the rating should do the job then.
->=20
-> Thanks for the explanation.
->=20
->>  You may have already noticed that this independent SYSOST component=20
->> is
->>  like an upgraded and streamlined TCU, which only retains one generic
->>  timer channel that can generate interrupts, upgrade it from 16bit to
->>  32bit, and then retain the 64bit ost channel. so the driver code and
->>  Kconfig code of this patch is largely referenced
->>  "INGENIC_TIMER" driver and "INGENIC_OST" driver.
->>=20
->>  Thanks and best regards!
->>=20
->>>>  +    default MACH_INGENIC
->>>>  +    depends on MIPS || COMPILE_TEST
->>>>  +    depends on COMMON_CLK
->>>>  +    select MFD_SYSCON
->>>>  +    select TIMER_OF
->>>>  +    select IRQ_DOMAIN
->>>>  +    help
->>>>  +      Support for the SYSOST of the Ingenic X Series SoCs.
->>>>  +
->>>  [ ... ]
->>>=20
->>>=20
->=20
->=20
-> --
-> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
-M=20
-> SoCs
->=20
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
+Something like:
+
+(and the memcmp below could be ether_addr_equal instead
+ but I'm too lazy to find out if the addresses are both
+ guaranteed to be __aligned(2) which is likely)
+
+---
+ drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c | 8 +++++---
+ drivers/staging/rtl8188eu/include/wifi.h        | 7 -------
+ 2 files changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c b/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c
+index 7d0135fde795..a2994f9ecbde 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188e_rxdesc.c
+@@ -144,10 +144,12 @@ void update_recvframe_phyinfo_88e(struct recv_frame *precvframe,
+ 
+ 	wlanhdr = precvframe->pkt->data;
+ 
+-	pkt_info.bPacketMatchBSSID = ((!IsFrameTypeCtrl(wlanhdr)) &&
+-		!pattrib->icv_err && !pattrib->crc_err &&
++	pkt_info.bPacketMatchBSSID =
++		GetFrameType(wlanhdr) != WIFI_CTRL_TYPE &&
++		!pattrib->icv_err &&
++		!pattrib->crc_err &&
+ 		!memcmp(get_hdr_bssid(wlanhdr),
+-		 get_bssid(&padapter->mlmepriv), ETH_ALEN));
++			get_bssid(&padapter->mlmepriv), ETH_ALEN);
+ 
+ 	pkt_info.bPacketToSelf = pkt_info.bPacketMatchBSSID &&
+ 				 (!memcmp(get_da(wlanhdr),
+diff --git a/drivers/staging/rtl8188eu/include/wifi.h b/drivers/staging/rtl8188eu/include/wifi.h
+index 791f287a546d..3998d5633860 100644
+--- a/drivers/staging/rtl8188eu/include/wifi.h
++++ b/drivers/staging/rtl8188eu/include/wifi.h
+@@ -324,13 +324,6 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
+ 	return sa;
+ }
+ 
+-static inline int IsFrameTypeCtrl(unsigned char *pframe)
+-{
+-	if (WIFI_CTRL_TYPE == GetFrameType(pframe))
+-		return true;
+-	else
+-		return false;
+-}
+ /*-----------------------------------------------------------------------------
+ 			Below is for the security related definition
+ ------------------------------------------------------------------------------*/
+
+
 
 
