@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF878224A2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 11:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A06224A2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 11:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgGRJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 05:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48412 "EHLO
+        id S1726963AbgGRJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 05:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgGRJUr (ORCPT
+        with ESMTP id S1726055AbgGRJUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 05:20:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23925C0619D2;
-        Sat, 18 Jul 2020 02:20:47 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id p3so7865080pgh.3;
-        Sat, 18 Jul 2020 02:20:47 -0700 (PDT)
+        Sat, 18 Jul 2020 05:20:51 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B19EC0619D2;
+        Sat, 18 Jul 2020 02:20:51 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ch3so7630637pjb.5;
+        Sat, 18 Jul 2020 02:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=qR4vJT+mcA6eHTDOA004E+9HQE1jjc1zKhWS+aHn5+s=;
-        b=ILk8sJlgP/1iJ+pXHTXLVEti55fV/dvUXOg3wBPshnyNPk4yOH5Y0hdD6cPdP3pJnd
-         qHCGk0CGL9vO4u1Hdng6HTn7EruWAZhAlRcBckOOVPSuTE3lMRuoyWetrO3l3FKQ8/qw
-         ypKfrelR7H4sIzqLyeTNqiy05mnHtpaYcM2IEN543K7GIzboj9Uxz5rLVdn/m/1d83pm
-         Rg0ILXwr3kGpK3rYEo6a0C5bf9R99DWiJTcm9TuYg/KxamDiDAqspsywl4eZjTjekgL6
-         WTl4Wa97NN6ySVmGDabFERIIwiKLeVii8wCxBbMW4isBMj47ORxjPG+4JAYKxEQOWqbC
-         8fGQ==
+        bh=NviHgVjQuLhyVmkMejGiB4uUEB9WSVa/9K89QO1Z6/I=;
+        b=ZM5hEzloNLoubWfThl0I5dMBiNGbpj9DKGspRnyV8UUzXDQe3d/EJMi7efD+x2u+xF
+         ADbidj8qK8bHRy78+YNMxoyuT3c7ldE6qCtN/IXtaqt7w6gHIVvTx+EiUCpyjZ4MWY+R
+         ki0wVBCMiam4VSAajGm6kjDk0jxU1O78nd31qw9RGyEV5REhc+fvLABEdEkDL/+3HzVC
+         1uueZZkggn6ZGBmfKSc35mT3bEpDElG+zp2YqnWJXEKtIuMpNx3kkefIqSBACSZisf6R
+         bZTXjzvpXZ1ZhcMejWI3RmcW6WsW1Cgy4f0ucedeM5/qu3h8GEmORS5ty4ZpPDxIoI+F
+         +Vpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=qR4vJT+mcA6eHTDOA004E+9HQE1jjc1zKhWS+aHn5+s=;
-        b=QAtA2P3eOBVNjYtHzDClAwkFFTSq3Hd2BUGifY/Z5Px048a2j/v7dnBPhdJYBxqBSy
-         V8PVKXeoVMVrDKwxXoNKEVzZPnDB5ttVibuwD6t7JNTkx2ZPiXo0vA66o9Saul+dGPMw
-         Vwd1tUNN/KjMVpSFGeMbU84b9cLa6Ioi1bDo0VrLHjMVthZsPV/Jxd6O/Ea4T5PEwUIA
-         TVOAx5mu8TP2Q5mF0GtLGR0RtYPGv6JcOR5rGpmAvp7fgBL6GIE+u0ZB45xiWe1eSafg
-         YwmxmcoVnlK+thLm5m+pJJ/mx3AetCQokWzR1nJaqhJ1YDeck3T9AOmXWtFO5haZlwpd
-         Mliw==
-X-Gm-Message-State: AOAM530pIjSzNptv1uPdLok11/C/oQHykFMZem1aMH/Hv8AiTOyHuf7g
-        adx3VCg55po7hXGNMicQsp0=
-X-Google-Smtp-Source: ABdhPJxLuQJNE5tXdiUm1YBU5Ezg+JifUDzpOp3MPCMjoq9HM3zMjRf2cvytGZKg+ulw9tXPALZ3dQ==
-X-Received: by 2002:a63:ca11:: with SMTP id n17mr11688198pgi.439.1595064046647;
-        Sat, 18 Jul 2020 02:20:46 -0700 (PDT)
+        bh=NviHgVjQuLhyVmkMejGiB4uUEB9WSVa/9K89QO1Z6/I=;
+        b=dOCsmFt7zE/zDGFTeETAwKZoj55aKGU+GxEpVo9WMdWFvkTVbAYm1sIR74NuRji0h3
+         7ueiuNkQisLodFoO1P/xxd0No/r3MtXy25uvFz3RV9X6BFoxelTSbVRw4mjYZ+lpUkQ8
+         JIwP7VxBukRByFAGDhOwkRdrftuEhg25D+dT/wiWNgx4kYrBkx6iu5TxmMC60Ql06osV
+         V8vT8hxME4AbGHjdgSbaJe8TComMVz5R0xn1yLJrWbv4EdELfH3lq4UtUWOVNiD9OeNF
+         MjbBEoYMMEa9Pp7dCf3soJsbtkjlOXLQJ7eHQ56Ic+Dhrquvs3lxxcre/RvhUGw+Yuwt
+         C7Ug==
+X-Gm-Message-State: AOAM530ZgCjvTAVzwYkh80VISqmFtGylWP205C25Pb7qvXRsXeWxr8yu
+        FjN0SIBk0nyAK3ejgHJhL7g=
+X-Google-Smtp-Source: ABdhPJxRdlZFbb/t7neWxYozgmgI5MV4OV5IXTLjyB4u0x7K7aV8E8sKRr+rwIYz+sWqHJb11bPzSw==
+X-Received: by 2002:a17:902:c402:: with SMTP id k2mr10664183plk.184.1595064050702;
+        Sat, 18 Jul 2020 02:20:50 -0700 (PDT)
 Received: from localhost.localdomain ([182.69.248.222])
-        by smtp.gmail.com with ESMTPSA id nl5sm5217800pjb.36.2020.07.18.02.20.42
+        by smtp.gmail.com with ESMTPSA id nl5sm5217800pjb.36.2020.07.18.02.20.46
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 18 Jul 2020 02:20:45 -0700 (PDT)
+        Sat, 18 Jul 2020 02:20:50 -0700 (PDT)
 From:   Amit Singh Tomar <amittomer25@gmail.com>
 To:     andre.przywara@arm.com, afaerber@suse.de,
         manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
 Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v6 09/10] arm64: dts: actions: Add MMC controller support for S700
-Date:   Sat, 18 Jul 2020 14:49:33 +0530
-Message-Id: <1595063974-24228-10-git-send-email-amittomer25@gmail.com>
+Subject: [PATCH v6 10/10] arm64: dts: actions: Add uSD support for Cubieboard7
+Date:   Sat, 18 Jul 2020 14:49:34 +0530
+Message-Id: <1595063974-24228-11-git-send-email-amittomer25@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595063974-24228-1-git-send-email-amittomer25@gmail.com>
 References: <1595063974-24228-1-git-send-email-amittomer25@gmail.com>
@@ -64,15 +64,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commits adds support for MMC controllers present on Actions S700 SoC,
-there are 3 MMC controllers in this SoC which can be used for accessing
-SD/EMMC/SDIO cards.
+This commit adds uSD support for Cubieboard7 board based on Actions Semi
+S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
+added yet, fixed regulator has been used as a regulator node.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 ---
 Changes since v5:
-        * Added Mani's Reviewed-by: tag.
+	* Removed the Fixed regulators as these are 
+	  not needed.
 Changes since v4:
         * No change.
 Changes since v3:
@@ -80,56 +80,70 @@ Changes since v3:
 Changes since v2:
         * No change.
 Changes since v1:
-        * Added SoC specific compatibe string.
+        * No change.
 Changes since RFC:
-        * No change
+        * No change.
 ---
- arch/arm64/boot/dts/actions/s700.dtsi | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 22 ++++++++++++++++++++++
+ arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
+ 2 files changed, 23 insertions(+)
 
+diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+index 63e375cd9eb4..eaaf8f876203 100644
+--- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
++++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+@@ -13,6 +13,7 @@
+ 
+ 	aliases {
+ 		serial3 = &uart3;
++		mmc0 = &mmc0;
+ 	};
+ 
+ 	chosen {
+@@ -81,6 +82,14 @@
+ 			bias-pull-up;
+ 		};
+ 	};
++
++	mmc0_default: mmc0_default {
++		pinmux {
++			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
++				 "sd0_cmd_mfp", "sd0_clk_mfp";
++			function = "sd0";
++		};
++	};
+ };
+ 
+ &timer {
+@@ -90,3 +99,16 @@
+ &uart3 {
+ 	status = "okay";
+ };
++
++/* uSD */
++&mmc0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mmc0_default>;
++	cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
++	no-sdio;
++	no-mmc;
++	no-1-8-v;
++	bus-width = <4>;
++};
++
 diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-index 2c78caebf515..9ed88aafc2da 100644
+index 9ed88aafc2da..ba498cf9217d 100644
 --- a/arch/arm64/boot/dts/actions/s700.dtsi
 +++ b/arch/arm64/boot/dts/actions/s700.dtsi
-@@ -259,5 +259,38 @@
- 			clocks = <&cmu CLK_DMAC>;
- 			power-domains = <&sps S700_PD_DMA>;
- 		};
-+
-+		mmc0: mmc@e0210000 {
-+			compatible = "actions,s700-mmc", "actions,owl-mmc";
-+			reg = <0x0 0xe0210000 0x0 0x4000>;
-+			interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_SD0>;
-+			resets = <&cmu RESET_SD0>;
-+			dmas = <&dma 2>;
-+			dma-names = "mmc";
-+			status = "disabled";
-+		};
-+
-+		mmc1: mmc@e0214000 {
-+			compatible = "actions,s700-mmc", "actions,owl-mmc";
-+			reg = <0x0 0xe0214000 0x0 0x4000>;
-+			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_SD1>;
-+			resets = <&cmu RESET_SD1>;
-+			dmas = <&dma 3>;
-+			dma-names = "mmc";
-+			status = "disabled";
-+		};
-+
-+		mmc2: mmc@e0218000 {
-+			compatible = "actions,s700-mmc", "actions,owl-mmc";
-+			reg = <0x0 0xe0218000 0x0 0x4000>;
-+			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_SD2>;
-+			resets = <&cmu RESET_SD2>;
-+			dmas = <&dma 4>;
-+			dma-names = "mmc";
-+			status = "disabled";
-+		};
- 	};
- };
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <dt-bindings/clock/actions,s700-cmu.h>
++#include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/power/owl-s700-powergate.h>
+ #include <dt-bindings/reset/actions,s700-reset.h>
 -- 
 2.7.4
 
