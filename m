@@ -2,86 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DED52249BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 10:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C80A2249C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 10:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgGRICa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 04:02:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39396 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728936AbgGRICa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 04:02:30 -0400
-IronPort-SDR: 1MnRAX8ARDb9P3+/NCdFzIWLLqXFLSR/OJxFptkTcXheOngIE9jriw8wtWj1Hy8KQ0N091tb3o
- J3mRQ0oc7uPA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="214422212"
-X-IronPort-AV: E=Sophos;i="5.75,366,1589266800"; 
-   d="scan'208";a="214422212"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2020 01:02:29 -0700
-IronPort-SDR: MXXqIORaX5UGpnUKXYIV8m/sFA0ZMkXIGFoEOttqIncTMN6NCseomwxr6oe+O7dfUng0ZfSzYA
- b7qaXNexa7Vw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,366,1589266800"; 
-   d="scan'208";a="300787745"
-Received: from lkp-server02.sh.intel.com (HELO 50058c6ee6fc) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 18 Jul 2020 01:02:27 -0700
-Received: from kbuild by 50058c6ee6fc with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jwhnf-0000gg-8J; Sat, 18 Jul 2020 08:02:27 +0000
-Date:   Sat, 18 Jul 2020 16:01:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     sathyanarayanan.kuppuswamy@linux.intel.com, bhelgaas@google.com
-Cc:     kbuild-all@lists.01.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: [PATCH] ACPI/PCI: fix array_size.cocci warnings
-Message-ID: <20200718080145.GA55766@adfac4dc55cb>
-References: <a5da506cb5cd5d590d88da8537ad01c0167840da.1595006564.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S1729231AbgGRIFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 04:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729127AbgGRIFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 04:05:45 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2B1C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 01:05:44 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 70EC9BC078;
+        Sat, 18 Jul 2020 08:05:40 +0000 (UTC)
+Subject: Re: [PATCH] m68k: Replace HTTP links with HTTPS ones
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     geert@linux-m68k.org, funaho@jurai.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20200717184240.79799-1-grandmaster@al2klimov.de>
+ <alpine.LNX.2.23.453.2007181258320.92@nippy.intranet>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <d4c73203-56ed-820f-82ee-c239d7976d33@al2klimov.de>
+Date:   Sat, 18 Jul 2020 10:05:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5da506cb5cd5d590d88da8537ad01c0167840da.1595006564.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.LNX.2.23.453.2007181258320.92@nippy.intranet>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
 
-drivers/acpi/pci_root.c:150:37-38: WARNING: Use ARRAY_SIZE
 
- Use ARRAY_SIZE instead of dividing sizeof array with sizeof an element
+Am 18.07.20 um 06:25 schrieb Finn Thain:
+> On Fri, 17 Jul 2020, Alexander A. Klimov wrote:
+> 
+>> Rationale:
+>> Reduces attack surface on kernel devs opening the links for
+>> MITM as HTTPS traffic is much harder to manipulate.
+>>
+> 
+> Has that actually happened?
+I hope no. And with my patch it won't happen.
 
-Semantic patch information:
- This makes an effort to find cases where ARRAY_SIZE can be used such as
- where there is a division of sizeof the array by the sizeof its first
- element or by any indexed element or the element type. It replaces the
- division of the two sizeofs by ARRAY_SIZE.
+> 
+> You still need to fix the chain of trust in all the relevant browsers
+> (unless you're planning to ship root certificates with the kernel source).
+> 
+> Even then, developers using "HTTPS Everywhere" or equivalent will not
+> benefit from this patch.
+> 
+> And these new links are just as stale as the old ones, so I have to use
+> web.archive.org anyway. So this patch achieves practically nothing.
+Are they broken? I thought they're just redirecting?
 
-Generated by: scripts/coccinelle/misc/array_size.cocci
+> 
+>> Deterministic algorithm:
+>> For each file:
+>>    If not .svg:
+> 
+> Are URLs in .svg files not exploitable by MITM attack?
+They're boilerplates set by Inkscape.
 
-CC: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+> 
+>>      For each line:
+>>        If doesn't contain `\bxmlns\b`:
+> 
+> Are XML parsers not exploitable by MITM attack?
+They're boilerplates set by Inkscape.
 
-url:    https://github.com/0day-ci/linux/commits/sathyanarayanan-kuppuswamy-linux-intel-com/Simplify-PCIe-native-ownership-detection-logic/20200718-012614
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git next
+> 
+>>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 
+> Are ftp:// links etc. not exploitable by MITM attack?
+> 
+>> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+I'll add this to my todo list.
 
- pci_root.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Should developers be more concerned about MITM attack or lawsuit?
+They're boilerplates we should replace with SPDX headers instead.
 
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -147,7 +147,7 @@ static struct pci_osc_bit_struct pci_osc
- 
- static char *get_osc_desc(u32 bit)
- {
--	int len = sizeof(pci_osc_control_bit) / sizeof(pci_osc_control_bit[0]);
-+	int len = ARRAY_SIZE(pci_osc_control_bit);
- 	int i = 0;
- 
- 	for (i = 0; i <len; i++)
+> 
+>>              If both the HTTP and HTTPS versions
+>>              return 200 OK and serve the same content:
+> 
+> ...then you have not been MITM attacked.
+... for now.
+
+> 
+>>                Replace HTTP with HTTPS.
+>>
+> 
+> Will you also require developers to use DNSSEC?
+*Sigh* ... yes, doing everything one nice day is better that doing just 
+something right now.
+But doing just something right now is better that doing nothing at all.
+
+Wait for v5.9-rc1, run...
+
+> 
+>> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+>> ---
+>>   Continuing my work started at 93431e0607e5.
+>>   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+... this command and see how many maintainers agree with me.
+
+>>
+>>   If there are any URLs to be removed completely
+>>   or at least not (just) HTTPSified:
+>>   Just clearly say so and I'll *undo my change*.
+>>   See also: https://lkml.org/lkml/2020/6/27/64
+>>
+>>   If there are any valid, but yet not changed URLs:
+>>   See: https://lkml.org/lkml/2020/6/26/837
+>>
+>>   If you apply the patch, please let me know.
+>>
+>>
+>>   arch/m68k/include/asm/mac_via.h | 4 ++--
+>>   arch/m68k/mac/config.c          | 2 +-
+>>   arch/m68k/mac/macboing.c        | 2 +-
+>>   3 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/m68k/include/asm/mac_via.h b/arch/m68k/include/asm/mac_via.h
+>> index 1149251ea58d..0cbab71f2592 100644
+>> --- a/arch/m68k/include/asm/mac_via.h
+>> +++ b/arch/m68k/include/asm/mac_via.h
+>> @@ -30,7 +30,7 @@
+>>    *      http://www.rs6000.ibm.com/resource/technology/chrpio/via5.mak.html
+>>    *      ftp://ftp.austin.ibm.com/pub/technology/spec/chrp/inwork/CHRP_IORef_1.0.pdf
+>>    *
+>> - * also, http://developer.apple.com/technotes/hw/hw_09.html claims the
+>> + * also, https://developer.apple.com/technotes/hw/hw_09.html claims the
+>>    * following changes for IIfx:
+>>    * VIA1A_vSccWrReq not available and that VIA1A_vSync has moved to an IOP.
+>>    * Also, "All of the functionality of VIA2 has been moved to other chips".
+>> @@ -178,7 +178,7 @@
+>>   				 * on others, 0=disable processor's instruction
+>>   				 * and data caches. */
+>>   
+>> -/* Apple sez: http://developer.apple.com/technotes/ov/ov_04.html
+>> +/* Apple sez: https://developer.apple.com/technotes/ov/ov_04.html
+>>    * Another example of a valid function that has no ROM support is the use
+>>    * of the alternate video page for page-flipping animation. Since there
+>>    * is no ROM call to flip pages, it is necessary to go play with the
+>> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+>> index 5c9f3a2d6538..6f2eb1dcfc0c 100644
+>> --- a/arch/m68k/mac/config.c
+>> +++ b/arch/m68k/mac/config.c
+>> @@ -240,7 +240,7 @@ static struct mac_model mac_data_table[] = {
+>>   	 * Weirdified Mac II hardware - all subtly different. Gee thanks
+>>   	 * Apple. All these boxes seem to have VIA2 in a different place to
+>>   	 * the Mac II (+1A000 rather than +4000)
+>> -	 * CSA: see http://developer.apple.com/technotes/hw/hw_09.html
+>> +	 * CSA: see https://developer.apple.com/technotes/hw/hw_09.html
+>>   	 */
+>>   
+>>   	{
+>> diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
+>> index 388780797f7d..a904146dc4e6 100644
+>> --- a/arch/m68k/mac/macboing.c
+>> +++ b/arch/m68k/mac/macboing.c
+>> @@ -116,7 +116,7 @@ static void mac_init_asc( void )
+>>   			 *   support 16-bit stereo output, but only mono input."
+>>   			 *
+>>   			 *   Technical Information Library (TIL) article number 16405.
+>> -			 *   http://support.apple.com/kb/TA32601
+>> +			 *   https://support.apple.com/kb/TA32601
+>>   			 *
+>>   			 * --David Kilzer
+>>   			 */
+>>
