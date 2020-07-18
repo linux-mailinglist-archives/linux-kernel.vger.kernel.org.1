@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B71224D1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9C8224D21
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgGRQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 12:36:57 -0400
-Received: from www381.your-server.de ([78.46.137.84]:50708 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbgGRQg5 (ORCPT
+        id S1727866AbgGRQvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 12:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727055AbgGRQvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 12:36:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MuAF07/PLYpW3vDGuXu6XLibaUuocTYnjLIQeyAsQI0=; b=RmXTjFH1+pOtSPwnYZcb2DsfUK
-        jf1gsQQBazFVX/Ntfzfa1iptZXdb3uRKHeLwDQioklHhFkemG+QC1un/iVZixXYHfHFZMc9ZPg9wf
-        tMF95BGfusRR6Ki2PkAOSPVPPLtp7XCuXbI8jIDU23VQH/NSsQ1bSKOKASDpTHy2devf1AScVT717
-        N2+Ynnae8wHjGrEip6nQ5q57Gc81vhbS4LUd86cJ2u1O4BXWZ/57Gv4VKSgFGPTmcdRYugmFMyPem
-        VEXDLk7Pur/Spky6Uxlge+mkcBbQZoPWw7CSoYtQcVQkqj5lo2I5aV4yYTUMVRwbcOBmBzJe/e0Kt
-        hXXEBlKQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <lars@metafoo.de>)
-        id 1jwppU-0002Yl-8e; Sat, 18 Jul 2020 18:36:52 +0200
-Received: from [62.216.206.120] (helo=[192.168.178.20])
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1jwppU-0005jj-4K; Sat, 18 Jul 2020 18:36:52 +0200
-Subject: Re: [PATCH] iio: trigger: Staticise stub functions
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200714142456.67054-1-alexandru.ardelean@analog.com>
- <20200718172501.4ba58924@archlinux>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <017b33b1-b6f9-107b-b9c4-8c0abd0d6a3b@metafoo.de>
-Date:   Sat, 18 Jul 2020 18:36:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 18 Jul 2020 12:51:23 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC383C0619D2;
+        Sat, 18 Jul 2020 09:51:22 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id w34so10032265qte.1;
+        Sat, 18 Jul 2020 09:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jgz/bjqrYYuXfJJiYweI1bjndcl+QrBnvt6EE8RcSqg=;
+        b=eZ98Nuk97kOV6dWfN8m14a8jBbGWOk9Ftl5lVJdZQSMFYr/4c23JWrX4IFR/LLPJ8g
+         ZvWvmkO568a0ssK8u9spN5tnw8R/7QyzgMDYUDF4rUZu2+Q+1QIUgU8GZkWjACB59xxW
+         OW5Sqnb9dMZoLs0/EAzM97UEjKAl8fCQPlm6lzZiI11NrPtg3IGr7WUpLxT/suWTX1A6
+         qhvIj7PHEzlkbXhF/ch3q+ykoZVVN0Vdyt2IoEdqv5leKCOym2QsvyeI4Z2MmyvZcK/Z
+         AuxNIOZScmrAcnRJztHWlGxZrnyhX68oYjf8dfiMQMqQDUNGo/x4RQtXvoJVxO/V2U6H
+         1c+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jgz/bjqrYYuXfJJiYweI1bjndcl+QrBnvt6EE8RcSqg=;
+        b=nC+idJohh1bzBVjnt7GGXNecNdNzM1y6ozx5vBBU2e4c5siZOF2Hw6AwY17DaqoukL
+         00X9JOJaVuXwbKlwJCtI7iUGR6cO8c8ovUeRU7rSySBsi4L4IrtzID7RGqXVfg6jtavM
+         6doOAzFYfqvvmAInY3ErOLenzYZ4fwRCH5O71KsOj/Besp1wNmkDswdG2WyeOCgi1doB
+         U6sJ2C36088HI4pTnjgXq66pEn1ybEyuaauP57CZPmCvVxGLUj9wJBsF1GiNj/k6FCnr
+         ygfaFZ8QQOlMcUj8zuYc0H4bY5Zc+9iPY/FigNRnkBIUS7be/vcTp7ObN8K2oqNWzBv/
+         3njQ==
+X-Gm-Message-State: AOAM5317/P3dyvsTAPuR7tuLUfAN5abIb5oK56ClD7RrUBVQ4CFEXAei
+        1+cww06yhKwbHVopmXGY4FY=
+X-Google-Smtp-Source: ABdhPJzXZklAJ4ZJ0QCecSanri2g0yoP6JHDzBTOQa3w1xuJpEzM6RjfcApT/jw2Ub1lg1vE9JfXkQ==
+X-Received: by 2002:aed:25d1:: with SMTP id y17mr15743427qtc.126.1595091081841;
+        Sat, 18 Jul 2020 09:51:21 -0700 (PDT)
+Received: from localhost.localdomain ([2804:18:602d:16d:d038:1a92:190d:65d2])
+        by smtp.gmail.com with ESMTPSA id q5sm15361801qtf.12.2020.07.18.09.51.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 09:51:21 -0700 (PDT)
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+X-Google-Original-From: Daniel W. S. Almeida
+To:     corbet@lwn.net, mchehab@kernel.org
+Cc:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: admin-guide/mm/index: Fix reference to nonexistent document
+Date:   Sat, 18 Jul 2020 13:50:55 -0300
+Message-Id: <20200718165107.625847-1-dwlsalmeida@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200718172501.4ba58924@archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25877/Sat Jul 18 16:24:08 2020)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/20 6:25 PM, Jonathan Cameron wrote:
-> On Tue, 14 Jul 2020 17:24:56 +0300
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
->> From: Lars-Peter Clausen <lars@metafoo.de>
->>
->> Make sure that the trigger function stubs are all static inline. Otherwise
->> we'll get linker errors due to multiple definitions of the same function.
->>
->> Fixes f8c6f4e9a40d4: ("iio: trigger: Staticise stub functions")
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> I'm curious on what the actual build error is?  Static functions should
-> result in independent implementations in each C file that includes
-> them. Inline is normally considered a hint.  Hence what am I missing?
+From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 
-It's a bad commit message, my fault. This should have been
+Fix the following warning:
 
-Make sure that the trigger function stubs are all static inline. 
-Otherwise we might see compiler warnings about declared but unused 
-functions.
+WARNING: toctree contains reference to nonexistent document
+'admin-guide/mm/nommu-map'
 
+This was due to a typo.
+
+Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+---
+ Documentation/admin-guide/mm/index.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
+index 774dad6d3d291..cd727cfc1b040 100644
+--- a/Documentation/admin-guide/mm/index.rst
++++ b/Documentation/admin-guide/mm/index.rst
+@@ -31,7 +31,7 @@ the Linux memory management.
+    idle_page_tracking
+    ksm
+    memory-hotplug
+-   nommu-map
++   nommu-mmap
+    numa_memory_policy
+    numaperf
+    pagemap
+-- 
+2.27.0
 
