@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E29224ADF
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 13:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E328224AE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 13:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726994AbgGRLFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 07:05:30 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:39908 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726507AbgGRLFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 07:05:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 7F632FB03;
-        Sat, 18 Jul 2020 13:05:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zmh5EomUl9RE; Sat, 18 Jul 2020 13:05:26 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id B06E842576; Sat, 18 Jul 2020 13:05:25 +0200 (CEST)
-Date:   Sat, 18 Jul 2020 13:05:25 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>, lukas@mntmn.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/4] drm/imx: Add initial support for DCSS on iMX8MQ
-Message-ID: <20200718110525.GA2827@bogon.m.sigxcpu.org>
-References: <20200717144132.2206-1-laurentiu.palcu@oss.nxp.com>
- <20200717144132.2206-3-laurentiu.palcu@oss.nxp.com>
- <20200717194849.GA2369507@ravnborg.org>
+        id S1726882AbgGRLJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 07:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbgGRLJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 07:09:08 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCFFC0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 04:09:08 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id E6C44BC069;
+        Sat, 18 Jul 2020 11:09:04 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] ASoC: ti: Replace HTTP links with HTTPS ones
+Date:   Sat, 18 Jul 2020 13:08:57 +0200
+Message-Id: <20200718110857.11520-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717194849.GA2369507@ravnborg.org>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Fri, Jul 17, 2020 at 09:48:49PM +0200, Sam Ravnborg wrote:
-> Hi Laurentiu.
-> 
-> On Fri, Jul 17, 2020 at 05:41:27PM +0300, Laurentiu Palcu wrote:
-> > From: Laurentiu Palcu <laurentiu.palcu@nxp.com>
-> > 
-> > This adds initial support for iMX8MQ's Display Controller Subsystem (DCSS).
-> > Some of its capabilities include:
-> >  * 4K@60fps;
-> >  * HDR10;
-> >  * one graphics and 2 video pipelines;
-> >  * on-the-fly decompression of compressed video and graphics;
-> > 
-> > The reference manual can be found here:
-> > https://www.nxp.com/webapp/Download?colCode=IMX8MDQLQRM
-> > 
-> > The current patch adds only basic functionality: one primary plane for
-> > graphics, linear, tiled and super-tiled buffers support (no graphics
-> > decompression yet), no HDR10 and no video planes.
-> > 
-> > Video planes support and HDR10 will be added in subsequent patches once
-> > per-plane de-gamma/CSC/gamma support is in.
-> > 
-> > Signed-off-by: Laurentiu Palcu <laurentiu.palcu@nxp.com>
-> > Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-> > ---
-> 
-> ....
->         return drm_bridge_attach(encoder, bridge, NULL, 0);
-> ....
-> 
-> The above code-snippet tells that the display-driver rely on the bridge
-> to create the connector.
-> Could this by any chance be updated to the new way where the display
-> driver creates the connector - and thus passing DRM_BRIDGE_ATTACH_NO_CONNECTOR
-> as the flags argument?
-> 
-> What bridges would be relevant?
-> To check that the reelvant bridges are already ported.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I think that's mostly NWL atm since MHDP isn't mainline yet. Can you
-recommend a bridge driver to look at that does this right?
-Cheers,
- -- Guido
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ sound/soc/ti/udma-pcm.c | 2 +-
+ sound/soc/ti/udma-pcm.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/ti/udma-pcm.c b/sound/soc/ti/udma-pcm.c
+index 39830caaaf7c..2ff0f518aba5 100644
+--- a/sound/soc/ti/udma-pcm.c
++++ b/sound/soc/ti/udma-pcm.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
++ *  Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com
+  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  */
+ 
+diff --git a/sound/soc/ti/udma-pcm.h b/sound/soc/ti/udma-pcm.h
+index 54111e7312c1..9ed588fd79b9 100644
+--- a/sound/soc/ti/udma-pcm.h
++++ b/sound/soc/ti/udma-pcm.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- *  Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
++ *  Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com
+  */
+ 
+ #ifndef __UDMA_PCM_H__
+-- 
+2.27.0
+
