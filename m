@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7B4224942
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829EB22494E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 08:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728972AbgGRGjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 02:39:15 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:60943 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgGRGjO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 02:39:14 -0400
-Received: from oscar.flets-west.jp (softbank126025067101.bbtec.net [126.25.67.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 06I6cod9015918;
-        Sat, 18 Jul 2020 15:38:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 06I6cod9015918
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1595054331;
-        bh=XE6IhH9B+MTAazbdPx+nUYPzcg3JfBLMiZA4IYkdxLE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZyhUBpb7n26FFVNS1u8ymXCZapJ//JWl9qPSkizaFBISCvGu2wLriLdiz5nbCmf4k
-         BI8FCI22qMvPC5+fyEnLtrWarwUOxhseg2u6z6LQEdCfSOp7USAalp1jeVko2+7dNn
-         QRw5qVFfbPCX4oeEUfQaTLMluGulFeS4/zL1E7BWxfeaAJ7XNOcP9gWx1FKO6dJBFQ
-         Ng63q+aSQwTa0VRF8jbzTLnWOO/hOkGPby2Bdp5cOj9+sHkJ1cJIuZ7gamHWXO1JSS
-         cl4DCvcAWq8J6+EyYcazniNXDdqfKIiWBwTuhEY3avwllg80Bp2OiIaWIqnXQdUfKb
-         XbQ1Dtim/cTbg==
-X-Nifty-SrcIP: [126.25.67.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        id S1729037AbgGRGjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 02:39:42 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30319 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726551AbgGRGjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 02:39:01 -0400
+IronPort-SDR: r0A0JB1oajJ29rhhkVdRyhJiFNBkgkw5/bH233KOrzWx14QjfOLubZhuMWRCYV34j903P6tUU6
+ sVcgXATOp2CA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="151079553"
+X-IronPort-AV: E=Sophos;i="5.75,366,1589266800"; 
+   d="scan'208";a="151079553"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2020 23:39:00 -0700
+IronPort-SDR: WqBGYgKWUBAFm9qTIPSxn35YWrWClTpoBhdGM4JL6q7BDnxWQbuQ5EZQ6LUvWOyYLPpnOrth1y
+ wIfRME2nTG3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,366,1589266800"; 
+   d="scan'208";a="486690949"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2020 23:39:00 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] kconfig: constify XPM data
-Date:   Sat, 18 Jul 2020 15:38:47 +0900
-Message-Id: <20200718063847.919599-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH 1/7] KVM: x86: Add RIP to the kvm_entry, i.e. VM-Enter, tracepoint
+Date:   Fri, 17 Jul 2020 23:38:48 -0700
+Message-Id: <20200718063854.16017-2-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200718063854.16017-1-sean.j.christopherson@intel.com>
+References: <20200718063854.16017-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -42,195 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Constify arrays as well as strings.
+Add RIP to the kvm_entry tracepoint to help debug if the kvm_exit
+tracepoint is disable or if VM-Enter fails, in which case the kvm_exit
+tracepoint won't be hit.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Read RIP from within the tracepoint itself to avoid a potential VMREAD
+and retpoline if the guest's RIP isn't available.
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
+ arch/x86/kvm/trace.h | 10 ++++++----
+ arch/x86/kvm/x86.c   |  2 +-
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
- scripts/kconfig/images.c | 30 +++++++++++++++---------------
- scripts/kconfig/images.h | 30 +++++++++++++++---------------
- 2 files changed, 30 insertions(+), 30 deletions(-)
-
-diff --git a/scripts/kconfig/images.c b/scripts/kconfig/images.c
-index b4fa0e4a63a5..2f9afffa5d79 100644
---- a/scripts/kconfig/images.c
-+++ b/scripts/kconfig/images.c
-@@ -5,7 +5,7 @@
+diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+index b66432b015d2e..9899ff0fa2534 100644
+--- a/arch/x86/kvm/trace.h
++++ b/arch/x86/kvm/trace.h
+@@ -15,18 +15,20 @@
+  * Tracepoint for guest mode entry.
+  */
+ TRACE_EVENT(kvm_entry,
+-	TP_PROTO(unsigned int vcpu_id),
+-	TP_ARGS(vcpu_id),
++	TP_PROTO(struct kvm_vcpu *vcpu),
++	TP_ARGS(vcpu),
  
- #include "images.h"
+ 	TP_STRUCT__entry(
+ 		__field(	unsigned int,	vcpu_id		)
++		__field(	unsigned long,	rip		)
+ 	),
  
--const char *xpm_load[] = {
-+const char * const xpm_load[] = {
- "22 22 5 1",
- ". c None",
- "# c #000000",
-@@ -35,7 +35,7 @@ const char *xpm_load[] = {
- "###############.......",
- "......................"};
+ 	TP_fast_assign(
+-		__entry->vcpu_id	= vcpu_id;
++		__entry->vcpu_id        = vcpu->vcpu_id;
++		__entry->rip		= kvm_rip_read(vcpu);
+ 	),
  
--const char *xpm_save[] = {
-+const char * const xpm_save[] = {
- "22 22 5 1",
- ". c None",
- "# c #000000",
-@@ -65,7 +65,7 @@ const char *xpm_save[] = {
- "..##################..",
- "......................"};
+-	TP_printk("vcpu %u", __entry->vcpu_id)
++	TP_printk("vcpu %u, rip 0x%lx", __entry->vcpu_id, __entry->rip)
+ );
  
--const char *xpm_back[] = {
-+const char * const xpm_back[] = {
- "22 22 3 1",
- ". c None",
- "# c #000083",
-@@ -93,7 +93,7 @@ const char *xpm_back[] = {
- "......................",
- "......................"};
+ /*
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 5f526d94c33f3..3563359316d64 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8547,7 +8547,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 		kvm_x86_ops.request_immediate_exit(vcpu);
+ 	}
  
--const char *xpm_tree_view[] = {
-+const char * const xpm_tree_view[] = {
- "22 22 2 1",
- ". c None",
- "# c #000000",
-@@ -120,7 +120,7 @@ const char *xpm_tree_view[] = {
- "......................",
- "......................"};
+-	trace_kvm_entry(vcpu->vcpu_id);
++	trace_kvm_entry(vcpu);
  
--const char *xpm_single_view[] = {
-+const char * const xpm_single_view[] = {
- "22 22 2 1",
- ". c None",
- "# c #000000",
-@@ -147,7 +147,7 @@ const char *xpm_single_view[] = {
- "......................",
- "......................"};
- 
--const char *xpm_split_view[] = {
-+const char * const xpm_split_view[] = {
- "22 22 2 1",
- ". c None",
- "# c #000000",
-@@ -174,7 +174,7 @@ const char *xpm_split_view[] = {
- "......................",
- "......................"};
- 
--const char *xpm_symbol_no[] = {
-+const char * const xpm_symbol_no[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -191,7 +191,7 @@ const char *xpm_symbol_no[] = {
- " .......... ",
- "            "};
- 
--const char *xpm_symbol_mod[] = {
-+const char * const xpm_symbol_mod[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -208,7 +208,7 @@ const char *xpm_symbol_mod[] = {
- " .......... ",
- "            "};
- 
--const char *xpm_symbol_yes[] = {
-+const char * const xpm_symbol_yes[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -225,7 +225,7 @@ const char *xpm_symbol_yes[] = {
- " .......... ",
- "            "};
- 
--const char *xpm_choice_no[] = {
-+const char * const xpm_choice_no[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -242,7 +242,7 @@ const char *xpm_choice_no[] = {
- "    ....    ",
- "            "};
- 
--const char *xpm_choice_yes[] = {
-+const char * const xpm_choice_yes[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -259,7 +259,7 @@ const char *xpm_choice_yes[] = {
- "    ....    ",
- "            "};
- 
--const char *xpm_menu[] = {
-+const char * const xpm_menu[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -276,7 +276,7 @@ const char *xpm_menu[] = {
- " .......... ",
- "            "};
- 
--const char *xpm_menu_inv[] = {
-+const char * const xpm_menu_inv[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -293,7 +293,7 @@ const char *xpm_menu_inv[] = {
- " .......... ",
- "            "};
- 
--const char *xpm_menuback[] = {
-+const char * const xpm_menuback[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-@@ -310,7 +310,7 @@ const char *xpm_menuback[] = {
- " .......... ",
- "            "};
- 
--const char *xpm_void[] = {
-+const char * const xpm_void[] = {
- "12 12 2 1",
- "  c white",
- ". c black",
-diff --git a/scripts/kconfig/images.h b/scripts/kconfig/images.h
-index d8ff614bd087..7212dec2006c 100644
---- a/scripts/kconfig/images.h
-+++ b/scripts/kconfig/images.h
-@@ -10,21 +10,21 @@
- extern "C" {
- #endif
- 
--extern const char *xpm_load[];
--extern const char *xpm_save[];
--extern const char *xpm_back[];
--extern const char *xpm_tree_view[];
--extern const char *xpm_single_view[];
--extern const char *xpm_split_view[];
--extern const char *xpm_symbol_no[];
--extern const char *xpm_symbol_mod[];
--extern const char *xpm_symbol_yes[];
--extern const char *xpm_choice_no[];
--extern const char *xpm_choice_yes[];
--extern const char *xpm_menu[];
--extern const char *xpm_menu_inv[];
--extern const char *xpm_menuback[];
--extern const char *xpm_void[];
-+extern const char * const xpm_load[];
-+extern const char * const xpm_save[];
-+extern const char * const xpm_back[];
-+extern const char * const xpm_tree_view[];
-+extern const char * const xpm_single_view[];
-+extern const char * const xpm_split_view[];
-+extern const char * const xpm_symbol_no[];
-+extern const char * const xpm_symbol_mod[];
-+extern const char * const xpm_symbol_yes[];
-+extern const char * const xpm_choice_no[];
-+extern const char * const xpm_choice_yes[];
-+extern const char * const xpm_menu[];
-+extern const char * const xpm_menu_inv[];
-+extern const char * const xpm_menuback[];
-+extern const char * const xpm_void[];
- 
- #ifdef __cplusplus
- }
+ 	fpregs_assert_state_consistent();
+ 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
 -- 
-2.25.1
+2.26.0
 
