@@ -2,133 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837C4224BCC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E9224BCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgGRO1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:27:43 -0400
-Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:44880 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726574AbgGRO1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:27:42 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 4A0BA18566;
-        Sat, 18 Jul 2020 14:27:41 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3866:3867:3868:4321:5007:6997:7576:8603:8957:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:13439:14181:14659:14721:21080:21451:21627:21990:30054:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: smell32_63132ee26f14
-X-Filterd-Recvd-Size: 3682
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 18 Jul 2020 14:27:39 +0000 (UTC)
-Message-ID: <e9571e823a855f5c3c671c9c9c5ffe423b313ca4.camel@perches.com>
-Subject: Re: [PATCH] ACPI/PCI: fix array_size.cocci warnings
-From:   Joe Perches <joe@perches.com>
-To:     kernel test robot <lkp@intel.com>,
-        sathyanarayanan.kuppuswamy@linux.intel.com, bhelgaas@google.com
-Cc:     kbuild-all@lists.01.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com
-Date:   Sat, 18 Jul 2020 07:27:38 -0700
-In-Reply-To: <20200718080145.GA55766@adfac4dc55cb>
-References: <a5da506cb5cd5d590d88da8537ad01c0167840da.1595006564.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-         <20200718080145.GA55766@adfac4dc55cb>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1727828AbgGRO1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:27:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726574AbgGRO1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 10:27:48 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D0242064B;
+        Sat, 18 Jul 2020 14:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595082467;
+        bh=ps9ZZzz+lcyes6oa4jJWZNjZto/m00DauUtvo08pCNc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ODoM/j36sufJAvVQFb+JUbr5ulclWbrXJlOh81AGFHBcPqK7PooT7H1dY77YVwdK4
+         brUPsQlMhxtDUk6hime/23SJ6kklEfL2AfmOx+f0syar/VTlWYWig4AMyne56qxLAt
+         qtO24HnjMWkrF2TMuoraGTqzKskHdwAVRsU7vwNs=
+Date:   Sat, 18 Jul 2020 15:27:43 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        William Markezana <william.markezana@meas-spec.com>,
+        Ludovic Tancerel <ludovic.tancerel@maplehightech.com>
+Subject: Re: [PATCH 03/30] iio: common: ms_sensors: ms_sensors_i2c: Fix
+ misspelling of parameter 'client'
+Message-ID: <20200718152743.6867b3ea@archlinux>
+In-Reply-To: <20200716135928.1456727-4-lee.jones@linaro.org>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-4-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-07-18 at 16:01 +0800, kernel test robot wrote:
-> From: kernel test robot <lkp@intel.com>
+On Thu, 16 Jul 2020 14:59:01 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> Probably due to docrot.
 > 
-> drivers/acpi/pci_root.c:150:37-38: WARNING: Use ARRAY_SIZE
+> Fixes the following W=1 kernel build warning(s):
 > 
->  Use ARRAY_SIZE instead of dividing sizeof array with sizeof an element
-[]
->  static char *get_osc_desc(u32 bit)
->  {
-> -	int len = sizeof(pci_osc_control_bit) / sizeof(pci_osc_control_bit[0]);
-> +	int len = ARRAY_SIZE(pci_osc_control_bit);
->  	int i = 0;
+>  drivers/iio/common/ms_sensors/ms_sensors_i2c.c:186: warning: Function parameter or member 'client' not described in 'ms_sensors_read_serial'
+>  drivers/iio/common/ms_sensors/ms_sensors_i2c.c:186: warning: Excess function parameter 'cli' description in 'ms_sensors_read_serial'
+> 
+> Cc: William Markezana <william.markezana@meas-spec.com>
+> Cc: Ludovic Tancerel <ludovic.tancerel@maplehightech.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Applied
+
+> ---
+>  drivers/iio/common/ms_sensors/ms_sensors_i2c.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/common/ms_sensors/ms_sensors_i2c.c b/drivers/iio/common/ms_sensors/ms_sensors_i2c.c
+> index b52cba1b3c831..b9e2038d05ef4 100644
+> --- a/drivers/iio/common/ms_sensors/ms_sensors_i2c.c
+> +++ b/drivers/iio/common/ms_sensors/ms_sensors_i2c.c
+> @@ -165,7 +165,7 @@ static bool ms_sensors_crc_valid(u32 value)
 >  
->  	for (i = 0; i <len; i++)
-
-And likely better to not declare len at all
-and ARRAY_SIZE directly instead.
-
-static char *get_osc_desc(u32 bit)
-{
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(pci_osc_control_bit); i++) {
-		if (bit == pci_osc_control_bit[i].bit)
-			return pci_osc_control_bit[i].desc;
-	}
-
-	return NULL;
-}
-
-and also likely both arrays should be const.
-
-Something like:
----
- drivers/acpi/pci_root.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index f90e841c59f5..bfb437cf749a 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -122,10 +122,10 @@ static acpi_status try_get_root_bridge_busnr(acpi_handle handle,
- 
- struct pci_osc_bit_struct {
- 	u32 bit;
--	char *desc;
-+	const char *desc;
- };
- 
--static struct pci_osc_bit_struct pci_osc_support_bit[] = {
-+static const struct pci_osc_bit_struct pci_osc_support_bit[] = {
- 	{ OSC_PCI_EXT_CONFIG_SUPPORT, "ExtendedConfig" },
- 	{ OSC_PCI_ASPM_SUPPORT, "ASPM" },
- 	{ OSC_PCI_CLOCK_PM_SUPPORT, "ClockPM" },
-@@ -135,7 +135,7 @@ static struct pci_osc_bit_struct pci_osc_support_bit[] = {
- 	{ OSC_PCI_HPX_TYPE_3_SUPPORT, "HPX-Type3" },
- };
- 
--static struct pci_osc_bit_struct pci_osc_control_bit[] = {
-+static const struct pci_osc_bit_struct pci_osc_control_bit[] = {
- 	{ OSC_PCI_EXPRESS_NATIVE_HP_CONTROL, "PCIeHotplug" },
- 	{ OSC_PCI_SHPC_NATIVE_HP_CONTROL, "SHPCHotplug" },
- 	{ OSC_PCI_EXPRESS_PME_CONTROL, "PME" },
-@@ -146,17 +146,18 @@ static struct pci_osc_bit_struct pci_osc_control_bit[] = {
- };
- 
- static void decode_osc_bits(struct acpi_pci_root *root, char *msg, u32 word,
--			    struct pci_osc_bit_struct *table, int size)
-+			    const struct pci_osc_bit_struct *table, int size)
- {
- 	char buf[80];
- 	int i, len = 0;
--	struct pci_osc_bit_struct *entry;
- 
- 	buf[0] = '\0';
--	for (i = 0, entry = table; i < size; i++, entry++)
--		if (word & entry->bit)
-+	for (i = 0; i < size; i++) {
-+		if (word & table->bit)
- 			len += scnprintf(buf + len, sizeof(buf) - len, "%s%s",
--					len ? " " : "", entry->desc);
-+					len ? " " : "", table->desc);
-+		table++;
-+	}
- 
- 	dev_info(&root->device->dev, "_OSC: %s [%s]\n", msg, buf);
- }
-
+>  /**
+>   * ms_sensors_read_serial() - Serial number read function
+> - * @cli:	pointer to i2c client
+> + * @client:	pointer to i2c client
+>   * @sn:		pointer to 64-bits destination value
+>   *
+>   * Generic i2c serial number read function for Measurement Specialties devices.
 
