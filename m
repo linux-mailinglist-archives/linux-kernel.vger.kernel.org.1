@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAF5224744
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 02:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5741C224746
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 02:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgGRAAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 20:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S1728348AbgGRAB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 20:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgGRAAV (ORCPT
+        with ESMTP id S1727040AbgGRAB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 20:00:21 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7D8C0619D2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:00:21 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h22so14611672lji.9
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LfDE4ruJhyC46Wi3RsJ/GllVHPpuqL5yVRuFbthLOuI=;
-        b=Asvu6yiFTH7mDWS3ok1hQi/vxghIf/ULfa8/lMbwgMAQlGqUqQ2Cwhu6VCvk/zsA+V
-         uN8GN3YZiywISGAvc0HpupYOQ101xF+mVckD8yWK+Y5Hty/bx0tsC7rFU6n6O0Vhiqbj
-         6SWfBdimEhqyIFp6vGDlFyYi6mUu6JLgQHR+o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LfDE4ruJhyC46Wi3RsJ/GllVHPpuqL5yVRuFbthLOuI=;
-        b=LazXLYfJikNRmp89VFQGMq8woB7X6PJoxzb8V3QgCUBvkfiU+oKDvhwIKio6Arv1XB
-         AzrpT+ZrEDrXoPJoOOe6sPT30kP7EfxzOFHykITMHyhFvYS2WrVFgB9rQSwNddcDfZoR
-         3r5z5lA8/rkVlkPT+DN6dAnN75lvNpGcxzkPYbND1RwMUG12jOygbDoh3hygtbR6eJUF
-         EWeUJxDmJ+/dMI6RexdDDr6q4VwJSrP2kXqAgGwj0LwWE1s8b/LgG1S1IQHGMBWUjGNC
-         Ecv4aHBrhc5nMDtbFenJytvXltFUJay/0fA/Fwqj2YWlBdmRT0GnYyDMpuBhevGPLTMp
-         acPg==
-X-Gm-Message-State: AOAM532odylGUgmsMZBehU6qcyagVLxPRHmNHGVrrp7RkHnkqiWe5XOH
-        KOuAj1ZJZhMg94jIoeGj3sIgu50yoZ0=
-X-Google-Smtp-Source: ABdhPJy3Hg2330W0RYSf1u85vwznr5p15B9p9EYsOhYBRXGlag7MfjSjCsR+72Pi8ag5VlWCqWKzxg==
-X-Received: by 2002:a05:651c:10f:: with SMTP id a15mr5139491ljb.192.1595030419018;
-        Fri, 17 Jul 2020 17:00:19 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id u7sm2547546lfi.45.2020.07.17.17.00.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 17:00:17 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id k15so7004943lfc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:00:17 -0700 (PDT)
-X-Received: by 2002:ac2:5093:: with SMTP id f19mr5794252lfm.10.1595030417179;
- Fri, 17 Jul 2020 17:00:17 -0700 (PDT)
+        Fri, 17 Jul 2020 20:01:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D05C0619D2;
+        Fri, 17 Jul 2020 17:01:57 -0700 (PDT)
+Date:   Sat, 18 Jul 2020 00:01:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595030515;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MukbcjmBrDg2Lx48HStzUZb1PPE5amUzAQIMc8hjWBI=;
+        b=h/w0vVMgtmmf+mnnyAyHYRHoNGEXU8gkXXfZ5eqks2VQClDWbpPZXDkFQA2TTVz0GCQ4PL
+        CaGnsxt2Il4HtsV0Hbw08iWw094Aoigrh/4IqjFGPRKzj1Aj8adurNKmDjTuqKnzxz5/Vm
+        wjv1uZ5DesioNBrNX6x6NCsvH5uCFTONDRLuU3xmblYjK0YHI18TpqP6B0XtBGaU8wpSsm
+        tVPOgFGsWgii7ZfVKVIxpMOdp/eimGt+KMNNIzP6JIiHr7St6nCysZMwu4Vk05mrsycI5B
+        h2y4CUt8xWGsdYmLg/mHRgQwxXGCAcVzE8FlVrHW9OO2oEx3DJzRxBJLZUtlSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595030515;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MukbcjmBrDg2Lx48HStzUZb1PPE5amUzAQIMc8hjWBI=;
+        b=JBx9dv+eKaLd1kYbMTAIfw19HtzvS4mD+RRSLuvfBTcoQe9lYWzHiTUPtkzJAlL6GZX0gv
+        aDqOEC4baraqc1Aw==
+From:   tip-bot2 for =?utf-8?q?Andr=C3=A9?= Almeida 
+        <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] futex: Remove unused or redundant includes
+Cc:     andrealmeid@collabora.com, Thomas Gleixner <tglx@linutronix.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200702202843.520764-4-andrealmeid@collabora.com>
+References: <20200702202843.520764-4-andrealmeid@collabora.com>
 MIME-Version: 1.0
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
-In-Reply-To: <20200717234818.8622-1-john.ogness@linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 17 Jul 2020 17:00:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
-Message-ID: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
-Subject: Re: [PATCH 0/4] printk: reimplement LOG_CONT handling
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159503051436.4006.10659426956008198981.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 4:48 PM John Ogness <john.ogness@linutronix.de> wrote:
->
-> Using placeholders avoids tools such as systemd-journald from
-> erroneously reporting missed messages. However, it also means that
-> empty placeholder records are visible in systemd-journald logs and
-> displayed in tools such as dmesg.
+The following commit has been merged into the locking/core branch of tip:
 
-As long as the readers still reliably do the joining, this is fine.
+Commit-ID:     9a71df495c3d29dab596bb590e73fd8b20106e2d
+Gitweb:        https://git.kernel.org/tip/9a71df495c3d29dab596bb590e73fd8b201=
+06e2d
+Author:        Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+AuthorDate:    Thu, 02 Jul 2020 17:28:42 -03:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 18 Jul 2020 01:56:09 +02:00
 
-HOWEVER.
+futex: Remove unused or redundant includes
 
-Make sure you test the case of "fast concurrent readers". The last
-time we did things like this, it was a disaster, because a concurrent
-reader would see and return the _incomplete_ line, and the next entry
-was still being generated on another CPU.
+Since 82af7aca ("Removal of FUTEX_FD"), some includes related to file
+operations aren't needed anymore. More investigation around the includes
+showed that a lot of includes aren't required for compilation, possible
+due to redundant includes. Simplify the code by removing unused
+includes.
 
-The reader would then decide to return that incomplete line, because
-it had something.
+Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200702202843.520764-4-andrealmeid@collabora=
+.com
 
-And while in theory this could then be handled properly in user space,
-in practice it wasn't. So you'd see a lot of logging tools that would
-then report all those continuations as separate log events.
+---
+ kernel/futex.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-Which is the whole point of LOG_CONT - for that *not* to happen.
-
-So this is just a heads-up that I will not pull something that breaks
-LOG_CONT because it thinks "user space can handle it". No. User space
-does not handle it, and we need to handle it for the user.
-
-So as long as the kernel makes sure the joining does happen it at some
-point, it's all fine. It obviously doesn't have to happen at printk()
-time, just as long as incomplete records aren't exposed even to
-concurrent readers.
-
-A test-case with a short delay in between writes might be a good idea,
-although the last time this broke it was very clear in peoples syslogs
-and dmesg because it turns out there are lots of concurrent readers at
-boot time and _somebody_ will hit the race.
-
-             Linus
+diff --git a/kernel/futex.c b/kernel/futex.c
+index cda9175..4616d4a 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -32,30 +32,13 @@
+  *  "But they come in a choice of three flavours!"
+  */
+ #include <linux/compat.h>
+-#include <linux/slab.h>
+-#include <linux/poll.h>
+-#include <linux/fs.h>
+-#include <linux/file.h>
+ #include <linux/jhash.h>
+-#include <linux/init.h>
+-#include <linux/futex.h>
+-#include <linux/mount.h>
+ #include <linux/pagemap.h>
+ #include <linux/syscalls.h>
+-#include <linux/signal.h>
+-#include <linux/export.h>
+-#include <linux/magic.h>
+-#include <linux/pid.h>
+-#include <linux/nsproxy.h>
+-#include <linux/ptrace.h>
+-#include <linux/sched/rt.h>
+-#include <linux/sched/wake_q.h>
+-#include <linux/sched/mm.h>
+ #include <linux/hugetlb.h>
+ #include <linux/freezer.h>
+ #include <linux/memblock.h>
+ #include <linux/fault-inject.h>
+-#include <linux/refcount.h>
+=20
+ #include <asm/futex.h>
+=20
