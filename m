@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF68224E47
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 01:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B5E224E4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 01:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgGRXfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 19:35:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:30875 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726492AbgGRXfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 19:35:06 -0400
-IronPort-SDR: E1qbDBG4aLpmdMaAzy87gJ/cEvDgZW409L05WxY1Tr+uQ/cMIYRzGtcyIgb8AudIjuXnJb4Egw
- Fhx6n5XBGDjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9686"; a="148930547"
-X-IronPort-AV: E=Sophos;i="5.75,368,1589266800"; 
-   d="scan'208";a="148930547"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2020 16:35:05 -0700
-IronPort-SDR: T4jfnmHtDcBqaw9XzeXtvKcAgXHjTNhKj0Ps5MmLSKb/nZiGhSeJdJHi6Pq5xYk7HipOqxLHqe
- f20oxLiVgp+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,368,1589266800"; 
-   d="scan'208";a="300925286"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga002.jf.intel.com with ESMTP; 18 Jul 2020 16:35:04 -0700
-Message-ID: <14f3bee7569f229541852f61f0a1a88fcdec7249.camel@intel.com>
-Subject: Re: Random shadow stack pointer corruption
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Date:   Sat, 18 Jul 2020 16:34:05 -0700
-In-Reply-To: <d4b9d6a1-d413-b044-1d4a-512bbbf06d78@intel.com>
-References: <c2bfe1aa390777b10d810d2b76a35b97fbd32a1c.camel@intel.com>
-         <CALCETrUBDUKTcmmYD7BpZkL3869ELvha1PqOcScw4M-B_DQdiA@mail.gmail.com>
-         <7653c6c74a4eee18b8bdc8262e0c0b5b95f9d771.camel@intel.com>
-         <d4b9d6a1-d413-b044-1d4a-512bbbf06d78@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726576AbgGRXkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 19:40:11 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48330 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726209AbgGRXkL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 19:40:11 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1046)
+        id 5FA3A20B4909; Sat, 18 Jul 2020 16:40:10 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5FA3A20B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1595115610;
+        bh=9xRlxmh/3mioap28Q8NNX9lHocf7lk8i9TYkoBpJhu0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Kksg74EWJmJ6r2UVnQydY7kG0/YUWOkTIwAO2fIiFxOM46xbZzJBMRzk4qrMDURcy
+         EyLHWp6K7hP5S9+cBEXfv7x2KsfkiBi3vadRtwS7+NTH3gCHHx0aCE4xpKXkl+UJHS
+         zBrrD7PLvxZ1q+AMwOX/SY9exw0BnrtC0XJFZvkQ=
+From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
+To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wolfram Sang <wsa@kernel.org>
+Cc:     Ray Jui <rjui@broadcom.com>, bcm-kernel-feedback-list@broadcom.com,
+        Dhananjay Phadke <dphadke@linux.microsoft.com>
+Subject: [PATCH] i2c: iproc: fix race between client unreg and isr
+Date:   Sat, 18 Jul 2020 16:39:59 -0700
+Message-Id: <1595115599-100054-1-git-send-email-dphadke@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-07-18 at 15:41 -0700, Dave Hansen wrote:
-> On 7/18/20 11:24 AM, Yu-cheng Yu wrote:
-> > On Sat, 2020-07-18 at 11:00 -0700, Andy Lutomirski wrote:
-> > > On Sat, Jul 18, 2020 at 10:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
-> > > > Hi,
-> > > > 
-> > > > My shadow stack tests start to have random shadow stack pointer corruption after
-> > > > v5.7 (excluding).  The symptom looks like some locking issue or the kernel is
-> > > > confused about which CPU a task is on.  In later tip/master, this can be
-> > > > triggered by creating two tasks and each does continuous
-> > > > pthread_create()/pthread_join().  If the kernel has max_cpus=1, the issue goes
-> > > > away.  I also checked XSAVES/XRSTORS, but this does not seem to be an issue
-> > > > coming from there.
-> > > 
-> > > What do you mean "shadow stack pointer corruption"?  Is SSP itself
-> > > corrupt while running in the kernel?  Is one of the MSRs getting
-> > > corrupted?  Is the memory to which the shadow stack points getting
-> > > corrupted? Is the CPU rejecting an attempt to change SSP?
-> > 
-> > What I see is, a new thread after ret_from_fork() and iret back to ring-3, 
-> > its shadow stack pointer (MSR_IA32_PL3_SSP) is corrupted.
-> 
-> Does corrupt mean random?  Or is it a valid stack address, just not for
-> _this_ thread?  Or NULL?  Or is it a kernel address?  Have you tried
-> tracing *ALL* the WRMSR's and XRSTOR's that write to the MSR?
+When i2c client unregisters, synchronize irq before setting
+iproc_i2c->slave to NULL.
 
-When a shadow stack address is changed, the address appears to be other task's. 
-I traced all WRMSR's and XRSTOR's.  I also verified there have not been any
-XRSTORS from a wrong buffer.  When rc6 is tagged, I will re-base, test, and
-share current patches.
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000318
 
+[  371.020421] pc : bcm_iproc_i2c_isr+0x530/0x11f0
+[  371.025098] lr : __handle_irq_event_percpu+0x6c/0x170
+[  371.030309] sp : ffff800010003e40
+[  371.033727] x29: ffff800010003e40 x28: 0000000000000060
+[  371.039206] x27: ffff800010ca9de0 x26: ffff800010f895df
+[  371.044686] x25: ffff800010f18888 x24: ffff0008f7ff3600
+[  371.050165] x23: 0000000000000003 x22: 0000000001600000
+[  371.055645] x21: ffff800010f18888 x20: 0000000001600000
+[  371.061124] x19: ffff0008f726f080 x18: 0000000000000000
+[  371.066603] x17: 0000000000000000 x16: 0000000000000000
+[  371.072082] x15: 0000000000000000 x14: 0000000000000000
+[  371.077561] x13: 0000000000000000 x12: 0000000000000001
+[  371.083040] x11: 0000000000000000 x10: 0000000000000040
+[  371.088519] x9 : ffff800010f317c8 x8 : ffff800010f317c0
+[  371.093999] x7 : ffff0008f805b3b0 x6 : 0000000000000000
+[  371.099478] x5 : ffff0008f7ff36a4 x4 : ffff8008ee43d000
+[  371.104957] x3 : 0000000000000000 x2 : ffff8000107d64c0
+[  371.110436] x1 : 00000000c00000af x0 : 0000000000000000
+
+[  371.115916] Call trace:
+[  371.118439]  bcm_iproc_i2c_isr+0x530/0x11f0
+[  371.122754]  __handle_irq_event_percpu+0x6c/0x170
+[  371.127606]  handle_irq_event_percpu+0x34/0x88
+[  371.132189]  handle_irq_event+0x40/0x120
+[  371.136234]  handle_fasteoi_irq+0xcc/0x1a0
+[  371.140459]  generic_handle_irq+0x24/0x38
+[  371.144594]  __handle_domain_irq+0x60/0xb8
+[  371.148820]  gic_handle_irq+0xc0/0x158
+[  371.152687]  el1_irq+0xb8/0x140
+[  371.155927]  arch_cpu_idle+0x10/0x18
+[  371.159615]  do_idle+0x204/0x290
+[  371.162943]  cpu_startup_entry+0x24/0x60
+[  371.166990]  rest_init+0xb0/0xbc
+[  371.170322]  arch_call_rest_init+0xc/0x14
+[  371.174458]  start_kernel+0x404/0x430
+
+Fixes: c245d94ed106 ("i2c: iproc: Add multi byte read-write support for slave mode")
+Signed-off-by: Dhananjay Phadke <dphadke@linux.microsoft.com>
+---
+ drivers/i2c/busses/i2c-bcm-iproc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-bcm-iproc.c
+index b58224b7b..37d2a79e7 100644
+--- a/drivers/i2c/busses/i2c-bcm-iproc.c
++++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+@@ -1074,14 +1074,15 @@ static int bcm_iproc_i2c_unreg_slave(struct i2c_client *slave)
+ 	if (!iproc_i2c->slave)
+ 		return -EINVAL;
+ 
+-	iproc_i2c->slave = NULL;
+-
+ 	/* disable all slave interrupts */
+ 	tmp = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
+ 	tmp &= ~(IE_S_ALL_INTERRUPT_MASK <<
+ 			IE_S_ALL_INTERRUPT_SHIFT);
+ 	iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, tmp);
+ 
++	synchronize_irq(iproc_i2c->irq);
++	iproc_i2c->slave = NULL;
++
+ 	/* Erase the slave address programmed */
+ 	tmp = iproc_i2c_rd_reg(iproc_i2c, S_CFG_SMBUS_ADDR_OFFSET);
+ 	tmp &= ~BIT(S_CFG_EN_NIC_SMB_ADDR3_SHIFT);
