@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD217224742
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 01:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAF5224744
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 02:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgGQX5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 19:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S1728116AbgGRAAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 20:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727946AbgGQX5v (ORCPT
+        with ESMTP id S1726851AbgGRAAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 19:57:51 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FD6C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 16:57:51 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p20so12616241ejd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 16:57:51 -0700 (PDT)
+        Fri, 17 Jul 2020 20:00:21 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7D8C0619D2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:00:21 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h22so14611672lji.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=90BDAQt2ZKjpK6dC2RjNJvlJ6X9bNG9d2FjodAiTaIs=;
-        b=QOvLbloSaN5KHLKmGPPgrN2pCkLUwBvPDo3+63ct4xAZbGv8y8iBEtS5iP7XP/4rUk
-         Y4lZShsdYs+6AzwCkUtJBBKHgwUj2L2uaI0p/JNx6ooMbyU5ivWKklcm9U63APZ8USIm
-         1dpu9UsPvaSvEBCikT2WBCJMi4zKMZDJxXDuk=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LfDE4ruJhyC46Wi3RsJ/GllVHPpuqL5yVRuFbthLOuI=;
+        b=Asvu6yiFTH7mDWS3ok1hQi/vxghIf/ULfa8/lMbwgMAQlGqUqQ2Cwhu6VCvk/zsA+V
+         uN8GN3YZiywISGAvc0HpupYOQ101xF+mVckD8yWK+Y5Hty/bx0tsC7rFU6n6O0Vhiqbj
+         6SWfBdimEhqyIFp6vGDlFyYi6mUu6JLgQHR+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=90BDAQt2ZKjpK6dC2RjNJvlJ6X9bNG9d2FjodAiTaIs=;
-        b=p5QfdhzXP/83JKKw+syJyXfptWEiWdyGVsXcT0NhhZhiqBTOeFrXnZWFAZ2Yt9BeqX
-         xbWZWJx2pP6SkhbipertDxErSx9maevZCaUyUfVa7ygSuyT+Ya71U4X9bb3zZI43g38H
-         cZiQk9YfUhMl5bb5Vr7V+bncCC86+VV4zas9fs9XcA6e8JgH6tesKG/gUSua1Lf898og
-         5xaO+9nBDL7+aqoa9AVjV92AHsBjFVrhx26UIc4ZtNgLa2XPZuAFXeTWmiy7k7QEEgTK
-         wpnjXfRU+89SayHkkw3QL2ffWVBb+kfiJfLCoXrycOxxooclBOV0qveO/fXx+9Mvk2rQ
-         sObw==
-X-Gm-Message-State: AOAM531EGqVfbNtVRnRIrxPIFCybJ70IPGHNBtcLpUu0g/OCFZLYYdaY
-        H7+Wj1K65NXBe3epLcHDWySWNxHvE/ob5SF0
-X-Google-Smtp-Source: ABdhPJzZICwvD2lHCdBPoedxxdB9CsLD8/5+wD8myd8nLObsSVSXyyF19NYub8OSky354S+yneJZXQ==
-X-Received: by 2002:a17:906:aac9:: with SMTP id kt9mr10580040ejb.488.1595030269688;
-        Fri, 17 Jul 2020 16:57:49 -0700 (PDT)
-Received: from [192.168.1.201] (d66-183-107-60.bchsia.telus.net. [66.183.107.60])
-        by smtp.gmail.com with ESMTPSA id g21sm9593764edr.45.2020.07.17.16.57.46
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LfDE4ruJhyC46Wi3RsJ/GllVHPpuqL5yVRuFbthLOuI=;
+        b=LazXLYfJikNRmp89VFQGMq8woB7X6PJoxzb8V3QgCUBvkfiU+oKDvhwIKio6Arv1XB
+         AzrpT+ZrEDrXoPJoOOe6sPT30kP7EfxzOFHykITMHyhFvYS2WrVFgB9rQSwNddcDfZoR
+         3r5z5lA8/rkVlkPT+DN6dAnN75lvNpGcxzkPYbND1RwMUG12jOygbDoh3hygtbR6eJUF
+         EWeUJxDmJ+/dMI6RexdDDr6q4VwJSrP2kXqAgGwj0LwWE1s8b/LgG1S1IQHGMBWUjGNC
+         Ecv4aHBrhc5nMDtbFenJytvXltFUJay/0fA/Fwqj2YWlBdmRT0GnYyDMpuBhevGPLTMp
+         acPg==
+X-Gm-Message-State: AOAM532odylGUgmsMZBehU6qcyagVLxPRHmNHGVrrp7RkHnkqiWe5XOH
+        KOuAj1ZJZhMg94jIoeGj3sIgu50yoZ0=
+X-Google-Smtp-Source: ABdhPJy3Hg2330W0RYSf1u85vwznr5p15B9p9EYsOhYBRXGlag7MfjSjCsR+72Pi8ag5VlWCqWKzxg==
+X-Received: by 2002:a05:651c:10f:: with SMTP id a15mr5139491ljb.192.1595030419018;
+        Fri, 17 Jul 2020 17:00:19 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id u7sm2547546lfi.45.2020.07.17.17.00.17
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 16:57:48 -0700 (PDT)
-Subject: Re: [PATCH v3] pwm: bcm-iproc: handle clk_get_rate() return
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-References: <20200717231954.11695-1-scott.branden@broadcom.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <ebf62731-29bd-078b-e815-55751c9c7ccf@broadcom.com>
-Date:   Fri, 17 Jul 2020 16:57:44 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 17 Jul 2020 17:00:17 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id k15so7004943lfc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 17:00:17 -0700 (PDT)
+X-Received: by 2002:ac2:5093:: with SMTP id f19mr5794252lfm.10.1595030417179;
+ Fri, 17 Jul 2020 17:00:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200717231954.11695-1-scott.branden@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+In-Reply-To: <20200717234818.8622-1-john.ogness@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 17 Jul 2020 17:00:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+Message-ID: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] printk: reimplement LOG_CONT handling
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 17, 2020 at 4:48 PM John Ogness <john.ogness@linutronix.de> wrote:
+>
+> Using placeholders avoids tools such as systemd-journald from
+> erroneously reporting missed messages. However, it also means that
+> empty placeholder records are visible in systemd-journald logs and
+> displayed in tools such as dmesg.
 
+As long as the readers still reliably do the joining, this is fine.
 
-On 7/17/2020 4:19 PM, Scott Branden wrote:
-> From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> 
-> Handle clk_get_rate() returning 0 to avoid possible division by zero.
-> 
-> Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
-> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> Reviewed-off-by: Ray Jui <ray.jui@broadcom.com>
+HOWEVER.
 
-Typo. Should be 'Reviewed-by: Ray Jui <ray.jui@broadcom.com>', :)
+Make sure you test the case of "fast concurrent readers". The last
+time we did things like this, it was a disaster, because a concurrent
+reader would see and return the _incomplete_ line, and the next entry
+was still being generated on another CPU.
 
-> 
-> ---
-> Changes from v2: update commit message to remove <= condition
-> as clk_get_rate only returns value >= 0
-> ---
->  drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
-> index 1f829edd8ee7..d392a828fc49 100644
-> --- a/drivers/pwm/pwm-bcm-iproc.c
-> +++ b/drivers/pwm/pwm-bcm-iproc.c
-> @@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
->  	u64 tmp, multi, rate;
->  	u32 value, prescale;
->  
-> -	rate = clk_get_rate(ip->clk);
-> -
->  	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
->  
->  	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
-> @@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
->  	else
->  		state->polarity = PWM_POLARITY_INVERSED;
->  
-> +	rate = clk_get_rate(ip->clk);
-> +	if (rate == 0) {
-> +		state->period = 0;
-> +		state->duty_cycle = 0;
-> +		return;
-> +	}
-> +
->  	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
->  	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
->  	prescale &= IPROC_PWM_PRESCALE_MAX;
-> 
+The reader would then decide to return that incomplete line, because
+it had something.
+
+And while in theory this could then be handled properly in user space,
+in practice it wasn't. So you'd see a lot of logging tools that would
+then report all those continuations as separate log events.
+
+Which is the whole point of LOG_CONT - for that *not* to happen.
+
+So this is just a heads-up that I will not pull something that breaks
+LOG_CONT because it thinks "user space can handle it". No. User space
+does not handle it, and we need to handle it for the user.
+
+So as long as the kernel makes sure the joining does happen it at some
+point, it's all fine. It obviously doesn't have to happen at printk()
+time, just as long as incomplete records aren't exposed even to
+concurrent readers.
+
+A test-case with a short delay in between writes might be a good idea,
+although the last time this broke it was very clear in peoples syslogs
+and dmesg because it turns out there are lots of concurrent readers at
+boot time and _somebody_ will hit the race.
+
+             Linus
