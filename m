@@ -2,63 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73CF224BD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EA5224BDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgGROf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726574AbgGROf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:35:29 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3096BC0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:35:29 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id x138so5970405ybg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=BSHMDTWXlHY4dFaAaeyU6JcCNJrJneby7ZD8rwUaMos7m0PJwGS2g3U7c6Ivd69sCn
-         ynwI+++J18wvre+9GVbr8274upIi/cgAUd7QRb9AhSNQyoN2iaUJSy5werEvGgzf6xiW
-         IyRdL7IPph7ZN1lricM7JwMWTgD7Zi1VLKd2y39KuPCQAbQqUoCojSb83G0xWwB6G7Jg
-         rDHemGPzatKGLc5dORlodl8Rb1985QlHP6KX4Np+71UFS6I84Jazk/Bd1vQe0BIyk5ZT
-         TK3EFk8sv0FFlV3Tem57I2Ars4NKN/XEZWSLH8FnQF1DJToeZkTEABgE4eQOAPTs67Op
-         fmdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=DJFxpA1W/JdAhc6Go5P9oo/oAqhpzR9IhDIQ+P8gVnGRn22WBgMZaTf9eWWYWsXC6y
-         pSrShvMrbp05nNrgu09t9bKFGZKxkmu1v2dnz27uTU4SnToS3i+bgtZIfeAQzvG4e1d3
-         QrpSqXaOVbuRalszHqCfn48gW8iACbv1+bGB82tg3peAaH8ZbdyGwPyhIF8Rg6E0Ltrk
-         9ZuUWXuwPQFzDgfw5qVfL41rRe3p6GgznFd9WHr7PZLoQHjmpjXOc2fbp2dyiQlyomnC
-         ZROHjWp8Bpc3X615DMv1ZNu8TtztyFRFC7omv4MYcrBprwWPrQ+Skmll5mNCloS52Sxw
-         8VOQ==
-X-Gm-Message-State: AOAM5322MU8LPMgfHVfhdE+eMNsLghz6QHzKtAiXjuovUAN+6wdyMfct
-        TGDDPmQZZaW6/abrMspRDfBaDlNF/35conO3s1A=
-X-Google-Smtp-Source: ABdhPJzp9vN/VIcgJAMhhACrRY30xb60MroAHqtpTIdg2G2QZhqGF+lNt1AZDFJ6biyuYfybbhapDCMkWqI4e+BWqWU=
-X-Received: by 2002:a25:32d6:: with SMTP id y205mr21758520yby.182.1595082928301;
- Sat, 18 Jul 2020 07:35:28 -0700 (PDT)
+        id S1727903AbgGROgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:36:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726818AbgGROgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 10:36:07 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A92920684;
+        Sat, 18 Jul 2020 14:36:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595082966;
+        bh=IfX8tSOZ/8baxnwF/9PC5sXaZTo3y9+O7goGe18dF7A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tOTkXKVJOyNajCtGbOYIPmSRjjmWXgzY+X6Nbo2sm2cyZjNQSm1/nRnGaXDSma5E7
+         8L84Fe2lVVM2GF7Q4ohhVeX/cpHZADJKURDRcDkO7b0s+h5WqPkGDbbsk0fG99BzX/
+         9l+JO1JgEgV9aEtCXML0mg+472q8FctG3U7jjZV4=
+Date:   Sat, 18 Jul 2020 15:36:02 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH 07/30] iio: dac: ad5360: Fix kerneldoc attribute
+ formatting for 'lock'
+Message-ID: <20200718153602.0809f251@archlinux>
+In-Reply-To: <20200716135928.1456727-8-lee.jones@linaro.org>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-8-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a25:3401:0:0:0:0:0 with HTTP; Sat, 18 Jul 2020 07:35:27
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   Shayma <shaymamarwan08@gmail.com>
-Date:   Sat, 18 Jul 2020 14:35:27 +0000
-Message-ID: <CA+HOoT0YAfBFckravz7Sj_0vzL+VEqVpSvuQsXfBr0qjqOQ6kQ@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Danke
-Michelle
+On Thu, 16 Jul 2020 14:59:05 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> Kerneldoc expects attributes/parameters to be in '@*.: ' format.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/iio/dac/ad5360.c:89: warning: Function parameter or member 'lock' not described in 'ad5360_state'
+> 
+> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Applied.
+
+> ---
+>  drivers/iio/dac/ad5360.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/dac/ad5360.c b/drivers/iio/dac/ad5360.c
+> index 3e0c9e84e8dab..e2a2473bfed77 100644
+> --- a/drivers/iio/dac/ad5360.c
+> +++ b/drivers/iio/dac/ad5360.c
+> @@ -67,7 +67,7 @@ struct ad5360_chip_info {
+>   * @chip_info:		chip model specific constants, available modes etc
+>   * @vref_reg:		vref supply regulators
+>   * @ctrl:		control register cache
+> - * @lock		lock to protect the data buffer during SPI ops
+> + * @lock:		lock to protect the data buffer during SPI ops
+>   * @data:		spi transfer buffers
+>   */
+>  
+
