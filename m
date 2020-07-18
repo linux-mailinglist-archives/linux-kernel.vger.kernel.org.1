@@ -2,171 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0604C224996
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 09:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9045B2249A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 09:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgGRHJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 03:09:21 -0400
-Received: from mout.web.de ([212.227.15.4]:41305 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726672AbgGRHJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 03:09:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1595056151;
-        bh=Lg53zZ/EkD4Xjs0dLB9/V5tVQtWj7O0vdS46kMAnCrg=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=swJKJEYPmSsAwdPA1CBCHHO2jz5oOB6FrXN1OxtqTu6k3XqpPxCjRknn0PoIkt/PO
-         t7KkxFKLwaBeHpObuzziCqdnAQFyWSozUeD2zJ3+tNxMblKFXzrC0/qyRP5IWKTxlY
-         LctgX9XbMQOd50bDDBx6NMYI8njJzcNy0OTRT/zM=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([2.243.120.168]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MPpD8-1jrlHZ344Y-0052vt; Sat, 18
- Jul 2020 09:09:11 +0200
-Subject: Re: [v2 1/4] coccinelle: api: extend memdup_user transformation with
- GFP_USER
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>
-Cc:     Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <0b9f2c58-e124-22d2-d91d-62a6e831c880@web.de>
- <alpine.DEB.2.22.394.2007180841520.2538@hadrien>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
- +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
- mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
- lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
- YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
- GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
- rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
- 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
- jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
- BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
- cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
- Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
- g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
- OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
- CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
- LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
- sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
- kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
- i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
- g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
- q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
- NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
- nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
- 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
- 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
- wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
- riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
- DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
- fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
- 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
- xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
- qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
- Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
- Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
- +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
- hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
- /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
- tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
- qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
- Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
- x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
- pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <fa0ec546-9aee-5c95-428c-a225a3521f6f@web.de>
-Date:   Sat, 18 Jul 2020 09:09:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729084AbgGRHRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 03:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgGRHQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 03:16:55 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE90EC0619D6
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 00:16:54 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ch3so7497058pjb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 00:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hfxUueH3QbeglEO7GeTZdxJkg4B3ud/EaO3dQbu1Hog=;
+        b=dJkmroxRnASHU49YmVLzvTRNRNDhNriN4AkQBH8Uh7RzLxxpddcTCglkk9C7OIlojz
+         Bg2I+4BZod7hZhFJb4dTzGDjGMFEAzCoAGZUxrohX87vux5J82jnWcq6xYuZqqIZ3t79
+         cudhKXbUTgB0WBVnong8BkqETzxZqazL+t9i2kcgBL6RMy0urpkLO/E8t6x13pCacSLr
+         M225oOctgnwDwEOeDN4cZe4Wa272TY4DFz43fF5ULxJ05rC4iKP8fPJzPgr23NjUEmoo
+         5n+E3W15gaB6ylvXHyqJcWF4Xpa405tbjktCA6vM+i1brDEedNMWDrOL8A6BPYA2lYLQ
+         9tRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hfxUueH3QbeglEO7GeTZdxJkg4B3ud/EaO3dQbu1Hog=;
+        b=o4z/p0ePkpTPu7na3wqzhGlXrPYnOk+ndniJoREJh4c84Osr0uYTg6fe+MHD+ZVoOO
+         nWVdVyz93M8XOMmhY0W+7ezFJFPRU0wMRlPvaZdIeW6RB0E1ArAVZxcfC12El2UKSVeu
+         20RzYAalJMgAf2bP/QBnOqDgORJCKfIpqUt//ZO/6Et1QabCQTEG1lqPCymUatDEundO
+         2w26tf6gx0sN8S+wOkQUN98oVWZ3hMnK+k6GNX+laaMt6jwFwSyWWSwa8mntClirwLqA
+         9YOutAnVZ3ZUbML3q7nAsK2xHu0b/YCcjtb3tWyZg7a797hDMCWGP2wUlGeoV/zBrh3U
+         ajOQ==
+X-Gm-Message-State: AOAM531yTLrC08NuUThPWjRcoYqp9aFIz/vLIRTN6JahJudEGzCLJNi9
+        Oj2MPFpKaArH/8X+js5ItLw9Wg==
+X-Google-Smtp-Source: ABdhPJw+e+O6DfxUZ/zVD14RmqoHO4q64ucdaV4e2CBHpcvf3lklVV+zwiNz4hv2SJez9BqpzI8uPg==
+X-Received: by 2002:a17:902:40a:: with SMTP id 10mr10822306ple.260.1595056613941;
+        Sat, 18 Jul 2020 00:16:53 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id x9sm7088652pfq.11.2020.07.18.00.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 00:16:53 -0700 (PDT)
+Date:   Sat, 18 Jul 2020 00:16:50 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, mka@chromium.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        Pradeep P V K <ppvk@codeaurora.org>
+Subject: Re: [PATCH V1] arm64: dts: qcom: Add bandwidth votes for eMMC and
+ SDcard
+Message-ID: <20200718071650.GC61202@yoga>
+References: <1595054006-6803-1-git-send-email-sbhanu@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2007180841520.2538@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KuSTGgloxgMFk/a1JCAIibqq2ZpgzEmIx2kJACEQKcwQT62rayx
- 5Nx5NZxYtZAQXQgy0oEvoj45x/7LuJc8LkAhOWFx61YuLagBR4V6Twa9me7tpXDYz8mVR5y
- G5bFvxE/cUZYbkijeyvDWmO+grGLHdClE1u0HZT+rkafXshdK4JqyZtjpx4s5ng2HGuYz6C
- AO+byByOX3txR32XCOBVA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I6GHEvMedRg=:fTtgyM3XyRg56fZiPLFIk4
- CV7UwfnB0TKcv+ebyoAMPPjVGXvs2RZP9W3YFOUSw4Syl7CvVUK0ArxPNQb+55kUJktO2DtJ3
- mzrHpU0VXO0bXuO1Nsiut8U2DhECnBZp8D3sIFrU7ytXRKoY5msBzErS5ej4k3S7zcV2QWf2n
- VBKRgfwPs6UwRvpeJg4hsHbNwU1oWtqqiU8I5RvpFU+HOnpLmwcha2nJV1sSr6zI3SOfl1xJc
- +Xw+11qzYAQ2g7qY0bK51Y0pO6ZIHlKuyu9c2oTWkM7uICPzpIhwOb59aKoNE7YMEueYcLH1f
- Mq7Y/6PUbOlYLnTGn6s2Med+OXDxQNCmyWr8VjS7foS1EYktbmlyVRFevSLDlQZNofxp15hQV
- IZcRDgLpEj5N1i3hvup2KkNzJwjKfGHOq26h2IM9crsfLhhW7qx/qgaRrOWpqGV6oUtsQsGBA
- c4HSE6ik6jC8RGx6vmoxwy83dzA+V62gfYhO6LVb/gqwtZV1RTG9oPs4vEDFwnqrSnoLFEFeg
- v8u0EA+xJP41/ABfJCvClv5VjHVycs/m8tTktGCQy6C+xGw3KRSKyediCIsQ88SPnXowNxsEw
- v7eN5EZVRR+F49WQ377PVuxglIxvTZ7a3CPLG04biQw/rVnuqXkzMSfxkic+rjsFSX90J2N21
- yOaqe1GMVkkEpNjMnjT/xZL5uHK8JcHjQZ0gPjKZQKa2mkozahtmO/8nyLHmBrT/1es+lFHQE
- WS/K7Z0HQpZs5MOQiKAt66ExzbHKBYF8jSmWWrDYWiJjiqa51eYgg5+7GA7iX1qYvMfYX3g3J
- MD5QJUwYqqz0Z6sUET4Dtk5rFg88U2WV9+Ke3ugd41dyYXanHjXQc/HtO4Glew/pkEGrLUH5q
- Gk8P2bRFTLqHVTsukfkVuNmz4PkuIXPc7JK+ur0SAhJcXiXZ09BgOqh8N9KYDrv+/zxvf6PC6
- DrVa3/YAceezcKdvxfSX6hFGATbBQ72Qi2l4Y0XxDYn1/Gl5ku0XM9wRk973JE6H0i+AenR27
- gHK5A6yFeP0cmJ/ZRrRLMyxoMehHnYLyX5DfpktAb+rO5DqGQX1IZdBYnt4PM0qzXhbDsNWqb
- 9MYZoBRjniE9afl+Hlfo2R+pp+nhkH/47TsqeEl39bCcXVQbmiOsaYPslTRbXZTiMBoG85KZU
- XJH7VRfCKLGYYPquWn55EszfECwGPODs8Ldex/E9BPtkb+Igup1Kd87pU1lEGUo4q3jBESXYW
- huGj6Horg3Een3nZCiK4fq1yl+BAM4LbOGquSOw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595054006-6803-1-git-send-email-sbhanu@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> Applied.
->>
->> Do you care for patch review concerns according to this SmPL script adj=
-ustment?
->>
->> * https://lore.kernel.org/cocci/5c0dae88-e172-3ba6-f86c-d1a6238bb4c4@we=
-b.de/
->>   https://lkml.org/lkml/2020/6/9/568
->
-> This one it complete nonsense.
+On Fri 17 Jul 23:33 PDT 2020, Shaik Sajida Bhanu wrote:
 
-I hope that different views can be clarified for such a software situation
-in more constructive ways.
+Plase add "sc7180: " between "qcom:" and "Add"
 
+> From: Pradeep P V K <ppvk@codeaurora.org>
+> 
+> Add the bandwidth domain supporting performance state and
+> the corresponding OPP tables for the sdhc device on sc7180.
+> 
 
->> * https://lore.kernel.org/cocci/c3464cad-e567-9ef5-b4e3-a01e3b11120b@we=
-b.de/
->>   https://lkml.org/lkml/2020/6/8/637
->
-> This on is indeed a problem.
+You need Pradeep's signed-off-by here before yours.
 
-I find this feedback interesting.
+> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> ---
+> This change is depends on the patch series
+> https://lkml.org/lkml/2020/6/30/1280
+> Also depends on documentation commit 557ed5f (Present on linux-next)
 
-* How does it fit to your response =E2=80=9CApplied=E2=80=9D?
-
-* Will it trigger any more consequences?
+Afaict both of these exists in linux-next, so no need to mention them.
 
 
-> Markus, if you would limit your comments to suggesting SmPL code
-> that is actually correct, ie that you have tested,
+Would be nice to have Rajendra's ack/reviewed-by on this patch, as
+you're amending his. Please Cc him.
 
-Patch reviews contain usual risks that suggestions are presented
-which can be still questionable.
-
-
-> and 2) stop suggesting stupid things over and over
-
-We come along different development views.
-
-
-> like that putting all of the virtual declarations on
-> the same line would save space (it does, but who cares),
-
-It seems that you admit a possibly desirable effect.
-Will any more developers care also for SmPL coding style aspects?
-
-
-> then I would take your suggestions more seriously.
-
-Your change acceptance is varying to your development mood
-(and other factors), isn't it?
+The change itself looks good to me though.
 
 Regards,
-Markus
+Bjorn
+
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 68f9894..d78a066 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -684,6 +684,9 @@
+>  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+>  					<&gcc GCC_SDCC1_AHB_CLK>;
+>  			clock-names = "core", "iface";
+> +			interconnects = <&aggre1_noc MASTER_EMMC &mc_virt SLAVE_EBI1>,
+> +				<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_EMMC_CFG>;
+> +			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>  			power-domains = <&rpmhpd SC7180_CX>;
+>  			operating-points-v2 = <&sdhc1_opp_table>;
+>  
+> @@ -704,11 +707,15 @@
+>  				opp-100000000 {
+>  					opp-hz = /bits/ 64 <100000000>;
+>  					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <100000 100000>;
+> +					opp-avg-kBps = <100000 50000>;
+>  				};
+>  
+>  				opp-384000000 {
+>  					opp-hz = /bits/ 64 <384000000>;
+>  					required-opps = <&rpmhpd_opp_svs_l1>;
+> +					opp-peak-kBps = <600000 900000>;
+> +					opp-avg-kBps = <261438 300000>;
+>  				};
+>  			};
+>  		};
+> @@ -2476,6 +2483,10 @@
+>  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+>  					<&gcc GCC_SDCC2_AHB_CLK>;
+>  			clock-names = "core", "iface";
+> +
+> +			interconnects = <&aggre1_noc MASTER_SDCC_2 &mc_virt SLAVE_EBI1>,
+> +				<&gem_noc MASTER_APPSS_PROC &config_noc	SLAVE_SDCC_2>;
+> +			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>  			power-domains = <&rpmhpd SC7180_CX>;
+>  			operating-points-v2 = <&sdhc2_opp_table>;
+>  
+> @@ -2489,11 +2500,15 @@
+>  				opp-100000000 {
+>  					opp-hz = /bits/ 64 <100000000>;
+>  					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <160000 100000>;
+> +					opp-avg-kBps = <80000 50000>;
+>  				};
+>  
+>  				opp-202000000 {
+>  					opp-hz = /bits/ 64 <202000000>;
+>  					required-opps = <&rpmhpd_opp_svs_l1>;
+> +					opp-peak-kBps = <200000	120000>;
+> +					opp-avg-kBps = <100000 60000>;
+>  				};
+>  			};
+>  		};
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
