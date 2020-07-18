@@ -2,202 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C1B22483B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 05:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF8722483F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 05:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728993AbgGRDF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Jul 2020 23:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728970AbgGRDFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Jul 2020 23:05:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03172C0619D2;
-        Fri, 17 Jul 2020 20:05:52 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id s26so6266672pfm.4;
-        Fri, 17 Jul 2020 20:05:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IwiSc8ny1eiqFoZFL5UVikvl9/Kv6xkm+XtoA/y4ccI=;
-        b=HoniX5YxiN+/rdvP/6xfbQHUK5ubUPWgsAMQf85wATqoauNmTPR03IkbUsoOFzBxYD
-         6t5VU+ynh6FV7GsLQnDWNBDVKaP+cLk7WBxCATaXLs3t2xTQPq+kDYrrsZU8Kyz3qL90
-         B4C5r4lTH97ibG7tq7dyfCccAtqmTjoeSQDU3DAhoyS4oM337CNWgp++j/P/CYwBOskS
-         5WTsO8xSiVVYXYv5G2fraq0varfzCjmI9RKg17RjXmVr6jCOQd1ADOVEb7tS5kK/LdhD
-         BURun2TKckqhWKHYjsyCIFTxERdTizPTWP/8ExMqi83j/rEHj35z5NbIKn5EJoiKc8Yy
-         y1Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IwiSc8ny1eiqFoZFL5UVikvl9/Kv6xkm+XtoA/y4ccI=;
-        b=KxoJZAldSL8/EylpU7/G30a+nyP+xm94bKivglG8egKDtZFNhiUxqchqlOPilEKOrO
-         wRWPsYK9OHJhjGNFPo06DQNJxUzZDwyRlgKPd4V2zdmdgDgdxuHQH3WU83hfjJltK2Vo
-         EdmKhCm7SwB+7V1MOB0o0FzReDLZWPIVUixU/mHBLcG9+16rjRNQQa10R4pkM804K5ZD
-         b7b1L352u3n5Q1tAIgeDx4OAdjPVqctO8F1OfoExA+rgnfUCMh+Ya6igM+qR+Rn62Vo6
-         wIY6mhEMLpOejbd3T12qalcwc8BRqLP716rMYGgJS8/2EYwBR20NZk7az2Xn+1CIWfTP
-         t8Gw==
-X-Gm-Message-State: AOAM5304NmV8XcBySDTZBxo9QQfMPVhf8Tq6z/cP13oGwwM0UkdSvvyt
-        qNqRaNzCt13lYiIn0F2c9V67R8ME
-X-Google-Smtp-Source: ABdhPJwBSyti78al7Z9WVBUxUhtUwxeX+t2Y91nI/T9uOnPC8zG3je1GXa4klFoyTAE7iTNJoxwmsg==
-X-Received: by 2002:a62:834c:: with SMTP id h73mr10908926pfe.221.1595041551056;
-        Fri, 17 Jul 2020 20:05:51 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id c9sm617331pjr.35.2020.07.17.20.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 20:05:50 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 4/4] net: dsa: Setup dsa_netdev_ops
-Date:   Fri, 17 Jul 2020 20:05:33 -0700
-Message-Id: <20200718030533.171556-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200718030533.171556-1-f.fainelli@gmail.com>
-References: <20200718030533.171556-1-f.fainelli@gmail.com>
+        id S1728817AbgGRDO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Jul 2020 23:14:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726898AbgGRDO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Jul 2020 23:14:29 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BA0E2083B
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 03:14:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595042068;
+        bh=24uFYMthOrL4UuVjEYj+QUe8/pbaGdx4LvKJbHi2cuE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=scKMI63lvbDIy9cjSaqoguK1EzwVs3BvLGuSK5Jy2Lq0lWkODfq+enHnopNyafd6I
+         Kk+ilRmii5gjRRbJ67I0S9WexzZmziseCgbQPy/OqcB7zHTKH8qJL0bFpaOsP1O+i2
+         mMBQqTTHKGY0EynCQE8GD2Do9YZcnt5XLD1R1KpE=
+Received: by mail-wr1-f48.google.com with SMTP id o11so13019096wrv.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 20:14:27 -0700 (PDT)
+X-Gm-Message-State: AOAM531gOvk5lOBNGuYFUeDih+kyqv7EKzqAUXH8Wd6ZESEVa4IREVRi
+        r3E3ipxF8PgsR0dZIPmQkOB2VigaiqgtxbvKxJOZ0w==
+X-Google-Smtp-Source: ABdhPJzlyJ74IbiFnl0jVhJFyCtCdCHdRHgHKQfrNUYP5f3E6xPecIEfSGXZJZvvJpNR80yxwBagWOIwMh+7waXRPsU=
+X-Received: by 2002:adf:f707:: with SMTP id r7mr12760446wrp.70.1595042066566;
+ Fri, 17 Jul 2020 20:14:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200718021331.940659-1-joshdon@google.com>
+In-Reply-To: <20200718021331.940659-1-joshdon@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 17 Jul 2020 20:14:14 -0700
+X-Gmail-Original-Message-ID: <CALCETrXHEhwBS72_Fiv9LbPjsBGp_rMmU16oYMTZJFa=wTki8A@mail.gmail.com>
+Message-ID: <CALCETrXHEhwBS72_Fiv9LbPjsBGp_rMmU16oYMTZJFa=wTki8A@mail.gmail.com>
+Subject: Re: [RFC][PATCH] x86: optimization to avoid CAL+RES IPIs
+To:     Josh Don <joshdon@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we hav all the infrastructure in place for calling into the
-dsa_ptr->netdev_ops function pointers, install them when we configure
-the DSA CPU/management interface and tear them down. The flow is
-unchanged from before, but now we preserve equality of tests when
-network device drivers do tests like dev->netdev_ops == &foo_ops which
-was not the case before since we were allocating an entirely new
-structure.
+> On Jul 17, 2020, at 7:13 PM, Josh Don <joshdon@google.com> wrote:
+>
+> =EF=BB=BFFrom: Venkatesh Pallipadi <venki@google.com>
+>
+> smp_call_function_single and smp_send_reschedule send unconditional IPI
+> to target CPU. However, if the target CPU is in some form of poll based
+> idle, we can do IPI-less wakeups.
+>
+> Doing this has certain advantages:
+> * Lower overhead on Async "no wait" IPI send path.
+> * Avoiding actual interrupts reduces system non-idle cycles.
+>
+> Note that this only helps when target CPU is idle. When it is busy we
+> will still send an IPI as before.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/net/dsa.h |  1 -
- net/dsa/master.c  | 52 ++++++++++++-----------------------------------
- 2 files changed, 13 insertions(+), 40 deletions(-)
+PeterZ and I fixed a whole series of bugs a few years ago, and remote
+wakeups *should* already do this. Did we miss something?  Did it
+regress?  Even the call_function_single path ought to go through this:
 
-diff --git a/include/net/dsa.h b/include/net/dsa.h
-index 681ba2752514..c9f350303947 100644
---- a/include/net/dsa.h
-+++ b/include/net/dsa.h
-@@ -230,7 +230,6 @@ struct dsa_port {
- 	 * Original copy of the master netdev net_device_ops
- 	 */
- 	const struct dsa_netdevice_ops *netdev_ops;
--	const struct net_device_ops *orig_ndo_ops;
- 
- 	bool setup;
- };
-diff --git a/net/dsa/master.c b/net/dsa/master.c
-index 480a61460c23..0a90911ae31b 100644
---- a/net/dsa/master.c
-+++ b/net/dsa/master.c
-@@ -220,12 +220,17 @@ static int dsa_master_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 		break;
- 	}
- 
--	if (cpu_dp->orig_ndo_ops && cpu_dp->orig_ndo_ops->ndo_do_ioctl)
--		err = cpu_dp->orig_ndo_ops->ndo_do_ioctl(dev, ifr, cmd);
-+	if (dev->netdev_ops->ndo_do_ioctl)
-+		err = dev->netdev_ops->ndo_do_ioctl(dev, ifr, cmd);
- 
- 	return err;
- }
- 
-+static const struct dsa_netdevice_ops dsa_netdev_ops = {
-+	.ndo_do_ioctl = dsa_master_ioctl,
-+	.ndo_get_phys_port_name = dsa_master_get_phys_port_name,
-+};
-+
- static int dsa_master_ethtool_setup(struct net_device *dev)
- {
- 	struct dsa_port *cpu_dp = dev->dsa_ptr;
-@@ -260,38 +265,10 @@ static void dsa_master_ethtool_teardown(struct net_device *dev)
- 	cpu_dp->orig_ethtool_ops = NULL;
- }
- 
--static int dsa_master_ndo_setup(struct net_device *dev)
--{
--	struct dsa_port *cpu_dp = dev->dsa_ptr;
--	struct dsa_switch *ds = cpu_dp->ds;
--	struct net_device_ops *ops;
--
--	if (dev->netdev_ops->ndo_get_phys_port_name)
--		return 0;
--
--	ops = devm_kzalloc(ds->dev, sizeof(*ops), GFP_KERNEL);
--	if (!ops)
--		return -ENOMEM;
--
--	cpu_dp->orig_ndo_ops = dev->netdev_ops;
--	if (cpu_dp->orig_ndo_ops)
--		memcpy(ops, cpu_dp->orig_ndo_ops, sizeof(*ops));
--
--	ops->ndo_get_phys_port_name = dsa_master_get_phys_port_name;
--	ops->ndo_do_ioctl = dsa_master_ioctl;
--
--	dev->netdev_ops  = ops;
--
--	return 0;
--}
--
--static void dsa_master_ndo_teardown(struct net_device *dev)
-+static void dsa_netdev_ops_set(struct net_device *dev,
-+			       const struct dsa_netdevice_ops *ops)
- {
--	struct dsa_port *cpu_dp = dev->dsa_ptr;
--
--	if (cpu_dp->orig_ndo_ops)
--		dev->netdev_ops = cpu_dp->orig_ndo_ops;
--	cpu_dp->orig_ndo_ops = NULL;
-+	dev->dsa_ptr->netdev_ops = ops;
- }
- 
- static ssize_t tagging_show(struct device *d, struct device_attribute *attr,
-@@ -353,9 +330,7 @@ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- 	if (ret)
- 		return ret;
- 
--	ret = dsa_master_ndo_setup(dev);
--	if (ret)
--		goto out_err_ethtool_teardown;
-+	dsa_netdev_ops_set(dev, &dsa_netdev_ops);
- 
- 	ret = sysfs_create_group(&dev->dev.kobj, &dsa_group);
- 	if (ret)
-@@ -364,8 +339,7 @@ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- 	return ret;
- 
- out_err_ndo_teardown:
--	dsa_master_ndo_teardown(dev);
--out_err_ethtool_teardown:
-+	dsa_netdev_ops_set(dev, NULL);
- 	dsa_master_ethtool_teardown(dev);
- 	return ret;
- }
-@@ -373,7 +347,7 @@ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- void dsa_master_teardown(struct net_device *dev)
- {
- 	sysfs_remove_group(&dev->dev.kobj, &dsa_group);
--	dsa_master_ndo_teardown(dev);
-+	dsa_netdev_ops_set(dev, NULL);
- 	dsa_master_ethtool_teardown(dev);
- 	dsa_master_reset_mtu(dev);
- 
--- 
-2.25.1
+void send_call_function_single_ipi(int cpu)
+{
+        struct rq *rq =3D cpu_rq(cpu);
 
+        if (!set_nr_if_polling(rq->idle))
+                arch_send_call_function_single_ipi(cpu);
+        else
+                trace_sched_wake_idle_without_ipi(cpu);
+}
+
+
+>
+> *** RFC NOTE ***
+> This patch breaks idle time accounting (and to a lesser degree, softirq
+> accounting). This is because this patch violates the assumption that
+> softirq can only be run either on the tail of a hard IRQ or inline on
+> a non-idle thread via local_bh_enable(), since we can now process
+> softirq inline within the idle loop. These ssues can be resolved in a
+> later version of this patch.
+>
+> Signed-off-by: Josh Don <joshdon@google.com>
+> ---
+> arch/x86/include/asm/mwait.h       |  5 +-
+> arch/x86/include/asm/processor.h   |  1 +
+> arch/x86/include/asm/thread_info.h |  2 +
+> arch/x86/kernel/apic/ipi.c         |  8 +++
+> arch/x86/kernel/smpboot.c          |  4 ++
+> drivers/cpuidle/poll_state.c       |  5 +-
+> include/linux/ipiless_wake.h       | 93 ++++++++++++++++++++++++++++++
+> kernel/sched/idle.c                | 10 +++-
+> 8 files changed, 124 insertions(+), 4 deletions(-)
+> create mode 100644 include/linux/ipiless_wake.h
+>
+> diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
+> index e039a933aca3..aed393f38a39 100644
+> --- a/arch/x86/include/asm/mwait.h
+> +++ b/arch/x86/include/asm/mwait.h
+> @@ -2,6 +2,7 @@
+> #ifndef _ASM_X86_MWAIT_H
+> #define _ASM_X86_MWAIT_H
+>
+> +#include <linux/ipiless_wake.h>
+> #include <linux/sched.h>
+> #include <linux/sched/idle.h>
+>
+> @@ -109,6 +110,7 @@ static inline void __sti_mwait(unsigned long eax, uns=
+igned long ecx)
+> static inline void mwait_idle_with_hints(unsigned long eax, unsigned long=
+ ecx)
+> {
+>    if (static_cpu_has_bug(X86_BUG_MONITOR) || !current_set_polling_and_te=
+st()) {
+> +        enter_ipiless_idle();
+>        if (static_cpu_has_bug(X86_BUG_CLFLUSH_MONITOR)) {
+>            mb();
+>            clflush((void *)&current_thread_info()->flags);
+> @@ -116,8 +118,9 @@ static inline void mwait_idle_with_hints(unsigned lon=
+g eax, unsigned long ecx)
+>        }
+>
+>        __monitor((void *)&current_thread_info()->flags, 0, 0);
+> -        if (!need_resched())
+> +        if (!is_ipiless_wakeup_pending())
+>            __mwait(eax, ecx);
+> +        exit_ipiless_idle();
+>    }
+>    current_clr_polling();
+> }
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/proc=
+essor.h
+> index 03b7c4ca425a..045fc9bbd095 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -568,6 +568,7 @@ static inline void arch_thread_struct_whitelist(unsig=
+ned long *offset,
+>  * have to worry about atomic accesses.
+>  */
+> #define TS_COMPAT        0x0002    /* 32bit syscall active (64BIT)*/
+> +#define TS_IPILESS_WAKEUP    0x0010    /* pending IPI-work on idle exit =
+*/
+
+What's this for?
+
+> +#define _TIF_IN_IPILESS_IDLE    (1 << TIF_IN_IPILESS_IDLE)
+
+We already have TIF_POLLING_NRFLAG.  Why do we need this?
+
+
+> #include "local.h"
+> @@ -67,11 +68,18 @@ void native_smp_send_reschedule(int cpu)
+>        WARN(1, "sched: Unexpected reschedule of offline CPU#%d!\n", cpu);
+>        return;
+>    }
+> +
+> +    if (try_ipiless_wakeup(cpu))
+> +        return;
+> +
+
+I think this shouldn=E2=80=99t be called if the target is idle unless we lo=
+st
+a race. What am I missing?
+
+>    apic->send_IPI(cpu, RESCHEDULE_VECTOR);
+> }
+>
+> void native_send_call_func_single_ipi(int cpu)
+> {
+> +    if (try_ipiless_wakeup(cpu))
+> +        return;
+> +
+>    apic->send_IPI(cpu, CALL_FUNCTION_SINGLE_VECTOR);
+> }
+
+This function's caller already does this.
+
+> +static inline void exit_ipiless_idle(void)
+> +{
+> +    if (!test_and_clear_thread_flag(TIF_IN_IPILESS_IDLE)) {
+
+This has the unfortunate property that, if you try to wake the same
+polling CPU twice in rapid succession, the second try will send an
+IPI.  One might debate whether this is a real problem, but the
+existing code does not have this issue.
+
+I could poke at this more, but I'm wondering whether you might have
+developed this against a rather old kernel and blindly forward-ported
+it.
+
+--Andy
