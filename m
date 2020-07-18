@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DE2224D5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF395224D5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 19:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgGRRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 13:42:19 -0400
-Received: from vps.xff.cz ([195.181.215.36]:42368 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726604AbgGRRmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 13:42:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1595094136; bh=f00AuFPGY+rLOuWwPL06wPWVJed68+DRaP3u0RP0c2c=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=hs7atBAxH/fITeB5hr2J/7wADtYv0weGQOMSo1ZnF3NVUAKmOmunM8QK5MR9jMoGO
-         JcEMp/KQ5yrlMBhwIHLESCsASDcQV5Tb/MBgItbA7OJsuaITf/A7tRHP5oIc2e53rm
-         aMDpaHxwrn2KQqcLMIZfGAij8zXP/E/8l3nX7u8Q=
-Date:   Sat, 18 Jul 2020 19:42:15 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Samuel Holland <samuel@sholland.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Fix st7703 panel initialization failures
-Message-ID: <20200718174215.mgjl3klytfa3nf3t@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Fabio Estevam <festevam@gmail.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Samuel Holland <samuel@sholland.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200716123753.3552425-1-megous@megous.com>
- <20200716140843.GA359122@bogon.m.sigxcpu.org>
- <20200716143209.ud6ote4q545bo2c7@core.my.home>
- <20200718173124.GA88021@bogon.m.sigxcpu.org>
+        id S1727976AbgGRRmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 13:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726604AbgGRRmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 13:42:49 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5467C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:42:48 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b30so5428772lfj.12
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GiY4+QiT/AY/Z/a8K8W0oYps875PzAtQx8Asj6Q1aPg=;
+        b=FM+3ch1bDzhsiXNk+T+LOrHD4qkMShboABLic2xzn+DKHMi9Cgt2kWfMijpega0ALy
+         JQOhddwsoTpnDE/eexxgbiNkVKH9MQ+fSTpjlS2vysSTAT+7EO9kqxZg+1gtIEYIjgfu
+         Yt2hjqDc5MP/2HjiXc67Jpa/06la4Hw8kgZiw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GiY4+QiT/AY/Z/a8K8W0oYps875PzAtQx8Asj6Q1aPg=;
+        b=DgsYhZILvLuIQzEMc2yBdi9W+jY2n0m+Sna2lJiQiUdsUg1ZHZszQhL0DmUffNLw/J
+         ThpdyxaC5gQeaV49PEmL6uGxxvmbDgUCUqtq3QaiqfqDAwcurAxwe82X04bgz56p8PoW
+         6rusyZkLIqiNw3b48HJyEbhOgUIFoTw7+/jblkQv1oJfrjTQhiR0TlZU6p43cw81zjOE
+         WZD9ZBIcGqTwWG0P4+ly6LzVJSg9SNAX1X9hoIs3DkZkCLzyQHJ6usUZtbTzjGO0gtp8
+         Ywcd/Vsj8PjU44hN9fvmKC1XbjXzXbQvcOaA7F5G+0IZgx6UaTgchSjP6YU9HI44oGxN
+         8UQA==
+X-Gm-Message-State: AOAM531n4I8OxVIehXk/1g/nXzrInt3zoX2osjVngucY+YBQW9hyGnhs
+        hzqd8S/AT1MnpwRJ13TkfFTXpUMfCvU=
+X-Google-Smtp-Source: ABdhPJzXqXMRI4SKqOB+O98Len/0QycmrwaA2/r4OzxFBXPIpN6ug2VlSDP+P6krqPICWJlG9DxtdQ==
+X-Received: by 2002:a19:228a:: with SMTP id i132mr5894610lfi.178.1595094166479;
+        Sat, 18 Jul 2020 10:42:46 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id h26sm2293263ljb.78.2020.07.18.10.42.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Jul 2020 10:42:45 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id o4so7730012lfi.7
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 10:42:44 -0700 (PDT)
+X-Received: by 2002:ac2:4422:: with SMTP id w2mr6995326lfl.152.1595094164495;
+ Sat, 18 Jul 2020 10:42:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200718173124.GA88021@bogon.m.sigxcpu.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+ <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com> <87blkcanps.fsf@jogness.linutronix.de>
+In-Reply-To: <87blkcanps.fsf@jogness.linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 18 Jul 2020 10:42:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgX9Q+en5j8EmYkhxEx8H0EzHhx5WqPGui7KNiV7=ZK-w@mail.gmail.com>
+Message-ID: <CAHk-=wgX9Q+en5j8EmYkhxEx8H0EzHhx5WqPGui7KNiV7=ZK-w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] printk: reimplement LOG_CONT handling
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jul 18, 2020 at 7:43 AM John Ogness <john.ogness@linutronix.de> wrote:
+>
+> I expect this is handled correctly since the reader is not given any
+> parts until a full line is ready, but I will put more focus on testing
+> this to make sure.
 
-On Sat, Jul 18, 2020 at 07:31:24PM +0200, Guido Günther wrote:
-> Hi,
-> On Thu, Jul 16, 2020 at 04:32:09PM +0200, Ondřej Jirman wrote:
-> > Hi Guido,
-> > 
-> > On Thu, Jul 16, 2020 at 04:08:43PM +0200, Guido Günther wrote:
-> > > Hi Ondrej,
-> > > On Thu, Jul 16, 2020 at 02:37:51PM +0200, Ondrej Jirman wrote:
-> > > > When extending the driver for xbd599 panel support I tried to do minimal
-> > > > changes and keep the existing initialization timing.
-> > > > 
-> > > > It turned out that it's not good enough and the existing init sequence
-> > > > is too aggressive and doesn't follow the specification. On PinePhone
-> > > > panel is being powered down/up during suspend/resume and with current
-> > > > timings this frequently leads to corrupted display.
-> > > 
-> > > Given the amount of ST7703 look alikes i don't think you can go by the
-> > > datasheet and hope not to break other panels. The current sleeps cater
-> > > for the rocktech panel (which suffered from similar issues you describe
-> > > when we took other parameters) so you need to make those panel specific.
-> > 
-> > It should work on rocktech too. The patch mostly increases/reorders the delays
-> > slightly, to match the controller documentation. I don't see a reason to
-> > complicate the driver with per panel special delays, unless these patches don't
-> > work on your panel.
-> 
-> That's why i brought it up. It breaks the rocktech panel on
-> blank/unblank loops where it just stays blank and then starts hitting
-> DSI command timeouts.
+Yeah, the patches looked fine, but I only scanned them, and just
+wanted to make sure.
 
-Good to know. Does keeping the msleep(20); after init sequence and before sleep
-exit make it work?
+Over the years, we've gotten printk wrong so many times that I get a
+bit paranoid. Things can look fine on the screen, but then have odd
+line breaks in the logs. Or vice versa. Or work fine on some machine,
+but consistently show some race on another.
 
-thank you and regards,
-	o.
+And some of the more complex features are hardly ever actually used -
+I'm not sure the optional message context (aka dictionary) is ever
+actually used.
 
-> Cheers,
->  -- Guido
-> 
-> > 
-> > The init sequence is still suboptimal, and doesn't follow the kernel docs
-> > completely, even after these patches. Controller spec also talks about adding
-> > some delay before enabling the backlight to avoid visual glitches.
-> > 
-> > Which is what enable callback is documented to be for. Currently part of the
-> > initialization that belongs to prepare callback is also done in enable callback.
-> > 
-> > I see the glitch (small vertical shift of the image on powerup), but personally
-> > don't care much to introduce even more delays to the driver, just for the
-> > cosmetic issue.
-> > 
-> > regards,
-> > 	o.
-> > 
-> > > Cheers,
-> > >  -- Guido
-> > > 
-> > > > 
-> > > > This patch series fixes the problems.
-> > > > 
-> > > > The issue was reported by Samuel Holland.
-> > > > 
-> > > > Relevant screenshots from the datasheet:
-> > > > 
-> > > >   Power on timing: https://megous.com/dl/tmp/35b72e674ce0ca27.png
-> > > >   Power off timing: https://megous.com/dl/tmp/dea195517106ff17.png
-> > > >   More optimal reset on poweron: https://megous.com/dl/tmp/a9e5caf14e1b0dc6.png
-> > > >   Less optimal reset on poweron: https://megous.com/dl/tmp/246761039283c4cf.png
-> > > >   Datasheet: https://megous.com/dl/tmp/ST7703_DS_v01_20160128.pdf
-> > > > 
-> > > > Please take a look.
-> > > > 
-> > > > thank you and regards,
-> > > >   Ondrej Jirman
-> > > > 
-> > > > Ondrej Jirman (2):
-> > > >   drm/panel: st7703: Make the sleep exit timing match the spec
-> > > >   drm/panel: st7703: Fix the power up sequence of the panel
-> > > > 
-> > > >  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 29 ++++++++++---------
-> > > >  1 file changed, 15 insertions(+), 14 deletions(-)
-> > > > 
-> > > > -- 
-> > > > 2.27.0
-> > > > 
-> > 
+Yes, all the "dev_printk()" helpers fill it in with the device
+information (create_syslog_header()), and you _can_ use them if you
+know about them (ie
+
+    journalctl -b _KERNEL_SUBSYSTEM=pci_bus
+
+but I sometimes wonder how many people use all this complexity. And
+how many people even know about it..)
+
+So there are hidden things in there that can easily break *subtly* and
+then take ages for people to notice, because while some are very
+obvious indeed ("why is my module list message broken up into a
+hundred lines?") others might be things people aren't even aware of.
+
+Maybe a lot of system tools use those kernel dictionaries. Maybe it
+would break immediately. I just sometimes wonder...
+
+                 Linus
