@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9C8224D21
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E67224D23
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 18:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbgGRQvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 12:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
+        id S1728080AbgGRQv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 12:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgGRQvX (ORCPT
+        with ESMTP id S1727055AbgGRQv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 12:51:23 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC383C0619D2;
-        Sat, 18 Jul 2020 09:51:22 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id w34so10032265qte.1;
-        Sat, 18 Jul 2020 09:51:22 -0700 (PDT)
+        Sat, 18 Jul 2020 12:51:26 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E094DC0619D2;
+        Sat, 18 Jul 2020 09:51:25 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id b185so11604228qkg.1;
+        Sat, 18 Jul 2020 09:51:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jgz/bjqrYYuXfJJiYweI1bjndcl+QrBnvt6EE8RcSqg=;
-        b=eZ98Nuk97kOV6dWfN8m14a8jBbGWOk9Ftl5lVJdZQSMFYr/4c23JWrX4IFR/LLPJ8g
-         ZvWvmkO568a0ssK8u9spN5tnw8R/7QyzgMDYUDF4rUZu2+Q+1QIUgU8GZkWjACB59xxW
-         OW5Sqnb9dMZoLs0/EAzM97UEjKAl8fCQPlm6lzZiI11NrPtg3IGr7WUpLxT/suWTX1A6
-         qhvIj7PHEzlkbXhF/ch3q+ykoZVVN0Vdyt2IoEdqv5leKCOym2QsvyeI4Z2MmyvZcK/Z
-         AuxNIOZScmrAcnRJztHWlGxZrnyhX68oYjf8dfiMQMqQDUNGo/x4RQtXvoJVxO/V2U6H
-         1c+Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=V9YXkfG4mae7D/kQPuWy1/wziMNrDLom8h0lx0qxbpY=;
+        b=ClIGS0yTVQUP9UjBPM38xmFMOUmn04jnItF9s1DYLC8K64D8rV9Pz63EtBv0B7KMYo
+         dtoNzWBNMZB3dFD992kQ93fLUuJOVakIq3fJi2okYfwiJSVhyXuznp8Kils4tL+314q2
+         icC5zVIL6dwr/ydP9HHDQBlH9OXBfzrq0LIP5CCS++9S8F19MJ5EBAmKimdnWLiTq5FA
+         1rFp9uoJyTQ2wKeHuuOapUr99uekPhwdnWFhQ3Bxclvc/l5pjpYU8Sx3vdto0uKr079T
+         Z7A6OhbsjPiS4nEQ9AIv00ziv8h8D6b0bZOkSMAR6xu9US+gQKUUOdnFhcvS6L0U5jiC
+         zLlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jgz/bjqrYYuXfJJiYweI1bjndcl+QrBnvt6EE8RcSqg=;
-        b=nC+idJohh1bzBVjnt7GGXNecNdNzM1y6ozx5vBBU2e4c5siZOF2Hw6AwY17DaqoukL
-         00X9JOJaVuXwbKlwJCtI7iUGR6cO8c8ovUeRU7rSySBsi4L4IrtzID7RGqXVfg6jtavM
-         6doOAzFYfqvvmAInY3ErOLenzYZ4fwRCH5O71KsOj/Besp1wNmkDswdG2WyeOCgi1doB
-         U6sJ2C36088HI4pTnjgXq66pEn1ybEyuaauP57CZPmCvVxGLUj9wJBsF1GiNj/k6FCnr
-         ygfaFZ8QQOlMcUj8zuYc0H4bY5Zc+9iPY/FigNRnkBIUS7be/vcTp7ObN8K2oqNWzBv/
-         3njQ==
-X-Gm-Message-State: AOAM5317/P3dyvsTAPuR7tuLUfAN5abIb5oK56ClD7RrUBVQ4CFEXAei
-        1+cww06yhKwbHVopmXGY4FY=
-X-Google-Smtp-Source: ABdhPJzXZklAJ4ZJ0QCecSanri2g0yoP6JHDzBTOQa3w1xuJpEzM6RjfcApT/jw2Ub1lg1vE9JfXkQ==
-X-Received: by 2002:aed:25d1:: with SMTP id y17mr15743427qtc.126.1595091081841;
-        Sat, 18 Jul 2020 09:51:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=V9YXkfG4mae7D/kQPuWy1/wziMNrDLom8h0lx0qxbpY=;
+        b=VGBhW3Pwu7GzuNtYWN+RzGVmjgSIFj7FWHk1UGsoV/rsY/m80G+5Z14WGPiY2BWA6s
+         KxkmbnlIMU2PR4KrVWdRsPEWoYY2wI+K7J5riDNL/hPZsgnOcfy5OMDe26v6ZIXwMDHL
+         1H3p95bLkedbqcxEpAuzNEhugIPdIKBTuztL5GBES3HZJTfKLpBOfj6q50cSvlfCqoyW
+         CsYG0MlnixDPmt/gzs0U3jIM3M7D/p04DaUQIt7pmF1kpi5jQmlSpY1CzEbM9zdfTVTT
+         aanZNGG1yJ/+hiQt9AMRhv1KwVHCKCOp4/LteKCHtX8N3OXARRKl7p+ME3xOYJo+ZVCk
+         P4WQ==
+X-Gm-Message-State: AOAM533SPTNBD6vMErcYm8c/3jrgxvQx8C6AwwPZdTbdz8QgGjHCHtTs
+        m1+2msCrOxEYUQJP+gIpTooIO5wc
+X-Google-Smtp-Source: ABdhPJzdZNP/o5fBHD0pspMNziAHHlaWNZ4Lp185t93jzxIgXOnPLThIOS4fTWaR7iUnjVLJYE+QbQ==
+X-Received: by 2002:a37:b941:: with SMTP id j62mr13845168qkf.233.1595091085112;
+        Sat, 18 Jul 2020 09:51:25 -0700 (PDT)
 Received: from localhost.localdomain ([2804:18:602d:16d:d038:1a92:190d:65d2])
-        by smtp.gmail.com with ESMTPSA id q5sm15361801qtf.12.2020.07.18.09.51.18
+        by smtp.gmail.com with ESMTPSA id q5sm15361801qtf.12.2020.07.18.09.51.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2020 09:51:21 -0700 (PDT)
+        Sat, 18 Jul 2020 09:51:24 -0700 (PDT)
 From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 X-Google-Original-From: Daniel W. S. Almeida
-To:     corbet@lwn.net, mchehab@kernel.org
+To:     corbet@lwn.net
 Cc:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: admin-guide/mm/index: Fix reference to nonexistent document
-Date:   Sat, 18 Jul 2020 13:50:55 -0300
-Message-Id: <20200718165107.625847-1-dwlsalmeida@gmail.com>
+Subject: [PATCH] docs: watch_queue.rst: fix malformed inline literal
+Date:   Sat, 18 Jul 2020 13:50:56 -0300
+Message-Id: <20200718165107.625847-2-dwlsalmeida@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200718165107.625847-1-dwlsalmeida@gmail.com>
+References: <20200718165107.625847-1-dwlsalmeida@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,31 +68,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 
-Fix the following warning:
+Fix the following warnings:
 
-WARNING: toctree contains reference to nonexistent document
-'admin-guide/mm/nommu-map'
+watch_queue.rst:107: WARNING: Inline literal start-string
+without end-string.
 
-This was due to a typo.
+watch_queue.rst:107: WARNING: Inline emphasis start-string
+without end-string
+
+watch_queue.rst:184: WARNING: Inline literal start-string
+without end-string.
+
+watch_queue.rst:184: WARNING: Inline emphasis start-string
+without end-string
+
+Multiline inline literals are not supported.
 
 Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 ---
- Documentation/admin-guide/mm/index.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/watch_queue.rst | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
-index 774dad6d3d291..cd727cfc1b040 100644
---- a/Documentation/admin-guide/mm/index.rst
-+++ b/Documentation/admin-guide/mm/index.rst
-@@ -31,7 +31,7 @@ the Linux memory management.
-    idle_page_tracking
-    ksm
-    memory-hotplug
--   nommu-map
-+   nommu-mmap
-    numa_memory_policy
-    numaperf
-    pagemap
+diff --git a/Documentation/watch_queue.rst b/Documentation/watch_queue.rst
+index 81d9d322b1c8b..d98af4f11804e 100644
+--- a/Documentation/watch_queue.rst
++++ b/Documentation/watch_queue.rst
+@@ -106,8 +106,7 @@ watch that specific key).
+ 
+ To manage a watch list, the following functions are provided:
+ 
+-  * ``void init_watch_list(struct watch_list *wlist,
+-			   void (*release_watch)(struct watch *wlist));``
++  * ``void init_watch_list(struct watch_list *wlist, void (*release_watch)(struct watch *wlist));``
+ 
+     Initialise a watch list.  If ``release_watch`` is not NULL, then this
+     indicates a function that should be called when the watch_list object is
+@@ -182,9 +181,9 @@ The following functions are provided to manage watches:
+     driver-settable fields in the watch struct must have been set before this
+     is called.
+ 
+-  * ``int remove_watch_from_object(struct watch_list *wlist,
+-				   struct watch_queue *wqueue,
+-				   u64 id, false);``
++  * ``int remove_watch_from_object(struct watch_list *wlist,``
++				 ``struct watch_queue *wqueue,``
++				 ``u64 id, false);``
+ 
+     Remove a watch from a watch list, where the watch must match the specified
+     watch queue (``wqueue``) and object identifier (``id``).  A notification
 -- 
 2.27.0
 
