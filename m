@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA761224BAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47B2224BA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbgGROGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:06:03 -0400
-Received: from m15114.mail.126.com ([220.181.15.114]:58765 "EHLO
-        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgGROGD (ORCPT
+        id S1727032AbgGROBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:01:54 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54981 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726611AbgGROBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:06:03 -0400
-X-Greylist: delayed 2067 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Jul 2020 10:05:34 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=+amZxSkpaPypl7S/BB
-        uMS43KAmapgCGLbADtQmMNmIU=; b=a1k3Xi0lsO1K2GRFtDo/ic08FjRs9t7nTW
-        DwslJ8eQw91bwFptXF4QO83gJ5Hbn1ENxtjOQ3O5ILoDM6kbMPeVuyFGzX4KfbXP
-        U5hVLZw0dtcBgmg37OTxizb7kZWl85GOW4J1PJ02x0k+i2OU2nDsygo4jyaSoHw0
-        C0tJsRgjs=
-Received: from 192.168.137.249 (unknown [112.10.74.162])
-        by smtp7 (Coremail) with SMTP id DsmowAB3KBDj+BJfSO3mHQ--.56553S3;
-        Sat, 18 Jul 2020 21:28:05 +0800 (CST)
-From:   Xianting Tian <xianting_tian@126.com>
-To:     tytso@mit.edu, jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] jbd2: check bh2jh() before accessing it
-Date:   Sat, 18 Jul 2020 09:28:03 -0400
-Message-Id: <1595078883-8647-1-git-send-email-xianting_tian@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DsmowAB3KBDj+BJfSO3mHQ--.56553S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZrW8ArW7Gw1rWw1fWw18uFg_yoW7JryUpr
-        y5G348urWvvFnxZr1kJF45CrWUXw1FyayUGw1I9r1v9a1UGw1ftFW5JFs8Ga4DZFsxC3W2
-        qr4DXws5Kw1UtaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j3fHUUUUUU=
-X-Originating-IP: [112.10.74.162]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi3AVlpFpD-NvKkAAAs8
+        Sat, 18 Jul 2020 10:01:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0U33ffAT_1595080903;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U33ffAT_1595080903)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 18 Jul 2020 22:01:44 +0800
+Subject: Re: [PATCH v16 19/22] mm/lru: introduce the relock_page_lruvec
+ function
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-20-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0UdL7ppCdszBNyY3O9d2stE0tCZ8vCzH7tBEnHG2ZwkZHg@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <640e4081-3db3-c941-4b02-8a9aef26e7ba@linux.alibaba.com>
+Date:   Sat, 18 Jul 2020 22:01:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAKgT0UdL7ppCdszBNyY3O9d2stE0tCZ8vCzH7tBEnHG2ZwkZHg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We met a crash issue when testing nbd device on kernel 4.14.0-115,
-the scenario of the issue is "nbd device disconnected before unmounting
-ext4 filesystem".
-The call trace of the crash as below:
-[346961.426274] block nbd2: Connection timed out
-[346961.426943] EXT4-fs warning (device nbd2): ext4_end_bio:323: I/O error 10 writing to inode 5768758
-			(offset 155926528 size 8192 starting block 8998070)
-[346961.426957] Aborting journal on device nbd2-8.
-[346961.427027] EXT4-fs error (device nbd2) in __ext4_new_inode:927: Readonly filesystem
- ... ...
-[346961.437288] Buffer I/O error on dev nbd2, logical block 13139968, lost sync page write
-[346961.437878] JBD2: Error -5 detected when updating journal superblock for nbd2-8.
-[346961.438478] BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
-[346961.452495] RIP: 0010:jbd2_journal_grab_journal_head+0x1e/0x40 [jbd2]  <== crash code offset is 0x1e(30)
-[346961.453457] RSP: 0018:ffffc9000ffbbca8 EFLAGS: 00010206
-[346961.454414] RAX: 0000000000000000 RBX: ffff881dafe04960 RCX: ffff881aee5b0ac8
-[346961.455378] RDX: ffff881df7768690 RSI: ffff88100a5e9800 RDI: ffff880a22593d40
-[346961.456360] RBP: ffffc9000ffbbca8 R08: ffff881dafe04960 R09: 000000018040001c
-[346961.457332] R10: 000000002fe92601 R11: ffff88202fe90700 R12: ffff88100a5e9800
-[346961.458302] R13: 0000000000000000 R14: ffff880a22593d40 R15: ffff881dafe04960
-[346961.459269] FS:  0000000000000000(0000) GS:ffff88103e5c0000(0000) knlGS:0000000000000000
-[346961.460250] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[346961.461216] CR2: 0000000000000008 CR3: 0000000001c09004 CR4: 00000000007606e0
-[346961.462201] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[346961.463164] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[346961.465047] Call Trace:
-[346961.465981]  __jbd2_journal_insert_checkpoint+0x28/0x80 [jbd2]
-[346961.466907]  jbd2_journal_commit_transaction+0x1185/0x1a20 [jbd2]
-[346961.467862]  ? lock_timer_base+0x7d/0xa0
-[346961.468794]  kjournald2+0xd2/0x260 [jbd2]
-[346961.469717]  ? remove_wait_queue+0x60/0x60
-[346961.470630]  kthread+0x109/0x140
-[346961.471533]  ? commit_timeout+0x10/0x10 [jbd2]
-[346961.472438]  ? kthread_park+0x60/0x60
-[346961.473521]  ? do_syscall_64+0x182/0x1b0
-[346961.474546]  ret_from_fork+0x25/0x30
 
-Analysis of the crash code as below:
-struct journal_head *jbd2_journal_grab_journal_head(struct buffer_head *bh)
-{
-        struct journal_head *jh = NULL;
 
-        jbd_lock_bh_journal_head(bh);
-        if (buffer_jbd(bh)) {
-                jh = bh2jh(bh); <== jh is NULL (bh->b_private = NULL)
-                jh->b_jcount++; <== crash here!!!
-				    b_jcount offset in 'struct journal_head' is 0x8
-        }
-        jbd_unlock_bh_journal_head(bh);
-        return jh;
-}
+在 2020/7/18 上午6:03, Alexander Duyck 写道:
+>> index 129c532357a4..9fb906fbaed5 100644
+>> --- a/mm/swap.c
+>> +++ b/mm/swap.c
+>> @@ -209,19 +209,12 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
+>>
+>>         for (i = 0; i < pagevec_count(pvec); i++) {
+>>                 struct page *page = pvec->pages[i];
+>> -               struct lruvec *new_lruvec;
+>> -
+>> -               new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+>> -               if (lruvec != new_lruvec) {
+>> -                       if (lruvec)
+>> -                               unlock_page_lruvec_irqrestore(lruvec, flags);
+>> -                       lruvec = lock_page_lruvec_irqsave(page, &flags);
+>> -               }
+>>
+>>                 /* block memcg migration during page moving between lru */
+>>                 if (!TestClearPageLRU(page))
+>>                         continue;
+>>
+>> +               lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+>>                 (*move_fn)(page, lruvec);
+>>
+>>                 SetPageLRU(page);
+> So looking at this I realize that patch 18 probably should have
+> ordered this the same way with the TestClearPageLRU happening before
+> you fetched the new_lruvec. Otherwise I think you are potentially
+> exposed to the original issue you were fixing the the previous patch
+> that added the call to TestClearPageLRU.
 
-crash> dis -l jbd2_journal_grab_journal_head
-0xffffffffa00b6050 <jbd2_journal_grab_journal_head>:    nopl   0x0(%rax,%rax,1) [FTRACE NOP]
-0xffffffffa00b6055 <jbd2_journal_grab_journal_head+5>:  push   %rbp
-0xffffffffa00b6056 <jbd2_journal_grab_journal_head+6>:  mov    %rsp,%rbp
-0xffffffffa00b6059 <jbd2_journal_grab_journal_head+9>:  lock btsl $0x18,(%rdi)
-0xffffffffa00b605e <jbd2_journal_grab_journal_head+14>: jb     0xffffffffa00b6079 <jbd2_journal_grab_journal_head+41>
-0xffffffffa00b6060 <jbd2_journal_grab_journal_head+16>: mov    (%rdi),%rax
-0xffffffffa00b6063 <jbd2_journal_grab_journal_head+19>: test   $0x20000,%eax
-0xffffffffa00b6068 <jbd2_journal_grab_journal_head+24>: je     0xffffffffa00b6087 <jbd2_journal_grab_journal_head+55>
-0xffffffffa00b606a <jbd2_journal_grab_journal_head+26>: mov    0x40(%rdi),%rax  <== jh is NULL(b_private's offset in 'struct buffer_head' is 0x40)
-0xffffffffa00b606e <jbd2_journal_grab_journal_head+30>: addl   $0x1,0x8(%rax)  <== "jh->b_jcount++" crash!!!
+Good catch. It's better to be aligned in next version.
+Thanks!
 
-According to the logical in above code, buffer_head has an attached
-journal_head("buffer_jbd(bh)" is true), but buffer_head doesn't record
-it(bh->b_private is NULL).
-So testing if "buffer_jbd(bh)" is true can't guarantee "bh->b_private"
-is not NULL under the abnormal test case.
+> 
+>> @@ -866,17 +859,12 @@ void release_pages(struct page **pages, int nr)
+>>                 }
+>>
+>>                 if (PageLRU(page)) {
+>> -                       struct lruvec *new_lruvec;
+>> -
+>> -                       new_lruvec = mem_cgroup_page_lruvec(page,
+>> -                                                       page_pgdat(page));
+>> -                       if (new_lruvec != lruvec) {
+>> -                               if (lruvec)
+>> -                                       unlock_page_lruvec_irqrestore(lruvec,
+>> -                                                                       flags);
+>> +                       struct lruvec *pre_lruvec = lruvec;
+>> +
+>> +                       lruvec = relock_page_lruvec_irqsave(page, lruvec,
+>> +                                                                       &flags);
+>> +                       if (pre_lruvec != lruvec)
+> So this doesn't really read right. I suppose "pre_lruvec" should
+> probably be "prev_lruvec" since I assume you mean "previous" not
+> "before".
 
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
----
- fs/jbd2/journal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index e494443..cb661d4 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2535,7 +2535,7 @@ struct journal_head *jbd2_journal_grab_journal_head(struct buffer_head *bh)
- 	struct journal_head *jh = NULL;
- 
- 	jbd_lock_bh_journal_head(bh);
--	if (buffer_jbd(bh)) {
-+	if (buffer_jbd(bh) && bh2jh(bh)) {
- 		jh = bh2jh(bh);
- 		jh->b_jcount++;
- 	}
--- 
-1.8.3.1
-
+yes, it's previous, I will rename it.
+Thanks
+Alex
+> 
