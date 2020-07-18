@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6321F224BE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE91224BE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 16:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgGROhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 10:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        id S1727775AbgGROiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 10:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgGROhH (ORCPT
+        with ESMTP id S1726611AbgGROiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 10:37:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBE3C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:37:07 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mn17so7888748pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:37:07 -0700 (PDT)
+        Sat, 18 Jul 2020 10:38:46 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8ABC0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:38:46 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id d18so13311986ion.0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 07:38:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=OBxVyEg3bdADV2OFLorxOQYOlQLEYNXuUZHrmed//Yw=;
-        b=q2pKauGPutsq7X/osxzAdP5R7jcR5hBKTkgNFUITBMeyRr7tGwBmdGB9kN2OFkPtVo
-         gC4XGaD+1zUxruSNgagkQNlrOkj0vn70BB/iKFO0RKgU3zU3jPVdgOnviczuueRHXohG
-         Y+6GFTAcJRjMeoZFOGGfkUpD8sAsx6enVEwELdO4zoPNdjxGCr6Ad0z4DxarEjMBlwBM
-         n9/vveTB0K+Dn4nbCUTi07m+MAQC3gMss5Iaa+sx/RA6IrYz9HBoiX7WAcj3lLQ6IJzi
-         QBpKtiGi/Lma/Vqhkkl/DUhrKgTFI188Ed2YhkainYCc8LisQ6magBWtWF/HAw+3loww
-         rKlw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3CZFF+SPnEfHSXiQgUR+BE19nE+BkkIE3L7TpE9V3uc=;
+        b=IBSz+fT4JgoTuFrsLgZrNzfmdABix/zmUstvtGPatwiHcGKqFgx/IJEh5UGhBPpaA1
+         a0vySOLKu2W5b3ddxJurbxLPsQSZRwuk+DifuxtxrgsBt+vW8kLMrRt6RWHV/CEB46RE
+         6GvMAjxbY+DCOG0Zi82HdOL0XZtkyTKHRvhuImRMklw537iEKOGt/YsJkjuiTs7LXNh5
+         87reovGvbw6kf3A6uiXG/YMZ6qRuulILzB96WmxpY3IJE7cnf7qBT9L6QeOCc1TzCg+v
+         O5tPd06EeaM2y03sgYUWR9hMwa7A7zRQF1u27pa+ulrBoP6cg7CZuZeyhKe3mLSCzYl1
+         zLHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=OBxVyEg3bdADV2OFLorxOQYOlQLEYNXuUZHrmed//Yw=;
-        b=L8F/CXI7V7p33NSAd1kO4LSbHRBgNr5gafbwCTqlqck1Eknb2rmmSJ3Dzkb+o6O0gL
-         63PhcGuJ25bv/Y+1Ww86YWP12D4/wnv8YtFEpRupR4G/RAIRt2XNa+0Exvqlw0B4haPT
-         3eck+mv/y5xKF7aJaZZ+S/S5+WaL2bbMjuHQzEckSIoNEAlmsRMceU4Si100HFn0gGUg
-         8jiq4n1g4U+yHHUMJnGgnunW2W0bBA2G3K9mPOtyyHuX2pvkI9qOVCdk3AoIu0Lr1cGM
-         PAr4ttRdQnJhQc4FQnYobNqQ6JaRaVMTz4rQ7q02G9QzUCGkxPsYG7nCB5ieD8s0U7Ne
-         LKZw==
-X-Gm-Message-State: AOAM5302ifnauOA/WYM69ebtd37Gp1LuLJs6mXikWG8kMt9SqDCFMMx7
-        FHeHn+x16Zzn5vRpQgaIWnAr60+Kr9q75Q==
-X-Google-Smtp-Source: ABdhPJwXzTRqkExLgXXpeJ9pKSnTxCd2wGCBsaRl6vw30r3m2wm8UvlbYoxwS/CEUBpUgKiBOWi6WA==
-X-Received: by 2002:a17:90a:ea05:: with SMTP id w5mr14758483pjy.175.1595083026148;
-        Sat, 18 Jul 2020 07:37:06 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id y18sm10841886pff.10.2020.07.18.07.37.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Jul 2020 07:37:05 -0700 (PDT)
-Subject: Re: [PATCH 0/2] task_put batching
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1595021626.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
-Date:   Sat, 18 Jul 2020 08:37:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=3CZFF+SPnEfHSXiQgUR+BE19nE+BkkIE3L7TpE9V3uc=;
+        b=mEuDbTBp+kP2+AIIpkIEM3QU6WK/p8AYvYk/dBcHOIa6pNzraX/92UXDX+inpdsJYF
+         Rv4R+RU0MUQSrhfFRG+gPbm6kZ7Q2Vogt3Jl5ngQJq9F9YRm5XNx2pqvHeJ6bJYLd1tL
+         g79F9Ef6AR+epojV1vAGPLQi2HlmJjFzGSYLmU7RNaq6PBeFYLKMz7+aIeteabLVLwUh
+         qHN+RzAPT/T4DE1o5DqN5E9R+G3dPfd/qLcaIMFzHonKpuXjY1S0nGOXhz0FpxBB8D8S
+         p5T+TAJXc3vOrEII94oSdoefkH1IoS3CljO/OmzhenHk6b8GPf4dAF9Ka/OfoaDdaBer
+         Atmg==
+X-Gm-Message-State: AOAM530N/yZfIz75mVsNcjsK98IYApxZtIckkoZKG78J2cECFtjMQC8f
+        eTEtWRk1hwMUWS2yGjP22yldUc4=
+X-Google-Smtp-Source: ABdhPJySoFUNKeU1kzzCX2DTnsI9TY1hbtPQgWd+biWv7IxJ9a2wbtQiaoZ4rkMoYOW4Cyz3Q1i/6g==
+X-Received: by 2002:a02:c50d:: with SMTP id s13mr15856962jam.109.1595083125320;
+        Sat, 18 Jul 2020 07:38:45 -0700 (PDT)
+Received: from localhost.localdomain (174-084-153-250.res.spectrum.com. [174.84.153.250])
+        by smtp.gmail.com with ESMTPSA id 5sm5888610ion.7.2020.07.18.07.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 07:38:44 -0700 (PDT)
+From:   Brian Gerst <brgerst@gmail.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>
+Subject: [PATCH 0/3] x86: Clean up SYSRET/SYSEXIT validation
+Date:   Sat, 18 Jul 2020 10:38:36 -0400
+Message-Id: <20200718143839.194960-1-brgerst@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <cover.1595021626.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/20 2:32 AM, Pavel Begunkov wrote:
-> For my a bit exaggerated test case perf continues to show high CPU
-> cosumption by io_dismantle(), and so calling it io_iopoll_complete().
-> Even though the patch doesn't yield throughput increase for my setup,
-> probably because the effect is hidden behind polling, but it definitely
-> improves relative percentage. And the difference should only grow with
-> increasing number of CPUs. Another reason to have this is that atomics
-> may affect other parallel tasks (e.g. which doesn't use io_uring)
-> 
-> before:
-> io_iopoll_complete: 5.29%
-> io_dismantle_req:   2.16%
-> 
-> after:
-> io_iopoll_complete: 3.39%
-> io_dismantle_req:   0.465%
+This series cleans up the tests for using the SYSRET or SYSEXIT
+instructions on exit from a syscall, moving some code from assembly to C
+and merging native and compat tests.
 
-Still not seeing a win here, but it's clean and it _should_ work. For
-some reason I end up getting the offset in task ref put growing the
-fput_many(). Which doesn't (on the surface) make a lot of sense, but
-may just mean that we have some weird side effects.
+Brian Gerst (3):
+  x86-64: Move SYSRET validation code to C
+  x86-32: Remove SEP test for SYSEXIT
+  x86: Clean up do_fast_syscall_32() tests
 
-I have applied it, thanks.
+ arch/x86/entry/calling.h         |  10 +--
+ arch/x86/entry/common.c          | 142 ++++++++++++++++++++-----------
+ arch/x86/entry/entry_32.S        |   6 +-
+ arch/x86/entry/entry_64.S        |  71 +---------------
+ arch/x86/entry/entry_64_compat.S |  13 +--
+ arch/x86/include/asm/segment.h   |   1 +
+ arch/x86/include/asm/syscall.h   |   4 +-
+ 7 files changed, 108 insertions(+), 139 deletions(-)
 
+
+base-commit: bccf9048549afe54b3c6bc8979ebfddea748da85
 -- 
-Jens Axboe
+2.26.2
 
