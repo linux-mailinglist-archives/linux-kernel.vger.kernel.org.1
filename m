@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A7F224904
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 07:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3838B224907
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 07:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgGRFcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 01:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
+        id S1726576AbgGRFkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 01:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgGRFcI (ORCPT
+        with ESMTP id S1726207AbgGRFkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 01:32:08 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0C6C0619D2;
-        Fri, 17 Jul 2020 22:32:08 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id e18so9086138ilr.7;
-        Fri, 17 Jul 2020 22:32:08 -0700 (PDT)
+        Sat, 18 Jul 2020 01:40:46 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19801C0619D2;
+        Fri, 17 Jul 2020 22:40:46 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 17so20411935wmo.1;
+        Fri, 17 Jul 2020 22:40:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=Q91gtO58hCq0wdQ/qvG+6bdBUzXulWzjoOklqz06aB4=;
-        b=tPI8bHuM7O1/hnnerKenngBwMqp2su1gAdMivuob9EcL4wNLpcBkR2ybiBj0u49weN
-         ZKuNZzV7kJPt4mDVHYB0zb+CPx99m47mddbHkgJLyeQDXhRZJaV/46K8ZpH9SP33Mv7t
-         JjZF0/ZI/5vJVUAo28HEArPh+175VeGJQUGW6Lj3t2Tvl41ZCHq3FTaXThbFcgZZiZqB
-         IUp8dQiKenlN+U4miqSgkLAsdzlVZ2zq8Ew+5qIlPAqzVh4JTAC4bWdHXPp3N++eRTF5
-         J+MV67J+r1lJ/r1R680Cjya6H8eNrU7FVKfmwezPG8T/ZwXY3E8LSxkOFFF3rvRYpqBo
-         sKmg==
+        bh=pHFn3qli/TjcBYDvPYIZphMr/9QXXE2rgKtRBMGR0ZI=;
+        b=ZNEe8AGalV3orNvMIKrPzBzMHPZqcNzooMpw9EXGTVPWf/dHyyk7xaLEQngOcZya/D
+         pThmZNBRstvLjKQ6tm4kOiP/1sIOh229jlklB8JcibilNTBrjJc9e3KYMA1+6BFLzWpa
+         gLkz1wib73q5Mc75eqngEnfubM/dTp4/7zHe4dwdtRaFLzQFGe+UxqqWfVZqqXZRts+7
+         oWvf7g4Cq4q5ssPwTbKzqfDULdOREybSIRkN54yO6yUcoDK9n5uEePTDgPNkeEfML/U0
+         Hp2cLap8SdlW1XwjSjiIQySVC/qRDXnlgkMPcgzzozT6Mf0N0hGyLETi+1EwLUb2Cz8O
+         NOPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Q91gtO58hCq0wdQ/qvG+6bdBUzXulWzjoOklqz06aB4=;
-        b=e790aQ3cn7wavss1AJOa0WGYYK+OnkaYzyrzrFA5IHCl6MnPmcTzAeDyQuq1NLsxSH
-         9VJeXdrWucqfV6XOlvKZlKBWy0oYYfML8l84zTdx81eRYxD8Jfv6+QluX1W4v/o0Svk6
-         1QmR3LUzLsiq7DIwOghoDduzGZBg+4bKKKpmdGiPPVrGt80F1nSKj6GSCiSiwtS7AGoc
-         RFl9KxnIWJoXXI5XdUGzUc6wSU/z3UQciup+PkXhrhut8qqhzDwSznQC/zCqQM/XFTBu
-         XDIjqRz9CBc9csSrb6MhiJxecgLOmCt9LaPK/hkFp3cUu3afLww3iuTg7upeWy9W0cnb
-         KBvA==
-X-Gm-Message-State: AOAM533sDqQdnGHaof8DYOUMU16Kg1jk5xLcPLnxuPJ0zvL770Osweao
-        z1IHA4iz8wi2AkG39bOPZRX98iXc+bs=
-X-Google-Smtp-Source: ABdhPJy3kHWp7oPphW6RdeZY/qdTQ0MDgUPNCS0Bvi4QCg37oB54GPB5SdgAjCgdbL4tohm7nMze8A==
-X-Received: by 2002:a92:db44:: with SMTP id w4mr12509517ilq.306.1595050327391;
-        Fri, 17 Jul 2020 22:32:07 -0700 (PDT)
-Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [160.94.145.20])
-        by smtp.googlemail.com with ESMTPSA id t67sm2165163ill.88.2020.07.17.22.32.06
+        bh=pHFn3qli/TjcBYDvPYIZphMr/9QXXE2rgKtRBMGR0ZI=;
+        b=VG/nDghgGTcHZVdaPn3v152K+7vQZIq28oTYPW91K8b4LBIdGYXP6mLqpkITl7WZ3x
+         G2LaoY6seZiQGRd3FoHPn2jsHiPXzu0HumdnfC/VZg3CQyrrCEyhHoHTdNE31Rz7vBnt
+         KeZnxwNRcKRTVWEwvEFlN8ir5E5H2coXzS0EQ44zFcv9eEbdnTkC55aWiPacKMiGMsXL
+         +Unx8fjvhcHGy/1NGMPDCTSut6S6OlxpPHKL6yvywmsvABrqRlngzj+SFDcIKWx9dG2t
+         sSG7zLU9bcHzcA90CJP8H0K68t4zv3ih61n/Vof9uUmFGcGbP6VqxhRk9WBmDSEd4mHt
+         IeMg==
+X-Gm-Message-State: AOAM531sMZRKBjciApM0OrNrcuqOvE/VW41S9WTTSNQUyGbadcXIBxZ5
+        4d6Wg2SdSoPA68wGes5hCKY=
+X-Google-Smtp-Source: ABdhPJz14TbNNNBW+nTTvXOaLTqyKPD9qyFpCxpQurtQUWxPrmzmSQhDYHvM1885ty1C+zFmLOaYTw==
+X-Received: by 2002:a7b:c185:: with SMTP id y5mr12739965wmi.85.1595050844672;
+        Fri, 17 Jul 2020 22:40:44 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id 59sm19361711wrj.37.2020.07.17.22.40.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 22:32:06 -0700 (PDT)
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-To:     Robert Baldyga <r.baldyga@samsung.com>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: [PATCH] nfc: s3fwrn5: add missing release on skb in s3fwrn5_recv_frame
-Date:   Sat, 18 Jul 2020 00:31:49 -0500
-Message-Id: <20200718053150.11555-1-navid.emamdoost@gmail.com>
+        Fri, 17 Jul 2020 22:40:44 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3
+Date:   Sat, 18 Jul 2020 05:40:40 +0000
+Message-Id: <20200718054040.3996-1-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The implementation of s3fwrn5_recv_frame() is supposed to consume skb on
-all execution paths. Release skb before returning -ENODEV.
+Similar to other G12B devices using the W400 dtsi, I see reports of mmc0
+tuning errors on VIM3 after a few hours uptime:
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+[12483.917391] mmc0: tuning execution failed: -5
+[30535.551221] mmc0: tuning execution failed: -5
+[35359.953671] mmc0: tuning execution failed: -5
+[35561.875332] mmc0: tuning execution failed: -5
+[61733.348709] mmc0: tuning execution failed: -5
+
+I do not see the same on VIM3L, so remove sd-uhs-sdr50 from the common dtsi
+to silence the error, then (re)add it to the VIM3L dts.
+
+Signed-off-by: Chrisitan Hewitt <christianshewitt@gmail.com>
 ---
- drivers/nfc/s3fwrn5/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi     | 1 -
+ arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 4 ++++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nfc/s3fwrn5/core.c b/drivers/nfc/s3fwrn5/core.c
-index 91d4d5b28a7d..ba6c486d6465 100644
---- a/drivers/nfc/s3fwrn5/core.c
-+++ b/drivers/nfc/s3fwrn5/core.c
-@@ -198,6 +198,7 @@ int s3fwrn5_recv_frame(struct nci_dev *ndev, struct sk_buff *skb,
- 	case S3FWRN5_MODE_FW:
- 		return s3fwrn5_fw_recv_frame(ndev, skb);
- 	default:
-+		kfree_skb(skb);
- 		return -ENODEV;
- 	}
- }
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 27408c10a811..ddfd52b88002 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -293,7 +293,6 @@
+ 
+ 	bus-width = <4>;
+ 	cap-sd-highspeed;
+-	sd-uhs-sdr50;
+ 	max-frequency = <100000000>;
+ 
+ 	non-removable;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index dbbf29a0dbf6..026b21708b07 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -88,6 +88,10 @@
+ 	status = "okay";
+ };
+ 
++&sd_emmc_a {
++	sd-uhs-sdr50;
++};
++
+ &usb {
+ 	phys = <&usb2_phy0>, <&usb2_phy1>;
+ 	phy-names = "usb2-phy0", "usb2-phy1";
 -- 
 2.17.1
 
