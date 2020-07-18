@@ -2,149 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69568224D99
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 21:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3200224D9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Jul 2020 21:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgGRTZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 15:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726346AbgGRTZ4 (ORCPT
+        id S1727813AbgGRTfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 15:35:11 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16157 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726346AbgGRTfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 15:25:56 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2E1C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 12:25:56 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m9so7035070pfh.0
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 12:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=IUuO59HPOhmBxerlGrYcaRptbgM0uZnsf5CqGWahS/Q=;
-        b=h5UClVI5adBPz6tYw3fU49YKvdDMVv1U6O8LRIExeg98jNqeK15rMydsvli5+Vd97F
-         3Z3/EJ2Q4VCNrzwbu0JeKqUOIkekxjeJnivsOIN1q4Z3AV5JWUBmo21ea1L5Fjc5B6Cf
-         RtswAIUdXBK3sjHzv8Z6tbDquWeMl2mzFPKOjBSaQxzWfiIM0vaknNBpfKmoVpOGTeL5
-         1eKa8oBzCv/qXUkPgEoUtHkuqEMMWAsjz5OJUY3ZYnQFyf6eJYayKg/T7wCF9vyf2Ty5
-         +39WxPLIOYV39XepXX5w1+/HbIg7dxtllERI7QK/v36pdsEDFWGjVM88VuppXwYjFhHF
-         E8lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=IUuO59HPOhmBxerlGrYcaRptbgM0uZnsf5CqGWahS/Q=;
-        b=a4x6DqnB7pn7J8W8UWwvrKBfsSGpPiz7MZLyMIVq7gFGEIJuHedge3bOx5wfBf6nGs
-         AiLyrw+yUKckYIvDlgCF/XmKRfbrOLcRZay4uqQdYQgjF0Bul14asBeXIdOPGULLhXGQ
-         vzS6QonmR08l6m7F0cBykRojMnWH4FfPhiq9GDSTxI2NL30t/UloJd2dvF2EovEW6dsJ
-         MwcoY4aDxPRz2I57M0o01rf5JwIXtpWCG67Vd5nvAgsXzpbtLW59sNameyC6+cjxmsRp
-         p0FJAGb2GjI+qT4NNVoq9hAEl78qDOWLaoV3LlI25fo9uOWedvkESU6QFDQEA2NwmQTp
-         4JdA==
-X-Gm-Message-State: AOAM532ZW99ZB7bBvlB4BesypG2aX7lGXcttEk7L5OfY4coFBECGS7wQ
-        +KcMtnslNgU2uzJpIi6tLk6R4FEz3mmiHg==
-X-Google-Smtp-Source: ABdhPJyaVNNy8aVMTzNXB9e1dfav1DtEjLaSW0pIevxCJg2Sq7bR9lR6zeVDREsg8sZjq+1Gxswwpg==
-X-Received: by 2002:a63:3308:: with SMTP id z8mr13049944pgz.409.1595100355358;
-        Sat, 18 Jul 2020 12:25:55 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:e0ba:42b5:b0b0:d1a? ([2601:646:c200:1ef2:e0ba:42b5:b0b0:d1a])
-        by smtp.gmail.com with ESMTPSA id m9sm6505426pjs.18.2020.07.18.12.25.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Jul 2020 12:25:54 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
+        Sat, 18 Jul 2020 15:35:11 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f134e790000>; Sat, 18 Jul 2020 12:33:13 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sat, 18 Jul 2020 12:35:10 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sat, 18 Jul 2020 12:35:10 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 18 Jul
+ 2020 19:35:06 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sat, 18 Jul 2020 19:35:06 +0000
+Received: from vdumpa-ubuntu.nvidia.com (Not Verified[172.17.173.140]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f134ee90000>; Sat, 18 Jul 2020 12:35:06 -0700
+From:   Krishna Reddy <vdumpa@nvidia.com>
+To:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <robh+dt@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <yhsu@nvidia.com>,
+        <snikam@nvidia.com>, <praithatha@nvidia.com>, <talho@nvidia.com>,
+        <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
+        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
+        <nicoleotsuka@gmail.com>, Krishna Reddy <vdumpa@nvidia.com>
+Subject: [PATCH v11 0/5] NVIDIA ARM SMMU Implementation
+Date:   Sat, 18 Jul 2020 12:34:52 -0700
+Message-ID: <20200718193457.30046-1-vdumpa@nvidia.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] x86/idt: Make sure idt_table takes a whole page
-Date:   Sat, 18 Jul 2020 12:25:46 -0700
-Message-Id: <7FB389D0-77D4-482E-8A21-8662DDB00268@amacapital.net>
-References: <0CEC6A66-FD50-4B6B-9521-A40E5B9DA10F@zytor.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        joro@8bytes.org
-In-Reply-To: <0CEC6A66-FD50-4B6B-9521-A40E5B9DA10F@zytor.com>
-To:     hpa@zytor.com
-X-Mailer: iPhone Mail (17F80)
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595100793; bh=TN+H04oNQO9bZvotrlKTP2TmCq3SKVkosF9GEOPNIJU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=rO91Ze9GtaOlLYV08m4UPtp1X0ec4qU9039Jn2xYvNAuFgXvKxFibz9eOlaPcXCzn
+         Hie156uusl/owMiO3kHcX+9wuY6QCUWHtAEux9BmuY5tj3WcM7N4GFbFkwMxC6RkcK
+         6sJC1H4wFf7tA1Glo3jsFbzM5I9ovsxHqK7zqMWUzqEkPi6PlAGh4HkeZRvb78NFe5
+         b76j4ROvTUb4cwt7/1NYzIvxkoJAvVsHAQfAhmDS2j5jKYNjBY2VfV+rOKQpjf/J9K
+         C9VJABmlmPgwYTXK0oLhvurERH7nfGzpdj00i+XsjCzV72PrAOqhar4i6PngjWo+Im
+         +aJ3xCgRYJtLw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in v11:
+Addressed Rob comment on DT binding patch to set min/maxItems of reg proper=
+ty in else part.
+Rebased on top of https://git.kernel.org/pub/scm/linux/kernel/git/will/linu=
+x.git/log/?h=3Dfor-joerg/arm-smmu/updates.
 
-> On Jul 18, 2020, at 10:57 AM, hpa@zytor.com wrote:
->=20
-> =EF=BB=BFOn July 9, 2020 3:33:55 AM PDT, Joerg Roedel <joro@8bytes.org> wr=
-ote:
->> From: Joerg Roedel <jroedel@suse.de>
->>=20
->> On x86-32 the idt_table with 256 entries needs only 2048 bytes. It is
->> page-aligned, but the end of the .bss..page_aligned section is not
->> guaranteed to be page-aligned.
->>=20
->> As a result, symbols from other .bss sections may end up on the same
->> 4k page as the idt_table, and will accidentially get mapped read-only
->> during boot, causing unexpected page-faults when the kernel writes to
->> them.
->>=20
->> Avoid this by making the idt_table 4kb in size even on x86-32. On
->> x86-64 the idt_table is already 4kb large, so nothing changes there.
->>=20
->> Fixes: 3e77abda65b1c ("x86/idt: Consolidate idt functionality")
->> Signed-off-by: Joerg Roedel <jroedel@suse.de>
->> ---
->> arch/x86/kernel/idt.c | 12 ++++++++++--
->> 1 file changed, 10 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
->> index 0db21206f2f3..83e24f837127 100644
->> --- a/arch/x86/kernel/idt.c
->> +++ b/arch/x86/kernel/idt.c
->> @@ -157,8 +157,13 @@ static const __initconst struct idt_data
->> apic_idts[] =3D {
->> #endif
->> };
->>=20
->> -/* Must be page-aligned because the real IDT is used in the cpu entry
->> area */
->> -static gate_desc idt_table[IDT_ENTRIES] __page_aligned_bss;
->> +/*
->> + * Must be page-aligned because the real IDT is used in the cpu entry
->> area.
->> + * Allocate more entries than needed so that idt_table takes a whole
->> page, so it
->> + * is safe to map the idt_table read-only and into the user-space
->> page-table.
->> + */
->> +#define IDT_ENTRIES_ALLOCATED    (PAGE_SIZE / sizeof(gate_desc))
->> +static gate_desc idt_table[IDT_ENTRIES_ALLOCATED] __page_aligned_bss;
->>=20
->> struct desc_ptr idt_descr __ro_after_init =3D {
->>    .size        =3D IDT_TABLE_SIZE - 1,
->> @@ -335,6 +340,9 @@ void __init idt_setup_apic_and_irq_gates(void)
->>    idt_map_in_cea();
->>    load_idt(&idt_descr);
->>=20
->> +    BUILD_BUG_ON(IDT_ENTRIES_ALLOCATED < IDT_ENTRIES);
->> +    BUILD_BUG_ON(sizeof(idt_table) !=3D PAGE_SIZE);
->> +
->>    /* Make the IDT table read only */
->>    set_memory_ro((unsigned long)&idt_table, 1);
->>=20
->=20
-> NAK... this isn't the right way to fix this and just really kicks the can d=
-own the road. The reason is that you aren't fixing the module that actually h=
-as a problem.
->=20
-> The Right Way[TM] is to figure out which module(s) lack the proper alignme=
-nt for this section. A script using objdump -h or readelf -SW running over t=
-he .o files looking for alignment less than 2**12 should spot the modules th=
-at are missing the proper .balign directives.
+Changes in v10:
+Perform SMMU base ioremap before calling implementation init.
+Check for Global faults across both ARM MMU-500s during global interrupt.
+Check for context faults across all contexts of both ARM MMU-500s during co=
+ntext fault interrupt.
+Add new DT binding nvidia,smmu-500 for NVIDIA implementation.
+https://lkml.org/lkml/2020/7/8/57
 
-I don=E2=80=99t see the problem. If we are going to treat an object as thoug=
-h it=E2=80=99s 4096 bytes, making C think it=E2=80=99s 4096 bytes seems enti=
-rely reasonable to me.
+v9 - https://lkml.org/lkml/2020/6/30/1282
+v8 - https://lkml.org/lkml/2020/6/29/2385
+v7 - https://lkml.org/lkml/2020/6/28/347
+v6 - https://lkml.org/lkml/2020/6/4/1018
+v5 - https://lkml.org/lkml/2020/5/21/1114
+v4 - https://lkml.org/lkml/2019/10/30/1054
+v3 - https://lkml.org/lkml/2019/10/18/1601
+v2 - https://lkml.org/lkml/2019/9/2/980
+v1 - https://lkml.org/lkml/2019/8/29/1588
 
-> --=20
 
-> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+Krishna Reddy (5):
+  iommu/arm-smmu: move TLB timeout and spin count macros
+  iommu/arm-smmu: ioremap smmu mmio region before implementation init
+  iommu/arm-smmu: add NVIDIA implementation for ARM MMU-500 usage
+  dt-bindings: arm-smmu: add binding for Tegra194 SMMU
+  iommu/arm-smmu: Add global/context fault implementation hooks
+
+ .../devicetree/bindings/iommu/arm,smmu.yaml   |  25 +-
+ MAINTAINERS                                   |   2 +
+ drivers/iommu/Makefile                        |   2 +-
+ drivers/iommu/arm-smmu-impl.c                 |   3 +
+ drivers/iommu/arm-smmu-nvidia.c               | 278 ++++++++++++++++++
+ drivers/iommu/arm-smmu.c                      |  29 +-
+ drivers/iommu/arm-smmu.h                      |   6 +
+ 7 files changed, 334 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/iommu/arm-smmu-nvidia.c
+
+
+base-commit: 49fbb25030265c660de732513f18275d88ff99d3
+--=20
+2.26.2
+
