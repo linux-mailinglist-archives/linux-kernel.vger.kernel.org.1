@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B6A2252BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 18:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D4E2252BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 18:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgGSQII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 12:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgGSQIH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 12:08:07 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576EEC0619D2;
-        Sun, 19 Jul 2020 09:08:07 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id q17so7838809pfu.8;
-        Sun, 19 Jul 2020 09:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6e6x8F+nvFKYkpVM/PBmF306fEprwt2iW+/MkbLnTGs=;
-        b=aDnO2D45JbleuQy+nqiM6Oh/adaAOBrOcXuuemjX72m35hlYQEzLP0ET6aKyZW/0De
-         +Q7mdBtnW2C5kBm4r3RDNQG9lKtExMhAXvsrgNfkYbSwZSl9NbshjnImw901pffKZvZh
-         0puhJSax5UZ4+ZuYvL4ifvRgjpmtIa0FeQ5nocgg6PrAAaWjFvLoWoY9a0O7epbvF2u1
-         ecHEB3pESaEcR+8F4j+4aLHn1uYeBBlW0myRFkry4GDjXOxjFoN9Ic13sAoer3RbGZgy
-         2uaff1ZjSdf1FIwBdJKbutM0wwJO1JwLT+EP7bVl2Rz8/ZZufcHe7CR86iVjRGK+1mUy
-         /g6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6e6x8F+nvFKYkpVM/PBmF306fEprwt2iW+/MkbLnTGs=;
-        b=l88wOgUForAhxUCzkMbBDmln/A3CTiXqti5HbIdmrBvg22pEX4AKLopFyDak5WalU9
-         X4ZnG+CbpIiguSFXV//t/9MRvLS4NEZnWaTADPWAIO9kK5QQZ8ikz37PA2NB/C2Oe4Tk
-         9CUxdXdroCRp5QKb6a3TKCIr9nbWZjzotxsNQDr88DU968wDi4vFZ+nVS4DMVMyJcRae
-         UL8nO1hLLH/I/cguCNXjJeSF1fU9k54StoY8MEBTBI1L6TjFf4WURyB3taoDpTAJPbrJ
-         lSEWwOaBH1eqghv+944nRpTL1YBU500u460mg4MBTQD0HngW6DBEk3kjR6AshanjmN96
-         5wxw==
-X-Gm-Message-State: AOAM532hOcQ22x4Ek8HPk0KA+YKt2VnRGz6XMj5T6Ep9NTAkBAxNeoSm
-        H1E9I94enI7Dtz6NG2Q5JeqUhStm
-X-Google-Smtp-Source: ABdhPJzvwR12vzZqXmb2+F8OxWENfXaTcZP46py/Q46CQ4GDJcZAqjKtqTP9Vtj5zgxnq7Da6YtIKw==
-X-Received: by 2002:a63:9212:: with SMTP id o18mr15864925pgd.347.1595174886437;
-        Sun, 19 Jul 2020 09:08:06 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id 190sm13800325pfz.41.2020.07.19.09.08.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Jul 2020 09:08:05 -0700 (PDT)
-Subject: Re: [PATCH net-next 3/4] net: Call into DSA netdevice_ops wrappers
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200718030533.171556-1-f.fainelli@gmail.com>
- <20200718030533.171556-4-f.fainelli@gmail.com>
- <20200718211805.3yyckq23udacz4sa@skbuf>
- <d3a11ef5-3e4e-0c4a-790b-63da94a1545c@gmail.com>
- <20200719160441.GK1383417@lunn.ch>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <898882da-780e-babb-15d0-01d3bba07f67@gmail.com>
-Date:   Sun, 19 Jul 2020 09:08:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.10.0
+        id S1726694AbgGSQIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 12:08:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgGSQIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 12:08:24 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4232820B1F;
+        Sun, 19 Jul 2020 16:08:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595174904;
+        bh=0wFOBIblcTxzXV3S2TYEYAJuKoT8vFEuWNcwPnEYwX0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JfjG0CXqcBd5lRY4vnMvSNkcYTTZ1+XvSXk6aDp4K/jt4GLqqUcIE9i+GwUoqQhwm
+         of0zMIrqPa6vnK50BNr1IZD1u7ERa8G94lzMAMjjdgE19bJMu+B3yxxBEXH7g4+1HL
+         BTe0lbHn0WmJRhPPPeJQUfbLSOHcVR2d1FeNr2/k=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 312873522960; Sun, 19 Jul 2020 09:08:24 -0700 (PDT)
+Date:   Sun, 19 Jul 2020 09:08:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     madhuparnabhowmik10@gmail.com,
+        Dexuan-Linux Cui <dexuan.linux@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
+        frextrite@gmail.com, lkft-triage@lists.linaro.org,
+        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
+Message-ID: <20200719160824.GF9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
+ <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
+ <20200712160856.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
+ <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
+ <20200717170747.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
+ <20200718001259.GY9247@paulmck-ThinkPad-P72>
+ <CA+G9fYs7s34mmtard-ETjH2r94psgQFLDJWayznvN6UTvMYh5g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200719160441.GK1383417@lunn.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYs7s34mmtard-ETjH2r94psgQFLDJWayznvN6UTvMYh5g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jul 19, 2020 at 05:52:44PM +0530, Naresh Kamboju wrote:
+> On Sat, 18 Jul 2020 at 05:43, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Sat, Jul 18, 2020 at 12:35:12AM +0530, Naresh Kamboju wrote:
+> > > Hi Paul,
+> > >
+> > > > I am not seeing this here.
+> > >
+> > > Do you notice any warnings while building linux next master
+> > > for x86_64 architecture ?
+> >
+> > Idiot here was failing to enable building of KVM.  With that, I do see
+> > the error.  The patch resolves it for me.  Does it help for you?
+> 
+> yes.
+> The below patch applied on top of linux -next 20200717 tag
+> and build pass.
 
+Thank you!  May I add your Tested-by?
 
-On 7/19/2020 9:04 AM, Andrew Lunn wrote:
->> If we have the core network stack reference DSA as a module then we
->> force DSA to be either built-in or not, which is not very practical,
->> people would still want a modular choice to be possible. The static
->> inline only wraps indirect function pointer calls using definitions
->> available at build time and actual function pointer substitution at run
->> time, so we avoid that problem entirely that way.
+                                                        Thanx, Paul
+
+> > ------------------------------------------------------------------------
+> >
+> > diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> > index de9385b..f8633d3 100644
+> > --- a/include/linux/rculist.h
+> > +++ b/include/linux/rculist.h
+> > @@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+> >  #define __list_check_rcu(dummy, cond, extra...)                                \
+> >         ({ check_arg_count_one(extra); })
+> >
+> > -#define __list_check_srcu(cond) true
+> > +#define __list_check_srcu(cond) ({ })
+> >  #endif
+> >
+> >  /*
 > 
-> Hi Florian
-> 
-> The jumping through the pointer avoids the inbuilt vs module problems.
-> 
-> The helpers themselves could be in a net/core/*.c file, rather than
-> static inline in a header. Is it worth adding a net/core/dsa.c for
-> code which must always be built in? At the moment, probably not.  But
-> if we have more such redirect, maybe it would be?
-I would continue to put what is DSA specific in net/dsa.h an not
-introduce new files within net/core/ that we could easily miss while
-updating DSA or we would need to update the MAINTAINERS file for etc.
--- 
-Florian
+> - Naresh
