@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E565225351
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 20:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D343B22535B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 20:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgGSSMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 14:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgGSSME (ORCPT
+        id S1726611AbgGSSNc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 19 Jul 2020 14:13:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22867 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726009AbgGSSNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 14:12:04 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEC9C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 11:12:04 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ls15so9022868pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 11:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kxZp5oQLXLp2mcGfAQe0wlBX6+dD2V4bhp1ZWl8hiqM=;
-        b=hXaBS10Fqhq432zqPQ3rSbg/lJhhUXwu0Bts4s5ZuJR0FNddji/eu8ggs2cyRJRZww
-         54ox3nSLBWhafPF8aV1WWsBow5JA3iz5MxwH/GOQJNbtfLRI7xhKxwA+QRAvODVkzjHl
-         stcAp18Ha7VQEiJvVXF2LiceVCcHbVb+Br+5UZlvibpv2p1no3hWPjkOgnXllbVeOgRI
-         gQwZ47Ubp5XicTFVvKlK2FMjNTyVA5Vo2aI8bIpf70yXkUL6RPL3iWbi29Ai1YUbKttG
-         0ud0k+TdAdwpzXt9lT5LB7csP5YRa/LTD1XlQ9N/5tDfszeKnR4r+gEVEmyKMi33lxIV
-         LDZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kxZp5oQLXLp2mcGfAQe0wlBX6+dD2V4bhp1ZWl8hiqM=;
-        b=iRXTz8Z+FBrSMDeNHgpIZYnqS2M5ZPoP6sjxPR1TuDohHQMe6bhBkwlqJgiiLWMpk2
-         v4CLBl3QGSBNsnmUH15SdcpwH/2n/dodR+t2C+fQGv0ahfXOKBAr1cMpgPf1HoJncK1f
-         GblTHxffWPf1DOoDmMnQsfsb77ho/MX1sJPDiCC7DPbe8bgIiwRICJ9oF14OG+imu+0B
-         nP8B1i3gNChb6OdiMepqVuU+2OsQdYkSiGuVsG6gwNhIIbd7BZOmfe1i3Wd/IlxYn5Oh
-         z768cvYM0M6+bUahnl26J5Xhp4qLx3wdhn1uphkxkncsfnAKmVm8NRUxJQAgepEc7s0P
-         BL/g==
-X-Gm-Message-State: AOAM532uMtC+Q3aREYMt7Z40BhGpxF60PJCl/UTcNYkDS+NmAV3fpMIu
-        FgTRPb1a8+MgThJV0y/y9LOwRJL19rA=
-X-Google-Smtp-Source: ABdhPJxa+u1x4+zWtMj1qS+kTxLzw51OdKtEp/n1No2Fqb0RJgRlPcvHscfCaCdnCoIKozfLl2Rzig==
-X-Received: by 2002:a17:90a:110:: with SMTP id b16mr19295803pjb.235.1595182323905;
-        Sun, 19 Jul 2020 11:12:03 -0700 (PDT)
-Received: from thinkpad ([69.172.171.109])
-        by smtp.gmail.com with ESMTPSA id g5sm9027863pjl.31.2020.07.19.11.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 11:12:03 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 11:12:23 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org,
-        syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wlan-ng: properly check endpoint types
-Message-ID: <20200719181223.GA210062@thinkpad>
-References: <20200718155836.86384-1-rkovhaev@gmail.com>
- <20200719092338.GC171181@kroah.com>
+        Sun, 19 Jul 2020 14:13:32 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-oHUPqxUTOvKjM4sB-CXu5A-1; Sun, 19 Jul 2020 14:13:26 -0400
+X-MC-Unique: oHUPqxUTOvKjM4sB-CXu5A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF8431083;
+        Sun, 19 Jul 2020 18:13:24 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C784F74F6C;
+        Sun, 19 Jul 2020 18:13:21 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCHv3 00/19] perf metric: Add support to reuse metric
+Date:   Sun, 19 Jul 2020 20:13:01 +0200
+Message-Id: <20200719181320.785305-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200719092338.GC171181@kroah.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 11:23:38AM +0200, Greg KH wrote:
-> On Sat, Jul 18, 2020 at 08:58:36AM -0700, Rustam Kovhaev wrote:
-> > As syzkaller detected, wlan-ng driver submits bulk urb without checking
-> > that the endpoint type is actually bulk, add usb_urb_ep_type_check()
-> > 
-> > Reported-and-tested-by: syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-> > Link: https://syzkaller.appspot.com/bug?extid=c2a1fa67c02faa0de723
-> > Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-> > ---
-> >  drivers/staging/wlan-ng/hfa384x_usb.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
-> > index fa1bf8b069fd..7cde60ea68a2 100644
-> > --- a/drivers/staging/wlan-ng/hfa384x_usb.c
-> > +++ b/drivers/staging/wlan-ng/hfa384x_usb.c
-> > @@ -339,6 +339,12 @@ static int submit_rx_urb(struct hfa384x *hw, gfp_t memflags)
-> >  
-> >  	hw->rx_urb_skb = skb;
-> >  
-> > +	result = usb_urb_ep_type_check(&hw->rx_urb);
-> > +	if (result) {
-> > +	       netdev_warn(hw->wlandev->netdev, "invalid rx endpoint");
-> > +	       goto cleanup;
-> > +	}
-> 
-> In looking at this again, can you just make these checks in the probe
-> function, and abort binding the driver to the device at that point in
-> time?  This feels really late in the init sequence.
-> 
-> The real problem here is in the hfa384x_create() function, where it
-> blindly takes the 1 and 2 endpoints and assumes that those are the
-> "correct type".  How about checking the types there, and if they are
-> incorrect, returning an error from that function and have the caller
-> return the error as well.
-> 
-> That should keep anything else in the driver from being initialized and
-> set up, and stop bad devices from being bound to the driver at a much
-> earlier point in time.
-> 
-> Note, just checking for the valid type/direction of those endpoints
-> should be sufficient.
-> 
-tyvm for the feedback! makes perfect sense, i'll send a new patch
+hi,
+this patchset is adding the support to reused metric in
+another metric.
+
+For example, to define IPC by using CPI with change like:
+
+     {
+         "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
+-        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
++        "MetricExpr": "1/CPI",
+         "MetricGroup": "TopDownL1",
+         "MetricName": "IPC"
+     },
+
+I won't be able to find all the possible places we could
+use this at, so I wonder you guys (who was asking for this)
+would try it and come up with comments if there's something
+missing or we could already use it at some places.
+
+It's based on Arnaldo's tmp.perf/core.
+
+v3 changes:
+  - added some acks
+  - some patches got merged
+  - added missing zalloc include [John Garry]
+  - added ids array outside the egroup object [Ian]
+  - removed wrong m->has_constraint assignment [Ian]
+  - renamed 'list' to 'metric_list' [Ian]
+  - fixed group metric and added test for it [Paul A. Clarke]
+  - fixed memory leak [Arnaldo]
+  - using lowercase keys for metrics in hashmap, because jevents
+    converts metric_expr to lowercase
+
+Also available in here:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/metric
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (19):
+      perf metric: Fix memory leak in expr__add_id function
+      perf metric: Add expr__add_id function
+      perf metric: Change expr__get_id to return struct expr_id_data
+      perf metric: Add expr__del_id function
+      perf metric: Add macros for iterating map events
+      perf metric: Add add_metric function
+      perf metric: Rename __metricgroup__add_metric to __add_metric
+      perf metric: Collect referenced metrics in struct metric_ref_node
+      perf metric: Collect referenced metrics in struct metric_expr
+      perf metric: Add referenced metrics to hash data
+      perf metric: Compute referenced metrics
+      perf metric: Add events for the current list
+      perf metric: Add cache_miss_cycles to metric parse test
+      perf metric: Add DCache_L2 to metric parse test
+      perf metric: Add recursion check when processing nested metrics
+      perf metric: Make compute_single function more precise
+      perf metric: Add metric group test
+      perf metric: Rename struct egroup to metric
+      perf metric: Rename group_list to metric_list
+
+ tools/perf/tests/parse-metric.c | 206 +++++++++++++++++++++++++++++++++++++++++++++++++----
+ tools/perf/util/expr.c          | 143 ++++++++++++++++++++++++++++++++-----
+ tools/perf/util/expr.h          |  30 +++++++-
+ tools/perf/util/expr.y          |  16 +++--
+ tools/perf/util/metricgroup.c   | 466 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------
+ tools/perf/util/metricgroup.h   |   6 ++
+ tools/perf/util/stat-shadow.c   |  20 ++++--
+ 7 files changed, 751 insertions(+), 136 deletions(-)
 
