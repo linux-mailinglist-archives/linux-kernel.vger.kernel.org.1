@@ -2,96 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE11225319
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3AA22531D
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgGSRhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 13:37:38 -0400
-Received: from sonic314-19.consmr.mail.ir2.yahoo.com ([77.238.177.145]:44843
-        "EHLO sonic314-19.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726463AbgGSRhh (ORCPT
+        id S1726159AbgGSRme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 13:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgGSRmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 13:37:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595180255; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=VIqVDPa58OIxE4a8kyoS2KJZmbjZQR8f4ukk3GBRkDOmYzNO+IQu5jQQ7lDugn+s1xgnwzZkhfqDsqutsor8cWJHCisOp4OOnnriG5HtxCGjL7MLn3dcMwIZ2uzynHNN59wuHvlyqH2NDnghGPVLu4krE1MJzV3oP5c08i3woWE5y0ziC5u/k3b+qv+Amasd9ONtD0WLpEfu9DG4do32nVzB8lOky8foXYukZa8n2P+7p7ljh3qNGFN6VuAHm4SOnL5/5y8OTvrGGsskQa5Sm+yUZ2NAO7E4lMJR9ryng2mXs/dKE1aulxaYdbGNxIHSMOyua/n/CbIkqbYTu9LdoQ==
-X-YMail-OSG: WO9cObkVM1lEhsTFqB3LgqY.v.2B7qqZ4Ugrx9fBfVKvNdHW4KXthZ8vErUEpQv
- bVtJwDUO0nRBL70rL_RP9z2tsVEEWyVSwcAkf_CeSqGmcqBTF5VbDINJzS2xbfZQsL.Hl_VKMqeL
- bsWvlzCKB_LnTRAXUf_nyU9Pj9czvMUneVJO5ZxTE5T7r.ewGEmG5.7BfRZvauPgXC.KSUdxcK3.
- a_erOYfJYVZNxEiveP.ND01cKkea2SCDi3kYEfSPDAz72aYRtwkZGIB.Im5XHjkfy0QLoKqSbTj4
- IViUa8.GjatV3GlQiTC6n2fb54N4eVgJW3_v7W89gTNBR4tzE4uEqecXdYK7ftgAs1RFMlTnSS.X
- gMQaVhYxyaJtaj3n6rRS1_ZR2AD8rwyGbHXqSk0FzzWK43KSuvxWvPNPHWEbalT8UWTgSwyhimY7
- qAzrfhZPfHbVA9qzE34S5vR8rX0dyYBJSNf8WSp6AUI.SQSajwaBLL3jlt32Er3Zfz7N8hiIh7JS
- R43ubi9dSpb3mhqPlmhDLTZX7Y0dAtMxAjwU6ijaMNz4WT.WANV_MjPoOcDoIjY6DHpy3nI2OhX3
- 3PxKJ4ZrVNDIyWV.jtsrI7A9tlG55IyjTmGkyHSGpISLsPUEApunm.yvxokw4nReu2.sy20LgEKz
- .o7IlzSku8sGPJjYMXT8KVLnddpxB8K4pc3jSJrc.HVmUys97giMz9Ge6mvEYsqhJpX21okkyVYr
- HSKSg5Ex1sBZCYsZtxiTXsii.nlHmN3DM3Wp0KsA614ibGMMTmvN7L01BZX4m11_K.aifI4qnMNX
- qSAskvtO5JTz5K.USibWD_dMVUYRBfthybuISy0unp3h5zctoIJBhFm4M8knEPNf8P1TvKFPeA1j
- r.5oj91HdVB7KQX0SUN06wHn7tTNbQDL85P5si7lS5cAdQfpj4TBN8gK9sKZI7zHVPBxGtgZraeq
- sY5BfS_27lE2P_0wJpqcZSlEeumI519v18E4wqo9.88HTnqOf6soathkMQWqEpUJoJtQcugLf1L2
- d2x4PJ9q8McwOr7k7U1ckkSR8yuyzWAz6mBpjwKMRA8Q5c8x4GGxt66LQ.06h7vMitb6gX7eDZNt
- UmIhg3YvlRYXhK2DOGqAliAukkrGNctRrbdf68iiy6c5Vc9akvhfcNEEvtcKKnK7yD7qEbw.QnHu
- QQzM0vhaPfvEuE9hWCCx2UpBX51m2l_xLAfOWstseUktrXyHNvt87AK_is5mlZBv5lZ9juvMmX1t
- Ou2oOiZ2VlHiB73Nc9V5G.BYkFf4tuNtNcZpJYX.SLbHDitzLWv0RkZUUcSddjpVdwpy59XwaEQ-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ir2.yahoo.com with HTTP; Sun, 19 Jul 2020 17:37:35 +0000
-Date:   Sun, 19 Jul 2020 17:37:31 +0000 (UTC)
-From:   "Mina A. Brunel" <mrsminaabrunel2334@gmail.com>
-Reply-To: mrsminaabrunel57044@gmail.com
-Message-ID: <186376232.5922971.1595180251749@mail.yahoo.com>
-Subject: My Dear in the lord
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <186376232.5922971.1595180251749.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+        Sun, 19 Jul 2020 13:42:33 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4E1C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 10:42:33 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x9so7633332plr.2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 10:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+itGL+wkOYuB6Tm6ltx3pOu6ONhkEl6XVNHndNYsqLk=;
+        b=lJ8btFU7V0AVT8sgEVuThveMF+v6thXOww5DvlSwjiRTtgnRRZhM0RXqYMFuwxzeK9
+         E5g+VvlXKj2iWQYhshU7hyljkn6mQeKS7VIrwPklQb7xhv9T4WQ0f5lgf10u2Y/oqqZs
+         tP/fpucRYm2Ph3qWZSr3SwpTGJJzfRtFEqjXQOpXx58N9N/wDjM56J1ZF4G2dxIqzj5n
+         cjZ0/tciJJR3YW355wgexUCr3b6sK/93Y7xgDnYtR6c8K2ovON4fHu2hTw+665dOPdvm
+         QmZsP6y5IB26fTmI+j03TpImQ0H2fIWW9APH6y/q/UzXIjTcln5u2FvG5caf7JmF1QZK
+         zHJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+itGL+wkOYuB6Tm6ltx3pOu6ONhkEl6XVNHndNYsqLk=;
+        b=MOABDAPrIdJS/UQ1EwLHbGNo7zRGpCUxIKLf6mOu/H/xfJ9iVt4XOrRux2ISxPZ5rP
+         Pktwj1M8JPMamNUENcwLnZXUK1chSsqssuvUoYDmtuG9rRkNSfD8pK7WFtovZg1U1rj5
+         BoCglq8o7vK6nWVytu42GIwBhxrRFab/w5F9bvO6+/D/ARY6obklsUpMeYDLZPca2LQC
+         85gafiyKhtna0DphBD5XlSwxWwbhQZoQFW2zg9MI9lf6ALl5V6jhFQgGu0yuoF0ckyhC
+         WfKICGBxXWygsa1dqba+NFIn+yKx3z+VBtvcVsURIyqyxVXX3/JaUqnXE3TKRSecp7Cu
+         B6CQ==
+X-Gm-Message-State: AOAM532dmed1BaQ+wEZniErgCPt3V+nM+BtktosWqDLnq+2onwX48ufd
+        JrZcplfxy6XIPYegEoOMJ18=
+X-Google-Smtp-Source: ABdhPJy0LDm8NcxAUyqU74zNmxMNY2ZAl5rukdnA2lo+16dOEoRv9MW7/C950cYLXt4l/qK12zcwpw==
+X-Received: by 2002:a17:902:22:: with SMTP id 31mr13836321pla.120.1595180552653;
+        Sun, 19 Jul 2020 10:42:32 -0700 (PDT)
+Received: from localhost.localdomain ([182.69.248.222])
+        by smtp.gmail.com with ESMTPSA id e191sm13906083pfh.42.2020.07.19.10.42.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 19 Jul 2020 10:42:31 -0700 (PDT)
+From:   Amit Singh Tomar <amittomer25@gmail.com>
+To:     andre.przywara@arm.com, afaerber@suse.de,
+        manivannan.sadhasivam@linaro.org, vkoul@kernel.org,
+        sboyd@kernel.org, robh+dt@kernel.org
+Cc:     dan.j.williams@intel.com, cristian.ciocaltea@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org
+Subject: [PATCH v7 00/10] Add MMC and DMA support for Actions S700
+Date:   Sun, 19 Jul 2020 23:11:57 +0530
+Message-Id: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This Series(v7) brought back the uSD regulator to model it correctly
+in DT, and for that patch 10/10 has changed.
 
+------------------------------------------------------------------
 
-My Dear in the lord
+Series(v6) addressed the review comments from Rob and Mani,
+changes are made in patch 01/10 and 10/10.
 
+Rob's bot reported an error for patch 01/10, and now it has been
+fixed by adjusting the reg property in example section.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+For patch 10/10 unnecessary regulators are removed as suggested by
+Mani. 
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+Serie is rebased on top of:
+https://github.com/torvalds/linux/commit/6a70f89cc58f2368efa055cbcbd8b37384f6c588
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+--------------------------------------------------------------------
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+Series(v5) addressed the review comments provided by Vinod, and
+patch 05/10 is moved to 01/10 so that documentation patch comes before
+driver.
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+Apart from it, changes are made in patch 03/10(earlier it was 02/10)
+to replace of_match_device() with of_device_get_match_data() and
+removed uintptr_t from type-cast.
 
-Thanks
-Mrs. Mina A. Brunel
+This Series is rebased on top of 5.8.0-rc3.
+
+---------------------------------------------------------------------
+
+Series(v4) addressed the review comments provided by Mani, and
+there are changes in patch 1/10, 2/10 and 6/10 for it.
+
+For first couple of patches , old comments are preserved and more
+details about how DMA descriptors fields are programmed is added.
+
+Apart from it, Typo is fixed patch 6/10 and placed the header file
+in alphabetical order.
+
+Also, this series fixes one compilation warning (reported by Kbuild)
+introduced by patch 2/10 using clang compiler.
+------------------------------------------------------------------------
+
+Series(v3) addressed the review comments provided by Rob, and 
+there are changes in patch 5/10 for it.
+
+Also, one of the important change for this series(v3) is about the way we 
+we handle address range conflict between pinctrl and sps node.
+
+In the last Series(v2), patch 4/10 was sent as *do not merge* but while
+discussing about some proper solution for it, we have come up with
+idea of limiting pinctrl address range(to 0x100) to avoid this conflict.
+This is safe to do as current pinctrl driver uses address range only
+up to 0x100 (even less than that?), and this would let sps to work properly.
+
+Since sps block is now enabled , we have to provide power-domain bit
+for dma to work properly and patch 6/10 has that change now.
+
+Looking forward have some comments for this series.
+
+---------------------------------------------------------------------------
+
+Series(v2) addressed the review comments provided by Andre, and
+there are changes in patch 1/10, 2/10, 5/10 and 9/10.
+
+* Accessor function (to get the frame lenght) has moved from
+  patch 2/9 to patch 1/9 with inline removed.
+* Removed the unnecessary line break.
+* Added comments about the way DMA descriptor differs between S700
+  and S900.
+* Added a macro to define fcnt value.
+* Updated dma DT bindings.
+* Used SoC secific compatible string for MMC.
+
+Apart from it, a new patch 8/10 is added in this series to
+update mmc DT bindings.
+
+Series is rebased on 5.7.0-rc6.
+
+-----------------------------------------------------------------------------
+
+Series(v1) have following changes from the previous series.
+
+New patch(5/8) has been introduced that converts dma dt-binding
+for Actions OWL SoC from text format to yaml file.
+
+For patch(2/8) new accessor function is added to get the frame
+lenght which is common to both S900 and S700. Apart from it
+SoC check is removed from irq routine as it is not needed.
+
+Patch(4/8) which is an hack to prove our DMA and MMC works
+for S700 is now sent as *do not merge* patch.
+ 
+DMA is tested using dmatest with follwoing result:
+
+root@ubuntu:~# echo dma0chan1 > /sys/module/dmatest/parameters/channel
+root@ubuntu:~# echo 2000 > /sys/module/dmatest/parameters/timeout
+root@ubuntu:~# echo 1 > /sys/module/dmatest/parameters/iterations
+root@ubuntu:~# echo 1 > /sys/module/dmatest/parameters/run
+
+root@ubuntu:~# dmesg | tail
+[  303.362586] dmatest: Added 1 threads using dma0chan1
+[  317.258658] dmatest: Started 1 threads using dma0chan1
+[  317.259397] dmatest: dma0chan1-copy0: summary 1 tests, 0 failures 16129.03 iops 32258 KB/s (0)
+
+-------------------------------------------------------------------------------
+
+The intention of RFC series is to enable uSD and DMA support for
+Cubieboard7 based on Actions S700 SoC, and on the way we found that
+it requires changes in dmaengine present on S700 as its different
+from what is present on S900.
+
+Patch(1/8) does provide a new way to describe DMA descriptor, idea is
+to remove the bit-fields as its less maintainable. It is only build
+tested and it would be great if this can be tested on S900 based
+hardware.
+
+Patch(2/8) adds S700 DMA engine support, there is new compatible
+string added for it, which means a changed bindings needed to submitted
+for this. I would plan to send it later the converted "owl-dma.yaml".
+
+Patch(4/8) disables the sps node as its memory range is conflicting
+pinctrl node and results in pinctrl proble failure.
+
+Rest of patches in the series adds DMA/MMC nodes for S700
+alone with binding constants and enables the uSD for Cubieboard7.
+
+This whole series is tested, by building/compiling Kernel on
+Cubieboard7-lite which was *almost* successful (OOM kicked in,
+while Linking due to less RAM present on hardware).
+
+Following is the mmc speed :
+
+ubuntu@ubuntu:~$ sudo hdparm -tT /dev/mmcblk0
+
+/dev/mmcblk0:
+ Timing cached reads:   1310 MB in  2.00 seconds = 655.15 MB/sec
+ Timing buffered disk reads:  62 MB in  3.05 seconds =  20.30 MB/sec
+
+Amit Singh Tomar (10):
+  dt-bindings: dmaengine: convert Actions Semi Owl SoCs bindings to yaml
+  dmaengine: Actions: get rid of bit fields from dma descriptor
+  dmaengine: Actions: Add support for S700 DMA engine
+  clk: actions: Add MMC clock-register reset bits
+  arm64: dts: actions: limit address range for pinctrl node
+  arm64: dts: actions: Add DMA Controller for S700
+  dt-bindings: reset: s700: Add binding constants for mmc
+  dt-bindings: mmc: owl: add compatible string actions,s700-mmc
+  arm64: dts: actions: Add MMC controller support for S700
+  arm64: dts: actions: Add uSD support for Cubieboard7
+
+ Documentation/devicetree/bindings/dma/owl-dma.txt  |  47 -------
+ Documentation/devicetree/bindings/dma/owl-dma.yaml |  79 ++++++++++++
+ Documentation/devicetree/bindings/mmc/owl-mmc.yaml |   6 +-
+ arch/arm64/boot/dts/actions/s700-cubieboard7.dts   |  33 +++++
+ arch/arm64/boot/dts/actions/s700.dtsi              |  51 +++++++-
+ drivers/clk/actions/owl-s700.c                     |   3 +
+ drivers/dma/owl-dma.c                              | 139 +++++++++++++--------
+ include/dt-bindings/reset/actions,s700-reset.h     |   3 +
+ 8 files changed, 263 insertions(+), 98 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/owl-dma.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/owl-dma.yaml
+
+-- 
+2.7.4
+
