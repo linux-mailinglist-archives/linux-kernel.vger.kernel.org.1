@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A739522541A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 22:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5179C22541D
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 22:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgGSUWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 16:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbgGSUWA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 16:22:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3B8C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 13:21:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s10so15813583wrw.12
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 13:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=z7woOAe/zQXx4LdtnXgtnLa3IAxT8bU6q1bX4fVXwlc=;
-        b=nyfJFkURKKssu+7T7cf1kF0w8Oele3QV8qY7rKzE51eudyB8yWuTBjfgNHXdve96uy
-         7bbnnwSM+4adHPzqI8TaNrnpzI+1JYlNuRtdTLY7e5hy/Zfu/en6qB0C6D8ojIkJkbRZ
-         fRI1Q4EtpTQVVyAnFOhTV2P9jKbSY18s9Vby1u/Mq8MYnAereo8HhvBt8mkNg34v/dPc
-         UApxAOJL8HXSuhKQbrPdtDuMFJ1P/9Vl7fOb8oDPoA9La3it3iJFDyg1bL119fPKLu83
-         pvDcRaw+PJSC2xWxET2wIUcsU50Mb70gtPgmSK6IFXuJ1ObYCHvePpC40Y46skTZ4SQp
-         IITA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=z7woOAe/zQXx4LdtnXgtnLa3IAxT8bU6q1bX4fVXwlc=;
-        b=k0xXAUTwM/Zh1HFHcp972t40Bb3KkRn3R672SkxQZAZG9MXg7Jz6JlNAHYhk3d/8XK
-         R6cHrTLpf6EUpdcCKsUSJHbYynwu5/MWvqrkQup5h2rue6e7VDjw/QOEH8a+9L7/Re5E
-         6zo4HV8opCZA5fr1SXcLR4IwK22TbxeE/BdnIltirbyddrPl7CFkNmflTgfPNNKKWgyU
-         /Kw7XSmLqrcUhAEdSnksXEHQsJIORgoO6DPpTXmyh3CZPJ9xB2A8eaJ/LERSPIT4t4oE
-         KulUTKtBda175FbsoC2vv4jRFbFXByy6hBnUJtu03XmAZhid2zof7pgjDFfC00RbFMTT
-         2VFQ==
-X-Gm-Message-State: AOAM531tGZrpzQfxdVuNS8yNop8JOU9AcAcHOvVi6LBPWnH6ctsb1l2Q
-        JCbsy7eXX+EeSYqAALL8Vht2ALVF+y65gvDferw=
-X-Google-Smtp-Source: ABdhPJyTenKS0Ayu60z++T+ERJuE+WZ0wymWcIC4fJZJwWmiwpiqgHAcxfGfPBgbsKmfv179jr3ZX06cBB88ngZ6MyY=
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr3241638wrq.210.1595190117181;
- Sun, 19 Jul 2020 13:21:57 -0700 (PDT)
+        id S1726607AbgGSU0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 16:26:55 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:43666 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbgGSU0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 16:26:55 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 78FF3BC085;
+        Sun, 19 Jul 2020 20:26:50 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     vyasevich@gmail.com, nhorman@tuxdriver.com,
+        marcelo.leitner@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        corbet@lwn.net, linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH for v5.9] sctp: Replace HTTP links with HTTPS ones
+Date:   Sun, 19 Jul 2020 22:26:44 +0200
+Message-Id: <20200719202644.61663-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Received: by 2002:a5d:630a:0:0:0:0:0 with HTTP; Sun, 19 Jul 2020 13:21:56
- -0700 (PDT)
-Reply-To: rizwanaayan4@gmail.com
-From:   Rizwan Aayan <johnsonbobolo333@gmail.com>
-Date:   Sun, 19 Jul 2020 13:21:56 -0700
-Message-ID: <CAKd=Y6tYh1FJJs7vqzp8qo31zoH9egBUWRg2GZhJEfHXzKubQw@mail.gmail.com>
-Subject: Dear friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
+
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ Documentation/networking/sctp.rst | 4 ++--
+ net/sctp/Kconfig                  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/networking/sctp.rst b/Documentation/networking/sctp.rst
+index 9f4d9c8a925b..e2b9f4d9a8a2 100644
+--- a/Documentation/networking/sctp.rst
++++ b/Documentation/networking/sctp.rst
+@@ -15,8 +15,8 @@ developed the SCTP protocol and later handed the protocol over to the
+ Transport Area (TSVWG) working group for the continued evolvement of SCTP as a
+ general purpose transport.
+ 
+-See the IETF website (http://www.ietf.org) for further documents on SCTP.
+-See http://www.ietf.org/rfc/rfc2960.txt
++See the IETF website (https://www.ietf.org) for further documents on SCTP.
++See https://www.ietf.org/rfc/rfc2960.txt
+ 
+ The initial project goal is to create an Linux kernel reference implementation
+ of SCTP that is RFC 2960 compliant and provides an programming interface
+diff --git a/net/sctp/Kconfig b/net/sctp/Kconfig
+index 39d7fa9569f8..0d4ac89ad695 100644
+--- a/net/sctp/Kconfig
++++ b/net/sctp/Kconfig
+@@ -14,7 +14,7 @@ menuconfig IP_SCTP
+ 	help
+ 	  Stream Control Transmission Protocol
+ 
+-	  From RFC 2960 <http://www.ietf.org/rfc/rfc2960.txt>.
++	  From RFC 2960 <https://www.ietf.org/rfc/rfc2960.txt>.
+ 
+ 	  "SCTP is a reliable transport protocol operating on top of a
+ 	  connectionless packet network such as IP.  It offers the following
 -- 
+2.27.0
 
-
--- 
-
-Dear Friend,
-
-I am Mr Rizwan  Aayan, I work at a bank here in Burkina Faso as the
-manager in the audit department. During our last banking audits, I
-discovered an abandoned account belong to one of our deceased customer
-late Mr. Samak Thienthong from Thailand.
-
-Meanwhile, before I contacted you, I have done personal investigation
-in locating any of his relatives who know about the deceased but all
-came out unsuccessful. Now I need your help as a foreigner to claim
-the abandoned fund sum of $15 million U.S dollars. This money belonged
-to Mr. Samak Thienthong from Thailand who died 26 December 2004 in
-Indian Ocean earthquake and tsunami while on vacation with his family.
-
-After I found your information from a business contact when I was
-searching for a honest partner I decided to contact you to act as his
-relative so that you will claim the fund as his next of Kin. However,
-i will give you full details on how the fund transfer will be executed
-and also note that you will have 40% of the above mentioned while 60%
-for me, if you are interested to handle this business kindly fill out
-below information and send it back to me for more details.
-
-Your full name,
-Your country.
-Your age.
-Your occupation.
-Your Phone number.
-Your address.
-Your sexual.
-A copy of your passport or ID card.
-
- I am expecting to read from you soon.
-
- Best Regards
-Mr Rizwan  Aayan     ,
