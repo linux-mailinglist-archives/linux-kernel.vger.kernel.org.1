@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111A12254B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 01:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEF92254A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 01:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgGSXMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 19:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
+        id S1727038AbgGSXLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 19:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgGSXLg (ORCPT
+        with ESMTP id S1726996AbgGSXLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 19:11:36 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38175C0619D4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:36 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 18so10812706otv.6
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:36 -0700 (PDT)
+        Sun, 19 Jul 2020 19:11:37 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E39FC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:37 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t4so12995649oij.9
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qjkiLR+60k9QfvgBZn9QHWt4cqJyvhTf2cZ66HgG/g8=;
-        b=sPRMmWyBOK0bzRCo5iKWMGlfVESewAW1LHC2FSlaxXboPedqHIeGGyXAOx9RHiMbyJ
-         Dm4793memuW+pbTsUVs2nu9TpQ2d8qSRNCA5STBDZkeJ6dUXggT9BgAS9agHv+OjiRTG
-         i8eFEfg1QI+o725zDmImsBTWvNYNevwtSxzdANnkPxwUc8OAjbt6dR+i+N6WaLiaj4Rq
-         9sgWWz0bjkI0h96XxMbkNRM7sXezeMqtdl7DcOrepbmO+lXrWG3ILtTISkp31zX7aA/+
-         hUZNMl4kxctT8ipL4c6ZzRBFKEk0xpTGGIMbp0D4S4Fg3CCyI0vLc67T2gCnKPrBbYut
-         6bBw==
+        bh=5dxLGInHWnF0fsK6AxTnYzixhFSHss/CD5LDV/6gHL4=;
+        b=ModsBH2fmSAIozyWyRpog6ScetmIJCaHqmR1jW3ObJoEZv4h67LVRYFOsByXw5BUK0
+         iEZQhKyf+tPggGrirG+NOTJsnOdTNqQNeDncrit98VmvZchkgWHKize3EIJxM8uWqNZM
+         ihpXmCTPl/L0VWms5O4YSiHjhbzcBaNwAapkgEWL3TYSF58vQNQu01uN7rkpDniz42md
+         5cz1ZLRJPNZpcXBURAvt9LWEwhFCoMcgMu1pQ0nwhwHCev55Cf0wVT4Oi3JSBH5qiYMi
+         8XCVTv2mm24Yk/ybs9uDOO/d9y7KH+u1BHR1f+acGx67UhX/sjZVKuDsHXjhZFA34dsD
+         +DsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qjkiLR+60k9QfvgBZn9QHWt4cqJyvhTf2cZ66HgG/g8=;
-        b=UfpxEO2oomfqDlM5diqvMdWJAISx/+aIvQi1gaDxQe12oXOG24vIES4N5+cgNdHs/8
-         0HKPPfn1FfMdsbqIuZwfW/zJJAqMmiuoHLorNW9e0YT3kdvcQSq8nqfmeJZaNzczIwo7
-         nVVHjXUtCeGswtJ1fYMK4DkPOtppsyfObt1cVHNq1ikrpotP3ofgP6C1T7Rm9sfwiasH
-         VRsnFE8D6JrUyV3wKhMWy7lJ8nwnMgwCDFuy35wdDQL+QtO+Myj3rTf3SBwBH+3H4DyX
-         VldFyOw1mLLf9xMtOhsEBQuAA9Gg/Pb7kjkL2hK/d+S4pyD+Sps0/EBg5OzAq9JCKWyH
-         ns/A==
-X-Gm-Message-State: AOAM5319UFPKGfQaYGz394Gy43uiZg+XrBm6nOmF4CM6wl2FGJnj7CC9
-        h49DNFtmwgoQeJPMebBoy60=
-X-Google-Smtp-Source: ABdhPJz9YdRGF/dws8Tzc1lDIJSUQyELx9Jcg24qi6ogYUzhTY6rNZr6l9gUZGTfYoa3+cob32KV5g==
-X-Received: by 2002:a9d:7552:: with SMTP id b18mr17096570otl.344.1595200295572;
-        Sun, 19 Jul 2020 16:11:35 -0700 (PDT)
+        bh=5dxLGInHWnF0fsK6AxTnYzixhFSHss/CD5LDV/6gHL4=;
+        b=IdqaPMDOcwpqYxPiogncbBTJduZjN5ZBDv3FKDk7g9+uqDOKePAUrjkccPInNDtMRU
+         EoVGk6B7y+ICqlJLYHWy2XzUiJe6wQdxPxlH6Isd6DyOoOYylkxiIARSfrmmq3M0wAeJ
+         mVyjb+KESuOce77SZfSPj3c2JJIrHa9oHX5qUNRqBqew3+FA7zSFqOjLPicbinBZZzID
+         67eQTGABGuf4H6efJB8KR7yT1iVm6/JiW74wRm8mkoF6vD70/mqTIj7kURbE2cA97VSX
+         m7pu8VsBsgfMZYpPnCNKl+R0Oja53FWUWptij/UOjkTm1IYSFPr4JWRDYhTm37VzY2bC
+         1STQ==
+X-Gm-Message-State: AOAM533+zI7In2CRSYqvtu/OMeDZ2CrVbRiUwqXVO/jl/G2h/N8K4cbg
+        tcYQvh6Va4XprAhpksG7J6hAyjT4Ylg=
+X-Google-Smtp-Source: ABdhPJx3Dx6/OZRiByI1yuCbb2Oji60eBo3MYKSE5e9vGicjfafrEL3EAVxjY0ZpPnNbRfJXlEOa0g==
+X-Received: by 2002:aca:544d:: with SMTP id i74mr16523297oib.105.1595200296706;
+        Sun, 19 Jul 2020 16:11:36 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::5e16])
-        by smtp.googlemail.com with ESMTPSA id q19sm2394680ooi.14.2020.07.19.16.11.31
+        by smtp.googlemail.com with ESMTPSA id q19sm2394680ooi.14.2020.07.19.16.11.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 16:11:35 -0700 (PDT)
+        Sun, 19 Jul 2020 16:11:36 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v5 08/18] dyndbg: fix pr_err with empty string
-Date:   Sun, 19 Jul 2020 17:10:48 -0600
-Message-Id: <20200719231058.1586423-9-jim.cromie@gmail.com>
+Subject: [PATCH v5 09/18] dyndbg: prefer declarative init in caller, to memset in callee
+Date:   Sun, 19 Jul 2020 17:10:49 -0600
+Message-Id: <20200719231058.1586423-10-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200719231058.1586423-1-jim.cromie@gmail.com>
 References: <20200719231058.1586423-1-jim.cromie@gmail.com>
@@ -65,27 +65,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this pr_err attempts to print the string after the OP, but the string
-has been parsed and chopped up, so looks empty.
+ddebug_exec_query declares an auto var, and passes it to
+ddebug_parse_query, which memsets it before using it.  Drop that
+memset, instead initialize the variable in the caller; let the
+compiler decide how to do it.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/dynamic_debug.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 0cb5679f6c54..1d25a846553b 100644
+index 1d25a846553b..da3ed54a6521 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -420,7 +420,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
- 			}
- 		}
- 		if (i < 0) {
--			pr_err("unknown flag '%c' in \"%s\"\n", *str, str);
-+			pr_err("unknown flag '%c'\n", *str);
- 			return -EINVAL;
- 		}
+@@ -330,7 +330,6 @@ static int ddebug_parse_query(char *words[], int nwords,
+ 		pr_err("expecting pairs of match-spec <value>\n");
+ 		return -EINVAL;
  	}
+-	memset(query, 0, sizeof(*query));
+ 
+ 	if (modname)
+ 		/* support $modname.dyndbg=<multiple queries> */
+@@ -448,7 +447,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+ static int ddebug_exec_query(char *query_string, const char *modname)
+ {
+ 	unsigned int flags = 0, mask = 0;
+-	struct ddebug_query query;
++	struct ddebug_query query = {};
+ #define MAXWORDS 9
+ 	int nwords, nfound;
+ 	char *words[MAXWORDS];
 -- 
 2.26.2
 
