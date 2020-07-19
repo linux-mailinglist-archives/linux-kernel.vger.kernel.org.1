@@ -2,134 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5B2225070
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 09:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9425225076
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 09:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgGSH1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 03:27:20 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:38964 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgGSH1T (ORCPT
+        id S1726126AbgGSHjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 03:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgGSHjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 03:27:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595143638; x=1626679638;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=RmKitqVTx2MR8ZaomLxJkzbH9AeadVSYy6yq7cO+TzI=;
-  b=aK7u3r5b7wlGgVtm3eKB/ZB/9d2LqpOtUCHOkQwYrrFQG16GduvWj6BC
-   +lHGFJzZbiZie3hDKe7pL1t5v7lK8w74IKRJmOirF63YKBfdSOgdxdlGB
-   uw/iIM4p7jLP5bpjDTkAg5Oew4AiE6Sd7G/5ZUsM+yP9NWWEaoqvGJNkf
-   NudI8hkP+iQTknd8rBS3YckYcwRi25jfPm8mQ8euE4sn5JLzKxtH11BSi
-   8zM1obtJHkBxnh7N4zdz2mVU66WryF4ptOkf5LMF4YOzxx6r9DTOvXtuU
-   2443FYQX0i1pmycIwAw9G5fEN6/moG+rph4FbCIDSJHWFM+5CH0YO1PJ6
-   g==;
-IronPort-SDR: nfRImBJLVnrUjgwmVENiOQ3J9QFBGIIweibnnMtPebBqIqxeQCARg2ZpaRbgSYY5KNV8gWaO9r
- dx5jcD7ytDTpSfFe1l+QkbXPc32lOH50XR0rUcMYXUuCZBEfrc9jXjlxFVJIHBbwXAFAwqtyVX
- rpabGEnpioK94c/hhrpEQeh7J0ETjGr1yvQWL3jEDXu/h9DVeLcrOGBLdFdLgkYLKFiOfQuy1H
- iHuFFDGYEicaBv+6x0hscgetJB1rY0axzkb9t7XAhqAs/LcV0hH2De3eWEMKnwGTmaDlGlXOPE
- Sw4=
-X-IronPort-AV: E=Sophos;i="5.75,370,1589212800"; 
-   d="scan'208";a="252097266"
-Received: from mail-dm6nam12lp2174.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.174])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Jul 2020 15:27:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WSEUwMdXfOAjD5+koiULZl20XpJLOUXj2jOT0Znh5n4wXrpQeSfiEqvwuSHsn2hJogtybDcwa0pUEarJFnqttyyGexN0DEhV99bEifP0IReizGUDFpMitMDwAFmS/siO+rxJDadGbo+Z4+h+X0QBADZTmJoFBoXs0ggtGOdi51NoBadO9gVvQvJxrrnFMMYg7jShincVL9xOETDqc7PebfdL7EhUwIn6s3ExYwkKP7afpOJmthsMmvpAo281aoldQMhqbrHWuOLOyJgtm137P4vv6bhFTp8S/ww5yA4NwSV9jiW+W8J68EkSij5d3XHsq0bpmUctreddPtIUsH+law==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RmKitqVTx2MR8ZaomLxJkzbH9AeadVSYy6yq7cO+TzI=;
- b=NMLfU4sy6DnswwaKdKF5KKPI9ex58O6ft+xYE71DdLHsD/0MK7hNGnJ3sEOfxloXnNifP/LZuJB88Y9HSxPhVG92CUKB5ORGexNx0XxS45a3X63RRNLdu+NSQq5OT6SMnQb/1GqacFXLmWYM3KTg7Yr0FcXMH9dr5GrF5+jAoeIEgKInopli9/+a84TbduW0WgYjE4gQUDwdn1IkBq9nCgzsY8M+LtoxykuqN0m0tctPcQj9DHorFOV32kwzdDc4g1lMZibRLLmuUJYgB1SEVjH9cvDxUMBHxJ7EwboyokOhmHzSnt6UtggnhlVcWSsiyZmZnKNMJJ4tKHDHAW1Zhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RmKitqVTx2MR8ZaomLxJkzbH9AeadVSYy6yq7cO+TzI=;
- b=JEZ6JWkf5S0Wr4T6zk/ZwG/jtbfA7cB5XKoKvTc7vxvThPMwovzIKOJJkQQba7R91gF4OWgxto0KYSv/tVlfwF2i/Upnm/WXw/POknNuZykZKSR0B2qztZ4drx5ESFoOq/sRKGU2IKPvQ7bEXlcB4Gt9iLncvTFLPTebKrjcgsQ=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB3838.namprd04.prod.outlook.com (2603:10b6:805:44::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Sun, 19 Jul
- 2020 07:27:14 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2%4]) with mapi id 15.20.3195.023; Sun, 19 Jul 2020
- 07:27:14 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Can Guo <cang@codeaurora.org>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "rnayak@codeaurora.org" <rnayak@codeaurora.org>,
-        "sh425.lee@samsung.com" <sh425.lee@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "saravanak@google.com" <saravanak@google.com>,
-        "salyzyn@google.com" <salyzyn@google.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/4] scsi: ufs: Add checks before setting clk-gating
- states
-Thread-Topic: [PATCH v3 1/4] scsi: ufs: Add checks before setting clk-gating
- states
-Thread-Index: AQHWXLnHWRh9qzZI+UewR3pmAiHbqKkOgl3g
-Date:   Sun, 19 Jul 2020 07:27:13 +0000
-Message-ID: <SN6PR04MB464006AE7A2A6D8C57603123FC7A0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <1595045585-16402-1-git-send-email-cang@codeaurora.org>
- <1595045585-16402-2-git-send-email-cang@codeaurora.org>
-In-Reply-To: <1595045585-16402-2-git-send-email-cang@codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 38e04f47-a656-4037-1b28-08d82bb52878
-x-ms-traffictypediagnostic: SN6PR04MB3838:
-x-microsoft-antispam-prvs: <SN6PR04MB3838C098D5BBAC22865BA2E0FC7A0@SN6PR04MB3838.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2150;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0W/kxTXvh/d7wlU/lNw3go6lWA8KFPK9byq+uzM/6w7zOj/cVnh6tz8OYukqxjUK8eDZ80OoaI0+jHD+2OAT5GKQH+MnVxTb14o3fS9xtmIetoJ/8NimsABEBjS/YChz0ybYSFw4PbMyDit+zFFYwlrGq7OyOryEhHFs1JpJA91NeUG0DEUQlD7pvyUgON8tVnYnYzEsAtQMsjTNnB3uESQtR3BN+Yuzd/t550O9Ibph0igHehbpEwcpbTGKWV7RAuv3Qre5uvtDfc/DV2NMoNsLFeuRd6Ddto7XR8m3cyLwbaql7ZAo6mupCOjNSh7DNgjRnLnk/Gz07X9CXmTyNrkXSuHPiujNqq9wss/hBdic6Is/4SZLh5xgavFa7pal
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(64756008)(9686003)(66446008)(66476007)(66946007)(55016002)(66556008)(33656002)(4326008)(83380400001)(2906002)(8936002)(86362001)(8676002)(558084003)(26005)(5660300002)(76116006)(7416002)(7696005)(54906003)(52536014)(478600001)(71200400001)(110136005)(6506007)(316002)(186003)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: UWhjLOFpbd2KPZ1wMBA/f6kcgBVmtXYuixSnJtrTSFcW+8ZqiI4aPKOtGxVLVrKRWK235ufVm0GxCnfpHKJbNOD78Q0q0PeOBbxqBCqTyB4T0m+I0qdG3p1eVB/bGe7PvTC8fhdjXUmxHOeB4xi3IUkU2PG+2TUccGqj9nKn+djzdcbX88d7dIYDmyeOl47K0QMzQRPip2ui9xRWcTkFoyeijQJKws7bhCjQCTSHS9ndai3ICxDxAhkGLIUvp6LGCk15bl48flvDRYoJLv1vdtgELe4RuiTEayHbevEulN7oKuXrrJ6SiDP7poBBRu8p0+5hwI6vskoKqf1jSU84X8wRx7lGXsCqQYCYpkw9gw/EAEdaHpjCAeRwpDhz6FeqYDOC6Yh4pRhJOsggmDPsbwi33rK6ud2jtBtzfiSv15zRiLjVmo1PE0k7+a93etYh5fMmTlcRwY2KGnsOh9ofMTCJKADqfw7/kbiQ9+UP26tH4/nixWTbvdB3mRixuBcZ
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 19 Jul 2020 03:39:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77411C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 00:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=cNsbswgmt5UoWdjIXqDw0mZBByTg/kfR0BZVwY68014=; b=ghtU5skADnySWERfccuHaUPDLU
+        xw5ZNDLYS8qTNezw5W/6s6oEP0HWgA1JUGbQPw67eJ1PJhSBJXv5VOjjvMmQ1ZgAzDpRYYV6Ri9OK
+        uIubRA4ivmUEKXzNFttfrPbrn03mPshlB7XAYf+amj8tfUf6dQmjwFjRNgB6vEH2imqVBJx2T5MAn
+        WCNSIQSI5YYkxxdPz1fzt84g/5gMFF3PI+skmmQNxpJO/UclCJYSmBm+iQTU01ZExKMIvDGC22k1W
+        0DkksMIwpiaXDNwT8r7I6QWwpWA9QIS1Bd3vrxoRYfXHrNP1Rws8IbFxNZCUn3wcfm8sh8O+N0K36
+        XYcWTenA==;
+Received: from [2001:4bb8:105:4a81:4ef5:9f24:cda4:103f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jx3uy-0001IV-2o; Sun, 19 Jul 2020 07:39:28 +0000
+Date:   Sun, 19 Jul 2020 09:39:27 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [GIT PULL] dma-mapping fixes for 5.8
+Message-ID: <20200719073927.GA114439@infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4640.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38e04f47-a656-4037-1b28-08d82bb52878
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2020 07:27:13.9031
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tFypT8cZ8d+EYw7BKCaMPoVra8ftMh1mGwxb8onvY2ksji0gs+W7egHLMCY0NNXgdy/TOMC9bzEIRBQNGa+XNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3838
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
->=20
-> Clock gating features can be turned on/off selectively which means its
-> state information is only important if it is enabled. This change makes
-> sure that we only look at state of clk-gating if it is enabled.
->=20
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+The following changes since commit 0dc589da873b58b70f4caf4b070fb0cf70fdd1dc:
+
+  Merge tag 'iommu-fixes-v5.8-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu (2020-07-13 12:34:05 -0700)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.8-6
+
+for you to fetch changes up to d9765e41d8e9ea2251bf73735a2895c8bad546fc:
+
+  dma-pool: do not allocate pool memory from CMA (2020-07-14 15:46:32 +0200)
+
+----------------------------------------------------------------
+dma-mapping fixes for 5.8:
+
+ - ensure we always have fully addressable memory in the dma coherent
+   pool (Nicolas Saenz Julienne)
+
+----------------------------------------------------------------
+Nicolas Saenz Julienne (5):
+      dma-direct: provide function to check physical memory area validity
+      dma-pool: get rid of dma_in_atomic_pool()
+      dma-pool: introduce dma_guess_pool()
+      dma-pool: make sure atomic pool suits device
+      dma-pool: do not allocate pool memory from CMA
+
+ include/linux/dma-direct.h |  1 +
+ kernel/dma/direct.c        |  2 +-
+ kernel/dma/pool.c          | 91 ++++++++++++++++++++++++++++------------------
+ 3 files changed, 58 insertions(+), 36 deletions(-)
