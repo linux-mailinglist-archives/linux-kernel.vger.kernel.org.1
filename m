@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF7522530D
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC934225317
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgGSRYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 13:24:49 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:35492 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgGSRYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 13:24:49 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 5B174BC078;
-        Sun, 19 Jul 2020 17:24:45 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     jsarha@ti.com, tomi.valkeinen@ti.com, airlied@linux.ie,
-        daniel@ffwll.ch, robh+dt@kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH for v5.9] drm/tilcdc: Replace HTTP links with HTTPS ones
-Date:   Sun, 19 Jul 2020 19:24:38 +0200
-Message-Id: <20200719172438.60536-1-grandmaster@al2klimov.de>
+        id S1726219AbgGSRhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 13:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgGSRhe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 13:37:34 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B802CC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 10:37:33 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id w9so1670374ejc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 10:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9mR0eGFh9MH9sNZOZh0ch4XwokpANORC/EtJxy7S/4c=;
+        b=PqocFj0Jsii8lhfLE+i9nkHhQxwb+4fvkmQpIk+6oQvM4O3P1R6HdSLNpjJ2S0vqmy
+         ImMCCRT9lJxe6ZvaVRavb8zChQ48lbv52AN/5xEA7ZeDWl4psh9eNt+ILjvRy4SYfN/P
+         VB9+wrEW9dck4RyXBIToou5kroxexoONJE25Esnmj9A+jYpgeZ8kkmp26VUup9m3S1mg
+         AodQzZrEgo9hTSYVCYvcPpQdLOZJSiejtxpHpofvHVlSutLrX2TOeJii3XVXweAQboF+
+         Xw9K4SgsQH3jVPTqQkCZ2KKW7S9T9z9HHS3GZjbwiG6p14VToyv8ALRjIBIg2cFWHk+O
+         +cLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9mR0eGFh9MH9sNZOZh0ch4XwokpANORC/EtJxy7S/4c=;
+        b=DViSwu1EkuNDsRT8Ckpaisa3wWhgHDAf411jHWK0p3tBmQCN2sNbOM/E8NGgKPpXtD
+         rw2jp1iA6tZuU2+P2aDS411ufQihTiOP8uHhq/Mvxfl4jDgrV7o8CsfNsdeRvFQlhs+S
+         PfM0kD/eHzpdZAzMgQdxnvwHOVOkeKaJ5s/cU8XwYpIcMOuy/ksVmzvyen7JqafNwjZz
+         5bCoj9U9P/c0i5PFAEl75+92gC4y+8vKfS4/QuI9oN+PjKUxNkP0OwQovnOchtA36LOJ
+         9ucwhe7JUIoSt2SeXeMRsIppuuv8okLGVIpvn24fNHH0bxAVGlBiKd0C2hRWy87slpx6
+         v/Jg==
+X-Gm-Message-State: AOAM531LashyEW8ClzofcwqZomlJE7dNwQToyYT023q+2xy1K0OtLFGC
+        S55wRPtVNj0pH8kw16getpo=
+X-Google-Smtp-Source: ABdhPJzdG3bG+QiQ6JAaqQvzVrYAYHyHbzTb+FaypiX/eZFje/aNBPy5qd9VGW+15tq5at4aC546Eg==
+X-Received: by 2002:a17:906:d057:: with SMTP id bo23mr17450701ejb.210.1595180252411;
+        Sun, 19 Jul 2020 10:37:32 -0700 (PDT)
+Received: from localhost.localdomain (p200300f13716be00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3716:be00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id bc23sm13563208edb.90.2020.07.19.10.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Jul 2020 10:37:31 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org, khilman@baylibre.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        narmstrong@baylibre.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 0/3] GPU DVFS for Meson GXBB/GXL/GXM/G12A/G12B/SM1
+Date:   Sun, 19 Jul 2020 19:32:10 +0200
+Message-Id: <20200719173213.639540-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Now that we have GPU DVFS support in lima [0] (in Linux 5.7) and
+panfrost we can make it work on Amlogic SoCs.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+I decided to remove code duplication for the Mali-450 GPU on GXBB and
+GXL so it will be easier to maintain this. This refactoring is part of
+patch #1. Patches #2 (GXM) and #3 (G12A, G12B, SM1) are straight
+forward; it replaces the hardcoded clock settings with the the GPU OPP
+table.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+I used the userspace devfreq governor to cycle through all available
+GPU frequency settings on GXL, GXM and G12A (which covers all relevant
+GPU driver and clock driver combinations). I have taken the GPU OPP
+tables from Amlogic's 4.9 vendor kernel and the voltage settings
+(opp-microvolt property) from the public dataseheets for all SoCs.
 
 
- Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v1 at [1]:
+- removed the clock patches from this series as they are already
+  applied (in Linux 5.8)
+- rebased on top of Neil's recent patch "arm64: dts: meson-gxl-s805x:
+  reduce initial Mali450 core frequency"
+- adapted patch #1 after Neil's GXL S805X patch to keep the 744MHz OPP
+  disabled on that package
+- added a comment about GP0_PLL (as to why it's needed) to all patch
+  descriptions
+- removed RFC prefix
 
-diff --git a/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt b/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt
-index aac617acb64f..8b2a71395647 100644
---- a/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt
-+++ b/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt
-@@ -46,7 +46,7 @@ Optional nodes:
-     crossed and LCD_DATA[0:4] is for Red[3:7] and LCD_DATA[11:15] is
-     for Blue[3-7]. For more details see section 3.1.1 in AM335x
-     Silicon Errata:
--    http://www.ti.com/general/docs/lit/getliterature.tsp?baseLiteratureNumber=sprz360
-+    https://www.ti.com/general/docs/lit/getliterature.tsp?baseLiteratureNumber=sprz360
- 
- Example:
- 
+
+[0] https://cgit.freedesktop.org/drm-misc/commit/?id=1996970773a323533e1cc1b6b97f00a95d675f32
+[1] https://patchwork.kernel.org/cover/11466399/
+
+
+Martin Blumenstingl (3):
+  arm64: dts: amlogic: meson-gx: add the Mali-450 OPP table and use DVFS
+  arm64: dts: amlogic: meson-gxm: add the Mali OPP table and use DVFS
+  arm64: dts: amlogic: meson-g12: add the Mali OPP table and use DVFS
+
+ .../boot/dts/amlogic/meson-g12-common.dtsi    | 49 ++++++++++-----
+ .../boot/dts/amlogic/meson-gx-mali450.dtsi    | 61 +++++++++++++++++++
+ arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi   | 51 ++++------------
+ .../boot/dts/amlogic/meson-gxl-mali.dtsi      | 46 +++-----------
+ .../boot/dts/amlogic/meson-gxl-s805x.dtsi     | 17 +++---
+ arch/arm64/boot/dts/amlogic/meson-gxm.dtsi    | 45 +++++++++-----
+ 6 files changed, 153 insertions(+), 116 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-gx-mali450.dtsi
+
 -- 
 2.27.0
 
