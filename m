@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EE8225328
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56811225329
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgGSRnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 13:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
+        id S1726683AbgGSRnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 13:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgGSRnB (ORCPT
+        with ESMTP id S1725783AbgGSRnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 13:43:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D90C0619D2;
-        Sun, 19 Jul 2020 10:43:00 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id w17so7611775ply.11;
-        Sun, 19 Jul 2020 10:43:00 -0700 (PDT)
+        Sun, 19 Jul 2020 13:43:05 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EC0C0619D2;
+        Sun, 19 Jul 2020 10:43:05 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u185so7929342pfu.1;
+        Sun, 19 Jul 2020 10:43:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ln2ry33JZeYSRz7UO65SnIUwaEVYySx56C+yn6tKPXQ=;
-        b=T4A14xNYImiKs5f8YkDq4Bh1g5kT81BjvllgxFeNPlYTAHgha4D+OFuOhBdMKKAaPq
-         0vkGtnTzPJzB7gio009QBGcs10xQY22lB4cgpiF+U6oX66+r/yvdyVcMFCqfNGMisg1g
-         r2+1jYdIvoPOi36YUxMZfpzFIerCs0B3+WI44Owu4+cPTqzB/0QhpiouF/5nB+BqPHJZ
-         6haAN5myAQICQ2YI4q4yQyziqg4F6mCwfKsDPlXNkvAVIT8YPiNms/BO7WAJ0RfU2B2o
-         AotDK0csSbWayGzLwYuWzCDMqE2LbHD+5oavje3liAP5QPPKT0jYYbw5n5THWzvyWfBc
-         NN6g==
+        bh=nEbCHjkuXDoaKqNoX/pXlsfKXaRlHFlOyuXXdN/SzCI=;
+        b=M+C9Zh9HtKlLDwgIcN5r68LBOJctiR7QDIZ1Xx+UWWURs7OLs2IxO20q5mNV6QQcH1
+         rCEqPQWMFLLUxwxHZCPEG4DcWFS7BZ/MabjVNWIVNEQUzN/0TITJZ/WKSmRiqAS1vIkK
+         CuYtgYZCiae581v0ew01sVsYu8zcEep0Yr3RQ+I/Br0IK9wGTlpypKPaaZYhOtaXA4sq
+         761DyfB7/iwlzm+My8gBiYW48BOHSVeu+l+sdnaAkLL1pNo1idspx1bLAEhVHo2uU2fd
+         M1qlFrk2fISjTAmNQqTEVt4BjDf6X/ZPQX94nX5oUu5HwWMcM5S7VkQpYp7EWWjm7mOQ
+         SqfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ln2ry33JZeYSRz7UO65SnIUwaEVYySx56C+yn6tKPXQ=;
-        b=MozAoZ6W+lKSn9rsExrurbmptzlOzaWwihBfM8cj74CHZY3dBEDTSehJqpik/sx+j0
-         lKF0+bDxZPnavVNApF//fPSpBfTrpIx1iprEz94SbvdMSB9JcmlFIszVp6q/+/lGECaI
-         FW1lkDde6dxFxIqK4pQ7NrWbwgj8YTEOdJDOj0RsEgP59MbDgjn1XaF5sIMSKaUg6/n/
-         UVlkJ4vqvlmqbbu5XB/eg0Y1gY/dERbsXbBfA7Z0uFl7hyE2Obpn2DIX9jGgHKnUMoJy
-         CKgNDGAW8chjeb2h6tC5WVC4i4gN2r81Yt2Uoi0iifI5nSGstMEvVm/iiIURR0jb25me
-         MYcQ==
-X-Gm-Message-State: AOAM530Pr+8hMAbkdp1RY59kemOHHhQaY5yIO9Bu/bK8YbhZOi99y6/3
-        IgrAtnwhocZJ7FMA2Umry4g=
-X-Google-Smtp-Source: ABdhPJxQkwKiYUaaBNiT8Nsgr0bnfGl6O9wNO7fgmh3rUNFYdz8A4F2uZnmkScIsxPgjEg40IgJLMg==
-X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr20453301pjb.66.1595180580493;
-        Sun, 19 Jul 2020 10:43:00 -0700 (PDT)
+        bh=nEbCHjkuXDoaKqNoX/pXlsfKXaRlHFlOyuXXdN/SzCI=;
+        b=SZ4XvM5dx+M86aT2BSnFvrEJYiCddLzK2CU/2PVF104nVVXOP1jHtkubxhumNz9leM
+         8LCCbyDX85T99i3CKRgIT9LvX/b+Ychi3MX/a7pxtxRalOQZYPMEz32eu+vVRSDM3dfF
+         BSEcp0gqtm3ad67Anug6u/eqThhkUEyJL8wMwPP5F1DZtLl4sBGT4QdO9BrjQjxm+9un
+         jO1rUVrpFPoqRgp5cXSfeL7+kAJXQfi4oxyfozsyDaI+G9IiVp0LT/tCvfCl6quhU/yR
+         LuItbCSMnTfoW+6CuBQ92/CALxJRtVTZMQXanEDnJY2GibQ5wL8b3oaOybG6wnjp7LTw
+         MxhQ==
+X-Gm-Message-State: AOAM531WO0EhhIphvd+/WSHCM0JX2X00w5mTxP1vPNA/D0RUuOZqzZQu
+        CqVr7njLVui63uY/LbX9GAs=
+X-Google-Smtp-Source: ABdhPJzfMgnt5NuME4q8hdablaBOIAJjIJqyIVtNqpmCQV9zerW5+dhbRf7MElawJJiuB4vNUxVt5Q==
+X-Received: by 2002:a63:9246:: with SMTP id s6mr15687123pgn.22.1595180585006;
+        Sun, 19 Jul 2020 10:43:05 -0700 (PDT)
 Received: from localhost.localdomain ([182.69.248.222])
-        by smtp.gmail.com with ESMTPSA id e191sm13906083pfh.42.2020.07.19.10.42.55
+        by smtp.gmail.com with ESMTPSA id e191sm13906083pfh.42.2020.07.19.10.43.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 19 Jul 2020 10:42:59 -0700 (PDT)
+        Sun, 19 Jul 2020 10:43:04 -0700 (PDT)
 From:   Amit Singh Tomar <amittomer25@gmail.com>
-To:     andre.przywara@arm.com, afaerber@suse.de, vkoul@kernel.org,
+To:     andre.przywara@arm.com, afaerber@suse.de,
         manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
-Cc:     dan.j.williams@intel.com, cristian.ciocaltea@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v7 06/10] arm64: dts: actions: Add DMA Controller for S700
-Date:   Sun, 19 Jul 2020 23:12:03 +0530
-Message-Id: <1595180527-11320-7-git-send-email-amittomer25@gmail.com>
+Subject: [PATCH v7 07/10] dt-bindings: reset: s700: Add binding constants for mmc
+Date:   Sun, 19 Jul 2020 23:12:04 +0530
+Message-Id: <1595180527-11320-8-git-send-email-amittomer25@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
 References: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
@@ -64,10 +64,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds DMA controller present on Actions S700, it differs from
-S900 in terms of number of dma channels and requests.
+This commit adds device tree binding reset constants for mmc controller
+present on Actions S700 Soc.
 
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 ---
 Changes since v6:
@@ -77,51 +78,30 @@ Changes since v5:
 Changes since v4:
         * No change.
 Changes since v3:
-        * Fixed typo in commit message.
-        * Placed owl-s700-powergate.h in alphabetical order.
+        * No change.
 Changes since v2:
-        * added power-domain property as sps
-          is enabled now and DMA needs it.
+        * No change.
 Changes since v1:
-        * No Change.
+        * No change.
 Changes since RFC:
-        * No Change.
+        * added Rob's acked-by tag
 ---
- arch/arm64/boot/dts/actions/s700.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ include/dt-bindings/reset/actions,s700-reset.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-index f8eb72bb4125..2c78caebf515 100644
---- a/arch/arm64/boot/dts/actions/s700.dtsi
-+++ b/arch/arm64/boot/dts/actions/s700.dtsi
-@@ -5,6 +5,7 @@
+diff --git a/include/dt-bindings/reset/actions,s700-reset.h b/include/dt-bindings/reset/actions,s700-reset.h
+index 5e3b16b8ef53..a3118de6d7aa 100644
+--- a/include/dt-bindings/reset/actions,s700-reset.h
++++ b/include/dt-bindings/reset/actions,s700-reset.h
+@@ -30,5 +30,8 @@
+ #define RESET_UART4				20
+ #define RESET_UART5				21
+ #define RESET_UART6				22
++#define RESET_SD0				23
++#define RESET_SD1				24
++#define RESET_SD2				25
  
- #include <dt-bindings/clock/actions,s700-cmu.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/power/owl-s700-powergate.h>
- #include <dt-bindings/reset/actions,s700-reset.h>
- 
- / {
-@@ -244,5 +245,19 @@
- 				     <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		dma: dma-controller@e0230000 {
-+			compatible = "actions,s700-dma";
-+			reg = <0x0 0xe0230000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			dma-channels = <10>;
-+			dma-requests = <44>;
-+			clocks = <&cmu CLK_DMAC>;
-+			power-domains = <&sps S700_PD_DMA>;
-+		};
- 	};
- };
+ #endif /* __DT_BINDINGS_ACTIONS_S700_RESET_H */
 -- 
 2.7.4
 
