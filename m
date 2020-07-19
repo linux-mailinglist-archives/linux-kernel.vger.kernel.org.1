@@ -2,115 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E61D224EC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 04:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5A3224EB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 04:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgGSCwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 22:52:18 -0400
-Received: from mail31c7.megamailservers.com ([69.49.98.140]:53416 "EHLO
-        mail31c7.megamailservers.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726382AbgGSCwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 22:52:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megamailservers.com;
-        s=mailtor; t=1595121569;
-        bh=yvANOojya5qgSJTErzD86VGzARc89Wq0g5jpb9tq1t8=;
-        h=From:To:CC:Subject:Date:From;
-        b=bZ0iyfGyiIh8qEDz0gHNtRcgM07LjKgoy9C/QZTgkRQ79TbA4+BRUc+gxBKoYLLQ3
-         1sB/JXehRi1DYzkAIRoqlDG58IR1/PimJozAWTSNmBHT1Btuik/S0nXBTpxPg/1jKd
-         7kDoUY/2sv/zqRsRDJEeJ+a79DWn70FrBFG468Ho=
-Feedback-ID: tazzarama68@sas
-Received: from mail31c7.megamailservers.com (localhost [127.0.0.1])
-        by mail31c7.megamailservers.com (8.14.9/8.13.1) with ESMTP id 06J1JTqX028395
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 18 Jul 2020 21:19:29 -0400
-Received: (from webmail@localhost)
-        by mail31c7.megamailservers.com (8.14.9/8.12.2/Submit) id 06J1JJZS027767;
-        Sat, 18 Jul 2020 21:19:19 -0400
-From:   Marcy Alkhalifa <tazzarama68@sasktel.net>
-Subject: marcy
-Date:   Sat, 18 Jul 2020 21:19:19 -0400
-Message-ID: <1595121559.08mc9yd2sccw84co@webmail.sasktel.net>
+        id S1726424AbgGSCaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 22:30:06 -0400
+Received: from mga04.intel.com ([192.55.52.120]:5164 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726284AbgGSCaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 22:30:05 -0400
+IronPort-SDR: xvFeyC43uA2lW6UQh9PgjYWI2EDE28NXnie7aPq7rT8VE0RZxqcbz5COChQMs0osdltAGF/laJ
+ SrIigK0oHkSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9686"; a="147280826"
+X-IronPort-AV: E=Sophos;i="5.75,369,1589266800"; 
+   d="scan'208";a="147280826"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2020 19:30:05 -0700
+IronPort-SDR: /kTK814oxi+sM4nrMDXIBaTcaxtMJtVHuYcku2WYpgac900uPx0yFJxL+F8XBnFsxbt+hiLjng
+ 3oWcX7rVPdqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,369,1589266800"; 
+   d="scan'208";a="317687877"
+Received: from lkp-server02.sh.intel.com (HELO 50058c6ee6fc) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2020 19:30:03 -0700
+Received: from kbuild by 50058c6ee6fc with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jwz5X-00011D-2P; Sun, 19 Jul 2020 02:30:03 +0000
+Date:   Sun, 19 Jul 2020 10:29:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Chinner <dchinner@redhat.com>
+Subject: fs/zonefs/super.c:1110:6: warning: Variable 'ret' is reassigned a
+ value before the old one has been used.
+Message-ID: <202007191013.4IvvVjHl%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Image-Url: https://webmail.sasktel.net/api/storage/tazzarama68@sasktel.net/profile/picture
-X-CTCH-RefID: str=0001.0A02020F.5F139FA1.0010,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-X-CTCH-VOD: Unknown
-X-CTCH-Spam: Unknown
-X-CTCH-Score: 0.000
-X-CTCH-Rules: 
-X-CTCH-Flags: 0
-X-CTCH-ScoreCust: 0.000
-X-CSC:  0
-X-CHA:  v=2.3 cv=Dc5pVclW c=1 sm=1 tr=0 a=WkljmVdYkabdwxfqvArNOQ==:117
-        a=IkcTkHD0fZMA:10 a=ikZSrtty1KYA:10 a=_RQrkK6FrEwA:10 a=pGLkceISAAAA:8
-        a=fye4JmOfHNDID9Nm9ZEA:9 a=yLtrk5sO3Y-bVj-b:21 a=Bn5Yhd7Q7eQ3N1YX:21
-        a=QEXdDO2ut3YA:10 a=6p9WQQAd33IA:10 a=yo7BhnmJ3tj95sA3zuun:22
-        a=Z5ABNNGmrOfJ6cZ5bIyy:22 a=jd6J4Gguk5HxikPWLKER:22
-X-Origin-Country: Unknown
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6cf7ccba29dcf39ab27630c383a3844078a6d5cd
+commit: 8dcc1a9d90c10fa4143e5c17821082e5e60e46a1 fs: New zonefs file system
+date:   5 months ago
+compiler: gcc-9 (Debian 9.3.0-14) 9.3.0
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
-Hello My Dear,
-I would really like to have a good relationship with you, I contact you bec=
-ause of the urgency of my situation here. I am Miss Marcy Majzoub Alkhalifa=
-, 23 years old girl from south Sudan, only daughter of Late Dr Majzoub Alkh=
-alifa. My father was a politician and also a Gold dealer before he was kill=
-ed with my mother by Rebel attack during the political crisis that happens =
-in my country some years ago, It was only me that is alive now and I manage=
-d to make my way to a nearby country Ivory Coast where I am leaving now at =
-refugee camp under a Reverend father's care and I am using his computer to =
-send these message to you.
+cppcheck warnings: (new ones prefixed by >>)
 
-I don't have any relatives now whom I can go to because all my relatives ra=
-n away in the middle of the war, the only person I have now is (Rev. Donatu=
-s Diop who is the Reverend of the (Christ The King Church) here in the camp=
- he has been very nice to me and the children in the camp but I am not livi=
-ng with him rather I am leaving in the woman's hostel because the camp has =
-two hostels, one for men the other for women. The Rev Tel number is
-+225.54566773
-if you call tell him that you want to speak with me, he will send for me in=
- the hostel. Please listen to this, I have my late father's statement of ac=
-count and his death certificate here with me, because when he was alive he =
-deposited some amount of money in one of the leading banks in Europe which =
-he used my name as the next of kin, the amount in question is
-=C2=A33.7m. (Three Million Seven Hundred Thousand Euros ) So I would like y=
-ou to help me to transfer this money to your country and from it, you will =
-send some money for me to get my travelling documents and air ticket to com=
-e over to your country. I kept this secret to people in the camp here becau=
-se am afraid of losing my life and the money if people gets to know about i=
-t. It is my intention to compensate you with 20% of the total money after t=
-he transfer and you will also help me invest the 80% of the amount in any i=
-nvestment of your choice in your country under your care. I like honest and=
- understanding people, truthful and people with vision, truth and hardworki=
-ng. My favourite language is English very fluently. Please I have some impo=
-rtant question for you which I need an answer from your inner heart.
-Please I will like to know from your heart if you will really help me to re=
-trieve this money from the bank without any betrayal. I will like to know i=
-f you will really help me to invest this money in a good and profitable bus=
-iness in your country. I will like to know if you will really send me money=
- to get my travelling documents after the transfer. Please this is what I w=
-ill like you to clear me from your heart of trust to me. Once you agree wit=
-h this few words, I will like you to send me your
-FULL NAME, . . . . . . . . . .
-CONTACT ADDRESS,. . . . .
-OCCUPATION, . . . . . . . . .
-AGE . . . . . . . . . . . . . . . .
-PHONE NUMBER,. . . . .
-so that I will send them to the bank and get you to introduce to them as my=
- foreign representative for the transfer. The bank said that I can not do t=
-he transfer by myself because of my refugee status so they instructed me to=
- choose a representative who will stand on my behalf for the transfer. Mean=
-while, I will like you to contact me on my private email for more details=
-=2E (marcyalkhalifa705@gmail.com) after that call me through Rev. Donatus D=
-iop phone so that I will speak with you. kindly reply back to my private em=
-ail for more details. (marcyalkhalifa705@gmail.com)
-I hope to receive your reply.
-Yours
-Marcy.
+>> fs/zonefs/super.c:1110:6: warning: Variable 'ret' is reassigned a value before the old one has been used. [redundantAssignment]
+    ret = 0;
+        ^
+   fs/zonefs/super.c:1045:0: note: Variable 'ret' is reassigned a value before the old one has been used.
+    int ret = -ENOMEM;
+   ^
+   fs/zonefs/super.c:1110:6: note: Variable 'ret' is reassigned a value before the old one has been used.
+    ret = 0;
+        ^
+   fs/zonefs/super.c:1257:6: warning: Variable 'ret' is reassigned a value before the old one has been used. [redundantAssignment]
+    ret = 0;
+        ^
+   fs/zonefs/super.c:1210:6: note: Variable 'ret' is reassigned a value before the old one has been used.
+    ret = -EINVAL;
+        ^
+   fs/zonefs/super.c:1257:6: note: Variable 'ret' is reassigned a value before the old one has been used.
+    ret = 0;
+        ^
+
+vim +/ret +1110 fs/zonefs/super.c
+
+  1031	
+  1032	/*
+  1033	 * Create a zone group and populate it with zone files.
+  1034	 */
+  1035	static int zonefs_create_zgroup(struct zonefs_zone_data *zd,
+  1036					enum zonefs_ztype type)
+  1037	{
+  1038		struct super_block *sb = zd->sb;
+  1039		struct zonefs_sb_info *sbi = ZONEFS_SB(sb);
+  1040		struct blk_zone *zone, *next, *end;
+  1041		const char *zgroup_name;
+  1042		char *file_name;
+  1043		struct dentry *dir;
+  1044		unsigned int n = 0;
+  1045		int ret = -ENOMEM;
+  1046	
+  1047		/* If the group is empty, there is nothing to do */
+  1048		if (!zd->nr_zones[type])
+  1049			return 0;
+  1050	
+  1051		file_name = kmalloc(ZONEFS_NAME_MAX, GFP_KERNEL);
+  1052		if (!file_name)
+  1053			return -ENOMEM;
+  1054	
+  1055		if (type == ZONEFS_ZTYPE_CNV)
+  1056			zgroup_name = "cnv";
+  1057		else
+  1058			zgroup_name = "seq";
+  1059	
+  1060		dir = zonefs_create_inode(sb->s_root, zgroup_name, NULL, type);
+  1061		if (!dir)
+  1062			goto free;
+  1063	
+  1064		/*
+  1065		 * The first zone contains the super block: skip it.
+  1066		 */
+  1067		end = zd->zones + blkdev_nr_zones(sb->s_bdev->bd_disk);
+  1068		for (zone = &zd->zones[1]; zone < end; zone = next) {
+  1069	
+  1070			next = zone + 1;
+  1071			if (zonefs_zone_type(zone) != type)
+  1072				continue;
+  1073	
+  1074			/*
+  1075			 * For conventional zones, contiguous zones can be aggregated
+  1076			 * together to form larger files. Note that this overwrites the
+  1077			 * length of the first zone of the set of contiguous zones
+  1078			 * aggregated together. If one offline or read-only zone is
+  1079			 * found, assume that all zones aggregated have the same
+  1080			 * condition.
+  1081			 */
+  1082			if (type == ZONEFS_ZTYPE_CNV &&
+  1083			    (sbi->s_features & ZONEFS_F_AGGRCNV)) {
+  1084				for (; next < end; next++) {
+  1085					if (zonefs_zone_type(next) != type)
+  1086						break;
+  1087					zone->len += next->len;
+  1088					if (next->cond == BLK_ZONE_COND_READONLY &&
+  1089					    zone->cond != BLK_ZONE_COND_OFFLINE)
+  1090						zone->cond = BLK_ZONE_COND_READONLY;
+  1091					else if (next->cond == BLK_ZONE_COND_OFFLINE)
+  1092						zone->cond = BLK_ZONE_COND_OFFLINE;
+  1093				}
+  1094			}
+  1095	
+  1096			/*
+  1097			 * Use the file number within its group as file name.
+  1098			 */
+  1099			snprintf(file_name, ZONEFS_NAME_MAX - 1, "%u", n);
+  1100			if (!zonefs_create_inode(dir, file_name, zone, type))
+  1101				goto free;
+  1102	
+  1103			n++;
+  1104		}
+  1105	
+  1106		zonefs_info(sb, "Zone group \"%s\" has %u file%s\n",
+  1107			    zgroup_name, n, n > 1 ? "s" : "");
+  1108	
+  1109		sbi->s_nr_files[type] = n;
+> 1110		ret = 0;
+  1111	
+  1112	free:
+  1113		kfree(file_name);
+  1114	
+  1115		return ret;
+  1116	}
+  1117	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
