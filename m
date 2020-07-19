@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC8A2251D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 14:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5792251BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 14:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgGSMXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 08:23:55 -0400
-Received: from m12-12.163.com ([220.181.12.12]:44173 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgGSMXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 08:23:55 -0400
-X-Greylist: delayed 2708 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Jul 2020 08:23:51 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=euji8
-        3kgaRZ1o5ZfGEIqaM5nKxpg0EB9wV1jv0YgH7w=; b=Ydea2avLlvl0mS1ydElyA
-        r0Jxm0kC2nwrW9KyJUvcGqu9lulRCwcC3G/tBELk1Iahkaxw7UI61SwR3NnMso4H
-        9X0bD+0kAiG8V5wyGD83ruW43ASvYtUk9oEko0biMWUyVCfent+XY8NBB+ydSiUT
-        CiQ+IexfPbfw5hTMf550F8=
-Received: from localhost.localdomain (unknown [125.82.8.121])
-        by smtp8 (Coremail) with SMTP id DMCowAA3NS1iJRRfAc7rEg--.39456S4;
-        Sun, 19 Jul 2020 18:50:14 +0800 (CST)
-From:   Hu Haowen <xianfengting221@163.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, notify@kernel.org,
-        Hu Haowen <xianfengting221@163.com>
-Subject: [PATCH] x86/perf: Fix a typo
-Date:   Sun, 19 Jul 2020 18:50:07 +0800
-Message-Id: <20200719105007.57649-1-xianfengting221@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726165AbgGSMCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 08:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgGSMCY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 08:02:24 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046C4C0619D2;
+        Sun, 19 Jul 2020 05:02:23 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 0E25BBC065;
+        Sun, 19 Jul 2020 12:02:18 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     paul@paul-moore.com, pablo@netfilter.org, kadlec@netfilter.org,
+        fw@strlen.de, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH for v5.9] netfilter: xtables: Replace HTTP links with HTTPS ones
+Date:   Sun, 19 Jul 2020 14:02:12 +0200
+Message-Id: <20200719120212.58514-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAA3NS1iJRRfAc7rEg--.39456S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JrWxJry5XFWkGFWUtFyfXrb_yoWxAFg_A3
-        W8JayDZr1Fy3s2q395uay5t3Z3A3yFvw45Gr4fAFyUt345t3W5CFyUWwsak345WF9xZrWI
-        yFZ3KFyYqw13ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRNFAp7UUUUU==
-X-Originating-IP: [125.82.8.121]
-X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/xtbBDwBZAFPAMoZQfAABsc
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The word "Zhoaxin" is incorrect and the right one is "Zhaoxin".
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Signed-off-by: Hu Haowen <xianfengting221@163.com>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- arch/x86/events/zhaoxin/core.c | 2 +-
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ net/netfilter/xt_CONNSECMARK.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/zhaoxin/core.c b/arch/x86/events/zhaoxin/core.c
-index 898fa1ae9ceb..e68827e604ad 100644
---- a/arch/x86/events/zhaoxin/core.c
-+++ b/arch/x86/events/zhaoxin/core.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Zhoaxin PMU; like Intel Architectural PerfMon-v2
-+ * Zhaoxin PMU; like Intel Architectural PerfMon-v2
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+diff --git a/net/netfilter/xt_CONNSECMARK.c b/net/netfilter/xt_CONNSECMARK.c
+index a5c8b653476a..76acecf3e757 100644
+--- a/net/netfilter/xt_CONNSECMARK.c
++++ b/net/netfilter/xt_CONNSECMARK.c
+@@ -6,7 +6,7 @@
+  * with the SECMARK target and state match.
+  *
+  * Based somewhat on CONNMARK:
+- *   Copyright (C) 2002,2004 MARA Systems AB <http://www.marasystems.com>
++ *   Copyright (C) 2002,2004 MARA Systems AB <https://www.marasystems.com>
+  *    by Henrik Nordstrom <hno@marasystems.com>
+  *
+  * (C) 2006,2008 Red Hat, Inc., James Morris <jmorris@redhat.com>
 -- 
-2.25.1
-
+2.27.0
 
