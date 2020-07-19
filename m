@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A260022537C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 20:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E508B225379
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 20:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgGSSZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 14:25:46 -0400
-Received: from mail.stusta.mhn.de ([141.84.69.5]:53070 "EHLO
-        mail.stusta.mhn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgGSSZp (ORCPT
+        id S1726301AbgGSSXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 14:23:16 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58969 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726009AbgGSSXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 14:25:45 -0400
-X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Jul 2020 14:25:44 EDT
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.stusta.mhn.de (Postfix) with ESMTPSA id 4B8tRZ0r2bz3H;
-        Sun, 19 Jul 2020 20:19:21 +0200 (CEST)
-Date:   Sun, 19 Jul 2020 21:19:19 +0300
-From:   Adrian Bunk <bunk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: Linux kernel in-tree Rust support
-Message-ID: <20200719181919.GA4179@localhost>
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
- <20200712123151.GB25970@localhost>
- <20200712193944.GA81641@localhost>
- <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
+        Sun, 19 Jul 2020 14:23:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595182994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ScFFpz4vFBlMNgYQO4+t85nM3baIIzWmlaiuw6ztJE=;
+        b=jT0KcneRVEfLSoWykETak46+ZL+YL8ArzrR64jSSI0no13u7KY3ctUhASrgVJFzLBbCm6E
+        kQ9cSpZtLQftJHTSEWWiXqSeVm0D0JThRsiYSlAxCwMGZo0xYj+cYiYKVWGbNusmEkD5/L
+        keuTaJIrP+r6MxiUE1Cl383wzMhduEI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-ZMmX2uy3O8aWve82ysVtNQ-1; Sun, 19 Jul 2020 14:23:10 -0400
+X-MC-Unique: ZMmX2uy3O8aWve82ysVtNQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02F928015F3;
+        Sun, 19 Jul 2020 18:23:09 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.63])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0218A2B6DB;
+        Sun, 19 Jul 2020 18:23:06 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Sun, 19 Jul 2020 20:23:08 +0200 (CEST)
+Date:   Sun, 19 Jul 2020 20:23:05 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Jiri Slaby <jirislaby@kernel.org>, christian@brauner.io,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200719182304.GB28397@redhat.com>
+References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+ <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
+ <20200717122651.GA6067@redhat.com>
+ <20200717124017.GB6067@redhat.com>
+ <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
+ <20200719072726.5892-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200719072726.5892-1-hdanton@sina.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:06:01PM +0200, Arnd Bergmann wrote:
-> 
-> I would expect we'd want a fairly tight coupling between kernel
-> releases and minimum rust releases at first. Whatever is the latest
-> stable rust version during the kernel's merge window might be
-> assumed to be the minimum version for the life of that kernel, but
-> an LTS release would not suddenly start relying on features
-> from a newer compiler (thought it might warn about known bugs).
-> 
-> This might mean that linux-next requires a beta version of rust, if
-> the release is expected before the merge window and it contains
-> an important change.
+Hi Hillf,
 
-I would expect this is absolutely not wanted,
-it would make testing recent kernels very hard.
+On 07/19, Hillf Danton wrote:
+>
+> Dunno if the wheel prior to JOBCTL_TASK_WORK helps debug the warnings.
+>
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -2541,7 +2541,7 @@ bool get_signal(struct ksignal *ksig)
+>
+>  relock:
+>  	spin_lock_irq(&sighand->siglock);
+> -	current->jobctl &= ~JOBCTL_TASK_WORK;
+> +	task_clear_jobctl_pending(current, JOBCTL_TASK_WORK);
+>  	if (unlikely(current->task_works)) {
+>  		spin_unlock_irq(&sighand->siglock);
+>  		task_work_run();
+> --- a/kernel/task_work.c
+> +++ b/kernel/task_work.c
+> @@ -43,8 +43,8 @@ task_work_add(struct task_struct *task,
+>  		break;
+>  	case TWA_SIGNAL:
+>  		if (lock_task_sighand(task, &flags)) {
+> -			task->jobctl |= JOBCTL_TASK_WORK;
+> -			signal_wake_up(task, 0);
+> +			if (task_set_jobctl_pending(task, JOBCTL_TASK_WORK))
+> +				recalc_sigpending_and_wake(task);
+>  			unlock_task_sighand(task, &flags);
 
-If you want to keep a tool that tightly to the kernel,
-please bundle it with the kernel and build it as part
-of the kernel build.
+To be be honest I don't understand why do you think this makes any sense...
 
-I would suggest to start with a proper design/specification what the 
-kernel wants to use, so that you are confident that a compiler 
-implementing this will be sufficient for the next 5 years.
+But this doesn't matter, please note that the Jiri tested the kernel with
+e91b48162332480f5 (which added JOBCTL_TASK_WORK) reverted.
 
-As a secondary benefit, starting with a proper design often brings
-a better result than adding permanent features piece by piece.
+Oleg.
 
-As a tertiary benefit, it would avoid tying the kernel to one specific 
-compiler implementation. A compiler like mrustc or a hypothetical Rust 
-frontend for gcc could then implement a superset of what the kernel 
-needs.
-
-> Staying with fairly recent versions of clang
-> certainly helped in getting clang and the kernel to co-evolve and
-> get to the point we are now in using it as an alternative to gcc.
-
-The main difference is between an alternative to an existing tool,
-and a mandatory new tool.
-
-> While Linux used to build with 12 year old compilers (4.1 until
-> 2018), we now require a 6 year old gcc (4.9) or 1 year old
-> clang/llvm. I don't know whether these will fully converge over
-> time but it seems sensible that the minimum rust frontend version
-> we require for a new kernel release would eventually also fall
-> in that range, requiring a compiler that is no more than a few
-> years old, but not requiring the latest stable release.
-
-The correct range for a mandatory tool are the 6 to 12 years for gcc.
-
-Debian stable and Ubuntu LTS are providing (different) mechanisms
-for installing the kernel from the next stable/LTS release 2 years
-later[1] for supporting new hardware.
-If kernel 5.12 LTS cannot be compiled on Ubuntu 20.04 LTS with
-the 2019 gcc 9 there would be pain downstream.
-
-In the embedded world spreads far wider than these 3 years are common.
-I would currently have a real-life usecase for compiling a recent
-kernel with a gcc 4.0 (sic) toolchain.
-Properly supporting 15 year old toolchains would be painful upstream,
-supporting 6 year old toolchains is a reasonable compromise between
-not being too painful upstream while rarely causing pain downstream.
-
-What applies to gcc does also apply to other external tools used
-during the kernel build.
-
->       Arnd
-
-cu
-Adrian
-
-[1] following a new upstream kernel stable branch every 6 months (Ubuntu)
-    or the latest upstream stable kernels (Debian) until this is reached
