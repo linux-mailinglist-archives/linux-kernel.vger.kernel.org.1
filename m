@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C47E225411
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 22:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A739522541A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 22:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgGSUQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 16:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
+        id S1726264AbgGSUWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 16:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727779AbgGSUQp (ORCPT
+        with ESMTP id S1726073AbgGSUWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 16:16:45 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20B5C0619D2;
-        Sun, 19 Jul 2020 13:16:44 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 90DEABC064;
-        Sun, 19 Jul 2020 20:16:40 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        corbet@lwn.net, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH for v5.9] rxrpc: Replace HTTP links with HTTPS ones
-Date:   Sun, 19 Jul 2020 22:16:32 +0200
-Message-Id: <20200719201632.61594-1-grandmaster@al2klimov.de>
+        Sun, 19 Jul 2020 16:22:00 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3B8C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 13:21:59 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s10so15813583wrw.12
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 13:21:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=z7woOAe/zQXx4LdtnXgtnLa3IAxT8bU6q1bX4fVXwlc=;
+        b=nyfJFkURKKssu+7T7cf1kF0w8Oele3QV8qY7rKzE51eudyB8yWuTBjfgNHXdve96uy
+         7bbnnwSM+4adHPzqI8TaNrnpzI+1JYlNuRtdTLY7e5hy/Zfu/en6qB0C6D8ojIkJkbRZ
+         fRI1Q4EtpTQVVyAnFOhTV2P9jKbSY18s9Vby1u/Mq8MYnAereo8HhvBt8mkNg34v/dPc
+         UApxAOJL8HXSuhKQbrPdtDuMFJ1P/9Vl7fOb8oDPoA9La3it3iJFDyg1bL119fPKLu83
+         pvDcRaw+PJSC2xWxET2wIUcsU50Mb70gtPgmSK6IFXuJ1ObYCHvePpC40Y46skTZ4SQp
+         IITA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=z7woOAe/zQXx4LdtnXgtnLa3IAxT8bU6q1bX4fVXwlc=;
+        b=k0xXAUTwM/Zh1HFHcp972t40Bb3KkRn3R672SkxQZAZG9MXg7Jz6JlNAHYhk3d/8XK
+         R6cHrTLpf6EUpdcCKsUSJHbYynwu5/MWvqrkQup5h2rue6e7VDjw/QOEH8a+9L7/Re5E
+         6zo4HV8opCZA5fr1SXcLR4IwK22TbxeE/BdnIltirbyddrPl7CFkNmflTgfPNNKKWgyU
+         /Kw7XSmLqrcUhAEdSnksXEHQsJIORgoO6DPpTXmyh3CZPJ9xB2A8eaJ/LERSPIT4t4oE
+         KulUTKtBda175FbsoC2vv4jRFbFXByy6hBnUJtu03XmAZhid2zof7pgjDFfC00RbFMTT
+         2VFQ==
+X-Gm-Message-State: AOAM531tGZrpzQfxdVuNS8yNop8JOU9AcAcHOvVi6LBPWnH6ctsb1l2Q
+        JCbsy7eXX+EeSYqAALL8Vht2ALVF+y65gvDferw=
+X-Google-Smtp-Source: ABdhPJyTenKS0Ayu60z++T+ERJuE+WZ0wymWcIC4fJZJwWmiwpiqgHAcxfGfPBgbsKmfv179jr3ZX06cBB88ngZ6MyY=
+X-Received: by 2002:a5d:438c:: with SMTP id i12mr3241638wrq.210.1595190117181;
+ Sun, 19 Jul 2020 13:21:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Received: by 2002:a5d:630a:0:0:0:0:0 with HTTP; Sun, 19 Jul 2020 13:21:56
+ -0700 (PDT)
+Reply-To: rizwanaayan4@gmail.com
+From:   Rizwan Aayan <johnsonbobolo333@gmail.com>
+Date:   Sun, 19 Jul 2020 13:21:56 -0700
+Message-ID: <CAKd=Y6tYh1FJJs7vqzp8qo31zoH9egBUWRg2GZhJEfHXzKubQw@mail.gmail.com>
+Subject: Dear friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
-
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- Documentation/networking/rxrpc.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/networking/rxrpc.rst b/Documentation/networking/rxrpc.rst
-index 39c2249c7aa7..2a842d4ee50f 100644
---- a/Documentation/networking/rxrpc.rst
-+++ b/Documentation/networking/rxrpc.rst
-@@ -506,7 +506,7 @@ kaserver or the kerberos server and installed as "rxrpc" type keys.  This is
- normally done using the klog program.  An example simple klog program can be
- found at:
- 
--	http://people.redhat.com/~dhowells/rxrpc/klog.c
-+	https://people.redhat.com/~dhowells/rxrpc/klog.c
- 
- The payload provided to add_key() on the client should be of the following
- form::
-@@ -537,7 +537,7 @@ socket then looks the server secret keys up in this keyring when secure
- incoming connections are made.  This can be seen in an example program that can
- be found at:
- 
--	http://people.redhat.com/~dhowells/rxrpc/listen.c
-+	https://people.redhat.com/~dhowells/rxrpc/listen.c
- 
- 
- ====================
 -- 
-2.27.0
 
+
+-- 
+
+Dear Friend,
+
+I am Mr Rizwan  Aayan, I work at a bank here in Burkina Faso as the
+manager in the audit department. During our last banking audits, I
+discovered an abandoned account belong to one of our deceased customer
+late Mr. Samak Thienthong from Thailand.
+
+Meanwhile, before I contacted you, I have done personal investigation
+in locating any of his relatives who know about the deceased but all
+came out unsuccessful. Now I need your help as a foreigner to claim
+the abandoned fund sum of $15 million U.S dollars. This money belonged
+to Mr. Samak Thienthong from Thailand who died 26 December 2004 in
+Indian Ocean earthquake and tsunami while on vacation with his family.
+
+After I found your information from a business contact when I was
+searching for a honest partner I decided to contact you to act as his
+relative so that you will claim the fund as his next of Kin. However,
+i will give you full details on how the fund transfer will be executed
+and also note that you will have 40% of the above mentioned while 60%
+for me, if you are interested to handle this business kindly fill out
+below information and send it back to me for more details.
+
+Your full name,
+Your country.
+Your age.
+Your occupation.
+Your Phone number.
+Your address.
+Your sexual.
+A copy of your passport or ID card.
+
+ I am expecting to read from you soon.
+
+ Best Regards
+Mr Rizwan  Aayan     ,
