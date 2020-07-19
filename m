@@ -2,197 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FD422544F
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 23:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5F522545E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 00:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgGSVq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 17:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgGSVqZ (ORCPT
+        id S1726679AbgGSWDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 18:03:47 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:38633 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgGSWDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 17:46:25 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097A0C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 14:46:25 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f2so15941425wrp.7
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 14:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U15DiQpwwrkjUs3TnpndJYI5QOKyEAdlj16sEd+GPwU=;
-        b=Lo5n2LqU/WaJJ1Zy9GhRri4FbP7iC/VzyAlwQlCTIhSkPaoYfYGtFzOXy5Hnhbh6X+
-         PCtguRRmdGE7qpxc7iZ3Z8dV21k4rTe6s7RaS8KIbg4xYuwCIGPWTDekoanOCKXIMTT0
-         PB76bRasSuaR/cN9uq1u1INrHdmcckHEjlJ0IXv9IYK7FtyntJ1BzpZ4NB95I+zkqZVD
-         a/5Bc63Ra7U+9aIS8WJNA8z/FtDYtDdKx0mDEI841Jy9Rq9uvtrSWi76CKmR0/FBvWMn
-         0F6g+99gETc68qJqbpXuSqBylka85akX5PJ1uwPYOAvGRidAhIliBcz2oKT5rtWe+UKC
-         Z4qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U15DiQpwwrkjUs3TnpndJYI5QOKyEAdlj16sEd+GPwU=;
-        b=JYx7c9BF5ff1gcfpCPWWRfXeMGDgQwfMC4YBZ7jvj2YezELSKKeCgAEtDfcKmHbacw
-         MRKoXJk0gXKJ0cYnCzVtQlajXd4y+cj54Kw9cIDtpicZV1YTEqp62aM2fqici6IgL8UT
-         RWKKG5UzYZHlT6S+hwd93VzHfBZY4io3Vy7i6pFW+kJkM9tHWqjpMXY7yyhG7o+Jthpo
-         ONhY0bVrWY7BatwpDcyW1Al5COR1wIpfH6g+bZ0FRZ4ofcRue8oXsDyjpqZlvJxIt8T7
-         Vy0WHhScF4x3o/EsSgZExoFLMe0Zba34vJ7s0iW9LQMBLjAwW2h/tImoWWNvetTBNq4q
-         wyRg==
-X-Gm-Message-State: AOAM5316ch6FJ3Rqb2dJNykS9iMeuZHfm3HM54sQIOVCd9HtT0zxsj1Y
-        3kLXKEyriytGu1rF2Sx4SzGJSs5g7ExukNMMYsJHaw==
-X-Google-Smtp-Source: ABdhPJzvNyHIxThNV7RYQAZr6s5+RUe9PCDZ47rJHXP9HkSEmEgdbeGP6k1VbS0vtyiYk7+7P/aAAxZtDEdkYCgutxU=
-X-Received: by 2002:a5d:4bd2:: with SMTP id l18mr18783458wrt.119.1595195183485;
- Sun, 19 Jul 2020 14:46:23 -0700 (PDT)
+        Sun, 19 Jul 2020 18:03:46 -0400
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id F416E22FEC;
+        Mon, 20 Jul 2020 00:03:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1595196224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XKk8+t5MLJEeSzFrY4LraeUIQ/GC5u/mAsRgDMFyZl0=;
+        b=TpXYaQKovs53NDtoQmYHr7/YU9tXAJBw88fwfvXzS9YWgthUsONg9IfGqiDKHIyP+iXhhc
+        2m3QdZkyfygNM6QHV2+7L7kl3Pbn1Nk7qhfc/hhEGOPpOyVZKNssKfxVTx3jHkkRIVvdmd
+        jeIGbh9AOpgh7Q95NiAM1p8EvtiT7Go=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Michael Walle <michael@walle.cc>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Subject: [PATCH net-next v7 0/4] net: enetc: remove bootloader dependency
+Date:   Mon, 20 Jul 2020 00:03:32 +0200
+Message-Id: <20200719220336.6919-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200719181320.785305-1-jolsa@kernel.org> <20200719181320.785305-6-jolsa@kernel.org>
-In-Reply-To: <20200719181320.785305-6-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Sun, 19 Jul 2020 14:46:12 -0700
-Message-ID: <CAP-5=fWYOjCSruJ1=c6896zjJe-e-EMKJTrOUcoeo0fED3tk2A@mail.gmail.com>
-Subject: Re: [PATCH 05/19] perf metric: Add macros for iterating map events
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 11:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding following macros to iterate events and metric:
->   map_for_each_event(__pe, __idx, __map)
->     - iterates over all pmu_events_map events
->   map_for_each_metric(__pe, __idx, __map, __metric)
->     - iterates over all metrics that match __metric argument
->
-> and use it in metricgroup__add_metric function. Macros
-> will be be used from other places in following changes.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+These patches were picked from the following series:
+https://lore.kernel.org/netdev/1567779344-30965-1-git-send-email-claudiu.manoil@nxp.com/
+They have never been resent. I've picked them up, addressed Andrews
+comments, fixed some more bugs and asked Claudiu if I can keep their SOB
+tags; he agreed. I've tested this on our board which happens to have a
+bootloader which doesn't do the enetc setup in all cases. Though, only
+SGMII mode was tested.
 
-Acked-by: Ian Rogers <irogers@google.com>
+changes since v6:
+ - dropped _LPA_ infix for USXGMII constants
 
-Thanks!
-Ian
+changes since v5:
+ - fixed pcs->autoneg_complete and pcs->link assignment. Thanks Vladimir.
 
-> ---
->  tools/perf/util/metricgroup.c | 77 ++++++++++++++++++-----------------
->  1 file changed, 40 insertions(+), 37 deletions(-)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index df0356ec120d..b37008fc253c 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -614,6 +614,17 @@ static int __metricgroup__add_metric(struct list_head *group_list,
->         return 0;
->  }
->
-> +#define map_for_each_event(__pe, __idx, __map)                         \
-> +       for (__idx = 0, __pe = &__map->table[__idx];                    \
-> +            __pe->name || __pe->metric_group || __pe->metric_name;     \
-> +            __pe = &__map->table[++__idx])
-> +
-> +#define map_for_each_metric(__pe, __idx, __map, __metric)              \
-> +       map_for_each_event(__pe, __idx, __map)                          \
-> +               if (__pe->metric_expr &&                                \
-> +                   (match_metric(__pe->metric_group, __metric) ||      \
-> +                    match_metric(__pe->metric_name, __metric)))
-> +
->  static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->                                    struct strbuf *events,
->                                    struct list_head *group_list,
-> @@ -624,49 +635,41 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->         int i, ret;
->         bool has_match = false;
->
-> -       for (i = 0; ; i++) {
-> -               pe = &map->table[i];
-> -
-> -               if (!pe->name && !pe->metric_group && !pe->metric_name) {
-> -                       /* End of pmu events. */
-> -                       if (!has_match)
-> -                               return -EINVAL;
-> -                       break;
-> -               }
-> -               if (!pe->metric_expr)
-> -                       continue;
-> -               if (match_metric(pe->metric_group, metric) ||
-> -                   match_metric(pe->metric_name, metric)) {
-> -                       has_match = true;
-> -                       pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
-> -
-> -                       if (!strstr(pe->metric_expr, "?")) {
-> -                               ret = __metricgroup__add_metric(group_list,
-> -                                                               pe,
-> -                                                               metric_no_group,
-> -                                                               1);
-> -                               if (ret)
-> -                                       return ret;
-> -                       } else {
-> -                               int j, count;
-> +       map_for_each_metric(pe, i, map, metric) {
-> +               pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
-> +               has_match = true;
-> +
-> +               if (!strstr(pe->metric_expr, "?")) {
-> +                       ret = __metricgroup__add_metric(group_list,
-> +                                                       pe,
-> +                                                       metric_no_group,
-> +                                                       1);
-> +                       if (ret)
-> +                               return ret;
-> +               } else {
-> +                       int j, count;
->
-> -                               count = arch_get_runtimeparam();
-> +                       count = arch_get_runtimeparam();
->
-> -                               /* This loop is added to create multiple
-> -                                * events depend on count value and add
-> -                                * those events to group_list.
-> -                                */
-> +                       /* This loop is added to create multiple
-> +                        * events depend on count value and add
-> +                        * those events to group_list.
-> +                        */
->
-> -                               for (j = 0; j < count; j++) {
-> -                                       ret = __metricgroup__add_metric(
-> -                                               group_list, pe,
-> -                                               metric_no_group, j);
-> -                                       if (ret)
-> -                                               return ret;
-> -                               }
-> +                       for (j = 0; j < count; j++) {
-> +                               ret = __metricgroup__add_metric(
-> +                                       group_list, pe,
-> +                                       metric_no_group, j);
-> +                               if (ret)
-> +                                       return ret;
->                         }
->                 }
->         }
-> +
-> +       /* End of pmu events. */
-> +       if (!has_match)
-> +               return -EINVAL;
-> +
->         list_for_each_entry(eg, group_list, nd) {
->                 if (events->len > 0)
->                         strbuf_addf(events, ",");
-> --
-> 2.25.4
->
+changes since v4:
+ - moved (and renamed) the USXGMII constants to include/uapi/linux/mdio.h.
+   Suggested by Russell King.
+
+changes since v3:
+ - rebased to latest net-next where devm_mdiobus_free() was removed.
+   replace it by mdiobus_free(). The internal MDIO bus is optional, if
+   there is any error, we try to run with the bootloader default PCS
+   settings, thus in the error case, we need to free the mdiobus.
+
+changes since v2:
+ - removed SOBs from "net: enetc: Initialize SerDes for SGMII and USXGMII
+   protocols" because almost everything has changed.
+ - get a phy_device for the internal PCS PHY so we can use the phy_
+   functions instead of raw mdiobus writes
+ - reuse macros already defined in fsl_mdio.h, move missing bits from
+   felix to fsl_mdio.h, because they share the same PCS PHY building
+   block
+ - added 2500BaseX mode (based on felix init routine)
+ - changed xgmii mode to usxgmii mode, because it is actually USXGMII and
+   felix does the same.
+ - fixed devad, which is 0x1f (MMD_VEND2)
+
+changes since v1:
+ - mdiobus id is '"imdio-%s", dev_name(dev)' because the plain dev_name()
+   is used by the emdio.
+ - use mdiobus_write() instead of imdio->write(imdio, ..), since this is
+   already a full featured mdiobus
+ - set phy_mask to ~0 to avoid scanning the bus
+ - use phy_interface_mode_is_rgmii(phy_mode) to also include the RGMII
+   modes with pad delays.
+ - move enetc_imdio_init() to enetc_pf.c, there shouldn't be any other
+   users, should it?
+ - renamed serdes to SerDes
+ - printing the error code of mdiobus_register() in the error path
+ - call mdiobus_unregister() on _remove()
+ - call devm_mdiobus_free() if mdiobus_register() fails, since an
+   error is not fatal
+Alex Marginean (1):
+  net: enetc: Use DT protocol information to set up the ports
+
+Michael Walle (3):
+  net: phy: add USXGMII link partner ability constants
+  net: dsa: felix: (re)use already existing constants
+  net: enetc: Initialize SerDes for SGMII and USXGMII protocols
+
+ drivers/net/dsa/ocelot/felix_vsc9959.c        |  45 ++---
+ .../net/ethernet/freescale/enetc/enetc_hw.h   |   3 +
+ .../net/ethernet/freescale/enetc/enetc_pf.c   | 188 +++++++++++++++---
+ .../net/ethernet/freescale/enetc/enetc_pf.h   |   5 +
+ include/uapi/linux/mdio.h                     |  26 +++
+ 5 files changed, 210 insertions(+), 57 deletions(-)
+
+-- 
+2.20.1
+
