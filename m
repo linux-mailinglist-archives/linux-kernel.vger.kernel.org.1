@@ -2,236 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BE3224F76
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 06:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53736224F7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 07:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgGSEqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 00:46:12 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:34702 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725272AbgGSEqL (ORCPT
+        id S1726051AbgGSFBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 01:01:41 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4424 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgGSFBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 00:46:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0U36e0fH_1595133957;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U36e0fH_1595133957)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 19 Jul 2020 12:45:58 +0800
-Subject: Re: [PATCH v16 13/22] mm/lru: introduce TestClearPageLRU
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-14-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UfLbVRQ4+TOw-XnjuyZqoVmRmWb5_rbEZZ0povYv-n_Lg@mail.gmail.com>
- <072b39ac-b95a-94f1-67a2-3293d4550ff8@linux.alibaba.com>
- <CAKgT0UdDQp_bptKAjG4A4fJQgS5gJuvu6D7LJfKw_wETLtLG_w@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <530c222e-dfd4-f78e-e9d4-315fad6f816a@linux.alibaba.com>
-Date:   Sun, 19 Jul 2020 12:45:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Sun, 19 Jul 2020 01:01:41 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f13d3780000>; Sat, 18 Jul 2020 22:00:40 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Sat, 18 Jul 2020 22:01:40 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Sat, 18 Jul 2020 22:01:40 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
+ 2020 05:01:40 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sun, 19 Jul 2020 05:01:40 +0000
+Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f13d3ae000d>; Sat, 18 Jul 2020 22:01:39 -0700
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>, Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH v5 00/11] Add ASoC AHUB components for Tegra210 and later
+Date:   Sun, 19 Jul 2020 10:31:19 +0530
+Message-ID: <1595134890-16470-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UdDQp_bptKAjG4A4fJQgS5gJuvu6D7LJfKw_wETLtLG_w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595134840; bh=LGxf60I5XaGrX8yXXnY4xPzwYnkwqPT1C5uyrz62EaM=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=Jk1bZggFAUG0bbN8M36PxRZRaHCK2ZZfJ1xpaHXlgt+rWN25Vi/U1EpAA9qdxMCRa
+         duKK8+IhzfJUaUaQHyEvTeMNRsGAEFM4sCcukjjSQcR7r+vVMZm/X0av9K2oaMFYyC
+         XHdsW3RBRHDwY34CJ1HA5Ie5zJ4AyZ8J7Rnt3e1iedHVqIc7TARRmEIeSaLOioW0Ta
+         WE+hBH7VQkpnxJJH1MxAV3evWRrCk19fcRnIxJSVivT/gnc9UikAAn4hVQ01ocrImb
+         NawZSUcm374ocHygMDp01lZiXTb9qYzITHgtVdOuLfRVWmNS6gQeRvnOmCO3DutP3v
+         r4+xsLNgtLHEg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Overview
+========
+Audio Processing Engine (APE) comprises of Audio DMA (ADMA) and Audio
+Hub (AHUB) unit. AHUB is a collection of hardware accelerators for audio
+pre-processing and post-processing. It also includes a programmable full
+crossbar for routing audio data across these accelerators.
 
+This series exposes some of these below mentioned HW devices as ASoC
+components for Tegra platforms from Tegra210 onwards.
+ * ADMAIF : The interface between ADMA and AHUB
+ * XBAR   : Crossbar for routing audio samples across various modules
+ * I2S    : Inter-IC Sound Controller
+ * DMIC   : Digital Microphone
+ * DSPK   : Digital Speaker
 
-在 2020/7/18 上午2:26, Alexander Duyck 写道:
-> On Fri, Jul 17, 2020 at 12:46 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>
->>
->>
->> 在 2020/7/17 上午5:12, Alexander Duyck 写道:
->>> On Fri, Jul 10, 2020 at 5:59 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>>>
->>>> Combine PageLRU check and ClearPageLRU into a function by new
->>>> introduced func TestClearPageLRU. This function will be used as page
->>>> isolation precondition to prevent other isolations some where else.
->>>> Then there are may non PageLRU page on lru list, need to remove BUG
->>>> checking accordingly.
->>>>
->>>> Hugh Dickins pointed that __page_cache_release and release_pages
->>>> has no need to do atomic clear bit since no user on the page at that
->>>> moment. and no need get_page() before lru bit clear in isolate_lru_page,
->>>> since it '(1) Must be called with an elevated refcount on the page'.
->>>>
->>>> As Andrew Morton mentioned this change would dirty cacheline for page
->>>> isn't on LRU. But the lost would be acceptable with Rong Chen
->>>> <rong.a.chen@intel.com> report:
->>>> https://lkml.org/lkml/2020/3/4/173
->>>>
->>
->> ...
->>
->>>> diff --git a/mm/swap.c b/mm/swap.c
->>>> index f645965fde0e..5092fe9c8c47 100644
->>>> --- a/mm/swap.c
->>>> +++ b/mm/swap.c
->>>> @@ -83,10 +83,9 @@ static void __page_cache_release(struct page *page)
->>>>                 struct lruvec *lruvec;
->>>>                 unsigned long flags;
->>>>
->>>> +               __ClearPageLRU(page);
->>>>                 spin_lock_irqsave(&pgdat->lru_lock, flags);
->>>>                 lruvec = mem_cgroup_page_lruvec(page, pgdat);
->>>> -               VM_BUG_ON_PAGE(!PageLRU(page), page);
->>>> -               __ClearPageLRU(page);
->>>>                 del_page_from_lru_list(page, lruvec, page_off_lru(page));
->>>>                 spin_unlock_irqrestore(&pgdat->lru_lock, flags);
->>>>         }
->>>
->>> So this piece doesn't make much sense to me. Why not use
->>> TestClearPageLRU(page) here? Just a few lines above you are testing
->>> for PageLRU(page) and it seems like if you are going to go for an
->>> atomic test/clear and then remove the page from the LRU list you
->>> should be using it here as well otherwise it seems like you could run
->>> into a potential collision since you are testing here without clearing
->>> the bit.
->>>
->>
->> Hi Alex,
->>
->> Thanks a lot for comments!
->>
->> In this func's call path __page_cache_release, the page is unlikely be
->> ClearPageLRU, since this page isn't used by anyone, and going to be freed.
->> just __ClearPageLRU would be safe, and could save a non lru page flags disturb.
-> 
-> So if I understand what you are saying correctly you are indicating
-> that this page should likely not have the LRU flag set and that we
-> just transitioned it from 1 -> 0 so there should be nobody else
-> accessing it correct?
-> 
-> It might be useful to document this somewhere. Essentially what we are
-> doing then is breaking this up into the following cases.
-> 
-> 1. Setting the LRU bit requires holding the LRU lock
-> 2. Clearing the LRU bit requires either:
->         a. Use of atomic operations if page count is 1 or more
->         b. Non-atomic operations can be used if we cleared last reference count
-> 
-> Is my understanding on this correct? So we have essentially two
-> scenarios, one for the get_page_unless_zero case, and another with the
-> put_page_testzero.
+Following is the summary of current series.
+ * Add YAML DT binding documentation for above mentioned modules.
+ * Helper function for ACIF programming is exposed for Tegra210 and later.
+ * Add ASoC driver components for each of the above modules.
+ * Build ACONNECT and ADMA drivers which are essential to realize audio
+   use case.
+ * Add DT entries for above components for Tegra210, Tegra186 and
+   Tegra194.
 
-the summary isn't incorrect. 
-The the points for me are:
-1, Generally, the lru bit indicated if the page on lru list, just in some temporary
-moment(isolating), the page may have no bit set when it's on lru list.  that imply
-the page must be on lru list when the lru bit is set.
-2, have to remove lru bit before delete it from lru list.
+As per the suggestion in [0] audio graph based sound card support
+is pushed in a separate series.
 
-> 
->>>> @@ -878,9 +877,8 @@ void release_pages(struct page **pages, int nr)
->>>>                                 spin_lock_irqsave(&locked_pgdat->lru_lock, flags);
->>>>                         }
->>>>
->>>> -                       lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
->>>> -                       VM_BUG_ON_PAGE(!PageLRU(page), page);
->>>>                         __ClearPageLRU(page);
->>>> +                       lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
->>>>                         del_page_from_lru_list(page, lruvec, page_off_lru(page));
->>>>                 }
->>>>
->>>
->>> Same here. You are just moving the flag clearing, but you didn't
->>> combine it with the test. It seems like if you are expecting this to
->>> be treated as an atomic operation. It should be a relatively low cost
->>> to do since you already should own the cacheline as a result of
->>> calling put_page_testzero so I am not sure why you are not combining
->>> the two.
->>
->> before the ClearPageLRU, there is a put_page_testzero(), that means no one using
->> this page, and isolate_lru_page can not run on this page the in func checking.
->>         VM_BUG_ON_PAGE(!page_count(page), page);
->> So it would be safe here.
-> 
-> Okay, so this is another 2b case as defined above then.
-> 
->>>
->>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>>> index c1c4259b4de5..18986fefd49b 100644
->>>> --- a/mm/vmscan.c
->>>> +++ b/mm/vmscan.c
->>>> @@ -1548,16 +1548,16 @@ int __isolate_lru_page(struct page *page, isolate_mode_t mode)
->>>>  {
->>>>         int ret = -EINVAL;
->>>>
->>>> -       /* Only take pages on the LRU. */
->>>> -       if (!PageLRU(page))
->>>> -               return ret;
->>>> -
->>>>         /* Compaction should not handle unevictable pages but CMA can do so */
->>>>         if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
->>>>                 return ret;
->>>>
->>>>         ret = -EBUSY;
->>>>
->>>> +       /* Only take pages on the LRU. */
->>>> +       if (!PageLRU(page))
->>>> +               return ret;
->>>> +
->>>>         /*
->>>>          * To minimise LRU disruption, the caller can indicate that it only
->>>>          * wants to isolate pages it will be able to operate on without
->>>> @@ -1671,8 +1671,6 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
->>>>                 page = lru_to_page(src);
->>>>                 prefetchw_prev_lru_page(page, src, flags);
->>>>
->>>> -               VM_BUG_ON_PAGE(!PageLRU(page), page);
->>>> -
->>>>                 nr_pages = compound_nr(page);
->>>>                 total_scan += nr_pages;
->>>>
->>>
->>> So effectively the changes here are making it so that a !PageLRU page
->>> will cycle to the start of the LRU list. Now if I understand correctly
->>> we are guaranteed that if the flag is not set it cannot be set while
->>> we are holding the lru_lock, however it can be cleared while we are
->>> holding the lock, correct? Thus that is why isolate_lru_pages has to
->>> call TestClearPageLRU after the earlier check in __isolate_lru_page.
->>
->> Right.
->>
->>>
->>> It might make it more readable to pull in the later patch that
->>> modifies isolate_lru_pages that has it using TestClearPageLRU.
->> As to this change, It has to do in this patch, since any TestClearPageLRU may
->> cause lru bit miss in the lru list, so the precondication check has to
->> removed here.
-> 
-> So I think some of my cognitive dissonance is from the fact that you
-> really are doing two different things here. You aren't really
-> implementing the full TestClearPageLRU until patch 15. So this patch
-> is doing part of 2a and 2b, and then patch 15 is following up and
-> completing the 2a cases. I still think it might make more sense to
-> pull out the pieces related to 2b and move them into a patch before
-> this with documentation explaining that there should be no competition
-> for the LRU flag because the page has transitioned to a reference
-> count of zero. Then take the remaining bits and combine them with
-> patch 15 since the description for the two is pretty similar.
-> 
+[0] https://lkml.org/lkml/2020/6/27/4
 
-Good suggestion, I consider this.
+Changelog
+=========
 
-Thanks
+v4 -> v5
+--------
+ * Common changes
+   - simple-card driver changes are dropped. Changes are migrated to audio
+     graph card and are moved to a separate series as suggested.
+
+   - '#sound-dai-cells' property is not needed for planned audio graph card
+     Hence dropped from documentation and related DT binding of component
+     drivers.
+
+   - CIF and DAP DAIs are added for I/O drivers (DMIC, DSPK, I2S) to
+     represent DAI links using audio graph card. Similary DAIs are added in
+     AHUB driver to describe endpoints in audio crossbar. Routing is updated
+     to reflect the same in drivers.
+
+v3 -> v4
+--------
+ * [1/23] "ASoC: dt-bindings: tegra: Add DT bindings for Tegra210"
+   - Removed multiple examples and retained one example per doc
+   - Fixed as per inputs on the previous series
+   - Tested bindings with 'make dt_binding_check/dtbs_check'
+
+ * [2/23] "ASoC: tegra: Add support for CIF programming"
+   - No change
+
+ * Common changes (for patch [3/10] to [7/10])
+   - Mixer control overrides, for PCM parameters (rate, channel, bits),
+     in each driver are dropped.
+   - Updated routing as per DPCM usage
+   - Minor changes related to formatting
+
+ * New changes (patch [8/23] to [18/23] and patch [23/23])
+   - Based on discussions in following threads DPCM is used for Tegra Audio.
+     https://lkml.org/lkml/2020/2/20/91
+     https://lkml.org/lkml/2020/4/30/519
+   - The simple-card driver is used for Tegra Audio and accordingly
+     some enhancements are made in simple-card and core drivers.
+   - Patch [8/23] to [18/23] are related to simple-card and core changes.
+   - Patch [23/23] adds sound card support to realize complete audio path.
+     This is based on simple-card driver with proposed enhancements.
+   - Re-ordered patches depending on above
+
+v2 -> v3
+--------
+ * [1/10]  "dt-bindings: sound: tegra: add DT binding for AHUB
+   - Updated licence
+   - Removed redundancy w.r.t items/const/enum
+   - Added constraints wherever needed with "pattern" property
+
+ * [2/10]  "ASoC: tegra: add support for CIF programming"
+   - Removed tegra_cif.c
+   - Instead added inline helper function in tegra_cif.h
+
+ * common changes (for patch [3/10] to [7/10])
+   - Replace LATE system calls with Normal sleep
+   - Remove explicit RPM suspend in driver remove() call
+   - Use devm_kzalloc() instead of devm_kcalloc() for single element
+   - Replace 'ret' with 'err' for better reading
+   - Consistent error printing style across drivers
+   - Minor formating fixes
+
+ * [8/10]  "arm64: tegra: add AHUB components for few Tegra chips"
+   - no change
+
+ * [9/10]  "arm64: tegra: enable AHUB modules for few Tegra chips"
+   - no change
+
+ * [10/10] "arm64: defconfig: enable AHUB components for Tegra210 and later"
+   (New patch)
+   - Enables ACONNECT and AHUB components. With this AHUB and components are
+     registered with ASoC core.
+
+v1 -> v2
+--------
+ * [1/9] "dt-bindings: sound: tegra: add DT binding for AHUB"
+   - no changes
+
+ * [2/9] "ASoC: tegra: add support for CIF programming"
+   - removed CIF programming changes for legacy chips.
+   - this patch now exposes helper function for CIF programming,
+     which can be used on Tegra210 later.
+   - later tegra_cif.c can be extended for legacy chips as well.
+   - updated commit message accordingly
+
+ * [3/9] "ASoC: tegra: add Tegra210 based DMIC driver"
+   - removed unnecessary initialization of 'ret' in probe()
+
+ * [4/9] "ASoC: tegra: add Tegra210 based I2S driver"
+   - removed unnecessary initialization of 'ret' in probe()
+   - fixed indentation
+   - added consistent bracing for if-else clauses
+   - updated 'rx_fifo_th' type to 'unsigned int'
+   - used BIT() macro for defines like '1 << {x}' in tegra210_i2s.h
+
+ * [5/9] "ASoC: tegra: add Tegra210 based AHUB driver"
+   - used of_device_get_match_data() to get 'soc_data' and removed
+    explicit of_match_device()
+   - used devm_platform_ioremap_resource() and removed explicit
+    platform_get_resource()
+   - fixed indentation for devm_snd_soc_register_component()
+   - updated commit message
+   - updated commit message to reflect compatible binding for Tegra186 and
+     Tegra194.
+
+ * [6/9] "ASoC: tegra: add Tegra186 based DSPK driver"
+   - removed unnecessary initialization of 'ret' in probe()
+   - updated 'max_th' to 'unsigned int'
+   - shortened lengthy macro names to avoid wrapping in
+     tegra186_dspk_wr_reg() and to be consistent
+
+ * [7/9] "ASoC: tegra: add Tegra210 based ADMAIF driver"
+   - used of_device_get_match_data() and removed explicit of_match_device()
+   - used BIT() macro for defines like '1 << {x}' in tegra210_admaif.h
+   - updated commit message to reflect compatible binding for Tegra186 and
+     Tegra194.
+
+ * [8/9] "arm64: tegra: add AHUB components for few Tegra chips"
+   - no change
+
+ * [9/9] "arm64: tegra: enable AHUB modules for few Tegra chips"
+   - no change
+
+ * common changes for patch [3/9] to [7/9]
+   - sorted headers in alphabetical order
+   - moved MODULE_DEVICE_TABLE() right below *_of_match table
+   - removed macro DRV_NAME
+   - removed explicit 'owner' field from platform_driver structure
+   - added 'const' to snd_soc_dai_ops structure
+
+Sameer Pujar (11):
+  ASoC: dt-bindings: tegra: Add DT bindings for Tegra210
+  ASoC: tegra: Add support for CIF programming
+  ASoC: tegra: Add Tegra210 based DMIC driver
+  ASoC: tegra: Add Tegra210 based I2S driver
+  ASoC: tegra: Add Tegra210 based AHUB driver
+  ASoC: tegra: Add Tegra186 based DSPK driver
+  ASoC: tegra: Add Tegra210 based ADMAIF driver
+  arm64: defconfig: Build AHUB component drivers
+  arm64: defconfig: Build ADMA and ACONNECT driver
+  arm64: tegra: Enable ACONNECT, ADMA and AGIC on Jetson Nano
+  arm64: tegra: Add DT binding for AHUB components
+
+ .../bindings/sound/nvidia,tegra186-dspk.yaml       |  83 +++
+ .../bindings/sound/nvidia,tegra210-admaif.yaml     | 111 +++
+ .../bindings/sound/nvidia,tegra210-ahub.yaml       | 136 ++++
+ .../bindings/sound/nvidia,tegra210-dmic.yaml       |  83 +++
+ .../bindings/sound/nvidia,tegra210-i2s.yaml        | 101 +++
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           | 217 +++++-
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           | 225 +++++-
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts |  12 +
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 140 ++++
+ arch/arm64/configs/defconfig                       |   8 +
+ sound/soc/tegra/Kconfig                            |  56 ++
+ sound/soc/tegra/Makefile                           |  10 +
+ sound/soc/tegra/tegra186_dspk.c                    | 442 +++++++++++
+ sound/soc/tegra/tegra186_dspk.h                    |  70 ++
+ sound/soc/tegra/tegra210_admaif.c                  | 800 ++++++++++++++++++++
+ sound/soc/tegra/tegra210_admaif.h                  | 162 ++++
+ sound/soc/tegra/tegra210_ahub.c                    | 676 +++++++++++++++++
+ sound/soc/tegra/tegra210_ahub.h                    | 127 ++++
+ sound/soc/tegra/tegra210_dmic.c                    | 455 ++++++++++++
+ sound/soc/tegra/tegra210_dmic.h                    |  82 +++
+ sound/soc/tegra/tegra210_i2s.c                     | 812 +++++++++++++++++++++
+ sound/soc/tegra/tegra210_i2s.h                     | 126 ++++
+ sound/soc/tegra/tegra_cif.h                        |  65 ++
+ sound/soc/tegra/tegra_pcm.c                        | 235 +++++-
+ sound/soc/tegra/tegra_pcm.h                        |  21 +-
+ 25 files changed, 5251 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
+ create mode 100644 sound/soc/tegra/tegra186_dspk.c
+ create mode 100644 sound/soc/tegra/tegra186_dspk.h
+ create mode 100644 sound/soc/tegra/tegra210_admaif.c
+ create mode 100644 sound/soc/tegra/tegra210_admaif.h
+ create mode 100644 sound/soc/tegra/tegra210_ahub.c
+ create mode 100644 sound/soc/tegra/tegra210_ahub.h
+ create mode 100644 sound/soc/tegra/tegra210_dmic.c
+ create mode 100644 sound/soc/tegra/tegra210_dmic.h
+ create mode 100644 sound/soc/tegra/tegra210_i2s.c
+ create mode 100644 sound/soc/tegra/tegra210_i2s.h
+ create mode 100644 sound/soc/tegra/tegra_cif.h
+
+-- 
+2.7.4
+
