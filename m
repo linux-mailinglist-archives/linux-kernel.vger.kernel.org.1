@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDED22522C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 16:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF7B225234
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 16:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgGSOMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 10:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S1726219AbgGSO0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 10:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgGSOMg (ORCPT
+        with ESMTP id S1726038AbgGSO0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 10:12:36 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF55C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 07:12:36 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id q17so7481294pls.9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 07:12:36 -0700 (PDT)
+        Sun, 19 Jul 2020 10:26:36 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3745AC0619D2;
+        Sun, 19 Jul 2020 07:26:36 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t15so8703916pjq.5;
+        Sun, 19 Jul 2020 07:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:mime-version:content-disposition
          :user-agent;
-        bh=ogVwZHcdoirAU1j5aR0/R3zuLNG50DzLDPM0lgRbRy0=;
-        b=pHbDVx18hDCP66ockL+jzt3tIxQR2d7BiMDsiRDOzHkxDWa3YWsfh6YQqNv/43VRdQ
-         U5Jyv0DNfjqeXUFPFt7XRR9Bd6lLF0hpDX4wNKj0jhf11/REXlV/g/6MkFJGET19C3So
-         toGB/oX7+IhV4k5oX4ocOBxwFmoSMnROfzMTBC3s4jsovm5gJLo1cpia5E4B40PLiqmF
-         SPIV54JbNzUudl44XjAIaqNO3qRFLX0zDUSxknkfAeYJRVK9zN6MccWCVbG05h622+RY
-         zpXvuOs68pt17hU1Uhbcbra0nYOXLwo2JxuriPxTbfGgzBBVYmRn/dyOG5N/O31Mt+eB
-         YqqA==
+        bh=oMMdTXZE/SgKfnyt+CE5RFRImiPbBYVyuLwDLtnU710=;
+        b=EzbcabwlmwC4jqxRbOKtvJ9MHzIhodmrDdUcgAmLM7KNPfhOf12UERa6e+Ix73WN99
+         B9CSgpa2wp9J/0RnkP0Giyq5HOdZ9bamkCAQ8ZEqTndO/2iLTkzT4OzbIbOPE5KDk6GZ
+         8Lhzctls2OlsbcjVBq5wKft7B8bM37sc/RhFniR5D+QF7PstIxVh16+ggynEcmdoR9Kx
+         p/7dJdFEhohOU6UjjBsTBRqWhiqjKVUdJLas88BLok+H7qiL4cFc7JFv9kWMYeV0W8jl
+         Htef5Pn9jHZAx3WYZgCbwV++4wrRI057lL6Z4CHM0vBQWafwwmpyIvDDmwBvGXFtFuxz
+         VRTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
          :content-disposition:user-agent;
-        bh=ogVwZHcdoirAU1j5aR0/R3zuLNG50DzLDPM0lgRbRy0=;
-        b=ASVT6OD0b1j9fc/yOxi7tMm4TzEpdK32UgTEOr1HbR0Wzmp5W8hN8yeTHSnbQO/5bm
-         LGPQkw7VIDLBtWS6tLr2YkgsBVNfIkYaXydq8G2XndOqrUoF0IEE5z0gP+ncUK01ZSXw
-         VMvLotbZ/QfF9pMXWLn1qwVkCCGWfgMLav8MHip+dYxYQFW5DGHDx/aecV4c/ynnsQ1v
-         80CXzi8iJ980oE/2fZhp0jxmLqUdG1VABv1eAj1+GDTK6UiupEktYQ+fVMZUw4SvbRmk
-         6B/EQ6fZ5+olPJ+9JemTUUMHCFdszYbW410wHWtxtrvrLRQQ7NjxYCyWMyXwT2V7m0GE
-         cxyQ==
-X-Gm-Message-State: AOAM532sPsAyJKQ9bDHpUzK+zoOEUmJxGLo8PSyStz+5q6aRCumo0Oxw
-        alcP4gz4JCV1j0W3DYXCyDo=
-X-Google-Smtp-Source: ABdhPJx/ffurpmql9buHT+Gdtm6H37Vtzjsxm8iMC+7SJKdFWkI3kqBDnAWvW9Fr6EtiU6C6Z8MNNQ==
-X-Received: by 2002:a17:90b:1106:: with SMTP id gi6mr19925396pjb.2.1595167955993;
-        Sun, 19 Jul 2020 07:12:35 -0700 (PDT)
+        bh=oMMdTXZE/SgKfnyt+CE5RFRImiPbBYVyuLwDLtnU710=;
+        b=PMnLaLzHox5Fud+zf6LK5vbOSF8mM5O4lY1j0Fk0RiCSxt7rJ6Ifm8Qu4787wBKVpt
+         YHXF+ArsbLFHUaud1cEMJg2kgtowCRq3+7jU+vpvLdtCPo6WHcZKB5TpxjFmsv9JPFk3
+         Tnl05gRQEApCRsqoeDhQzVZF2xkf/4uTYxYdM7Ey+Z1eXS7yjAjDw9gExzj4shJ7CRyi
+         LZ5fYsDDBhlfUQFLHK674/C6XdRHQf5b38V7V3rGLaM1GMBxcEKJGEv/By7NOsdFr2v0
+         VfZg57k/aUypDh1Mb4l12CjHqEPx/vJYmruts1kBNstxfWPvzxcbfR65Cg0HYY2LeI4p
+         X/3w==
+X-Gm-Message-State: AOAM532YBR48Tv6QeLzBzBP+i6SG0dQyCApwxV/+O2wyTHe5ENrbRVuX
+        s2DvV6zSskzp3LnAv1GRtshfC1rE+VM=
+X-Google-Smtp-Source: ABdhPJyHkJphjwrwB3Q6cZ2Xn4DmrvnkvjiU+j1n+X1klm3CGtABSJZW31khrbzX0PEBHQ68heFfxw==
+X-Received: by 2002:a17:90b:3c1:: with SMTP id go1mr18153119pjb.129.1595168795748;
+        Sun, 19 Jul 2020 07:26:35 -0700 (PDT)
 Received: from blackclown ([103.88.82.25])
-        by smtp.gmail.com with ESMTPSA id n63sm13729104pfd.209.2020.07.19.07.12.33
+        by smtp.gmail.com with ESMTPSA id f207sm14031419pfa.107.2020.07.19.07.26.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 19 Jul 2020 07:12:35 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 19:42:22 +0530
+        Sun, 19 Jul 2020 07:26:35 -0700 (PDT)
+Date:   Sun, 19 Jul 2020 19:56:23 +0530
 From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] staging: kpc2000: Replace depracated MSI APIs
-Message-ID: <20200719141222.GA29679@blackclown>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: media: atomisp: Replace depracated MSI APIs
+Message-ID: <20200719142623.GA31565@blackclown>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3MwIy2ne0vdjdPXF"
+        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
 Content-Disposition: inline
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,71 +67,71 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3MwIy2ne0vdjdPXF
+--ZPt4rx8FFjLCG7dd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Replace depracated MSI IRQ enabler and disabler
 with pci_alloc_irq_vectors and pci_free_irq_vectors respectively.
+And as a result handle the returned error as appropriate.
 Compile tested.
 
 Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
-Changes:
-	v3: Replaced the disabler for MSI IRQ too with
-            pci_free_irq_vectors.
-	v2: Fix the undefined variable error.
-	    Reported-by: kernel test robot <lkp@intel.com>
+Change:
+	v2: Replace the MSI IRQ disabler too.
 ---
- drivers/staging/kpc2000/kpc2000/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/kpc2000/kpc2000/core.c b/drivers/staging/kpc20=
-00/kpc2000/core.c
-index 358d7b2f4ad1..952ae8d11f9d 100644
---- a/drivers/staging/kpc2000/kpc2000/core.c
-+++ b/drivers/staging/kpc2000/kpc2000/core.c
-@@ -440,7 +440,7 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
- 	dev_dbg(&pcard->pdev->dev,
- 		"Using DMA mask %0llx\n", dma_get_mask(PCARD_TO_DEV(pcard)));
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/sta=
+ging/media/atomisp/pci/atomisp_v4l2.c
+index d36809a0182c..a5dea5521b36 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+@@ -1735,8 +1735,8 @@ static int atomisp_pci_probe(struct pci_dev *dev,
+ 	pci_set_master(dev);
+ 	pci_set_drvdata(dev, isp);
 =20
--	err =3D pci_enable_msi(pcard->pdev);
-+	err =3D pci_alloc_irq_vectors(pcard->pdev, 1, 1, PCI_IRQ_MSI);
- 	if (err < 0)
- 		goto err_release_dma;
-=20
-@@ -474,7 +474,7 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
- err_free_irq:
- 	free_irq(pcard->pdev->irq, pcard);
- err_disable_msi:
--	pci_disable_msi(pcard->pdev);
-+	pci_free_irq_vectors(pcard->pdev);
- err_release_dma:
- 	pci_release_region(pdev, DMA_BAR);
- err_unmap_dma:
+-	err =3D pci_enable_msi(dev);
+-	if (err) {
++	err =3D pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_MSI);
++	if (err < 0) {
+ 		dev_err(&dev->dev, "Failed to enable msi (%d)\n", err);
+ 		goto enable_msi_fail;
+ 	}
+@@ -1857,7 +1857,7 @@ static int atomisp_pci_probe(struct pci_dev *dev,
+ initialize_modules_fail:
+ 	cpu_latency_qos_remove_request(&isp->pm_qos);
+ 	atomisp_msi_irq_uninit(isp, dev);
+-	pci_disable_msi(dev);
++	pci_free_irq_vectors(dev);
+ enable_msi_fail:
+ fw_validation_fail:
+ 	release_firmware(isp->firmware);
 --=20
 2.17.1
 
 
---3MwIy2ne0vdjdPXF
+--ZPt4rx8FFjLCG7dd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8UVLwACgkQ+gRsbIfe
-745Kwg/+KnEBX5JUYavy8PIGoQzZPtbYO5gIERC0+9HCPlefafLbASc+n5Wo9S3R
-Rl1ZETYkWCxTNZ2JCZh9qrw4TcGv1Yylcvb8XROmn7ntapKGItANj1olMg6tzsCx
-Xjn0RuQYVqIaLv54wmroFTctCDRQB44DmldNm9AaBO2xjDBn2yJtxi92Q3Vp18GX
-WWNjTUoMm1Xxuse+XGtrXhINXQuJhNAS6Iv5AKHG0TAGnixiWgnCjL4FLlZj/kMk
-UG5uUJrS/kbzRYfG3VApMEG1w0LCtRzW6oARQjigJGl13JdDGAwCsi8d6myplLOz
-nZ2bIWIolMlbCAiyIEPz7aD7qjHmyI5qOiDqQyu+J/k0w2gHlPIpjujpZrTB8gMO
-KGFnfhZ1U+dLWOnn5FLWfpDTPJpGBxZelFW29hL7ifC2oEpfsCuceOm+8oz1CWtl
-MPOU3xGLLO7EtbO68Y1iDO4+xndvquWPOEKLkhJvczFZlzC5rdVQR0KQTqxavtku
-lqvV75GV2L0F48RiD4fnwoSgN/g2yN5GVbKbV4sy6UPsjyKxd2Nl9XYRBvvvvcOo
-W8Z5V8UqVdJrA3h2GkGM0L+WvRaMhCj1VY9FS+BKIX9pVL+FAN0Mr1/SCmh652O4
-fjIECnP8kcRrHMcl7gKK3WOqVfWLfgQz1ODbLZRQGC9LvK8ombA=
-=1mL5
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8UWA4ACgkQ+gRsbIfe
+7460DQ/9EUsPrIHgSxSfS3NIWg+/PaRCXfxS4V+3voUz57aoINkqRJcbRxs2uTYq
+1mBfCNTE1WlNQfplnGJe4VCwamF9sniqn1/DDUDJhpqJibsjuY1OXkOyXRTZIk1e
+AUGjbbdAEo05UOPOqZPAOvm8mlCjZ04btYOHA4x1jIetCFAKj+A1/f1rwvy1UGiP
+LJQJSlZCPej4kyKjdd7AHy6w0LYMJ8LcjXW5aGG3031ne129InLPNJROd+ZCiqbK
+2HGwy34MjgU6Uxtr6x++sSI60iJa5rsO0AxzDF5y4usCxSdcutMThZVUjM4K6tBS
+M1/cXgfzBWLHZXkJxlbxOCT8H1R4vLkpovo6TaSq6Kdhktt6vyu3YfWLpR/OWike
+KD0W6Kia8Kkfe5IGHJoqOHunwxBc3fXmFumWNZyqtCZND3KNy77WlnPtncAZNN0J
+fKOstp1XNTUNJAqGiY8uA029Fy/34EK5M/Pts7LZjlpY+Zz9Fy0xwuqmpOG/HijS
+jUwYKZhj+h7LaktU/PFZ4Ag8/UVlwL0yHtgRYvMHFpFcAM3IyhxKU/WL94f6wZ4P
+5n1OTPuvgkGSjGI2v7tFMELzMomYt8TIF1WJI4NpaKVo06gwbcGLFCEHXrMYpUWi
+ZFmub5PWOOI3BMxk4TS3HVAt04lES0GWvTXoY6E9/8idDSe1zDU=
+=ajNK
 -----END PGP SIGNATURE-----
 
---3MwIy2ne0vdjdPXF--
+--ZPt4rx8FFjLCG7dd--
