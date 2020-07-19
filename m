@@ -2,114 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E662225184
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 13:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D6222518C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 13:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgGSLIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 07:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgGSLIu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 07:08:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AF3C0619D2;
-        Sun, 19 Jul 2020 04:08:49 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 11:08:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595156927;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W7KpxnjlF09zH8K4byK41OC5OazMD869zEXDUxnGD+c=;
-        b=B46ErlI/Dj1WPJ0azblXDcK4TCUHIcYGlb9XRDHoNrp3+hnT3Hvd7wbRsNnrT5sbiIF6CN
-        LbxHYpRiqKjaaoCuoTdH87iuPMZXIPWTg4XsEvUpmOzu8Kv14qqTZEwQcS8wxo2+8KwUxP
-        588Fr81mPF4Eb+bSu5Tyd/bAnyzf5/eIF5QeHIbAOst0C+MxQzadaTeWwQaxijb3tL8GRX
-        lmJlni9uFUMV9z+2JCCY+fFft3bMGmiRJIgrwU4Wke6b//UYUD6VHJGXfib24fjE6Fya51
-        Pwx26Eo0oUG/ESGZPuKwmUQlxkCXP15x0wxtEdy4ylUHF1VeyGczLmWDyWK/qw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595156927;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W7KpxnjlF09zH8K4byK41OC5OazMD869zEXDUxnGD+c=;
-        b=Z2+gDbB3Tw0zjTilfvEXIdNAX1tzFCCbxQtP70Gln0TgvOPlfYldzR4uWdksdARaaOcLqj
-        Hk/Va5cO2YPp3aBw==
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/entry: Actually disable stack protector
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <202006261333.585319CA6B@keescook>
-References: <202006261333.585319CA6B@keescook>
+        id S1726510AbgGSLLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 07:11:36 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:41678 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgGSLLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 07:11:35 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id EC2B5BC053;
+        Sun, 19 Jul 2020 11:11:30 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     Larry.Finger@lwfinger.net, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH for v5.9] b43legacy: Replace HTTP links with HTTPS ones
+Date:   Sun, 19 Jul 2020 13:11:24 +0200
+Message-Id: <20200719111124.58167-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Message-ID: <159515692670.4006.16427533642222007723.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Commit-ID:     58ac3154b83938515129c20aa76d456a4c9202a8
-Gitweb:        https://git.kernel.org/tip/58ac3154b83938515129c20aa76d456a4c9202a8
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 26 Jun 2020 13:34:25 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 19 Jul 2020 13:07:10 +02:00
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-x86/entry: Actually disable stack protector
-
-Some builds of GCC enable stack protector by default. Simply removing
-the arguments is not sufficient to disable stack protector, as the stack
-protector for those GCC builds must be explicitly disabled. Remove the
-argument removals and add -fno-stack-protector. Additionally include
-missed x32 argument updates, and adjust whitespace for readability.
-
-Fixes: 20355e5f73a7 ("x86/entry: Exclude low level entry code from sanitizing")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/202006261333.585319CA6B@keescook
-
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- arch/x86/entry/Makefile | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-index b7a5790..08bf95d 100644
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -7,12 +7,20 @@ KASAN_SANITIZE := n
- UBSAN_SANITIZE := n
- KCOV_INSTRUMENT := n
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/net/wireless/broadcom/b43legacy/main.c  | 8 ++++----
+ drivers/net/wireless/broadcom/b43legacy/phy.c   | 8 ++++----
+ drivers/net/wireless/broadcom/b43legacy/radio.c | 8 ++++----
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/b43legacy/main.c b/drivers/net/wireless/broadcom/b43legacy/main.c
+index 5208a39fd6f7..177a5d85915f 100644
+--- a/drivers/net/wireless/broadcom/b43legacy/main.c
++++ b/drivers/net/wireless/broadcom/b43legacy/main.c
+@@ -591,7 +591,7 @@ static void b43legacy_synchronize_irq(struct b43legacy_wldev *dev)
+ }
  
--CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
--CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
--CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-+CFLAGS_REMOVE_common.o		= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_syscall_64.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_syscall_32.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_syscall_x32.o	= $(CC_FLAGS_FTRACE)
-+
-+CFLAGS_common.o			+= -fno-stack-protector
-+CFLAGS_syscall_64.o		+= -fno-stack-protector
-+CFLAGS_syscall_32.o		+= -fno-stack-protector
-+CFLAGS_syscall_x32.o		+= -fno-stack-protector
+ /* DummyTransmission function, as documented on
+- * http://bcm-specs.sipsolutions.net/DummyTransmission
++ * https://bcm-specs.sipsolutions.net/DummyTransmission
+  */
+ void b43legacy_dummy_transmission(struct b43legacy_wldev *dev)
+ {
+@@ -1870,7 +1870,7 @@ static int b43legacy_upload_initvals(struct b43legacy_wldev *dev)
+ }
  
- CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
- CFLAGS_syscall_32.o		+= $(call cc-option,-Wno-override-init,)
-+CFLAGS_syscall_x32.o		+= $(call cc-option,-Wno-override-init,)
-+
- obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
- obj-y				+= common.o
+ /* Initialize the GPIOs
+- * http://bcm-specs.sipsolutions.net/GPIO
++ * https://bcm-specs.sipsolutions.net/GPIO
+  */
+ static int b43legacy_gpio_init(struct b43legacy_wldev *dev)
+ {
+@@ -1960,7 +1960,7 @@ void b43legacy_mac_enable(struct b43legacy_wldev *dev)
+ 	}
+ }
  
+-/* http://bcm-specs.sipsolutions.net/SuspendMAC */
++/* https://bcm-specs.sipsolutions.net/SuspendMAC */
+ void b43legacy_mac_suspend(struct b43legacy_wldev *dev)
+ {
+ 	int i;
+@@ -2141,7 +2141,7 @@ static void b43legacy_chip_exit(struct b43legacy_wldev *dev)
+ }
+ 
+ /* Initialize the chip
+- * http://bcm-specs.sipsolutions.net/ChipInit
++ * https://bcm-specs.sipsolutions.net/ChipInit
+  */
+ static int b43legacy_chip_init(struct b43legacy_wldev *dev)
+ {
+diff --git a/drivers/net/wireless/broadcom/b43legacy/phy.c b/drivers/net/wireless/broadcom/b43legacy/phy.c
+index a659259bc51a..05404fbd1e70 100644
+--- a/drivers/net/wireless/broadcom/b43legacy/phy.c
++++ b/drivers/net/wireless/broadcom/b43legacy/phy.c
+@@ -129,7 +129,7 @@ void b43legacy_phy_calibrate(struct b43legacy_wldev *dev)
+ }
+ 
+ /* initialize B PHY power control
+- * as described in http://bcm-specs.sipsolutions.net/InitPowerControl
++ * as described in https://bcm-specs.sipsolutions.net/InitPowerControl
+  */
+ static void b43legacy_phy_init_pctl(struct b43legacy_wldev *dev)
+ {
+@@ -1461,7 +1461,7 @@ void b43legacy_phy_set_baseband_attenuation(struct b43legacy_wldev *dev,
+ 	b43legacy_phy_write(dev, 0x0060, value);
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/LocalOscillator/Measure */
++/* https://bcm-specs.sipsolutions.net/LocalOscillator/Measure */
+ void b43legacy_phy_lo_g_measure(struct b43legacy_wldev *dev)
+ {
+ 	static const u8 pairorder[10] = { 3, 1, 5, 7, 9, 2, 0, 4, 6, 8 };
+@@ -1721,7 +1721,7 @@ void b43legacy_phy_lo_mark_all_unused(struct b43legacy_wldev *dev)
+ 	}
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/EstimatePowerOut
++/* https://bcm-specs.sipsolutions.net/EstimatePowerOut
+  * This function converts a TSSI value to dBm in Q5.2
+  */
+ static s8 b43legacy_phy_estimate_power_out(struct b43legacy_wldev *dev, s8 tssi)
+@@ -1747,7 +1747,7 @@ static s8 b43legacy_phy_estimate_power_out(struct b43legacy_wldev *dev, s8 tssi)
+ 	return dbm;
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/RecalculateTransmissionPower */
++/* https://bcm-specs.sipsolutions.net/RecalculateTransmissionPower */
+ void b43legacy_phy_xmitpower(struct b43legacy_wldev *dev)
+ {
+ 	struct b43legacy_phy *phy = &dev->phy;
+diff --git a/drivers/net/wireless/broadcom/b43legacy/radio.c b/drivers/net/wireless/broadcom/b43legacy/radio.c
+index da40d1ca8723..06891b4f837b 100644
+--- a/drivers/net/wireless/broadcom/b43legacy/radio.c
++++ b/drivers/net/wireless/broadcom/b43legacy/radio.c
+@@ -313,14 +313,14 @@ u8 b43legacy_radio_aci_scan(struct b43legacy_wldev *dev)
+ 	return ret[channel - 1];
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/NRSSILookupTable */
++/* https://bcm-specs.sipsolutions.net/NRSSILookupTable */
+ void b43legacy_nrssi_hw_write(struct b43legacy_wldev *dev, u16 offset, s16 val)
+ {
+ 	b43legacy_phy_write(dev, B43legacy_PHY_NRSSILT_CTRL, offset);
+ 	b43legacy_phy_write(dev, B43legacy_PHY_NRSSILT_DATA, (u16)val);
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/NRSSILookupTable */
++/* https://bcm-specs.sipsolutions.net/NRSSILookupTable */
+ s16 b43legacy_nrssi_hw_read(struct b43legacy_wldev *dev, u16 offset)
+ {
+ 	u16 val;
+@@ -331,7 +331,7 @@ s16 b43legacy_nrssi_hw_read(struct b43legacy_wldev *dev, u16 offset)
+ 	return (s16)val;
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/NRSSILookupTable */
++/* https://bcm-specs.sipsolutions.net/NRSSILookupTable */
+ void b43legacy_nrssi_hw_update(struct b43legacy_wldev *dev, u16 val)
+ {
+ 	u16 i;
+@@ -345,7 +345,7 @@ void b43legacy_nrssi_hw_update(struct b43legacy_wldev *dev, u16 val)
+ 	}
+ }
+ 
+-/* http://bcm-specs.sipsolutions.net/NRSSILookupTable */
++/* https://bcm-specs.sipsolutions.net/NRSSILookupTable */
+ void b43legacy_nrssi_mem_update(struct b43legacy_wldev *dev)
+ {
+ 	struct b43legacy_phy *phy = &dev->phy;
+-- 
+2.27.0
+
