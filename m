@@ -2,190 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD87225295
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 17:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A979522529A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 17:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgGSPsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 11:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgGSPsq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 11:48:46 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC47EC0619D2;
-        Sun, 19 Jul 2020 08:48:45 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 613A3BC062;
-        Sun, 19 Jul 2020 15:48:42 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     jeffrey.t.kirsher@intel.com, davem@davemloft.net, kuba@kernel.org,
-        corbet@lwn.net, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH for v5.9] Documentation: intel: Replace HTTP links with HTTPS ones
-Date:   Sun, 19 Jul 2020 17:48:36 +0200
-Message-Id: <20200719154836.59873-1-grandmaster@al2klimov.de>
+        id S1726388AbgGSPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 11:51:57 -0400
+Received: from mout.gmx.net ([212.227.17.20]:41589 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgGSPv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 11:51:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595173872;
+        bh=II5cHQCwfPee86KSUefTyAwEuMywfdmgqOhgIYjQV6w=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=ZTNJnNSnR5692hlzt+RMrAgyMmLHXoZ9XZQsejfJ96mvL/siseUnYtDixg61nUAeM
+         tcpJA3JJpyaXtsyvhMpn1aqWr8U1lK4mkCNi+FQf83sIVRL03bRj3dU9eiYYV5Wy10
+         r+1r6zMJkQCMnGS7x4K0yjugbJm/lgKRxnZPpt5I=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.73.70]) by mail.gmx.com
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MYeR1-1kJv6S3qiJ-00Vl2R; Sun, 19 Jul 2020 17:51:12 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>, linux-kernel@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, Jann Horn <jannh@google.com>
+Subject: [PATCH v2 0/2] kernel/trace: Remove function callback casts
+Date:   Sun, 19 Jul 2020 17:50:31 +0200
+Message-Id: <20200719155033.24201-1-oscar.carter@gmx.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:PAJKW7m3+NEkL7h7V0Z7LnFNinjyjbDH70fHBDbofLsjc/8YDFI
+ Cz04NdXc/Iqx/cLnMwjSPwakkQbi+pCzA1WJc6Q2GB3Npjsee+o5sDqqQAQ1yGlvLT1G3Lz
+ K7VTaGX+x1S0wu2DwaZecE4C5YKtLfdyC+fLhu9YSMmZiehWgB8k6dLLgMKx7NBXWtNkiVY
+ BhiNRZjR1nXnKVRMQ/CDg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:luPXm42dGBo=:aV0F9ngfFkJGJ1UG2XfZyq
+ EDW/iq0MJ8kOVclatXcmLBexnYxouiaayARfVGKKxKCRiaCOktSq7YwToHqzcXO/2XyK0DpoH
+ mZ8a2/OkkTItskUxqKLpdvSMk2UBuvrixEd6AjJAIaqt6Ny2+N4bxg34UjY83fC0d1yyKmguS
+ P/NUcthyjXxqW7FX1BAHkP88CObHVzwsVb8CgpNxGvH5Mhfhg6eyyaZ7KyWqx2bL53+2r+MPR
+ 4Ff3bmiia8f5IxO1szfp6YdTKeaqPrE8vPsr3G1F+zTyFG7lRpaA9Wkh3znhzlBXNhBCAObVh
+ 0p1XU5ikproy9d6SCeBzZccRkhntODBZ8B0MTgVjx/sS5gs4LQQG9YlbqAkaKXGSnE80E328g
+ DyRIkuXob/HCkDaoUEEvqJvMMTErwyp6+N6uXhoN3IHR2kp/b9TcwJY0Hc7wVpVNdy4VR0lVk
+ pSBMWRc+TKQism4Mz5+zGOAlN3LwG1fYpV/1BUIVMmgNVnsNmAiopRi1Gy3rMdxRUSa/7Ma3q
+ hVIz4S1pNyVWe5OyaX0yRxb1Uzt0uTcK8YYLgAbXL/BfIT3D8eUVPAvxKHHlPJXTYjcjs4a5h
+ WG20PvRtD+q7nNI8cA62kBHIFIKFZXiWZyg692SvIO/GSJGMMSK9pyc0dcFylifwYJSWeMt8K
+ 0U1OqzSNmhynNd2q54Jy7SwcxLqQFqFD/RM5VFWgI6u4LblypqcJKLQ5NNzjv9Dxd5BErNCe4
+ OfW8lP3t6Tid9g8P3Tq8iNxC4mcUe71pR/RCr9uBNov+efbr0Mz5j6L3U8X5D82P3VTnqR4S/
+ BfJCuWcqm1gPM1EagjhCQM+QGE9X2p47apC6NkeiO7zHM5Y3oikZsMZIYMz9o13RBvJje5Kyu
+ 7IORDI0qs0gMd+V0klV44sV6QKc70eF3c8SZor6cxnnVjunoJe//qYRtlB2EYdx8xTshALVqD
+ cOhHRzyePwEZvdCYJJj/XXQh0aPHWXBwNpWpczyCj85+2XFa328VrnWaBC1I3V3ILYzVL17EY
+ vchEZl1jloJzBMQ4UEHYigHMyn3h+SnfliyV1aEfgp+AXEX9My+8dwlOJpZ0NK3U5zsn+D7fE
+ z+TjdG9fbQ0r46eXARu8tvaZVHQVSrvLqhMLUJJ0GuoLxUnc6BodSA1qrP9IwiAJJ/wNqTfnG
+ lOUCxtpm6+hP20OlzvGFpq1T9yqZ6kpCs0u9/khgq4lT66A/rROKnQHGTYq95XQ0HBe1Z7kkF
+ Rl+jrCPVp2rFr6kfe7Hz5lz29S+2ox+sZFDmVWg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+In an effort to enable -Wcast-function-type in the top-level Makefile to
+support Control Flow Integrity builds, there are the need to remove all
+the function callback casts.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+ftrace_ops_list_func() can no longer be defined as ftrace_ops_no_ops().
+The reason for ftrace_ops_no_ops() is to use that when an architecture
+calls ftrace_ops_list_func() with only two parameters (called from
+assembly). And to make sure there's no C side-effects, those archs call
+ftrace_ops_no_ops() which only has two parameters, as the function
+ftrace_ops_list_func() has four parameters.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+This patch series is a new proposal for the work start by me [1] and
+followed by the Steven Rostedt patch [2] and Jann Horn comments [3].
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+This new proposal removes all the function callback casts without the
+use of linker magic and so is more CFI friendly.
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+The first patch prepares the needed infrastructure to remove all the
+function callback casts. This infrastructure is based in a new union
+type to manage two different function pointers (2 parameters and 4
+parameters) using the same variable. Also create two static inline
+helpers to set and compare against the fields of the new union type.
+The helpers are duplicated for the archs that support ftrace ops and
+for the archs that don't support ftrace ops as both cases use different
+function prototypes.
 
- If you apply the patch, please let me know.
+The second patch removes all the function callback casts using the
+infrastructure defined previously in the first patch.
 
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+[1] https://lore.kernel.org/kernel-hardening/20200614070154.6039-1-oscar.c=
+arter@gmx.com/
+[2] https://lore.kernel.org/kernel-hardening/20200617165616.52241bde@oasis=
+.local.home/
+[3] https://lore.kernel.org/kernel-hardening/CAG48ez04Fj=3D1p61KAxAQWZ3f_z=
+073fVUr8LsQgtKA9c-kcHmDQ@mail.gmail.com/
 
+Changelog v1->v2
+-Discard the idea behind the v1 patch.
+-Use a new union type to manage two different function pointers.
+-Create the infrastructure to remove the casts.
+-Remove the casts using the new infrastructure.
 
- Documentation/networking/device_drivers/intel/e100.rst  | 4 ++--
- Documentation/networking/device_drivers/intel/e1000.rst | 2 +-
- Documentation/networking/device_drivers/intel/fm10k.rst | 2 +-
- Documentation/networking/device_drivers/intel/iavf.rst  | 2 +-
- Documentation/networking/device_drivers/intel/igb.rst   | 2 +-
- Documentation/networking/device_drivers/intel/igbvf.rst | 2 +-
- Documentation/networking/device_drivers/intel/ixgb.rst  | 2 +-
- 7 files changed, 8 insertions(+), 8 deletions(-)
+Oscar Carter (2):
+  kernel/trace: Prepare to remove function callback casts
+  kernel/trace: Remove function callback casts
 
-diff --git a/Documentation/networking/device_drivers/intel/e100.rst b/Documentation/networking/device_drivers/intel/e100.rst
-index 3ac21e7119a7..3d4a9ba21946 100644
---- a/Documentation/networking/device_drivers/intel/e100.rst
-+++ b/Documentation/networking/device_drivers/intel/e100.rst
-@@ -41,7 +41,7 @@ Identifying Your Adapter
- 
- For information on how to identify your adapter, and for the latest Intel
- network drivers, refer to the Intel Support website:
--http://www.intel.com/support
-+https://www.intel.com/support
- 
- Driver Configuration Parameters
- ===============================
-@@ -179,7 +179,7 @@ filtering by
- Support
- =======
- For general information, go to the Intel support website at:
--http://www.intel.com/support/
-+https://www.intel.com/support/
- 
- or the Intel Wired Networking project hosted by Sourceforge at:
- http://sourceforge.net/projects/e1000
-diff --git a/Documentation/networking/device_drivers/intel/e1000.rst b/Documentation/networking/device_drivers/intel/e1000.rst
-index 4aaae0f7d6ba..9d99ff15d737 100644
---- a/Documentation/networking/device_drivers/intel/e1000.rst
-+++ b/Documentation/networking/device_drivers/intel/e1000.rst
-@@ -44,7 +44,7 @@ NOTES:
-         For more information about the InterruptThrottleRate,
-         RxIntDelay, TxIntDelay, RxAbsIntDelay, and TxAbsIntDelay
-         parameters, see the application note at:
--        http://www.intel.com/design/network/applnots/ap450.htm
-+        https://www.intel.com/design/network/applnots/ap450.htm
- 
- AutoNeg
- -------
-diff --git a/Documentation/networking/device_drivers/intel/fm10k.rst b/Documentation/networking/device_drivers/intel/fm10k.rst
-index 4d279e64e221..9258ef6f515c 100644
---- a/Documentation/networking/device_drivers/intel/fm10k.rst
-+++ b/Documentation/networking/device_drivers/intel/fm10k.rst
-@@ -22,7 +22,7 @@ Ethernet Multi-host Controller.
- 
- For information on how to identify your adapter, and for the latest Intel
- network drivers, refer to the Intel Support website:
--http://www.intel.com/support
-+https://www.intel.com/support
- 
- 
- Flow Control
-diff --git a/Documentation/networking/device_drivers/intel/iavf.rst b/Documentation/networking/device_drivers/intel/iavf.rst
-index 84ac7e75f363..52e037b11c97 100644
---- a/Documentation/networking/device_drivers/intel/iavf.rst
-+++ b/Documentation/networking/device_drivers/intel/iavf.rst
-@@ -43,7 +43,7 @@ device.
- 
- For information on how to identify your adapter, and for the latest NVM/FW
- images and Intel network drivers, refer to the Intel Support website:
--http://www.intel.com/support
-+https://www.intel.com/support
- 
- 
- Additional Features and Configurations
-diff --git a/Documentation/networking/device_drivers/intel/igb.rst b/Documentation/networking/device_drivers/intel/igb.rst
-index 87e560fe5eaa..d46289e182cf 100644
---- a/Documentation/networking/device_drivers/intel/igb.rst
-+++ b/Documentation/networking/device_drivers/intel/igb.rst
-@@ -20,7 +20,7 @@ Identifying Your Adapter
- ========================
- For information on how to identify your adapter, and for the latest Intel
- network drivers, refer to the Intel Support website:
--http://www.intel.com/support
-+https://www.intel.com/support
- 
- 
- Command Line Parameters
-diff --git a/Documentation/networking/device_drivers/intel/igbvf.rst b/Documentation/networking/device_drivers/intel/igbvf.rst
-index 557fc020ef31..40fa210c5e14 100644
---- a/Documentation/networking/device_drivers/intel/igbvf.rst
-+++ b/Documentation/networking/device_drivers/intel/igbvf.rst
-@@ -35,7 +35,7 @@ Identifying Your Adapter
- ========================
- For information on how to identify your adapter, and for the latest Intel
- network drivers, refer to the Intel Support website:
--http://www.intel.com/support
-+https://www.intel.com/support
- 
- 
- Additional Features and Configurations
-diff --git a/Documentation/networking/device_drivers/intel/ixgb.rst b/Documentation/networking/device_drivers/intel/ixgb.rst
-index ab624f1a44a8..c6a233e68ad6 100644
---- a/Documentation/networking/device_drivers/intel/ixgb.rst
-+++ b/Documentation/networking/device_drivers/intel/ixgb.rst
-@@ -203,7 +203,7 @@ With the 10 Gigabit server adapters, the default Linux configuration will
- very likely limit the total available throughput artificially.  There is a set
- of configuration changes that, when applied together, will increase the ability
- of Linux to transmit and receive data.  The following enhancements were
--originally acquired from settings published at http://www.spec.org/web99/ for
-+originally acquired from settings published at https://www.spec.org/web99/ for
- various submitted results using Linux.
- 
- NOTE:
--- 
-2.27.0
+ kernel/trace/ftrace.c | 80 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 61 insertions(+), 19 deletions(-)
+
+=2D-
+2.20.1
 
