@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB11C225315
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE11225319
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgGSRfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 13:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgGSRfp (ORCPT
+        id S1726557AbgGSRhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 13:37:38 -0400
+Received: from sonic314-19.consmr.mail.ir2.yahoo.com ([77.238.177.145]:44843
+        "EHLO sonic314-19.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726463AbgGSRhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 13:35:45 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF6EC0619D2;
-        Sun, 19 Jul 2020 10:35:45 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id s189so9202584pgc.13;
-        Sun, 19 Jul 2020 10:35:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=q1hm1sNECA9uytNSHgqhyhAHgDexMNtTL9LjjuUPhKA=;
-        b=gFnSTTkwEmitje3dvvITeq7hEI2++5VrfoyF19GJEuXwliXdkWxv5vE/2nD/RUC8YS
-         iumpIqMzhLYTlfbdpDqHeQxklv+ieVmmwE6Htf2XWJz121/p6/wawHhNPi5/dt0sAqCR
-         bTBT0ei7JCRlgWBC0/R/Q2Vo3aXmsLrWf6KpHZTZ71PzVghQJ2NM9+frXxmXAkDyU7z2
-         6gXEHWNzPbW8MwVdXkB2U+HYpju/9jAy5XfRiphp5QeHeNrCq14RxTF4tAaByrUd5rbV
-         XLiG8l6BZNSWTI86/hPpsXCOrnjDAYxbNL9NOfAx9Fsa2hsr9nlgPg1BaizPUOM/AD7Q
-         MKEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=q1hm1sNECA9uytNSHgqhyhAHgDexMNtTL9LjjuUPhKA=;
-        b=VdOvCAWaxDWuqCVyXRQ8V74WNWnmJ2MR9b/PUvAf0SWaQIqA73ASMDUEANkjuqWgjf
-         97QLQjliFGVEYNBUaVqA9cQTGulsYkAI9DETFg0Dhm4d1Iokj0Mj6wbat9mVWawPvFq9
-         aZ5pvOWo50+QpytP/tQtk9R2rRcKwjQJqm0oo6ApHRSz1L9xi5nu3DeS4uNJWUhRER1D
-         +UZXZx+8lnVIJ8cU5U4VwxIRfBBo359rGHVhzHyoPPCy00SVxkDoXOYf8Vku45BWkzEY
-         eWf1ziDPfOQ26cKh/QBsPHZREv/y8O6OU1K4qCV/FcNyacf6XDcy8F74DwMXfTekxM4t
-         VVjQ==
-X-Gm-Message-State: AOAM533GiSCmX8PM69BakB7G8cyInHMhuwtfQ8XxnVmcI7oaDrsK1fT0
-        oOFloAll+DmRTO5w7SAb0h0=
-X-Google-Smtp-Source: ABdhPJxB78V7wj2N+mFe4MiOdRkXpeymFq62bnozS6DmMGsrvbb9ndRJmqvs8simQbLVQ2UNJLZarQ==
-X-Received: by 2002:a62:647:: with SMTP id 68mr5391597pfg.45.1595180144520;
-        Sun, 19 Jul 2020 10:35:44 -0700 (PDT)
-Received: from blackclown ([103.88.82.25])
-        by smtp.gmail.com with ESMTPSA id g7sm13830785pfh.210.2020.07.19.10.35.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 19 Jul 2020 10:35:43 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 23:05:31 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: net: decnet: TODO Items
-Message-ID: <20200719173531.GA8585@blackclown>
-References: <20200717061816.GA12159@blackclown>
- <20200719100649.3719add8@hermes.lan>
+        Sun, 19 Jul 2020 13:37:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595180255; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=VIqVDPa58OIxE4a8kyoS2KJZmbjZQR8f4ukk3GBRkDOmYzNO+IQu5jQQ7lDugn+s1xgnwzZkhfqDsqutsor8cWJHCisOp4OOnnriG5HtxCGjL7MLn3dcMwIZ2uzynHNN59wuHvlyqH2NDnghGPVLu4krE1MJzV3oP5c08i3woWE5y0ziC5u/k3b+qv+Amasd9ONtD0WLpEfu9DG4do32nVzB8lOky8foXYukZa8n2P+7p7ljh3qNGFN6VuAHm4SOnL5/5y8OTvrGGsskQa5Sm+yUZ2NAO7E4lMJR9ryng2mXs/dKE1aulxaYdbGNxIHSMOyua/n/CbIkqbYTu9LdoQ==
+X-YMail-OSG: WO9cObkVM1lEhsTFqB3LgqY.v.2B7qqZ4Ugrx9fBfVKvNdHW4KXthZ8vErUEpQv
+ bVtJwDUO0nRBL70rL_RP9z2tsVEEWyVSwcAkf_CeSqGmcqBTF5VbDINJzS2xbfZQsL.Hl_VKMqeL
+ bsWvlzCKB_LnTRAXUf_nyU9Pj9czvMUneVJO5ZxTE5T7r.ewGEmG5.7BfRZvauPgXC.KSUdxcK3.
+ a_erOYfJYVZNxEiveP.ND01cKkea2SCDi3kYEfSPDAz72aYRtwkZGIB.Im5XHjkfy0QLoKqSbTj4
+ IViUa8.GjatV3GlQiTC6n2fb54N4eVgJW3_v7W89gTNBR4tzE4uEqecXdYK7ftgAs1RFMlTnSS.X
+ gMQaVhYxyaJtaj3n6rRS1_ZR2AD8rwyGbHXqSk0FzzWK43KSuvxWvPNPHWEbalT8UWTgSwyhimY7
+ qAzrfhZPfHbVA9qzE34S5vR8rX0dyYBJSNf8WSp6AUI.SQSajwaBLL3jlt32Er3Zfz7N8hiIh7JS
+ R43ubi9dSpb3mhqPlmhDLTZX7Y0dAtMxAjwU6ijaMNz4WT.WANV_MjPoOcDoIjY6DHpy3nI2OhX3
+ 3PxKJ4ZrVNDIyWV.jtsrI7A9tlG55IyjTmGkyHSGpISLsPUEApunm.yvxokw4nReu2.sy20LgEKz
+ .o7IlzSku8sGPJjYMXT8KVLnddpxB8K4pc3jSJrc.HVmUys97giMz9Ge6mvEYsqhJpX21okkyVYr
+ HSKSg5Ex1sBZCYsZtxiTXsii.nlHmN3DM3Wp0KsA614ibGMMTmvN7L01BZX4m11_K.aifI4qnMNX
+ qSAskvtO5JTz5K.USibWD_dMVUYRBfthybuISy0unp3h5zctoIJBhFm4M8knEPNf8P1TvKFPeA1j
+ r.5oj91HdVB7KQX0SUN06wHn7tTNbQDL85P5si7lS5cAdQfpj4TBN8gK9sKZI7zHVPBxGtgZraeq
+ sY5BfS_27lE2P_0wJpqcZSlEeumI519v18E4wqo9.88HTnqOf6soathkMQWqEpUJoJtQcugLf1L2
+ d2x4PJ9q8McwOr7k7U1ckkSR8yuyzWAz6mBpjwKMRA8Q5c8x4GGxt66LQ.06h7vMitb6gX7eDZNt
+ UmIhg3YvlRYXhK2DOGqAliAukkrGNctRrbdf68iiy6c5Vc9akvhfcNEEvtcKKnK7yD7qEbw.QnHu
+ QQzM0vhaPfvEuE9hWCCx2UpBX51m2l_xLAfOWstseUktrXyHNvt87AK_is5mlZBv5lZ9juvMmX1t
+ Ou2oOiZ2VlHiB73Nc9V5G.BYkFf4tuNtNcZpJYX.SLbHDitzLWv0RkZUUcSddjpVdwpy59XwaEQ-
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ir2.yahoo.com with HTTP; Sun, 19 Jul 2020 17:37:35 +0000
+Date:   Sun, 19 Jul 2020 17:37:31 +0000 (UTC)
+From:   "Mina A. Brunel" <mrsminaabrunel2334@gmail.com>
+Reply-To: mrsminaabrunel57044@gmail.com
+Message-ID: <186376232.5922971.1595180251749@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200719100649.3719add8@hermes.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <186376232.5922971.1595180251749.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 10:06:49AM -0700, Stephen Hemminger wrote:
-> On Fri, 17 Jul 2020 11:48:16 +0530
-> Suraj Upadhyay <usuraj35@gmail.com> wrote:
-> 
-> > Hi Maintainers and Developers,
-> > 	I am interested in the DECnet TODO list.
-> > I just need a quick response whether they are worth doing or not
-> > for the amount of development happening in this subsystem is extremely
-> > low and I can't help but question whether I should indulge in any of
-> > the listed works or not.
-> > 
-> > Thanks,
-> > 
-> > Suraj Upadhyay.
-> > 
-> 
-> The was a push to move decnet into staging and kill it.
-> But last time there were still some users.
 
-It's understandable that it has grown obsolete now.
 
-Thanks for your response.
+My Dear in the lord
 
-Suraj Upadhyay.
 
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
