@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6D1225227
+	by mail.lfdr.de (Postfix) with ESMTP id BE81C225228
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 16:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgGSOKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 10:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S1726607AbgGSOKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 10:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgGSOKp (ORCPT
+        with ESMTP id S1725988AbgGSOKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 10:10:45 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B28C0619D2;
-        Sun, 19 Jul 2020 07:10:44 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w3so22682275wmi.4;
-        Sun, 19 Jul 2020 07:10:44 -0700 (PDT)
+        Sun, 19 Jul 2020 10:10:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D1FC0619D2;
+        Sun, 19 Jul 2020 07:10:47 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o11so15378590wrv.9;
+        Sun, 19 Jul 2020 07:10:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6+i6RY9LWPM0oMc6IkXi+EqQQ0KYWnUH3ATLz37JIGc=;
-        b=dp1f9xNnBRiEwNcHBq0meBXNOsWJkgt3Uoi0BWGbQ6VsOIq7LmcH3kzOo2MJn9tUfa
-         Bv+4UhVMJkwHxzHg4zfV5e3Mlita+S766uE5+2hdW25VhrNfVPXw6IIQIHCjsbK/P+P+
-         pkL59RXE7DiJ/d8qXcO9tEjnYIymZ0lKAnqv7Yu0/7FTLM2v6EgVarGMLMK0uNT4Qw8X
-         pqWntsnWCzFsk2yBiJfD0tIE3rGRb3wVAvfNjh2gQlWqRgDBV4tWgu9zXdCoE6VTc7mO
-         6QsBhyNRmSLhCOGleBw36/s9cHigai5vbUqdRgGohvxwv4eNbz+3J+z8UEHoAJBiSP5J
-         QmzA==
+        bh=BO3/npBe/d3IU+Xb/V+yWFJYQheJQv/P5LLMxy6zjOI=;
+        b=DS1kNoof5nEfvtqD86NpiQvO/pKycqZpLQzz8mUB3MWCkvVyMJmRQ1FbhDzVqfrp/6
+         laMgFtXMutsiEfpZtMG8O5zv2v7Hgm9R1JHkdUp/eGAD1S4BLt32HCwzuoS+LDECAuUp
+         OJ1rqdgCZBWhI9KbCEshgetYXCa6/HWhX24XTjk3eh/xU8X781tF2AytCVqTOCDomH7c
+         ev+gtrNpA+urtRvUWMynwGeoRwTQOupGV5ItsQj7FTuLnO8Ts3Wh/WWGSkH3DRCRVDHT
+         1Tl7iTcwy7I2wWGZ0XX9HWJkmYrgOal+usAs164luVeeqbShAFEJ3WLYSZhTYJIDX2Dz
+         HEgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=6+i6RY9LWPM0oMc6IkXi+EqQQ0KYWnUH3ATLz37JIGc=;
-        b=jPOmOFETEKEVXFMtgHiVsYo3SMZGt4LBBGkEp/8X4YJohM4u85lJQu1LF9BYzxJvyx
-         d+KkI6QF2dkxpZ7ci89hc8UZBGACEOVoYlLqekUah6x61uwXlNrmHV+a0Itxte3dekjP
-         iH7yUuj9o50gg0bFeIpwhFsvdteCYxEzTX+dRcdK7EKrMUiQqCvobTILKz9UtL9MP2mw
-         VNl2XtXKKIAh4D+zXLt1DjqyiQ5+8f4geEz9uZIYPhfeDBnRncUFBNgiOEY2tJKcu7Na
-         T4NlhDa4ZvFd2s9D6eswK0BLG/Mh3bgmD7H+JUOR8R/r5hBJUOQp6jUCI6Kgs0rcFDtq
-         k9hw==
-X-Gm-Message-State: AOAM530gZuLY3WdOKkhN0c8MAsAmH8uxS5nCi8uzaMW4gtQ2T6eHpmOu
-        iQNipQb/mhk8Txt69Mj7UkM=
-X-Google-Smtp-Source: ABdhPJzq4GQqvr8i9zhthgq+iMBYiRgjINWCxSMC2J6MWU6I+sNtickMI/hOp9jSKWuJ5bcybWdaYg==
-X-Received: by 2002:a1c:2e57:: with SMTP id u84mr18708737wmu.52.1595167843592;
-        Sun, 19 Jul 2020 07:10:43 -0700 (PDT)
+        bh=BO3/npBe/d3IU+Xb/V+yWFJYQheJQv/P5LLMxy6zjOI=;
+        b=VMgVm5rlVITuTfpzD1K3/dpIn24ezCGXOeaSNjiJN7fhr1eySMsKvuLUpJYSQ31IVZ
+         aQbaNPc7y9tTBLSKN3tr22zA0TivRtGyn/2gn4ZYucMcTD4zSPCR03xMN3cXMfx7vcja
+         Eb4gipQ40wpIaS4C8Sh7/byNyyWLRIrDFYvy626Gh6ZOWw6aRzFgt1wXRLg6qfTMGx7q
+         CtNX+Uf16eRbTE3lASbsZPgHwVYotMKRcAqZyanaMe10tXyksv8HGN+2wwrZWhnt1oPP
+         Onl/1gZj9oY+WgTY7dML1rPn5BIT8ODSc90ONtsgZ/B2T1X/CHNTBZ4McDU2mFWvZKy5
+         mlUA==
+X-Gm-Message-State: AOAM532T7B1cBCGFNLLtNrLdCKtTAp6PYuwPnv4xlapugEdq5PjzJDV6
+        8PXl8ZeDrfkxxWCz+tuKSdi2eLKn
+X-Google-Smtp-Source: ABdhPJyLN7KEli95FjWvMQPH5iNrxKCsln/FrY+b7WavAQ92CWP0VWbwceObDro0QbbWzaSdIEZH6Q==
+X-Received: by 2002:adf:d084:: with SMTP id y4mr17959433wrh.161.1595167845879;
+        Sun, 19 Jul 2020 07:10:45 -0700 (PDT)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id y11sm9215554wrs.80.2020.07.19.07.10.41
+        by smtp.gmail.com with ESMTPSA id y11sm9215554wrs.80.2020.07.19.07.10.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 07:10:43 -0700 (PDT)
+        Sun, 19 Jul 2020 07:10:45 -0700 (PDT)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -55,9 +55,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>,
         Dongjin Kim <tobetter@hardkernel.com>
-Subject: [PATCH 2/3] dt-bindings: arm: amlogic: add support for the ODROID-N2+
-Date:   Sun, 19 Jul 2020 14:10:33 +0000
-Message-Id: <20200719141034.8403-3-christianshewitt@gmail.com>
+Subject: [PATCH 3/3] arm64: dts: meson: add support for the ODROID-N2+
+Date:   Sun, 19 Jul 2020 14:10:34 +0000
+Message-Id: <20200719141034.8403-4-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200719141034.8403-1-christianshewitt@gmail.com>
 References: <20200719141034.8403-1-christianshewitt@gmail.com>
@@ -66,26 +66,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HardKernel ODROID-N2+ uses a revised Amlogic S922X v2 chip that supports
-higher cpu clock speeds than the original ODROID-N2.
+HardKernel ODROID-N2+ uses an Amlogic S922X rev. C chip capable of higher
+clock speeds than the original ODROID-N2. Hardkernel supports the big cpu
+cluster at 2.4GHz and the little cpu cluster at 2.0GHz. Opp points and
+regulator changess are from the HardKernel Linux kernel sources.
 
+Suggested-by: Dongjin Kim <tobetter@hardkernel.com>
 Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/amlogic.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/amlogic/Makefile          |  1 +
+ .../dts/amlogic/meson-g12b-odroid-n2-plus.dts | 53 +++++++++++++++++++
+ 2 files changed, 54 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
-index 378229fa8310..595bb1d089f7 100644
---- a/Documentation/devicetree/bindings/arm/amlogic.yaml
-+++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
-@@ -152,6 +152,7 @@ properties:
-               - azw,gtking
-               - azw,gtking-pro
-               - hardkernel,odroid-n2
-+              - hardkernel,odroid-n2-plus
-               - khadas,vim3
-               - ugoos,am6
-           - const: amlogic,s922x
+diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
+index 5cac4d1d487d..6dc508b80133 100644
+--- a/arch/arm64/boot/dts/amlogic/Makefile
++++ b/arch/arm64/boot/dts/amlogic/Makefile
+@@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
++dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2-plus.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-ugoos-am6.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-kii-pro.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-nanopi-k2.dtb
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
+new file mode 100644
+index 000000000000..99e96be509f8
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
++
++/dts-v1/;
++
++#include "meson-g12b-odroid-n2.dtsi"
++
++/ {
++	compatible = "hardkernel,odroid-n2-plus", "amlogic,s922x", "amlogic,g12b";
++	model = "Hardkernel ODROID-N2+";
++
++	vddcpu_a: regulator-vddcpu-a {
++		regulator-min-microvolt = <680000>;
++		regulator-max-microvolt = <1040000>;
++
++		pwms = <&pwm_ab 0 1500 0>;
++	};
++
++	vddcpu_b: regulator-vddcpu-b {
++		regulator-min-microvolt = <680000>;
++		regulator-max-microvolt = <1040000>;
++
++		pwms = <&pwm_AO_cd 1 1500 0>;
++	};
++
++	cpu_opp_table_0: opp-table-0 {
++		opp-1908000000 {
++			opp-hz = /bits/ 64 <1908000000>;
++			opp-microvolt = <1030000>;
++		};
++
++		opp-2016000000 {
++			opp-hz = /bits/ 64 <2016000000>;
++			opp-microvolt = <1040000>;
++		};
++	};
++
++	cpub_opp_table_1: opp-table-1 {
++		opp-2304000000 {
++			opp-hz = /bits/ 64 <2304000000>;
++			opp-microvolt = <1030000>;
++		};
++
++		opp-2400000000 {
++			opp-hz = /bits/ 64 <2400000000>;
++			opp-microvolt = <1040000>;
++		};
++	};
++};
++
 -- 
 2.17.1
 
