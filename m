@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F803224E96
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 04:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4E0224E9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 04:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgGSB75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 21:59:57 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55226 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726256AbgGSB75 (ORCPT
+        id S1726492AbgGSCJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 22:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgGSCJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 21:59:57 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06J1xYxZ127625;
-        Sun, 19 Jul 2020 01:59:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=f7OFTiNijTKWVwpU9cqPB4oaEZccBuJ7BYyIc/fNeCU=;
- b=HvKtPjmLuioiOgn8JAnm/l1msmBm1vWWhlNhO3omxy4cQCWKQmNB2eH4nK28FEEZvyPp
- GkPLQg5OIOClBiv09k7Z4GI7EsNbtTGpCsCdaSGa5ANHX995gwAOR6pJbz0y6uSgImWL
- yWh611XojpPHJ1TNlITD3azJ65G27e5FRPYoAZgrP6JfGTLsqU7Ais2y99DUKD2ynbZU
- 0CtCqY8MlYPK8vM+PJr+paTCOtA/GfhGBNg27dHPBLFQSKSuCyjoQY6KXUptfxB1NI42
- S155C5YZ5/sases25GWMnmkYDDdGaNTQH7fzQ6Z2w6tYzQQt3Rc8TnwUdW8ocX/dzYm8 Bw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 32brgr25kk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 19 Jul 2020 01:59:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06J1w2li152820;
-        Sun, 19 Jul 2020 01:59:39 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 32cbq74ys6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 19 Jul 2020 01:59:39 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06J1xa6G011053;
-        Sun, 19 Jul 2020 01:59:37 GMT
-Received: from [10.39.198.189] (/10.39.198.189)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 18 Jul 2020 18:59:36 -0700
-Subject: Re: [PATCH -next] x86/xen: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>, Chen-Yu Tsai <wens@csie.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20200716090641.14184-1-miaoqinglang@huawei.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Autocrypt: addr=boris.ostrovsky@oracle.com; keydata=
- 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
- Jg6OxFYd01z+a+oL
-Message-ID: <a75ff99a-bb2e-6470-6c47-e7089c0fc8b4@oracle.com>
-Date:   Sat, 18 Jul 2020 21:59:34 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 18 Jul 2020 22:09:21 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22236C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 19:09:21 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t6so7082666plo.3
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 19:09:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QtHrNXMSpyatUvUEtvk0zy0sYC+0CsUTNDsn+37VAVw=;
+        b=RI2u69cAKbx6QZ8BPbBmXTkTXkEOktawEPEaX1J+QA5VSw+EzTA9yQWF2K1pjNPjqU
+         of8yPvby9LmdjPFe33L7fgxNnyC4fQPiIjK/8INhZjXsfxvrQw71eIwiqDlA+yn59WBe
+         Ofp/460HjewE8QhLTVvQZzLseslWQYELmhj8karfKPF2PvazPhV0f9VZpX5Vcl6GR0xt
+         QIBpCtf24Gygt2ilBMACLM3Fe9vIBQWSbqFwKpBj52WWaTLcq406+/fISbqUsgVPPC7x
+         S2GNeaEFZxyQkZtvDdcZfBSyFhvh0KIi/GmO/a2KYXg4HfJ2dLVjH+LAAG7aB/IkrwiU
+         eCtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QtHrNXMSpyatUvUEtvk0zy0sYC+0CsUTNDsn+37VAVw=;
+        b=dSiNSL/cZQJI65L5RTeIdANwfnv0R/B7NR4eX+AQVBK5jIi4OZpxhrP2sZz7VPJWWQ
+         gphR4Ml9UmXJYKPvjNsX9yIgzC25eepA2HMUHIFyAlUXVJcllfqNPMJF3U7G9U3Cto2E
+         O0BS8TfSl+mb0OdTefvNbj8PKA0YXxZns3RaAEY+j33hpIcbslbmlvqiawjJY2tT4LmW
+         RiaE1q49naKAlUTFrTF0235UyvJFQ6fI06x8KcphPI8FClReuUYXZfFJbQr+jhQRb9hl
+         veoMwqxa5EJPasS46eflGenqzj0Fyxoa5FkxVCtOVn04vNH6FXhn9DVsyBu48PzmMYs4
+         B6zg==
+X-Gm-Message-State: AOAM532PySygeDui63dFbHY2ujRjyeZDSOHX0hvrQRd2UihhUJKkEEj1
+        lgE55IDYGFyiT0zqAd8MLSOkKQ0g
+X-Google-Smtp-Source: ABdhPJyDBS0Gryauf7x/s/qj1hi1aRXGhcLlVdBWgIoatOrfH5k5B6FIAGiHE526huC4vqwg2cZ3sA==
+X-Received: by 2002:a17:90a:2681:: with SMTP id m1mr15468157pje.204.1595124560587;
+        Sat, 18 Jul 2020 19:09:20 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:e00:19b7:f650:7bbe:a7fb])
+        by smtp.gmail.com with ESMTPSA id b8sm5767459pjd.5.2020.07.18.19.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 19:09:19 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH] xtensa: add audit support
+Date:   Sat, 18 Jul 2020 19:09:07 -0700
+Message-Id: <20200719020907.25742-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200716090641.14184-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9686 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- malwarescore=0 spamscore=0 suspectscore=0 mlxscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007190012
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9686 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 suspectscore=0 adultscore=0 clxscore=1011 mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007190012
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/20 5:06 AM, Qinglang Miao wrote:
-> From: Chen Huang <chenhuang5@huawei.com>
->
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->
-> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+All bits needed for syscall audit are present on xtensa. Add
+audit_syscall_entry and audit_syscall_exit calls and select
+HAVE_ARCH_AUDITSYSCALL in Kconfig.
 
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+---
+ arch/xtensa/Kconfig                   | 1 +
+ arch/xtensa/include/asm/thread_info.h | 4 +++-
+ arch/xtensa/kernel/ptrace.c           | 6 ++++++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 3a9f1e80394a..a7def0991a01 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -21,6 +21,7 @@ config XTENSA
+ 	select GENERIC_PCI_IOMAP
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_STRNCPY_FROM_USER if KASAN
++	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ 	select HAVE_ARCH_KASAN if MMU && !XIP_KERNEL
+ 	select HAVE_ARCH_TRACEHOOK
+diff --git a/arch/xtensa/include/asm/thread_info.h b/arch/xtensa/include/asm/thread_info.h
+index f092cc3f4e66..c49cc4a1f39a 100644
+--- a/arch/xtensa/include/asm/thread_info.h
++++ b/arch/xtensa/include/asm/thread_info.h
+@@ -111,15 +111,17 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_RESTORE_SIGMASK	6	/* restore signal mask in do_signal() */
+ #define TIF_NOTIFY_RESUME	7	/* callback before returning to user */
+ #define TIF_DB_DISABLED		8	/* debug trap disabled for syscall */
++#define TIF_SYSCALL_AUDIT	9	/* syscall auditing active */
+ 
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+ #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
+ #define _TIF_SINGLESTEP		(1<<TIF_SINGLESTEP)
+ #define _TIF_SYSCALL_TRACEPOINT	(1<<TIF_SYSCALL_TRACEPOINT)
++#define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
+ 
+ #define _TIF_WORK_MASK		(_TIF_SYSCALL_TRACE | _TIF_SINGLESTEP | \
+-				 _TIF_SYSCALL_TRACEPOINT)
++				 _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_AUDIT)
+ 
+ #define THREAD_SIZE KERNEL_STACK_SIZE
+ #define THREAD_SIZE_ORDER (KERNEL_STACK_SHIFT - PAGE_SHIFT)
+diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
+index b4c07bd890fe..0278d7dfb4d6 100644
+--- a/arch/xtensa/kernel/ptrace.c
++++ b/arch/xtensa/kernel/ptrace.c
+@@ -12,6 +12,7 @@
+  * Marc Gauthier<marc@tensilica.com> <marc@alumni.uwaterloo.ca>
+  */
+ 
++#include <linux/audit.h>
+ #include <linux/errno.h>
+ #include <linux/hw_breakpoint.h>
+ #include <linux/kernel.h>
+@@ -562,6 +563,9 @@ int do_syscall_trace_enter(struct pt_regs *regs)
+ 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_enter(regs, syscall_get_nr(current, regs));
+ 
++	audit_syscall_entry(regs->syscall, regs->areg[6],
++			    regs->areg[3], regs->areg[4],
++			    regs->areg[5]);
+ 	return 1;
+ }
+ 
+@@ -569,6 +573,8 @@ void do_syscall_trace_leave(struct pt_regs *regs)
+ {
+ 	int step;
+ 
++	audit_syscall_exit(regs);
++
+ 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_exit(regs, regs_return_value(regs));
+ 
+-- 
+2.20.1
 
