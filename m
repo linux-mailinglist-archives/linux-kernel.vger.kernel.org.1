@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73CB224F92
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 07:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE51224FA1
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 07:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgGSFDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 01:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgGSFDl (ORCPT
+        id S1726093AbgGSFKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 01:10:38 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18180 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725272AbgGSFKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 01:03:41 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACF5C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 22:03:41 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id e12so10675216qtr.9
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 22:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JEqZBcqpv35rf52dotkzmMLHr8VjKvDha+vHrVrlW0A=;
-        b=D6inz7cPW5KtL4cfSKKNob6tOCWLXCyACu71vQf1AKdWjWW/Ru7iL8LL5KeK+iEYW9
-         HaMZtnaytgIE0gXVgqMouC1psLLXQVub/40zNbJPwYWzM3JI7QPfkKkSzBmM/dfjQ0RU
-         CbtoN23Yr2PuCkwrAwdFH8MzvvmuqP7W6iNjfdJUhTONAfuM7jVU+OdZ3YJXs8giGmaf
-         jBVKIOIkG6Xp4bF4dBmWfZ6bENCWV/G3kch0eradlm29RFaffAJAxBcQTA7faOjm3Roz
-         jODBjdS/3eq0cptBUjZwibSpiaPO00qGyJA/EBdtqpQ4TZloGI9a2L3qWY65QIkjHEJL
-         7QEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JEqZBcqpv35rf52dotkzmMLHr8VjKvDha+vHrVrlW0A=;
-        b=YWySo6KueJNZExCzCC6O5wFF5Iqrj/6KXmMib4wLQiA+poo90cnF5toPREbbJsA7rY
-         g6RwunbUu37WppBuY30wEvvWT2chuakFWJZcvDZiYu5RUTDQnRe1vL++vlXpnd83fvWM
-         +a1iVyGzgWKarsk1mD+ey9XC1gjYnO6aw5T26dT5RubuuCbvcMuUxjzCo9DYa+t4AEJJ
-         5ujcbux2k/XbMWlWek6BODG4fLl2neCxO4A8SVwZv/NgU9OqqxQQIdJy5U3/AIebn/2u
-         SP9CDDGiSUJPUoFOlnkahoNgVideZOQPRykVCfE6OMlZx7AP7G8nEptO9X1DUe3NNKmU
-         DjVw==
-X-Gm-Message-State: AOAM533v0EUJyyGHpzJx+GIoESZpbdHKH55+vIALk8YAMfKKKZAdYutt
-        f/iDQWPKy1NSdtod3vdYJdMX0xLoOlHPsOOf/XU=
-X-Google-Smtp-Source: ABdhPJw0ikC0VJ2buLuhX5AoQkeCoRIp2Y/xO+wYrRjdeukK8Al3WDMssG8e7TeQ4swr5BBN2yrSDqO5Im9oy462Hzo=
-X-Received: by 2002:ac8:87d:: with SMTP id x58mr17702400qth.28.1595135019168;
- Sat, 18 Jul 2020 22:03:39 -0700 (PDT)
+        Sun, 19 Jul 2020 01:10:38 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f13d5c10000>; Sat, 18 Jul 2020 22:10:25 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Sat, 18 Jul 2020 22:10:38 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Sat, 18 Jul 2020 22:10:38 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
+ 2020 05:10:37 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sun, 19 Jul 2020 05:10:37 +0000
+Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f13d5c80000>; Sat, 18 Jul 2020 22:10:37 -0700
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 00/10] Audio graph card updates and usage with Tegra210 audio
+Date:   Sun, 19 Jul 2020 10:40:07 +0530
+Message-ID: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <CAAvDm6bGBbN=EiJxO9Fq9HqLz6F=hSQqjKms_G6qPHzbZ6G3zg@mail.gmail.com>
- <20200704122222.GB15530@amd>
-In-Reply-To: <20200704122222.GB15530@amd>
-From:   =?UTF-8?B?5a2Z5LiW6b6ZIHN1bnNoaWxvbmc=?= <sunshilong369@gmail.com>
-Date:   Sun, 19 Jul 2020 13:03:25 +0800
-Message-ID: <CAAvDm6YcE7VwphmD0t4FP+JNutkC4W8B=n1X5adL7wZ2s=92Wg@mail.gmail.com>
-Subject: Re: Are there some potentially serious problems that I should be
- aware of if I totally disable the CONFIG_ACPI option on the X86_64 platform?
-To:     Pavel Machek <pavel@ucw.cz>, LKML <linux-kernel@vger.kernel.org>
-Cc:     kernelnewbies <Kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595135425; bh=2yR3bYh9gS4d3yeOOjl6Vfl0mVOZ60aB1nO5qNxebQU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=MP6Ox3R7Sgzld54uLLNY0Fdg4C/pv1j2ajpcLwaOJka9fkvpNV16YnlamUhZEBCsZ
+         4diTasDOVgf3dNIoiT75ugIrOcRwm3DYL5bT2BOo7wzKGyQcw5MaFP53hBVw8Pmwt4
+         +tC0bBJedubBlOy+Pqf9ykWoUZ92W8CIPFfjtkyaVIxxqO1gHTOL6VjFFRJSKsyYAy
+         zla6fTZGS2kXbe4MW/EKu2ECTpxBGlxMvl5So+2Ba31lR+6hLKw3N3kb+uA5g8eqHV
+         NFCtJEk9ZXo3Bz28YpX7O5RRM85oXtjxUPPdlWyGKtf/kSLBZr9Q4GzwXkbWJsgTDt
+         BDy105l+WpEDA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Pavel
->> Are there some potentially serious problems that I should be aware of
->> if I totally disable the CONFIG_ACPI option on the X86_64 platform?
->These machines are still mostly IBM-PC compatible, so it is likely to
->somehow work. You'll likely get worse power and thermal
->management. Try it.
+This series proposes following enhancements to audio-graph card driver.
+ * Support multiple instances of a component.
+ * Support Codec port with multiple endpoints.
+ * Support open platforms with empty Codec endpoint.
+ * Identify no-pcm DPCM DAI links which can be used in BE<->BE connections.
+ * Add new compatible to support DPCM based DAI chaining.
 
-Thank you for taking the time to respond to my question.
+This pushes DT support for Tegra210 based platforms which uses audio-graph
+card and above enhancements.
 
-Do you mean disabling the CONFIG_ACPI option is mostly on IBM-PC
-compatible platforms?
+The series is based on following references where DPCM usgae for Tegra
+Audio and simple-card driver proposal were discussed.
+ * https://lkml.org/lkml/2020/4/30/519 (DPCM for Tegra)
+ * https://lkml.org/lkml/2020/6/27/4 (simple-card driver)
 
-Do you think disabling the CONFIG_ACPI may cause the OS failing to boot
-up?
+Sameer Pujar (10):
+  ASoC: soc-core: Fix component name_prefix parsing
+  ASoC: audio-graph: Use of_node and DAI for DPCM DAI link names
+  ASoC: audio-graph: Support Codec with multiple endpoints
+  ASoC: audio-graph: Support for empty end point
+  ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM
+  ASoC: soc-pcm: Get all BEs along DAPM path
+  ASoC: dt-bindings: audio-graph-card: Support for component chaining
+  ASoC: audio-graph: Add support for component chaining
+  arm64: tegra: Audio graph header for Tegra210
+  arm64: tegra: Audio graph sound card for Jetson Nano and TX1
 
-Thank you for your attention to this matter.
+ .../devicetree/bindings/sound/audio-graph-card.txt |   1 +
+ .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 120 +++++++++++++
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 196 +++++++++++++++++++++
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 110 ++++++++++++
+ include/sound/soc.h                                |   1 +
+ sound/soc/generic/audio-graph-card.c               |  85 ++++++---
+ sound/soc/soc-core.c                               |   3 +-
+ sound/soc/soc-pcm.c                                |   3 +-
+ 8 files changed, 495 insertions(+), 24 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
 
-On Sat, Jul 4, 2020 at 8:22 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > Are there some potentially serious problems that I should be aware of
-> > if I totally disable the CONFIG_ACPI option on the X86_64 platform?
-> >
-> > Would it do harm to the hardware?
-> >
-> > Thank you for your attention to this matter.
->
-> These machines are still mostly IBM-PC compatible, so it is likely to
-> somehow work. You'll likely get worse power and thermal
-> management. Try it.
->
->                                                                         Pavel
->
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+-- 
+2.7.4
+
