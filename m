@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843D4225249
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 16:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C563225251
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 16:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgGSOuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 10:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S1726330AbgGSOup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 10:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgGSOuj (ORCPT
+        with ESMTP id S1726024AbgGSOuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 10:50:39 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA55C0619D2;
-        Sun, 19 Jul 2020 07:50:39 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o11so15429412wrv.9;
-        Sun, 19 Jul 2020 07:50:39 -0700 (PDT)
+        Sun, 19 Jul 2020 10:50:44 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465C8C0619D2;
+        Sun, 19 Jul 2020 07:50:44 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so15378638wrw.12;
+        Sun, 19 Jul 2020 07:50:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UUqLFtjizIDo67kZSDAuxTvDZ8v5hpCknWjlNVsJDEE=;
-        b=G7Eq1PJQEyo8Takx/kaoykf4sk2/Xa1qsLGrafGiL8XQGE29sZLmx1ECnQuj/OBfHl
-         dB3FB7qhSLBZ8EEjKI1t7h2fioIKfHRGdRFHB2Hun7yq2nkIcFaoNOAnLs0mncD2jZuZ
-         Z+aEEPMPtmj7tPH+uyy/9jj7avxhM5DVK4WrmG/Z2+0aZM8XXBW8P7uTJlsRO/MsYO3L
-         auqYIb/2kG0WJWuWZ5rfJ+3cYUcS9zErm28ppynDT62SlbtLzXoYIW9awCdktV+pijym
-         /gIVw/oMoOFgp1yuIZtjWn6LWJ3A2rrQ/0Mw6wSQovG415EgsY4EsRLLNo/7GpnQH3mJ
-         Virg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Kjfuse7dtGFuujC8xKQQtWkMq6uG/2iBu5hcp0AydUM=;
+        b=AZK9wg1DXgX28pBbajcPDYLcnk43Qj2AOevWnTVuCv3yXTq/YELz1G0Ul7+v0eCTvi
+         MB8sd7FdbuqGAmqXoixLVNffTzI1ihdrw0vfzSnsjg7D9YE3AikleRFunF4FC2sWR812
+         LnTu6JOitsoEo8RC226fRp1XmpzbZUSt5bZ/Twu8kr1Obc4g31r8afDCKhtLhx9qtVSE
+         mCaeN/WLr2jN5zHwxkEjDR2wN/di4pYhQVImsgculyOyCowVaAEqltifGl9/mHLUZEeB
+         KzzouGzgZl0OMEriHNc8zH1igfzHQOtCrYQXuLBOWkauFYI7txqSpkjWQo9IxKl7FEHE
+         apHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UUqLFtjizIDo67kZSDAuxTvDZ8v5hpCknWjlNVsJDEE=;
-        b=R9nYfO4MKx6X9VCvFL2x4BF0EX2IYgqSRV1bSRtJoZ0y7nurP4A2hgXtl8YyJKTQOz
-         XGa8Nb4eDj07ke5Xv8lBe5532TE972sWcrZO0OASQEhxmr6Fw6V2yQUN/hEJFWYN2mpz
-         ktvKGmYt3jH0RCY2xUSqgVP/AFeAowv0KHePVwhp79wV0g38QKb23ujrbSkNXEfAvpdO
-         moiIklfchtwEeu7zOTSqf+zrC6rFojGk05z1pTCiT3NHvqYs63FF0AHIRThvIfK7IRbS
-         jzd5pa+1Pr+eyVAPS191maNFfDqx278/TbkESNTAP8gEtFjfCiLaQtDrvKpnDpp+4coZ
-         KA2g==
-X-Gm-Message-State: AOAM532+igXbbLUKMBx/KY6m5xCGH9UhzyLLW55GoL4w+k0O1jHsKiG2
-        adeNUsYzB/xJIB/iS8vTC8w=
-X-Google-Smtp-Source: ABdhPJyNOMc9VuTGG3PC6b6FayRsZXsh0Mt8lFi6GRDpdpnSz9+N2I9pPXKA4OpE4DzP1iscXAosOg==
-X-Received: by 2002:a5d:6107:: with SMTP id v7mr18012777wrt.174.1595170237975;
-        Sun, 19 Jul 2020 07:50:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Kjfuse7dtGFuujC8xKQQtWkMq6uG/2iBu5hcp0AydUM=;
+        b=X9OKYMhe8bRLYhTPX0x8yPazt9hNIabrJzpWKPxDje2pLelyeS6dWoG0fsWVdyuCZF
+         Q7ZM4+0VSnkSOglIduCDElMAg4I/bo4IRF/4VjYnONp3ndP1ZiVVMIBc5S4+fWY4Kuej
+         t+ZfSzpVPK9nIymARqAJ4mxkemZjqdfXH5pdIK0jzffsQvJZ0Vpof/39KDfeYEA+BvUg
+         TkSE84bT5jTIrIZcZ7YEbkEKP6/SGHf6P7/7+PQ2+xXwXhFf+d7nzQS6ry0uXoMuVTQ4
+         nEcgRVMXMXI/Qa5msdwqhalLGTCqiQT2j5eoPRt9a84Byc+T61CLTdtwqeewioPQOA9p
+         0//w==
+X-Gm-Message-State: AOAM530ahQT2GkRWNIiEqmtkW2Orz9tpotXL768ELG0BOKGTgB2jt+LK
+        6GNL+qwcg1FCkqSW+n4+Rmw=
+X-Google-Smtp-Source: ABdhPJwslrlNgQRc5S4GUrNpBrqbecXCN9mawT9Cuuc1xNWEODhN9GtBzhV866bI9hjUba3kyC3HCg==
+X-Received: by 2002:adf:ee51:: with SMTP id w17mr2439713wro.239.1595170243004;
+        Sun, 19 Jul 2020 07:50:43 -0700 (PDT)
 Received: from localhost.localdomain (arl-84-90-179-3.netvisao.pt. [84.90.179.3])
-        by smtp.gmail.com with ESMTPSA id d13sm26422755wrq.89.2020.07.19.07.50.36
+        by smtp.gmail.com with ESMTPSA id d13sm26422755wrq.89.2020.07.19.07.50.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 19 Jul 2020 07:50:37 -0700 (PDT)
+        Sun, 19 Jul 2020 07:50:42 -0700 (PDT)
 From:   miguelborgesdefreitas@gmail.com
 To:     a.zummo@towertech.it
 Cc:     linux@armlinux.org.uk, alexandre.belloni@bootlin.com,
@@ -55,10 +55,12 @@ Cc:     linux@armlinux.org.uk, alexandre.belloni@bootlin.com,
         kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
         miguelborgesdefreitas@gmail.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] rtc: pcf8523: Make DSM for battery switch-over configurable from DT and enable it for the cubox-i
-Date:   Sun, 19 Jul 2020 15:50:26 +0100
-Message-Id: <20200719145028.3370-1-miguelborgesdefreitas@gmail.com>
+Subject: [PATCH 1/2] rtc: pcf8523: Make DSM for battery switch-over configurable from DT
+Date:   Sun, 19 Jul 2020 15:50:27 +0100
+Message-Id: <20200719145028.3370-2-miguelborgesdefreitas@gmail.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20200719145028.3370-1-miguelborgesdefreitas@gmail.com>
+References: <20200719145028.3370-1-miguelborgesdefreitas@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,34 +70,100 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>
 
-The pcf8523 has two configurable modes for the battery switch-over functionality:
-(i) the default mode and (ii) the direct switching mode. For the default mode to work (at the
-moment the only driver option), a filtering circuit consisting of a series resistor of 1 kOhm
-and a capacitor of 3.3 microF must be added to the VDD pin input to guarantee a voltage drop
-of less 0.7V/ms for the oscillator operation reliability (see pp.54 of the datasheet).
-Some boards (e.g. the cubox-i) do not include such circuitry and are designed to work only in
-direct switching mode. In fact, this is the recommended mode in the datasheet for hw designs
-where VDD is always expected to be higher than VBAT.
-If DSM is not enabled, after a power cycle, the voltage drop may be too high causing the
-oscillator to stop working momentarily and the REG_SECONDS_OS bit to be set.
-This causes userspace applications such as timedatectl and hwclock to fail when obtaining
-the RTC time (RTC_RD_TIME: Invalid argument).
-Hence, this patch set makes DSM configurable for the pcf8523 RTC in the device-tree and enables it
-for the board where this issue was detected - the cubox-i. Note that if the RTC comes from an
-inconsistent state, the software reset will override any power management options set during the
-probe phase. Thus, pm is also enforced in pcf8523_start_rtc.
-
-
-Miguel Borges de Freitas (2):
-  rtc: pcf8523: Make DSM for battery switch-over configurable from DT
-  ARM: dts: imx6qdl-cubox-i: enable DSM for the RTC
-
+Signed-off-by: Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>
+---
  Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt |  7 ++++++-
  Documentation/devicetree/bindings/rtc/rtc.yaml        |  7 +++++++
- arch/arm/boot/dts/imx6qdl-cubox-i.dtsi                |  1 +
  drivers/rtc/rtc-pcf8523.c                             | 13 ++++++++++---
- 4 files changed, 24 insertions(+), 4 deletions(-)
+ 3 files changed, 23 insertions(+), 4 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+index 0b1080c..f715a8f 100644
+--- a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
++++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+@@ -4,10 +4,14 @@ Required properties:
+ - compatible: Should contain "nxp,pcf8523".
+ - reg: I2C address for chip.
+ 
+-Optional property:
++Optional properties:
+ - quartz-load-femtofarads: The capacitive load of the quartz(x-tal),
+   expressed in femto Farad (fF). Valid values are 7000 and 12500.
+   Default value (if no value is specified) is 12500fF.
++- pm-enable-dsm: battery switch-over function is enabled in direct
++  switching mode. The power failure condition happens when VDD < VBAT,
++  without requiring VDD to drop below Vth(sw)bat.
++  Default value (if not provided) is the standard mode.
+ 
+ Example:
+ 
+@@ -15,4 +19,5 @@ pcf8523: rtc@68 {
+ 	compatible = "nxp,pcf8523";
+ 	reg = <0x68>;
+ 	quartz-load-femtofarads = <7000>;
++	pm-enable-dsm;
+ };
+diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+index ee237b2..a0048f4 100644
+--- a/Documentation/devicetree/bindings/rtc/rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+@@ -47,4 +47,11 @@ properties:
+     description:
+       Enables wake up of host system on alarm.
+ 
++  pm-enable-dsm:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Enables the battery switch-over function in direct switching
++      mode. Should be set in systems where VDD is higher than VBAT
++      at all times.
++
+ ...
+diff --git a/drivers/rtc/rtc-pcf8523.c b/drivers/rtc/rtc-pcf8523.c
+index 47e0f41..0c08f91 100644
+--- a/drivers/rtc/rtc-pcf8523.c
++++ b/drivers/rtc/rtc-pcf8523.c
+@@ -122,7 +122,7 @@ static int pcf8523_load_capacitance(struct i2c_client *client)
+ 	return err;
+ }
+ 
+-static int pcf8523_set_pm(struct i2c_client *client, u8 pm)
++static int pcf8523_set_pm(struct i2c_client *client)
+ {
+ 	u8 value;
+ 	int err;
+@@ -131,7 +131,10 @@ static int pcf8523_set_pm(struct i2c_client *client, u8 pm)
+ 	if (err < 0)
+ 		return err;
+ 
+-	value = (value & ~REG_CONTROL3_PM_MASK) | pm;
++	if (of_property_read_bool(client->dev.of_node, "pm-enable-dsm"))
++		value = (value & ~REG_CONTROL3_PM_MASK) | REG_CONTROL3_PM_DSM;
++	else
++		value = (value & ~REG_CONTROL3_PM_MASK) | 0;
+ 
+ 	err = pcf8523_write(client, REG_CONTROL3, value);
+ 	if (err < 0)
+@@ -173,6 +176,10 @@ static int pcf8523_start_rtc(struct i2c_client *client)
+ 	if (err < 0)
+ 		return err;
+ 
++	err = pcf8523_set_pm(client);
++	if (err < 0)
++		return err;
++
+ 	return 0;
+ }
+ 
+@@ -352,7 +359,7 @@ static int pcf8523_probe(struct i2c_client *client,
+ 		dev_warn(&client->dev, "failed to set xtal load capacitance: %d",
+ 			 err);
+ 
+-	err = pcf8523_set_pm(client, 0);
++	err = pcf8523_set_pm(client);
+ 	if (err < 0)
+ 		return err;
+ 
 -- 
 1.8.3.1
 
