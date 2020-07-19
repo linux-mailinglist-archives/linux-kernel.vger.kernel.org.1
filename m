@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7642251ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 15:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABF62251EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 15:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgGSNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 09:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
+        id S1726446AbgGSNTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 09:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgGSNTF (ORCPT
+        with ESMTP id S1725836AbgGSNTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 09:19:05 -0400
+        Sun, 19 Jul 2020 09:19:06 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE39C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 06:19:05 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 13:18:10 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADBBC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 06:19:06 -0700 (PDT)
+Date:   Sun, 19 Jul 2020 13:18:11 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595164743;
+        s=2020; t=1595164744;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zqdGyXBIrLEbZePTQIbct+RaSA/vuiwkN2wt6l1D3fg=;
-        b=fXIxVDVC2KnI95ui9bE+Ql0cXNtGcaZb0HzMPUnsZUm6tsOWpMQkpNFkCJfS6VJKggXPT+
-        Z6OeGmQA4knukMgc/+EPNuJiS5C7YEN+xOzz9/rTMeVlKalj1cezLfIZkdgZYSbYoJ0jlT
-        QNSj0IZpYanIWzvYv+VgkPUZSx0X+fSco/ldt0FHLazT2LKQgSw2suP3iFZ+swWjCkZaOE
-        4kPHKP7E/tpfBHC5DMSwFtEHi+7Lk2MGvXrBMA/qWe5iBNqcj5Qq2ztsX/huhlosNDxkmj
-        PLselL95ie8EOaAkeDtD8TPsDJT3ZLbUGvKlhppdmURTx4eWX1El1DCBVryGPQ==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=+kmDVi3C7GOfiUhs70fP7OvB5FmTXvUfvcUti57Xoj8=;
+        b=wFp2H43hn1I0SjzLilDAS0+op7yogic13pciaN76db8y6LRYf4fmULaaqTMCaYevYO/lSs
+        RkKaQs4GJuSiJt4DrsfAUmu2Z7QMmpLlGouRhtHtZeW7zN2GAK8E8QrFGDkDaGZF7XfLta
+        mwhcpcVeLAqj6pvsAcTMREIVkbafcY3AHfZeOFeIBIQaxZ85KmXjUFYN0uR1bQHJ+hYQzI
+        GkiiCEn5DZhHdrxfIqHm36t5AkpZqgoJ7/OzyvEqsdaGM0V3ZMaOfCkMTTmOvv6VnZzFlV
+        lkvGuOfT3yD8b+rczcuEByA+dy/FdfhLu4eHa3vuAlKZT/7QPSLjcs0Jah1Njw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595164743;
+        s=2020e; t=1595164744;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zqdGyXBIrLEbZePTQIbct+RaSA/vuiwkN2wt6l1D3fg=;
-        b=g1hmJ0McGZUlcyqH20IzdTFsM1yQmHOCXiFjehwtMbEGJ4CxiWOw0M1Ztg4gO2j+yz/gIt
-        PIoTH3vbK09JD4BA==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=+kmDVi3C7GOfiUhs70fP7OvB5FmTXvUfvcUti57Xoj8=;
+        b=NKrErDvlDQeiYklUrb++64Eg38NlCC2pTr0hY4O1eguP91vOyzzSSPEzo1xj++Tab0mCU4
+        8/1OnCfyzbDQU2AQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] irq/urgent for v5.8-rc6
-Message-ID: <159516469014.4147.6471285397574034610.tglx@nanos.tec.linutronix.de>
+Subject: [GIT pull] sched/urgent for v5.8-rc6
+References: <159516469014.4147.6471285397574034610.tglx@nanos.tec.linutronix.de>
+Message-ID: <159516469134.4147.3024788666121647415.tglx@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
@@ -50,369 +51,252 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-please pull the latest irq/urgent branch from:
+please pull the latest sched/urgent branch from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2020-07-19
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-07-19
 
-up to:  baedb87d1b53: genirq/affinity: Handle affinity setting on inactive interrupts correctly
+up to:  01cfcde9c26d: sched/fair: handle case of task_h_load() returning 0
 
-Two fixes for the interrupt subsystem:
+A set of scheduler fixes:
 
- - Make the handling of the firmware node consistent and do not free the
-   node after the domain has been created successfully. The core code
-   stores a pointer to it which can lead to a use after free or double
-   free.
+ - Plug a load average accounting race which was introduced with a recent
+   optimization casing load average to show bogus numbers.
 
-   This used to "work" because the pointer was not stored when the initial
-   code was written, but at some point later it was required to store
-   it. Of course nobody noticed that the existing users break that way.
+ - Fix the rseq CPU id initialization for new tasks. sched_fork() does not
+   update the rseq CPU id so the id is the stale id of the parent task,
+   which can cause user space data corruption.
 
- - Handle affinity setting on inactive interrupts correctly when
-   hierarchical irq domains are enabled. When interrupts are inactive with
-   the modern hierarchical irqdomain design, the interrupt chips are not
-   necessarily in a state where affinity changes can be handled. The legacy
-   irq chip design allowed this because interrupts are immediately fully
-   initialized at allocation time. X86 has a hacky workaround for this, but
-   other implementations do not. This cased malfunction on GIC-V3. Instead
-   of playing whack a mole to find all affected drivers, change the core
-   code to store the requested affinity setting and then establish it when
-   the interrupt is allocated, which makes the X86 hack go away.
+ - Handle a 0 return value of task_h_load() correctly in the load balancer,
+   which does not decrease imbalance and therefore pulls until the maximum
+   number of loops is reached, which might be all tasks just created by a
+   fork bomb.
 
 Thanks,
 
 	tglx
 
 ------------------>
-Thomas Gleixner (2):
-      irqdomain/treewide: Keep firmware node unconditionally allocated
-      genirq/affinity: Handle affinity setting on inactive interrupts correctly
+Mathieu Desnoyers (1):
+      sched: Fix unreliable rseq cpu_id for new tasks
+
+Peter Zijlstra (1):
+      sched: Fix loadavg accounting race
+
+Vincent Guittot (1):
+      sched/fair: handle case of task_h_load() returning 0
 
 
- arch/mips/pci/pci-xtalk-bridge.c    |  5 +++--
- arch/x86/kernel/apic/io_apic.c      | 10 +++++-----
- arch/x86/kernel/apic/msi.c          | 18 ++++++++++++------
- arch/x86/kernel/apic/vector.c       | 23 +++++------------------
- arch/x86/platform/uv/uv_irq.c       |  3 ++-
- drivers/iommu/amd/iommu.c           |  5 +++--
- drivers/iommu/hyperv-iommu.c        |  5 ++++-
- drivers/iommu/intel/irq_remapping.c |  2 +-
- drivers/mfd/ioc3.c                  |  5 +++--
- drivers/pci/controller/vmd.c        |  5 +++--
- kernel/irq/manage.c                 | 37 +++++++++++++++++++++++++++++++++++--
- 11 files changed, 76 insertions(+), 42 deletions(-)
+ include/linux/sched.h |  4 ---
+ kernel/sched/core.c   | 69 +++++++++++++++++++++++++++++++++++++++------------
+ kernel/sched/fair.c   | 15 +++++++++--
+ 3 files changed, 66 insertions(+), 22 deletions(-)
 
-diff --git a/arch/mips/pci/pci-xtalk-bridge.c b/arch/mips/pci/pci-xtalk-bridge.c
-index 3b2552fb7735..5958217861b8 100644
---- a/arch/mips/pci/pci-xtalk-bridge.c
-+++ b/arch/mips/pci/pci-xtalk-bridge.c
-@@ -627,9 +627,10 @@ static int bridge_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	domain = irq_domain_create_hierarchy(parent, 0, 8, fn,
- 					     &bridge_domain_ops, NULL);
--	irq_domain_free_fwnode(fn);
--	if (!domain)
-+	if (!domain) {
-+		irq_domain_free_fwnode(fn);
- 		return -ENOMEM;
-+	}
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 692e327d7455..683372943093 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -114,10 +114,6 @@ struct task_group;
  
- 	pci_set_flags(PCI_PROBE_ONLY);
+ #define task_is_stopped_or_traced(task)	((task->state & (__TASK_STOPPED | __TASK_TRACED)) != 0)
  
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index ce61e3e7d399..81ffcfbfaef2 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -2316,12 +2316,12 @@ static int mp_irqdomain_create(int ioapic)
- 	ip->irqdomain = irq_domain_create_linear(fn, hwirqs, cfg->ops,
- 						 (void *)(long)ioapic);
- 
--	/* Release fw handle if it was allocated above */
--	if (!cfg->dev)
--		irq_domain_free_fwnode(fn);
+-#define task_contributes_to_load(task)	((task->state & TASK_UNINTERRUPTIBLE) != 0 && \
+-					 (task->flags & PF_FROZEN) == 0 && \
+-					 (task->state & TASK_NOLOAD) == 0)
 -
--	if (!ip->irqdomain)
-+	if (!ip->irqdomain) {
-+		/* Release fw handle if it was allocated above */
-+		if (!cfg->dev)
-+			irq_domain_free_fwnode(fn);
- 		return -ENOMEM;
-+	}
+ #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
  
- 	ip->irqdomain->parent = parent;
+ /*
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index ca5db40392d4..e15543cb8481 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1311,9 +1311,6 @@ static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
  
-diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 5cbaca58af95..c2b2911feeef 100644
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -263,12 +263,13 @@ void __init arch_init_msi_domain(struct irq_domain *parent)
- 		msi_default_domain =
- 			pci_msi_create_irq_domain(fn, &pci_msi_domain_info,
- 						  parent);
--		irq_domain_free_fwnode(fn);
- 	}
--	if (!msi_default_domain)
-+	if (!msi_default_domain) {
-+		irq_domain_free_fwnode(fn);
- 		pr_warn("failed to initialize irqdomain for MSI/MSI-x.\n");
--	else
-+	} else {
- 		msi_default_domain->flags |= IRQ_DOMAIN_MSI_NOMASK_QUIRK;
-+	}
+ void activate_task(struct rq *rq, struct task_struct *p, int flags)
+ {
+-	if (task_contributes_to_load(p))
+-		rq->nr_uninterruptible--;
+-
+ 	enqueue_task(rq, p, flags);
+ 
+ 	p->on_rq = TASK_ON_RQ_QUEUED;
+@@ -1323,9 +1320,6 @@ void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
+ {
+ 	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
+ 
+-	if (task_contributes_to_load(p))
+-		rq->nr_uninterruptible++;
+-
+ 	dequeue_task(rq, p, flags);
  }
  
- #ifdef CONFIG_IRQ_REMAP
-@@ -301,7 +302,8 @@ struct irq_domain *arch_create_remap_msi_irq_domain(struct irq_domain *parent,
- 	if (!fn)
- 		return NULL;
- 	d = pci_msi_create_irq_domain(fn, &pci_msi_ir_domain_info, parent);
--	irq_domain_free_fwnode(fn);
-+	if (!d)
-+		irq_domain_free_fwnode(fn);
- 	return d;
- }
+@@ -2236,10 +2230,10 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+ 
+ 	lockdep_assert_held(&rq->lock);
+ 
+-#ifdef CONFIG_SMP
+ 	if (p->sched_contributes_to_load)
+ 		rq->nr_uninterruptible--;
+ 
++#ifdef CONFIG_SMP
+ 	if (wake_flags & WF_MIGRATED)
+ 		en_flags |= ENQUEUE_MIGRATED;
  #endif
-@@ -364,7 +366,8 @@ static struct irq_domain *dmar_get_irq_domain(void)
- 	if (fn) {
- 		dmar_domain = msi_create_irq_domain(fn, &dmar_msi_domain_info,
- 						    x86_vector_domain);
--		irq_domain_free_fwnode(fn);
-+		if (!dmar_domain)
-+			irq_domain_free_fwnode(fn);
+@@ -2583,7 +2577,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
+ 	 */
+ 	smp_rmb();
+-	if (p->on_rq && ttwu_remote(p, wake_flags))
++	if (READ_ONCE(p->on_rq) && ttwu_remote(p, wake_flags))
+ 		goto unlock;
+ 
+ 	if (p->in_iowait) {
+@@ -2592,9 +2586,6 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	}
- out:
- 	mutex_unlock(&dmar_lock);
-@@ -489,7 +492,10 @@ struct irq_domain *hpet_create_irq_domain(int hpet_id)
- 	}
  
- 	d = msi_create_irq_domain(fn, domain_info, parent);
--	irq_domain_free_fwnode(fn);
-+	if (!d) {
-+		irq_domain_free_fwnode(fn);
-+		kfree(domain_info);
-+	}
- 	return d;
- }
- 
-diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-index c48be6e1f676..7649da2478d8 100644
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -446,12 +446,10 @@ static int x86_vector_activate(struct irq_domain *dom, struct irq_data *irqd,
- 	trace_vector_activate(irqd->irq, apicd->is_managed,
- 			      apicd->can_reserve, reserve);
- 
--	/* Nothing to do for fixed assigned vectors */
--	if (!apicd->can_reserve && !apicd->is_managed)
--		return 0;
+ #ifdef CONFIG_SMP
+-	p->sched_contributes_to_load = !!task_contributes_to_load(p);
+-	p->state = TASK_WAKING;
 -
- 	raw_spin_lock_irqsave(&vector_lock, flags);
--	if (reserve || irqd_is_managed_and_shutdown(irqd))
-+	if (!apicd->can_reserve && !apicd->is_managed)
-+		assign_irq_vector_any_locked(irqd);
-+	else if (reserve || irqd_is_managed_and_shutdown(irqd))
- 		vector_assign_managed_shutdown(irqd);
- 	else if (apicd->is_managed)
- 		ret = activate_managed(irqd);
-@@ -709,7 +707,6 @@ int __init arch_early_irq_init(void)
- 	x86_vector_domain = irq_domain_create_tree(fn, &x86_vector_domain_ops,
- 						   NULL);
- 	BUG_ON(x86_vector_domain == NULL);
--	irq_domain_free_fwnode(fn);
- 	irq_set_default_host(x86_vector_domain);
- 
- 	arch_init_msi_domain(x86_vector_domain);
-@@ -775,20 +772,10 @@ void lapic_offline(void)
- static int apic_set_affinity(struct irq_data *irqd,
- 			     const struct cpumask *dest, bool force)
- {
--	struct apic_chip_data *apicd = apic_chip_data(irqd);
- 	int err;
- 
--	/*
--	 * Core code can call here for inactive interrupts. For inactive
--	 * interrupts which use managed or reservation mode there is no
--	 * point in going through the vector assignment right now as the
--	 * activation will assign a vector which fits the destination
--	 * cpumask. Let the core code store the destination mask and be
--	 * done with it.
--	 */
--	if (!irqd_is_activated(irqd) &&
--	    (apicd->is_managed || apicd->can_reserve))
--		return IRQ_SET_MASK_OK;
-+	if (WARN_ON_ONCE(!irqd_is_activated(irqd)))
-+		return -EIO;
- 
- 	raw_spin_lock(&vector_lock);
- 	cpumask_and(vector_searchmask, dest, cpu_online_mask);
-diff --git a/arch/x86/platform/uv/uv_irq.c b/arch/x86/platform/uv/uv_irq.c
-index fc13cbbb2dce..abb6075397f0 100644
---- a/arch/x86/platform/uv/uv_irq.c
-+++ b/arch/x86/platform/uv/uv_irq.c
-@@ -167,9 +167,10 @@ static struct irq_domain *uv_get_irq_domain(void)
- 		goto out;
- 
- 	uv_domain = irq_domain_create_tree(fn, &uv_domain_ops, NULL);
--	irq_domain_free_fwnode(fn);
- 	if (uv_domain)
- 		uv_domain->parent = x86_vector_domain;
-+	else
-+		irq_domain_free_fwnode(fn);
- out:
- 	mutex_unlock(&uv_lock);
- 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 74cca1757172..2f22326ee4df 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3985,9 +3985,10 @@ int amd_iommu_create_irq_domain(struct amd_iommu *iommu)
- 	if (!fn)
- 		return -ENOMEM;
- 	iommu->ir_domain = irq_domain_create_tree(fn, &amd_ir_domain_ops, iommu);
--	irq_domain_free_fwnode(fn);
--	if (!iommu->ir_domain)
-+	if (!iommu->ir_domain) {
-+		irq_domain_free_fwnode(fn);
- 		return -ENOMEM;
-+	}
- 
- 	iommu->ir_domain->parent = arch_get_ir_parent_domain();
- 	iommu->msi_domain = arch_create_remap_msi_irq_domain(iommu->ir_domain,
-diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-index 3c0c67a99c7b..8919c1c70b68 100644
---- a/drivers/iommu/hyperv-iommu.c
-+++ b/drivers/iommu/hyperv-iommu.c
-@@ -155,7 +155,10 @@ static int __init hyperv_prepare_irq_remapping(void)
- 				0, IOAPIC_REMAPPING_ENTRY, fn,
- 				&hyperv_ir_domain_ops, NULL);
- 
--	irq_domain_free_fwnode(fn);
-+	if (!ioapic_ir_domain) {
-+		irq_domain_free_fwnode(fn);
-+		return -ENOMEM;
-+	}
- 
  	/*
- 	 * Hyper-V doesn't provide irq remapping function for
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index 7f8769800815..9564d23d094f 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -563,8 +563,8 @@ static int intel_setup_irq_remapping(struct intel_iommu *iommu)
- 					    0, INTR_REMAP_TABLE_ENTRIES,
- 					    fn, &intel_ir_domain_ops,
- 					    iommu);
--	irq_domain_free_fwnode(fn);
- 	if (!iommu->ir_domain) {
-+		irq_domain_free_fwnode(fn);
- 		pr_err("IR%d: failed to allocate irqdomain\n", iommu->seq_id);
- 		goto out_free_bitmap;
- 	}
-diff --git a/drivers/mfd/ioc3.c b/drivers/mfd/ioc3.c
-index 02998d4eb74b..74cee7cb0afc 100644
---- a/drivers/mfd/ioc3.c
-+++ b/drivers/mfd/ioc3.c
-@@ -142,10 +142,11 @@ static int ioc3_irq_domain_setup(struct ioc3_priv_data *ipd, int irq)
- 		goto err;
- 
- 	domain = irq_domain_create_linear(fn, 24, &ioc3_irq_domain_ops, ipd);
--	if (!domain)
-+	if (!domain) {
-+		irq_domain_free_fwnode(fn);
- 		goto err;
-+	}
- 
--	irq_domain_free_fwnode(fn);
- 	ipd->domain = domain;
- 
- 	irq_set_chained_handler_and_data(irq, ioc3_irq_handler, domain);
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index e386d4eac407..9a64cf90c291 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -546,9 +546,10 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
- 
- 	vmd->irq_domain = pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
- 						    x86_vector_domain);
--	irq_domain_free_fwnode(fn);
--	if (!vmd->irq_domain)
-+	if (!vmd->irq_domain) {
-+		irq_domain_free_fwnode(fn);
- 		return -ENODEV;
-+	}
- 
- 	pci_add_resource(&resources, &vmd->resources[0]);
- 	pci_add_resource_offset(&resources, &vmd->resources[1], offset[0]);
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 761911168438..2a9fec53e159 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -195,9 +195,9 @@ void irq_set_thread_affinity(struct irq_desc *desc)
- 			set_bit(IRQTF_AFFINITY, &action->thread_flags);
- }
- 
-+#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- static void irq_validate_effective_affinity(struct irq_data *data)
- {
--#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 	const struct cpumask *m = irq_data_get_effective_affinity_mask(data);
- 	struct irq_chip *chip = irq_data_get_irq_chip(data);
- 
-@@ -205,9 +205,19 @@ static void irq_validate_effective_affinity(struct irq_data *data)
- 		return;
- 	pr_warn_once("irq_chip %s did not update eff. affinity mask of irq %u\n",
- 		     chip->name, data->irq);
--#endif
- }
- 
-+static inline void irq_init_effective_affinity(struct irq_data *data,
-+					       const struct cpumask *mask)
-+{
-+	cpumask_copy(irq_data_get_effective_affinity_mask(data), mask);
-+}
-+#else
-+static inline void irq_validate_effective_affinity(struct irq_data *data) { }
-+static inline void irq_init_effective_affinity(struct irq_data *data,
-+					       const struct cpumask *mask) { }
-+#endif
-+
- int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
- 			bool force)
- {
-@@ -304,6 +314,26 @@ static int irq_try_set_affinity(struct irq_data *data,
- 	return ret;
- }
- 
-+static bool irq_set_affinity_deactivated(struct irq_data *data,
-+					 const struct cpumask *mask, bool force)
-+{
-+	struct irq_desc *desc = irq_data_to_desc(data);
+ 	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+ 	 * possible to, falsely, observe p->on_cpu == 0.
+@@ -2613,8 +2604,20 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	 *
+ 	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+ 	 * __schedule().  See the comment for smp_mb__after_spinlock().
++	 *
++	 * Form a control-dep-acquire with p->on_rq == 0 above, to ensure
++	 * schedule()'s deactivate_task() has 'happened' and p will no longer
++	 * care about it's own p->state. See the comment in __schedule().
+ 	 */
+-	smp_rmb();
++	smp_acquire__after_ctrl_dep();
 +
 +	/*
-+	 * If the interrupt is not yet activated, just store the affinity
-+	 * mask and do not call the chip driver at all. On activation the
-+	 * driver has to make sure anyway that the interrupt is in a
-+	 * useable state so startup works.
++	 * We're doing the wakeup (@success == 1), they did a dequeue (p->on_rq
++	 * == 0), which means we need to do an enqueue, change p->state to
++	 * TASK_WAKING such that we can unlock p->pi_lock before doing the
++	 * enqueue, such as ttwu_queue_wakelist().
 +	 */
-+	if (!IS_ENABLED(CONFIG_IRQ_DOMAIN_HIERARCHY) || irqd_is_activated(data))
-+		return false;
-+
-+	cpumask_copy(desc->irq_common_data.affinity, mask);
-+	irq_init_effective_affinity(data, mask);
-+	irqd_set(data, IRQD_AFFINITY_SET);
-+	return true;
-+}
-+
- int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,
- 			    bool force)
- {
-@@ -314,6 +344,9 @@ int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,
- 	if (!chip || !chip->irq_set_affinity)
- 		return -EINVAL;
++	p->state = TASK_WAKING;
  
-+	if (irq_set_affinity_deactivated(data, mask, force))
-+		return 0;
+ 	/*
+ 	 * If the owning (remote) CPU is still in the middle of schedule() with
+@@ -2962,6 +2965,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	 * Silence PROVE_RCU.
+ 	 */
+ 	raw_spin_lock_irqsave(&p->pi_lock, flags);
++	rseq_migrate(p);
+ 	/*
+ 	 * We're setting the CPU for the first time, we don't migrate,
+ 	 * so use __set_task_cpu().
+@@ -3026,6 +3030,7 @@ void wake_up_new_task(struct task_struct *p)
+ 	 * as we're not fully set-up yet.
+ 	 */
+ 	p->recent_used_cpu = task_cpu(p);
++	rseq_migrate(p);
+ 	__set_task_cpu(p, select_task_rq(p, task_cpu(p), SD_BALANCE_FORK, 0));
+ #endif
+ 	rq = __task_rq_lock(p, &rf);
+@@ -4097,6 +4102,7 @@ static void __sched notrace __schedule(bool preempt)
+ {
+ 	struct task_struct *prev, *next;
+ 	unsigned long *switch_count;
++	unsigned long prev_state;
+ 	struct rq_flags rf;
+ 	struct rq *rq;
+ 	int cpu;
+@@ -4113,12 +4119,22 @@ static void __sched notrace __schedule(bool preempt)
+ 	local_irq_disable();
+ 	rcu_note_context_switch(preempt);
+ 
++	/* See deactivate_task() below. */
++	prev_state = prev->state;
 +
- 	if (irq_can_move_pcntxt(data) && !irqd_is_setaffinity_pending(data)) {
- 		ret = irq_try_set_affinity(data, mask, force);
- 	} else {
+ 	/*
+ 	 * Make sure that signal_pending_state()->signal_pending() below
+ 	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+-	 * done by the caller to avoid the race with signal_wake_up().
++	 * done by the caller to avoid the race with signal_wake_up():
++	 *
++	 * __set_current_state(@state)		signal_wake_up()
++	 * schedule()				  set_tsk_thread_flag(p, TIF_SIGPENDING)
++	 *					  wake_up_state(p, state)
++	 *   LOCK rq->lock			    LOCK p->pi_state
++	 *   smp_mb__after_spinlock()		    smp_mb__after_spinlock()
++	 *     if (signal_pending_state())	    if (p->state & @state)
+ 	 *
+-	 * The membarrier system call requires a full memory barrier
++	 * Also, the membarrier system call requires a full memory barrier
+ 	 * after coming from user-space, before storing to rq->curr.
+ 	 */
+ 	rq_lock(rq, &rf);
+@@ -4129,10 +4145,31 @@ static void __sched notrace __schedule(bool preempt)
+ 	update_rq_clock(rq);
+ 
+ 	switch_count = &prev->nivcsw;
+-	if (!preempt && prev->state) {
+-		if (signal_pending_state(prev->state, prev)) {
++	/*
++	 * We must re-load prev->state in case ttwu_remote() changed it
++	 * before we acquired rq->lock.
++	 */
++	if (!preempt && prev_state && prev_state == prev->state) {
++		if (signal_pending_state(prev_state, prev)) {
+ 			prev->state = TASK_RUNNING;
+ 		} else {
++			prev->sched_contributes_to_load =
++				(prev_state & TASK_UNINTERRUPTIBLE) &&
++				!(prev_state & TASK_NOLOAD) &&
++				!(prev->flags & PF_FROZEN);
++
++			if (prev->sched_contributes_to_load)
++				rq->nr_uninterruptible++;
++
++			/*
++			 * __schedule()			ttwu()
++			 *   prev_state = prev->state;	  if (READ_ONCE(p->on_rq) && ...)
++			 *   LOCK rq->lock		    goto out;
++			 *   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
++			 *   p->on_rq = 0;		  p->state = TASK_WAKING;
++			 *
++			 * After this, schedule() must not care about p->state any more.
++			 */
+ 			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
+ 
+ 			if (prev->in_iowait) {
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 658aa7a2ae6f..04fa8dbcfa4d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4039,7 +4039,11 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+ 		return;
+ 	}
+ 
+-	rq->misfit_task_load = task_h_load(p);
++	/*
++	 * Make sure that misfit_task_load will not be null even if
++	 * task_h_load() returns 0.
++	 */
++	rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
+ }
+ 
+ #else /* CONFIG_SMP */
+@@ -7638,7 +7642,14 @@ static int detach_tasks(struct lb_env *env)
+ 
+ 		switch (env->migration_type) {
+ 		case migrate_load:
+-			load = task_h_load(p);
++			/*
++			 * Depending of the number of CPUs and tasks and the
++			 * cgroup hierarchy, task_h_load() can return a null
++			 * value. Make sure that env->imbalance decreases
++			 * otherwise detach_tasks() will stop only after
++			 * detaching up to loop_max tasks.
++			 */
++			load = max_t(unsigned long, task_h_load(p), 1);
+ 
+ 			if (sched_feat(LB_MIN) &&
+ 			    load < 16 && !env->sd->nr_balance_failed)
 
