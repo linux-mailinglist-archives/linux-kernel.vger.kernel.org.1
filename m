@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA44D225375
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 20:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A260022537C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 20:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgGSSR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 14:17:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39120 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgGSSR4 (ORCPT
+        id S1726505AbgGSSZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 14:25:46 -0400
+Received: from mail.stusta.mhn.de ([141.84.69.5]:53070 "EHLO
+        mail.stusta.mhn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgGSSZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 14:17:56 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jxDsQ-0003b6-HU; Sun, 19 Jul 2020 18:17:30 +0000
-Date:   Sun, 19 Jul 2020 20:17:29 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Adrian Reber <areber@redhat.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Christine Flood <chf@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 0/7] capabilities: Introduce CAP_CHECKPOINT_RESTORE
-Message-ID: <20200719181729.6f37lilhvov5a74f@wittgenstein>
-References: <20200719100418.2112740-1-areber@redhat.com>
+        Sun, 19 Jul 2020 14:25:45 -0400
+X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Jul 2020 14:25:44 EDT
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        by mail.stusta.mhn.de (Postfix) with ESMTPSA id 4B8tRZ0r2bz3H;
+        Sun, 19 Jul 2020 20:19:21 +0200 (CEST)
+Date:   Sun, 19 Jul 2020 21:19:19 +0300
+From:   Adrian Bunk <bunk@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Linux kernel in-tree Rust support
+Message-ID: <20200719181919.GA4179@localhost>
+References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+ <20200712123151.GB25970@localhost>
+ <20200712193944.GA81641@localhost>
+ <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200719100418.2112740-1-areber@redhat.com>
+In-Reply-To: <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 12:04:10PM +0200, Adrian Reber wrote:
-> This is v6 of the 'Introduce CAP_CHECKPOINT_RESTORE' patchset. The
-> changes to v5 are:
+On Thu, Jul 16, 2020 at 03:06:01PM +0200, Arnd Bergmann wrote:
 > 
->  * split patch dealing with /proc/self/exe into two patches:
->    * first patch to enable changing it with CAP_CHECKPOINT_RESTORE
->      and detailed history in the commit message
->    * second patch changes -EINVAL to -EPERM
->  * use kselftest_harness.h infrastructure for test
->  * replace if (!capable(CAP_SYS_ADMIN) || !capable(CAP_CHECKPOINT_RESTORE))
->    with if (!checkpoint_restore_ns_capable(&init_user_ns))
+> I would expect we'd want a fairly tight coupling between kernel
+> releases and minimum rust releases at first. Whatever is the latest
+> stable rust version during the kernel's merge window might be
+> assumed to be the minimum version for the life of that kernel, but
+> an LTS release would not suddenly start relying on features
+> from a newer compiler (thought it might warn about known bugs).
 > 
-> Adrian Reber (5):
->   capabilities: Introduce CAP_CHECKPOINT_RESTORE
->   pid: use checkpoint_restore_ns_capable() for set_tid
->   pid_namespace: use checkpoint_restore_ns_capable() for ns_last_pid
->   proc: allow access in init userns for map_files with
->     CAP_CHECKPOINT_RESTORE
->   selftests: add clone3() CAP_CHECKPOINT_RESTORE test
-> 
-> Nicolas Viennot (2):
->   prctl: Allow local CAP_CHECKPOINT_RESTORE to change /proc/self/exe
->   prctl: exe link permission error changed from -EINVAL to -EPERM
-> 
->  fs/proc/base.c                                |   8 +-
->  include/linux/capability.h                    |   6 +
->  include/uapi/linux/capability.h               |   9 +-
->  kernel/pid.c                                  |   2 +-
->  kernel/pid_namespace.c                        |   2 +-
->  kernel/sys.c                                  |  13 +-
->  security/selinux/include/classmap.h           |   5 +-
->  tools/testing/selftests/clone3/.gitignore     |   1 +
->  tools/testing/selftests/clone3/Makefile       |   4 +-
->  .../clone3/clone3_cap_checkpoint_restore.c    | 177 ++++++++++++++++++
->  10 files changed, 212 insertions(+), 15 deletions(-)
->  create mode 100644 tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-> 
-> base-commit: d31958b30ea3b7b6e522d6bf449427748ad45822
+> This might mean that linux-next requires a beta version of rust, if
+> the release is expected before the merge window and it contains
+> an important change.
 
-Adrian, Nicolas thank you!
-I grabbed the series to run the various core test-suites we've added
-over the last year and pushed it to
-https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=cap_checkpoint_restore
-for now to let kbuild/ltp chew on it for a bit.
+I would expect this is absolutely not wanted,
+it would make testing recent kernels very hard.
 
-Thanks!
-Christian
+If you want to keep a tool that tightly to the kernel,
+please bundle it with the kernel and build it as part
+of the kernel build.
+
+I would suggest to start with a proper design/specification what the 
+kernel wants to use, so that you are confident that a compiler 
+implementing this will be sufficient for the next 5 years.
+
+As a secondary benefit, starting with a proper design often brings
+a better result than adding permanent features piece by piece.
+
+As a tertiary benefit, it would avoid tying the kernel to one specific 
+compiler implementation. A compiler like mrustc or a hypothetical Rust 
+frontend for gcc could then implement a superset of what the kernel 
+needs.
+
+> Staying with fairly recent versions of clang
+> certainly helped in getting clang and the kernel to co-evolve and
+> get to the point we are now in using it as an alternative to gcc.
+
+The main difference is between an alternative to an existing tool,
+and a mandatory new tool.
+
+> While Linux used to build with 12 year old compilers (4.1 until
+> 2018), we now require a 6 year old gcc (4.9) or 1 year old
+> clang/llvm. I don't know whether these will fully converge over
+> time but it seems sensible that the minimum rust frontend version
+> we require for a new kernel release would eventually also fall
+> in that range, requiring a compiler that is no more than a few
+> years old, but not requiring the latest stable release.
+
+The correct range for a mandatory tool are the 6 to 12 years for gcc.
+
+Debian stable and Ubuntu LTS are providing (different) mechanisms
+for installing the kernel from the next stable/LTS release 2 years
+later[1] for supporting new hardware.
+If kernel 5.12 LTS cannot be compiled on Ubuntu 20.04 LTS with
+the 2019 gcc 9 there would be pain downstream.
+
+In the embedded world spreads far wider than these 3 years are common.
+I would currently have a real-life usecase for compiling a recent
+kernel with a gcc 4.0 (sic) toolchain.
+Properly supporting 15 year old toolchains would be painful upstream,
+supporting 6 year old toolchains is a reasonable compromise between
+not being too painful upstream while rarely causing pain downstream.
+
+What applies to gcc does also apply to other external tools used
+during the kernel build.
+
+>       Arnd
+
+cu
+Adrian
+
+[1] following a new upstream kernel stable branch every 6 months (Ubuntu)
+    or the latest upstream stable kernels (Debian) until this is reached
