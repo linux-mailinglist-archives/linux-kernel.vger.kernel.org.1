@@ -2,764 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6448224FD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 07:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8465B224FD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 07:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgGSFky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 01:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgGSFkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 01:40:53 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCE8820734;
-        Sun, 19 Jul 2020 05:40:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595137251;
-        bh=O2zxmvqXQCGVdbveF7s+vXFAkhcI7jUOrG1xBYwB7uY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AloXYMxNu2skO9C6OEkrEpQNGd9J0cB2jDM5Ys0Or/6fkLlm2lMuANXP/DhecNO7L
-         mcn2TGSqOv/uv31eqgDui/1KRkB7rsNE+9Jvvj9cbAOc2VRV1BgTiKysNPjHEutqLl
-         ZTJ5ESMnQta3xzyReM23Pj1V1zI/XiKrcT/ixjEk=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jx248-007nUq-98; Sun, 19 Jul 2020 07:40:48 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH] media: atomisp: move system_local consts into a C file
-Date:   Sun, 19 Jul 2020 07:40:47 +0200
-Message-Id: <955bf4d69923df789bd913e988d1486e4f7476ab.1595137236.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726330AbgGSFo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 01:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgGSFo1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 01:44:27 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756FCC0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 22:44:27 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a14so7429210pfi.2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 22:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AyFRPd1KqAbJdK62U99Tk4B0iYN4wPv7oVxjjBvR+KE=;
+        b=jV22vwSG6dcFHuT7GYez0ARiif9z2x5vdRW2U7MxbX2PIWs82Y2UA0LILo1r/ksBkg
+         hyIj7TGEc3F2a+jszVtQyXp39d+yUVN9/MG6myjjhkVhCmiwCOYtUIAbR6M2RVtWv88x
+         9+bDPR4IYuO4De9frT3ebHUDpzYeUWOt6iFch9vWMJswtVvXCH/Ur5rKku2jzmV3sF4T
+         O4mrNZTcGscxbcoTmpbjiV9/FT9PYWakEPesbn/PlYM5+b7BDREtfUad9fPSKwbBWSmF
+         iDLfSNtSvB5t/woG0Jwrdb5zw2JyxpXxV7B+/dkJ9PS8RtC0KPHdRNvdAvD3xaJMJSmk
+         Pejg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AyFRPd1KqAbJdK62U99Tk4B0iYN4wPv7oVxjjBvR+KE=;
+        b=KLykWD+rnA6IYHAKcVkLY1L1aDEJJDioepQ55JGLmfdzc7fFKXNv3DINduS8smM84c
+         Z5fDsAKwxJvnygF5Id5VSU7H9NaU+ZbvldJzwBbEM4LQAkWsLnGSkFyu7UpIgDn/yl7d
+         74EEH73EzUIShR9XmLJGP67pEVNL/PkoOzNpn1c3F6txsliwyyo+ccZLzkClkeMQor6b
+         XBUp8suoUP+yX7zN74x8POUc0pqSqK15a2JtmQUzTQh64HL5P1alHeZjyalFmgnD8hgT
+         57kDIHtEorO3DLA5s/do/jzOY/UKgzzZmlMAxxicWMte+VLdAGgbrFzKppBSzmw1E9YV
+         5Y8A==
+X-Gm-Message-State: AOAM531GHyq2v+iQuGxK8JY3iNd+MVWdjjdg+nEgDn53AKsd6/4VKejL
+        nl3+yVNy9T+M6Rb3ZyrfnSkRCnWflL0=
+X-Google-Smtp-Source: ABdhPJwe25PkmSdtqQJnV2SBBq7sAbbmcQFZ4dEOa9/YxfarO35nCykbdoUrs2kgzJA9fqLRnrCR7Q==
+X-Received: by 2002:a62:8848:: with SMTP id l69mr14135010pfd.314.1595137466463;
+        Sat, 18 Jul 2020 22:44:26 -0700 (PDT)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:1:a6ae:11ff:fe18:6ce2])
+        by smtp.gmail.com with ESMTPSA id l207sm12573821pfd.79.2020.07.18.22.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 22:44:25 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH 1/2] f2fs: add sysfs symbolic link to kobject with volume name
+Date:   Sun, 19 Jul 2020 14:44:08 +0900
+Message-Id: <20200719054409.3050516-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of declaring all those consts everywhere when the
-headers are included, just place them on a single place.
+From: Daeho Jeong <daehojeong@google.com>
 
-This change shuts up lots of warnings when built with W=1:
+Added a symbolic link directory pointing to its device name
+directory using the volume name of the partition in sysfs.
+(i.e., /sys/fs/f2fs/vol_#x -> /sys/fs/f2fs/sda1)
+"vol" is the volume name of the partition, "#x" is the number
+representing the order of mounting with the same volume name.
+We allow the volume name duplication within 100, which means the
+range of #x should be 0 ~ 99. Once one mount point was umounted,
+that sequential number #x in "vol_#x" could be reused by later
+newly mounted point.
 
-In file included from drivers/staging/media/atomisp/pci/ia_css_acc_types.h:23,
-                 from drivers/staging/media/atomisp/pci/ia_css.h:26,
-                 from drivers/staging/media/atomisp/pci/atomisp_compat_css20.h:24,
-                 from drivers/staging/media/atomisp/pci/atomisp_compat.h:22,
-                 from drivers/staging/media/atomisp/pci/atomisp_drvfs.c:23:
-./drivers/staging/media/atomisp//pci/system_local.h:193:26: warning: ‘STREAM2MMIO_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  193 | static const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:186:26: warning: ‘PIXELGEN_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  186 | static const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:179:26: warning: ‘CSI_RX_BE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  179 | static const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:172:26: warning: ‘CSI_RX_FE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  172 | static const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:165:26: warning: ‘ISYS_IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-  165 | static const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:158:26: warning: ‘IBUF_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  158 | static const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:153:26: warning: ‘RX_BASE’ defined but not used [-Wunused-const-variable=]
-  153 | static const hrt_address RX_BASE[N_RX_ID] = {
-      |                          ^~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:138:26: warning: ‘INPUT_SYSTEM_BASE’ defined but not used [-Wunused-const-variable=]
-  138 | static const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:130:26: warning: ‘INPUT_FORMATTER_BASE’ defined but not used [-Wunused-const-variable=]
-  130 | static const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:125:26: warning: ‘TIMED_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  125 | static const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:120:26: warning: ‘GPIO_BASE’ defined but not used [-Wunused-const-variable=]
-  120 | static const hrt_address GPIO_BASE[N_GPIO_ID] = {
-      |                          ^~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:116:26: warning: ‘GP_TIMER_BASE’ defined but not used [-Wunused-const-variable=]
-  116 | static const hrt_address GP_TIMER_BASE =
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:109:26: warning: ‘GP_DEVICE_BASE’ defined but not used [-Wunused-const-variable=]
-  109 | static const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:96:26: warning: ‘FIFO_MONITOR_BASE’ defined but not used [-Wunused-const-variable=]
-   96 | static const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:90:26: warning: ‘GDC_BASE’ defined but not used [-Wunused-const-variable=]
-   90 | static const hrt_address GDC_BASE[N_GDC_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:78:26: warning: ‘IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-   78 | static const hrt_address IRQ_BASE[N_IRQ_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:73:26: warning: ‘ISYS2401_DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   73 | static const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:69:26: warning: ‘DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   69 | static const hrt_address DMA_BASE[N_DMA_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:63:26: warning: ‘MMU_BASE’ defined but not used [-Wunused-const-variable=]
-   63 | static const hrt_address MMU_BASE[N_MMU_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:54:26: warning: ‘SP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   54 | static const hrt_address SP_DMEM_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:50:26: warning: ‘SP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   50 | static const hrt_address SP_CTRL_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:45:26: warning: ‘ISP_BAMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   45 | static const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:41:26: warning: ‘ISP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   41 | static const hrt_address ISP_DMEM_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:37:26: warning: ‘ISP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   37 | static const hrt_address ISP_CTRL_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-In file included from drivers/staging/media/atomisp/pci/ia_css_acc_types.h:23,
-                 from drivers/staging/media/atomisp/pci/ia_css.h:26,
-                 from drivers/staging/media/atomisp/pci/atomisp_file.c:27:
-./drivers/staging/media/atomisp//pci/system_local.h:193:26: warning: ‘STREAM2MMIO_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  193 | static const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:186:26: warning: ‘PIXELGEN_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  186 | static const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:179:26: warning: ‘CSI_RX_BE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  179 | static const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:172:26: warning: ‘CSI_RX_FE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  172 | static const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:165:26: warning: ‘ISYS_IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-  165 | static const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:158:26: warning: ‘IBUF_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  158 | static const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:153:26: warning: ‘RX_BASE’ defined but not used [-Wunused-const-variable=]
-  153 | static const hrt_address RX_BASE[N_RX_ID] = {
-      |                          ^~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:138:26: warning: ‘INPUT_SYSTEM_BASE’ defined but not used [-Wunused-const-variable=]
-  138 | static const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:130:26: warning: ‘INPUT_FORMATTER_BASE’ defined but not used [-Wunused-const-variable=]
-  130 | static const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:125:26: warning: ‘TIMED_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  125 | static const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:120:26: warning: ‘GPIO_BASE’ defined but not used [-Wunused-const-variable=]
-  120 | static const hrt_address GPIO_BASE[N_GPIO_ID] = {
-      |                          ^~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:116:26: warning: ‘GP_TIMER_BASE’ defined but not used [-Wunused-const-variable=]
-  116 | static const hrt_address GP_TIMER_BASE =
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:109:26: warning: ‘GP_DEVICE_BASE’ defined but not used [-Wunused-const-variable=]
-  109 | static const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:96:26: warning: ‘FIFO_MONITOR_BASE’ defined but not used [-Wunused-const-variable=]
-   96 | static const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:90:26: warning: ‘GDC_BASE’ defined but not used [-Wunused-const-variable=]
-   90 | static const hrt_address GDC_BASE[N_GDC_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:78:26: warning: ‘IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-   78 | static const hrt_address IRQ_BASE[N_IRQ_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:73:26: warning: ‘ISYS2401_DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   73 | static const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:69:26: warning: ‘DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   69 | static const hrt_address DMA_BASE[N_DMA_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:63:26: warning: ‘MMU_BASE’ defined but not used [-Wunused-const-variable=]
-   63 | static const hrt_address MMU_BASE[N_MMU_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:54:26: warning: ‘SP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   54 | static const hrt_address SP_DMEM_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:50:26: warning: ‘SP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   50 | static const hrt_address SP_CTRL_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:45:26: warning: ‘ISP_BAMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   45 | static const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:41:26: warning: ‘ISP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   41 | static const hrt_address ISP_DMEM_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:37:26: warning: ‘ISP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   37 | static const hrt_address ISP_CTRL_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-In file included from ./drivers/staging/media/atomisp//pci/ia_css_acc_types.h:23,
-                 from ./drivers/staging/media/atomisp//pci/ia_css_pipe_public.h:29,
-                 from drivers/staging/media/atomisp/pci/sh_css_legacy.h:23,
-                 from drivers/staging/media/atomisp/pci/atomisp_internal.h:34,
-                 from drivers/staging/media/atomisp/pci/atomisp_cmd.h:30,
-                 from drivers/staging/media/atomisp/pci/atomisp_csi2.c:21:
-./drivers/staging/media/atomisp//pci/system_local.h:193:26: warning: ‘STREAM2MMIO_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  193 | static const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:186:26: warning: ‘PIXELGEN_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  186 | static const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:179:26: warning: ‘CSI_RX_BE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  179 | static const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:172:26: warning: ‘CSI_RX_FE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  172 | static const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:165:26: warning: ‘ISYS_IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-  165 | static const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:158:26: warning: ‘IBUF_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  158 | static const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:153:26: warning: ‘RX_BASE’ defined but not used [-Wunused-const-variable=]
-  153 | static const hrt_address RX_BASE[N_RX_ID] = {
-      |                          ^~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:138:26: warning: ‘INPUT_SYSTEM_BASE’ defined but not used [-Wunused-const-variable=]
-  138 | static const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:130:26: warning: ‘INPUT_FORMATTER_BASE’ defined but not used [-Wunused-const-variable=]
-  130 | static const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:125:26: warning: ‘TIMED_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  125 | static const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:120:26: warning: ‘GPIO_BASE’ defined but not used [-Wunused-const-variable=]
-  120 | static const hrt_address GPIO_BASE[N_GPIO_ID] = {
-      |                          ^~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:116:26: warning: ‘GP_TIMER_BASE’ defined but not used [-Wunused-const-variable=]
-  116 | static const hrt_address GP_TIMER_BASE =
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:109:26: warning: ‘GP_DEVICE_BASE’ defined but not used [-Wunused-const-variable=]
-  109 | static const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:96:26: warning: ‘FIFO_MONITOR_BASE’ defined but not used [-Wunused-const-variable=]
-   96 | static const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:90:26: warning: ‘GDC_BASE’ defined but not used [-Wunused-const-variable=]
-   90 | static const hrt_address GDC_BASE[N_GDC_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:78:26: warning: ‘IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-   78 | static const hrt_address IRQ_BASE[N_IRQ_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:73:26: warning: ‘ISYS2401_DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   73 | static const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:69:26: warning: ‘DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   69 | static const hrt_address DMA_BASE[N_DMA_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:63:26: warning: ‘MMU_BASE’ defined but not used [-Wunused-const-variable=]
-   63 | static const hrt_address MMU_BASE[N_MMU_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:54:26: warning: ‘SP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   54 | static const hrt_address SP_DMEM_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:50:26: warning: ‘SP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   50 | static const hrt_address SP_CTRL_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:45:26: warning: ‘ISP_BAMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   45 | static const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:41:26: warning: ‘ISP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   41 | static const hrt_address ISP_DMEM_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:37:26: warning: ‘ISP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   37 | static const hrt_address ISP_CTRL_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-In file included from ./drivers/staging/media/atomisp//pci/ia_css_acc_types.h:23,
-                 from ./drivers/staging/media/atomisp//pci/ia_css_pipe_public.h:29,
-                 from drivers/staging/media/atomisp/pci/sh_css_legacy.h:23,
-                 from drivers/staging/media/atomisp/pci/atomisp_internal.h:34,
-                 from drivers/staging/media/atomisp/pci/atomisp_acc.h:23,
-                 from drivers/staging/media/atomisp/pci/atomisp_acc.c:29:
-./drivers/staging/media/atomisp//pci/system_local.h:193:26: warning: ‘STREAM2MMIO_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  193 | static const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:186:26: warning: ‘PIXELGEN_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  186 | static const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:179:26: warning: ‘CSI_RX_BE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  179 | static const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:172:26: warning: ‘CSI_RX_FE_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  172 | static const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:165:26: warning: ‘ISYS_IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-  165 | static const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:158:26: warning: ‘IBUF_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  158 | static const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:153:26: warning: ‘RX_BASE’ defined but not used [-Wunused-const-variable=]
-  153 | static const hrt_address RX_BASE[N_RX_ID] = {
-      |                          ^~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:138:26: warning: ‘INPUT_SYSTEM_BASE’ defined but not used [-Wunused-const-variable=]
-  138 | static const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:130:26: warning: ‘INPUT_FORMATTER_BASE’ defined but not used [-Wunused-const-variable=]
-  130 | static const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:125:26: warning: ‘TIMED_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-  125 | static const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID] = {
-      |                          ^~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:120:26: warning: ‘GPIO_BASE’ defined but not used [-Wunused-const-variable=]
-  120 | static const hrt_address GPIO_BASE[N_GPIO_ID] = {
-      |                          ^~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:116:26: warning: ‘GP_TIMER_BASE’ defined but not used [-Wunused-const-variable=]
-  116 | static const hrt_address GP_TIMER_BASE =
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:109:26: warning: ‘GP_DEVICE_BASE’ defined but not used [-Wunused-const-variable=]
-  109 | static const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:96:26: warning: ‘FIFO_MONITOR_BASE’ defined but not used [-Wunused-const-variable=]
-   96 | static const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:90:26: warning: ‘GDC_BASE’ defined but not used [-Wunused-const-variable=]
-   90 | static const hrt_address GDC_BASE[N_GDC_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:78:26: warning: ‘IRQ_BASE’ defined but not used [-Wunused-const-variable=]
-   78 | static const hrt_address IRQ_BASE[N_IRQ_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:73:26: warning: ‘ISYS2401_DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   73 | static const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID] = {
-      |                          ^~~~~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:69:26: warning: ‘DMA_BASE’ defined but not used [-Wunused-const-variable=]
-   69 | static const hrt_address DMA_BASE[N_DMA_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:63:26: warning: ‘MMU_BASE’ defined but not used [-Wunused-const-variable=]
-   63 | static const hrt_address MMU_BASE[N_MMU_ID] = {
-      |                          ^~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:54:26: warning: ‘SP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   54 | static const hrt_address SP_DMEM_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:50:26: warning: ‘SP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   50 | static const hrt_address SP_CTRL_BASE[N_SP_ID] = {
-      |                          ^~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:45:26: warning: ‘ISP_BAMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   45 | static const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID] = {
-      |                          ^~~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:41:26: warning: ‘ISP_DMEM_BASE’ defined but not used [-Wunused-const-variable=]
-   41 | static const hrt_address ISP_DMEM_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
-./drivers/staging/media/atomisp//pci/system_local.h:37:26: warning: ‘ISP_CTRL_BASE’ defined but not used [-Wunused-const-variable=]
-   37 | static const hrt_address ISP_CTRL_BASE[N_ISP_ID] = {
-      |                          ^~~~~~~~~~~~~
+It will provide easy access to sysfs node using volume name,
+even if not knowing the specific device node name like sda1 and
+dm-3.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
- drivers/staging/media/atomisp/Makefile        |   1 +
- .../staging/media/atomisp/pci/system_local.c  | 179 ++++++++++++++++++
- .../staging/media/atomisp/pci/system_local.h  | 146 +++-----------
- 3 files changed, 205 insertions(+), 121 deletions(-)
- create mode 100644 drivers/staging/media/atomisp/pci/system_local.c
+ Documentation/filesystems/f2fs.rst | 21 +++++++++++--
+ fs/f2fs/f2fs.h                     | 14 +++++++++
+ fs/f2fs/file.c                     |  2 ++
+ fs/f2fs/super.c                    |  1 +
+ fs/f2fs/sysfs.c                    | 50 ++++++++++++++++++++++++++++++
+ 5 files changed, 86 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
-index 7b8288bbe119..205d0f8cc2e1 100644
---- a/drivers/staging/media/atomisp/Makefile
-+++ b/drivers/staging/media/atomisp/Makefile
-@@ -156,6 +156,7 @@ atomisp-objs += \
- 	pci/hive_isp_css_common/host/timed_ctrl.o \
- 	pci/hive_isp_css_common/host/vmem.o \
- 	pci/hive_isp_css_shared/host/tag.o \
-+	pci/system_local.o \
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index de43239a3c31..8221f3af6042 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -278,8 +278,25 @@ Sysfs Entries
+ =============
  
- obj-byt = \
- 	pci/css_2400_system/hive/ia_css_isp_configs.o \
-diff --git a/drivers/staging/media/atomisp/pci/system_local.c b/drivers/staging/media/atomisp/pci/system_local.c
-new file mode 100644
-index 000000000000..4ca8569d7feb
---- /dev/null
-+++ b/drivers/staging/media/atomisp/pci/system_local.c
-@@ -0,0 +1,179 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Support for Intel Camera Imaging ISP subsystem.
-+ * Copyright (c) 2015, Intel Corporation.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ */
+ Information about mounted f2fs file systems can be found in
+-/sys/fs/f2fs.  Each mounted filesystem will have a directory in
+-/sys/fs/f2fs based on its device name (i.e., /sys/fs/f2fs/sda).
++/sys/fs/f2fs. Each mounted filesystem will have a directory in
++/sys/fs/f2fs based on its device name (i.e., /sys/fs/f2fs/sda),
++or, if the partition has the volume name in the on-disk super
++block, the volume name with the number (i.e., /sys/fs/f2fs/vol_#x).
++"vol" is the volume name of the partition, "#x" is the number
++representing the order of mounting with the same volume name.
++We allow the volume name duplication within 100, which means the
++range of #x should be 0 ~ 99. Once one mount point was umounted,
++that sequential number #x in "vol_#x" could be reused by later
++newly mounted point.
 +
-+#include "system_local.h"
++Here is an example of this.
 +
-+/* ISP */
-+const hrt_address ISP_CTRL_BASE[N_ISP_ID] = {
-+	0x0000000000020000ULL
-+};
++mount dev0 mount0 (vol_0 -> dev0)
++mount dev1 mount1 (vol_1 -> dev1)
++umount mount0
++mount dev2 mount2 (vol_0 -> dev2)
++* dev0, dev1 and dev2 have the same volume name "vol".
 +
-+const hrt_address ISP_DMEM_BASE[N_ISP_ID] = {
-+	0x0000000000200000ULL
-+};
-+
-+const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID] = {
-+	0x0000000000100000ULL
-+};
-+
-+/* SP */
-+const hrt_address SP_CTRL_BASE[N_SP_ID] = {
-+	0x0000000000010000ULL
-+};
-+
-+const hrt_address SP_DMEM_BASE[N_SP_ID] = {
-+	0x0000000000300000ULL
-+};
-+
-+/* MMU */
-+/*
-+ * MMU0_ID: The data MMU
-+ * MMU1_ID: The icache MMU
-+ */
-+const hrt_address MMU_BASE[N_MMU_ID] = {
-+	0x0000000000070000ULL,
-+	0x00000000000A0000ULL
-+};
-+
-+/* DMA */
-+const hrt_address DMA_BASE[N_DMA_ID] = {
-+	0x0000000000040000ULL
-+};
-+
-+const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID] = {
-+	0x00000000000CA000ULL
-+};
-+
-+/* IRQ */
-+const hrt_address IRQ_BASE[N_IRQ_ID] = {
-+	0x0000000000000500ULL,
-+	0x0000000000030A00ULL,
-+	0x000000000008C000ULL,
-+	0x0000000000090200ULL
-+};
-+
-+/*
-+	0x0000000000000500ULL};
-+ */
-+
-+/* GDC */
-+const hrt_address GDC_BASE[N_GDC_ID] = {
-+	0x0000000000050000ULL,
-+	0x0000000000060000ULL
-+};
-+
-+/* FIFO_MONITOR (not a subset of GP_DEVICE) */
-+const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID] = {
-+	0x0000000000000000ULL
-+};
-+
-+/*
-+const hrt_address GP_REGS_BASE[N_GP_REGS_ID] = {
-+	0x0000000000000000ULL};
-+
-+const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
-+	0x0000000000090000ULL};
-+*/
-+
-+/* GP_DEVICE (single base for all separate GP_REG instances) */
-+const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
-+	0x0000000000000000ULL
-+};
-+
-+/*GP TIMER , all timer registers are inter-twined,
-+ * so, having multiple base addresses for
-+ * different timers does not help*/
-+const hrt_address GP_TIMER_BASE =
-+    (hrt_address)0x0000000000000600ULL;
-+
-+/* GPIO */
-+const hrt_address GPIO_BASE[N_GPIO_ID] = {
-+	0x0000000000000400ULL
-+};
-+
-+/* TIMED_CTRL */
-+const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID] = {
-+	0x0000000000000100ULL
-+};
-+
-+/* INPUT_FORMATTER */
-+const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID] = {
-+	0x0000000000030000ULL,
-+	0x0000000000030200ULL,
-+	0x0000000000030400ULL,
-+	0x0000000000030600ULL
-+}; /* memcpy() */
-+
-+/* INPUT_SYSTEM */
-+const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID] = {
-+	0x0000000000080000ULL
-+};
-+
-+/*	0x0000000000081000ULL, */ /* capture A */
-+/*	0x0000000000082000ULL, */ /* capture B */
-+/*	0x0000000000083000ULL, */ /* capture C */
-+/*	0x0000000000084000ULL, */ /* Acquisition */
-+/*	0x0000000000085000ULL, */ /* DMA */
-+/*	0x0000000000089000ULL, */ /* ctrl */
-+/*	0x000000000008A000ULL, */ /* GP regs */
-+/*	0x000000000008B000ULL, */ /* FIFO */
-+/*	0x000000000008C000ULL, */ /* IRQ */
-+
-+/* RX, the MIPI lane control regs start at offset 0 */
-+const hrt_address RX_BASE[N_RX_ID] = {
-+	0x0000000000080100ULL
-+};
-+
-+/* IBUF_CTRL, part of the Input System 2401 */
-+const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID] = {
-+	0x00000000000C1800ULL,	/* ibuf controller A */
-+	0x00000000000C3800ULL,	/* ibuf controller B */
-+	0x00000000000C5800ULL	/* ibuf controller C */
-+};
-+
-+/* ISYS IRQ Controllers, part of the Input System 2401 */
-+const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID] = {
-+	0x00000000000C1400ULL,	/* port a */
-+	0x00000000000C3400ULL,	/* port b */
-+	0x00000000000C5400ULL	/* port c */
-+};
-+
-+/* CSI FE, part of the Input System 2401 */
-+const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID] = {
-+	0x00000000000C0400ULL,	/* csi fe controller A */
-+	0x00000000000C2400ULL,	/* csi fe controller B */
-+	0x00000000000C4400ULL	/* csi fe controller C */
-+};
-+
-+/* CSI BE, part of the Input System 2401 */
-+const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID] = {
-+	0x00000000000C0800ULL,	/* csi be controller A */
-+	0x00000000000C2800ULL,	/* csi be controller B */
-+	0x00000000000C4800ULL	/* csi be controller C */
-+};
-+
-+/* PIXEL Generator, part of the Input System 2401 */
-+const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID] = {
-+	0x00000000000C1000ULL,	/* pixel gen controller A */
-+	0x00000000000C3000ULL,	/* pixel gen controller B */
-+	0x00000000000C5000ULL	/* pixel gen controller C */
-+};
-+
-+/* Stream2MMIO, part of the Input System 2401 */
-+const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID] = {
-+	0x00000000000C0C00ULL,	/* stream2mmio controller A */
-+	0x00000000000C2C00ULL,	/* stream2mmio controller B */
-+	0x00000000000C4C00ULL	/* stream2mmio controller C */
-+};
-diff --git a/drivers/staging/media/atomisp/pci/system_local.h b/drivers/staging/media/atomisp/pci/system_local.h
-index d60591e04b61..a47258c2e8a8 100644
---- a/drivers/staging/media/atomisp/pci/system_local.h
-+++ b/drivers/staging/media/atomisp/pci/system_local.h
-@@ -34,166 +34,70 @@
- #define GP_FIFO_BASE   ((hrt_address)0x0000000000090104)		/* This is NOT a base address */
+ The files in each per-device directory are shown in table below.
  
- /* ISP */
--static const hrt_address ISP_CTRL_BASE[N_ISP_ID] = {
--	0x0000000000020000ULL
--};
--
--static const hrt_address ISP_DMEM_BASE[N_ISP_ID] = {
--	0x0000000000200000ULL
--};
--
--static const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID] = {
--	0x0000000000100000ULL
--};
-+extern const hrt_address ISP_CTRL_BASE[N_ISP_ID];
-+extern const hrt_address ISP_DMEM_BASE[N_ISP_ID];
-+extern const hrt_address ISP_BAMEM_BASE[N_BAMEM_ID];
+ Files in /sys/fs/f2fs/<devname>
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index a555377cf51f..392ee7d7a37d 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1382,6 +1382,10 @@ struct decompress_io_ctx {
+ #define MAX_COMPRESS_LOG_SIZE		8
+ #define MAX_COMPRESS_WINDOW_SIZE	((PAGE_SIZE) << MAX_COMPRESS_LOG_SIZE)
  
- /* SP */
--static const hrt_address SP_CTRL_BASE[N_SP_ID] = {
--	0x0000000000010000ULL
--};
--
--static const hrt_address SP_DMEM_BASE[N_SP_ID] = {
--	0x0000000000300000ULL
--};
-+extern const hrt_address SP_CTRL_BASE[N_SP_ID];
-+extern const hrt_address SP_DMEM_BASE[N_SP_ID];
- 
- /* MMU */
--/*
-- * MMU0_ID: The data MMU
-- * MMU1_ID: The icache MMU
-- */
--static const hrt_address MMU_BASE[N_MMU_ID] = {
--	0x0000000000070000ULL,
--	0x00000000000A0000ULL
--};
++#define MAX_DUP_NAME			8
++#define MAX_SYSLINK_NAME		(MAX_VOLUME_NAME + MAX_DUP_NAME)
++#define MAX_DUP_NUM			100
 +
-+extern const hrt_address MMU_BASE[N_MMU_ID];
+ struct f2fs_sb_info {
+ 	struct super_block *sb;			/* pointer to VFS super block */
+ 	struct proc_dir_entry *s_proc;		/* proc entry */
+@@ -1586,6 +1590,10 @@ struct f2fs_sb_info {
  
- /* DMA */
--static const hrt_address DMA_BASE[N_DMA_ID] = {
--	0x0000000000040000ULL
--};
--
--static const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID] = {
--	0x00000000000CA000ULL
--};
-+extern const hrt_address DMA_BASE[N_DMA_ID];
-+extern const hrt_address ISYS2401_DMA_BASE[N_ISYS2401_DMA_ID];
+ 	struct kmem_cache *inline_xattr_slab;	/* inline xattr entry */
+ 	unsigned int inline_xattr_slab_size;	/* default inline xattr slab size */
++
++	/* For sysfs symlink per volume */
++	char syslink_name[MAX_SYSLINK_NAME];
++	struct mutex syslink_mutex;
+ };
  
- /* IRQ */
--static const hrt_address IRQ_BASE[N_IRQ_ID] = {
--	0x0000000000000500ULL,
--	0x0000000000030A00ULL,
--	0x000000000008C000ULL,
--	0x0000000000090200ULL
--};
--
--/*
--	0x0000000000000500ULL};
-- */
-+extern const hrt_address IRQ_BASE[N_IRQ_ID];
+ struct f2fs_private_dio {
+@@ -3816,6 +3824,12 @@ int __init f2fs_init_sysfs(void);
+ void f2fs_exit_sysfs(void);
+ int f2fs_register_sysfs(struct f2fs_sb_info *sbi);
+ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi);
++void f2fs_reload_syslink(struct f2fs_sb_info *sbi);
++
++static inline bool f2fs_has_syslink(struct f2fs_sb_info *sbi)
++{
++	return strlen(sbi->syslink_name);
++}
  
- /* GDC */
--static const hrt_address GDC_BASE[N_GDC_ID] = {
--	0x0000000000050000ULL,
--	0x0000000000060000ULL
--};
-+extern const hrt_address GDC_BASE[N_GDC_ID];
+ /* verity.c */
+ extern const struct fsverity_operations f2fs_verityops;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 521987cd8772..4612f645007a 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -3418,6 +3418,8 @@ static int f2fs_ioc_setfslabel(struct file *filp, unsigned long arg)
  
- /* FIFO_MONITOR (not a subset of GP_DEVICE) */
--static const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID] = {
--	0x0000000000000000ULL
--};
--
--/*
--static const hrt_address GP_REGS_BASE[N_GP_REGS_ID] = {
--	0x0000000000000000ULL};
--
--static const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
--	0x0000000000090000ULL};
--*/
-+extern const hrt_address FIFO_MONITOR_BASE[N_FIFO_MONITOR_ID];
+ 	up_write(&sbi->sb_lock);
  
- /* GP_DEVICE (single base for all separate GP_REG instances) */
--static const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID] = {
--	0x0000000000000000ULL
--};
-+extern const hrt_address GP_DEVICE_BASE[N_GP_DEVICE_ID];
++	f2fs_reload_syslink(sbi);
++
+ 	mnt_drop_write_file(filp);
+ out:
+ 	kfree(vbuf);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 2686b07ae7eb..7b002785417a 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3021,6 +3021,7 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
  
- /*GP TIMER , all timer registers are inter-twined,
-  * so, having multiple base addresses for
-  * different timers does not help*/
--static const hrt_address GP_TIMER_BASE =
--    (hrt_address)0x0000000000000600ULL;
-+extern const hrt_address GP_TIMER_BASE;
+ 	init_rwsem(&sbi->sb_lock);
+ 	init_rwsem(&sbi->pin_sem);
++	mutex_init(&sbi->syslink_mutex);
+ }
  
- /* GPIO */
--static const hrt_address GPIO_BASE[N_GPIO_ID] = {
--	0x0000000000000400ULL
--};
-+extern const hrt_address GPIO_BASE[N_GPIO_ID];
+ static int init_percpu_info(struct f2fs_sb_info *sbi)
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 50524401c8e6..e9818dd338c1 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -11,6 +11,7 @@
+ #include <linux/f2fs_fs.h>
+ #include <linux/seq_file.h>
+ #include <linux/unicode.h>
++#include <linux/nls.h>
  
- /* TIMED_CTRL */
--static const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID] = {
--	0x0000000000000100ULL
--};
-+extern const hrt_address TIMED_CTRL_BASE[N_TIMED_CTRL_ID];
+ #include "f2fs.h"
+ #include "segment.h"
+@@ -897,6 +898,51 @@ static int __maybe_unused victim_bits_seq_show(struct seq_file *seq,
+ 	return 0;
+ }
  
- /* INPUT_FORMATTER */
--static const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID] = {
--	0x0000000000030000ULL,
--	0x0000000000030200ULL,
--	0x0000000000030400ULL,
--	0x0000000000030600ULL
--}; /* memcpy() */
-+extern const hrt_address INPUT_FORMATTER_BASE[N_INPUT_FORMATTER_ID];
++static void f2fs_unload_syslink(struct f2fs_sb_info *sbi)
++{
++	if (!f2fs_has_syslink(sbi))
++		return;
++
++	sysfs_remove_link(&f2fs_kset.kobj, sbi->syslink_name);
++	memset(sbi->syslink_name, 0, MAX_SYSLINK_NAME);
++}
++
++static int f2fs_load_syslink(struct f2fs_sb_info *sbi)
++{
++	int idx, count, ret;
++
++	down_read(&sbi->sb_lock);
++	count = utf16s_to_utf8s(sbi->raw_super->volume_name,
++			ARRAY_SIZE(sbi->raw_super->volume_name),
++			UTF16_LITTLE_ENDIAN, sbi->syslink_name,
++			MAX_VOLUME_NAME);
++	up_read(&sbi->sb_lock);
++
++	if (!count)
++		return -ENOENT;
++
++	for (idx = 0; idx < MAX_DUP_NUM; idx++) {
++		snprintf(sbi->syslink_name + count, MAX_DUP_NAME, "_%d", idx);
++		ret = sysfs_create_link(&f2fs_kset.kobj, &sbi->s_kobj,
++				sbi->syslink_name);
++		if (ret != -EEXIST)
++			break;
++	}
++
++	if (ret)
++		memset(sbi->syslink_name, 0, MAX_SYSLINK_NAME);
++
++	return ret;
++}
++
++void f2fs_reload_syslink(struct f2fs_sb_info *sbi)
++{
++	mutex_lock(&sbi->syslink_mutex);
++	f2fs_unload_syslink(sbi);
++	f2fs_load_syslink(sbi);
++	mutex_unlock(&sbi->syslink_mutex);
++}
++
+ int __init f2fs_init_sysfs(void)
+ {
+ 	int ret;
+@@ -954,11 +1000,15 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
+ 		proc_create_single_data("victim_bits", S_IRUGO, sbi->s_proc,
+ 				victim_bits_seq_show, sb);
+ 	}
++
++	f2fs_load_syslink(sbi);
++
+ 	return 0;
+ }
  
- /* INPUT_SYSTEM */
--static const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID] = {
--	0x0000000000080000ULL
--};
--
--/*	0x0000000000081000ULL, */ /* capture A */
--/*	0x0000000000082000ULL, */ /* capture B */
--/*	0x0000000000083000ULL, */ /* capture C */
--/*	0x0000000000084000ULL, */ /* Acquisition */
--/*	0x0000000000085000ULL, */ /* DMA */
--/*	0x0000000000089000ULL, */ /* ctrl */
--/*	0x000000000008A000ULL, */ /* GP regs */
--/*	0x000000000008B000ULL, */ /* FIFO */
--/*	0x000000000008C000ULL, */ /* IRQ */
-+extern const hrt_address INPUT_SYSTEM_BASE[N_INPUT_SYSTEM_ID];
- 
- /* RX, the MIPI lane control regs start at offset 0 */
--static const hrt_address RX_BASE[N_RX_ID] = {
--	0x0000000000080100ULL
--};
-+extern const hrt_address RX_BASE[N_RX_ID];
- 
- /* IBUF_CTRL, part of the Input System 2401 */
--static const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID] = {
--	0x00000000000C1800ULL,	/* ibuf controller A */
--	0x00000000000C3800ULL,	/* ibuf controller B */
--	0x00000000000C5800ULL	/* ibuf controller C */
--};
-+extern const hrt_address IBUF_CTRL_BASE[N_IBUF_CTRL_ID];
- 
- /* ISYS IRQ Controllers, part of the Input System 2401 */
--static const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID] = {
--	0x00000000000C1400ULL,	/* port a */
--	0x00000000000C3400ULL,	/* port b */
--	0x00000000000C5400ULL	/* port c */
--};
-+extern const hrt_address ISYS_IRQ_BASE[N_ISYS_IRQ_ID];
- 
- /* CSI FE, part of the Input System 2401 */
--static const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID] = {
--	0x00000000000C0400ULL,	/* csi fe controller A */
--	0x00000000000C2400ULL,	/* csi fe controller B */
--	0x00000000000C4400ULL	/* csi fe controller C */
--};
-+extern const hrt_address CSI_RX_FE_CTRL_BASE[N_CSI_RX_FRONTEND_ID];
- 
- /* CSI BE, part of the Input System 2401 */
--static const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID] = {
--	0x00000000000C0800ULL,	/* csi be controller A */
--	0x00000000000C2800ULL,	/* csi be controller B */
--	0x00000000000C4800ULL	/* csi be controller C */
--};
-+extern const hrt_address CSI_RX_BE_CTRL_BASE[N_CSI_RX_BACKEND_ID];
- 
- /* PIXEL Generator, part of the Input System 2401 */
--static const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID] = {
--	0x00000000000C1000ULL,	/* pixel gen controller A */
--	0x00000000000C3000ULL,	/* pixel gen controller B */
--	0x00000000000C5000ULL	/* pixel gen controller C */
--};
-+extern const hrt_address PIXELGEN_CTRL_BASE[N_PIXELGEN_ID];
- 
- /* Stream2MMIO, part of the Input System 2401 */
--static const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID] = {
--	0x00000000000C0C00ULL,	/* stream2mmio controller A */
--	0x00000000000C2C00ULL,	/* stream2mmio controller B */
--	0x00000000000C4C00ULL	/* stream2mmio controller C */
--};
-+extern const hrt_address STREAM2MMIO_CTRL_BASE[N_STREAM2MMIO_ID];
- 
- #endif /* __SYSTEM_LOCAL_H_INCLUDED__ */
+ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
+ {
++	f2fs_unload_syslink(sbi);
+ 	if (sbi->s_proc) {
+ 		remove_proc_entry("iostat_info", sbi->s_proc);
+ 		remove_proc_entry("segment_info", sbi->s_proc);
 -- 
-2.26.2
+2.28.0.rc0.105.gf9edc3c819-goog
 
