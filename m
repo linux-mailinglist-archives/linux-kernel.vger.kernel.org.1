@@ -2,135 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A00E2250CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 11:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668502250D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 11:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbgGSJJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 05:09:15 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:41224 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgGSJJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 05:09:14 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 9BEBBBC084;
-        Sun, 19 Jul 2020 09:09:10 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     paul@pwsan.com, tony@atomide.com, linux@armlinux.org.uk,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH for v5.9] ARM: OMAP2+: hwmod: Replace HTTP links with HTTPS ones
-Date:   Sun, 19 Jul 2020 11:09:03 +0200
-Message-Id: <20200719090903.57207-1-grandmaster@al2klimov.de>
+        id S1726416AbgGSJMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 05:12:41 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46584 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725836AbgGSJMl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 05:12:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U37udgA_1595149946;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U37udgA_1595149946)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 19 Jul 2020 17:12:27 +0800
+Subject: Re: [PATCH v16 18/22] mm/lru: replace pgdat lru_lock with lruvec lock
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Rong Chen <rong.a.chen@intel.com>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-19-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0Ud+Dj-Q8Sxv8eDQhjM3fFHwnU_ZFEVG54debBennUmxAg@mail.gmail.com>
+ <62dfd262-a7ac-d18e-216a-2988c690b256@linux.alibaba.com>
+Message-ID: <c339f46e-ae04-4e65-2713-a5c8be56051a@linux.alibaba.com>
+Date:   Sun, 19 Jul 2020 17:12:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <62dfd262-a7ac-d18e-216a-2988c690b256@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Spam-Level: ******
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
-
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
 
 
- arch/arm/mach-omap2/omap_hwmod_33xx_data.c | 2 +-
- arch/arm/mach-omap2/omap_hwmod_54xx_data.c | 2 +-
- arch/arm/mach-omap2/omap_hwmod_7xx_data.c  | 2 +-
- arch/arm/mach-omap2/omap_hwmod_81xx_data.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+在 2020/7/18 下午10:15, Alex Shi 写道:
+>>>
+>>>  struct wb_domain *mem_cgroup_wb_domain(struct bdi_writeback *wb);
+>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>>> index 14c668b7e793..36c1680efd90 100644
+>>> --- a/include/linux/mmzone.h
+>>> +++ b/include/linux/mmzone.h
+>>> @@ -261,6 +261,8 @@ struct lruvec {
+>>>         atomic_long_t                   nonresident_age;
+>>>         /* Refaults at the time of last reclaim cycle */
+>>>         unsigned long                   refaults;
+>>> +       /* per lruvec lru_lock for memcg */
+>>> +       spinlock_t                      lru_lock;
+>>>         /* Various lruvec state flags (enum lruvec_flags) */
+>>>         unsigned long                   flags;
+>> Any reason for placing this here instead of at the end of the
+>> structure? From what I can tell it looks like lruvec is already 128B
+>> long so placing the lock on the end would put it into the next
+>> cacheline which may provide some performance benefit since it is
+>> likely to be bounced quite a bit.
+> Rong Chen(Cced) once reported a performance regression when the lock at
+> the end of struct, and move here could remove it.
+> Although I can't not reproduce. But I trust his report.
+> 
+Oops, Rong's report is on another member which is different with current
+struct. 
 
-diff --git a/arch/arm/mach-omap2/omap_hwmod_33xx_data.c b/arch/arm/mach-omap2/omap_hwmod_33xx_data.c
-index 3cf9c4c90b18..ff99b8898215 100644
---- a/arch/arm/mach-omap2/omap_hwmod_33xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_33xx_data.c
-@@ -1,7 +1,7 @@
- /*
-  * omap_hwmod_33xx_data.c: Hardware modules present on the AM33XX chips
-  *
-- * Copyright (C) {2012} Texas Instruments Incorporated - http://www.ti.com/
-+ * Copyright (C) {2012} Texas Instruments Incorporated - https://www.ti.com/
-  *
-  * This file is automatically generated from the AM33XX hardware databases.
-  * This program is free software; you can redistribute it and/or
-diff --git a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-index 4cb194ac7a7e..1de4c156c8c8 100644
---- a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-@@ -2,7 +2,7 @@
- /*
-  * Hardware modules present on the OMAP54xx chips
-  *
-- * Copyright (C) 2013 Texas Instruments Incorporated - http://www.ti.com
-+ * Copyright (C) 2013 Texas Instruments Incorporated - https://www.ti.com
-  *
-  * Paul Walmsley
-  * Benoit Cousson
-diff --git a/arch/arm/mach-omap2/omap_hwmod_7xx_data.c b/arch/arm/mach-omap2/omap_hwmod_7xx_data.c
-index 07b7458deae4..5c503daad6dc 100644
---- a/arch/arm/mach-omap2/omap_hwmod_7xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_7xx_data.c
-@@ -2,7 +2,7 @@
- /*
-  * Hardware modules present on the DRA7xx chips
-  *
-- * Copyright (C) 2013 Texas Instruments Incorporated - http://www.ti.com
-+ * Copyright (C) 2013 Texas Instruments Incorporated - https://www.ti.com
-  *
-  * Paul Walmsley
-  * Benoit Cousson
-diff --git a/arch/arm/mach-omap2/omap_hwmod_81xx_data.c b/arch/arm/mach-omap2/omap_hwmod_81xx_data.c
-index 50fb699b163f..450ab990c66a 100644
---- a/arch/arm/mach-omap2/omap_hwmod_81xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_81xx_data.c
-@@ -1,7 +1,7 @@
- /*
-  * DM81xx hwmod data.
-  *
-- * Copyright (C) 2010 Texas Instruments, Inc. - http://www.ti.com/
-+ * Copyright (C) 2010 Texas Instruments, Inc. - https://www.ti.com/
-  * Copyright (C) 2013 SKTB SKiT, http://www.skitlab.ru/
-  *
-  * This program is free software; you can redistribute it and/or
--- 
-2.27.0
+Compare to move to tail, how about to move it to head of struct, which is
+close to lru list? Did you have some data of the place change?
 
+Thanks
+Alex
+
+ 
+> ...
+> 
+>>>  putback:
+>>> -               spin_unlock_irq(&zone->zone_pgdat->lru_lock);
+>>>                 pagevec_add(&pvec_putback, pvec->pages[i]);
+>>>                 pvec->pages[i] = NULL;
+>>>         }
+>>> -       /* tempary disable irq, will remove later */
+>>> -       local_irq_disable();
+>>>         __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+>>> -       local_irq_enable();
+>>> +       if (lruvec)
+>>> +               unlock_page_lruvec_irq(lruvec);
+>> So I am not a fan of this change. You went to all the trouble of
+>> reducing the lock scope just to bring it back out here again. In
+>> addition it implies there is a path where you might try to update the
+>> page state without disabling interrupts.
+> Right. but any idea to avoid this except a extra local_irq_disable?
+> 
+
+The following changes would resolve the problem. Is this ok?
+@@ -324,7 +322,8 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+                pagevec_add(&pvec_putback, pvec->pages[i]);
+                pvec->pages[i] = NULL;
+        }
+-       __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
++       if (delta_munlocked)
++               __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+        if (lruvec)
+                unlock_page_lruvec_irq(lruvec);
