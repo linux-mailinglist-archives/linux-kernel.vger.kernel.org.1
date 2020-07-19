@@ -2,132 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE02B22543A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 23:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3344822543C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 23:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgGSVCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 17:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        id S1726817AbgGSVEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 17:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726679AbgGSVCl (ORCPT
+        with ESMTP id S1726755AbgGSVEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 17:02:41 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A06C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 14:02:41 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a6so15928793wrm.4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 14:02:41 -0700 (PDT)
+        Sun, 19 Jul 2020 17:04:05 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A983C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 14:04:05 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a6so10630065wmm.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 14:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wVukSkm9ZNAOyksCl8y76WJHMfa+qpv4fs73sx3+kgs=;
-        b=TussMoAMDsJv+UH/1wFpUMF6LUXdTwmWbxtSXxMUxOE2jDXGkQOmwi27VruCj1jeu2
-         M/s7KdBIo6u2cerL885trF0fM/ZAjsmmqVT+g9FiJH9gFYG78PuHtwb1qbUV3UlEEkgK
-         kVBQtAygmc3IO4/iwa7bOEgHZq2nEgJz18ukU=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=twrqapN86/1t1LKuO/iCsZfHNcmWrjBXOPdj4L6Z6nM=;
+        b=m4NXgJu8K71aQq0pthXa+FIp5wtDMLNHMIdG+V3noIkY9L7Mqcm0euOou1ZP/Ezkh2
+         YKhxUDaklUzFRciHjCdFW56yGynlP1pCeJEzdOnxyiwpGt24xDfIIwPKK75cKvyNCuud
+         guEkG50IiUO9doS0GqUMN0mplG9flpet79oFw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wVukSkm9ZNAOyksCl8y76WJHMfa+qpv4fs73sx3+kgs=;
-        b=SSoB6pEDG21C5YBrVXv51R5Nwms3BBW79EMBpkmtU5+bxu9CIibm8oGbhUe75FcWXu
-         S7xBDTwkX7lQY5hbkDX7A4inUCICeYr9IMjHXfIf8sA202iFtLz1cwHZP+53/vHkcjQk
-         bo8OagUkPJiiCbgZC6a5Q1Dw5rbUiGBaHolL4wwfNYAdfCPahrpEkxm2GbD8M4Awtqub
-         NdkM1AumRIFaFH/Xf88bpOP9+ii9LW+nLC/GcWItwtOx6EhxPGFyQ0PDmBGfeJ/7pWgc
-         VSqUc5S/+DXbY0vkN/u8tUhYMz8Kyi5q28aBP7fTE4Zww9FGP+eIfk4X4Nu6IGVssJ5A
-         jzAw==
-X-Gm-Message-State: AOAM53335ukWrrJ+r65WWgAAeuU2Hg27QE7K+IchpqH7KUBtcreqEBn3
-        lpj2o7W2prCm/X/S4MpibHb7KQ==
-X-Google-Smtp-Source: ABdhPJyrxUUVIMi0zt9ssTOxITvumFWrsHFTWkgYEUlquymTA502lFSv0QZIbN1xUpIAdqJCAsuq0g==
-X-Received: by 2002:adf:c986:: with SMTP id f6mr19485303wrh.168.1595192559872;
-        Sun, 19 Jul 2020 14:02:39 -0700 (PDT)
-Received: from localhost.localdomain ([88.144.89.224])
-        by smtp.gmail.com with ESMTPSA id l15sm27408453wro.33.2020.07.19.14.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 14:02:39 -0700 (PDT)
-From:   Ignat Korchagin <ignat@cloudflare.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        brendanhiggins@google.com, masahiroy@kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Ignat Korchagin <ignat@cloudflare.com>, kernel-team@cloudflare.com
-Subject: [PATCH v4 3/3] um: allow static linking for non-glibc implementations
-Date:   Sun, 19 Jul 2020 22:02:22 +0100
-Message-Id: <20200719210222.2811-4-ignat@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200719210222.2811-1-ignat@cloudflare.com>
-References: <20200719210222.2811-1-ignat@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=twrqapN86/1t1LKuO/iCsZfHNcmWrjBXOPdj4L6Z6nM=;
+        b=OiHNAB3Lz2lVHOnyijpKyGONfsliCaysL+PR8sp9wfjOxgNJXtuxJTB++wjg6ZQWAp
+         823D4+C16YwjtZ8ag64BLU+a70HJkjtxJLf/C2Wy0qgCMMgtrRpV2LNOx+dWvNCxc3Ru
+         zm5sZJ4vgzq+g+RwJiUinwi1BeT9Od0nKkwKeuqjwT5Y47o6PT+i6jRGZ1zb/5QgpYv5
+         4eu8sF30TsIK8IhjrB//x7YNX+ak8FutESG5TxXm6IK3qokQ9LGO8skbKB2xSOiMrbIC
+         gnSpCa480nvFJ8qTq1tjri13Hbzr85o/6zUPD95Yd4PGsY79TF00ZyMsBTdKsI1joXEp
+         sPlw==
+X-Gm-Message-State: AOAM531lSlbLmyN1OeGMKBvuF1CVQ0zhsTAY9fBlvDvDlgjPzP0XVdxf
+        j3/yfzV/sV1/smY0rPTIx4U1XG6oCwBIo/70yBUglAiG
+X-Google-Smtp-Source: ABdhPJxdDRKEIynjD2ZcTlo+fcQ6wNXuCZeG91wZeFU/M8xcWSxl6E4BOpxlu/j3qv1PDgcGuoamnS3tBbe1sdR95CA=
+X-Received: by 2002:a7b:c246:: with SMTP id b6mr19888882wmj.161.1595192643983;
+ Sun, 19 Jul 2020 14:04:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200715201159.54166-1-ignat@cloudflare.com> <20200715201159.54166-4-ignat@cloudflare.com>
+ <159691324719ca79fbb8c206da527fc1f2bbc1ed.camel@sipsolutions.net>
+In-Reply-To: <159691324719ca79fbb8c206da527fc1f2bbc1ed.camel@sipsolutions.net>
+From:   Ignat Korchagin <ignat@cloudflare.com>
+Date:   Sun, 19 Jul 2020 22:03:53 +0100
+Message-ID: <CALrw=nEB-ohdc-RCA=Ncv40TFg457m7gm5qWg5ahjNrpE9bDCA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] um: allow static linking for non-glibc implementations
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        masahiroy@kernel.org, linux-um <linux-um@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible to produce a statically linked UML binary with UML_NET_VECTOR,
-UML_NET_VDE and UML_NET_PCAP options enabled using alternative libc
-implementations, which do not rely on NSS, such as musl.
+On Thu, Jul 16, 2020 at 10:10 AM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> On Wed, 2020-07-15 at 21:11 +0100, Ignat Korchagin wrote:
+> > It is possible to produce a statically linked UML binary with UML_NET_VECTOR,
+> > UML_NET_VDE and UML_NET_PCAP options enabled using alternative libc
+> > implementations, which do not rely on NSS, such as musl.
+> >
+> > Allow static linking in this case.
+> >
+> > Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> > Tested-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+> >  arch/um/Kconfig         | 5 +----
+> >  arch/um/drivers/Kconfig | 3 ---
+> >  2 files changed, 1 insertion(+), 7 deletions(-)
+> >
+> > diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> > index 9318dc6d1a0c..beb98b3b9f75 100644
+> > --- a/arch/um/Kconfig
+> > +++ b/arch/um/Kconfig
+> > @@ -62,12 +62,9 @@ config NR_CPUS
+> >
+> >  source "arch/$(HEADER_ARCH)/um/Kconfig"
+> >
+> > -config FORBID_STATIC_LINK
+> > -     bool
+> > -
+> >  config STATIC_LINK
+> >       bool "Force a static link"
+> > -     depends on !FORBID_STATIC_LINK
+> > +     depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || (!UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP)
+>
+> Come to think of it, in a way "FORBID_STATIC_LINK" was nicer because
+> there didn't need to be a single list of "what has dynamic dependencies"
+> like here the list of UML_NET_VECTOR, UML_NET_VDE, UML_NET_PCAP.
+>
+> Maybe it could be
+>
+> config MAY_HAVE_NON_STATIC_RUNTIME_DEPS
+>         bool
+>
+> config STATIC_LINK
+>         ...
+>         depends on !MAY_HAVE_NON_STATIC_RUNTIME_DEPS || CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+>
+>
+> and then UML_NET_VECTOR et al can
+>
+>         select MAY_HAVE_NON_STATIC_RUNTIME_DEPS
+>
+> so that the knowledge is still distributed to the corresponding options?
 
-Allow static linking in this case.
+Yes, makes sense. I've shortened it to MAY_HAVE_RUNTIME_DEPS and
+reposted the series.
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
----
- arch/um/Kconfig         | 6 +++---
- arch/um/drivers/Kconfig | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 9318dc6d1a0c..d888b859c167 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -62,12 +62,12 @@ config NR_CPUS
- 
- source "arch/$(HEADER_ARCH)/um/Kconfig"
- 
--config FORBID_STATIC_LINK
--	bool
-+config MAY_HAVE_RUNTIME_DEPS
-+        bool
- 
- config STATIC_LINK
- 	bool "Force a static link"
--	depends on !FORBID_STATIC_LINK
-+	depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || !MAY_HAVE_RUNTIME_DEPS
- 	help
- 	  This option gives you the ability to force a static link of UML.
- 	  Normally, UML is linked as a shared binary.  This is inconvenient for
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 9160ead56e33..2e7b8e0e7194 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -234,7 +234,7 @@ config UML_NET_DAEMON
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
-+	select MAY_HAVE_RUNTIME_DEPS
- 	help
- 	This User-Mode Linux network driver uses multi-message send
- 	and receive functions. The host running the UML guest must have
-@@ -246,7 +246,7 @@ config UML_NET_VECTOR
- config UML_NET_VDE
- 	bool "VDE transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
-+	select MAY_HAVE_RUNTIME_DEPS
- 	help
- 	This User-Mode Linux network transport allows one or more running
- 	UMLs on a single host to communicate with each other and also
-@@ -294,7 +294,7 @@ config UML_NET_MCAST
- config UML_NET_PCAP
- 	bool "pcap transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
-+	select MAY_HAVE_RUNTIME_DEPS
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
- 	like an ethernet device inside UML.  This is useful for making
--- 
-2.20.1
-
+> johannes
+>
