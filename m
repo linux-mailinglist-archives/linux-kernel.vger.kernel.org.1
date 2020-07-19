@@ -2,66 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D70E224E79
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 02:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7776224E81
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 03:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgGSAdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Jul 2020 20:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgGSAdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Jul 2020 20:33:24 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858C7C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Jul 2020 17:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=ejhbUXRyUGcuxfHilbyRZHXTEvE6s41ebx55gOa3sr4=; b=JJAwQuBaSok0dLnO98Bcgkor9C
-        vO8HkSOx6ZPvOn2dOFVTiS7E/yFQrdon8KXfn+O7hZPYPgtzRYOynx4TltF5G58lKDBX0BhhmDFo9
-        16ZcOjrcvXVq6Bctnmah5JiGWDpOm2Fau3FS2JFaefCHUaJPIZEw8a2eaWmyH7RX/4svnfUt/u8ER
-        RR5HjemBftX0T/6hfbHxIwW3imWhK3BX+xdbKoh7qUKaHo40cpKY41HebV/MjKGf2B5SIoDSFHPog
-        NTo1eDaNsnNjtapMe96euBDZgE8QujB2v0rKE07Mx4X3DhhkipZ4ktiThra3yb7FmZgToVztSWbTa
-        MLsiEENg==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwxGb-0003C7-Oe; Sun, 19 Jul 2020 00:33:22 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
-Subject: [PATCH] xen/gntdev: gntdev.h: drop a duplicated word
-Date:   Sat, 18 Jul 2020 17:33:17 -0700
-Message-Id: <20200719003317.21454-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726403AbgGSBNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Jul 2020 21:13:45 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28720 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726248AbgGSBNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Jul 2020 21:13:45 -0400
+IronPort-SDR: T5dLXw+M5iK4tIbHpK9gpPhiWx23WUJq8kXNzZJmU4oJxKrU2nHP36fqRMwf4xO0p/6XXfvNbF
+ mY467F6QLnNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9686"; a="137256684"
+X-IronPort-AV: E=Sophos;i="5.75,369,1589266800"; 
+   d="scan'208";a="137256684"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2020 18:13:44 -0700
+IronPort-SDR: XlpJjQ8LEOa+0rrLRqFrj5pjx9gaJ/zWCSDtufVW82IoIpDLVNxNkz0eFp88fi7QrAtlY0PPHw
+ UMyW9017P2Sw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,369,1589266800"; 
+   d="scan'208";a="319156723"
+Received: from lkp-server02.sh.intel.com (HELO 50058c6ee6fc) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Jul 2020 18:13:42 -0700
+Received: from kbuild by 50058c6ee6fc with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jwxte-000103-9D; Sun, 19 Jul 2020 01:13:42 +0000
+Date:   Sun, 19 Jul 2020 09:12:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ cadfad870154e14f745ec845708bc17d166065f2
+Message-ID: <5f139dee.zd1Hg91mqTf4r3KF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the repeated word "of" in a comment.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: cadfad870154e14f745ec845708bc17d166065f2  x86/ioperm: Fix io bitmap invalidation on Xen PV
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: xen-devel@lists.xenproject.org
+elapsed time: 722m
+
+configs tested: 78
+configs skipped: 79
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+nds32                             allnoconfig
+powerpc                      ppc64e_defconfig
+arm                           viper_defconfig
+ia64                             alldefconfig
+sh                           se7721_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- include/uapi/xen/gntdev.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20200717.orig/include/uapi/xen/gntdev.h
-+++ linux-next-20200717/include/uapi/xen/gntdev.h
-@@ -66,7 +66,7 @@ struct ioctl_gntdev_map_grant_ref {
- 
- /*
-  * Removes the grant references from the mapping table of an instance of
-- * of gntdev. N.B. munmap() must be called on the relevant virtual address(es)
-+ * gntdev. N.B. munmap() must be called on the relevant virtual address(es)
-  * before this ioctl is called, or an error will result.
-  */
- #define IOCTL_GNTDEV_UNMAP_GRANT_REF \
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
