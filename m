@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CF3225325
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EE8225328
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgGSRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 13:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S1726658AbgGSRnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 13:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgGSRmz (ORCPT
+        with ESMTP id S1725783AbgGSRnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 13:42:55 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3865DC0619D2;
-        Sun, 19 Jul 2020 10:42:55 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 207so7922582pfu.3;
-        Sun, 19 Jul 2020 10:42:55 -0700 (PDT)
+        Sun, 19 Jul 2020 13:43:01 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D90C0619D2;
+        Sun, 19 Jul 2020 10:43:00 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w17so7611775ply.11;
+        Sun, 19 Jul 2020 10:43:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=bZxcR2KZzn+4XZ0ufduODiRcz7ZfigdmNagILQzXPSU=;
-        b=qniJkCyp1nHKRjS4t75bL6r00uUD1VRlgUFg/d1qpq50yyoK/6XC/Ni5h+4Blm/ubE
-         IqrXREPesdEnzkmGSxyt8BgMtvMM8etn8Ks9f/FrqFROsB+Fc/zY/I7DLF8vXV5bEEKz
-         u4fyGV9n6yMy/KHffy27rq5VmtHMiK55R/o3+oqT8Tda/rNK8RiUSHOfACd7p5Gfxwow
-         BlBicKHTPsC1oVNLR+RL7LHPvSMU72Zr6lLDwqyh4NyA9MWjvhFVKdAXiebP3AzkMGUq
-         DabfV2TeAoygnwgP9cATknegkWln+stj3kHxi1ghEThV6DaEbcleojeEMCsagL8o4KQt
-         bXNw==
+        bh=ln2ry33JZeYSRz7UO65SnIUwaEVYySx56C+yn6tKPXQ=;
+        b=T4A14xNYImiKs5f8YkDq4Bh1g5kT81BjvllgxFeNPlYTAHgha4D+OFuOhBdMKKAaPq
+         0vkGtnTzPJzB7gio009QBGcs10xQY22lB4cgpiF+U6oX66+r/yvdyVcMFCqfNGMisg1g
+         r2+1jYdIvoPOi36YUxMZfpzFIerCs0B3+WI44Owu4+cPTqzB/0QhpiouF/5nB+BqPHJZ
+         6haAN5myAQICQ2YI4q4yQyziqg4F6mCwfKsDPlXNkvAVIT8YPiNms/BO7WAJ0RfU2B2o
+         AotDK0csSbWayGzLwYuWzCDMqE2LbHD+5oavje3liAP5QPPKT0jYYbw5n5THWzvyWfBc
+         NN6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=bZxcR2KZzn+4XZ0ufduODiRcz7ZfigdmNagILQzXPSU=;
-        b=Mz09y1HOOQwOYoFTDuyFD71uiWftZ1vBwY/8Ih+vS51GEjruRw4LABUbMdglrWzt9/
-         EvMfRP9tSFN0VMxVjfayt4CwFoJ0fUTrHvqmYqrDks11KIuaQeepoXk2W2fFgEjl6iDL
-         ZjFwYvJsQgST/w9mwxNY41CNB4eM27fZXUxNy8yE5neQjmdWiOR78Fzko31t4tuw3bmh
-         irGBc5/k7PYazUkJIUrABvKqejunaoM924vVzb+tDytpS5g0lacROhLfbt1s7093qPN5
-         YCT3Axs5reADlwkctmYKAs3isyrzijpvwFUb6bymWliM1NsosEJoGZDVkBbEXA8A5VoL
-         0SQQ==
-X-Gm-Message-State: AOAM533waeiaZL5DpEyuzAezwPbi4ACauWd8S86XW1f55iAUGPBKtF2/
-        cBIygb3SZ3dEJK1enpr3eOg=
-X-Google-Smtp-Source: ABdhPJwTHRQChGBUhy+aOEq3A5g+j6eC9CZB7yP9nkAAjETquKlYP/Xx+R0WHz8fxyKyN91ctp2YHw==
-X-Received: by 2002:a62:4ec8:: with SMTP id c191mr15859767pfb.15.1595180574674;
-        Sun, 19 Jul 2020 10:42:54 -0700 (PDT)
+        bh=ln2ry33JZeYSRz7UO65SnIUwaEVYySx56C+yn6tKPXQ=;
+        b=MozAoZ6W+lKSn9rsExrurbmptzlOzaWwihBfM8cj74CHZY3dBEDTSehJqpik/sx+j0
+         lKF0+bDxZPnavVNApF//fPSpBfTrpIx1iprEz94SbvdMSB9JcmlFIszVp6q/+/lGECaI
+         FW1lkDde6dxFxIqK4pQ7NrWbwgj8YTEOdJDOj0RsEgP59MbDgjn1XaF5sIMSKaUg6/n/
+         UVlkJ4vqvlmqbbu5XB/eg0Y1gY/dERbsXbBfA7Z0uFl7hyE2Obpn2DIX9jGgHKnUMoJy
+         CKgNDGAW8chjeb2h6tC5WVC4i4gN2r81Yt2Uoi0iifI5nSGstMEvVm/iiIURR0jb25me
+         MYcQ==
+X-Gm-Message-State: AOAM530Pr+8hMAbkdp1RY59kemOHHhQaY5yIO9Bu/bK8YbhZOi99y6/3
+        IgrAtnwhocZJ7FMA2Umry4g=
+X-Google-Smtp-Source: ABdhPJxQkwKiYUaaBNiT8Nsgr0bnfGl6O9wNO7fgmh3rUNFYdz8A4F2uZnmkScIsxPgjEg40IgJLMg==
+X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr20453301pjb.66.1595180580493;
+        Sun, 19 Jul 2020 10:43:00 -0700 (PDT)
 Received: from localhost.localdomain ([182.69.248.222])
-        by smtp.gmail.com with ESMTPSA id e191sm13906083pfh.42.2020.07.19.10.42.50
+        by smtp.gmail.com with ESMTPSA id e191sm13906083pfh.42.2020.07.19.10.42.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 19 Jul 2020 10:42:53 -0700 (PDT)
+        Sun, 19 Jul 2020 10:42:59 -0700 (PDT)
 From:   Amit Singh Tomar <amittomer25@gmail.com>
-To:     andre.przywara@arm.com, afaerber@suse.de,
+To:     andre.przywara@arm.com, afaerber@suse.de, vkoul@kernel.org,
         manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
-Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+Cc:     dan.j.williams@intel.com, cristian.ciocaltea@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v7 05/10] arm64: dts: actions: limit address range for pinctrl node
-Date:   Sun, 19 Jul 2020 23:12:02 +0530
-Message-Id: <1595180527-11320-6-git-send-email-amittomer25@gmail.com>
+Subject: [PATCH v7 06/10] arm64: dts: actions: Add DMA Controller for S700
+Date:   Sun, 19 Jul 2020 23:12:03 +0530
+Message-Id: <1595180527-11320-7-git-send-email-amittomer25@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
 References: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
@@ -64,28 +64,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for
-Actions Semi S700") following error has been observed while booting
-Linux on Cubieboard7-lite(based on S700 SoC).
-
-[    0.257415] pinctrl-s700 e01b0000.pinctrl: can't request region for
-resource [mem 0xe01b0000-0xe01b0fff]
-[    0.266902] pinctrl-s700: probe of e01b0000.pinctrl failed with error -16
-
-This is due to the fact that memory range for "sps" power domain controller
-clashes with pinctrl.
-
-One way to fix it, is to limit pinctrl address range which is safe
-to do as current pinctrl driver uses address range only up to 0x100.
-
-This commit limits the pinctrl address range to 0x100 so that it doesn't
-conflict with sps range.
-
-Fixes: 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for Actions
-Semi S700")
+This commit adds DMA controller present on Actions S700, it differs from
+S900 in terms of number of dma channels and requests.
 
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Suggested-by: Andre Przywara <andre.przywara@arm.com>
 Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 ---
 Changes since v6:
@@ -93,35 +75,53 @@ Changes since v6:
 Changes since v5:
         * Added Mani's Reviewed-by: tag.
 Changes since v4:
-        * Reordered it from 04/10 to 05/10.
+        * No change.
 Changes since v3:
-        * No change.
+        * Fixed typo in commit message.
+        * Placed owl-s700-powergate.h in alphabetical order.
 Changes since v2:
-        * this is no more don't merge and fixed
-          the broken S700 boot by limiting pinctrl
-          address range.
-        * Modified the subject to reflect the changes.
+        * added power-domain property as sps
+          is enabled now and DMA needs it.
 Changes since v1:
-        * No change.
+        * No Change.
 Changes since RFC:
-        * kept as do not merge.
+        * No Change.
 ---
- arch/arm64/boot/dts/actions/s700.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/actions/s700.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-index 2006ad5424fa..f8eb72bb4125 100644
+index f8eb72bb4125..2c78caebf515 100644
 --- a/arch/arm64/boot/dts/actions/s700.dtsi
 +++ b/arch/arm64/boot/dts/actions/s700.dtsi
-@@ -231,7 +231,7 @@
+@@ -5,6 +5,7 @@
  
- 		pinctrl: pinctrl@e01b0000 {
- 			compatible = "actions,s700-pinctrl";
--			reg = <0x0 0xe01b0000 0x0 0x1000>;
-+			reg = <0x0 0xe01b0000 0x0 0x100>;
- 			clocks = <&cmu CLK_GPIO>;
- 			gpio-controller;
- 			gpio-ranges = <&pinctrl 0 0 136>;
+ #include <dt-bindings/clock/actions,s700-cmu.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/power/owl-s700-powergate.h>
+ #include <dt-bindings/reset/actions,s700-reset.h>
+ 
+ / {
+@@ -244,5 +245,19 @@
+ 				     <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
++
++		dma: dma-controller@e0230000 {
++			compatible = "actions,s700-dma";
++			reg = <0x0 0xe0230000 0x0 0x1000>;
++			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
++			#dma-cells = <1>;
++			dma-channels = <10>;
++			dma-requests = <44>;
++			clocks = <&cmu CLK_DMAC>;
++			power-domains = <&sps S700_PD_DMA>;
++		};
+ 	};
+ };
 -- 
 2.7.4
 
