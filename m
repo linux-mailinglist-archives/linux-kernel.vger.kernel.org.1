@@ -2,260 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357F72252FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8692252E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 19:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgGSROc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 13:14:32 -0400
-Received: from relay5.mymailcheap.com ([159.100.241.64]:55625 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgGSROb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 13:14:31 -0400
-X-Greylist: delayed 517 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Jul 2020 13:14:29 EDT
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.66.161])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 2D16F200DB;
-        Sun, 19 Jul 2020 17:05:51 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 3E3EF3ECDF;
-        Sun, 19 Jul 2020 19:05:49 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 6C07D2A3B7;
-        Sun, 19 Jul 2020 13:05:48 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1595178348;
-        bh=ELid77VVNx1YqQOuhBe9RsMJyM8XGB3o70MJQYb+aSg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eiG6FIV1vosAbrlmJwsm/wKN0XpWi3TSovx82MTQ4k/EfDix9FaxUK3eFKXyGqmei
-         yh+0qWrr8pTshIrTeETpmqrXAfAFW2R61uw8Rxw27uDTinnWGOGkmKPI+AnFPvko2g
-         AVaT2Z7YlKtZCNugYyU3wxIGL7qMShLYNtS4N+fQ=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id nThCY5Q6kNSb; Sun, 19 Jul 2020 13:05:47 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Sun, 19 Jul 2020 13:05:47 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 405A540B41;
-        Sun, 19 Jul 2020 17:05:46 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="P8jCNWOJ";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.163.116])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 74C9440856;
-        Sun, 19 Jul 2020 17:04:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1595178276; bh=ELid77VVNx1YqQOuhBe9RsMJyM8XGB3o70MJQYb+aSg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P8jCNWOJReR+5ws3sHnR5DPKdnVjun1ZNOfRVIoUjIRq4asnZDvDvMS0pgQ1Mh46h
-         4JqkGsxyUxGZ7UrHgB3QvQabO/61SqqJVIv/g/7hWN846TWF2qfpzOjtuB5sHHuDR1
-         AFZ8lcQMXf75aablWf8Si0LzjnX52wUxYwfIViZs=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH 1/4] drm/panel: ilitek-ili9881c: prepare for adding support for extra panels
-Date:   Mon, 20 Jul 2020 01:04:07 +0800
-Message-Id: <20200719170411.275812-2-icenowy@aosc.io>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200719170411.275812-1-icenowy@aosc.io>
-References: <20200719170411.275812-1-icenowy@aosc.io>
+        id S1726225AbgGSREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 13:04:32 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:59404 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbgGSREc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 13:04:32 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 68921BC062;
+        Sun, 19 Jul 2020 17:04:26 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     linux@roeck-us.net, jdelvare@suse.com, corbet@lwn.net,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH for v5.9] docs: hwmon: Replace HTTP links with HTTPS ones
+Date:   Sun, 19 Jul 2020 19:04:20 +0200
+Message-Id: <20200719170420.60399-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 405A540B41
-X-Spamd-Result: default: False [6.40 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         FREEMAIL_TO(0.00)[gmail.com,ravnborg.org,kernel.org];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.116:received];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         MID_CONTAINS_FROM(1.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There're more panels with ILI9881C controller than the Bananapi one
-supported by this driver.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Extract the mode and init sequence part, to prepare the driver for
-adding new panels.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 56 ++++++++++++-------
- 1 file changed, 37 insertions(+), 19 deletions(-)
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 3ed8635a6fbdf..4f8e6865029f1 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -10,6 +10,7 @@
- #include <linux/fb.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of_device.h>
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ Documentation/hwmon/adm1275.rst  |  2 +-
+ Documentation/hwmon/lm25066.rst  |  6 +++---
+ Documentation/hwmon/ltc2978.rst  |  6 +++---
+ Documentation/hwmon/max20751.rst |  4 ++--
+ Documentation/hwmon/max34440.rst | 12 ++++++------
+ Documentation/hwmon/pmbus.rst    | 18 +++++++++---------
+ Documentation/hwmon/tps40422.rst |  2 +-
+ 7 files changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/Documentation/hwmon/adm1275.rst b/Documentation/hwmon/adm1275.rst
+index 49966ed70ec6..ce6528f90e4a 100644
+--- a/Documentation/hwmon/adm1275.rst
++++ b/Documentation/hwmon/adm1275.rst
+@@ -49,7 +49,7 @@ Supported chips:
  
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
-@@ -20,14 +21,6 @@
+     Addresses scanned: -
  
- #include <video/mipi_display.h>
+-    Datasheet: http://www.analog.com/media/en/technical-documentation/data-sheets/ADM1293_1294.pdf
++    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADM1293_1294.pdf
  
--struct ili9881c {
--	struct drm_panel	panel;
--	struct mipi_dsi_device	*dsi;
--
--	struct regulator	*power;
--	struct gpio_desc	*reset;
--};
--
- enum ili9881c_op {
- 	ILI9881C_SWITCH_PAGE,
- 	ILI9881C_COMMAND,
-@@ -45,6 +38,21 @@ struct ili9881c_instr {
- 	} arg;
- };
+ Author: Guenter Roeck <linux@roeck-us.net>
  
-+struct ili9881c_desc {
-+	const struct ili9881c_instr *init;
-+	const size_t init_length;
-+	const struct drm_display_mode *mode;
-+};
-+
-+struct ili9881c {
-+	struct drm_panel	panel;
-+	struct mipi_dsi_device	*dsi;
-+	const struct ili9881c_desc	*desc;
-+
-+	struct regulator	*power;
-+	struct gpio_desc	*reset;
-+};
-+
- #define ILI9881C_SWITCH_PAGE_INSTR(_page)	\
- 	{					\
- 		.op = ILI9881C_SWITCH_PAGE,	\
-@@ -64,7 +72,7 @@ struct ili9881c_instr {
- 		},					\
- 	}
+diff --git a/Documentation/hwmon/lm25066.rst b/Documentation/hwmon/lm25066.rst
+index 30e6e77fb3c8..9f1d7e4d3ca1 100644
+--- a/Documentation/hwmon/lm25066.rst
++++ b/Documentation/hwmon/lm25066.rst
+@@ -11,9 +11,9 @@ Supported chips:
  
--static const struct ili9881c_instr ili9881c_init[] = {
-+static const struct ili9881c_instr lhr050h41_init[] = {
- 	ILI9881C_SWITCH_PAGE_INSTR(3),
- 	ILI9881C_COMMAND_INSTR(0x01, 0x00),
- 	ILI9881C_COMMAND_INSTR(0x02, 0x00),
-@@ -311,8 +319,8 @@ static int ili9881c_prepare(struct drm_panel *panel)
- 	gpiod_set_value(ctx->reset, 0);
- 	msleep(20);
+     Datasheets:
  
--	for (i = 0; i < ARRAY_SIZE(ili9881c_init); i++) {
--		const struct ili9881c_instr *instr = &ili9881c_init[i];
-+	for (i = 0; i < ctx->desc->init_length; i++) {
-+		const struct ili9881c_instr *instr = &ctx->desc->init[i];
+-	http://www.ti.com/lit/gpn/lm25056
++	https://www.ti.com/lit/gpn/lm25056
  
- 		if (instr->op == ILI9881C_SWITCH_PAGE)
- 			ret = ili9881c_switch_page(ctx, instr->arg.page);
-@@ -368,7 +376,7 @@ static int ili9881c_unprepare(struct drm_panel *panel)
- 	return 0;
- }
+-	http://www.ti.com/lit/gpn/lm25056a
++	https://www.ti.com/lit/gpn/lm25056a
  
--static const struct drm_display_mode bananapi_default_mode = {
-+static const struct drm_display_mode lhr050h41_default_mode = {
- 	.clock		= 62000,
+   * National Semiconductor LM25066
  
- 	.hdisplay	= 720,
-@@ -380,6 +388,9 @@ static const struct drm_display_mode bananapi_default_mode = {
- 	.vsync_start	= 1280 + 10,
- 	.vsync_end	= 1280 + 10 + 10,
- 	.vtotal		= 1280 + 10 + 10 + 20,
-+
-+	.width_mm	= 62,
-+	.height_mm	= 110,
- };
+@@ -55,7 +55,7 @@ Supported chips:
  
- static int ili9881c_get_modes(struct drm_panel *panel,
-@@ -388,12 +399,12 @@ static int ili9881c_get_modes(struct drm_panel *panel,
- 	struct ili9881c *ctx = panel_to_ili9881c(panel);
- 	struct drm_display_mode *mode;
+ 	Datasheet:
  
--	mode = drm_mode_duplicate(connector->dev, &bananapi_default_mode);
-+	mode = drm_mode_duplicate(connector->dev, ctx->desc->mode);
- 	if (!mode) {
- 		dev_err(&ctx->dsi->dev, "failed to add mode %ux%ux@%u\n",
--			bananapi_default_mode.hdisplay,
--			bananapi_default_mode.vdisplay,
--			drm_mode_vrefresh(&bananapi_default_mode));
-+			ctx->desc->mode->hdisplay,
-+			ctx->desc->mode->vdisplay,
-+			drm_mode_vrefresh(ctx->desc->mode));
- 		return -ENOMEM;
- 	}
+-    http://www.ti.com/product/LM5066I
++    https://www.ti.com/product/LM5066I
  
-@@ -402,8 +413,8 @@ static int ili9881c_get_modes(struct drm_panel *panel,
- 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
- 	drm_mode_probed_add(connector, mode);
  
--	connector->display_info.width_mm = 62;
--	connector->display_info.height_mm = 110;
-+	connector->display_info.width_mm = mode->width_mm;
-+	connector->display_info.height_mm = mode->height_mm;
+ Author: Guenter Roeck <linux@roeck-us.net>
+diff --git a/Documentation/hwmon/ltc2978.rst b/Documentation/hwmon/ltc2978.rst
+index bc5270e5a477..b99a63965cfb 100644
+--- a/Documentation/hwmon/ltc2978.rst
++++ b/Documentation/hwmon/ltc2978.rst
+@@ -179,7 +179,7 @@ Supported chips:
  
- 	return 1;
- }
-@@ -426,6 +437,7 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
- 		return -ENOMEM;
- 	mipi_dsi_set_drvdata(dsi, ctx);
- 	ctx->dsi = dsi;
-+	ctx->desc = of_device_get_match_data(&dsi->dev);
+     Addresses scanned: -
  
- 	drm_panel_init(&ctx->panel, &dsi->dev, &ili9881c_funcs,
- 		       DRM_MODE_CONNECTOR_DSI);
-@@ -467,8 +479,14 @@ static int ili9881c_dsi_remove(struct mipi_dsi_device *dsi)
- 	return 0;
- }
+-    Datasheet: http://www.analog.com/ltm4680
++    Datasheet: https://www.analog.com/ltm4680
  
-+static const struct ili9881c_desc lhr050h41_desc = {
-+	.init = lhr050h41_init,
-+	.init_length = ARRAY_SIZE(lhr050h41_init),
-+	.mode = &lhr050h41_default_mode,
-+};
-+
- static const struct of_device_id ili9881c_of_match[] = {
--	{ .compatible = "bananapi,lhr050h41" },
-+	{ .compatible = "bananapi,lhr050h41", .data = &lhr050h41_desc },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ili9881c_of_match);
+   * Analog Devices LTM4686
+ 
+@@ -187,7 +187,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://www.analog.com/ltm4686
++    Datasheet: https://www.analog.com/ltm4686
+ 
+   * Analog Devices LTM4700
+ 
+@@ -195,7 +195,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://www.analog.com/ltm4700
++    Datasheet: https://www.analog.com/ltm4700
+ 
+ 
+ 
+diff --git a/Documentation/hwmon/max20751.rst b/Documentation/hwmon/max20751.rst
+index fe701e07eaf5..f9febefce02d 100644
+--- a/Documentation/hwmon/max20751.rst
++++ b/Documentation/hwmon/max20751.rst
+@@ -9,9 +9,9 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX20751.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX20751.pdf
+ 
+-    Application note: http://pdfserv.maximintegrated.com/en/an/AN5941.pdf
++    Application note: https://pdfserv.maximintegrated.com/en/an/AN5941.pdf
+ 
+ Author: Guenter Roeck <linux@roeck-us.net>
+ 
+diff --git a/Documentation/hwmon/max34440.rst b/Documentation/hwmon/max34440.rst
+index 5744df100a5d..162d289f0814 100644
+--- a/Documentation/hwmon/max34440.rst
++++ b/Documentation/hwmon/max34440.rst
+@@ -9,7 +9,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX34440.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX34440.pdf
+ 
+   * Maxim MAX34441
+ 
+@@ -19,7 +19,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX34441.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX34441.pdf
+ 
+   * Maxim MAX34446
+ 
+@@ -29,7 +29,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX34446.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX34446.pdf
+ 
+   * Maxim MAX34451
+ 
+@@ -39,7 +39,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX34451.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX34451.pdf
+ 
+   * Maxim MAX34460
+ 
+@@ -49,7 +49,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX34460.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX34460.pdf
+ 
+   * Maxim MAX34461
+ 
+@@ -59,7 +59,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://datasheets.maximintegrated.com/en/ds/MAX34461.pdf
++    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX34461.pdf
+ 
+ Author: Guenter Roeck <linux@roeck-us.net>
+ 
+diff --git a/Documentation/hwmon/pmbus.rst b/Documentation/hwmon/pmbus.rst
+index 2658ddee70eb..ea2b9b081391 100644
+--- a/Documentation/hwmon/pmbus.rst
++++ b/Documentation/hwmon/pmbus.rst
+@@ -21,11 +21,11 @@ Supported chips:
+ 
+     Datasheets:
+ 
+-	http://www.onsemi.com/pub_link/Collateral/ADP4000-D.PDF
++	https://www.onsemi.com/pub_link/Collateral/ADP4000-D.PDF
+ 
+-	http://www.onsemi.com/pub_link/Collateral/NCP4200-D.PDF
++	https://www.onsemi.com/pub_link/Collateral/NCP4200-D.PDF
+ 
+-	http://www.onsemi.com/pub_link/Collateral/JUNE%202009-%20REV.%200.PDF
++	https://www.onsemi.com/pub_link/Collateral/JUNE%202009-%20REV.%200.PDF
+ 
+   * Lineage Power
+ 
+@@ -53,15 +53,15 @@ Supported chips:
+ 
+     Datasheets:
+ 
+-	http://www.ti.com/lit/gpn/tps40400
++	https://www.ti.com/lit/gpn/tps40400
+ 
+-	http://www.ti.com/lit/gpn/tps544b20
++	https://www.ti.com/lit/gpn/tps544b20
+ 
+-	http://www.ti.com/lit/gpn/tps544b25
++	https://www.ti.com/lit/gpn/tps544b25
+ 
+-	http://www.ti.com/lit/gpn/tps544c20
++	https://www.ti.com/lit/gpn/tps544c20
+ 
+-	http://www.ti.com/lit/gpn/tps544c25
++	https://www.ti.com/lit/gpn/tps544c25
+ 
+   * Maxim MAX20796
+ 
+diff --git a/Documentation/hwmon/tps40422.rst b/Documentation/hwmon/tps40422.rst
+index 8fe3e1c3572e..32a62ccea192 100644
+--- a/Documentation/hwmon/tps40422.rst
++++ b/Documentation/hwmon/tps40422.rst
+@@ -9,7 +9,7 @@ Supported chips:
+ 
+     Addresses scanned: -
+ 
+-    Datasheet: http://www.ti.com/lit/gpn/tps40422
++    Datasheet: https://www.ti.com/lit/gpn/tps40422
+ 
+ Author: Zhu Laiwen <richard.zhu@nsn.com>
+ 
 -- 
 2.27.0
+
