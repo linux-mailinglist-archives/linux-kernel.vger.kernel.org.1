@@ -2,115 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77354225283
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 17:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39899225284
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 17:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgGSPgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 11:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgGSPgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 11:36:48 -0400
-Received: from hump.s81c.com (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726552AbgGSPiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 11:38:07 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60219 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726024AbgGSPiH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 11:38:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595173085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gFa20iOvNaIpC3/ExmrY2AxI8kzsflBaDnsmuPlGFx8=;
+        b=VPEzdOYYFpg9+s49DFJLApYnfK4jIS4asUSiuKOjt1cTugrIQx9++EJkct569yiNWOP95e
+        2uhEXHJJmIlPfeOT/phW7kE35SkErDYIeA341d1FuJabrqNKrsWnSihJF4Teo1tXnRPDqr
+        z851lMMCH2dM4vtbv9otIcox2ViREJc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-bjCNlHG2Os-xmHBRAOqNFQ-1; Sun, 19 Jul 2020 11:38:01 -0400
+X-MC-Unique: bjCNlHG2Os-xmHBRAOqNFQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70F0E21775;
-        Sun, 19 Jul 2020 15:36:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595173007;
-        bh=94o7D2F4FGd2DEm55n4Eh6xXaFTpqGHFhCaS0GvT7+k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=x42bk9SO17uErV6rvAyn9wzr+muvjQ4tZ5zhytPg/dPvQ2eZ1g0ldpA6ytCQ1MOdd
-         o6nXQsCnHHo3K2OBTCOeVb80mp6yiaO3846atUg6ImHGKXCdUQczWTSP26PDAINrrL
-         LPkWlmHylT39Fp9UzhjVXpUnPnGLnoqNvadrTxbc=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH RESEND] docs/core-api: memory-allocation: describe reclaim behaviour
-Date:   Sun, 19 Jul 2020 18:36:41 +0300
-Message-Id: <20200719153641.231131-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.25.4
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 805CD80183C;
+        Sun, 19 Jul 2020 15:37:59 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 727001A90F;
+        Sun, 19 Jul 2020 15:37:50 +0000 (UTC)
+Subject: Re: [PATCH v5 08/15] iommu: Pass domain to sva_unbind_gpasid()
+To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        baolu.lu@linux.intel.com, joro@8bytes.org
+Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
+        stefanha@gmail.com, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1594552870-55687-1-git-send-email-yi.l.liu@intel.com>
+ <1594552870-55687-9-git-send-email-yi.l.liu@intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <27ac7880-bdd3-2891-139e-b4a7cd18420b@redhat.com>
+Date:   Sun, 19 Jul 2020 17:37:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594552870-55687-9-git-send-email-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Yi,
 
-Changelog of commit dcda9b04713c ("mm, tree wide: replace __GFP_REPEAT by
-__GFP_RETRY_MAYFAIL with more useful semantic") has very nice description
-of GFP flags that affect reclaim behaviour of the page allocator.
+On 7/12/20 1:21 PM, Liu Yi L wrote:
+> From: Yi Sun <yi.y.sun@intel.com>
+> 
+> Current interface is good enough for SVA virtualization on an assigned
+> physical PCI device, but when it comes to mediated devices, a physical
+> device may attached with multiple aux-domains. Also, for guest unbind,
+> the PASID to be unbind should be allocated to the VM. This check requires
+> to know the ioasid_set which is associated with the domain.
+> 
+> So this interface needs to pass in domain info. Then the iommu driver is
+> able to know which domain will be used for the 2nd stage translation of
+> the nesting mode and also be able to do PASID ownership check. This patch
+> passes @domain per the above reason.
+> 
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Yi Sun <yi.y.sun@intel.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> ---
+> v2 -> v3:
+> *) pass in domain info only
+> *) use ioasid_t for pasid instead of int type
+> 
+> v1 -> v2:
+> *) added in v2.
+> ---
+>  drivers/iommu/intel/svm.c   | 3 ++-
+>  drivers/iommu/iommu.c       | 2 +-
+>  include/linux/intel-iommu.h | 3 ++-
+>  include/linux/iommu.h       | 3 ++-
+>  4 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index b9a9c55..d2c0e1a 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -432,7 +432,8 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+>  	return ret;
+>  }
+>  
+> -int intel_svm_unbind_gpasid(struct device *dev, int pasid)
+> +int intel_svm_unbind_gpasid(struct iommu_domain *domain,
+> +			    struct device *dev, ioasid_t pasid)
+int -> ioasid_t proto change is not described in the commit message,
+>  {
+>  	struct intel_iommu *iommu = intel_svm_device_to_iommu(dev);
+>  	struct intel_svm_dev *sdev;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 7910249..d3e554c 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2151,7 +2151,7 @@ int __iommu_sva_unbind_gpasid(struct iommu_domain *domain, struct device *dev,
+>  	if (unlikely(!domain->ops->sva_unbind_gpasid))
+>  		return -ENODEV;
+>  
+> -	return domain->ops->sva_unbind_gpasid(dev, data->hpasid);
+> +	return domain->ops->sva_unbind_gpasid(domain, dev, data->hpasid);
+>  }
+>  EXPORT_SYMBOL_GPL(__iommu_sva_unbind_gpasid);
+>  
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index 0d0ab32..18f292e 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -738,7 +738,8 @@ extern int intel_svm_enable_prq(struct intel_iommu *iommu);
+>  extern int intel_svm_finish_prq(struct intel_iommu *iommu);
+>  int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+>  			  struct iommu_gpasid_bind_data *data);
+> -int intel_svm_unbind_gpasid(struct device *dev, int pasid);
+> +int intel_svm_unbind_gpasid(struct iommu_domain *domain,
+> +			    struct device *dev, ioasid_t pasid);
+>  struct iommu_sva *intel_svm_bind(struct device *dev, struct mm_struct *mm,
+>  				 void *drvdata);
+>  void intel_svm_unbind(struct iommu_sva *handle);
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index e84a1d5..ca5edd8 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -303,7 +303,8 @@ struct iommu_ops {
+>  	int (*sva_bind_gpasid)(struct iommu_domain *domain,
+>  			struct device *dev, struct iommu_gpasid_bind_data *data);
+>  
+> -	int (*sva_unbind_gpasid)(struct device *dev, int pasid);
+> +	int (*sva_unbind_gpasid)(struct iommu_domain *domain,
+> +				 struct device *dev, ioasid_t pasid);
+>  
+>  	int (*def_domain_type)(struct device *dev);
+>  
+> 
+Besides
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
-It would be pity to keep this description buried in the log so let's expose
-it in the Documentation/ as well.
-
-Cc: Michal Hocko <mhocko@suse.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- Documentation/core-api/memory-allocation.rst | 44 ++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
-index 4aa82ddd01b8..4446a1ac36cc 100644
---- a/Documentation/core-api/memory-allocation.rst
-+++ b/Documentation/core-api/memory-allocation.rst
-@@ -84,6 +84,50 @@ driver for a device with such restrictions, avoid using these flags.
- And even with hardware with restrictions it is preferable to use
- `dma_alloc*` APIs.
- 
-+GFP flags and reclaim behavior
-+------------------------------
-+Memory allocations may trigger direct or background reclaim and it is
-+useful to understand how hard the page allocator will try to satisfy that
-+or another request.
-+
-+  * ``GFP_KERNEL & ~__GFP_RECLAIM`` - optimistic allocation without _any_
-+    attempt to free memory at all. The most light weight mode which even
-+    doesn't kick the background reclaim. Should be used carefully because it
-+    might deplete the memory and the next user might hit the more aggressive
-+    reclaim.
-+
-+  * ``GFP_KERNEL & ~__GFP_DIRECT_RECLAIM`` (or ``GFP_NOWAIT``)- optimistic
-+    allocation without any attempt to free memory from the current
-+    context but can wake kswapd to reclaim memory if the zone is below
-+    the low watermark. Can be used from either atomic contexts or when
-+    the request is a performance optimization and there is another
-+    fallback for a slow path.
-+
-+  * ``(GFP_KERNEL|__GFP_HIGH) & ~__GFP_DIRECT_RECLAIM`` (aka ``GFP_ATOMIC``) -
-+    non sleeping allocation with an expensive fallback so it can access
-+    some portion of memory reserves. Usually used from interrupt/bottom-half
-+    context with an expensive slow path fallback.
-+
-+  * ``GFP_KERNEL`` - both background and direct reclaim are allowed and the
-+    **default** page allocator behavior is used. That means that not costly
-+    allocation requests are basically no-fail but there is no guarantee of
-+    that behavior so failures have to be checked properly by callers
-+    (e.g. OOM killer victim is allowed to fail currently).
-+
-+  * ``GFP_KERNEL | __GFP_NORETRY`` - overrides the default allocator behavior
-+    and all allocation requests fail early rather than cause disruptive
-+    reclaim (one round of reclaim in this implementation). The OOM killer
-+    is not invoked.
-+
-+  * ``GFP_KERNEL | __GFP_RETRY_MAYFAIL`` - overrides the default allocator
-+    behavior and all allocation requests try really hard. The request
-+    will fail if the reclaim cannot make any progress. The OOM killer
-+    won't be triggered.
-+
-+  * ``GFP_KERNEL | __GFP_NOFAIL`` - overrides the default allocator behavior
-+    and all allocation requests will loop endlessly until they succeed.
-+    This might be really dangerous especially for larger orders.
-+
- Selecting memory allocator
- ==========================
- 
--- 
-2.25.4
+Eric
 
