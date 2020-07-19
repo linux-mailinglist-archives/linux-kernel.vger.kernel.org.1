@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B597F225164
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 12:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40747225168
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Jul 2020 12:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgGSKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 06:51:02 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:37060 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgGSKvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 06:51:02 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 39543BC078;
-        Sun, 19 Jul 2020 10:50:58 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH for v5.9] ath9k: Replace HTTP links with HTTPS ones
-Date:   Sun, 19 Jul 2020 12:50:52 +0200
-Message-Id: <20200719105052.57997-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+        id S1726095AbgGSK4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 06:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgGSK4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 06:56:05 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C050C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 03:56:05 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d1so7366284plr.8
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 03:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=DIKfZ2h/OsqeEjg5s5ssaDZDoJKCseBDD+tGu/EIuW4=;
+        b=R11UaFD8k9tSfOmd+txBsHd9GJep6vkYfYA1rH3RNiySIOlBQD1c957vAiFnE4P7cp
+         GKEe1RCqQHNct1x4Gich+h9mWEyS+sMq7eFp5pJMapGs5hMmdKcCoBZOA3Xh8Jnm6W48
+         qbApEh4NkLKl0Nxw03jtzFVylpe+J1h2FAFl1SR5b/rbAvUTJy3ifDf1VLPSW8vt1++a
+         cHDehwCiblta4DjNA+o5XViosRrMCdsKDjGSR2hg6Tn5oLUoI3whDJUwZXEvVeFlrA5p
+         ArcHXhcd8f3tvyMtSUQO/Cm8Klmhx5QR+R400he1vP65Mc6EBzMYiyfTbBc5nkYn8oKc
+         X00g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=DIKfZ2h/OsqeEjg5s5ssaDZDoJKCseBDD+tGu/EIuW4=;
+        b=eFSGtsQbMI9Mv1MiESUGm2xwurK7VDmwL2JNicdfcd55DLCLb9H3NN7DlpQydtZzqW
+         J42eSORPXsxSA5iskeVJ46feAmNg3rSEP30zpYBsFOFPG3oJfRkoGRrhn0MWv6A2LU7G
+         aNEo0g8zfi8blK+IkkspmpF7e7IdPbMOaXcGeGrj4C4wSEaSuQD0GHqfQsQ+2diK/QxK
+         h24n5BkfLMCOD9RVtygTIphLAI31+4aGFF17+1Xi4AhQzhwCdWy5t16ree+/4bOTI+C2
+         SUSF+WFeLsLRKW5DYaAfvtfJ+shhpI0iLaotDBovLxDveAHbOhkO0SsohoeyOalgv33+
+         ZvXA==
+X-Gm-Message-State: AOAM530pRvzo566edDvXs5vvQAs3NxBJwIn+vOJGt++xC04MfN8DMRJT
+        w5RRBib2jItKELa2d3s0r0CPXyExNp3+rQ==
+X-Google-Smtp-Source: ABdhPJxgZ/UW5D6dLsCW3Vjn0xw5bnMpFN7wql1vOqCF0jjPLQZMMG99ddPCF2aZok2eCLNa5zpJJA==
+X-Received: by 2002:a17:90a:f6d8:: with SMTP id er24mr17144956pjb.203.1595156164592;
+        Sun, 19 Jul 2020 03:56:04 -0700 (PDT)
+Received: from DV.bbrouter ([117.242.250.233])
+        by smtp.gmail.com with ESMTPSA id o26sm13299253pfp.219.2020.07.19.03.56.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Jul 2020 03:56:04 -0700 (PDT)
+From:   Darshan D V <darshandv10@gmail.com>
+To:     gregkh@linuxfoundation.org, yuehaibing@huawei.com, ardb@kernel.org,
+        contact@christina-quast.de
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        darshandv10@gmail.com
+Subject: [PATCH 1/2] staging: rtl8192e: Fixed a coding style error
+Date:   Sun, 19 Jul 2020 16:25:56 +0530
+Message-Id: <20200719105557.12605-1-darshandv10@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200719092236.GB171181@kroah.com>
+References: <20200719092236.GB171181@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+    rtllib_crypt_ccmp.c: Fixed the error - space required before the
+    open parenthesis '(' on line #281.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Signed-off-by: Darshan D V <darshandv10@gmail.com>
 ---
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/net/wireless/ath/ath9k/ani.c | 2 +-
+ drivers/staging/rtl8192e/rtllib_crypt_ccmp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ani.c b/drivers/net/wireless/ath/ath9k/ani.c
-index 5214dd7a3936..41d192709e8e 100644
---- a/drivers/net/wireless/ath/ath9k/ani.c
-+++ b/drivers/net/wireless/ath/ath9k/ani.c
-@@ -74,7 +74,7 @@ static const struct ani_ofdm_level_entry ofdm_level_table[] = {
-  * Regardless of alignment in time, the antenna signals add constructively after
-  * FFT and improve your reception. For more information:
-  *
-- * http://en.wikipedia.org/wiki/Maximal-ratio_combining
-+ * https://en.wikipedia.org/wiki/Maximal-ratio_combining
-  */
+diff --git a/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c b/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+index 0cbf4a1a326b..b2af802b9451 100644
+--- a/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
++++ b/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+@@ -278,7 +278,7 @@ static int rtllib_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+ 		int aad_len, ret;
  
- struct ani_cck_level_entry {
+ 		req = aead_request_alloc(key->tfm, GFP_ATOMIC);
+-		if(!req)
++		if (!req)
+ 			return -ENOMEM;
+ 
+ 		aad_len = ccmp_init_iv_and_aad(hdr, pn, iv, aad);
 -- 
-2.27.0
+2.17.1
 
