@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A162254AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 01:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BBF2254B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 01:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgGSXLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 19:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S1727849AbgGSXMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 19:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgGSXLi (ORCPT
+        with ESMTP id S1727036AbgGSXLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 19:11:38 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E459C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:38 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 5so10772973oty.11
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:38 -0700 (PDT)
+        Sun, 19 Jul 2020 19:11:40 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0ACC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:40 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id k22so13028191oib.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 16:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HhcAoXPW7ZRiM/8Q3ygWBvgF6djv95EaVmKQGesqI94=;
-        b=cmaw3dQRAtHMt+2E+yl1tYZBdRQ/3msUFsLjOBj1nxVBkJxkMO/oU8xv9yaUFqRWlR
-         xv/kniDCmSFzA4e/Ae5vqMW1t2akWTcculKNbONbzY8FmjERGRdoNUIV9odsmrs2MvzS
-         67o+/QNEYB8sRC9SV9DB82+2PtiUnuTzqPPQW0Tj1Gw/aV/SQdvghhDlyisyVyAGoJOi
-         hGQ7/5vBuzkfQwYTeIJEhlOvchVecBPfZz0MONEtcSsUD+w9rSTmUszmKeDRVkgEkk3g
-         8h2Mzos++eYMjzRYKItQ9Xktmd+xLpzPjscH6egKLiNWS4Sfj4wR/7zu/Kb8YKJ2RceS
-         jJfw==
+        bh=tJ9r7Kj2JZ78SZKbu2ksaAjGKTUOUIiaxChKdLFlRa4=;
+        b=Upq5jsJbyhEgpKW7Pkr+aqO/nuzSbbqBjvUFRLBNio6eEOnfcteoqYD99EDrYTX9I1
+         g9LUwxDqpUWkSbPx6RlkcBceJLCnGYsTYXbKaOY8ygqy7Vqm9TrSeyPHg5gUs24KZN19
+         tsfYUYxLJPyxpZSN5kqM4jvyWGNjkJPgp04kbT+bNqG+8Ec7SIFDHd/BgJRA5ZcvbMg3
+         uj/NKSJ152rOGx61eLMDBWVqfMWbzuYt4DTbVy2DVOOi1IaR88xv0+iPsVKuKHqbNz9g
+         97NINoDb99Yn+n2CZdrn9szoQ+e9UwPqeTeoixFjXNiE21r1xNllS+DhMqaCCQo51pjd
+         iVOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HhcAoXPW7ZRiM/8Q3ygWBvgF6djv95EaVmKQGesqI94=;
-        b=kLzogMLbqOM+qrcGcPNJp56FI/Qzub6zVxwImqHDCIrofGhMkdDoeOA+iY/ivAbG4U
-         W+bV3d/6Wu5M6gVDABq0M4z8h1dpaVlseypcT8yGde+GD7snYXhLo7UVP8K485//TTGg
-         V21jWWGPZ24lScpAt6O+FonyLslXyAW91XmYXfwl4n5mKFD6s+aNE/O33vIbNEk3auW6
-         PPxrLZUbHZp0SnW0k+0rh19+zeYMMRdzgDdXLDQe6hGPFftmpV+ch6eQoqBk60ty7mGn
-         UbD+Qp+TuN5uqRn2Z7yzd/drfoLwEU8zKVaGZpBu+gA2CXTvemjS13k+2mTBRuKYWtTs
-         8aPw==
-X-Gm-Message-State: AOAM532/WYAq+MerY4DT38xcUJ2N+jmFlSVxTSsjomkVEm5Qu4IuHvOo
-        86EoSAC1RdQSXTcfRJuFDto=
-X-Google-Smtp-Source: ABdhPJybVuqaC7ItywiUhGXX6BbHSHRfnorRn8ln1t7pxqqVvDu78o/Mx1oD3gPJ6/nsAJtRnOximQ==
-X-Received: by 2002:a05:6830:18f6:: with SMTP id d22mr17701947otf.243.1595200297880;
-        Sun, 19 Jul 2020 16:11:37 -0700 (PDT)
+        bh=tJ9r7Kj2JZ78SZKbu2ksaAjGKTUOUIiaxChKdLFlRa4=;
+        b=oRx2KIvd+V8YLRAQljM01oUIcA5vxJA93YdQ2NvMsgwloEErMEX0W61T1Xguh74TiP
+         ModF0BLFWfL7OaUeMU6I4qF+dSuen92IsnphC66ezDj5lBXc7dpNVKExY0o2jLqKiXR1
+         1yTK/mB4T0suyMWtDYO6G8wGwzKHQ5Qn824zW4sPcepQyVNAqB+mv19tAg3v8UkghrsW
+         ciEBDU2D07l45KZsKCX/o4aLecOmNEbexgppCo8+8Sf/aqkvPjaXqsz6Pjkzhf881TpV
+         vejB0JanmKXT/mbIVUBnzWFVwhO3d82iK8l4FpKdmHQ/63Z+xYmRcnbO2JDh4mz8g8zz
+         JuBg==
+X-Gm-Message-State: AOAM531C4VVkw2/9NiJuKuh/eQWWEoKEhpI1oyEoA4fyrVkNGsa+IFWg
+        VaqnrDDNAhoXmy5Mktq9K7c=
+X-Google-Smtp-Source: ABdhPJxzITwpBg2Q2KpgteDgmkYYwJxeKoC4n5bocu6REUkV9/qNB7Dv/YpmzcMT4Xk+5dZOpok/mg==
+X-Received: by 2002:aca:bd8a:: with SMTP id n132mr16186298oif.121.1595200299046;
+        Sun, 19 Jul 2020 16:11:39 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::5e16])
-        by smtp.googlemail.com with ESMTPSA id q19sm2394680ooi.14.2020.07.19.16.11.36
+        by smtp.googlemail.com with ESMTPSA id q19sm2394680ooi.14.2020.07.19.16.11.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 16:11:37 -0700 (PDT)
+        Sun, 19 Jul 2020 16:11:38 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v5 10/18] dyndbg: make ddebug_tables list LIFO for add/remove_module
-Date:   Sun, 19 Jul 2020 17:10:50 -0600
-Message-Id: <20200719231058.1586423-11-jim.cromie@gmail.com>
+Subject: [PATCH v5 11/18] dyndbg: use gcc ?: to reduce word count
+Date:   Sun, 19 Jul 2020 17:10:51 -0600
+Message-Id: <20200719231058.1586423-12-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200719231058.1586423-1-jim.cromie@gmail.com>
 References: <20200719231058.1586423-1-jim.cromie@gmail.com>
@@ -65,29 +65,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loadable modules are the last in on this list, and are the only
-modules that could be removed.  ddebug_remove_module() searches from
-head, but ddebug_add_module() uses list_add_tail().  Change it to
-list_add() for a micro-optimization.
+reduce word count via gcc ?: extension, no actual code change.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/dynamic_debug.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index da3ed54a6521..e879af4e66e0 100644
+index e879af4e66e0..6d0159075308 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -895,7 +895,7 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
- 	dt->ddebugs = tab;
+@@ -127,10 +127,10 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
  
- 	mutex_lock(&ddebug_lock);
--	list_add_tail(&dt->link, &ddebug_tables);
-+	list_add(&dt->link, &ddebug_tables);
- 	mutex_unlock(&ddebug_lock);
+ 	vpr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
+ 		 msg,
+-		 query->function ? query->function : "",
+-		 query->filename ? query->filename : "",
+-		 query->module ? query->module : "",
+-		 fmtlen, query->format ? query->format : "",
++		 query->function ?: "",
++		 query->filename ?: "",
++		 query->module ?: "",
++		 fmtlen, query->format ?: "",
+ 		 query->first_lineno, query->last_lineno);
+ }
  
- 	v2pr_info("%u debug prints in module %s\n", n, dt->mod_name);
 -- 
 2.26.2
 
