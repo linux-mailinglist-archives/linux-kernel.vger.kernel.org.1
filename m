@@ -2,126 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CDE226879
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C36E226777
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388263AbgGTQTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387796AbgGTQLY (ORCPT
+        id S2387876AbgGTQL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:11:56 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:36421 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387800AbgGTQLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:11:24 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD86C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:11:24 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id a12so18147055ion.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=BYqUr1CXn/LWbIDpCFv95fWgX/X0sTMN+KIEoKgBT9g=;
-        b=BQchVYHnt5hj8+P/O/cuHxnVgddKs3pyZkKWOh5J6SMY22W8AJIRR7krPhr7M7MXnj
-         F/Ud8Kh7hO9fD5nZqhlkBEhQ1vbil0jhOjxHGgwDmlBVPKvjaDigBtOKE8QVJWWma3YK
-         FlHwdEORKOaiKW9zaO6h4COzjoDdLYQxOyblL2GwPQrgn9ZTQ4+XuwbIbmW9g3p8aiDK
-         tpIkINkuVtBf8AMJPqGcpNXTv0WxHFoefO2WZ4PV2+4aGmW2/TCD7g6HAsLmpsY9fyIa
-         hP6f9DGDYQzeYc7FsKqwRQJDyJjZN+mGL4lS3RW7yn9+ECZVrmhW6XzvFHEGYjvXM8YX
-         P6Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BYqUr1CXn/LWbIDpCFv95fWgX/X0sTMN+KIEoKgBT9g=;
-        b=T5fEW+qptqUVfdX2okdqNo266ad63KTNIhMKSau8B2tTd4UcGJk2Af+1I8zCQRAP8B
-         fj8/1Ip3eO2DoLLmHpYHk92IuPoOdwqP5xr3GOPN5YdXsR1c4iRrHZAXdmh2pVZxwUOm
-         X8QlGL/8wuzpDKhHaUgJwC9Tb1YTRCxwVYS8fi3eCgvsb1iTJkx79uKawqTOnX7bSozv
-         7DTmVDXTZyfdQhOoYqf3VsZuXDCcCPz4tSF8NyCGbYEnN64iyT0p5n6nLXfOImRNQiGQ
-         WN7btul667PEnxPgMKCn/hXX+TB2chbKQOz+MVutn+F0EONpFUeXBYFHoiGWPeT7zK6R
-         lx4Q==
-X-Gm-Message-State: AOAM532sB4jnn8cq6pgRJGbGXNd+csqNZ6/Er32Fy55mR5QUmqWW847N
-        vsBrtvYd3tp7bt0Jya+hkfBgkOCoHvu/OA==
-X-Google-Smtp-Source: ABdhPJxE9tIgYp1nGsXBaolEaOkucSVFotXZks2yPE9czV87tx+DxvBw0F4pZ4M+UPtq4KQzbX0BCA==
-X-Received: by 2002:a02:694c:: with SMTP id e73mr27185708jac.17.1595261483087;
-        Mon, 20 Jul 2020 09:11:23 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id t7sm9034365iol.2.2020.07.20.09.11.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 09:11:22 -0700 (PDT)
-Subject: Re: [PATCH 0/2] task_put batching
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1595021626.git.asml.silence@gmail.com>
- <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
- <b01e7f2d-d9a6-5593-3afb-5008d96695c6@gmail.com>
- <a2aa8de0-a2d0-3381-3415-4b523c2b66a5@kernel.dk>
- <5b20b94d-13f7-66ee-610a-6f37ec8caa8d@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <35740763-8123-a0d7-3cc6-593c7fcc63e7@kernel.dk>
-Date:   Mon, 20 Jul 2020 10:11:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 20 Jul 2020 12:11:35 -0400
+Received: from localhost (unknown [42.109.212.217])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id D6FE810000E;
+        Mon, 20 Jul 2020 16:11:27 +0000 (UTC)
+Date:   Mon, 20 Jul 2020 21:41:23 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     Tudor.Ambarus@microchip.com
+Cc:     p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, broonie@kernel.org, Nicolas.Ferre@microchip.com,
+        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+        matthias.bgg@gmail.com, michal.simek@xilinx.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, boris.brezillon@collabora.com,
+        nsekhar@ti.com
+Subject: Re: [PATCH v10 13/17] mtd: spi-nor: core: perform a Soft Reset on
+ shutdown
+Message-ID: <20200720161123.dth4rzziidpx5pmb@yadavpratyush.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <20200623183030.26591-14-p.yadav@ti.com>
+ <ccc128f1-2e7b-e64f-c958-ad5cc272085a@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <5b20b94d-13f7-66ee-610a-6f37ec8caa8d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ccc128f1-2e7b-e64f-c958-ad5cc272085a@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/20 10:06 AM, Pavel Begunkov wrote:
-> On 20/07/2020 18:49, Jens Axboe wrote:
->> On 7/20/20 9:22 AM, Pavel Begunkov wrote:
->>> On 18/07/2020 17:37, Jens Axboe wrote:
->>>> On 7/18/20 2:32 AM, Pavel Begunkov wrote:
->>>>> For my a bit exaggerated test case perf continues to show high CPU
->>>>> cosumption by io_dismantle(), and so calling it io_iopoll_complete().
->>>>> Even though the patch doesn't yield throughput increase for my setup,
->>>>> probably because the effect is hidden behind polling, but it definitely
->>>>> improves relative percentage. And the difference should only grow with
->>>>> increasing number of CPUs. Another reason to have this is that atomics
->>>>> may affect other parallel tasks (e.g. which doesn't use io_uring)
->>>>>
->>>>> before:
->>>>> io_iopoll_complete: 5.29%
->>>>> io_dismantle_req:   2.16%
->>>>>
->>>>> after:
->>>>> io_iopoll_complete: 3.39%
->>>>> io_dismantle_req:   0.465%
->>>>
->>>> Still not seeing a win here, but it's clean and it _should_ work. For
->>>> some reason I end up getting the offset in task ref put growing the
->>>> fput_many(). Which doesn't (on the surface) make a lot of sense, but
->>>> may just mean that we have some weird side effects.
->>>
->>> It grows because the patch is garbage, the second condition is always false.
->>> See the diff. Could you please drop both patches?
->>
->> Hah, indeed. With this on top, it looks like it should in terms of
->> performance and profiles.
+Hi Tudor,
+
+On 08/07/20 04:10PM, Tudor.Ambarus@microchip.com wrote:
+> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Perform a Soft Reset on shutdown on flashes that support it so that the
+> > flash can be reset to its initial state and any configurations made by
+> > spi-nor (given that they're only done in volatile registers) will be
+> > reset. This will hand back the flash in pristine state for any further
+> > operations on it.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c  | 42 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/mtd/spi-nor.h |  2 ++
+> >  2 files changed, 44 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 4a1f6b343534..27ad9bab06dc 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -40,6 +40,9 @@
+> > 
+> >  #define SPI_NOR_MAX_ADDR_WIDTH 4
+> > 
+> > +#define SPI_NOR_SRST_SLEEP_MIN 200
+> > +#define SPI_NOR_SRST_SLEEP_MAX 400
+> > +
+> >  /**
+> >   * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
+> >   *                        extension type.
+> > @@ -3201,6 +3204,41 @@ static int spi_nor_init(struct spi_nor *nor)
+> >         return 0;
+> >  }
+> > 
+> > +static void spi_nor_soft_reset(struct spi_nor *nor)
+> > +{
+> > +       struct spi_mem_op op;
+> > +       int ret;
+> > +
+> > +       op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 8),
+> > +                       SPI_MEM_OP_NO_DUMMY,
+> > +                       SPI_MEM_OP_NO_ADDR,
+> > +                       SPI_MEM_OP_NO_DATA);
+> > +       spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> > +       ret = spi_mem_exec_op(nor->spimem, &op);
+> > +       if (ret) {
+> > +               dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+> > +               return;
+> > +       }
+> > +
+> > +       op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 8),
+> > +                       SPI_MEM_OP_NO_DUMMY,
+> > +                       SPI_MEM_OP_NO_ADDR,
+> > +                       SPI_MEM_OP_NO_DATA);
+> > +       spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> > +       ret = spi_mem_exec_op(nor->spimem, &op);
+> > +       if (ret) {
+> > +               dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+> > +               return;
+> > +       }
+> > +
+> > +       /*
+> > +        * Software Reset is not instant, and the delay varies from flash to
+> > +        * flash. Looking at a few flashes, most range somewhere below 100
+> > +        * microseconds. So, sleep for a range of 200-400 us.
+> > +        */
+> > +       usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
+> > +}
+> > +
+> >  /* mtd resume handler */
+> >  static void spi_nor_resume(struct mtd_info *mtd)
+> >  {
+> > @@ -3220,6 +3258,10 @@ void spi_nor_restore(struct spi_nor *nor)
+> >         if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
+> >             nor->flags & SNOR_F_BROKEN_RESET)
+> >                 nor->params->set_4byte_addr_mode(nor, false);
+> > +
+> > +       if (nor->info->flags & SPI_NOR_OCTAL_DTR_READ &&
 > 
-> It just shows, that it doesn't really matters for a single-threaded app,
-> as expected. Worth to throw some contention though. I'll think about
-> finding some time to get/borrow a multi-threaded one.
+> Why this limitation? Can't we make the software reset available for all
+> the modes?
 
-But it kind of did here, ended up being mostly a wash in terms of perf
-here as my testing reported. With the incremental applied, it's up a bit
-over before the task put batching.
+Because I wrote the function spi_nor_soft_reset() from the perspective 
+of xSPI support, and the xSPI spec only cares about the 8D-8D-8D version 
+of the soft reset.
 
->> I can just fold this into the existing one, if you'd like.
-> 
-> Would be nice. I'm going to double-check the counter and re-measure anyway.
-> BTW, how did you find it? A tool or a proc file would be awesome.
+BFPT says we can execute it on 1, 2, 4, or 8 wires depending on the mode 
+so I guess we can support a generalized version as well. Will fix.
 
-For this kind of testing, I just use t/io_uring out of fio. It's probably
-the lowest overhead kind of tool:
-
-# sudo taskset -c 0 t/io_uring -b512 -p1 /dev/nvme2n1
+> > +           nor->flags & SNOR_F_SOFT_RESET)
+> > +               spi_nor_soft_reset(nor);
+> >  }
+> >  EXPORT_SYMBOL_GPL(spi_nor_restore);
+> > 
+> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> > index cd549042c53d..299685d15dc2 100644
+> > --- a/include/linux/mtd/spi-nor.h
+> > +++ b/include/linux/mtd/spi-nor.h
+> > @@ -51,6 +51,8 @@
+> >  #define SPINOR_OP_CLFSR                0x50    /* Clear flag status register */
+> >  #define SPINOR_OP_RDEAR                0xc8    /* Read Extended Address Register */
+> >  #define SPINOR_OP_WREAR                0xc5    /* Write Extended Address Register */
+> > +#define SPINOR_OP_SRSTEN       0x66    /* Software Reset Enable */
+> > +#define SPINOR_OP_SRST         0x99    /* Software Reset */
+> > 
+> >  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+> >  #define SPINOR_OP_READ_4B      0x13    /* Read data bytes (low frequency) */
 
 -- 
-Jens Axboe
-
+Regards,
+Pratyush Yadav
