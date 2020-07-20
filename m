@@ -2,132 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D65226A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6102E226A6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732800AbgGTQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:33:56 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:39659 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388962AbgGTQdy (ORCPT
+        id S2388971AbgGTQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:34:03 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:38462 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731806AbgGTQeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:33:54 -0400
-Received: by mail-il1-f193.google.com with SMTP id k6so13834845ili.6;
-        Mon, 20 Jul 2020 09:33:53 -0700 (PDT)
+        Mon, 20 Jul 2020 12:34:00 -0400
+Received: by mail-wm1-f54.google.com with SMTP id f18so146320wml.3;
+        Mon, 20 Jul 2020 09:33:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=I0wQ3YO8Vss6xaeuCLdInIi0SX7uQKxUoc58bndvXRg=;
-        b=cZgYGUFjAVKN8ZX8fTOTsFvezbIe6LfiDdYMQyQv5r2NRjkk1D2GAbUmiH/HsYPY6R
-         mBGY4yHL7mH7K/8eK6mEh73N5PcJ00gQ0VlH9QbkUiBdrIr4UxYEWBjU9l5Lg9ybni2H
-         JlKQLL2p943NJXnTUV6/DwRCcnFGZ67pNwdOnJqp+pCFgLgaQCiFLcdyvvyPpF9D8I+J
-         MnlKJELDrU0tSffteh3cntx3U0C5rdMtYmDBL+60zLMRNPtb0Pj032KRaAU8Rh84MUDY
-         cGiD6Pb0rcM5Jz3bzBiRF+c56kzdp7MZ4FExFeP+Ywpi+TTPiE5vkE1ZNWCFKy6YVKu0
-         Hbhg==
-X-Gm-Message-State: AOAM530SCty2zVl2/b01BolON7YwYkKYWblEOExKvF6ifssQ0ntoPLjY
-        xYs/X+wwTA3z6uecpzvwIC2aiFE4MQ==
-X-Google-Smtp-Source: ABdhPJyWvpuSNg/zWars+w88sZJsxEErbQ5PDf/rFSRBSl5xMfKye5hioNqx7KI9vXMByvsU0WXuzA==
-X-Received: by 2002:a92:5ecf:: with SMTP id f76mr22893176ilg.281.1595262833149;
-        Mon, 20 Jul 2020 09:33:53 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id i6sm8997543ilj.61.2020.07.20.09.33.50
+         :mime-version:content-disposition:in-reply-to;
+        bh=vsumXDSjRCB3mjTpA+ep77yxk0IlkkZV6qgRHqWpdCo=;
+        b=lsqMeRJklChZBg1IlCoEfDJCPnGasGqcJXCtsskjtIRB8df+zICfx+/0We6BhSvZMq
+         gmvxKnOEYZis4+BRnnVd3yHQfLTR0nY201n6S8c0ekOx8UgEwNh0JAalCLLhBq1RNRRm
+         aUIHdi2WTmXtDj3pDtVHz3D/A+GcCMBRDJl2CHogIGlnanugCS3qyGCW2vu5o7PFcMk1
+         JehJ92HxO+F7iopgul+7DuPYMI1b0GRt4TWgbrxGTWBTJFgC5Z6ErVon6dytXDXJ4/+S
+         oNoZ3IVP6vRxmDn6NbCxAwBHLMwJ9VNHOaQNMZQ6I2OEkY5M/krpvU9IGoMrXoM43Le8
+         4c/w==
+X-Gm-Message-State: AOAM532Y6OwaZHkpY2cXE4z6AKZ1nMSkD8AOMEUsrw3lrxNOAQK9fbSa
+        WMYvZiBTeIpZHSWWwEI8MqE=
+X-Google-Smtp-Source: ABdhPJyBCfJt5mnYmvs0N2dm/zSvnpr7Pn7iHFOH6pzm91E8hNpV4jHXVySktCXThjCyz+o8Wxbjnw==
+X-Received: by 2002:a1c:7916:: with SMTP id l22mr170978wme.91.1595262837466;
+        Mon, 20 Jul 2020 09:33:57 -0700 (PDT)
+Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
+        by smtp.gmail.com with ESMTPSA id f9sm34272539wru.47.2020.07.20.09.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 09:33:52 -0700 (PDT)
-Received: (nullmailer pid 2627088 invoked by uid 1000);
-        Mon, 20 Jul 2020 16:33:49 -0000
-Date:   Mon, 20 Jul 2020 10:33:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     yanfei.li@ingenic.com, devicetree@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, zhenwenjin@gmail.com,
-        aric.pzqi@ingenic.com, paul@crapouillou.net,
-        rick.tyliu@ingenic.com, daniel.lezcano@linaro.org,
-        tglx@linutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, sernia.zhou@foxmail.com
-Subject: Re: [PATCH v9 1/2] dt-bindings: timer: Add Ingenic X1000 OST
- bindings.
-Message-ID: <20200720163349.GA2626388@bogus>
-References: <20200720151106.112807-1-zhouyanjie@wanyeetech.com>
- <20200720151106.112807-2-zhouyanjie@wanyeetech.com>
+        Mon, 20 Jul 2020 09:33:56 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 18:33:55 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: kworker/0:3+pm hogging CPU
+Message-ID: <20200720163355.GA4061@dhcp22.suse.cz>
+References: <20200720083956.GA4074@dhcp22.suse.cz>
+ <20200720135857.GB1228057@rowland.harvard.edu>
+ <20200720143213.GJ4074@dhcp22.suse.cz>
+ <20200720151255.GE1228057@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200720151106.112807-2-zhouyanjie@wanyeetech.com>
+In-Reply-To: <20200720151255.GE1228057@rowland.harvard.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 23:11:05 +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Add the OST bindings for the X10000 SoC from Ingenic.
+On Mon 20-07-20 11:12:55, Alan Stern wrote:
+[...]
+> 	sudo echo 'module usbcore =p' >/debug/dynamic_debug/control
 > 
-> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
+> Then wait long enough for some interesting messages to appear in the 
+> kernel log (it should only take a few seconds if the worker thread is as 
+> busy as you say) and collect the output from the dmesg command.
 > 
-> Notes:
->     v1->v2:
->     No change.
-> 
->     v2->v3:
->     Fix wrong parameters in "clocks".
-> 
->     v3->v4:
->     1.Rename "ingenic,ost.yaml" to "ingenic,sysost.yaml".
->     2.Rename "ingenic,ost.h" to "ingenic,sysost.h".
->     3.Modify the description in "ingenic,sysost.yaml".
-> 
->     v4->v5:
->     No change.
-> 
->     v5->v6:
->     1.Drop "oneOf" and the blank line.
->     2.Add "additionalProperties: false".
-> 
->     v6->v7:
->     No change.
-> 
->     v7->v8:
->     No change.
-> 
->     v8->v9:
->     Fix warning while applying.
->     Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> 
->  .../devicetree/bindings/timer/ingenic,sysost.yaml  | 63 ++++++++++++++++++++++
->  include/dt-bindings/clock/ingenic,sysost.h         | 12 +++++
->  2 files changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
->  create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
-> 
+> To turn dynamic debugging back off when you're finished, use the same 
+> command with "=p" changed to "-p".
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml: properties: '#address-cells' is a dependency of '#size-cells'
-Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/timer/ingenic,sysost.example.dts' failed
-make[1]: *** [Documentation/devicetree/bindings/timer/ingenic,sysost.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml: ignoring, error in schema: properties
-warning: no schema found in file: ./Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml: ignoring, error in schema: properties
-warning: no schema found in file: ./Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
-Makefile:1347: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1332465
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+[   95.395815] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.395824] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.395838] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.396016] hub 2-0:1.0: hub_suspend
+[   95.396023] usb usb2: bus auto-suspend, wakeup 1
+[   95.396029] usb usb2: bus suspend fail, err -16
+[   95.396030] hub 2-0:1.0: hub_resume
+[   95.396094] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.396160] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.396166] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.396259] hub 2-0:1.0: hub_suspend
+[   95.396300] usb usb2: bus auto-suspend, wakeup 1
+[   95.396321] usb usb2: bus suspend fail, err -16
+[   95.396332] hub 2-0:1.0: hub_resume
+[   95.396436] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.396443] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.396449] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.396582] hub 2-0:1.0: hub_suspend
+[   95.396587] usb usb2: bus auto-suspend, wakeup 1
+[   95.396594] usb usb2: bus suspend fail, err -16
+[   95.396595] hub 2-0:1.0: hub_resume
+[   95.396718] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.396725] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.396731] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.396870] hub 2-0:1.0: hub_suspend
+[   95.396874] usb usb2: bus auto-suspend, wakeup 1
+[   95.396881] usb usb2: bus suspend fail, err -16
+[   95.396882] hub 2-0:1.0: hub_resume
+[   95.396911] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.396917] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.396975] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.397063] hub 2-0:1.0: hub_suspend
+[   95.397068] usb usb2: bus auto-suspend, wakeup 1
+[   95.397095] usb usb2: bus suspend fail, err -16
+[   95.397105] hub 2-0:1.0: hub_resume
+[   95.397200] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.397207] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.397213] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.397367] hub 2-0:1.0: hub_suspend
+[   95.397372] usb usb2: bus auto-suspend, wakeup 1
+[   95.397379] usb usb2: bus suspend fail, err -16
+[   95.397380] hub 2-0:1.0: hub_resume
+[   95.397412] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.397418] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.397470] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.397560] hub 2-0:1.0: hub_suspend
+[   95.397565] usb usb2: bus auto-suspend, wakeup 1
+[   95.397599] usb usb2: bus suspend fail, err -16
+[   95.397610] hub 2-0:1.0: hub_resume
+[   95.397740] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.397746] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.397753] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.397888] hub 2-0:1.0: hub_suspend
+[   95.397893] usb usb2: bus auto-suspend, wakeup 1
+[   95.397900] usb usb2: bus suspend fail, err -16
+[   95.397901] hub 2-0:1.0: hub_resume
+[   95.397989] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.398030] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.398036] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.398120] hub 2-0:1.0: hub_suspend
+[   95.398158] usb usb2: bus auto-suspend, wakeup 1
+[   95.398189] usb usb2: bus suspend fail, err -16
+[   95.398190] hub 2-0:1.0: hub_resume
+[   95.398231] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.398237] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.398243] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.398381] hub 2-0:1.0: hub_suspend
+[   95.398385] usb usb2: bus auto-suspend, wakeup 1
+[   95.398392] usb usb2: bus suspend fail, err -16
+[   95.398393] hub 2-0:1.0: hub_resume
+[   95.398479] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.398523] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.398529] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.398620] hub 2-0:1.0: hub_suspend
+[   95.398678] usb usb2: bus auto-suspend, wakeup 1
+[   95.398685] usb usb2: bus suspend fail, err -16
+[   95.398686] hub 2-0:1.0: hub_resume
+[   95.398717] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.398724] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.398730] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.398869] hub 2-0:1.0: hub_suspend
+[   95.398874] usb usb2: bus auto-suspend, wakeup 1
+[   95.398880] usb usb2: bus suspend fail, err -16
+[   95.398882] hub 2-0:1.0: hub_resume
+[   95.399004] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.399011] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.399016] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.399152] hub 2-0:1.0: hub_suspend
+[   95.399157] usb usb2: bus auto-suspend, wakeup 1
+[   95.399164] usb usb2: bus suspend fail, err -16
+[   95.399165] hub 2-0:1.0: hub_resume
+[   95.399194] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.399201] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.399241] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.399346] hub 2-0:1.0: hub_suspend
+[   95.399350] usb usb2: bus auto-suspend, wakeup 1
+[   95.399357] usb usb2: bus suspend fail, err -16
+[   95.399358] hub 2-0:1.0: hub_resume
+[   95.399481] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.399488] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.399493] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.399630] hub 2-0:1.0: hub_suspend
+[   95.399634] usb usb2: bus auto-suspend, wakeup 1
+[   95.399641] usb usb2: bus suspend fail, err -16
+[   95.399642] hub 2-0:1.0: hub_resume
+[   95.399671] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.399707] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.399750] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.399934] hub 2-0:1.0: hub_suspend
+[   95.399985] usb usb2: bus auto-suspend, wakeup 1
+[   95.399992] usb usb2: bus suspend fail, err -16
+[   95.399995] hub 2-0:1.0: hub_resume
+[   95.400027] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.400034] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.400093] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.400228] hub 2-0:1.0: hub_suspend
+[   95.400233] usb usb2: bus auto-suspend, wakeup 1
+[   95.400267] usb usb2: bus suspend fail, err -16
+[   95.400276] hub 2-0:1.0: hub_resume
+[   95.400363] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.400370] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.400377] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.400514] hub 2-0:1.0: hub_suspend
+[   95.400519] usb usb2: bus auto-suspend, wakeup 1
+[   95.400526] usb usb2: bus suspend fail, err -16
+[   95.400527] hub 2-0:1.0: hub_resume
+[   95.400558] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
+[   95.400565] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
+[   95.400571] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
+[   95.400709] hub 2-0:1.0: hub_suspend
+[   95.400714] usb usb2: bus auto-suspend, wakeup 1
+[   95.400721] usb usb2: bus suspend fail, err -16
+[   95.400722] hub 2-0:1.0: hub_resume
+-- 
+Michal Hocko
+SUSE Labs
