@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B43B225806
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DEA22580B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgGTG4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:56:41 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:26653 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725815AbgGTG4l (ORCPT
+        id S1727033AbgGTG5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726735AbgGTG5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:56:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595228199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FGxfsH7JoYjo8uZ25QL7MHJ8zI5IrhXb8UDFK05X1AM=;
-        b=DL9mwDA76NTgnEh89lqiAWYEp6CIqOUCokwKSwVYUszNaAg+scjhnHrtB0QdlAPkPDLLYn
-        hnZTNy0rVBCTHvmkhdSG3gw6K2qVc5l9mpZRAs2wdOnL61zcCXsvUJHiWD6mxnqBg/Wu0k
-        bX19ujrystojha/1AGyxbSeW6lysjag=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-uz-DO6llPKelP1Kl2nFCvw-1; Mon, 20 Jul 2020 02:56:37 -0400
-X-MC-Unique: uz-DO6llPKelP1Kl2nFCvw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D44D19057A8;
-        Mon, 20 Jul 2020 06:56:36 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.147])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1007A1001B07;
-        Mon, 20 Jul 2020 06:56:34 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 20 Jul 2020 08:56:35 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 08:56:33 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-Message-ID: <20200720065633.GB6612@redhat.com>
-References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
- <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
- <20200717122651.GA6067@redhat.com>
- <20200717124017.GB6067@redhat.com>
- <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
- <20200718171406.GB16791@redhat.com>
- <0deb1081-299b-1475-f368-7ca65b535a9c@kernel.org>
+        Mon, 20 Jul 2020 02:57:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFDFC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 23:57:46 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jxPjv-00026Q-NH; Mon, 20 Jul 2020 08:57:31 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jxPjv-0000j4-1T; Mon, 20 Jul 2020 08:57:31 +0200
+Date:   Mon, 20 Jul 2020 08:57:32 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     robh+dt@kernel.org, kernel@pengutronix.de, linux@armlinux.org.uk,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] ARM: dts: efm32: Replace HTTP links with HTTPS
+ ones
+Message-ID: <20200720065732.pudnfzn4eyu33eig@pengutronix.de>
+References: <20200719095958.57555-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="igplwgecwcj5vega"
 Content-Disposition: inline
-In-Reply-To: <0deb1081-299b-1475-f368-7ca65b535a9c@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200719095958.57555-1-grandmaster@al2klimov.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/20, Jiri Slaby wrote:
->
-> On 18. 07. 20, 19:14, Oleg Nesterov wrote:
-> >
-> > This is already wrong. But
-> >
-> > 	Where does this __might_sleep() come from ??? I ses no blocking calls
-> > 	in ptrace_stop(). Not to mention it is called with ->siglock held and
-> > 	right after this lock is dropped we take tasklist_lock.
->
-> Decoded stacktrace:
->
-> > ptrace_stop (include/linux/freezer.h:57 include/linux/freezer.h:67 include/linux/freezer.h:128 include/linux/freezer.h:173 kernel/signal.c:2217)
-> > ptrace_do_notify (kernel/signal.c:2272)
-> > ptrace_notify (arch/x86/include/asm/paravirt.h:656 arch/x86/include/asm/qspinlock.h:55 include/linux/spinlock.h:211 include/linux/spinlock_api_smp.h:167 include/linux/spinlock.h:403 kernel/signal.c:2282)
-> > syscall_trace_enter (include/linux/tracehook.h:73 include/linux/tracehook.h:104 arch/x86/entry/common.c:159)
-> > do_syscall_64 (arch/x86/entry/common.c:380)
-> > entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:124)
->
-> It is try_to_freeze_unsafe in try_to_freeze in freezable_schedule in
-> ptrace_stop.
 
-Aha, thanks a lot!
+--igplwgecwcj5vega
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-try_to_freeze_unsafe() is called after schedule() which must return with
-->state = RUNNING, so this matches another WARN_ON(current->state) added
-by debugging patch after freezable_schedule().
+Hello,
 
-Somehow I decided __might_sleep() was called before read_unlock/schedule.
+On Sun, Jul 19, 2020 at 11:59:58AM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>=20
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
 
-> >
-> >       How this connects to the debugging patch I sent? Did you see this warning
-> >       without that patch?
->
-> I suppose this made it appear:
-> +CONFIG_PREEMPT_COUNT=y
-> -# CONFIG_DEBUG_ATOMIC_SLEEP is not set
-> +CONFIG_DEBUG_ATOMIC_SLEEP=y
+I would have described this in prose instead. (Something like: Replace
+http: URL scheme with https:. As of today the old and new URLs result in
+the same content to be accessed.)
 
-I see,
+Other than that:
 
-> Please see my other e-mail, all this is with dbfb089d360b applied. Maybe
-> it makes more sense now?
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-Yes. Thanks Jiri!
+> diff --git a/arch/arm/mach-efm32/Makefile.boot b/arch/arm/mach-efm32/Make=
+file.boot
+> index cec195d4fcba..5dde7328a7a9 100644
+> --- a/arch/arm/mach-efm32/Makefile.boot
+> +++ b/arch/arm/mach-efm32/Makefile.boot
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  # Empty file waiting for deletion once Makefile.boot isn't needed any mo=
+re.
+>  # Patch waits for application at
+> -# http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3D7889/=
+1 .
+> +# https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3D7889=
+/1 .
 
-Oleg.
+:-|
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--igplwgecwcj5vega
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8VQFkACgkQwfwUeK3K
+7AmsZQf/RhLZJkQ45VLwZJmaOR12/ZsWU29kLWYvQv3peDjl6mF7vNG3TjaZwD4G
+DN8R92udQ+T/TRm2PnJ6+p8O1/aQNN7373Bh8x5k/MOTHqDFrxy9gKeTsMRTBXK4
+oiaZh0r91vB7DEHVkr8UuIFsme91ItVtWhKuTy/C06N4OyzX/yKIFKbcscMq/xQO
+OpzmvbhS8RDCJBo9rPG0V1cRzR9FVQVIG8aty/q0n0bFtYJ+ZhdiKsvS6mKMlsCA
+tUd9JqW04TMzADHQmolWJOm35YkzaDG6RHigNP7vYjxJW74S2iy5bkgXcgk/SVUc
+ApdMaoGFBMGrfOhs2coGjxaeu7foGA==
+=NbK5
+-----END PGP SIGNATURE-----
+
+--igplwgecwcj5vega--
