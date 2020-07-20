@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E785E226BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E00226B42
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbgGTPl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:41:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34346 "EHLO mail.kernel.org"
+        id S2389009AbgGTQkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729977AbgGTPly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:54 -0400
+        id S1730671AbgGTPqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:46:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 936172064B;
-        Mon, 20 Jul 2020 15:41:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC5EE2064B;
+        Mon, 20 Jul 2020 15:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259714;
-        bh=KMkAKeNoZ26c+Gb1mutbil441mqczc7waHx+c2v1cJM=;
+        s=default; t=1595260001;
+        bh=9TRkhmqSLkl/P6HzOwstbiyOpyW6vM8hv5RwUxK6nrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EYshliYSplSjDLTeGXUqMFJP7ShzxVHKC2G/2PbVjz0WuIFpdT35ZkRYr9gOykdsI
-         5OsForaruYy27Q5xJOCKgiS/6s/1bW69XsFgRVwHvuXfdU9FLjzv6M5ftx2Vz0GdBC
-         FNJwvTBB+Y+fnWRJXWUkK/SpDkh5ng/OAZh6tzC8=
+        b=dnsAznPO7E3QHaobZNfuaHpM0zIGBTzwqAt70cBxAc9Q7WCUuOzXQ4l9Ywp3lj0DB
+         fnuTYVmUB0vebxWDyR3fmdR0e/9TDbiwkC24b5CReYvhRkt9+luMwcJMXaXXPF6suv
+         pfHZT9ChcT07W0Oi/txwMzdzw7ZwOTAZVlwS+NuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 53/86] spi: spi-sun6i: sun6i_spi_transfer_one(): fix setting of clock rate
-Date:   Mon, 20 Jul 2020 17:36:49 +0200
-Message-Id: <20200720152755.830531635@linuxfoundation.org>
+Subject: [PATCH 4.14 071/125] net: dsa: bcm_sf2: Fix node reference count
+Date:   Mon, 20 Jul 2020 17:36:50 +0200
+Message-Id: <20200720152806.443262648@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +45,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit ed7815db70d17b1741883f2da8e1d80bc2efe517 ]
+[ Upstream commit 8dbe4c5d5e40fe140221024f7b16bec9f310bf70 ]
 
-A SPI transfer defines the _maximum_ speed of the SPI transfer. However the
-driver doesn't take into account that the clock divider is always rounded down
-(due to integer arithmetics). This results in a too high clock rate for the SPI
-transfer.
+of_find_node_by_name() will do an of_node_put() on the "from" argument.
+With CONFIG_OF_DYNAMIC enabled which checks for device_node reference
+counts, we would be getting a warning like this:
 
-E.g.: with a mclk_rate of 24 MHz and a SPI transfer speed of 10 MHz, the
-original code calculates a reg of "0", which results in a effective divider of
-"2" and a 12 MHz clock for the SPI transfer.
+[    6.347230] refcount_t: increment on 0; use-after-free.
+[    6.352498] WARNING: CPU: 3 PID: 77 at lib/refcount.c:156
+refcount_inc_checked+0x38/0x44
+[    6.360601] Modules linked in:
+[    6.363661] CPU: 3 PID: 77 Comm: kworker/3:1 Tainted: G        W
+5.4.46-gb78b3e9956e6 #13
+[    6.372546] Hardware name: BCM97278SV (DT)
+[    6.376649] Workqueue: events deferred_probe_work_func
+[    6.381796] pstate: 60000005 (nZCv daif -PAN -UAO)
+[    6.386595] pc : refcount_inc_checked+0x38/0x44
+[    6.391133] lr : refcount_inc_checked+0x38/0x44
+...
+[    6.478791] Call trace:
+[    6.481243]  refcount_inc_checked+0x38/0x44
+[    6.485433]  kobject_get+0x3c/0x4c
+[    6.488840]  of_node_get+0x24/0x34
+[    6.492247]  of_irq_find_parent+0x3c/0xe0
+[    6.496263]  of_irq_parse_one+0xe4/0x1d0
+[    6.500191]  irq_of_parse_and_map+0x44/0x84
+[    6.504381]  bcm_sf2_sw_probe+0x22c/0x844
+[    6.508397]  platform_drv_probe+0x58/0xa8
+[    6.512413]  really_probe+0x238/0x3fc
+[    6.516081]  driver_probe_device+0x11c/0x12c
+[    6.520358]  __device_attach_driver+0xa8/0x100
+[    6.524808]  bus_for_each_drv+0xb4/0xd0
+[    6.528650]  __device_attach+0xd0/0x164
+[    6.532493]  device_initial_probe+0x24/0x30
+[    6.536682]  bus_probe_device+0x38/0x98
+[    6.540524]  deferred_probe_work_func+0xa8/0xd4
+[    6.545061]  process_one_work+0x178/0x288
+[    6.549078]  process_scheduled_works+0x44/0x48
+[    6.553529]  worker_thread+0x218/0x270
+[    6.557285]  kthread+0xdc/0xe4
+[    6.560344]  ret_from_fork+0x10/0x18
+[    6.563925] ---[ end trace 68f65caf69bb152a ]---
 
-This patch fixes the issue by using DIV_ROUND_UP() instead of a plain
-integer division.
+Fix this by adding a of_node_get() to increment the reference count
+prior to the call.
 
-While there simplify the divider calculation for the CDR1 case, use
-order_base_2() instead of two ilog2() calculations.
-
-Fixes: 3558fe900e8a ("spi: sunxi: Add Allwinner A31 SPI controller driver")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Link: https://lore.kernel.org/r/20200706143443.9855-2-mkl@pengutronix.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: afa3b592953b ("net: dsa: bcm_sf2: Ensure correct sub-node is parsed")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-sun6i.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/net/dsa/bcm_sf2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index 7e7da97982aaf..17068e62e792d 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -163,7 +163,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 				  struct spi_transfer *tfr)
- {
- 	struct sun6i_spi *sspi = spi_master_get_devdata(master);
--	unsigned int mclk_rate, div, timeout;
-+	unsigned int mclk_rate, div, div_cdr1, div_cdr2, timeout;
- 	unsigned int start, end, tx_time;
- 	unsigned int tx_len = 0;
- 	int ret = 0;
-@@ -241,14 +241,12 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	 * First try CDR2, and if we can't reach the expected
- 	 * frequency, fall back to CDR1.
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index b40ebc27e1ece..9f355673f630c 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -1175,6 +1175,8 @@ static int bcm_sf2_sw_probe(struct platform_device *pdev)
  	 */
--	div = mclk_rate / (2 * tfr->speed_hz);
--	if (div <= (SUN6I_CLK_CTL_CDR2_MASK + 1)) {
--		if (div > 0)
--			div--;
--
--		reg = SUN6I_CLK_CTL_CDR2(div) | SUN6I_CLK_CTL_DRS;
-+	div_cdr1 = DIV_ROUND_UP(mclk_rate, tfr->speed_hz);
-+	div_cdr2 = DIV_ROUND_UP(div_cdr1, 2);
-+	if (div_cdr2 <= (SUN6I_CLK_CTL_CDR2_MASK + 1)) {
-+		reg = SUN6I_CLK_CTL_CDR2(div_cdr2 - 1) | SUN6I_CLK_CTL_DRS;
- 	} else {
--		div = ilog2(mclk_rate) - ilog2(tfr->speed_hz);
-+		div = min(SUN6I_CLK_CTL_CDR1_MASK, order_base_2(div_cdr1));
- 		reg = SUN6I_CLK_CTL_CDR1(div);
- 	}
+ 	set_bit(0, priv->cfp.used);
  
++	/* Balance of_node_put() done by of_find_node_by_name() */
++	of_node_get(dn);
+ 	ports = of_find_node_by_name(dn, "ports");
+ 	if (ports) {
+ 		bcm_sf2_identify_ports(priv, ports);
 -- 
 2.25.1
 
