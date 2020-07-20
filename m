@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F61225875
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9E9225878
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgGTH2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:28:50 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51364 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgGTH2u (ORCPT
+        id S1726824AbgGTHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:30:22 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:60734 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725815AbgGTHaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:28:50 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06K7Sagj001411;
-        Mon, 20 Jul 2020 02:28:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595230116;
-        bh=4tf5ULnVtQ9E433Ndn2ggyp9DNG66VBQs5JJ6heww+Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=W5mHTqxIVIorxFWFvz6oSBjYdtapN5W/a4pXu2X/Yidn7jal5VIQUR/GUK8pA1Mxb
-         5rQprs9CxEpSXBZiRrmarq5ckCWkpi7pSWpso2QKEE1tMWagItFxtPYpryibFF3aBT
-         mYFdmW9jzvrsBCAsUjhPzssD8gEN+ORrH+LOob5I=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06K7SanY050304
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Jul 2020 02:28:36 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
- Jul 2020 02:28:36 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 20 Jul 2020 02:28:36 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06K7SXi5064729;
-        Mon, 20 Jul 2020 02:28:34 -0500
-Subject: Re: [PATCH] soc: ti/ti_sci_protocol.h: drop a duplicated word +
- clarify
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200719003145.21100-1-rdunlap@infradead.org>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <54d19b9e-2439-eed2-ff8e-82a1acb4ff33@ti.com>
-Date:   Mon, 20 Jul 2020 10:28:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 20 Jul 2020 03:30:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U3DnCGw_1595230215;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3DnCGw_1595230215)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 20 Jul 2020 15:30:16 +0800
+Subject: Re: [PATCH v16 00/22] per memcg lru_lock
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <04a2ad99-5d88-a300-6430-7a8da0946f04@linux.alibaba.com>
+Date:   Mon, 20 Jul 2020 15:30:14 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200719003145.21100-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2020 03:31, Randy Dunlap wrote:
-> Drop the repeated word "an" in a comment.
-> Insert "and" between "source" and "destination" as is done a few
-> lines earlier.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Tero Kristo <t-kristo@ti.com>
-> Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> Cc: Lokesh Vutla <lokeshvutla@ti.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-arm-kernel@lists.infradead.org
 
-Reviewed-by: Tero Kristo <t-kristo@ti.com>
+I am preparing/testing the patch v17 according comments from Hugh Dickins
+and Alexander Duyck. 
+Many thanks for line by line review and patient suggestion!
 
-> ---
->   include/linux/soc/ti/ti_sci_protocol.h |    4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- linux-next-20200717.orig/include/linux/soc/ti/ti_sci_protocol.h
-> +++ linux-next-20200717/include/linux/soc/ti/ti_sci_protocol.h
-> @@ -226,8 +226,8 @@ struct ti_sci_rm_core_ops {
->    *			and destination
->    * @set_event_map:	Set an Event based peripheral irq to Interrupt
->    *			Aggregator.
-> - * @free_irq:		Free an an IRQ route between the requested source
-> - *			destination.
-> + * @free_irq:		Free an IRQ route between the requested source
-> + *			and destination.
->    * @free_event_map:	Free an event based peripheral irq to Interrupt
->    *			Aggregator.
->    */
-> 
+Please drop me any more comments or concern of any patches!
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks a lot!
+Alex
+
+在 2020/7/11 上午8:58, Alex Shi 写道:
+> The new version which bases on v5.8-rc4. Add 2 more patchs:
+> 'mm/thp: remove code path which never got into'
+> 'mm/thp: add tail pages into lru anyway in split_huge_page()'
+> and modified 'mm/mlock: reorder isolation sequence during munlock'
+> 
+> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+> lru lists, but now we had moved the lru lists into memcg for long time. Still
+> using per node lru_lock is clearly unscalable, pages on each of memcgs have
+> to compete each others for a whole lru_lock. This patchset try to use per
+> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+> it scalable for memcgs and get performance gain.
+> 
+> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+> but if we want to use specific lruvec lock on the page, we need to pin down
+> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+> undermined by the page's memcg charge/migration. To fix this problem, we could
+> take out the page's lru bit clear and use it as pin down action to block the
+> memcg changes. That's the reason for new atomic func TestClearPageLRU.
+> So now isolating a page need both actions: TestClearPageLRU and hold the
+> lru_lock.
+> 
+> The typical usage of this is isolate_migratepages_block() in compaction.c
+> we have to take lru bit before lru lock, that serialized the page isolation
+> in memcg page charge/migration which will change page's lruvec and new 
+> lru_lock in it.
+> 
+> The above solution suggested by Johannes Weiner, and based on his new memcg 
+> charge path, then have this patchset. (Hugh Dickins tested and contributed much
+> code from compaction fix to general code polish, thanks a lot!).
+> 
+> The patchset includes 3 parts:
+> 1, some code cleanup and minimum optimization as a preparation.
+> 2, use TestCleanPageLRU as page isolation's precondition
+> 3, replace per node lru_lock with per memcg per node lru_lock
+> 
+> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+> containers on a 2s * 26cores * HT box with a modefied case:
+> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+> With this patchset, the readtwice performance increased about 80%
+> in concurrent containers.
+> 
+> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+> 
+> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
