@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431FB22701F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5217D22702A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgGTVDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:03:41 -0400
-Received: from gate.crashing.org ([63.228.1.57]:41157 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgGTVDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:03:41 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 06KL2tAD003247;
-        Mon, 20 Jul 2020 16:02:55 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 06KL2qPF003246;
-        Mon, 20 Jul 2020 16:02:52 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 20 Jul 2020 16:02:52 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Joel Stanley <joel@jms.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] powerpc/boot: Use address-of operator on section symbols
-Message-ID: <20200720210252.GO30544@gate.crashing.org>
-References: <20200624035920.835571-1-natechancellor@gmail.com> <CAMuHMdU_KfQ-RT_nev5LgN=Vj_P97Fn=nwRoC6ZREFLa3Ysj7w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726657AbgGTVH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:07:27 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39206 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgGTVH1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 17:07:27 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D94031C0BE2; Mon, 20 Jul 2020 23:07:25 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 23:07:22 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 041/133] Revert "usb/ohci-platform: Fix a warning
+ when hibernating"
+Message-ID: <20200720210722.GA11552@amd>
+References: <20200720152803.732195882@linuxfoundation.org>
+ <20200720152805.704517976@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdU_KfQ-RT_nev5LgN=Vj_P97Fn=nwRoC6ZREFLa3Ysj7w@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20200720152805.704517976@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hi!
+On Mon 2020-07-20 17:36:28, Greg Kroah-Hartman wrote:
+> This reverts commit c83258a757687ffccce37ed73dba56cc6d4b8a1b.
+>=20
+> Eugeniu Rosca writes:
+>=20
+> On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+> >After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+> >Set PM runtime as active on resume") into downstream v4.14.x, we started
+> >to consistently experience below panic [1] on every second s2ram of
+> >R-Car H3 Salvator-X Renesas reference board.
+> >
+> >After some investigations, we concluded the following:
+> > - the issue does not exist in vanilla v5.8-rc4+
+> > - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+> >   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+> >   link support"). Getting evidence for that is easy. Reverting
+> >   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+> >
+> >Questions:
+> > - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+> >   link support") to v4.14.187 looks challenging enough, so probably not
+> >   worth it. Anybody to contradict this?
 
-On Sat, Jul 18, 2020 at 09:50:50AM +0200, Geert Uytterhoeven wrote:
-> On Wed, Jun 24, 2020 at 6:02 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >         /* If we have an image attached to us, it overrides anything
-> >          * supplied by the loader. */
-> > -       if (_initrd_end > _initrd_start) {
-> > +       if (&_initrd_end > &_initrd_start) {
-> 
-> Are you sure that fix is correct?
-> 
->     extern char _initrd_start[];
->     extern char _initrd_end[];
->     extern char _esm_blob_start[];
->     extern char _esm_blob_end[];
-> 
-> Of course the result of their comparison is a constant, as the addresses
-> are constant.  If clangs warns about it, perhaps that warning should be moved
-> to W=1?
-> 
-> But adding "&" is not correct, according to C.
+I'm not sure about v4.14.187, but backport to v4.19 is quite simple
+(just ignore single non-existing file) and passes basic testing.
 
-Why not?
+Would that be better solution for 4.19 and newer?
 
-6.5.3.2/3
-The unary & operator yields the address of its operand.  [...]
-Otherwise, the result is a pointer to the object or function designated
-by its operand.
+> > - Assuming no plans to backport the missing mainline commit to v4.14.x,
+> >   should the following three v4.14.186 commits be reverted on v4.14.x?
+> >   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+> >   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+> >   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on res=
+ume")
 
-This is the same as using the name of an array without anything else,
-yes.  It is a bit clearer if it would not be declared as array, perhaps,
-but it is correct just fine like this.
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
+--bp/iNruPH9dso1Pn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Segher
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl8WB4oACgkQMOfwapXb+vKCXQCgmMJbj/q/X85kLcSkTWrKywOT
+7zMAn1rPDePz2FZ2R/tmn5rmAIVw50Bs
+=qsSw
+-----END PGP SIGNATURE-----
+
+--bp/iNruPH9dso1Pn--
