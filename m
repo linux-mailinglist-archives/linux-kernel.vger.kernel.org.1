@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13052263BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949062264B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgGTPjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59116 "EHLO mail.kernel.org"
+        id S1730783AbgGTPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:47:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728093AbgGTPjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:51 -0400
+        id S1730758AbgGTPrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:47:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCCCA22B4E;
-        Mon, 20 Jul 2020 15:39:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E400722CB3;
+        Mon, 20 Jul 2020 15:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259591;
-        bh=GjzTNAD2SRCoK8sJDxSQRELwKr0irgmWB87gKjOlOwM=;
+        s=default; t=1595260041;
+        bh=AGBnPG3j5pXqrZ+XuXX8bDaVopY3JrUjvToX1odT9w8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxcbpdTChaqauxquYR1XRzXoSzAwbRrw57zkxzeb7cP08QC33Mg822j+zB2x66f2M
-         hwienKBCdpR09kEo1I3udOuHDb9/aqVY/RF+6oB78cz5jKMpx/Xi2AnI0KMI8VispK
-         iVCo8YC5l4UpEMRuMu97GPTDhYMSc833YxDLGD10=
+        b=eJL+ua9k3ngJa55njMqKEF9aVhxCauZ5hPH38ZP2kntvXcrmjGEc4czq26T8EBY2b
+         JQNVlDQ5A9WX7pWlmwvTjyDcu6HafmcZracL4XP2r6sc432/4hw33Ya9V80xVAwGY1
+         +DDpc4TXNvY2NyxElMNGOZI0mmvopMruGrdCOvgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Igor Moura <imphilippini@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 46/58] USB: serial: ch341: add new Product ID for CH340
-Date:   Mon, 20 Jul 2020 17:37:02 +0200
-Message-Id: <20200720152749.536769940@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 084/125] usb: gadget: udc: atmel: fix uninitialized read in debug printk
+Date:   Mon, 20 Jul 2020 17:37:03 +0200
+Message-Id: <20200720152807.071152976@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Moura <imphilippini@gmail.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit 5d0136f8e79f8287e6a36780601f0ce797cf11c2 upstream.
+[ Upstream commit 30517ffeb3bff842e1355cbc32f1959d9dbb5414 ]
 
-Add PID for CH340 that's found on some ESP8266 dev boards made by
-LilyGO. The specific device that contains such serial converter can be
-seen here: https://github.com/LilyGO/LILYGO-T-OI.
+Fixed commit moved the assignment of 'req', but did not update a
+reference in the DBG() call. Use the argument as it was renamed.
 
-Apparently, it's a regular CH340, but I've confirmed with others that
-also bought this board that the PID found on this device (0x7522)
-differs from other devices with the "same" converter (0x7523).
-Simply adding its PID to the driver and rebuilding it made it work
-as expected.
-
-Signed-off-by: Igor Moura <imphilippini@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 5fb694f96e7c ("usb: gadget: udc: atmel: fix possible oops when unloading module")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/ch341.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/udc/atmel_usba_udc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -71,6 +71,7 @@
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+index 39676824a2c6f..8540e52c28a97 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -912,7 +912,7 @@ static int usba_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
+ 	u32 status;
  
- static const struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(0x4348, 0x5523) },
-+	{ USB_DEVICE(0x1a86, 0x7522) },
- 	{ USB_DEVICE(0x1a86, 0x7523) },
- 	{ USB_DEVICE(0x1a86, 0x5523) },
- 	{ },
+ 	DBG(DBG_GADGET | DBG_QUEUE, "ep_dequeue: %s, req %p\n",
+-			ep->ep.name, req);
++			ep->ep.name, _req);
+ 
+ 	spin_lock_irqsave(&udc->lock, flags);
+ 
+-- 
+2.25.1
+
 
 
