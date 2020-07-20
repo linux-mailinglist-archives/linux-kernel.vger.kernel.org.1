@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0CB22646E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487C22263C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730469AbgGTPo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
+        id S1728910AbgGTPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:40:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730441AbgGTPow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:52 -0400
+        id S1729658AbgGTPkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:40:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36A0022CAF;
-        Mon, 20 Jul 2020 15:44:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 475F322CB3;
+        Mon, 20 Jul 2020 15:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259891;
-        bh=v2giCxH71A5tDukEjDE8nM85lgxbwaF7w9YWl0BkFhQ=;
+        s=default; t=1595259608;
+        bh=uwy+BXwYPPNIUx96JC4FhR0SBqC30g9dJrODr3P4qs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j6oXXsUurePa/tvjDKUcA6Rknf7pmagsScTjH5GlydBJ02zI3Eygno3Vnsgw6Cin8
-         T8s1AQ5PrUhPg/GtcHzhgYEVgwij3AO5wocUKohM0t8S2F9NhJFXLZn1DQ/5LDqKDO
-         kV35S9I4IoXrYKAqTgsza6g0soLuLZYqrD8IUOi4=
+        b=MU3UpmU33YCMK4VTRWXuz7W3BY5u1HgKmM0DN3/Mmw11DTPSjr1ZUXe7qxOu9yYaz
+         4KMqrk1Zj88C2KrnKd1aYUlqz19JJA9Jg05wCx95k/WPvSXYu+H6oyxZq1ZG4oB+4a
+         GSEFiP6OndZIHn4LmU4SG5O633ucEdPIyrGKlfBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.14 031/125] KVM: x86: bit 8 of non-leaf PDPEs is not reserved
+        stable@vger.kernel.org, Fei Liu <feliu@redhat.com>,
+        Jonathan Toppins <jtoppins@redhat.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 14/86] bnxt_en: fix NULL dereference in case SR-IOV configuration fails
 Date:   Mon, 20 Jul 2020 17:36:10 +0200
-Message-Id: <20200720152804.487691671@linuxfoundation.org>
+Message-Id: <20200720152753.845576867@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +47,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Davide Caratti <dcaratti@redhat.com>
 
-commit 5ecad245de2ae23dc4e2dbece92f8ccfbaed2fa7 upstream.
+[ Upstream commit c8b1d7436045d3599bae56aef1682813ecccaad7 ]
 
-Bit 8 would be the "global" bit, which does not quite make sense for non-leaf
-page table entries.  Intel ignores it; AMD ignores it in PDEs and PDPEs, but
-reserves it in PML4Es.
+we need to set 'active_vfs' back to 0, if something goes wrong during the
+allocation of SR-IOV resources: otherwise, further VF configurations will
+wrongly assume that bp->pf.vf[x] are valid memory locations, and commands
+like the ones in the following sequence:
 
-Probably, earlier versions of the AMD manual documented it as reserved in PDPEs
-as well, and that behavior made it into KVM as well as kvm-unit-tests; fix it.
+ # echo 2 >/sys/bus/pci/devices/${ADDR}/sriov_numvfs
+ # ip link set dev ens1f0np0 up
+ # ip link set dev ens1f0np0 vf 0 trust on
 
-Cc: stable@vger.kernel.org
-Reported-by: Nadav Amit <namit@vmware.com>
-Fixes: a0c0feb57992 ("KVM: x86: reserve bit 8 of non-leaf PDPEs and PML4Es in 64-bit mode on AMD", 2014-09-03)
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+will cause a kernel crash similar to this:
 
+ bnxt_en 0000:3b:00.0: not enough MMIO resources for SR-IOV
+ BUG: kernel NULL pointer dereference, address: 0000000000000014
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP PTI
+ CPU: 43 PID: 2059 Comm: ip Tainted: G          I       5.8.0-rc2.upstream+ #871
+ Hardware name: Dell Inc. PowerEdge R740/08D89F, BIOS 2.2.11 06/13/2019
+ RIP: 0010:bnxt_set_vf_trust+0x5b/0x110 [bnxt_en]
+ Code: 44 24 58 31 c0 e8 f5 fb ff ff 85 c0 0f 85 b6 00 00 00 48 8d 1c 5b 41 89 c6 b9 0b 00 00 00 48 c1 e3 04 49 03 9c 24 f0 0e 00 00 <8b> 43 14 89 c2 83 c8 10 83 e2 ef 45 84 ed 49 89 e5 0f 44 c2 4c 89
+ RSP: 0018:ffffac6246a1f570 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000b
+ RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff98b28f538900
+ RBP: ffff98b28f538900 R08: 0000000000000000 R09: 0000000000000008
+ R10: ffffffffb9515be0 R11: ffffac6246a1f678 R12: ffff98b28f538000
+ R13: 0000000000000001 R14: 0000000000000000 R15: ffffffffc05451e0
+ FS:  00007fde0f688800(0000) GS:ffff98baffd40000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000014 CR3: 000000104bb0a003 CR4: 00000000007606e0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ PKRU: 55555554
+ Call Trace:
+  do_setlink+0x994/0xfe0
+  __rtnl_newlink+0x544/0x8d0
+  rtnl_newlink+0x47/0x70
+  rtnetlink_rcv_msg+0x29f/0x350
+  netlink_rcv_skb+0x4a/0x110
+  netlink_unicast+0x21d/0x300
+  netlink_sendmsg+0x329/0x450
+  sock_sendmsg+0x5b/0x60
+  ____sys_sendmsg+0x204/0x280
+  ___sys_sendmsg+0x88/0xd0
+  __sys_sendmsg+0x5e/0xa0
+  do_syscall_64+0x47/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: c0c050c58d840 ("bnxt_en: New Broadcom ethernet driver.")
+Reported-by: Fei Liu <feliu@redhat.com>
+CC: Jonathan Toppins <jtoppins@redhat.com>
+CC: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Acked-by: Jonathan Toppins <jtoppins@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu.c |    2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -4244,7 +4244,7 @@ __reset_rsvds_bits_mask(struct kvm_vcpu
- 			nonleaf_bit8_rsvd | rsvd_bits(7, 7) |
- 			rsvd_bits(maxphyaddr, 51);
- 		rsvd_check->rsvd_bits_mask[0][2] = exb_bit_rsvd |
--			nonleaf_bit8_rsvd | gbpages_bit_rsvd |
-+			gbpages_bit_rsvd |
- 			rsvd_bits(maxphyaddr, 51);
- 		rsvd_check->rsvd_bits_mask[0][1] = exb_bit_rsvd |
- 			rsvd_bits(maxphyaddr, 51);
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
+index 393cce3bf2fc6..1d6cb5f0ffeb5 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
+@@ -342,6 +342,7 @@ static void bnxt_free_vf_resources(struct bnxt *bp)
+ 		}
+ 	}
+ 
++	bp->pf.active_vfs = 0;
+ 	kfree(bp->pf.vf);
+ 	bp->pf.vf = NULL;
+ }
+@@ -590,7 +591,6 @@ void bnxt_sriov_disable(struct bnxt *bp)
+ 
+ 	bnxt_free_vf_resources(bp);
+ 
+-	bp->pf.active_vfs = 0;
+ 	/* Reclaim all resources for the PF. */
+ 	bnxt_hwrm_func_qcaps(bp);
+ }
+-- 
+2.25.1
+
 
 
