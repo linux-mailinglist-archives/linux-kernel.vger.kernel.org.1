@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936F522558A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1220E225592
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgGTBnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 21:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
+        id S1726854AbgGTBqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 21:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgGTBnF (ORCPT
+        with ESMTP id S1726225AbgGTBqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 21:43:05 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549C5C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:43:05 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id h13so10991310otr.0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:43:05 -0700 (PDT)
+        Sun, 19 Jul 2020 21:46:11 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDBEC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:46:11 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id t9so8859231lfl.5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/V56vpG6VmCA46P7nYwbFvH9ch6Jbn81Eu33ezKH4EQ=;
-        b=lBjd6AuIheNnitCvLHRoWZ2oDqbEwOMjIx+QaJMcGw6X0fBlzO8TUsb9YNZJmWi0qe
-         WhFmGOdgOj0RDBHIg69RfwnvOAjoOFMIVmGOdiPS/wo5GKMfoh7MgRopanvbxvSVkVgN
-         lEw/WIITspqQd9FW7KwnuUFVoxyBh/4B3wZ4VgwPJQKpqsz5mE5HPW0hKlYaPVHwA81F
-         9xP4IPmxaEfWrVs8bruRr4kQkx9LcNla/scNRe4eVtu4panA3FQ//eYdpi/rMZ8i7ksK
-         815vh4RaKZsJpbg1eWLwgTHGrYkVdfSwUsIA5MKvcGpNRHvGf2vCZBUOxFv1xDSj+d2u
-         uwQQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=YRv1ZMPeKloCXiGnvm9THeGZ4g4sw/J7xcl2dIGNecY=;
+        b=BqRGNksrNI+sXQdAcQqOyxO9nFkkPMzCGvpq6AiHtUOzn+xgygcRiaN9/CSvE59mlH
+         3wlUPCvpwcOl1DdyGJjL14JMFKPBRfj6lfHjLueEVsv78X1uJ/MD8J0RiL1d1C4znWG5
+         XLdyEu8pWrkJh2BY8qeOgIUu7lcuIpD4nmic8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/V56vpG6VmCA46P7nYwbFvH9ch6Jbn81Eu33ezKH4EQ=;
-        b=Gct4FSVfZ0DqeyevpkvFyjAuIR7E3SnScgWdDoGOesty+f9DhJrI0o7RTu3maC+z2w
-         VzpGI39n6+0dyxtGytgL86SnQOcWRGMhgeJotAQjqxoUdHPKZ6VaUC9exa4G+1sg5jJK
-         zmKHqfKdlYX84JPjN2X403BzD7dAwWQKDmAx0Tkza1g+WimRGKnKILqDUiUVz79J6Qan
-         oZ+9UynKhCdU1HatHaiwgogE8VxBppYqrQ4OI3j1dZQr6N486BTs3qYQ1dpZ1aFb+fMG
-         NwYY+UXC/Hcl5Fkz/oWgx5BQgrC/kGHCmVBnW+WAwFFwxe8R4Qf9J+EHLziy0egar856
-         W/bA==
-X-Gm-Message-State: AOAM530gL4dsP/C9X0Qv/5B+vKAwxylI+//KPihCBhMJyyygIwjKGdgy
-        HW3WvEYrox9CJpCQsdPUxED710ro0oz1YhSZLi0=
-X-Google-Smtp-Source: ABdhPJz0T2XPbt6RJEE+xqKozWMd00jTLrYdaAnuVRYhHFryyIp8su5E3iKVJSzCuUeSsae1swlIbST9HW09gA1o24c=
-X-Received: by 2002:a9d:6a12:: with SMTP id g18mr19272580otn.155.1595209384681;
- Sun, 19 Jul 2020 18:43:04 -0700 (PDT)
+         :message-id:subject:to;
+        bh=YRv1ZMPeKloCXiGnvm9THeGZ4g4sw/J7xcl2dIGNecY=;
+        b=OgE9W/MBxB3Bt6WbLrV5y2cLJy0zfL1snuCKKMUvqBH3I2sUwZ2/A6YUWLI5L/ZLzU
+         P9OpTuIsUidtZUWmAFgL+dAISqfODERt9gfs0uCFD02RvGN/8fgSxLI5Ao1tI/5Rave3
+         wRPQlLMnkCoQipdtlogPDHMroY1CRpgOicrZ8qINAGvKCnZPiPJlzszI4jr5ELoJK9O0
+         xPitJzqeNUbyZq8Mqvy4E9W02wfZY3WvkJct7VOD266MmgphaWZoBZKJcVa8sYa2UE2g
+         oG/3RLv37k4mn7Plpc0vhf+2IxMlmNmIYQGP5I29pJc9rnz8PKkBia1dsoPTo6hSEobh
+         PyKg==
+X-Gm-Message-State: AOAM531ESWUNjOHJzlBtTJ47sHz2gsx5P4AoLOiJKHJ1RkfdsXWp3saN
+        6CayWY4b6sGbVuGIyqnmzV694qwM9lM=
+X-Google-Smtp-Source: ABdhPJyjLoXsfy8CgHGr1om7+BbLWxe7yel3LGlLR0M+w1kY/6s0EawpjiTqI7w8k7c9HEO41t0fAg==
+X-Received: by 2002:a19:428c:: with SMTP id p134mr9188351lfa.70.1595209569261;
+        Sun, 19 Jul 2020 18:46:09 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id h22sm2956379ljg.1.2020.07.19.18.46.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Jul 2020 18:46:08 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id e8so18499534ljb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:46:08 -0700 (PDT)
+X-Received: by 2002:a2e:760b:: with SMTP id r11mr9758613ljc.285.1595209567723;
+ Sun, 19 Jul 2020 18:46:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com> <20200717040958.70561-7-ravi.bangoria@linux.ibm.com>
-In-Reply-To: <20200717040958.70561-7-ravi.bangoria@linux.ibm.com>
-From:   Jordan Niethe <jniethe5@gmail.com>
-Date:   Mon, 20 Jul 2020 11:39:49 +1000
-Message-ID: <CACzsE9oEB7Gs5bMatvoOs66vFkaFEBwJvj_nhBg2P8zVH8maaQ@mail.gmail.com>
-Subject: Re: [PATCH v4 06/10] powerpc/watchpoint: Set CPU_FTR_DAWR1 based on
- pa-features bit
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>, mikey@neuling.org,
-        apopple@linux.ibm.com, Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
-        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
-        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <CAHk-=wj_gy9xpqFx_aLTtLtFTCTKKLfV9E2bgE5J2GeKit3MCg@mail.gmail.com>
+ <20200720004709.GA16677@Gentoo>
+In-Reply-To: <20200720004709.GA16677@Gentoo>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 19 Jul 2020 18:45:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjGTkHgJDrK8F7-OOu=mjVQ2bb4MsUu92E_Eo7TPOehdA@mail.gmail.com>
+Message-ID: <CAHk-=wjGTkHgJDrK8F7-OOu=mjVQ2bb4MsUu92E_Eo7TPOehdA@mail.gmail.com>
+Subject: Re: Oops build error...Linux 5.8-rc6
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 2:10 PM Ravi Bangoria
-<ravi.bangoria@linux.ibm.com> wrote:
+On Sun, Jul 19, 2020 at 5:47 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 >
-> As per the PAPR, bit 0 of byte 64 in pa-features property indicates
-> availability of 2nd DAWR registers. i.e. If this bit is set, 2nd
-> DAWR is present, otherwise not. Host generally uses "cpu-features",
-> which masks "pa-features". But "cpu-features" are still not used for
-> guests and thus this change is mostly applicable for guests only.
->
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-I checked those PAPR values are correct and checked running a powernv
-kernel in p10 mambo with dt_cpu_ftrs=off and it does set the
-CPU_FTR_DAWR1 bit.
-(using p10 skiboot).
-Tested-by: Jordan Niethe <jniethe5@gmail.com>
-> ---
->  arch/powerpc/kernel/prom.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index 9cc49f265c86..c76c09b97bc8 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -175,6 +175,8 @@ static struct ibm_pa_feature {
->          */
->         { .pabyte = 22, .pabit = 0, .cpu_features = CPU_FTR_TM_COMP,
->           .cpu_user_ftrs2 = PPC_FEATURE2_HTM_COMP | PPC_FEATURE2_HTM_NOSC_COMP },
-> +
-> +       { .pabyte = 64, .pabit = 0, .cpu_features = CPU_FTR_DAWR1 },
->  };
->
->  static void __init scan_features(unsigned long node, const unsigned char *ftrs,
-> --
-> 2.26.2
->
+>    CLEAN   arch/x86/entry/vdso
+>    make[3]: *** arch/x86/platform/sfi/Makefile: Input/output error.
+>    Stop.
+
+That _sounds_ like filesystem corruption on your end. EIO isn't
+exactly the usual "it won't compile" problem.
+
+                Linus
