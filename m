@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A403225CE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A9F225CF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgGTKrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        id S1728452AbgGTKxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728273AbgGTKrw (ORCPT
+        with ESMTP id S1728348AbgGTKxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:47:52 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E56C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:47:51 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id o11so17340622wrv.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:47:51 -0700 (PDT)
+        Mon, 20 Jul 2020 06:53:08 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE20CC061794;
+        Mon, 20 Jul 2020 03:53:08 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id p3so10137845pgh.3;
+        Mon, 20 Jul 2020 03:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uHRAgQoOuo2NrrewNnTyTofto5ZGKZsKC7PlWtRZlsk=;
-        b=p1HO6687swYNaesbAFlQr5ER5YLa6Dp61vm/cYxzq5BiwlhW8miLzY1N+ywd4GFtgC
-         3XA6WY/XPvOSHgg9TqIxLI5KhvMGnfnTW2NViUu4dlbKJAbl6gnUljRbZeH5RlZkqSzv
-         NYIu0hbyjqx5xjOSNxzJHccYaD45O+xLXGTO7OW63sCBqy0HgOh6kbAPFRhNAX4Xaclw
-         B52VdQ9mQMWK+HpRptC3d8yoWgLXAMokvcb4zYATNkCHu1X4pdTmk83uqT1FMAPL6v3A
-         YqJLtmBJHgx/w5f84ImJux4v1xigy/1ATHGXIcHJWFAv33oMPWxdzgpU6MMgZgGZKwO/
-         lHQA==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=0qEaLy0Hyr3SwuDgUAydri7YBfNLnnwpux/l1PMZrXs=;
+        b=DfbfY0OClpMHAFSaP+f9tqbmvr533JaX4bNcruO+IiubyumIIzF+ZR7evBBXjmuleh
+         R0y0HxshhdySi25YF8SHlPQj7zmSWAFkOKx8mRVYCtJyJKV0U8uGKQMDI+mM6CX2w5+4
+         anzvsNc8DC07lf+jLdDPHBl0IgiIuP7vuYGDkfIRY3kSaTCyPxv/1knuqiQlFm7rzisM
+         1mOuwxynMQKshI3u02qIbMOgyrLi2cQInAdG/nxy8kNET2ktdBZ0CRpK7HTLrisYD/Kt
+         Cmfl8sl+grmeBz3BLzBBu7xYzx1v0wgkdSQdeIZTua85gRztILnYxuw+ULo1+dIy+7Wk
+         E6jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uHRAgQoOuo2NrrewNnTyTofto5ZGKZsKC7PlWtRZlsk=;
-        b=h6pdSx8FyJ7W4btLw2qtjNU03Em5rG6BY89BTWj+4YAcz3ev10zABirfEEIQqNQosj
-         BV2j4qXzvSaFRYVRUQKXHT1Gw5ZSGA4YZomlMvajb24hClPbQa2V5x4tjG8BBPj+noM1
-         Zelh1ikiqV4pvcPPmZxbdO8/aHxpDx3Ohd99rE00pXAuBgLgL7aevXlWd8vB5/mHXbNc
-         6uh1qAapH0V8deT6HtvV7IkJGyD1UXrHNLsoNoC+npJL4YRmeVYGfYE0sEkXIdfeWNJS
-         V4pw6RgUA92Td+3KwaPyahRXt+PGPpYhv4orDXLIQFUP7UmJw1If+ufw2mhz6P2Fck4S
-         WF9w==
-X-Gm-Message-State: AOAM5318/4aHeCJI51Cl+K79bUWv1wesUyXsNPgWWHKH0krP0lGvqY0d
-        oXsssIq15mJzKKQ2694fpTI2hODxV2Y=
-X-Google-Smtp-Source: ABdhPJxum0c+tr6bp3uzQyfxF85Ev6PhOKDV+5JO1aAMnghVrUIm2LoCd/ZltwPRMaLd01KeHiWl7w==
-X-Received: by 2002:adf:e7c9:: with SMTP id e9mr13083233wrn.307.1595242070556;
-        Mon, 20 Jul 2020 03:47:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:3590:b402:869a:11fc? ([2a01:e34:ed2f:f020:3590:b402:869a:11fc])
-        by smtp.googlemail.com with ESMTPSA id 51sm33651621wrc.44.2020.07.20.03.47.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 03:47:49 -0700 (PDT)
-Subject: Re: [PATCH V2 1/2] clocksource: Add support for i.MX TPM driver with
- ARM64
-To:     Anson Huang <Anson.Huang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, tglx@linutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com, linux-soc@vger.kernel.org
-References: <1594178168-13007-1-git-send-email-Anson.Huang@nxp.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6c80edf0-52ce-7b64-0631-cc52e937f54c@linaro.org>
-Date:   Mon, 20 Jul 2020 12:47:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=0qEaLy0Hyr3SwuDgUAydri7YBfNLnnwpux/l1PMZrXs=;
+        b=DHuSQonZ8vMoj6k7LqrTrgw9/zMjj6LM9ZbAYfFpzykwUe1wCi3CUsbuTAEvarhPGX
+         Nsvb8oDdfGagFCFqbUSvQimbuCWnhKNGheElM8T2V600Xdge+I61Onkb21vraShxffL/
+         6Bx5tx7tLv4hwL9lfybRGTgeSxvadmU/XuIoDSPP0pzG8sNxjTac3DHtxeQpPoZbKBNG
+         wRKXnF1S6WPk5YrDJtS1KKcCY/xyrlLBQK8ZaV/c8a7VAAo0nwWqTFWOikfhHIh4kGcs
+         jiQmbpL1glc0NviokDdY2UdVKnzRo1PG0G6lSEvuR1UxzHCBVFP3urqAd/FcgwB1Inrb
+         W7DQ==
+X-Gm-Message-State: AOAM532ijqrwstqvMeGYfEeW/1WcsLEXXXtcuDLuNOYbZiYTZU5pRNYm
+        HhG05RMoH/tZravFWyQkl8ncIgzkSLtCxZ4md19xdXyteas=
+X-Google-Smtp-Source: ABdhPJxSxfvZHSnPCHB3+sKTFypPPlKhNZB18FrBL+Aj0NR3DL6NzsvwlGecY4X4aL9KHFMgvGGlaG7WNOlk0joiKCQ=
+X-Received: by 2002:a65:6714:: with SMTP id u20mr18262640pgf.121.1595242387927;
+ Mon, 20 Jul 2020 03:53:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1594178168-13007-1-git-send-email-Anson.Huang@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Feng Li <lifeng1519@gmail.com>
+Date:   Mon, 20 Jul 2020 18:52:37 +0800
+Message-ID: <CAEK8JBC+0deq-aYeq=xNsypRUkR1gZVpiHjuNjh6MugYSe42XA@mail.gmail.com>
+Subject: [Question] About IO timeout and hang
+To:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        linux-block <linux-block@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/07/2020 05:16, Anson Huang wrote:
-> Allows building and compile-testing the i.MX TPM driver for ARM64.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> Changes since V1:
-> 	- select TIMER_OF for CLKSRC_IMX_TPM.
-> ---
->  drivers/clocksource/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> index be49123..401eac7 100644
-> --- a/drivers/clocksource/Kconfig
-> +++ b/drivers/clocksource/Kconfig
-> @@ -620,8 +620,9 @@ config CLKSRC_IMX_GPT
->  
->  config CLKSRC_IMX_TPM
->  	bool "Clocksource using i.MX TPM" if COMPILE_TEST
-> -	depends on ARM && CLKDEV_LOOKUP
-> +	depends on (ARM || ARM64) && CLKDEV_LOOKUP
->  	select CLKSRC_MMIO
-> +	select TIMER_OF
->  	help
->  	  Enable this option to use IMX Timer/PWM Module (TPM) timer as
->  	  clocksource.
+Hi Experts,
 
-Applied, but I will let 2/2 applied by the corresponding maintainer.
+Consider accessing a "bad" disk, if the user process submits a
+'read/write' request to the kernel through libaio,
+and the kernel doesn't return the IO, because the underlay disk is
+bad, and IO is stuck for a long time.
 
-Thanks
-  -- Daniel
+When the IO is a 'read', the user-space process has its own timeout
+policy, and find this IO has timeout-ed, then is it safe
+to free the io buffer before IO error return?
+If the user-space doesn't free the buffer and use this buffer as
+another read request, for example, read from another health disk,
+and if at this time the bad disk response the IO,
+will the buffer be corrupted by the before 'read' request?
 
+Could anyone help me clarify this concern?
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks in advance.
