@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE9F226B7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E30226AAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731121AbgGTQle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:41:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39816 "EHLO mail.kernel.org"
+        id S1729069AbgGTQgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730523AbgGTPp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:28 -0400
+        id S1731354AbgGTPwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F3D32065E;
-        Mon, 20 Jul 2020 15:45:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C82D22CF7;
+        Mon, 20 Jul 2020 15:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259927;
-        bh=8OtSB7nWPHAUJcX3LrVccg62zsMc6i0VFnEsdZpoOHM=;
+        s=default; t=1595260341;
+        bh=LPXjPPm8Og7DDV+bv6tM3wciAoaVYBbr2XOqBMBKihE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZDzv/zAI8gw/Ws3fw6NfgyRt5rtEn9dEWH4rS7x2lc1Ck5HGpZ1LUWrl1NOO+pwo
-         vXeqlb5idCSTwXjMuJHLK/5BB4RYaE54swDWVSqnWleInfBWtiIlCUSWKJpFrLsscQ
-         6QMsWJFJivTijPZcM7Ya7tyZLXRMOe+VPAu8hbSc=
+        b=LdMzDqQfMNHfc63D7Z6L1HAvDE8w/LtsEdmEqD9vbgnuMm2n6aiiAWk7em7+RM1pA
+         L1Y9v8VklqAk++jCuXX5+co0/X3FCX65eM9x18FEMICQ8Z+gs8CHuQjlClst4rvTGF
+         QRx9nqvQGKkm3GEW8JS29GxhgCmp7yDZ1Fyts5lY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        James Chapman <jchapman@katalix.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 043/125] l2tp: remove skb_dst_set() from l2tp_xmit_skb()
-Date:   Mon, 20 Jul 2020 17:36:22 +0200
-Message-Id: <20200720152805.087450344@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 038/133] spi: spi-fsl-dspi: Fix lockup if device is shutdown during SPI transfer
+Date:   Mon, 20 Jul 2020 17:36:25 +0200
+Message-Id: <20200720152805.559931515@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +46,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 27d53323664c549b5bb2dfaaf6f7ad6e0376a64e ]
+[ Upstream commit 3c525b69e8c1a9a6944e976603c7a1a713e728f9 ]
 
-In the tx path of l2tp, l2tp_xmit_skb() calls skb_dst_set() to set
-skb's dst. However, it will eventually call inet6_csk_xmit() or
-ip_queue_xmit() where skb's dst will be overwritten by:
+During shutdown, the driver should unregister the SPI controller
+and stop the hardware.  Otherwise the dspi_transfer_one_message() could
+wait on completion infinitely.
 
-   skb_dst_set_noref(skb, dst);
+Additionally, calling spi_unregister_controller() first in device
+shutdown reverse-matches the probe function, where SPI controller is
+registered at the end.
 
-without releasing the old dst in skb. Then it causes dst/dev refcnt leak:
-
-  unregister_netdevice: waiting for eth0 to become free. Usage count = 1
-
-This can be reproduced by simply running:
-
-  # modprobe l2tp_eth && modprobe l2tp_ip
-  # sh ./tools/testing/selftests/net/l2tp.sh
-
-So before going to inet6_csk_xmit() or ip_queue_xmit(), skb's dst
-should be dropped. This patch is to fix it by removing skb_dst_set()
-from l2tp_xmit_skb() and moving skb_dst_drop() into l2tp_xmit_core().
-
-Fixes: 3557baabf280 ("[L2TP]: PPP over L2TP driver core")
-Reported-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: James Chapman <jchapman@katalix.com>
-Tested-by: James Chapman <jchapman@katalix.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: dc234825997e ("spi: spi-fsl-dspi: Adding shutdown hook")
+Reported-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200622110543.5035-2-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/l2tp/l2tp_core.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/spi/spi-fsl-dspi.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -1141,6 +1141,7 @@ static int l2tp_xmit_core(struct l2tp_se
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index 1144d022cc582..43809fad250b6 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1164,20 +1164,7 @@ static int dspi_remove(struct platform_device *pdev)
  
- 	/* Queue the packet to IP for output */
- 	skb->ignore_df = 1;
-+	skb_dst_drop(skb);
- #if IS_ENABLED(CONFIG_IPV6)
- 	if (l2tp_sk_is_v6(tunnel->sock))
- 		error = inet6_csk_xmit(tunnel->sock, skb, NULL);
-@@ -1214,10 +1215,6 @@ int l2tp_xmit_skb(struct l2tp_session *s
- 		goto out_unlock;
- 	}
- 
--	/* Get routing info from the tunnel socket */
--	skb_dst_drop(skb);
--	skb_dst_set(skb, sk_dst_check(sk, 0));
+ static void dspi_shutdown(struct platform_device *pdev)
+ {
+-	struct spi_controller *ctlr = platform_get_drvdata(pdev);
+-	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
 -
- 	inet = inet_sk(sk);
- 	fl = &inet->cork.fl;
- 	switch (tunnel->encap) {
+-	/* Disable RX and TX */
+-	regmap_update_bits(dspi->regmap, SPI_MCR,
+-			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF,
+-			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF);
+-
+-	/* Stop Running */
+-	regmap_update_bits(dspi->regmap, SPI_MCR, SPI_MCR_HALT, SPI_MCR_HALT);
+-
+-	dspi_release_dma(dspi);
+-	clk_disable_unprepare(dspi->clk);
+-	spi_unregister_controller(dspi->master);
++	dspi_remove(pdev);
+ }
+ 
+ static struct platform_driver fsl_dspi_driver = {
+-- 
+2.25.1
+
 
 
