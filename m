@@ -2,171 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF5A226C1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAC8226C15
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389118AbgGTQrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730047AbgGTQq6 (ORCPT
+        id S2388855AbgGTQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:46:37 -0400
+Received: from mail.efficios.com ([167.114.26.124]:40442 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729732AbgGTQqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:46:58 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E18C0619D2;
-        Mon, 20 Jul 2020 09:46:58 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o2so190224wmh.2;
-        Mon, 20 Jul 2020 09:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9TUkabklxIXk2rG01tEVzaKI9h1RHrZIgtt3w/3l2iM=;
-        b=cqgBjnypFa1cbeUeu4WKA3uvV4175XXicaesi3cB7HqFuZkvUS3EnOHeMfJwNpNlcu
-         thvdafoSdEpu3CyPa0BvtB18a649D+XC6ajS63SeSnJp6XDu18WDcEJTK8klZNzdximZ
-         VuENIM+1ZvbGer8HlSEIJ5nBBP/QCWiT36HTgRFZfhMl74u3ZylqJREsFY0Lwc7KPZfZ
-         CVu19F0/MAN2L88oyFeatinyVCcE8rFRVB0KHI7TQT2a/Fv/pRVO9FMOnNYPgoKZVlO4
-         hlQqnmp+3KYZ9wrW6RC9f04lVmriNZKKST63JfVFty4Y9voY7HrmjAKp9hJlI1COu6AR
-         TYWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9TUkabklxIXk2rG01tEVzaKI9h1RHrZIgtt3w/3l2iM=;
-        b=mt66boa/ILERyE81gMU+dgOyJczfAxN2dRToEms2isikkt+Xn2W9qrRxu1gCh6AJQd
-         BhFCxp4UeoW+LWcyW5gkyj6DiOOYTnJytApYVsVF9gLMpa4OxLPvRWz1rWH7SIOgJK0/
-         gFV+NlnsFV+7uZ2jhd4XGEnDeTLpFzvtPQpfCc6H7vFeVVoeCvBaCfGDIPR37uK3aO44
-         8EW/h7C6YPu0n+BcETWiNEd9Ba5EEg6TSf7zXcWpGKnswD5zo3xo0Y5nAVhlVkPwgtIc
-         2rxhoRrRqHKm23xGTwv+ashf5mBGr1ZRi/Fnncpg5QnMplnkKzB4ObNCjOOAN4Tf8PKh
-         wCMw==
-X-Gm-Message-State: AOAM531dngUaN1OfmoLCkbp8t5koWX0m9sF7/5/WQx75M9CRkNBmcFbj
-        NBJx7ytNfpR16KrYM3nkbM39RKwi1tQUrdYvXyg=
-X-Google-Smtp-Source: ABdhPJwHnWafr2ui/E9BQNR1LWn8VA0FKZgs+fhoDxBR6hA5H0uc44yL3f5SpS8O04T80tEL381rAROIPtdr1Fbg7hY=
-X-Received: by 2002:a1c:2485:: with SMTP id k127mr220540wmk.138.1595263616571;
- Mon, 20 Jul 2020 09:46:56 -0700 (PDT)
+        Mon, 20 Jul 2020 12:46:32 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4A2722C34AA;
+        Mon, 20 Jul 2020 12:46:31 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id y8N1uMCN0ppf; Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id CCD872C3619;
+        Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CCD872C3619
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1595263590;
+        bh=qGPk0zNFwo5cVQw8ZAK/QyIsHyu6OZPMekpsDrpVWP0=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=HXiT5Rdi/FF5QIH6XZv4gJJ1Kju6lX5VX4hzPj+hydfPtz1E9pzRTxh8iaYZG2R73
+         eg3S6CBN/N3CzdOA1wtGesnftvZPn/jreiYbon5BVt5Xo07uYCDrp3r6+T6NpduFg1
+         +WaAaCvuMdvcOz7ILW26ZFzs7SSho+yUvlWOXk4X3/jZCbCPPaJVfE8ksX3ESVXYZy
+         UJHjbMPAPdnxAbLqWKXe13jwyDGaE1j2dwhFeLRbe2rF5E+yQnFrtHCIHes82YNUuZ
+         hMFVlmdcxzHjcByqw0tk6PQeH+vfVINABK0AxVRl9R/75dRRzYKUr7TbPkcu/OxiEL
+         QX9rO3DoP+RtQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id lJkhJIb6W00t; Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id B98062C34A7;
+        Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
+Date:   Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Message-ID: <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1595213677.kxru89dqy2.astroid@bobo.none>
+References: <1594868476.6k5kvx8684.astroid@bobo.none> <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net> <20200716085032.GO10769@hirez.programming.kicks-ass.net> <1594892300.mxnq3b9a77.astroid@bobo.none> <20200716110038.GA119549@hirez.programming.kicks-ass.net> <1594906688.ikv6r4gznx.astroid@bobo.none> <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com> <1595213677.kxru89dqy2.astroid@bobo.none>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
 MIME-Version: 1.0
-References: <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
- <1593974870-18919-5-git-send-email-joshi.k@samsung.com> <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
- <20200709085501.GA64935@infradead.org> <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
- <20200709140053.GA7528@infradead.org> <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
- <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
- <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk> <CA+1E3rLna6VVuwMSHVVEFmrgsTyJN=U4CcZtxSGWYr_UYV7AmQ@mail.gmail.com>
- <20200710131054.GB7491@infradead.org> <9e870249-01db-c68d-ea65-28edc3c1f071@kernel.dk>
-In-Reply-To: <9e870249-01db-c68d-ea65-28edc3c1f071@kernel.dk>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Mon, 20 Jul 2020 22:16:28 +0530
-Message-ID: <CA+1E3rK9LCmB4Lt8hTLrCx7bXaF6sETWgm=M6=D6grOnGSgiRQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
-        bcrl@kvack.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
-        linux-fsdevel@vger.kernel.org, "Matias Bj??rling" <mb@lightnvm.io>,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
+Thread-Topic: x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
+Thread-Index: 9hzlA0XuD7jqnfPzlJuu2D9uF0Nx4Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 7:39 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 7/10/20 7:10 AM, Christoph Hellwig wrote:
-> > On Fri, Jul 10, 2020 at 12:35:43AM +0530, Kanchan Joshi wrote:
-> >> Append required special treatment (conversion for sector to bytes) for io_uring.
-> >> And we were planning a user-space wrapper to abstract that.
-> >>
-> >> But good part (as it seems now) was: append result went along with cflags at
-> >> virtually no additional cost. And uring code changes became super clean/minimal
-> >> with further revisions.
-> >> While indirect-offset requires doing allocation/mgmt in application,
-> >> io-uring submission
-> >> and in completion path (which seems trickier), and those CQE flags
-> >> still get written
-> >> user-space and serve no purpose for append-write.
-> >
-> > I have to say that storing the results in the CQE generally make
-> > so much more sense.  I wonder if we need a per-fd "large CGE" flag
-> > that adds two extra u64s to the CQE, and some ops just require this
-> > version.
->
-> I have been pondering the same thing, we could make certain ops consume
-> two CQEs if it makes sense. It's a bit ugly on the app side with two
-> different CQEs for a request, though. We can't just treat it as a large
-> CQE, as they might not be sequential if we happen to wrap. But maybe
-> it's not too bad.
+----- On Jul 19, 2020, at 11:03 PM, Nicholas Piggin npiggin@gmail.com wrote:
 
-Did some work on the two-cqe scheme for zone-append.
-First CQE is the same (as before), while second CQE does not keep
-res/flags and instead has 64bit result to report append-location.
-It would look like this -
+> Excerpts from Mathieu Desnoyers's message of July 17, 2020 11:42 pm:
+>> ----- On Jul 16, 2020, at 7:26 PM, Nicholas Piggin npiggin@gmail.com wrote:
+>> [...]
+>>> 
+>>> membarrier does replace barrier instructions on remote CPUs, which do
+>>> order accesses performed by the kernel on the user address space. So
+>>> membarrier should too I guess.
+>>> 
+>>> Normal process context accesses like read(2) will do so because they
+>>> don't get filtered out from IPIs, but kernel threads using the mm may
+>>> not.
+>> 
+>> But it should not be an issue, because membarrier's ordering is only with
+>> respect
+>> to submit and completion of io_uring requests, which are performed through
+>> system calls from the context of user-space threads, which are called from the
+>> right mm.
+> 
+> Is that true? Can io completions be written into an address space via a
+> kernel thread? I don't know the io_uring code well but it looks like
+> that's asynchonously using the user mm context.
 
-struct io_uring_cqe {
-        __u64   user_data;      /* sqe->data submission passed back */
--       __s32   res;            /* result code for this event */
--       __u32   flags;
-+       union {
-+               struct {
-+                       __s32   res;            /* result code for this event */
-+                       __u32   flags;
-+               };
-+               __u64   append_res;   /*only used for append, in
-secondary cqe */
-+       };
+Indeed, the io completion appears to be signaled asynchronously between kernel
+and user-space. Therefore, both kernel and userspace code need to have proper
+memory barriers in place to signal completion, otherwise user-space could read
+garbage after it notices completion of a read.
 
-And kernel will produce two CQEs for append completion-
+I did not review the entire io_uring implementation, but the publish side
+for completion appears to be:
 
-static void __io_cqring_fill_event(struct io_kiocb *req, long res, long cflags)
+static void __io_commit_cqring(struct io_ring_ctx *ctx)
 {
--       struct io_uring_cqe *cqe;
-+       struct io_uring_cqe *cqe, *cqe2 = NULL;
+        struct io_rings *rings = ctx->rings;
 
--       cqe = io_get_cqring(ctx);
-+       if (unlikely(req->flags & REQ_F_ZONE_APPEND))
-+ /* obtain two CQEs for append. NULL if two CQEs are not available */
-+               cqe = io_get_two_cqring(ctx, &cqe2);
-+       else
-+               cqe = io_get_cqring(ctx);
-+
-        if (likely(cqe)) {
-                WRITE_ONCE(cqe->user_data, req->user_data);
-                WRITE_ONCE(cqe->res, res);
-                WRITE_ONCE(cqe->flags, cflags);
-+               /* update secondary cqe for zone-append */
-+               if (req->flags & REQ_F_ZONE_APPEND) {
-+                       WRITE_ONCE(cqe2->append_res,
-+                               (u64)req->append_offset << SECTOR_SHIFT);
-+                       WRITE_ONCE(cqe2->user_data, req->user_data);
-+               }
-  mutex_unlock(&ctx->uring_lock);
+        /* order cqe stores with ring update */
+        smp_store_release(&rings->cq.tail, ctx->cached_cq_tail);
 
+        if (wq_has_sleeper(&ctx->cq_wait)) {
+                wake_up_interruptible(&ctx->cq_wait);
+                kill_fasync(&ctx->cq_fasync, SIGIO, POLL_IN);
+        }
+}
 
-This seems to go fine in Kernel.
-But the application will have few differences such as:
+The store-release on tail should be paired with a load_acquire on the
+reader-side (it's called "read_barrier()" in the code):
 
-- When it submits N appends, and decides to wait for all completions
-it needs to specify min_complete as 2*N (or at least 2N-1).
-Two appends will produce 4 completion events, and if application
-decides to wait for both it must specify 4 (or 3).
+tools/io_uring/queue.c:
 
-io_uring_enter(unsigned int fd, unsigned int to_submit,
-                   unsigned int min_complete, unsigned int flags,
-                   sigset_t *sig);
+static int __io_uring_get_cqe(struct io_uring *ring,
+                              struct io_uring_cqe **cqe_ptr, int wait)
+{
+        struct io_uring_cq *cq = &ring->cq;
+        const unsigned mask = *cq->kring_mask;
+        unsigned head;
+        int ret;
 
-- Completion-processing sequence for mixed-workload (few reads + few
-appends, on the same ring).
-Currently there is a one-to-one relationship. Application looks at N
-CQE entries, and treats each as distinct IO completion - a for loop
-does the work.
-With two-cqe scheme, extracting, from a bunch of completion, the ones
-for read (one cqe) and append (two cqe): flow gets somewhat
-non-linear.
+        *cqe_ptr = NULL;
+        head = *cq->khead;
+        do {
+                /*
+                 * It's necessary to use a read_barrier() before reading
+                 * the CQ tail, since the kernel updates it locklessly. The
+                 * kernel has the matching store barrier for the update. The
+                 * kernel also ensures that previous stores to CQEs are ordered
+                 * with the tail update.
+                 */
+                read_barrier();
+                if (head != *cq->ktail) {
+                        *cqe_ptr = &cq->cqes[head & mask];
+                        break;
+                }
+                if (!wait)
+                        break;
+                ret = io_uring_enter(ring->ring_fd, 0, 1,
+                                        IORING_ENTER_GETEVENTS, NULL);
+                if (ret < 0)
+                        return -errno;
+        } while (1);
 
-Perhaps this is not too bad, but felt that it must be put here upfront.
+        return 0;
+}
+
+So as far as membarrier memory ordering dependencies are concerned, it relies
+on the store-release/load-acquire dependency chain in the completion queue to
+order against anything that was done prior to the completed requests.
+
+What is in-flight while the requests are being serviced provides no memory
+ordering guarantee whatsoever.
+
+> How about other memory accesses via kthread_use_mm? Presumably there is
+> still ordering requirement there for membarrier,
+
+Please provide an example case with memory accesses via kthread_use_mm where
+ordering matters to support your concern.
+
+> so I really think
+> it's a fragile interface with no real way for the user to know how
+> kernel threads may use its mm for any particular reason, so membarrier
+> should synchronize all possible kernel users as well.
+
+I strongly doubt so, but perhaps something should be clarified in the documentation
+if you have that feeling.
+
+Thanks,
+
+Mathieu
+
+> 
+> Thanks,
+> Nick
 
 -- 
-Kanchan Joshi
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
