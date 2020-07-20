@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4435B226466
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ED422644B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgGTPon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
+        id S1730340AbgGTPn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729830AbgGTPoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:38 -0400
+        id S1730322AbgGTPnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:43:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62F3E22CBB;
-        Mon, 20 Jul 2020 15:44:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 592492064B;
+        Mon, 20 Jul 2020 15:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259878;
-        bh=bQdhkyleKNrB/eAmk3MoXZ4uuEJHYABQVPYga/A9WNQ=;
+        s=default; t=1595259833;
+        bh=PeKvIN1kjCHm+SwAwXuvBKYp1u9GRzDXbVJh2Y8Q7CU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yfdtphn2CZqFXJpYZ0AWg1XYM3SCppCge3pxM0LQN0Mdd2pvMb3UZQIwxgGF2D+NE
-         Kn9rU9IJlVteCYFPpEz7EIhHdolix3O88eiLqXJldJ+GxDDF9CppM8fRKKvghANOSz
-         jr1UE+ToMC28bbrvq8FwdSD0BRqzKobtiGKxLdMc=
+        b=crHGpL0NKdTBgYTt3OcuKyGsmS0aagz6IA9OS5DEYuDz5iX10TYcYQdMwUwNWMFN8
+         zS2SD3Em00iH9+Pw0Qiw1leXyYEy0Dz2uunakKg41239FW9yWUGs2EhZjCOwH8TGP7
+         UlsFtaxlSWkhhtyFqG1rLQeCCBAtypwtPUzNhC7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Ciara Loftus <ciara.loftus@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 008/125] spi: spidev: fix a race between spidev_release and spidev_remove
-Date:   Mon, 20 Jul 2020 17:35:47 +0200
-Message-Id: <20200720152803.352905177@linuxfoundation.org>
+Subject: [PATCH 4.14 010/125] ixgbe: protect ring accesses with READ- and WRITE_ONCE
+Date:   Mon, 20 Jul 2020 17:35:49 +0200
+Message-Id: <20200720152803.451830791@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
 References: <20200720152802.929969555@linuxfoundation.org>
@@ -44,60 +45,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+From: Ciara Loftus <ciara.loftus@intel.com>
 
-[ Upstream commit abd42781c3d2155868821f1b947ae45bbc33330d ]
+[ Upstream commit f140ad9fe2ae16f385f8fe4dc9cf67bb4c51d794 ]
 
-Imagine below scene, spidev is referenced after it's freed.
+READ_ONCE should be used when reading rings prior to accessing the
+statistics pointer. Introduce this as well as the corresponding WRITE_ONCE
+usage when allocating and freeing the rings, to ensure protected access.
 
-spidev_release()                spidev_remove()
-...
-                                spin_lock_irq(&spidev->spi_lock);
-                                    spidev->spi = NULL;
-                                spin_unlock_irq(&spidev->spi_lock);
-mutex_lock(&device_list_lock);
-dofree = (spidev->spi == NULL);
-if (dofree)
-    kfree(spidev);
-mutex_unlock(&device_list_lock);
-                                mutex_lock(&device_list_lock);
-                                list_del(&spidev->device_entry);
-                                device_destroy(spidev_class, spidev->devt);
-                                clear_bit(MINOR(spidev->devt), minors);
-                                if (spidev->users == 0)
-                                    kfree(spidev);
-                                mutex_unlock(&device_list_lock);
-
-Fix it by resetting spidev->spi in device_list_lock's protection.
-
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Link: https://lore.kernel.org/r/20200618032125.4650-1-zhenzhong.duan@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spidev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 12 ++++++------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 14 +++++++++++---
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 028725573e632..5edf4029a3486 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -782,13 +782,13 @@ static int spidev_remove(struct spi_device *spi)
- {
- 	struct spidev_data	*spidev = spi_get_drvdata(spi);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+index f1bfae0c41d0c..3cf8b3ea43b08 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+@@ -917,7 +917,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 			ring->queue_index = txr_idx;
  
-+	/* prevent new opens */
-+	mutex_lock(&device_list_lock);
- 	/* make sure ops on existing fds can abort cleanly */
- 	spin_lock_irq(&spidev->spi_lock);
- 	spidev->spi = NULL;
- 	spin_unlock_irq(&spidev->spi_lock);
+ 		/* assign ring to adapter */
+-		adapter->tx_ring[txr_idx] = ring;
++		WRITE_ONCE(adapter->tx_ring[txr_idx], ring);
  
--	/* prevent new opens */
--	mutex_lock(&device_list_lock);
- 	list_del(&spidev->device_entry);
- 	device_destroy(spidev_class, spidev->devt);
- 	clear_bit(MINOR(spidev->devt), minors);
+ 		/* update count and index */
+ 		txr_count--;
+@@ -944,7 +944,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 		set_ring_xdp(ring);
+ 
+ 		/* assign ring to adapter */
+-		adapter->xdp_ring[xdp_idx] = ring;
++		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
+ 
+ 		/* update count and index */
+ 		xdp_count--;
+@@ -991,7 +991,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 			ring->queue_index = rxr_idx;
+ 
+ 		/* assign ring to adapter */
+-		adapter->rx_ring[rxr_idx] = ring;
++		WRITE_ONCE(adapter->rx_ring[rxr_idx], ring);
+ 
+ 		/* update count and index */
+ 		rxr_count--;
+@@ -1020,13 +1020,13 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
+ 
+ 	ixgbe_for_each_ring(ring, q_vector->tx) {
+ 		if (ring_is_xdp(ring))
+-			adapter->xdp_ring[ring->queue_index] = NULL;
++			WRITE_ONCE(adapter->xdp_ring[ring->queue_index], NULL);
+ 		else
+-			adapter->tx_ring[ring->queue_index] = NULL;
++			WRITE_ONCE(adapter->tx_ring[ring->queue_index], NULL);
+ 	}
+ 
+ 	ixgbe_for_each_ring(ring, q_vector->rx)
+-		adapter->rx_ring[ring->queue_index] = NULL;
++		WRITE_ONCE(adapter->rx_ring[ring->queue_index], NULL);
+ 
+ 	adapter->q_vector[v_idx] = NULL;
+ 	napi_hash_del(&q_vector->napi);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 64ee45b6680a0..9c3fa0b555519 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -6842,7 +6842,10 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
+ 	}
+ 
+ 	for (i = 0; i < adapter->num_rx_queues; i++) {
+-		struct ixgbe_ring *rx_ring = adapter->rx_ring[i];
++		struct ixgbe_ring *rx_ring = READ_ONCE(adapter->rx_ring[i]);
++
++		if (!rx_ring)
++			continue;
+ 		non_eop_descs += rx_ring->rx_stats.non_eop_descs;
+ 		alloc_rx_page_failed += rx_ring->rx_stats.alloc_rx_page_failed;
+ 		alloc_rx_buff_failed += rx_ring->rx_stats.alloc_rx_buff_failed;
+@@ -6861,15 +6864,20 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
+ 	packets = 0;
+ 	/* gather some stats to the adapter struct that are per queue */
+ 	for (i = 0; i < adapter->num_tx_queues; i++) {
+-		struct ixgbe_ring *tx_ring = adapter->tx_ring[i];
++		struct ixgbe_ring *tx_ring = READ_ONCE(adapter->tx_ring[i]);
++
++		if (!tx_ring)
++			continue;
+ 		restart_queue += tx_ring->tx_stats.restart_queue;
+ 		tx_busy += tx_ring->tx_stats.tx_busy;
+ 		bytes += tx_ring->stats.bytes;
+ 		packets += tx_ring->stats.packets;
+ 	}
+ 	for (i = 0; i < adapter->num_xdp_queues; i++) {
+-		struct ixgbe_ring *xdp_ring = adapter->xdp_ring[i];
++		struct ixgbe_ring *xdp_ring = READ_ONCE(adapter->xdp_ring[i]);
+ 
++		if (!xdp_ring)
++			continue;
+ 		restart_queue += xdp_ring->tx_stats.restart_queue;
+ 		tx_busy += xdp_ring->tx_stats.tx_busy;
+ 		bytes += xdp_ring->stats.bytes;
 -- 
 2.25.1
 
