@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FF92264D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3901E2265A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730927AbgGTPsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44442 "EHLO mail.kernel.org"
+        id S1731057AbgGTPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729962AbgGTPsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:48:43 -0400
+        id S1731008AbgGTPzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 236862064B;
-        Mon, 20 Jul 2020 15:48:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D21C2065E;
+        Mon, 20 Jul 2020 15:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260122;
-        bh=hzLAThHvf7gJmaisKABfV8tEcvLhHCQOlRUK9Pj01rs=;
+        s=default; t=1595260532;
+        bh=9IYFXvNdzrOsWw+bw1eHWtHAmTn0VG0xwVdxYbgrFo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DkWUIPqfdYIaUlLHlAmiidBJSFwwp6nHLlEmlbrnxS5QXxiL9Lyi6m8L05JYfU/DC
-         xwdlqwF7YWje9I3hVJeznmPcR1NMWH6xXHKnWaCBD/TVd0Gd5MWW8LkwTgcjoQn/lr
-         cOqvrTgpHVs3AWYiT6Ss8IBYVtBhobEojtlzzmw0=
+        b=V6VmSkhb2YZlqtvZ+iHtLB2eYvG0KFV2eXNIqx9HGBH5r884e+hDweS0Kb6XZdNUF
+         INbly9oEc5bALn5wtitkJxsCpcqkuha6QQ6nMYFQZ+0agB2FoqA4CykxTWzj80CDHA
+         mRezr+OLExRaH786hvKE9ZXfqCN/FeyfXlg3ZUJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishwas M <vishwas.reddy.vr@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 114/125] hwmon: (emc2103) fix unable to change fan pwm1_enable attribute
+        stable@vger.kernel.org, Chirantan Ekbote <chirantan@chromium.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 4.19 106/133] fuse: Fix parameter for FS_IOC_{GET,SET}FLAGS
 Date:   Mon, 20 Jul 2020 17:37:33 +0200
-Message-Id: <20200720152808.537990545@linuxfoundation.org>
+Message-Id: <20200720152808.866418357@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vishwas M <vishwas.reddy.vr@gmail.com>
+From: Chirantan Ekbote <chirantan@chromium.org>
 
-commit 14b0e83dc4f1e52b94acaeb85a18fd7fdd46d2dc upstream.
+commit 31070f6ccec09f3bd4f1e28cd1e592fa4f3ba0b6 upstream.
 
-This patch fixes a bug which does not let FAN mode to be changed from
-sysfs(pwm1_enable). i.e pwm1_enable can not be set to 3, it will always
-remain at 0.
+The ioctl encoding for this parameter is a long but the documentation says
+it should be an int and the kernel drivers expect it to be an int.  If the
+fuse driver treats this as a long it might end up scribbling over the stack
+of a userspace process that only allocated enough space for an int.
 
-This is caused because the device driver handles the result of
-"read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg)" incorrectly. The
-driver thinks an error has occurred if the (result != 0). This has been
-fixed by changing the condition to (result < 0).
+This was previously discussed in [1] and a patch for fuse was proposed in
+[2].  From what I can tell the patch in [2] was nacked in favor of adding
+new, "fixed" ioctls and using those from userspace.  However there is still
+no "fixed" version of these ioctls and the fact is that it's sometimes
+infeasible to change all userspace to use the new one.
 
-Signed-off-by: Vishwas M <vishwas.reddy.vr@gmail.com>
-Link: https://lore.kernel.org/r/20200707142747.118414-1-vishwas.reddy.vr@gmail.com
-Fixes: 9df7305b5a86 ("hwmon: Add driver for SMSC EMC2103 temperature monitor and fan controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Handling the ioctls specially in the fuse driver seems like the most
+pragmatic way for fuse servers to support them without causing crashes in
+userspace applications that call them.
+
+[1]: https://lore.kernel.org/linux-fsdevel/20131126200559.GH20559@hall.aurel32.net/T/
+[2]: https://sourceforge.net/p/fuse/mailman/message/31771759/
+
+Signed-off-by: Chirantan Ekbote <chirantan@chromium.org>
+Fixes: 59efec7b9039 ("fuse: implement ioctl support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hwmon/emc2103.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/fuse/file.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/hwmon/emc2103.c
-+++ b/drivers/hwmon/emc2103.c
-@@ -454,7 +454,7 @@ static ssize_t pwm1_enable_store(struct
- 	}
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -18,6 +18,7 @@
+ #include <linux/swap.h>
+ #include <linux/falloc.h>
+ #include <linux/uio.h>
++#include <linux/fs.h>
  
- 	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
--	if (result) {
-+	if (result < 0) {
- 		count = result;
- 		goto err;
- 	}
+ static const struct file_operations fuse_direct_io_file_operations;
+ 
+@@ -2535,7 +2536,16 @@ long fuse_do_ioctl(struct file *file, un
+ 		struct iovec *iov = iov_page;
+ 
+ 		iov->iov_base = (void __user *)arg;
+-		iov->iov_len = _IOC_SIZE(cmd);
++
++		switch (cmd) {
++		case FS_IOC_GETFLAGS:
++		case FS_IOC_SETFLAGS:
++			iov->iov_len = sizeof(int);
++			break;
++		default:
++			iov->iov_len = _IOC_SIZE(cmd);
++			break;
++		}
+ 
+ 		if (_IOC_DIR(cmd) & _IOC_WRITE) {
+ 			in_iov = iov;
 
 
