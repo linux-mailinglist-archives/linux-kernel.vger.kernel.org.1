@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2D22258DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318C52258E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgGTHn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:43:59 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:46619 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726015AbgGTHn6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:43:58 -0400
-Received: from [78.134.114.177] (port=42258 helo=[192.168.77.62])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jxQSp-0001Yt-L9; Mon, 20 Jul 2020 09:43:55 +0200
-Subject: Re: [PATCH v2 2/3] dt-bindings: media: imx274: Add optional input
- clock and supplies
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, leonl@leopardimaging.com, robh+dt@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1595013322-15077-1-git-send-email-skomatineni@nvidia.com>
- <1595013322-15077-2-git-send-email-skomatineni@nvidia.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <75b7e3bb-cdc1-a266-09cb-3eedd79d198d@lucaceresoli.net>
-Date:   Mon, 20 Jul 2020 09:43:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727067AbgGTHoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:44:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbgGTHob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 03:44:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E4C95AC46;
+        Mon, 20 Jul 2020 07:44:35 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH] scripts/decode_stacktrace: strip all base path prefixes
+Date:   Mon, 20 Jul 2020 09:44:29 +0200
+Message-Id: <20200720074429.29359-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1595013322-15077-2-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/20 21:15, Sowjanya Komatineni wrote:
-> This patch adds IMX274 optional external clock input and voltage
-> supplies to device tree bindings.
-> 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+When addr2line returns more than one location, decode_stacktrace does
+not currently remove base path from the paths. So the result might look
+like (line wrapped here):
+ ptrace_stop (include/linux/freezer.h:57
+ /home/abuild/rpmbuild/BUILD/kernel-default-5.8.rc5/linux-5.8-rc5/linux-obj/../include/linux/freezer.h:67
+ /home/abuild/rpmbuild/BUILD/kernel-default-5.8.rc5/linux-5.8-rc5/linux-obj/../include/linux/freezer.h:128
+ /home/abuild/rpmbuild/BUILD/kernel-default-5.8.rc5/linux-5.8-rc5/linux-obj/../include/linux/freezer.h:173
+ /home/abuild/rpmbuild/BUILD/kernel-default-5.8.rc5/linux-5.8-rc5/linux-obj/../kernel/signal.c:2217)
 
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+Make sure all the lines are processed, so the result now looks like
+(line wrapped here again):
+ ptrace_stop (include/linux/freezer.h:57 include/linux/freezer.h:67
+ include/linux/freezer.h:128 include/linux/freezer.h:173
+ kernel/signal.c:2217)
 
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Fixes: 67a28de47faa (scripts/decode_stacktrace: only strip base path when a prefix of the path)
+Cc: Sasha Levin <sashal@kernel.org>
+---
+ scripts/decode_stacktrace.sh | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
+diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
+index 4bdcb6d8c605..3fddcb48b464 100755
+--- a/scripts/decode_stacktrace.sh
++++ b/scripts/decode_stacktrace.sh
+@@ -140,14 +140,15 @@ parse_symbol() {
+ 		return
+ 	fi
+ 
+-	# Strip out the base of the path
+-	code=${code#$basepath/}
+-
+-	# In the case of inlines, move everything to same line
+-	code=${code//$'\n'/' '}
++	declare -a output
++	while read LINE; do
++		# Strip out the base of the path
++		LINE=${LINE#$basepath/}
++		output+=("$LINE")
++	done <<< $code
+ 
+ 	# Replace old address with pretty line numbers
+-	symbol="$segment$name ($code)"
++	symbol="$segment$name (${output[@]})"
+ }
+ 
+ decode_code() {
 -- 
-Luca
+2.27.0
+
