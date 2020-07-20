@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C35022552E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FD9225531
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgGTBKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 21:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgGTBKF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 21:10:05 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D855C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:10:05 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxKJd-00GEh6-6x; Mon, 20 Jul 2020 01:10:01 +0000
-Date:   Mon, 20 Jul 2020 02:10:01 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Kevin Buettner <kevinb@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] copy_xstate_to_kernel: Fix typo which caused GDB
- regression
-Message-ID: <20200720011001.GL2786714@ZenIV.linux.org.uk>
-References: <20200718002003.6e0a2aef@f32-m1.lan>
- <CAPM=9tzJt5W8YpyBpyr0Xk3OwgA8iEOKe_zOtJSM3FThp38K4w@mail.gmail.com>
+        id S1727040AbgGTBKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 21:10:48 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7784 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726312AbgGTBKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 21:10:48 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 63D3841452D250B40056;
+        Mon, 20 Jul 2020 09:10:46 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 20 Jul
+ 2020 09:10:42 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: segment.h: delete a duplicated word
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200720001344.25138-1-rdunlap@infradead.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <bffcb40e-94bf-ca89-4ee8-3158050930c1@huawei.com>
+Date:   Mon, 20 Jul 2020 09:10:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPM=9tzJt5W8YpyBpyr0Xk3OwgA8iEOKe_zOtJSM3FThp38K4w@mail.gmail.com>
+In-Reply-To: <20200720001344.25138-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 09:40:14AM +1000, Dave Airlie wrote:
-> Just adding Linus, as Al is oft distracted.
+On 2020/7/20 8:13, Randy Dunlap wrote:
+> Drop the repeated word "the" in a comment.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+> Cc: Chao Yu <chao@kernel.org>
+> Cc: linux-f2fs-devel@lists.sourceforge.net
 
-Already in vfs.git#fixes, actually:
-commit 8d95867c8610c515ffab2913b2cb19b2c7f7f6c1
-Author: Kevin Buettner <kevinb@redhat.com>
-Date:   Sat Jul 18 00:20:03 2020 -0700
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-    copy_xstate_to_kernel: Fix typo which caused GDB regression
-    
-    This commit fixes a regression encountered while running the
-    gdb.base/corefile.exp test in GDB's test suite.
-    
-    In my testing, the typo prevented the sw_reserved field of struct
-    fxregs_state from being output to the kernel XSAVES area.  Thus the
-    correct mask corresponding to XCR0 was not present in the core file
-    for GDB to interrogate, resulting in the following behavior:
-    
-    [kev@f32-1 gdb]$ ./gdb -q testsuite/outputs/gdb.base/corefile/corefile testsuite/outputs/gdb.base/corefile/corefile.core
-    Reading symbols from testsuite/outputs/gdb.base/corefile/corefile...
-    [New LWP 232880]
-    
-    warning: Unexpected size of section `.reg-xstate/232880' in core file.
-    
-    With the typo fixed, the test works again as expected.
-    
-    Fixes: 9e46365459331 ("copy_xstate_to_kernel(): don't leave parts of destination uninitialized")
-    Signed-off-by: Kevin Buettner <kevinb@redhat.com>
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Thanks,
