@@ -2,63 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A42622628A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E1522628C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgGTOvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
+        id S1728460AbgGTOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgGTOvc (ORCPT
+        with ESMTP id S1728010AbgGTOwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:51:32 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E71FC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:51:32 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id y17so8402472ybm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:51:32 -0700 (PDT)
+        Mon, 20 Jul 2020 10:52:06 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7514FC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:52:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 22so22566925wmg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=lWLurWjbXovBrndRU7wTktTobaL8QPW1CZ7B0l/g/CQ=;
-        b=kcERMzTGFcT1lq1DvyJlkFs6vKl/1JKhqPecArSmv5uoqCCVIGrVURNfVU85nIQ8ln
-         xzbUcyAlxIymPOMnKTWXMDVPLNp5vZ/SQyW5l1QBeFpG1bAELCkpqzGI5Ur/OARLGI+v
-         byI6jJ3K9Nt2QyB1iwOXLZn+osfQ3g7RQc8XXbalNuywZ1ukmwWyCtsJnmN7/yDm5yic
-         RklT62Is3W/P+n+JLVpNnqe3QTaq1L1hQPTiiJ6N0uMCELJmlwUDW482Zwm/6PFFvwMe
-         VdW7qHDg+R5DPsiq6eeRNlVM+7cQVqMWzq3MJB6VRgahVbdf+28HImm8Y9bqfUSOL9+z
-         3yMA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ix/25GZ9U6dIRQ1w/0wuRPIycq7srIUn1TSXhkojW48=;
+        b=sXOOnFR7R/xtAJqrT9MbQksZpIUQgSAJkvjhDzXjE/srw7zNYNG2wlprXUAGGHU9pv
+         g55h8Y6n0HVrk4hDdoAY5bXrkPR8osZa7KPfw9D++Zn39ohYgCa5ba0qvNEo1DfSaydx
+         cCPtlR5G8QKOvchw3uo3bXEweEKnAxg+HCODvjpcbijdp1L3F8z9AqDNS4ZO/K3XfhQv
+         38tMXvXmC+gaCfZJQAgyCJH1RDGsPYqHETXDQbsiKjrUCWJKeuq8mSttMzFd2vP84JvS
+         qX5qLgNMp7PKrz5G2HQt5ZAFrv3dzSyHK0tEpWxLwiRDkzoJNytcat/adkk0OhWx+pcY
+         tL6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=lWLurWjbXovBrndRU7wTktTobaL8QPW1CZ7B0l/g/CQ=;
-        b=ZfkvPUoorHm6UhtIpN8lqXxZGdDtHhyOfO5sKx3YkcxBHPVOu8XKiGo1DhbduU6CmH
-         4i0kuz6Wu2EYSvfFCEDASmgPVXh/BIctnCNSg+bBYDzPlVClM2SxT5klKo33Tl+8rBW1
-         SS+46YplM+Y9vi1411q/rc+qByTEZXO96rhVG71mAgawMaUGz575bB/1raQF42aNHPFb
-         BGyhEMgEnVLcqHOmyHEfsU/0dN/TNqmkki8YP7py0Rg8VTAAl0iJCi+E3BfAUV0PAfFW
-         aFYDZ7Czq+Le5BQpfzu83kIV/lp47vamSQ+h1vZ/XsoxwEObgVW6wRf/cMuXTtCxW9PH
-         j+1g==
-X-Gm-Message-State: AOAM530LKbP6RQmFSQ1y+zNa9ky1isKqm+XGwnGyFW/mkIhfWH/v3M2C
-        jM7nYdL5scutjgg5FYboeN9gvxqeuuSHEbsNZ5c=
-X-Google-Smtp-Source: ABdhPJw0K/uKVoR3j586sgqqwxfBToptEQTGksdLthKLbx6OYXLMyQ560P63STK0yhlEZods0m8Zm7QISt7XfRDChC4=
-X-Received: by 2002:a25:a488:: with SMTP id g8mr33262732ybi.35.1595256691582;
- Mon, 20 Jul 2020 07:51:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ix/25GZ9U6dIRQ1w/0wuRPIycq7srIUn1TSXhkojW48=;
+        b=Tu/ZiqiVP5WaCGKAItut2HRZ0sOM/ODJ6iPm5MW37ThPg+PWMMmpqpPbr2yMeOtLFh
+         HMHtThPJxY+Dg3babEim1qpjLG8HSQusDvhktTQchfEfijCALsMFiEjTTorDJAgMxNMK
+         GcD8pNVU/TGWEP8Xqk7GtziIY/d1w4wsU3MLgzjD+GJXpccct+x1RhK6qwoGryYSWw4S
+         XFC3dcBm4EnuEWurxFkDqoWXn/MBG5z88B97l4ObZH4EMWEIZ1+UkuAzDrA80eJZpLAV
+         3B4317ND3jJiyV6rHjTSgoSU3gHYiDE6XPO0oKsoTZhIKiVMJmYLVmz87LeF+9e/4RvT
+         6Xmw==
+X-Gm-Message-State: AOAM530PTItTERYkkhskEb+UHZEJadAfaODbMSULvglUVlX400aUsEI4
+        X9aZoJogQ11De2V29JaV3nRFvw==
+X-Google-Smtp-Source: ABdhPJz1lexK9cL47R0ggWP8od++vRFlJcnsmesJxnQKEstPVI0SmnuupQGqzWfgGds3oMN20RozRQ==
+X-Received: by 2002:a1c:9a02:: with SMTP id c2mr23897744wme.16.1595256725241;
+        Mon, 20 Jul 2020 07:52:05 -0700 (PDT)
+Received: from dell ([2.27.167.94])
+        by smtp.gmail.com with ESMTPSA id h14sm32549558wrt.36.2020.07.20.07.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 07:52:04 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 15:52:02 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     ricky_wu@realtek.com, Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, rui_feng@realsil.com.cn,
+        Bjorn Helgaas <bhelgaas@google.com>, kdlnx@doth.eu,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Subject: Re: [PATCH] misc: rtsx: Add support new chip rts5228 mmc: rtsx: Add
+ support MMC_CAP2_NO_MMC
+Message-ID: <20200720145202.GA621928@dell>
+References: <20200706070259.32565-1-ricky_wu@realtek.com>
+ <CACRpkdbkpwMaS3FR1F1-WU5AjwvBchwLDKDhgHAA+-sKZLRpsg@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a25:3401:0:0:0:0:0 with HTTP; Mon, 20 Jul 2020 07:51:30
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   Shayma <shaymamarwan08@gmail.com>
-Date:   Mon, 20 Jul 2020 14:51:30 +0000
-Message-ID: <CA+HOoT3JbKYXAt0NKn57wEZ7huZ1Wq6z=1W8ZxFog65vXrT0gg@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdbkpwMaS3FR1F1-WU5AjwvBchwLDKDhgHAA+-sKZLRpsg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Vielen Dank.
-Michelle
+On Mon, 20 Jul 2020, Linus Walleij wrote:
+
+> On Mon, Jul 6, 2020 at 9:03 AM <ricky_wu@realtek.com> wrote:
+> 
+> >  drivers/misc/cardreader/Makefile   |   2 +-
+> >  drivers/misc/cardreader/rts5228.c  | 740 +++++++++++++++++++++++++++++
+> >  drivers/misc/cardreader/rts5228.h  | 168 +++++++
+> >  drivers/misc/cardreader/rtsx_pcr.c |  89 ++--
+> >  drivers/misc/cardreader/rtsx_pcr.h |   5 +
+> 
+> This drivers/misc/cardreader business is a big confusion for my mind.
+> 
+> Is it really that fantastic that it needs to be a unique special case?
+> 
+> To me it looks like a drivers/mfd thing which should have separate
+> drivers/regulator/rts5228.c (LDOs)
+> drivers/clk/rts5228.c (clocks)
+> subdrivers.
+> 
+> See for example drivers/mfd/sta2x11-mfd.c thay spawns a few
+> devices off a PCI card.
+
+Thanks for Cc'ing me Linus.
+
+Can you please bounce the diff to me too?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
