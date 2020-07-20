@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F64226250
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C20226251
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgGTOiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgGTOiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:38:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728301AbgGTOjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:39:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27790 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725815AbgGTOjj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:39:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595255978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bTQiDkwTqffwl6gPguYjz7dLWFf2hmRpT9nM3y07XK0=;
+        b=BsIvAXE/ha64zkDP0kHn2moznRFdA1Jl0Y0Fc41uWnLov8GSTOEyZH/AdF+ola9Zk+c61y
+        LaufGY6GjIR5GcqNHWTahwNY+uR8wG8B29qja+lkn59z1WpCLFh4DXuAu62O8BgQRKn/oN
+        2inqjYiQbW7vt5GZyUUd4Mb3t4lN6Kw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-uYkMibmYNyeRRlUnmjlMZQ-1; Mon, 20 Jul 2020 10:39:36 -0400
+X-MC-Unique: uYkMibmYNyeRRlUnmjlMZQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 094DE22B4D;
-        Mon, 20 Jul 2020 14:38:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595255931;
-        bh=+auK55a4lJcssKkr7Cej4IkQyyeqOsJrBcmvKvm9b2M=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=djWD4X4Lcf415yldlZd+jRvzOVMBSvuXUMPmz7QKB4+OdKYT2tTvgTyT/Op9SM/qB
-         4zVGFRCxneiDRsodjXiqU21i23Yz27pU+LkJa3x/H5gov5QpmAycTYG1hVe3t8bRae
-         ONCNYfColjJ4PrOpldU9g6tpwEjnfz56ZrXjdfF8=
-Date:   Mon, 20 Jul 2020 15:38:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20200717215500.GA13910@embeddedor>
-References: <20200717215500.GA13910@embeddedor>
-Subject: Re: [PATCH][next] ASoC: Intel: Skylake: Avoid the use of one-element array
-Message-Id: <159525589434.6792.8045971060889896063.b4-ty@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A691AC7467;
+        Mon, 20 Jul 2020 14:39:34 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.147])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 30E2019C58;
+        Mon, 20 Jul 2020 14:39:31 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 20 Jul 2020 16:39:34 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 16:39:30 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200720143930.GE6612@redhat.com>
+References: <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
+ <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+ <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com>
+ <20200720082657.GC6612@redhat.com>
+ <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+ <20200720105924.GE43129@hirez.programming.kicks-ass.net>
+ <20200720140224.GD6612@redhat.com>
+ <20200720142105.GR10769@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720142105.GR10769@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 16:55:00 -0500, Gustavo A. R. Silva wrote:
-> One-element arrays are being deprecated[1]. Replace the one-element
-> array with a simple value type 'u8 reserved'[2], once it seems this
-> is just a placeholder for alignment.
-> 
-> [1] https://github.com/KSPP/linux/issues/79
-> [2] https://github.com/KSPP/linux/issues/86
+On 07/20, Peter Zijlstra wrote:
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
+>  	local_irq_disable();
+>  	rcu_note_context_switch(preempt);
+>  
+> -	/* See deactivate_task() below. */
+> -	prev_state = prev->state;
+> -
+>  	/*
+>  	 * Make sure that signal_pending_state()->signal_pending() below
+>  	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+> @@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
+>  	 * We must re-load prev->state in case ttwu_remote() changed it
+>  	 * before we acquired rq->lock.
+>  	 */
+> -	if (!preempt && prev_state && prev_state == prev->state) {
+> +	prev_state = prev->state;
+> +	if (!preempt && prev_state) {
 
-Applied to
+Heh ;) Peter, you know what? I did the same change and tried to understand
+why it is wrong and what have I missed.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Thanks, now I can relax. But my head hurts too, I'll probably try to re-read
+this code and other emails from you tomorrow.
 
-Thanks!
+Oleg.
 
-[1/1] ASoC: Intel: Skylake: Avoid the use of one-element array
-      commit: 23f8d964f15a21991a166f0d1a7cf3cf8e4bfc9b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
