@@ -2,96 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772B4226D78
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45378226D84
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389213AbgGTRpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 13:45:35 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36066 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729431AbgGTRpe (ORCPT
+        id S1730718AbgGTRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 13:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726686AbgGTRtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 13:45:34 -0400
-Received: by mail-wr1-f68.google.com with SMTP id 88so8423818wrh.3;
-        Mon, 20 Jul 2020 10:45:33 -0700 (PDT)
+        Mon, 20 Jul 2020 13:49:13 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023AAC0619D4;
+        Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id k71so188795pje.0;
+        Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=96y7EAtauwpST2sJvN1xqRaaYTBW7xFiifRwkpVmX4I=;
+        b=jg/iEt+0wHY/FV3Q81wX9QAl/uJk+XggykUcXKKHxIkxhXQ0AXB7HJA1n+VKyzthkI
+         8hDC3mxxB86xuU1/zjVG17x2pWdnLQaexcu/kE5SYCLbJnNv7QyCO/RocBC4IeE3Dnk0
+         xp/Q7wTP6ClTeePLDl1t4OkFpMCXWMCKPrc/6DqTxBF4PXQHHdQyPjQpJLlkFEffPB/w
+         TStkgpuAiE0YkT/QEqdMS/wxmHQMVQNSg/Os+aDFc0ZvUo4Hyjn8j6VP15VVQN1Hf83S
+         x1X9YrqeLocpYpqr7t4cjHsyYliRRciPUN+e/QX/p/1Op9g4bjSFRz/wdv21jNcjKgI0
+         EKJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vCW6rhw++ctPrWxqsobIhIm2YGDrSLQICyPcOqGzVic=;
-        b=siDpoCAdCvWJoextvjPas8GjBg9zEnfmkwZKiBFSvbnQw3vY0XNPBWi5E0K4Av7DBQ
-         kRTsrl90IZq4vXL7Y5Deb9rA2c7doYFBqRPcGW/Q6u+xlScHArYfq0maeVPiH/mbrxhI
-         HdfaH/us07Dio5FaTkDCg57dsUjWz+5kZBJQjDUOj1VRmtqJdoX8jYW9LYt/bc3jXE9E
-         DQ73gAhjihEpUpYR/pKCmTcBENNs1jBG8bgdZOfMo82gdZBCf3RFCc7+8Gl2aLn9S/Zn
-         AAiepYeDBQavAs3AG2k8n/52y6gEPCcnEQMgwF4/HsDn+616P6B+jlYHccxTzxuAwQz4
-         ev+w==
-X-Gm-Message-State: AOAM530GDNed28YxmmygG/TTyOVR8a5XvemyUnZ7niMNkkFmNHh2pCVG
-        cwjJsB/k6MARY3EOchIDsyM=
-X-Google-Smtp-Source: ABdhPJxAmtT2PiCX1cPO/6tiM/WmB4eTtiXp39Jhq6o8XKE02D6H09Ij3QF5Vfe85E2QFp2R2eOgBw==
-X-Received: by 2002:adf:f6cb:: with SMTP id y11mr23142800wrp.100.1595267132638;
-        Mon, 20 Jul 2020 10:45:32 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id r8sm34178512wrp.40.2020.07.20.10.45.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=96y7EAtauwpST2sJvN1xqRaaYTBW7xFiifRwkpVmX4I=;
+        b=kjxEUdM/vHh/4+kxlZ9HEReD6vhk/OebZwOwXSI1QRrJ+/5ecqN2paUAhRAOG4FMG1
+         xux6J6oKc7hFh5IzbzlHEPSDNom6hqlXnITcdYUAFa2pPBQ/dO6JTz98beRWyPgsdLy0
+         Q3HytJLc7SydfU655hr6DB+DeHJ873GH/oQNeGomAWe3cEtiVoeZaPBWqiSHsS6uvMlD
+         dPB7/UfJD5czKDY8ktnwBDhHXhAj+oDdb+8QmB/0bsGyEObMZmbwAqAksMDh84trg6Q1
+         p5K816kwj5ol+4AX9/mwmJ/MZyWBLum/KLMvSuFMXQeB1IE4IzMp/6wwUhQ5lydhiatG
+         iuwQ==
+X-Gm-Message-State: AOAM531iWiQpSIxdgpaskvI3C+okkXRXJntK2Tj1vz77ZD5OhUje0r0h
+        8Xw8QwEMKhKN53KH9Vs7adY=
+X-Google-Smtp-Source: ABdhPJy/P1ezLwGpEG0knayswF4R/ww4dDpu6dy1QBZUaQEiSB0wwVhOtmGxkQyhBFmAypl7LGgj1g==
+X-Received: by 2002:a17:90a:c295:: with SMTP id f21mr562409pjt.208.1595267352276;
+        Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id i196sm15538658pgc.55.2020.07.20.10.49.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 10:45:31 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 19:45:30 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: kworker/0:3+pm hogging CPU
-Message-ID: <20200720174530.GB4061@dhcp22.suse.cz>
-References: <20200720083956.GA4074@dhcp22.suse.cz>
- <20200720135857.GB1228057@rowland.harvard.edu>
- <20200720143213.GJ4074@dhcp22.suse.cz>
- <20200720151255.GE1228057@rowland.harvard.edu>
- <20200720163355.GA4061@dhcp22.suse.cz>
- <20200720173807.GJ1228057@rowland.harvard.edu>
+        Mon, 20 Jul 2020 10:49:11 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1] media: cafe-driver: use generic power management
+Date:   Mon, 20 Jul 2020 23:15:46 +0530
+Message-Id: <20200720174545.827778-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720173807.GJ1228057@rowland.harvard.edu>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 20-07-20 13:38:07, Alan Stern wrote:
-> On Mon, Jul 20, 2020 at 06:33:55PM +0200, Michal Hocko wrote:
-> > On Mon 20-07-20 11:12:55, Alan Stern wrote:
-> > [...]
-> > > 	sudo echo 'module usbcore =p' >/debug/dynamic_debug/control
-> > > 
-> > > Then wait long enough for some interesting messages to appear in the 
-> > > kernel log (it should only take a few seconds if the worker thread is as 
-> > > busy as you say) and collect the output from the dmesg command.
-> > > 
-> > > To turn dynamic debugging back off when you're finished, use the same 
-> > > command with "=p" changed to "-p".
-> > 
-> > [   95.395815] hub 2-0:1.0: state 7 ports 6 chg 0006 evt 0000
-> > [   95.395824] usb usb2-port1: status 0088, change 0000, 5.0 Gb/s
-> > [   95.395838] usb usb2-port2: status 0088, change 0000, 5.0 Gb/s
-> > [   95.396016] hub 2-0:1.0: hub_suspend
-> > [   95.396023] usb usb2: bus auto-suspend, wakeup 1
-> > [   95.396029] usb usb2: bus suspend fail, err -16
-> 
-> Okay, that's the problem.  You may get more specific information about 
-> the suspend failure if you turn on dynamic debugging for the xhci-hcd 
-> module (same command as above but with xhci-hcd instead of usbcore).
+Drivers using legacy PM have to manage PCI states and device's PM states
+themselves. They also need to take care of configuration registers.
 
-Would that help to pinpoint the problem down?
+With improved and powerful support of generic PM, PCI Core takes care of
+above mentioned, device-independent, jobs.
 
-> If you want a quick way to prevent this from happening, you can do:
-> 
-> 	sudo echo on >/sys/bus/usb/devices/usb2/power/control
-> 
-> That won't actually fix anything, but it will stop the system from 
-> automatically trying to suspend usb2 root hub.
+This driver makes use of PCI helper functions like
+pci_save/restore_state() and pci_enable/disable_device() to do required
+operations. In generic mode, they are no longer needed.
 
-Yes, that helped to put some relief to the machine. 
+Change function parameter in both .suspend() and .resume() to
+"struct device*" type.
 
+Compile-tested only.
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ .../media/platform/marvell-ccic/cafe-driver.c | 31 +++++--------------
+ .../media/platform/marvell-ccic/mcam-core.c   |  3 --
+ 2 files changed, 7 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/media/platform/marvell-ccic/cafe-driver.c b/drivers/media/platform/marvell-ccic/cafe-driver.c
+index 9a09a10a3631..58b9915ac7a4 100644
+--- a/drivers/media/platform/marvell-ccic/cafe-driver.c
++++ b/drivers/media/platform/marvell-ccic/cafe-driver.c
+@@ -604,44 +604,28 @@ static void cafe_pci_remove(struct pci_dev *pdev)
+ }
+ 
+ 
+-#ifdef CONFIG_PM
+ /*
+  * Basic power management.
+  */
+-static int cafe_pci_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused cafe_pci_suspend(struct device *dev)
+ {
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
++	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev);
+ 	struct cafe_camera *cam = to_cam(v4l2_dev);
+-	int ret;
+ 
+-	ret = pci_save_state(pdev);
+-	if (ret)
+-		return ret;
+ 	mccic_suspend(&cam->mcam);
+-	pci_disable_device(pdev);
+ 	return 0;
+ }
+ 
+ 
+-static int cafe_pci_resume(struct pci_dev *pdev)
++static int __maybe_unused cafe_pci_resume(struct device *dev)
+ {
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
++	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev);
+ 	struct cafe_camera *cam = to_cam(v4l2_dev);
+-	int ret = 0;
+ 
+-	pci_restore_state(pdev);
+-	ret = pci_enable_device(pdev);
+-
+-	if (ret) {
+-		cam_warn(cam, "Unable to re-enable device on resume!\n");
+-		return ret;
+-	}
+ 	cafe_ctlr_init(&cam->mcam);
+ 	return mccic_resume(&cam->mcam);
+ }
+ 
+-#endif  /* CONFIG_PM */
+-
+ static const struct pci_device_id cafe_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL,
+ 		     PCI_DEVICE_ID_MARVELL_88ALP01_CCIC) },
+@@ -650,15 +634,14 @@ static const struct pci_device_id cafe_ids[] = {
+ 
+ MODULE_DEVICE_TABLE(pci, cafe_ids);
+ 
++static SIMPLE_DEV_PM_OPS(cafe_pci_pm_ops, cafe_pci_suspend, cafe_pci_resume);
++
+ static struct pci_driver cafe_pci_driver = {
+ 	.name = "cafe1000-ccic",
+ 	.id_table = cafe_ids,
+ 	.probe = cafe_pci_probe,
+ 	.remove = cafe_pci_remove,
+-#ifdef CONFIG_PM
+-	.suspend = cafe_pci_suspend,
+-	.resume = cafe_pci_resume,
+-#endif
++	.driver.pm = &cafe_pci_pm_ops,
+ };
+ 
+ 
+diff --git a/drivers/media/platform/marvell-ccic/mcam-core.c b/drivers/media/platform/marvell-ccic/mcam-core.c
+index 09775b6624c6..d81d0c130e3c 100644
+--- a/drivers/media/platform/marvell-ccic/mcam-core.c
++++ b/drivers/media/platform/marvell-ccic/mcam-core.c
+@@ -1967,8 +1967,6 @@ EXPORT_SYMBOL_GPL(mccic_shutdown);
+ /*
+  * Power management
+  */
+-#ifdef CONFIG_PM
+-
+ void mccic_suspend(struct mcam_camera *cam)
+ {
+ 	mutex_lock(&cam->s_mutex);
+@@ -2015,7 +2013,6 @@ int mccic_resume(struct mcam_camera *cam)
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mccic_resume);
+-#endif /* CONFIG_PM */
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Jonathan Corbet <corbet@lwn.net>");
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
