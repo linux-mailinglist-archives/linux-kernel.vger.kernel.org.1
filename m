@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D6E22656A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBFE2264C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731493AbgGTPxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52142 "EHLO mail.kernel.org"
+        id S1729096AbgGTPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731485AbgGTPxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:53:39 -0400
+        id S1729257AbgGTPsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81E6C2064B;
-        Mon, 20 Jul 2020 15:53:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8611F2065E;
+        Mon, 20 Jul 2020 15:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260419;
-        bh=fsnnDiVTPQQbT2KVekUadP5jr9jJ91n2sCUXodLSEyY=;
+        s=default; t=1595260089;
+        bh=0haVu6E79fN+inhHE7UwUFEAmCPLSs7a/v4teHZpRfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+ABq2NGbcTYTEffMOqrqlH6ocCHNoCS41REyXJhneFnkGzrLGtgmj8tPfo38qCgY
-         VO2gl/v4n87IEiOdo41P2qFhJzZLiuKxpmR+zUacPQtBtKOXAlNA5TIoCWjbPca+qk
-         vmLMxZ3ejqO+nIw7nMoBJfOV+hLKIQ2sFkzDC9P4=
+        b=ZcdixK3h2yQgvHCtzTbrCdb4AnMdCc6GS+TSjqJijk66MWBYht+XP1rdKXaHv1/qt
+         fsBJktJxrGjUI3+uWoK1frCLpghfkldV9fcc/RVMlf7bI3nM0neC/DA01wdeiEFL5N
+         a0xKU5VJ4ZojHp/hrW1v0Z8LoT60AiJRErQlZPWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 094/133] USB: serial: iuu_phoenix: fix memory corruption
-Date:   Mon, 20 Jul 2020 17:37:21 +0200
-Message-Id: <20200720152808.264804020@linuxfoundation.org>
+        stable@vger.kernel.org, Igor Moura <imphilippini@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 103/125] USB: serial: ch341: add new Product ID for CH340
+Date:   Mon, 20 Jul 2020 17:37:22 +0200
+Message-Id: <20200720152808.000930906@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Igor Moura <imphilippini@gmail.com>
 
-commit e7b931bee739e8a77ae216e613d3b99342b6dec0 upstream.
+commit 5d0136f8e79f8287e6a36780601f0ce797cf11c2 upstream.
 
-The driver would happily overwrite its write buffer with user data in
-256 byte increments due to a removed buffer-space sanity check.
+Add PID for CH340 that's found on some ESP8266 dev boards made by
+LilyGO. The specific device that contains such serial converter can be
+seen here: https://github.com/LilyGO/LILYGO-T-OI.
 
-Fixes: 5fcf62b0f1f2 ("tty: iuu_phoenix: fix locking.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.31
+Apparently, it's a regular CH340, but I've confirmed with others that
+also bought this board that the PID found on this device (0x7522)
+differs from other devices with the "same" converter (0x7523).
+Simply adding its PID to the driver and rebuilding it made it work
+as expected.
+
+Signed-off-by: Igor Moura <imphilippini@gmail.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/iuu_phoenix.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/usb/serial/ch341.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/iuu_phoenix.c
-+++ b/drivers/usb/serial/iuu_phoenix.c
-@@ -697,14 +697,16 @@ static int iuu_uart_write(struct tty_str
- 	struct iuu_private *priv = usb_get_serial_port_data(port);
- 	unsigned long flags;
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -84,6 +84,7 @@
  
--	if (count > 256)
--		return -ENOMEM;
--
- 	spin_lock_irqsave(&priv->lock, flags);
- 
-+	count = min(count, 256 - priv->writelen);
-+	if (count == 0)
-+		goto out;
-+
- 	/* fill the buffer */
- 	memcpy(priv->writebuf + priv->writelen, buf, count);
- 	priv->writelen += count;
-+out:
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
- 	return count;
+ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(0x4348, 0x5523) },
++	{ USB_DEVICE(0x1a86, 0x7522) },
+ 	{ USB_DEVICE(0x1a86, 0x7523) },
+ 	{ USB_DEVICE(0x1a86, 0x5523) },
+ 	{ },
 
 
