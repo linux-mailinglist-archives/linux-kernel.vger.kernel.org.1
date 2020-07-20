@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2C522726D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588D6227270
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgGTWfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:35:21 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41166 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgGTWfV (ORCPT
+        id S1726994AbgGTWkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgGTWkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:35:21 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q17so9755854pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:35:20 -0700 (PDT)
+        Mon, 20 Jul 2020 18:40:21 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCCEC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:40:21 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r12so19238471wrj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tdzStXPHhn/lPCcmGPCaBvtaXY8ZKM9Cp45GAKfxt9s=;
+        b=Y54+52P/XnjtilisJNCnGinNUWBD1b9Cvz+O4isdAveWxDMPbnyfUL7l8PH2vQGasT
+         vl3INNIKsFFzrET9BFHvb+Ue0N3aZ4z75lX0PzZpTLERLsjAXYUd84XeeCJt+whtg/n+
+         AzY6AQ64NTNFlEgiVdsU6QsgFUBdbR2SjY+cAGcED1wahHvRR8vY5/ICQ9L4an3LDNVC
+         /k3EpFMu853pFmtQOWpfE/xLcgBsChLYtYfh1k2d+lqevnP98D0iDMW/11k5723XfJlD
+         MuEksnUiyX+c/oF2wwGA43PgPCDU027fBzfMN8/XRYzdP+waUPU1Zvxwrg0fvUn05JNG
+         1PBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qVsb3irT98yWXpJxhGCe+v3RWy+B0oryB1ExGX84sUM=;
-        b=Nv6n0//pv2iJuiUjCR4MPWk05L/t4CP4+4z8LYJYBPGwwzp8CYL+16LidHp9RIurW8
-         sJTm8ZJVdxsWxL2m6Yaa9fNJQ/OPCfRHzOp2WiqGfHO7ESoK0iy9EsdUV/1Gu+zdaUWP
-         p4rDMpZLYQ3VeUJknqtWcqb/lSR2d5lZSvcV8BEuig8vGXKvyglp3uZYtD9YQ+rlwLle
-         OLHz7jtyGTTqsmRpHDup1szXNgksCW8TxoK/kMkHsx7YxIndbSm7kNnIvZpXDY0DO/mf
-         yJ676EcgV9eMP0LJ9uc57jbpSptzNKVo9rs70XfMeTbvxPdqkQtPoFC5qb1fCYekX7Jw
-         QSSg==
-X-Gm-Message-State: AOAM532hUiM88Y7ixlB3Bl/Dmx4EUWALaw5G8PZ4a3hDSa06FiNBL0te
-        dkERSGfX7PguuY9Qis3ajvU=
-X-Google-Smtp-Source: ABdhPJwLwOv2cDyLT2iUdhQRRdhgA++8oV1eJMBcYxZCfKoAYMj9H4ko3IsgMSax1T8I4JGHAJibWw==
-X-Received: by 2002:a63:5d1:: with SMTP id 200mr20793955pgf.59.1595284520130;
-        Mon, 20 Jul 2020 15:35:20 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:81fd:84d6:3c38:f7ef? ([2601:647:4802:9070:81fd:84d6:3c38:f7ef])
-        by smtp.gmail.com with ESMTPSA id o128sm18201897pfg.127.2020.07.20.15.35.18
+        bh=tdzStXPHhn/lPCcmGPCaBvtaXY8ZKM9Cp45GAKfxt9s=;
+        b=XvQEVRHZB28IxpNye2vCp8OzBzYimwp2d23J09f4eNZfOBcEPgQ1cQS+CQSsQ3GA01
+         57Q+HhYQdMvFX7CRYMJKFHW4RVw0d6vm21D3qkkIIbzwdJBLUaLcfS3Pw0CCpv5q8GWo
+         aVhK28joSgGpdpCWsNxxHeu48CN0GL9vZbq2OEmDrzKIMuaOPssuw3PLD0PXdrsD+T5v
+         lE1qBkJITQA8x21lnOg5BLp5gHkVANiWEI0NXKZBE1LtMF0pKJ62AFNNu5tQ9/bxSf58
+         ueAPnr1oe4pw2JeTS/9qOmNIBX8BCW5NvwBTBRVqhQnDHoxEFAyFnZZVfv3mMp8eRzZT
+         OQlw==
+X-Gm-Message-State: AOAM5306G4fh7QdB/kZU83gybUAL+xLDJetFGzcpRnmd1LyIdphIfiRY
+        5kLLuXox/alR5zCzi2Q/LvTtYcuA
+X-Google-Smtp-Source: ABdhPJxMuvjHZthcawt8WUmiSHPwNllUGkXx5YnfTh7/mggvie8pQKteaMNu69ak3ikuRjX9cBkcVQ==
+X-Received: by 2002:a5d:4bc4:: with SMTP id l4mr22765783wrt.97.1595284819931;
+        Mon, 20 Jul 2020 15:40:19 -0700 (PDT)
+Received: from [192.168.0.74] ([178.233.178.9])
+        by smtp.gmail.com with ESMTPSA id i67sm1153944wma.12.2020.07.20.15.40.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 15:35:19 -0700 (PDT)
-Subject: Re: [PATCH v15 7/9] nvmet-passthru: Add passthru code to process
- commands
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20200716203319.16022-1-logang@deltatee.com>
- <20200716203319.16022-8-logang@deltatee.com> <20200720141606.GF4627@lst.de>
- <e939dd43-9e7f-8ef0-162b-2a27f53e6e1a@grimberg.me>
- <5cc390cf-9b0b-b48b-7447-37934be51ee0@deltatee.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <2dc39232-4042-1f93-3dcc-3266e70cf6f0@grimberg.me>
-Date:   Mon, 20 Jul 2020 15:35:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Mon, 20 Jul 2020 15:40:19 -0700 (PDT)
+Subject: Re: Speaker pops with max98357a on rk3399-gru-kevin since v5.7
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org
+References: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
+ <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
+From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Message-ID: <846feea6-e2b6-3a0e-b05f-d70e898f9ea5@gmail.com>
+Date:   Tue, 21 Jul 2020 01:40:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <5cc390cf-9b0b-b48b-7447-37934be51ee0@deltatee.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,34 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/07/2020 05:27, Tzung-Bi Shih wrote:
+> I am not convinced the pop comes from 128f825aeab7.
 
-> Thanks for the review Christoph. I think I should be able to make all
-> the requested changes in the next week or two.
-> 
-> On 2020-07-20 1:35 p.m., Sagi Grimberg wrote:
->>
->>> I'm still not so happy about having to look up the namespace and still
->>> wonder if we should generalize the connect_q to a passthrough_q.  But
->>> I guess we can do that later and then reduce some of the exports here..
->>
->> That is a neat idea! should be easy to do (and we can then lose the host
->> xarray stuff). I don't mind having it on a later patch, but it should be
->> easy enough to do even before...
->>
-> 
-> I sort of follow this. I can try to work something up but it will
-> probably take me a few iterations to get it to where you want it. So,
-> roughly, we'd create a passthrough_q in core with the controller's IO
-> tagset and then cleanup the fabrics hosts to use that instead of each
-> independently creating their connect_q?
-> 
-> Though, I don't understand how this relates to the host xarray stuff
-> that Sagi mentioned...
+Maybe some pre-existing defect in rk3399_gru_sound got exposed by
+128f825aeab7 or the machine driver needs some changes to complement
+that commit?
 
-passthru commands are in essence REQ_OP_DRV_IN/REQ_OP_DRV_OUT, which
-means that the driver shouldn't need the ns at all. So if you have a
-dedicated request queue (mapped to the I/O tagset), you don't need the
-ns->queue and we can lose the ns lookup altogether.
+> (I don't have a rk3399-gru-kevin so I got another test machine with MAX98357A.)
+> (I was testing with and without an audio server.)
 
-The only part is to check the effects, but that can probably be handled
-when we setup the passthru controller or something...
+Your observations are also a bit different from mine, which IMO also
+suggests the machine driver is the true culprit -- I'd guess the pops
+you hear would be from a different problem in your test machine's
+machine driver?
+
+(Let me restate my observations to contrast with yours, as I feel my
+previous explanation was too wordy:)
+
+> Observations:
+> - I can hear the pop either with or without 128f825aeab7 (with and
+> without sdmode-delay).
+
+I never hear pops without 128f825aeab7, but always hear pops with it.
+(no change when I remove "sdmode-delay" from the device-tree)
+
+> - The pop noise is not always.  Higher probability after stopping
+> playback than before starting.
+
+I always hear one pop when starting playback, and two pops (with a few
+seconds between them) when stopping playback.
