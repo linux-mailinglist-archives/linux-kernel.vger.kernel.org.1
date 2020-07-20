@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39762265CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474612265A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731894AbgGTP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:57:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56790 "EHLO mail.kernel.org"
+        id S1731248AbgGTPz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:55:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731859AbgGTP5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:05 -0400
+        id S1731732AbgGTPzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B61A2065E;
-        Mon, 20 Jul 2020 15:57:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD2892065E;
+        Mon, 20 Jul 2020 15:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260624;
-        bh=t1as8jjmM9/CjP432IFcq9zmVDBLor6vyibQW3FZRo0=;
+        s=default; t=1595260552;
+        bh=/8OZCy/0KMlUsqPtaxFSHndILlRwA5ZBFrl1lWVTsh4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMDpjTg1ct3y8ijodaD0kkkOXDGRx/P/6YZJi2lNrONX1PBfEngF7+07zdGsH8N7o
-         oh73N4OVEvQNWNBdy85P69gJNf6fY+PYz6hB5HxtwUbv/cewXr1O383pShRK58es2h
-         skDo5Cj4DEDdvVcnvI27v2uwGGHuu+OVttFGG4+I=
+        b=OBdeIFhuR1vFWlLrJpoGxBoYauZGttLVJ6oQlERYDGUhLFkqjUM33tU/ldXzSk5gy
+         0SWo5IFGsB3Fv/91xmgj6/bhTh3T8ssJjlAKMYjYOvEd4+LUC6J0eeQQg0zl+xdawR
+         tcJBaPdjcEzZRhx89kuQYUwH+Rg2PHTjiqazV9G8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Rak <brak@choopa.com>,
-        David Ahern <dsahern@kernel.org>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        James Chapman <jchapman@katalix.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 008/215] ipv6: fib6_select_path can not use out path for nexthop objects
-Date:   Mon, 20 Jul 2020 17:34:50 +0200
-Message-Id: <20200720152820.552884553@linuxfoundation.org>
+Subject: [PATCH 5.4 010/215] l2tp: remove skb_dst_set() from l2tp_xmit_skb()
+Date:   Mon, 20 Jul 2020 17:34:52 +0200
+Message-Id: <20200720152820.654695945@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -44,73 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@kernel.org>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 34fe5a1cf95c3f114068fc16d919c9cf4b00e428 ]
+[ Upstream commit 27d53323664c549b5bb2dfaaf6f7ad6e0376a64e ]
 
-Brian reported a crash in IPv6 code when using rpfilter with a setup
-running FRR and external nexthop objects. The root cause of the crash
-is fib6_select_path setting fib6_nh in the result to NULL because of
-an improper check for nexthop objects.
+In the tx path of l2tp, l2tp_xmit_skb() calls skb_dst_set() to set
+skb's dst. However, it will eventually call inet6_csk_xmit() or
+ip_queue_xmit() where skb's dst will be overwritten by:
 
-More specifically, rpfilter invokes ip6_route_lookup with flowi6_oif
-set causing fib6_select_path to be called with have_oif_match set.
-fib6_select_path has early check on have_oif_match and jumps to the
-out label which presumes a builtin fib6_nh. This path is invalid for
-nexthop objects; for external nexthops fib6_select_path needs to just
-return if the fib6_nh has already been set in the result otherwise it
-returns after the call to nexthop_path_fib6_result. Update the check
-on have_oif_match to not bail on external nexthops.
+   skb_dst_set_noref(skb, dst);
 
-Update selftests for this problem.
+without releasing the old dst in skb. Then it causes dst/dev refcnt leak:
 
-Fixes: f88d8ea67fbd ("ipv6: Plumb support for nexthop object in a fib6_info")
-Reported-by: Brian Rak <brak@choopa.com>
-Signed-off-by: David Ahern <dsahern@kernel.org>
+  unregister_netdevice: waiting for eth0 to become free. Usage count = 1
+
+This can be reproduced by simply running:
+
+  # modprobe l2tp_eth && modprobe l2tp_ip
+  # sh ./tools/testing/selftests/net/l2tp.sh
+
+So before going to inet6_csk_xmit() or ip_queue_xmit(), skb's dst
+should be dropped. This patch is to fix it by removing skb_dst_set()
+from l2tp_xmit_skb() and moving skb_dst_drop() into l2tp_xmit_core().
+
+Fixes: 3557baabf280 ("[L2TP]: PPP over L2TP driver core")
+Reported-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: James Chapman <jchapman@katalix.com>
+Tested-by: James Chapman <jchapman@katalix.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/route.c                            |    5 ++++-
- tools/testing/selftests/net/fib_nexthops.sh |   13 +++++++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ net/l2tp/l2tp_core.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -431,9 +431,12 @@ void fib6_select_path(const struct net *
- 	struct fib6_info *sibling, *next_sibling;
- 	struct fib6_info *match = res->f6i;
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -1030,6 +1030,7 @@ static void l2tp_xmit_core(struct l2tp_s
  
--	if ((!match->fib6_nsiblings && !match->nh) || have_oif_match)
-+	if (!match->nh && (!match->fib6_nsiblings || have_oif_match))
- 		goto out;
+ 	/* Queue the packet to IP for output */
+ 	skb->ignore_df = 1;
++	skb_dst_drop(skb);
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	if (l2tp_sk_is_v6(tunnel->sock))
+ 		error = inet6_csk_xmit(tunnel->sock, skb, NULL);
+@@ -1101,10 +1102,6 @@ int l2tp_xmit_skb(struct l2tp_session *s
+ 		goto out_unlock;
+ 	}
  
-+	if (match->nh && have_oif_match && res->nh)
-+		return;
-+
- 	/* We might have already computed the hash for ICMPv6 errors. In such
- 	 * case it will always be non-zero. Otherwise now is the time to do it.
- 	 */
---- a/tools/testing/selftests/net/fib_nexthops.sh
-+++ b/tools/testing/selftests/net/fib_nexthops.sh
-@@ -512,6 +512,19 @@ ipv6_fcnal_runtime()
- 	run_cmd "$IP nexthop add id 86 via 2001:db8:91::2 dev veth1"
- 	run_cmd "$IP ro add 2001:db8:101::1/128 nhid 81"
- 
-+	# rpfilter and default route
-+	$IP nexthop flush >/dev/null 2>&1
-+	run_cmd "ip netns exec me ip6tables -t mangle -I PREROUTING 1 -m rpfilter --invert -j DROP"
-+	run_cmd "$IP nexthop add id 91 via 2001:db8:91::2 dev veth1"
-+	run_cmd "$IP nexthop add id 92 via 2001:db8:92::2 dev veth3"
-+	run_cmd "$IP nexthop add id 93 group 91/92"
-+	run_cmd "$IP -6 ro add default nhid 91"
-+	run_cmd "ip netns exec me ping -c1 -w1 2001:db8:101::1"
-+	log_test $? 0 "Nexthop with default route and rpfilter"
-+	run_cmd "$IP -6 ro replace default nhid 93"
-+	run_cmd "ip netns exec me ping -c1 -w1 2001:db8:101::1"
-+	log_test $? 0 "Nexthop with multipath default route and rpfilter"
-+
- 	# TO-DO:
- 	# existing route with old nexthop; append route with new nexthop
- 	# existing route with old nexthop; replace route with new
+-	/* Get routing info from the tunnel socket */
+-	skb_dst_drop(skb);
+-	skb_dst_set(skb, sk_dst_check(sk, 0));
+-
+ 	inet = inet_sk(sk);
+ 	fl = &inet->cork.fl;
+ 	switch (tunnel->encap) {
 
 
