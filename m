@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22B5225631
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE384225643
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgGTDf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 23:35:27 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26200 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726109AbgGTDf0 (ORCPT
+        id S1726548AbgGTDqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 23:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgGTDqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 23:35:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595216125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D7FqMYqDvd7eDbuQSOuxX0aLldcdVgd76BMYePyueXY=;
-        b=T17Vkc70mXKk4ZP0enbSDKVxJkZER+jSyDARcSRr4Ic2gtNEarl1m4nduWemeaFc9xAEy9
-        NaRcxA3KRy/S8iZJ6Gk4p4F86ozXF1nvq/p59Jdst3HT8A29/lKpu6MfPjeFQVrRr9b30g
-        79k1r/sY/S6zdqUvk+WrEemSNv63yG8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-sByBR4xhPNSvCj3WC_n2Ig-1; Sun, 19 Jul 2020 23:35:23 -0400
-X-MC-Unique: sByBR4xhPNSvCj3WC_n2Ig-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CE89E91A;
-        Mon, 20 Jul 2020 03:35:21 +0000 (UTC)
-Received: from [10.10.114.255] (ovpn-114-255.rdu2.redhat.com [10.10.114.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F3FF7849A;
-        Mon, 20 Jul 2020 03:35:21 +0000 (UTC)
-Subject: Re: [PATCH] Revert "kbuild: use -flive-patching when CONFIG_LIVEPATCH
- is enabled"
-To:     Josh Poimboeuf <jpoimboe@redhat.com>, live-patching@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <696262e997359666afa053fe7d1a9fb2bb373964.1595010490.git.jpoimboe@redhat.com>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <fc7d4932-a043-1adc-fd9b-96211c508f64@redhat.com>
-Date:   Sun, 19 Jul 2020 23:35:20 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Sun, 19 Jul 2020 23:46:02 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3951EC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 20:46:02 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id t18so11112046otq.5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 20:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BUo91yORQpmQrJaOYjYlutMzILGTSt8GTjjWtCRYY+Y=;
+        b=J4Zx4MgOZIL/gGkGJMyP+FNGO8dyF8LKnVLl3pQaMc7wo0FnO7t3tO+pQhTVc6fZmJ
+         TAGQGJ1yacVYHJh7J5w5HKFaHv3Fz/b+rc5Wu2Qk/k7vKjAIIKe3Ua9NXby6Rh0QXbmn
+         COtWCMuoyBZjkUJYblsgKyOS4+VfBTE6AO9n/6NHvnfjzhLB2Oz56OXdEdKf3me6ISkj
+         CMiTHZ6niEY7TyizY6v9cHPrvvPX9JRNRT4+BzAqqMxXtdZpZ/CsnVTTBhPFVlYw/6hj
+         Gkv80XPRO0Mzx8ybt5DNeOm9pUTjejxdN23+z9d+pRqF7SpNrH0Bf+PnIn4k628Vql5o
+         EfPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BUo91yORQpmQrJaOYjYlutMzILGTSt8GTjjWtCRYY+Y=;
+        b=KFU+jAB+QTzddtaMka+FWJV/DEc32wNPr3Sc3aClb0FebpNc31xqATgjkh5nTj5eEg
+         WZC8OFvI3/ccegD32zW4vRMqUahX3yibhU/uYRWLnPCUcjNcm6n4cQKqhhbm2G3Rmn0k
+         45M63Lvtt+quzapDcmSX3NwNRUanW2VM7NFTppwPScFMeOPNanl9kZgnRdSDyuibF1dx
+         FzY+A50l+0niijD5nm0c9WlNYsSuT8H/0M9n4Dbo2XxnbJBWlcPN+SlF0UKyO3MPE+pz
+         sOiLhlobGDrFFaNc2CMammtTo6yz4l+YXgBSAi1XBWOHmKwnpjReZH+aKHl9rEWs+VgH
+         IrIg==
+X-Gm-Message-State: AOAM530rh+Co2XmzV9Yb4dymubQ+Ij7Sww/Tg4kwUahjX4C1poF2XZ0i
+        C5ApHcaoRbwCJQcrB0DrzAZbxugP0Tje/nFtKJU=
+X-Google-Smtp-Source: ABdhPJw9jkRfB/fLMAKvjcGMQ0RpmsQS2Kcfu7xbtbkIOAM7bX0lwvqv7pPKnqhfETHAI3VawfiCv2I1KfiLMyZiQfs=
+X-Received: by 2002:a9d:6a12:: with SMTP id g18mr19560641otn.155.1595216761606;
+ Sun, 19 Jul 2020 20:46:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <696262e997359666afa053fe7d1a9fb2bb373964.1595010490.git.jpoimboe@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com> <20200717040958.70561-10-ravi.bangoria@linux.ibm.com>
+In-Reply-To: <20200717040958.70561-10-ravi.bangoria@linux.ibm.com>
+From:   Jordan Niethe <jniethe5@gmail.com>
+Date:   Mon, 20 Jul 2020 13:42:42 +1000
+Message-ID: <CACzsE9r0acLUkV35mVxy1AEK_xObs0yz+fD6UdbNdc6uz=Buqw@mail.gmail.com>
+Subject: Re: [PATCH v4 09/10] powerpc/watchpoint: Return available watchpoints dynamically
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, mikey@neuling.org,
+        apopple@linux.ibm.com, Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
+        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
+        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/20 2:29 PM, Josh Poimboeuf wrote:
-> Use of the new -flive-patching flag was introduced with the following
-> commit:
-> 
->    43bd3a95c98e ("kbuild: use -flive-patching when CONFIG_LIVEPATCH is enabled")
-> 
-> This flag has several drawbacks:
-> 
-> [ ... snip ... ]
-> 
-> - While there *is* a distro which relies on this flag for their distro
->    livepatch module builds, there's not a publicly documented way to
->    create safe livepatch modules with it.  Its use seems to be based on
->    tribal knowledge.  It serves no benefit to those who don't know how to
->    use it.
-> 
->    (In fact, I believe the current livepatch documentation and samples
->    are misleading and dangerous, and should be corrected.  Or at least
->    amended with a disclaimer.  But I don't feel qualified to make such
->    changes.)
-
-FWIW, I'm not exactly qualified to document source-based creation 
-either, however I have written a few of the samples and obviously the 
-kselftest modules.
-
-The samples should certainly include a disclaimer (ie, they are only for 
-API demonstration purposes!) and eventually it would be great if the 
-kselftest modules could guarantee their safety as well.  I don't know 
-quite yet how we can automate that, but perhaps some kind of post-build 
-sanity check could verify that they are in fact patching what they 
-intend to patch.
-
-As for a more general, long-form warning about optimizations, I grabbed 
-Miroslav's LPC slides from a few years back and poked around at some 
-IPA-optimized disassembly... Here are my notes that attempt to capture 
-some common cases:
-
-http://file.bos.redhat.com/~jolawren/klp-compiler-notes/livepatch/compiler-considerations.html
-
-It's not complete and I lost steam about 80% of the way through today. 
-:)  But if it looks useful enough to add to Documentation/livepatch, we 
-can work on it on-list and try to steer folks into using the automated 
-kpatch-build, objtool (eventually) or a source-based safety checklist. 
-The source-based steps have been posted on-list a few times, but I think 
-it only needs to be formalized in a doc.
-
--- Joe
-
+On Fri, Jul 17, 2020 at 2:11 PM Ravi Bangoria
+<ravi.bangoria@linux.ibm.com> wrote:
+>
+> So far Book3S Powerpc supported only one watchpoint. Power10 is
+> introducing 2nd DAWR. Enable 2nd DAWR support for Power10.
+> Availability of 2nd DAWR will depend on CPU_FTR_DAWR1.
+>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>  arch/powerpc/include/asm/cputable.h      | 4 +++-
+>  arch/powerpc/include/asm/hw_breakpoint.h | 5 +++--
+>  2 files changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+> index 3445c86e1f6f..36a0851a7a9b 100644
+> --- a/arch/powerpc/include/asm/cputable.h
+> +++ b/arch/powerpc/include/asm/cputable.h
+> @@ -633,7 +633,9 @@ enum {
+>   * Maximum number of hw breakpoint supported on powerpc. Number of
+>   * breakpoints supported by actual hw might be less than this.
+>   */
+> -#define HBP_NUM_MAX    1
+> +#define HBP_NUM_MAX    2
+> +#define HBP_NUM_ONE    1
+> +#define HBP_NUM_TWO    2
+I wonder if these defines are necessary - has it any advantage over
+just using the literal?
+>
+>  #endif /* !__ASSEMBLY__ */
+>
+> diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
+> index cb424799da0d..d4eab1694bcd 100644
+> --- a/arch/powerpc/include/asm/hw_breakpoint.h
+> +++ b/arch/powerpc/include/asm/hw_breakpoint.h
+> @@ -5,10 +5,11 @@
+>   * Copyright 2010, IBM Corporation.
+>   * Author: K.Prasad <prasad@linux.vnet.ibm.com>
+>   */
+> -
+Was removing this line deliberate?
+>  #ifndef _PPC_BOOK3S_64_HW_BREAKPOINT_H
+>  #define _PPC_BOOK3S_64_HW_BREAKPOINT_H
+>
+> +#include <asm/cpu_has_feature.h>
+> +
+>  #ifdef __KERNEL__
+>  struct arch_hw_breakpoint {
+>         unsigned long   address;
+> @@ -46,7 +47,7 @@ struct arch_hw_breakpoint {
+>
+>  static inline int nr_wp_slots(void)
+>  {
+> -       return HBP_NUM_MAX;
+> +       return cpu_has_feature(CPU_FTR_DAWR1) ? HBP_NUM_TWO : HBP_NUM_ONE;
+So it'd be something like:
++       return cpu_has_feature(CPU_FTR_DAWR1) ? HBP_NUM_MAX : 1;
+But thinking that there might be more slots added in the future, it
+may be better to make the number of slots a variable that is set
+during the init and then have this function return that.
+>  }
+>
+>  #ifdef CONFIG_HAVE_HW_BREAKPOINT
+> --
+> 2.26.2
+>
