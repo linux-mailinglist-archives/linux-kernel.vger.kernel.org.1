@@ -2,51 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9C2226E06
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28964226E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731941AbgGTSLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 14:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728448AbgGTSLM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:11:12 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61712C061794;
-        Mon, 20 Jul 2020 11:11:12 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxaFn-00GiGn-Lp; Mon, 20 Jul 2020 18:11:07 +0000
-Date:   Mon, 20 Jul 2020 19:11:07 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH 05/24] fs: move the putname from filename_lookup to the
- callers
-Message-ID: <20200720181107.GQ2786714@ZenIV.linux.org.uk>
-References: <20200720155902.181712-1-hch@lst.de>
- <20200720155902.181712-6-hch@lst.de>
+        id S1731525AbgGTSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 14:11:57 -0400
+Received: from mga01.intel.com ([192.55.52.88]:43566 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728448AbgGTSL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 14:11:56 -0400
+IronPort-SDR: u7sYJoWp2O7QGiQwMLAZKOnQ+5ykIWM0VY5xt4VxHeooygyj+g6SgT2G2FWccEv2129IGSGiMG
+ /ESKN0lANMTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="168125131"
+X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
+   d="scan'208";a="168125131"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 11:11:56 -0700
+IronPort-SDR: /fmlAY/iMfOEmHME3kfN5aV2UTzJmnU3t0dOXwf453J0OwODoOVpLilOEqCiqe0xWv1hu005GJ
+ e36h0EfmZBNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
+   d="scan'208";a="362102923"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 20 Jul 2020 11:11:56 -0700
+Received: from [10.255.230.139] (kliang2-mobl.ccr.corp.intel.com [10.255.230.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 87F91580299;
+        Mon, 20 Jul 2020 11:11:55 -0700 (PDT)
+Subject: Re: [PATCH V6 07/14] perf/x86/intel: Generic support for hardware
+ TopDown metrics
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com
+References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+ <20200717140554.22863-8-kan.liang@linux.intel.com>
+ <20200720174103.GV10769@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <c814c39a-3cd2-f4d3-0b89-fbe4993e1fcc@linux.intel.com>
+Date:   Mon, 20 Jul 2020 14:11:54 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720155902.181712-6-hch@lst.de>
+In-Reply-To: <20200720174103.GV10769@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 05:58:43PM +0200, Christoph Hellwig wrote:
-> This allows reusing the struct filename for retries, and will also allow
-> pushing the getname up the stack for a few places to allower for better
-> handling of kernel space filenames.
 
-You are complicating the callers for no good reason.  NAK.  The same goes
-for the previous patch in the series.
 
-Keep the cleanup rules simple.  Sure, I understand wanting to avoid
-special rules for early bootstrap, but that's a corner case; don't
-make fs/namei.c harder to follow.
+On 7/20/2020 1:41 PM, Peter Zijlstra wrote:
+> On Fri, Jul 17, 2020 at 07:05:47AM -0700, kan.liang@linux.intel.com wrote:
+> 
+>> For the event mapping, a special 0x00 event code is used, which is
+>> reserved for fake events. The metric events start from umask 0x10.
+> 
+>> +#define INTEL_PMC_IDX_METRIC_BASE		(INTEL_PMC_IDX_FIXED + 16)
+>> +#define INTEL_PMC_IDX_TD_RETIRING		(INTEL_PMC_IDX_METRIC_BASE + 0)
+>> +#define INTEL_PMC_IDX_TD_BAD_SPEC		(INTEL_PMC_IDX_METRIC_BASE + 1)
+>> +#define INTEL_PMC_IDX_TD_FE_BOUND		(INTEL_PMC_IDX_METRIC_BASE + 2)
+>> +#define INTEL_PMC_IDX_TD_BE_BOUND		(INTEL_PMC_IDX_METRIC_BASE + 3)
+> 
+> So this is internal and we can change it around if/when needed, right?
+> 
+
+Yes
+
+>> +#define INTEL_PMC_IDX_METRIC_END		INTEL_PMC_IDX_TD_BE_BOUND
+>> +#define INTEL_PMC_MSK_TOPDOWN			((0xfull << INTEL_PMC_IDX_METRIC_BASE) | \
+>> +						INTEL_PMC_MSK_FIXED_SLOTS)
+>> +
+>> +/*
+>> + * There is no event-code assigned to the TopDown events.
+>> + *
+>> + * For the slots event, use the pseudo code of the fixed counter 3.
+>> + *
+>> + * For the metric events, the pseudo event-code is 0x00.
+>> + * The pseudo umask-code starts from 0x10.
+>> + */
+>> +#define INTEL_TD_SLOTS				0x0400	/* TOPDOWN.SLOTS */
+>> +/* Level 1 metrics */
+>> +#define INTEL_TD_METRIC_RETIRING		0x1000	/* Retiring metric */
+>> +#define INTEL_TD_METRIC_BAD_SPEC		0x1100	/* Bad speculation metric */
+>> +#define INTEL_TD_METRIC_FE_BOUND		0x1200	/* FE bound metric */
+>> +#define INTEL_TD_METRIC_BE_BOUND		0x1300	/* BE bound metric */
+>> +#define INTEL_TD_METRIC_MAX			INTEL_TD_METRIC_BE_BOUND
+>> +#define INTEL_TD_METRIC_NUM			4
+> 
+> But this is ABI, once we merge this, it's stuck.
+> 
+> Also, per how Fixed2 is 0x0300, should not Fixed16 (aka
+> METRICS_RETIRING) be 0x1100 ?
+> 
+> But aside of that, are we sure the hardware will never grow a Fixed16?
+> Or do we want to be paranoid and move the metrics events up in the
+> pseudo event space?
+> 
+
+Right, we cannot guarantee that the number of fixed counters is always 
+less than 16.
+
+I will move the metrics events to the middle of the pseudo event space.
+
++#define INTEL_TD_METRIC_RETIRING	0x8000	/* Retiring metric */
++#define INTEL_TD_METRIC_BAD_SPEC	0x8100	/* Bad speculation metric */
++#define INTEL_TD_METRIC_FE_BOUND	0x8200	/* FE bound metric */
++#define INTEL_TD_METRIC_BE_BOUND	0x8300	/* BE bound metric */
+
+Thanks,
+Kan
+
