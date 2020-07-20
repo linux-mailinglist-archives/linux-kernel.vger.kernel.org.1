@@ -2,87 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA0E226033
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF4E226035
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgGTMzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728487AbgGTMzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:55:03 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B86CB22D02;
-        Mon, 20 Jul 2020 12:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595249703;
-        bh=y7RZr4EBxM8bRsCsBovfRFd7rWz4XGbu3I/ANJaXpBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kTpcT+IeTaDp9SQ9Gj8yCeGkMQXxtWInWyx5lna0GMo70Obp2TX1pZsCQtMgBUZLT
-         BfaEIva0Emhu/zXioODyNkWuua34Dm7GlfR6PAEJE9xlnkrwkCestrq5fBjSOxuHEU
-         CldhOBTsvHDI8qClrM0wIYZoWv2H8/vf2MX/qYX0=
-Date:   Mon, 20 Jul 2020 13:54:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Shreyas Joshi <Shreyas.Joshi@biamp.com>
-Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "shreyasjoshi15@gmail.com" <shreyasjoshi15@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: spi-cadence: add support for chip select high
-Message-ID: <20200720125450.GE4601@sirena.org.uk>
-References: <20200710045140.458-1-shreyas.joshi@biamp.com>
- <20200710211655.1564-1-shreyas.joshi@biamp.com>
- <MN2PR17MB29743B1AE9419961F152EC73FC7B0@MN2PR17MB2974.namprd17.prod.outlook.com>
+        id S1728964AbgGTMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:55:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49886 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728487AbgGTMzX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:55:23 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KCV7X8137778;
+        Mon, 20 Jul 2020 08:55:12 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5jyueaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 08:55:12 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KCVBeh138245;
+        Mon, 20 Jul 2020 08:55:11 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5jyue9e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 08:55:11 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KCsruP030727;
+        Mon, 20 Jul 2020 12:55:09 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 32dbmn0025-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 12:55:09 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KCt6W161866196
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 12:55:06 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A940E4C04E;
+        Mon, 20 Jul 2020 12:55:06 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4AA734C046;
+        Mon, 20 Jul 2020 12:55:03 +0000 (GMT)
+Received: from hbathini.in.ibm.com (unknown [9.85.112.199])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 12:55:03 +0000 (GMT)
+Subject: [PATCH v4 12/12] ppc64/kexec_file: fix kexec load failure with lack
+ of memory hole
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>
+Date:   Mon, 20 Jul 2020 18:25:02 +0530
+Message-ID: <159524969473.20855.3849168475361726663.stgit@hbathini.in.ibm.com>
+In-Reply-To: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+References: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8vCeF2GUdMpe9ZbK"
-Content-Disposition: inline
-In-Reply-To: <MN2PR17MB29743B1AE9419961F152EC73FC7B0@MN2PR17MB2974.namprd17.prod.outlook.com>
-X-Cookie: Be different: conform.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_07:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=2 priorityscore=1501 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kexec purgatory has to run in real mode. Only the first memory
+block maybe accessible in real mode. And, unlike the case with panic
+kernel, no memory is set aside for regular kexec load. Another thing
+to note is, the memory for crashkernel is reserved at an offset of
+128MB. So, when crashkernel memory is reserved, the memory ranges to
+load kexec segments shrink further as the generic code only looks for
+memblock free memory ranges and in all likelihood only a tiny bit of
+memory from 0 to 128MB would be available to load kexec segments.
 
---8vCeF2GUdMpe9ZbK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+With kdump being used by default in general, kexec file load is likely
+to fail almost always. This can be fixed by changing the memory hole
+lookup logic for regular kexec to use the same method as kdump. This
+would mean that most kexec segments will overlap with crashkernel
+memory region. That should still be ok as the pages, whose destination
+address isn't available while loading, are placed in an intermediate
+location till a flush to the actual destination address happens during
+kexec boot sequence.
 
-On Mon, Jul 20, 2020 at 03:55:55AM +0000, Shreyas Joshi wrote:
-> Were you able to patch my driver successfully?
->=20
-> -----Original Message-----
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+Tested-by: Pingfan Liu <piliu@redhat.com>
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+---
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+v3 -> v4:
+* Unchanged. Added Reviewed-by tag from Thiago.
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
+v2 -> v3:
+* Unchanged. Added Tested-by tag from Pingfan.
 
---8vCeF2GUdMpe9ZbK
-Content-Type: application/pgp-signature; name="signature.asc"
+v1 -> v2:
+* New patch to fix locating memory hole for kexec_file_load (kexec -s -l)
+  when memory is reserved for crashkernel.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8VlBoACgkQJNaLcl1U
-h9CszQf/dvvg4/PSg8v9xouJCIhBeA2sD5wIubZbZPRUvb2X24FMR0f6nCUBRhAj
-8bX8kO6BzYawwsYdhkbCYqOInpHOLeuJC4/nyU1a9CNxkZZmp6KXUyJP61lPUY/y
-yK90QYS4Wm9eiPxOfsAbADdOkJ0vs7vUQbDOLrBzFIXzEa2bI/MzU9/nTQ5/vRIN
-nOvnZP/xix+1GbD7W3Swe7VxRjNU5h6CdkNInPgId9DfsqAaw3QIdMJv5iYzivzE
-XwM0/AekQx8cnV5WaWDjm/1SHfvwntt12KO5Hosew3DP82USfa5+AO+VjiAS8lzh
-EHKRqc1+xmorIzoUUC0OtqOv761yMQ==
-=6Wmy
------END PGP SIGNATURE-----
+ arch/powerpc/kexec/file_load_64.c |   33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
 
---8vCeF2GUdMpe9ZbK--
+diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
+index 47642d5..694f305 100644
+--- a/arch/powerpc/kexec/file_load_64.c
++++ b/arch/powerpc/kexec/file_load_64.c
+@@ -1374,13 +1374,6 @@ int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf)
+ 	u64 buf_min, buf_max;
+ 	int ret;
+ 
+-	/*
+-	 * Use the generic kexec_locate_mem_hole for regular
+-	 * kexec_file_load syscall
+-	 */
+-	if (kbuf->image->type != KEXEC_TYPE_CRASH)
+-		return kexec_locate_mem_hole(kbuf);
+-
+ 	/* Look up the exclude ranges list while locating the memory hole */
+ 	emem = &(kbuf->image->arch.exclude_ranges);
+ 	if (!(*emem) || ((*emem)->nr_ranges == 0)) {
+@@ -1388,11 +1381,15 @@ int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf)
+ 		return kexec_locate_mem_hole(kbuf);
+ 	}
+ 
++	buf_min = kbuf->buf_min;
++	buf_max = kbuf->buf_max;
+ 	/* Segments for kdump kernel should be within crashkernel region */
+-	buf_min = (kbuf->buf_min < crashk_res.start ?
+-		   crashk_res.start : kbuf->buf_min);
+-	buf_max = (kbuf->buf_max > crashk_res.end ?
+-		   crashk_res.end : kbuf->buf_max);
++	if (kbuf->image->type == KEXEC_TYPE_CRASH) {
++		buf_min = (buf_min < crashk_res.start ?
++			   crashk_res.start : buf_min);
++		buf_max = (buf_max > crashk_res.end ?
++			   crashk_res.end : buf_max);
++	}
+ 
+ 	if (buf_min > buf_max) {
+ 		pr_err("Invalid buffer min and/or max values\n");
+@@ -1522,15 +1519,13 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+ int arch_kexec_kernel_image_probe(struct kimage *image, void *buf,
+ 				  unsigned long buf_len)
+ {
+-	if (image->type == KEXEC_TYPE_CRASH) {
+-		int ret;
++	int ret;
+ 
+-		/* Get exclude memory ranges needed for setting up kdump segments */
+-		ret = get_exclude_memory_ranges(&(image->arch.exclude_ranges));
+-		if (ret) {
+-			pr_err("Failed to setup exclude memory ranges for buffer lookup\n");
+-			return ret;
+-		}
++	/* Get exclude memory ranges needed for setting up kexec segments */
++	ret = get_exclude_memory_ranges(&(image->arch.exclude_ranges));
++	if (ret) {
++		pr_err("Failed to setup exclude memory ranges for buffer lookup\n");
++		return ret;
+ 	}
+ 
+ 	return kexec_image_probe_default(image, buf, buf_len);
+
