@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B16226C30
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9EE226C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388867AbgGTQrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        id S1730249AbgGTQrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729409AbgGTPjK (ORCPT
+        with ESMTP id S1729363AbgGTPjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:10 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD981C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:39:09 -0700 (PDT)
+        Mon, 20 Jul 2020 11:39:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F17C061794;
+        Mon, 20 Jul 2020 08:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SORy7n9Lm/HsaDAW1ESZ+sVeiSH8dZynS/Gg7rN5onA=; b=0x2LOjN9+Nyf7IFsRZ1XmqsGP3
-        4GO0WvFxBXZhPXGC27lbhuR8MAUq1V6A/G9Ao3Le95dh8pbFyZpNaQtojWulwdTHTGj9zgPXE1Zz0
-        332P0GUMeMYOP2wNTrqWj1/6WRPPcMDVcb0xepz1hnmPYyv0wUgS0wKCboA6Gh2bhR1Z3T3R+N2dw
-        1LzDlJ1KYBL4JHaMehHc5Rc0Py4+USN+ztQYz/7ztCEstQqg/Wj45/jyYcK+VobpLv0qNsXEErnEQ
-        YzN13c2WKw/n85LAVAdUpM6Qy/ajc5Jse52JfRI1GEb8+nMQXx/cvoHhDLmiOfPY7qZfOvsNrHerW
-        wIrE33DQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxXsZ-0002C7-LF; Mon, 20 Jul 2020 15:39:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C4C2307983;
-        Mon, 20 Jul 2020 17:38:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 67B2F20DCCA0D; Mon, 20 Jul 2020 17:38:55 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 17:38:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-Message-ID: <20200720153855.GS10769@hirez.programming.kicks-ass.net>
-References: <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
- <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
- <20200720064326.GA6612@redhat.com>
- <20200720082657.GC6612@redhat.com>
- <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
- <20200720105924.GE43129@hirez.programming.kicks-ass.net>
- <20200720140224.GD6612@redhat.com>
- <20200720142105.GR10769@hirez.programming.kicks-ass.net>
- <20200720143930.GE6612@redhat.com>
- <20200720153514.GF6612@redhat.com>
+        bh=ni3GtEq//rn/T0Y31rT9wL4PCiqDOjTkE6241aZZHHo=; b=BiHDGagd+pgP536ZQhYUL4DrI0
+        cMFa6Nval3D9C3UFIeLO/+EGQjO3Mhic3hTUpI/yH9aoBNux/iQOFfJIryUL+8t9hgOoNK/6izEJJ
+        UqzGFdBpIsrvOJALzW9a6S5U06lVkps5GrJwFxYuzn+XlCKgZJtDOsxf+g3OAvHkisZShKt+UC1I2
+        A6WXqG5gbdrFpDpmKms+BNaV7LP68vdeR/ewhPKwnrKCnKvnjPk/62G+D/5qFJ/BprKn7rmdI1BTb
+        fqHsANZLurUqXW+PLa3ubnx9KtVTWG2dtIDfrhyga6bBl3rIBA2zDH8OV1BfiERufy7dWhKGOaxxA
+        EAyk21xw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxXsl-0005o1-Ni; Mon, 20 Jul 2020 15:39:12 +0000
+Date:   Mon, 20 Jul 2020 16:39:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
+Message-ID: <20200720153911.GX12769@casper.infradead.org>
+References: <20200717044427.68747-1-ebiggers@kernel.org>
+ <20200718014204.GN5369@dread.disaster.area>
+ <20200718140811.GA1179836@rowland.harvard.edu>
+ <20200720013320.GP5369@dread.disaster.area>
+ <20200720145211.GC1228057@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720153514.GF6612@redhat.com>
+In-Reply-To: <20200720145211.GC1228057@rowland.harvard.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 05:35:15PM +0200, Oleg Nesterov wrote:
-> On 07/20, Oleg Nesterov wrote:
-> >
-> > On 07/20, Peter Zijlstra wrote:
-> > >
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
-> > >  	local_irq_disable();
-> > >  	rcu_note_context_switch(preempt);
-> > >
-> > > -	/* See deactivate_task() below. */
-> > > -	prev_state = prev->state;
-> > > -
-> > >  	/*
-> > >  	 * Make sure that signal_pending_state()->signal_pending() below
-> > >  	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
-> > > @@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
-> > >  	 * We must re-load prev->state in case ttwu_remote() changed it
-> > >  	 * before we acquired rq->lock.
-> > >  	 */
-> > > -	if (!preempt && prev_state && prev_state == prev->state) {
-> > > +	prev_state = prev->state;
-> > > +	if (!preempt && prev_state) {
-> >
-> > Heh ;) Peter, you know what? I did the same change and tried to understand
-> > why it is wrong and what have I missed.
-> >
-> > Thanks, now I can relax. But my head hurts too, I'll probably try to re-read
-> > this code and other emails from you tomorrow.
+On Mon, Jul 20, 2020 at 10:52:11AM -0400, Alan Stern wrote:
+> On Mon, Jul 20, 2020 at 11:33:20AM +1000, Dave Chinner wrote:
+> > On Sat, Jul 18, 2020 at 10:08:11AM -0400, Alan Stern wrote:
+> > > > This is one of the reasons that the LKMM documetnation is so damn
+> > > > difficult to read and understand: just understanding the vocabulary
+> > > > it uses requires a huge learning curve, and it's not defined
+> > > > anywhere. Understanding the syntax of examples requires a huge
+> > > > learning curve, because it's not defined anywhere. 
+> > > 
+> > > Have you seen tools/memory-model/Documentation/explanation.txt?
+> > 
+> > <raises eyebrow>
+> > 
+> > Well, yes. Several times. I look at it almost daily, but that
+> > doesn't mean it's approachable, easy to read or even -that I
+> > understand what large parts of it say-. IOWs, that's one of the 
+> > problematic documents that I've been saying have a huge learning
+> > curve.
 > 
-> Yes, I can no longer read this code today ;)
+> Can you be more specific?  For example, exactly where does it start to 
+> become unapproachable or difficult to read?
 > 
-> but now it seems to me that (in theory) we need READ_ONCE(prev->state) here
-> and probably WRITE_ONCE(on_rq) in deactivate_task() to ensure ctrl-dep?
-> 
-> Probably not, I got lost.
-> Probably not, I got lost.
-> Probably not, I got lost.
+> Don't forget that this document was meant to help mitigate the LKMM's 
+> learning curve.  If it isn't successful, I want to improve it.
 
-So, task_struct::state is declared volatile (we should probably 'fix'
-that some day), so that doesn't require READ_ONCE() -- in fact, that
-caused a bunch of re-reads in the old code which made the loadavg race
-more likely.
+I can't speak for Dave, but the introduction to that documentation makes
+it clear to me that it's not the document I want to read.
 
-->on_rq is only ever written 0,1,2, there's no possibe store-tearing.
-But possibly, yes, WRITE_ONCE() would be nicer.
+: This document describes the ideas underlying the LKMM.  It is meant
+: for people who want to understand how the model was designed.  It does
+: not go into the details of the code in the .bell and .cat files;
+: rather, it explains in English what the code expresses symbolically.
+
+I don't want to know how the model was designed.  I want to write a
+device driver, or filesystem, or whatever.
+
+Honestly, even the term "release semantics" trips me up _every_ time.
+It's a barrier to understanding because I have to translate it into "Oh,
+he means it's like an unlock".  Why can't you just say "unlock semantics"?
