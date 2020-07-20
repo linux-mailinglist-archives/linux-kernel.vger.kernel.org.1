@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F432265E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7D722636E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732012AbgGTP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732000AbgGTP6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:12 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728801AbgGTPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:35:25 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37978 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726426AbgGTPfZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:35:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595259324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2o1W4SQXRhEpyrn3Gh4s7C74MBb+wSct4n37pEECT2M=;
+        b=CUeNAzjHpvYqrK4moiLSyF93EFwO+KZv619U/nPHI3aMI5ajV9p0mKRAAUSYbJbMj9KSyH
+        S47Bg2408rrsQYJmcI+KTT+V0z1dwYEKz8aY1EPfPGN07nwwVVb8XNVwxD34OtXVz+FyqM
+        OQub9lZqkzRC/rnw9qlquUwqBmp1Xd8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-80-vlUmw2FVPYCLrY283kqdoQ-1; Mon, 20 Jul 2020 11:35:20 -0400
+X-MC-Unique: vlUmw2FVPYCLrY283kqdoQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FA252065E;
-        Mon, 20 Jul 2020 15:58:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260692;
-        bh=0CkNs1w4+hp7Zb/ftz2DB5LZ5V5bhaCc01Eh0fyBlCg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DIVtB+m/Lqu7XwACKhqB9pvqSBH5WwI7Kf935WnxsuBgi6s9yyK5Sf7SLMqWc4lD1
-         0Sl9Kz+TfhJtsTMOd+ibdvgek0+rLOxSqrHykpHc60lcDc/VuB/tM0RI3Nv/WfbaCJ
-         3IAyWLRDiUTUrc1AK2njA0hZe6Rs0/y1O4qL6Utc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 033/215] drm/exynos: fix ref count leak in mic_pre_enable
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB644100AA21;
+        Mon, 20 Jul 2020 15:35:18 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.147])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 45F1A10640E1;
+        Mon, 20 Jul 2020 15:35:16 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 20 Jul 2020 17:35:18 +0200 (CEST)
 Date:   Mon, 20 Jul 2020 17:35:15 +0200
-Message-Id: <20200720152821.762532842@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
-User-Agent: quilt/0.66
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200720153514.GF6612@redhat.com>
+References: <20200718171406.GB16791@redhat.com>
+ <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+ <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com>
+ <20200720082657.GC6612@redhat.com>
+ <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+ <20200720105924.GE43129@hirez.programming.kicks-ass.net>
+ <20200720140224.GD6612@redhat.com>
+ <20200720142105.GR10769@hirez.programming.kicks-ass.net>
+ <20200720143930.GE6612@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720143930.GE6612@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+On 07/20, Oleg Nesterov wrote:
+>
+> On 07/20, Peter Zijlstra wrote:
+> >
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
+> >  	local_irq_disable();
+> >  	rcu_note_context_switch(preempt);
+> >
+> > -	/* See deactivate_task() below. */
+> > -	prev_state = prev->state;
+> > -
+> >  	/*
+> >  	 * Make sure that signal_pending_state()->signal_pending() below
+> >  	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+> > @@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
+> >  	 * We must re-load prev->state in case ttwu_remote() changed it
+> >  	 * before we acquired rq->lock.
+> >  	 */
+> > -	if (!preempt && prev_state && prev_state == prev->state) {
+> > +	prev_state = prev->state;
+> > +	if (!preempt && prev_state) {
+>
+> Heh ;) Peter, you know what? I did the same change and tried to understand
+> why it is wrong and what have I missed.
+>
+> Thanks, now I can relax. But my head hurts too, I'll probably try to re-read
+> this code and other emails from you tomorrow.
 
-[ Upstream commit d4f5a095daf0d25f0b385e1ef26338608433a4c5 ]
+Yes, I can no longer read this code today ;)
 
-in mic_pre_enable, pm_runtime_get_sync is called which
-increments the counter even in case of failure, leading to incorrect
-ref count. In case of failure, decrement the ref count before returning.
+but now it seems to me that (in theory) we need READ_ONCE(prev->state) here
+and probably WRITE_ONCE(on_rq) in deactivate_task() to ensure ctrl-dep?
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: Inki Dae <inki.dae@samsung.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/exynos/exynos_drm_mic.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Probably not, I got lost.
+Probably not, I got lost.
+Probably not, I got lost.
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_mic.c b/drivers/gpu/drm/exynos/exynos_drm_mic.c
-index b78e8c5ba553b..2aff986add899 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_mic.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_mic.c
-@@ -268,8 +268,10 @@ static void mic_pre_enable(struct drm_bridge *bridge)
- 		goto unlock;
- 
- 	ret = pm_runtime_get_sync(mic->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(mic->dev);
- 		goto unlock;
-+	}
- 
- 	mic_set_path(mic, 1);
- 
--- 
-2.25.1
-
-
+Oleg.
 
