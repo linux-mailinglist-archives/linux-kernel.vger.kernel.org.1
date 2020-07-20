@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00497226EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1D9226EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730441AbgGTTH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:07:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55174 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729237AbgGTTH5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:07:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595272076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wDSn77KHLgCft4skfPmD/XyPr1U9WWAni3dIC85rwNI=;
-        b=JR+5VCouAd3ZMKevhcXaqdTqqiixEiB/TSdQGEvY4GpWZDgxE3gvms4XIjoUdXFevwh3j7
-        EKOIRp7OlBmWffFVPZih2x+TCFOwHgMwJIRSr9jIg1v8nxPXGlbjXnuqaxmmFiZpn0+qXO
-        MK+i08n77nx9MmuqfmjdDBDiAhxLbeE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110--RtHis-JPYOB2lF7FzpPVg-1; Mon, 20 Jul 2020 15:07:52 -0400
-X-MC-Unique: -RtHis-JPYOB2lF7FzpPVg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729373AbgGTTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728771AbgGTTNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 15:13:54 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F19DC800688;
-        Mon, 20 Jul 2020 19:07:50 +0000 (UTC)
-Received: from Ruby.redhat.com (ovpn-120-196.rdu2.redhat.com [10.10.120.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 036995C1D4;
-        Mon, 20 Jul 2020 19:07:49 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5/5] drm/vblank: Use spin_(un)lock_irq() in drm_crtc_queue_sequence_ioctl()
-Date:   Mon, 20 Jul 2020 15:07:36 -0400
-Message-Id: <20200720190736.180297-6-lyude@redhat.com>
-In-Reply-To: <20200720190736.180297-1-lyude@redhat.com>
-References: <20200720190736.180297-1-lyude@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A46C2176B;
+        Mon, 20 Jul 2020 19:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595272434;
+        bh=hLXOHhr7/G2lqFQDj4nvPKc453bOQlXUJx/UKuZzRJ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBXDlQsr8NG7GoGgB4PpDI4UZSCPnnMRA1YjX9aKE4sQ74fC+ItEdKkJeXt+EBrRb
+         /XjQijor7OKyNKRyAgRAoVuNsAdQamO54Hpuu4xf82HH8V0jPXs1UNoJmWfemtqUlV
+         +ooY2xvQuzZ0RMEbUFMkTGD7/aOmJV9BlObs+au4=
+Date:   Mon, 20 Jul 2020 21:14:03 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Atish Patra <Atish.Patra@wdc.com>
+Cc:     "naresh.kamboju@linaro.org" <naresh.kamboju@linaro.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "walken@google.com" <walken@google.com>,
+        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "zong.li@sifive.com" <zong.li@sifive.com>,
+        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>
+Subject: Re: [PATCH 5.7 233/244] RISC-V: Acquire mmap lock before invoking
+ walk_page_range
+Message-ID: <20200720191403.GB1529125@kroah.com>
+References: <20200720152825.863040590@linuxfoundation.org>
+ <20200720152836.926007002@linuxfoundation.org>
+ <CA+G9fYteJs0X1Ctjbt-51Q9J2JHM--cOpYg+02jSdfnbWbwr2g@mail.gmail.com>
+ <194a70d4428b96b59594efc5cae7ed26f6da45b3.camel@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <194a70d4428b96b59594efc5cae7ed26f6da45b3.camel@wdc.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an ioctl callback, so we're guaranteed to have IRQs enabled when
-calling this function. Use the plain _irq() variants of spin_(un)lock()
-to make this more obvious.
+On Mon, Jul 20, 2020 at 06:50:10PM +0000, Atish Patra wrote:
+> On Mon, 2020-07-20 at 23:11 +0530, Naresh Kamboju wrote:
+> > RISC-V build breaks on stable-rc 5.7 branch.
+> > build failed with gcc-8, gcc-9 and gcc-9.
+> > 
+> 
+> Sorry for the compilation issue.
+> 
+> mmap_read_lock was intrdouced in the following commit.
+> 
+> commit 9740ca4e95b4
+> Author: Michel Lespinasse <walken@google.com>
+> Date:   Mon Jun 8 21:33:14 2020 -0700
+> 
+>     mmap locking API: initial implementation as rwsem wrappers
+> 
+> The following two commits replaced the usage of mmap_sem rwsem calls
+> with mmap_lock.
+> 
+> d8ed45c5dcd4 (mmap locking API: use coccinelle to convert mmap_sem
+> rwsem call sites)
+> 89154dd5313f (mmap locking API: convert mmap_sem call sites missed by
+> coccinelle)
+> 
+> The first commit is not present in stale 5.7-y for obvious reasons.
+> 
+> Do we need to send a separate patch only for stable branch with
+> mmap_sem ? I am not sure if that will cause a conflict again in future.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
----
- drivers/gpu/drm/drm_vblank.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+I do not like taking odd backports, and would rather take the real patch
+that is upstream.
 
-diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
-index 64610070ba473..b18e1efbbae1a 100644
---- a/drivers/gpu/drm/drm_vblank.c
-+++ b/drivers/gpu/drm/drm_vblank.c
-@@ -2066,7 +2066,6 @@ int drm_crtc_queue_sequence_ioctl(struct drm_device *dev, void *data,
- 	u64 seq;
- 	u64 req_seq;
- 	int ret;
--	unsigned long spin_flags;
- 
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
-@@ -2114,7 +2113,7 @@ int drm_crtc_queue_sequence_ioctl(struct drm_device *dev, void *data,
- 	e->event.base.length = sizeof(e->event.seq);
- 	e->event.seq.user_data = queue_seq->user_data;
- 
--	spin_lock_irqsave(&dev->event_lock, spin_flags);
-+	spin_lock_irq(&dev->event_lock);
- 
- 	/*
- 	 * drm_crtc_vblank_off() might have been called after we called
-@@ -2145,11 +2144,11 @@ int drm_crtc_queue_sequence_ioctl(struct drm_device *dev, void *data,
- 		queue_seq->sequence = req_seq;
- 	}
- 
--	spin_unlock_irqrestore(&dev->event_lock, spin_flags);
-+	spin_unlock_irq(&dev->event_lock);
- 	return 0;
- 
- err_unlock:
--	spin_unlock_irqrestore(&dev->event_lock, spin_flags);
-+	spin_unlock_irq(&dev->event_lock);
- 	drm_crtc_vblank_put(crtc);
- err_free:
- 	kfree(e);
--- 
-2.26.2
+I will drop this patch from the tree now, so everyone can figure out
+what they want to do in the future :)
 
+thanks,
+
+greg k-h
