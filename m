@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AE6226B6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547B8226BBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgGTPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
+        id S2388960AbgGTQoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:44:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730553AbgGTPpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:43 -0400
+        id S1729945AbgGTPlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:41:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6250922CAF;
-        Mon, 20 Jul 2020 15:45:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFE892065E;
+        Mon, 20 Jul 2020 15:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259941;
-        bh=v7InIuk+EwKMrOnqi776Pp+2N959mlUc4pv3XI8qrA0=;
+        s=default; t=1595259703;
+        bh=dr6vadShhVxDUp5feV3jXXDwSy9MNJ9WhHtlCUjCzHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DP8/1ob8XGRj73E8jLmUe38V0dS1GzVnOe1BlS/k2/3a1WHT7vKPhrvin2nA6XrTb
-         Ga5l5NaHHjJR9p2AhZ7JE3kSpNuRyrRkdLbAoMiUAQpf9/Jcur54qMUFs9bZ0FNWC/
-         7avtJ8eX3ffnzcvpHc+ECfRaunBksUBaroeCeSew=
+        b=wlWkOOGh1wOBFMd24NdXNgQIUc1Lhv8JVEWKqDWufVGBU5fOGfNT1xrfdzExJtUCM
+         Jw393CzMt33WZCln3Yp/gV444k6QEi2fNWfvQ9PX6lvRbCY3Jrr+3czg77GKWI3lfj
+         tST4hxmVDU5h58gTc5zH3krOqJNL6JPQzVLsRzPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Marco Elver <elver@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 048/125] tcp: md5: refine tcp_md5_do_add()/tcp_md5_hash_key() barriers
-Date:   Mon, 20 Jul 2020 17:36:27 +0200
-Message-Id: <20200720152805.330067760@linuxfoundation.org>
+Subject: [PATCH 4.9 32/86] tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()
+Date:   Mon, 20 Jul 2020 17:36:28 +0200
+Message-Id: <20200720152754.775270760@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,88 +46,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit e6ced831ef11a2a06e8d00aad9d4fc05b610bf38 ]
+[ Upstream commit 6a2febec338df7e7699a52d00b2e1207dcf65b28 ]
 
-My prior fix went a bit too far, according to Herbert and Mathieu.
+MD5 keys are read with RCU protection, and tcp_md5_do_add()
+might update in-place a prior key.
 
-Since we accept that concurrent TCP MD5 lookups might see inconsistent
-keys, we can use READ_ONCE()/WRITE_ONCE() instead of smp_rmb()/smp_wmb()
+Normally, typical RCU updates would allocate a new piece
+of memory. In this case only key->key and key->keylen might
+be updated, and we do not care if an incoming packet could
+see the old key, the new one, or some intermediate value,
+since changing the key on a live flow is known to be problematic
+anyway.
 
-Clearing all key->key[] is needed to avoid possible KMSAN reports,
-if key->keylen is increased. Since tcp_md5_do_add() is not fast path,
-using __GFP_ZERO to clear all struct tcp_md5sig_key is simpler.
+We only want to make sure that in the case key->keylen
+is changed, cpus in tcp_md5_hash_key() wont try to use
+uninitialized data, or crash because key->keylen was
+read twice to feed sg_init_one() and ahash_request_set_crypt()
 
-data_race() was added in linux-5.8 and will prevent KCSAN reports,
-this can safely be removed in stable backports, if data_race() is
-not yet backported.
-
-v2: use data_race() both in tcp_md5_hash_key() and tcp_md5_do_add()
-
-Fixes: 6a2febec338d ("tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()")
+Fixes: 9ea88a153001 ("tcp: md5: check md5 signature without socket lock")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Marco Elver <elver@google.com>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp.c      |    6 +++---
- net/ipv4/tcp_ipv4.c |   14 ++++++++++----
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ net/ipv4/tcp.c      |    7 +++++--
+ net/ipv4/tcp_ipv4.c |    3 +++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
 --- a/net/ipv4/tcp.c
 +++ b/net/ipv4/tcp.c
-@@ -3394,13 +3394,13 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
+@@ -3207,10 +3207,13 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
  
  int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct tcp_md5sig_key *key)
  {
--	u8 keylen = key->keylen;
-+	u8 keylen = READ_ONCE(key->keylen); /* paired with WRITE_ONCE() in tcp_md5_do_add */
++	u8 keylen = key->keylen;
  	struct scatterlist sg;
  
--	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
--
- 	sg_init_one(&sg, key->key, keylen);
- 	ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
+-	sg_init_one(&sg, key->key, key->keylen);
+-	ahash_request_set_crypt(hp->md5_req, &sg, NULL, key->keylen);
++	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
 +
-+	/* tcp_md5_do_add() might change key->key under us */
++	sg_init_one(&sg, key->key, keylen);
++	ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
  	return crypto_ahash_update(hp->md5_req);
  }
  EXPORT_SYMBOL(tcp_md5_hash_key);
 --- a/net/ipv4/tcp_ipv4.c
 +++ b/net/ipv4/tcp_ipv4.c
-@@ -995,12 +995,18 @@ int tcp_md5_do_add(struct sock *sk, cons
- 
- 	key = tcp_md5_do_lookup_exact(sk, addr, family, prefixlen);
+@@ -938,6 +938,9 @@ int tcp_md5_do_add(struct sock *sk, cons
  	if (key) {
--		/* Pre-existing entry - just update that one. */
-+		/* Pre-existing entry - just update that one.
-+		 * Note that the key might be used concurrently.
-+		 */
+ 		/* Pre-existing entry - just update that one. */
  		memcpy(key->key, newkey, newkeylen);
- 
--		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
-+		/* Pairs with READ_ONCE() in tcp_md5_hash_key().
-+		 * Also note that a reader could catch new key->keylen value
-+		 * but old key->key[], this is the reason we use __GFP_ZERO
-+		 * at sock_kmalloc() time below these lines.
-+		 */
-+		WRITE_ONCE(key->keylen, newkeylen);
- 
--		key->keylen = newkeylen;
++
++		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
++
+ 		key->keylen = newkeylen;
  		return 0;
  	}
- 
-@@ -1016,7 +1022,7 @@ int tcp_md5_do_add(struct sock *sk, cons
- 		rcu_assign_pointer(tp->md5sig_info, md5sig);
- 	}
- 
--	key = sock_kmalloc(sk, sizeof(*key), gfp);
-+	key = sock_kmalloc(sk, sizeof(*key), gfp | __GFP_ZERO);
- 	if (!key)
- 		return -ENOMEM;
- 	if (!tcp_alloc_md5sig_pool()) {
 
 
