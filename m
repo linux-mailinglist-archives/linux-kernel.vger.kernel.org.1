@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607A22265A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D21E2265C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730971AbgGTPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
+        id S1731860AbgGTP5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:57:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731724AbgGTPzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:50 -0400
+        id S1731835AbgGTP4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:56:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 240F022CBE;
-        Mon, 20 Jul 2020 15:55:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB37C22CF6;
+        Mon, 20 Jul 2020 15:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260549;
-        bh=ppTfgYb09TB9qxq+h+9fQ/bwVJO7A7SzJInWDp8mVuI=;
+        s=default; t=1595260610;
+        bh=kuI7McwKpSemTfEAuqoCig7IL4PBatzOwJOaPr1Li9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=irsAUX3Ui8+Hz9nqcQ+UIFxs0c/SJf8VEAL2RvLt5olBfDwiNHH14HVrfHn03LU3p
-         xej4w9o+eCqiaOxC3YBjCdftKbYKc0HPiqPNwk73ZQ6DrmX6Q1kN/A+bylAvdVrTZ9
-         N2j2nJR1rR+96Gftt8RIUKP/ordYTe5XzvI3FigE=
+        b=zIVbWbxgF1rsH6hjSt7XZe00IS665mGtMn9oN6G/k7V2iWmaGrD2zq5A0OdwioHfi
+         f6dIz8RtM2QKP7LW8VXpzJW+wMrbO5nkQokThBCUz36EZR81B0idMWwQnVccxsppqL
+         i0qqa7V1G5q6YuC+/nYWdJLA58sKXOZ5NcL+bRGY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 001/215] crypto: atmel - Fix selection of CRYPTO_AUTHENC
-Date:   Mon, 20 Jul 2020 17:34:43 +0200
-Message-Id: <20200720152820.208935209@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Bogdanov <dbogdanov@marvell.com>,
+        Mark Starovoytov <mstarovoitov@marvell.com>,
+        Alexander Lobakin <alobakin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 003/215] net: atlantic: fix ip dst and ipv6 address filters
+Date:   Mon, 20 Jul 2020 17:34:45 +0200
+Message-Id: <20200720152820.305220326@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,45 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+From: Dmitry Bogdanov <dbogdanov@marvell.com>
 
-commit d158367682cd822aca811971e988be6a8d8f679f upstream.
+commit a42e6aee7f47a8a68d09923c720fc8f605a04207 upstream.
 
-The following error is raised when CONFIG_CRYPTO_DEV_ATMEL_AES=y and
-CONFIG_CRYPTO_DEV_ATMEL_AUTHENC=m:
-drivers/crypto/atmel-aes.o: In function `atmel_aes_authenc_setkey':
-atmel-aes.c:(.text+0x9bc): undefined reference to `crypto_authenc_extractkeys'
-Makefile:1094: recipe for target 'vmlinux' failed
+This patch fixes ip dst and ipv6 address filters.
+There were 2 mistakes in the code, which led to the issue:
+* invalid register was used for ipv4 dst address;
+* incorrect write order of dwords for ipv6 addresses.
 
-Fix it by moving the selection of CRYPTO_AUTHENC under
-config CRYPTO_DEV_ATMEL_AES.
-
-Fixes: 89a82ef87e01 ("crypto: atmel-authenc - add support to...")
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 23e7a718a49b ("net: aquantia: add rx-flow filter definitions")
+Signed-off-by: Dmitry Bogdanov <dbogdanov@marvell.com>
+Signed-off-by: Mark Starovoytov <mstarovoitov@marvell.com>
+Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c          |    4 ++--
+ drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -493,7 +493,6 @@ endif # if CRYPTO_DEV_UX500
- config CRYPTO_DEV_ATMEL_AUTHENC
- 	tristate "Support for Atmel IPSEC/SSL hw accelerator"
- 	depends on ARCH_AT91 || COMPILE_TEST
--	select CRYPTO_AUTHENC
- 	select CRYPTO_DEV_ATMEL_AES
- 	select CRYPTO_DEV_ATMEL_SHA
- 	help
-@@ -508,6 +507,7 @@ config CRYPTO_DEV_ATMEL_AES
- 	select CRYPTO_AES
- 	select CRYPTO_AEAD
- 	select CRYPTO_BLKCIPHER
-+	select CRYPTO_AUTHENC
- 	help
- 	  Some Atmel processors have AES hw accelerator.
- 	  Select this if you want to use the Atmel module for
+--- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c
++++ b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c
+@@ -1597,7 +1597,7 @@ void hw_atl_rpfl3l4_ipv6_src_addr_set(st
+ 	for (i = 0; i < 4; ++i)
+ 		aq_hw_write_reg(aq_hw,
+ 				HW_ATL_RPF_L3_SRCA_ADR(location + i),
+-				ipv6_src[i]);
++				ipv6_src[3 - i]);
+ }
+ 
+ void hw_atl_rpfl3l4_ipv6_dest_addr_set(struct aq_hw_s *aq_hw, u8 location,
+@@ -1608,7 +1608,7 @@ void hw_atl_rpfl3l4_ipv6_dest_addr_set(s
+ 	for (i = 0; i < 4; ++i)
+ 		aq_hw_write_reg(aq_hw,
+ 				HW_ATL_RPF_L3_DSTA_ADR(location + i),
+-				ipv6_dest[i]);
++				ipv6_dest[3 - i]);
+ }
+ 
+ u32 hw_atl_sem_ram_get(struct aq_hw_s *self)
+--- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h
++++ b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h
+@@ -2564,7 +2564,7 @@
+  */
+ 
+  /* Register address for bitfield pif_rpf_l3_da0_i[31:0] */
+-#define HW_ATL_RPF_L3_DSTA_ADR(location) (0x000053B0 + (location) * 0x4)
++#define HW_ATL_RPF_L3_DSTA_ADR(filter) (0x000053D0 + (filter) * 0x4)
+ /* Bitmask for bitfield l3_da0[1F:0] */
+ #define HW_ATL_RPF_L3_DSTA_MSK 0xFFFFFFFFu
+ /* Inverted bitmask for bitfield l3_da0[1F:0] */
 
 
