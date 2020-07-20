@@ -2,145 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071C7226CCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B23226CD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389134AbgGTRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 13:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729957AbgGTRDT (ORCPT
+        id S1729955AbgGTREg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 13:04:36 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:51184 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729322AbgGTREf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 13:03:19 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E37AC0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 10:03:18 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id y10so18847089eje.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 10:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/D99yVB3Oiz5Mh00scTWz5/c04ErKfScrbcBA6SkIPw=;
-        b=D1kNZ97uQbS+psUY/wpbNhL+V3j7kvil0De+3fNHHIbbmYkbXypwfizcVy0gp1lzE8
-         7PRzu+A/DJqCiXG3TFpg0CU2LqyzqlAcLEyovIpxOpRNKdKE/EdUIu5z2kXMQr928Q39
-         FS4Ga5tFbkn8/CP6o4go59NrA+6hN8L6Jic2QioJZzyLlPcKr0PoP434tfoWNi2AjRQC
-         JgNnc1qxestfxBJdBYM3QGUwlDRa96HrLWyP2xLc1v6hPUO+iB07p7nxvDyVMXF+3oaY
-         jGpI+XBdZQzcP4bCwpYBZrLCv/cGRpWAH+ITrpaSHEORxOjlOgZTjHcyXWHex5YWmq9d
-         8I7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/D99yVB3Oiz5Mh00scTWz5/c04ErKfScrbcBA6SkIPw=;
-        b=YYU2WYOIBRIrQqbZxgOk0QzWW6j8ew0OOUla3eSdfrbTUPGG1WNfEKOFLMt1JZ1mhU
-         BifCJFXjup7y7YFg7bYxqJM2Pzl+Ckb9vaImmkkOAYZhjqfDprPUp1CmNxZqagnz74e+
-         KTK/BGWAntLcPrdsdFGAYpSSVxJKWuyDWi69wYszuSPjcMGqv70ct+HyI11STQXoYVUR
-         cM1T2SfpE+KEb7iIP4mH4wv1yc0sidIbblPIBxeYSiwMOyhA+swcPR/Vea8keKZJXTLQ
-         0UZN+Fi8L7fkRD+qagmjibPqTXixcDNBOGqHM/8jlIhjTghQ3YjS8G0677uUw0ZWidRJ
-         TGjQ==
-X-Gm-Message-State: AOAM532nsVwytftmD2U1UIlhaOiRx6lAvPAq4U5eG2zBdJKuHl7xSFdt
-        Si2crNM3houVx/yiS112AZ3C2og2XXjimEttSDxpHg==
-X-Google-Smtp-Source: ABdhPJzW7jeqn8/HrRf1zvDOSBhWBELyOoysxnoaonrBp2ayMlaTV+GUKzwc1g6K05h7+lORk8nrO2ZkuRfId+MHg7g=
-X-Received: by 2002:a17:907:10d4:: with SMTP id rv20mr22660986ejb.413.1595264596856;
- Mon, 20 Jul 2020 10:03:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200715214312.2266839-1-haoluo@google.com> <20200715214312.2266839-2-haoluo@google.com>
- <CAEf4BzZ5A+uMPFEmgom+0x+jju3JgTLXuuy=QB_dm2Skf--5Dg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ5A+uMPFEmgom+0x+jju3JgTLXuuy=QB_dm2Skf--5Dg@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 20 Jul 2020 10:03:05 -0700
-Message-ID: <CA+khW7h1HBmV5LdALswF2d2q9cD_EU1CfbBEogdHszbHLnTVAQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: BTF support for __ksym externs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 20 Jul 2020 13:04:35 -0400
+Received: from vla1-fdfb804fb3f3.qloud-c.yandex.net (vla1-fdfb804fb3f3.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3199:0:640:fdfb:804f])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id CF8172E1518;
+        Mon, 20 Jul 2020 20:04:32 +0300 (MSK)
+Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
+        by vla1-fdfb804fb3f3.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id C1WzD3voiw-4Vs07Qlq;
+        Mon, 20 Jul 2020 20:04:32 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1595264672; bh=9nc5QhNzzf3iw2FswYDHWVtv9fk5oYfLZ674amcL4Ng=;
+        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
+        b=wfCs5R6UIKKZvgtfiMFoIwW2B3uUWxWCLG5i/phDFGnhyLObsjeOiuG8QAGh1/Qe2
+         qmvFUP3rhpfxokfyxCGkkN+OI09UatStqU4Tu74nZXYWnExqvVAlJRbMQRjnjc9YRO
+         mzW1X4lltZMG1ewsPrSNo1niGRToXBnNliQeZRy4=
+Authentication-Results: vla1-fdfb804fb3f3.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
+        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id gk6qeYCCCz-4ViKeTXI;
+        Mon, 20 Jul 2020 20:04:31 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Subject: [PATCH] block: bfq fix blkio cgroup leakage v2
+Date:   Mon, 20 Jul 2020 17:04:11 +0000
+Message-Id: <20200720170411.21250-1-dmtrmonakhov@yandex-team.ru>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <b4561a09-f00f-568b-9d55-0a2893de4be5@kernel.dk>
+References: <b4561a09-f00f-568b-9d55-0a2893de4be5@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrii,
+commit db37a34c563b ("block, bfq: get a ref to a group when adding it to a service tree")
+introduce leak forbfq_group and blkcg_gq objects because of get/put
+imbalance. See trace balow:
+-> blkg_alloc
+   -> bfq_pq_alloc
+     -> bfqg_get (+1)
+->bfq_activate_bfqq
+  ->bfq_activate_requeue_entity
+    -> __bfq_activate_entity
+       ->bfq_get_entity
+         ->bfqg_and_blkg_get (+1)  <==== : Note1
+->bfq_del_bfqq_busy
+  ->bfq_deactivate_entity+0x53/0xc0 [bfq]
+    ->__bfq_deactivate_entity+0x1b8/0x210 [bfq]
+      -> bfq_forget_entity(is_in_service = true)
+	 entity->on_st_or_in_serv = false   <=== :Note2
+	 if (is_in_service)
+	     return;  ==> do not touch reference
+-> blkcg_css_offline
+ -> blkcg_destroy_blkgs
+  -> blkg_destroy
+   -> bfq_pd_offline
+    -> __bfq_deactivate_entity
+         if (!entity->on_st_or_in_serv) /* true, because (Note2)
+		return false;
+ -> bfq_pd_free
+    -> bfqg_put() (-1, byt bfqg->ref == 2) because of (Note2)
+So bfq_group and blkcg_gq  will leak forever, see test-case below.
 
-Thanks for taking a look at this. You comments are clear, I will fix them in v2.
+We should drop group reference once it finaly removed from service
+inside __bfq_bfqd_reset_in_service, as we do with queue entities.
 
-> Also, in the next version, please split kernel part and libbpf part
-> into separate patches.
->
+##TESTCASE_BEGIN:
+#!/bin/bash
 
-Got it. Will do.
+max_iters=${1:-100}
+#prep cgroup mounts
+mount -t tmpfs cgroup_root /sys/fs/cgroup
+mkdir /sys/fs/cgroup/blkio
+mount -t cgroup -o blkio none /sys/fs/cgroup/blkio
 
-> I don't think that's the right approach. It can't be the best effort.
-> It's actually pretty clear when a user wants a BTF-based variable with
-> ability to do direct memory access vs __ksym address that we have
-> right now: variable type info. In your patch you are only looking up
-> variable by name, but it needs to be more elaborate logic:
->
-> 1. if variable type is `extern void` -- do what we do today (no BTF required)
-> 2. if the variable type is anything but `extern void`, then find that
-> variable in BTF. If no BTF or variable is not found -- hard error with
-> detailed enough message about what we expected to find in kernel BTF.
-> 3. If such a variable is found in the kernel, then might be a good
-> idea to additionally check type compatibility (e.g., struct/union
-> should match struct/union, int should match int, typedefs should get
-> resolved to underlying type, etc). I don't think deep comparison of
-> structs is right, though, due to CO-RE, so just high-level
-> compatibility checks to prevent the most obvious mistakes.
->
+# Prepare blkdev
+grep blkio /proc/cgroups
+truncate -s 1M img
+losetup /dev/loop0 img
+echo bfq > /sys/block/loop0/queue/scheduler
 
-Ack.
+grep blkio /proc/cgroups
+for ((i=0;i<max_iters;i++))
+do
+    mkdir -p /sys/fs/cgroup/blkio/a
+    echo 0 > /sys/fs/cgroup/blkio/a/cgroup.procs
+    dd if=/dev/loop0 bs=4k count=1 of=/dev/null iflag=direct 2> /dev/null
+    echo 0 > /sys/fs/cgroup/blkio/cgroup.procs
+    rmdir /sys/fs/cgroup/blkio/a
+    grep blkio /proc/cgroups
+done
+##TESTCASE_END:
 
-> >
-> > Also note since we need to carry the ksym's address (64bits) as well as
-> > its btf_id (32bits), pseudo_btf_id uses ld_imm64's both imm and off
-> > fields.
->
-> For BTF-enabled ksyms, libbpf doesn't need to provide symbol address,
-> kernel will find it and substitute it, so BTF ID is the only
-> parameter. Thus it can just go into the imm field (and simplify
-> ldimm64 validation logic a bit).
->
+Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+---
+ block/bfq-wf2q.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-Ack.
+diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+index 8113138..93b236c 100644
+--- a/block/bfq-wf2q.c
++++ b/block/bfq-wf2q.c
+@@ -635,14 +635,10 @@ static void bfq_idle_insert(struct bfq_service_tree *st,
+  * @entity: the entity being removed.
+  * @is_in_service: true if entity is currently the in-service entity.
+  *
+- * Forget everything about @entity. In addition, if entity represents
+- * a queue, and the latter is not in service, then release the service
+- * reference to the queue (the one taken through bfq_get_entity). In
+- * fact, in this case, there is really no more service reference to
+- * the queue, as the latter is also outside any service tree. If,
+- * instead, the queue is in service, then __bfq_bfqd_reset_in_service
+- * will take care of putting the reference when the queue finally
+- * stops being served.
++ * Forget everything about @entity. If entity is not in service, then release
++ * the service reference to the entity (the one taken through  bfq_get_entity).
++ * If the entity is in service, then __bfq_bfqd_reset_in_service will take care
++ * of putting the reference when the entity finally stops being served.
+  */
+ static void bfq_forget_entity(struct bfq_service_tree *st,
+ 			      struct bfq_entity *entity,
+@@ -1626,9 +1622,16 @@ bool __bfq_bfqd_reset_in_service(struct bfq_data *bfqd)
+ 	 * execute the final step: reset in_service_entity along the
+ 	 * path from entity to the root.
+ 	 */
+-	for_each_entity(entity)
++	for_each_entity(entity) {
+ 		entity->sched_data->in_service_entity = NULL;
+-
++		/*
++		 * Release bfq_groups reference if it was not released in
++		 * bfq_forget_entity, which was taken in bfq_get_entity.
++		 */
++		if (!bfq_entity_to_bfqq(entity) && !entity->on_st_or_in_serv)
++			bfqg_and_blkg_put(container_of(entity, struct bfq_group,
++						       entity));
++	}
+ 	/*
+ 	 * in_serv_entity is no longer in service, so, if it is in no
+ 	 * service tree either, then release the service reference to
+-- 
+2.7.4
 
-> >  /* when bpf_call->src_reg == BPF_PSEUDO_CALL, bpf_call->imm == pc-relative
-> >   * offset to another bpf function
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 3c1efc9d08fd..3c925957b9b6 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -7131,15 +7131,29 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
-> >                 verbose(env, "invalid BPF_LD_IMM insn\n");
-> >                 return -EINVAL;
-> >         }
-> > +       err = check_reg_arg(env, insn->dst_reg, DST_OP);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /*
-> > +        * BPF_PSEUDO_BTF_ID insn's off fields carry the ksym's btf_id, so its
-> > +        * handling has to come before the reserved field check.
-> > +        */
-> > +       if (insn->src_reg == BPF_PSEUDO_BTF_ID) {
-> > +               u32 id = ((u32)(insn + 1)->off << 16) | (u32)insn->off;
-> > +               const struct btf_type *t = btf_type_by_id(btf_vmlinux, id);
-> > +
->
-> This is the kernel, we should be paranoid and assume the hackers want
-> to do bad things. So check t for NULL. Check that it's actually a
-> BTF_KIND_VAR. Check the name, find ksym addr, etc.
->
-
-Ack.
