@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B721226BA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380A2226BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730031AbgGTPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:42:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
+        id S1730058AbgGTPmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:42:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730022AbgGTPmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:42:11 -0400
+        id S1730042AbgGTPmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:42:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 482C122CF6;
-        Mon, 20 Jul 2020 15:42:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EBBA2176B;
+        Mon, 20 Jul 2020 15:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259730;
-        bh=aDXyZSup/tyHwbuuJAR296adUriUMYZPaAMIGGnLs5M=;
+        s=default; t=1595259736;
+        bh=Ii21Y4dB2dtPOuktMfoSercnM/W9406kERuSR4p265M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ul42pafqrVhjzo6uh1gmZHYWUfTzCWELJGD33i0NRP4lPZtq8QHSWJxAiewHFlgpa
-         0tVfGHDWdJpj+zmi2JKdqP4c9XXE8MEcSXHqZxnVkm52EdZhV/ZHrJFELHhUWVlUK6
-         IhpimV3R+2Ig72TwEu3NJf2LINrJVrcq1bB1bJBM=
+        b=o/TqHLLLbdeasWBOwtL5LOFu1m+3+tlivVvuw6nf9vBIuXtr/ohZJy0Qu7Q6KYDBe
+         uh8TeFQcCJwVtxPJluFMvpJ6zY3znq+M7J8q0VnV9Mgox60vKu/yRBOEfd62uOG8ZF
+         QapkVYeRFzeKsC6UHSYx5unEU2TOQcbxYJPGIMiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.9 59/86] mtd: rawnand: brcmnand: fix CS0 layout
-Date:   Mon, 20 Jul 2020 17:36:55 +0200
-Message-Id: <20200720152756.132846580@linuxfoundation.org>
+        stable@vger.kernel.org, Yariv <oigevald+kernel@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.9 60/86] HID: magicmouse: do not set up autorepeat
+Date:   Mon, 20 Jul 2020 17:36:56 +0200
+Message-Id: <20200720152756.196264399@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
 References: <20200720152753.138974850@linuxfoundation.org>
@@ -45,37 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Álvaro Fernández Rojas <noltari@gmail.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-commit 3d3fb3c5be9ce07fa85d8f67fb3922e4613b955b upstream.
+commit 6363d2065cd399cf9d6dc9d08c437f8658831100 upstream.
 
-Only v3.3-v5.0 have a different CS0 layout.
-Controllers before v3.3 use the same layout for every CS.
+Neither the trackpad, nor the mouse want input core to generate autorepeat
+events for their buttons, so let's reset the bit (as hid-input sets it for
+these devices based on the usage vendor code).
 
-Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200522121524.4161539-3-noltari@gmail.com
+Cc: stable@vger.kernel.org
+Reported-by: Yariv <oigevald+kernel@gmail.com>
+Tested-by: Yariv <oigevald+kernel@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/brcmnand/brcmnand.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/hid/hid-magicmouse.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -491,8 +491,9 @@ static int brcmnand_revision_init(struct
- 	} else {
- 		ctrl->cs_offsets = brcmnand_cs_offsets;
- 
--		/* v5.0 and earlier has a different CS0 offset layout */
--		if (ctrl->nand_version <= 0x0500)
-+		/* v3.3-5.0 have a different CS0 offset layout */
-+		if (ctrl->nand_version >= 0x0303 &&
-+		    ctrl->nand_version <= 0x0500)
- 			ctrl->cs0_offsets = brcmnand_cs_offsets_cs0;
+--- a/drivers/hid/hid-magicmouse.c
++++ b/drivers/hid/hid-magicmouse.c
+@@ -451,6 +451,12 @@ static int magicmouse_setup_input(struct
+ 		__set_bit(MSC_RAW, input->mscbit);
  	}
+ 
++	/*
++	 * hid-input may mark device as using autorepeat, but neither
++	 * the trackpad, nor the mouse actually want it.
++	 */
++	__clear_bit(EV_REP, input->evbit);
++
+ 	return 0;
+ }
  
 
 
