@@ -2,145 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936DD225727
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDADD225729
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgGTFne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 01:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgGTFnd (ORCPT
+        id S1726712AbgGTFo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 01:44:59 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:45444 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725845AbgGTFo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 01:43:33 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE14DC0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 22:43:33 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id x13so7828457vsx.13
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 22:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bbLapiGcJOFTbUyK//8Fe9PD8yV2JZi5AG9HjtvvQrA=;
-        b=jj1lurMJabflLy5RgODdvDSsqwg4LNBBvV2vJXasXqtYgo0+msjC1M2ABFQX2Hx0S5
-         JWRrVYPqvC6wx21kAa9FwFts+z6ojJytWWnpeK0SPmUSZortpePdjvlDiVu2PQnIcM/S
-         RsUIgoiQLAjSFOnQgadcWhqlix+fY4oThTwOJ95eghx9hxzF/NUGG347CBv/+2yQSd2v
-         ac9XPl9rkZpSEFqgHhK8ffVqcCUvfCEJJrDtuVT7HWHQWYx2YFmBfbM4G/hJweli/Zfn
-         ikouE1LntmptRTsrCvV19wZcTWEEsvSGyw+TAA5K/N07kmoqvT275Vq1a5AhRZS47OcC
-         FtLQ==
+        Mon, 20 Jul 2020 01:44:59 -0400
+Received: by mail-ej1-f67.google.com with SMTP id a1so16734026ejg.12
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 22:44:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bbLapiGcJOFTbUyK//8Fe9PD8yV2JZi5AG9HjtvvQrA=;
-        b=Ci4BS8YV0ixabw/XIj8+T/rZdBiia9rWHT/NmlSbH/WZaUPdUerozdSGaV7cbi7yBR
-         pCI9kAtE6Jsd/rpQzcet46bdNvILxf9wFiIxhGo86oiWe/xOOpccK3bNfcpilV6RqnEn
-         oisagquP3BEqOLodb2lqCc73chwTAF/afOHQd1oPEVkeuHBPQZ63tClAAXh+aX8JoZGv
-         9OJRbMSNQoEsOUcEarytW7X4OkJacQc4Eqw72UXoft5n+FayRY+iu0oCOlVxCBxHV+xa
-         S+mYUElTYpWnyGXmeDKhnv+Zxg+QIB/pPEO+Tq3LqRVVeRT4AaQylWT0FDAAvf6IsIuj
-         fSRw==
-X-Gm-Message-State: AOAM531YOvSYXB+12xKxzAxKq9KsigKoGLFzibjxuwnWvYWDARY0iCX+
-        NKOpgDa1yREdFeaNw1ZhKZegyVCfixWccrKDRWgaqQ==
-X-Google-Smtp-Source: ABdhPJyjgOlgkreB2uvU8zXbH7F+KFhG4EFoZL6NjUMOyUv9H1nqnfOF2ArdbefVQmvPiC+CFEQwocwOCYmxkSO99Cg=
-X-Received: by 2002:a67:2285:: with SMTP id i127mr14138213vsi.159.1595223812879;
- Sun, 19 Jul 2020 22:43:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P3C1c9veJT5xao6W/+BSbcnDxvOAGXZygUTBB4BI63M=;
+        b=B9El2gnDdoO/txHkgE98pCXrR5BEMlIV7y5DRQWpBIChIfuF6boTqTYoozJvgxADS0
+         xk2t3hFAMXb+V+ZGm/tvt8jW3Oe6jD2L80+vZO920LXSZd+tr0HndsYtmT3hj/mpagQP
+         fQeKap8eqko2GZJOfqfwhB1uQFWyk/21bOnTBxGB4Rt8qSLlQjy/9gmRbdwKnsw4/cZI
+         JNDJ8B6tRAK8GcCUixJn6R2WOZ+7uIjgvpNA1lwsJSL1Cz+LP1Ab+2EggVSDgvVZZZj3
+         AjOkY1weIit00I87web0rC5/qs4I1ZY5Rm1+HL9lA/EzVLvJXxhG9dv3/2Oj6Zdj/Wbf
+         XGGA==
+X-Gm-Message-State: AOAM5338xEL3NTdXt4BQRJGZjGLT2h/UZJVidwx185RxcyhhvcxnCj5h
+        0QdwDryK2TB+AOP4FT7DDog=
+X-Google-Smtp-Source: ABdhPJx4zQpxMwJIHn0VevhF0Vuj5PVgTbPVRwD9foLkXQzprWtrUn9LDCPy4tD+1rxFFBZzR0kZ2w==
+X-Received: by 2002:a17:906:a253:: with SMTP id bi19mr18613712ejb.338.1595223896118;
+        Sun, 19 Jul 2020 22:44:56 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id x64sm15073826edc.95.2020.07.19.22.44.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Jul 2020 22:44:55 -0700 (PDT)
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+ <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
+ <20200717122651.GA6067@redhat.com> <20200717124017.GB6067@redhat.com>
+ <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
+ <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+Date:   Mon, 20 Jul 2020 07:44:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200717164217.18819-1-daniel.lezcano@linaro.org>
-In-Reply-To: <20200717164217.18819-1-daniel.lezcano@linaro.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Mon, 20 Jul 2020 11:13:21 +0530
-Message-ID: <CAHLCerNfKGmEz9g98VA6iMYy7MjfwfH=gaF9KR0o_qpJwFPekA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] thermal: netlink: Improve the initcall ordering
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:12 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> The initcalls like to play joke. In our case, the thermal-netlink
-> initcall is called after the thermal-core initcall but this one sends
-> a notification before the former is initialzed. No issue was spotted,
+On 18. 07. 20, 19:44, Christian Brauner wrote:
+> On Sat, Jul 18, 2020 at 07:14:07PM +0200, Oleg Nesterov wrote:
+>> On 07/18, Jiri Slaby wrote:
+>>>
+>>> On 17. 07. 20, 14:40, Oleg Nesterov wrote:
+>>>>
+>>>> please see the updated patch below, lets check ptrace_unfreeze() too.
+>>>
+>>> Sure, dmesg attached.
+>>
+>> Thanks a lot!
+>>
+>> But I am totally confused...
+>>
+>>> [   94.513944] ------------[ cut here ]------------
+>>> [   94.513985] do not call blocking ops when !TASK_RUNNING; state=8 set at [<000000002fe279e9>] ptrace_check_attach+0xbf/0x110
+>>
+>> OK, so the ptracer has already did the TASK_TRACED -> __TASK_TRACED change in
+>> ptrace_freeze_traced(),
+>>
+>>> [   94.514019] WARNING: CPU: 16 PID: 34171 at kernel/sched/core.c:6881 __might_sleep+0x6c/0x70
+>>> [   94.514020] Modules linked in: ata_generic(E) pata_acpi(E) crc32_pclmul(E) qemu_fw_cfg(E) ata_piix(E) e1000(E) nls_iso8859_1(E) nls_cp437(E) vfat(E) fat(E) virtio_blk(E) virtio_mmio(E) xfs(E) btrfs(E) blake2b_generic(E) xor(E) raid6_pq(E) libcrc32c(E) crc32c_intel(E) reiserfs(E) squashfs(E) fuse(E) dm_snapshot(E) dm_bufio(E) dm_crypt(E) dm_mod(E) binfmt_misc(E) loop(E) sg(E) virtio_rng(E)
+>>> [   94.514082] CPU: 16 PID: 34171 Comm: strace Tainted: G            E     5.8.0-rc5-100.g55927f9-default #1 openSUSE Tumbleweed (unreleased)
+>>> [   94.514084] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-0-ga698c89-rebuilt.suse.com 04/01/2014
+>>> [   94.514087] RIP: 0010:__might_sleep+0x6c/0x70
+>>> [   94.514090] Code: 41 5c 41 5d e9 25 ff ff ff 48 8b 90 68 1a 00 00 48 8b 70 10 48 c7 c7 10 45 70 8f c6 05 4f a9 68 01 01 48 89 d1 e8 7a bb fc ff <0f> 0b eb c8 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41 55 49 89 fd
+>>> [   94.514092] RSP: 0018:ffff9ffa4ba1be00 EFLAGS: 00010286
+>>> [   94.514093] RAX: 0000000000000000 RBX: ffff8dc82b503e00 RCX: 0000000000000489
+>>> [   94.514094] RDX: 0000000000000001 RSI: 0000000000000096 RDI: 0000000000000247
+>>> [   94.514095] RBP: ffffffff8f6ffa6b R08: 0000000000000004 R09: 0000000000000489
+>>> [   94.514095] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000039
+>>> [   94.514096] R13: 0000000000000000 R14: 0000000000000001 R15: ffff8dc82b5045e4
+>>> [   94.514098] FS:  00007fa00f1f9240(0000) GS:ffff8dcb0c000000(0000) knlGS:0000000000000000
+>>> [   94.514099] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [   94.514100] CR2: 0000557b53d25877 CR3: 00000004ca490005 CR4: 0000000000360ee0
+>>> [   94.514103] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> [   94.514104] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> [   94.514105] Call Trace:
+>>> [   94.514821]  ptrace_stop+0x1a9/0x300
+>>
+>> This is already wrong. But
+>>
+>> 	Where does this __might_sleep() come from ??? I ses no blocking calls
+>> 	in ptrace_stop(). Not to mention it is called with ->siglock held and
+>> 	right after this lock is dropped we take tasklist_lock.
+>>
+>> 	How this connects to the debugging patch I sent? Did you see this warning
+>> 	without that patch?
+>> 	
+>>
+>>> [   94.514888] WARNING: CPU: 16 PID: 34171 at kernel/signal.c:2219 ptrace_stop+0x1d8/0x300
+>> ...
+>>> [   94.514899] RIP: 0010:ptrace_stop+0x1d8/0x300
+>>
+>> This is WARN_ON(current->state) added to ptrace_stop(), this can explain
+>> BUG_ON() in do_notify_parent() you reported.
+>>
+>> So, the tracee returns from schedule() with ->state != TASK_RUNNING ???
+>> This must not be possible.
+>>
+>> OK, perhaps task->state was changed by ptrace_unfreeze_traced()? this can
+>> only happen if it races with ttwu(__TASK_TRACED) without ->siglock held,
+>> nobody should do this.
+>>
+>> Strange.
+> 
+> I have tried to reproduce this with an vanilla upstream 5.8-rc4 and the
+> strace test-suite with
+> 
+> make check -j4
+> 
+> and I wasn't able to after multiple retries. Jiri, just to make sure
+> this is upstream 5.8-rc4 without any additional patches?
 
-typo: initialized
+You tackled it, we cherry-picked dbfb089d360 to our kernels. Ccing more
+people.
 
-> but it could lead to a memory corruption, so instead of relying on the
-> core_initcall for the thermal-netlink, let's initialize directly from
-> the thermal-core init routine, so we have full control of the init
-> ordering.
+So if you try with pure vanilla 5.8-rc6 (it contains the commit), you
+should be able to reproduce. I am.
 
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+OTOH 5.8-rc6 with that commit reverted -- I cannot reproduce there. So
+it must be it.
 
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+> Anything special required to reproduce this in the way you run strace
+> and so on?
 
-> ---
->  drivers/thermal/thermal_core.c    | 4 ++++
->  drivers/thermal/thermal_netlink.c | 3 +--
->  drivers/thermal/thermal_netlink.h | 6 ++++++
->  3 files changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 25ef29123f72..c2e7d7aaa354 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1581,6 +1581,10 @@ static int __init thermal_init(void)
->  {
->         int result;
->
-> +       result = thermal_netlink_init();
-> +       if (result)
-> +               goto error;
-> +
->         mutex_init(&poweroff_lock);
->         result = thermal_register_governors();
->         if (result)
-> diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
-> index dd0a3b889674..42eace7401da 100644
-> --- a/drivers/thermal/thermal_netlink.c
-> +++ b/drivers/thermal/thermal_netlink.c
-> @@ -641,8 +641,7 @@ static struct genl_family thermal_gnl_family __ro_after_init = {
->         .n_mcgrps       = ARRAY_SIZE(thermal_genl_mcgrps),
->  };
->
-> -static int __init thermal_netlink_init(void)
-> +int __init thermal_netlink_init(void)
->  {
->         return genl_register_family(&thermal_gnl_family);
->  }
-> -core_initcall(thermal_netlink_init);
-> diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
-> index 0ec28d105da5..828d1dddfa98 100644
-> --- a/drivers/thermal/thermal_netlink.h
-> +++ b/drivers/thermal/thermal_netlink.h
-> @@ -6,6 +6,7 @@
->
->  /* Netlink notification function */
->  #ifdef CONFIG_THERMAL_NETLINK
-> +int __init thermal_netlink_init(void);
->  int thermal_notify_tz_create(int tz_id, const char *name);
->  int thermal_notify_tz_delete(int tz_id);
->  int thermal_notify_tz_enable(int tz_id);
-> @@ -23,6 +24,11 @@ int thermal_notify_cdev_delete(int cdev_id);
->  int thermal_notify_tz_gov_change(int tz_id, const char *name);
->  int thermal_genl_sampling_temp(int id, int temp);
->  #else
-> +static inline int thermal_netlink_init(void)
-> +{
-> +       return 0;
-> +}
-> +
->  static inline int thermal_notify_tz_create(int tz_id, const char *name)
->  {
->         return 0;
-> --
-> 2.17.1
->
+Nothing special there. Except the HW: when I run a VM with 16+
+processors, it's much more likely to be hit (usually, on the first run
+of make check).
+
+thanks,
+-- 
+js
