@@ -2,70 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FC622636C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FD92265BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgGTPfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:35:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58576 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgGTPfE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:35:04 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595259302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ufuggYevdsxiEsM6XXjzZH3T4aQwv57H04VOD0n80js=;
-        b=ykIsIdVy6iTVunurqGW6mvQzrsfYH8VAN+cS3RxVHx0+qNMCiIX9gYOdEHRD41S69Ajgwa
-        NkIE8mbpV+65xIY6v3Wb5Jjvq/L+iwvgqUdRCdmbBkrd6wfAwizRWBs1FHwQB02KydPXDF
-        XWAqKwvgX0oZq50FFF5uJDmN1vLtzNE145DVPHi1cCeNPtJWHoBef3nbEt+KPJQJYPbo12
-        lxDUEvD/q6D/rCs1mAPMpNsPvJzyIhj+L40wpsE+yiNpSV5Uuten2f9YRQhairr30pV3+2
-        WDmx6Oq8iE/uXUZov/8tUAtk6rq1L0CRcyG17iUSMiYxfYboMB3HHaU3Kzvv/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595259302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ufuggYevdsxiEsM6XXjzZH3T4aQwv57H04VOD0n80js=;
-        b=HRkBAS/x+gIamYfN5EbFxuu5i87i8FA/tuz+aMwEfMys6qT91oIp9W9ec/sW1xVDfFU6ar
-        ojWiuAh4KStjgAAw==
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH v2] fs/namespace: use percpu_rw_semaphore for writer holding
-In-Reply-To: <20200719014954.GH2786714@ZenIV.linux.org.uk>
-References: <20200702154646.qkrzchuttrywvuud@linutronix.de> <20200719014954.GH2786714@ZenIV.linux.org.uk>
-Date:   Mon, 20 Jul 2020 17:41:01 +0206
-Message-ID: <877duyryhm.fsf@jogness.linutronix.de>
+        id S1731827AbgGTP4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729723AbgGTP4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:56:34 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 128BA2065E;
+        Mon, 20 Jul 2020 15:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595260593;
+        bh=WuaXP4JoutujePFRTW8/UpKRMPkA/U8hIoHLBrJkrXw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CdqITxzy+h8q/peX1b9+QPBkXJCRc1fd/WI7Y2BJimNgbyeTIZTpg2W71+yUKp64f
+         pOkHtCoThOzv/xOpaA1UXTCeWrDfomMYQcHR0m/ksVI1+60WCNyN88FtldO+mL/rNS
+         oHvPuqggWcbrGunh/qiHCiJ4yFEChXxZsfuhOFHI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Cameron Berkenpas <cam@neo-zeon.de>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Lu Fengqi <lufq.fnst@cn.fujitsu.com>,
+        =?UTF-8?q?Dani=C3=ABl=20Sonck?= <dsonck92@gmail.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Zefan Li <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 024/215] cgroup: fix cgroup_sk_alloc() for sk_clone_lock()
+Date:   Mon, 20 Jul 2020 17:35:06 +0200
+Message-Id: <20200720152821.333739006@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-19, Al Viro <viro@zeniv.linux.org.uk> wrote:
->> The MNT_WRITE_HOLD flag is used to manually implement a rwsem.
->
-> Could you show me where does it currently sleep?  Your version does,
-> unless I'm misreading it...
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-You are reading it correctly. This patch introduces new possible
-sleeping for__mnt_want_write() when writers for a superblock are being
-held.
+[ Upstream commit ad0f75e5f57ccbceec13274e1e242f2b5a6397ed ]
 
-The RFCv1 [0] is a variant that does not introduce sleeping, but instead
-reverts back to per-cpu spinlocks.
+When we clone a socket in sk_clone_lock(), its sk_cgrp_data is
+copied, so the cgroup refcnt must be taken too. And, unlike the
+sk_alloc() path, sock_update_netprioidx() is not called here.
+Therefore, it is safe and necessary to grab the cgroup refcnt
+even when cgroup_sk_alloc is disabled.
 
-Sebastian and I are requesting comments on these two possible
-solutions. Or perhaps you have an idea how to solve the potential live
-lock situation.
+sk_clone_lock() is in BH context anyway, the in_interrupt()
+would terminate this function if called there. And for sk_alloc()
+skcd->val is always zero. So it's safe to factor out the code
+to make it more readable.
 
-John Ogness
+The global variable 'cgroup_sk_alloc_disabled' is used to determine
+whether to take these reference counts. It is impossible to make
+the reference counting correct unless we save this bit of information
+in skcd->val. So, add a new bit there to record whether the socket
+has already taken the reference counts. This obviously relies on
+kmalloc() to align cgroup pointers to at least 4 bytes,
+ARCH_KMALLOC_MINALIGN is certainly larger than that.
 
-[0] https://lkml.kernel.org/r/20200617104058.14902-2-john.ogness@linutronix.de
+This bug seems to be introduced since the beginning, commit
+d979a39d7242 ("cgroup: duplicate cgroup reference when cloning sockets")
+tried to fix it but not compeletely. It seems not easy to trigger until
+the recent commit 090e28b229af
+("netprio_cgroup: Fix unlimited memory leak of v2 cgroups") was merged.
+
+Fixes: bd1060a1d671 ("sock, cgroup: add sock->sk_cgroup")
+Reported-by: Cameron Berkenpas <cam@neo-zeon.de>
+Reported-by: Peter Geis <pgwipeout@gmail.com>
+Reported-by: Lu Fengqi <lufq.fnst@cn.fujitsu.com>
+Reported-by: Daniël Sonck <dsonck92@gmail.com>
+Reported-by: Zhang Qiang <qiang.zhang@windriver.com>
+Tested-by: Cameron Berkenpas <cam@neo-zeon.de>
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Tested-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Zefan Li <lizefan@huawei.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/cgroup-defs.h |    6 ++++--
+ include/linux/cgroup.h      |    4 +++-
+ kernel/cgroup/cgroup.c      |   31 +++++++++++++++++++------------
+ net/core/sock.c             |    2 +-
+ 4 files changed, 27 insertions(+), 16 deletions(-)
+
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -797,7 +797,8 @@ struct sock_cgroup_data {
+ 	union {
+ #ifdef __LITTLE_ENDIAN
+ 		struct {
+-			u8	is_data;
++			u8	is_data : 1;
++			u8	no_refcnt : 1;
+ 			u8	padding;
+ 			u16	prioidx;
+ 			u32	classid;
+@@ -807,7 +808,8 @@ struct sock_cgroup_data {
+ 			u32	classid;
+ 			u16	prioidx;
+ 			u8	padding;
+-			u8	is_data;
++			u8	no_refcnt : 1;
++			u8	is_data : 1;
+ 		} __packed;
+ #endif
+ 		u64		val;
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -822,6 +822,7 @@ extern spinlock_t cgroup_sk_update_lock;
+ 
+ void cgroup_sk_alloc_disable(void);
+ void cgroup_sk_alloc(struct sock_cgroup_data *skcd);
++void cgroup_sk_clone(struct sock_cgroup_data *skcd);
+ void cgroup_sk_free(struct sock_cgroup_data *skcd);
+ 
+ static inline struct cgroup *sock_cgroup_ptr(struct sock_cgroup_data *skcd)
+@@ -835,7 +836,7 @@ static inline struct cgroup *sock_cgroup
+ 	 */
+ 	v = READ_ONCE(skcd->val);
+ 
+-	if (v & 1)
++	if (v & 3)
+ 		return &cgrp_dfl_root.cgrp;
+ 
+ 	return (struct cgroup *)(unsigned long)v ?: &cgrp_dfl_root.cgrp;
+@@ -847,6 +848,7 @@ static inline struct cgroup *sock_cgroup
+ #else	/* CONFIG_CGROUP_DATA */
+ 
+ static inline void cgroup_sk_alloc(struct sock_cgroup_data *skcd) {}
++static inline void cgroup_sk_clone(struct sock_cgroup_data *skcd) {}
+ static inline void cgroup_sk_free(struct sock_cgroup_data *skcd) {}
+ 
+ #endif	/* CONFIG_CGROUP_DATA */
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6379,18 +6379,8 @@ void cgroup_sk_alloc_disable(void)
+ 
+ void cgroup_sk_alloc(struct sock_cgroup_data *skcd)
+ {
+-	if (cgroup_sk_alloc_disabled)
+-		return;
+-
+-	/* Socket clone path */
+-	if (skcd->val) {
+-		/*
+-		 * We might be cloning a socket which is left in an empty
+-		 * cgroup and the cgroup might have already been rmdir'd.
+-		 * Don't use cgroup_get_live().
+-		 */
+-		cgroup_get(sock_cgroup_ptr(skcd));
+-		cgroup_bpf_get(sock_cgroup_ptr(skcd));
++	if (cgroup_sk_alloc_disabled) {
++		skcd->no_refcnt = 1;
+ 		return;
+ 	}
+ 
+@@ -6415,10 +6405,27 @@ void cgroup_sk_alloc(struct sock_cgroup_
+ 	rcu_read_unlock();
+ }
+ 
++void cgroup_sk_clone(struct sock_cgroup_data *skcd)
++{
++	if (skcd->val) {
++		if (skcd->no_refcnt)
++			return;
++		/*
++		 * We might be cloning a socket which is left in an empty
++		 * cgroup and the cgroup might have already been rmdir'd.
++		 * Don't use cgroup_get_live().
++		 */
++		cgroup_get(sock_cgroup_ptr(skcd));
++		cgroup_bpf_get(sock_cgroup_ptr(skcd));
++	}
++}
++
+ void cgroup_sk_free(struct sock_cgroup_data *skcd)
+ {
+ 	struct cgroup *cgrp = sock_cgroup_ptr(skcd);
+ 
++	if (skcd->no_refcnt)
++		return;
+ 	cgroup_bpf_put(cgrp);
+ 	cgroup_put(cgrp);
+ }
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1837,7 +1837,7 @@ struct sock *sk_clone_lock(const struct
+ 		/* sk->sk_memcg will be populated at accept() time */
+ 		newsk->sk_memcg = NULL;
+ 
+-		cgroup_sk_alloc(&newsk->sk_cgrp_data);
++		cgroup_sk_clone(&newsk->sk_cgrp_data);
+ 
+ 		rcu_read_lock();
+ 		filter = rcu_dereference(sk->sk_filter);
+
+
