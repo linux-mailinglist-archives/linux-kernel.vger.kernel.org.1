@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B761E2255C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028962255C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgGTCE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 22:04:58 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55234 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgGTCE6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 22:04:58 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 50DB320B4909;
-        Sun, 19 Jul 2020 19:04:57 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 50DB320B4909
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595210697;
-        bh=zRG1ESiLAHDyNiv0B4tmWGwGfmW3Odsif5Z4IcufgBY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=K+4absWZa2gX4t8pSglBLKmy/9E9YldShr3PWP/443G4ykMhPoClGFe6LPQLlAz1Z
-         7wtteeoDMdm3MhE7YxZUJYW7Vpbnhg56YIBwY3+Url2otVTqvZ8qZUC5zIGh91QDZU
-         zNFBIl6ZDaZDBnk4jkUi8AycwnLUjaJgGD3xypcE=
-Subject: Re: [PATCH v3 4/5] LSM: Define SELinux function to measure security
- state
-To:     kernel test robot <lkp@intel.com>, zohar@linux.ibm.com,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com
-Cc:     kbuild-all@lists.01.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200717222819.26198-5-nramas@linux.microsoft.com>
- <202007181027.UwJXCNXk%lkp@intel.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <61a4c849-5cb7-0a58-2bb9-61f55a98657a@linux.microsoft.com>
-Date:   Sun, 19 Jul 2020 19:04:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726830AbgGTCHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 22:07:19 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42042 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726225AbgGTCHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 22:07:19 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 559488765EB5FCFC14C9;
+        Mon, 20 Jul 2020 10:07:16 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.16) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
+ 10:07:01 +0800
+Subject: Re: [PATCH v2] scsi: scsi_transport_sas: add missing newline when
+ printing 'enable' by sysfs
+To:     Bart Van Assche <bvanassche@acm.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <john.garry@huawei.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <guohanjun@huawei.com>
+References: <1594975472-12486-1-git-send-email-wangxiongfeng2@huawei.com>
+ <88b08a41-55b2-ae5d-fbe5-24439429855f@acm.org>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <be74553e-24a1-5d2b-beb6-59cca1599450@huawei.com>
+Date:   Mon, 20 Jul 2020 10:07:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <202007181027.UwJXCNXk%lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+In-Reply-To: <88b08a41-55b2-ae5d-fbe5-24439429855f@acm.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.16]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/20 8:14 PM, kernel test robot wrote:
-> Hi Lakshmi,
+Hi,
+
+On 2020/7/19 4:25, Bart Van Assche wrote:
+> On 2020-07-17 01:44, Xiongfeng Wang wrote:
+>> diff --git a/drivers/scsi/scsi_transport_sas.c b/drivers/scsi/scsi_transport_sas.c
+>> index 182fd25..e443dee 100644
+>> --- a/drivers/scsi/scsi_transport_sas.c
+>> +++ b/drivers/scsi/scsi_transport_sas.c
+>> @@ -563,7 +563,7 @@ static ssize_t do_sas_phy_enable(struct device *dev,
+>>  {
+>>  	struct sas_phy *phy = transport_class_to_phy(dev);
+>>  
+>> -	return snprintf(buf, 20, "%d", phy->enabled);
+>> +	return snprintf(buf, 20, "%d\n", phy->enabled);
+>>  }
 > 
-> Thank you for the patch! Yet something to improve:
+> For future sysfs show function patches, please use PAGE_SIZE as second
+> snprintf() argument or use sprintf() instead of snprintf() because in
+> this case it is clear that no output buffer overflow will happen. Using
+
+Thanks for your advice. I will follow it in the future patches.
+
+> any other size argument than PAGE_SIZE makes patches like the above
+> harder to verify than necessary. Anyway:
 > 
-> [auto build test ERROR on integrity/next-integrity]
-> [cannot apply to pcmoore-selinux/next security/next-testing linus/master v5.8-rc5 next-20200717]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> Reviewed-by: Bart van Assche <bvanassche@acm.org>
 
-Thank you for catching this.
+Thanks,
+Xiongfeng
 
-I did not see these failures with the compiler and make options I'd used.
-
-Am able to reproduce the errors with the instructions you'd provided.
-Will post the updated patches shortly.
-
-thanks,
-  -lakshmi
+> 
 
