@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719712261E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FA52261FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728691AbgGTOVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgGTOVS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:21:18 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AD3C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XhKiPHw8NMvO7D68bNb7M0LivUfDDlMFnTxSdNpiGKA=; b=PgWjM+3fjAMff/9vy9gToJwMTJ
-        lmKeKQmrvMl08Va47cNbBg32SRBjsUZZqg3KOQoHsoQg+Rj7yk1ZUWnVLbBFyx43vPrH1sulWj4+e
-        gcLCaPKLDF7dazrcnGaF4ChyfwOLTdZ7YkRTotqCCuDdB0BfkUClozQVBBoa0ikpDv2rzzay5H/n/
-        Iw7lwanBlbl3xMQQvjX6z4ZGRxjxaSK2g5NI4GDb73cr0rvfp8fIlYGbgBZ0AcPhuYvajBy4vb3M3
-        y85gHXKFiOv3izj2rNzK7J8S0ouHaAxPQx6euB7vwcOaxMsQWZsCod4tQkKaJtjAF/RULJOOPmZB0
-        sCqLM0kA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxWfF-0002VE-Sh; Mon, 20 Jul 2020 14:21:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1A4933056DE;
-        Mon, 20 Jul 2020 16:21:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F135D2120BDC0; Mon, 20 Jul 2020 16:21:05 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 16:21:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-Message-ID: <20200720142105.GR10769@hirez.programming.kicks-ass.net>
-References: <20200717124017.GB6067@redhat.com>
- <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
- <20200718171406.GB16791@redhat.com>
- <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
- <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
- <20200720064326.GA6612@redhat.com>
- <20200720082657.GC6612@redhat.com>
- <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
- <20200720105924.GE43129@hirez.programming.kicks-ass.net>
- <20200720140224.GD6612@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720140224.GD6612@redhat.com>
+        id S1728560AbgGTO0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:26:08 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:59636 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728081AbgGTO0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:26:07 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1F2282002FE;
+        Mon, 20 Jul 2020 16:26:06 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 32CC12002DC;
+        Mon, 20 Jul 2020 16:25:56 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E3256402C3;
+        Mon, 20 Jul 2020 22:07:07 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     catalin.marinas@arm.com, will@kernel.org,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        p.zabel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        bjorn.andersson@linaro.org, leoyang.li@nxp.com, vkoul@kernel.org,
+        geert+renesas@glider.be, olof@lixom.net,
+        amurray@thegoodpenguin.co.uk, treding@nvidia.com,
+        vidyas@nvidia.com, hayashi.kunihiko@socionext.com,
+        jonnyc@amazon.com, eswara.kota@linux.intel.com, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3 1/3] reset: imx7: Support module build
+Date:   Mon, 20 Jul 2020 22:21:59 +0800
+Message-Id: <1595254921-26050-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 04:02:24PM +0200, Oleg Nesterov wrote:
-> I have to admit, I do not understand the usage of prev_state in schedule(),
-> it looks really, really subtle...
+Use module_platform_driver(), add module device table, author,
+description and license to support module build, and
+CONFIG_RESET_IMX7 is changed to default 'y' ONLY for i.MX7D,
+other platforms need to select it in defconfig.
 
-Right, so commit dbfb089d360 solved a problem where schedule() re-read
-prev->state vs prev->on_rq = 0. That is, schedule()'s dequeue and
-ttwu()'s enqueue disagreed over sched_contributes_to_load. and as a
-result load-accounting went wobbly.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V2:
+	- use module_platform_driver() instead of builtin_platform_driver().
+---
+ drivers/reset/Kconfig      | 5 +++--
+ drivers/reset/reset-imx7.c | 9 +++++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-Now, looking at that commit again, I might've solved the problem twice
-:-P
-
-So on the one hand, I provider ordering:
-
-	LOAD p->state		LOAD-ACQUIRE p->on_rq == 0
-	MB
-	STORE p->on_rq, 0	STORE p->state, TASK_WAKING
-
-such that ttwu() will only change p->state, after on_rq==0, which is
-after loading p->state in schedule().
-
-At the same time, I also had schedule() set
-p->sched_contributes_to_load once, and then consistently used that value
-throughout, without ever looking at p->state again, which too makes it
-much harder to mess load-avg up.
-
-
-Now, the ordering in schedule(), relies on doing the p->state load
-before:
-
-	spin_lock(rq->lock)
-	smp_mb__after_spinlock();
-
-and doing a re-load check after, with the assumption that if the reload
-is different, it will not block.
-
-That said, in a crossed email, I just proposed we could simplify all
-this like so.. but now I need to go ask people to re-validate that
-loadavg muck again :-/
-
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a2a244af9a53..437fc3b241f2 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
- 	local_irq_disable();
- 	rcu_note_context_switch(preempt);
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index d9efbfd..19f9773 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -65,9 +65,10 @@ config RESET_HSDK
+ 	  This enables the reset controller driver for HSDK board.
  
--	/* See deactivate_task() below. */
--	prev_state = prev->state;
--
- 	/*
- 	 * Make sure that signal_pending_state()->signal_pending() below
- 	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
-@@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
- 	 * We must re-load prev->state in case ttwu_remote() changed it
- 	 * before we acquired rq->lock.
- 	 */
--	if (!preempt && prev_state && prev_state == prev->state) {
-+	prev_state = prev->state;
-+	if (!preempt && prev_state) {
- 		if (signal_pending_state(prev_state, prev)) {
- 			prev->state = TASK_RUNNING;
- 		} else {
-@@ -4237,10 +4235,12 @@ static void __sched notrace __schedule(bool preempt)
+ config RESET_IMX7
+-	bool "i.MX7/8 Reset Driver" if COMPILE_TEST
++	tristate "i.MX7/8 Reset Driver"
+ 	depends on HAS_IOMEM
+-	default SOC_IMX7D || (ARM64 && ARCH_MXC)
++	depends on SOC_IMX7D || (ARM64 && ARCH_MXC) || COMPILE_TEST
++	default y if SOC_IMX7D
+ 	select MFD_SYSCON
+ 	help
+ 	  This enables the reset controller driver for i.MX7 SoCs.
+diff --git a/drivers/reset/reset-imx7.c b/drivers/reset/reset-imx7.c
+index d170fe6..9832033 100644
+--- a/drivers/reset/reset-imx7.c
++++ b/drivers/reset/reset-imx7.c
+@@ -8,7 +8,7 @@
+  */
  
- 			/*
- 			 * __schedule()			ttwu()
--			 *   prev_state = prev->state;	  if (READ_ONCE(p->on_rq) && ...)
--			 *   LOCK rq->lock		    goto out;
--			 *   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
--			 *   p->on_rq = 0;		  p->state = TASK_WAKING;
-+			 *   if (prev_state)		  if (p->on_rq && ...)
-+			 *     p->on_rq = 0;		    goto out;
-+			 *				  smp_acquire__after_ctrl_dep();
-+			 *				  p->state = TASK_WAKING
-+			 *
-+			 * Where __schedule() and ttwu() have matching control dependencies.
- 			 *
- 			 * After this, schedule() must not care about p->state any more.
- 			 */
+ #include <linux/mfd/syscon.h>
+-#include <linux/mod_devicetable.h>
++#include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+@@ -386,6 +386,7 @@ static const struct of_device_id imx7_reset_dt_ids[] = {
+ 	{ .compatible = "fsl,imx8mp-src", .data = &variant_imx8mp },
+ 	{ /* sentinel */ },
+ };
++MODULE_DEVICE_TABLE(of, imx7_reset_dt_ids);
+ 
+ static struct platform_driver imx7_reset_driver = {
+ 	.probe	= imx7_reset_probe,
+@@ -394,4 +395,8 @@ static struct platform_driver imx7_reset_driver = {
+ 		.of_match_table	= imx7_reset_dt_ids,
+ 	},
+ };
+-builtin_platform_driver(imx7_reset_driver);
++module_platform_driver(imx7_reset_driver);
++
++MODULE_AUTHOR("Andrey Smirnov <andrew.smirnov@gmail.com>");
++MODULE_DESCRIPTION("NXP i.MX7 reset driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
+
