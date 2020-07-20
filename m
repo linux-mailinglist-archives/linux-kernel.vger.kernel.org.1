@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DF52264D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501492264D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730895AbgGTPsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:48:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44050 "EHLO mail.kernel.org"
+        id S1730903AbgGTPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729843AbgGTPs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:48:26 -0400
+        id S1730490AbgGTPsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08F0C2065E;
-        Mon, 20 Jul 2020 15:48:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 304042064B;
+        Mon, 20 Jul 2020 15:48:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260105;
-        bh=x37chkiE3RibfOnCA9OownYkXilLTGLp6mdRMCznAfY=;
+        s=default; t=1595260111;
+        bh=uUIeuthN7YjPK+Imy+UK5gSEQoybZoUj3NYqZ0gBz7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UZOXIpxv7gHv4NIs8+6Wn0uGPXV1+UKHZbA1TfIoSLm8JIJV3QX9mHNorhYGKmBkB
-         n2JhANpXsoI6VzGZFFjg3l2XUUt5O2XTtwjSA+Fw8T/XLOoiEpYEwAQLlNbDjV5fSh
-         BeF87XtsHeVDazbw+dxID8+nNIdmcOTuVUKZ3ksg=
+        b=BYUb80FNP88ta7s/Jsp5rjdVqA44ULRq/uOcKDLYpCOQDBbklFILgon0DqV+4b+fl
+         E11knVCoFxWVh6pg8GWFXBfpMesIOc42ie0HnSge4MxXAP90dbVvyJ4Gqk0FoXkc6S
+         Wg/hJXZVmFALrCloMBLK9hczVqZsppmytU1JBEes=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wade Mealing <wmealing@redhat.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH 4.14 108/125] Revert "zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()"
-Date:   Mon, 20 Jul 2020 17:37:27 +0200
-Message-Id: <20200720152808.244532027@linuxfoundation.org>
+        stable@vger.kernel.org, David Pedersen <limero1337@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.14 110/125] Input: i8042 - add Lenovo XiaoXin Air 12 to i8042 nomux list
+Date:   Mon, 20 Jul 2020 17:37:29 +0200
+Message-Id: <20200720152808.340649390@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
 References: <20200720152802.929969555@linuxfoundation.org>
@@ -44,39 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wade Mealing <wmealing@redhat.com>
+From: David Pedersen <limero1337@gmail.com>
 
-commit 853eab68afc80f59f36bbdeb715e5c88c501e680 upstream.
+commit 17d51429da722cd8fc77a365a112f008abf4f8b3 upstream.
 
-Turns out that the permissions for 0400 really are what we want here,
-otherwise any user can read from this file.
+This fixes two finger trackpad scroll on the Lenovo XiaoXin Air 12.
+Without nomux, the trackpad behaves as if only one finger is present and
+moves the cursor when trying to scroll.
 
-[fixed formatting, added changelog, and made attribute static - gregkh]
-
-Reported-by: Wade Mealing <wmealing@redhat.com>
-Cc: stable <stable@vger.kernel.org>
-Fixes: f40609d1591f ("zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()")
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1847832
-Reviewed-by: Steffen Maier <maier@linux.ibm.com>
-Acked-by: Minchan Kim <minchan@kernel.org>
-Link: https://lore.kernel.org/r/20200617114946.GA2131650@kroah.com
+Signed-off-by: David Pedersen <limero1337@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200625133754.291325-1-limero1337@gmail.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/block/zram/zram_drv.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/serio/i8042-x86ia64io.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1648,7 +1648,8 @@ static ssize_t hot_add_show(struct class
- 		return ret;
- 	return scnprintf(buf, PAGE_SIZE, "%d\n", ret);
- }
--static CLASS_ATTR_RO(hot_add);
-+static struct class_attribute class_attr_hot_add =
-+	__ATTR(hot_add, 0400, hot_add_show, NULL);
- 
- static ssize_t hot_remove_store(struct class *class,
- 			struct class_attribute *attr,
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -430,6 +430,13 @@ static const struct dmi_system_id __init
+ 		},
+ 	},
+ 	{
++		/* Lenovo XiaoXin Air 12 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "80UN"),
++		},
++	},
++	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 1360"),
 
 
