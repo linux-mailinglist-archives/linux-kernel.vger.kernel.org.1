@@ -2,224 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77140226E29
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6EF226E2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729306AbgGTSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 14:18:29 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60860 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgGTSS2 (ORCPT
+        id S1729480AbgGTSXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 14:23:23 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:56624 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGTSXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:18:28 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06KIGPwX130251;
-        Mon, 20 Jul 2020 18:17:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=tqOn5ouunZazfKbwRP0ZmjENwAJZBiN0o9LArs8Rw/0=;
- b=g1wpLkVYH0InQUSYqloSTjK3lqIvHkHGRHtDNc2eUJwvjKuSv1kahDRzcErtOZV8qB7N
- Dt57NzC6RRLIGodC/Xp1S7vV0LKiN6kJ/6VsRhMQD1Yc7mJc6vTo+BqRxds8pxa/Xbfd
- I8jsTpkd3b2fi4ivYWtxy14bnICSumHub40FrWiCQIHAg70kOjaT9U49hCfbsIVR7P6C
- y5OxN0z51ZJB0WBGUGTqhouK4/d/W5kd3T+yqvT3GoA1qtO8SdeLtXWsv3strptuuPs2
- seKnr7a72jpPWbjc8QumRM/onDPSE1RARIwwZ/3fGFdysC9f7h9mKY4xod4LH2I/JD31 FA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 32brgr8kpa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Jul 2020 18:17:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06KI2w1K078704;
-        Mon, 20 Jul 2020 18:17:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 32da2dftqx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 18:17:37 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06KIHXFn011383;
-        Mon, 20 Jul 2020 18:17:34 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 20 Jul 2020 18:17:33 +0000
-Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>, Roman Gushchin <guro@fb.com>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "H.Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        akpm@linux-foundation.org, Mike Rapoport <rppt@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
- <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
- <20200715081822.GA5683@willie-the-truck>
- <5724f1f8-63a6-ee0f-018c-06fb259b6290@oracle.com>
- <20200716081243.GA6561@willie-the-truck>
- <a867c7a2-e89b-2015-4895-f30f7aeb07cb@oracle.com>
- <81103d30-f4fd-8807-03f9-d131da5097bd@arm.com>
- <1efdfe52-abdb-3931-742c-70e4a170e403@oracle.com>
- <11b03fcd-c210-032c-16d2-79ada41e0349@arm.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <c0c9f0a4-ae2c-e3e5-1df8-884f8300066c@oracle.com>
-Date:   Mon, 20 Jul 2020 11:17:31 -0700
+        Mon, 20 Jul 2020 14:23:22 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KIMUOE102100;
+        Mon, 20 Jul 2020 13:22:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595269350;
+        bh=Sd5hnnt4GxFptLwg5tfzZnZe3N/CSbSSNwGUNJiJjGg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=knABtIz/jmMhBngJ8jfzuvoe4eXBXcBKN9jwGnl956ycWLGE3iCkivm5pbdn7z7EI
+         bUagy0Zdls//uoybpGBdhCDWIQgjneSVPXgxA23XPixpPAjFgX9+2jzSIRc7ltuLl2
+         h9dwtNHeUQ5T7iOfp0qRJ+8rjAkLemRu0JNemaz8=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KIMU0x103198;
+        Mon, 20 Jul 2020 13:22:30 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
+ Jul 2020 13:22:30 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 20 Jul 2020 13:22:30 -0500
+Received: from [10.250.32.229] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KIMUVZ080357;
+        Mon, 20 Jul 2020 13:22:30 -0500
+Subject: Re: [PATCH 4/4] dt-bindings: tas2562: Convert the tas2562 binding to
+ yaml
+To:     Rob Herring <robh@kernel.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200626154143.20351-1-dmurphy@ti.com>
+ <20200626154143.20351-4-dmurphy@ti.com> <20200715201522.GA740682@bogus>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <e61b54bf-f77c-cb4d-c256-fb0c15f18993@ti.com>
+Date:   Mon, 20 Jul 2020 13:22:25 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <11b03fcd-c210-032c-16d2-79ada41e0349@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200715201522.GA740682@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9688 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007200123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9688 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015 mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007200124
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/20 11:22 PM, Anshuman Khandual wrote:
-> 
-> 
-> On 07/17/2020 10:32 PM, Mike Kravetz wrote:
->> On 7/16/20 10:02 PM, Anshuman Khandual wrote:
->>>
->>>
->>> On 07/16/2020 11:55 PM, Mike Kravetz wrote:
->>>> >From 17c8f37afbf42fe7412e6eebb3619c6e0b7e1c3c Mon Sep 17 00:00:00 2001
->>>> From: Mike Kravetz <mike.kravetz@oracle.com>
->>>> Date: Tue, 14 Jul 2020 15:54:46 -0700
->>>> Subject: [PATCH] hugetlb: move cma reservation to code setting up gigantic
->>>>  hstate
->>>>
->>>> Instead of calling hugetlb_cma_reserve() directly from arch specific
->>>> code, call from hugetlb_add_hstate when adding a gigantic hstate.
->>>> hugetlb_add_hstate is either called from arch specific huge page setup,
->>>> or as the result of hugetlb command line processing.  In either case,
->>>> this is late enough in the init process that all numa memory information
->>>> should be initialized.  And, it is early enough to still use early
->>>> memory allocator.
->>>
->>> This assumes that hugetlb_add_hstate() is called from the arch code at
->>> the right point in time for the generic HugeTLB to do the required CMA
->>> reservation which is not ideal. I guess it must have been a reason why
->>> CMA reservation should always called by the platform code which knows
->>> the boot sequence timing better.
+Rob
+
+On 7/15/20 3:15 PM, Rob Herring wrote:
+> On Fri, Jun 26, 2020 at 10:41:43AM -0500, Dan Murphy wrote:
+>> Convert the TAS2562 text file to yaml format.
 >>
->> Actually, the code does not make the assumption that hugetlb_add_hstate
->> is called from arch specific huge page setup.  It can even be called later
->> at the time of hugetlb command line processing.
-> 
-> Yes, now that hugetlb_cma_reserve() has been moved into hugetlb_add_hstate().
-> But then there is an explicit warning while trying to mix both the command
-> line options i.e hugepagesz= and hugetlb_cma=. The proposed code here have
-> not changed that behavior and hence the following warning should have been
-> triggered here as well.
-> 
-> 1) hugepagesz_setup()
-> 	hugetlb_add_hstate()
-> 		 hugetlb_cma_reserve()
-> 
-> 2) hugepages_setup()
-> 	hugetlb_hstate_alloc_pages()	when order >= MAX_ORDER
-> 
-> 	if (hstate_is_gigantic(h)) {
->         	if (IS_ENABLED(CONFIG_CMA) && hugetlb_cma[0]) {
->                 	pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
-> 			break;
->                 }
-> 		if (!alloc_bootmem_huge_page(h))
->                 break;
-> 	}
-> 
-> Nonetheless, it does not make sense to mix both memblock and CMA based huge
-> page pre-allocations. But looking at this again, could this warning be ever
-> triggered till now ? Unless, a given platform calls hugetlb_cma_reserve()
-> before _setup("hugepages=", hugepages_setup). Anyways, there seems to be
-> good reasons to keep both memblock and CMA based pre-allocations in place.
-> But mixing them together (as done in the proposed code here) does not seem
-> to be right.
-
-I'm not sure if I follow the question.
-
-This proposal does not change the trigger for the warning printed when one
-tries to both reserve CMA and pre-allocate gigantic pages.  If hugetlb_cma
-is specified on the command line, and someone tries to pre-allocate gigantic
-pages they will get the warning.  Such a command line on x86 might look like,
-hugetlb_cma=4G hugepagesz=1G hugepages=4
-
-You will then see,
-[    0.065864] HugeTLB: hugetlb_cma is enabled, skip boot time allocation
-[    0.065866] HugeTLB: allocating 4 of page size 1.00 GiB failed.  Only allocated 0 hugepages.
-
-Ideally we could/should eliminate the second message.
-This behavior exists in the current code.
-
->> My 'reasoning' is that gigantic pages can currently be preallocated from
->> bootmem/memblock_alloc at the time of command line processing.  Therefore,
->> we should be able to reserve bootmem for CMA at the same time.  Is there
->> something wrong with this reasoning?  I tested this on x86 by removing the
->> call to hugetlb_add_hstate from arch specific code and instead forced the
->> call at command line processing time.  The ability to reserve CMA was the
->> same.
-> 
-> There is no problem with that reasoning. __setup() triggered function should
-> be able perform CMA reservation. But as pointed out before, it does not make
-> sense to mix both CMA reservation and memblock based pre-allocation.
-
-Agree.  I am not proposing we do.  Sorry, if you got that impression.
-
->> Yes, the CMA reservation interface says it should be called from arch
->> specific code.  However, if we currently depend on the ability to do
->> memblock_alloc at hugetlb command line processing time for gigantic page
->> preallocation, then I think we can do the CMA reservation here as well.
-> 
-> IIUC, CMA reservation and memblock alloc have some differences in terms of
-> how the memory can be used later on, will have to dig deeper on this. But
-> the comment section near cma_declare_contiguous_nid() is a concern.
-> 
->  * This function reserves memory from early allocator. It should be
->  * called by arch specific code once the early allocator (memblock or bootmem)
->  * has been activated and all other subsystems have already allocated/reserved
->  * memory. This function allows to create custom reserved areas.
-> 
-
-Yes, that is the comment I was looking at as well.
-
-However, note that hugetlb pre-allocation of gigantic pages will end up
-calling memblock_alloc_range_nid.  This is the same routine used for CMA
-reservations/allocations from cma_declare_contiguous_nid.  This is why
-there should be no issue with doing CMA reservations at this time.
-
-This may be the confusing part.  I am not saying we would do CMA reservations
-and pre-allocations together.  Rather, they both rely on the underlying code so
-we can call them at the same time in the init process.
-
->> Thinking about it some more, I suppose there could be some arch code that
->> could call hugetlb_add_hstate too early in the boot process.  But, I do
->> not think we have an issue with calling it too late.
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   .../devicetree/bindings/sound/tas2562.txt     | 37 ---------
+>>   .../devicetree/bindings/sound/tas2562.yaml    | 77 +++++++++++++++++++
+>>   2 files changed, 77 insertions(+), 37 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
+>>   create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
 >>
-> 
-> Calling it too late might have got the page allocator initialized completely
-> and then CMA reservation would not be possible afterwards. Also calling it
-> too early would prevent other subsystems which might need memory reservation
-> in specific physical ranges.
+>> diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+>> deleted file mode 100644
+>> index dc6d7362ded7..000000000000
+>> --- a/Documentation/devicetree/bindings/sound/tas2562.txt
+>> +++ /dev/null
+>> @@ -1,37 +0,0 @@
+>> -Texas Instruments TAS2562 Smart PA
+>> -
+>> -The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
+>> -efficiently driving high peak power into small loudspeakers.
+>> -Integrated speaker voltage and current sense provides for
+>> -real time monitoring of loudspeaker behavior.
+>> -
+>> -Required properties:
+>> - - #address-cells  - Should be <1>.
+>> - - #size-cells     - Should be <0>.
+>> - - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
+>> - - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
+>> - - ti,imon-slot-no:- TDM TX current sense time slot.
+>> - - ti,vmon-slot-no:- TDM TX voltage sense time slot. This slot must always be
+>> -		     greater then ti,imon-slot-no.
+>> -
+>> -Optional properties:
+>> -- interrupt-parent: phandle to the interrupt controller which provides
+>> -                    the interrupt.
+>> -- interrupts: (GPIO) interrupt to which the chip is connected.
+>> -- shut-down-gpio: GPIO used to control the state of the device.
+>> -
+>> -Examples:
+>> -tas2562@4c {
+>> -        #address-cells = <1>;
+>> -        #size-cells = <0>;
+>> -        compatible = "ti,tas2562";
+>> -        reg = <0x4c>;
+>> -
+>> -        interrupt-parent = <&gpio1>;
+>> -        interrupts = <14>;
+>> -
+>> -	shut-down-gpio = <&gpio1 15 0>;
+>> -        ti,imon-slot-no = <0>;
+>> -        ti,vmon-slot-no = <1>;
+>> -};
+>> -
+>> diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+>> new file mode 100644
+>> index 000000000000..1fb467e14d4c
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+>> @@ -0,0 +1,77 @@
+>> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+> Same licensing comment here as tas2770
 
-I thought about it some more and came up with a way to do all this at command
-line processing time.  It will take me a day or two to put together.
+OK I will fix it like I did with the other TAS2770 patches
 
-The patch from Barry which started this thread is indeed needed and is in
-Andrew's tree.  I'll start another thread with a patch to move CMA reservations
-to command line processing.
--- 
-Mike Kravetz
+
+>> +# Copyright (C) 2019 Texas Instruments Incorporated
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: Texas Instruments TAS2562 Smart PA
+>> +
+>> +maintainers:
+>> +  - Dan Murphy <dmurphy@ti.com>
+>> +
+>> +description: |
+>> +  The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
+>> +  efficiently driving high peak power into small loudspeakers.
+>> +  Integrated speaker voltage and current sense provides for
+>> +  real time monitoring of loudspeaker behavior.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - ti,tas2562
+>> +      - ti,tas2563
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +    description: |
+>> +       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
+>> +
+>> +  shut-down-gpio:
+>> +    description: GPIO used to control the state of the device.
+>> +    deprecated: true
+> Why do we need this as the driver never worked?
+
+Not sure what you are asking.
+
+Driver has been fixed for this specific binding in sound for-next.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/sound/soc/codecs/tas2562.c?h=for-next&id=bc07b54459cbb3a572a78b5c200ff79ef11b8158
+
+>
+>> +
+>> +  shutdown-gpio:
+>> +    description: GPIO used to control the state of the device.
+> -gpios is the preferred form: shutdown-gpios
+
+So the plural form of gpio is preferred even if the gpio is singular?  I 
+would think gpio would be plural if this was an array of gpios.
+
+I am waiting for the yaml to be accepted before adding this shutdown 
+property to the driver.
+
+Dan
+
