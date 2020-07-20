@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7050B22659A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BD82265A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgGTPzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54224 "EHLO mail.kernel.org"
+        id S1731719AbgGTPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731644AbgGTPzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:10 -0400
+        id S1731704AbgGTPzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9761206E9;
-        Mon, 20 Jul 2020 15:55:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C11AE2065E;
+        Mon, 20 Jul 2020 15:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260510;
-        bh=zGFdMAGUBy7f3VSaxnRjjK6orKYi1qj09rhCvqA3+u4=;
+        s=default; t=1595260538;
+        bh=g0DGVhTj7Hg3uonLOIEB3WSq78xgYXKFOvG8xk7uMNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z6zlfKk1sN1qCQ2SYhzYwdLtODZtPB3oLDs+CVnz/l+R4B60ieJgh9wersYwMRmSp
-         9qgFiYTN7upQqQicBbZIflOiug1FdUgHgrmcwBMmx56ytOY9sZOGAWi0rY24ALonHK
-         2YfpKK5EcFL92D7UHbJmueffY5oM+WU4bBx3MqN4=
+        b=wZTrGM3CLYlNNeUCH3jbNRA4Rb96coukX0Cycq+FEalNvKndaWoY05A4qIwq8QdSj
+         Tr6PwAjBiQ7fr9l7+GkNr9mX1/GB+pi2/M1HCgzjLU6bL8NfjV6tQP/d3tOg9jxN3q
+         fFrQjPAFCApQBBXFzR9rVhjEzolSH/054p+UufQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Weimer <fweimer@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.19 127/133] sched: Fix unreliable rseq cpu_id for new tasks
-Date:   Mon, 20 Jul 2020 17:37:54 +0200
-Message-Id: <20200720152809.864784704@linuxfoundation.org>
+        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH 4.19 131/133] libceph: dont omit recovery_deletes in target_copy()
+Date:   Mon, 20 Jul 2020 17:37:58 +0200
+Message-Id: <20200720152810.060099252@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
 References: <20200720152803.732195882@linuxfoundation.org>
@@ -44,81 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Ilya Dryomov <idryomov@gmail.com>
 
-commit ce3614daabea8a2d01c1dd17ae41d1ec5e5ae7db upstream.
+commit 2f3fead62144002557f322c2a7c15e1255df0653 upstream.
 
-While integrating rseq into glibc and replacing glibc's sched_getcpu
-implementation with rseq, glibc's tests discovered an issue with
-incorrect __rseq_abi.cpu_id field value right after the first time
-a newly created process issues sched_setaffinity.
+Currently target_copy() is used only for sending linger pings, so
+this doesn't come up, but generally omitting recovery_deletes can
+result in unneeded resends (force_resend in calc_target()).
 
-For the records, it triggers after building glibc and running tests, and
-then issuing:
-
-  for x in {1..2000} ; do posix/tst-affinity-static  & done
-
-and shows up as:
-
-error: Unexpected CPU 2, expected 0
-error: Unexpected CPU 2, expected 0
-error: Unexpected CPU 2, expected 0
-error: Unexpected CPU 2, expected 0
-error: Unexpected CPU 138, expected 0
-error: Unexpected CPU 138, expected 0
-error: Unexpected CPU 138, expected 0
-error: Unexpected CPU 138, expected 0
-
-This is caused by the scheduler invoking __set_task_cpu() directly from
-sched_fork() and wake_up_new_task(), thus bypassing rseq_migrate() which
-is done by set_task_cpu().
-
-Add the missing rseq_migrate() to both functions. The only other direct
-use of __set_task_cpu() is done by init_idle(), which does not involve a
-user-space task.
-
-Based on my testing with the glibc test-case, just adding rseq_migrate()
-to wake_up_new_task() is sufficient to fix the observed issue. Also add
-it to sched_fork() to keep things consistent.
-
-The reason why this never triggered so far with the rseq/basic_test
-selftest is unclear.
-
-The current use of sched_getcpu(3) does not typically require it to be
-always accurate. However, use of the __rseq_abi.cpu_id field within rseq
-critical sections requires it to be accurate. If it is not accurate, it
-can cause corruption in the per-cpu data targeted by rseq critical
-sections in user-space.
-
-Reported-By: Florian Weimer <fweimer@redhat.com>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-By: Florian Weimer <fweimer@redhat.com>
-Cc: stable@vger.kernel.org # v4.18+
-Link: https://lkml.kernel.org/r/20200707201505.2632-1-mathieu.desnoyers@efficios.com
+Fixes: ae78dd8139ce ("libceph: make RECOVERY_DELETES feature create a new interval")
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/sched/core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/ceph/osd_client.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2345,6 +2345,7 @@ int sched_fork(unsigned long clone_flags
- 	 * Silence PROVE_RCU.
- 	 */
- 	raw_spin_lock_irqsave(&p->pi_lock, flags);
-+	rseq_migrate(p);
- 	/*
- 	 * We're setting the CPU for the first time, we don't migrate,
- 	 * so use __set_task_cpu().
-@@ -2409,6 +2410,7 @@ void wake_up_new_task(struct task_struct
- 	 * as we're not fully set-up yet.
- 	 */
- 	p->recent_used_cpu = task_cpu(p);
-+	rseq_migrate(p);
- 	__set_task_cpu(p, select_task_rq(p, task_cpu(p), SD_BALANCE_FORK, 0));
- #endif
- 	rq = __task_rq_lock(p, &rf);
+--- a/net/ceph/osd_client.c
++++ b/net/ceph/osd_client.c
+@@ -442,6 +442,7 @@ static void target_copy(struct ceph_osd_
+ 	dest->size = src->size;
+ 	dest->min_size = src->min_size;
+ 	dest->sort_bitwise = src->sort_bitwise;
++	dest->recovery_deletes = src->recovery_deletes;
+ 
+ 	dest->flags = src->flags;
+ 	dest->paused = src->paused;
 
 
