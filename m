@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8093D2268C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E9E226747
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388627AbgGTQUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:20:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48588 "EHLO mail.kernel.org"
+        id S2387654AbgGTQKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:10:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387635AbgGTQKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:10:12 -0400
+        id S2387647AbgGTQKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:10:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DC2E20734;
-        Mon, 20 Jul 2020 16:10:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 367872064B;
+        Mon, 20 Jul 2020 16:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261411;
-        bh=5rB47IRt3w2v7qDHOt4FBAEYDoNAJuxs7BoOZJzslfc=;
+        s=default; t=1595261414;
+        bh=OrUqV8JJjkoxK8FuCM07uleGXeKVco3gz7e0rfHRBo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YxGn2nVQpuvB3mDeNxMeDuNcMfzxvEtTaGJ7XSCwD6BQwIFC3vRQKzRVOP030hVG7
-         H0nQY6EsoTgtzYhuyvKgmsZbZhSH+/8lukQawG5NvT/pCvY2RRxXwaT+cZi2aHjTjU
-         D5hgT/0NNCJ9vsaSFLWODRKJ5cp4COn1zhdEAq/g=
+        b=Dk+TabjISWf+jQvVHxUpUH4insW+w74SbeN3oj+FMUiaXcfU8GFCcu/xsJkDFZbL/
+         +ERkAvS1s0WWKz2NRidAvMqkjcLJETK1LRdX89b204LhWloEWgSydDUJbia5YCzbBn
+         oh+/2SCPuBbKWkzQewVDHs7euP32RWhyoTdmzuTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Andi Shyti <andi@etezian.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 076/244] Input: mms114 - add extra compatible for mms345l
-Date:   Mon, 20 Jul 2020 17:35:47 +0200
-Message-Id: <20200720152829.455502986@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Andrew F. Davis" <afd@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 077/244] iio:health:afe4404 Fix timestamp alignment and prevent data leak.
+Date:   Mon, 20 Jul 2020 17:35:48 +0200
+Message-Id: <20200720152829.503117733@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
 References: <20200720152825.863040590@linuxfoundation.org>
@@ -45,86 +44,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 7842087b0196d674ed877d768de8f2a34d7fdc53 ]
+[ Upstream commit f88ecccac4be348bbcc6d056bdbc622a8955c04d ]
 
-MMS345L is another first generation touch screen from Melfas,
-which uses mostly the same registers as MMS152.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses a 40 byte array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data with alignment
+explicitly requested.  This data is allocated with kzalloc so no
+data can leak appart from previous readings.
 
-However, there is some garbage printed during initialization.
-Apparently MMS345L does not have the MMS152_COMPAT_GROUP register
-that is read+printed during initialization.
-
-  TSP FW Rev: bootloader 0x6 / core 0x26 / config 0x26, Compat group: \x06
-
-On earlier kernel versions the compat group was actually printed as
-an ASCII control character, seems like it gets escaped now.
-
-But we probably shouldn't print something from a random register.
-
-Add a separate "melfas,mms345l" compatible that avoids reading
-from the MMS152_COMPAT_GROUP register. This might also help in case
-there is some other device-specific quirk in the future.
-
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Andi Shyti <andi@etezian.org>
-Link: https://lore.kernel.org/r/20200423102431.2715-1-stephan@gerhold.net
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 87aec56e27ef ("iio: health: Add driver for the TI AFE4404 heart monitor")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/mms114.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/iio/health/afe4404.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/touchscreen/mms114.c b/drivers/input/touchscreen/mms114.c
-index 2ef1adaed9afb..5bdf4ac1a3033 100644
---- a/drivers/input/touchscreen/mms114.c
-+++ b/drivers/input/touchscreen/mms114.c
-@@ -54,6 +54,7 @@
- enum mms_type {
- 	TYPE_MMS114	= 114,
- 	TYPE_MMS152	= 152,
-+	TYPE_MMS345L	= 345,
+diff --git a/drivers/iio/health/afe4404.c b/drivers/iio/health/afe4404.c
+index e728bbb21ca88..cebb1fd4d0b15 100644
+--- a/drivers/iio/health/afe4404.c
++++ b/drivers/iio/health/afe4404.c
+@@ -83,6 +83,7 @@ static const struct reg_field afe4404_reg_fields[] = {
+  * @regulator: Pointer to the regulator for the IC
+  * @trig: IIO trigger for this device
+  * @irq: ADC_RDY line interrupt number
++ * @buffer: Used to construct a scan to push to the iio buffer.
+  */
+ struct afe4404_data {
+ 	struct device *dev;
+@@ -91,6 +92,7 @@ struct afe4404_data {
+ 	struct regulator *regulator;
+ 	struct iio_trigger *trig;
+ 	int irq;
++	s32 buffer[10] __aligned(8);
  };
  
- struct mms114_data {
-@@ -250,6 +251,15 @@ static int mms114_get_version(struct mms114_data *data)
- 	int error;
+ enum afe4404_chan_id {
+@@ -328,17 +330,17 @@ static irqreturn_t afe4404_trigger_handler(int irq, void *private)
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct afe4404_data *afe = iio_priv(indio_dev);
+ 	int ret, bit, i = 0;
+-	s32 buffer[10];
  
- 	switch (data->type) {
-+	case TYPE_MMS345L:
-+		error = __mms114_read_reg(data, MMS152_FW_REV, 3, buf);
-+		if (error)
-+			return error;
-+
-+		dev_info(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x\n",
-+			 buf[0], buf[1], buf[2]);
-+		break;
-+
- 	case TYPE_MMS152:
- 		error = __mms114_read_reg(data, MMS152_FW_REV, 3, buf);
- 		if (error)
-@@ -287,8 +297,8 @@ static int mms114_setup_regs(struct mms114_data *data)
- 	if (error < 0)
- 		return error;
+ 	for_each_set_bit(bit, indio_dev->active_scan_mask,
+ 			 indio_dev->masklength) {
+ 		ret = regmap_read(afe->regmap, afe4404_channel_values[bit],
+-				  &buffer[i++]);
++				  &afe->buffer[i++]);
+ 		if (ret)
+ 			goto err;
+ 	}
  
--	/* MMS152 has no configuration or power on registers */
--	if (data->type == TYPE_MMS152)
-+	/* Only MMS114 has configuration and power on registers */
-+	if (data->type != TYPE_MMS114)
- 		return 0;
+-	iio_push_to_buffers_with_timestamp(indio_dev, buffer, pf->timestamp);
++	iio_push_to_buffers_with_timestamp(indio_dev, afe->buffer,
++					   pf->timestamp);
+ err:
+ 	iio_trigger_notify_done(indio_dev->trig);
  
- 	error = mms114_set_active(data, true);
-@@ -597,6 +607,9 @@ static const struct of_device_id mms114_dt_match[] = {
- 	}, {
- 		.compatible = "melfas,mms152",
- 		.data = (void *)TYPE_MMS152,
-+	}, {
-+		.compatible = "melfas,mms345l",
-+		.data = (void *)TYPE_MMS345L,
- 	},
- 	{ }
- };
 -- 
 2.25.1
 
