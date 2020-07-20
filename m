@@ -2,185 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6F42256F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF872256F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgGTFHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 01:07:00 -0400
-Received: from mail-dm6nam10on2054.outbound.protection.outlook.com ([40.107.93.54]:46049
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725287AbgGTFG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 01:06:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DpV4f5s3QSAuPU0j84pWVdYU33H31nv9RTrOZpuSJREJQkgQVLaB5LKiUEd/6bCcvUp2RHTfSnAM725cni79pj+ISGgBJq7HMCRlIgYrbaOjBBAFTUO1BZ5ROfR/1ikw6J+cphY2J5qhzOhfAMd1gnyvdOSaKHUGUOQE7m2lo9MzUzKooVfN6ooEVtObNNU1HhLLlP2P6v6TIOHCCHPlFFRtpT8prcyIykp4USLo8LulcTePaAaCnO1kYcUV0DvgWhKYxTLjTQdq4mx5QjTyZuj7gZsZTp1fqAU7Qe1I+JfkjXXJ7wvUSeQbokczJvqFEH9wW1lcsNSKRuDdFZAX1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=twvrfswfDYU6++VZizB6yPQWICq6rL1wnHe+si4wPD0=;
- b=YmDAWr6Ihp3uPSNAhkeD8LZLMr4icY+2gKQeFecjffu6mAsdMLDSk0ZWTnUEfAa2IDVuYhdkKt5k6h/7gBT92AdbKq9gBWds8o/zJN/prQ4DmuoaN82F4aq/qTS8+4DjA8Z4atPX7fL32kiShHWGqCXFAMlLGj5DxNtsTEkbGL22pg9FYZSXSVvoxYALRyU+tQLWOquxVnkTNijOY0jrrXDxmh8VuUgK23ATMkLyxbG1pXUjpHkSKpuqJz8l5p355CuwsicMAJtGrlG2OtR8BgrOpFCOBvdppSvqtovEZ9wtVpFWK8YOPUntvxiG9+2egGyKXKDQvFHwylu4VV79wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=twvrfswfDYU6++VZizB6yPQWICq6rL1wnHe+si4wPD0=;
- b=gD9AdZcWGyxIzHVbL7puIZ2HLAfM342gWbfv4x0nkVpnh+4TXHFBGSOsh46GDBE0KZAMrRwB4h/s8WO1zbqfQWRnHHu2p028O/LhHyEFoZF0TxhTAF4KYaolj2s6X1X6Jlq+5NmOMLr2ocGY+HHx/tv+jeVRrrCJK4LfLcw6mBE=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1599.namprd12.prod.outlook.com (2603:10b6:301:10::12)
- by MWHPR12MB1853.namprd12.prod.outlook.com (2603:10b6:300:113::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Mon, 20 Jul
- 2020 05:06:56 +0000
-Received: from MWHPR12MB1599.namprd12.prod.outlook.com
- ([fe80::25b9:83b0:4b17:2c63]) by MWHPR12MB1599.namprd12.prod.outlook.com
- ([fe80::25b9:83b0:4b17:2c63%12]) with mapi id 15.20.3195.025; Mon, 20 Jul
- 2020 05:06:56 +0000
-From:   Akshu Agrawal <akshu.agrawal@amd.com>
-To:     akshu.agrawal@amd.com
-Cc:     sboyd@kernel.org, Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [v2 4/4] clk: x86: Support RV architecture
-Date:   Mon, 20 Jul 2020 10:34:59 +0530
-Message-Id: <20200720050500.23357-5-akshu.agrawal@amd.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200720050500.23357-1-akshu.agrawal@amd.com>
-References: <20200720050500.23357-1-akshu.agrawal@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MAXPR0101CA0054.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:e::16) To MWHPR12MB1599.namprd12.prod.outlook.com
- (2603:10b6:301:10::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from local.mshome.net (122.171.179.172) by MAXPR0101CA0054.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Mon, 20 Jul 2020 05:06:54 +0000
-X-Mailer: git-send-email 2.20.1
-X-Originating-IP: [122.171.179.172]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7198c5b0-a6a2-4494-f77c-08d82c6ab95c
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1853:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1853CE0FABEAB3E4E9DFDA37F87B0@MWHPR12MB1853.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U4omR5Dvh5uyUxh32BVc2xb6WXcHwP4qoRRaqlEG92AFWERJwwpiRlyUNlc2QcBZCOujyNfCN3/T0ec9wOWIIQbVzWOAd9Yx3nR0nhzlEAYq4CEdxwe2UlGiLGcv03SQuAGB0auHRCio5NfTvbGmcJpRfw3GQAefk5JqBQ2BXvgr9yc4Pd0AnfUZGiTaOnik0XWvVUpyuAv4g/ucuwodFq4JS5+Klszo3Iwn16qoYqzaKUKPKxqepDh/nDhdyAg0UWvomNTAhM2Le9Qr4UONTuadnkcb5EwHFR2YQUBDnHem0kz4g+KFxlvw5rg3HGPUQ4Waz2bnEWQ5qLWV4tNChQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1599.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(6486002)(26005)(36756003)(478600001)(2906002)(8936002)(5660300002)(66946007)(66556008)(66476007)(6512007)(6506007)(86362001)(37006003)(186003)(83380400001)(52116002)(316002)(1076003)(956004)(2616005)(8676002)(34206002)(4326008)(16526019)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: gyD/OV5XGsHF9HBll1DCUMMnwCjRTH96m8969/+dt4lo5S4zLfvSytTVl3jHCFjsx1SixVGU+MYQAFs8IvABaYkxjoiOAU8ZDKWUg9esn1t3zEEcz+RqCETJ1bFsMB3W2/fvDegbMLQLEIVf7hzDkZzEANa9GvDtDxT4rkWrBqWKFbTt4UtcpkwgCE1UQ/a2GxkWOj6Ou7YTn+dJ4MfIAZlfMAmlF1mw15Jj/qpFohNhfx8+NfjK+MKZqSG0o+Yy1MA42bNLmYAuPcWDunPo8D4nyUNTQmcdf1+ucfGbb1F/y5TsYBBnxJnqhuFwUqtbd3/jI3MRKXJiyS7S1Ih8dN7gefIro2rFreSZwIJEuJ+9DZzrYkuruXPe21go883lI9wORHvXVqqXPmB9Kd3u5+xArIAENZGqUwzi7FhsQX5qL2G5L9B86nMKQV1maEExWWHS40gMBaGxxaJmvcmQYHiSgTtyjWbhc4/QUZ76kf8=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7198c5b0-a6a2-4494-f77c-08d82c6ab95c
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1599.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 05:06:56.3837
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cjZQAt/4/2IWH1DpozrGllE2S0grJGbDR201SRrAETNzt+W/7aroXT/UBHYDrfBQYRSQ8fF2SoJzFWVB9ZBzOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1853
+        id S1726042AbgGTFNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 01:13:38 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:24058 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725287AbgGTFNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 01:13:37 -0400
+Date:   20 Jul 2020 14:13:35 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; 
+   d="scan'208";a="52564349"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 14:13:35 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8018B400753D;
+        Mon, 20 Jul 2020 14:13:35 +0900 (JST)
+Message-ID: <87o8oazs5a.wl-kuninori.morimoto.gx@renesas.com>
+From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 03/10] ASoC: audio-graph: Support Codec with multiple endpoints
+In-Reply-To: <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
+References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
+        <1595135417-16589-4-git-send-email-spujar@nvidia.com>
+        <87365n2i2z.wl-kuninori.morimoto.gx@renesas.com>
+        <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is minor difference between previous family of SoC and
-the current one. Which is the there is only 48Mh fixed clk.
-There is no mux and no option to select another freq as there in previous.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Hi Sameer
+
+> >> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+> >> index 1e20562..b1903f9 100644
+> >> --- a/sound/soc/generic/audio-graph-card.c
+> >> +++ b/sound/soc/generic/audio-graph-card.c
+> >> @@ -201,8 +201,7 @@ static void graph_parse_mclk_fs(struct device_node *top,
+> >>   static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+> >>                                  struct device_node *cpu_ep,
+> >>                                  struct device_node *codec_ep,
+> >> -                               struct link_info *li,
+> >> -                               int dup_codec)
+> >> +                               struct link_info *li)
+> > This patch breaks DPCM connection which is used for MIXer
+> 
+> Could you please elaborate a bit more as to what is broken with this?
+> The problem I am trying to solve here is to have multiple endpoints
+> for Codec port.
+
+For example MIXer, it is like below.
+If you removes "dup_codec", it breaks MIXer and/or TDM split mode.
+
+	CPU0  ---+---- DAI
+	         |
+	CPU1  ---+
+
+	cpu {
+		ports {
+			port@0 {
+				cpu_0: endpoint {
+					remote-endpoint = <&codec_0>;
+				};
+			};
+			port@1 {
+				cpu_1: endpoint {
+					remote-endpoint = <&codec_1>;
+				};
+			};
+		};
+	};
+
+	codec {
+		port {
+			codec_0: endpoint {
+				remote-endpoint = <&cpu_0>;
+			};
+			codec_1: endpoint {
+				remote-endpoint = <&cpu_1>;
+			};
+		}
+	};
+
+Thank you for your help !!
+
+Best regards
 ---
-v2: Consolidated the loops in remove.
-
- drivers/clk/x86/clk-fch.c | 53 ++++++++++++++++++++++++++++-----------
- 1 file changed, 38 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/clk/x86/clk-fch.c b/drivers/clk/x86/clk-fch.c
-index b252f0cf0628..d68bca7b213f 100644
---- a/drivers/clk/x86/clk-fch.c
-+++ b/drivers/clk/x86/clk-fch.c
-@@ -26,6 +26,10 @@
- #define ST_CLK_GATE	3
- #define ST_MAX_CLKS	4
- 
-+#define RV_CLK_48M	0
-+#define RV_CLK_GATE	1
-+#define RV_MAX_CLKS	2
-+
- static const char * const clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
- static struct clk_hw *hws[ST_MAX_CLKS];
- 
-@@ -37,33 +41,52 @@ static int fch_clk_probe(struct platform_device *pdev)
- 	if (!fch_data || !fch_data->base)
- 		return -EINVAL;
- 
--	hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz", NULL, 0,
--						     48000000);
--	hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz", NULL, 0,
--						     25000000);
-+	if (!fch_data->is_rv) {
-+		hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
-+			NULL, 0, 48000000);
-+		hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz",
-+			NULL, 0, 25000000);
-+
-+		hws[ST_CLK_MUX] = clk_hw_register_mux(NULL, "oscout1_mux",
-+			clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
-+			0, fch_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0,
-+			NULL);
- 
--	hws[ST_CLK_MUX] = clk_hw_register_mux(NULL, "oscout1_mux",
--		clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
--		0, fch_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
-+		clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
- 
--	clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
-+		hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
-+			"oscout1_mux", 0, fch_data->base + MISCCLKCNTL1,
-+			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
- 
--	hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1", "oscout1_mux",
--		0, fch_data->base + MISCCLKCNTL1, OSCCLKENB,
--		CLK_GATE_SET_TO_DISABLE, NULL);
-+		devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE],
-+			"oscout1", NULL);
-+	} else {
-+		hws[RV_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
-+			NULL, 0, 48000000);
- 
--	devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE], "oscout1",
--				    NULL);
-+		hws[RV_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
-+			"clk48MHz", 0, fch_data->base + MISCCLKCNTL1,
-+			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
-+
-+		devm_clk_hw_register_clkdev(&pdev->dev, hws[RV_CLK_GATE],
-+			"oscout1", NULL);
-+	}
- 
- 	return 0;
- }
- 
- static int fch_clk_remove(struct platform_device *pdev)
- {
--	int i;
-+	int i, clks;
-+	struct fch_clk_data *fch_data;
- 
--	for (i = 0; i < ST_MAX_CLKS; i++)
-+	fch_data = dev_get_platdata(&pdev->dev);
-+
-+	clks = (!fch_data->is_rv) ? ST_MAX_CLKS : RV_MAX_CLKS;
-+
-+	for (i = 0; i < clks; i++)
- 		clk_hw_unregister(hws[i]);
-+
- 	return 0;
- }
- 
--- 
-2.20.1
-
+Kuninori Morimoto
