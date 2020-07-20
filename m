@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30CE2264B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18249226449
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730766AbgGTPrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42166 "EHLO mail.kernel.org"
+        id S1730326AbgGTPny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730386AbgGTPrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:47:08 -0400
+        id S1729571AbgGTPnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:43:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97655206E9;
-        Mon, 20 Jul 2020 15:47:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD1AF2064B;
+        Mon, 20 Jul 2020 15:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260028;
-        bh=Vk7IagyqnoRmnENC1u/iaiaXIz648HETL5Ky4FZuhwo=;
+        s=default; t=1595259828;
+        bh=PKbze4aIN2Tiq+hHX/fexUrT/75/AE9fmKBYSnkr+oY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JrOTbe/bTWtPsCwiqmhBWBtm3r6EvTq31LOF4ClAOUFI6Mx5EH5KbwYxmiLuq+zln
-         ypAZJL1VwKFcIx3T8s0IKHp3iJe1OxkWxAAGat1duffhADxspO9u/qMMwVYxDyXqIx
-         poPFcsASKcACrNifCIzyNeaddLNFX8hgGd09yQ3c=
+        b=N+tbrBEjTzGSWFKWu8Afi3olui7rrpzeko7i4SEJAGggeuCSrMK8Hm/9pRPYcapVP
+         F4yD51n98kA/S4hwT4tEmgY1jpvliUoajcv3VEQn8sldxuxJrbxWrD3tqS1FcmOXrY
+         IoiFB6OYxnw3vBK9EIvhRLubG+yaSxbvYDfcXHi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Andrew F. Davis" <afd@ti.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 080/125] iio:health:afe4404 Fix timestamp alignment and prevent data leak.
+        stable@vger.kernel.org,
+        syzbot+0f4ecfe6a2c322c81728@syzkaller.appspotmail.com,
+        syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 63/86] ALSA: usb-audio: Fix race against the error recovery URB submission
 Date:   Mon, 20 Jul 2020 17:36:59 +0200
-Message-Id: <20200720152806.883617444@linuxfoundation.org>
+Message-Id: <20200720152756.340958934@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit f88ecccac4be348bbcc6d056bdbc622a8955c04d ]
+commit 9b7e5208a941e2e491a83eb5fa83d889e888fa2f upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 40 byte array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data with alignment
-explicitly requested.  This data is allocated with kzalloc so no
-data can leak appart from previous readings.
+USB MIDI driver has an error recovery mechanism to resubmit the URB in
+the delayed timer handler, and this may race with the standard start /
+stop operations.  Although both start and stop operations themselves
+don't race with each other due to the umidi->mutex protection, but
+this isn't applied to the timer handler.
 
-Fixes: 87aec56e27ef ("iio: health: Add driver for the TI AFE4404 heart monitor")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Andrew F. Davis <afd@ti.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For fixing this potential race, the following changes are applied:
+
+- Since the timer handler can't use the mutex, we apply the
+  umidi->disc_lock protection at each input stream URB submission;
+  this also needs to change the GFP flag to GFP_ATOMIC
+- Add a check of the URB refcount and skip if already submitted
+- Move the timer cancel call at disconnection to the beginning of the
+  procedure; this assures the in-flight timer handler is gone properly
+  before killing all pending URBs
+
+Reported-by: syzbot+0f4ecfe6a2c322c81728@syzkaller.appspotmail.com
+Reported-by: syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200710160656.16819-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/iio/health/afe4404.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/usb/midi.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/health/afe4404.c b/drivers/iio/health/afe4404.c
-index 964f5231a831c..5e256b11ac877 100644
---- a/drivers/iio/health/afe4404.c
-+++ b/drivers/iio/health/afe4404.c
-@@ -91,6 +91,7 @@ static const struct reg_field afe4404_reg_fields[] = {
-  * @regulator: Pointer to the regulator for the IC
-  * @trig: IIO trigger for this device
-  * @irq: ADC_RDY line interrupt number
-+ * @buffer: Used to construct a scan to push to the iio buffer.
-  */
- struct afe4404_data {
- 	struct device *dev;
-@@ -99,6 +100,7 @@ struct afe4404_data {
- 	struct regulator *regulator;
- 	struct iio_trigger *trig;
- 	int irq;
-+	s32 buffer[10] __aligned(8);
- };
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1477,6 +1477,8 @@ void snd_usbmidi_disconnect(struct list_
+ 	spin_unlock_irq(&umidi->disc_lock);
+ 	up_write(&umidi->disc_rwsem);
  
- enum afe4404_chan_id {
-@@ -337,17 +339,17 @@ static irqreturn_t afe4404_trigger_handler(int irq, void *private)
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct afe4404_data *afe = iio_priv(indio_dev);
- 	int ret, bit, i = 0;
--	s32 buffer[10];
- 
- 	for_each_set_bit(bit, indio_dev->active_scan_mask,
- 			 indio_dev->masklength) {
- 		ret = regmap_read(afe->regmap, afe4404_channel_values[bit],
--				  &buffer[i++]);
-+				  &afe->buffer[i++]);
- 		if (ret)
- 			goto err;
++	del_timer_sync(&umidi->error_timer);
++
+ 	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
+ 		struct snd_usb_midi_endpoint *ep = &umidi->endpoints[i];
+ 		if (ep->out)
+@@ -1503,7 +1505,6 @@ void snd_usbmidi_disconnect(struct list_
+ 			ep->in = NULL;
+ 		}
  	}
+-	del_timer_sync(&umidi->error_timer);
+ }
+ EXPORT_SYMBOL(snd_usbmidi_disconnect);
  
--	iio_push_to_buffers_with_timestamp(indio_dev, buffer, pf->timestamp);
-+	iio_push_to_buffers_with_timestamp(indio_dev, afe->buffer,
-+					   pf->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
+@@ -2260,16 +2261,22 @@ void snd_usbmidi_input_stop(struct list_
+ }
+ EXPORT_SYMBOL(snd_usbmidi_input_stop);
  
--- 
-2.25.1
-
+-static void snd_usbmidi_input_start_ep(struct snd_usb_midi_in_endpoint *ep)
++static void snd_usbmidi_input_start_ep(struct snd_usb_midi *umidi,
++				       struct snd_usb_midi_in_endpoint *ep)
+ {
+ 	unsigned int i;
++	unsigned long flags;
+ 
+ 	if (!ep)
+ 		return;
+ 	for (i = 0; i < INPUT_URBS; ++i) {
+ 		struct urb *urb = ep->urbs[i];
+-		urb->dev = ep->umidi->dev;
+-		snd_usbmidi_submit_urb(urb, GFP_KERNEL);
++		spin_lock_irqsave(&umidi->disc_lock, flags);
++		if (!atomic_read(&urb->use_count)) {
++			urb->dev = ep->umidi->dev;
++			snd_usbmidi_submit_urb(urb, GFP_ATOMIC);
++		}
++		spin_unlock_irqrestore(&umidi->disc_lock, flags);
+ 	}
+ }
+ 
+@@ -2285,7 +2292,7 @@ void snd_usbmidi_input_start(struct list
+ 	if (umidi->input_running || !umidi->opened[1])
+ 		return;
+ 	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i)
+-		snd_usbmidi_input_start_ep(umidi->endpoints[i].in);
++		snd_usbmidi_input_start_ep(umidi, umidi->endpoints[i].in);
+ 	umidi->input_running = 1;
+ }
+ EXPORT_SYMBOL(snd_usbmidi_input_start);
 
 
