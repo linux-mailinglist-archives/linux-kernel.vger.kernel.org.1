@@ -2,120 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9252268D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208142268EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388165AbgGTQVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:21:42 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:57597 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732740AbgGTQVj (ORCPT
+        id S2388707AbgGTQWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:22:53 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:39040 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388667AbgGTQWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:21:39 -0400
-Received: from localhost (unknown [42.109.212.217])
-        (Authenticated sender: me@yadavpratyush.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 05B42100006;
-        Mon, 20 Jul 2020 16:21:32 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 21:51:30 +0530
-From:   Pratyush Yadav <me@yadavpratyush.com>
-To:     Tudor.Ambarus@microchip.com
-Cc:     p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, broonie@kernel.org, Nicolas.Ferre@microchip.com,
-        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
-        matthias.bgg@gmail.com, michal.simek@xilinx.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, boris.brezillon@collabora.com,
-        nsekhar@ti.com
-Subject: Re: [PATCH v10 12/17] mtd: spi-nor: sfdp: detect Soft Reset sequence
- support from BFPT
-Message-ID: <20200720162130.hknyyclgndjokqly@yadavpratyush.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
- <20200623183030.26591-13-p.yadav@ti.com>
- <5f9a93d0-833c-8976-c6d3-2043e65b1b66@microchip.com>
+        Mon, 20 Jul 2020 12:22:48 -0400
+Received: by mail-lj1-f196.google.com with SMTP id b25so20882030ljp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:22:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s6tdYtNz+qDIDRhGgPrdBToU6tSHk3rys73lASsyyZg=;
+        b=IiB2wuh+V4SyKF8ondMk0MqfZyY9amFi+k1BeFs+NRZ/LlSk8p0AeN7B33YZP1hj6D
+         woU4YchPvz8vUTN5R8CzPzNm3FU3bDDhfzIH0bOdLXJyIZJszSYOpu8M2jqbwqy2UrqS
+         AU0TAgaV/p5h+8W+WSAJERbWpwOrk7oP5XQUHWMC2WNLvHarVcdNf18ym8k/x9cMev63
+         K8lRuXkTh9J3+TA4KkckVL2rrgDlRxYUjZToxKqo1VwEueayCaGXQbn1OSkbCIm1j3Eg
+         dM9vIkeveyUtprV/f7fWLnBnGAr0kO0Ey9kd37O0n4ep0tEyf19NnRqr+BhvoaxoIQj3
+         jkVA==
+X-Gm-Message-State: AOAM531xZvTOVmgllbpn/JWxUeK3KEErsVwWDchG6nBg0cO5KUkNnxN+
+        VaFBB3AEui83aKpeCuN66oQ=
+X-Google-Smtp-Source: ABdhPJzTpx/3GEm/mdl3zCsea6GWprPX5/o5NX25tfmUNJ8qGeNGweY4sfXRocU5bYUIRUhGtCX2mQ==
+X-Received: by 2002:a2e:8556:: with SMTP id u22mr11328825ljj.348.1595262166015;
+        Mon, 20 Jul 2020 09:22:46 -0700 (PDT)
+Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.googlemail.com with ESMTPSA id a19sm925855lff.25.2020.07.20.09.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 09:22:44 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Update memdup_user.cocci
+Date:   Mon, 20 Jul 2020 19:22:13 +0300
+Message-Id: <20200720162216.13248-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f9a93d0-833c-8976-c6d3-2043e65b1b66@microchip.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+Add GFP_USER to the allocation flags and handle vmemdup_user().
 
-On 08/07/20 04:08PM, Tudor.Ambarus@microchip.com wrote:
-> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > A Soft Reset sequence will return the flash to Power-on-Reset (POR)
-> > state. It consists of two commands: Soft Reset Enable and Soft Reset.
-> > Find out if the sequence is supported from BFPT DWORD 16.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.h | 1 +
-> >  drivers/mtd/spi-nor/sfdp.c | 4 ++++
-> >  drivers/mtd/spi-nor/sfdp.h | 2 ++
-> >  3 files changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> > index 6338d32a0d77..79ce952c0539 100644
-> > --- a/drivers/mtd/spi-nor/core.h
-> > +++ b/drivers/mtd/spi-nor/core.h
-> > @@ -26,6 +26,7 @@ enum spi_nor_option_flags {
-> >         SNOR_F_HAS_SR_TB_BIT6   = BIT(11),
-> >         SNOR_F_HAS_4BIT_BP      = BIT(12),
-> >         SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
-> > +       SNOR_F_SOFT_RESET       = BIT(14),
-> >  };
-> > 
-> >  struct spi_nor_read_command {
-> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > index 7983ff431346..8e0741d8bfd3 100644
-> > --- a/drivers/mtd/spi-nor/sfdp.c
-> > +++ b/drivers/mtd/spi-nor/sfdp.c
-> > @@ -616,6 +616,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
-> >                 break;
-> >         }
-> > 
-> > +       /* Soft Reset support. */
-> > +       if (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_SOFT_RST)
-> 
-> this can be improved. There are multiple reset methods described and you're
-> addressing just one of them.
+Changes in v2:
+ - memdup_user/vmemdup_user matching suppressed
+ - PoC for selfcheck virtual rule
+Changes in v3:
+ - add missing '-' for patch rule in kmalloc/kzalloc call args
+ - selfcheck rule dropped from patchset
 
-Yes, it can be. But xSPI only cares about the 0x66 and 0x99 reset 
-sequence and that is what I implemented. Others can be added if they are 
-needed in the future. In addition, I don't have hardware that supports 
-these resets so I can't test them. IMO if someone needs other reset 
-modes, they should send a separate patch for it.
+Denis Efremov (3):
+  coccinelle: api: extend memdup_user transformation with GFP_USER
+  coccinelle: api: extend memdup_user rule with vmemdup_user()
+  coccinelle: api: filter out memdup_user definitions
 
-If you are worried about future work needed to support multiple soft 
-reset modes, I can introduce a nor->soft_reset() hook that can be 
-populated when parsing BFPT. But I think that is a bit premature. The 
-work needed to do that is not a lot so I think we should hold off until 
-the need really comes up.
- 
-> > +               nor->flags |= SNOR_F_SOFT_RESET;
-> > +
-> >         /* Stop here if not JESD216 rev C or later. */
-> >         if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
-> >                 return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
-> > diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-> > index 6d7243067252..8ae55e98084e 100644
-> > --- a/drivers/mtd/spi-nor/sfdp.h
-> > +++ b/drivers/mtd/spi-nor/sfdp.h
-> > @@ -90,6 +90,8 @@ struct sfdp_bfpt {
-> >  #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD                (0x4UL << 20)
-> >  #define BFPT_DWORD15_QER_SR2_BIT1              (0x5UL << 20) /* Spansion */
-> > 
-> > +#define BFPT_DWORD16_SOFT_RST                  BIT(12)
-> > +
-> >  #define BFPT_DWORD18_CMD_EXT_MASK              GENMASK(30, 29)
-> >  #define BFPT_DWORD18_CMD_EXT_REP               (0x0UL << 29) /* Repeat */
-> >  #define BFPT_DWORD18_CMD_EXT_INV               (0x1UL << 29) /* Invert */
+ scripts/coccinelle/api/memdup_user.cocci | 64 ++++++++++++++++++++++--
+ 1 file changed, 61 insertions(+), 3 deletions(-)
 
 -- 
-Regards,
-Pratyush Yadav
+2.26.2
+
