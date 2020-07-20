@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB8A2272F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 01:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E033F2272FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 01:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgGTXfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 19:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGTXfA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 19:35:00 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E4DC061794;
-        Mon, 20 Jul 2020 16:35:00 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0596B11E8EC0A;
-        Mon, 20 Jul 2020 16:34:58 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 16:34:58 -0700 (PDT)
-Message-Id: <20200720.163458.475401930020484350.davem@davemloft.net>
-To:     ndesaulniers@google.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        oss-drivers@netronome.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, elder@linaro.org
-Subject: Re: [PATCH v2 0/2 net] bitfield.h cleanups
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <CAKwvOdkGmgdh6-4VRUGkd1KRC-PgFcGwP5vKJvO9Oj3cB_Qh6Q@mail.gmail.com>
-References: <20200708230402.1644819-1-ndesaulniers@google.com>
-        <CAKwvOdmXtFo8YoNd7pgBnTQEwTZw0nGx-LypDiFKRR_HzZm9aA@mail.gmail.com>
-        <CAKwvOdkGmgdh6-4VRUGkd1KRC-PgFcGwP5vKJvO9Oj3cB_Qh6Q@mail.gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 20 Jul 2020 16:34:59 -0700 (PDT)
+        id S1727941AbgGTXgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 19:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726425AbgGTXgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 19:36:18 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45B7A207FC;
+        Mon, 20 Jul 2020 23:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595288178;
+        bh=5wUWZTgLDGHLY0b9AD8FrjBZZ27JrDASbzC7CTV8awo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=BgQvT4o5Xpt82FGLtEwXj3nshT+vjMtfX6VHZMJTEIgEO46oS3TgO1SqLnA8m2XkQ
+         cIlprELy2O+YaNRBHmK4tglrXTbh9YQGNZXIKLuMqTmnPrdK6uJoGramddqH9+9dNr
+         VpoviPyZczNy9iFhCCwJUZmzydaHDIg6J0Z2JNYc=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAP245DUqvTYENmaxG3rjUn1XrzrmvdFmKG_vaef2BxKL6jY+Rg@mail.gmail.com>
+References: <20200716022817.30439-1-ansuelsmth@gmail.com> <20200716022817.30439-2-ansuelsmth@gmail.com> <CAP245DUqvTYENmaxG3rjUn1XrzrmvdFmKG_vaef2BxKL6jY+Rg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/7] ipq806x: gcc: add support for child probe
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+To:     Amit Kucheria <amit.kucheria@linaro.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>
+Date:   Mon, 20 Jul 2020 16:36:17 -0700
+Message-ID: <159528817752.3847286.2725374997908705208@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 20 Jul 2020 12:48:38 -0700
+Quoting Amit Kucheria (2020-07-20 02:41:44)
+> On Thu, Jul 16, 2020 at 7:58 AM Ansuel Smith <ansuelsmth@gmail.com> wrote:
+> >
+> > Add support for child probing needed for tsens driver that share the
+> > seme regs of gcc for this platform.
+>=20
+> Typo: same
+>=20
 
-> Hi David, bumping for review.
-
-If it's not active in my networking patchwork you can't just bump your original
-submission like this.
-
-You have to submit your series entirely again.
-
-And if it is in patchwork, such "bumping" is %100 unnecessary.  It's
-in my queue, it is not lost, and I will process it when I have the
-time.
-
-Thank you.
+Otherwise reviewed-by? Because I can throw this into the clk tree with
+the typo fixed.
