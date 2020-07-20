@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE11226683
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D01226692
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732791AbgGTQDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38174 "EHLO mail.kernel.org"
+        id S1732832AbgGTQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732126AbgGTQDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:03:44 -0400
+        id S1732823AbgGTQEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:04:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 599A720672;
-        Mon, 20 Jul 2020 16:03:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D606720672;
+        Mon, 20 Jul 2020 16:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261023;
-        bh=pm6kHTtMpBoIr951g35yAHu9xhsyX7RqgTMwl37J7uY=;
+        s=default; t=1595261054;
+        bh=Y/zWR9qtvEQbATV+qXey+DSENWV9ufEwXodCAcF07go=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0bSorloBPEaHeJ3gakB+KewZNX2JttKl28mZyGhfzGyDx/LLcnwumhbA2Mj0Cauuk
-         Q54XCGN84F/B91wspOJ+v5CK4I8FC56Zu/HYyE50yFxeBojBIG96oczwpuXoWFKNbO
-         UOvnmPdDGqn9I+m8MApW+I6SwmJBnk/EtZ218pVU=
+        b=zrsH4lvSKvJABojcrRVSoDM+a+TTdcFfuB+ilW7n89XktRfFx5rnlWNs9NEKdp2+0
+         If/5D3lkHHcJuC7FS/7LxjKyoQYcx9aLqMx4FrgEKMboYoy9KZ5aO+bNnjNHVfTnOq
+         dVS4J4jrLOTlYQCjGZSooljr5r1H6yZrOd3eCE9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.4 164/215] virt: vbox: Fix VBGL_IOCTL_VMMDEV_REQUEST_BIG and _LOG req numbers to match upstream
-Date:   Mon, 20 Jul 2020 17:37:26 +0200
-Message-Id: <20200720152827.982802824@linuxfoundation.org>
+Subject: [PATCH 5.4 165/215] virt: vbox: Fix guest capabilities mask check
+Date:   Mon, 20 Jul 2020 17:37:27 +0200
+Message-Id: <20200720152828.031839401@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -45,117 +45,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-commit f794db6841e5480208f0c3a3ac1df445a96b079e upstream.
+commit 59d1d2e8e1e7c50d2657d5e4812b53f71f507968 upstream.
 
-Until this commit the mainline kernel version (this version) of the
-vboxguest module contained a bug where it defined
-VBGL_IOCTL_VMMDEV_REQUEST_BIG and VBGL_IOCTL_LOG using
-_IOC(_IOC_READ | _IOC_WRITE, 'V', ...) instead of
-_IO(V, ...) as the out of tree VirtualBox upstream version does.
+Check the passed in capabilities against VMMDEV_GUEST_CAPABILITIES_MASK
+instead of against VMMDEV_EVENT_VALID_EVENT_MASK.
+This tightens the allowed mask from 0x7ff to 0x7.
 
-Since the VirtualBox userspace bits are always built against VirtualBox
-upstream's headers, this means that so far the mainline kernel version
-of the vboxguest module has been failing these 2 ioctls with -ENOTTY.
-I guess that VBGL_IOCTL_VMMDEV_REQUEST_BIG is never used causing us to
-not hit that one and sofar the vboxguest driver has failed to actually
-log any log messages passed it through VBGL_IOCTL_LOG.
-
-This commit changes the VBGL_IOCTL_VMMDEV_REQUEST_BIG and VBGL_IOCTL_LOG
-defines to match the out of tree VirtualBox upstream vboxguest version,
-while keeping compatibility with the old wrong request defines so as
-to not break the kernel ABI in case someone has been using the old
-request defines.
-
-Fixes: f6ddd094f579 ("virt: Add vboxguest driver for Virtual Box Guest integration UAPI")
+Fixes: 0ba002bc4393 ("virt: Add vboxguest driver for Virtual Box Guest integration")
 Cc: stable@vger.kernel.org
 Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200709120858.63928-2-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20200709120858.63928-3-hdegoede@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/virt/vboxguest/vboxguest_core.c  |    4 +++-
- drivers/virt/vboxguest/vboxguest_core.h  |   15 +++++++++++++++
- drivers/virt/vboxguest/vboxguest_linux.c |    3 ++-
- include/uapi/linux/vboxguest.h           |    4 ++--
- 4 files changed, 22 insertions(+), 4 deletions(-)
+ drivers/virt/vboxguest/vboxguest_core.c |    2 +-
+ drivers/virt/vboxguest/vmmdev.h         |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 --- a/drivers/virt/vboxguest/vboxguest_core.c
 +++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -1519,7 +1519,8 @@ int vbg_core_ioctl(struct vbg_session *s
+@@ -1443,7 +1443,7 @@ static int vbg_ioctl_change_guest_capabi
+ 	or_mask = caps->u.in.or_mask;
+ 	not_mask = caps->u.in.not_mask;
  
- 	/* For VMMDEV_REQUEST hdr->type != VBG_IOCTL_HDR_TYPE_DEFAULT */
- 	if (req_no_size == VBG_IOCTL_VMMDEV_REQUEST(0) ||
--	    req == VBG_IOCTL_VMMDEV_REQUEST_BIG)
-+	    req == VBG_IOCTL_VMMDEV_REQUEST_BIG ||
-+	    req == VBG_IOCTL_VMMDEV_REQUEST_BIG_ALT)
- 		return vbg_ioctl_vmmrequest(gdev, session, data);
+-	if ((or_mask | not_mask) & ~VMMDEV_EVENT_VALID_EVENT_MASK)
++	if ((or_mask | not_mask) & ~VMMDEV_GUEST_CAPABILITIES_MASK)
+ 		return -EINVAL;
  
- 	if (hdr->type != VBG_IOCTL_HDR_TYPE_DEFAULT)
-@@ -1557,6 +1558,7 @@ int vbg_core_ioctl(struct vbg_session *s
- 	case VBG_IOCTL_HGCM_CALL(0):
- 		return vbg_ioctl_hgcm_call(gdev, session, f32bit, data);
- 	case VBG_IOCTL_LOG(0):
-+	case VBG_IOCTL_LOG_ALT(0):
- 		return vbg_ioctl_log(data);
- 	}
+ 	ret = vbg_set_session_capabilities(gdev, session, or_mask, not_mask,
+--- a/drivers/virt/vboxguest/vmmdev.h
++++ b/drivers/virt/vboxguest/vmmdev.h
+@@ -206,6 +206,8 @@ VMMDEV_ASSERT_SIZE(vmmdev_mask, 24 + 8);
+  * not.
+  */
+ #define VMMDEV_GUEST_SUPPORTS_GRAPHICS                      BIT(2)
++/* The mask of valid capabilities, for sanity checking. */
++#define VMMDEV_GUEST_CAPABILITIES_MASK                      0x00000007U
  
---- a/drivers/virt/vboxguest/vboxguest_core.h
-+++ b/drivers/virt/vboxguest/vboxguest_core.h
-@@ -15,6 +15,21 @@
- #include <linux/vboxguest.h>
- #include "vmmdev.h"
- 
-+/*
-+ * The mainline kernel version (this version) of the vboxguest module
-+ * contained a bug where it defined VBGL_IOCTL_VMMDEV_REQUEST_BIG and
-+ * VBGL_IOCTL_LOG using _IOC(_IOC_READ | _IOC_WRITE, 'V', ...) instead
-+ * of _IO(V, ...) as the out of tree VirtualBox upstream version does.
-+ *
-+ * These _ALT definitions keep compatibility with the wrong defines the
-+ * mainline kernel version used for a while.
-+ * Note the VirtualBox userspace bits have always been built against
-+ * VirtualBox upstream's headers, so this is likely not necessary. But
-+ * we must never break our ABI so we keep these around to be 100% sure.
-+ */
-+#define VBG_IOCTL_VMMDEV_REQUEST_BIG_ALT _IOC(_IOC_READ | _IOC_WRITE, 'V', 3, 0)
-+#define VBG_IOCTL_LOG_ALT(s)             _IOC(_IOC_READ | _IOC_WRITE, 'V', 9, s)
-+
- struct vbg_session;
- 
- /** VBox guest memory balloon. */
---- a/drivers/virt/vboxguest/vboxguest_linux.c
-+++ b/drivers/virt/vboxguest/vboxguest_linux.c
-@@ -131,7 +131,8 @@ static long vbg_misc_device_ioctl(struct
- 	 * the need for a bounce-buffer and another copy later on.
- 	 */
- 	is_vmmdev_req = (req & ~IOCSIZE_MASK) == VBG_IOCTL_VMMDEV_REQUEST(0) ||
--			 req == VBG_IOCTL_VMMDEV_REQUEST_BIG;
-+			 req == VBG_IOCTL_VMMDEV_REQUEST_BIG ||
-+			 req == VBG_IOCTL_VMMDEV_REQUEST_BIG_ALT;
- 
- 	if (is_vmmdev_req)
- 		buf = vbg_req_alloc(size, VBG_IOCTL_HDR_TYPE_DEFAULT,
---- a/include/uapi/linux/vboxguest.h
-+++ b/include/uapi/linux/vboxguest.h
-@@ -103,7 +103,7 @@ VMMDEV_ASSERT_SIZE(vbg_ioctl_driver_vers
- 
- 
- /* IOCTL to perform a VMM Device request larger then 1KB. */
--#define VBG_IOCTL_VMMDEV_REQUEST_BIG	_IOC(_IOC_READ | _IOC_WRITE, 'V', 3, 0)
-+#define VBG_IOCTL_VMMDEV_REQUEST_BIG	_IO('V', 3)
- 
- 
- /** VBG_IOCTL_HGCM_CONNECT data structure. */
-@@ -198,7 +198,7 @@ struct vbg_ioctl_log {
- 	} u;
- };
- 
--#define VBG_IOCTL_LOG(s)		_IOC(_IOC_READ | _IOC_WRITE, 'V', 9, s)
-+#define VBG_IOCTL_LOG(s)		_IO('V', 9)
- 
- 
- /** VBG_IOCTL_WAIT_FOR_EVENTS data structure. */
+ /** struct vmmdev_hypervisorinfo - Hypervisor info structure. */
+ struct vmmdev_hypervisorinfo {
 
 
