@@ -2,131 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693DE226F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC181226F52
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgGTTwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgGTTwk (ORCPT
+        id S1731055AbgGTTy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:54:56 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17615 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbgGTTyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:52:40 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F334C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:52:40 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id k6so15286221oij.11
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=atKBBWcnU++49tmxsg8oq4hs4l/FvwBwr9+f5kHrPQE=;
-        b=ZJgoG2v9a3cZM4UqmYfn++N0kaA7KzoYlCD9aks8VYOBn6rR2+oadW4WeaetOwqXtK
-         9wtVNkYUeRNpdgZdpD+4e+Mag6dOG1iYFX6G23w8cUWbC4x9lIkJXTKEcABwlW9RoBta
-         cveGXS4ay5iUd+m/7R2K4Ua8LV51xZIjRokaakCsIUNSsba1YZzoXl5gD1PMqOvCC1Dc
-         r3vPcnm9E+/TXxURYhySdwQtwm4D6sJxEsJgc8i8nDHRhKYeLQbSk/rBHS2MNcl3pujD
-         hPHIV/HsqNZTwXWDJYKxAx8bnhhzRuLkzkCDoyVOKtqrIdVIuO7wAzcKwn0/dCVo5Pc8
-         Bg2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=atKBBWcnU++49tmxsg8oq4hs4l/FvwBwr9+f5kHrPQE=;
-        b=XGZcun6a1ZxWXIgbRlCwYZ+3cgqmq1Iuzuzr+cEeyKcapbdAzjq2d0vBmpPop3GapQ
-         rsgyGmkRcgD2oTPRTmItOVjAcNDcF72fkYSFbTRU5qJzm50hB0xRzgABoIp/6YXCrvkI
-         0QBcCwpAx0jIvOOKulXCaH89+9JNbu8LGwff82l5za90f/NgUybuK3NRFtn9h9vAiv04
-         KaFz9pasf9kIfYaZOgmnZRp40e6iDac7aUSufNvRsc0kYIKB2hlree9KoJ8/9+50j81u
-         AN+WPMdjRgZrokYVdH9OzKhU2G1w3HM56LnMEbNAFEKzJsMBFABihFZNqOyrUaQS3Y1c
-         kG/Q==
-X-Gm-Message-State: AOAM531zRaQxj3BxNB+a3sA2511h/yZGhPKpmQUie+puhXrlIzFNx1uW
-        l2UdgyGqDfulgVW5fVxloQ==
-X-Google-Smtp-Source: ABdhPJxqM6pg5Fv/HsBONDNbtH4Msu1sRLXaPLyToL/8sGazJJtntFelMODQ9A/uOG96DKl0XKiNrA==
-X-Received: by 2002:aca:57c5:: with SMTP id l188mr725424oib.154.1595274759308;
-        Mon, 20 Jul 2020 12:52:39 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.146.204])
-        by smtp.gmail.com with ESMTPSA id s4sm4573610oom.15.2020.07.20.12.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 12:52:38 -0700 (PDT)
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:70d6:b947:41f4:6e7e])
-        by serve.minyard.net (Postfix) with ESMTPSA id 1B9E5180050;
-        Mon, 20 Jul 2020 19:52:36 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 14:52:34 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, guohanjun@huawei.com
-Subject: Re: [PATCH] ipmi/watchdog: add missing newlines when printing
- parameters by sysfs
-Message-ID: <20200720195234.GC2952@minyard.net>
-Reply-To: minyard@acm.org
-References: <1595210605-27888-1-git-send-email-wangxiongfeng2@huawei.com>
+        Mon, 20 Jul 2020 15:54:55 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f15f6510000>; Mon, 20 Jul 2020 12:53:53 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 20 Jul 2020 12:54:55 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 20 Jul 2020 12:54:55 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Jul
+ 2020 19:54:54 +0000
+Subject: Re: [PATCH v2 2/5] mm/migrate: add a direction parameter to
+ migrate_vma
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
+References: <20200713172149.2310-1-rcampbell@nvidia.com>
+ <20200713172149.2310-3-rcampbell@nvidia.com>
+ <20200720183643.GA3028737@nvidia.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <2e775a5d-9d62-de52-6799-3bbb09c88c5a@nvidia.com>
+Date:   Mon, 20 Jul 2020 12:54:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595210605-27888-1-git-send-email-wangxiongfeng2@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200720183643.GA3028737@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595274833; bh=xe0NlTll7koBWxfHzF7xMR2/rT2YI2SjQkBbzGUMHBo=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=R1BoJhWZIo+phXPvLeBHb9GE3Ir3Ca2lGqCHZ7NOF28da9GouiDynuAzy0gXwHK3b
+         0SMyfaA0vmSyeRjgDlnXk6jyQwdL9gxZzJ3BWM0f8xL7QCDDUC7gC4urSU3lvrIwhr
+         Q/QFFZ3p5SX+tx1mFrH3nTwS4SZvc1GgkIjJyuIxTdmoGO4JaYLWNAVAIH3tTHYv2Q
+         jU03JZBll7tMF8wszpfoFUpydK44DBij3jJxuXMpE1rw9qoEFZuC34Z+f8iN+kYHTg
+         8Hip24/wshZhcjucEB6XpxKQZQEdfUZ2VK4A8GhafEtptM2onG1cGmjF48lb52H7+a
+         kpV37ju9KbY2w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 10:03:25AM +0800, Xiongfeng Wang wrote:
-> When I cat some ipmi_watchdog parameters by sysfs, it displays as
-> follows. It's better to add a newline for easy reading.
+
+On 7/20/20 11:36 AM, Jason Gunthorpe wrote:
+> On Mon, Jul 13, 2020 at 10:21:46AM -0700, Ralph Campbell wrote:
+>> The src_owner field in struct migrate_vma is being used for two purposes,
+>> it implies the direction of the migration and it identifies device private
+>> pages owned by the caller. Split this into separate parameters so the
+>> src_owner field can be used just to identify device private pages owned
+>> by the caller of migrate_vma_setup().
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> Reviewed-by: Bharata B Rao <bharata@linux.ibm.com>
+>>   arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 ++
+>>   drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 ++
+>>   include/linux/migrate.h                | 12 +++++++++---
+>>   lib/test_hmm.c                         |  2 ++
+>>   mm/migrate.c                           |  5 +++--
+>>   5 files changed, 18 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>> index 09d8119024db..acbf14cd2d72 100644
+>> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>> @@ -400,6 +400,7 @@ kvmppc_svm_page_in(struct vm_area_struct *vma, unsigned long start,
+>>   	mig.end = end;
+>>   	mig.src = &src_pfn;
+>>   	mig.dst = &dst_pfn;
+>> +	mig.dir = MIGRATE_VMA_FROM_SYSTEM;
+>>   
+>>   	/*
+>>   	 * We come here with mmap_lock write lock held just for
+>> @@ -578,6 +579,7 @@ kvmppc_svm_page_out(struct vm_area_struct *vma, unsigned long start,
+>>   	mig.src = &src_pfn;
+>>   	mig.dst = &dst_pfn;
+>>   	mig.src_owner = &kvmppc_uvmem_pgmap;
+>> +	mig.dir = MIGRATE_VMA_FROM_DEVICE_PRIVATE;
+>>   
+>>   	mutex_lock(&kvm->arch.uvmem_lock);
+>>   	/* The requested page is already paged-out, nothing to do */
+>> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+>> index e5c230d9ae24..e5c83b8ee82e 100644
+>> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+>> @@ -183,6 +183,7 @@ static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
+>>   		.src		= &src,
+>>   		.dst		= &dst,
+>>   		.src_owner	= drm->dev,
+>> +		.dir		= MIGRATE_VMA_FROM_DEVICE_PRIVATE,
+>>   	};
+>>   
+>>   	/*
+>> @@ -615,6 +616,7 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
+>>   	struct migrate_vma args = {
+>>   		.vma		= vma,
+>>   		.start		= start,
+>> +		.dir		= MIGRATE_VMA_FROM_SYSTEM,
+>>   	};
+>>   	unsigned long i;
+>>   	u64 *pfns;
+>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+>> index 3e546cbf03dd..620f2235d7d4 100644
+>> +++ b/include/linux/migrate.h
+>> @@ -180,6 +180,11 @@ static inline unsigned long migrate_pfn(unsigned long pfn)
+>>   	return (pfn << MIGRATE_PFN_SHIFT) | MIGRATE_PFN_VALID;
+>>   }
+>>   
+>> +enum migrate_vma_direction {
+>> +	MIGRATE_VMA_FROM_SYSTEM,
+>> +	MIGRATE_VMA_FROM_DEVICE_PRIVATE,
+>> +};
 > 
-> root@(none):/# cat /sys/module/ipmi_watchdog/parameters/action
-> resetroot@(none):/# cat /sys/module/ipmi_watchdog/parameters/preaction
-> pre_noneroot@(none):/# cat /sys/module/ipmi_watchdog/parameters/preop
-> preop_noneroot@(none):/#
+> I would have guessed this is more natural as _FROM_DEVICE_ and
+> TO_DEVICE_ ?
 
-Yeah, that's not consistent with other things displayed in the kernel.
+The caller controls where the destination memory is allocated so it isn't
+necessarily device private memory, it could be from system to system.
+The use case for system to system memory migration is for hardware
+like ARM SMMU or PCIe ATS where a single set of page tables is shared by
+the device and a CPU process over a coherent system memory bus.
+Also many integrated GPUs in SOCs fall into this category too.
 
-> 
-> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> ---
->  drivers/char/ipmi/ipmi_watchdog.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-> index 55986e1..3e05a1d 100644
-> --- a/drivers/char/ipmi/ipmi_watchdog.c
-> +++ b/drivers/char/ipmi/ipmi_watchdog.c
-> @@ -232,12 +232,16 @@ static int set_param_str(const char *val, const struct kernel_param *kp)
->  static int get_param_str(char *buffer, const struct kernel_param *kp)
->  {
->  	action_fn fn = (action_fn) kp->arg;
-> -	int       rv;
-> +	int rv, len;
->  
->  	rv = fn(NULL, buffer);
->  	if (rv)
->  		return rv;
-> -	return strlen(buffer);
-> +
-> +	len = strlen(buffer);
-> +	len += sprintf(buffer + len, "\n");
+So to me, it makes more sense to specify the direction based on the
+source location.
 
-sprintf is kind of overkill to stick a \n on the end of a line.  How
-about:
+> All the callers of this API are device drivers managing their
+> DEVICE_PRIVATE, right?
 
-	buffer[len++] = '\n';
+True for now, yes.
 
-Since you are returning the length, you shouldn't need to nil terminate
-the string.
-
-An unrelated question: Are you using any of the special functions of the
-IPMI watchdog, like the pretimeout?
-
--corey
-
-> +
-> +	return len;
->  }
->  
->  
-> -- 
-> 1.7.12.4
+> Jason
 > 
