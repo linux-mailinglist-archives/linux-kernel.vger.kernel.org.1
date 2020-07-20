@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8181B2263AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DA72263B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgGTPjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        id S1729514AbgGTPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:39:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729363AbgGTPjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:01 -0400
+        id S1729479AbgGTPj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:39:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53E7A22CAF;
-        Mon, 20 Jul 2020 15:39:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65ED622CB2;
+        Mon, 20 Jul 2020 15:39:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259540;
-        bh=gHMFfJOi8qxKoVrEySmfFxRRRt2jZd3dP9BATkzoiZ4=;
+        s=default; t=1595259569;
+        bh=nHkRgkxW3FPWPvUEDFW0Ho3ejuEvpzjSEkQyB3mRkbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vRrqM03MjXa/dGaquKOnoZTS64lrb6U0qzzym6jjD0S6k49qrTHd42bYOImd7OKH2
-         WMcyVhDe+le1RTzOlLrBNgMqEwuA0yDpIwPJgu1gpP58KpVSFrfouRmLs8OVX/on7c
-         gNkmc+TYTsC2LPaoi44oIPVa8xT5CAqgpMCaIJmA=
+        b=vUm7BzY+cecRb+9XYhs78Edhfe0q18wla1EsMnlOln2GzXIUhBUqJsuVySpxJxtOZ
+         3reAa9Yv9LTqXx1HoQduLo45teVp1Cc9J82WxqMW/CKzh9N9B+UwL1pHHhEy94rkK7
+         EQIabT/X0hZ67RTpKufPdTjwq1PRDmfjOTx6wIhw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
+        stable@vger.kernel.org,
+        syzbot+c190f6858a04ea7fbc52@syzkaller.appspotmail.com,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 38/58] usb: core: Add a helper function to check the validity of EP type in URB
-Date:   Mon, 20 Jul 2020 17:36:54 +0200
-Message-Id: <20200720152749.118768122@linuxfoundation.org>
+Subject: [PATCH 4.4 39/58] ALSA: line6: Perform sanity check for each URB creation
+Date:   Mon, 20 Jul 2020 17:36:55 +0200
+Message-Id: <20200720152749.174857260@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
 References: <20200720152747.127988571@linuxfoundation.org>
@@ -45,91 +46,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit e901b9873876ca30a09253731bd3a6b00c44b5b0 upstream.
+commit 6e8a914ad619042c5f25a4feb663357c4170fd8d upstream.
 
-This patch adds a new helper function to perform a sanity check of the
-given URB to see whether it contains a valid endpoint.  It's a light-
-weight version of what usb_submit_urb() does, but without the kernel
-warning followed by the stack trace, just returns an error code.
+LINE6 drivers create stream URBs with a fixed pipe without checking
+its validity, and this may lead to a kernel WARNING at the submission
+when a malformed USB descriptor is passed.
 
-Especially for a driver that doesn't parse the descriptor but fills
-the URB with the fixed endpoint (e.g. some quirks for non-compliant
-devices), this kind of check is preferable at the probe phase before
-actually submitting the urb.
+For avoiding the kernel warning, perform the similar sanity checks for
+each pipe type at creating a URB.
 
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+c190f6858a04ea7fbc52@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/s5hv9iv4hq8.wl-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/core/urb.c |   30 ++++++++++++++++++++++++++----
- include/linux/usb.h    |    2 ++
- 2 files changed, 28 insertions(+), 4 deletions(-)
+ sound/usb/line6/capture.c  |    2 ++
+ sound/usb/line6/playback.c |    2 ++
+ 2 files changed, 4 insertions(+)
 
---- a/drivers/usb/core/urb.c
-+++ b/drivers/usb/core/urb.c
-@@ -185,6 +185,31 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
+--- a/sound/usb/line6/capture.c
++++ b/sound/usb/line6/capture.c
+@@ -269,6 +269,8 @@ int line6_create_audio_in_urbs(struct sn
+ 		urb->interval = LINE6_ISO_INTERVAL;
+ 		urb->error_count = 0;
+ 		urb->complete = audio_in_callback;
++		if (usb_urb_ep_type_check(urb))
++			return -EINVAL;
+ 	}
  
- /*-------------------------------------------------------------------*/
+ 	return 0;
+--- a/sound/usb/line6/playback.c
++++ b/sound/usb/line6/playback.c
+@@ -423,6 +423,8 @@ int line6_create_audio_out_urbs(struct s
+ 		urb->interval = LINE6_ISO_INTERVAL;
+ 		urb->error_count = 0;
+ 		urb->complete = audio_out_callback;
++		if (usb_urb_ep_type_check(urb))
++			return -EINVAL;
+ 	}
  
-+static const int pipetypes[4] = {
-+	PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
-+};
-+
-+/**
-+ * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-+ * @urb: urb to be checked
-+ *
-+ * This performs a light-weight sanity check for the endpoint in the
-+ * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-+ * a negative error code.
-+ */
-+int usb_urb_ep_type_check(const struct urb *urb)
-+{
-+	const struct usb_host_endpoint *ep;
-+
-+	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-+	if (!ep)
-+		return -EINVAL;
-+	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-+		return -EINVAL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
-+
- /**
-  * usb_submit_urb - issue an asynchronous transfer request for an endpoint
-  * @urb: pointer to the urb describing the request
-@@ -324,9 +349,6 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
-  */
- int usb_submit_urb(struct urb *urb, gfp_t mem_flags)
- {
--	static int			pipetypes[4] = {
--		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
--	};
- 	int				xfertype, max;
- 	struct usb_device		*dev;
- 	struct usb_host_endpoint	*ep;
-@@ -445,7 +467,7 @@ int usb_submit_urb(struct urb *urb, gfp_
- 	 */
- 
- 	/* Check that the pipe's type matches the endpoint's type */
--	if (usb_pipetype(urb->pipe) != pipetypes[xfertype])
-+	if (usb_urb_ep_type_check(urb))
- 		dev_WARN(&dev->dev, "BOGUS urb xfer, pipe %x != type %x\n",
- 			usb_pipetype(urb->pipe), pipetypes[xfertype]);
- 
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -1655,6 +1655,8 @@ static inline int usb_urb_dir_out(struct
- 	return (urb->transfer_flags & URB_DIR_MASK) == URB_DIR_OUT;
- }
- 
-+int usb_urb_ep_type_check(const struct urb *urb);
-+
- void *usb_alloc_coherent(struct usb_device *dev, size_t size,
- 	gfp_t mem_flags, dma_addr_t *dma);
- void usb_free_coherent(struct usb_device *dev, size_t size,
+ 	return 0;
 
 
