@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0397A2267B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC04226916
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388189AbgGTQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54030 "EHLO mail.kernel.org"
+        id S2388689AbgGTQY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387679AbgGTQNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:13:51 -0400
+        id S1732025AbgGTQD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:03:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 753FD20734;
-        Mon, 20 Jul 2020 16:13:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEA762064B;
+        Mon, 20 Jul 2020 16:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261631;
-        bh=U9A2yR2k6FkavOn/3+booMWwECu0863W08r20mMUvOs=;
+        s=default; t=1595261007;
+        bh=rXLB+yVYKsofx1X/1NjAGvs5acGSN+ZQLzZdfonJ3y4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnaa8zcnt3TsDmcsV681JcsAdTggpgeibQwpOQ/BKIT632/G7M5u8QW9LelqCGvrN
-         HOLq/BwEPkDqDGdSXnDf3OhkSFuXpCFAEdssg8gU0hUi+XL/BF52aBuQOblBTqDy2N
-         fjMm2/y+jwZmS15G4a0UOZPFmAT6YvBtcr1ti4eg=
+        b=1SQfIkrYhsCc7+ZgpuP8PJqCIOiH+8YBmd+2xKWQWmeit3zqOdECO80Y/iGuIVJWw
+         hK/q0MYP2G+vhqm286kFrCK81Kx4PjHZ1E4Alah5Ziv1gtp7Lw2hCs11w31pEnaQIK
+         TFm3WkarUzFMh6VnfwOz0h6OzmoG0rrUC9glEJ2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH 5.7 186/244] mei: bus: dont clean driver pointer
-Date:   Mon, 20 Jul 2020 17:37:37 +0200
-Message-Id: <20200720152834.688721482@linuxfoundation.org>
+        stable@vger.kernel.org, Wade Mealing <wmealing@redhat.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH 5.4 176/215] Revert "zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()"
+Date:   Mon, 20 Jul 2020 17:37:38 +0200
+Message-Id: <20200720152828.547557534@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Wade Mealing <wmealing@redhat.com>
 
-commit e852c2c251ed9c23ae6e3efebc5ec49adb504207 upstream.
+commit 853eab68afc80f59f36bbdeb715e5c88c501e680 upstream.
 
-It's not needed to set driver to NULL in mei_cl_device_remove()
-which is bus_type remove() handler as this is done anyway
-in __device_release_driver().
+Turns out that the permissions for 0400 really are what we want here,
+otherwise any user can read from this file.
 
-Actually this is causing an endless loop in driver_detach()
-on ubuntu patched kernel, while removing (rmmod) the mei_hdcp module.
-The reason list_empty(&drv->p->klist_devices.k_list) is always not-empty.
-as the check is always true in  __device_release_driver()
-	if (dev->driver != drv)
-		return;
+[fixed formatting, added changelog, and made attribute static - gregkh]
 
-The non upstream patch is causing this behavior, titled:
-'vfio -- release device lock before userspace requests'
-
-Nevertheless the fix is correct also for the upstream.
-
-Link: https://patchwork.ozlabs.org/project/ubuntu-kernel/patch/20180912085046.3401-2-apw@canonical.com/
-Cc: <stable@vger.kernel.org>
-Cc: Andy Whitcroft <apw@canonical.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20200628225359.2185929-1-tomas.winkler@intel.com
+Reported-by: Wade Mealing <wmealing@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Fixes: f40609d1591f ("zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()")
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1847832
+Reviewed-by: Steffen Maier <maier@linux.ibm.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Link: https://lore.kernel.org/r/20200617114946.GA2131650@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/mei/bus.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/block/zram/zram_drv.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -745,9 +745,8 @@ static int mei_cl_device_remove(struct d
- 
- 	mei_cl_bus_module_put(cldev);
- 	module_put(THIS_MODULE);
--	dev->driver = NULL;
--	return ret;
- 
-+	return ret;
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -2023,7 +2023,8 @@ static ssize_t hot_add_show(struct class
+ 		return ret;
+ 	return scnprintf(buf, PAGE_SIZE, "%d\n", ret);
  }
+-static CLASS_ATTR_RO(hot_add);
++static struct class_attribute class_attr_hot_add =
++	__ATTR(hot_add, 0400, hot_add_show, NULL);
  
- static ssize_t name_show(struct device *dev, struct device_attribute *a,
+ static ssize_t hot_remove_store(struct class *class,
+ 			struct class_attribute *attr,
 
 
