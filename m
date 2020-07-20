@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928A0226736
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8CA226936
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387569AbgGTQJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
+        id S1732230AbgGTP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387535AbgGTQJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:09:42 -0400
+        id S1732167AbgGTP7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E76F82065E;
-        Mon, 20 Jul 2020 16:09:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DFC222CAF;
+        Mon, 20 Jul 2020 15:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261381;
-        bh=MjQVEo8ePfmHAxMzEUEPB8j9rECsoTukm0HF3RCe50g=;
+        s=default; t=1595260755;
+        bh=PKJqW285Wyj9VDxoQk/MlK8bcvV3xkLNjAGN/bWGlpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a10xblzfErA5kzx6QEiqU2VaPRDLbZGDt6OLPGA4nX2Gtrh9X6ltWM/oxT1bMF9+w
-         SUquFIlJ7akOaQILswi+laHKDdWJlUBjvMOITeqNe7D6V63ruLQtugz/JeA6f4RZ+Y
-         1NOZ7eSXk/qwOiKf2pSG9KuEHDbCBaU9ftHWzQkE=
+        b=bWMJJGgtQMuG4OCAup9ii3EelFawAYX+akAnjE6PoLNfhooravtpGTs975br2rrtO
+         /7o7Vo+A2KIZSl73SSgFY1LiuvfKhjyLu+5toAhlvOw+hqviCQQbQdRQ3k9TTWHIWk
+         42boah6oX5xIn6IsX4O57CtmRe9c+ok+taUbAhjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 095/244] dmaengine: dw: Initialize channel before each transfer
+        stable@vger.kernel.org, Haibo Chen <haibo.chen@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 084/215] mmc: sdhci: do not enable card detect interrupt for gpio cd type
 Date:   Mon, 20 Jul 2020 17:36:06 +0200
-Message-Id: <20200720152830.351191120@linuxfoundation.org>
+Message-Id: <20200720152824.202443009@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,77 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Haibo Chen <haibo.chen@nxp.com>
 
-[ Upstream commit 99ba8b9b0d9780e9937eb1d488d120e9e5c2533d ]
+[ Upstream commit e65bb38824711559844ba932132f417bc5a355e2 ]
 
-In some cases DMA can be used only with a consumer which does runtime power
-management and on the platforms, that have DMA auto power gating logic
-(see comments in the drivers/acpi/acpi_lpss.c), may result in DMA losing
-its context. Simple mitigation of this issue is to initialize channel
-each time the consumer initiates a transfer.
+Except SDHCI_QUIRK_BROKEN_CARD_DETECTION and MMC_CAP_NONREMOVABLE,
+we also do not need to handle controller native card detect interrupt
+for gpio cd type.
+If we wrong enabled the card detect interrupt for gpio case, it will
+cause a lot of unexpected card detect interrupts during data transfer
+which should not happen.
 
-Fixes: cfdf5b6cc598 ("dw_dmac: add support for Lynxpoint DMA controllers")
-Reported-by: Tsuchiya Yuto <kitakar@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206403
-Link: https://lore.kernel.org/r/20200705115620.51929-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/1582100563-20555-2-git-send-email-haibo.chen@nxp.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/dw/core.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/mmc/host/sdhci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 21cb2a58dbd29..a1b56f52db2f2 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -118,16 +118,11 @@ static void dwc_initialize(struct dw_dma_chan *dwc)
- {
- 	struct dw_dma *dw = to_dw_dma(dwc->chan.device);
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 50514fedbc76f..136f9737713d8 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -152,7 +152,7 @@ static void sdhci_set_card_detection(struct sdhci_host *host, bool enable)
+ 	u32 present;
  
--	if (test_bit(DW_DMA_IS_INITIALIZED, &dwc->flags))
--		return;
--
- 	dw->initialize_chan(dwc);
+ 	if ((host->quirks & SDHCI_QUIRK_BROKEN_CARD_DETECTION) ||
+-	    !mmc_card_is_removable(host->mmc))
++	    !mmc_card_is_removable(host->mmc) || mmc_can_gpio_cd(host->mmc))
+ 		return;
  
- 	/* Enable interrupts */
- 	channel_set_bit(dw, MASK.XFER, dwc->mask);
- 	channel_set_bit(dw, MASK.ERROR, dwc->mask);
--
--	set_bit(DW_DMA_IS_INITIALIZED, &dwc->flags);
- }
- 
- /*----------------------------------------------------------------------*/
-@@ -954,8 +949,6 @@ static void dwc_issue_pending(struct dma_chan *chan)
- 
- void do_dw_dma_off(struct dw_dma *dw)
- {
--	unsigned int i;
--
- 	dma_writel(dw, CFG, 0);
- 
- 	channel_clear_bit(dw, MASK.XFER, dw->all_chan_mask);
-@@ -966,9 +959,6 @@ void do_dw_dma_off(struct dw_dma *dw)
- 
- 	while (dma_readl(dw, CFG) & DW_CFG_DMA_EN)
- 		cpu_relax();
--
--	for (i = 0; i < dw->dma.chancnt; i++)
--		clear_bit(DW_DMA_IS_INITIALIZED, &dw->chan[i].flags);
- }
- 
- void do_dw_dma_on(struct dw_dma *dw)
-@@ -1032,8 +1022,6 @@ static void dwc_free_chan_resources(struct dma_chan *chan)
- 	/* Clear custom channel configuration */
- 	memset(&dwc->dws, 0, sizeof(struct dw_dma_slave));
- 
--	clear_bit(DW_DMA_IS_INITIALIZED, &dwc->flags);
--
- 	/* Disable interrupts */
- 	channel_clear_bit(dw, MASK.XFER, dwc->mask);
- 	channel_clear_bit(dw, MASK.BLOCK, dwc->mask);
+ 	if (enable) {
 -- 
 2.25.1
 
