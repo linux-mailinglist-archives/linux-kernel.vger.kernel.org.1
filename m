@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E80B22658B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176BB22658C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731604AbgGTPyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:54:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
+        id S1731611AbgGTPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731594AbgGTPyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:54:43 -0400
+        id S1731600AbgGTPyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:54:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A82322CBB;
-        Mon, 20 Jul 2020 15:54:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF16622482;
+        Mon, 20 Jul 2020 15:54:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260482;
-        bh=t1bRhQoPUUkSx0+T/8WDvHePYDDMkvJgRyhhHwWI7bg=;
+        s=default; t=1595260485;
+        bh=9D4BKhxX91QDi37+vYRhuOfxXIYVo+HlAafW5fRwI78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oZ0+tftDCDeohNBA/5TnqqcbE2IZEoLVd5w70iQGz30CWfwDf1mvZj7c6+mmGWvPO
-         W1UWNA1gwqJi45KJqvW4daw+lJsz7cG4zf3Lv5wUwSNYdES96yi9JMAoSbraUB/jMa
-         CisV+SZ/xi08BwiHg8uFP2jcSuQsR+HUpW+t6LNY=
+        b=TaiYmwmpJyyEj42p1HIWLktMHHTK5SH5+FUupxTTONs5ZF1h/PJSAqX410eL700QB
+         UPNoKbN2JlzWwJfwPHsX+j/aFy2QzDbW5deMnqtNdcdciZIP5B2WkN1sS/FoBheFJz
+         Vw5+XSYPgEedcgklbIWshWWyYEIig8hZdUYS4LNs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4.19 118/133] intel_th: pci: Add Tiger Lake PCH-H support
-Date:   Mon, 20 Jul 2020 17:37:45 +0200
-Message-Id: <20200720152809.440502748@linuxfoundation.org>
+Subject: [PATCH 4.19 119/133] intel_th: pci: Add Emmitsburg PCH support
+Date:   Mon, 20 Jul 2020 17:37:46 +0200
+Message-Id: <20200720152809.489521397@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
 References: <20200720152803.732195882@linuxfoundation.org>
@@ -46,14 +46,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 
-commit 6227585dc7b6a5405fc08dc322f98cb95e2f0eb4 upstream.
+commit fd73d74a32bfaaf259441322cc5a1c83caaa94f2 upstream.
 
-This adds support for the Trace Hub in Tiger Lake PCH-H.
+This adds support for the Trace Hub in Emmitsburg PCH.
 
 Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: stable@vger.kernel.org # v4.14+
-Link: https://lore.kernel.org/r/20200706161339.55468-3-alexander.shishkin@linux.intel.com
+Link: https://lore.kernel.org/r/20200706161339.55468-4-alexander.shishkin@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
@@ -62,17 +62,17 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/hwtracing/intel_th/pci.c
 +++ b/drivers/hwtracing/intel_th/pci.c
-@@ -206,6 +206,11 @@ static const struct pci_device_id intel_
+@@ -230,6 +230,11 @@ static const struct pci_device_id intel_
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x4b26),
  		.driver_data = (kernel_ulong_t)&intel_th_2x,
  	},
- 	{
-+		/* Tiger Lake PCH-H */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x43a6),
++	{
++		/* Emmitsburg PCH */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x1bcc),
 +		.driver_data = (kernel_ulong_t)&intel_th_2x,
 +	},
-+	{
- 		/* Jasper Lake PCH */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x4da6),
- 		.driver_data = (kernel_ulong_t)&intel_th_2x,
+ 	{ 0 },
+ };
+ 
 
 
