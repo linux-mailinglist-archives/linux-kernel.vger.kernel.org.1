@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3901E2265A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C449226577
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731057AbgGTPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54668 "EHLO mail.kernel.org"
+        id S1731544AbgGTPyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:54:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbgGTPzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:33 -0400
+        id S1730181AbgGTPyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:54:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D21C2065E;
-        Mon, 20 Jul 2020 15:55:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1883C2064B;
+        Mon, 20 Jul 2020 15:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260532;
-        bh=9IYFXvNdzrOsWw+bw1eHWtHAmTn0VG0xwVdxYbgrFo4=;
+        s=default; t=1595260449;
+        bh=+zyIxA2wZ+3ko/VQnfkCiZs6xfl7S6167m35bkStRss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V6VmSkhb2YZlqtvZ+iHtLB2eYvG0KFV2eXNIqx9HGBH5r884e+hDweS0Kb6XZdNUF
-         INbly9oEc5bALn5wtitkJxsCpcqkuha6QQ6nMYFQZ+0agB2FoqA4CykxTWzj80CDHA
-         mRezr+OLExRaH786hvKE9ZXfqCN/FeyfXlg3ZUJc=
+        b=MgZiCVFqZoliUU/EvQKxmnCyHdx5GgoxJG2mydk3TL+grKjTDxMC73CLRjwMjj3H8
+         /ffscylQZGUUHoCIa/coA3jf/AtbwrN85AuJ9lQTylA2hLMgm/DFdZwnDbGqfo+FaU
+         qzBsP/t23vRaZsqF7FNeX/4RGKoFgFm/tObRONb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chirantan Ekbote <chirantan@chromium.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 106/133] fuse: Fix parameter for FS_IOC_{GET,SET}FLAGS
-Date:   Mon, 20 Jul 2020 17:37:33 +0200
-Message-Id: <20200720152808.866418357@linuxfoundation.org>
+        stable@vger.kernel.org, Wade Mealing <wmealing@redhat.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH 4.19 107/133] Revert "zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()"
+Date:   Mon, 20 Jul 2020 17:37:34 +0200
+Message-Id: <20200720152808.906854489@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
 References: <20200720152803.732195882@linuxfoundation.org>
@@ -43,65 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chirantan Ekbote <chirantan@chromium.org>
+From: Wade Mealing <wmealing@redhat.com>
 
-commit 31070f6ccec09f3bd4f1e28cd1e592fa4f3ba0b6 upstream.
+commit 853eab68afc80f59f36bbdeb715e5c88c501e680 upstream.
 
-The ioctl encoding for this parameter is a long but the documentation says
-it should be an int and the kernel drivers expect it to be an int.  If the
-fuse driver treats this as a long it might end up scribbling over the stack
-of a userspace process that only allocated enough space for an int.
+Turns out that the permissions for 0400 really are what we want here,
+otherwise any user can read from this file.
 
-This was previously discussed in [1] and a patch for fuse was proposed in
-[2].  From what I can tell the patch in [2] was nacked in favor of adding
-new, "fixed" ioctls and using those from userspace.  However there is still
-no "fixed" version of these ioctls and the fact is that it's sometimes
-infeasible to change all userspace to use the new one.
+[fixed formatting, added changelog, and made attribute static - gregkh]
 
-Handling the ioctls specially in the fuse driver seems like the most
-pragmatic way for fuse servers to support them without causing crashes in
-userspace applications that call them.
-
-[1]: https://lore.kernel.org/linux-fsdevel/20131126200559.GH20559@hall.aurel32.net/T/
-[2]: https://sourceforge.net/p/fuse/mailman/message/31771759/
-
-Signed-off-by: Chirantan Ekbote <chirantan@chromium.org>
-Fixes: 59efec7b9039 ("fuse: implement ioctl support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Reported-by: Wade Mealing <wmealing@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Fixes: f40609d1591f ("zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()")
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1847832
+Reviewed-by: Steffen Maier <maier@linux.ibm.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Link: https://lore.kernel.org/r/20200617114946.GA2131650@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fuse/file.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/block/zram/zram_drv.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -18,6 +18,7 @@
- #include <linux/swap.h>
- #include <linux/falloc.h>
- #include <linux/uio.h>
-+#include <linux/fs.h>
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1802,7 +1802,8 @@ static ssize_t hot_add_show(struct class
+ 		return ret;
+ 	return scnprintf(buf, PAGE_SIZE, "%d\n", ret);
+ }
+-static CLASS_ATTR_RO(hot_add);
++static struct class_attribute class_attr_hot_add =
++	__ATTR(hot_add, 0400, hot_add_show, NULL);
  
- static const struct file_operations fuse_direct_io_file_operations;
- 
-@@ -2535,7 +2536,16 @@ long fuse_do_ioctl(struct file *file, un
- 		struct iovec *iov = iov_page;
- 
- 		iov->iov_base = (void __user *)arg;
--		iov->iov_len = _IOC_SIZE(cmd);
-+
-+		switch (cmd) {
-+		case FS_IOC_GETFLAGS:
-+		case FS_IOC_SETFLAGS:
-+			iov->iov_len = sizeof(int);
-+			break;
-+		default:
-+			iov->iov_len = _IOC_SIZE(cmd);
-+			break;
-+		}
- 
- 		if (_IOC_DIR(cmd) & _IOC_WRITE) {
- 			in_iov = iov;
+ static ssize_t hot_remove_store(struct class *class,
+ 			struct class_attribute *attr,
 
 
