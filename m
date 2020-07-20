@@ -2,86 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F8E225E66
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3108225E6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728780AbgGTMVH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Jul 2020 08:21:07 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:32999 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgGTMVG (ORCPT
+        id S1728762AbgGTMW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:22:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57521 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728651AbgGTMW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:21:06 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1M7JrG-1juCT63Gf6-007j4f; Mon, 20 Jul 2020 14:21:04 +0200
-Received: by mail-qk1-f182.google.com with SMTP id z15so8193088qki.10;
-        Mon, 20 Jul 2020 05:21:04 -0700 (PDT)
-X-Gm-Message-State: AOAM533ithWRD6Gv/yS3ySVZQWpH2Ee5Al0wJnqfzEI4CJ1n+FiGWbc2
-        A7To4/S700mp6SLZ0Nhe0ACYXyBN8pi2Q3iiU+A=
-X-Google-Smtp-Source: ABdhPJxnDaps2mzwyIsQu5vg0Fu3YsCdpchsfKZVpyRu8MsSM9Gcl79g+mqxBm6tfbp35cPwGB+thoVnqL5sOIIyG+c=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr21267846qkf.394.1595247663277;
- Mon, 20 Jul 2020 05:21:03 -0700 (PDT)
+        Mon, 20 Jul 2020 08:22:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595247776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PFM1Qo8fTP4agFAqoUXIx/sYoR1DNoACJDTPmZRrdKQ=;
+        b=X9UnxWVHL5izrQ1RjvfYVnafId/SXmYNzyprQPtI5R6ZxsSay9d2uOQmgdZf90HbRBzyEj
+        +6Owrq30ujNmJnHT3pZnrEsyU5jiltmNCxocMYqahQJ/O/RwFg/867nROTP9sDi41Mcbl6
+        cJozVcMOBsJaeYmzcpVzhR65koJCfwE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514--fmzgAVpM3WTrqd1e3leqw-1; Mon, 20 Jul 2020 08:22:30 -0400
+X-MC-Unique: -fmzgAVpM3WTrqd1e3leqw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28EFC800597;
+        Mon, 20 Jul 2020 12:22:28 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B80272B6E2;
+        Mon, 20 Jul 2020 12:22:18 +0000 (UTC)
+Subject: Re: [PATCH v5 12/15] vfio/type1: Add vSVA support for IOMMU-backed
+ mdevs
+To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        baolu.lu@linux.intel.com, joro@8bytes.org
+Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
+        stefanha@gmail.com, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1594552870-55687-1-git-send-email-yi.l.liu@intel.com>
+ <1594552870-55687-13-git-send-email-yi.l.liu@intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <5921bffc-9daa-99be-9a12-6d94ce1950d2@redhat.com>
+Date:   Mon, 20 Jul 2020 14:22:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200720074249.596364-1-jiaxun.yang@flygoat.com>
- <20200720074249.596364-4-jiaxun.yang@flygoat.com> <CAK8P3a13vZJyOGZ1FpS98ytVC57P6NgmQpSfhf2h9b7meQLtcw@mail.gmail.com>
- <d927b5b6-e33e-4a94-c997-b1794dbde411@flygoat.com>
-In-Reply-To: <d927b5b6-e33e-4a94-c997-b1794dbde411@flygoat.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 20 Jul 2020 14:20:46 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2=qrp6x4yLUXhQU2MwcMa4HpEzAdVs_zW8f14GZ-_zqQ@mail.gmail.com>
-Message-ID: <CAK8P3a2=qrp6x4yLUXhQU2MwcMa4HpEzAdVs_zW8f14GZ-_zqQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] MIPS: Loongson64: Enlarge IO_SPACE_LIMIT
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:cD2rRfBF59CX61+zemVyUHT3Z9YhsV3/Z+NHlrBTDAPsD74CR0L
- nyOgRYZuZYWmOQ2dgYtQBxgKLiR8eRiobdfquNJBUmWhlELJvehIDi1zkyxyrSWStMdLGnE
- OgRNitBOvmix2W8l+2rfol9HM+hEQ56iSqiLcrpSXrvCKcscoKnYp791ja9DCybxgedZtJj
- zct3LJCXapc7Sq1jzSQVg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i+f8y2Tjuhc=:mVrdaKEhHPMW8V6+dV4jQW
- ROk0WSCY8QIJdWAhzb6FXwEw7ggXgk1TmicrFRJx/FbseVg95qETX7IeNgLWpmFsBU9oXB2KQ
- csYOxouwX/KSa5ivE5iyS6CwBATpJS9lV/I/aS0DkBrvJHc7gOziL56qd26INwBZx9j7FSdtN
- paje5DUiViHp+Y7GrMNVq8EbT7+mQI19nOoMtMxVRFMbtgUBqPGHkey2/3hnFlCwQ7tKoQZq7
- JHwjcPX9kkHabQbbj9a3hPRfTZBERjAt+5P5yNrkwz0SulYAbtw7GuvM0jxlW7sReuYOpL1rw
- R1J2+5jJfdHcU7vsltqFIQT9I0j2Etkm6PyA+2b3CxXU0X4ZJY2iqdY6kX2thMvfh/qSPubwf
- 4EbBVR/LBuDN6bNEK7bMK6Pz4/cZTKeYHUQWto4uRE2wF8/TU9jnGR2a7wSVfRdGCnqMcvo0M
- 5uZ/7hpe99LyFrq0dvdeW10hgz13M/yKZ9z3gV4zA6o3TWMwwk/UnQvQ6CqZCS/23oytKm5/z
- PMINa6JaSTx2DRLr5ELMtRvvk82D6oe4A69D1aENJejMgMK+nkNEBUMnagtPjLJJ9vgQRvrK6
- S2pc7HpF03GBBl6QfHJJ8Vcni+Q0RHQVrAqvkS+C1Jl3az715Edj5QqtswBH7f3u81zNODgWU
- hMriL68NeNzDwdu1LhEcF+I0ShqCJBshf6VPziZUKYcpEjtQ3gp0uJ+2bCbwHDzffbzYTwmNn
- DMuF0ZNtpMncFCq8zJg23yjCmmKn4Tpu09yQYTn2pO4xHWxPSQGPQPCFij+xpBeKCYEWCtRe7
- 444JyFoq3lqVFA0wVJBPXHJMBoHvtQqG5z7M5/34zXqnFcJ5gzBUuxVZlPekUPeBqyn7u0Piq
- t6PQqlLRePlGHr7BTjTwjYrP2EG5tlvb9S5CHPxfcieit9A5UJ/F26YEmP3A9sY02hbL5w0Xf
- GoD1xswEp58IHmLgdsMsJPzKOCu3u+nyn5+ajvCZGjpZzjaiMgU7y
+In-Reply-To: <1594552870-55687-13-git-send-email-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 2:07 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> 在 2020/7/20 下午6:45, Arnd Bergmann 写道:
-> > On Mon, Jul 20, 2020 at 9:44 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> >> It can be very big on LS7A PCH systems.
-> > In practice, one should rarely need more than a few kb worth of
-> > port numbers, unless you expect to see hundreds of legacy PCI
-> > devices.
-> I must blame stupid hardware design here. The LPC Controller (for ISA
-> device) can eat
-> up to 0x20000 IO BAR, and we can't resize it. Thus we have to enlarge
-> the I/O Space.
+Yi,
 
-Ok, I see.
+On 7/12/20 1:21 PM, Liu Yi L wrote:
+> Recent years, mediated device pass-through framework (e.g. vfio-mdev)
+> is used to achieve flexible device sharing across domains (e.g. VMs).
+> Also there are hardware assisted mediated pass-through solutions from
+> platform vendors. e.g. Intel VT-d scalable mode which supports Intel
+> Scalable I/O Virtualization technology. Such mdevs are called IOMMU-
+> backed mdevs as there are IOMMU enforced DMA isolation for such mdevs.
+there is IOMMU enforced DMA isolation
+> In kernel, IOMMU-backed mdevs are exposed to IOMMU layer by aux-domain
+> concept, which means mdevs are protected by an iommu domain which is
+> auxiliary to the domain that the kernel driver primarily uses for DMA
+> API. Details can be found in the KVM presentation as below:
+> 
+> https://events19.linuxfoundation.org/wp-content/uploads/2017/12/\
+> Hardware-Assisted-Mediated-Pass-Through-with-VFIO-Kevin-Tian-Intel.pdf
+> 
+> This patch extends NESTING_IOMMU ops to IOMMU-backed mdev devices. The
+> main requirement is to use the auxiliary domain associated with mdev.
 
-       Arnd
+So as a result vSVM becomes functional for scalable mode mediated
+devices, right?
+> 
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> CC: Jun Tian <jun.j.tian@intel.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> ---
+> v1 -> v2:
+> *) check the iommu_device to ensure the handling mdev is IOMMU-backed
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 39 +++++++++++++++++++++++++++++++++++----
+>  1 file changed, 35 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 960cc59..f1f1ae2 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2373,20 +2373,41 @@ static int vfio_iommu_resv_refresh(struct vfio_iommu *iommu,
+>  	return ret;
+>  }
+>  
+> +static struct device *vfio_get_iommu_device(struct vfio_group *group,
+> +					    struct device *dev)
+> +{
+> +	if (group->mdev_group)
+> +		return vfio_mdev_get_iommu_device(dev);
+> +	else
+> +		return dev;
+> +}
+> +
+>  static int vfio_dev_bind_gpasid_fn(struct device *dev, void *data)
+>  {
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	unsigned long arg = *(unsigned long *)dc->data;
+> +	struct device *iommu_device;
+> +
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+>  
+> -	return iommu_sva_bind_gpasid(dc->domain, dev, (void __user *)arg);
+> +	return iommu_sva_bind_gpasid(dc->domain, iommu_device,
+> +				     (void __user *)arg);
+>  }
+>  
+>  static int vfio_dev_unbind_gpasid_fn(struct device *dev, void *data)
+>  {
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	unsigned long arg = *(unsigned long *)dc->data;
+> +	struct device *iommu_device;
+>  
+> -	iommu_sva_unbind_gpasid(dc->domain, dev, (void __user *)arg);
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+> +
+> +	iommu_sva_unbind_gpasid(dc->domain, iommu_device,
+> +				(void __user *)arg);
+>  	return 0;
+>  }
+>  
+> @@ -2395,8 +2416,13 @@ static int __vfio_dev_unbind_gpasid_fn(struct device *dev, void *data)
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	struct iommu_gpasid_bind_data *unbind_data =
+>  				(struct iommu_gpasid_bind_data *)dc->data;
+> +	struct device *iommu_device;
+> +
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+>  
+> -	__iommu_sva_unbind_gpasid(dc->domain, dev, unbind_data);
+> +	__iommu_sva_unbind_gpasid(dc->domain, iommu_device, unbind_data);
+>  	return 0;
+>  }
+>  
+> @@ -3077,8 +3103,13 @@ static int vfio_dev_cache_invalidate_fn(struct device *dev, void *data)
+>  {
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	unsigned long arg = *(unsigned long *)dc->data;
+> +	struct device *iommu_device;
+> +
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+>  
+> -	iommu_cache_invalidate(dc->domain, dev, (void __user *)arg);
+> +	iommu_cache_invalidate(dc->domain, iommu_device, (void __user *)arg);
+>  	return 0;
+>  }
+>  
+> 
+Besides,
+
+Looks grood to me
+
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+
