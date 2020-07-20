@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF0022644F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A217226614
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729631AbgGTPoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37706 "EHLO mail.kernel.org"
+        id S1729887AbgGTQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729393AbgGTPoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:05 -0400
+        id S1732348AbgGTQAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:00:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35D3322CAF;
-        Mon, 20 Jul 2020 15:44:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D8EC22BEF;
+        Mon, 20 Jul 2020 16:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259844;
-        bh=b9mQDorhFC7sS98onQzu+8sJwNkkUMXw0ygqhBTzCHA=;
+        s=default; t=1595260802;
+        bh=GSGYs6BnJdboLJOwsvcqcct0UCOLTzlmL+V4yzMOjUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCm9cfyQNCPDlr/qjGCuN6ChMri8trQyBb0iEpebU9d7kz3DEke06afjrBl6wlWSD
-         aOrzxfSWlRaZCuWJ4dcbTL1qIFLo7NvJSB0NrpSIvoQ5H1ooHL6eSCEdA6REhJ9+qz
-         eO8eBvJAWLEGc9Sn9/id7jizN96LGJqimwPwk1xA=
+        b=JfIhsOCd+3Y+2hyYlXocWaR8hzC8dcZ1AXiYdWsHjpFQadi3ORIRCW50AAlo/t0Zi
+         sglqcHFZySZtNZvCJT04bKIrDHhU8qDKPOFINCtr8j7O+/kWJAWEv2fe9j28RBINFa
+         8awAbuwuOZrChvWcX4gI+SOHnJrFeC+9eJH5vXu0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stanislav Saner <ssaner@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 014/125] scsi: mptscsih: Fix read sense data size
+Subject: [PATCH 5.4 071/215] ARM: at91: pm: add quirk for sam9x60s ulp1
 Date:   Mon, 20 Jul 2020 17:35:53 +0200
-Message-Id: <20200720152803.665771520@linuxfoundation.org>
+Message-Id: <20200720152823.590075573@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Henzl <thenzl@redhat.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit afe89f115e84edbc76d316759e206580a06c6973 ]
+[ Upstream commit bb1a0e87e1c54cd884e9b92b1cec06b186edc7a0 ]
 
-The sense data buffer in sense_buf_pool is allocated with size of
-MPT_SENSE_BUFFER_ALLOC(64) (multiplied by req_depth) while SNS_LEN(sc)(96)
-is used when reading the data.  That may lead to a read from unallocated
-area, sometimes from another (unallocated) page.  To fix this, limit the
-read size to MPT_SENSE_BUFFER_ALLOC.
+On SAM9X60 2 nop operations has to be introduced after setting
+WAITMODE bit in CKGR_MOR.
 
-Link: https://lore.kernel.org/r/20200616150446.4840-1-thenzl@redhat.com
-Co-developed-by: Stanislav Saner <ssaner@redhat.com>
-Signed-off-by: Stanislav Saner <ssaner@redhat.com>
-Signed-off-by: Tomas Henzl <thenzl@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1579522208-19523-9-git-send-email-claudiu.beznea@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/message/fusion/mptscsih.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/arm/mach-at91/pm_suspend.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/message/fusion/mptscsih.c b/drivers/message/fusion/mptscsih.c
-index 6ba07c7feb92b..2af7ae13449d3 100644
---- a/drivers/message/fusion/mptscsih.c
-+++ b/drivers/message/fusion/mptscsih.c
-@@ -118,8 +118,6 @@ int 		mptscsih_suspend(struct pci_dev *pdev, pm_message_t state);
- int 		mptscsih_resume(struct pci_dev *pdev);
- #endif
+diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
+index ed57c879d4e17..2591cba61937b 100644
+--- a/arch/arm/mach-at91/pm_suspend.S
++++ b/arch/arm/mach-at91/pm_suspend.S
+@@ -268,6 +268,10 @@ ENDPROC(at91_backup_mode)
+ 	orr	tmp1, tmp1, #AT91_PMC_KEY
+ 	str	tmp1, [pmc, #AT91_CKGR_MOR]
  
--#define SNS_LEN(scp)	SCSI_SENSE_BUFFERSIZE
--
++	/* Quirk for SAM9X60's PMC */
++	nop
++	nop
++
+ 	wait_mckrdy
  
- /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
- /*
-@@ -2420,7 +2418,7 @@ mptscsih_copy_sense_data(struct scsi_cmnd *sc, MPT_SCSI_HOST *hd, MPT_FRAME_HDR
- 		/* Copy the sense received into the scsi command block. */
- 		req_index = le16_to_cpu(mf->u.frame.hwhdr.msgctxu.fld.req_idx);
- 		sense_data = ((u8 *)ioc->sense_buf_pool + (req_index * MPT_SENSE_BUFFER_ALLOC));
--		memcpy(sc->sense_buffer, sense_data, SNS_LEN(sc));
-+		memcpy(sc->sense_buffer, sense_data, MPT_SENSE_BUFFER_ALLOC);
- 
- 		/* Log SMART data (asc = 0x5D, non-IM case only) if required.
- 		 */
+ 	/* Enable the crystal oscillator */
 -- 
 2.25.1
 
