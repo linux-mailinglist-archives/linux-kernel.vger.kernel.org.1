@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E8B225A39
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992AE225A41
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgGTIkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 04:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgGTIko (ORCPT
+        id S1727986AbgGTIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 04:41:15 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60430 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgGTIlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 04:40:44 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0A9C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 01:40:44 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z2so16980961wrp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 01:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BlDAyGJ84Q1MRWobMfZ2vz9Jimz7XhVN3a5fTfxyjNs=;
-        b=a13MgTJMMzogWZOltIcLHCW2hq/KoC1zE+dDLltAUYUmzQdrJr6tjEV7VvDiZhuwlR
-         Yo8nZFNRL38L5Dz8X3OVwcnAstv4WrCyEZHaDPLuhZfmcSQsxB0yh4k+Pe0dq3B8lgom
-         a1fVL49DUFm6GOW+EQ7e26z7d3pBDRTjIUH9n9fv1VxnnqvNe7NxWTODXkZ6KoRJ+Ylj
-         0+HOSJBs6HCVE4vDY2IN7+CoX41S4wpZ/s2smuQtKTkSdez12xKk3wazc7/uVQ8UGx2M
-         RuhaboOxHn15h63TyfYdNKSvO2uY9NF0qNgfmuZY4FZn3R5ymv2GcWg7pRdUAKBHR5t9
-         h3Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BlDAyGJ84Q1MRWobMfZ2vz9Jimz7XhVN3a5fTfxyjNs=;
-        b=A0EggHGf3oAJdUWK8lvHpNKEfa9yiZFi6xwUBERp+hD3AkqWdKkuICceCjM0u7cvkF
-         Ty+rYMdzUFyreIJ4VCFdIhYUcjR6cXe5azXiBqOlSl9jUFE/eACD2B1hhGhejDv/jGGJ
-         jK1Zi1VD12HALnHH8u+/G+E/0EJZJJdYE8+67GnnmnNaZZ8XMCIp5VZT4UisHiWUU2kd
-         3flfJ+wo1RpK88d/0r6EZBxgtqNApUAqukZES5ZtSUqAa0KVNUA8gbi+HGRR6ElENH+z
-         9sZkHcMDojLZtmNxw9t2XTyPJugCNUxm7okmuJJMFnLp1TAmKBBGRDWrAUeZPTIQKFtd
-         iDZQ==
-X-Gm-Message-State: AOAM530jQ6r/yDohiHdYC+S8TIGe0+oY27kAF3BEWbkQPifmiMxXHdBA
-        gfSZwzzBxLp0ViQ+tQ3xxIWdAQ==
-X-Google-Smtp-Source: ABdhPJxvqyPIo2tbAstdzEdwSSMus8KQtHJorvgTkfjy+Kqv+jAGv/J+zdFKKQEDaZRQHlz2b5jYvw==
-X-Received: by 2002:adf:f60b:: with SMTP id t11mr22778978wrp.249.1595234442821;
-        Mon, 20 Jul 2020 01:40:42 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id x11sm29153952wmc.26.2020.07.20.01.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 01:40:42 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 10:40:40 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: amlogic: Convert to DEFINE_SHOW_ATTRIBUTE
-Message-ID: <20200720084040.GA23952@Red>
-References: <20200716090411.13573-1-miaoqinglang@huawei.com>
+        Mon, 20 Jul 2020 04:41:14 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06K8bDkh146748;
+        Mon, 20 Jul 2020 08:41:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=N1tmgU/JSypAmYPQOpiVBV41mTd9aIjyYmi1clORZkI=;
+ b=zhu8psgYhcnhxl1nzSkjx+NbGtep1wyuGT0v7k1NwC9iIP/a76UTjfXKgpwJgzTaLTTK
+ 9PHMrTjf8orCRaediSHaDSMNp31j4lmIvjvUpUfyVqjT6GGqrXhvAy+OfHh2K+AF9FML
+ S9pOlx8mpmAMwo2P9deBMLdVllD3RbMZWvJJBi9aizHAH2x70bAVcdg3w5s2kI5lkdJW
+ mZ6TYnCtTDDMDiqQ0e5/T89vm3Jtlwm6ZsypOgugXMiN0YZZXDpVfq1Su8Jje6uJlOE+
+ 3bRGMTzde/ExPVqyotblGq2sny4/a2gYFn3vlxEbVcEBbs4+X6ZEyhUd4wNjbyecIyuu tg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 32bs1m5hhd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 08:41:07 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06K8cuXu020485;
+        Mon, 20 Jul 2020 08:41:07 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 32d68g7swv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 08:41:07 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06K8f5gj007426;
+        Mon, 20 Jul 2020 08:41:05 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Jul 2020 01:41:05 -0700
+Date:   Mon, 20 Jul 2020 11:40:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v2] staging: media: atomisp: Replace depracated MSI APIs
+Message-ID: <20200720084058.GG2549@kadam>
+References: <20200719142623.GA31565@blackclown>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716090411.13573-1-miaoqinglang@huawei.com>
+In-Reply-To: <20200719142623.GA31565@blackclown>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9687 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 suspectscore=2 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200065
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9687 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 bulkscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=993 malwarescore=0 clxscore=1015
+ spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200065
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 05:04:11PM +0800, Qinglang Miao wrote:
-> From: Liu Shixin <liushixin2@huawei.com>
+On Sun, Jul 19, 2020 at 07:56:23PM +0530, Suraj Upadhyay wrote:
+> Replace depracated MSI IRQ enabler and disabler
+> with pci_alloc_irq_vectors and pci_free_irq_vectors respectively.
+> And as a result handle the returned error as appropriate.
+> Compile tested.
 > 
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 > ---
->  drivers/crypto/amlogic/amlogic-gxl-core.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
+> Change:
+> 	v2: Replace the MSI IRQ disabler too.
+> ---
+>  drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> index d36809a0182c..a5dea5521b36 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> @@ -1735,8 +1735,8 @@ static int atomisp_pci_probe(struct pci_dev *dev,
+>  	pci_set_master(dev);
+>  	pci_set_drvdata(dev, isp);
+>  
+> -	err = pci_enable_msi(dev);
+> -	if (err) {
+> +	err = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_MSI);
+> +	if (err < 0) {
+>  		dev_err(&dev->dev, "Failed to enable msi (%d)\n", err);
+>  		goto enable_msi_fail;
+>  	}
+> @@ -1857,7 +1857,7 @@ static int atomisp_pci_probe(struct pci_dev *dev,
+>  initialize_modules_fail:
+>  	cpu_latency_qos_remove_request(&isp->pm_qos);
+>  	atomisp_msi_irq_uninit(isp, dev);
+> -	pci_disable_msi(dev);
+> +	pci_free_irq_vectors(dev);
 
-Acked-by: Corentin Labbe <clabbe@baylibre.com>
-Tested-by: Corentin Labbe <clabbe@baylibre.com>
+Actually, my initial complaint was that I was just looking for to see if
+the remove function was updated...  It turns out the remove function
+never freed the IRQs to begin with so it was buggy from square one.
 
-Thanks
+Anyway, the remove function should call pci_free_irq_vectors().  We may
+as well fix it now that we have seen the bug.
+
+regards,
+dan carpenter
+
