@@ -2,183 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB93225D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 13:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0781A225D90
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 13:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgGTLkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 07:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727887AbgGTLkC (ORCPT
+        id S1728554AbgGTLkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 07:40:24 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:45678 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727887AbgGTLkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 07:40:02 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E651FC061794;
-        Mon, 20 Jul 2020 04:40:01 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x72so8928963pfc.6;
-        Mon, 20 Jul 2020 04:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9ydUkxccpldgiDYqKvhXSUOUhAioZWR9Lw+8lusKjv0=;
-        b=BgFDZByinpOxZ38qajfri4IVASZaQbqNn3xQlgqO5+WLJKENmfGAJScC1n2EgkPMY8
-         xa8MsYYh+lFA/8zNAh94CGvxNm3l6YHIbhPY3nQBy/k+BlYvMDctWeXPo//vzivmr5Ni
-         5DXWg5LcTlbzGykAIDew2X0P5rmqiVjMsvT0Bs6XBiujPXaKE5aBmP+pDU4iCf7x3HrK
-         Q1LikTjRMygbayjDDoRqUQq4glc0fC2VEV3CwFDhhMwpSexqhxuWZx09mgi5a05L4B82
-         EVtd6NQZS0BA+Edr5RJdfGdR0/Tg4KPnjgYaar0LBWTYAA1+x8rDNd8wS5MxjzpdQwxi
-         Vgkw==
+        Mon, 20 Jul 2020 07:40:23 -0400
+Received: by mail-ej1-f50.google.com with SMTP id a1so17653885ejg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 04:40:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9ydUkxccpldgiDYqKvhXSUOUhAioZWR9Lw+8lusKjv0=;
-        b=ArGSh1aI/YqF+L7CIKE8WPPKD4dgVHgA9575TdwGoQmCuaagAwbRc0R1ioNoGBm5Qv
-         mzY0BYmdxym96yjXWqWq7ueOB5tcmCBGyh+wvVDPxbWOUAHAgYLqA9sYD0Ng1c80z9Vl
-         GC0I00WiG/B4n+q+l4IRxXehYi5qKOnMD8UKeRMiNWjsw8CnRP/3RqmGhvNwe1grIJkD
-         PeW1EOsQqI47+Ul1oH/0YLOqRjCdqcY0SzKmf4j5cbfU35JQxgwu3uUU+FYCzGwhQKwv
-         c/sUXY+S7b8YuYU7rkqH5tovGDvPsnHfixbv/8DrLcb69fzgb0RXPYmsOnuXu85LuOmC
-         9gtg==
-X-Gm-Message-State: AOAM532X/uoG0iAUtQNPX9doEOn7uh6M/1nHbEWniPw3Rv5Wyr9kESKL
-        IvRsoJhNW8NsSOwxvtDF7Ck=
-X-Google-Smtp-Source: ABdhPJzn4/Nkjxymf/WNDQhYvjrNU7KoFMAW3Hpf2OEMoq7mFr4jtW2Lu4qzp5HEX54aNZfjTp1pzQ==
-X-Received: by 2002:a63:b74f:: with SMTP id w15mr7259245pgt.314.1595245201447;
-        Mon, 20 Jul 2020 04:40:01 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id 83sm16680114pfu.60.2020.07.20.04.39.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 04:40:00 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH v1] dmaengine: pch_dma: use generic power management
-Date:   Mon, 20 Jul 2020 17:07:41 +0530
-Message-Id: <20200720113740.353479-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        bh=hqiX6Q87pkqMHVPDuaXOUOL1+RdGGgT/OYosWJBzCRQ=;
+        b=EGIefytrwKSR1jyNJJxQ1/9PeSvY71H1AsFdanvspxHJrgA9yNzJeJtdHwk4ewFzvp
+         12H9nAORZ6TgPoMn2X5qSokTKkc+m3Q8LyC4KVu6HOrDq98qUDosngqqBszPddT9nVfQ
+         B3HMCZS/VTMZTKUnSnUBTQWf7/6dqDm8wP6DjW5FOIvIIc2PZfz8S+UiK0GmZa0Yndk7
+         9Md4FOnDpXld6X20eqXFb6fQ/ttTUdgrZJR4mRpuFpXA8XbEPMS5bFJ0yyxO2grfZcY0
+         I0S+oPtg6/mrLR/EGqzZ88Q3CqJRxVxQ4nY0CLDP3Tp3rR+0BqkfN/P2xLVxZWdsAYvA
+         yQdw==
+X-Gm-Message-State: AOAM532NsmS2HyQoa8IE61z8tjt5HysDaCqHVZTVMIVgS8A37KkP956p
+        XaLus8LOa+kzk8zylSBvdLU=
+X-Google-Smtp-Source: ABdhPJzqDnlnjpT7UoaOluX3p7nLmkjbafdBqvjuwFTUbYCDqqUlCUjW6sWNIKim1cKAg3f+cMmKXw==
+X-Received: by 2002:a17:906:1ec3:: with SMTP id m3mr20599958ejj.197.1595245222089;
+        Mon, 20 Jul 2020 04:40:22 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id b11sm15422489edw.76.2020.07.20.04.40.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 04:40:21 -0700 (PDT)
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+To:     peterz@infradead.org, Oleg Nesterov <oleg@redhat.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+References: <20200717122651.GA6067@redhat.com>
+ <20200717124017.GB6067@redhat.com>
+ <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
+ <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+ <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com> <20200720082657.GC6612@redhat.com>
+ <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+ <20200720105924.GE43129@hirez.programming.kicks-ass.net>
+ <20200720112623.GF43129@hirez.programming.kicks-ass.net>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <4df1e23a-8b07-8439-c54b-6ef9864aa78a@kernel.org>
+Date:   Mon, 20 Jul 2020 13:40:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200720112623.GF43129@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PM have to manage PCI states and device's PM states
-themselves. They also need to take care of configuration registers.
+On 20. 07. 20, 13:26, peterz@infradead.org wrote:
+> On Mon, Jul 20, 2020 at 12:59:24PM +0200, peterz@infradead.org wrote:
+>> On Mon, Jul 20, 2020 at 10:41:06AM +0200, Peter Zijlstra wrote:
+>>> On Mon, Jul 20, 2020 at 10:26:58AM +0200, Oleg Nesterov wrote:
+>>>> Peter,
+>>>>
+>>>> Let me add another note. TASK_TRACED/TASK_STOPPED was always protected by
+>>>> ->siglock. In particular, ttwu(__TASK_TRACED) must be always called with
+>>>> ->siglock held. That is why ptrace_freeze_traced() assumes it can safely
+>>>> do s/TASK_TRACED/__TASK_TRACED/ under spin_lock(siglock).
+>>>>
+>>>> Can this change race with
+>>>>
+>>>> 		if (signal_pending_state(prev->state, prev)) {
+>>>> 			prev->state = TASK_RUNNING;
+>>>> 		}
+>>>>
+>>>> in __schedule() ? Hopefully not, signal-state is protected by siglock too.
+>>>>
+>>>> So I think this logic was correct even if it doesn't look nice. But "doesn't
+>>>> look nice" is true for the whole ptrace code ;)
+>>>
+>>> *groan*... another bit of obscure magic :-(
+>>>
+>>> let me go try and wake up and figure out how best to deal with this.
+> 
+> This then? That seems to survive the strace thing.
 
-With improved and powerful support of generic PM, PCI Core takes care of
-above mentioned, device-independent, jobs.
+FWIW for me too.
 
-This driver makes use of PCI helper functions like
-pci_save/restore_state(), pci_enable/disable_device(),
-and pci_set_power_state() to do required operations. In generic mode, they
-are no longer needed.
-
-Change function parameter in both .suspend() and .resume() to
-"struct device*" type. Use dev_get_drvdata() to get drv data.
-
-Compile-tested only.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/dma/pch_dma.c | 35 +++++++++--------------------------
- 1 file changed, 9 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index a3b0b4c56a19..e93005837e3f 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -735,8 +735,7 @@ static irqreturn_t pd_irq(int irq, void *devid)
- 	return ret0 | ret2;
- }
- 
--#ifdef	CONFIG_PM
--static void pch_dma_save_regs(struct pch_dma *pd)
-+static void __maybe_unused pch_dma_save_regs(struct pch_dma *pd)
- {
- 	struct pch_dma_chan *pd_chan;
- 	struct dma_chan *chan, *_c;
-@@ -759,7 +758,7 @@ static void pch_dma_save_regs(struct pch_dma *pd)
- 	}
- }
- 
--static void pch_dma_restore_regs(struct pch_dma *pd)
-+static void __maybe_unused pch_dma_restore_regs(struct pch_dma *pd)
- {
- 	struct pch_dma_chan *pd_chan;
- 	struct dma_chan *chan, *_c;
-@@ -782,40 +781,25 @@ static void pch_dma_restore_regs(struct pch_dma *pd)
- 	}
- }
- 
--static int pch_dma_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused pch_dma_suspend(struct device *dev)
- {
--	struct pch_dma *pd = pci_get_drvdata(pdev);
-+	struct pch_dma *pd = dev_get_drvdata(dev);
- 
- 	if (pd)
- 		pch_dma_save_regs(pd);
- 
--	pci_save_state(pdev);
--	pci_disable_device(pdev);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
--
- 	return 0;
- }
- 
--static int pch_dma_resume(struct pci_dev *pdev)
-+static int __maybe_unused pch_dma_resume(struct device *dev)
- {
--	struct pch_dma *pd = pci_get_drvdata(pdev);
--	int err;
--
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--
--	err = pci_enable_device(pdev);
--	if (err) {
--		dev_dbg(&pdev->dev, "failed to enable device\n");
--		return err;
--	}
-+	struct pch_dma *pd = dev_get_drvdata(dev);
- 
- 	if (pd)
- 		pch_dma_restore_regs(pd);
- 
- 	return 0;
- }
--#endif
- 
- static int pch_dma_probe(struct pci_dev *pdev,
- 				   const struct pci_device_id *id)
-@@ -993,15 +977,14 @@ static const struct pci_device_id pch_dma_id_table[] = {
- 	{ 0, },
- };
- 
-+static SIMPLE_DEV_PM_OPS(pch_dma_pm_ops, pch_dma_suspend, pch_dma_resume);
-+
- static struct pci_driver pch_dma_driver = {
- 	.name		= DRV_NAME,
- 	.id_table	= pch_dma_id_table,
- 	.probe		= pch_dma_probe,
- 	.remove		= pch_dma_remove,
--#ifdef CONFIG_PM
--	.suspend	= pch_dma_suspend,
--	.resume		= pch_dma_resume,
--#endif
-+	.driver.pm	= &pch_dma_pm_ops,
- };
- 
- module_pci_driver(pch_dma_driver);
+thanks,
 -- 
-2.27.0
-
+js
