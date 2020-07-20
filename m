@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D0722630B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334A322630E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728732AbgGTPM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:12:57 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:35227 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728478AbgGTPM5 (ORCPT
+        id S1727983AbgGTPOd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Jul 2020 11:14:33 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56880 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgGTPOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:12:57 -0400
-Received: (qmail 1232970 invoked by uid 1000); 20 Jul 2020 11:12:55 -0400
-Date:   Mon, 20 Jul 2020 11:12:55 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: kworker/0:3+pm hogging CPU
-Message-ID: <20200720151255.GE1228057@rowland.harvard.edu>
-References: <20200720083956.GA4074@dhcp22.suse.cz>
- <20200720135857.GB1228057@rowland.harvard.edu>
- <20200720143213.GJ4074@dhcp22.suse.cz>
+        Mon, 20 Jul 2020 11:14:33 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 50A1928B855
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Unicode patches for v5.9
+Date:   Mon, 20 Jul 2020 11:14:28 -0400
+Message-ID: <87blkap6az.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720143213.GJ4074@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 04:32:13PM +0200, Michal Hocko wrote:
-> On Mon 20-07-20 09:58:57, Alan Stern wrote:
-> [...]
-> > Can you provide the contents of /sys/kernel/debug/usb/devices and also a 
-> 
-> attached.
+The following changes since commit 9c94b39560c3a013de5886ea21ef1eaf21840cb9:
 
-It looks like you've got just two devices, only one of which is in use, 
-on bus 1 (the non-SuperSpeed bus) and nothing on bus 2.
+  Merge tag 'ext4_for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4 (2020-04-05 10:54:03 -0700)
 
-> > usbmon trace showing a few rounds of this recurring activity?
-> 
-> This is not my area so I will need some help here. I assume I should
-> look for debug/usb/usbmon which contains quite some files for me
-> 0s  0u  1s  1t  1u  2s  2t  2u
-> most of them provide data when cating them.
+are available in the Git repository at:
 
-The interesting files are 1u (for bus 1) and 2u (for bus 2).  At the 
-moment, though, we don't know which bus the troublesome 
-device/controller is on.
+  git://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode.git tags/unicode-next-v5.9
 
-> > section of the dmesg log with dynamic debugging enabled for the usbcore 
-> > module, as well.
-> 
-> Could you give me more details steps please?
+for you to fetch changes up to c055c978bebf14dda7e72d89d7ed9c867b2e6382:
 
-Do:
+  unicode: Replace HTTP links with HTTPS ones (2020-07-08 14:06:53 -0400)
 
-	sudo echo 'module usbcore =p' >/debug/dynamic_debug/control
+----------------------------------------------------------------
+fs/unicode patches for v5.9
 
-Then wait long enough for some interesting messages to appear in the 
-kernel log (it should only take a few seconds if the worker thread is as 
-busy as you say) and collect the output from the dmesg command.
+This includes 3 patches for the unicode system for inclusion into
+Linux v5.9:
 
-To turn dynamic debugging back off when you're finished, use the same 
-command with "=p" changed to "-p".
+  - A patch by Ricardo Cañuelo converting the unicode tests to kunit.
 
-Alan Stern
+  - A patch from Gabriel exporting in sysfs the most recent utf-8
+    version available.
+
+  - A patch from Gabriel fixing the build of the kunit part as a module.
+
+  - A patch from Alexander updating documentation web links.
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+      unicode: Replace HTTP links with HTTPS ones
+
+Gabriel Krisman Bertazi (2):
+      unicode: Expose available encodings in sysfs
+      unicode: Allow building kunit test suite as a module
+
+Ricardo Cañuelo (1):
+      unicode: implement utf8 unit tests as a KUnit test suite.
+
+ Documentation/ABI/testing/sysfs-fs-unicode  |   6 +
+ fs/unicode/Kconfig                          |  19 ++-
+ fs/unicode/Makefile                         |   2 +-
+ fs/unicode/mkutf8data.c                     |   2 +-
+ fs/unicode/utf8-core.c                      |  55 ++++++++
+ fs/unicode/utf8-norm.c                      |   2 +-
+ fs/unicode/{utf8-selftest.c => utf8-test.c} | 199 +++++++++++++---------------
+ fs/unicode/utf8n.h                          |   4 +
+ 8 files changed, 175 insertions(+), 114 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-fs-unicode
+ rename fs/unicode/{utf8-selftest.c => utf8-test.c} (60%)
+
+-- 
+Gabriel Krisman Bertazi
