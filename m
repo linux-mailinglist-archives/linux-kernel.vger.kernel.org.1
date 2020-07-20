@@ -2,254 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DF8226CAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B67C226CAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729942AbgGTQ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:59:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:34689 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728903AbgGTQ7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:59:42 -0400
-IronPort-SDR: X5i7G/3fOU8XWBUgB0C894DnURMjAwSfyJqHTm8RgmmcgXZAY6e4HLlVf0LOvXeYKgrt4DftkH
- RRw/BZ4qZzYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="168102499"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="168102499"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 09:59:41 -0700
-IronPort-SDR: pDzSBFM4yJH1tXx4Kp7X64fNGS8OeidMosNuhZ4pmB+IxdQ1QIUfyNyWorsyqe1LEcQzrKgWS6
- NlhiyE6EaGaw==
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="392088999"
-Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.209.123.246])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 09:59:38 -0700
-Message-ID: <23893338061f2066693f4eb18c8d059d59327952.camel@linux.intel.com>
-Subject: Re: [PATCH v4 09/10] kallsyms: Hide layout
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        arjan@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecombe@intel.com, Tony Luck <tony.luck@intel.com>
-Date:   Mon, 20 Jul 2020 09:59:35 -0700
-In-Reply-To: <202007191815.D39859C@keescook>
-References: <20200717170008.5949-1-kristen@linux.intel.com>
-         <20200717170008.5949-10-kristen@linux.intel.com>
-         <202007191815.D39859C@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1730035AbgGTQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728827AbgGTQ75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:59:57 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7C1C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:59:57 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e8so10550194pgc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XTpfTRtjLabMYQDaBkpj4hw5ufV0kY4GfLGgilGMUUo=;
+        b=n5sv0TUVhgDbWOe+6Utv6xdRSmrGuQ8DoVuv3SnLuAFeCIMRYpoSFxkNXF2HrRBzpU
+         RN/R6q024UeVvtqhHlrd++5kYTWFl2b5kU07P8or67od+CO1HhCd2hjHj2JxhsDSy0mN
+         P+y2j+rmotIi6vTQiieLsv3+0ZKMqkUqJJrSegeGDr4uv8qLKDDRVMNSLaDwNejEsigB
+         TQCXUQ2tHQY/3JHVTDoAqtTc+Oy0o3kaXYcj5pg6cy8RtHy18UvrKChwIW2r5RkZG3Z5
+         OYu90iDD84Enw8/pUI28ijHRZhe8nfmFC+mkX2D+p4UvQflDDxz5D1ex/zEoaIe7lMPH
+         NSEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XTpfTRtjLabMYQDaBkpj4hw5ufV0kY4GfLGgilGMUUo=;
+        b=neWgxdNBRSlWjXvEOZBpsiaH1Qmu/xsb/goeNIdui4t4ZnAwNlWRu2CWxmgOPom9ES
+         UfSECdfq6wnl6ERnMK33C2Ri5WSbV0KmvPR7XshWESbLhdjiQPreJ9cwXBJs6q0LFO36
+         n1u8EPrJhoTnApPYl9Wj73SiCugrFD9Rw25pu4vqquJY7kOFpq+GXodiWcNgoALwXigY
+         MyhbYc/7YSsu+pQvQxhsWSaJEvpKOw/dZU0KMdkVQYyrYpzZjESHLj/bcQw/vC+5ZB5Y
+         tfyyFAwZHurAAPoJfzyp7/vlv9C5VklFmP8QC5383R3tB8l2dwbwHV8jRwJCp5IBVqmO
+         Bfxw==
+X-Gm-Message-State: AOAM533URz0aO8TS34Poh8PLQNqrHSPrVLrfBAJDewafVD43TpAc0cBs
+        mQ5FhQ1Eq5DYlJPq6gGMWl7v5A==
+X-Google-Smtp-Source: ABdhPJzRTVraKqfSfPPhCXufOsemlddmRnH6ao+bP8KnXOPYPmpAB1Y4Bxwp5DYGDcwSzpXCKZfx7Q==
+X-Received: by 2002:a63:e14c:: with SMTP id h12mr19548473pgk.110.1595264397195;
+        Mon, 20 Jul 2020 09:59:57 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id t5sm15152737pgl.38.2020.07.20.09.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 09:59:56 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 10:59:54 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, sibis@codearora.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v8 3/5] remoteproc: Pass size and offset as arguments to
+ segment dump function
+Message-ID: <20200720165954.GB1113627@xps15>
+References: <1594938035-7327-1-git-send-email-rishabhb@codeaurora.org>
+ <1594938035-7327-4-git-send-email-rishabhb@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594938035-7327-4-git-send-email-rishabhb@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-07-19 at 18:25 -0700, Kees Cook wrote:
-> On Fri, Jul 17, 2020 at 10:00:06AM -0700, Kristen Carlson Accardi
-> wrote:
-> > This patch makes /proc/kallsyms display in a random order, rather
-> > than sorted by address in order to hide the newly randomized
-> > address
-> > layout.
+On Thu, Jul 16, 2020 at 03:20:33PM -0700, Rishabh Bhatnagar wrote:
+> Change the segment dump API signature to include size and offset
+> arguments. Refactor the qcom_q6v5_mss driver to use these
+> arguments while copying the segment. Doing this lays the ground
+> work for "inline" coredump functionality being added in the next
+> patch.
 > 
-> Ah! Much nicer. Is there any reason not to just do this
-> unconditionally,
-> regardless of FGKASLR? It's a smallish dynamic allocation, and
-> displaying kallsyms is hardly fast-path...
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> ---
+>  drivers/remoteproc/qcom_q6v5_mss.c       | 10 +++++-----
+>  drivers/remoteproc/remoteproc_coredump.c |  5 +++--
+>  include/linux/remoteproc.h               |  5 +++--
+>  3 files changed, 11 insertions(+), 9 deletions(-)
 
-My only concern would be whether or not there are scripts out there
-which assume the list would be ordered. If someone chooses to enable
-CONFIG_FG_KASLR, I think that it is reasonable to break those scripts.
-On the flip side, I don't know why it needs to come out of
-/proc/kallsyms in order, you can always just sort it after the fact if
-you need it sorted. It would make it more maintainable to not special
-case this. Hopefully a maintainer will comment on their preference.
-Another thing I do in this patch is continue to use the existing sorted
-by address functions if you are root. I didn't know if this was
-neccessary - it'd be nice if we could just do it the same way all the
-time. But I need some guidance here.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
 > 
-> > Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > Tested-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> >  kernel/kallsyms.c | 163
-> > +++++++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 162 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > index bb14e64f62a4..45d147f7f10e 100644
-> > --- a/kernel/kallsyms.c
-> > +++ b/kernel/kallsyms.c
-> > @@ -446,6 +446,12 @@ struct kallsym_iter {
-> >  	int show_value;
-> >  };
-> >  
-> > +struct kallsyms_shuffled_iter {
-> > +	struct kallsym_iter iter;
-> > +	loff_t total_syms;
-> > > 
-> > > (I need to go read how kallsyms doesn't miscount in general when
-> > the
-> > > symbol table changes out from under it...)
-> > > 
-> > > 
-> > +	loff_t shuffled_index[];
-> > +};
-> > +
-> >  int __weak arch_get_kallsym(unsigned int symnum, unsigned long
-> > *value,
-> >  			    char *type, char *name)
-> >  {
-> > @@ -661,7 +667,7 @@ bool kallsyms_show_value(const struct cred
-> > *cred)
-> >  	}
-> >  }
-> >  
-> > -static int kallsyms_open(struct inode *inode, struct file *file)
-> > +static int __kallsyms_open(struct inode *inode, struct file *file)
-> >  {
-> >  	/*
-> >  	 * We keep iterator in m->private, since normal case is to
-> > @@ -682,6 +688,161 @@ static int kallsyms_open(struct inode *inode,
-> > struct file *file)
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * When function granular kaslr is enabled, we need to print out
-> > the symbols
-> > + * at random so we don't reveal the new layout.
-> > + */
-> > +#if defined(CONFIG_FG_KASLR)
-> > +static int update_random_pos(struct kallsyms_shuffled_iter
-> > *s_iter,
-> > +			     loff_t pos, loff_t *new_pos)
-> > +{
-> > +	loff_t new;
-> > +
-> > +	if (pos >= s_iter->total_syms)
-> > +		return 0;
-> > +
-> > +	new = s_iter->shuffled_index[pos];
-> > +
-> > +	/*
-> > +	 * normally this would be done as part of update_iter, however,
-> > +	 * we want to avoid triggering this in the event that new is
-> > +	 * zero since we don't want to blow away our pos end
-> > indicators.
-> > +	 */
-> > +	if (new == 0) {
-> > +		s_iter->iter.name[0] = '\0';
-> > +		s_iter->iter.nameoff = get_symbol_offset(new);
-> > +		s_iter->iter.pos = new;
-> > +	}
-> > +
-> > +	*new_pos = new;
-> > +	return 1;
-> > +}
-> > +
-> > +static void *shuffled_start(struct seq_file *m, loff_t *pos)
-> > +{
-> > +	struct kallsyms_shuffled_iter *s_iter = m->private;
-> > +	loff_t new_pos;
-> > +
-> > +	if (!update_random_pos(s_iter, *pos, &new_pos))
-> > +		return NULL;
-> > +
-> > +	return s_start(m, &new_pos);
-> > +}
-> > +
-> > +static void *shuffled_next(struct seq_file *m, void *p, loff_t
-> > *pos)
-> > +{
-> > +	struct kallsyms_shuffled_iter *s_iter = m->private;
-> > +	loff_t new_pos;
-> > +
-> > +	(*pos)++;
-> > +
-> > +	if (!update_random_pos(s_iter, *pos, &new_pos))
-> > +		return NULL;
-> > +
-> > +	if (!update_iter(m->private, new_pos))
-> > +		return NULL;
-> > +
-> > +	return p;
-> > +}
-> > +
-> > +/*
-> > + * shuffle_index_list()
-> > + * Use a Fisher Yates algorithm to shuffle a list of text
-> > sections.
-> > + */
-> > +static void shuffle_index_list(loff_t *indexes, loff_t size)
-> > +{
-> > +	int i;
-> > +	unsigned int j;
-> > +	loff_t temp;
-> > +
-> > +	for (i = size - 1; i > 0; i--) {
-> > +		/* pick a random index from 0 to i */
-> > +		get_random_bytes(&j, sizeof(j));
-> > +		j = j % (i + 1);
-> > +
-> > +		temp = indexes[i];
-> > +		indexes[i] = indexes[j];
-> > +		indexes[j] = temp;
-> > +	}
-> > +}
-> > +
-> > +static const struct seq_operations kallsyms_shuffled_op = {
-> > +	.start = shuffled_start,
-> > +	.next = shuffled_next,
-> > +	.stop = s_stop,
-> > +	.show = s_show
-> > +};
-> > +
-> > +static int kallsyms_random_open(struct inode *inode, struct file
-> > *file)
-> > +{
-> > +	loff_t pos;
-> > +	struct kallsyms_shuffled_iter *shuffled_iter;
-> > +	struct kallsym_iter iter;
-> > +	bool show_value;
-> > +
-> > +	/*
-> > +	 * If privileged, go ahead and use the normal algorithm for
-> > +	 * displaying symbols
-> > +	 */
-> > +	show_value = kallsyms_show_value(file->f_cred);
-> > +	if (show_value)
-> > +		return __kallsyms_open(inode, file);
-> > +
-> > +	/*
-> > +	 * we need to figure out how many extra symbols there are
-> > +	 * to print out past kallsyms_num_syms
-> > +	 */
-> > +	pos = kallsyms_num_syms;
-> > +	reset_iter(&iter, 0);
-> > +	do {
-> > +		if (!update_iter(&iter, pos))
-> > +			break;
-> > +		pos++;
-> > +	} while (1);
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index 037cd45..6baa3ae 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -1199,7 +1199,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+>  
+>  static void qcom_q6v5_dump_segment(struct rproc *rproc,
+>  				   struct rproc_dump_segment *segment,
+> -				   void *dest)
+> +				   void *dest, size_t cp_offset, size_t size)
+>  {
+>  	int ret = 0;
+>  	struct q6v5 *qproc = rproc->priv;
+> @@ -1219,16 +1219,16 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
+>  	}
+>  
+>  	if (!ret)
+> -		ptr = ioremap_wc(qproc->mpss_phys + offset, segment->size);
+> +		ptr = ioremap_wc(qproc->mpss_phys + offset + cp_offset, size);
+>  
+>  	if (ptr) {
+> -		memcpy(dest, ptr, segment->size);
+> +		memcpy(dest, ptr, size);
+>  		iounmap(ptr);
+>  	} else {
+> -		memset(dest, 0xff, segment->size);
+> +		memset(dest, 0xff, size);
+>  	}
+>  
+> -	qproc->current_dump_size += segment->size;
+> +	qproc->current_dump_size += size;
+>  
+>  	/* Reclaim mba after copying segments */
+>  	if (qproc->current_dump_size == qproc->total_dump_size) {
+> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
+> index ded0244..390f563 100644
+> --- a/drivers/remoteproc/remoteproc_coredump.c
+> +++ b/drivers/remoteproc/remoteproc_coredump.c
+> @@ -72,7 +72,8 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
+>  				      dma_addr_t da, size_t size,
+>  				      void (*dumpfn)(struct rproc *rproc,
+>  						     struct rproc_dump_segment *segment,
+> -						     void *dest),
+> +						     void *dest, size_t offset,
+> +						     size_t size),
+>  				      void *priv)
+>  {
+>  	struct rproc_dump_segment *segment;
+> @@ -183,7 +184,7 @@ void rproc_coredump(struct rproc *rproc)
+>  		elf_phdr_set_p_align(class, phdr, 0);
+>  
+>  		if (segment->dump) {
+> -			segment->dump(rproc, segment, data + offset);
+> +			segment->dump(rproc, segment, data + offset, 0, segment->size);
+>  		} else {
+>  			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
+>  			if (!ptr) {
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index e7b7bab..eb08139 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -451,7 +451,7 @@ struct rproc_dump_segment {
+>  
+>  	void *priv;
+>  	void (*dump)(struct rproc *rproc, struct rproc_dump_segment *segment,
+> -		     void *dest);
+> +		     void *dest, size_t offset, size_t size);
+>  	loff_t offset;
+>  };
+>  
+> @@ -630,7 +630,8 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
+>  				      dma_addr_t da, size_t size,
+>  				      void (*dumpfn)(struct rproc *rproc,
+>  						     struct rproc_dump_segment *segment,
+> -						     void *dest),
+> +						     void *dest, size_t offset,
+> +						     size_t size),
+>  				      void *priv);
+>  int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 machine);
+>  
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> Can this be tracked separately instead of needing to search for it
-> every
-> time? (Looks like it's modules and ftrace? Could they each have a
-> *_num_sysms?)
-
-It could, but I'd probably have to make more changes to those
-subsystems to keep this information there than I would to just do this
-search here. Because we start search at the end of the kernel core
-symbols, I don't think this search takes too many cycles to complete.
-On my system running a standard distro config the number of module and
-bpf symbols is not all that many, especially compared to the kernel
-core symbols.
-
-
