@@ -2,188 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD9E226EDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8948B226ED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730902AbgGTTRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:17:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7852 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726899AbgGTTRO (ORCPT
+        id S1730665AbgGTTQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:16:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54039 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726899AbgGTTQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:17:14 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KJ3Kws110242;
-        Mon, 20 Jul 2020 15:16:36 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5h7y11u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 15:16:36 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KJ3QeO110872;
-        Mon, 20 Jul 2020 15:16:35 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5h7y11c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 15:16:35 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KJ6AQW029169;
-        Mon, 20 Jul 2020 19:16:34 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03dal.us.ibm.com with ESMTP id 32brq90hx8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 19:16:34 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KJGWTR38207870
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 19:16:32 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41D1D78064;
-        Mon, 20 Jul 2020 19:16:32 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55DB078066;
-        Mon, 20 Jul 2020 19:16:26 +0000 (GMT)
-Received: from [153.66.254.194] (unknown [9.85.132.116])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Jul 2020 19:16:26 +0000 (GMT)
-Message-ID: <1595272585.4554.28.camel@linux.ibm.com>
-Subject: Re: [PATCH 3/6] mm: introduce secretmemfd system call to create
- "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-nvdimm@lists.01.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linaro-mm-sig@lists.linaro.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Mon, 20 Jul 2020 12:16:25 -0700
-In-Reply-To: <CAK8P3a34kx4aAFY=-SBHX3suCLwxeZY7+YSRzct93YM_OFbSWA@mail.gmail.com>
-References: <20200720092435.17469-1-rppt@kernel.org>
-         <20200720092435.17469-4-rppt@kernel.org>
-         <CAK8P3a0NyvRMqH7X0YNO5E6DGtvZXD5ZcD6Y6n7AkocufkMnHA@mail.gmail.com>
-         <1595260305.4554.9.camel@linux.ibm.com>
-         <CAK8P3a34kx4aAFY=-SBHX3suCLwxeZY7+YSRzct93YM_OFbSWA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 clxscore=1015 mlxscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007200128
+        Mon, 20 Jul 2020 15:16:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595272598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=udwHk4yQs9a7okbIGNpumR6e7TTud7FzGXDS4QXVwVQ=;
+        b=fApPH6HUzbvR2+sEhUBzwOgbRzs3hZ9f6qvPvjEXEVIDEd0IhHXl/Nj3tIS0Eo5sMXEm7o
+        qtqUwNuhVJmWtTToX6hovgoszV+3EtMaEiXQ+2aTee7oeFc0xxP1Y96wvvvkQRd+AVB612
+        7M/upcJeT3vrOy68vqX5Vt3bkeEdH1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-egiFU7O3Opmkzy7FkJHPUA-1; Mon, 20 Jul 2020 15:16:33 -0400
+X-MC-Unique: egiFU7O3Opmkzy7FkJHPUA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA65E18C63C1;
+        Mon, 20 Jul 2020 19:16:29 +0000 (UTC)
+Received: from krava (unknown [10.40.194.11])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 193E076114;
+        Mon, 20 Jul 2020 19:16:25 +0000 (UTC)
+Date:   Mon, 20 Jul 2020 21:16:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
+Message-ID: <20200720191625.GL760733@krava>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
+ <20200720072237.GC760733@krava>
+ <6cb72b48-5244-9faf-a9e5-67858c732b83@linux.ibm.com>
+ <20200720081943.GE760733@krava>
+ <dd465647-da63-c473-9944-bdfec2abe484@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd465647-da63-c473-9944-bdfec2abe484@linux.ibm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-20 at 20:08 +0200, Arnd Bergmann wrote:
-> On Mon, Jul 20, 2020 at 5:52 PM James Bottomley <jejb@linux.ibm.com>
-> wrote:
-> > On Mon, 2020-07-20 at 13:30 +0200, Arnd Bergmann wrote:
-> > 
-> > I'll assume you mean the dmabuf userspace API?  Because the kernel
-> > API is completely device exchange specific and wholly inappropriate
-> > for this use case.
-> > 
-> > The user space API of dmabuf uses a pseudo-filesystem.  So you
-> > mount the dmabuf file type (and by "you" I mean root because an
-> > ordinary user doesn't have sufficient privilege).  This is
-> > basically because every dmabuf is usable by any user who has
-> > permissions.  This really isn't the initial interface we want for
-> > secret memory because secret regions are supposed to be per process
-> > and not shared (at least we don't want other tenants to see who's
-> > using what).
-> > 
-> > Once you have the fd, you can seek to find the size, mmap, poll and
-> > ioctl it.  The ioctls are all to do with memory synchronization (as
-> > you'd expect from a device backed region) and the mmap is handled
-> > by the dma_buf_ops, which is device specific.  Sizing is missing
-> > because that's reported by the device not settable by the user.
+On Mon, Jul 20, 2020 at 02:32:40PM +0530, kajoljain wrote:
 > 
-> I was mainly talking about the in-kernel interface that is used for
-> sharing a buffer with hardware. Aside from the limited ioctls,
-> anything in the kernel can decide on how it wants to export a dma_buf
-> by calling dma_buf_export()/dma_buf_fd(), which is roughly what the
-> new syscall does as well. Using dma_buf vs the proposed
-> implementation for this is not a big difference in complexity.
-
-I have thought about it, but haven't got much further:  We can't couple
-to SGX without a huge break in the current simple userspace API (it
-becomes complex because you'd have to enter the enclave each time you
-want to use the memory, or put the whole process in the enclave, which
-is a bit of a nightmare for simplicity), and we could only couple it to
-SEV if the memory encryption engine would respond to PCID as well as
-ASID, which it doesn't.
-
-> The one thing that a dma_buf does is that it allows devices to
-> do DMA on it. This is either something that can turn out to be
-> useful later, or it is not. From the description, it sounded like
-> the sharing might be useful, since we already have known use
-> cases in which "secret" data is exchanged with a trusted execution
-> environment using the dma-buf interface.
-
-The current use case for private keys is that you take an encrypted
-file (which would be the DMA coupled part) and you decrypt the contents
-into the secret memory.  There might possibly be a DMA component later
-where a HSM like device DMAs a key directly into your secret memory to
-avoid exposure, but I wouldn't anticipate any need for anything beyond
-the usual page cache API for that case (effectively this would behave
-like an ordinary page cache page except that only the current process
-would be able to touch the contents).
-
-> If there is no way the data stored in this new secret memory area
-> would relate to secret data in a TEE or some other hardware
-> device, then I agree that dma-buf has no value.
-
-Never say never, but current TEE designs tend to require full
-confidentiality for the entire execution.  What we're probing is
-whether we can improve security by doing an API that requires less than
-full confidentiality for the process.  I think if the API proves useful
-then we will get HW support for it, but it likely won't be in the
-current TEE of today form.
-
-> > What we want is the ability to get an fd, set the properties and
-> > the size and mmap it.  This is pretty much a 100% overlap with the
-> > memfd API and not much overlap with the dmabuf one, which is why I
-> > don't think the interface is very well suited.
 > 
-> Does that mean you are suggesting to use additional flags on
-> memfd_create() instead of a new system call?
+> On 7/20/20 1:49 PM, Jiri Olsa wrote:
+> > On Mon, Jul 20, 2020 at 01:39:24PM +0530, kajoljain wrote:
+> > 
+> > SNIP
+> > 
+> >> This is with your perf/metric branch:
+> >> command# ./perf stat -M PowerBUS_Frequency -C 0 -I 1000
+> >> assertion failed at util/metricgroup.c:709
+> >> #           time             counts unit events
+> >>      1.000054545          7,807,505      hv_24x7/pm_pb_cyc,chip=0/ #      2.0 GHz  PowerBUS_Frequency_0
+> >>      1.000054545          7,807,485      hv_24x7/pm_pb_cyc,chip=1/                                   
+> >>      2.000232761          7,807,500      hv_24x7/pm_pb_cyc,chip=0/ #      2.0 GHz  PowerBUS_Frequency_0
+> >>      2.000232761          7,807,478      hv_24x7/pm_pb_cyc,chip=1/                                   
+> >>      3.000363762          7,799,665      hv_24x7/pm_pb_cyc,chip=0/ #      1.9 GHz  PowerBUS_Frequency_0
+> >>      3.000363762          7,807,502      hv_24x7/pm_pb_cyc,chip=1/                                   
+> >> ^C     3.259418599          2,022,150      hv_24x7/pm_pb_cyc,chip=0/ #      0.5 GHz  PowerBUS_Frequency_0
+> >>      3.259418599          2,022,164      hv_24x7/pm_pb_cyc,chip=1/                                   
+> >>
+> >>  Performance counter stats for 'CPU(s) 0':
+> >>
+> >>         25,436,820      hv_24x7/pm_pb_cyc,chip=0/ #      6.4 GHz  PowerBUS_Frequency_0
+> >>         25,444,629      hv_24x7/pm_pb_cyc,chip=1/                                   
+> >>
+> >>        3.259505529 seconds time elapsed
+> > 
+> > I found the bug, we are not adding runtime metrics as standalone ones,
+> > but as referenced metrics.. will fix and try to add test for that
+> > 
+> > as for testing.. do I need some special ppc server to have support for this? 
+> 
+> Hi jiri,
+>     We need power9 lpar machine and need to make sure `CONFIG_HV_PERF_CTRS` is
+> enabled.
 
-Well, that was what the previous patch did.  I'm agnostic on the
-mechanism for obtaining the fd: new syscall as this patch does or
-extension to memfd like the old one did.  All I was saying is that once
-you have the fd, the API you use on it is the same as the memfd API.
+could you please try with following patch on top?
 
-James
+thanks,
+jirka
+
+
+---
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 6f179b9903a0..03aa4bd4a38b 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -820,11 +820,11 @@ static int add_metric(struct list_head *metric_list,
+ 		      struct expr_id *parent,
+ 		      struct expr_ids *ids);
+ 
+-static int resolve_metric(struct metric *m,
+-			  bool metric_no_group,
+-			  struct list_head *metric_list,
+-			  struct pmu_events_map *map,
+-			  struct expr_ids *ids)
++static int __resolve_metric(struct metric *m,
++			    bool metric_no_group,
++			    struct list_head *metric_list,
++			    struct pmu_events_map *map,
++			    struct expr_ids *ids)
+ {
+ 	struct hashmap_entry *cur;
+ 	size_t bkt;
+@@ -869,6 +869,23 @@ static int resolve_metric(struct metric *m,
+ 	return 0;
+ }
+ 
++static int resolve_metric(bool metric_no_group,
++			  struct list_head *metric_list,
++			  struct pmu_events_map *map,
++			  struct expr_ids *ids)
++{
++	struct metric *m;
++	int err;
++
++	list_for_each_entry(m, metric_list, nd) {
++		err = __resolve_metric(m, metric_no_group, metric_list, map, ids);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
+ static int add_metric(struct list_head *metric_list,
+ 		      struct pmu_event *pe,
+ 		      bool metric_no_group,
+@@ -876,6 +893,7 @@ static int add_metric(struct list_head *metric_list,
+ 		      struct expr_id *parent,
+ 		      struct expr_ids *ids)
+ {
++	struct metric *orig = *m;
+ 	int ret = 0;
+ 
+ 	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
+@@ -892,7 +910,7 @@ static int add_metric(struct list_head *metric_list,
+ 		 * those events to metric_list.
+ 		 */
+ 
+-		for (j = 0; j < count && !ret; j++) {
++		for (j = 0; j < count && !ret; j++, *m = orig) {
+ 			ret = __add_metric(metric_list, pe, metric_no_group, j, m, parent, ids);
+ 		}
+ 	}
+@@ -907,8 +925,8 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 
+ {
+ 	struct expr_ids ids = { 0 };
++	struct metric *m = NULL;
+ 	struct pmu_event *pe;
+-	struct metric *m;
+ 	LIST_HEAD(list);
+ 	int i, ret;
+ 	bool has_match = false;
+@@ -925,7 +943,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 		 * Process any possible referenced metrics
+ 		 * included in the expression.
+ 		 */
+-		ret = resolve_metric(m, metric_no_group,
++		ret = resolve_metric(metric_no_group,
+ 				     &list, map, &ids);
+ 		if (ret)
+ 			return ret;
 
