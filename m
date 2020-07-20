@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D646226516
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7C922654C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730547AbgGTPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:50:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47272 "EHLO mail.kernel.org"
+        id S1731379AbgGTPwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731148AbgGTPum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:50:42 -0400
+        id S1731366AbgGTPwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D651E206E9;
-        Mon, 20 Jul 2020 15:50:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D43D2065E;
+        Mon, 20 Jul 2020 15:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260241;
-        bh=bYcsp+lTAjYQXjg17ZAbSyfn2+pSwrVpblngizYvBnQ=;
+        s=default; t=1595260350;
+        bh=PYHRM3/vuupAlPy3KFuJj1++LvMrnbsTNPrhIdDVqkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vsvGioOlssbVPZ78droZfVkvWIqqm1p58xHXC+B8uzbCVkzusX/TenLU18S+QyBUI
-         XBVgIUeixFGsdQp7WFlISI9gaBHnhJFSVD0ayENr1ieDUXUJWdXBvGfBzvc4wFa4vM
-         AKjjjjrGwt88uQvEvhW5PmbaukuKihOi1b4hkcDM=
+        b=P+yEYzl9edIZ6BsIIIKZeAtyg/vurCv8gicZqBPAH+4FLEuXSNbwBtTbU7hoP+9TH
+         R9R7vpcPNm2BL6AhD1tp2403n1MskAt/VED/Tts9qHKefCMjZh/LBtC54SeP6wAiWg
+         Xv/aMysCYOTfEp6GxCjZgBnEc6hEZr0eXnqCmq5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alison Schofield <amsfield22@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 030/133] iio:humidity:hdc100x Fix alignment and data leak issues
-Date:   Mon, 20 Jul 2020 17:36:17 +0200
-Message-Id: <20200720152805.191228617@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 031/133] iio: magnetometer: ak8974: Fix runtime PM imbalance on error
+Date:   Mon, 20 Jul 2020 17:36:18 +0200
+Message-Id: <20200720152805.241721533@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
 References: <20200720152803.732195882@linuxfoundation.org>
@@ -46,69 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit ea5e7a7bb6205d24371373cd80325db1bc15eded upstream.
+commit 0187294d227dfc42889e1da8f8ce1e44fc25f147 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data.
-This data is allocated with kzalloc so no data can leak apart
-from previous readings.
+When devm_regmap_init_i2c() returns an error code, a pairing
+runtime PM usage counter decrement is needed to keep the
+counter balanced. For error paths after ak8974_set_power(),
+ak8974_detect() and ak8974_reset(), things are the same.
 
-Fixes: 16bf793f86b2 ("iio: humidity: hdc100x: add triggered buffer support for HDC100X")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
-Cc: Alison Schofield <amsfield22@gmail.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+However, When iio_triggered_buffer_setup() returns an error
+code, there will be two PM usgae counter decrements.
+
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Fixes: 7c94a8b2ee8c ("iio: magn: add a driver for AK8974")
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/humidity/hdc100x.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/magnetometer/ak8974.c |   19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
---- a/drivers/iio/humidity/hdc100x.c
-+++ b/drivers/iio/humidity/hdc100x.c
-@@ -38,6 +38,11 @@ struct hdc100x_data {
- 
- 	/* integration time of the sensor */
- 	int adc_int_us[2];
-+	/* Ensure natural alignment of timestamp */
-+	struct {
-+		__be16 channels[2];
-+		s64 ts __aligned(8);
-+	} scan;
- };
- 
- /* integration time in us */
-@@ -319,7 +324,6 @@ static irqreturn_t hdc100x_trigger_handl
- 	struct i2c_client *client = data->client;
- 	int delay = data->adc_int_us[0] + data->adc_int_us[1];
- 	int ret;
--	s16 buf[8];  /* 2x s16 + padding + 8 byte timestamp */
- 
- 	/* dual read starts at temp register */
- 	mutex_lock(&data->lock);
-@@ -330,13 +334,13 @@ static irqreturn_t hdc100x_trigger_handl
- 	}
- 	usleep_range(delay, delay + 1000);
- 
--	ret = i2c_master_recv(client, (u8 *)buf, 4);
-+	ret = i2c_master_recv(client, (u8 *)data->scan.channels, 4);
- 	if (ret < 0) {
- 		dev_err(&client->dev, "cannot read sensor data\n");
- 		goto err;
+--- a/drivers/iio/magnetometer/ak8974.c
++++ b/drivers/iio/magnetometer/ak8974.c
+@@ -768,19 +768,21 @@ static int ak8974_probe(struct i2c_clien
+ 	ak8974->map = devm_regmap_init_i2c(i2c, &ak8974_regmap_config);
+ 	if (IS_ERR(ak8974->map)) {
+ 		dev_err(&i2c->dev, "failed to allocate register map\n");
++		pm_runtime_put_noidle(&i2c->dev);
++		pm_runtime_disable(&i2c->dev);
+ 		return PTR_ERR(ak8974->map);
  	}
  
--	iio_push_to_buffers_with_timestamp(indio_dev, buf,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   iio_get_time_ns(indio_dev));
- err:
- 	mutex_unlock(&data->lock);
+ 	ret = ak8974_set_power(ak8974, AK8974_PWR_ON);
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "could not power on\n");
+-		goto power_off;
++		goto disable_pm;
+ 	}
+ 
+ 	ret = ak8974_detect(ak8974);
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "neither AK8974 nor AMI30x found\n");
+-		goto power_off;
++		goto disable_pm;
+ 	}
+ 
+ 	ret = ak8974_selftest(ak8974);
+@@ -790,14 +792,9 @@ static int ak8974_probe(struct i2c_clien
+ 	ret = ak8974_reset(ak8974);
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "AK8974 reset failed\n");
+-		goto power_off;
++		goto disable_pm;
+ 	}
+ 
+-	pm_runtime_set_autosuspend_delay(&i2c->dev,
+-					 AK8974_AUTOSUSPEND_DELAY);
+-	pm_runtime_use_autosuspend(&i2c->dev);
+-	pm_runtime_put(&i2c->dev);
+-
+ 	indio_dev->dev.parent = &i2c->dev;
+ 	indio_dev->channels = ak8974_channels;
+ 	indio_dev->num_channels = ARRAY_SIZE(ak8974_channels);
+@@ -850,6 +847,11 @@ no_irq:
+ 		goto cleanup_buffer;
+ 	}
+ 
++	pm_runtime_set_autosuspend_delay(&i2c->dev,
++					 AK8974_AUTOSUSPEND_DELAY);
++	pm_runtime_use_autosuspend(&i2c->dev);
++	pm_runtime_put(&i2c->dev);
++
+ 	return 0;
+ 
+ cleanup_buffer:
+@@ -858,7 +860,6 @@ disable_pm:
+ 	pm_runtime_put_noidle(&i2c->dev);
+ 	pm_runtime_disable(&i2c->dev);
+ 	ak8974_set_power(ak8974, AK8974_PWR_OFF);
+-power_off:
+ 	regulator_bulk_disable(ARRAY_SIZE(ak8974->regs), ak8974->regs);
+ 
+ 	return ret;
 
 
