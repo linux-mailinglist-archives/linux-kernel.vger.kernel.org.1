@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C03226813
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1281322692A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388631AbgGTQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:17:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388613AbgGTQQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:16:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ACA22064B;
-        Mon, 20 Jul 2020 16:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261813;
-        bh=zp+/tj1wGk+aIdCWdyD/6BHJ9SueCc5DLykjfdOmZaY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zUwXfDo5+hiZ+Qqh1zmVrLtnd0gmYL8ZtM1Nq9IMT07FeF6BVyF4XtC1JwyPcVG1k
-         cCaiOYQaik1kkH39SgcYSHqRw52OMtViqI9nxFIxm5TfWHZia2dnQrvXoBJiN/cxDQ
-         NLRSt45mPn/dNynyn6SVtxZHK9q8pp+FtHekIAtk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+        id S1732177AbgGTP7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732140AbgGTP7L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A30C0619D2;
+        Mon, 20 Jul 2020 08:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ATjmBzjI/n6oxkwr3gKzLrXKn2KIaLRJvHCblp/KGMo=; b=ieVgzSIF0/MnWX86vE7znh0SaZ
+        +w0UOnDHJfs6ucW7fJdERo7h+KGK27CyD70XmHEWC5JSJFGpreOWoAdQ+gBBUDX5ugIIaBassftAg
+        N4zRCBYNIJeD+uIp9cTApbCgkSAXCgWaRElPc4HL3jDQsMz4xPYlgFhCkw677jPNvSOserBfWSPoT
+        geQZ1Ai/Vye5Knk6VdPjP9WUOXPPFVA3I6JJ/bR9I/IPO64MPHvk++2Dse1hZyED9cCs5WKLPtcnN
+        O4x+psI9RMnV4uaIkuNb3I0w3kYNz1djswFGsVGs2bI6UYEII16DHee6rPnQOqShAk6C2h9TotZm7
+        7gK2+Zdw==;
+Received: from [2001:4bb8:105:4a81:db56:edb1:dbf2:5cc3] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxYBz-0007mY-7z; Mon, 20 Jul 2020 15:59:03 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>,
-        Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>,
-        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.7 244/244] drm/i915/perf: Use GTT when saving/restoring engine GPR
-Date:   Mon, 20 Jul 2020 17:38:35 +0200
-Message-Id: <20200720152837.447723793@linuxfoundation.org>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: add file system helpers that take kernel pointers for the init code
+Date:   Mon, 20 Jul 2020 17:58:38 +0200
+Message-Id: <20200720155902.181712-1-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
+Hi Al,
 
-commit aee62e02c48bd62b9b07f5e297ecfc9aaa964937 upstream.
+currently a lot of the file system calls in the early in code (and the
+devtmpfs kthread) rely on the implicit set_fs(KERNEL_DS) during boot.
+This is one of the few last remaining places we need to deal with to kill
+off set_fs entirely, so this series adds new helpers that take kernel
+pointers.  That is mostly done by pushing the getname() call further up
+the stack so that we can add variants using getname_kernel() without
+duplicating code.
 
-MI_STORE_REGISTER_MEM and MI_LOAD_REGISTER_MEM need to know which
-translation to use when saving restoring the engine general purpose
-registers to and from the GT scratch. Since GT scratch is mapped to
-ggtt, we need to set an additional bit in the command to use GTT.
+The series sits on top of my previous
 
-Fixes: daed3e44396d17 ("drm/i915/perf: implement active wait for noa configurations")
-Suggested-by: Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>
-Signed-off-by: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
-Reviewed-by: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200709224504.11345-1-chris@chris-wilson.co.uk
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-(cherry picked from commit e43ff99c8deda85234e6233e0f4af6cb09566a37)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  "decruft the early init / initrd / initramfs code v2"
 
----
- drivers/gpu/drm/i915/i915_perf.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/gpu/drm/i915/i915_perf.c
-+++ b/drivers/gpu/drm/i915/i915_perf.c
-@@ -1645,6 +1645,7 @@ static u32 *save_restore_register(struct
- 	u32 d;
- 
- 	cmd = save ? MI_STORE_REGISTER_MEM : MI_LOAD_REGISTER_MEM;
-+	cmd |= MI_SRM_LRM_GLOBAL_GTT;
- 	if (INTEL_GEN(stream->perf->i915) >= 8)
- 		cmd++;
- 
+series.
 
 
+Git tree:
+
+    git://git.infradead.org/users/hch/misc.git kern_path
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/kern_path
+
+
+Diffstat:
+ drivers/base/devtmpfs.c    |    8 +-
+ drivers/md/md-autodetect.c |    2 
+ fs/coredump.c              |    2 
+ fs/fs_parser.c             |    1 
+ fs/internal.h              |   12 ---
+ fs/namei.c                 |  166 +++++++++++++++++++++++++++++++--------------
+ fs/namespace.c             |  134 +++++++++++++++++++++---------------
+ fs/open.c                  |  149 ++++++++++++++++++++++++++++------------
+ fs/stat.c                  |   92 ++++++++++++------------
+ fs/utimes.c                |   19 +++--
+ include/linux/fs.h         |   39 +++++-----
+ include/linux/syscalls.h   |   82 ----------------------
+ init/do_mounts.c           |   12 +--
+ init/do_mounts.h           |    4 -
+ init/do_mounts_initrd.c    |   26 +++----
+ init/do_mounts_rd.c        |    2 
+ init/initramfs.c           |   27 +++----
+ init/main.c                |    9 --
+ init/noinitramfs.c         |    9 +-
+ kernel/uid16.c             |   15 ----
+ 20 files changed, 434 insertions(+), 376 deletions(-)
