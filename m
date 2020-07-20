@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AA6225B53
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D493A225B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgGTJW6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Jul 2020 05:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbgGTJW6 (ORCPT
+        id S1728202AbgGTJXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:23:48 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:42004 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727961AbgGTJXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:22:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7B8C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:22:58 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jxS0B-00035o-7c; Mon, 20 Jul 2020 11:22:27 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jxS06-0004dK-6S; Mon, 20 Jul 2020 11:22:22 +0200
-Message-ID: <9c2d6c888817880974f850622b14905a9338b60e.camel@pengutronix.de>
-Subject: Re: [PATCH V2 1/3] reset: imx7: Support module build
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Anson Huang <Anson.Huang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        bjorn.andersson@linaro.org, leoyang.li@nxp.com, vkoul@kernel.org,
-        geert+renesas@glider.be, olof@lixom.net, treding@nvidia.com,
-        gustavo.pimentel@synopsys.com, amurray@thegoodpenguin.co.uk,
-        vidyas@nvidia.com, xiaowei.bao@nxp.com, jonnyc@amazon.com,
-        hayashi.kunihiko@socionext.com, eswara.kota@linux.intel.com,
-        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Date:   Mon, 20 Jul 2020 11:22:22 +0200
-In-Reply-To: <1593443129-18766-1-git-send-email-Anson.Huang@nxp.com>
-References: <1593443129-18766-1-git-send-email-Anson.Huang@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Mon, 20 Jul 2020 05:23:47 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06K963Fj001059;
+        Mon, 20 Jul 2020 02:23:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=9Pdq+syVPGsE7NiIyror1875Q3xdqrQ6j+hVF3yHZjg=;
+ b=GpfalX26qtABHMyMnlaBzTPipHdhsk1hzqJXVsyAoggEenmtwV2vXAH1lQza9vbkg5K4
+ cTVgEuoovRPHhc0cDG/R+yuClPKQogoGUjK1xd0dxzeakTK44GYxn+CHA+cOwEUmK1gQ
+ 4xGQfJoTym1DJAQmZKTzZggp1Mago54Xn9hU46zgKqSkFW89OQzP8oLocbayARihnPRe
+ o6ZyFtG2i0mPii2CrzH8+v5Wji+WXtF+YLmVUxH33vSbHdmGZcSr1oQJ7hqj3vVqvToQ
+ Oin3Y0pnW42+hE3AhkQI1GlASHz+SK948L8IhZPl3j+CY4g822NrBKjD0E0p0Oar8dVU BA== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 32c0kkda03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 02:23:37 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 20 Jul
+ 2020 02:23:34 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 20 Jul 2020 02:23:34 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
+        by maili.marvell.com (Postfix) with ESMTP id 37CDE3F703F;
+        Mon, 20 Jul 2020 02:23:29 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Alexander Lobakin <alobakin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        Denis Bolotin <denis.bolotin@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <GR-everest-linux-l2@marvell.com>,
+        <QLogic-Storage-Upstream@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 net-next 01/14] qed: convert link mode from u32 to bitmap
+Date:   Mon, 20 Jul 2020 12:23:06 +0300
+Message-ID: <20200720092306.355-1-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200719212100.GM1383417@lunn.ch>
+References: <20200719212100.GM1383417@lunn.ch>
+ <20200719201453.3648-1-alobakin@marvell.com>
+ <20200719201453.3648-2-alobakin@marvell.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_05:2020-07-17,2020-07-20 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-29 at 23:05 +0800, Anson Huang wrote:
-> Add module device table, author, description and license to support
-> module build, and CONFIG_RESET_IMX7 is changed to default 'y' ONLY
-> for i.MX7D, other platforms need to select it in defconfig.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> Changes since V1:
-> 	- make it default 'y' for SOC_IMX7D;
-> 	- add module author, description;
-> 	- use device_initcall instead of builtin_platform_driver() to support
-> 	  module unload.
-> ---
->  drivers/reset/Kconfig      |  5 +++--
->  drivers/reset/reset-imx7.c | 14 ++++++++++++--
->  2 files changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index d9efbfd..19f9773 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -65,9 +65,10 @@ config RESET_HSDK
->  	  This enables the reset controller driver for HSDK board.
->  
->  config RESET_IMX7
-> -	bool "i.MX7/8 Reset Driver" if COMPILE_TEST
-> +	tristate "i.MX7/8 Reset Driver"
->  	depends on HAS_IOMEM
-> -	default SOC_IMX7D || (ARM64 && ARCH_MXC)
-> +	depends on SOC_IMX7D || (ARM64 && ARCH_MXC) || COMPILE_TEST
-> +	default y if SOC_IMX7D
->  	select MFD_SYSCON
->  	help
->  	  This enables the reset controller driver for i.MX7 SoCs.
-> diff --git a/drivers/reset/reset-imx7.c b/drivers/reset/reset-imx7.c
-> index d170fe6..c710f789 100644
-> --- a/drivers/reset/reset-imx7.c
-> +++ b/drivers/reset/reset-imx7.c
-> @@ -8,7 +8,7 @@
->   */
->  
->  #include <linux/mfd/syscon.h>
-> -#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/reset-controller.h>
-> @@ -386,6 +386,7 @@ static const struct of_device_id imx7_reset_dt_ids[] = {
->  	{ .compatible = "fsl,imx8mp-src", .data = &variant_imx8mp },
->  	{ /* sentinel */ },
->  };
-> +MODULE_DEVICE_TABLE(of, imx7_reset_dt_ids);
->  
->  static struct platform_driver imx7_reset_driver = {
->  	.probe	= imx7_reset_probe,
-> @@ -394,4 +395,13 @@ static struct platform_driver imx7_reset_driver = {
->  		.of_match_table	= imx7_reset_dt_ids,
->  	},
->  };
-> -builtin_platform_driver(imx7_reset_driver);
-> +
-> +static int __init imx7_reset_init(void)
-> +{
-> +	return platform_driver_register(&imx7_reset_driver);
-> +}
-> +device_initcall(imx7_reset_init);
+Date: Sun, 19 Jul 2020 23:21:00 +0200
+From: Andrew Lunn <andrew@lunn.ch>
 
-Shouldn't this use module_platform_driver instead?
+> On Sun, Jul 19, 2020 at 11:14:40PM +0300, Alexander Lobakin wrote:
+>> Currently qed driver already ran out of 32 bits to store link modes,
+>> and this doesn't allow to add and support more speeds.
+>> Convert link mode to bitmap that will always have enough space for
+>> any number of speeds and modes.
+>
+> Hi Alexander
 
-regards
-Philipp
+Hi Andrew!
+
+> Why not just throw away all these QED_LM_ defines and use the kernel
+> link modes? The fact you are changing the u32 to a bitmap suggests the
+> hardware does not use them.
+
+I've just double-checked, and you're right, management firmware operates
+with NVM_* definitions, while QED_LM_* are used only in QED and QEDE to
+fill Ethtool link settings.
+I didn't notice this while working on the series, but it would be really
+a lot better to just use generic definitions.
+So I'll send v3 soon.
+
+>      Andrew
+
+Thanks,
+Al
