@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A229B22656F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F492264B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731520AbgGTPx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52458 "EHLO mail.kernel.org"
+        id S1730247AbgGTPrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731241AbgGTPxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:53:53 -0400
+        id S1730715AbgGTPrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:47:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 960BA2065E;
-        Mon, 20 Jul 2020 15:53:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A66062065E;
+        Mon, 20 Jul 2020 15:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260433;
-        bh=ng0sjrRwkc/M1EmAyW3RhXlKMHDp0dBQG4Gu4UQsXHE=;
+        s=default; t=1595260020;
+        bh=fBoNzMQzm3BsBq+QNOsWa2q+IQ389zXSjgJitdgmLCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OPWxmghC883CZrp5RetBmiLpueuBzlVjyFqBiRvCYAe9qaIM//D/7ot8qBtm7jhHA
-         DxTNhgYg6LHt54fzlYxGq9HnSpPIkw37wXPlLqhBrT2SqZ6mDVPj2xp+4poe4uLk0R
-         R++UZxGLM6vNrOjDEl3FIrlwDaBYIMXk2Q4EWw4Y=
+        b=DTrNlpRgvp1f8ldNP1nruBGL4GqFt3HWrcHvFqgDCN30Hu/3hLlQ/k8yruJe+28Dx
+         tAyjmqIU/dF0eduVIPYMbDJa2+a/00ou5C9DCqrWTma8kFy4enaPsXgMdwCWDNEUH9
+         nlJfLZYIAjwIFDpxG7qEFPnEUD7SbQdtF9t2ecTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.19 069/133] perf stat: Zero all the ena and run array slot stats for interval mode
+        stable@vger.kernel.org, Haibo Chen <haibo.chen@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 077/125] mmc: sdhci: do not enable card detect interrupt for gpio cd type
 Date:   Mon, 20 Jul 2020 17:36:56 +0200
-Message-Id: <20200720152807.055568557@linuxfoundation.org>
+Message-Id: <20200720152806.723963127@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,49 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jin Yao <yao.jin@linux.intel.com>
+From: Haibo Chen <haibo.chen@nxp.com>
 
-commit 0e0bf1ea1147fcf74eab19c2d3c853cc3740a72f upstream.
+[ Upstream commit e65bb38824711559844ba932132f417bc5a355e2 ]
 
-As the code comments in perf_stat_process_counter() say, we calculate
-counter's data every interval, and the display code shows ps->res_stats
-avg value. We need to zero the stats for interval mode.
+Except SDHCI_QUIRK_BROKEN_CARD_DETECTION and MMC_CAP_NONREMOVABLE,
+we also do not need to handle controller native card detect interrupt
+for gpio cd type.
+If we wrong enabled the card detect interrupt for gpio case, it will
+cause a lot of unexpected card detect interrupts during data transfer
+which should not happen.
 
-But the current code only zeros the res_stats[0], it doesn't zero the
-res_stats[1] and res_stats[2], which are for ena and run of counter.
-
-This patch zeros the whole res_stats[] for interval mode.
-
-Fixes: 51fd2df1e882 ("perf stat: Fix interval output values")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jin Yao <yao.jin@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200409070755.17261-1-yao.jin@linux.intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/1582100563-20555-2-git-send-email-haibo.chen@nxp.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/stat.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@ -358,8 +358,10 @@ int perf_stat_process_counter(struct per
- 	 * interval mode, otherwise overall avg running
- 	 * averages will be shown for each interval.
- 	 */
--	if (config->interval)
--		init_stats(ps->res_stats);
-+	if (config->interval) {
-+		for (i = 0; i < 3; i++)
-+			init_stats(&ps->res_stats[i]);
-+	}
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 4f1c884c0b508..33028099d3a01 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -133,7 +133,7 @@ static void sdhci_set_card_detection(struct sdhci_host *host, bool enable)
+ 	u32 present;
  
- 	if (counter->per_pkg)
- 		zero_per_pkg(counter);
+ 	if ((host->quirks & SDHCI_QUIRK_BROKEN_CARD_DETECTION) ||
+-	    !mmc_card_is_removable(host->mmc))
++	    !mmc_card_is_removable(host->mmc) || mmc_can_gpio_cd(host->mmc))
+ 		return;
+ 
+ 	if (enable) {
+-- 
+2.25.1
+
 
 
