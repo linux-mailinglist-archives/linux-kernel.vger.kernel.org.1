@@ -2,170 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C62226C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B16226C30
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389126AbgGTQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:47:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44447 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729310AbgGTPiu (ORCPT
+        id S2388867AbgGTQrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729409AbgGTPjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:38:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595259529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nj5CVbO042d9zu7TAo3vkfTDVgfDO82EbmPSLZjSnng=;
-        b=e5k0Y2AP5254Z5ySfg+fyfYzV8w4F78pFcdMWI6bLtH2kcGv21QdtQZCnx/3DM3SIETpw6
-        oDtG+LQPEGoMKeXt5PYqXxTAsC+6n/tjjFJTez3uicSkqbQ6I0oIDGbmosOv3UngoJTCfX
-        Q93B0hiKn7jm1TRgbcNTCBf/XCgBeaI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-n8nRwOJfNmeINbcE0cT-lQ-1; Mon, 20 Jul 2020 11:38:45 -0400
-X-MC-Unique: n8nRwOJfNmeINbcE0cT-lQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99E5F1932480;
-        Mon, 20 Jul 2020 15:38:43 +0000 (UTC)
-Received: from localhost (ovpn-116-11.gru2.redhat.com [10.97.116.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B5F0274F45;
-        Mon, 20 Jul 2020 15:38:42 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 12:38:41 -0300
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Nayna <nayna@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-integrity@vger.kernel.org,
-        erichte@linux.ibm.com, nayna@linux.ibm.com, stable@vger.kernel.org
-Subject: Re: [PATCH v6] ima: move APPRAISE_BOOTPARAM dependency on
- ARCH_POLICY to runtime
-Message-ID: <20200720153841.GG10323@glitch>
-References: <20200713164830.101165-1-bmeneg@redhat.com>
- <d337cbba-e996-e898-1e75-9f142d480e5e@linux.vnet.ibm.com>
- <1595257015.5055.8.camel@linux.ibm.com>
+        Mon, 20 Jul 2020 11:39:10 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD981C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SORy7n9Lm/HsaDAW1ESZ+sVeiSH8dZynS/Gg7rN5onA=; b=0x2LOjN9+Nyf7IFsRZ1XmqsGP3
+        4GO0WvFxBXZhPXGC27lbhuR8MAUq1V6A/G9Ao3Le95dh8pbFyZpNaQtojWulwdTHTGj9zgPXE1Zz0
+        332P0GUMeMYOP2wNTrqWj1/6WRPPcMDVcb0xepz1hnmPYyv0wUgS0wKCboA6Gh2bhR1Z3T3R+N2dw
+        1LzDlJ1KYBL4JHaMehHc5Rc0Py4+USN+ztQYz/7ztCEstQqg/Wj45/jyYcK+VobpLv0qNsXEErnEQ
+        YzN13c2WKw/n85LAVAdUpM6Qy/ajc5Jse52JfRI1GEb8+nMQXx/cvoHhDLmiOfPY7qZfOvsNrHerW
+        wIrE33DQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxXsZ-0002C7-LF; Mon, 20 Jul 2020 15:39:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C4C2307983;
+        Mon, 20 Jul 2020 17:38:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 67B2F20DCCA0D; Mon, 20 Jul 2020 17:38:55 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 17:38:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200720153855.GS10769@hirez.programming.kicks-ass.net>
+References: <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+ <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com>
+ <20200720082657.GC6612@redhat.com>
+ <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+ <20200720105924.GE43129@hirez.programming.kicks-ass.net>
+ <20200720140224.GD6612@redhat.com>
+ <20200720142105.GR10769@hirez.programming.kicks-ass.net>
+ <20200720143930.GE6612@redhat.com>
+ <20200720153514.GF6612@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1595257015.5055.8.camel@linux.ibm.com>
-X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zGQnqpIoxlsbsOfg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200720153514.GF6612@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---zGQnqpIoxlsbsOfg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 20, 2020 at 10:56:55AM -0400, Mimi Zohar wrote:
-> On Mon, 2020-07-20 at 10:40 -0400, Nayna wrote:
-> > On 7/13/20 12:48 PM, Bruno Meneguele wrote:
-> > > The IMA_APPRAISE_BOOTPARAM config allows enabling different "ima_appr=
-aise=3D"
-> > > modes - log, fix, enforce - at run time, but not when IMA architectur=
-e
-> > > specific policies are enabled. =A0This prevents properly labeling the
-> > > filesystem on systems where secure boot is supported, but not enabled=
- on the
-> > > platform. =A0Only when secure boot is actually enabled should these I=
-MA
-> > > appraise modes be disabled.
+On Mon, Jul 20, 2020 at 05:35:15PM +0200, Oleg Nesterov wrote:
+> On 07/20, Oleg Nesterov wrote:
+> >
+> > On 07/20, Peter Zijlstra wrote:
 > > >
-> > > This patch removes the compile time dependency and makes it a runtime
-> > > decision, based on the secure boot state of that platform.
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
+> > >  	local_irq_disable();
+> > >  	rcu_note_context_switch(preempt);
 > > >
-> > > Test results as follows:
-> > >
-> > > -> x86-64 with secure boot enabled
-> > >
-> > > [    0.015637] Kernel command line: <...> ima_policy=3Dappraise_tcb i=
-ma_appraise=3Dfix
-> > > [    0.015668] ima: Secure boot enabled: ignoring ima_appraise=3Dfix =
-boot parameter option
-> > >
->=20
-> Is it common to have two colons in the same line? =A0Is the colon being
-> used as a delimiter when parsing the kernel logs? =A0Should the second
-> colon be replaced with a hyphen? =A0(No need to repost. =A0I'll fix it
-> up.)
-> =A0
+> > > -	/* See deactivate_task() below. */
+> > > -	prev_state = prev->state;
+> > > -
+> > >  	/*
+> > >  	 * Make sure that signal_pending_state()->signal_pending() below
+> > >  	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+> > > @@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
+> > >  	 * We must re-load prev->state in case ttwu_remote() changed it
+> > >  	 * before we acquired rq->lock.
+> > >  	 */
+> > > -	if (!preempt && prev_state && prev_state == prev->state) {
+> > > +	prev_state = prev->state;
+> > > +	if (!preempt && prev_state) {
+> >
+> > Heh ;) Peter, you know what? I did the same change and tried to understand
+> > why it is wrong and what have I missed.
+> >
+> > Thanks, now I can relax. But my head hurts too, I'll probably try to re-read
+> > this code and other emails from you tomorrow.
+> 
+> Yes, I can no longer read this code today ;)
+> 
+> but now it seems to me that (in theory) we need READ_ONCE(prev->state) here
+> and probably WRITE_ONCE(on_rq) in deactivate_task() to ensure ctrl-dep?
+> 
+> Probably not, I got lost.
+> Probably not, I got lost.
+> Probably not, I got lost.
 
-AFAICS it has been used without any limitations, e.g:
+So, task_struct::state is declared volatile (we should probably 'fix'
+that some day), so that doesn't require READ_ONCE() -- in fact, that
+caused a bunch of re-reads in the old code which made the loadavg race
+more likely.
 
-PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
-clocksource: hpet: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 13=
-3484873504 ns
-microcode: CPU0: patch_level=3D0x08701013
-Lockdown: modprobe: unsigned module loading is restricted; see man kernel_l=
-ockdown.7
-...
-
-I'd say we're fine using it.
-
->=20
-> > > -> powerpc with secure boot disabled
-> > >
-> > > [    0.000000] Kernel command line: <...> ima_policy=3Dappraise_tcb i=
-ma_appraise=3Dfix
-> > > [    0.000000] Secure boot mode disabled
-> > >
-> > > -> Running the system without secure boot and with both options set:
-> > >
-> > > CONFIG_IMA_APPRAISE_BOOTPARAM=3Dy
-> > > CONFIG_IMA_ARCH_POLICY=3Dy
-> > >
-> > > Audit prompts "missing-hash" but still allow execution and, consequen=
-tly,
-> > > filesystem labeling:
-> > >
-> > > type=3DINTEGRITY_DATA msg=3Daudit(07/09/2020 12:30:27.778:1691) : pid=
-=3D4976
-> > > uid=3Droot auid=3Droot ses=3D2
-> > > subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=3Dapp=
-raise_data
-> > > cause=3Dmissing-hash comm=3Dbash name=3D/usr/bin/evmctl dev=3D"dm-0" =
-ino=3D493150
-> > > res=3Dno
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: d958083a8f64 ("x86/ima: define arch_get_ima_policy() for x86")
-> > > Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
-> >=20
-> >=20
-> > Reviewed-by: Nayna Jain<nayna@linux.ibm.com>
-> > Tested-by: Nayna Jain<nayna@linux.ibm.com>
->=20
-> Thanks, Nayna.
->=20
-> Mimi
->=20
-
---=20
-bmeneg=20
-PGP Key: http://bmeneg.com/pubkey.txt
-
---zGQnqpIoxlsbsOfg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8VuoEACgkQYdRkFR+R
-okPE9AgAzeX+81xWo21ombBBIIV7StgWU8qS6SadvIvUksysp8K1+912UFK1SAVA
-IKLtwrRnv0HH4f3syFCsnQNb8m2Z5HRiBwj/kr/1h+xUkujfolpUgLdgQvlscVTD
-HkHUTSA86vjACGW7YvnyumWroHwirVUOovA91k0mk9pfkUq57Wrmr5G5rmacjMeK
-SKEu3NZlQKF6NTr0LUwxQ6y4e9i4skeNCIBFNFVR6re92LNhEAASVNMF6rhU7DCy
-9BQmy9QSvIwyDd0o+b3/FeskWyxYj6g40gtXYjlrl3BBMWk1oGF5KRdboclfL21U
-GioxjG6g710tRaCOZwB+9Wkwk/I49g==
-=1i4d
------END PGP SIGNATURE-----
-
---zGQnqpIoxlsbsOfg--
-
+->on_rq is only ever written 0,1,2, there's no possibe store-tearing.
+But possibly, yes, WRITE_ONCE() would be nicer.
