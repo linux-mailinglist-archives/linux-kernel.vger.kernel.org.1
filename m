@@ -2,190 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45378226D84
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5272A226D7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730718AbgGTRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 13:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbgGTRtN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 13:49:13 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023AAC0619D4;
-        Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k71so188795pje.0;
-        Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=96y7EAtauwpST2sJvN1xqRaaYTBW7xFiifRwkpVmX4I=;
-        b=jg/iEt+0wHY/FV3Q81wX9QAl/uJk+XggykUcXKKHxIkxhXQ0AXB7HJA1n+VKyzthkI
-         8hDC3mxxB86xuU1/zjVG17x2pWdnLQaexcu/kE5SYCLbJnNv7QyCO/RocBC4IeE3Dnk0
-         xp/Q7wTP6ClTeePLDl1t4OkFpMCXWMCKPrc/6DqTxBF4PXQHHdQyPjQpJLlkFEffPB/w
-         TStkgpuAiE0YkT/QEqdMS/wxmHQMVQNSg/Os+aDFc0ZvUo4Hyjn8j6VP15VVQN1Hf83S
-         x1X9YrqeLocpYpqr7t4cjHsyYliRRciPUN+e/QX/p/1Op9g4bjSFRz/wdv21jNcjKgI0
-         EKJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=96y7EAtauwpST2sJvN1xqRaaYTBW7xFiifRwkpVmX4I=;
-        b=kjxEUdM/vHh/4+kxlZ9HEReD6vhk/OebZwOwXSI1QRrJ+/5ecqN2paUAhRAOG4FMG1
-         xux6J6oKc7hFh5IzbzlHEPSDNom6hqlXnITcdYUAFa2pPBQ/dO6JTz98beRWyPgsdLy0
-         Q3HytJLc7SydfU655hr6DB+DeHJ873GH/oQNeGomAWe3cEtiVoeZaPBWqiSHsS6uvMlD
-         dPB7/UfJD5czKDY8ktnwBDhHXhAj+oDdb+8QmB/0bsGyEObMZmbwAqAksMDh84trg6Q1
-         p5K816kwj5ol+4AX9/mwmJ/MZyWBLum/KLMvSuFMXQeB1IE4IzMp/6wwUhQ5lydhiatG
-         iuwQ==
-X-Gm-Message-State: AOAM531iWiQpSIxdgpaskvI3C+okkXRXJntK2Tj1vz77ZD5OhUje0r0h
-        8Xw8QwEMKhKN53KH9Vs7adY=
-X-Google-Smtp-Source: ABdhPJy/P1ezLwGpEG0knayswF4R/ww4dDpu6dy1QBZUaQEiSB0wwVhOtmGxkQyhBFmAypl7LGgj1g==
-X-Received: by 2002:a17:90a:c295:: with SMTP id f21mr562409pjt.208.1595267352276;
-        Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id i196sm15538658pgc.55.2020.07.20.10.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 10:49:11 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1] media: cafe-driver: use generic power management
-Date:   Mon, 20 Jul 2020 23:15:46 +0530
-Message-Id: <20200720174545.827778-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S2388986AbgGTRrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 13:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732122AbgGTRrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 13:47:06 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45F9D20709;
+        Mon, 20 Jul 2020 17:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595267225;
+        bh=h7xTJHL3tD3hyqROKlN47q+7JtwYj6iU2IDwcwmnD10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YlqRcxTuXQfRrbeqatLbuRaOeADiac4H6X9sEArUzE5oRMfR8PHkKo5MsS8CqIiH2
+         30gUB8awpWvMVLHqbmwCRcCebqbRb3WB5zVyQMWCeasxnsnHVcByE17hsBPHomNYe/
+         2IYK/lsU5KfUy43NS89poYLzWTie5RjpZ+F0ezt8=
+Date:   Mon, 20 Jul 2020 20:46:50 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-nvdimm@lists.01.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [PATCH 3/6] mm: introduce secretmemfd system call to create
+ "secret" memory areas
+Message-ID: <20200720174650.GD8593@kernel.org>
+References: <20200720092435.17469-1-rppt@kernel.org>
+ <20200720092435.17469-4-rppt@kernel.org>
+ <CAK8P3a0NyvRMqH7X0YNO5E6DGtvZXD5ZcD6Y6n7AkocufkMnHA@mail.gmail.com>
+ <20200720142053.GC8593@kernel.org>
+ <CAK8P3a07jAec4hKyNMcha032TT6OXjYHaZZ4Za9ncDsvapeg8Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a07jAec4hKyNMcha032TT6OXjYHaZZ4Za9ncDsvapeg8Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PM have to manage PCI states and device's PM states
-themselves. They also need to take care of configuration registers.
+On Mon, Jul 20, 2020 at 04:34:12PM +0200, Arnd Bergmann wrote:
+> On Mon, Jul 20, 2020 at 4:21 PM Mike Rapoport <rppt@kernel.org> wrote:
+> > On Mon, Jul 20, 2020 at 01:30:13PM +0200, Arnd Bergmann wrote:
+> > > On Mon, Jul 20, 2020 at 11:25 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > >
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > >
+> > > > Introduce "secretmemfd" system call with the ability to create memory areas
+> > > > visible only in the context of the owning process and not mapped not only
+> > > > to other processes but in the kernel page tables as well.
+> > > >
+> > > > The user will create a file descriptor using the secretmemfd system call
+> > > > where flags supplied as a parameter to this system call will define the
+> > > > desired protection mode for the memory associated with that file
+> > > > descriptor. Currently there are two protection modes:
+> > > >
+> > > > * exclusive - the memory area is unmapped from the kernel direct map and it
+> > > >               is present only in the page tables of the owning mm.
+> > > > * uncached  - the memory area is present only in the page tables of the
+> > > >               owning mm and it is mapped there as uncached.
+> > > >
+> > > > For instance, the following example will create an uncached mapping (error
+> > > > handling is omitted):
+> > > >
+> > > >         fd = secretmemfd(SECRETMEM_UNCACHED);
+> > > >         ftruncate(fd, MAP_SIZE);
+> > > >         ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
+> > > >                    fd, 0);
+> > > >
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > >
+> > > I wonder if this should be more closely related to dmabuf file
+> > > descriptors, which
+> > > are already used for a similar purpose: sharing access to secret memory areas
+> > > that are not visible to the OS but can be shared with hardware through device
+> > > drivers that can import a dmabuf file descriptor.
+> >
+> > TBH, I didn't think about dmabuf, but my undestanding is that is this
+> > case memory areas are not visible to the OS because they are on device
+> > memory rather than normal RAM and when dmabuf is backed by the normal
+> > RAM, the memory is visible to the OS.
+> 
+> No, dmabuf is normally about normal RAM that is shared between multiple
+> devices, the idea is that you can have one driver allocate a buffer in RAM
+> and export it to user space through a file descriptor. The application can then
+> go and mmap() it or pass it into one or more other drivers.
+> 
+> This can be used e.g. for sharing a buffer between a video codec and the
+> gpu, or between a crypto engine and another device that accesses
+> unencrypted data while software can only observe the encrypted version.
 
-With improved and powerful support of generic PM, PCI Core takes care of
-above mentioned, device-independent, jobs.
+For our usecase sharing is optional from one side and there are no
+devices involved from the other.
 
-This driver makes use of PCI helper functions like
-pci_save/restore_state() and pci_enable/disable_device() to do required
-operations. In generic mode, they are no longer needed.
+As James pointed out, there is no match for the userspace API and if
+there will emerge a usacase that requires integration of secretmem with
+dma-buf, we'll deal with it then.
 
-Change function parameter in both .suspend() and .resume() to
-"struct device*" type.
+>        Arnd
 
-Compile-tested only.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- .../media/platform/marvell-ccic/cafe-driver.c | 31 +++++--------------
- .../media/platform/marvell-ccic/mcam-core.c   |  3 --
- 2 files changed, 7 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/media/platform/marvell-ccic/cafe-driver.c b/drivers/media/platform/marvell-ccic/cafe-driver.c
-index 9a09a10a3631..58b9915ac7a4 100644
---- a/drivers/media/platform/marvell-ccic/cafe-driver.c
-+++ b/drivers/media/platform/marvell-ccic/cafe-driver.c
-@@ -604,44 +604,28 @@ static void cafe_pci_remove(struct pci_dev *pdev)
- }
- 
- 
--#ifdef CONFIG_PM
- /*
-  * Basic power management.
-  */
--static int cafe_pci_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused cafe_pci_suspend(struct device *dev)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
-+	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev);
- 	struct cafe_camera *cam = to_cam(v4l2_dev);
--	int ret;
- 
--	ret = pci_save_state(pdev);
--	if (ret)
--		return ret;
- 	mccic_suspend(&cam->mcam);
--	pci_disable_device(pdev);
- 	return 0;
- }
- 
- 
--static int cafe_pci_resume(struct pci_dev *pdev)
-+static int __maybe_unused cafe_pci_resume(struct device *dev)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
-+	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev);
- 	struct cafe_camera *cam = to_cam(v4l2_dev);
--	int ret = 0;
- 
--	pci_restore_state(pdev);
--	ret = pci_enable_device(pdev);
--
--	if (ret) {
--		cam_warn(cam, "Unable to re-enable device on resume!\n");
--		return ret;
--	}
- 	cafe_ctlr_init(&cam->mcam);
- 	return mccic_resume(&cam->mcam);
- }
- 
--#endif  /* CONFIG_PM */
--
- static const struct pci_device_id cafe_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL,
- 		     PCI_DEVICE_ID_MARVELL_88ALP01_CCIC) },
-@@ -650,15 +634,14 @@ static const struct pci_device_id cafe_ids[] = {
- 
- MODULE_DEVICE_TABLE(pci, cafe_ids);
- 
-+static SIMPLE_DEV_PM_OPS(cafe_pci_pm_ops, cafe_pci_suspend, cafe_pci_resume);
-+
- static struct pci_driver cafe_pci_driver = {
- 	.name = "cafe1000-ccic",
- 	.id_table = cafe_ids,
- 	.probe = cafe_pci_probe,
- 	.remove = cafe_pci_remove,
--#ifdef CONFIG_PM
--	.suspend = cafe_pci_suspend,
--	.resume = cafe_pci_resume,
--#endif
-+	.driver.pm = &cafe_pci_pm_ops,
- };
- 
- 
-diff --git a/drivers/media/platform/marvell-ccic/mcam-core.c b/drivers/media/platform/marvell-ccic/mcam-core.c
-index 09775b6624c6..d81d0c130e3c 100644
---- a/drivers/media/platform/marvell-ccic/mcam-core.c
-+++ b/drivers/media/platform/marvell-ccic/mcam-core.c
-@@ -1967,8 +1967,6 @@ EXPORT_SYMBOL_GPL(mccic_shutdown);
- /*
-  * Power management
-  */
--#ifdef CONFIG_PM
--
- void mccic_suspend(struct mcam_camera *cam)
- {
- 	mutex_lock(&cam->s_mutex);
-@@ -2015,7 +2013,6 @@ int mccic_resume(struct mcam_camera *cam)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mccic_resume);
--#endif /* CONFIG_PM */
- 
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Jonathan Corbet <corbet@lwn.net>");
 -- 
-2.27.0
-
+Sincerely yours,
+Mike.
