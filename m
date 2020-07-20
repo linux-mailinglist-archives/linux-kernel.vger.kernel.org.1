@@ -2,269 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFF4225C7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C62C225C7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgGTKP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:15:26 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33930 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728007AbgGTKP0 (ORCPT
+        id S1728288AbgGTKRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:17:20 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:25700 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728007AbgGTKRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:15:26 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BB5631C0BE5; Mon, 20 Jul 2020 12:15:23 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 12:15:22 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     stable@kernel.org, kernel list <linux-kernel@vger.kernel.org>,
-        gregkh@duo.ucw.cz, erosca@de.adit-jv.com, roscaeugeniu@gmail.com,
-        stern@rowland.harvard.edu, qais.yousef@arm.com,
-        linux@prisktech.co.nz, mathias.nyman@intel.com, oneukum@suse.de,
-        linux-usb@vger.kernel.org
-Subject: hibernation reverts in 4.19.134: better alternative?
-Message-ID: <20200720101522.GB13137@amd>
+        Mon, 20 Jul 2020 06:17:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595240237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y99N3HO5g+WhE1TjJOE+/XsdF+y0jzvQOLZP2UKx7lM=;
+        b=TvVhZfWDFpptfz+akF9jGaD9T+ccYbib0z26dC852sfRNTDh2A1ZAdibC8fwdTssw2sTUn
+        BndKMZ7B482SaxVMKmWpqJ9ZENnOFg67zDXjkPPPBz8QumBLG+fXR+v7SJSCl5lgjyTWc0
+        VcSH750W7WDF4A7YQLjnfXqjLVvl86s=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-CnFAw3flNMiH_MNNNYDkbA-1; Mon, 20 Jul 2020 06:17:16 -0400
+X-MC-Unique: CnFAw3flNMiH_MNNNYDkbA-1
+Received: by mail-qk1-f198.google.com with SMTP id d6so3717502qkg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:17:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y99N3HO5g+WhE1TjJOE+/XsdF+y0jzvQOLZP2UKx7lM=;
+        b=O5ExFFBG+V+8x8LCgREo9u3/S5ilYP+jx2BFltSyeGvBHtcZike5ZRmRckni6D3ORn
+         Ev5EGpc1zYbIFJtX064J9nWUU8gRdYP9gs3J7UP3+R7RY5t1O0lhbJ3z5xqlHchTrah4
+         7m+Wcp52QkMiWJkgGwI+UyO8hL06Fn1DhiJRnqSvQAVfVBGy2bdF7axzUeQFKRYa4W6J
+         xyZhh+muBp62hIOHuOPw38YEUQs12R+K9GNzYPd6vKNukL7VvRABaWMLVvhDcmtGpGhA
+         nhccqS1J1kGhvGy5ybt4AsiqnoIsvBZo0QpxeCniyICVnuFZlEy9Jv0ItdpSYfDipb8g
+         5ucw==
+X-Gm-Message-State: AOAM530yDGiw7JbqO7gHSnVq3hsWwdIJj8d4lK2JvBqseu/aZWOxXVsY
+        NTuQ/9r2AbKc6zI2k8g3QXn9+CM4ZiAnt3IctYYLqeQVqvupQajUSEKWt5SgrvTe6MAaC3nbrPP
+        x5pOWv1BhHzEcNXzA9sN2u91m8ClgdmERzhJU0pZ+
+X-Received: by 2002:ac8:4250:: with SMTP id r16mr23291255qtm.378.1595240235916;
+        Mon, 20 Jul 2020 03:17:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6eRppsUdj+OcqUxbAewN8h1jl91t7/Dlnn5nvDs66q2TQMR7droK4ih5j7ccrpQu6tl74/h+hoe4dHN1Cets=
+X-Received: by 2002:ac8:4250:: with SMTP id r16mr23291239qtm.378.1595240235652;
+ Mon, 20 Jul 2020 03:17:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200717190547.648604-1-kherbst@redhat.com> <e7a8cb3a-e9f8-b78a-93f0-c09e5eb5ed10@canonical.com>
+ <CACO55tvLCrqeV8MsVDbTaWP2EPAeZtfU08Kb2fVGCD6X+g3-rg@mail.gmail.com> <8ad1866d-eb61-a30c-5875-5ffbfd2e17e1@canonical.com>
+In-Reply-To: <8ad1866d-eb61-a30c-5875-5ffbfd2e17e1@canonical.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Mon, 20 Jul 2020 12:17:04 +0200
+Message-ID: <CACO55ttJRpjZVSATSYo8bL_BStGACMO76kO8pZ5W+2vp6Ni6xA@mail.gmail.com>
+Subject: Re: [PATCH] RFC: ACPI / OSI: remove workarounds for hybrid graphics laptops
+To:     Alex Hung <alex.hung@canonical.com>
+Cc:     Linux ACPI Mailing List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Lyude Paul <lyude@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau <nouveau@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 20, 2020 at 3:19 AM Alex Hung <alex.hung@canonical.com> wrote:
+>
+> On 2020-07-19 1:50 p.m., Karol Herbst wrote:
+> > On Fri, Jul 17, 2020 at 9:52 PM Alex Hung <alex.hung@canonical.com> wrote:
+> >>
+> >> On 2020-07-17 1:05 p.m., Karol Herbst wrote:
+> >>> It's hard to figure out what systems are actually affected and right now I
+> >>> don't see a good way of removing those...
+> >>>
+> >>> But I'd like to see thos getting removed and drivers fixed instead (which
+> >>> happened at least for nouveau).
+> >>>
+> >>> And as mentioned before, I prefer people working on fixing issues instead
+> >>> of spending time to add firmware level workarounds which are hard to know
+> >>> to which systems they apply to, hard to remove and basically a big huge
+> >>> pain to work with.> In the end I have no idea how to even figure out what systems are affected
+> >>> and which not by this, so I have no idea how to even verify we can safely
+> >>> remove this (which just means those are impossible to remove unless we risk
+> >>> breaking systems, which again makes those supper annoying to deal with).
+> >>>
+> >>> Also from the comments it's hard to get what those bits really do. Are they
+> >>> just preventing runtime pm or do the devices are powered down when booting?
+> >>> I am sure it's the former, still...
+> >>>
+> >>> Please, don't do this again.
+> >>>
+> >>> For now, those workaround prevent power savings on systems those workaround
+> >>> applies to, which might be any so those should get removed asap and if
+> >>> new issues arrise removing those please do a proper bug report and we can
+> >>> look into it and come up with a proper fix (and keep this patch out until
+> >>> we resolve all of those).
+> >>>
+> >>> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> >>> CC: Alex Hung <alex.hung@canonical.com>
+> >>> CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> >>> CC: Len Brown <lenb@kernel.org>
+> >>> CC: Lyude Paul <lyude@redhat.com>
+> >>> CC: linux-kernel@vger.kernel.org
+> >>> CC: dri-devel@lists.freedesktop.org
+> >>> CC: nouveau@lists.freedesktop.org
+> >>> ---
+> >>>  drivers/acpi/osi.c | 24 ------------------------
+> >>>  1 file changed, 24 deletions(-)
+> >>>
+> >>> diff --git a/drivers/acpi/osi.c b/drivers/acpi/osi.c
+> >>> index 9f68538091384..d4405e1ca9b97 100644
+> >>> --- a/drivers/acpi/osi.c
+> >>> +++ b/drivers/acpi/osi.c
+> >>> @@ -44,30 +44,6 @@ osi_setup_entries[OSI_STRING_ENTRIES_MAX] __initdata = {
+> >>>       {"Processor Device", true},
+> >>>       {"3.0 _SCP Extensions", true},
+> >>>       {"Processor Aggregator Device", true},
+> >>> -     /*
+> >>> -      * Linux-Dell-Video is used by BIOS to disable RTD3 for NVidia graphics
+> >>> -      * cards as RTD3 is not supported by drivers now.  Systems with NVidia
+> >>> -      * cards will hang without RTD3 disabled.
+> >>> -      *
+> >>> -      * Once NVidia drivers officially support RTD3, this _OSI strings can
+> >>> -      * be removed if both new and old graphics cards are supported.
+> >>> -      */
+> >>> -     {"Linux-Dell-Video", true},
+> >>> -     /*
+> >>> -      * Linux-Lenovo-NV-HDMI-Audio is used by BIOS to power on NVidia's HDMI
+> >>> -      * audio device which is turned off for power-saving in Windows OS.
+> >>> -      * This power management feature observed on some Lenovo Thinkpad
+> >>> -      * systems which will not be able to output audio via HDMI without
+> >>> -      * a BIOS workaround.
+> >>> -      */
+> >>> -     {"Linux-Lenovo-NV-HDMI-Audio", true},
+> >>> -     /*
+> >>> -      * Linux-HPI-Hybrid-Graphics is used by BIOS to enable dGPU to
+> >>> -      * output video directly to external monitors on HP Inc. mobile
+> >>> -      * workstations as Nvidia and AMD VGA drivers provide limited
+> >>> -      * hybrid graphics supports.
+> >>> -      */
+> >>> -     {"Linux-HPI-Hybrid-Graphics", true},
+> >>>  };
+> >>>
+> >>>  static u32 acpi_osi_handler(acpi_string interface, u32 supported)
+> >>>
+> >>
+> >> The changes were discussed and tested a while ago, and no crashes were
+> >> observed. Thanks for solving PM issues in nouveau.
+> >>
+> >> Acked-by: Alex Hung <alex.hung@canonical.com>
+> >>
+> >
+> > By any chance, do you have a list of systems implementing those workarounds?
+> >
+>
+> I don't keep a list but the workaround, in theory, should only apply to
+> the systems with the specific nvidia hardware.
+>
+> I reminded OEMs and ODMs that these _OSI strings were temporary
+> solutions, and highlighted we were going to remove them after our
+> discussion last year. If they were paying attentions recent systems
+> shouldn't have these _OSI strings.
+>
 
---ZfOjI3PrQbgiZnxM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right.. but I am actually wondering because I never saw those strings
+in the wild or not on the Dell and Lenovo systems I was testing on. So
+I think we might want to ask the vendors themselves and verify on
+those systems.
 
-Hi!
+> --
+> Cheers,
+> Alex Hung
+>
 
-This is queued for 4.19.134-stable, reverting 3 patches. But it seems
-better alternative is available...
-
-commit f3e697b7b6f5e2c570226f8f8692fb7db57215ec
-Author: Sasha Levin <sashal@kernel.org>
-Date:   Fri Jul 17 12:58:32 2020 -0400
-
-    Revert "usb/ohci-platform: Fix a warning when hibernating"
-   =20
-    This reverts commit c83258a757687ffccce37ed73dba56cc6d4b8a1b.
-   =20
-    Eugeniu Rosca writes:
-
-=2E..
-
-    > - Backporting 987351e1ea7772 ("phy: core: Add consumer device
-    >   link support") to v4.14.187 looks challenging enough, so probably n=
-ot
-    >   worth it. Anybody to contradict this?
-
-Backporting 987351e1ea7772 to 4.4 may be "interesting", but backport
-to 4.19 seems trivial, here, and it seems to work ok according to CIP
-test suites:
-
-https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipelines/168487477
-
-(You can simply apply 987351e1ea7772 ignoring one file that is not yet
-present in 4.19.)
-
-Eugeniu, can you verify this works for you?
-
-Best regards,
-								Pavel
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-
-diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-index 35fd38c5a4a1..600a4e554d17 100644
---- a/drivers/phy/phy-core.c
-+++ b/drivers/phy/phy-core.c
-@@ -33,7 +33,7 @@ static void devm_phy_release(struct device *dev, void *re=
-s)
- {
- 	struct phy *phy =3D *(struct phy **)res;
-=20
--	phy_put(phy);
-+	phy_put(dev, phy);
- }
-=20
- static void devm_phy_provider_release(struct device *dev, void *res)
-@@ -490,12 +490,12 @@ struct phy *of_phy_get(struct device_node *np, const =
-char *con_id)
- EXPORT_SYMBOL_GPL(of_phy_get);
-=20
- /**
-- * phy_put() - release the PHY
-- * @phy: the phy returned by phy_get()
-+ * of_phy_put() - release the PHY
-+ * @phy: the phy returned by of_phy_get()
-  *
-- * Releases a refcount the caller received from phy_get().
-+ * Releases a refcount the caller received from of_phy_get().
-  */
--void phy_put(struct phy *phy)
-+void of_phy_put(struct phy *phy)
- {
- 	if (!phy || IS_ERR(phy))
- 		return;
-@@ -503,6 +503,20 @@ void phy_put(struct phy *phy)
- 	module_put(phy->ops->owner);
- 	put_device(&phy->dev);
- }
-+EXPORT_SYMBOL_GPL(of_phy_put);
-+
-+/**
-+ * phy_put() - release the PHY
-+ * @dev: device that wants to release this phy
-+ * @phy: the phy returned by phy_get()
-+ *
-+ * Releases a refcount the caller received from phy_get().
-+ */
-+void phy_put(struct device *dev, struct phy *phy)
-+{
-+	device_link_remove(dev, &phy->dev);
-+	of_phy_put(phy);
-+}
- EXPORT_SYMBOL_GPL(phy_put);
-=20
- /**
-@@ -570,6 +584,7 @@ struct phy *phy_get(struct device *dev, const char *str=
-ing)
- {
- 	int index =3D 0;
- 	struct phy *phy;
-+	struct device_link *link;
-=20
- 	if (string =3D=3D NULL) {
- 		dev_WARN(dev, "missing string\n");
-@@ -591,6 +606,13 @@ struct phy *phy_get(struct device *dev, const char *st=
-ring)
-=20
- 	get_device(&phy->dev);
-=20
-+	link =3D device_link_add(dev, &phy->dev, DL_FLAG_STATELESS);
-+	if (!link) {
-+		dev_err(dev, "failed to create device link to %s\n",
-+			dev_name(phy->dev.parent));
-+		return ERR_PTR(-EINVAL);
-+	}
-+
- 	return phy;
- }
- EXPORT_SYMBOL_GPL(phy_get);
-@@ -684,6 +706,7 @@ struct phy *devm_of_phy_get(struct device *dev, struct =
-device_node *np,
- 			    const char *con_id)
- {
- 	struct phy **ptr, *phy;
-+	struct device_link *link;
-=20
- 	ptr =3D devres_alloc(devm_phy_release, sizeof(*ptr), GFP_KERNEL);
- 	if (!ptr)
-@@ -695,6 +718,14 @@ struct phy *devm_of_phy_get(struct device *dev, struct=
- device_node *np,
- 		devres_add(dev, ptr);
- 	} else {
- 		devres_free(ptr);
-+		return phy;
-+	}
-+
-+	link =3D device_link_add(dev, &phy->dev, DL_FLAG_STATELESS);
-+	if (!link) {
-+		dev_err(dev, "failed to create device link to %s\n",
-+			dev_name(phy->dev.parent));
-+		return ERR_PTR(-EINVAL);
- 	}
-=20
- 	return phy;
-@@ -717,6 +748,7 @@ struct phy *devm_of_phy_get_by_index(struct device *dev=
-, struct device_node *np,
- 				     int index)
- {
- 	struct phy **ptr, *phy;
-+	struct device_link *link;
-=20
- 	ptr =3D devres_alloc(devm_phy_release, sizeof(*ptr), GFP_KERNEL);
- 	if (!ptr)
-@@ -738,6 +770,13 @@ struct phy *devm_of_phy_get_by_index(struct device *de=
-v, struct device_node *np,
- 	*ptr =3D phy;
- 	devres_add(dev, ptr);
-=20
-+	link =3D device_link_add(dev, &phy->dev, DL_FLAG_STATELESS);
-+	if (!link) {
-+		dev_err(dev, "failed to create device link to %s\n",
-+			dev_name(phy->dev.parent));
-+		return ERR_PTR(-EINVAL);
-+	}
-+
- 	return phy;
- }
- EXPORT_SYMBOL_GPL(devm_of_phy_get_by_index);
-diff --git a/drivers/usb/renesas_usbhs/rcar2.c b/drivers/usb/renesas_usbhs/=
-rcar2.c
-index 0027092b1118..c52d36c384e7 100644
---- a/drivers/usb/renesas_usbhs/rcar2.c
-+++ b/drivers/usb/renesas_usbhs/rcar2.c
-@@ -33,7 +33,7 @@ static int usbhs_rcar2_hardware_exit(struct platform_devi=
-ce *pdev)
- 	struct usbhs_priv *priv =3D usbhs_pdev_to_priv(pdev);
-=20
- 	if (priv->phy) {
--		phy_put(priv->phy);
-+		phy_put(&pdev->dev, priv->phy);
- 		priv->phy =3D NULL;
- 	}
-=20
-diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-index 9713aebdd348..e969b604cb54 100644
---- a/include/linux/phy/phy.h
-+++ b/include/linux/phy/phy.h
-@@ -185,7 +185,8 @@ struct phy *devm_of_phy_get(struct device *dev, struct =
-device_node *np,
- 			    const char *con_id);
- struct phy *devm_of_phy_get_by_index(struct device *dev, struct device_nod=
-e *np,
- 				     int index);
--void phy_put(struct phy *phy);
-+void of_phy_put(struct phy *phy);
-+void phy_put(struct device *dev, struct phy *phy);
- void devm_phy_put(struct device *dev, struct phy *phy);
- struct phy *of_phy_get(struct device_node *np, const char *con_id);
- struct phy *of_phy_simple_xlate(struct device *dev,
-@@ -348,7 +349,11 @@ static inline struct phy *devm_of_phy_get_by_index(str=
-uct device *dev,
- 	return ERR_PTR(-ENOSYS);
- }
-=20
--static inline void phy_put(struct phy *phy)
-+static inline void of_phy_put(struct phy *phy)
-+{
-+}
-+
-+static inline void phy_put(struct device *dev, struct phy *phy)
- {
- }
-=20
-
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---ZfOjI3PrQbgiZnxM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl8VbroACgkQMOfwapXb+vIsdgCeN8e0SOmPQhjKnsYZaF90xKl4
-lCEAoIOXJk+fLM5ZKytKp2EmossZ1aME
-=DooB
------END PGP SIGNATURE-----
-
---ZfOjI3PrQbgiZnxM--
