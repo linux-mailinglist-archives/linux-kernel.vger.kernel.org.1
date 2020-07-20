@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F118226A55
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D65226A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388940AbgGTQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:33:08 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:33744 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731802AbgGTQdB (ORCPT
+        id S1732800AbgGTQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:33:56 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:39659 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388962AbgGTQdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:33:01 -0400
-Received: by mail-io1-f65.google.com with SMTP id d18so18264091ion.0;
-        Mon, 20 Jul 2020 09:33:00 -0700 (PDT)
+        Mon, 20 Jul 2020 12:33:54 -0400
+Received: by mail-il1-f193.google.com with SMTP id k6so13834845ili.6;
+        Mon, 20 Jul 2020 09:33:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jnt8NGEcb9QuspToNkCE0B8uWDCkviqvtXBWs7ndp7U=;
-        b=dR3hTB7BiWw/IcwA5DjFjczFD2oDyELi2GOkahBJZT88PZ/PU8EGrz/VWOi6vPkCUb
-         0Z7/OyQEyU7mE5T7tLMWYaqGShtJkduHX++9Id4Ahj1viAODKwx9eaTEMdyvUpUBbJny
-         /FopgqQHKiUTu2vjwr5NwDg+thAako4p9sk55eNNPDQK/z436OvdKgeODv6eIAipd2yf
-         KZSMY3V1ygXtuJDuwgWKYoV3UdZs+6Bfw1Ds4TTTqpsTFx3YOip9gQfyZxpO1oS+UAJK
-         Q4IrbYLdbGdtrjLDA5A2mWOOF6j/P1aOt01GuRk2bEtPFb/6HqKXzKxr4Q7a8iZ8QCUB
-         FeFg==
-X-Gm-Message-State: AOAM532SsRu9U7wrB/r6ZcvzjopEdvZNNi9JBfc24wuoKksHV9HHJHbW
-        R64LpDdQ+ggwowZBET+/2w==
-X-Google-Smtp-Source: ABdhPJwcUlO64ABhqVtn8AX7Eodm+sHDVMi+gLO66Zc7WYwVg0XRJFukPDma212P5nj5hmFTmdHLSw==
-X-Received: by 2002:a6b:c343:: with SMTP id t64mr24390076iof.66.1595262779894;
-        Mon, 20 Jul 2020 09:32:59 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=I0wQ3YO8Vss6xaeuCLdInIi0SX7uQKxUoc58bndvXRg=;
+        b=cZgYGUFjAVKN8ZX8fTOTsFvezbIe6LfiDdYMQyQv5r2NRjkk1D2GAbUmiH/HsYPY6R
+         mBGY4yHL7mH7K/8eK6mEh73N5PcJ00gQ0VlH9QbkUiBdrIr4UxYEWBjU9l5Lg9ybni2H
+         JlKQLL2p943NJXnTUV6/DwRCcnFGZ67pNwdOnJqp+pCFgLgaQCiFLcdyvvyPpF9D8I+J
+         MnlKJELDrU0tSffteh3cntx3U0C5rdMtYmDBL+60zLMRNPtb0Pj032KRaAU8Rh84MUDY
+         cGiD6Pb0rcM5Jz3bzBiRF+c56kzdp7MZ4FExFeP+Ywpi+TTPiE5vkE1ZNWCFKy6YVKu0
+         Hbhg==
+X-Gm-Message-State: AOAM530SCty2zVl2/b01BolON7YwYkKYWblEOExKvF6ifssQ0ntoPLjY
+        xYs/X+wwTA3z6uecpzvwIC2aiFE4MQ==
+X-Google-Smtp-Source: ABdhPJyWvpuSNg/zWars+w88sZJsxEErbQ5PDf/rFSRBSl5xMfKye5hioNqx7KI9vXMByvsU0WXuzA==
+X-Received: by 2002:a92:5ecf:: with SMTP id f76mr22893176ilg.281.1595262833149;
+        Mon, 20 Jul 2020 09:33:53 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id j17sm8948918ilq.7.2020.07.20.09.32.57
+        by smtp.gmail.com with ESMTPSA id i6sm8997543ilj.61.2020.07.20.09.33.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 09:32:58 -0700 (PDT)
-Received: (nullmailer pid 2625794 invoked by uid 1000);
-        Mon, 20 Jul 2020 16:32:56 -0000
-Date:   Mon, 20 Jul 2020 10:32:56 -0600
+        Mon, 20 Jul 2020 09:33:52 -0700 (PDT)
+Received: (nullmailer pid 2627088 invoked by uid 1000);
+        Mon, 20 Jul 2020 16:33:49 -0000
+Date:   Mon, 20 Jul 2020 10:33:49 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Artur Rojek <contact@artur-rojek.eu>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH v8 1/2] dt-bindings: input: Add docs for ADC driven
- joystick.
-Message-ID: <20200720163256.GA2625563@bogus>
-References: <20200719221103.91644-1-contact@artur-rojek.eu>
- <20200719221103.91644-2-contact@artur-rojek.eu>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     yanfei.li@ingenic.com, devicetree@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, zhenwenjin@gmail.com,
+        aric.pzqi@ingenic.com, paul@crapouillou.net,
+        rick.tyliu@ingenic.com, daniel.lezcano@linaro.org,
+        tglx@linutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, sernia.zhou@foxmail.com
+Subject: Re: [PATCH v9 1/2] dt-bindings: timer: Add Ingenic X1000 OST
+ bindings.
+Message-ID: <20200720163349.GA2626388@bogus>
+References: <20200720151106.112807-1-zhouyanjie@wanyeetech.com>
+ <20200720151106.112807-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200719221103.91644-2-contact@artur-rojek.eu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200720151106.112807-2-zhouyanjie@wanyeetech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 00:11:02 +0200, Artur Rojek wrote:
-> Add documentation for the adc-joystick driver, used to provide support
-> for joysticks connected over ADC.
+On Mon, 20 Jul 2020 23:11:05 +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Add the OST bindings for the X10000 SoC from Ingenic.
 > 
-> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
-> Tested-by: Paul Cercueil <paul@crapouillou.net>
+> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 > Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
 > 
->  Changes:
+> Notes:
+>     v1->v2:
+>     No change.
 > 
->  v2: - Add `reg` property to axis subnode in order to enumerate the axes,
->      - rename `linux,abs-code` property to `linux,code`,
->      - drop `linux,` prefix from the remaining properties of axis subnode
+>     v2->v3:
+>     Fix wrong parameters in "clocks".
 > 
->  v3: no change
+>     v3->v4:
+>     1.Rename "ingenic,ost.yaml" to "ingenic,sysost.yaml".
+>     2.Rename "ingenic,ost.h" to "ingenic,sysost.h".
+>     3.Modify the description in "ingenic,sysost.yaml".
 > 
->  v4: - remove "bindings" from the unique identifier string,
->      - replace `|` with `>` for all description properties,
->      - specify the number of items for `io-channels`,
->      - correct the regex pattern of `axis` property,
->      - specify the value range of `reg` property for each axis,
->      - put `abs-range` properties under `allOf`
+>     v4->v5:
+>     No change.
 > 
->  v5: add `a-f` to the regex pattern of `axis` property
+>     v5->v6:
+>     1.Drop "oneOf" and the blank line.
+>     2.Add "additionalProperties: false".
 > 
->  v6-v8: no change
+>     v6->v7:
+>     No change.
 > 
->  Notes:
+>     v7->v8:
+>     No change.
 > 
->  Rob, the bindings example in this patch depends on changes introduced
->  in another patchset, still to be merged:
->  https://lore.kernel.org/linux-iio/20200719205307.87385-4-contact@artur-rojek.eu/
->  Your scripts will most likely fail to validate this.
+>     v8->v9:
+>     Fix warning while applying.
+>     Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 > 
->  .../bindings/input/adc-joystick.yaml          | 121 ++++++++++++++++++
->  1 file changed, 121 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/adc-joystick.yaml
+>  .../devicetree/bindings/timer/ingenic,sysost.yaml  | 63 ++++++++++++++++++++++
+>  include/dt-bindings/clock/ingenic,sysost.h         | 12 +++++
+>  2 files changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+>  create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
 > 
 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
-Error: Documentation/devicetree/bindings/input/adc-joystick.example.dts:24.31-32 syntax error
-FATAL ERROR: Unable to parse input tree
-scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/input/adc-joystick.example.dt.yaml' failed
-make[1]: *** [Documentation/devicetree/bindings/input/adc-joystick.example.dt.yaml] Error 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml: properties: '#address-cells' is a dependency of '#size-cells'
+Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/timer/ingenic,sysost.example.dts' failed
+make[1]: *** [Documentation/devicetree/bindings/timer/ingenic,sysost.example.dts] Error 1
 make[1]: *** Waiting for unfinished jobs....
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml: ignoring, error in schema: properties
+warning: no schema found in file: ./Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml: ignoring, error in schema: properties
+warning: no schema found in file: ./Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
 Makefile:1347: recipe for target 'dt_binding_check' failed
 make: *** [dt_binding_check] Error 2
 
 
-See https://patchwork.ozlabs.org/patch/1331964
+See https://patchwork.ozlabs.org/patch/1332465
 
 If you already ran 'make dt_binding_check' and didn't see the above
 error(s), then make sure dt-schema is up to date:
