@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCF3226A20
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9665F226A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731728AbgGTP4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:56:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58724 "EHLO
+        id S2388933AbgGTQdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:33:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58808 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731731AbgGTPzx (ORCPT
+        with ESMTP id S1731799AbgGTP40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:53 -0400
+        Mon, 20 Jul 2020 11:56:26 -0400
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260551;
+        s=2020; t=1595260584;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WoUJnr4URy+0EwDgNtGsLyT4yoY91spHNMewIh6xqZU=;
-        b=HOLvJQfPfaARhiarvOeloF1vEAChe6B+hY8/1EYC1w8Mfoqv35NnG8DB13uYYFrRlAMP9F
-        l9qYuVrAUM5riuh8n1SehtJyikNWwP1uM1UUxUFeQyGzVTXGYN9R8H9ET8R5+jyyDwsaRr
-        yYIkXaQN96KbW3kmHuJrDdrRXW6t74gHRx4zZLtURswOZQ9S7sfbaxrOR1x+xNtErlOfNt
-        8lrsb+Cf366+lDokSdkeHaBMEK6bgptR2io5m0ZAQdswcr3ZxY0/GBUpYcxMFMMcKHAPVn
-        kWCgYKqDbqkAYi8oo5PAFrtmG8tIAW3dPfc5E2na5662RxvYDBxkxc/wCuTrZQ==
+        bh=0LvtODdt/qpdhh8rPzhryXa7h9i3Brijmjrucqb9JZE=;
+        b=vglMCEkJnKDV9C9gl5yiBKv0rsKn11X9rca8Uhpd3/JzUjkB47eLDwg6mZl97/X2A2NMnG
+        V3ZDjFK4/lRiCusV+cMPKqzQOtUdVfXa374NtTVhr4TC7kdylQPMhRZvfcx3ao+ZmoGmjM
+        tSNqPKvU16oVkHkVxg7PsrRsKb0J4KJUB+4M2pX2shxzzI9kgesqHEMJOtaCcBzDZTTbCB
+        BBazox5RJdIF/VstuK9W8fGJbuIjb23AHo1fhai95H8qNCsH5tCz0W4P6VbWOSbDLvvFpb
+        J8D8lB47W1gTIkkdxD/OGSXo4kmGYVEqmxxstrwZexLx4wyuH3AO4JupskwSGA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260551;
+        s=2020e; t=1595260584;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WoUJnr4URy+0EwDgNtGsLyT4yoY91spHNMewIh6xqZU=;
-        b=6384ay2/3CWYlLnOcoi/UrWoRythVAzuDmZ3Dn5x4ARbXYak+K21ZU9RkjcwChZ3Zqr6Z0
-        y2SP+NlNWeLOcsAg==
+        bh=0LvtODdt/qpdhh8rPzhryXa7h9i3Brijmjrucqb9JZE=;
+        b=WpXgsBkD0uNt1Rx2RbQ3QwKmY4xJgRuU8KSbTtQiQUGfnAxseItKzSI6FvDBIRrtttKqbN
+        PUR+FecPEzFoL8Dw==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -41,10 +41,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Sebastian A. Siewior" <bigeasy@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v4 04/24] seqlock: Reorder seqcount_t and seqlock_t API definitions
-Date:   Mon, 20 Jul 2020 17:55:10 +0200
-Message-Id: <20200720155530.1173732-5-a.darwish@linutronix.de>
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH v4 11/24] dma-buf: Remove custom seqcount lockdep class key
+Date:   Mon, 20 Jul 2020 17:55:17 +0200
+Message-Id: <20200720155530.1173732-12-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -55,291 +56,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The seqlock.h seqcount_t and seqlock_t API definitions are presented in
-the chronological order of their development rather than the order that
-makes most sense to readers. This makes it hard to follow and understand
-the header file code.
+Commit 3c3b177a9369 ("reservation: add support for read-only access
+using rcu") introduced a sequence counter to manage updates to
+reservations. Back then, the reservation object initializer
+reservation_object_init() was always inlined.
 
-Group and reorder all of the exported seqlock.h functions according to
-their function.
+Having the sequence counter initialization inlined meant that each of
+the call sites would have a different lockdep class key, which would've
+broken lockdep's deadlock detection. The aforementioned commit thus
+introduced, and exported, a custom seqcount lockdep class key and name.
 
-First, group together the seqcount_t standard read path functions:
+The commit 8735f16803f00 ("dma-buf: cleanup reservation_object_init...")
+transformed the reservation object initializer to a normal non-inlined C
+function. seqcount_init(), which automatically defines the seqcount
+lockdep class key and must be called non-inlined, can now be safely used.
 
-    - __read_seqcount_begin()
-    - raw_read_seqcount_begin()
-    - read_seqcount_begin()
-
-since each function is implemented exactly in terms of the one above
-it. Then, group the special-case seqcount_t readers on their own as:
-
-    - raw_read_seqcount()
-    - raw_seqcount_begin()
-
-since the only difference between the two functions is that the second
-one masks the sequence counter LSB while the first one does not. Note
-that raw_seqcount_begin() can actually be implemented in terms of
-raw_read_seqcount(), which will be done in a follow-up commit.
-
-Then, group the seqcount_t write path functions, instead of injecting
-unrelated seqcount_t latch functions between them, and order them as:
-
-    - raw_write_seqcount_begin()
-    - raw_write_seqcount_end()
-    - write_seqcount_begin_nested()
-    - write_seqcount_begin()
-    - write_seqcount_end()
-    - raw_write_seqcount_barrier()
-    - write_seqcount_invalidate()
-
-which is the expected natural order. This also isolates the seqcount_t
-latch functions into their own area, at the end of the sequence counters
-section, and before jumping to the next one: sequential locks
-(seqlock_t).
-
-Do a similar grouping and reordering for seqlock_t "locking" readers vs.
-the "conditionally locking or lockless" ones.
-
-No implementation code was changed in any of the reordering above.
+Remove the seqcount custom lockdep class key, name, and export. Use
+seqcount_init() inside the dma reservation object initializer.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 ---
- include/linux/seqlock.h | 174 ++++++++++++++++++++--------------------
- 1 file changed, 86 insertions(+), 88 deletions(-)
+ drivers/dma-buf/dma-resv.c | 9 +--------
+ include/linux/dma-resv.h   | 2 --
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index d724b5e5408d..4c1456008d89 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -128,23 +128,6 @@ static inline unsigned __read_seqcount_begin(const seqcount_t *s)
- 	return ret;
- }
+diff --git a/drivers/dma-buf/dma-resv.c b/drivers/dma-buf/dma-resv.c
+index b45f8514dc82..15efa0c2dacb 100644
+--- a/drivers/dma-buf/dma-resv.c
++++ b/drivers/dma-buf/dma-resv.c
+@@ -51,12 +51,6 @@
+ DEFINE_WD_CLASS(reservation_ww_class);
+ EXPORT_SYMBOL(reservation_ww_class);
  
--/**
-- * raw_read_seqcount - Read the raw seqcount
-- * @s: pointer to seqcount_t
-- * Returns: count to be passed to read_seqcount_retry
-- *
-- * raw_read_seqcount opens a read critical section of the given
-- * seqcount without any lockdep checking and without checking or
-- * masking the LSB. Calling code is responsible for handling that.
-- */
--static inline unsigned raw_read_seqcount(const seqcount_t *s)
--{
--	unsigned ret = READ_ONCE(s->sequence);
--	smp_rmb();
--	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
--	return ret;
--}
+-struct lock_class_key reservation_seqcount_class;
+-EXPORT_SYMBOL(reservation_seqcount_class);
+-
+-const char reservation_seqcount_string[] = "reservation_seqcount";
+-EXPORT_SYMBOL(reservation_seqcount_string);
 -
  /**
-  * raw_read_seqcount_begin - start seq-read critical section w/o lockdep
-  * @s: pointer to seqcount_t
-@@ -176,6 +159,23 @@ static inline unsigned read_seqcount_begin(const seqcount_t *s)
- 	return raw_read_seqcount_begin(s);
- }
- 
-+/**
-+ * raw_read_seqcount - Read the raw seqcount
-+ * @s: pointer to seqcount_t
-+ * Returns: count to be passed to read_seqcount_retry
-+ *
-+ * raw_read_seqcount opens a read critical section of the given
-+ * seqcount without any lockdep checking and without checking or
-+ * masking the LSB. Calling code is responsible for handling that.
-+ */
-+static inline unsigned raw_read_seqcount(const seqcount_t *s)
-+{
-+	unsigned ret = READ_ONCE(s->sequence);
-+	smp_rmb();
-+	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
-+	return ret;
-+}
-+
- /**
-  * raw_seqcount_begin - begin a seq-read critical section
-  * @s: pointer to seqcount_t
-@@ -234,8 +234,6 @@ static inline int read_seqcount_retry(const seqcount_t *s, unsigned start)
- 	return __read_seqcount_retry(s, start);
- }
- 
--
--
- static inline void raw_write_seqcount_begin(seqcount_t *s)
+  * dma_resv_list_alloc - allocate fence list
+  * @shared_max: number of fences we need space for
+@@ -135,9 +129,8 @@ subsys_initcall(dma_resv_lockdep);
+ void dma_resv_init(struct dma_resv *obj)
  {
- 	kcsan_nestable_atomic_begin();
-@@ -250,6 +248,23 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
- 	kcsan_nestable_atomic_end();
- }
+ 	ww_mutex_init(&obj->lock, &reservation_ww_class);
++	seqcount_init(&obj->seq);
  
-+static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
-+{
-+	raw_write_seqcount_begin(s);
-+	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
-+}
-+
-+static inline void write_seqcount_begin(seqcount_t *s)
-+{
-+	write_seqcount_begin_nested(s, 0);
-+}
-+
-+static inline void write_seqcount_end(seqcount_t *s)
-+{
-+	seqcount_release(&s->dep_map, _RET_IP_);
-+	raw_write_seqcount_end(s);
-+}
-+
+-	__seqcount_init(&obj->seq, reservation_seqcount_string,
+-			&reservation_seqcount_class);
+ 	RCU_INIT_POINTER(obj->fence, NULL);
+ 	RCU_INIT_POINTER(obj->fence_excl, NULL);
+ }
+diff --git a/include/linux/dma-resv.h b/include/linux/dma-resv.h
+index ee50d10f052b..a6538ae7d93f 100644
+--- a/include/linux/dma-resv.h
++++ b/include/linux/dma-resv.h
+@@ -46,8 +46,6 @@
+ #include <linux/rcupdate.h>
+ 
+ extern struct ww_class reservation_ww_class;
+-extern struct lock_class_key reservation_seqcount_class;
+-extern const char reservation_seqcount_string[];
+ 
  /**
-  * raw_write_seqcount_barrier - do a seq write barrier
-  * @s: pointer to seqcount_t
-@@ -300,6 +315,21 @@ static inline void raw_write_seqcount_barrier(seqcount_t *s)
- 	kcsan_nestable_atomic_end();
- }
- 
-+/**
-+ * write_seqcount_invalidate - invalidate in-progress read-side seq operations
-+ * @s: pointer to seqcount_t
-+ *
-+ * After write_seqcount_invalidate, no read-side seq operations will complete
-+ * successfully and see data older than this.
-+ */
-+static inline void write_seqcount_invalidate(seqcount_t *s)
-+{
-+	smp_wmb();
-+	kcsan_nestable_atomic_begin();
-+	s->sequence+=2;
-+	kcsan_nestable_atomic_end();
-+}
-+
- static inline int raw_read_seqcount_latch(seqcount_t *s)
- {
- 	/* Pairs with the first smp_wmb() in raw_write_seqcount_latch() */
-@@ -395,38 +425,6 @@ static inline void raw_write_seqcount_latch(seqcount_t *s)
-        smp_wmb();      /* increment "sequence" before following stores */
- }
- 
--static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
--{
--	raw_write_seqcount_begin(s);
--	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
--}
--
--static inline void write_seqcount_begin(seqcount_t *s)
--{
--	write_seqcount_begin_nested(s, 0);
--}
--
--static inline void write_seqcount_end(seqcount_t *s)
--{
--	seqcount_release(&s->dep_map, _RET_IP_);
--	raw_write_seqcount_end(s);
--}
--
--/**
-- * write_seqcount_invalidate - invalidate in-progress read-side seq operations
-- * @s: pointer to seqcount_t
-- *
-- * After write_seqcount_invalidate, no read-side seq operations will complete
-- * successfully and see data older than this.
-- */
--static inline void write_seqcount_invalidate(seqcount_t *s)
--{
--	smp_wmb();
--	kcsan_nestable_atomic_begin();
--	s->sequence+=2;
--	kcsan_nestable_atomic_end();
--}
--
- /*
-  * Sequential locks (seqlock_t)
-  *
-@@ -555,6 +553,43 @@ static inline void read_sequnlock_excl(seqlock_t *sl)
- 	spin_unlock(&sl->lock);
- }
- 
-+static inline void read_seqlock_excl_bh(seqlock_t *sl)
-+{
-+	spin_lock_bh(&sl->lock);
-+}
-+
-+static inline void read_sequnlock_excl_bh(seqlock_t *sl)
-+{
-+	spin_unlock_bh(&sl->lock);
-+}
-+
-+static inline void read_seqlock_excl_irq(seqlock_t *sl)
-+{
-+	spin_lock_irq(&sl->lock);
-+}
-+
-+static inline void read_sequnlock_excl_irq(seqlock_t *sl)
-+{
-+	spin_unlock_irq(&sl->lock);
-+}
-+
-+static inline unsigned long __read_seqlock_excl_irqsave(seqlock_t *sl)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&sl->lock, flags);
-+	return flags;
-+}
-+
-+#define read_seqlock_excl_irqsave(lock, flags)				\
-+	do { flags = __read_seqlock_excl_irqsave(lock); } while (0)
-+
-+static inline void
-+read_sequnlock_excl_irqrestore(seqlock_t *sl, unsigned long flags)
-+{
-+	spin_unlock_irqrestore(&sl->lock, flags);
-+}
-+
- /**
-  * read_seqbegin_or_lock - begin a sequence number check or locking block
-  * @lock: sequence lock
-@@ -584,43 +619,6 @@ static inline void done_seqretry(seqlock_t *lock, int seq)
- 		read_sequnlock_excl(lock);
- }
- 
--static inline void read_seqlock_excl_bh(seqlock_t *sl)
--{
--	spin_lock_bh(&sl->lock);
--}
--
--static inline void read_sequnlock_excl_bh(seqlock_t *sl)
--{
--	spin_unlock_bh(&sl->lock);
--}
--
--static inline void read_seqlock_excl_irq(seqlock_t *sl)
--{
--	spin_lock_irq(&sl->lock);
--}
--
--static inline void read_sequnlock_excl_irq(seqlock_t *sl)
--{
--	spin_unlock_irq(&sl->lock);
--}
--
--static inline unsigned long __read_seqlock_excl_irqsave(seqlock_t *sl)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&sl->lock, flags);
--	return flags;
--}
--
--#define read_seqlock_excl_irqsave(lock, flags)				\
--	do { flags = __read_seqlock_excl_irqsave(lock); } while (0)
--
--static inline void
--read_sequnlock_excl_irqrestore(seqlock_t *sl, unsigned long flags)
--{
--	spin_unlock_irqrestore(&sl->lock, flags);
--}
--
- static inline unsigned long
- read_seqbegin_or_lock_irqsave(seqlock_t *lock, int *seq)
- {
+  * struct dma_resv_list - a list of shared fences
 -- 
 2.20.1
 
