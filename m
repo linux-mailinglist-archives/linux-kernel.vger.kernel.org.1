@@ -2,153 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFA2226D87
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BD2226D88
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732122AbgGTRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 13:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbgGTRtN (ORCPT
+        id S2388142AbgGTRt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 13:49:26 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24815 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726699AbgGTRtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 13:49:13 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23EFC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c80so361278wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 10:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dHGb/SpCGr7LJoGHyEMXrvxy1/3cgQI+BwLHtPx8ztY=;
-        b=J/HE6FTppGwiK3cGRV8XmKQpMaqC49zVxWuYF7d5shgDI/H/123csQWqM48Bmrcsl7
-         p5cIf3WJeukPwjcXWMNBfvh7jsT9vM4+FpSE9zs9wiA0fWpn52OEOZezEnbZmQaAP8c+
-         IHnQVc8OFDw5QOyw7Vpd4Q5cg6ui1FvltX6hY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dHGb/SpCGr7LJoGHyEMXrvxy1/3cgQI+BwLHtPx8ztY=;
-        b=K3pYAOLe0JOtY3Ro+kGZ8wv4jRGS0ADMeWRkuEb+xk7/EuHuXFa05UxHVMvzrY5t/b
-         BpcH3LOY52B7vg+bhM/gZJugidw6asgPdcAaxoxJK4ADw2/ja181+rH3K9Nq5Tb6Y5t1
-         BfzRN+ZDrqgyBSWfmVllyQ7gy/kooNVrGMEw1fomtqYqaOU1aRAnjxEA74LQutzhZJmG
-         uhMghBrNNPcW2sZw96witxSC3Fob3dH/T7RJMNZ+waq6z32OOkfda7KwVEaEpt6lFu6B
-         4LzTHPtqekAQucNIAzGtEqToDifW489QdysD0hwKLuKc0s61ZuXKaKTVv4Y9x+ezHLwA
-         tBQg==
-X-Gm-Message-State: AOAM530zHysLYl1FQr2okj0L4zsXJfVHjDRv9In6s5a3plhMX4X7AG+d
-        P4qKFX6gj0EVJEvVU4tP5PBs6H5tavszk9ko
-X-Google-Smtp-Source: ABdhPJxmGe7qRWDzUpGNJ5e168Fd+vcelswyQ/kv7bMS8mjdZOMqqqGGUiZ7Qgz0uB93WeAl44OTgg==
-X-Received: by 2002:a05:600c:218f:: with SMTP id e15mr377219wme.187.1595267351324;
-        Mon, 20 Jul 2020 10:49:11 -0700 (PDT)
-Received: from [10.136.8.242] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id k14sm33356834wrn.76.2020.07.20.10.49.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 10:49:10 -0700 (PDT)
-Subject: Re: [PATCH] i2c: iproc: fix race between client unreg and isr
-To:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa@kernel.org>
-Cc:     Ray Jui <rjui@broadcom.com>, bcm-kernel-feedback-list@broadcom.com
-References: <1595115599-100054-1-git-send-email-dphadke@linux.microsoft.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <116ac90c-8b49-ca89-90a4-9a28f43a7c50@broadcom.com>
-Date:   Mon, 20 Jul 2020 10:49:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 20 Jul 2020 13:49:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595267363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4JlHwh3SUGPYylkGk+T5UD+lE4YPhqSmyAUTHmFlqd8=;
+        b=g08pY9C+DMl0Km+42JFhsZqUK0VvUqJjnytsrhzSEyxHH34RFK6H0y2CBs0r7YodfPcM/V
+        2p2HEE5Qyi4U9pt5Wc+64L84m99GITQbalMXrBq1q9cpTLRAVvstv11TKGEVc/2s172dfI
+        PQCtKRLuAj+sTtbS7ubgppJWWf2ijl0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-n5KZeqc4Obeqjrl-ozYV4w-1; Mon, 20 Jul 2020 13:49:21 -0400
+X-MC-Unique: n5KZeqc4Obeqjrl-ozYV4w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88814800468;
+        Mon, 20 Jul 2020 17:49:20 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-128.rdu2.redhat.com [10.10.115.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A77F860E3E;
+        Mon, 20 Jul 2020 17:49:17 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 08429220203; Mon, 20 Jul 2020 13:49:17 -0400 (EDT)
+Date:   Mon, 20 Jul 2020 13:49:16 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] kvm,x86: Exit to user space in case of page fault
+ error
+Message-ID: <20200720174916.GE502563@redhat.com>
+References: <20200709125442.GA150543@redhat.com>
+ <87365qsb2v.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1595115599-100054-1-git-send-email-dphadke@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87365qsb2v.fsf@vitty.brq.redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 17, 2020 at 12:14:00PM +0200, Vitaly Kuznetsov wrote:
 
+[..]
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 6d6a0ae7800c..a0e6283e872d 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4078,7 +4078,7 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+> >  	if (!async)
+> >  		return false; /* *pfn has correct page already */
+> >  
+> > -	if (!prefault && kvm_can_do_async_pf(vcpu)) {
+> > +	if (!prefault && kvm_can_do_async_pf(vcpu, cr2_or_gpa >> PAGE_SHIFT)) {
+> 
+> gpa_to_gfn() ?
 
-On 7/18/2020 4:39 PM, Dhananjay Phadke wrote:
-> When i2c client unregisters, synchronize irq before setting
-> iproc_i2c->slave to NULL.
+Will do. I forgot to make this change since last feedback.
+
 > 
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000318
+> >  		trace_kvm_try_async_get_page(cr2_or_gpa, gfn);
+> >  		if (kvm_find_async_pf_gfn(vcpu, gfn)) {
+> >  			trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 88c593f83b28..c4d4dab3ccde 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -263,6 +263,13 @@ static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
+> >  		vcpu->arch.apf.gfns[i] = ~0;
+> >  }
+> >  
+> > +static inline void kvm_error_gfn_hash_reset(struct kvm_vcpu *vcpu)
+> > +{
+> > +	int i;
+> > +	for (i = 0; i < ERROR_GFN_PER_VCPU; i++)
+> > +		vcpu->arch.apf.error_gfns[i] = ~0;
 > 
-> [  371.020421] pc : bcm_iproc_i2c_isr+0x530/0x11f0
-> [  371.025098] lr : __handle_irq_event_percpu+0x6c/0x170
-> [  371.030309] sp : ffff800010003e40
-> [  371.033727] x29: ffff800010003e40 x28: 0000000000000060
-> [  371.039206] x27: ffff800010ca9de0 x26: ffff800010f895df
-> [  371.044686] x25: ffff800010f18888 x24: ffff0008f7ff3600
-> [  371.050165] x23: 0000000000000003 x22: 0000000001600000
-> [  371.055645] x21: ffff800010f18888 x20: 0000000001600000
-> [  371.061124] x19: ffff0008f726f080 x18: 0000000000000000
-> [  371.066603] x17: 0000000000000000 x16: 0000000000000000
-> [  371.072082] x15: 0000000000000000 x14: 0000000000000000
-> [  371.077561] x13: 0000000000000000 x12: 0000000000000001
-> [  371.083040] x11: 0000000000000000 x10: 0000000000000040
-> [  371.088519] x9 : ffff800010f317c8 x8 : ffff800010f317c0
-> [  371.093999] x7 : ffff0008f805b3b0 x6 : 0000000000000000
-> [  371.099478] x5 : ffff0008f7ff36a4 x4 : ffff8008ee43d000
-> [  371.104957] x3 : 0000000000000000 x2 : ffff8000107d64c0
-> [  371.110436] x1 : 00000000c00000af x0 : 0000000000000000
+> Nit: I see this is already present in kvm_async_pf_hash_reset() but what
+> about defining 
 > 
-> [  371.115916] Call trace:
-> [  371.118439]  bcm_iproc_i2c_isr+0x530/0x11f0
-> [  371.122754]  __handle_irq_event_percpu+0x6c/0x170
-> [  371.127606]  handle_irq_event_percpu+0x34/0x88
-> [  371.132189]  handle_irq_event+0x40/0x120
-> [  371.136234]  handle_fasteoi_irq+0xcc/0x1a0
-> [  371.140459]  generic_handle_irq+0x24/0x38
-> [  371.144594]  __handle_domain_irq+0x60/0xb8
-> [  371.148820]  gic_handle_irq+0xc0/0x158
-> [  371.152687]  el1_irq+0xb8/0x140
-> [  371.155927]  arch_cpu_idle+0x10/0x18
-> [  371.159615]  do_idle+0x204/0x290
-> [  371.162943]  cpu_startup_entry+0x24/0x60
-> [  371.166990]  rest_init+0xb0/0xbc
-> [  371.170322]  arch_call_rest_init+0xc/0x14
-> [  371.174458]  start_kernel+0x404/0x430
-> 
-> Fixes: c245d94ed106 ("i2c: iproc: Add multi byte read-write support for slave mode")
-> Signed-off-by: Dhananjay Phadke <dphadke@linux.microsoft.com>
-> ---
->  drivers/i2c/busses/i2c-bcm-iproc.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-bcm-iproc.c
-> index b58224b7b..37d2a79e7 100644
-> --- a/drivers/i2c/busses/i2c-bcm-iproc.c
-> +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
-> @@ -1074,14 +1074,15 @@ static int bcm_iproc_i2c_unreg_slave(struct i2c_client *slave)
->  	if (!iproc_i2c->slave)
->  		return -EINVAL;
+> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
+> index a7580f69dda0..9144fde2550e 100644
+> --- a/include/linux/kvm_types.h
+> +++ b/include/linux/kvm_types.h
+> @@ -38,6 +38,7 @@ typedef u64            gpa_t;
+>  typedef u64            gfn_t;
 >  
-> -	iproc_i2c->slave = NULL;
-> -
->  	/* disable all slave interrupts */
->  	tmp = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
->  	tmp &= ~(IE_S_ALL_INTERRUPT_MASK <<
->  			IE_S_ALL_INTERRUPT_SHIFT);
->  	iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, tmp);
->  
-> +	synchronize_irq(iproc_i2c->irq);
+>  #define GPA_INVALID    (~(gpa_t)0)
+> +#define GFN_INVALID    (~(gfn_t)0)
 
-If one takes a look at the I2C slave ISR routine, there are places where
-IRQ can be re-enabled in the ISR itself. What happens after we mask all
-slave interrupt and when 'synchronize_irq' is called, which I suppose is
-meant to wait for inflight interrupt to finish where there's a chance
-the interrupt can be re-enable again? How is one supposed to deal with that?
+Will do.
 
-Thanks,
-
-Ray
-
-> +	iproc_i2c->slave = NULL;
-> +
->  	/* Erase the slave address programmed */
->  	tmp = iproc_i2c_rd_reg(iproc_i2c, S_CFG_SMBUS_ADDR_OFFSET);
->  	tmp &= ~BIT(S_CFG_EN_NIC_SMB_ADDR3_SHIFT);
+[..]
+> > +static void kvm_del_error_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
+> > +{
+> > +	u32 key = kvm_error_gfn_hash_fn(gfn);
+> > +
+> > +	if (WARN_ON_ONCE(vcpu->arch.apf.error_gfns[key] != gfn))
+> > +		return;
+> > +
+> > +	vcpu->arch.apf.error_gfns[key] = ~0;
+> > +}
+> > +
+> > +static bool kvm_find_error_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
+> > +{
+> > +	u32 key = kvm_error_gfn_hash_fn(gfn);
+> > +
+> > +	return vcpu->arch.apf.error_gfns[key] == gfn;
+> > +}
 > 
+> These two functions kvm_del_error_gfn()/kvm_find_error_gfn() come in
+> pair and the only usage seems to be
+> 
+>  if (kvm_find_error_gfn())
+>     kvm_del_error_gfn();
+> 
+> what if we replace it with a single kvm_find_and_remove_error_gfn() and
+> drop the WARN_ON_ONCE()?
+
+Ok, I am fine with this as well. Will do.
+
+Thanks
+Vivek
+
