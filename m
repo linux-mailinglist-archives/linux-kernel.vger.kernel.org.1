@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6DE226B77
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F192226BD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731239AbgGTQlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
+        id S1729157AbgGTPlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730596AbgGTPp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:59 -0400
+        id S1729069AbgGTPlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:41:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 214782064B;
-        Mon, 20 Jul 2020 15:45:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58DA420773;
+        Mon, 20 Jul 2020 15:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259958;
-        bh=DLzUlWLcdovNYaTfAImL2JYNyT91aDYwHaEMaNIKqeE=;
+        s=default; t=1595259663;
+        bh=YTCTQWdpjhQ595I9mUzMFZlufhUKG+bLo2BPcRNmJPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A8d82i842S4PYh+fOcKknowxH+MnGxr84/AGbVMH2kdkeyWjdcUloTJ8rXCp8Irt+
-         k0H4FDqER+bCcKy4xqZoZKS/N0aY2tLLzpe47i9DPtiE1Qho6iUFlyYof4Y9+ZP2pb
-         LjkRYSTIZb95MeCu6Bognmnn1VwWDwk5M3mGWWqU=
+        b=TbShGHRXwC3rkdPrC5L1LhHCg2fkQeO3UgQICNhWM6vnpd2A8Z2sIk76MTT7axwmS
+         GakAJvEAVXWreajxTmnahNIGcsRrCDTWR79Way1GA6GB7tfahO5lBrPpSkJSbgTHqX
+         AipmZ2m0fMpjo0s67vKKfCqYbyLPoSU6bUSHWoAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Harini Katakam <harini.katakam@xilinx.com>,
-        Sergio Prado <sergio.prado@e-labworks.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, yu kuai <yukuai3@huawei.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 024/125] net: macb: mark device wake capable when "magic-packet" property present
+Subject: [PATCH 4.9 07/86] ARM: imx6: add missing put_device() call in imx6q_suspend_init()
 Date:   Mon, 20 Jul 2020 17:36:03 +0200
-Message-Id: <20200720152804.160386019@linuxfoundation.org>
+Message-Id: <20200720152753.486641372@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,46 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+From: yu kuai <yukuai3@huawei.com>
 
-[ Upstream commit ced4799d06375929e013eea04ba6908207afabbe ]
+[ Upstream commit 4845446036fc9c13f43b54a65c9b757c14f5141b ]
 
-Change the way the "magic-packet" DT property is handled in the
-macb_probe() function, matching DT binding documentation.
-Now we mark the device as "wakeup capable" instead of calling the
-device_init_wakeup() function that would enable the wakeup source.
+if of_find_device_by_node() succeed, imx6q_suspend_init() doesn't have a
+corresponding put_device(). Thus add a jump target to fix the exception
+handling for this function implementation.
 
-For Ethernet WoL, enabling the wakeup_source is done by
-using ethtool and associated macb_set_wol() function that
-already calls device_set_wakeup_enable() for this purpose.
-
-That would reduce power consumption by cutting more clocks if
-"magic-packet" property is set but WoL is not configured by ethtool.
-
-Fixes: 3e2a5e153906 ("net: macb: add wake-on-lan support via magic packet")
-Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: Harini Katakam <harini.katakam@xilinx.com>
-Cc: Sergio Prado <sergio.prado@e-labworks.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: yu kuai <yukuai3@huawei.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-imx/pm-imx6.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index b01b242c2bf00..4d2a996ba4460 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -3516,7 +3516,7 @@ static int macb_probe(struct platform_device *pdev)
- 	bp->wol = 0;
- 	if (of_get_property(np, "magic-packet", NULL))
- 		bp->wol |= MACB_WOL_HAS_MAGIC_PACKET;
--	device_init_wakeup(&pdev->dev, bp->wol & MACB_WOL_HAS_MAGIC_PACKET);
-+	device_set_wakeup_capable(&pdev->dev, bp->wol & MACB_WOL_HAS_MAGIC_PACKET);
+diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
+index dd9eb3f14f45c..6da26692f2fde 100644
+--- a/arch/arm/mach-imx/pm-imx6.c
++++ b/arch/arm/mach-imx/pm-imx6.c
+@@ -481,14 +481,14 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
+ 	if (!ocram_pool) {
+ 		pr_warn("%s: ocram pool unavailable!\n", __func__);
+ 		ret = -ENODEV;
+-		goto put_node;
++		goto put_device;
+ 	}
  
- 	spin_lock_init(&bp->lock);
+ 	ocram_base = gen_pool_alloc(ocram_pool, MX6Q_SUSPEND_OCRAM_SIZE);
+ 	if (!ocram_base) {
+ 		pr_warn("%s: unable to alloc ocram!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
+ 	}
+ 
+ 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
+@@ -511,7 +511,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
+ 	ret = imx6_pm_get_base(&pm_info->mmdc_base, socdata->mmdc_compat);
+ 	if (ret) {
+ 		pr_warn("%s: failed to get mmdc base %d!\n", __func__, ret);
+-		goto put_node;
++		goto put_device;
+ 	}
+ 
+ 	ret = imx6_pm_get_base(&pm_info->src_base, socdata->src_compat);
+@@ -558,7 +558,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
+ 		&imx6_suspend,
+ 		MX6Q_SUSPEND_OCRAM_SIZE - sizeof(*pm_info));
+ 
+-	goto put_node;
++	goto put_device;
+ 
+ pl310_cache_map_failed:
+ 	iounmap(pm_info->gpc_base.vbase);
+@@ -568,6 +568,8 @@ iomuxc_map_failed:
+ 	iounmap(pm_info->src_base.vbase);
+ src_map_failed:
+ 	iounmap(pm_info->mmdc_base.vbase);
++put_device:
++	put_device(&pdev->dev);
+ put_node:
+ 	of_node_put(node);
  
 -- 
 2.25.1
