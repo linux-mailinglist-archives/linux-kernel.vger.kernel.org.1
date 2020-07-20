@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B959E227126
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB292270E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgGTVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:41:56 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:34428 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728403AbgGTVjQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:39:16 -0400
-Date:   Mon, 20 Jul 2020 17:39:13 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jia He <justin.he@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Kaly Xin <Kaly.Xin@arm.com>
-Subject: Re: [PATCH v3 3/6] sh/mm: use default dummy
- memory_add_physaddr_to_nid()
-Message-ID: <20200720213913.GM14669@brightrain.aerifal.cx>
-References: <20200709020629.91671-1-justin.he@arm.com>
- <20200709020629.91671-4-justin.he@arm.com>
- <f1a172b2-80c2-1ec7-483f-f3fba761ccb0@redhat.com>
+        id S1727820AbgGTVkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:40:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728483AbgGTVjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 17:39:32 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AED9922CF7;
+        Mon, 20 Jul 2020 21:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595281171;
+        bh=eD4zAKWlWfvLrHL1FEoXL3TH2eqc9KqDLJjKPzym2uQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TItpyXPII3ZKip6OZIsdVkAR5KBAKOMB+qs7CphCESLZNAOSQV+eiSeBM8ieSIS+W
+         bPuJzFYByn7KOmbRATHlE3Pfv9HCJav8GGaiA1M4jdNdQkzlczf3g69BkdhyGbXqKf
+         WRlujLNmDxbn8C6Rg/GToTeBagU3j7STMhX3Cju8=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Olga Kornievskaia <kolga@netapp.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 13/13] SUNRPC reverting d03727b248d0 ("NFSv4 fix CLOSE not waiting for direct IO compeletion")
+Date:   Mon, 20 Jul 2020 17:39:14 -0400
+Message-Id: <20200720213914.407919-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200720213914.407919-1-sashal@kernel.org>
+References: <20200720213914.407919-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f1a172b2-80c2-1ec7-483f-f3fba761ccb0@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:10:36AM +0200, David Hildenbrand wrote:
-> On 09.07.20 04:06, Jia He wrote:
-> > After making default memory_add_physaddr_to_nid in mm/memory_hotplug,
-> > there is no use to define a similar one in arch specific directory.
-> > 
-> > Signed-off-by: Jia He <justin.he@arm.com>
-> > ---
-> >  arch/sh/mm/init.c | 9 ---------
-> >  1 file changed, 9 deletions(-)
-> > 
-> > diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-> > index a70ba0fdd0b3..f75932ba87a6 100644
-> > --- a/arch/sh/mm/init.c
-> > +++ b/arch/sh/mm/init.c
-> > @@ -430,15 +430,6 @@ int arch_add_memory(int nid, u64 start, u64 size,
-> >  	return ret;
-> >  }
-> >  
-> > -#ifdef CONFIG_NUMA
-> > -int memory_add_physaddr_to_nid(u64 addr)
-> > -{
-> > -	/* Node 0 for now.. */
-> > -	return 0;
-> > -}
-> > -EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
-> > -#endif
-> > -
-> >  void arch_remove_memory(int nid, u64 start, u64 size,
-> >  			struct vmem_altmap *altmap)
-> >  {
-> > 
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-Acked-by: Rich Felker <dalias@libc.org>
+[ Upstream commit 65caafd0d2145d1dd02072c4ced540624daeab40 ]
+
+Reverting commit d03727b248d0 "NFSv4 fix CLOSE not waiting for
+direct IO compeletion". This patch made it so that fput() by calling
+inode_dio_done() in nfs_file_release() would wait uninterruptably
+for any outstanding directIO to the file (but that wait on IO should
+be killable).
+
+The problem the patch was also trying to address was REMOVE returning
+ERR_ACCESS because the file is still opened, is supposed to be resolved
+by server returning ERR_FILE_OPEN and not ERR_ACCESS.
+
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/nfs/direct.c | 13 ++++---------
+ fs/nfs/file.c   |  1 -
+ 2 files changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 3cef33b0f7e08..e6ea4511c41ce 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -396,6 +396,8 @@ static void nfs_direct_complete(struct nfs_direct_req *dreq)
+ {
+ 	struct inode *inode = dreq->inode;
+ 
++	inode_dio_end(inode);
++
+ 	if (dreq->iocb) {
+ 		long res = (long) dreq->error;
+ 		if (dreq->count != 0) {
+@@ -407,10 +409,7 @@ static void nfs_direct_complete(struct nfs_direct_req *dreq)
+ 
+ 	complete(&dreq->completion);
+ 
+-	igrab(inode);
+ 	nfs_direct_req_release(dreq);
+-	inode_dio_end(inode);
+-	iput(inode);
+ }
+ 
+ static void nfs_direct_read_completion(struct nfs_pgio_header *hdr)
+@@ -540,10 +539,8 @@ static ssize_t nfs_direct_read_schedule_iovec(struct nfs_direct_req *dreq,
+ 	 * generic layer handle the completion.
+ 	 */
+ 	if (requested_bytes == 0) {
+-		igrab(inode);
+-		nfs_direct_req_release(dreq);
+ 		inode_dio_end(inode);
+-		iput(inode);
++		nfs_direct_req_release(dreq);
+ 		return result < 0 ? result : -EIO;
+ 	}
+ 
+@@ -960,10 +957,8 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
+ 	 * generic layer handle the completion.
+ 	 */
+ 	if (requested_bytes == 0) {
+-		igrab(inode);
+-		nfs_direct_req_release(dreq);
+ 		inode_dio_end(inode);
+-		iput(inode);
++		nfs_direct_req_release(dreq);
+ 		return result < 0 ? result : -EIO;
+ 	}
+ 
+diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+index 7da2cea1e7a06..81cca49a83750 100644
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -82,7 +82,6 @@ nfs_file_release(struct inode *inode, struct file *filp)
+ 	dprintk("NFS: release(%pD2)\n", filp);
+ 
+ 	nfs_inc_stats(inode, NFSIOS_VFSRELEASE);
+-	inode_dio_wait(inode);
+ 	nfs_file_clear_open_context(filp);
+ 	return 0;
+ }
+-- 
+2.25.1
 
