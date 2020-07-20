@@ -2,191 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFF42262FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913BB226348
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgGTPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgGTPJk (ORCPT
+        id S1728345AbgGTP1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:27:33 -0400
+Received: from gateway20.websitewelcome.com ([192.185.52.45]:35323 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbgGTP1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:09:40 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD97C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:09:40 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a14so9190350pfi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P2mRU9DML+WlUjG+x0KgX1XxnekTukVWP0rhuq7mq9o=;
-        b=pF2xi4w6gHUB6KW6oVO8ioBNFr4YuhVG9jm+hW8Zh4OrXm28Dd17IN8/kmz4H2P4oc
-         ISGLz5n0zY0gA4ad2Nx38ctTepSAW3OALHb1zN8K6Foel9279E6gvQzFhrN82mLQEUZx
-         JtTx7YTY52uGnM7rUnkEKUNfZ5yXRDy+6YhHrJT25y0ZJp+NFT+LL0kSBcOM/HN1FHI2
-         7rKtd/WT8rLzBvDXhQRMK6ZbtG+d6L2A3iOCg7XUWIB+Qu4xFimDWE0vVwJjo/C5Z7bA
-         qnFxGBBONqB9BmFEE4Ur0rP0MBBcQcngNzyZVAUsoN4RkyGlSQwe/Ba/aWdcLt2yeJwY
-         cw9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P2mRU9DML+WlUjG+x0KgX1XxnekTukVWP0rhuq7mq9o=;
-        b=m3ouAFCZ9uMVPX3NtuNf38+10XHpUE0JTWZW5XWuAI86gcVAtH51f58dvx5yKLIbZB
-         k88WcBr5BsA3GnT9oRFtZ6QAYrizRxfaaxs/A+1YwxRml9wAFhEedIEi2b29F46rw01N
-         7jJ0WnFAw/gMnxJ6VtdMJBU2lmBz2BKQviU5yhMw77MuVUFuQ+icrhYnT+oUMJohk5Ig
-         xgiBBQuHFxZUCI5YFDd0z6FExGCET5Ba3Nj/chvBynq7je9dsmQ/ue41Ewj2DLXtFvip
-         OL6k0/0qE/TXulx7McXGvfWgF0tII1w8168e/WPW02fV9gcfXXRpjehMTfMO4/6d0jSm
-         mnZw==
-X-Gm-Message-State: AOAM530yY74EFhkKxXg71/dVvys6jRJ578M5pZC7a6qn9RpO0EiJQ/xL
-        7AzEdc1rz8zO2Hb0zkVKnsE=
-X-Google-Smtp-Source: ABdhPJws8JrM5TULRLzImq9oyGdayyre0j2HUv0+tiud6sIC2oAR/xrn7Ia6p4g9JrdCMX4x7qpP9Q==
-X-Received: by 2002:aa7:9155:: with SMTP id 21mr19004277pfi.306.1595257779413;
-        Mon, 20 Jul 2020 08:09:39 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id f207sm17723624pfa.107.2020.07.20.08.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 08:09:38 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1] firewire: ohci: use generic power management
-Date:   Mon, 20 Jul 2020 20:37:16 +0530
-Message-Id: <20200720150715.624520-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 20 Jul 2020 11:27:33 -0400
+X-Greylist: delayed 1329 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Jul 2020 11:27:32 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 0A1704011894F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:43:18 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id xXLkj74nxBb5dxXLljxa9Z; Mon, 20 Jul 2020 10:05:05 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WIjggXUy7GcDd3xDRIJ/WPhD4riCs9JcTnEsxbVIO8E=; b=iJ/gop5prkKiTLIrDBZAouL8ZV
+        CxRQdc3x8Vi1cEOfl94gMhNpCduf4l1IjTGSijcygNjTYs37I46LuoV0CZoP3rRM1zwH2seGLlXEh
+        YZ5IPW0SNPW1+iqpYeF4VSgV6rhZ6aSfVz5CCONhgAPGqg6O56jva8IOQYuLa/Y3n+lqSlb4fzSEl
+        nq2vwaG8lGOcgm3d2VfqN4p0gCvOsOVorMXwD5SKIx0N3OpUr+zXUh8VXfSLc50i2Qjz/QgDFv1jn
+        9wiY8gjeAT3yxSS00YBd2j0FRDhMW1JKDQPUQ5dmWcx0VWWa+jiX4FxpFpfJiRePb6sQbVnGaYpH6
+        3j1WKsRQ==;
+Received: from [200.68.140.17] (port=24009 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jxXLk-0044Ne-D8; Mon, 20 Jul 2020 10:05:04 -0500
+Subject: Re: [PATCH][next] i2c: busses: Use fallthrough pseudo-keyword
+To:     Jean Delvare <jdelvare@suse.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200716220307.GA19706@embeddedor>
+ <20200720165938.31bb6b10@endymion>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <b2caf3e8-7efe-96d7-045a-19a52132ca84@embeddedor.com>
+Date:   Mon, 20 Jul 2020 10:10:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200720165938.31bb6b10@endymion>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.140.17
+X-Source-L: No
+X-Exim-ID: 1jxXLk-0044Ne-D8
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [200.68.140.17]:24009
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PM have to manage PCI states and device's PM states
-themselves. They also need to take care of configuration registers.
+Hi,
 
-With improved and powerful support of generic PM, PCI Core takes care of
-above mentioned, device-independent, jobs.
+On 7/20/20 09:59, Jean Delvare wrote:
+> Hi Gustavo,
+> 
+> On Thu, 16 Jul 2020 17:03:07 -0500, Gustavo A. R. Silva wrote:
+>> Replace the existing /* fall through */ comments and its variants with
+>> the new pseudo-keyword macro fallthrough[1].
+>>
+>> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  drivers/i2c/busses/i2c-amd8111.c | 2 +-
+>>  drivers/i2c/busses/i2c-i801.c    | 8 ++++----
+>>  drivers/i2c/busses/i2c-viapro.c  | 2 +-
+>>  3 files changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-amd8111.c b/drivers/i2c/busses/i2c-amd8111.c
+>> index 2b14fef5bf26..34862ad3423e 100644
+>> --- a/drivers/i2c/busses/i2c-amd8111.c
+>> +++ b/drivers/i2c/busses/i2c-amd8111.c
+>> @@ -381,7 +381,7 @@ static s32 amd8111_access(struct i2c_adapter * adap, u16 addr,
+>>  			if (status)
+>>  				return status;
+>>  			len = min_t(u8, len, I2C_SMBUS_BLOCK_MAX);
+>> -			/* fall through */
+>> +			fallthrough;
+>>  		case I2C_SMBUS_I2C_BLOCK_DATA:
+>>  			for (i = 0; i < len; i++) {
+>>  				status = amd_ec_read(smbus, AMD_SMB_DATA + i,
+>> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+>> index 1fc7ae77753d..638e7f7c66cc 100644
+>> --- a/drivers/i2c/busses/i2c-i801.c
+>> +++ b/drivers/i2c/busses/i2c-i801.c
+>> @@ -1765,19 +1765,19 @@ static int i801_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>  	case PCI_DEVICE_ID_INTEL_WELLSBURG_SMBUS_MS1:
+>>  	case PCI_DEVICE_ID_INTEL_WELLSBURG_SMBUS_MS2:
+>>  		priv->features |= FEATURE_IDF;
+>> -		/* fall through */
+>> +		fallthrough;
+>>  	default:
+>>  		priv->features |= FEATURE_BLOCK_PROC;
+>>  		priv->features |= FEATURE_I2C_BLOCK_READ;
+>>  		priv->features |= FEATURE_IRQ;
+>> -		/* fall through */
+>> +		fallthrough;
+>>  	case PCI_DEVICE_ID_INTEL_82801DB_3:
+>>  		priv->features |= FEATURE_SMBUS_PEC;
+>>  		priv->features |= FEATURE_BLOCK_BUFFER;
+>> -		/* fall through */
+>> +		fallthrough;
+>>  	case PCI_DEVICE_ID_INTEL_82801CA_3:
+>>  		priv->features |= FEATURE_HOST_NOTIFY;
+>> -		/* fall through */
+>> +		fallthrough;
+>>  	case PCI_DEVICE_ID_INTEL_82801BA_2:
+>>  	case PCI_DEVICE_ID_INTEL_82801AB_3:
+>>  	case PCI_DEVICE_ID_INTEL_82801AA_3:
+>> diff --git a/drivers/i2c/busses/i2c-viapro.c b/drivers/i2c/busses/i2c-viapro.c
+>> index 05aa92a3fbe0..970ccdcbb889 100644
+>> --- a/drivers/i2c/busses/i2c-viapro.c
+>> +++ b/drivers/i2c/busses/i2c-viapro.c
+>> @@ -228,7 +228,7 @@ static s32 vt596_access(struct i2c_adapter *adap, u16 addr,
+>>  			goto exit_unsupported;
+>>  		if (read_write == I2C_SMBUS_READ)
+>>  			outb_p(data->block[0], SMBHSTDAT0);
+>> -		/* Fall through */
+>> +		fallthrough;
+>>  	case I2C_SMBUS_BLOCK_DATA:
+>>  		outb_p(command, SMBHSTCMD);
+>>  		if (read_write == I2C_SMBUS_WRITE) {
+> 
+> Looks good to me, thanks for doing that.
+> 
+> Reviewed-by: Jean Delvare <jdelvare@suse.de>
+> 
 
-This driver makes use of PCI helper functions like
-pci_save/restore_state(), pci_disable_device() and pci_set_power_state() to
-do required operations. In generic mode, they are no longer needed.
+Thanks for this.
 
-Change function parameter in both .suspend() and .resume() to
-"struct device*" type. Use to_pci_dev() to get "struct pci_dev*" variable.
+> However I see many occurrences in other drivers within
+> drivers/i2c/busses, which are not covered by this patch:
+> 
+> drivers/i2c/busses/i2c-designware-pcidrv.c
+> drivers/i2c/busses/i2c-mv64xxx.c
+> drivers/i2c/busses/i2c-omap.c
+> drivers/i2c/busses/i2c-synquacer.c
+> drivers/i2c/busses/i2c-ibm_iic.c
+> drivers/i2c/busses/i2c-aspeed.c
+> drivers/i2c/busses/scx200_acb.c
+> drivers/i2c/busses/i2c-digicolor.c
+> drivers/i2c/busses/i2c-opal.c
+> 
+> Are they covered by another patch of yours?
+> 
 
-Compile-tested only.
+Yep; I have a queue of pending patches I'm about to send. :)
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/firewire/ohci.c | 43 ++++++++++++-----------------------------
- 1 file changed, 12 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 54fdc39cd0bc..2d19db5e81a1 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -3169,8 +3169,7 @@ static int ohci_set_iso_channels(struct fw_iso_context *base, u64 *channels)
- 	return ret;
- }
- 
--#ifdef CONFIG_PM
--static void ohci_resume_iso_dma(struct fw_ohci *ohci)
-+static void __maybe_unused ohci_resume_iso_dma(struct fw_ohci *ohci)
- {
- 	int i;
- 	struct iso_context *ctx;
-@@ -3187,7 +3186,6 @@ static void ohci_resume_iso_dma(struct fw_ohci *ohci)
- 			ohci_start_iso(&ctx->base, 0, ctx->sync, ctx->tags);
- 	}
- }
--#endif
- 
- static int queue_iso_transmit(struct iso_context *ctx,
- 			      struct fw_iso_packet *packet,
-@@ -3793,39 +3791,24 @@ static void pci_remove(struct pci_dev *dev)
- 	dev_notice(&dev->dev, "removed fw-ohci device\n");
- }
- 
--#ifdef CONFIG_PM
--static int pci_suspend(struct pci_dev *dev, pm_message_t state)
-+static int __maybe_unused pci_suspend(struct device *dev)
- {
--	struct fw_ohci *ohci = pci_get_drvdata(dev);
--	int err;
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	struct fw_ohci *ohci = pci_get_drvdata(pdev);
- 
- 	software_reset(ohci);
--	err = pci_save_state(dev);
--	if (err) {
--		ohci_err(ohci, "pci_save_state failed\n");
--		return err;
--	}
--	err = pci_set_power_state(dev, pci_choose_state(dev, state));
--	if (err)
--		ohci_err(ohci, "pci_set_power_state failed with %d\n", err);
--	pmac_ohci_off(dev);
-+	pmac_ohci_off(pdev);
- 
- 	return 0;
- }
- 
--static int pci_resume(struct pci_dev *dev)
-+static int __maybe_unused pci_resume(struct device *dev)
- {
--	struct fw_ohci *ohci = pci_get_drvdata(dev);
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	struct fw_ohci *ohci = pci_get_drvdata(pdev);
- 	int err;
- 
--	pmac_ohci_on(dev);
--	pci_set_power_state(dev, PCI_D0);
--	pci_restore_state(dev);
--	err = pci_enable_device(dev);
--	if (err) {
--		ohci_err(ohci, "pci_enable_device failed\n");
--		return err;
--	}
-+	pmac_ohci_on(pdev);
- 
- 	/* Some systems don't setup GUID register on resume from ram  */
- 	if (!reg_read(ohci, OHCI1394_GUIDLo) &&
-@@ -3842,7 +3825,6 @@ static int pci_resume(struct pci_dev *dev)
- 
- 	return 0;
- }
--#endif
- 
- static const struct pci_device_id pci_table[] = {
- 	{ PCI_DEVICE_CLASS(PCI_CLASS_SERIAL_FIREWIRE_OHCI, ~0) },
-@@ -3851,15 +3833,14 @@ static const struct pci_device_id pci_table[] = {
- 
- MODULE_DEVICE_TABLE(pci, pci_table);
- 
-+static SIMPLE_DEV_PM_OPS(pci_pm_ops, pci_suspend, pci_resume);
-+
- static struct pci_driver fw_ohci_pci_driver = {
- 	.name		= ohci_driver_name,
- 	.id_table	= pci_table,
- 	.probe		= pci_probe,
- 	.remove		= pci_remove,
--#ifdef CONFIG_PM
--	.resume		= pci_resume,
--	.suspend	= pci_suspend,
--#endif
-+	.driver.pm	= &pci_pm_ops,
- };
- 
- static int __init fw_ohci_init(void)
--- 
-2.27.0
-
+Thanks
+--
+Gustavo
