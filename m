@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74912265DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8567822644A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731998AbgGTP6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58260 "EHLO mail.kernel.org"
+        id S1730336AbgGTPn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731991AbgGTP6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:07 -0400
+        id S1729259AbgGTPnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:43:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EE9A206E9;
-        Mon, 20 Jul 2020 15:58:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 799A52065E;
+        Mon, 20 Jul 2020 15:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260686;
-        bh=7mPeL6q5fqzI+QggGUNvC3bQjLzT8Ro3i8ISN2AzR1Q=;
+        s=default; t=1595259830;
+        bh=JhEDeNgbOVHJLJ1fLjPfIyGua1j99rVBJxT5B+XwGCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A5KXijEqwTiLI06rRJYuu+1Rhmd7AWjpu6bOTWCKrVTu5IJIYPO4hgqQnkZCOfMzK
-         66adA54VyAtCVwlDR/OgrX6++msgbDdadEsTNQYAwBAMU+DSc2gaw6PYZysanMeDVa
-         8tH8gEBKOg62kl2OdC5kohZ8XBuDwRVUpeTTEG+k=
+        b=xKKuwA0RalIVg7oDMU2b4XMg+sKIXDI5MlW1rK7QUq15wS0fo+9Nw70qPRuGrnJrT
+         X22I//P17y9eiA4irsaLG4Av7VtFbzzaQ4LPk1QHDYFNEkmFVx1i3BLreLKT5yCG8l
+         hx7TDr2sO7yl60ZK6on8d2bWkBprL4ylZUVAex+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/215] net: macb: call pm_runtime_put_sync on failure path
+Subject: [PATCH 4.14 001/125] KVM: s390: reduce number of IO pins to 1
 Date:   Mon, 20 Jul 2020 17:35:40 +0200
-Message-Id: <20200720152822.973921309@linuxfoundation.org>
+Message-Id: <20200720152803.013585079@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,42 +48,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 0eaf228d574bd82a9aed73e3953bfb81721f4227 ]
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-Call pm_runtime_put_sync() on failure path of at91ether_open.
+[ Upstream commit 774911290c589e98e3638e73b24b0a4d4530e97c ]
 
-Fixes: e6a41c23df0d ("net: macb: ensure interface is not suspended on at91rm9200")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The current number of KVM_IRQCHIP_NUM_PINS results in an order 3
+allocation (32kb) for each guest start/restart. This can result in OOM
+killer activity even with free swap when the memory is fragmented
+enough:
+
+kernel: qemu-system-s39 invoked oom-killer: gfp_mask=0x440dc0(GFP_KERNEL_ACCOUNT|__GFP_COMP|__GFP_ZERO), order=3, oom_score_adj=0
+kernel: CPU: 1 PID: 357274 Comm: qemu-system-s39 Kdump: loaded Not tainted 5.4.0-29-generic #33-Ubuntu
+kernel: Hardware name: IBM 8562 T02 Z06 (LPAR)
+kernel: Call Trace:
+kernel: ([<00000001f848fe2a>] show_stack+0x7a/0xc0)
+kernel:  [<00000001f8d3437a>] dump_stack+0x8a/0xc0
+kernel:  [<00000001f8687032>] dump_header+0x62/0x258
+kernel:  [<00000001f8686122>] oom_kill_process+0x172/0x180
+kernel:  [<00000001f8686abe>] out_of_memory+0xee/0x580
+kernel:  [<00000001f86e66b8>] __alloc_pages_slowpath+0xd18/0xe90
+kernel:  [<00000001f86e6ad4>] __alloc_pages_nodemask+0x2a4/0x320
+kernel:  [<00000001f86b1ab4>] kmalloc_order+0x34/0xb0
+kernel:  [<00000001f86b1b62>] kmalloc_order_trace+0x32/0xe0
+kernel:  [<00000001f84bb806>] kvm_set_irq_routing+0xa6/0x2e0
+kernel:  [<00000001f84c99a4>] kvm_arch_vm_ioctl+0x544/0x9e0
+kernel:  [<00000001f84b8936>] kvm_vm_ioctl+0x396/0x760
+kernel:  [<00000001f875df66>] do_vfs_ioctl+0x376/0x690
+kernel:  [<00000001f875e304>] ksys_ioctl+0x84/0xb0
+kernel:  [<00000001f875e39a>] __s390x_sys_ioctl+0x2a/0x40
+kernel:  [<00000001f8d55424>] system_call+0xd8/0x2c8
+
+As far as I can tell s390x does not use the iopins as we bail our for
+anything other than KVM_IRQ_ROUTING_S390_ADAPTER and the chip/pin is
+only used for KVM_IRQ_ROUTING_IRQCHIP. So let us use a small number to
+reduce the memory footprint.
+
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200617083620.5409-1-borntraeger@de.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/s390/include/asm/kvm_host.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 01ed4d4296db2..a5c4d4d66df35 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -3708,7 +3708,7 @@ static int at91ether_open(struct net_device *dev)
+diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+index 3fdc0bb974d92..82d76ac71d2ec 100644
+--- a/arch/s390/include/asm/kvm_host.h
++++ b/arch/s390/include/asm/kvm_host.h
+@@ -33,12 +33,12 @@
+ #define KVM_USER_MEM_SLOTS 32
  
- 	ret = at91ether_start(dev);
- 	if (ret)
--		return ret;
-+		goto pm_exit;
+ /*
+- * These seem to be used for allocating ->chip in the routing table,
+- * which we don't use. 4096 is an out-of-thin-air value. If we need
+- * to look at ->chip later on, we'll need to revisit this.
++ * These seem to be used for allocating ->chip in the routing table, which we
++ * don't use. 1 is as small as we can get to reduce the needed memory. If we
++ * need to look at ->chip later on, we'll need to revisit this.
+  */
+ #define KVM_NR_IRQCHIPS 1
+-#define KVM_IRQCHIP_NUM_PINS 4096
++#define KVM_IRQCHIP_NUM_PINS 1
+ #define KVM_HALT_POLL_NS_DEFAULT 80000
  
- 	/* Enable MAC interrupts */
- 	macb_writel(lp, IER, MACB_BIT(RCOMP)	|
-@@ -3725,6 +3725,10 @@ static int at91ether_open(struct net_device *dev)
- 	netif_start_queue(dev);
- 
- 	return 0;
-+
-+pm_exit:
-+	pm_runtime_put_sync(&lp->pdev->dev);
-+	return ret;
- }
- 
- /* Close the interface */
+ /* s390-specific vcpu->requests bit members */
 -- 
 2.25.1
 
