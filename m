@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B2C225E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F8E225E66
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbgGTMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:20:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:41222 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728732AbgGTMUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:20:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DD1D106F;
-        Mon, 20 Jul 2020 05:20:33 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D1B73F66E;
-        Mon, 20 Jul 2020 05:20:32 -0700 (PDT)
-References: <20200717122651.GA6067@redhat.com> <20200717124017.GB6067@redhat.com> <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org> <20200718171406.GB16791@redhat.com> <20200718174448.4btbjcvp6wbbdgts@wittgenstein> <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org> <20200720064326.GA6612@redhat.com> <20200720082657.GC6612@redhat.com> <20200720084106.GJ10769@hirez.programming.kicks-ass.net> <20200720105924.GE43129@hirez.programming.kicks-ass.net> <20200720112623.GF43129@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     peterz@infradead.org
-Cc:     Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-In-reply-to: <20200720112623.GF43129@hirez.programming.kicks-ass.net>
-Date:   Mon, 20 Jul 2020 13:20:26 +0100
-Message-ID: <jhjwo2yidit.mognet@arm.com>
+        id S1728780AbgGTMVH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Jul 2020 08:21:07 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:32999 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728460AbgGTMVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:21:06 -0400
+Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M7JrG-1juCT63Gf6-007j4f; Mon, 20 Jul 2020 14:21:04 +0200
+Received: by mail-qk1-f182.google.com with SMTP id z15so8193088qki.10;
+        Mon, 20 Jul 2020 05:21:04 -0700 (PDT)
+X-Gm-Message-State: AOAM533ithWRD6Gv/yS3ySVZQWpH2Ee5Al0wJnqfzEI4CJ1n+FiGWbc2
+        A7To4/S700mp6SLZ0Nhe0ACYXyBN8pi2Q3iiU+A=
+X-Google-Smtp-Source: ABdhPJxnDaps2mzwyIsQu5vg0Fu3YsCdpchsfKZVpyRu8MsSM9Gcl79g+mqxBm6tfbp35cPwGB+thoVnqL5sOIIyG+c=
+X-Received: by 2002:a37:b484:: with SMTP id d126mr21267846qkf.394.1595247663277;
+ Mon, 20 Jul 2020 05:21:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200720074249.596364-1-jiaxun.yang@flygoat.com>
+ <20200720074249.596364-4-jiaxun.yang@flygoat.com> <CAK8P3a13vZJyOGZ1FpS98ytVC57P6NgmQpSfhf2h9b7meQLtcw@mail.gmail.com>
+ <d927b5b6-e33e-4a94-c997-b1794dbde411@flygoat.com>
+In-Reply-To: <d927b5b6-e33e-4a94-c997-b1794dbde411@flygoat.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 20 Jul 2020 14:20:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2=qrp6x4yLUXhQU2MwcMa4HpEzAdVs_zW8f14GZ-_zqQ@mail.gmail.com>
+Message-ID: <CAK8P3a2=qrp6x4yLUXhQU2MwcMa4HpEzAdVs_zW8f14GZ-_zqQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] MIPS: Loongson64: Enlarge IO_SPACE_LIMIT
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:cD2rRfBF59CX61+zemVyUHT3Z9YhsV3/Z+NHlrBTDAPsD74CR0L
+ nyOgRYZuZYWmOQ2dgYtQBxgKLiR8eRiobdfquNJBUmWhlELJvehIDi1zkyxyrSWStMdLGnE
+ OgRNitBOvmix2W8l+2rfol9HM+hEQ56iSqiLcrpSXrvCKcscoKnYp791ja9DCybxgedZtJj
+ zct3LJCXapc7Sq1jzSQVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:i+f8y2Tjuhc=:mVrdaKEhHPMW8V6+dV4jQW
+ ROk0WSCY8QIJdWAhzb6FXwEw7ggXgk1TmicrFRJx/FbseVg95qETX7IeNgLWpmFsBU9oXB2KQ
+ csYOxouwX/KSa5ivE5iyS6CwBATpJS9lV/I/aS0DkBrvJHc7gOziL56qd26INwBZx9j7FSdtN
+ paje5DUiViHp+Y7GrMNVq8EbT7+mQI19nOoMtMxVRFMbtgUBqPGHkey2/3hnFlCwQ7tKoQZq7
+ JHwjcPX9kkHabQbbj9a3hPRfTZBERjAt+5P5yNrkwz0SulYAbtw7GuvM0jxlW7sReuYOpL1rw
+ R1J2+5jJfdHcU7vsltqFIQT9I0j2Etkm6PyA+2b3CxXU0X4ZJY2iqdY6kX2thMvfh/qSPubwf
+ 4EbBVR/LBuDN6bNEK7bMK6Pz4/cZTKeYHUQWto4uRE2wF8/TU9jnGR2a7wSVfRdGCnqMcvo0M
+ 5uZ/7hpe99LyFrq0dvdeW10hgz13M/yKZ9z3gV4zA6o3TWMwwk/UnQvQ6CqZCS/23oytKm5/z
+ PMINa6JaSTx2DRLr5ELMtRvvk82D6oe4A69D1aENJejMgMK+nkNEBUMnagtPjLJJ9vgQRvrK6
+ S2pc7HpF03GBBl6QfHJJ8Vcni+Q0RHQVrAqvkS+C1Jl3az715Edj5QqtswBH7f3u81zNODgWU
+ hMriL68NeNzDwdu1LhEcF+I0ShqCJBshf6VPziZUKYcpEjtQ3gp0uJ+2bCbwHDzffbzYTwmNn
+ DMuF0ZNtpMncFCq8zJg23yjCmmKn4Tpu09yQYTn2pO4xHWxPSQGPQPCFij+xpBeKCYEWCtRe7
+ 444JyFoq3lqVFA0wVJBPXHJMBoHvtQqG5z7M5/34zXqnFcJ5gzBUuxVZlPekUPeBqyn7u0Piq
+ t6PQqlLRePlGHr7BTjTwjYrP2EG5tlvb9S5CHPxfcieit9A5UJ/F26YEmP3A9sY02hbL5w0Xf
+ GoD1xswEp58IHmLgdsMsJPzKOCu3u+nyn5+ajvCZGjpZzjaiMgU7y
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 20, 2020 at 2:07 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> 在 2020/7/20 下午6:45, Arnd Bergmann 写道:
+> > On Mon, Jul 20, 2020 at 9:44 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> >> It can be very big on LS7A PCH systems.
+> > In practice, one should rarely need more than a few kb worth of
+> > port numbers, unless you expect to see hundreds of legacy PCI
+> > devices.
+> I must blame stupid hardware design here. The LPC Controller (for ISA
+> device) can eat
+> up to 0x20000 IO BAR, and we can't resize it. Thus we have to enlarge
+> the I/O Space.
 
-On 20/07/20 12:26, peterz@infradead.org wrote:
-> ---
->  kernel/sched/core.c | 34 ++++++++++++++++++++++++++++------
->  1 file changed, 28 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index e15543cb84812..b5973d7fa521c 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4100,9 +4100,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->   */
->  static void __sched notrace __schedule(bool preempt)
->  {
-> +	unsigned long prev_state, tmp_state;
->       struct task_struct *prev, *next;
->       unsigned long *switch_count;
-> -	unsigned long prev_state;
->       struct rq_flags rf;
->       struct rq *rq;
->       int cpu;
-> @@ -4140,16 +4140,38 @@ static void __sched notrace __schedule(bool preempt)
->       rq_lock(rq, &rf);
->       smp_mb__after_spinlock();
->
-> +	/*
-> +	 * We must re-load prev->state in case ttwu_remote() changed it
-> +	 * before we acquired rq->lock.
-> +	 */
-> +	tmp_state = prev->state;
-> +	if (unlikely(prev_state != tmp_state)) {
-> +		/*
-> +		 * ptrace_{,un}freeze_traced() think it is cool to change
-> +		 * ->state around behind our backs between TASK_TRACED and
-> +		 *  __TASK_TRACED.
-> +		 *
-> +		 * This is safe because this, as well as any __TASK_TRACED
-> +		 * wakeups are under siglock.
-> +		 *
-> +		 * For any other case, a changed prev_state must be to
-> +		 * TASK_RUNNING, such that when it blocks, the load has
-> +		 * happened before the smp_mb().
-> +		 *
-> +		 * Also see the comment with deactivate_task().
-> +		 */
-> +		SCHED_WARN_ON(tmp_state && (prev_state & __TASK_TRACED &&
-> +					   !(tmp_state & __TASK_TRACED)));
-> +
+Ok, I see.
 
-IIUC if the state changed and isn't TASK_RUNNING it *has* to have
-__TASK_TRACED, so can't that be
-
-  SCHED_WARN_ON(tmp_state && !(tmp_state & __TASK_TRACED));
-
-Other than that, LGTM.
-
-> +		prev_state = tmp_state;
-> +	}
-> +
->       /* Promote REQ to ACT */
->       rq->clock_update_flags <<= 1;
->       update_rq_clock(rq);
->
->       switch_count = &prev->nivcsw;
-> -	/*
-> -	 * We must re-load prev->state in case ttwu_remote() changed it
-> -	 * before we acquired rq->lock.
-> -	 */
-> -	if (!preempt && prev_state && prev_state == prev->state) {
-> +	if (!preempt && prev_state) {
->               if (signal_pending_state(prev_state, prev)) {
->                       prev->state = TASK_RUNNING;
->               } else {
+       Arnd
