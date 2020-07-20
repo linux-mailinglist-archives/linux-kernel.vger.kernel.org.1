@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65CB226585
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A986C2264EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731585AbgGTPyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53212 "EHLO mail.kernel.org"
+        id S1731023AbgGTPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:49:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731567AbgGTPy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:54:29 -0400
+        id S1731011AbgGTPtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:49:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87C0B22482;
-        Mon, 20 Jul 2020 15:54:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30DC3206E9;
+        Mon, 20 Jul 2020 15:49:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260469;
-        bh=OAWEiNj0HxY5JoeCvIkJcL6gK3NsMqhllUtgiuN1mrQ=;
+        s=default; t=1595260163;
+        bh=xisV9O1MQFO//s+dF/qHJwRuCjGNODsK2gNeBFmefYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GlO1lDUAfAZVPLAYO77Eoqzuun8XlKS/84N9/IwmJQgnkOMBapTcIFnVujOLRF2PS
-         HfAojgt1pdxVeJ/KxgRWY/bu4uLQgMdl1gniDJnf0BzQHrJ4PE97kDTCipwOaryPKI
-         1zHPuyVbc4NVAVMqy/gd2/6VobUjlMjib8yN1dy0=
+        b=XmhV11thPE9hK7YfIYZzDTvfCTP3nqw9USsvLMtkOwhJJnXxNklzcIpfIbIHeUqET
+         vkaOnsfHTmXz1VmpCVAHDZ1Kut6z0AjtR/jSEbNFNKGzhnUeo/akUfDTofU56x2vbU
+         9qiX70xQq747eccwVvCQhGGkt2FoVmzGtGtcvfxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Schwab <schwab@suse.de>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 4.19 114/133] riscv: use 16KB kernel stack on 64-bit
+        stable@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: [PATCH 4.14 122/125] sched/fair: handle case of task_h_load() returning 0
 Date:   Mon, 20 Jul 2020 17:37:41 +0200
-Message-Id: <20200720152809.246674298@linuxfoundation.org>
+Message-Id: <20200720152808.948148629@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Schwab <schwab@suse.de>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-commit 0cac21b02ba5f3095fd2dcc77c26a25a0b2432ed upstream.
+commit 01cfcde9c26d8555f0e6e9aea9d6049f87683998 upstream.
 
-With the current 8KB stack size there are frequent overflows in a 64-bit
-configuration.  We may split IRQ stacks off in the future, but this fixes a
-number of issues right now.
+task_h_load() can return 0 in some situations like running stress-ng
+mmapfork, which forks thousands of threads, in a sched group on a 224 cores
+system. The load balance doesn't handle this correctly because
+env->imbalance never decreases and it will stop pulling tasks only after
+reaching loop_max, which can be equal to the number of running tasks of
+the cfs. Make sure that imbalance will be decreased by at least 1.
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-[Palmer: mention irqstack in the commit text]
-Fixes: 7db91e57a0ac ("RISC-V: Task implementation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+misfit task is the other feature that doesn't handle correctly such
+situation although it's probably more difficult to face the problem
+because of the smaller number of CPUs and running tasks on heterogenous
+system.
+
+We can't simply ensure that task_h_load() returns at least one because it
+would imply to handle underflow in other places.
+
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: <stable@vger.kernel.org> # v4.4+
+Link: https://lkml.kernel.org/r/20200710152426.16981-1-vincent.guittot@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- arch/riscv/include/asm/thread_info.h |    4 ++++
- 1 file changed, 4 insertions(+)
 
---- a/arch/riscv/include/asm/thread_info.h
-+++ b/arch/riscv/include/asm/thread_info.h
-@@ -20,7 +20,11 @@
- #include <linux/const.h>
+---
+ kernel/sched/fair.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6871,7 +6871,15 @@ static int detach_tasks(struct lb_env *e
+ 		if (!can_migrate_task(p, env))
+ 			goto next;
  
- /* thread information allocation */
-+#ifdef CONFIG_64BIT
-+#define THREAD_SIZE_ORDER	(2)
-+#else
- #define THREAD_SIZE_ORDER	(1)
-+#endif
- #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+-		load = task_h_load(p);
++		/*
++		 * Depending of the number of CPUs and tasks and the
++		 * cgroup hierarchy, task_h_load() can return a null
++		 * value. Make sure that env->imbalance decreases
++		 * otherwise detach_tasks() will stop only after
++		 * detaching up to loop_max tasks.
++		 */
++		load = max_t(unsigned long, task_h_load(p), 1);
++
  
- #ifndef __ASSEMBLY__
+ 		if (sched_feat(LB_MIN) && load < 16 && !env->sd->nr_balance_failed)
+ 			goto next;
 
 
