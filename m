@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC11226AFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B1F226B14
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389025AbgGTQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:38:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44993 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729269AbgGTQiI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:38:08 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jxYnk-00007X-BL; Mon, 20 Jul 2020 16:38:04 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Michael Tretter <m.tretter@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: allegro: fix potential null dereference on header
-Date:   Mon, 20 Jul 2020 17:38:04 +0100
-Message-Id: <20200720163804.340047-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S2389064AbgGTQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732718AbgGTQik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:38:40 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2634122CBB;
+        Mon, 20 Jul 2020 16:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595263119;
+        bh=wlqo7kAx+og7PtKyjy/9X5uYlujAIR96QYTi8/c6yXY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KedFP10soudJd9FGCXk2UQ6mwGYV9FfLgr9Jehpfqo3DeBMYh9Cg2T64ka4vLb/9E
+         yZE0kTEtUh1mwFGolpaTN3qJTAigCNeN60HjhesQSQimi39aadhKkQmY9ZpzWdIGAc
+         DM8CICk2pF95QKtAIcFlAv4SRPp0hIAXO+8S+9xE=
+Date:   Mon, 20 Jul 2020 09:38:36 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Subject: Re: get rid of the address_space override in setsockopt
+Message-ID: <20200720163836.GB1292162@gmail.com>
+References: <20200720124737.118617-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720124737.118617-1-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Jul 20, 2020 at 02:47:13PM +0200, Christoph Hellwig wrote:
+> Hi Dave,
+> 
+> setsockopt is the last place in architecture-independ code that still
+> uses set_fs to force the uaccess routines to operate on kernel pointers.
+> 
+> This series adds a new sockptr_t type that can contained either a kernel
+> or user pointer, and which has accessors that do the right thing, and
+> then uses it for setsockopt, starting by refactoring some low-level
+> helpers and moving them over to it before finally doing the main
+> setsockopt method.
+> 
+> Note that I could not get the eBPF selftests to work, so this has been
+> tested with a testing patch that always copies the data first and passes
+> a kernel pointer.  This is something that works for most common sockopts
+> (and is something that the ePBF support relies on), but unfortunately
+> in various corner cases we either don't use the passed in length, or in
+> one case actually copy data back from setsockopt, so we unfortunately
+> can't just always do the copy in the highlevel code, which would have
+> been much nicer.
+> 
 
-The pointer header is an alias to msg and msg is being null checked.
-However, if msg is null then header is also null and this can lead to
-a null pointer dereference on the assignment type = header->type. Fix
-this by only dereferencing header after the null check on msg.
+Please mention what git tree your patchset applies to.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: 3de16839669f ("media: allegro: add explicit mail encoding and decoding")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/media/allegro-dvt/allegro-mail.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/media/allegro-dvt/allegro-mail.c b/drivers/staging/media/allegro-dvt/allegro-mail.c
-index 4ac65de12463..4496e2a4da5c 100644
---- a/drivers/staging/media/allegro-dvt/allegro-mail.c
-+++ b/drivers/staging/media/allegro-dvt/allegro-mail.c
-@@ -462,12 +462,14 @@ allegro_dec_encode_frame(struct mcu_msg_encode_frame_response *msg, u32 *src)
- ssize_t allegro_encode_mail(u32 *dst, void *msg)
- {
- 	const struct mcu_msg_header *header = msg;
--	enum mcu_msg_type type = header->type;
-+	enum mcu_msg_type type;
- 	ssize_t size;
- 
- 	if (!msg || !dst)
- 		return -EINVAL;
- 
-+	type = header->type;
-+
- 	switch (type) {
- 	case MCU_MSG_TYPE_INIT:
- 		size = allegro_enc_init(&dst[1], msg);
--- 
-2.27.0
-
+- Eric
