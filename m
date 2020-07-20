@@ -2,111 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F1F2271FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30602271FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgGTWGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33106 "EHLO mail.kernel.org"
+        id S1727050AbgGTWG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgGTWGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:06:52 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        id S1726021AbgGTWGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:06:54 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B425820729;
-        Mon, 20 Jul 2020 22:06:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CE5C2073A;
+        Mon, 20 Jul 2020 22:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595282811;
-        bh=6x2B6tHzk/AK+Gp4nhiVnHJOFQxF6ZQYhvHBPpGLxx8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=GfYo84e5NH9ySeUlI335uKO6IHp9m/oJPecOGmfcLn7P6RguHpvYx/9GZHtn+Am9+
-         bMucw9MVP6y/46wsq4bkniwV2aKUaPzLds6Cih4EusxY4SAlt9Pkh3Ol1JcI5nrKUZ
-         k/NpJoetfBLQT8T8U2fLrpiIykP7D2DHzkLU00N0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 99A843522C1A; Mon, 20 Jul 2020 15:06:51 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 15:06:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     peterz@infradead.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
-Message-ID: <20200720220651.GV9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200717044427.68747-1-ebiggers@kernel.org>
- <20200718014204.GN5369@dread.disaster.area>
- <20200718140811.GA1179836@rowland.harvard.edu>
- <20200720013320.GP5369@dread.disaster.area>
- <20200720145211.GC1228057@rowland.harvard.edu>
- <20200720153911.GX12769@casper.infradead.org>
- <20200720160433.GQ9247@paulmck-ThinkPad-P72>
- <20200720164850.GF119549@hirez.programming.kicks-ass.net>
+        s=default; t=1595282813;
+        bh=78BdF/HR6s7qSjh/SH8MXr7/WJ4eMmExO0xS180B/h8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Wp0hVRJHHRmiSwwTStGNUkQO8nKQV3GvxlL/+Yl6CcnItiPNE2UPJ3GquBbGaLHrD
+         lIz+NYuJufRZa8YxDjkw53fgIH/V08rtzV7ztEx9NWHApo4AlrTz6Ibb/Lip5dTRrf
+         AuanM1RI7uQ/IrAFaLihcTON45oNGcNH/4FCif6c=
+Date:   Mon, 20 Jul 2020 17:06:51 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     ricky_wu@realtek.com
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org, ulf.hansson@linaro.org,
+        rui_feng@realsil.com.cn, bhelgaas@google.com, kdlnx@doth.eu,
+        linus.walleij@linaro.org, rmfrfs@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Puranjay Mohan <puranjay12@gmail.com>
+Subject: Re: [PATCH] misc: rtsx: Add support new chip rts5228 mmc:  rtsx: Add
+ support MMC_CAP2_NO_MMC
+Message-ID: <20200720220651.GA1035857@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720164850.GF119549@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200706070259.32565-1-ricky_wu@realtek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 06:48:50PM +0200, peterz@infradead.org wrote:
-> On Mon, Jul 20, 2020 at 09:04:34AM -0700, Paul E. McKenney wrote:
-> > 2.	If we were to say "unlock" instead of "release", consistency
-> > 	would demand that we also say "lock" instead of "acquire".
-> > 	But "lock" is subtlely different than "acquire", and there is
-> > 	a history of people requesting further divergence.
+[+cc Puranjay, for LTR issues, original posting at
+https://lore.kernel.org/r/20200706070259.32565-1-ricky_wu@realtek.com]
+
+I've complained about some of this stuff before, but we haven't really
+made any progress yet:
+
+  https://lore.kernel.org/lkml/20171214222522.GL30595@bhelgaas-glaptop.roam.corp.google.com/
+
+On Mon, Jul 06, 2020 at 03:02:59PM +0800, ricky_wu@realtek.com wrote:
+> From: Ricky Wu <ricky_wu@realtek.com>
 > 
-> This, acquire/release are RCpc, while (with the exception of Power)
-> LOCK/UNLOCK are RCsc.
-> 
-> ( Or did we settle on RCtso for our release/acquire order? I have vague
-> memories of a long-ish thread, but seem to have forgotten the outcome,
-> if any. )
-> 
-> Lots of subtlety and head-aches right about there. Anyway, it would be
-> awesome if we can get Power into the RCsc locking camp :-)
+> In order to support new chip rts5228, the definitions of some internal
+> registers and workflow have to be modified.
+> Added rts5228.c rts5228.h for independent functions of the new chip rts5228
 
-I will let you take that one up with the Power folks.
+> +static void rts5228_init_from_cfg(struct rtsx_pcr *pcr)
+> +{
+> +	u32 lval;
+> +	struct rtsx_cr_option *option = &pcr->option;
+> +
+> +	rtsx_pci_read_config_dword(pcr, PCR_ASPM_SETTING_REG1, &lval);
+> +
+> +
+> +	if (0 == (lval & 0x0F))
+> +		rtsx_pci_enable_oobs_polling(pcr);
+> +	else
+> +		rtsx_pci_disable_oobs_polling(pcr);
+> +
+> +	if (lval & ASPM_L1_1_EN_MASK)
+> +		rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
+> +	else
+> +		rtsx_clear_dev_flag(pcr, ASPM_L1_1_EN);
+> +
+> +	if (lval & ASPM_L1_2_EN_MASK)
+> +		rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
+> +	else
+> +		rtsx_clear_dev_flag(pcr, ASPM_L1_2_EN);
+> +
+> +	if (lval & PM_L1_1_EN_MASK)
+> +		rtsx_set_dev_flag(pcr, PM_L1_1_EN);
+> +	else
+> +		rtsx_clear_dev_flag(pcr, PM_L1_1_EN);
+> +
+> +	if (lval & PM_L1_2_EN_MASK)
+> +		rtsx_set_dev_flag(pcr, PM_L1_2_EN);
+> +	else
+> +		rtsx_clear_dev_flag(pcr, PM_L1_2_EN);
 
-But I should give an example of a current difference between lock and
-acquire, and just to spread the blame, I will pick on an architecture
-other than Power.  ;-)
+This looks like a bunch of driver-specific #defines that should be
+using the PCI core #defines instead (PCI_L1SS_CTL1_ASPM_L1_1,
+PCI_L1SS_CTL1_ASPM_L1_2, etc).
 
-With lock acquisition, the following orders the access to X and Z:
+rtsx_pci_read_config_dword() adds very little value and obscures the
+code unnecessarily.
 
-	WRITE_ONCE(X, 1);
-	spin_lock(&my_lock);
-	smp_mb__after_lock();
-	r1 = READ_ONCE(Z);
+PCR_ASPM_SETTING_REG1 probably should be removed and replaced with
+something like pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS).
 
-But if we replace the lock acquisition with a load acquire, there are
-no ordering guarantees for the accesses to X and Z:
+> +	rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, 0xFF, 0);
+> +	if (option->ltr_en) {
+> +		u16 val;
+> +
+> +		pcie_capability_read_word(pcr->pci, PCI_EXP_DEVCTL2, &val);
+> +		if (val & PCI_EXP_DEVCTL2_LTR_EN) {
+> +			option->ltr_enabled = true;
+> +			option->ltr_active = true;
+> +			rtsx_set_ltr_latency(pcr, option->ltr_active_latency);
 
-	WRITE_ONCE(X, 1);
-	r2 = smp_load_acquire(&Y);
-	smp_mb__after_lock();  // Yeah, there is no lock.  ;-)
-	r3 = READ_ONCE(Z);
+I do not believe this LTR programming is correct.  But I'd be glad to
+be corrected with specific references to the spec.
 
-There -is- ordering between the accesses to Y and Z, but not to X and Z.
-This is not a theoretical issue.  The x86 platform really can reorder
-the access to X to follow that of both Y and Z.
+One reason I don't think it's correct is because PCIe r5.0, sec 6.18,
+says LTR must not be enabled unless the Root Complex and all
+intermediate Switches indicate support for LTR.  I don't see any
+checking for that here.
 
-So the memory-model divergence between lock acquisition and acquire
-loads is very real in the here and now.
+I *assume* that rtsx_set_ltr_latency() sets values in the LTR
+Extended Capability.  That should be done with
+pci_write_config_word(), not with rtsx_pci_write_register() as is done
+in rtsx_comm_set_ltr_latency().  But maybe rtsx_set_ltr_latency()
+isn't doing what I think it is.
 
-							Thanx, Paul
+I think the values programmed into the LTR Capability depend on some
+platform-specific values that can only be learned from an ACPI _DSM;
+see the PCI Firmware spec, v3.2, sec 4.6.6.
+
+It looks like option->ltr_active_latency is always
+LTR_ACTIVE_LATENCY_DEF (0x883C).  How did you derive that value?
+
+All the LTR programming should be done by the PCI core.  The PCI core
+does some of that, but not all.  We should work on getting support
+done instead of spreading it around in drivers.
+
+> +static void rts5228_enable_aspm(struct rtsx_pcr *pcr, bool enable)
+> +{
+> +	u8 mask, val;
+> +
+> +	if (pcr->aspm_enabled == enable)
+> +		return;
+> +
+> +	mask = FORCE_ASPM_VAL_MASK | FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
+> +	val = FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
+> +	val |= (pcr->aspm_en & 0x02);
+> +	rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, mask, val);
+> +	pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
+> +					   PCI_EXP_LNKCTL_ASPMC, pcr->aspm_en);
+> +	pcr->aspm_enabled = enable;
+
+ASPM configuration should also be done by the PCI core.
+
+Correct ASPM configuration can only be done by looking at *both* ends
+of the link.  The PCI core is in a position to do that, but individual
+drivers really are not.
+
+Bjorn
