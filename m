@@ -2,82 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058442258EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2392258D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgGTHpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S1726808AbgGTHnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgGTHpD (ORCPT
+        with ESMTP id S1726521AbgGTHnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:45:03 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B9FC061794;
-        Mon, 20 Jul 2020 00:45:03 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 190F41FECC;
-        Mon, 20 Jul 2020 07:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1595231103; bh=JQPKVllLBhjegV8oJ4/3W4Dq3jbR4Ki6pJQ0tsIkbus=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UcP5zdYgnNjqWjgyXOUFxxE2au/BJgpu+BZxvJyy0LkKw5yM1G2koAxT2P59M7IXj
-         pf6QtfVs0jdUgEfOeR2QQ9JCNB2AhpBtUkD1RbMGAV+R36zIh9vwjK5RyHzpIQKI37
-         nNodzXKkPbbCcpFRf2jNeHnojHlygLJvlLyQR2MfhzwokXFxai9b76xQuDaowd13sD
-         vlgXpxgbC6X4q+DnXhCrFursWHf9RX05he0i1304vE0h2uhXxJIUmL2RxPZpLoiO8D
-         c9Ob2q2Gnc38gy03meWBq7YAB8aCL6v0fgOlTqr+fgCMOtEDwhDZAf0CRyN8+Q/3/w
-         NN/D/3r77Gvgw==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Mon, 20 Jul 2020 03:43:18 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8902EC0619D7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 00:43:17 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g10so11308322wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 00:43:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=m6yytUMdKpAiiKF/+CcuV8LMm9NpXNcKGc9Sb6F7cqo=;
+        b=IVK09e1ld+9cwoXx1bqDODaFImU/E8BERDq0mWlu1Dh3gZ8IilQ3NLb5AgUJs2EZ6A
+         DOpTQs9i1N8ia2cP2g7Hb9P6XoaJ7E0SsvqJvP109FQdN1+ZnJhAs2U+kTjtokXyi7kX
+         KZWHKc+5M16aNSA+dKO3bVZQ3Ch6eBOqPwHOhmW6ZcCXCA9lkNv0mus2J2Dg295523dN
+         wlMsuRQmfpFIbc8P/E473L2Usu9r1pSH6N0HzqC+VSRl0++AZtaLlfi6afz/RKsfOi1+
+         pBDqXeB4fWSWXBmqduD5AQBaV8vSZx9hm2B0U5J2k7sG/cAbFhzBStssMGIksHjKYPH5
+         ApOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=m6yytUMdKpAiiKF/+CcuV8LMm9NpXNcKGc9Sb6F7cqo=;
+        b=tZVEJhtIM4I06zW82AkbMBduD/DGbYy58b+1ZvaWRJ8V4ha0dmTGR/cXYX0QJWNQmr
+         yuqzA7ST+AYS0fKNGACCk9MOK+u9iGRt9LzoQ4CAu0KL5nzb06fv8ZtSi0qfASHBbJT7
+         MLRwUPMnjkBjUat7r/jNjP0hr28Lm26vpp1rQI/5D3o0hBlSBCvVEsYleI6LYFyoiGsC
+         vJXKX7VHwgLkvYoq2hg/6UlxmYfRZszGy6H16X3y8OHynwox0wWXlFt6Cpcfq231ecYh
+         Vx3Zqp72qdeJB9KLfIbjRkkd+B/LjK97zQdM/I+BqlxPrw/iFwVilcmFI870UJwco7Lw
+         ddSw==
+X-Gm-Message-State: AOAM533/qImwgSLJPqOifL11Mb6Y5lLf2OsiJsvjLRXbwSayV6SVrLrO
+        VExSTRbYgG91eudN7QXUoEvBAURqBeI=
+X-Google-Smtp-Source: ABdhPJzdJSdBbBWM2quCXUnipLg3+n/33qPK8Rxd7dlcJHIfTbXk90f6awCJz9w28J/D1s9VK8ooPw==
+X-Received: by 2002:a1c:408b:: with SMTP id n133mr20209577wma.88.1595230995865;
+        Mon, 20 Jul 2020 00:43:15 -0700 (PDT)
+Received: from dell ([2.27.167.94])
+        by smtp.gmail.com with ESMTPSA id o7sm17531643wrv.50.2020.07.20.00.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 00:43:15 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 08:43:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] MIPS: Loongson64: Add ISA node for LS7A PCH
-Date:   Mon, 20 Jul 2020 15:42:38 +0800
-Message-Id: <20200720074249.596364-6-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.28.0.rc1
-In-Reply-To: <20200720074249.596364-1-jiaxun.yang@flygoat.com>
-References: <20200720074249.596364-1-jiaxun.yang@flygoat.com>
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v5 02/13] mfd: add simple regmap based I2C driver
+Message-ID: <20200720074312.GL3165313@dell>
+References: <20200706175353.16404-1-michael@walle.cc>
+ <20200706175353.16404-3-michael@walle.cc>
+ <20200717090656.GF3165313@dell>
+ <52d85ea1ddc488762df547168e2001e9@walle.cc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <52d85ea1ddc488762df547168e2001e9@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although currently we're not enabling any ISA device in devicetree,
-but this node is required to express the ranges of address reserved
-for ISA.
+On Mon, 20 Jul 2020, Michael Walle wrote:
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+> Am 2020-07-17 11:06, schrieb Lee Jones:
+> > On Mon, 06 Jul 2020, Michael Walle wrote:
+> > 
+> > > There are I2C devices which contain several different functions but
+> > > doesn't require any special access functions. For these kind of
+> > > drivers
+> > > an I2C regmap should be enough.
+> > > 
+> > > Create an I2C driver which creates an I2C regmap and enumerates its
+> > > children. If a device wants to use this as its MFD core driver, it has
+> > > to add an individual compatible string. It may provide its own regmap
+> > > configuration.
+> > > 
+> > > Subdevices can use dev_get_regmap() on the parent to get their regmap
+> > > instance.
+> > > 
+> > > Signed-off-by: Michael Walle <michael@walle.cc>
+> > > ---
+> > > Changes since v4:
+> > >  - new patch. Lee, please bear with me. I didn't want to delay the
+> > >    new version (where a lot of remarks on the other patches were
+> > >    addressed) even more, just because we haven't figured out how
+> > >    to deal with the MFD part. So for now, I've included this one.
+> > > 
+> > >  drivers/mfd/Kconfig          |  9 +++++++
+> > >  drivers/mfd/Makefile         |  1 +
+> > >  drivers/mfd/simple-mfd-i2c.c | 50
+> > > ++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 60 insertions(+)
+> > >  create mode 100644 drivers/mfd/simple-mfd-i2c.c
+> > > 
+> > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > index 33df0837ab41..f1536a710aca 100644
+> > > --- a/drivers/mfd/Kconfig
+> > > +++ b/drivers/mfd/Kconfig
+> > > @@ -1162,6 +1162,15 @@ config MFD_SI476X_CORE
+> > >  	  To compile this driver as a module, choose M here: the
+> > >  	  module will be called si476x-core.
+> > > 
+> > > +config MFD_SIMPLE_MFD_I2C
+> > > +	tristate "Simple regmap based I2C devices"
+> > 
+> > Doesn't look like tristate to me.
+> > 
+> > Haven't you made this builtin only?
+> 
+> Mh yeah, I forgot to change it to module in the driver. I don't
+> know whats better though, have it tristate or just offer a boolean
+> option because it should be small anyway. What do you think?
+> My interrupt driver will force it to boolean anyway.
 
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 1c286bb8c703..724929ea3f5f 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -19,6 +19,13 @@ pic: interrupt-controller@10000000 {
- 			#interrupt-cells = <2>;
- 		};
- 
-+		isa {
-+			compatible = "isa";
-+			#address-cells = <2>;
-+			#size-cells = <1>;
-+			ranges = <1 0 0 0x18000000 0x20000>;
-+		};
-+
- 		pci@1a000000 {
- 			compatible = "loongson,ls7a-pci";
- 			device_type = "pci";
+Better to give consumers the choice I think.
+
 -- 
-2.28.0.rc1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
