@@ -2,124 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9509922582E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44261225834
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgGTHID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:08:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29497 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727075AbgGTHIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:08:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595228880; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Hgc8qrbajmA7cvjWQhgBc1e4wcka087+3kuJ5nLwjR4=; b=BV5Mi5urgWxGEjMLQcQX8wlC9vkPXIpYVfMljjNuyhLFb2oV3tAY6KvwV7dVlIBdI5NnIN1B
- XnSV9ZIEQbcZNWQmUY7LrI58YlTTgD5YwAY3/cdi35J/Kq6/4PWWvBAw2xdONcTsA49yBOKL
- Od3kgUrADDG9VR+opxVKbTGDUWc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
- 5f1542cb512812c070050098 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 07:07:55
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36164C433CB; Mon, 20 Jul 2020 07:07:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A161FC433CB;
-        Mon, 20 Jul 2020 07:07:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A161FC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     stanimir.varbanov@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v3 4/4] arm64: dts: sc7180: Add OPP tables and power-domains for venus
-Date:   Mon, 20 Jul 2020 12:37:22 +0530
-Message-Id: <1595228842-9826-5-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595228842-9826-1-git-send-email-rnayak@codeaurora.org>
-References: <1595228842-9826-1-git-send-email-rnayak@codeaurora.org>
+        id S1727812AbgGTHIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:08:09 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:37515 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgGTHIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 03:08:07 -0400
+Received: by mail-io1-f71.google.com with SMTP id 63so10688813ioy.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 00:08:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=hf+kwcKJaoB2O2XzZ62VTTEDTpLPt+1+yZptVyrXu3Y=;
+        b=Cd0ZM5qyuQdTgs89Gm7X/APDtUaQGerbHKTYh4Omci2kO6yRE4R5RZpR4tWZeyWl55
+         phjCCz7iYY9EFP8XVd+pMwLsSe1j4oxUS0GFdwE+Ii5TzMGlz8knOeXXy1gOGeYlKT+n
+         66/uZmOQKm4T1ujQGBLmYLcDzAJke6Aps4qgugn+nEHfo+jZ1evpaxQBsvc7XaMobIJL
+         7czzYoM6WzLx4LybQ3ZjtcmIUG5kBbISM1SsouLvHmjEAqBcZj7Vvl4uW006DvbIrir1
+         biWonAgARHuSqBWvN+rdPujZ2NsHXTxyuwGh/PNbT4NF8FYb7+7xEI9illFeP5M22cMv
+         KvRA==
+X-Gm-Message-State: AOAM5301p/+D6JBG4v10KTjYcn1JxphAdwo163WUkFeI42rpRyYTMEfQ
+        xLLlQQzMQUATQttornTcCPcoFuULS/q9qT39i2uHzkfJmgF0
+X-Google-Smtp-Source: ABdhPJxo/yL9uQtzaZRRNF+0FqYGONLLfW8cud6VWFvmxM1Yav75gunkUZy2TqikI8tHCMeJFCpPmRIsXPeM+7wwYZcGZeKzh4Ah
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:2601:: with SMTP id m1mr17777548jat.141.1595228885931;
+ Mon, 20 Jul 2020 00:08:05 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 00:08:05 -0700
+In-Reply-To: <0000000000005d946305a9f5d206@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014dc1805aada2bea@google.com>
+Subject: Re: INFO: rcu detected stall in sock_close (3)
+From:   syzbot <syzbot+4168fa4c45be33afa73c@syzkaller.appspotmail.com>
+To:     Markus.Elfring@web.de, davem@davemloft.net, fweisbec@gmail.com,
+        hdanton@sina.com, jmaloy@redhat.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, tipc-discussion@lists.sourceforge.net,
+        tuong.t.lien@dektech.com.au, ying.xue@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the OPP tables in order to be able to vote on the performance state
-of a power-domain
+syzbot has bisected this issue to:
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 35 +++++++++++++++++++++++++++++++++--
- 1 file changed, 33 insertions(+), 2 deletions(-)
+commit 5e9eeccc58f3e6bcc99b929670665d2ce047e9c9
+Author: Tuong Lien <tuong.t.lien@dektech.com.au>
+Date:   Wed Jun 3 05:06:01 2020 +0000
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 16df08d..cb6137d 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2664,8 +2664,10 @@
- 			reg = <0 0x0aa00000 0 0xff000>;
- 			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
- 			power-domains = <&videocc VENUS_GDSC>,
--					<&videocc VCODEC0_GDSC>;
--			power-domain-names = "venus", "vcodec0";
-+					<&videocc VCODEC0_GDSC>,
-+					<&rpmhpd SC7180_CX>;
-+			power-domain-names = "venus", "vcodec0", "cx";
-+			operating-points-v2 = <&venus_opp_table>;
- 			clocks = <&videocc VIDEO_CC_VENUS_CTL_CORE_CLK>,
- 				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
- 				 <&videocc VIDEO_CC_VENUS_CTL_AXI_CLK>,
-@@ -2686,6 +2688,35 @@
- 			video-encoder {
- 				compatible = "venus-encoder";
- 			};
-+
-+			venus_opp_table: venus-opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-150000000 {
-+					opp-hz = /bits/ 64 <150000000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+				};
-+
-+				opp-270000000 {
-+					opp-hz = /bits/ 64 <270000000>;
-+					required-opps = <&rpmhpd_opp_svs>;
-+				};
-+
-+				opp-340000000 {
-+					opp-hz = /bits/ 64 <340000000>;
-+					required-opps = <&rpmhpd_opp_svs_l1>;
-+				};
-+
-+				opp-434000000 {
-+					opp-hz = /bits/ 64 <434000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+				};
-+
-+				opp-500000000 {
-+					opp-hz = /bits/ 64 <500000000>;
-+					required-opps = <&rpmhpd_opp_turbo>;
-+				};
-+			};
- 		};
- 
- 		videocc: clock-controller@ab00000 {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+    tipc: fix NULL pointer dereference in streaming
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c5517d100000
+start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15c5517d100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c5517d100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=183dd243398ba7ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=4168fa4c45be33afa73c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112223b7100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154793a3100000
+
+Reported-by: syzbot+4168fa4c45be33afa73c@syzkaller.appspotmail.com
+Fixes: 5e9eeccc58f3 ("tipc: fix NULL pointer dereference in streaming")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
