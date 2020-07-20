@@ -2,116 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94378227155
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112282270D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgGTVm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:42:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35328 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728236AbgGTVip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:38:45 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KKWocY152958;
-        Mon, 20 Jul 2020 17:38:25 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5x49up3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 17:38:25 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KKl885030148;
-        Mon, 20 Jul 2020 17:38:25 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5x49una-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 17:38:24 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KLZBL4020699;
-        Mon, 20 Jul 2020 21:38:22 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 32dbmn06yb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 21:38:22 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KLcKd744040416
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 21:38:20 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D90BA4054;
-        Mon, 20 Jul 2020 21:38:20 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 856E2A4060;
-        Mon, 20 Jul 2020 21:38:18 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.145.253])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Jul 2020 21:38:18 +0000 (GMT)
-Message-ID: <1595281097.5055.79.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 00/12] ima: Fix rule parsing bugs and extend
- KEXEC_CMDLINE rule support
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        kexec@lists.infradead.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Nayna Jain <nayna@linux.ibm.com>
-Date:   Mon, 20 Jul 2020 17:38:17 -0400
-In-Reply-To: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
-References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
+        id S1728439AbgGTVjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:39:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728121AbgGTVix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 17:38:53 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 283D022CF7;
+        Mon, 20 Jul 2020 21:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595281132;
+        bh=qdAfJnBJ7sjyxic7UNz+QaCPtfFw871DnQVRrHY+yCY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=m9VhpZ69CWfiD9afVuKTeOaICBJ7QvFTeNevMfbUSjwAtrHzYr/g/Opjz/uUW9vl0
+         quVP6XoK/EtAcUCr7en0gzxSb9pZeCofUvQdSQH3Nj+DwvXZ3yrDUeLfr2qwUtwV4q
+         c2t/HAVHw2Jvb0Td9kzLfFMoftIW/Zr0XtJ0NYAQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Federico Ricchiuto <fed.ricchiuto@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 01/19] HID: i2c-hid: add Mediacom FlexBook edge13 to descriptor override
+Date:   Mon, 20 Jul 2020 17:38:32 -0400
+Message-Id: <20200720213851.407715-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- mlxscore=0 suspectscore=2 malwarescore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 impostorscore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007200136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc'ing Sasha]
+From: Federico Ricchiuto <fed.ricchiuto@gmail.com>
 
-On Thu, 2020-07-09 at 01:18 -0500, Tyler Hicks wrote:
+[ Upstream commit 43e666acb79f3d355dd89bf20f4d25d3b15da13e ]
 
-> I envision patches 1-7 going to stable. The series is ordered in a way
-> that has all the fixes up front, followed by cleanups, followed by the
-> feature patch. The breakdown of patches looks like so:
-> 
->  Memory leak fixes: 1-3
->  Parser strictness fixes: 4-7
->  Code cleanups made possible by the fixes: 8-11
->  Extend KEXEC_CMDLINE rule support: 12
+The Mediacom FlexBook edge13 uses the SIPODEV SP1064 touchpad, which does not
+supply descriptors, so it has to be added to the override list.
 
-I agree they should be backported, but they don't apply cleanly before
-linux-5.6.  The changes aren't that major.  Some patch hunks apply
-cleanly, but won't compile, while others patch hunks need to be
-dropped based on when the feature was upstreamed.  For these reasons,
-I'm not Cc'ing stable.
+Signed-off-by: Federico Ricchiuto <fed.ricchiuto@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Feature upstreamed:
-- LSM policy update: linux 5.3
-- key command line: linux 5.3
-- blacklist: linux 5.5
-- keyrings: linux 5.6
+diff --git a/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c b/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
+index 681ac9bc68b3d..f98c1e1b1dbdc 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
++++ b/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
+@@ -373,6 +373,14 @@ static const struct dmi_system_id i2c_hid_dmi_desc_override_table[] = {
+ 		},
+ 		.driver_data = (void *)&sipodev_desc
+ 	},
++	{
++		.ident = "Mediacom FlexBook edge 13",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MEDIACOM"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "FlexBook_edge13-M-FBE13"),
++		},
++		.driver_data = (void *)&sipodev_desc
++	},
+ 	{
+ 		.ident = "Odys Winbook 13",
+ 		.matches = {
+-- 
+2.25.1
 
-For Linux 5.3:
-- Dependency on backporting commit 483ec26eed42 ("ima: ima/lsm policy
-rule loading logic bug fixes") to apply " ima: Free the entire rule if
-it fails to parse".
-
-Mimi
