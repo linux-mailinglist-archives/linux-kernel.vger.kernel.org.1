@@ -2,142 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10750225849
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098FE22581E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgGTHTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:19:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14582 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725815AbgGTHTI (ORCPT
+        id S1726952AbgGTHGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725845AbgGTHGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:19:08 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06K73AeW020080;
-        Mon, 20 Jul 2020 03:19:01 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32bw8yt6u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 03:19:00 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06K73R0Y021770;
-        Mon, 20 Jul 2020 03:19:00 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32bw8yt6tb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 03:19:00 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06K7GgJ8010094;
-        Mon, 20 Jul 2020 07:18:58 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 32brq82awb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 07:18:58 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06K7ItIQ29557198
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 07:18:55 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9E08AE293;
-        Mon, 20 Jul 2020 07:02:12 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6DD08AE279;
-        Mon, 20 Jul 2020 07:02:09 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.85.114.242])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Jul 2020 07:02:09 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
-        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
-        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
-        nasastry@in.ibm.com, kjain@linux.ibm.com
-Subject: [PATCH v4 5/5] perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
-Date:   Mon, 20 Jul 2020 12:31:27 +0530
-Message-Id: <20200720070127.109234-6-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200720070127.109234-1-kjain@linux.ibm.com>
-References: <20200720070127.109234-1-kjain@linux.ibm.com>
+        Mon, 20 Jul 2020 03:06:22 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F63C0619D2;
+        Mon, 20 Jul 2020 00:06:22 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id a15so7798233ybs.8;
+        Mon, 20 Jul 2020 00:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NNpI/M/lodtD3bMxBFq9KWF3f+wOZiZ1YyX4woKE7VM=;
+        b=UvPo0O0w2d3vzAuShlPvhku2YquKaFq7MEjWEV3stlDM7Aj3SGr0FXfFjGihGMbxzO
+         XbaqkLJec66jefVoNu9g3/Hj4aW7YpIkuNv0a80/LSXXJQWFNx8/wOaqdR9GWhFWuHc1
+         HKihJUL0HziFgzL1VVJzzIOW/eyTPCymSM7LdrbBkZ5oWgJhmGB9JDa+rt+bsW/GoHoT
+         +fojEYnGEgDYyaYtUsyhsYiNimhg8ODzuO4uSPWfAbk4YWL4aDKPR1F+RBXzQ6qIj2UP
+         NlNxp8ZH7nOOUdwfvdhoiRbQv/XAGOGd5JpFR4+dr2DOMjhwRmMuizYAzCtsntqfWd/o
+         z94w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NNpI/M/lodtD3bMxBFq9KWF3f+wOZiZ1YyX4woKE7VM=;
+        b=rvDyQGTJ10DEJqWZZBMDiXRdnvCJO507WijkV5w+WbU+bzrJIXxibz6ynfJLaImISh
+         aWrbAjVlfFgpd67DUssI5+i2NFG3XwuX3Na8YEnS69RgB9b0DvDJdQvHyKUPAF6X6lFC
+         xNa4Yk34lc5du3EMk7TQCcptLc6tERw59tjDxZdWoBUTJrOIOoBuNRYAxEfHshgrC+Kg
+         7+1W/B0GV1AQYFnQifOa7GAj6L1KmK8lRxCL3aThNl1URra9nXPtcvDaMMwdfzaxkzpW
+         TU5HFRfMasnoR0VIxXs4WfAUrqOxxJ2dpIBFaNCLnQf+XgrSXA2IxqAt0I1GWDhQxqQ/
+         p5Sw==
+X-Gm-Message-State: AOAM531Mfez/Y7sclc3Svx/8JXqsIH2zuRSEZcrJCJILjbHeAeiJL3Ar
+        eBBamsH6yrU3nFRvq+J5ILGiy0LUvY2WhX+PdGCbnAVlhYs=
+X-Google-Smtp-Source: ABdhPJzweLAaK0Z3fYb6E0HOOnj4ZMMVVmVr2KHbrpCIA/Ho2onbFx4K9dgG5rU+O0L7QUbNixBeMlgEoENfbKi8aaM=
+X-Received: by 2002:a25:3f81:: with SMTP id m123mr35108107yba.476.1595228781661;
+ Mon, 20 Jul 2020 00:06:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-20_04:2020-07-17,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxscore=0
- suspectscore=1 bulkscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007200052
+References: <20200710110752.28853-1-benchuanggli@gmail.com> <CAPDyKFqUOdDCe6DAQMP-1GL3uAgLcKpaT7Hq-esi+nATbiiD2w@mail.gmail.com>
+In-Reply-To: <CAPDyKFqUOdDCe6DAQMP-1GL3uAgLcKpaT7Hq-esi+nATbiiD2w@mail.gmail.com>
+From:   Ben Chuang <benchuanggli@gmail.com>
+Date:   Mon, 20 Jul 2020 15:06:10 +0800
+Message-ID: <CACT4zj__3LM9_kz3ZYRG=dv-BPdpTByHF_W_20LeR15Toz9rNQ@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 00/21] Add support UHS-II for GL9755
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Takahiro Akashi <takahiro.akashi@linaro.org>,
+        greg.tu@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds hv_24x7 core level events in nest_metric.json file
-and also add PerChip/PerCore field in metric events.
+On Fri, Jul 17, 2020 at 6:18 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Fri, 10 Jul 2020 at 13:07, Ben Chuang <benchuanggli@gmail.com> wrote:
+> >
+> > Summary
+> > =======
+> > These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+>
+> First of all, thanks for posting this - and my apologies for not
+> having the bandwidth to review the earlier versions.
+>
+> >
+> > About UHS-II, roughly deal with the following three parts:
+> > 1) A UHS-II detection and initialization:
+> > - Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+> >   [2]).
+> > - Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+> > - In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+> >   3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+> >   Setup Sequence.
+> >
+> > 2) Send Legacy SD command through SD-TRAN
+> > - Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+> >   compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+> >   Types and Format Overview[3]).
+> > - Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+> >   CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+> >
+> > 3) UHS-II Interrupt
+> > - Except for UHS-II error interrupts, most interrupts share the original
+> >   interrupt registers.
+>
+> The above points to some specifications, which is good, but what I
+> really need to be able to do a proper review -  is an explanation of
+> *what*, *why* and *how* the series implements the UHS-II support.
 
-Result:
+What:
+ 1. detect UHS-II interface of a card
+ 2. change card to UHS-II mode
+ 3. send SD command through SD-TRAN
+ 4. go back to legacy interface if not detect UHS-II interface
 
-power9 platform:
+Why:
+ 1. UHS-II card support Legacy Interface and UHS-II interface
 
-command:# ./perf stat --metric-only -M PowerBUS_Frequency -C 0 -I 1000
-     1.000070601                        1.9                        2.0
-     2.000253881                        2.0                        1.9
-     3.000364810                        2.0                        2.0
+How:
+  a) Using 3.13.2 Card Interface Detection Sequence
+  1. power up, host provides RCLK and STB.L to D0.lane.
+  2. host waits D1.lane to change EIDL to STB.L
+  3. host starts UHS-II initialization if STB.L
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Acked-by: Ian Rogers <irogers@google.com>
----
- .../arch/powerpc/power9/nest_metrics.json     | 27 ++++++++++++-------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+>
+> To be clear, I don't need in-depth details, as that should be
+> described in each patch's commit message, but I would appreciate an
+> overall description of the approach you have taken to implement this.
+>
+> The reason I need this is because UHS-II is a completely new
+> interface/protocol. If it wasn't because that a UHS-II card is also
+> required to be backwards compatible with the legacy SD interface, one
+> could even consider introducing an entirely new subsystem. Not saying
+> that we should, but just pointing out that the series is not trivial
+> to review.
+>
+> That said, I am going to give it a real try to do the review. I will
+> try to focus on the overall approach, rather than on the details, at
+> least to start with.
+>
 
-diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-index 8383a37647ad..4672e6d7e7cb 100644
---- a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-+++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-@@ -1,20 +1,29 @@
- [
-     {
--        "MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
--        "MetricName": "Memory_RD_BW_Chip",
--        "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+	"MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
-+	"MetricName": "Memory_RD_BW_Chip",
-+	"MetricGroup": "Memory_BW",
-+	"ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_MCS01_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_WR_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT23\\,chip\\=?@ )",
--        "MetricName": "Memory_WR_BW_Chip",
--        "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+	"MetricName": "Memory_WR_BW_Chip",
-+	"MetricGroup": "Memory_BW",
-+	"ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_PB_CYC\\,chip\\=?@ )",
--        "MetricName": "PowerBUS_Frequency",
--        "ScaleUnit": "2.5e-7GHz"
-+	"MetricName": "PowerBUS_Frequency",
-+	"ScaleUnit": "2.5e-7GHz",
-+	"AggregationMode": "PerChip"
-+    },
-+    {
-+	"MetricExpr": "(hv_24x7@CPM_CS_32MHZ_CYC\\,domain\\=3\\,core\\=?@ )",
-+	"MetricName": "CPM_CS_32MHZ_CYC",
-+	"ScaleUnit": "1MHz",
-+	"AggregationMode": "PerCore"
-     },
-     {
- 	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@",
--- 
-2.26.2
+Thank you, I will be patient.
 
+> >
+> > Patch structure
+> > ===============
+> > patch#1-#7: for core
+> > patch#8-#17: for sdhci
+> > patch#18-#21: for GL9755
+> >
+> > Tests
+> > =====
+> > Ran 'dd' command to evaluate the performance:
+> > (SanDisk UHS-II card on GL9755 controller)
+> >                              Read    Write
+> > UHS-II disabled (UHS-I): 88.3MB/s 60.7MB/s
+> > UHS-II enabled         :  206MB/s   80MB/s
+>
+> I like these comparisons, thanks for sharing!
+>
+> What UHS-II interface mode does you HW support? FD156, HD312, FD312 FD624?
+
+GL9755 supports up to HD312.
+
+>
+> >
+> > TODO
+> > ====
+> > - replace some define with BIT macro
+> >
+> > Reference
+> > =========
+> > [1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+> > [2] SD Host Controller Simplified Specification 4.20
+> > [3] UHS-II Simplified Addendum 1.02
+> >
+> > Changes in v3 (Jul. 10, 2020)
+> > * rebased to v5.8-rc4
+> > * add copyright notice
+> > * reorganize the patch set and split some commits into smaller ones
+> > * separate uhs-2 headers from others
+> > * correct wrong spellings
+> > * fix most of checkpatch warnings/errors
+> > * remove all k[cz]alloc() from the code
+> > * guard sdhci-uhs2 specific code with
+> >       'if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))'
+> > * make sdhci-uhs2.c as a module
+> > * trivial changes, including
+> >   - rename back sdhci-core.c to sdhci.c
+> >   - allow vendor code to disable uhs2 if v4_mode == 0
+> >       in __sdhci_add_host()
+> >   - merge uhs2_power_up() into mmc_power_up()
+> >   - remove flag_uhs2 from mmc_attach_sd()
+> >   - add function descriptions to EXPORT'ed functions
+> >   - other minor code optimization
+> >
+> > Changes in v2 (Jan. 9, 2020)
+> > * rebased to v5.5-rc5
+> >
+> > AKASHI Takahiro (15):
+> >   mmc: core: UHS-II support, modify power-up sequence
+> >   mmc: core: UHS-II support, skip set_chip_select()
+> >   mmc: core: UHS-II support, skip TMODE setup in some cases
+> >   mmc: core: UHS-II support, generate UHS-II SD command packet
+> >   mmc: core: UHS-II support, set APP_CMD bit if necessary
+> >   mmc: sdhci: add a kernel configuration for enabling UHS-II support
+> >   mmc: sdhci: add UHS-II related definitions in headers
+> >   mmc: sdhci: UHS-II support, dump UHS-II registers
+> >   mmc: sdhci: UHS-II support, export host operations to core
+> >   mmc: sdhci: UHS-II support, skip signal_voltage_switch()
+> >   mmc: sdhci: UHS-II support, handle vdd2 in case of power-off
+> >   mmc: sdhci: UHS-II support, modify set_power() to handle vdd2
+> >   mmc: sdhci: UHS-II support, export helper functions to a module
+> >   mmc: sdhci: UHS-II support, implement operations as a module
+> >   mmc: core: add post-mmc_attach_sd hook
+> >
+> > Ben Chuang (6):
+> >   mmc: add UHS-II related definitions in public headers
+> >   mmc: core: UHS-II support, try to select UHS-II interface
+> >   mmc: sdhci: UHS-II support, add hooks for additional operations
+> >   mmc: sdhci-uhs2: add pre-detect_init hook
+> >   mmc: sdhci-uhs2: add post-mmc_attach_sd hook
+> >   mmc: sdhci-pci-gli: enable UHS-II mode for GL9755
+> >
+> >  drivers/mmc/core/Makefile         |   2 +-
+> >  drivers/mmc/core/block.c          |   7 +-
+> >  drivers/mmc/core/bus.c            |   5 +-
+> >  drivers/mmc/core/core.c           | 119 +++-
+> >  drivers/mmc/core/regulator.c      |  14 +
+> >  drivers/mmc/core/sd.c             |  32 ++
+> >  drivers/mmc/core/sd_ops.c         |  12 +
+> >  drivers/mmc/core/uhs2.c           | 874 ++++++++++++++++++++++++++++++
+>
+> Nitpick:
+>
+> I would prefer to prefix any new needed file with sd_*. In this case,
+> sd_uhs2.c|h.
+
+OK, change uhs2.c and uhs2.h to sd_uhs2.c and sd_uhs2.h later.
+
+>
+> >  drivers/mmc/core/uhs2.h           |  21 +
+> >  drivers/mmc/host/Kconfig          |  10 +
+> >  drivers/mmc/host/Makefile         |   1 +
+> >  drivers/mmc/host/sdhci-omap.c     |   2 +-
+> >  drivers/mmc/host/sdhci-pci-core.c |   4 +-
+> >  drivers/mmc/host/sdhci-pci-gli.c  | 361 +++++++++++-
+> >  drivers/mmc/host/sdhci-pxav3.c    |   4 +-
+> >  drivers/mmc/host/sdhci-uhs2.c     | 797 +++++++++++++++++++++++++++
+> >  drivers/mmc/host/sdhci-uhs2.h     | 215 ++++++++
+> >  drivers/mmc/host/sdhci-xenon.c    |   4 +-
+> >  drivers/mmc/host/sdhci.c          | 321 +++++++++--
+> >  drivers/mmc/host/sdhci.h          | 113 +++-
+> >  include/linux/mmc/card.h          |   1 +
+> >  include/linux/mmc/core.h          |   6 +
+> >  include/linux/mmc/host.h          |  31 ++
+> >  include/linux/mmc/uhs2.h          | 268 +++++++++
+> >  24 files changed, 3151 insertions(+), 73 deletions(-)
+> >  create mode 100644 drivers/mmc/core/uhs2.c
+> >  create mode 100644 drivers/mmc/core/uhs2.h
+> >  create mode 100644 drivers/mmc/host/sdhci-uhs2.c
+> >  create mode 100644 drivers/mmc/host/sdhci-uhs2.h
+> >  create mode 100644 include/linux/mmc/uhs2.h
+> >
+> > --
+> > 2.27.0
+> >
+>
+> Kind regards
+> Uffe
