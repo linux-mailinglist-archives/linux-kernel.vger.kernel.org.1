@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5018A22644E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC99226518
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730353AbgGTPoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37628 "EHLO mail.kernel.org"
+        id S1731163AbgGTPus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:50:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729737AbgGTPoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:02 -0400
+        id S1730556AbgGTPur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:50:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D51C2064B;
-        Mon, 20 Jul 2020 15:44:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BA232065E;
+        Mon, 20 Jul 2020 15:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259841;
-        bh=UH6G1+0WBk1GHP2aRIO3g6ybHZ8FCumTW500zg7A4mM=;
+        s=default; t=1595260246;
+        bh=412nGVgyVmkRZyzaJjo8NpyhjCgcd9mR7FnJzv4+7fg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yNdf9AyytnPIf7RQmvXACoY1KkxyXRLKXrfP1dAM8NTWxRgYPZQWxpjd6v5fobOmp
-         R/5FrlXWiWQTl8jw+6T8Belom5Wo/eykfrK9Gj2sCpMIwEqjvnGlck6IbEZG/9EEnK
-         GU51ihapViv3yggJ5JJoSqiiem2faCePsSXJMOJQ=
+        b=hBeqUtKO2LjTil2ZdnCEJzMX7MHcTGPEO8apVeTI94R8MAgZ7dMpvt2o7BuyaZoPY
+         nmiL4Y0fBd2VCnEjLvk/2r8z6wjdUZToXNolMm1pREws6DYtm9g18IlQtcJN8vSA8a
+         X0ZA0v4G6UgYdlQ5In40RiCZj2+6zbGeesnACKWo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, yu kuai <yukuai3@huawei.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 013/125] ARM: imx6: add missing put_device() call in imx6q_suspend_init()
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        James Chapman <jchapman@katalix.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 005/133] l2tp: remove skb_dst_set() from l2tp_xmit_skb()
 Date:   Mon, 20 Jul 2020 17:35:52 +0200
-Message-Id: <20200720152803.612706495@linuxfoundation.org>
+Message-Id: <20200720152803.998437522@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yu kuai <yukuai3@huawei.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 4845446036fc9c13f43b54a65c9b757c14f5141b ]
+[ Upstream commit 27d53323664c549b5bb2dfaaf6f7ad6e0376a64e ]
 
-if of_find_device_by_node() succeed, imx6q_suspend_init() doesn't have a
-corresponding put_device(). Thus add a jump target to fix the exception
-handling for this function implementation.
+In the tx path of l2tp, l2tp_xmit_skb() calls skb_dst_set() to set
+skb's dst. However, it will eventually call inet6_csk_xmit() or
+ip_queue_xmit() where skb's dst will be overwritten by:
 
-Signed-off-by: yu kuai <yukuai3@huawei.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+   skb_dst_set_noref(skb, dst);
+
+without releasing the old dst in skb. Then it causes dst/dev refcnt leak:
+
+  unregister_netdevice: waiting for eth0 to become free. Usage count = 1
+
+This can be reproduced by simply running:
+
+  # modprobe l2tp_eth && modprobe l2tp_ip
+  # sh ./tools/testing/selftests/net/l2tp.sh
+
+So before going to inet6_csk_xmit() or ip_queue_xmit(), skb's dst
+should be dropped. This patch is to fix it by removing skb_dst_set()
+from l2tp_xmit_skb() and moving skb_dst_drop() into l2tp_xmit_core().
+
+Fixes: 3557baabf280 ("[L2TP]: PPP over L2TP driver core")
+Reported-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: James Chapman <jchapman@katalix.com>
+Tested-by: James Chapman <jchapman@katalix.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/mach-imx/pm-imx6.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ net/l2tp/l2tp_core.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
-index 6078bcc9f594a..c7dcb0b207301 100644
---- a/arch/arm/mach-imx/pm-imx6.c
-+++ b/arch/arm/mach-imx/pm-imx6.c
-@@ -483,14 +483,14 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 	if (!ocram_pool) {
- 		pr_warn("%s: ocram pool unavailable!\n", __func__);
- 		ret = -ENODEV;
--		goto put_node;
-+		goto put_device;
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -1033,6 +1033,7 @@ static void l2tp_xmit_core(struct l2tp_s
+ 
+ 	/* Queue the packet to IP for output */
+ 	skb->ignore_df = 1;
++	skb_dst_drop(skb);
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	if (l2tp_sk_is_v6(tunnel->sock))
+ 		error = inet6_csk_xmit(tunnel->sock, skb, NULL);
+@@ -1104,10 +1105,6 @@ int l2tp_xmit_skb(struct l2tp_session *s
+ 		goto out_unlock;
  	}
  
- 	ocram_base = gen_pool_alloc(ocram_pool, MX6Q_SUSPEND_OCRAM_SIZE);
- 	if (!ocram_base) {
- 		pr_warn("%s: unable to alloc ocram!\n", __func__);
- 		ret = -ENOMEM;
--		goto put_node;
-+		goto put_device;
- 	}
- 
- 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
-@@ -513,7 +513,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 	ret = imx6_pm_get_base(&pm_info->mmdc_base, socdata->mmdc_compat);
- 	if (ret) {
- 		pr_warn("%s: failed to get mmdc base %d!\n", __func__, ret);
--		goto put_node;
-+		goto put_device;
- 	}
- 
- 	ret = imx6_pm_get_base(&pm_info->src_base, socdata->src_compat);
-@@ -560,7 +560,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 		&imx6_suspend,
- 		MX6Q_SUSPEND_OCRAM_SIZE - sizeof(*pm_info));
- 
--	goto put_node;
-+	goto put_device;
- 
- pl310_cache_map_failed:
- 	iounmap(pm_info->gpc_base.vbase);
-@@ -570,6 +570,8 @@ iomuxc_map_failed:
- 	iounmap(pm_info->src_base.vbase);
- src_map_failed:
- 	iounmap(pm_info->mmdc_base.vbase);
-+put_device:
-+	put_device(&pdev->dev);
- put_node:
- 	of_node_put(node);
- 
--- 
-2.25.1
-
+-	/* Get routing info from the tunnel socket */
+-	skb_dst_drop(skb);
+-	skb_dst_set(skb, sk_dst_check(sk, 0));
+-
+ 	inet = inet_sk(sk);
+ 	fl = &inet->cork.fl;
+ 	switch (tunnel->encap) {
 
 
