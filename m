@@ -2,159 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30602271FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E65422723D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgGTWG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:06:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33168 "EHLO mail.kernel.org"
+        id S1727887AbgGTWXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:23:43 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19243 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgGTWGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:06:54 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CE5C2073A;
-        Mon, 20 Jul 2020 22:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595282813;
-        bh=78BdF/HR6s7qSjh/SH8MXr7/WJ4eMmExO0xS180B/h8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Wp0hVRJHHRmiSwwTStGNUkQO8nKQV3GvxlL/+Yl6CcnItiPNE2UPJ3GquBbGaLHrD
-         lIz+NYuJufRZa8YxDjkw53fgIH/V08rtzV7ztEx9NWHApo4AlrTz6Ibb/Lip5dTRrf
-         AuanM1RI7uQ/IrAFaLihcTON45oNGcNH/4FCif6c=
-Date:   Mon, 20 Jul 2020 17:06:51 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     ricky_wu@realtek.com
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org, ulf.hansson@linaro.org,
-        rui_feng@realsil.com.cn, bhelgaas@google.com, kdlnx@doth.eu,
-        linus.walleij@linaro.org, rmfrfs@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Puranjay Mohan <puranjay12@gmail.com>
-Subject: Re: [PATCH] misc: rtsx: Add support new chip rts5228 mmc:  rtsx: Add
- support MMC_CAP2_NO_MMC
-Message-ID: <20200720220651.GA1035857@bjorn-Precision-5520>
+        id S1726021AbgGTWXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:23:42 -0400
+IronPort-SDR: UWT7XJUsJF3aT70fmOxzIrzLxdfzCr/wq3B22FpGnxt4XYKpfnfSjNSSdbT7GoW03xWtIJX8DA
+ Zdmcy4bi8mhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="129589070"
+X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
+   d="scan'208";a="129589070"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 15:23:41 -0700
+IronPort-SDR: AgaDJwrke57QLb9b+KUIwJFC5H28Pzg1JMmMTEUr8UW+brmvJX22eo3exMVQKWagsBkzXTf6YO
+ jAIMAiYYdDFQ==
+X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
+   d="scan'208";a="487871967"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 15:23:41 -0700
+Subject: [PATCH v3 00/11] ACPI/NVDIMM: Runtime Firmware Activation
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, stable@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 20 Jul 2020 15:07:24 -0700
+Message-ID: <159528284411.993790.11733759435137949717.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706070259.32565-1-ricky_wu@realtek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Puranjay, for LTR issues, original posting at
-https://lore.kernel.org/r/20200706070259.32565-1-ricky_wu@realtek.com]
+Changes since v2 [1]:
+- Drop the "mem-quiet" pm-debug interface in favor of an explicit
+  hibernate_quiet_exec() helper that executes firmware activation, or
+  any other subsystem provided routine, in a system-quiet context.
+  (Rafael)
 
-I've complained about some of this stuff before, but we haven't really
-made any progress yet:
+- Rework the sysfs interface to add an explicit trigger to run
+  activation under hibernate_quiet_exec(). Rename
+  ndbusX/firmware_activate to ndbusX/firmware/activate, and add a
+  ndbusX/firmware/capability. Some ndctl reworks are needed to catch up
+  with this change.
 
-  https://lore.kernel.org/lkml/20171214222522.GL30595@bhelgaas-glaptop.roam.corp.google.com/
+- The new ndbusX/firmware/capability attribute indicates the default
+  activation method / execution context between "live" and "suspend".
 
-On Mon, Jul 06, 2020 at 03:02:59PM +0800, ricky_wu@realtek.com wrote:
-> From: Ricky Wu <ricky_wu@realtek.com>
-> 
-> In order to support new chip rts5228, the definitions of some internal
-> registers and workflow have to be modified.
-> Added rts5228.c rts5228.h for independent functions of the new chip rts5228
+[1]: http://lore.kernel.org/r/159408711335.2385045.2567600405906448375.stgit@dwillia2-desk3.amr.corp.intel.com
 
-> +static void rts5228_init_from_cfg(struct rtsx_pcr *pcr)
-> +{
-> +	u32 lval;
-> +	struct rtsx_cr_option *option = &pcr->option;
-> +
-> +	rtsx_pci_read_config_dword(pcr, PCR_ASPM_SETTING_REG1, &lval);
-> +
-> +
-> +	if (0 == (lval & 0x0F))
-> +		rtsx_pci_enable_oobs_polling(pcr);
-> +	else
-> +		rtsx_pci_disable_oobs_polling(pcr);
-> +
-> +	if (lval & ASPM_L1_1_EN_MASK)
-> +		rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
-> +	else
-> +		rtsx_clear_dev_flag(pcr, ASPM_L1_1_EN);
-> +
-> +	if (lval & ASPM_L1_2_EN_MASK)
-> +		rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
-> +	else
-> +		rtsx_clear_dev_flag(pcr, ASPM_L1_2_EN);
-> +
-> +	if (lval & PM_L1_1_EN_MASK)
-> +		rtsx_set_dev_flag(pcr, PM_L1_1_EN);
-> +	else
-> +		rtsx_clear_dev_flag(pcr, PM_L1_1_EN);
-> +
-> +	if (lval & PM_L1_2_EN_MASK)
-> +		rtsx_set_dev_flag(pcr, PM_L1_2_EN);
-> +	else
-> +		rtsx_clear_dev_flag(pcr, PM_L1_2_EN);
+---
 
-This looks like a bunch of driver-specific #defines that should be
-using the PCI core #defines instead (PCI_L1SS_CTL1_ASPM_L1_1,
-PCI_L1SS_CTL1_ASPM_L1_2, etc).
+Quoting the documentation:
 
-rtsx_pci_read_config_dword() adds very little value and obscures the
-code unnecessarily.
+    Some persistent memory devices run a firmware locally on the device /
+    "DIMM" to perform tasks like media management, capacity provisioning,
+    and health monitoring. The process of updating that firmware typically
+    involves a reboot because it has implications for in-flight memory
+    transactions. However, reboots are disruptive and at least the Intel
+    persistent memory platform implementation, described by the Intel ACPI
+    DSM specification [1], has added support for activating firmware at
+    runtime.
 
-PCR_ASPM_SETTING_REG1 probably should be removed and replaced with
-something like pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS).
+    [1]: https://docs.pmem.io/persistent-memory/
 
-> +	rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, 0xFF, 0);
-> +	if (option->ltr_en) {
-> +		u16 val;
-> +
-> +		pcie_capability_read_word(pcr->pci, PCI_EXP_DEVCTL2, &val);
-> +		if (val & PCI_EXP_DEVCTL2_LTR_EN) {
-> +			option->ltr_enabled = true;
-> +			option->ltr_active = true;
-> +			rtsx_set_ltr_latency(pcr, option->ltr_active_latency);
+The approach taken is to abstract the Intel platform specific mechanism
+behind a libnvdimm-generic sysfs interface. The interface could support
+runtime-firmware-activation on another architecture without need to
+change userspace tooling.
 
-I do not believe this LTR programming is correct.  But I'd be glad to
-be corrected with specific references to the spec.
+The ACPI NFIT implementation involves a set of device-specific-methods
+(DSMs) to 'arm' individual devices for activation and bus-level
+'trigger' method to execute the activation. Informational / enumeration
+methods are also provided at the bus and device level.
 
-One reason I don't think it's correct is because PCIe r5.0, sec 6.18,
-says LTR must not be enabled unless the Root Complex and all
-intermediate Switches indicate support for LTR.  I don't see any
-checking for that here.
+One complicating aspect of the memory device firmware activation is that
+the memory controller may need to be quiesced, no memory cycles, during
+the activation. While the platform has mechanisms to support holding off
+in-flight DMA during the activation, the device response to that delay
+is potentially undefined. The platform may reject a runtime firmware
+update if, for example a PCI-E device does not support its completion
+timeout value being increased to meet the activation time. Outside of
+device timeouts the quiesce period may also violate application
+timeouts.
 
-I *assume* that rtsx_set_ltr_latency() sets values in the LTR
-Extended Capability.  That should be done with
-pci_write_config_word(), not with rtsx_pci_write_register() as is done
-in rtsx_comm_set_ltr_latency().  But maybe rtsx_set_ltr_latency()
-isn't doing what I think it is.
+Given the above device and application timeout considerations the
+implementation uses a new hibernate_quiet_exec() facility to carry-out
+firmware activation. This imposes the same conditions that allow for a
+stable memory image snapshot to be taken for a hibernate-to-disk
+sequence. However, if desired, runtime activation without the hibernate
+freeze can be forced as an override.
 
-I think the values programmed into the LTR Capability depend on some
-platform-specific values that can only be learned from an ACPI _DSM;
-see the PCI Firmware spec, v3.2, sec 4.6.6.
+The ndctl utility grows the following extensions / commands to drive
+this mechanism:
 
-It looks like option->ltr_active_latency is always
-LTR_ACTIVE_LATENCY_DEF (0x883C).  How did you derive that value?
+1/ The existing update-firmware command will 'arm' devices where the
+   firmware image is staged by default.
 
-All the LTR programming should be done by the PCI core.  The PCI core
-does some of that, but not all.  We should work on getting support
-done instead of spreading it around in drivers.
+    ndctl update-firmware all -f firmware_image.bin
 
-> +static void rts5228_enable_aspm(struct rtsx_pcr *pcr, bool enable)
-> +{
-> +	u8 mask, val;
-> +
-> +	if (pcr->aspm_enabled == enable)
-> +		return;
-> +
-> +	mask = FORCE_ASPM_VAL_MASK | FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
-> +	val = FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
-> +	val |= (pcr->aspm_en & 0x02);
-> +	rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, mask, val);
-> +	pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
-> +					   PCI_EXP_LNKCTL_ASPMC, pcr->aspm_en);
-> +	pcr->aspm_enabled = enable;
+2/ The existing ability to enumerate firmware-update capabilities now
+   includes firmware activate capabilities at the 'bus' and 'dimm/device'
+   level:
 
-ASPM configuration should also be done by the PCI core.
+    ndctl list -BDF -b nfit_test.0
+    [
+      {
+        "provider":"nfit_test.0",
+        "dev":"ndbus2",
+        "scrub_state":"idle",
+        "firmware":{
+          "activate_method":"suspend",
+          "activate_state":"idle"
+        },
+        "dimms":[
+          {
+            "dev":"nmem1",
+            "id":"cdab-0a-07e0-ffffffff",
+            "handle":0,
+            "phys_id":0,
+            "security":"disabled",
+            "firmware":{
+              "current_version":0,
+              "can_update":true
+            }
+          },
+    ...
 
-Correct ASPM configuration can only be done by looking at *both* ends
-of the link.  The PCI core is in a position to do that, but individual
-drivers really are not.
+3/ The new activate-firmware command triggers firmware activation per
+   the platform enumerated context, "suspend" vs "live", or can be forced
+   to "live" if there is a explicit knowledge that allowing applications
+   and devices to race the quiesce timeout will have no adverse effects.
 
-Bjorn
+    ndctl activate-firmware nfit_test.0 [--force]
+
+These patches are passing an updated version of the ndctl
+"firmware-update.sh" unit test (to be posted).
+
+---
+
+Dan Williams (11):
+      libnvdimm: Validate command family indices
+      ACPI: NFIT: Move bus_dsm_mask out of generic nvdimm_bus_descriptor
+      ACPI: NFIT: Define runtime firmware activation commands
+      tools/testing/nvdimm: Cleanup dimm index passing
+      tools/testing/nvdimm: Add command debug messages
+      tools/testing/nvdimm: Prepare nfit_ctl_test() for ND_CMD_CALL emulation
+      tools/testing/nvdimm: Emulate firmware activation commands
+      driver-core: Introduce DEVICE_ATTR_ADMIN_{RO,RW}
+      libnvdimm: Convert to DEVICE_ATTR_ADMIN_RO()
+      PM, libnvdimm: Add runtime firmware activation support
+      ACPI: NFIT: Add runtime firmware activate support
+
+
+ Documentation/ABI/testing/sysfs-bus-nfit           |   19 +
+ Documentation/ABI/testing/sysfs-bus-nvdimm         |    2 
+ .../driver-api/nvdimm/firmware-activate.rst        |   86 ++++
+ drivers/acpi/nfit/core.c                           |  142 +++++--
+ drivers/acpi/nfit/intel.c                          |  386 ++++++++++++++++++++
+ drivers/acpi/nfit/intel.h                          |   61 +++
+ drivers/acpi/nfit/nfit.h                           |   38 ++
+ drivers/nvdimm/bus.c                               |   16 +
+ drivers/nvdimm/core.c                              |  149 ++++++++
+ drivers/nvdimm/dimm_devs.c                         |  119 ++++++
+ drivers/nvdimm/namespace_devs.c                    |    2 
+ drivers/nvdimm/nd-core.h                           |    1 
+ drivers/nvdimm/pfn_devs.c                          |    2 
+ drivers/nvdimm/region_devs.c                       |    2 
+ include/linux/device.h                             |    4 
+ include/linux/libnvdimm.h                          |   52 +++
+ include/linux/suspend.h                            |    6 
+ include/linux/sysfs.h                              |    7 
+ include/uapi/linux/ndctl.h                         |    5 
+ kernel/power/hibernate.c                           |   97 +++++
+ tools/testing/nvdimm/test/nfit.c                   |  367 +++++++++++++++----
+ 21 files changed, 1449 insertions(+), 114 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-nvdimm
+ create mode 100644 Documentation/driver-api/nvdimm/firmware-activate.rst
+
+base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
