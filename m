@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09F1226799
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501AA226846
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388056AbgGTQM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:12:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
+        id S1730222AbgGTQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:12:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388031AbgGTQMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:12:52 -0400
+        id S1733224AbgGTQMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:12:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B881620734;
-        Mon, 20 Jul 2020 16:12:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C009E2065E;
+        Mon, 20 Jul 2020 16:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261572;
-        bh=fsnnDiVTPQQbT2KVekUadP5jr9jJ91n2sCUXodLSEyY=;
+        s=default; t=1595261575;
+        bh=bTZfeAWR2pBaRtAlL/mVt3xpRqcquaU//lEAkN+K/r4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FZZkO3YPIP8+w9VOTsMOZjSNlkgrTOQpwkWUwZbdiWFA060L9dzZ2VCxvsPvF5mwh
-         p/kHesTnZYifMt/IH30P8O8SqjkXb0cI2aN7Sk+LaKseLz59x2Di2qo8IodHUb6+Db
-         CtDGUooQ4mw0YW/M/5nEqeT85A6vvlqmeGHXzBTA=
+        b=tt+J/o2xOx+G3sJemFad7Q8OKUdTOgVFgTPSDm3zdaE7F0GudqjO4bu6tURXTKvSU
+         LFe46AopPDKOGIPngYgiDnpmn27xQej3wHGe1l4Ok14x2Dhrx8LXHk09mZ+v353/7n
+         WaWJ9xgIyIRZUScwjlHpj5LgVPMKtkEJRzpoUqVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.7 164/244] USB: serial: iuu_phoenix: fix memory corruption
-Date:   Mon, 20 Jul 2020 17:37:15 +0200
-Message-Id: <20200720152833.642120871@linuxfoundation.org>
+        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.7 165/244] USB: serial: cypress_m8: enable Simply Automated UPB PIM
+Date:   Mon, 20 Jul 2020 17:37:16 +0200
+Message-Id: <20200720152833.690464083@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
 References: <20200720152825.863040590@linuxfoundation.org>
@@ -42,43 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: James Hilliard <james.hilliard1@gmail.com>
 
-commit e7b931bee739e8a77ae216e613d3b99342b6dec0 upstream.
+commit 5c45d04c5081c1830d674f4d22d4400ea2083afe upstream.
 
-The driver would happily overwrite its write buffer with user data in
-256 byte increments due to a removed buffer-space sanity check.
+This is a UPB (Universal Powerline Bus) PIM (Powerline Interface Module)
+which allows for controlling multiple UPB compatible devices from Linux
+using the standard serial interface.
 
-Fixes: 5fcf62b0f1f2 ("tty: iuu_phoenix: fix locking.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.31
+Based on vendor application source code there are two different models
+of USB based PIM devices in addition to a number of RS232 based PIM's.
+
+The vendor UPB application source contains the following USB ID's:
+
+	#define USB_PCS_VENDOR_ID 0x04b4
+	#define USB_PCS_PIM_PRODUCT_ID 0x5500
+
+	#define USB_SAI_VENDOR_ID 0x17dd
+	#define USB_SAI_PIM_PRODUCT_ID 0x5500
+
+The first set of ID's correspond to the PIM variant sold by Powerline
+Control Systems while the second corresponds to the Simply Automated
+Incorporated PIM. As the product ID for both of these match the default
+cypress HID->COM RS232 product ID it assumed that they both use an
+internal variant of this HID->COM RS232 converter hardware. However
+as the vendor ID for the Simply Automated variant is different we need
+to also add it to the cypress_M8 driver so that it is properly
+detected.
+
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Link: https://lore.kernel.org/r/20200616220403.1807003-1-james.hilliard1@gmail.com
+Cc: stable@vger.kernel.org
+[ johan: amend VID define entry ]
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/iuu_phoenix.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/usb/serial/cypress_m8.c |    2 ++
+ drivers/usb/serial/cypress_m8.h |    3 +++
+ 2 files changed, 5 insertions(+)
 
---- a/drivers/usb/serial/iuu_phoenix.c
-+++ b/drivers/usb/serial/iuu_phoenix.c
-@@ -697,14 +697,16 @@ static int iuu_uart_write(struct tty_str
- 	struct iuu_private *priv = usb_get_serial_port_data(port);
- 	unsigned long flags;
+--- a/drivers/usb/serial/cypress_m8.c
++++ b/drivers/usb/serial/cypress_m8.c
+@@ -59,6 +59,7 @@ static const struct usb_device_id id_tab
  
--	if (count > 256)
--		return -ENOMEM;
--
- 	spin_lock_irqsave(&priv->lock, flags);
+ static const struct usb_device_id id_table_cyphidcomrs232[] = {
+ 	{ USB_DEVICE(VENDOR_ID_CYPRESS, PRODUCT_ID_CYPHIDCOM) },
++	{ USB_DEVICE(VENDOR_ID_SAI, PRODUCT_ID_CYPHIDCOM) },
+ 	{ USB_DEVICE(VENDOR_ID_POWERCOM, PRODUCT_ID_UPS) },
+ 	{ USB_DEVICE(VENDOR_ID_FRWD, PRODUCT_ID_CYPHIDCOM_FRWD) },
+ 	{ }						/* Terminating entry */
+@@ -73,6 +74,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(VENDOR_ID_DELORME, PRODUCT_ID_EARTHMATEUSB) },
+ 	{ USB_DEVICE(VENDOR_ID_DELORME, PRODUCT_ID_EARTHMATEUSB_LT20) },
+ 	{ USB_DEVICE(VENDOR_ID_CYPRESS, PRODUCT_ID_CYPHIDCOM) },
++	{ USB_DEVICE(VENDOR_ID_SAI, PRODUCT_ID_CYPHIDCOM) },
+ 	{ USB_DEVICE(VENDOR_ID_POWERCOM, PRODUCT_ID_UPS) },
+ 	{ USB_DEVICE(VENDOR_ID_FRWD, PRODUCT_ID_CYPHIDCOM_FRWD) },
+ 	{ USB_DEVICE(VENDOR_ID_DAZZLE, PRODUCT_ID_CA42) },
+--- a/drivers/usb/serial/cypress_m8.h
++++ b/drivers/usb/serial/cypress_m8.h
+@@ -25,6 +25,9 @@
+ #define VENDOR_ID_CYPRESS		0x04b4
+ #define PRODUCT_ID_CYPHIDCOM		0x5500
  
-+	count = min(count, 256 - priv->writelen);
-+	if (count == 0)
-+		goto out;
++/* Simply Automated HID->COM UPB PIM (using Cypress PID 0x5500) */
++#define VENDOR_ID_SAI			0x17dd
 +
- 	/* fill the buffer */
- 	memcpy(priv->writebuf + priv->writelen, buf, count);
- 	priv->writelen += count;
-+out:
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
- 	return count;
+ /* FRWD Dongle - a GPS sports watch */
+ #define VENDOR_ID_FRWD			0x6737
+ #define PRODUCT_ID_CYPHIDCOM_FRWD	0x0001
 
 
