@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EB0226E14
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38F1226E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731480AbgGTSNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 14:13:09 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:48530 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729921AbgGTSNI (ORCPT
+        id S1730664AbgGTSMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 14:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgGTSMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:13:08 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KICESd057699;
-        Mon, 20 Jul 2020 13:12:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595268734;
-        bh=7tyvgaL+fW83SAUmCUViLrsnXQp4Obzw1ixykaV8ISI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=kMmJlhlJy1WGDQkBsH0rhk1gjbXR46eDnqxStJo9yR8e4XCwYmGToZAVzASCBP1ap
-         Zwj8fcEuBSfB/3IQDcbdF9NkrjPeF52a626LqwoKSRehTDiA4uIhQBdUQaBVHwieZk
-         VPR3y0MW1Qc98QUs6Vm/0vqk5piLefkipNQiQux0=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KICE8Q091024;
-        Mon, 20 Jul 2020 13:12:14 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
- Jul 2020 13:12:14 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 20 Jul 2020 13:12:14 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KICEuK064305;
-        Mon, 20 Jul 2020 13:12:14 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v3 2/2] ASoC: tas2770: Fix reset gpio property name
-Date:   Mon, 20 Jul 2020 13:12:02 -0500
-Message-ID: <20200720181202.31000-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720181202.31000-1-dmurphy@ti.com>
-References: <20200720181202.31000-1-dmurphy@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Mon, 20 Jul 2020 14:12:46 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB56C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 11:12:46 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 124so22894839ybb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 11:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=foQP01o+jLLxWyYMddt7wMxz9LiizEHjChmq39E8dvQ=;
+        b=ks6dk1mRoPvv5K/RguqHzZXRvpQzZ8Sma0KZPaH2f9dcYupIWG8cBMxwDl+AR4xhaV
+         CH1dhBt+6QvtqFvJImE7/TQy6QanJ3RuMki6d2XjchxX6NLmodxKd/KU4im88YsqeISB
+         0PdFNGrai/DE1DxfYYhfhT+51rxO3HwD7yttKR78i/mA3LXJAncVIiTIkjq0TKeK7F2b
+         sHfctGLF7Zvzut+ZSeq6cb4vKRBUUEW2YtnYgEgH5jCsx4+dhdKZHZk4cn03GDcAWKAt
+         Wmc6voUlwuxFz/qni4DIekfBhxrgjZWS+g8WjfJWc6pKMq891yKv8oGa2AbFZd79eTpv
+         o/EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=foQP01o+jLLxWyYMddt7wMxz9LiizEHjChmq39E8dvQ=;
+        b=lvyDltCuvsrtQgMHeNsTR6p72z2ZxLNI9Jatr6bWejo19D6nAdDegQQRpM7BUwqEM+
+         gcnsSUWCEXaDpouPEcCvOL7LPRSCOOFqeepOaCaFc2UYLlWO0VYGCIc5VuAracW81QII
+         XM12q7MiQHv3oYanxQD1U3H1Jk2jFAh4DzWLoSayQCTG3sWm8xwVC6p2qfuWtlzKAk7T
+         U9P3XWh3/0p9tSTkqAaUhDHVIhjZsYgy2FlWWAzYZg71am1mOHHtlCLxbgEXcbIcPacB
+         kVfG/Zm1lkLhPG44RRvG/UWdjFt2kxLuPS6kx8xlWfvyXACD4EGIySBjNoP+z+uf3PNY
+         3nmw==
+X-Gm-Message-State: AOAM531ufQbnMV+zonYA1m8BYrGcakzv/AtKTbbA6zMOpaH7XbyDCuqz
+        YTJn9Rk/byS9BJUD6pngv3ZV/T+7TjaO
+X-Google-Smtp-Source: ABdhPJzqOaS4ZMz+61ASiwWqZJTx0yklQsWOZm640ChrHnJkwqqqGPaVilq3n2xbqX2bO72REcKFb38xI/gV
+X-Received: by 2002:a25:fc04:: with SMTP id v4mr37291336ybd.164.1595268765617;
+ Mon, 20 Jul 2020 11:12:45 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 11:12:22 -0700
+Message-Id: <20200720181237.3015826-1-maskray@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+Subject: [PATCH] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
+From:   Fangrui Song <maskray@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Cc:     Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the reset property name when allocating the GPIO descriptor.
-The gpiod_get_optional appends either the -gpio or -gpios suffix to the
-name.
+When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
+$(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-,
+GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
+/usr/bin/ and Clang as of 11 will search for both
+$(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
 
-Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
+$(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
+$(prefix)aarch64-linux-gnu/$needle rarely contains executables.
+
+To better model how GCC's -B/--prefix takes in effect in practice, newer
+Clang only searches for $(prefix)$needle and for example it will find
+/usr/bin/as instead of /usr/bin/aarch64-linux-gnu-as.
+
+Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)
+(/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
+appropriate cross compiling GNU as (when -no-integrated-as is in
+effect).
+
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1099
 ---
- sound/soc/codecs/tas2770.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 4538b2d0216f..1eb9b77439eb 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -759,8 +759,7 @@ static int tas2770_i2c_probe(struct i2c_client *client,
- 		}
- 	}
- 
--	tas2770->reset_gpio = devm_gpiod_get_optional(tas2770->dev,
--							  "reset-gpio",
-+	tas2770->reset_gpio = devm_gpiod_get_optional(tas2770->dev, "reset",
- 						      GPIOD_OUT_HIGH);
- 	if (IS_ERR(tas2770->reset_gpio)) {
- 		if (PTR_ERR(tas2770->reset_gpio) == -EPROBE_DEFER) {
+diff --git a/Makefile b/Makefile
+index 0b5f8538bde5..3ac83e375b61 100644
+--- a/Makefile
++++ b/Makefile
+@@ -567,7 +567,7 @@ ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
+ ifneq ($(CROSS_COMPILE),)
+ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+ GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+-CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
++CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)
+ GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+ endif
+ ifneq ($(GCC_TOOLCHAIN),)
 -- 
-2.27.0
+2.28.0.rc0.105.gf9edc3c819-goog
 
