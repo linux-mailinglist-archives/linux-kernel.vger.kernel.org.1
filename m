@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5217D22702A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F1C22702B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgGTVH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:07:27 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39206 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgGTVH1 (ORCPT
+        id S1726611AbgGTVJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:09:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58574 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726381AbgGTVJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:07:27 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D94031C0BE2; Mon, 20 Jul 2020 23:07:25 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 23:07:22 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 041/133] Revert "usb/ohci-platform: Fix a warning
- when hibernating"
-Message-ID: <20200720210722.GA11552@amd>
-References: <20200720152803.732195882@linuxfoundation.org>
- <20200720152805.704517976@linuxfoundation.org>
+        Mon, 20 Jul 2020 17:09:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595279373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mlHthLgSXx+0yukG47QpZktLnXxCHnNa5qkendynQ2U=;
+        b=WWarP0NI0eAqiVyUopWQyBPrp9wat8QuH4IMT4MJAmqqIK5eZ2e2dzQQfOy5nk5IDfFA5n
+        2LEAhmBiqCeUuJ2uvzFHjwrJiYwN+2xqLNu7f+8lT0jnrbFOqyRpCwJd580r0wPaOwuF21
+        vbjnX0p+WsOA0CFczMqH2XSEPRJvqt4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-305-nSOylXgzOdqC6eVgTMJPiw-1; Mon, 20 Jul 2020 17:09:31 -0400
+X-MC-Unique: nSOylXgzOdqC6eVgTMJPiw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC3D41902EA0;
+        Mon, 20 Jul 2020 21:09:30 +0000 (UTC)
+Received: from gimli.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CB2176214;
+        Mon, 20 Jul 2020 21:09:27 +0000 (UTC)
+Subject: [PATCH] vfio/pci: Hold igate across releasing eventfd contexts
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        cohuck@redhat.com, prime.zeng@hisilicon.com
+Date:   Mon, 20 Jul 2020 15:09:27 -0600
+Message-ID: <159527934542.26615.503005826695043299.stgit@gimli.home>
+User-Agent: StGit/0.19-dirty
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
-Content-Disposition: inline
-In-Reply-To: <20200720152805.704517976@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+No need to release and immediately re-acquire igate while clearing
+out the eventfd ctxs.
 
---bp/iNruPH9dso1Pn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+ drivers/vfio/pci/vfio_pci.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Hi!
-On Mon 2020-07-20 17:36:28, Greg Kroah-Hartman wrote:
-> This reverts commit c83258a757687ffccce37ed73dba56cc6d4b8a1b.
->=20
-> Eugeniu Rosca writes:
->=20
-> On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
-> >After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
-> >Set PM runtime as active on resume") into downstream v4.14.x, we started
-> >to consistently experience below panic [1] on every second s2ram of
-> >R-Car H3 Salvator-X Renesas reference board.
-> >
-> >After some investigations, we concluded the following:
-> > - the issue does not exist in vanilla v5.8-rc4+
-> > - [bisecting shows that] the panic on v4.14.186 is caused by the lack
-> >   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
-> >   link support"). Getting evidence for that is easy. Reverting
-> >   987351e1ea7772 in vanilla leads to a similar backtrace [2].
-> >
-> >Questions:
-> > - Backporting 987351e1ea7772 ("phy: core: Add consumer device
-> >   link support") to v4.14.187 looks challenging enough, so probably not
-> >   worth it. Anybody to contradict this?
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index b0258b79bb5b..dabca0450e6d 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -523,14 +523,12 @@ static void vfio_pci_release(void *device_data)
+ 		vfio_pci_vf_token_user_add(vdev, -1);
+ 		vfio_spapr_pci_eeh_release(vdev->pdev);
+ 		vfio_pci_disable(vdev);
++
+ 		mutex_lock(&vdev->igate);
+ 		if (vdev->err_trigger) {
+ 			eventfd_ctx_put(vdev->err_trigger);
+ 			vdev->err_trigger = NULL;
+ 		}
+-		mutex_unlock(&vdev->igate);
+-
+-		mutex_lock(&vdev->igate);
+ 		if (vdev->req_trigger) {
+ 			eventfd_ctx_put(vdev->req_trigger);
+ 			vdev->req_trigger = NULL;
 
-I'm not sure about v4.14.187, but backport to v4.19 is quite simple
-(just ignore single non-existing file) and passes basic testing.
-
-Would that be better solution for 4.19 and newer?
-
-> > - Assuming no plans to backport the missing mainline commit to v4.14.x,
-> >   should the following three v4.14.186 commits be reverted on v4.14.x?
-> >   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
-> >   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
-> >   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on res=
-ume")
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---bp/iNruPH9dso1Pn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl8WB4oACgkQMOfwapXb+vKCXQCgmMJbj/q/X85kLcSkTWrKywOT
-7zMAn1rPDePz2FZ2R/tmn5rmAIVw50Bs
-=qsSw
------END PGP SIGNATURE-----
-
---bp/iNruPH9dso1Pn--
