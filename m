@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CC92271E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C612271EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgGTVtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgGTVtp (ORCPT
+        id S1726425AbgGTV6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:58:40 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:32779 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgGTV6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:49:45 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5342C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 14:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Q/pmUl9G9tnIINckX+tsc4ZNDGVpCit7S6QnO2IEd7w=; b=Gadm/98gBnXxEvK0+FpIzGCCvW
-        FDiBWH+ibqVz6jGQaLhPole6CbO2mFOmoIxn+F5jveIZNcb7MSBi8u/b49zwggvxfKroIVAbGjjPa
-        n5ZHitwtSJFL26qAyZ09T+mjzYf885xBwFFswSVyPR9tnOF++n8z32YVwbp6sPLd+ol/m7T0GLZYt
-        SLamz/Fesla3Ozg8zFXPyCkpggBKftZmOVvbroAMoJzO8NqOUc4tRUPkKqxwsuoN199gBpkELsa4W
-        3vogAveu0epEF2qsUHs/ZBPNPJ+0O+e0AZfIHihRMFj4m8w7pc3aT98VQuFGpKpKNKMOVYacHXdCU
-        pCnAEfhg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxdez-0007Qr-I1; Mon, 20 Jul 2020 21:49:21 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5A83A983454; Mon, 20 Jul 2020 23:49:18 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 23:49:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>, sfr@canb.auug.org.au
-Subject: Re: [tip:sched/fifo 44/45] ERROR: modpost: "sched_setscheduler"
- undefined!
-Message-ID: <20200720214918.GM5523@worktop.programming.kicks-ass.net>
-References: <202006192249.AYnVBGCH%lkp@intel.com>
- <20200709124505.GT597537@hirez.programming.kicks-ass.net>
- <20200709115818.36a956a4@oasis.local.home>
+        Mon, 20 Jul 2020 17:58:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595282319; x=1626818319;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=45dWPGxVKj5CeUsx8GRPCPcqJSQ4hOGmZ2+CaHH+JPY=;
+  b=rBtZ/URdIoWEPlNIpgt6Ej4VMv/TH2OmrlBCJaIltdxykWTuVTsMdNxE
+   8nG4L18KKgu7wZsNKS4D/pvmFGzWNqirraY5Aq1/dWp1FhXaWxbMmTv9g
+   A1woOAmRmNch+Lm/fH9ZSk2YBH+toVcgu7yLr9WrvKxsop19iy7xdWTI8
+   uCVKawb9IKBxWOJekDS8YFcBDd7idvkw34Di+UyvKiQXX8zNi/CYpf64H
+   NeLvQJi4pN47/FwEZuksKYLdVKtQ1TEn/WkeYjlSh3kmfrsL0y1Ir9M8U
+   OFsI9FMnI7ixm7YVvG9H5xEO74C+pcXSNHUem+njEAt5Aa71dcGsktmta
+   w==;
+IronPort-SDR: Wgd3wbnyVO27AwQAmYOUlZr66JtXUrmiIA+gM9K3UgDRDEmeRnZqiNxZIwX1pAysXksb5t0Pml
+ BwXFLGAlavSHAv3Q6EoDf6NPgwS6v3QUXfQVDW1teo9xT6fkgH5e2DI0s8mPnZTgm4lWU9ULzq
+ 7Uj6qf9ps3+BQGcJb5lNATTcNyoFLv3S8kk981EY2+pPPUEsG40mB+eIkitkzR+6WlrSMdOaHb
+ LH928S2aEYFFCtOPms97q9CvY8H6IAuUoYm+I8tKsgBq4hOmSLxeLAe4cAY7gRHmGXlGxVhcur
+ ihk=
+X-IronPort-AV: E=Sophos;i="5.75,375,1589212800"; 
+   d="scan'208";a="142957049"
+Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Jul 2020 05:58:30 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XTUsPh9OEFxQoRXZsbsw48QZp62W41cqAvIYQlaiYahm0KfCgI5tORj2Vn7djT6RCIMQ3z17Mx7NYZv+ZdBSl9lzNTVcmsWVZo+OOqgvL7GaGHupt0PeYRBic6oz4V/aobxpd/GgBafhL5sBpJ43mMVKX0spZo5yoDjXH17GkA116tE1WhBHfWr5J1osg3uGBK779ZxLjR59xBKMhFkVncUbbtb6sN+DBnyNN/P56oU+H+l+F87+bwHJSAcY0+hDC4a1s7/OwHm6Zexf5H/Se/+8YDN6G/dqBwyxgWB0StfU8sXmA3m6jbRSEy44UdsbZC3smWXiBl4+6OIwIRJuww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=45dWPGxVKj5CeUsx8GRPCPcqJSQ4hOGmZ2+CaHH+JPY=;
+ b=HvF9a7wGfm2twjOr96LT9OZK3hWtzWj1x3dIuShW9g/S2TnZSLqc5NeTnn/+vje6gLfnhqTgM3jGBBEspionT49o7q86IqPxcaQsrZHP6IRZDHIvW5vnf9WoO5aQUCgxbaT65HF+zfnOXyNuCcZmfXZojiluESXRD+1GzPu6/NodhDP4hW0wjgOP+mCzhFY1Nre8jnTzyxcjVGWEeWbUyQiBKp21Z323mSRTgWSgf1c7Jd+z5fErdiTJt+NH+zto2vHDAihPcPidJ7d/jaiNbnCVarGGZvHcm+TvqSOMclc/YpkdRwSYq+0pyzHeaEbDhiEmaIn8adpERah4epN+rw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=45dWPGxVKj5CeUsx8GRPCPcqJSQ4hOGmZ2+CaHH+JPY=;
+ b=oBmQS4TfMNS4BFGSFyenHq9gkBX7AKTqFZgmIiP+eNj07XIAL8NL7Hoe2opUy7YEVRiYOTP/bTDOREX5K9NMN/EojFj2t848mqaLeNOm/CifD2XYeJnzcfvZXwOn2ZksIGRfmxnU8oEWBqRzqsq0c6Us9E03fph8KDqyra7ZDZ8=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB3861.namprd04.prod.outlook.com (2603:10b6:a02:ac::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.24; Mon, 20 Jul
+ 2020 21:58:29 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::98a4:d2c9:58c5:dee4]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::98a4:d2c9:58c5:dee4%5]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
+ 21:58:29 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Sagi Grimberg <sagi@grimberg.me>
+CC:     Logan Gunthorpe <logang@deltatee.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [PATCH v15 7/9] nvmet-passthru: Add passthru code to process
+ commands
+Thread-Topic: [PATCH v15 7/9] nvmet-passthru: Add passthru code to process
+ commands
+Thread-Index: AQHWW7Bs3rS14btVx0e0NQ0AiEjaXQ==
+Date:   Mon, 20 Jul 2020 21:58:29 +0000
+Message-ID: <BYAPR04MB4965E4374C4A99F326507A88867B0@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20200716203319.16022-1-logang@deltatee.com>
+ <20200716203319.16022-8-logang@deltatee.com> <20200720141606.GF4627@lst.de>
+ <e939dd43-9e7f-8ef0-162b-2a27f53e6e1a@grimberg.me>
+ <5cc390cf-9b0b-b48b-7447-37934be51ee0@deltatee.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: grimberg.me; dkim=none (message not signed)
+ header.d=none;grimberg.me; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1fc5a610-276b-433f-2423-08d82cf809a5
+x-ms-traffictypediagnostic: BYAPR04MB3861:
+x-microsoft-antispam-prvs: <BYAPR04MB386198FC620D47F5ABF1CFC0867B0@BYAPR04MB3861.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Adh52lO7BWuTC0+1+T965zdIQ0RBJdBj3trxrNNMTezC8fFOybXFLJYSGwWeF1uZTVo+G8EzAX8QsZ7gUV30QvrUeh+OoGeR4upZhbsJ1iWO1x6hVLGSH37ocqh0O7/SehnYSp4AimL3lsYwYIjHE/fxsF/ksQ6Oq1SdnPZn5LuWWwcTJGwf9g+uUHNw+oo+gqjU8srYyOf9bdKDsREsX2jy1tfnI3MhXxao5PFyeyBH26b4ck4B5UrQK7TLjVaSPTMfMdumXdSdqgpCFKZ+uv4BaXtWCQct7kSgHoz+BrxxV2CLn7jaVmFkswGRBvWl0xyNuTvo3o4t9e2TdqwqbA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(346002)(39860400002)(366004)(136003)(7696005)(8936002)(66946007)(71200400001)(4744005)(4326008)(55016002)(9686003)(33656002)(66556008)(66446008)(76116006)(86362001)(316002)(5660300002)(2906002)(8676002)(64756008)(6916009)(186003)(66476007)(6506007)(53546011)(52536014)(478600001)(54906003)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ARnRtBDA/SfUYVALMbwzVpAwEHYfd5YccC1pKIbPwC5fUe5aNj9VYqMhowa00BGwgB77Zd0QOyCZp4t5cJvoyPs78vr4KbN68TbQTYmWDC1umkaJB1Qpqv6/j5cjEtPtVUMeleWFzX94T4OprDuhqH4n1ckUBGMH2lIJSm+EtxTcTRBX4VsFcmUNSOuRXlS+KhZ2yZ2RdK0eAop8RmLWtwJ/OtHGDLtmkBq/sXUDhr6ELt83P5lQNSpX2FMEJ62sLkH6JJfl+EX1Vs6WXePRuLNdweTAgpnmnhvOb4K3ZXRdailVtvsHIGnHjM2T1qSgEvfCq/g3M9rx/Gt63WBznzMPr74ZA0d55bHQTewCiweZ/6PTw+l2lYeInW+zEfVUKlN/bHM3ZpbYVwUx4QBmwNaJarARlq8Cg9IeNS/i/5u7ULp6ukFngz1ibrTg1M3b/1K065Fbx+7et78lRwpz0lScdKbdo/ZmPLybjZiek7s=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709115818.36a956a4@oasis.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1fc5a610-276b-433f-2423-08d82cf809a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 21:58:29.6315
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PBs5w+BJi8Sa/h/AECz5ctPtjhuJW9ZWMGV3qZRFoj1XexiaIcIm/s73BokpgQkSauSZI8L/mkSPl6lD4KYGBhye1OUFWlXeFuRDnAGXZwE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3861
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:58:18AM -0400, Steven Rostedt wrote:
-> On Thu, 9 Jul 2020 14:45:05 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Fri, Jun 19, 2020 at 10:15:51PM +0800, kernel test robot wrote:
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/fifo
-> > > head:   8b700983de82f79e05b2c1136d6513ea4c9b22c4
-> > > commit: 616d91b68cd56bcb1954b6a5af7d542401fde772 [44/45] sched: Remove sched_setscheduler*() EXPORTs
-> > > config: x86_64-rhel (attached as .config)
-> > > compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         git checkout 616d91b68cd56bcb1954b6a5af7d542401fde772
-> > >         # save the attached .config to linux build tree
-> > >         make W=1 ARCH=x86_64 
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All errors (new ones prefixed by >>, old ones prefixed by <<):
-> > >   
-> > > >> ERROR: modpost: "sched_setscheduler" [kernel/trace/ring_buffer_benchmark.ko] undefined!  
-> > 
-> > Steve, do you have any preference on how to go about fixing this one?
-> 
-> Well, I use to manually set the priority of the test, but I guess we
-> can switch the parameters to accepting a "high, medium, and low" that
-> will correspond to your setting of the other sched_setscheduler() calls
-> that were replaced.
-
-Steve, would this work for you, or would you prefer renaming the
-parameters as well?
-
----
- kernel/trace/ring_buffer_benchmark.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
-index 8df0aa810950..0ee3d41ceee4 100644
---- a/kernel/trace/ring_buffer_benchmark.c
-+++ b/kernel/trace/ring_buffer_benchmark.c
-@@ -455,21 +455,19 @@ static int __init ring_buffer_benchmark_init(void)
- 	 * Run them as low-prio background tasks by default:
- 	 */
- 	if (!disable_reader) {
--		if (consumer_fifo >= 0) {
--			struct sched_param param = {
--				.sched_priority = consumer_fifo
--			};
--			sched_setscheduler(consumer, SCHED_FIFO, &param);
--		} else
-+		if (consumer_fifo > 1)
-+			sched_set_fifo(consumer);
-+		else if (consumer_fifo >= 0)
-+			sched_set_fifo_low(consumer);
-+		else
- 			set_user_nice(consumer, consumer_nice);
- 	}
- 
--	if (producer_fifo >= 0) {
--		struct sched_param param = {
--			.sched_priority = producer_fifo
--		};
--		sched_setscheduler(producer, SCHED_FIFO, &param);
--	} else
-+	if (producer_fifo > 1)
-+		sched_set_fifo(producer);
-+	else if (producer_fifo >= 0)
-+		sched_set_fifo_low(producer);
-+	else
- 		set_user_nice(producer, producer_nice);
- 
- 	return 0;
-
+On 7/20/20 14:41, Logan Gunthorpe wrote:=0A=
+>> That is a neat idea! should be easy to do (and we can then lose the host=
+=0A=
+>> xarray stuff). I don't mind having it on a later patch, but it should be=
+=0A=
+>> easy enough to do even before...=0A=
+>>=0A=
+> I sort of follow this. I can try to work something up but it will=0A=
+> probably take me a few iterations to get it to where you want it. So,=0A=
+> roughly, we'd create a passthrough_q in core with the controller's IO=0A=
+> tagset and then cleanup the fabrics hosts to use that instead of each=0A=
+> independently creating their connect_q?=0A=
+> =0A=
+> Though, I don't understand how this relates to the host xarray stuff=0A=
+> that Sagi mentioned...=0A=
+=0A=
+I didn't understand it either how having a passthru q can get rid of the=0A=
+struct nvme_ns search when nsid is embedded in the nvme_cmd in=0A=
+the I/O path ?=0A=
+=0A=
+Sagi can you please explain ?=0A=
