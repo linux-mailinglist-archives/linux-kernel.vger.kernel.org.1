@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671222269E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BD2226A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732058AbgGTP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58752 "EHLO mail.kernel.org"
+        id S2388823AbgGTQbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:31:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732047AbgGTP6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:31 -0400
+        id S1731887AbgGTP5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:57:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8139920734;
-        Mon, 20 Jul 2020 15:58:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5969620773;
+        Mon, 20 Jul 2020 15:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260711;
-        bh=XTUF+o5CIluzJxCVc/liIpiAQyJPlLkC0DzwQTYaWYY=;
+        s=default; t=1595260636;
+        bh=FAokqGgeK6mWcP265Yn4T2/8YECIOHBdNrkvb9y7XbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qBc5o9365dXMvoQzbllGedCQcJjzFEtyCje2nXbp3QNtHpdLLrJFksRvcxNy1HCMy
-         p64+5cLDOxYwY9wEa7yb0ierRi/vU5JRSE6vmrc5mdTOfNmy2iJsgGkcZRdTRVBOzi
-         ggolMenSs3tga98gxNs1UkH1miC9FpDrmz1EE8DY=
+        b=WvwyELylzVQwEXboB1uqC8TwZCn8+9S5HpubI7Q/BSewB7SVSFyrpQfcHIyGgabkn
+         EMmFjLmlqV6KgX730vnkehPsnzy/c0g7P3z+eZgEGPf9BjoL6N3me9mUf1eKG2s+d+
+         eEjSGf4Hn/War+iVbIXrFiZg36w6+6+Ox28/PYvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
+        stable@vger.kernel.org, Marshall Midden <marshallmidden@gmail.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/215] m68k: mm: fix node memblock init
-Date:   Mon, 20 Jul 2020 17:35:20 +0200
-Message-Id: <20200720152821.994807772@linuxfoundation.org>
+Subject: [PATCH 5.4 040/215] cifs: prevent truncation from long to int in wait_for_free_credits
+Date:   Mon, 20 Jul 2020 17:35:22 +0200
+Message-Id: <20200720152822.093089179@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -46,37 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Dureghello <angelo.dureghello@timesys.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit c43e55796dd4d13f4855971a4d7970ce2cd94db4 ]
+[ Upstream commit 19e888678bac8c82206eb915eaf72741b2a2615c ]
 
-After pulling 5.7.0 (linux-next merge), mcf5441x mmu boot was
-hanging silently.
+The wait_event_... defines evaluate to long so we should not assign it an int as this may truncate
+the value.
 
-memblock_add() seems not appropriate, since using MAX_NUMNODES
-as node id, while memblock_add_node() sets up memory for node id 0.
-
-Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Reported-by: Marshall Midden <marshallmidden@gmail.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/mm/mcfmmu.c | 2 +-
+ fs/cifs/transport.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-index 6cb1e41d58d00..70a5f55ea6647 100644
---- a/arch/m68k/mm/mcfmmu.c
-+++ b/arch/m68k/mm/mcfmmu.c
-@@ -164,7 +164,7 @@ void __init cf_bootmem_alloc(void)
- 	m68k_memory[0].addr = _rambase;
- 	m68k_memory[0].size = _ramend - _rambase;
- 
--	memblock_add(m68k_memory[0].addr, m68k_memory[0].size);
-+	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0);
- 
- 	/* compute total pages in system */
- 	num_pages = PFN_DOWN(_ramend - _rambase);
+diff --git a/fs/cifs/transport.c b/fs/cifs/transport.c
+index fe1552cc8a0a7..eafc49de4d7f7 100644
+--- a/fs/cifs/transport.c
++++ b/fs/cifs/transport.c
+@@ -528,7 +528,7 @@ wait_for_free_credits(struct TCP_Server_Info *server, const int num_credits,
+ 		      const int timeout, const int flags,
+ 		      unsigned int *instance)
+ {
+-	int rc;
++	long rc;
+ 	int *credits;
+ 	int optype;
+ 	long int t;
 -- 
 2.25.1
 
