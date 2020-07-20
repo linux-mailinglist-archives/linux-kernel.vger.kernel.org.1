@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A59B2268C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8025622694F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388395AbgGTQUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:20:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
+        id S1731750AbgGTQA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387695AbgGTQKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:10:42 -0400
+        id S1732380AbgGTQAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:00:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBA6220672;
-        Mon, 20 Jul 2020 16:10:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E09020578;
+        Mon, 20 Jul 2020 16:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261442;
-        bh=Y5bg9Y4GnzcKG6Ap7wWceKNr1KDlKIQK5OveZjreIZo=;
+        s=default; t=1595260818;
+        bh=v524NkExBB2dE3saBgiSvQ5ty8mbFAC4Cg1ZB04RqxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yHJv6qeC/l1y53q7hxs+RlvDLYffyUqoxY0vqTSGRyYC46z5y0eGHUMqoHuXxk1Sc
-         TW/l2Gudpt4rMuurOD1vqDox6D/Ha/uPnxClaBghmRNejOg0aTtQAlxOfpSnUi6WfZ
-         e5BFWfoMPn53FK6bSOSWJwaewPf/6GZ+Io+5t/5A=
+        b=zDSjJJZPTS7oDhKxyGOsYczCUM9E9rxGH2fcj2pUN1ExLrI1yn2UaeoXrQGpLFcpL
+         VYQ8Dey/0yhMm3Lm5HMFUURmj+SoUJFl9LUEwUv6n5CCog6gC8obOTT1f7eIZk5IoK
+         7RLL36OjMHeFs5hP/bVL7nUTc1UC01q37puilCKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.7 118/244] arm: dts: mt7623: add phy-mode property for gmac2
-Date:   Mon, 20 Jul 2020 17:36:29 +0200
-Message-Id: <20200720152831.452338153@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 108/215] clk: mvebu: ARMADA_AP_CPU_CLK needs to select ARMADA_AP_CP_HELPER
+Date:   Mon, 20 Jul 2020 17:36:30 +0200
+Message-Id: <20200720152825.338642575@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit ff5b89c2858f28006f9f9c0a88c55a679488192c upstream.
+[ Upstream commit 8e3709d7e3a67e2d3f42bd1fc2052353a5678944 ]
 
-Add phy-mode property required by phylink on gmac2
+When building arm32 allmodconfig:
 
-Fixes: b8fc9f30821e ("net: ethernet: mediatek: Add basic PHYLINK support")
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Link: https://lore.kernel.org/r/70e3eff31ecd500ed4862d9de28325a4dbd15105.1583648927.git.sean.wang@mediatek.com
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ld.lld: error: undefined symbol: ap_cp_unique_name
+>>> referenced by ap-cpu-clk.c
+>>>               clk/mvebu/ap-cpu-clk.o:(ap_cpu_clock_probe) in archive drivers/built-in.a
 
+ap_cp_unique_name is only compiled into the kernel image when
+CONFIG_ARMADA_AP_CP_HELPER is selected (as it is not user selectable).
+However, CONFIG_ARMADA_AP_CPU_CLK does not select it.
+
+This has been a problem since the driver was added to the kernel but it
+was not built before commit c318ea261749 ("cpufreq: ap806: fix cpufreq
+driver needs ap cpu clk") so it was never noticed.
+
+Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lore.kernel.org/r/20200701201128.2448427-1-natechancellor@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/mt7623n-rfb-emmc.dts |    1 +
+ drivers/clk/mvebu/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-+++ b/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-@@ -138,6 +138,7 @@
- 	mac@1 {
- 		compatible = "mediatek,eth-mac";
- 		reg = <1>;
-+		phy-mode = "rgmii";
- 		phy-handle = <&phy5>;
- 	};
+diff --git a/drivers/clk/mvebu/Kconfig b/drivers/clk/mvebu/Kconfig
+index 415e6906a113f..76cd06f4ed62a 100644
+--- a/drivers/clk/mvebu/Kconfig
++++ b/drivers/clk/mvebu/Kconfig
+@@ -42,6 +42,7 @@ config ARMADA_AP806_SYSCON
  
+ config ARMADA_AP_CPU_CLK
+ 	bool
++	select ARMADA_AP_CP_HELPER
+ 
+ config ARMADA_CP110_SYSCON
+ 	bool
+-- 
+2.25.1
+
 
 
