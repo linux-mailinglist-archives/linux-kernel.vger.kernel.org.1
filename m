@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37501225A3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14D0225A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgGTIlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 04:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
+        id S1728014AbgGTIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 04:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgGTIlG (ORCPT
+        with ESMTP id S1726030AbgGTIlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 04:41:06 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CF2C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 01:41:06 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id m16so8370913pls.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 01:41:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wJVaqEwj+i9esEAclMGRP9Zfh0g/F6dNbku9w6XnviM=;
-        b=TfdMPEasQT3G+tfqzADvLujHuxexhLRJ/plXttAQMI/n79r14vE+9EgS9X61y2x1ai
-         +NffY2FQTULcj5DhilVQK0uMlOQCO1O4IwpfxJYeCoAPlyc5FAETNZ9n0AZJI5gMxrHu
-         yy0O/H5bNUky91nSddtnq0aguz31//kJvMFbLTolcHAtNidnrFe5N6Z2Vz7AwaJTEj18
-         UNHkDqQV5l5MaiADb20P9L/4VsBCkJAV3RRjJvCjWP4ehVgNSXJRvIzm37jw80pM8QtT
-         9uF8pLlEdopnr7CKw7KGdlQJBfvj3EHl8K8IjJOglIaVK+vV7sPk28X8HBQr6NVzPyzU
-         iE9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wJVaqEwj+i9esEAclMGRP9Zfh0g/F6dNbku9w6XnviM=;
-        b=RQM9vKYXWEsmtvT5FyGeL/+3625BiUoGmCOywtQy0a9WV7nHAoGfnOHrV1draNRlEY
-         T7QTOnCMr+iqs3O+ONSG758irL2bFpqYK2Sw4F7/v6LBQNUp01udjh4D8g4DOVg64Eal
-         D8UrtzSsfswYN4shqsZ0eisGUnKjhs7IdOLi3YIqgYKXPVGwdpyqUPaxY7Uo9PI3JQjZ
-         kmZBrIypCd1+SuG3BHcZVPhWmf5qSoXMCY+POLkxaGi/lKFN4c1SPC9l8QcAWzd9UDH/
-         tfRSJDcMCNHtVpZsYEduV9EnOvq4Yy/EziMfxTrOoEOLpCpM5TjpzWHrvNMbOUbKX1fA
-         MIrQ==
-X-Gm-Message-State: AOAM532+cJEmhTXhmzFpf+H/hcQ71G5+idDcREGMJwpuJkP3A77CK4f1
-        v1wTQvgwlYfUW9grGdWbGFI=
-X-Google-Smtp-Source: ABdhPJyw0SFDFAB9z1Re98/4CrbPAPEVCxg/GXuVgVhN0OjY0CiciY/rJMPbK9vj3nWWM+V4/+y8CQ==
-X-Received: by 2002:a17:90a:cc03:: with SMTP id b3mr20585675pju.80.1595234465832;
-        Mon, 20 Jul 2020 01:41:05 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id u66sm16035298pfb.191.2020.07.20.01.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 01:41:05 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 17:41:02 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] printk: use the lockless ringbuffer
-Message-ID: <20200720084102.GC463@jagdpanzerIV.localdomain>
-References: <20200709132344.760-1-john.ogness@linutronix.de>
- <20200709132344.760-5-john.ogness@linutronix.de>
- <20200718121053.GA691245@elver.google.com>
- <20200719034312.GA566736@jagdpanzerIV.localdomain>
- <20200720064303.GA2144711@elver.google.com>
+        Mon, 20 Jul 2020 04:41:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FE4C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 01:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Q7H8FhLFAWwenVaWoaULPDjpconR6IkD92nyts4yKVU=; b=Fr2uojTEhUZfwR7jKyuXuTVajc
+        xK+lrm8l8kqREEwn+X9PxXcQqNfWBt+B3cYfNZzqrOvM9ILI7FSw+r9nIu7WwRr9vybDpj/ZXDxKr
+        ywRW95Iac4x7Anzm8BGj0D8lRWb+gSw7M2Z/apnwlTp91JbjxGrOlLD/h7TphzFfRWV8N9dy0F0oE
+        rvAk/hzgrwQ2c/m31mUIjLlM2bszkbcBTN8Qg8tMGjaL5520sl8hTmOcHpMcMbnRpSdVgMuQEo3yc
+        +t9gGZjqo4CyrSjyhkgGoX281Ux3rRT/1Ee8gMyNEdFeGxxQZLn84/W2ogzeSZv0cUhjIT/1VJ8sA
+        p8uOmw+Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxRMF-0007Kv-5p; Mon, 20 Jul 2020 08:41:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 782453010C8;
+        Mon, 20 Jul 2020 10:41:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 444732129EDD8; Mon, 20 Jul 2020 10:41:06 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 10:41:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
+ <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
+ <20200717122651.GA6067@redhat.com>
+ <20200717124017.GB6067@redhat.com>
+ <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
+ <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+ <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com>
+ <20200720082657.GC6612@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720064303.GA2144711@elver.google.com>
+In-Reply-To: <20200720082657.GC6612@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/20 08:43), Marco Elver wrote:
-> On Sun, Jul 19, 2020 at 12:43PM +0900, Sergey Senozhatsky wrote:
+On Mon, Jul 20, 2020 at 10:26:58AM +0200, Oleg Nesterov wrote:
+> Peter,
 > 
-> As I said, a number of debugging tools use them to format reports to be
-> more readable (visually separate title and report body, and separate
-> parts of the report). Also, such reports are often parsed by CI systems,
-> and by changing the reports, these CI systems may break. But those are
-> just the usecases I'm acutely aware of
+> Let me add another note. TASK_TRACED/TASK_STOPPED was always protected by
+> ->siglock. In particular, ttwu(__TASK_TRACED) must be always called with
+> ->siglock held. That is why ptrace_freeze_traced() assumes it can safely
+> do s/TASK_TRACED/__TASK_TRACED/ under spin_lock(siglock).
+> 
+> Can this change race with
+> 
+> 		if (signal_pending_state(prev->state, prev)) {
+> 			prev->state = TASK_RUNNING;
+> 		}
+> 
+> in __schedule() ? Hopefully not, signal-state is protected by siglock too.
+> 
+> So I think this logic was correct even if it doesn't look nice. But "doesn't
+> look nice" is true for the whole ptrace code ;)
 
-Can you give example of such CI systems? // that's a real question //
+*groan*... another bit of obscure magic :-(
 
-	-ss
+let me go try and wake up and figure out how best to deal with this.
