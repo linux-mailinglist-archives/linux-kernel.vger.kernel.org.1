@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D755822725D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D35227260
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgGTWZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:25:06 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58951 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgGTWZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:25:02 -0400
-IronPort-SDR: AVmOq5gjxDHxbjoDH3SwJo6mrZBRqHye8C1lbG2U/HmjtXxUzE+guuGj+7KXnwowlXiLtKXjyu
- RXOnVoyn9DsA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="234872346"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="234872346"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 15:25:02 -0700
-IronPort-SDR: 7/8S0vjEb159Htfk5t56meupFSDitBKxBe6kaGNj3wIIqVks0Bb4VPnQ+m4WL92KaLYoq3eDWw
- 8jQv1c4zitmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="318149101"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga008.jf.intel.com with ESMTP; 20 Jul 2020 15:25:02 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 21189301BF5; Mon, 20 Jul 2020 15:25:02 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 15:25:02 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 12/12] perf intel-pt: Add support for decoding PSB+
- only
-Message-ID: <20200720222502.GC1180481@tassilo.jf.intel.com>
-References: <20200710151104.15137-1-adrian.hunter@intel.com>
- <20200710151104.15137-13-adrian.hunter@intel.com>
+        id S1728301AbgGTWZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:25:10 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:36588 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgGTWZF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:25:05 -0400
+Received: by mail-il1-f196.google.com with SMTP id x9so14729042ila.3;
+        Mon, 20 Jul 2020 15:25:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MZqPehWuAaKZ1kDIiDAtIDxeI9fYnQ6uKzjYm+bg3hw=;
+        b=l74HM/QEIyMume9MYOGL+Y2z/FpKO5mNYjLxU543TVaJxNc1xBJ42YvkAIISSKnsEa
+         BDpZUGL1ddvRTET/lKwYmmBZh9ZzLdLAnj0F1QC8Hdw0iKqeMj0kuUftRM0h1UTJEHiT
+         T38wgfr7vRM3mFCQXPGGIwvGk3D3OptoSbNVorfCByFGrsEr5D8H1nd48LA4t1wN7//d
+         04EQfb9/DkkvgMwzhOAw0Vx2wfE1EqRlDEU2byM43dBDaa4XJXpCn6HCFI6KmDQfo6hJ
+         M7t49+PCrBVsXg0zWnK8MWer9TVHLN993BEGVbNbggCjliAQ9XLYu9YtmDFKklBBxN6y
+         8YfQ==
+X-Gm-Message-State: AOAM533J6fkqwJJcHqhzt2Ny74kVvpzTFnsADYeC8zBZjY4Qfw2YDJnB
+        ZXEe75K0vSEZmCWB+LrlpQ==
+X-Google-Smtp-Source: ABdhPJwB+CzpX9Dgd3C5ILBklMR8r62BD85LbwTOjFwD1kOkV+ZDYDVOCXLvY4fVyBJrJ9WY0ZIYUA==
+X-Received: by 2002:a92:8552:: with SMTP id f79mr25548228ilh.225.1595283904930;
+        Mon, 20 Jul 2020 15:25:04 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id u9sm10033330iom.14.2020.07.20.15.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 15:25:04 -0700 (PDT)
+Received: (nullmailer pid 3060507 invoked by uid 1000);
+        Mon, 20 Jul 2020 22:25:03 -0000
+Date:   Mon, 20 Jul 2020 16:25:03 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dmurphy@ti.com, jacek.anaszewski@gmail.com, vishwa@linux.ibm.com
+Subject: Re: [PATCH 1/2] dt-bindings: leds: pca955x: Add IBM implementation
+ compatible string
+Message-ID: <20200720222503.GA3058862@bogus>
+References: <20200709201220.13736-1-eajames@linux.ibm.com>
+ <20200709201220.13736-2-eajames@linux.ibm.com>
+ <20200711134814.GB6407@amd>
+ <ad50a2a7-0b06-420e-baa7-dec2787ab30d@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200710151104.15137-13-adrian.hunter@intel.com>
+In-Reply-To: <ad50a2a7-0b06-420e-baa7-dec2787ab30d@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 06:11:04PM +0300, Adrian Hunter wrote:
-> A single q option decodes ip from only FUP/TIP packets. Make it so that
-> repeating the q option (i.e. qq) decodes only PSB+, getting ip if there is
-> a FUP packet within PSB+ (i.e. between PSB and PSBEND).
+On Mon, Jul 13, 2020 at 09:28:32AM -0500, Eddie James wrote:
 > 
-> Example:
+> On 7/11/20 8:48 AM, Pavel Machek wrote:
+> > Hi!
+> > 
+> > > IBM created an implementation of the PCA9552 on a PIC16F
+> > > microcontroller. Document the new compatible string for this device.
+> > Is the implementation opensource?
 > 
->  $ perf record -e intel_pt//u grep -rI pudding drivers
->  [ perf record: Woken up 52 times to write data ]
->  [ perf record: Captured and wrote 57.870 MB perf.data ]
->  $ time perf script --itrace=bi | wc -l
->  58948289
 > 
->  real    1m23.863s
->  user    1m23.251s
->  sys     0m7.452s
->  $ time perf script --itrace=biq | wc -l
->  3385694
+> Hi, no it is not.
 > 
->  real    0m4.453s
->  user    0m4.455s
->  sys     0m0.328s
->  $ time perf script --itrace=biqq | wc -l
->  1883
 > 
->  real    0m0.047s
->  user    0m0.043s
->  sys     0m0.009s
+> > 
+> > > Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> > > +++ b/Documentation/devicetree/bindings/leds/leds-pca955x.txt
+> > > @@ -9,6 +9,7 @@ Required properties:
+> > >   	"nxp,pca9550"
+> > >   	"nxp,pca9551"
+> > >   	"nxp,pca9552"
+> > > +	"nxp,pca9552-ibm"
+> > >   	"nxp,pca9553"
+> > Is it good idea to use nxp prefix for something that is
+> > software-defined and not built by nxp?
 > 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/Documentation/perf-intel-pt.txt     | 15 +++++++++++++++
->  .../util/intel-pt-decoder/intel-pt-decoder.c   | 18 ++++++++++++++++++
->  2 files changed, 33 insertions(+)
 > 
-> diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-> index f9fe4a4040ba..d5a266d7f15b 100644
-> --- a/tools/perf/Documentation/perf-intel-pt.txt
-> +++ b/tools/perf/Documentation/perf-intel-pt.txt
-> @@ -999,6 +999,21 @@ What *will* be decoded with the (single) q option:
->  Note the q option does not specify what events will be synthesized e.g. the p
->  option must be used also to show power events.
->  
-> +Repeating the q option (double-q i.e. qq) results in even faster decoding and even
-> +less detail.  The decoder decodes only extended PSB (PSB+) packets, getting the
-> +instruction pointer if there is a FUP packet within PSB+ (i.e. between PSB and
-> +PSBEND).  Note PSB packets occur regularly in the trace based on the psb_period
-> +config term (refer config terms section).  There will be a FUP packet if the
-> +PSB+ occurs while control flow is being traced.
+> Yea I suppose not...
+> 
+> > 
+> > Would ibm,pca9552 be better, or maybe even sw,pca9552 to indicate that
+> > is not real hardware, but software emulation?
+> 
+> 
+> How about ibm,pca9552-sw? Someone suggested that just adding "sw" could be a
+> problem if another company does the same thing but it isn't compatible.
 
-Some estimate would be good how frequent that is.
+ibm,pca9552 is good.
 
-If we assume one bit per instruction then a 2K period it's roughly 16k instructions,
-with the 16K period roughly 128K instructions.
-
-Could be added in a followon patch.
-
-But looks overall the patches look good to me now.
-
-(for the whole series)
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Rob
