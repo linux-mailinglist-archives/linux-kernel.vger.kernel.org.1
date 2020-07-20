@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536CC226B9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA30226BB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731274AbgGTQnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:43:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34808 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730116AbgGTQnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:43:08 -0400
-IronPort-SDR: HCY3rPSSn6I2fxQg2ybSKsMgc5r8YNSkR/gj3gjGAY7lbtttvYtqg1ttt3/1W7ZGfxz4I/bHg3
- R7IdzA+6Mycw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="211497322"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="211497322"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 09:43:06 -0700
-IronPort-SDR: d4PLIuEwn7c0OTzx6bO7SLAnEHKLtwtFBvlrqqp3K9C7F/ygYHygZcewVV6IJYkG5wc3JVAbLT
- ovlOs0gRdsWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="318061857"
-Received: from otc-nc-03.jf.intel.com ([10.54.39.25])
-  by orsmga008.jf.intel.com with ESMTP; 20 Jul 2020 09:43:06 -0700
-From:   Ashok Raj <ashok.raj@intel.com>
-To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Lu Baolu <baolu.lu@intel.com>
-Cc:     Ashok Raj <ashok.raj@intel.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [PATCH] PCI/ATS: PASID and PRI are only enumerated in PF devices.
-Date:   Mon, 20 Jul 2020 09:43:00 -0700
-Message-Id: <1595263380-209956-1-git-send-email-ashok.raj@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1732661AbgGTQnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:43:37 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:37650 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731575AbgGTQnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:43:32 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KGhSoS033897;
+        Mon, 20 Jul 2020 11:43:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595263408;
+        bh=IhQglFTuHMFx3Wmu6u79WQ8Np7iv2tLYaEeJlwjbcSw=;
+        h=From:To:Subject:Date;
+        b=jP93GE6w7hi4lPU+yHZKbBdgM8MqhNdScpSBMPfMdqyka57tIwBKjs/Y7VvxD6nof
+         kTlqvUH6/sc78K7TVOFJdMPII9Rtle7J8DW3x/hLJuMhDLVYGD6G/IkhSR1Q0cHfA1
+         QhqBuwMpwWX6ltqwhhLHHVfrVWW0giKb51N6bjw4=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06KGhSdR113392
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 11:43:28 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
+ Jul 2020 11:43:27 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 20 Jul 2020 11:43:27 -0500
+Received: from uda0868495.fios-router.home (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KGhROP013493;
+        Mon, 20 Jul 2020 11:43:27 -0500
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: hsr: check for return value of skb_put_padto()
+Date:   Mon, 20 Jul 2020 12:43:27 -0400
+Message-ID: <20200720164327.16977-1-m-karicheri2@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PASID and PRI capabilities are only enumerated in PF devices. VF devices
-do not enumerate these capabilites. IOMMU drivers also need to enumerate
-them before enabling features in the IOMMU. Extending the same support as
-PASID feature discovery (pci_pasid_features) for PRI.
+skb_put_padto() can fail. So check for return type and return NULL
+for skb. Caller checks for skb and acts correctly if it is NULL.
 
-Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Fixes: 6d6148bc78d2 ("net: hsr: fix incorrect lsdu size in the tag of HSR frames for small frames")
 
-To: Bjorn Helgaas <bhelgaas@google.com>
-To: Joerg Roedel <joro@8bytes.com>
-To: Lu Baolu <baolu.lu@intel.com>
-Cc: stable@vger.kernel.org
-Cc: linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: iommu@lists.linux-foundation.org
+Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
 ---
- drivers/iommu/intel/iommu.c |  2 +-
- drivers/pci/ats.c           | 14 ++++++++++++++
- include/linux/pci-ats.h     |  1 +
- 3 files changed, 16 insertions(+), 1 deletion(-)
+ net/hsr/hsr_forward.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d759e7234e98..276452f5e6a7 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2560,7 +2560,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
- 			}
- 
- 			if (info->ats_supported && ecap_prs(iommu->ecap) &&
--			    pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_PRI))
-+			    pci_pri_supported(pdev))
- 				info->pri_supported = 1;
- 		}
- 	}
-diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-index b761c1f72f67..ffb4de8c5a77 100644
---- a/drivers/pci/ats.c
-+++ b/drivers/pci/ats.c
-@@ -461,6 +461,20 @@ int pci_pasid_features(struct pci_dev *pdev)
+diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+index e42fd356f073..1ea17752fffc 100644
+--- a/net/hsr/hsr_forward.c
++++ b/net/hsr/hsr_forward.c
+@@ -120,15 +120,17 @@ static struct sk_buff *frame_get_stripped_skb(struct hsr_frame_info *frame,
+ 	return skb_clone(frame->skb_std, GFP_ATOMIC);
  }
- EXPORT_SYMBOL_GPL(pci_pasid_features);
  
-+/**
-+ * pci_pri_supported - Check if PRI is supported.
-+ * @pdev: PCI device structure
-+ *
-+ * Returns false when no PRI capability is present.
-+ * Returns true if PRI feature is supported and enabled
-+ */
-+bool pci_pri_supported(struct pci_dev *pdev)
-+{
-+	/* VFs share the PF PRI configuration */
-+	return !!(pci_physfn(pdev)->pri_cap);
-+}
-+EXPORT_SYMBOL_GPL(pci_pri_supported);
+-static void hsr_fill_tag(struct sk_buff *skb, struct hsr_frame_info *frame,
+-			 struct hsr_port *port, u8 proto_version)
++static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
++				    struct hsr_frame_info *frame,
++				    struct hsr_port *port, u8 proto_version)
+ {
+ 	struct hsr_ethhdr *hsr_ethhdr;
+ 	int lane_id;
+ 	int lsdu_size;
+ 
+ 	/* pad to minimum packet size which is 60 + 6 (HSR tag) */
+-	skb_put_padto(skb, ETH_ZLEN + HSR_HLEN);
++	if (skb_put_padto(skb, ETH_ZLEN + HSR_HLEN))
++		return NULL;
+ 
+ 	if (port->type == HSR_PT_SLAVE_A)
+ 		lane_id = 0;
+@@ -147,6 +149,8 @@ static void hsr_fill_tag(struct sk_buff *skb, struct hsr_frame_info *frame,
+ 	hsr_ethhdr->hsr_tag.encap_proto = hsr_ethhdr->ethhdr.h_proto;
+ 	hsr_ethhdr->ethhdr.h_proto = htons(proto_version ?
+ 			ETH_P_HSR : ETH_P_PRP);
 +
- #define PASID_NUMBER_SHIFT	8
- #define PASID_NUMBER_MASK	(0x1f << PASID_NUMBER_SHIFT)
- /**
-diff --git a/include/linux/pci-ats.h b/include/linux/pci-ats.h
-index f75c307f346d..073d57292445 100644
---- a/include/linux/pci-ats.h
-+++ b/include/linux/pci-ats.h
-@@ -28,6 +28,7 @@ int pci_enable_pri(struct pci_dev *pdev, u32 reqs);
- void pci_disable_pri(struct pci_dev *pdev);
- int pci_reset_pri(struct pci_dev *pdev);
- int pci_prg_resp_pasid_required(struct pci_dev *pdev);
-+bool pci_pri_supported(struct pci_dev *pdev);
- #endif /* CONFIG_PCI_PRI */
++	return skb;
+ }
  
- #ifdef CONFIG_PCI_PASID
+ static struct sk_buff *create_tagged_skb(struct sk_buff *skb_o,
+@@ -175,9 +179,10 @@ static struct sk_buff *create_tagged_skb(struct sk_buff *skb_o,
+ 	memmove(dst, src, movelen);
+ 	skb_reset_mac_header(skb);
+ 
+-	hsr_fill_tag(skb, frame, port, port->hsr->prot_version);
+-
+-	return skb;
++	/* skb_put_padto free skb on error and hsr_fill_tag returns NULL in
++	 * that case
++	 */
++	return hsr_fill_tag(skb, frame, port, port->hsr->prot_version);
+ }
+ 
+ /* If the original frame was an HSR tagged frame, just clone it to be sent
 -- 
-2.7.4
+2.17.1
 
