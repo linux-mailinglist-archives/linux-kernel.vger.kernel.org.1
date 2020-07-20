@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179EC226BEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2C3226BCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730798AbgGTQpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:45:40 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:14165 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729826AbgGTPlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:08 -0400
+        id S2389087AbgGTQol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:44:41 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:56113 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729902AbgGTPlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:41:35 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595259667; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1595259695; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=r/yNFTKy3cACuNdHlkj6MWPsfGUj2lizZtThQE0+hs4=; b=DgWhA7li2mQHHiMkzjLiHl9x8RzFB3NBptLuvwCvxbnJAchHs7NtrTMKkj+2UzXTSklSmVOZ
- +thHH5DELYdJ0yaR17r1n8p7AFTrEgKOZm5WNca/d5Ky3czy+Tos7m7ynJ9gRUj0U26p+/7r
- W/AM0YX/pn4JD2mOhLf1l6/BTyU=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ Sender; bh=3lmJSoG9dimkIfG89flae8eVFFK1YUE+QtLZtUj9m6c=; b=LvURJvPW6Upe3TzZOC2+x+CkY8m7sNktiUiDl57vLES4lUj3gp5A1jeG1r/WllFxPlLnw1lH
+ me/F2AQRhDMGXvtAQTfqEN4mVMZwS5JQjFLuWT/5NjtyCKcPlagD4vd7GrV+pHlG9yezJUg2
+ Dq89z2+IvLGQZPDEroPX5YeUc0U=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5f15bb137c8ca473a8fc66bb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 15:41:07
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f15bb1a03c8596cdb482dbf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 15:41:14
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 487F7C433CA; Mon, 20 Jul 2020 15:41:04 +0000 (UTC)
+        id 5542DC433AF; Mon, 20 Jul 2020 15:41:11 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -36,9 +37,9 @@ Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.2
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E7C0C433AF;
-        Mon, 20 Jul 2020 15:41:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5E7C0C433AF
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9496EC4344E;
+        Mon, 20 Jul 2020 15:41:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9496EC4344E
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
 From:   Jordan Crouse <jcrouse@codeaurora.org>
@@ -50,9 +51,9 @@ Cc:     Robin Murphy <robin.murphy@arm.com>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
         Joerg Roedel <joro@8bytes.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v10 01/13] iommu/arm-smmu: Pass io-pgtable config to implementation specific function
-Date:   Mon, 20 Jul 2020 09:40:35 -0600
-Message-Id: <20200720154047.3611092-2-jcrouse@codeaurora.org>
+Subject: [PATCH v10 04/13] iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
+Date:   Mon, 20 Jul 2020 09:40:38 -0600
+Message-Id: <20200720154047.3611092-5-jcrouse@codeaurora.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200720154047.3611092-1-jcrouse@codeaurora.org>
 References: <20200720154047.3611092-1-jcrouse@codeaurora.org>
@@ -63,75 +64,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Construct the io-pgtable config before calling the implementation specific
-init_context function and pass it so the implementation specific function
-can get a chance to change it before the io-pgtable is created.
+Add a special implementation for the SMMU attached to most Adreno GPU
+target triggered from the qcom,adreno-smmu compatible string.
+
+The new Adreno SMMU implementation will enable split pagetables
+(TTBR1) for the domain attached to the GPU device (SID 0) and
+hard code it context bank 0 so the GPU hardware can implement
+per-instance pagetables.
 
 Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
 ---
 
- drivers/iommu/arm-smmu-impl.c |  3 ++-
- drivers/iommu/arm-smmu.c      | 11 ++++++-----
- drivers/iommu/arm-smmu.h      |  3 ++-
- 3 files changed, 10 insertions(+), 7 deletions(-)
+ drivers/iommu/arm-smmu-impl.c |  3 ++
+ drivers/iommu/arm-smmu-qcom.c | 83 ++++++++++++++++++++++++++++++++++-
+ drivers/iommu/arm-smmu.h      |  1 +
+ 3 files changed, 85 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
-index c75b9d957b70..a20e426d81ac 100644
+index b71b14685cc9..3bb1ef4e85f7 100644
 --- a/drivers/iommu/arm-smmu-impl.c
 +++ b/drivers/iommu/arm-smmu-impl.c
-@@ -68,7 +68,8 @@ static int cavium_cfg_probe(struct arm_smmu_device *smmu)
- 	return 0;
+@@ -176,5 +176,8 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+ 	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
+ 		return qcom_smmu_impl_init(smmu);
+ 
++	if (of_device_is_compatible(smmu->dev->of_node, "qcom,adreno-smmu"))
++		return qcom_adreno_smmu_impl_init(smmu);
++
+ 	return smmu;
  }
+diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+index be4318044f96..b9a5c5369e86 100644
+--- a/drivers/iommu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm-smmu-qcom.c
+@@ -12,6 +12,67 @@ struct qcom_smmu {
+ 	struct arm_smmu_device smmu;
+ };
  
--static int cavium_init_context(struct arm_smmu_domain *smmu_domain)
-+static int cavium_init_context(struct arm_smmu_domain *smmu_domain,
-+		struct io_pgtable_cfg *pgtbl_cfg)
- {
- 	struct cavium_smmu *cs = container_of(smmu_domain->smmu,
- 					      struct cavium_smmu, smmu);
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 243bc4cb2705..0e2c65ee9e5a 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -797,11 +797,6 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 		cfg->asid = cfg->cbndx;
- 
- 	smmu_domain->smmu = smmu;
--	if (smmu->impl && smmu->impl->init_context) {
--		ret = smmu->impl->init_context(smmu_domain);
--		if (ret)
--			goto out_unlock;
--	}
- 
- 	pgtbl_cfg = (struct io_pgtable_cfg) {
- 		.pgsize_bitmap	= smmu->pgsize_bitmap,
-@@ -812,6 +807,12 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 		.iommu_dev	= smmu->dev,
- 	};
- 
-+	if (smmu->impl && smmu->impl->init_context) {
-+		ret = smmu->impl->init_context(smmu_domain, &pgtbl_cfg);
-+		if (ret)
-+			goto out_clear_smmu;
++#define QCOM_ADRENO_SMMU_GPU_SID 0
++
++static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
++{
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
++	int idx, i;
++
++	/*
++	 * The GPU will always use SID 0 so that is a handy way to uniquely
++	 * identify it and configure it for per-instance pagetables
++	 */
++	for_each_cfg_sme(cfg, fwspec, i, idx) {
++		u16 sid = FIELD_GET(ARM_SMMU_SMR_ID, fwspec->ids[i]);
++
++		if (sid == QCOM_ADRENO_SMMU_GPU_SID)
++			return true;
 +	}
 +
- 	if (smmu_domain->non_strict)
- 		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
++	return false;
++}
++
++static int qcom_adreno_smmu_alloc_context_bank(struct arm_smmu_domain *smmu_domain,
++		struct device *dev, int start, int count)
++{
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++
++	/*
++	 * Assign context bank 0 to the GPU device so the GPU hardware can
++	 * switch pagetables
++	 */
++	if (qcom_adreno_smmu_is_gpu_device(dev)) {
++		if (start > 0 || test_bit(0, smmu->context_map))
++			return -ENOSPC;
++
++		set_bit(0, smmu->context_map);
++		return 0;
++	}
++
++	return __arm_smmu_alloc_bitmap(smmu->context_map, start, count);
++}
++
++static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
++		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
++{
++	/* Only enable split pagetables for the GPU device (SID 0) */
++	if (!qcom_adreno_smmu_is_gpu_device(dev))
++		return 0;
++
++	/*
++	 * All targets that use the qcom,adreno-smmu compatible string *should*
++	 * be AARCH64 stage 1 but double check because the arm-smmu code assumes
++	 * that is the case when the TTBR1 quirk is enabled
++	 */
++	if ((smmu_domain->stage == ARM_SMMU_DOMAIN_S1) &&
++	    (smmu_domain->cfg.fmt == ARM_SMMU_CTX_FMT_AARCH64))
++		pgtbl_cfg->quirks |= IO_PGTABLE_QUIRK_ARM_TTBR1;
++
++	return 0;
++}
++
+ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ 	{ .compatible = "qcom,adreno" },
+ 	{ .compatible = "qcom,mdp4" },
+@@ -65,7 +126,15 @@ static const struct arm_smmu_impl qcom_smmu_impl = {
+ 	.reset = qcom_smmu500_reset,
+ };
  
+-struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
++static const struct arm_smmu_impl qcom_adreno_smmu_impl = {
++	.init_context = qcom_adreno_smmu_init_context,
++	.def_domain_type = qcom_smmu_def_domain_type,
++	.reset = qcom_smmu500_reset,
++	.alloc_context_bank = qcom_adreno_smmu_alloc_context_bank,
++};
++
++static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
++		const struct arm_smmu_impl *impl)
+ {
+ 	struct qcom_smmu *qsmmu;
+ 
+@@ -75,8 +144,18 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+ 
+ 	qsmmu->smmu = *smmu;
+ 
+-	qsmmu->smmu.impl = &qcom_smmu_impl;
++	qsmmu->smmu.impl = impl;
+ 	devm_kfree(smmu->dev, smmu);
+ 
+ 	return &qsmmu->smmu;
+ }
++
++struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
++{
++	return qcom_smmu_create(smmu, &qcom_smmu_impl);
++}
++
++struct arm_smmu_device *qcom_adreno_smmu_impl_init(struct arm_smmu_device *smmu)
++{
++	return qcom_smmu_create(smmu, &qcom_adreno_smmu_impl);
++}
 diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index d172c024be61..38b041530a4f 100644
+index d10d745a0290..9f81c1fffe1e 100644
 --- a/drivers/iommu/arm-smmu.h
 +++ b/drivers/iommu/arm-smmu.h
-@@ -383,7 +383,8 @@ struct arm_smmu_impl {
- 			    u64 val);
- 	int (*cfg_probe)(struct arm_smmu_device *smmu);
- 	int (*reset)(struct arm_smmu_device *smmu);
--	int (*init_context)(struct arm_smmu_domain *smmu_domain);
-+	int (*init_context)(struct arm_smmu_domain *smmu_domain,
-+			struct io_pgtable_cfg *cfg);
- 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
- 			 int status);
- 	int (*def_domain_type)(struct device *dev);
+@@ -491,6 +491,7 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+ 
+ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu);
+ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu);
++struct arm_smmu_device *qcom_adreno_smmu_impl_init(struct arm_smmu_device *smmu);
+ 
+ int arm_mmu500_reset(struct arm_smmu_device *smmu);
+ 
 -- 
 2.25.1
 
