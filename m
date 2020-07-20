@@ -2,142 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCDC226FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 22:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC85E226FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 22:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgGTUYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 16:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S1731141AbgGTUZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 16:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729901AbgGTUYP (ORCPT
+        with ESMTP id S1727123AbgGTUZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 16:24:15 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D71C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:24:14 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id d11so9213027vsq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:24:14 -0700 (PDT)
+        Mon, 20 Jul 2020 16:25:01 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C27C061794;
+        Mon, 20 Jul 2020 13:25:01 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 1so9629954pfn.9;
+        Mon, 20 Jul 2020 13:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f8OZQPM5EHX3K0LcIbG7M5SK0hksxqYnwmQqH5pq9aU=;
-        b=Vm+rTjwEti7KsrVH0G9zYwoD4ZvDR6asQnjKP0m5wquwlArH8wQZRdqCHpEs2vHPvD
-         g75u4ABiQ/mstLqHDFM3kEjUdBRDLkaT+aHsmawJTSXH6qiC4UZtxnBplOeiU32rw9e6
-         TVFHTnzR3EKkZyrNnb68WQkbezTZ8VZU5t++w=
+        bh=lV6IEO34DQ5QN270Bu39re+3l43e4KkGz76UFGIKMPY=;
+        b=S/UyPh1SVbNXyTmocCZYmDKUTj5L9a220+TtVXBficI1O5knNPOcaGC2pXKDFGX51U
+         Vps02OhDwXqKhFv2dz9GRcPkCFRiO2ocUfFBW4lFFChHNeLjftmFsrQpio9fJUKHXtuK
+         LYPcfswEtbfQAfg+n3WB2SU6IclopRkZWehdj7hMiNjMkJO2Yw7MeyCTmSchBILyhko+
+         O9mFWYu6k3kqTmVisfuJyhYuZfddGqb60xAdc/a+UDtBihUdiTKupFhmuoqYwLMUFSXi
+         zRnB+L/DmnSkTwjsWQy5R4LD/XnXiQn5Ttgh7GyVfnJsgi1ZfIj4skEKLxtTipGR6SqW
+         B7EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f8OZQPM5EHX3K0LcIbG7M5SK0hksxqYnwmQqH5pq9aU=;
-        b=mMReK0Qbn6ABIFwY7YwGigNZlLvoUXLFevFQrsFBbC4tHSGSVgQYQwcwhFEDo3oFuT
-         fOujgnlRm3mSuUOG5pIb9sCr4LCgWuTCWWvXHp0yHESykSp8UHVToFwWmd54lumE6oXD
-         za+UvrjFC1/vYNyvRtMXxPSR7UcviDZrATfB3ak73MjX6EBDmqm1fD552w0vEKj09iU/
-         DjbHJdUsYXpze2cF3zZKnTpVjk8M+WmcP1Jg2qllznj/4tUEqWBboUihtXBeBK55jee0
-         +Wg3r1/HXH3TxCXfYONQaHkJGZHrmd/AVEsRRt5MdGeVwrBu7IfxEB96L1+8szDzGk3L
-         bNyQ==
-X-Gm-Message-State: AOAM532a+KTz5AV6MRm3GaSqxL19Rd6fcsIGs6WcYZ6ARjSu4yQx7dPY
-        ggmFkkWQK6eSEgf4twfLAkodaPTZhu8=
-X-Google-Smtp-Source: ABdhPJyiIChQ6Ejh6h5Uyvl4Z9z+8ag8p+3p08KdThdd3OWoleK7beIwo+8ziBVQ28kiXixXgoh3tA==
-X-Received: by 2002:a67:db97:: with SMTP id f23mr17830354vsk.135.1595276653712;
-        Mon, 20 Jul 2020 13:24:13 -0700 (PDT)
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
-        by smtp.gmail.com with ESMTPSA id j189sm2387461vsd.24.2020.07.20.13.24.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 13:24:12 -0700 (PDT)
-Received: by mail-vs1-f44.google.com with SMTP id x13so9169764vsx.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:24:12 -0700 (PDT)
-X-Received: by 2002:a05:6102:20a:: with SMTP id z10mr17445636vsp.213.1595276651995;
- Mon, 20 Jul 2020 13:24:11 -0700 (PDT)
+        bh=lV6IEO34DQ5QN270Bu39re+3l43e4KkGz76UFGIKMPY=;
+        b=bL4SlI/5Trj2f1u9EFIJxTr58ewBlLcYU/Nc8RJJlQ1ytEZvE/OwItKsNdmvfPKzEU
+         +P0OBPrmGb1hZcf65qzznDS44y3q3Wh5HbeafYBprhmp1WHPKPBqbXXh4gJQzIArEsWl
+         vnqrhN4KiAIf6sTVz2q6NOzjG4GKkxTgQrPK56zQyk9VEwpMuSwTMFe4skrJS1CA9W+1
+         ZVdAAExKvwSkzBkUp5Zi0cqjBlkM20lF/g6fDqBYsddKpydvoWYBVsQJCkEsGzigleEx
+         nyfJrOULSgct2leE/AC/Bq75HoSwfG5IzHQdacShpywVH+1pwtGRdgOkJKhcl4AeO6fm
+         BONw==
+X-Gm-Message-State: AOAM5318/NdCvQwzOqLxhLY/z8O8qGTpipW2Mf4ALg3+fnztxpuDS0Xj
+        00L0b9aFl3P/z9YB2Th0wzqaXvWdB5ceruDAzyfu4MKVqGYaOTxx
+X-Google-Smtp-Source: ABdhPJyA5NiuDH5xG/UxH7vPxminMYJd6g32yNQTgAJi8Fay2X98YCRy6kYiQzVCB66lBwoaCg+fuB9uHt+Q1LKEDUs=
+X-Received: by 2002:a63:571e:: with SMTP id l30mr20617701pgb.220.1595276700348;
+ Mon, 20 Jul 2020 13:25:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200716132120.1.I01e738cd469b61fc9b28b3ef1c6541a4f48b11bf@changeid>
-In-Reply-To: <20200716132120.1.I01e738cd469b61fc9b28b3ef1c6541a4f48b11bf@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 20 Jul 2020 13:24:00 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WonUcENxsY_jnYdw3d5rS0OMmrDAoMsDwYRZbMwCkJdw@mail.gmail.com>
-Message-ID: <CAD=FV=WonUcENxsY_jnYdw3d5rS0OMmrDAoMsDwYRZbMwCkJdw@mail.gmail.com>
-Subject: Re: [PATCH] drm: panel: simple: Delay HPD checking on
- boe_nv133fhm_n61 for 15 ms
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200720200916.31082-1-puilp0502@gmail.com>
+In-Reply-To: <20200720200916.31082-1-puilp0502@gmail.com>
+From:   Frank Yang <puilp0502@gmail.com>
+Date:   Tue, 21 Jul 2020 05:24:34 +0900
+Message-ID: <CA+rSvc7goy-h-Hu7MruaryngBs39_8oE1AijFAnybuDSiSRHhw@mail.gmail.com>
+Subject: Re: [PATCH] HID: Support Varmilo Keyboards' media hotkeys
+To:     linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-
-On Thu, Jul 16, 2020 at 1:21 PM Douglas Anderson <dianders@chromium.org> wrote:
+On Tue, 2020-07-21 at 05:10 +0900, Frank Yang <puilp0502@gmail.com> wrote:
 >
-> On boe_nv133fhm_n62 (and presumably on boe_nv133fhm_n61) a scope shows
-> a small spike on the HPD line right when you power the panel on.  The
-> picture looks something like this:
+> The Varmilo VA104M Keyboard (04b4:07b1, reported as Varmilo Z104M)
+> exposes media control hotkeys as a USB HID consumer control device,
+> but these keys do not work in the current (5.8-rc1) kernel due to
+> the incorrect HID report descriptor. Fix the problem by modifying
+> the internal HID report descriptor.
 >
->          +--------------------------------------
->          |
->          |
->          |
-> Power ---+
->                                            +---
->                                            |
->               ++                           |
->          +----+|                           |
-> HPD -----+     +---------------------------+
+> More specifically, the keyboard report descriptor specifies the
+> logical boundary as 572~10754 (0x023c ~ 0x2a02) while the usage
+> boundary is specified as 0~10754 (0x00 ~ 0x2a02). This results in an
+> incorrect interpretation of input reports, causing inputs to be ignored.
+> By setting the Logical Minimum to zero, we align the logical boundary
+> with the Usage ID boundary.
 >
-> So right when power is applied there's a little bump in HPD and then
-> there's small spike right before it goes low.  The total time of the
-> little bump plus the spike was measured on one panel as being 8 ms
-> long.  The total time for the HPD to go high on the same panel was
-> 51.2 ms, though the datasheet only promises it is < 200 ms.
+> Some notes:
 >
-> When asked about this glitch, BOE indicated that it was expected and
-> persisted until the TCON has been initialized.
+> * There seem to be multiple variants of the VA104M keyboard. This
+>   patch specifically targets 04b4:07b1 variant.
 >
-> If this was a real hotpluggable DP panel then this wouldn't matter a
-> whole lot.  We'd debounce the HPD signal for a really long time and so
-> the little blip wouldn't hurt.  However, this is not a hotpluggable DP
-> panel and the the debouncing logic isn't needed and just shows down
-> the time needed to get the display working.  This is why the code in
-> panel_simple_prepare() doesn't do debouncing and just waits for HPD to
-> go high once.  Unfortunately if we get unlucky and happen to poll the
-> HPD line right at the spike we can try talking to the panel before
-> it's ready.
+> * The device works out-of-the-box on Windows platform with the generic
+>   consumer control device driver (hidserv.inf). This suggests that
+>   Windows either ignores the Logical Minimum/Logical Maximum or
+>   interprets the Usage ID assignment differently from the linux
+>   implementation; Maybe there are other devices out there that only
+>   works on Windows due to this problem?
 >
-> Let's handle this situation by putting in a 15 ms prepare delay and
-> decreasing the "hpd absent delay" by 15 ms.  That means:
-> * If you don't have HPD hooked up at all you've still got the
->   hardcoded 200 ms delay.
-> * If you've got HPD hooked up you will always wait at least 15 ms
->   before checking HPD.  The only case where this could be bad is if
->   the panel is sharing a voltage rail with something else in the
->   system and was already turned on long before the panel came up.  In
->   such a case we'll be delaying 15 ms for no reason, but it's not a
->   huge delay and I don't see any other good solution to handle that
->   case.
->
-> Even though the delay was measured as 8 ms, 15 ms was chosen to give a
-> bit of margin.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Frank Yang <puilp0502@gmail.com>
 > ---
-> I don't actually have a device in front of me that is exhibiting these
-> problems.  I believe that it is only some devices and some of the
-> time.  Still, this patch seems safe and seems likely to fix the issue
-> given the scope shots.
+>  drivers/hid/Kconfig       |  6 ++++
+>  drivers/hid/Makefile      |  1 +
+>  drivers/hid/hid-ids.h     |  2 ++
+>  drivers/hid/hid-varmilo.c | 58 +++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 67 insertions(+)
+>  create mode 100644 drivers/hid/hid-varmilo.c
+>
+> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+> index 443c5cbbde04..c9f0c9b79158 100644
+> --- a/drivers/hid/Kconfig
+> +++ b/drivers/hid/Kconfig
+> @@ -441,6 +441,12 @@ config HID_WALTOP
+>         ---help---
+>         Support for Waltop tablets.
+>
+> +config HID_VARMILO
+> +       tristate "Varmilo Keyboards"
+> +       depends on HID
+> +       help
+> +         Support for Varmilo keyboards.
+> +
+>  config HID_VIEWSONIC
+>         tristate "ViewSonic/Signotec"
+>         depends on HID
+> diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+> index d8ea4b8c95af..e90a98090452 100644
+> --- a/drivers/hid/Makefile
+> +++ b/drivers/hid/Makefile
+> @@ -124,6 +124,7 @@ obj-$(CONFIG_HID_LED)               += hid-led.o
+>  obj-$(CONFIG_HID_XINMO)                += hid-xinmo.o
+>  obj-$(CONFIG_HID_ZEROPLUS)     += hid-zpff.o
+>  obj-$(CONFIG_HID_ZYDACRON)     += hid-zydacron.o
+> +obj-$(CONFIG_HID_VARMILO)      += hid-varmilo.o
+>  obj-$(CONFIG_HID_VIEWSONIC)    += hid-viewsonic.o
+>
+>  wacom-objs                     := wacom_wac.o wacom_sys.o
+> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+> index 874fc3791f3b..955be22fc69d 100644
+> --- a/drivers/hid/hid-ids.h
+> +++ b/drivers/hid/hid-ids.h
+> @@ -1189,6 +1189,8 @@
+>  #define USB_DEVICE_ID_UNITEC_USB_TOUCH_0709    0x0709
+>  #define USB_DEVICE_ID_UNITEC_USB_TOUCH_0A19    0x0a19
+>
+> +#define USB_DEVICE_ID_VARMILO_VA104M_07B1   0X07b1
+> +
+>  #define USB_VENDOR_ID_VELLEMAN         0x10cf
+>  #define USB_DEVICE_ID_VELLEMAN_K8055_FIRST     0x5500
+>  #define USB_DEVICE_ID_VELLEMAN_K8055_LAST      0x5503
+> diff --git a/drivers/hid/hid-varmilo.c b/drivers/hid/hid-varmilo.c
+> new file mode 100644
+> index 000000000000..10e50f2dca61
+> --- /dev/null
+> +++ b/drivers/hid/hid-varmilo.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + *  HID report fixup for varmilo keyboards
+> + *
+> + *  Copyright (c) 2020 Frank Yang <puilp0502@gmail.com>
+> + *
+> + */
+> +
+> +#include <linux/hid.h>
+> +#include <linux/module.h>
+> +
+> +#include "hid-ids.h"
+> +
+> +/*
+> + * Varmilo VA104M with device ID of 07B1 incorrectly reports Logical Minimum as
+> + * 572 (0x02 0x3c). We fix this by setting Logical Minimum to zero.
+> + */
+> +static __u8 *varmilo_07b1_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+> +                                      unsigned int *rsize)
+> +{
+> +       if (*rsize == 25 &&
+> +           rdesc[0] == 0x05 && rdesc[1] == 0x0c &&
+> +           rdesc[2] == 0x09 && rdesc[3] == 0x01 &&
+> +           rdesc[6] == 0x19 && rdesc[7] == 0x00 &&
+> +           rdesc[11] == 0x16 && rdesc[12] == 0x3c && rdesc[13] == 0x02) {
+> +               hid_info(hdev,
+> +                        "fixing up varmilo VA104M consumer control report descriptor\n");
+> +               rdesc[12] = 0x00;
+> +               rdesc[13] = 0x00;
+> +       }
+> +       return rdesc;
+> +}
+> +
+> +static __u8 *varmilo_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+> +                                 unsigned int *rsize)
+> +{
+> +       if (hdev->product == USB_DEVICE_ID_VARMILO_VA104M_07B1 &&
+> +           hdev->vendor == USB_VENDOR_ID_CYPRESS)
+> +               rdesc = varmilo_07b1_report_fixup(hdev, rdesc, rsize);
+> +       return rdesc;
+> +}
+> +
+> +static const struct hid_device_id varmilo_devices[] = {
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_VARMILO_VA104M_07B1) },
+> +       {}
+> +};
+> +
+> +MODULE_DEVICE_TABLE(hid, varmilo_devices);
+> +
+> +static struct hid_driver varmilo_driver = {
+> +       .name = "varmilo",
+> +       .id_table = varmilo_devices,
+> +       .report_fixup = varmilo_report_fixup,
+> +};
+> +
+> +module_hid_driver(varmilo_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> --
+> 2.17.1
+>
+CCing linux-input mailing list.
 
-Just to follow-up, I just heard that someone who had a panel
-exhibiting this problem tried my patch and it fixed it for them.  :-)
-So this is not such a shot in the dark anymore.
-
--Doug
+Cc: linux-input@vger.kernel.org
