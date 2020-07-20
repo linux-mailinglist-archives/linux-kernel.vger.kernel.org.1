@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32405227257
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D755822725D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgGTWYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgGTWYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:24:39 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35ECC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:24:38 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c80so960042wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=SD6pCvrvSmO2DCp4Ax7aixATHBTxpI+s2rfIo5Cd1Tk=;
-        b=gJuwBswFKpnqWojomkEAyfFJ97lPplPSeCK+E363TxmVlRV58FKEyWYXj715tEfJaF
-         WJp/pzSop/BTyKgsMRvZ4wcQnnV9yHjIMPlJgPRyl7r/47L7CqPAd4hc2kR/EqXNUqng
-         Fzmf7psWo0I/pPWpbRBDclhg7PyIf+6bPtBHfRPDsk5o9lVCZc2+HB8j2PxdKJKcNMz1
-         Y4jJwL0UGTkWerGpjrBWGt+552ScuE4A1ci+gZiZ/w+ZvEkTYLg2ef0epgkvuwpJvTMX
-         s3iBRDxK4RjDsqWn+hMiv1blBBdHqVAA+JrgsOq2VlNnIAzEi0QzFzln0/8+Fc1Fj3hS
-         yUug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=SD6pCvrvSmO2DCp4Ax7aixATHBTxpI+s2rfIo5Cd1Tk=;
-        b=TGbWhDvPmaaBWQT2Cgs8OjaEPch4vAT8lkazb7AWlPQnKz0zYjTThrjOYpZRoi3OZ/
-         vtL/2JneMv4vKT/h0gy0ElEUdOzvhTnL/GCpjKx7xHq+EWmx88UxF3X8v/FsrfLI2dyv
-         zTee4M/YlJIgQ9LHdaSqjqpjmrc0YpQYKiQwsd/BZoI49Or16sqishFH+xU5mp9NoKdM
-         YgqKvEayAI93XD/t9LyHFg/BoBM/kr7Nlhk+qYMEsdCdv73J2P0OrBNn8YROWmbyiVke
-         ImzrvaWCDuKtjpkkqqjcjf9cBsM7h5Zvru+ZzNYitN/GVYF3x2u2DRRfz+smdsrEXJHH
-         0FWQ==
-X-Gm-Message-State: AOAM532QONxT9s/8gVORz5XXjrAsU0xWPcAP0Qg9aK2IE2zxRz1pV4BM
-        8cxjXtGQxN+3c5g/M6cKLIyBsw==
-X-Google-Smtp-Source: ABdhPJzLjqSEGicKLBeM9jtOFSaC7vzuE8tYOjIYpQxTfgGZI4nBdbBv1nDffuj/z+Q+IdN56GIk7A==
-X-Received: by 2002:a1c:bb44:: with SMTP id l65mr1283114wmf.51.1595283877622;
-        Mon, 20 Jul 2020 15:24:37 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id v9sm36819684wri.3.2020.07.20.15.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 15:24:36 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: Re: [PATCH] arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3
-In-Reply-To: <20200718054040.3996-1-christianshewitt@gmail.com>
-References: <20200718054040.3996-1-christianshewitt@gmail.com>
-Date:   Mon, 20 Jul 2020 15:24:34 -0700
-Message-ID: <7ha6ztakpp.fsf@baylibre.com>
+        id S1728291AbgGTWZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:25:06 -0400
+Received: from mga05.intel.com ([192.55.52.43]:58951 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgGTWZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:25:02 -0400
+IronPort-SDR: AVmOq5gjxDHxbjoDH3SwJo6mrZBRqHye8C1lbG2U/HmjtXxUzE+guuGj+7KXnwowlXiLtKXjyu
+ RXOnVoyn9DsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="234872346"
+X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
+   d="scan'208";a="234872346"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 15:25:02 -0700
+IronPort-SDR: 7/8S0vjEb159Htfk5t56meupFSDitBKxBe6kaGNj3wIIqVks0Bb4VPnQ+m4WL92KaLYoq3eDWw
+ 8jQv1c4zitmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
+   d="scan'208";a="318149101"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga008.jf.intel.com with ESMTP; 20 Jul 2020 15:25:02 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 21189301BF5; Mon, 20 Jul 2020 15:25:02 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 15:25:02 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 12/12] perf intel-pt: Add support for decoding PSB+
+ only
+Message-ID: <20200720222502.GC1180481@tassilo.jf.intel.com>
+References: <20200710151104.15137-1-adrian.hunter@intel.com>
+ <20200710151104.15137-13-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710151104.15137-13-adrian.hunter@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Hewitt <christianshewitt@gmail.com> writes:
+On Fri, Jul 10, 2020 at 06:11:04PM +0300, Adrian Hunter wrote:
+> A single q option decodes ip from only FUP/TIP packets. Make it so that
+> repeating the q option (i.e. qq) decodes only PSB+, getting ip if there is
+> a FUP packet within PSB+ (i.e. between PSB and PSBEND).
+> 
+> Example:
+> 
+>  $ perf record -e intel_pt//u grep -rI pudding drivers
+>  [ perf record: Woken up 52 times to write data ]
+>  [ perf record: Captured and wrote 57.870 MB perf.data ]
+>  $ time perf script --itrace=bi | wc -l
+>  58948289
+> 
+>  real    1m23.863s
+>  user    1m23.251s
+>  sys     0m7.452s
+>  $ time perf script --itrace=biq | wc -l
+>  3385694
+> 
+>  real    0m4.453s
+>  user    0m4.455s
+>  sys     0m0.328s
+>  $ time perf script --itrace=biqq | wc -l
+>  1883
+> 
+>  real    0m0.047s
+>  user    0m0.043s
+>  sys     0m0.009s
+> 
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  tools/perf/Documentation/perf-intel-pt.txt     | 15 +++++++++++++++
+>  .../util/intel-pt-decoder/intel-pt-decoder.c   | 18 ++++++++++++++++++
+>  2 files changed, 33 insertions(+)
+> 
+> diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+> index f9fe4a4040ba..d5a266d7f15b 100644
+> --- a/tools/perf/Documentation/perf-intel-pt.txt
+> +++ b/tools/perf/Documentation/perf-intel-pt.txt
+> @@ -999,6 +999,21 @@ What *will* be decoded with the (single) q option:
+>  Note the q option does not specify what events will be synthesized e.g. the p
+>  option must be used also to show power events.
+>  
+> +Repeating the q option (double-q i.e. qq) results in even faster decoding and even
+> +less detail.  The decoder decodes only extended PSB (PSB+) packets, getting the
+> +instruction pointer if there is a FUP packet within PSB+ (i.e. between PSB and
+> +PSBEND).  Note PSB packets occur regularly in the trace based on the psb_period
+> +config term (refer config terms section).  There will be a FUP packet if the
+> +PSB+ occurs while control flow is being traced.
 
-> Similar to other G12B devices using the W400 dtsi, I see reports of mmc0
-> tuning errors on VIM3 after a few hours uptime:
->
-> [12483.917391] mmc0: tuning execution failed: -5
-> [30535.551221] mmc0: tuning execution failed: -5
-> [35359.953671] mmc0: tuning execution failed: -5
-> [35561.875332] mmc0: tuning execution failed: -5
-> [61733.348709] mmc0: tuning execution failed: -5
->
-> I do not see the same on VIM3L, so remove sd-uhs-sdr50 from the common dtsi
-> to silence the error, then (re)add it to the VIM3L dts.
->
-> Signed-off-by: Chrisitan Hewitt <christianshewitt@gmail.com>
+Some estimate would be good how frequent that is.
 
-Fixes?
+If we assume one bit per instruction then a 2K period it's roughly 16k instructions,
+with the 16K period roughly 128K instructions.
 
-Kevin
+Could be added in a followon patch.
+
+But looks overall the patches look good to me now.
+
+(for the whole series)
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
