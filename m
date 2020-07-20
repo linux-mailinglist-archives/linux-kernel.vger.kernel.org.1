@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4200E2264AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3362B22656E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730731AbgGTPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:47:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41874 "EHLO mail.kernel.org"
+        id S1731514AbgGTPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:53:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730714AbgGTPq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:58 -0400
+        id S1731216AbgGTPxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:53:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D527F22BF3;
-        Mon, 20 Jul 2020 15:46:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B7A52065E;
+        Mon, 20 Jul 2020 15:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260017;
-        bh=Y/nTKV+iKD8yJ82FydfoHPLeGAve6eDmW0/05D6MEKI=;
+        s=default; t=1595260430;
+        bh=E1YLJeTAHOKxV6duE8EQ8GUhJyZBh/zZZ+584voQu5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T6Q9dVwtV/LqggPI84XzwBmN2dMJ7t1yWInmqyrKOxxFwofi76gAC+gQZ2jr0cEs+
-         GHg+07dYG0tfvt8MAT9hGwRthHRF0QY0+Vxihw+xwTlzJvBDbV3DLCUjTUocwItE0P
-         Vth5haWZUHEKOHyM1SJPu1JoZ2gUs5Ys9bs8nkPE=
+        b=vme8vymLLhcu0WUP32im6qe6W3Ib/eSq0FwQd3HoTn2E0oWdGXo8rfdOHnoOrHCrM
+         kyZrt9B8GKXdOcXqyPHAm3b8HsL0I36q4SgHN3MsbiJx7/Y6G5a7X5B+BQ42Cs3EQg
+         ifo4RtSmNq1WTLEHqYUxjyLR3WITsEb3Eyfg8/I8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
-        Jianxin Pan <jianxin.pan@amlogic.com>,
-        Thinh Nguyen <thinhn@synopsys.com>,
-        Jun Li <lijun.kernel@gmail.com>, Tim <elatllat@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Herring <robh@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 076/125] doc: dt: bindings: usb: dwc3: Update entries for disabling SS instances in park mode
+        stable@vger.kernel.org,
+        Mike Salvatore <mike.salvatore@canonical.com>,
+        John Johansen <john.johansen@canonical.com>
+Subject: [PATCH 4.19 068/133] apparmor: ensure that dfa state tables have entries
 Date:   Mon, 20 Jul 2020 17:36:55 +0200
-Message-Id: <20200720152806.672175817@linuxfoundation.org>
+Message-Id: <20200720152807.016384082@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,42 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: John Johansen <john.johansen@canonical.com>
 
-[ Upstream commit 3d157c28d2289edf0439e8308e8de3a06acaaf0e ]
+commit c27c6bd2c4d6b6bb779f9b722d5607993e1d5e5c upstream.
 
-This patch updates the documentation with the information related
-to the quirks that needs to be added for disabling all SuperSpeed XHCI
-instances in park mode.
+Currently it is possible to specify a state machine table with 0 length,
+this is not valid as optional tables are specified by not defining
+the table as present. Further this allows by-passing the base tables
+range check against the next/check tables.
 
-Cc: Dongjin Kim <tobetter@gmail.com>
-Cc: Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: Thinh Nguyen <thinhn@synopsys.com>
-Cc: Jun Li <lijun.kernel@gmail.com>
-Reported-by: Tim <elatllat@gmail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d901d6a298dc ("apparmor: dfa split verification of table headers")
+Reported-by: Mike Salvatore <mike.salvatore@canonical.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- Documentation/devicetree/bindings/usb/dwc3.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ security/apparmor/match.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
-index 44e8bab159adc..baee73134d03e 100644
---- a/Documentation/devicetree/bindings/usb/dwc3.txt
-+++ b/Documentation/devicetree/bindings/usb/dwc3.txt
-@@ -47,6 +47,8 @@ Optional properties:
- 			from P0 to P1/P2/P3 without delay.
-  - snps,dis-tx-ipgap-linecheck-quirk: when set, disable u2mac linestate check
- 			during HS transmit.
-+ - snps,parkmode-disable-ss-quirk: when set, all SuperSpeed bus instances in
-+			park mode are disabled.
-  - snps,dis_metastability_quirk: when set, disable metastability workaround.
- 			CAUTION: use only if you are absolutely sure of it.
-  - snps,is-utmi-l1-suspend: true when DWC3 asserts output signal
--- 
-2.25.1
-
+--- a/security/apparmor/match.c
++++ b/security/apparmor/match.c
+@@ -101,6 +101,9 @@ static struct table_header *unpack_table
+ 	      th.td_flags == YYTD_DATA8))
+ 		goto out;
+ 
++	/* if we have a table it must have some entries */
++	if (th.td_lolen == 0)
++		goto out;
+ 	tsize = table_size(th.td_lolen, th.td_flags);
+ 	if (bsize < tsize)
+ 		goto out;
+@@ -202,6 +205,8 @@ static int verify_dfa(struct aa_dfa *dfa
+ 
+ 	state_count = dfa->tables[YYTD_ID_BASE]->td_lolen;
+ 	trans_count = dfa->tables[YYTD_ID_NXT]->td_lolen;
++	if (state_count == 0)
++		goto out;
+ 	for (i = 0; i < state_count; i++) {
+ 		if (!(BASE_TABLE(dfa)[i] & MATCH_FLAG_DIFF_ENCODE) &&
+ 		    (DEFAULT_TABLE(dfa)[i] >= state_count))
 
 
