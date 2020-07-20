@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEC8226514
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EA0226474
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731152AbgGTPun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:50:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47168 "EHLO mail.kernel.org"
+        id S1729760AbgGTPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730427AbgGTPug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:50:36 -0400
+        id S1730487AbgGTPpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:45:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A05E2065E;
-        Mon, 20 Jul 2020 15:50:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0CD42176B;
+        Mon, 20 Jul 2020 15:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260235;
-        bh=CxX0AJT363wpSILQqMtjxZO6oSEWTDFfl6+P8HsqE2E=;
+        s=default; t=1595259911;
+        bh=JS8ZQOSUM4qWSeqJVCG/LhsLW7f6uNGnyC/H3yHP2+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OfPqu1/lkxImMUtDcILKydIZqAw2jbCc2P4E+35QVh+wpaeqD7l1YKlebroLVpFEl
-         HiD1gFYdP/sDTt8K9KtPxMldnSMm4CHvoGjEoLcsUseMy+nxYxGNm5WQctqijY4/3t
-         UrN92q7xlZlSeBMSNutLnXrc09kIGK3NsFaOijUk=
+        b=SqGCzk3NTkgosQqampq2aykbx36sxTsGB0pek1TMB8kVrccVRe7BDbzTTHehXG/nC
+         nD9RIMrN3GPcWw/IDW7yR/+/GYbxG3htx04taW+epcLdB/qkqJXl64fFezoDFyKF92
+         h7hiplTThK0V86l8/zkv8w5NJ8VNrtx45+1WAHY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 029/133] iio:magnetometer:ak8974: Fix alignment and data leak issues
-Date:   Mon, 20 Jul 2020 17:36:16 +0200
-Message-Id: <20200720152805.143300701@linuxfoundation.org>
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 4.14 038/125] ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE
+Date:   Mon, 20 Jul 2020 17:36:17 +0200
+Message-Id: <20200720152804.840483594@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,69 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-commit 838e00b13bfd4cac8b24df25bfc58e2eb99bcc70 upstream.
+commit 00fdec98d9881bf5173af09aebd353ab3b9ac729 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data.
+Trap handler for syscall tracing reads EFA (Exception Fault Address),
+in case strace wants PC of trap instruction (EFA is not part of pt_regs
+as of current code).
 
-This data is allocated with kzalloc so no data can leak appart from
-previous readings.
+However this EFA read is racy as it happens after dropping to pure
+kernel mode (re-enabling interrupts). A taken interrupt could
+context-switch, trigger a different task's trap, clobbering EFA for this
+execution context.
 
-Fixes: 7c94a8b2ee8cf ("iio: magn: add a driver for AK8974")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: <Stable@vger.kernel.org>
+Fix this by reading EFA early, before re-enabling interrupts. A slight
+side benefit is de-duplication of FAKE_RET_FROM_EXCPN in trap handler.
+The trap handler is common to both ARCompact and ARCv2 builds too.
+
+This just came out of code rework/review and no real problem was reported
+but is clearly a potential problem specially for strace.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/magnetometer/ak8974.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/arc/kernel/entry.S |   16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
---- a/drivers/iio/magnetometer/ak8974.c
-+++ b/drivers/iio/magnetometer/ak8974.c
-@@ -184,6 +184,11 @@ struct ak8974 {
- 	bool drdy_irq;
- 	struct completion drdy_complete;
- 	bool drdy_active_low;
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		__le16 channels[3];
-+		s64 ts __aligned(8);
-+	} scan;
- };
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -156,7 +156,6 @@ END(EV_Extension)
+ tracesys:
+ 	; save EFA in case tracer wants the PC of traced task
+ 	; using ERET won't work since next-PC has already committed
+-	lr  r12, [efa]
+ 	GET_CURR_TASK_FIELD_PTR   TASK_THREAD, r11
+ 	st  r12, [r11, THREAD_FAULT_ADDR]	; thread.fault_address
  
- static const char ak8974_reg_avdd[] = "avdd";
-@@ -580,7 +585,6 @@ static void ak8974_fill_buffer(struct ii
- {
- 	struct ak8974 *ak8974 = iio_priv(indio_dev);
- 	int ret;
--	__le16 hw_values[8]; /* Three axes + 64bit padding */
+@@ -199,15 +198,9 @@ tracesys_exit:
+ ; Breakpoint TRAP
+ ; ---------------------------------------------
+ trap_with_param:
+-
+-	; stop_pc info by gdb needs this info
+-	lr  r0, [efa]
++	mov r0, r12	; EFA in case ptracer/gdb wants stop_pc
+ 	mov r1, sp
  
- 	pm_runtime_get_sync(&ak8974->i2c->dev);
- 	mutex_lock(&ak8974->lock);
-@@ -590,13 +594,13 @@ static void ak8974_fill_buffer(struct ii
- 		dev_err(&ak8974->i2c->dev, "error triggering measure\n");
- 		goto out_unlock;
- 	}
--	ret = ak8974_getresult(ak8974, hw_values);
-+	ret = ak8974_getresult(ak8974, ak8974->scan.channels);
- 	if (ret) {
- 		dev_err(&ak8974->i2c->dev, "error getting measures\n");
- 		goto out_unlock;
- 	}
+-	; Now that we have read EFA, it is safe to do "fake" rtie
+-	;   and get out of CPU exception mode
+-	FAKE_RET_FROM_EXCPN
+-
+ 	; Save callee regs in case gdb wants to have a look
+ 	; SP will grow up by size of CALLEE Reg-File
+ 	; NOTE: clobbers r12
+@@ -234,6 +227,10 @@ ENTRY(EV_Trap)
  
--	iio_push_to_buffers_with_timestamp(indio_dev, hw_values,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &ak8974->scan,
- 					   iio_get_time_ns(indio_dev));
+ 	EXCEPTION_PROLOGUE
  
-  out_unlock:
++	lr  r12, [efa]
++
++	FAKE_RET_FROM_EXCPN
++
+ 	;============ TRAP 1   :breakpoints
+ 	; Check ECR for trap with arg (PROLOGUE ensures r9 has ECR)
+ 	bmsk.f 0, r9, 7
+@@ -241,9 +238,6 @@ ENTRY(EV_Trap)
+ 
+ 	;============ TRAP  (no param): syscall top level
+ 
+-	; First return from Exception to pure K mode (Exception/IRQs renabled)
+-	FAKE_RET_FROM_EXCPN
+-
+ 	; If syscall tracing ongoing, invoke pre-post-hooks
+ 	GET_CURR_THR_INFO_FLAGS   r10
+ 	btst r10, TIF_SYSCALL_TRACE
 
 
