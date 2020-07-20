@@ -2,69 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770DC225A87
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1709F225A93
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgGTIze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 04:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726601AbgGTIzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 04:55:33 -0400
-Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C2A520773;
-        Mon, 20 Jul 2020 08:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595235332;
-        bh=OTz0b1zn56xSY338F25IC4hm9bfR0uECcJXvYiLKvto=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hJK+zoweDui39cr8zOV1cV8a5UQPn9Yp1Is4uhuV0B27Lu5Hf6uSKI/MCNJXqt7PL
-         6BQU27VWwQHFTir8kPyk7svquXOJoBWNul6pUcHhlP6r0TyGNXMiSUU2pL1KY2bZh1
-         NiQcdKmk4W8SiGfOxk0QcKRmBJnYWyATOeAJUJoA=
-Date:   Mon, 20 Jul 2020 10:55:29 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] modules: linux/moduleparam.h: drop duplicated word in a
- comment
-Message-ID: <20200720085529.GA25857@linux-8ccs>
-References: <e6006b9e-48dd-5b79-b676-eab2fc71c718@infradead.org>
+        id S1728062AbgGTI5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 04:57:09 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:63183 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgGTI5I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 04:57:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1595235428; x=1626771428;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=e8/HhYk/urxGZ+2YhG3WZsbvahVba0IK/eo3FV+lCrs=;
+  b=2T/Ohm3hZrimnV9QcP6l8LP/Nv/x3v4jL8mCId1ChNdlwv6Y66KPZ22S
+   vakWC+7gsk02gdVsXpbe1U4stbX6gJvko0dH+5zsdSbjBxymIEp/3jInh
+   2geddI1lcFlB871jyWnM0QpmuHPqd8G3SJvkwAalUn3c/jB3xN8f2cnMz
+   PibzIfX2Tjl+N8rQvcX1N2FQ1XXzU/oQhHupHcCJAtg0H8zaVFqBgCRVJ
+   34/YA7FVQRq6AzyIlRyuvdX9i/mMHoOoVznDnhxA/XZaqYwYebJCR5tR4
+   S/V2kOo9gAvlC5OmXSCzMVWETIvuZ792pCHORw02/QVJ+bsjJOSDCeX6f
+   g==;
+IronPort-SDR: HIkjrBjtDBPfTUJHMmkfw9G6lvWuXgvhdapm1isB7eSaJg0mowbzxqPhs54TAyLV/+ayGi6hQe
+ KaFDUqEzzux15k6BCNpU9e0vVnuaxOLFud+m+uD79hMMHpJpFcoYGM6Oh+iCZLQlBAgQyb07t0
+ mbjJ0wCppxqytbd309NtQ7yiCQ4jh5PQelA2m5aBuPwvxpg0scs7JfNdK0Msnw7xrAhrHqMoi8
+ rSkQLmfMCpLVBMzZ5df2ZS98bPrZQqoXK5PVIVVZPEsny2YI6vegCSSEUowhtKZ663QivDYFpR
+ C5M=
+X-IronPort-AV: E=Sophos;i="5.75,374,1589266800"; 
+   d="scan'208";a="19791024"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jul 2020 01:57:07 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 20 Jul 2020 01:57:07 -0700
+Received: from ness.mchp-main.com (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 20 Jul 2020 01:57:05 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
+        <netdev@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <harini.katakam@xilinx.com>, <f.fainelli@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <antoine.tenart@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH v7 0/2] net: macb: Wake-on-Lan magic packet GEM and MACB handling
+Date:   Mon, 20 Jul 2020 10:56:51 +0200
+Message-ID: <cover.1595235208.git.nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <e6006b9e-48dd-5b79-b676-eab2fc71c718@infradead.org>
-X-OS:   Linux linux-8ccs 5.5.0-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Randy Dunlap [17/07/20 16:36 -0700]:
->From: Randy Dunlap <rdunlap@infradead.org>
->
->Drop the doubled word "the" in a comment.
->
->Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->Cc: Jessica Yu <jeyu@kernel.org>
->---
-> include/linux/moduleparam.h |    2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->--- linux-next-20200714.orig/include/linux/moduleparam.h
->+++ linux-next-20200714/include/linux/moduleparam.h
->@@ -108,7 +108,7 @@ struct kparam_array
->  * ".") the kernel commandline parameter.  Note that - is changed to _, so
->  * the user can use "foo-bar=1" even for variable "foo_bar".
->  *
->- * @perm is 0 if the the variable is not to appear in sysfs, or 0444
->+ * @perm is 0 if the variable is not to appear in sysfs, or 0444
->  * for world-readable, 0644 for root-writable, etc.  Note that if it
->  * is writable, you may need to use kernel_param_lock() around
->  * accesses (esp. charp, which can be kfreed when it changes).
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Applied, thanks!
+Hi,
 
-Jessica
+Here is the second part of support for WoL magic-packet on the current macb
+driver. This one
+is addressing the bulk of the feature and is based on current net-next/master.
+
+MACB and GEM code must co-exist and as they don't share exactly the same
+register layout, I had to specialize a bit the suspend/resume paths and plug a
+specific IRQ handler in order to avoid overloading the "normal" IRQ hot path.
+
+These changes were tested on both sam9x60 which embeds a MACB+FIFO controller
+and sama5d2 which has a GEM+packet buffer type of controller.
+
+Best regards,
+  Nicolas
+
+Changes in v7:
+- Release the spinlock before exiting macb_suspend/resume in case of error
+  changing IRQ handler
+
+Changes in v6:
+- rebase on net-next/master now that the "fixes" patches of the series are
+  merged in both net and net-next.
+- GEM addition and MACB update to finish the support of WoL magic-packet on the
+  two revisions of the controller.
+
+These 2 patches were last posted in v3 series.
+
+History of previous changes already added to git commit message here:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9f41e3db40ee8d61b427d4d88c7365d968052a9
+
+
+Nicolas Ferre (2):
+  net: macb: WoL support for GEM type of Ethernet controller
+  net: macb: Add WoL interrupt support for MACB type of Ethernet
+    controller
+
+ drivers/net/ethernet/cadence/macb.h      |   3 +
+ drivers/net/ethernet/cadence/macb_main.c | 191 +++++++++++++++++++----
+ 2 files changed, 167 insertions(+), 27 deletions(-)
+
+-- 
+2.27.0
+
