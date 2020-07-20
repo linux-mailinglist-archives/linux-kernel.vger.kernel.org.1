@@ -2,172 +2,700 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFD62257D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D2F2257DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgGTGgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgGTGgG (ORCPT
+        id S1727924AbgGTGg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:36:27 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:10652 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726084AbgGTGgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:36:06 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5190C0619D4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 23:36:05 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id x9so18955163ljc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 23:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=FQV28QGdwTwKOWpDreLUi50G2AjPPA50/sb2JVPxnns=;
-        b=GjNXsb1TupAuup7Ai1G127hjV10+iWI9TQg6sNJa/CLSYMVadY6HJ4Do3CuPdo5L8X
-         JDr1l5imcbWkbJGrcJH3QRsBQw/0ezvUbiPDgTEHIC7BA9r56ogyg8OBkHq99jLITl4+
-         yZeGyd+28f26MMeHvNpmXfQT2gl+uMn08SZlokZmnip5LYltuk0ubz/3XuPkd0xZ6msW
-         Zrdsl6tRVJM2GKJT6olyiCocPi2s93q38/cgsgKgsygYAYnzbiT1nXyka3wg0dqWT3SQ
-         578qkFzePbDDUvFdtZYLzyiVR6V5GX8hXgpsuV4N+EqR+eSi+aM5FhAeoKWyCnpksbMf
-         S34Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=FQV28QGdwTwKOWpDreLUi50G2AjPPA50/sb2JVPxnns=;
-        b=d2jHDKqW9waAesI+gRsXsRqlN1puM8KGl8GAgW5fqq4ry2cQHHd5Upq4iFJ4T8L9Eu
-         YPVCyquTj1t8kMGBtzvcu8Yxsdy0z2f6aby56D/QT6+MGAV2X4kAJmbTgVXc4bOsiAAt
-         mURyExoXnDSQUU37fsBsmxz5r7ZTCt/C5D3JGiUiB0hxbo8lKqhSaZSZ6ELk14N1JJDD
-         YaWeXU0na+MlX3b9PiWZytV4Fe25JSncJR2tZGOgxW0N59Cn5EHzMu7mJ8keNUxw0xsP
-         bMKj830ogzhFPX/g13blkQxiKF2cai67UOkZgNrKghHszKOgx5v7RsQlsVpP3FNEwqt1
-         iBvA==
-X-Gm-Message-State: AOAM532QaSa+4ap7xHpUa1yXUm8hNokP6j/iiB58B35qmq/Ro82KHKJA
-        TXIUYK/DvPwvAg4Zr4QdoCPSgC58LG+PuVaFg2Le+zwQns0rMg==
-X-Google-Smtp-Source: ABdhPJzru40K+4IudODw+Tyc9+nlBM8CiDNqPiB7AxIVLIkZPZzVDQGTuNTBsP2QzAN/jhR915F1vsuWu0afy7mihk8=
-X-Received: by 2002:a2e:7401:: with SMTP id p1mr10351994ljc.366.1595226963554;
- Sun, 19 Jul 2020 23:36:03 -0700 (PDT)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 20 Jul 2020 12:05:52 +0530
-Message-ID: <CA+G9fYuzqA0N6O-52uH9aHjsfF6HfhuxMby1Y6Yz7jGMAHW0zw@mail.gmail.com>
-Subject: arm64: Internal error: Oops: qcom_iommu_tlb_inv_context
- free_io_pgtable_ops on db410c
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        iommu@lists.linux-foundation.org
-Cc:     "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <jroedel@suse.de>, Qian Cai <cai@lca.pw>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vinod Koul <vinod.koul@linaro.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 20 Jul 2020 02:36:25 -0400
+IronPort-SDR: IdUoeI71E1MzlFgv2W10HVRzxX7tRNHNo1LYCBiCNRhQYtLC/ND6z+dAtjsU5kx/F+fazif+y+
+ 0j32SnDXKrXSu//XTiXE7/GlPLGBhR3rQG/R2SjXsqxRoDrAPX+hQ4LjzT7OTcN1y3+umtxhoG
+ puYBUoasNbjlK7P9pEWfqRBD+CLJAuP222ZF7XDK0qxTNCqEhT54rgdM9dhVBDA9VL00tK/IM6
+ jYCMeHKZSVqNZWnmEm7ymXymCCBGhFy7wwYefkbts1cjj/lAQ0/QQElJrofMyLPjnq/XtSKZvm
+ nkA=
+X-IronPort-AV: E=Sophos;i="5.75,374,1589266800"; 
+   d="scan'208";a="29044592"
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by labrats.qualcomm.com with ESMTP; 19 Jul 2020 23:36:24 -0700
+Received: from pacamara-linux.qualcomm.com ([192.168.140.135])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 19 Jul 2020 23:36:23 -0700
+Received: by pacamara-linux.qualcomm.com (Postfix, from userid 359480)
+        id 4986522DA5; Sun, 19 Jul 2020 23:36:23 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        sh425.lee@samsung.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 5/8] scsi: ufs: Fix concurrency of error handler and other error recovery paths
+Date:   Sun, 19 Jul 2020 23:35:52 -0700
+Message-Id: <1595226956-7779-6-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1595226956-7779-1-git-send-email-cang@codeaurora.org>
+References: <1595226956-7779-1-git-send-email-cang@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This kernel oops while boot linux mainline kernel on arm64  db410c device.
+Error recovery can be invoked from multiple paths, including hibern8
+enter/exit, some vendor vops, ufshcd_eh_host_reset_handler(), resume and
+eh_work scheduled from IRQ context. Ultimately, these paths are trying to
+invoke ufshcd_reset_and_restore(), in either sync or async manner.
 
-metadata:
-  git branch: master
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-  git commit: f8456690ba8eb18ea4714e68554e242a04f65cff
-  git describe: v5.8-rc5-48-gf8456690ba8e
-  make_kernelversion: 5.8.0-rc5
-  kernel-config:
-https://builds.tuxbuild.com/2aLnwV7BLStU0t1R1QPwHQ/kernel.config
+Having both sync and async manners at the same time has some problems
 
-[    5.444121] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000018
-[    5.456615]   ESR = 0x96000004
-[    5.464471]   SET = 0, FnV = 0
-[    5.464487]   EA = 0, S1PTW = 0
-[    5.466521] Data abort info:
-[    5.469971]   ISV = 0, ISS = 0x00000004
-[    5.472768]   CM = 0, WnR = 0
-[    5.476172] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000bacba000
-[    5.479349] [0000000000000018] pgd=0000000000000000, p4d=0000000000000000
-[    5.485820] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[    5.492448] Modules linked in: crct10dif_ce adv7511(+)
-qcom_spmi_temp_alarm cec msm(+) mdt_loader qcom_camss videobuf2_dma_sg
-drm_kms_helper v4l2_fwnode videobuf2_memops videobuf2_v4l2 qcom_rng
-videobuf2_common i2c_qcom_cci display_connector socinfo drm qrtr ns
-rmtfs_mem fuse
-[    5.500256] CPU: 0 PID: 286 Comm: systemd-udevd Not tainted 5.8.0-rc5 #1
-[    5.522484] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[    5.529170] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[    5.535856] pc : qcom_iommu_tlb_inv_context+0x18/0xa8
-[    5.541148] lr : free_io_pgtable_ops+0x28/0x58
-[    5.546350] sp : ffff80001219b5f0
-[    5.550689] x29: ffff80001219b5f0 x28: 0000000000000013
-[    5.554078] x27: 0000000000000100 x26: ffff000036add3b8
-[    5.559459] x25: ffff80000915e910 x24: ffff00003a5458c0
-[    5.564753] x23: 0000000000000003 x22: ffff000036a37058
-[    5.570049] x21: ffff000036a3a100 x20: ffff000036a3a480
-[    5.575344] x19: ffff000036a37158 x18: 0000000000000000
-[    5.580639] x17: 0000000000000000 x16: 0000000000000000
-[    5.585935] x15: 0000000000000004 x14: 0000000000000368
-[    5.591229] x13: 0000000000000000 x12: ffff000039c61798
-[    5.596525] x11: ffff000039c616d0 x10: 0000000040000000
-[    5.601820] x9 : 0000000000000000 x8 : ffff000039c616f8
-[    5.607114] x7 : 0000000000000000 x6 : ffff000009f699a0
-[    5.612410] x5 : ffff80001219b520 x4 : ffff000036a3a000
-[    5.617705] x3 : ffff000009f69904 x2 : 0000000000000000
-[    5.623001] x1 : ffff8000107e27e8 x0 : ffff00003a545810
-[    5.628297] Call trace:
-[    5.633592]  qcom_iommu_tlb_inv_context+0x18/0xa8
-[    5.635764]  free_io_pgtable_ops+0x28/0x58
-[    5.640624]  qcom_iommu_domain_free+0x38/0x60
-[    5.644617]  iommu_group_release+0x4c/0x70
-[    5.649045]  kobject_put+0x6c/0x120
-[    5.653035]  kobject_del+0x64/0x90
-[    5.656421]  kobject_put+0xfc/0x120
-[    5.659893]  iommu_group_remove_device+0xdc/0xf0
-[    5.663281]  iommu_release_device+0x44/0x70
-[    5.668142]  iommu_bus_notifier+0xbc/0xd0
-[    5.672048]  notifier_call_chain+0x54/0x98
-[    5.676214]  blocking_notifier_call_chain+0x48/0x70
-[    5.680209]  device_del+0x26c/0x3a0
-[    5.684981]  platform_device_del.part.0+0x1c/0x88
-[    5.688453]  platform_device_unregister+0x24/0x40
-[    5.693316]  of_platform_device_destroy+0xe4/0xf8
-[    5.698002]  device_for_each_child+0x5c/0xa8
-[    5.702689]  of_platform_depopulate+0x3c/0x80
-[    5.707144]  msm_pdev_probe+0x1c4/0x308 [msm]
-[    5.711286]  platform_drv_probe+0x54/0xa8
-[    5.715624]  really_probe+0xd8/0x320
-[    5.719617]  driver_probe_device+0x58/0xb8
-[    5.723263]  device_driver_attach+0x74/0x80
-[    5.727168]  __driver_attach+0x58/0xe0
-[    5.731248]  bus_for_each_dev+0x70/0xc0
-[    5.735067]  driver_attach+0x24/0x30
-[    5.738801]  bus_add_driver+0x14c/0x1f0
-[    5.742619]  driver_register+0x64/0x120
-[    5.746178]  __platform_driver_register+0x48/0x58
-[    5.750099]  msm_drm_register+0x58/0x70 [msm]
-[    5.754861]  do_one_initcall+0x54/0x1a0
-[    5.759200]  do_init_module+0x54/0x200
-[    5.762846]  load_module+0x1d1c/0x2300
-[    5.766664]  __do_sys_finit_module+0xd8/0xf0
-[    5.770398]  __arm64_sys_finit_module+0x20/0x30
-[    5.774826]  el0_svc_common.constprop.0+0x6c/0x168
-[    5.779078]  do_el0_svc+0x24/0x90
-[    5.783939]  el0_sync_handler+0x90/0x198
-[    5.787323]  el0_sync+0x158/0x180
-[    5.791323] Code: 910003fd f9417404 b4000484 f9401482 (b9401846)
-[    5.794532] ---[ end trace 3d6a53241629e560 ]---
+- If link recovery happens during clock scaling work, acquring scaling_lock
+  in ufshcd_exec_dev_cmd() would cause dead lock, because scaling_lock is
+  already held by scaling work before link recovery happens.
 
-full crash log details.
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.8-rc5-48-gf8456690ba8e/testrun/2945157/suite/linux-log-parser/test/check-kernel-oops-1573988/log
+- If link recovery happens during ungate work, ufshcd_hold() would be
+  called recursively. Although commit 53c12d0ef6fcb
+  ("scsi: ufs: fix error recovery after the hibern8 exit failure") [1]
+  fixed a deadlock due to recursive calls of ufshcd_hold() by adding a
+  check of eh_in_progress into ufshcd_hold, this check allows eh_work to
+  run in parallel when link recovery is running.
 
+- Similar concurrency can also happen when error recovery is invoked from
+  eh_host_reset_handler. Although it tries to avoid that from happening
+  by flushing eh_work before start invoking reset and restore, after flush
+  work returns, eh_work can still be scheduled and running in parallel.
+
+- Concurrency can even happen between eh_works. eh_work, currently queued
+  on system_wq, is allowed to have multiple instances running in parallel,
+  but we don't have proper protection for that.
+
+If any of above concurrency happens, error recovery would fail and lead
+ufs device and host into bad states. To fix the concurrency problem, this
+change queues eh_work on a single threaded workqueue and remove link
+recovery calls from hibern8 enter/exit path. Meanwhile, make use of eh_work
+in eh_host_reset_handler instead of calling ufshcd_reset_and_restore. This
+unifies UFS error recovery mechanism.
+
+In addition, according to the UFSHCI JEDEC spec, hibern8 enter/exit error
+occurs when the link is broken. This essentially applies to any power mode
+change operations (since they all use PACP_PWR cmds in UniPro layer). So,
+in this change, if a power mode change operation (including AH8 enter/exit)
+fails, mark link state as UIC_LINK_BROKEN_STATE and schedule the eh_work.
+In this case, error handler needs to do a full reset and restore to recover
+the link back to active. Before the link state is recovered to active,
+ufshcd_uic_pwr_ctrl simply returns -ENOLINK to avoid more errors.
+
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufs-sysfs.c |   1 +
+ drivers/scsi/ufs/ufshcd.c    | 268 +++++++++++++++++++++++--------------------
+ drivers/scsi/ufs/ufshcd.h    |   9 ++
+ 3 files changed, 151 insertions(+), 127 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index 2d71d23..02d379f00 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -16,6 +16,7 @@ static const char *ufschd_uic_link_state_to_string(
+ 	case UIC_LINK_OFF_STATE:	return "OFF";
+ 	case UIC_LINK_ACTIVE_STATE:	return "ACTIVE";
+ 	case UIC_LINK_HIBERN8_STATE:	return "HIBERN8";
++	case UIC_LINK_BROKEN_STATE:	return "BROKEN";
+ 	default:			return "UNKNOWN";
+ 	}
+ }
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index a22414b..c01743a 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -228,6 +228,7 @@ static int ufshcd_scale_clks(struct ufs_hba *hba, bool scale_up);
+ static irqreturn_t ufshcd_intr(int irq, void *__hba);
+ static int ufshcd_change_power_mode(struct ufs_hba *hba,
+ 			     struct ufs_pa_layer_attr *pwr_mode);
++static void ufshcd_schedule_eh_work(struct ufs_hba *hba);
+ static int ufshcd_wb_buf_flush_enable(struct ufs_hba *hba);
+ static int ufshcd_wb_buf_flush_disable(struct ufs_hba *hba);
+ static int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable);
+@@ -1571,11 +1572,6 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	hba->clk_gating.active_reqs++;
+ 
+-	if (ufshcd_eh_in_progress(hba)) {
+-		spin_unlock_irqrestore(hba->host->host_lock, flags);
+-		return 0;
+-	}
+-
+ start:
+ 	switch (hba->clk_gating.state) {
+ 	case CLKS_ON:
+@@ -1653,6 +1649,7 @@ static void ufshcd_gate_work(struct work_struct *work)
+ 	struct ufs_hba *hba = container_of(work, struct ufs_hba,
+ 			clk_gating.gate_work.work);
+ 	unsigned long flags;
++	int ret;
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	/*
+@@ -1679,8 +1676,11 @@ static void ufshcd_gate_work(struct work_struct *work)
+ 
+ 	/* put the link into hibern8 mode before turning off clocks */
+ 	if (ufshcd_can_hibern8_during_gating(hba)) {
+-		if (ufshcd_uic_hibern8_enter(hba)) {
++		ret = ufshcd_uic_hibern8_enter(hba);
++		if (ret) {
+ 			hba->clk_gating.state = CLKS_ON;
++			dev_err(hba->dev, "%s: hibern8 enter failed %d\n",
++					__func__, ret);
+ 			trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 						hba->clk_gating.state);
+ 			goto out;
+@@ -1725,11 +1725,10 @@ static void __ufshcd_release(struct ufs_hba *hba)
+ 
+ 	hba->clk_gating.active_reqs--;
+ 
+-	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended
+-		|| hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
+-		|| ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks
+-		|| hba->active_uic_cmd || hba->uic_async_done
+-		|| ufshcd_eh_in_progress(hba))
++	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
++	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
++	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
++	    hba->active_uic_cmd || hba->uic_async_done)
+ 		return;
+ 
+ 	hba->clk_gating.state = REQ_CLKS_OFF;
+@@ -3750,6 +3749,10 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
+ 	ufshcd_add_delay_before_dme_cmd(hba);
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (ufshcd_is_link_broken(hba)) {
++		ret = -ENOLINK;
++		goto out_unlock;
++	}
+ 	hba->uic_async_done = &uic_async_done;
+ 	if (ufshcd_readl(hba, REG_INTERRUPT_ENABLE) & UIC_COMMAND_COMPL) {
+ 		ufshcd_disable_intr(hba, UIC_COMMAND_COMPL);
+@@ -3797,6 +3800,11 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
+ 	hba->uic_async_done = NULL;
+ 	if (reenable_intr)
+ 		ufshcd_enable_intr(hba, UIC_COMMAND_COMPL);
++	if (ret) {
++		ufshcd_set_link_broken(hba);
++		ufshcd_schedule_eh_work(hba);
++	}
++out_unlock:
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 	mutex_unlock(&hba->uic_cmd_mutex);
+ 
+@@ -3866,7 +3874,7 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_link_recovery);
+ 
+-static int __ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
++static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ {
+ 	int ret;
+ 	struct uic_command uic_cmd = {0};
+@@ -3879,45 +3887,16 @@ static int __ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ 	trace_ufshcd_profile_hibern8(dev_name(hba->dev), "enter",
+ 			     ktime_to_us(ktime_sub(ktime_get(), start)), ret);
+ 
+-	if (ret) {
+-		int err;
+-
++	if (ret)
+ 		dev_err(hba->dev, "%s: hibern8 enter failed. ret = %d\n",
+ 			__func__, ret);
+-
+-		/*
+-		 * If link recovery fails then return error code returned from
+-		 * ufshcd_link_recovery().
+-		 * If link recovery succeeds then return -EAGAIN to attempt
+-		 * hibern8 enter retry again.
+-		 */
+-		err = ufshcd_link_recovery(hba);
+-		if (err) {
+-			dev_err(hba->dev, "%s: link recovery failed", __func__);
+-			ret = err;
+-		} else {
+-			ret = -EAGAIN;
+-		}
+-	} else
++	else
+ 		ufshcd_vops_hibern8_notify(hba, UIC_CMD_DME_HIBER_ENTER,
+ 								POST_CHANGE);
+ 
+ 	return ret;
+ }
+ 
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+-{
+-	int ret = 0, retries;
+-
+-	for (retries = UIC_HIBERN8_ENTER_RETRIES; retries > 0; retries--) {
+-		ret = __ufshcd_uic_hibern8_enter(hba);
+-		if (!ret)
+-			goto out;
+-	}
+-out:
+-	return ret;
+-}
+-
+ int ufshcd_uic_hibern8_exit(struct ufs_hba *hba)
+ {
+ 	struct uic_command uic_cmd = {0};
+@@ -3934,7 +3913,6 @@ int ufshcd_uic_hibern8_exit(struct ufs_hba *hba)
+ 	if (ret) {
+ 		dev_err(hba->dev, "%s: hibern8 exit failed. ret = %d\n",
+ 			__func__, ret);
+-		ret = ufshcd_link_recovery(hba);
+ 	} else {
+ 		ufshcd_vops_hibern8_notify(hba, UIC_CMD_DME_HIBER_EXIT,
+ 								POST_CHANGE);
+@@ -5557,6 +5535,24 @@ static bool ufshcd_quirk_dl_nac_errors(struct ufs_hba *hba)
+ 	return err_handling;
+ }
+ 
++/* host lock must be held before calling this func */
++static inline bool ufshcd_is_saved_err_fatal(struct ufs_hba *hba)
++{
++	return ((hba->saved_err & INT_FATAL_ERRORS) ||
++		((hba->saved_err & UIC_ERROR) &&
++		 (hba->saved_uic_err & UFSHCD_UIC_DL_PA_INIT_ERROR)));
++}
++
++/* host lock must be held before calling this func */
++static inline void ufshcd_schedule_eh_work(struct ufs_hba *hba)
++{
++	/* handle fatal errors only when link is not in error state */
++	if (hba->ufshcd_state != UFSHCD_STATE_ERROR) {
++		hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED;
++		queue_work(hba->eh_wq, &hba->eh_work);
++	}
++}
++
+ /**
+  * ufshcd_err_handler - handle UFS errors that require s/w attention
+  * @work: pointer to work structure
+@@ -5573,15 +5569,22 @@ static void ufshcd_err_handler(struct work_struct *work)
+ 
+ 	hba = container_of(work, struct ufs_hba, eh_work);
+ 
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (hba->ufshcd_state == UFSHCD_STATE_ERROR ||
++	    (!(hba->saved_err || hba->saved_uic_err || hba->force_reset) &&
++	     !ufshcd_is_link_broken(hba))) {
++		if (hba->ufshcd_state != UFSHCD_STATE_ERROR)
++			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
++		spin_unlock_irqrestore(hba->host->host_lock, flags);
++		return;
++	}
++	ufshcd_set_eh_in_progress(hba);
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 	pm_runtime_get_sync(hba->dev);
+ 	ufshcd_hold(hba, false);
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+-	if (hba->ufshcd_state == UFSHCD_STATE_RESET)
+-		goto out;
+-
+ 	hba->ufshcd_state = UFSHCD_STATE_RESET;
+-	ufshcd_set_eh_in_progress(hba);
+ 
+ 	/* Complete requests that have door-bell cleared by h/w */
+ 	ufshcd_complete_requests(hba);
+@@ -5593,15 +5596,15 @@ static void ufshcd_err_handler(struct work_struct *work)
+ 		/* release the lock as ufshcd_quirk_dl_nac_errors() may sleep */
+ 		ret = ufshcd_quirk_dl_nac_errors(hba);
+ 		spin_lock_irqsave(hba->host->host_lock, flags);
+-		if (!ret)
++		if (!ret && !hba->force_reset && ufshcd_is_link_active(hba))
+ 			goto skip_err_handling;
+ 	}
+-	if ((hba->saved_err & INT_FATAL_ERRORS) ||
+-	    (hba->saved_err & UFSHCD_UIC_HIBERN8_MASK) ||
++
++	if (hba->force_reset || ufshcd_is_link_broken(hba) ||
++	    ufshcd_is_saved_err_fatal(hba) ||
+ 	    ((hba->saved_err & UIC_ERROR) &&
+-	    (hba->saved_uic_err & (UFSHCD_UIC_DL_PA_INIT_ERROR |
+-				   UFSHCD_UIC_DL_NAC_RECEIVED_ERROR |
+-				   UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
++	     (hba->saved_uic_err & (UFSHCD_UIC_DL_NAC_RECEIVED_ERROR |
++				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
+ 		needs_reset = true;
+ 
+ 	/*
+@@ -5655,34 +5658,25 @@ static void ufshcd_err_handler(struct work_struct *work)
+ 			__ufshcd_transfer_req_compl(hba,
+ 						    (1UL << (hba->nutrs - 1)));
+ 
++		hba->force_reset = false;
+ 		spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 		err = ufshcd_reset_and_restore(hba);
+ 		spin_lock_irqsave(hba->host->host_lock, flags);
+-		if (err) {
+-			dev_err(hba->dev, "%s: reset and restore failed\n",
+-					__func__);
+-			hba->ufshcd_state = UFSHCD_STATE_ERROR;
+-		}
+-		/*
+-		 * Inform scsi mid-layer that we did reset and allow to handle
+-		 * Unit Attention properly.
+-		 */
+-		scsi_report_bus_reset(hba->host, 0);
+-		hba->saved_err = 0;
+-		hba->saved_uic_err = 0;
++		if (err)
++			dev_err(hba->dev, "%s: reset and restore failed with err %d\n",
++					__func__, err);
+ 	}
+ 
+ skip_err_handling:
+ 	if (!needs_reset) {
+-		hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
++		if (hba->ufshcd_state == UFSHCD_STATE_RESET)
++			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
+ 		if (hba->saved_err || hba->saved_uic_err)
+ 			dev_err_ratelimited(hba->dev, "%s: exit: saved_err 0x%x saved_uic_err 0x%x",
+ 			    __func__, hba->saved_err, hba->saved_uic_err);
+ 	}
+ 
+ 	ufshcd_clear_eh_in_progress(hba);
+-
+-out:
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 	ufshcd_scsi_unblock_requests(hba);
+ 	ufshcd_release(hba);
+@@ -5816,6 +5810,7 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
+ 			hba->errors, ufshcd_get_upmcrs(hba));
+ 		ufshcd_update_reg_hist(&hba->ufs_stats.auto_hibern8_err,
+ 				       hba->errors);
++		ufshcd_set_link_broken(hba);
+ 		queue_eh_work = true;
+ 	}
+ 
+@@ -5827,30 +5822,25 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
+ 		hba->saved_err |= hba->errors;
+ 		hba->saved_uic_err |= hba->uic_error;
+ 
+-		/* handle fatal errors only when link is functional */
+-		if (hba->ufshcd_state == UFSHCD_STATE_OPERATIONAL) {
+-			/* block commands from scsi mid-layer */
+-			ufshcd_scsi_block_requests(hba);
+-
+-			hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED;
++		/* block commands from scsi mid-layer */
++		ufshcd_scsi_block_requests(hba);
+ 
+-			/* dump controller state before resetting */
+-			if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR)) {
+-				bool pr_prdt = !!(hba->saved_err &
+-						SYSTEM_BUS_FATAL_ERROR);
++		/* dump controller state before resetting */
++		if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR)) {
++			bool pr_prdt = !!(hba->saved_err &
++					SYSTEM_BUS_FATAL_ERROR);
+ 
+-				dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
++			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+ 					__func__, hba->saved_err,
+ 					hba->saved_uic_err);
+ 
+-				ufshcd_print_host_regs(hba);
+-				ufshcd_print_pwr_info(hba);
+-				ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+-				ufshcd_print_trs(hba, hba->outstanding_reqs,
+-							pr_prdt);
+-			}
+-			schedule_work(&hba->eh_work);
++			ufshcd_print_host_regs(hba);
++			ufshcd_print_pwr_info(hba);
++			ufshcd_print_tmrs(hba, hba->outstanding_tasks);
++			ufshcd_print_trs(hba, hba->outstanding_reqs,
++					pr_prdt);
+ 		}
++		ufshcd_schedule_eh_work(hba);
+ 		retval |= IRQ_HANDLED;
+ 	}
+ 	/*
+@@ -6595,8 +6585,6 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 	/* Establish the link again and restore the device */
+ 	err = ufshcd_probe_hba(hba, false);
+ 
+-	if (!err && (hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL))
+-		err = -EIO;
+ out:
+ 	if (err)
+ 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+@@ -6615,9 +6603,23 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+  */
+ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
+ {
++	u32 saved_err;
++	u32 saved_uic_err;
+ 	int err = 0;
++	unsigned long flags;
+ 	int retries = MAX_HOST_RESET_RETRIES;
+ 
++	/*
++	 * This is a fresh start, cache and clear saved error first,
++	 * in case new error generated during reset and restore.
++	 */
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	saved_err = hba->saved_err;
++	saved_uic_err = hba->saved_uic_err;
++	hba->saved_err = 0;
++	hba->saved_uic_err = 0;
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++
+ 	do {
+ 		/* Reset the attached device */
+ 		ufshcd_vops_device_reset(hba);
+@@ -6625,6 +6627,18 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
+ 		err = ufshcd_host_reset_and_restore(hba);
+ 	} while (err && --retries);
+ 
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	/*
++	 * Inform scsi mid-layer that we did reset and allow to handle
++	 * Unit Attention properly.
++	 */
++	scsi_report_bus_reset(hba->host, 0);
++	if (err) {
++		hba->saved_err |= saved_err;
++		hba->saved_uic_err |= saved_uic_err;
++	}
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++
+ 	return err;
+ }
+ 
+@@ -6636,48 +6650,25 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
+  */
+ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd)
+ {
+-	int err;
++	int err = SUCCESS;
+ 	unsigned long flags;
+ 	struct ufs_hba *hba;
+ 
+ 	hba = shost_priv(cmd->device->host);
+ 
+-	ufshcd_hold(hba, false);
+-	/*
+-	 * Check if there is any race with fatal error handling.
+-	 * If so, wait for it to complete. Even though fatal error
+-	 * handling does reset and restore in some cases, don't assume
+-	 * anything out of it. We are just avoiding race here.
+-	 */
+-	do {
+-		spin_lock_irqsave(hba->host->host_lock, flags);
+-		if (!(work_pending(&hba->eh_work) ||
+-			    hba->ufshcd_state == UFSHCD_STATE_RESET ||
+-			    hba->ufshcd_state == UFSHCD_STATE_EH_SCHEDULED))
+-			break;
+-		spin_unlock_irqrestore(hba->host->host_lock, flags);
+-		dev_dbg(hba->dev, "%s: reset in progress\n", __func__);
+-		flush_work(&hba->eh_work);
+-	} while (1);
+-
+-	hba->ufshcd_state = UFSHCD_STATE_RESET;
+-	ufshcd_set_eh_in_progress(hba);
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	hba->force_reset = true;
++	ufshcd_schedule_eh_work(hba);
++	dev_err(hba->dev, "%s: reset in progress - 1\n", __func__);
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 
+-	err = ufshcd_reset_and_restore(hba);
++	flush_work(&hba->eh_work);
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+-	if (!err) {
+-		err = SUCCESS;
+-		hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
+-	} else {
++	if (hba->ufshcd_state == UFSHCD_STATE_ERROR)
+ 		err = FAILED;
+-		hba->ufshcd_state = UFSHCD_STATE_ERROR;
+-	}
+-	ufshcd_clear_eh_in_progress(hba);
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 
+-	ufshcd_release(hba);
+ 	return err;
+ }
+ 
+@@ -7398,6 +7389,7 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async)
+ {
+ 	int ret;
++	unsigned long flags;
+ 	ktime_t start = ktime_get();
+ 
+ 	ret = ufshcd_link_startup(hba);
+@@ -7462,14 +7454,17 @@ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async)
+ 	 */
+ 	ufshcd_set_active_icc_lvl(hba);
+ 
+-	/* set the state as operational after switching to desired gear */
+-	hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
+-
+ 	ufshcd_wb_config(hba);
+ 	/* Enable Auto-Hibernate if configured */
+ 	ufshcd_auto_hibern8_enable(hba);
+ 
+ out:
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (ret)
++		hba->ufshcd_state = UFSHCD_STATE_ERROR;
++	else if (hba->ufshcd_state == UFSHCD_STATE_RESET)
++		hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 
+ 	trace_ufshcd_init(dev_name(hba->dev), ret,
+ 		ktime_to_us(ktime_sub(ktime_get(), start)),
+@@ -8076,10 +8071,13 @@ static int ufshcd_link_state_transition(struct ufs_hba *hba,
+ 
+ 	if (req_link_state == UIC_LINK_HIBERN8_STATE) {
+ 		ret = ufshcd_uic_hibern8_enter(hba);
+-		if (!ret)
++		if (!ret) {
+ 			ufshcd_set_link_hibern8(hba);
+-		else
++		} else {
++			dev_err(hba->dev, "%s: hibern8 enter failed %d\n",
++					__func__, ret);
+ 			goto out;
++		}
+ 	}
+ 	/*
+ 	 * If autobkops is enabled, link can't be turned off because
+@@ -8095,8 +8093,11 @@ static int ufshcd_link_state_transition(struct ufs_hba *hba,
+ 		 * unipro. But putting the link in hibern8 is much faster.
+ 		 */
+ 		ret = ufshcd_uic_hibern8_enter(hba);
+-		if (ret)
++		if (ret) {
++			dev_err(hba->dev, "%s: hibern8 enter failed %d\n",
++					__func__, ret);
+ 			goto out;
++		}
+ 		/*
+ 		 * Change controller state to "reset state" which
+ 		 * should also put the link in off/reset state
+@@ -8405,10 +8406,13 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 
+ 	if (ufshcd_is_link_hibern8(hba)) {
+ 		ret = ufshcd_uic_hibern8_exit(hba);
+-		if (!ret)
++		if (!ret) {
+ 			ufshcd_set_link_active(hba);
+-		else
++		} else {
++			dev_err(hba->dev, "%s: hibern8 exit failed %d\n",
++					__func__, ret);
+ 			goto vendor_suspend;
++		}
+ 	} else if (ufshcd_is_link_off(hba)) {
+ 		/*
+ 		 * A full initialization of the host and the device is
+@@ -8782,6 +8786,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
+ 	int err;
+ 	struct Scsi_Host *host = hba->host;
+ 	struct device *dev = hba->dev;
++	char eh_wq_name[sizeof("ufs_eh_wq_00")];
+ 
+ 	if (!mmio_base) {
+ 		dev_err(hba->dev,
+@@ -8843,6 +8848,15 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
+ 	hba->max_pwr_info.is_valid = false;
+ 
+ 	/* Initialize work queues */
++	snprintf(eh_wq_name, sizeof(eh_wq_name), "ufs_eh_wq_%d",
++		 hba->host->host_no);
++	hba->eh_wq = create_singlethread_workqueue(eh_wq_name);
++	if (!hba->eh_wq) {
++		dev_err(hba->dev, "%s: failed to create eh workqueue\n",
++				__func__);
++		err = -ENOMEM;
++		goto out_disable;
++	}
+ 	INIT_WORK(&hba->eh_work, ufshcd_err_handler);
+ 	INIT_WORK(&hba->eeh_work, ufshcd_exception_event_handler);
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 5b2cdaf..83e5cd9 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -90,6 +90,7 @@ enum uic_link_state {
+ 	UIC_LINK_OFF_STATE	= 0, /* Link powered down or disabled */
+ 	UIC_LINK_ACTIVE_STATE	= 1, /* Link is in Fast/Slow/Sleep state */
+ 	UIC_LINK_HIBERN8_STATE	= 2, /* Link is in Hibernate state */
++	UIC_LINK_BROKEN_STATE	= 3, /* Link is in broken state */
+ };
+ 
+ #define ufshcd_is_link_off(hba) ((hba)->uic_link_state == UIC_LINK_OFF_STATE)
+@@ -97,11 +98,15 @@ enum uic_link_state {
+ 				    UIC_LINK_ACTIVE_STATE)
+ #define ufshcd_is_link_hibern8(hba) ((hba)->uic_link_state == \
+ 				    UIC_LINK_HIBERN8_STATE)
++#define ufshcd_is_link_broken(hba) ((hba)->uic_link_state == \
++				   UIC_LINK_BROKEN_STATE)
+ #define ufshcd_set_link_off(hba) ((hba)->uic_link_state = UIC_LINK_OFF_STATE)
+ #define ufshcd_set_link_active(hba) ((hba)->uic_link_state = \
+ 				    UIC_LINK_ACTIVE_STATE)
+ #define ufshcd_set_link_hibern8(hba) ((hba)->uic_link_state = \
+ 				    UIC_LINK_HIBERN8_STATE)
++#define ufshcd_set_link_broken(hba) ((hba)->uic_link_state = \
++				    UIC_LINK_BROKEN_STATE)
+ 
+ #define ufshcd_set_ufs_dev_active(h) \
+ 	((h)->curr_dev_pwr_mode = UFS_ACTIVE_PWR_MODE)
+@@ -613,12 +618,14 @@ struct ufs_hba_variant_params {
+  * @intr_mask: Interrupt Mask Bits
+  * @ee_ctrl_mask: Exception event control mask
+  * @is_powered: flag to check if HBA is powered
++ * @eh_wq: Workqueue that eh_work works on
+  * @eh_work: Worker to handle UFS errors that require s/w attention
+  * @eeh_work: Worker to handle exception events
+  * @errors: HBA errors
+  * @uic_error: UFS interconnect layer error status
+  * @saved_err: sticky error mask
+  * @saved_uic_err: sticky UIC error mask
++ * @force_reset: flag to force eh_work perform a full reset
+  * @silence_err_logs: flag to silence error logs
+  * @dev_cmd: ufs device management command information
+  * @last_dme_cmd_tstamp: time stamp of the last completed DME command
+@@ -707,6 +714,7 @@ struct ufs_hba {
+ 	bool is_powered;
+ 
+ 	/* Work Queues */
++	struct workqueue_struct *eh_wq;
+ 	struct work_struct eh_work;
+ 	struct work_struct eeh_work;
+ 
+@@ -716,6 +724,7 @@ struct ufs_hba {
+ 	u32 saved_err;
+ 	u32 saved_uic_err;
+ 	struct ufs_stats ufs_stats;
++	bool force_reset;
+ 	bool silence_err_logs;
+ 
+ 	/* Device management request data */
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
