@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F172269C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDE92269BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387785AbgGTQ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:29:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59896 "EHLO mail.kernel.org"
+        id S2388743AbgGTQ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:29:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731383AbgGTP7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:59:18 -0400
+        id S1732200AbgGTP7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC2022065E;
-        Mon, 20 Jul 2020 15:59:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B59322CBB;
+        Mon, 20 Jul 2020 15:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260758;
-        bh=3KRZcieEP6v8AtuNQIAdBlVRggsZqQwLO0e1d34e/YQ=;
+        s=default; t=1595260761;
+        bh=RnqPvbW0WCd7AN3mwXv903E996tC0ecYc6XsZIODR5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GFD01kSieR1HOXMtld4A8nTXj+Us7H5BsKWSXRnwv8KuVRqfHh5hE3S0+n2DAEHkP
-         Hdki9AbC+Ej86bOQJngwOk/W7ZKjmdKiviQAfzYb4Q668xK0Rf9xrKF5G98WKVjcEK
-         sLMpsG3PzX1J3my/ShMhDDHrC0p6c3OUuDIR/Z00=
+        b=BNtTg3SvdUBxzzNY+a1wuLtwtb3+uxUTfCGFYnV9FJBrPMNSXjC8B+sAa0d4u4kG+
+         mVPphDu9HVpSSJlfW6jG7llQmBMmZmyJDGC9gvyne7gMLjNHQfswQi0+Znjwa8fAQW
+         q6m1T1mW56V8U4NOeEJYajdgdZ7Ggk2PkAQ0uyjE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/215] ALSA: usb-audio: Rewrite registration quirk handling
-Date:   Mon, 20 Jul 2020 17:36:07 +0200
-Message-Id: <20200720152824.246255051@linuxfoundation.org>
+Subject: [PATCH 5.4 086/215] ACPI: video: Use native backlight on Acer Aspire 5783z
+Date:   Mon, 20 Jul 2020 17:36:08 +0200
+Message-Id: <20200720152824.294111191@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -43,100 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit d8695bc5b1fe88305396b1f788d3b5f218e28a30 ]
+[ Upstream commit 1c8fbc1f9bfb804ef2f0d4ee9397ab800e33f23a ]
 
-A slight refactoring of the registration quirk code.  Now it uses the
-table lookup for easy additions in future.  Also the return type was
-changed to bool, and got a few more comments.
+The Acer Aspire 5783z shipped with Windows 7 and as such does not trigger
+our "win8 ready" heuristic for prefering the native backlight interface.
 
-Link: https://lore.kernel.org/r/20200325103322.2508-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Still ACPI backlight control doesn't work on this model, where as the
+native (intel_video) backlight interface does work. Add a quirk to
+force using native backlight control on this model.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/card.c   |  2 +-
- sound/usb/quirks.c | 40 ++++++++++++++++++++++++++++++----------
- sound/usb/quirks.h |  3 +--
- 3 files changed, 32 insertions(+), 13 deletions(-)
+ drivers/acpi/video_detect.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 2284377cbb98d..230d862cfa3a8 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -662,7 +662,7 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	/* we are allowed to call snd_card_register() many times, but first
- 	 * check to see if a device needs to skip it or do anything special
- 	 */
--	if (snd_usb_registration_quirk(chip, ifnum) == 0) {
-+	if (!snd_usb_registration_quirk(chip, ifnum)) {
- 		err = snd_card_register(chip->card);
- 		if (err < 0)
- 			goto __error;
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index f3e26e65c3257..ad557ab65e043 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1783,16 +1783,36 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
- 	}
- }
+diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+index e63fd7bfd3a53..8daeeb5e3eb67 100644
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -336,6 +336,15 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "Precision 7510"),
+ 		},
+ 	},
++	{
++	 .callback = video_detect_force_native,
++	 .ident = "Acer Aspire 5738z",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
++		DMI_MATCH(DMI_BOARD_NAME, "JV50"),
++		},
++	},
  
--int snd_usb_registration_quirk(struct snd_usb_audio *chip,
--			       int iface)
-+/*
-+ * registration quirk:
-+ * the registration is skipped if a device matches with the given ID,
-+ * unless the interface reaches to the defined one.  This is for delaying
-+ * the registration until the last known interface, so that the card and
-+ * devices appear at the same time.
-+ */
-+
-+struct registration_quirk {
-+	unsigned int usb_id;	/* composed via USB_ID() */
-+	unsigned int interface;	/* the interface to trigger register */
-+};
-+
-+#define REG_QUIRK_ENTRY(vendor, product, iface) \
-+	{ .usb_id = USB_ID(vendor, product), .interface = (iface) }
-+
-+static const struct registration_quirk registration_quirks[] = {
-+	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
-+	{ 0 }					/* terminator */
-+};
-+
-+/* return true if skipping registration */
-+bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface)
- {
--	switch (chip->usb_id) {
--	case USB_ID(0x0951, 0x16d8): /* Kingston HyperX AMP */
--		/* Register only when we reach interface 2 so that streams can
--		 * merge correctly into PCMs from interface 0
--		 */
--		return (iface != 2);
--	}
-+	const struct registration_quirk *q;
-+
-+	for (q = registration_quirks; q->usb_id; q++)
-+		if (chip->usb_id == q->usb_id)
-+			return iface != q->interface;
-+
- 	/* Register as normal */
--	return 0;
-+	return false;
- }
-diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index 3afc01eabc7e2..c76cf24a640a6 100644
---- a/sound/usb/quirks.h
-+++ b/sound/usb/quirks.h
-@@ -51,7 +51,6 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
- 					  struct audioformat *fp,
- 					  int stream);
- 
--int snd_usb_registration_quirk(struct snd_usb_audio *chip,
--			       int iface);
-+bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface);
- 
- #endif /* __USBAUDIO_QUIRKS_H */
+ 	/*
+ 	 * Desktops which falsely report a backlight and which our heuristics
 -- 
 2.25.1
 
