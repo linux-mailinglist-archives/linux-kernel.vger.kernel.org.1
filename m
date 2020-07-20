@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEF12255C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596092255CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgGTCHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 22:07:38 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:42707 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726225AbgGTCHi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 22:07:38 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 70025104E5B;
-        Mon, 20 Jul 2020 12:07:32 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jxLDH-00026c-AP; Mon, 20 Jul 2020 12:07:31 +1000
-Date:   Mon, 20 Jul 2020 12:07:31 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
-Message-ID: <20200720020731.GQ5369@dread.disaster.area>
-References: <20200717044427.68747-1-ebiggers@kernel.org>
- <20200717174750.GQ12769@casper.infradead.org>
- <20200718013839.GD2183@sol.localdomain>
- <20200718021304.GS12769@casper.infradead.org>
- <20200718052818.GF2183@sol.localdomain>
+        id S1726736AbgGTCLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 22:11:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726225AbgGTCLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 22:11:42 -0400
+Received: from dragon (unknown [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15472208B3;
+        Mon, 20 Jul 2020 02:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595211101;
+        bh=PgDcAq+4nyz4PbXB7ez/Cs907K+I0Hwh/nXW03+MYaE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xYYOIPhjYHhrVPbinYr1Yu+dMXz1s1oqP1orozIz0nqL8+BlHf4G6rTrMRoHCqrfc
+         yG4A/mlQ25vMLDKLq6LssLNpRR+ieh7scg5n3dK6hVfNRIUzlZ6nTKBrVGfUVRAsEr
+         cn1ufSU/UGfA1eXN/Rqddi2dwmloZUaIMBK65mHA=
+Date:   Mon, 20 Jul 2020 10:11:26 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Philippe Schenker <philippe.schenker@toradex.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH 3/3] ARM: dts: colibri-imx7: add usb dual-role switch
+ capability
+Message-ID: <20200720021125.GC11560@dragon>
+References: <20200710132423.497230-1-philippe.schenker@toradex.com>
+ <20200710132423.497230-3-philippe.schenker@toradex.com>
+ <73240ab0-5069-40c5-4ade-7fcc2207dfaf@pengutronix.de>
+ <c76c0fd056512a3f8e24bf06e7bb7e1650090609.camel@toradex.com>
+ <7e6f8135-120f-0831-20ad-25648ea646b8@pengutronix.de>
+ <83b230cef109e1a413ab1036c21ad763a1d127eb.camel@toradex.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200718052818.GF2183@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LPwYv6e9 c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8
-        a=6eSPBXchJsNOt_dXz80A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <83b230cef109e1a413ab1036c21ad763a1d127eb.camel@toradex.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:28:18PM -0700, Eric Biggers wrote:
-> What do people think about the following instead?  (Not proofread / tested yet,
-> so please comment on the high-level approach, not minor mistakes :-) )
-
-No huge long macros, please.
-
-We don't accept people writing long complex static inline functions,
-so for the same reasons it is not acceptable to write long complex
-macros.  Especially ones that use variable arguments and embed
-invisible locking within them.
-
-The whole serialisation/atomic/ordering APIs have fallen badly off
-the macro cliff, to the point where finding out something as simple
-as the order of parameters passed to cmpxchg and what semantics it
-provides requires macro-spelunking 5 layers deep to find the generic
-implementation function that contains a comment describing what it
-does....
-
-That's yet another barrier to understanding what all the different
-synchronisation primitives do.
-
-....
-
-> In the fs/direct-io.c case we'd use:
+On Tue, Jul 14, 2020 at 08:20:34AM +0000, Philippe Schenker wrote:
+> On Tue, 2020-07-14 at 09:55 +0200, Ahmad Fatoum wrote:
+> > Hello Philippe,
+> > 
+> > On 7/13/20 1:53 PM, Philippe Schenker wrote:
+> > > On Mon, 2020-07-13 at 11:46 +0200, Ahmad Fatoum wrote:
+> > > > Hello Philippe,
+> > > > 
+> > > > > +	extcon_usbc_det: usbc_det {
+> > > > > +		compatible = "linux,extcon-usb-gpio";
+> > > > 
+> > > > According to 4602f3bff266 ("usb: common: add USB GPIO based
+> > > > connection
+> > > > detection driver"):
+> > > > "the old way using extcon to support USB Dual-Role switch is now
+> > > > deprecated
+> > > >  when use Type-B connector."
+> > > > 
+> > > > Have you considered using a compatible = "gpio-usb-b-connector"
+> > > > child
+> > > > node instead?
+> > > > 
+> > > > Cheers,
+> > > > Ahmad
+> > > 
+> > > Thanks for the Hint Ahmad,
+> > > 
+> > > I already tried and just now tried again but it doesn't work on our
+> > > hardware. Are you sure this works with chipidea driver?
+> > 
+> > I haven't, just wanted to point its existence out in case you didn't
+> > know.
+> > Seems we need to call of_platform_populate somewhere in the driver.
+> > Unsure what other changes are necessary.
 > 
-> int sb_init_dio_done_wq(struct super_block *sb)
-> {
-> 	static DEFINE_MUTEX(sb_init_dio_done_mutex);
+> Yep, thanks for that! It seems like that need to be really called as I
+> can't get a probe of the new usb connector driver. I quickly grepped
+> through code and saw that tegra USB driver is calling
+> of_platform_populate and they also use that gpio-usb-b-connector.
 > 
-> 	return INIT_ONCE_PTR(&sb->s_dio_done_wq, &sb_init_dio_done_mutex,
-> 			     alloc_workqueue,
-> 			     "dio/%s", WQ_MEM_RECLAIM, 0, sb->s_id);
-> }
+> > 
+> > > Should this new usb-connector stuff work in general with every old
+> > > driver?
+> > 
+> > If the driver support isn't there yet, I think use of extcon is fine
+> > as is.
 
-Yeah, that's pretty horrible...
+Shouldn't we improve chipidea driver to get it work with gpio-usb-b-connector?
 
-I *much* prefer an API like Willy's suggested to somethign like
-this. Just because you can hide all sorts of stuff in macros doesn't
-mean you should.
-
-> The only part I really don't like is the way arguments are passed to the
-> alloc_func.  We could also make it work like the following, though it would
-> break the usual rules since it looks like the function call is always executed,
-> but it's not:
-> 
-> 	return INIT_ONCE_PTR(&sb->s_dio_done_wq, &sb_init_dio_done_mutex,
-> 			     alloc_workqueue("dio/%s", WQ_MEM_RECLAIM, 0,
-> 					     sb->s_id));
-
-Yeah, that's even worse. Code that does not do what it looks like it
-should needs to be nuked from orbit.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Shawn
