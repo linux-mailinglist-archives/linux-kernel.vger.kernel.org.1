@@ -2,204 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29FE226F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 22:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA431226F7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 22:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730459AbgGTUK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 16:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        id S1731092AbgGTUMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 16:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729357AbgGTUK1 (ORCPT
+        with ESMTP id S1728874AbgGTUMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 16:10:27 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D005EC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:10:27 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mn17so410998pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:10:27 -0700 (PDT)
+        Mon, 20 Jul 2020 16:12:13 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBD1C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:12:13 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id h7so1008847qkk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:12:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Qt6jGzvm3GC6CjwiV6wln+Xb/8pwnGX0O0vF6jd8ZYE=;
-        b=f7HmX8uJEiLg6GPaHOjJQaUIRNQ2abmjKS9jJE1HkNfeKfm37XujIMuScSCInwA7Ro
-         CJUNZBjCoez4wYxKk2xuIYefO41y3yF/OYbBo59YkAI4DXiZQlmqMYPCuYvIR4mWBxGo
-         1MPylNVJZvcDWKNeojzbWvlhmphlBGtjkBiETy5gZPfz8olOlMUVls6mFvvofA/s8sEP
-         wmcKfdT6IdUHaTi4EP440bBQb4F1/QXZdAI0G48cHwXFtW2oJUCdjZMtZhjjVfyzcF9s
-         eB1U5TOpGb+RBOKjpWsM+vRclDohkdF46Nmo5EjjL4wDLQ9zCznBtQGNCXx7WjFVqkqd
-         3yZQ==
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Gufroq3ZLK6QdGAL8wDHAFBHZWpw/Rpc6niq7LgVOX0=;
+        b=L8IvjmH7ZXtn4jpxvkf7GiSjkywR/ofWtLxBvhRIkb0t4Q7ms5GyVD6rCqISV2MHnc
+         a5X12+JllGRmc0hX8naT1BQ4JF/xCeFEibOhpiOgGPILqhXSRebBNQvtOEwxOEO7BwB5
+         +6L1UlEMMVezIKgAl6QBOqFXrkgAjiSLLZvJHVJ5Ft7Lfkvn2GWjcNzina7XxnxmaCtE
+         c5xnU2k5KvYHFWJbPgsM/8HnZ1MyziPguRQ0MvIODVWtbs4KpCNyxn8EeH4GaY/aPla6
+         yKtG7LmN2CjABlocxexAM6nkbwsXiLEbxthIvgkp4flxQIELWPViDdkormWfDqKlDWYQ
+         JcKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Qt6jGzvm3GC6CjwiV6wln+Xb/8pwnGX0O0vF6jd8ZYE=;
-        b=CjPPInXphczapm9yjYexJdU8Vm+jA0cY528OT2CdsUOyxsgcyArKKrRQJsvWcM2PDJ
-         FVx2Tk+motmjRSqegrssDWfI/aK2VqcoPkBa92Jsb2vGC6wrwcDb+wTKtfbXyhibnOSF
-         wzk41ng21+Qq4yXvA9DjJfyMthMy9T52umx8D8OYdCBjZ9DOlzzuzXRFevW4v+SaTFjF
-         NMl8Pi55WDe41kAkOSZaNY6/te5M/ObeEMJXbjHvaBMFNiZvNCB6yQwtQ2YKVYvFw/BQ
-         /aPKiBHfni1OlSkoXFZGYrWBwSGxxo37GVaJsPSnx1rMqpRQIgpiO8MuWA74AoLmtmbQ
-         4asQ==
-X-Gm-Message-State: AOAM531b+3b8Z3qJrZah8xox82VB2jvCMPBq/xbXdg/jPdCkecFO6iS+
-        3LBZwYSifMASO6TXwTZemtW07GF52rghR5AG
-X-Google-Smtp-Source: ABdhPJyw0TRbyVLKTq1Ia1pocvwrGkYe1MTP5ts2b3uJlaceVIXKGr0KiTl+ODtRo3QxFnOUsLl2Kg==
-X-Received: by 2002:a17:90a:c207:: with SMTP id e7mr1079695pjt.49.1595275827051;
-        Mon, 20 Jul 2020 13:10:27 -0700 (PDT)
-Received: from frank-MS-7C02.skbroadband ([211.110.90.114])
-        by smtp.gmail.com with ESMTPSA id j26sm17208028pfe.200.2020.07.20.13.10.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Gufroq3ZLK6QdGAL8wDHAFBHZWpw/Rpc6niq7LgVOX0=;
+        b=R9g3qdT5Rmxac2MrBLdFjxbXXDSKr/xEzi12iTX17v2o/WnRhBMe1xabjQYGQMg+8Q
+         dWE1PstHUiWrsyRjaxk42QmaFuGNfK0vb3f7Q5RZovR3OIYcjzh6MIv4o2UER03zhPzg
+         DPB4F3HQ5Sa2QwJQhtrmCGXpaKkpUq9TABeJiaYbURaSGSZbjqIrqvoORLerZ8TiOq9P
+         NMMopWzpKcLjJr4jiH7PXtzJC9KqUA7wxUpMg552K7V2VxEhObSgM1i6My+7qA4A7h2B
+         8LwCvl3b/HAA2IQ2HGRtANjtzql+ltKoZ7DQke2DfGMPnp2zP3Bbk3HD6AD6wFEYSBK2
+         fasw==
+X-Gm-Message-State: AOAM530mGRAAXG/YZyte7XKU7eUD4rQAlXXeIvcHypfQirDAHxE06nqa
+        iL53JEaN1xWKADrZCM3JETCYzQ==
+X-Google-Smtp-Source: ABdhPJw7xDTenwANdauxipEFY2jHjN//1NckKbZSSzcmaQUmHVrT3RLOTZhGpgU9gywArScCImZDeQ==
+X-Received: by 2002:a37:9c58:: with SMTP id f85mr456879qke.345.1595275932562;
+        Mon, 20 Jul 2020 13:12:12 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id a20sm20950223qtw.54.2020.07.20.13.12.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 13:10:26 -0700 (PDT)
-From:   Frank Yang <puilp0502@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Frank Yang <puilp0502@gmail.com>
-Subject: [PATCH] HID: Support Varmilo Keyboards' media hotkeys
-Date:   Tue, 21 Jul 2020 05:09:16 +0900
-Message-Id: <20200720200916.31082-1-puilp0502@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 20 Jul 2020 13:12:11 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 16:12:04 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: splice() rcu_sched self-detected stall on CPU
+Message-ID: <20200720201204.GA1280@lca.pw>
+References: <89F418A9-EB20-48CB-9AE0-52C700E6BB74@lca.pw>
+ <20200505185732.GP2869@paulmck-ThinkPad-P72>
+ <8678900D-8D52-4195-A767-9E6923EE0AAF@lca.pw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8678900D-8D52-4195-A767-9E6923EE0AAF@lca.pw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Varmilo VA104M Keyboard (04b4:07b1, reported as Varmilo Z104M)
-exposes media control hotkeys as a USB HID consumer control device,
-but these keys do not work in the current (5.8-rc1) kernel due to
-the incorrect HID report descriptor. Fix the problem by modifying
-the internal HID report descriptor.
+On Tue, May 05, 2020 at 03:00:34PM -0400, Qian Cai wrote:
+> 
+> 
+> > On May 5, 2020, at 2:57 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > On Mon, May 04, 2020 at 03:11:09PM -0400, Qian Cai wrote:
+> >> Running a syscall fuzzer inside a container on linux-next floods
+> >> systems with soft lockups. It looks like stuck in this line at
+> >> iov_iter_copy_from_user_atomic(), Thoughts?
+> >> 
+> >> iterate_all_kinds(i, bytes, v,
+> >>                copyin((p += v.iov_len) - v.iov_len, v.iov_base, v.iov_len),
+> >>                memcpy_from_page((p += v.bv_len) - v.bv_len, v.bv_page,
+> >>                                 v.bv_offset, v.bv_len),
+> >>                memcpy((p += v.iov_len) - v.iov_len, v.iov_base, v.iov_len)
+> >>        )
+> > 
+> > If the size being copied is large enough, something like this might happen.
+> > 
+> > Is this a CONFIG_PREEMPT=n kernel?  And is the size passed in to
+> 
+> Yes, CONFIG_PREEMPT=n.
+> 
+> > iov_iter_copy_from_user_atomic() quite large, given that this is generated
+> > by a fuzzer?  If so, one thing to try is to add cond_resched() in the
+> > iterate_bvec(), iterate_kvec(), and iterate_iovec() macros.
+> 
+> I’ll try that.
 
-More specifically, the keyboard report descriptor specifies the
-logical boundary as 572~10754 (0x023c ~ 0x2a02) while the usage
-boundary is specified as 0~10754 (0x00 ~ 0x2a02). This results in an
-incorrect interpretation of input reports, causing inputs to be ignored.
-By setting the Logical Minimum to zero, we align the logical boundary
-with the Usage ID boundary.
+Finally, had a chance to try it, but in
+iov_iter_copy_from_user_atomic(), it calls kmap_atomic() first which
+calls preempt_disable(). Thus, in_atomic() == 1. Later, those
+cond_resched() would trigger the "sleeping function called from invalid
+context" warnings.
 
-Some notes:
+Just to refresh the memory, it is quite easy to still reproduce this
+today.
 
-* There seem to be multiple variants of the VA104M keyboard. This
-  patch specifically targets 04b4:07b1 variant.
+# git clone https://gitlab.com/cailca/linux-mm
+# cd linux-mm; make
+# ./random -x 0-100 -f
 
-* The device works out-of-the-box on Windows platform with the generic
-  consumer control device driver (hidserv.inf). This suggests that
-  Windows either ignores the Logical Minimum/Logical Maximum or
-  interprets the Usage ID assignment differently from the linux
-  implementation; Maybe there are other devices out there that only
-  works on Windows due to this problem?
+[10605.410827][   C34] watchdog: BUG: soft lockup - CPU#34 stuck for 23s! [trinity-c47:134866]
+[10605.419192][   C34] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1 vfio loop processor ip_tables x_tables sd_mod ahci libahci mlx5_core firmware_class libata dm_mirror dm_region_hash dm_log dm_mod efivarfs
+[10605.438424][   C34] irq event stamp: 439794
+[10605.442615][   C34] hardirqs last  enabled at (439793): [<ffffa000101d38c4>] el1_irq+0xc4/0x140
+[10605.451313][   C34] hardirqs last disabled at (439794): [<ffffa000101d387c>] el1_irq+0x7c/0x140
+[10605.460013][   C34] softirqs last  enabled at (439790): [<ffffa000101d1b50>] efi_header_end+0xb50/0x14d4
+[10605.469494][   C34] softirqs last disabled at (439783): [<ffffa000102bd898>] irq_exit+0x440/0x510
+[10605.478368][   C34] CPU: 34 PID: 134866 Comm: trinity-c47 Not tainted 5.8.0-rc5-next-20200717+ #2
+[10605.487236][   C34] Hardware name: HPE Apollo 70             /C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
+[10605.497669][   C34] pstate: 40400009 (nZcv daif +PAN -UAO BTYPE=--)
+[10605.503938][   C34] pc : iov_iter_copy_from_user_atomic+0x640/0xa68
+[10605.510208][   C34] lr : generic_perform_write+0x24c/0x370
+[10605.515691][   C34] sp : ffff008921b57580
+[10605.519697][   C34] x29: ffff008921b57580 x28: 0000000000000000
+[10605.525712][   C34] x27: dfffa00000000000 x26: ffff00895cbe6500
+[10605.531726][   C34] x25: 0000000000000000 x24: 0000000000000003
+[10605.537740][   C34] x23: ffff008921b57b90 x22: 0000000000000000
+[10605.543754][   C34] x21: 0000000000000000 x20: 0000000000000004
+[10605.549769][   C34] x19: ffff000c5e817d39 x18: 0000000000000000
+[10605.555782][   C34] x17: 0000000000000000 x16: 0000000000000000
+[10605.561796][   C34] x15: 0000000000000000 x14: 1fffe0112436ae4a
+[10605.567809][   C34] x13: ffff8012adcac617 x12: 1fffe012adcac616
+[10605.573823][   C34] x11: 1fffe012adcac616 x10: ffff8012adcac616
+[10605.579838][   C34] x9 : dfffa00000000000 x8 : ffff00956e5630b7
+[10605.585852][   C34] x7 : ffff80112436af75 x6 : ffff8012adcac617
+[10605.591865][   C34] x5 : 0000000000000000 x4 : 0000000000000004
+[10605.597886][   C34] x3 : ffff00895cbe6500 x2 : 1fffe0112b97cca1
+[10605.603926][   C34] x1 : 0000000000000007 x0 : ffff00895cbe650c
+[10605.609941][   C34] Call trace:
+[10605.613083][   C34]  iov_iter_copy_from_user_atomic+0x640/0xa68
+[10605.619003][   C34]  generic_perform_write+0x24c/0x370
+[10605.624140][   C34]  __generic_file_write_iter+0x280/0x428
+[10605.629624][   C34]  generic_file_write_iter+0x2a4/0x8e0
+[10605.634936][   C34]  do_iter_readv_writev+0x348/0x590
+[10605.639986][   C34]  do_iter_write+0x124/0x468
+[10605.644428][   C34]  vfs_iter_write+0x54/0x98
+[10605.648786][   C34]  iter_file_splice_write+0x4a0/0x860
+[10605.654009][   C34]  do_splice_from+0x60/0x120
+[10605.658452][   C34]  do_splice+0x7ac/0x1310
+[10605.662633][   C34]  __arm64_sys_splice+0x118/0x1e0
+[10605.667510][   C34]  do_el0_svc+0x124/0x228
+[10605.671693][   C34]  el0_sync_handler+0x260/0x410
+[10605.676395][   C34]  el0_sync+0x140/0x180
+[10648.198030][   C34] rcu: INFO: rcu_sched self-detected stall on CPU
+[10648.204756][   C34] rcu: 	34-....: (6472 ticks this GP) idle=666/1/0x4000000000000002 softirq=36485/36485 fqs=1901
+[10648.216008][   C34] 	(t=6501 jiffies g=587637 q=293554)
+[10648.221240][   C34] Task dump for CPU 34:
+[10648.225248][   C34] trinity-c47     R  running task    25856 134866 106496 0x00000007
+[10648.233097][   C34] Call trace:
+[10648.236245][   C34]  dump_backtrace+0x0/0x398
+[10648.240603][   C34]  show_stack+0x14/0x20
+[10648.244615][   C34]  sched_show_task+0x498/0x608
+[10648.249232][   C34]  dump_cpu_task+0xcc/0xdc
+[10648.253503][   C34]  rcu_dump_cpu_stacks+0x248/0x294
+[10648.258467][   C34]  rcu_sched_clock_irq+0x12f4/0x1998
+[10648.263606][   C34]  update_process_times+0x2c/0x90
+[10648.268484][   C34]  tick_sched_handle+0x68/0x120
+[10648.273187][   C34]  tick_sched_timer+0x60/0x128
+[10648.277802][   C34]  __hrtimer_run_queues+0x7b4/0x1388
+[10648.282940][   C34]  hrtimer_interrupt+0x284/0x640
+[10648.287732][   C34]  arch_timer_handler_phys+0x48/0x68
+[10648.292871][   C34]  handle_percpu_devid_irq+0x248/0xde0
+[10648.298194][   C34]  generic_handle_irq+0x74/0xa0
+[10648.302907][   C34]  __handle_domain_irq+0xa0/0x160
+[10648.307784][   C34]  gic_handle_irq+0xc0/0x1a0
+[10648.312227][   C34]  el1_irq+0xbc/0x140
+[10648.316064][   C34]  iov_iter_copy_from_user_atomic+0x668/0xa68
+[10648.321984][   C34]  generic_perform_write+0x24c/0x370
+[10648.327121][   C34]  __generic_file_write_iter+0x280/0x428
+[10648.332605][   C34]  generic_file_write_iter+0x2a4/0x8e0
+[10648.337916][   C34]  do_iter_readv_writev+0x348/0x590
+[10648.342966][   C34]  do_iter_write+0x124/0x468
+[10648.347407][   C34]  vfs_iter_write+0x54/0x98
+[10648.351764][   C34]  iter_file_splice_write+0x4a0/0x860
+[10648.356987][   C34]  do_splice_from+0x60/0x120
+[10648.361430][   C34]  do_splice+0x7ac/0x1310
+[10648.365611][   C34]  __arm64_sys_splice+0x118/0x1e0
+[10648.370489][   C34]  do_el0_svc+0x124/0x228
+[10648.374672][   C34]  el0_sync_handler+0x260/0x410
+[10648.379374][   C34]  el0_sync+0x140/0x180
 
-Signed-off-by: Frank Yang <puilp0502@gmail.com>
----
- drivers/hid/Kconfig       |  6 ++++
- drivers/hid/Makefile      |  1 +
- drivers/hid/hid-ids.h     |  2 ++
- drivers/hid/hid-varmilo.c | 58 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 67 insertions(+)
- create mode 100644 drivers/hid/hid-varmilo.c
-
-diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-index 443c5cbbde04..c9f0c9b79158 100644
---- a/drivers/hid/Kconfig
-+++ b/drivers/hid/Kconfig
-@@ -441,6 +441,12 @@ config HID_WALTOP
- 	---help---
- 	Support for Waltop tablets.
- 
-+config HID_VARMILO
-+	tristate "Varmilo Keyboards"
-+	depends on HID
-+	help
-+	  Support for Varmilo keyboards.
-+
- config HID_VIEWSONIC
- 	tristate "ViewSonic/Signotec"
- 	depends on HID
-diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
-index d8ea4b8c95af..e90a98090452 100644
---- a/drivers/hid/Makefile
-+++ b/drivers/hid/Makefile
-@@ -124,6 +124,7 @@ obj-$(CONFIG_HID_LED)		+= hid-led.o
- obj-$(CONFIG_HID_XINMO)		+= hid-xinmo.o
- obj-$(CONFIG_HID_ZEROPLUS)	+= hid-zpff.o
- obj-$(CONFIG_HID_ZYDACRON)	+= hid-zydacron.o
-+obj-$(CONFIG_HID_VARMILO)	+= hid-varmilo.o
- obj-$(CONFIG_HID_VIEWSONIC)	+= hid-viewsonic.o
- 
- wacom-objs			:= wacom_wac.o wacom_sys.o
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 874fc3791f3b..955be22fc69d 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1189,6 +1189,8 @@
- #define USB_DEVICE_ID_UNITEC_USB_TOUCH_0709	0x0709
- #define USB_DEVICE_ID_UNITEC_USB_TOUCH_0A19	0x0a19
- 
-+#define USB_DEVICE_ID_VARMILO_VA104M_07B1   0X07b1
-+
- #define USB_VENDOR_ID_VELLEMAN		0x10cf
- #define USB_DEVICE_ID_VELLEMAN_K8055_FIRST	0x5500
- #define USB_DEVICE_ID_VELLEMAN_K8055_LAST	0x5503
-diff --git a/drivers/hid/hid-varmilo.c b/drivers/hid/hid-varmilo.c
-new file mode 100644
-index 000000000000..10e50f2dca61
---- /dev/null
-+++ b/drivers/hid/hid-varmilo.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  HID report fixup for varmilo keyboards
-+ *
-+ *  Copyright (c) 2020 Frank Yang <puilp0502@gmail.com>
-+ *
-+ */
-+
-+#include <linux/hid.h>
-+#include <linux/module.h>
-+
-+#include "hid-ids.h"
-+
-+/*
-+ * Varmilo VA104M with device ID of 07B1 incorrectly reports Logical Minimum as
-+ * 572 (0x02 0x3c). We fix this by setting Logical Minimum to zero.
-+ */
-+static __u8 *varmilo_07b1_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-+				       unsigned int *rsize)
-+{
-+	if (*rsize == 25 &&
-+	    rdesc[0] == 0x05 && rdesc[1] == 0x0c &&
-+	    rdesc[2] == 0x09 && rdesc[3] == 0x01 &&
-+	    rdesc[6] == 0x19 && rdesc[7] == 0x00 &&
-+	    rdesc[11] == 0x16 && rdesc[12] == 0x3c && rdesc[13] == 0x02) {
-+		hid_info(hdev,
-+			 "fixing up varmilo VA104M consumer control report descriptor\n");
-+		rdesc[12] = 0x00;
-+		rdesc[13] = 0x00;
-+	}
-+	return rdesc;
-+}
-+
-+static __u8 *varmilo_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-+				  unsigned int *rsize)
-+{
-+	if (hdev->product == USB_DEVICE_ID_VARMILO_VA104M_07B1 &&
-+	    hdev->vendor == USB_VENDOR_ID_CYPRESS)
-+		rdesc = varmilo_07b1_report_fixup(hdev, rdesc, rsize);
-+	return rdesc;
-+}
-+
-+static const struct hid_device_id varmilo_devices[] = {
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_VARMILO_VA104M_07B1) },
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(hid, varmilo_devices);
-+
-+static struct hid_driver varmilo_driver = {
-+	.name = "varmilo",
-+	.id_table = varmilo_devices,
-+	.report_fixup = varmilo_report_fixup,
-+};
-+
-+module_hid_driver(varmilo_driver);
-+
-+MODULE_LICENSE("GPL");
--- 
-2.17.1
-
+[10718.696867][ T1302] INFO: task trinity-c44:135125 blocked for more than 123 seconds.
+[10718.704644][ T1302]       Tainted: G             L    5.8.0-rc5-next-20200717+ #2
+[10718.712163][ T1302] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[10718.720728][ T1302] trinity-c44     D25760 135125      1 0x00000001
+[10718.727040][ T1302] Call trace:
+[10718.730222][ T1302]  __switch_to+0x1a0/0x258
+[10718.734496][ T1302]  __schedule+0x770/0x18d0
+[10718.738804][ T1302]  schedule+0x1e4/0x3e8
+[10718.742824][ T1302]  rwsem_down_write_slowpath+0x80c/0xe28
+[10718.748359][ T1302]  down_write+0x208/0x230
+[10718.752547][ T1302]  generic_file_write_iter+0xd0/0x8e0
+[10718.757774][ T1302]  do_iter_readv_writev+0x348/0x590
+[10718.762864][ T1302]  do_iter_write+0x124/0x468
+[10718.767311][ T1302]  vfs_writev+0x15c/0x250
+[10718.771543][ T1302]  do_pwritev+0x128/0x160
+[10718.775732][ T1302]  __arm64_sys_pwritev+0x88/0xc8
+[10718.780561][ T1302]  do_el0_svc+0x124/0x228
+[10718.784749][ T1302]  el0_sync_handler+0x260/0x410
+[10718.789491][ T1302]  el0_sync+0x140/0x180
