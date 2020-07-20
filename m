@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C4D22652E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146582263AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731263AbgGTPvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        id S1729383AbgGTPjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731252AbgGTPve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:51:34 -0400
+        id S1729345AbgGTPi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:38:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D19B32064B;
-        Mon, 20 Jul 2020 15:51:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCF4322D05;
+        Mon, 20 Jul 2020 15:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260294;
-        bh=dtljTeKVSfatOxCZOCNo1VmNsXnDxfFan/3oV9vWIzA=;
+        s=default; t=1595259538;
+        bh=HvLjSETqSGwPJTCtt7FAZ1rCHmOP8smwQD4IRxTnFBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtXkYtYQPMJxvTznGsaXT9emECJ3ynJpAcWH82lEx2qjXag6RQhLsqiPNGFH6OHBz
-         j8JSHol66VHtCkeJy6Fz+M5FZ2mNuK2QEZ9nXvYuwaz7LNkmQ0r5LSBWjDSGv/9xCL
-         87/7FUSfoOjeoM1p0ANRuGxvJmOAOHdqtQkoM0fU=
+        b=Ar+viXEXEV2u0QGz3Jdn+RJoZY6SPq2JjCbhi6Q1ZSJd7jUK/spo4B6J9a6yWROVu
+         OjG/idS0d5V/g/IjZO9ZkLc5RJCI+9g8ds5Nvs805YAO6rMyiu633IZn1eHKHVjp1Q
+         xqzw6kKt9aeauTVcklBXNNp7wDnBE8qIV6/ws7iE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 033/133] iio: pressure: zpa2326: handle pm_runtime_get_sync failure
+        stable@vger.kernel.org, Stanislav Saner <ssaner@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 04/58] scsi: mptscsih: Fix read sense data size
 Date:   Mon, 20 Jul 2020 17:36:20 +0200
-Message-Id: <20200720152805.323505221@linuxfoundation.org>
+Message-Id: <20200720152747.357291006@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Tomas Henzl <thenzl@redhat.com>
 
-commit d88de040e1df38414fc1e4380be9d0e997ab4d58 upstream.
+[ Upstream commit afe89f115e84edbc76d316759e206580a06c6973 ]
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count. Call pm_runtime_put if
-pm_runtime_get_sync fails.
+The sense data buffer in sense_buf_pool is allocated with size of
+MPT_SENSE_BUFFER_ALLOC(64) (multiplied by req_depth) while SNS_LEN(sc)(96)
+is used when reading the data.  That may lead to a read from unallocated
+area, sometimes from another (unallocated) page.  To fix this, limit the
+read size to MPT_SENSE_BUFFER_ALLOC.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Fixes: 03b262f2bbf4 ("iio:pressure: initial zpa2326 barometer support")
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200616150446.4840-1-thenzl@redhat.com
+Co-developed-by: Stanislav Saner <ssaner@redhat.com>
+Signed-off-by: Stanislav Saner <ssaner@redhat.com>
+Signed-off-by: Tomas Henzl <thenzl@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/pressure/zpa2326.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/message/fusion/mptscsih.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/iio/pressure/zpa2326.c
-+++ b/drivers/iio/pressure/zpa2326.c
-@@ -672,8 +672,10 @@ static int zpa2326_resume(const struct i
- 	int err;
+diff --git a/drivers/message/fusion/mptscsih.c b/drivers/message/fusion/mptscsih.c
+index 6c9fc11efb872..e77185e143ab7 100644
+--- a/drivers/message/fusion/mptscsih.c
++++ b/drivers/message/fusion/mptscsih.c
+@@ -118,8 +118,6 @@ int 		mptscsih_suspend(struct pci_dev *pdev, pm_message_t state);
+ int 		mptscsih_resume(struct pci_dev *pdev);
+ #endif
  
- 	err = pm_runtime_get_sync(indio_dev->dev.parent);
--	if (err < 0)
-+	if (err < 0) {
-+		pm_runtime_put(indio_dev->dev.parent);
- 		return err;
-+	}
+-#define SNS_LEN(scp)	SCSI_SENSE_BUFFERSIZE
+-
  
- 	if (err > 0) {
- 		/*
+ /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
+ /*
+@@ -2427,7 +2425,7 @@ mptscsih_copy_sense_data(struct scsi_cmnd *sc, MPT_SCSI_HOST *hd, MPT_FRAME_HDR
+ 		/* Copy the sense received into the scsi command block. */
+ 		req_index = le16_to_cpu(mf->u.frame.hwhdr.msgctxu.fld.req_idx);
+ 		sense_data = ((u8 *)ioc->sense_buf_pool + (req_index * MPT_SENSE_BUFFER_ALLOC));
+-		memcpy(sc->sense_buffer, sense_data, SNS_LEN(sc));
++		memcpy(sc->sense_buffer, sense_data, MPT_SENSE_BUFFER_ALLOC);
+ 
+ 		/* Log SMART data (asc = 0x5D, non-IM case only) if required.
+ 		 */
+-- 
+2.25.1
+
 
 
