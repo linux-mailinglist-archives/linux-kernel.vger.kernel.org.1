@@ -2,269 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620AD226320
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9226B22633C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGTPU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        id S1728812AbgGTPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgGTPU6 (ORCPT
+        with ESMTP id S1728720AbgGTPYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:20:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51620C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:20:58 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id k13so955379lfo.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:20:58 -0700 (PDT)
+        Mon, 20 Jul 2020 11:24:12 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DD1C061794;
+        Mon, 20 Jul 2020 08:24:11 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z15so18249209wrl.8;
+        Mon, 20 Jul 2020 08:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ysf+8/YCdjEbrDK2wJdiI6loWpMIMt3osD9k/2Tbbrw=;
-        b=UXmHAwiu2MCd+wxhb5pCceWUNu/Y0e0Newrd/B9iSC9gYykchTh5GEb5qevcCOU0+V
-         svFOKjX+qGRZoAoN7h4v2IyGs2PZpCP82PWhAyaRc8FrH50TvlNQgSxnVEe9pa5K1E/c
-         oOh8oRjeqczsX0lq1k6CbI9xBzrmSQDq62Nqr/cA4959szT1+qT5CsCrCRPbHzOyzlXS
-         FZmYOR2Zf6uZDHYMWOttgXcpoFrjqYfBAaZODtaEBd4GFzeKqCMvFBZO/XSAYN5b2pXt
-         K4/D/EvFiL/RGBaakIr2AMTXbXO0GhJlaHKZ4/x7xTNeJQx740Ke0jvV6XJ1CpmdP8au
-         +V+g==
+        d=gmail.com; s=20161025;
+        h=to:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=trzvaMNX+AcQWQqYUh5qqovO5SfHwtREyxDOxU9EIVw=;
+        b=kI+3Nwm6c4+ykoe59+5x8KB4084FUMfOaOEEIb3YZ/wZaqzOYJfIK/BqmUR6+Jlgyn
+         yKkSn19+7MA+xIZo67nqnqz2urTgQg9Ynr5rFUgo5Ev8mTk8wOL78poGu4y75uOWZPR9
+         pdVcD4KHOqPtWswjJbBcElUj8WuaQtzKpYZKr5QH6a5lmEP9x9S263c3AiZO+kH/VYUT
+         y33kCI5k37E/OpvNguuEgXZD16tXL9ekGoFw5Lx9SkKiaRPdfHgKWTb0j9y+yAbhcdBO
+         ud9Eka7MH10jmi3sKFpQYvyB9Tv4dRR3Mdk3kfvFHWFJfodAi0Jg15wZILJVWbGGS96R
+         7rTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ysf+8/YCdjEbrDK2wJdiI6loWpMIMt3osD9k/2Tbbrw=;
-        b=Zpm60R8rm7GV0F3O/TJCk0pl9rq1F8EFy+UgnId0RbIbqUmjNinZMZ2nqYnAPIF6wU
-         s6lxAmDOEXgsvOGr0NdAxD9GT+fHEhqJt1IXzIeTHi/3ld6aOcGFogPOeMQ8HpwPukzM
-         MhlqSjdFRvhKFjWf8nPV6N91XuCAv7K6AgUQMyqFDSSTkTdITcYQz78RBMdsfleH4edn
-         ttUpXrAV1uO00x7UgVnA9V0F95gEsYS+tUehgMvhyPLP3s4mODsONnKhRIB86kRHTetA
-         CsfgOWNDIAU3i7eviuHloDbU7A7jcXuWnoqfFwa95d4FUYD2dYiiT54N3pSKNJ/rlKRQ
-         n+oQ==
-X-Gm-Message-State: AOAM531Fl+7sl6T+XKmXrxPG3fEdzOGzWoA0ikvRARDBE1i+I8j2q3Lu
-        5zehQqeePm6rzGMCX+kyJ1aAI0AzK9uN7E68E73F0g==
-X-Google-Smtp-Source: ABdhPJw+jnq+DjUbXk/OacT5JbgIXzr3rPodhkyFZmiByvH1HmUQZshQ/Fhidw8MW3NgIOS3oKeSi/C5q3GcI6Qx+s4=
-X-Received: by 2002:a19:834f:: with SMTP id f76mr3089419lfd.25.1595258456652;
- Mon, 20 Jul 2020 08:20:56 -0700 (PDT)
+        h=x-gm-message-state:to:references:from:autocrypt:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=trzvaMNX+AcQWQqYUh5qqovO5SfHwtREyxDOxU9EIVw=;
+        b=ExG/C0QfCpKyXCFdaDRFRT+rYvDR+Cx/YLZJi+gmoSYIdfJBQvbtUqPSUyA8qvtp2K
+         bxUp7Siegq5BWJR7XwPOSmc1WYawIoYCvVfT5IdXGDaPx8uslmBZxGjYAqk18QEk4Xud
+         tBNh1a4TuC18yCzopy0NfGlZRp585MoYfgdiAJPgccIHF4O2OQNVEp/hEwMfj6nRWAcv
+         XZ0lUNZMsJ3cKwMxOKnTH6SmTL+88kcp+jML1WB4xKD+3WgO9cgjzaXkF/OG3zOX0EtT
+         1YP1qD4E3db2nRzFriDAodsuDutiv5EIzewqXisVd5JIMEOElaEp9oeqgrxDtRgmYFxr
+         NRrg==
+X-Gm-Message-State: AOAM5304Lil84ZHLJdb2YYxoS0LrgU7DlElsgs95Y4S4c5K8HjtPjTkG
+        ZSUUgxwDdv+aRcjS+vgHsFPljXkQ
+X-Google-Smtp-Source: ABdhPJwhkkhOO0Jj6EoGFh5w598NjZhdpbRTpM9Laiul1dLXxA05J5KKeaNgkuLah/Ri8T7gGIyqSw==
+X-Received: by 2002:a5d:69c5:: with SMTP id s5mr22730660wrw.197.1595258650164;
+        Mon, 20 Jul 2020 08:24:10 -0700 (PDT)
+Received: from [192.168.43.17] ([5.100.193.69])
+        by smtp.gmail.com with ESMTPSA id 68sm21903337wra.39.2020.07.20.08.24.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 08:24:09 -0700 (PDT)
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1595021626.git.asml.silence@gmail.com>
+ <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH 0/2] task_put batching
+Message-ID: <b01e7f2d-d9a6-5593-3afb-5008d96695c6@gmail.com>
+Date:   Mon, 20 Jul 2020 18:22:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <87v9kv2545.derkling@matbug.com> <87h7wd15v2.derkling@matbug.net>
- <87imgrlrqi.derkling@matbug.net> <87mu5sqwkt.derkling@matbug.net>
- <87eer42clt.derkling@matbug.net> <87imfi2qbk.derkling@matbug.net> <39cc4666-6355-fb9f-654d-e85e1852bc6f@linux.ibm.com>
-In-Reply-To: <39cc4666-6355-fb9f-654d-e85e1852bc6f@linux.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 20 Jul 2020 17:20:44 +0200
-Message-ID: <CAKfTPtAxcdQ=bNapyvsrG_Cb6p8h2ut4=waiSPmay+tNxF8fZQ@mail.gmail.com>
-Subject: Re: [SchedulerTaskPacking] Small background task packing
-To:     Parth Shah <parth@linux.ibm.com>
-Cc:     Patrick Bellasi <patrick.bellasi@matbug.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Josef Bacik <jbacik@fb.com>,
-        Chris Hyser <chris.hyser@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Parth,
+On 18/07/2020 17:37, Jens Axboe wrote:
+> On 7/18/20 2:32 AM, Pavel Begunkov wrote:
+>> For my a bit exaggerated test case perf continues to show high CPU
+>> cosumption by io_dismantle(), and so calling it io_iopoll_complete().
+>> Even though the patch doesn't yield throughput increase for my setup,
+>> probably because the effect is hidden behind polling, but it definitely
+>> improves relative percentage. And the difference should only grow with
+>> increasing number of CPUs. Another reason to have this is that atomics
+>> may affect other parallel tasks (e.g. which doesn't use io_uring)
+>>
+>> before:
+>> io_iopoll_complete: 5.29%
+>> io_dismantle_req:   2.16%
+>>
+>> after:
+>> io_iopoll_complete: 3.39%
+>> io_dismantle_req:   0.465%
+> 
+> Still not seeing a win here, but it's clean and it _should_ work. For
+> some reason I end up getting the offset in task ref put growing the
+> fput_many(). Which doesn't (on the surface) make a lot of sense, but
+> may just mean that we have some weird side effects.
 
-On Thu, 9 Jul 2020 at 14:09, Parth Shah <parth@linux.ibm.com> wrote:
->
-> > A) Name:
->
-> Small background task packing
->
-> > B) Target behaviour:
->
-> All fair task wakeup follows a procedure of finding an idle CPU and
-> waking the task on this idle CPU. There are two major wakeup paths:
-> 1. Slow-path: Wake up the task on an idle CPU which is in the shallowest
-> idle states by searching in the highest sched_domain flagged with
-> SD_BALANCE_FORK or SD_BALANCE_EXEC.
-> 2. Fast-path: Wake up the task on an idle CPU in the LLC sched_domain of
-> the waker CPU. There are optimization to bias task placement on prev_cpu or
-> wake_cpu of the task. This path is majorly used except in few cases like
-> during fork() and exec().
->
-> This assumption of picking an idle CPU is fair in-order to uniformly
-> consume system resources. But not all tasks deserves to wakeup an idle core
-> as it can hurt power consumption. For e.g. like small background tasks
-> waking up an idle core and runs only for very small duration. Reducing
-> number of active cores allows busier cores to boost frequency and hence
-> saving power can also result in performance benefits.
->
-> There is no mechanism in existing wake up path to detect small
-> background tasks which can be packed on fewer cores.
->
-> > C) Existing control paths:
->
-> fair:: .select_task_rq = select_task_rq_fair
->
-> fair::select_task_rq_fair()
->     // 1) Slow-path: find idle CPU with shallowest idle states
->     find_idlest_cpu()
->
->     // 2) Fast-path: find idle CPU
->     fair:select_idle_sibling()
->         // Wake up on idle core if available
->         fair:select_idle_core()
->         // Else wakeup on idle CPU if available
->         fair:select_idle_cpu()
->         fair:select_idle_smt()
->
->
-> There are multiple ways to call fair:select_task_rq_fair();
->
-> // 1) try_to_wake_up which should lead to fast-path
->    core::try_to_wake_up()
->       cpu = select_task_rq(p, p->wake_cpu, SD_BALANCE_WAKE, wake_flags);
->
-> // 2) wake_up_new_task which should lead to slow-path
->    core::wake_up_new_task()
->       __set_task_cpu(p, select_task_rq(p, task_cpu(p), SD_BALANCE_FORK,0));
->
-> // 3) sched_exec which should lead to slow-path
->    core::sched_exec()
->       dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p),
-> SD_BALANCE_EXEC, 0);
->
-> > D) Desired behaviour:
->
-> Latency tolerant tasks with small utilization should be packed
-> on a busy core rather than waking up a new core/CPU.
->
-> Upon detecting small-background tasks, different code-path can be used to
-> search for a busy core as described below;
->
-> sched/fair.c:
-> static inline bool is_small_bg_task(struct task_struct *p)
-> {
->         if (is_latency_tolerant(p) &&
->             (task_util(p) > (SCHED_CAPACITY_SCALE >> 3)))
+It grows because the patch is garbage, the second condition is always false.
+See the diff. Could you please drop both patches?
 
-This condition seems to be quite arbitrary and probably works on your
-current platform but other platforms might want another threshold. Is
-there a way to know how much utilization can be added to a CPU which
-would not use more capacity than the extra capacity that is provided
-by the turbo mode ?
 
-Also you may want to use task_util_est() instead of task_util() to
-make sure that the small background task has low chance to become a
-large one and not use more capacity than the one provided by turbo at
-the end
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 87a772eee0c4..2f02f85269eb 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1847,8 +1847,9 @@ static void io_req_free_batch(struct req_batch *rb, struct io_kiocb *req)
+                io_queue_next(req);
+ 
+        if (req->flags & REQ_F_TASK_PINNED) {
+-               if (req->task != rb->task && rb->task) {
+-                       put_task_struct_many(rb->task, rb->task_refs);
++               if (req->task != rb->task) {
++                       if (rb->task)
++                               put_task_struct_many(rb->task, rb->task_refs);
+                        rb->task = req->task;
+                        rb->task_refs = 0;
+                }
 
->                 return true;
->
->         return false;
-> }
->
-> sched/fair.c: in select_task_rq_fair()
->
-> if (sd_flag & SD_BALANCE_WAKE) {
->         if (is_small_bg_task(p)) {
->                 // New proposed wakeup path to do task packing
->                 new_cpu = select_non_idle_core(p, prev_cpu);
->                 if (new_cpu >= 0)
->                         return new_cpu;
->         }
-> }
->
-> where select_non_idle_core() searches for a busy core already running some
-> tasks and selects an idle CPU in that busy core to pack the waking task.
->
-> Complete code can be found on TurboSched patches [1].
->
-> > E) Existing knobs (if any): reference to whatever existing tunable
->
-> There are no existing knob which can hint the scheduler about the latency
-> nature of task. Detecting latency nature of the task can help in
-> classifying task as small background tasks to be packed on fewer number of
-> cores.
->
-> There are user-space hacks to do task packing for background tasks with the
-> use of cpuset.cpus or sched_setaffinity() to manually affine the process to
-> fewer  dedicated cores.
->
-> > F) Existing knobs (if any): one paragraph description of the limitations
->
-> Sysadmin/user has to define cpumask for each process (aka task pinning)
-> which is static in nature. There are multiple limitations to pin the small
-> background tasks;
->
-> - In presence of just one small background task, there is no power
-> consumption benefit here. It would be preferable to pin it to busy CPU.
->
-> - If a task changes the behavior in its life-cycle then sysadmin will have
-> to manually pin/unpin such tasks. This is limitation of user to classify
-> tasks as only "background "one and cannot say if and when it will be
-> "small" in utilization.
->
-> - Sysadmin cannot change the task's affinity mask based on the scheduling
-> pattern to give most optimal performance and energy consumption.
->
-> > G) Proportionality Analysis: check the nature of the target behavior
->
-> Task packing has to be noninvasive in nature, meaning only the tasks which
-> are latency tolerant should be packed on fewer cores. Providing this
-> behavior needs a run-time tunable knob which can hint the scheduler on
-> whether the waking task can be packed or not.
->
-> Upon detecting the nature of the task, a specific wakeup path can be followed:
-> 1. On latency-tolerant tasks with low utilization, a new proposed
-> scheduling wakeup path will be followed to do packing
-> 2. On latency-sensitive task, an exiting approach of wakeup can be used.
->
-> > H) Range Analysis: identify meaningful ranges
->
-> The new knob can be binary input accepting 0/1, where 0 means
-> latency-sensitive and 1 means latency-tolerant task.
->
-> Latency-sensitive tasks (value = 0) can search idle CPU in only the llc
-> sched_domain while the latency-tolerance (value = 1) tasks can go across
-> llc sched_domain (just like in slow-path) but here in-order to search for a
-> busy core.
->
-> Mapping analysis:
-> ================
-> The latency_nice proposal [2] offers a [-20, 19] range which can be
-> mapped into a binary switch, e.g. using a threshold based function.
->
-> However, it is possible to extend the concept of finding busy core by
-> limiting the time spent on searching based on the latency_nice value from
-> range [-20, 19] where value of 19 indicates searching in the whole chip for
-> a busy core, whereas value of 10 could mean search for half of the cores in
-> the chip.
->
-> > I) System-Wide tuning: which knobs are required
->
-> The latency_nice provided knobs should be enough to get the desired
-> effect.
->
-> > J) Per-Task tuning: which knobs are required
->
-> sched_setscheduler() is sufficient.
->
-> > K) Task-Group tuning: which knobs are required
->
-> A single attribute classifying task-group as latency_nice or
-> latency_tolerant is sufficient.
->
->
-> > .:: References
-> > ==============
->
-> [1] [RFC v6 0/5] TurboSched: A scheduler for sustaining Turbo Frequencies
->     for longer durations
->     https://lkml.org/lkml/2020/1/21/39
-> [2] [PATCH v5 0/4] Introduce per-task latency_nice for scheduler hints
->     Message-ID: 20200228090755.22829-1-parth@linux.ibm.com
->     https://lore.kernel.org/lkml/20200228090755.22829-1-parth@linux.ibm.com
-> [3] TurboSched: the return of small-task packing
->     https://lwn.net/Articles/792471/
->     https://www.phoronix.com/scan.php?page=news_item&px=Linux-TurboSched-V4
+-- 
+Pavel Begunkov
