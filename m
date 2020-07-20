@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2A22265E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622E522645F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732029AbgGTP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58480 "EHLO mail.kernel.org"
+        id S1730415AbgGTPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:44:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732000AbgGTP6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:18 -0400
+        id S1730385AbgGTPo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:44:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C921206E9;
-        Mon, 20 Jul 2020 15:58:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BD7C22CB3;
+        Mon, 20 Jul 2020 15:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260697;
-        bh=1khGz93IMQ86joGb6FmyeHHm/52XYj69rr/3AJ53SXs=;
+        s=default; t=1595259866;
+        bh=CkMZrcI/01t0Lt8pc/TKDR1bKE2fZRxd58+lX9RTrBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ntDRaRVJS8bgjaZziDaMr0xxPv+4F7dqvoKjrDSIQMX7HSviGP0SAUGBVqJlnbN3N
-         bQnCq145st6ztqok9TlW+ScdET9DnUiBu5/tS9BoLVTa9hpMXkKhhi4fhAlwfapcaH
-         aPHQxNX2qmKOayAG27gN8YnZC0UhrCyZHmoBh+9E=
+        b=b+eGuWAMGO3t+D1vVXKiHepikf/rD6u+vTrtjghd6JuYNMOebSwHHeaRuodpZxwAq
+         U/atkyjaaFa93LBevjmI9YsixOpyNDKm90jFoT60EiU1N/2mBRmCbkjtH7+1OT5LEK
+         nsR0m1rwZU+H92F8lnOfUt4Tk0nWKxI/ZeDYGqiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 061/215] Revert "usb/ohci-platform: Fix a warning when hibernating"
+        stable@vger.kernel.org, Chuanhua Han <chuanhua.han@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 004/125] spi: spi-fsl-dspi: use IRQF_SHARED mode to request IRQ
 Date:   Mon, 20 Jul 2020 17:35:43 +0200
-Message-Id: <20200720152823.109063432@linuxfoundation.org>
+Message-Id: <20200720152803.146031768@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit fbf719e5da126c6b391ea7b1f38d4493582d8aaf.
+From: Chuanhua Han <chuanhua.han@nxp.com>
 
-Eugeniu Rosca writes:
+[ Upstream commit 13aed23927414137a017ac2f7d567001f714293f ]
 
-On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
->After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
->Set PM runtime as active on resume") into downstream v4.14.x, we started
->to consistently experience below panic [1] on every second s2ram of
->R-Car H3 Salvator-X Renesas reference board.
->
->After some investigations, we concluded the following:
-> - the issue does not exist in vanilla v5.8-rc4+
-> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
->   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
->   link support"). Getting evidence for that is easy. Reverting
->   987351e1ea7772 in vanilla leads to a similar backtrace [2].
->
->Questions:
-> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
->   link support") to v4.14.187 looks challenging enough, so probably not
->   worth it. Anybody to contradict this?
-> - Assuming no plans to backport the missing mainline commit to v4.14.x,
->   should the following three v4.14.186 commits be reverted on v4.14.x?
->   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
->   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
->   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
+Some SoC share one irq number between DSPI controllers.
+For example, on the LX2160 board, DSPI0 and DSPI1 share one irq number.
+In this case, only one DSPI controller can register successfully,
+and others will fail.
 
+Signed-off-by: Chuanhua Han <chuanhua.han@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-platform.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/spi/spi-fsl-dspi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
-index 4a8456f12a73d..7addfc2cbadce 100644
---- a/drivers/usb/host/ohci-platform.c
-+++ b/drivers/usb/host/ohci-platform.c
-@@ -299,11 +299,6 @@ static int ohci_platform_resume(struct device *dev)
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index baf5274485004..4402e531b1bfd 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1027,8 +1027,8 @@ static int dspi_probe(struct platform_device *pdev)
+ 		goto out_clk_put;
  	}
  
- 	ohci_resume(hcd, false);
--
--	pm_runtime_disable(dev);
--	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
--
- 	return 0;
- }
- #endif /* CONFIG_PM_SLEEP */
+-	ret = devm_request_irq(&pdev->dev, dspi->irq, dspi_interrupt, 0,
+-			pdev->name, dspi);
++	ret = devm_request_irq(&pdev->dev, dspi->irq, dspi_interrupt,
++			       IRQF_SHARED, pdev->name, dspi);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Unable to attach DSPI interrupt\n");
+ 		goto out_clk_put;
 -- 
 2.25.1
 
