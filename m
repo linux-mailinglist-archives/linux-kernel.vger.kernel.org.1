@@ -2,86 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996E0225C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B932225C93
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgGTKUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:20:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56688 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728025AbgGTKUr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:20:47 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595240446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGN4a9T4+fArx80G7sxmBScW+YSeCVCeIRIwBpZpeX0=;
-        b=UQ5YkFr0mg8eiuyWrTq4fE3KBax1O6REpEbo5oMP+x1m9Lb7i68DY49dHuRy2+XPTzhIMX
-        bRgSCdwumNFLcvALIt9WixzO5KFvskOd8To47WH44AmTtQ8HZVGdv9+x3FmgSetPkaBAA/
-        8F9IZCVrGtbIckxPukk0egDAXAFeHUKEvVL4Bo0agore0wXrICOfzPz6G4R1BxcmOR3rKk
-        K7fM+DDdcgeWRLdfh+EjjFKpc7oFbWPUsm8l9UqZKhSwWshi10Nx7SakLg0rLOvzuAMT0e
-        EvhcJea4d6uJUSzcjf3SzdzwIJ0TZ12G2IJLrc8vYgC02OL9CVowvLnwy/rQiA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595240446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGN4a9T4+fArx80G7sxmBScW+YSeCVCeIRIwBpZpeX0=;
-        b=Xe6GrYBaP1ZMyjoCOp049r76FvbckLFJ7ozR6d4Hkfx75QMHsESyTSNxzk7S07wUotoLaI
-        F3IP9S+xkz/wWHCw==
-To:     Marco Elver <elver@google.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        id S1728303AbgGTKYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728001AbgGTKYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 06:24:18 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 533EE20773;
+        Mon, 20 Jul 2020 10:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595240658;
+        bh=W9TTx5jyCQo5ak9o/jP6CEx/Sr341WG69OjAm34Eqek=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=T4tSNOm0gskCRWVggXCfex1g0XU6SADjFV849ioJKi9OoLSDtZHkdljU5S3rFfdJt
+         2h7jnhcXhQEuBT1vJUcdFV5HBphLs0LUZr6JqWGQP/R6IoyDMOGl5iMJbbCp5ZNkOf
+         ZBoUFpYtFkqrcXdxdq0fXrkDKDG20qXO686m1Khs=
+Date:   Mon, 20 Jul 2020 12:24:15 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+cc:     gupt21@gmail.com, benjamin.tissoires@redhat.com,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] printk: use the lockless ringbuffer
-In-Reply-To: <20200718121053.GA691245@elver.google.com>
-References: <20200709132344.760-1-john.ogness@linutronix.de> <20200709132344.760-5-john.ogness@linutronix.de> <20200718121053.GA691245@elver.google.com>
-Date:   Mon, 20 Jul 2020 12:26:45 +0206
-Message-ID: <87eep6sd1e.fsf@jogness.linutronix.de>
+Subject: Re: [PATCH] HID: mcp2221: Replace HTTP links with HTTPS ones
+In-Reply-To: <20200713082135.32350-1-grandmaster@al2klimov.de>
+Message-ID: <nycvar.YFH.7.76.2007201224030.23768@cbobk.fhfr.pm>
+References: <20200713082135.32350-1-grandmaster@al2klimov.de>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-18, Marco Elver <elver@google.com> wrote:
-> It seems this causes a regression observed at least with newline-only
-> printks.
-> [...]
-> ------ >8 ------
->
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1039,6 +1039,10 @@ asmlinkage __visible void __init start_kernel(void)
->  	sfi_init_late();
->  	kcsan_init();
->  
-> +	pr_info("EXPECT BLANK LINE --vv\n");
-> +	pr_info("\n");
-> +	pr_info("EXPECT BLANK LINE --^^\n");
-> +
->  	/* Do the rest non-__init'ed, we're now alive */
->  	arch_call_rest_init();
+Applied, thanks Alexander.
 
-Thanks for the example. This is an unintentional regression in the
-series. I will submit a patch to fix this.
+-- 
+Jiri Kosina
+SUSE Labs
 
-Note that this regression does not exist when the followup series [0]
-(reimplementing LOG_CONT) is applied. All the more reason that the 1st
-series should be fixed before pushing the 2nd series to linux-next.
-
-John Ogness
-
-[0] https://lkml.kernel.org/r/20200717234818.8622-1-john.ogness@linutronix.de
