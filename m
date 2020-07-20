@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7D722636E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2156C2265E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgGTPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:35:25 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37978 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726426AbgGTPfZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:35:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595259324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2o1W4SQXRhEpyrn3Gh4s7C74MBb+wSct4n37pEECT2M=;
-        b=CUeNAzjHpvYqrK4moiLSyF93EFwO+KZv619U/nPHI3aMI5ajV9p0mKRAAUSYbJbMj9KSyH
-        S47Bg2408rrsQYJmcI+KTT+V0z1dwYEKz8aY1EPfPGN07nwwVVb8XNVwxD34OtXVz+FyqM
-        OQub9lZqkzRC/rnw9qlquUwqBmp1Xd8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-80-vlUmw2FVPYCLrY283kqdoQ-1; Mon, 20 Jul 2020 11:35:20 -0400
-X-MC-Unique: vlUmw2FVPYCLrY283kqdoQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730748AbgGTP61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:58:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732020AbgGTP6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:58:20 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB644100AA21;
-        Mon, 20 Jul 2020 15:35:18 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.147])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 45F1A10640E1;
-        Mon, 20 Jul 2020 15:35:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 20 Jul 2020 17:35:18 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 17:35:15 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-Message-ID: <20200720153514.GF6612@redhat.com>
-References: <20200718171406.GB16791@redhat.com>
- <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
- <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
- <20200720064326.GA6612@redhat.com>
- <20200720082657.GC6612@redhat.com>
- <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
- <20200720105924.GE43129@hirez.programming.kicks-ass.net>
- <20200720140224.GD6612@redhat.com>
- <20200720142105.GR10769@hirez.programming.kicks-ass.net>
- <20200720143930.GE6612@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id A4CD02065E;
+        Mon, 20 Jul 2020 15:58:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595260700;
+        bh=GEJJCDdVm8pUbVjvqKgHBBMZkXtSqzUnyt6nkVra9C4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pYCJGBokZIMj/Kn4NZLqtzYDkh+tuTZA1CPSish/ykYT2CZBkUm87EzzQWF5EoXx4
+         QbzZHCn8R7nT4qMor8Cv/d9QVNo08Y4/tew/1rqotaMeKzWEgAkzddpwbBQ0bAxtU0
+         gv7N1pjvzGa2E/G3S3LNak8T6m5BV6pyjd82nT2E=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 034/215] x86/fpu: Reset MXCSR to default in kernel_fpu_begin()
+Date:   Mon, 20 Jul 2020 17:35:16 +0200
+Message-Id: <20200720152821.811063427@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720143930.GE6612@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/20, Oleg Nesterov wrote:
->
-> On 07/20, Peter Zijlstra wrote:
-> >
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
-> >  	local_irq_disable();
-> >  	rcu_note_context_switch(preempt);
-> >
-> > -	/* See deactivate_task() below. */
-> > -	prev_state = prev->state;
-> > -
-> >  	/*
-> >  	 * Make sure that signal_pending_state()->signal_pending() below
-> >  	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
-> > @@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
-> >  	 * We must re-load prev->state in case ttwu_remote() changed it
-> >  	 * before we acquired rq->lock.
-> >  	 */
-> > -	if (!preempt && prev_state && prev_state == prev->state) {
-> > +	prev_state = prev->state;
-> > +	if (!preempt && prev_state) {
->
-> Heh ;) Peter, you know what? I did the same change and tried to understand
-> why it is wrong and what have I missed.
->
-> Thanks, now I can relax. But my head hurts too, I'll probably try to re-read
-> this code and other emails from you tomorrow.
+From: Petteri Aimonen <jpa@git.mail.kapsi.fi>
 
-Yes, I can no longer read this code today ;)
+[ Upstream commit 7ad816762f9bf89e940e618ea40c43138b479e10 ]
 
-but now it seems to me that (in theory) we need READ_ONCE(prev->state) here
-and probably WRITE_ONCE(on_rq) in deactivate_task() to ensure ctrl-dep?
+Previously, kernel floating point code would run with the MXCSR control
+register value last set by userland code by the thread that was active
+on the CPU core just before kernel call. This could affect calculation
+results if rounding mode was changed, or a crash if a FPU/SIMD exception
+was unmasked.
 
-Probably not, I got lost.
-Probably not, I got lost.
-Probably not, I got lost.
+Restore MXCSR to the kernel's default value.
 
-Oleg.
+ [ bp: Carve out from a bigger patch by Petteri, add feature check, add
+   FNINIT call too (amluto). ]
+
+Signed-off-by: Petteri Aimonen <jpa@git.mail.kapsi.fi>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=207979
+Link: https://lkml.kernel.org/r/20200624114646.28953-2-bp@alien8.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/x86/include/asm/fpu/internal.h | 5 +++++
+ arch/x86/kernel/fpu/core.c          | 6 ++++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 44c48e34d7994..00eac7f1529b0 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -619,6 +619,11 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
+  * MXCSR and XCR definitions:
+  */
+ 
++static inline void ldmxcsr(u32 mxcsr)
++{
++	asm volatile("ldmxcsr %0" :: "m" (mxcsr));
++}
++
+ extern unsigned int mxcsr_feature_mask;
+ 
+ #define XCR_XFEATURE_ENABLED_MASK	0x00000000
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index 12c70840980e4..cd8839027f66d 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -101,6 +101,12 @@ void kernel_fpu_begin(void)
+ 		copy_fpregs_to_fpstate(&current->thread.fpu);
+ 	}
+ 	__cpu_invalidate_fpregs_state();
++
++	if (boot_cpu_has(X86_FEATURE_XMM))
++		ldmxcsr(MXCSR_DEFAULT);
++
++	if (boot_cpu_has(X86_FEATURE_FPU))
++		asm volatile ("fninit");
+ }
+ EXPORT_SYMBOL_GPL(kernel_fpu_begin);
+ 
+-- 
+2.25.1
+
+
 
