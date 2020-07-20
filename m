@@ -2,169 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC35C2264B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21A3226555
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730751AbgGTPrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:47:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21165 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730733AbgGTPrF (ORCPT
+        id S1729694AbgGTPw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:52:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731115AbgGTPwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:47:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595260023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hQ1H7l9Ohk9cYexEWkkOl7WIuCDqSZlPZluQHWvxb1I=;
-        b=CMJQmbau19PE96nWqtHBVGYW1fHCBZQPFxWt7Ywsx/b6jPZHRwWaKbRFkmUF/k5/Qk58uF
-        EIUJXgEGXhEqJ66T/R1zVAVElGX+FMtHoE3gXN5vRiOCBxNk0S7Nmtcg6pk71cpxfjkOh4
-        GHolbTCVqZ7+OndxGu9mnHQs6A9aFqo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-kQ0JMy5zMwax-kYED5mPiQ-1; Mon, 20 Jul 2020 11:46:59 -0400
-X-MC-Unique: kQ0JMy5zMwax-kYED5mPiQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DC0818A1DFE;
-        Mon, 20 Jul 2020 15:46:58 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-113-230.rdu2.redhat.com [10.10.113.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 46C8C7EF81;
-        Mon, 20 Jul 2020 15:46:57 +0000 (UTC)
-Subject: Re: [PATCH v6] xfs: Fix false positive lockdep warning with
- sb_internal & fs_reclaim
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        Eric Sandeen <sandeen@redhat.com>
-References: <20200707191629.13911-1-longman@redhat.com>
- <20200713164112.GZ7606@magnolia>
- <104087053.24407245.1595259123778.JavaMail.zimbra@redhat.com>
- <20200720154043.GV7625@magnolia>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <d5218324-ee26-464b-8db6-3ca05ba98f3d@redhat.com>
-Date:   Mon, 20 Jul 2020 11:46:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200720154043.GV7625@magnolia>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 20 Jul 2020 11:52:49 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KFZClQ100188;
+        Mon, 20 Jul 2020 11:51:58 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5h7sk2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 11:51:57 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KFaXMR110773;
+        Mon, 20 Jul 2020 11:51:57 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5h7sk1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 11:51:57 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KFYvFQ012130;
+        Mon, 20 Jul 2020 15:51:55 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma02wdc.us.ibm.com with ESMTP id 32brq8tb75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 15:51:55 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KFps6657934112
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 15:51:54 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A87178060;
+        Mon, 20 Jul 2020 15:51:54 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ED0747805E;
+        Mon, 20 Jul 2020 15:51:46 +0000 (GMT)
+Received: from [153.66.254.194] (unknown [9.85.132.116])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 15:51:46 +0000 (GMT)
+Message-ID: <1595260305.4554.9.camel@linux.ibm.com>
+Subject: Re: [PATCH 3/6] mm: introduce secretmemfd system call to create
+ "secret" memory areas
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-nvdimm@lists.01.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Mon, 20 Jul 2020 08:51:45 -0700
+In-Reply-To: <CAK8P3a0NyvRMqH7X0YNO5E6DGtvZXD5ZcD6Y6n7AkocufkMnHA@mail.gmail.com>
+References: <20200720092435.17469-1-rppt@kernel.org>
+         <20200720092435.17469-4-rppt@kernel.org>
+         <CAK8P3a0NyvRMqH7X0YNO5E6DGtvZXD5ZcD6Y6n7AkocufkMnHA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 clxscore=1011 mlxscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/20 11:40 AM, Darrick J. Wong wrote:
-> On Mon, Jul 20, 2020 at 11:32:03AM -0400, Waiman Long wrote:
->>
->> ----- Original Message -----
->> From: "Darrick J. Wong" <darrick.wong@oracle.com>
->> To: "Waiman Long" <longman@redhat.com>
->> Cc: linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, "Dave Chinner" <david@fromorbit.com>, "Qian Cai" <cai@lca.pw>, "Eric Sandeen" <sandeen@redhat.com>
->> Sent: Monday, July 13, 2020 12:41:12 PM
->> Subject: Re: [PATCH v6] xfs: Fix false positive lockdep warning with sb_internal & fs_reclaim
->>
->> On Tue, Jul 07, 2020 at 03:16:29PM -0400, Waiman Long wrote:
->>> Depending on the workloads, the following circular locking dependency
->>> warning between sb_internal (a percpu rwsem) and fs_reclaim (a pseudo
->>> lock) may show up:
->>>
->>> ======================================================
->>> WARNING: possible circular locking dependency detected
->>> 5.0.0-rc1+ #60 Tainted: G        W
->>> ------------------------------------------------------
->>> fsfreeze/4346 is trying to acquire lock:
->>> 0000000026f1d784 (fs_reclaim){+.+.}, at:
->>> fs_reclaim_acquire.part.19+0x5/0x30
->>>
->>> but task is already holding lock:
->>> 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
->>>
->>> which lock already depends on the new lock.
->>>    :
->>>   Possible unsafe locking scenario:
->>>
->>>         CPU0                    CPU1
->>>         ----                    ----
->>>    lock(sb_internal);
->>>                                 lock(fs_reclaim);
->>>                                 lock(sb_internal);
->>>    lock(fs_reclaim);
->>>
->>>   *** DEADLOCK ***
->>>
->>> 4 locks held by fsfreeze/4346:
->>>   #0: 00000000b478ef56 (sb_writers#8){++++}, at: percpu_down_write+0xb4/0x650
->>>   #1: 000000001ec487a9 (&type->s_umount_key#28){++++}, at: freeze_super+0xda/0x290
->>>   #2: 000000003edbd5a0 (sb_pagefaults){++++}, at: percpu_down_write+0xb4/0x650
->>>   #3: 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
->>>
->>> stack backtrace:
->>> Call Trace:
->>>   dump_stack+0xe0/0x19a
->>>   print_circular_bug.isra.10.cold.34+0x2f4/0x435
->>>   check_prev_add.constprop.19+0xca1/0x15f0
->>>   validate_chain.isra.14+0x11af/0x3b50
->>>   __lock_acquire+0x728/0x1200
->>>   lock_acquire+0x269/0x5a0
->>>   fs_reclaim_acquire.part.19+0x29/0x30
->>>   fs_reclaim_acquire+0x19/0x20
->>>   kmem_cache_alloc+0x3e/0x3f0
->>>   kmem_zone_alloc+0x79/0x150
->>>   xfs_trans_alloc+0xfa/0x9d0
->>>   xfs_sync_sb+0x86/0x170
->>>   xfs_log_sbcount+0x10f/0x140
->>>   xfs_quiesce_attr+0x134/0x270
->>>   xfs_fs_freeze+0x4a/0x70
->>>   freeze_super+0x1af/0x290
->>>   do_vfs_ioctl+0xedc/0x16c0
->>>   ksys_ioctl+0x41/0x80
->>>   __x64_sys_ioctl+0x73/0xa9
->>>   do_syscall_64+0x18f/0xd23
->>>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
->>>
->>> This is a false positive as all the dirty pages are flushed out before
->>> the filesystem can be frozen.
->>>
->>> One way to avoid this splat is to add GFP_NOFS to the affected allocation
->>> calls by using the memalloc_nofs_save()/memalloc_nofs_restore() pair.
->>> This shouldn't matter unless the system is really running out of memory.
->>> In that particular case, the filesystem freeze operation may fail while
->>> it was succeeding previously.
->>>
->>> Without this patch, the command sequence below will show that the lock
->>> dependency chain sb_internal -> fs_reclaim exists.
->>>
->>>   # fsfreeze -f /home
->>>   # fsfreeze --unfreeze /home
->>>   # grep -i fs_reclaim -C 3 /proc/lockdep_chains | grep -C 5 sb_internal
->>>
->>> After applying the patch, such sb_internal -> fs_reclaim lock dependency
->>> chain can no longer be found. Because of that, the locking dependency
->>> warning will not be shown.
->>>
->>> Suggested-by: Dave Chinner <david@fromorbit.com>
->>> Signed-off-by: Waiman Long <longman@redhat.com>
->> Looks good to me,
->> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
->>
->> Will this patch be merged into the xfs tree soon?
-> It should appear in for-next in the next day or so.  I am trying to push
-> there only every other couple of weeks to reduce the amount of developer
-> tree rebasing that has to go on when people are trying to land a complex
-> series.
->
-> --D
+On Mon, 2020-07-20 at 13:30 +0200, Arnd Bergmann wrote:
+> On Mon, Jul 20, 2020 at 11:25 AM Mike Rapoport <rppt@kernel.org>
+> wrote:
+> > 
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Introduce "secretmemfd" system call with the ability to create
+> > memory areas visible only in the context of the owning process and
+> > not mapped not only to other processes but in the kernel page
+> > tables as well.
+> > 
+> > The user will create a file descriptor using the secretmemfd system
+> > call where flags supplied as a parameter to this system call will
+> > define the desired protection mode for the memory associated with
+> > that file descriptor. Currently there are two protection modes:
+> > 
+> > * exclusive - the memory area is unmapped from the kernel direct
+> > map and it
+> >               is present only in the page tables of the owning mm.
+> > * uncached  - the memory area is present only in the page tables of
+> > the
+> >               owning mm and it is mapped there as uncached.
+> > 
+> > For instance, the following example will create an uncached mapping
+> > (error handling is omitted):
+> > 
+> >         fd = secretmemfd(SECRETMEM_UNCACHED);
+> >         ftruncate(fd, MAP_SIZE);
+> >         ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
+> > MAP_SHARED,
+> >                    fd, 0);
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> I wonder if this should be more closely related to dmabuf file
+> descriptors, which are already used for a similar purpose: sharing
+> access to secret memory areas that are not visible to the OS but can
+> be shared with hardware through device drivers that can import a
+> dmabuf file descriptor.
 
-Thanks for the clarification.
+I'll assume you mean the dmabuf userspace API?  Because the kernel API
+is completely device exchange specific and wholly inappropriate for
+this use case.
 
-Cheers,
-Longman
+The user space API of dmabuf uses a pseudo-filesystem.  So you mount
+the dmabuf file type (and by "you" I mean root because an ordinary user
+doesn't have sufficient privilege).  This is basically because every
+dmabuf is usable by any user who has permissions.  This really isn't
+the initial interface we want for secret memory because secret regions
+are supposed to be per process and not shared (at least we don't want
+other tenants to see who's using what).
+
+Once you have the fd, you can seek to find the size, mmap, poll and
+ioctl it.  The ioctls are all to do with memory synchronization (as
+you'd expect from a device backed region) and the mmap is handled by
+the dma_buf_ops, which is device specific.  Sizing is missing because
+that's reported by the device not settable by the user.
+
+What we want is the ability to get an fd, set the properties and the
+size and mmap it.  This is pretty much a 100% overlap with the memfd
+API and not much overlap with the dmabuf one, which is why I don't
+think the interface is very well suited.
+
+James
 
