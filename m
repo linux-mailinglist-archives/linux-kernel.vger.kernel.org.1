@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E2E22653E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C813E22649E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731322AbgGTPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49372 "EHLO mail.kernel.org"
+        id S1730680AbgGTPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:46:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730041AbgGTPwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:52:02 -0400
+        id S1730671AbgGTPqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:46:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A12A32064B;
-        Mon, 20 Jul 2020 15:52:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFCB62064B;
+        Mon, 20 Jul 2020 15:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260322;
-        bh=dMpZKAoREPt/Ph4s1EySu309CYTNsehZNf+8JaSdUCY=;
+        s=default; t=1595259996;
+        bh=tBQY6XQvhbfSE1Pda01B/whktDR+5uctrCZVVVFzwZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M0SotcvCudK0dcDVXHivGVJLzjKTWRGuh/CHp9TQGMqy3TDRRlJ6QA5A5MppHTDXn
-         48OK+yYaeOvYo8hDuVzBNcffA+NH+oujrKAGLO7Npr78a2FlbFWopVAJ/NKcma6o5w
-         0jXd+WBwo1MLoOfeLxZUjXXyiFCwvymHKrjbwRPM=
+        b=D5g6zmfzE1n4DCXfjF3jyLr/eRanhl19ZUH01zG9scNx9nX8h98k1c7O0F12ftxwk
+         uPlgnFsIUjGlHzLXqZeqRLT9hUGgTacGqFPYLjiKQIz4URahJ1Hm3J4HIN89V0kFcc
+         GDkjRELP8KbWjmVZXfUy2ha+1FGy5FLkpPoQqSBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
+        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 060/133] arm64: dts: meson: add missing gxl rng clock
-Date:   Mon, 20 Jul 2020 17:36:47 +0200
-Message-Id: <20200720152806.628720493@linuxfoundation.org>
+Subject: [PATCH 4.14 069/125] spi: spi-fsl-dspi: Fix lockup if device is shutdown during SPI transfer
+Date:   Mon, 20 Jul 2020 17:36:48 +0200
+Message-Id: <20200720152806.351151572@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 95ca6f06dd4827ff63be5154120c7a8511cd9a41 ]
+[ Upstream commit 3c525b69e8c1a9a6944e976603c7a1a713e728f9 ]
 
-The peripheral clock of the RNG is missing for gxl while it is present
-for gxbb.
+During shutdown, the driver should unregister the SPI controller
+and stop the hardware.  Otherwise the dspi_transfer_one_message() could
+wait on completion infinitely.
 
-Fixes: 1b3f6d148692 ("ARM64: dts: meson-gx: add clock CLKID_RNG0 to hwrng node")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/20200617125346.1163527-1-jbrunet@baylibre.com
+Additionally, calling spi_unregister_controller() first in device
+shutdown reverse-matches the probe function, where SPI controller is
+registered at the end.
+
+Fixes: dc234825997e ("spi: spi-fsl-dspi: Adding shutdown hook")
+Reported-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200622110543.5035-2-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-gxl.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/spi/spi-fsl-dspi.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-index 8f0bb3c44bd6d..5d7724b3a6123 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-@@ -266,6 +266,11 @@ clkc: clock-controller {
- 	};
- };
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index dabff9718d426..cce9e34306787 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1097,20 +1097,7 @@ static int dspi_remove(struct platform_device *pdev)
  
-+&hwrng {
-+	clocks = <&clkc CLKID_RNG0>;
-+	clock-names = "core";
-+};
-+
- &i2c_A {
- 	clocks = <&clkc CLKID_I2C>;
- };
+ static void dspi_shutdown(struct platform_device *pdev)
+ {
+-	struct spi_controller *ctlr = platform_get_drvdata(pdev);
+-	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
+-
+-	/* Disable RX and TX */
+-	regmap_update_bits(dspi->regmap, SPI_MCR,
+-			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF,
+-			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF);
+-
+-	/* Stop Running */
+-	regmap_update_bits(dspi->regmap, SPI_MCR, SPI_MCR_HALT, SPI_MCR_HALT);
+-
+-	dspi_release_dma(dspi);
+-	clk_disable_unprepare(dspi->clk);
+-	spi_unregister_controller(dspi->master);
++	dspi_remove(pdev);
+ }
+ 
+ static struct platform_driver fsl_dspi_driver = {
 -- 
 2.25.1
 
