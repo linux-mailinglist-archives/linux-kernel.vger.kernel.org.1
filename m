@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6A62263E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F09B226489
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729842AbgGTPlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60718 "EHLO mail.kernel.org"
+        id S1730582AbgGTPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729798AbgGTPlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:00 -0400
+        id S1730564AbgGTPps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:45:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1866F2065E;
-        Mon, 20 Jul 2020 15:40:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C911322CAF;
+        Mon, 20 Jul 2020 15:45:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259660;
-        bh=KRAQrt4cEMUpPn5RaeHRePdc5z4AWcF+tQrH/o+Tr7k=;
+        s=default; t=1595259947;
+        bh=bLNmMfzvaUeMIO/qEM2BJem3mvZR3NFVay6VRNPdbF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tDKHKPr+kdWuOgRRFRCsj0pzeCE0SnhsKXj7WOmSxw4QyqNQ44dPPIAKgGteGRhjo
-         I3HCAsNfkGJwoPu4XMl0AoQWo09+T71rv3nU+7cVdYAQPDEwwtqExhlEzqfdWmIj3d
-         4h13QLFyH32hNU0Xopkfm3ARMf6WGqFFhDxbCSuE=
+        b=KxB6d3GqC6DpBAnXNZsUayMLxvwcPkqQXqv4Os5BTx32cy7XAPbSUVEBf7iqhgXAc
+         YP9JDIdBWqo2B17ijOa+bsCNfdfe0QpjyAJP2gBKrXshwIglGk9BPvEcMotb1yTPRE
+         /xb4WH2rIXe2r/x6zU45QRTs+mvgUZDP2pg1fZiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Fei Liu <feliu@redhat.com>,
+        Jonathan Toppins <jtoppins@redhat.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 06/86] cifs: update ctime and mtime during truncate
+Subject: [PATCH 4.14 023/125] bnxt_en: fix NULL dereference in case SR-IOV configuration fails
 Date:   Mon, 20 Jul 2020 17:36:02 +0200
-Message-Id: <20200720152753.442168934@linuxfoundation.org>
+Message-Id: <20200720152804.108300980@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +47,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+From: Davide Caratti <dcaratti@redhat.com>
 
-[ Upstream commit 5618303d8516f8ac5ecfe53ee8e8bc9a40eaf066 ]
+[ Upstream commit c8b1d7436045d3599bae56aef1682813ecccaad7 ]
 
-As the man description of the truncate, if the size changed,
-then the st_ctime and st_mtime fields should be updated. But
-in cifs, we doesn't do it.
+we need to set 'active_vfs' back to 0, if something goes wrong during the
+allocation of SR-IOV resources: otherwise, further VF configurations will
+wrongly assume that bp->pf.vf[x] are valid memory locations, and commands
+like the ones in the following sequence:
 
-It lead the xfstests generic/313 failed.
+ # echo 2 >/sys/bus/pci/devices/${ADDR}/sriov_numvfs
+ # ip link set dev ens1f0np0 up
+ # ip link set dev ens1f0np0 vf 0 trust on
 
-So, add the ATTR_MTIME|ATTR_CTIME flags on attrs when change
-the file size
+will cause a kernel crash similar to this:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+ bnxt_en 0000:3b:00.0: not enough MMIO resources for SR-IOV
+ BUG: kernel NULL pointer dereference, address: 0000000000000014
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP PTI
+ CPU: 43 PID: 2059 Comm: ip Tainted: G          I       5.8.0-rc2.upstream+ #871
+ Hardware name: Dell Inc. PowerEdge R740/08D89F, BIOS 2.2.11 06/13/2019
+ RIP: 0010:bnxt_set_vf_trust+0x5b/0x110 [bnxt_en]
+ Code: 44 24 58 31 c0 e8 f5 fb ff ff 85 c0 0f 85 b6 00 00 00 48 8d 1c 5b 41 89 c6 b9 0b 00 00 00 48 c1 e3 04 49 03 9c 24 f0 0e 00 00 <8b> 43 14 89 c2 83 c8 10 83 e2 ef 45 84 ed 49 89 e5 0f 44 c2 4c 89
+ RSP: 0018:ffffac6246a1f570 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000b
+ RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff98b28f538900
+ RBP: ffff98b28f538900 R08: 0000000000000000 R09: 0000000000000008
+ R10: ffffffffb9515be0 R11: ffffac6246a1f678 R12: ffff98b28f538000
+ R13: 0000000000000001 R14: 0000000000000000 R15: ffffffffc05451e0
+ FS:  00007fde0f688800(0000) GS:ffff98baffd40000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000014 CR3: 000000104bb0a003 CR4: 00000000007606e0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ PKRU: 55555554
+ Call Trace:
+  do_setlink+0x994/0xfe0
+  __rtnl_newlink+0x544/0x8d0
+  rtnl_newlink+0x47/0x70
+  rtnetlink_rcv_msg+0x29f/0x350
+  netlink_rcv_skb+0x4a/0x110
+  netlink_unicast+0x21d/0x300
+  netlink_sendmsg+0x329/0x450
+  sock_sendmsg+0x5b/0x60
+  ____sys_sendmsg+0x204/0x280
+  ___sys_sendmsg+0x88/0xd0
+  __sys_sendmsg+0x5e/0xa0
+  do_syscall_64+0x47/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: c0c050c58d840 ("bnxt_en: New Broadcom ethernet driver.")
+Reported-by: Fei Liu <feliu@redhat.com>
+CC: Jonathan Toppins <jtoppins@redhat.com>
+CC: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Acked-by: Jonathan Toppins <jtoppins@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/inode.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
-index 3dad943da956f..acd8e0dccab4c 100644
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -2194,6 +2194,15 @@ set_size_out:
- 	if (rc == 0) {
- 		cifsInode->server_eof = attrs->ia_size;
- 		cifs_setsize(inode, attrs->ia_size);
-+
-+		/*
-+		 * The man page of truncate says if the size changed,
-+		 * then the st_ctime and st_mtime fields for the file
-+		 * are updated.
-+		 */
-+		attrs->ia_ctime = attrs->ia_mtime = current_time(inode);
-+		attrs->ia_valid |= ATTR_CTIME | ATTR_MTIME;
-+
- 		cifs_truncate_page(inode->i_mapping, inode->i_size);
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
+index cef59b3b77a39..f0bc8f5246c0a 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
+@@ -344,6 +344,7 @@ static void bnxt_free_vf_resources(struct bnxt *bp)
+ 		}
  	}
  
++	bp->pf.active_vfs = 0;
+ 	kfree(bp->pf.vf);
+ 	bp->pf.vf = NULL;
+ }
+@@ -608,7 +609,6 @@ void bnxt_sriov_disable(struct bnxt *bp)
+ 
+ 	bnxt_free_vf_resources(bp);
+ 
+-	bp->pf.active_vfs = 0;
+ 	/* Reclaim all resources for the PF. */
+ 	rtnl_lock();
+ 	bnxt_restore_pf_fw_resources(bp);
 -- 
 2.25.1
 
