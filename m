@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597F62264E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE43622655B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730973AbgGTPtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44904 "EHLO mail.kernel.org"
+        id S1731137AbgGTPxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:53:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730558AbgGTPtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:49:02 -0400
+        id S1729995AbgGTPxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:53:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BF042065E;
-        Mon, 20 Jul 2020 15:49:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F36CD206E9;
+        Mon, 20 Jul 2020 15:53:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260141;
-        bh=0qTwDZ6Iw3dprPnwL8jchSVzMHxyLv0z21Gg6l59WME=;
+        s=default; t=1595260385;
+        bh=w3L0ltA9Lm03hwxJdwEednYK1OeTpgermLdcgX8ulc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=za5pC8S448hxYtwXzl86fNLrmC+RW9b1lHvrA8zCy/vZQ6vI35p+iZiacDBrGIupr
-         +/kK0KtiBMyP3d6+R9Si0Om/UyQCHVU5KZENXajhoZ0FGbG8aHvCSiOs4s+g5bGiHb
-         fD8fPeddce30+WYvx0vHs2SimecniGP7jPSESx90=
+        b=vRw+Q0IgnoipkTUjkLIHrFf8FRtGC4dFOYCyw0Vzn67X9o4Xg3m+2m2lKrCW5qf9X
+         ltgD02OoWXkEkLC29OW9d/6Annhtrv/7i/pcC0RK6edd0G/4m4zlC7MxSqls6dplg6
+         G+G4afMFAj21dtiMO5cyh5Ga9ks+GfLcbCcQxkvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.14 091/125] mtd: rawnand: oxnas: Keep track of registered devices
+        stable@vger.kernel.org, Sebastian Parschauer <s.parschauer@gmx.de>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.19 083/133] HID: quirks: Always poll Obins Anne Pro 2 keyboard
 Date:   Mon, 20 Jul 2020 17:37:10 +0200
-Message-Id: <20200720152807.416774732@linuxfoundation.org>
+Message-Id: <20200720152807.722207307@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Sebastian Parschauer <s.parschauer@gmx.de>
 
-commit 383fc3f613e7eac9f2e3c13b6f9fb8c1f39cb9d5 upstream.
+commit ca28aff0e1dc7dce9e12a7fd9276b7118ce5e73a upstream.
 
-All initialized and registered devices should be listed somewhere so
-that we can unregister/free them in the _remove() path.
+The Obins Anne Pro 2 keyboard (04d9:a293) disconnects after a few
+minutes of inactivity when using it wired and typing does not result
+in any input events any more. This is a common firmware flaw. So add
+the ALWAYS_POLL quirk for this device.
 
-This patch is not a fix per-se but is needed to apply three other
-fixes coming right after, explaining the Fixes/Cc: stable tags.
+GitHub user Dietrich Moerman (dietrichm) tested the quirk and
+requested my help in my project
+https://github.com/sriemer/fix-linux-mouse issue 22 to provide
+this patch.
 
-Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-36-miquel.raynal@bootlin.com
+Link: https://www.reddit.com/r/AnnePro/comments/gruzcb/anne_pro_2_linux_cant_type_after_inactivity/
+Signed-off-by: Sebastian Parschauer <s.parschauer@gmx.de>
+Cc: stable@vger.kernel.org # v4.16+
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/oxnas_nand.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/hid/hid-ids.h    |    1 +
+ drivers/hid/hid-quirks.c |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/mtd/nand/oxnas_nand.c
-+++ b/drivers/mtd/nand/oxnas_nand.c
-@@ -36,6 +36,7 @@ struct oxnas_nand_ctrl {
- 	void __iomem *io_base;
- 	struct clk *clk;
- 	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
-+	unsigned int nchips;
- };
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -609,6 +609,7 @@
+ #define USB_DEVICE_ID_HOLTEK_ALT_MOUSE_A081	0xa081
+ #define USB_DEVICE_ID_HOLTEK_ALT_MOUSE_A0C2	0xa0c2
+ #define USB_DEVICE_ID_HOLTEK_ALT_KEYBOARD_A096	0xa096
++#define USB_DEVICE_ID_HOLTEK_ALT_KEYBOARD_A293	0xa293
  
- static uint8_t oxnas_nand_read_byte(struct mtd_info *mtd)
-@@ -86,7 +87,6 @@ static int oxnas_nand_probe(struct platf
- 	struct nand_chip *chip;
- 	struct mtd_info *mtd;
- 	struct resource *res;
--	int nchips = 0;
- 	int count = 0;
- 	int err = 0;
- 
-@@ -150,12 +150,12 @@ static int oxnas_nand_probe(struct platf
- 		if (err)
- 			goto err_cleanup_nand;
- 
--		oxnas->chips[nchips] = chip;
--		++nchips;
-+		oxnas->chips[oxnas->nchips] = chip;
-+		++oxnas->nchips;
- 	}
- 
- 	/* Exit if no chips found */
--	if (!nchips) {
-+	if (!oxnas->nchips) {
- 		err = -ENODEV;
- 		goto err_clk_unprepare;
- 	}
+ #define USB_VENDOR_ID_IMATION		0x0718
+ #define USB_DEVICE_ID_DISC_STAKKA	0xd000
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -90,6 +90,7 @@ static const struct hid_device_id hid_qu
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HOLTEK_ALT, USB_DEVICE_ID_HOLTEK_ALT_KEYBOARD_A096), HID_QUIRK_NO_INIT_REPORTS },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_HOLTEK_ALT, USB_DEVICE_ID_HOLTEK_ALT_KEYBOARD_A293), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_LOGITECH_OEM_USB_OPTICAL_MOUSE_0A4A), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_LOGITECH_OEM_USB_OPTICAL_MOUSE_0B4A), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_PIXART_OEM_USB_OPTICAL_MOUSE), HID_QUIRK_ALWAYS_POLL },
 
 
