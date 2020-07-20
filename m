@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E1F22646D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAD122660D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgGTPox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38930 "EHLO mail.kernel.org"
+        id S1732299AbgGTP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730447AbgGTPot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:49 -0400
+        id S1732223AbgGTP71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88FED2065E;
-        Mon, 20 Jul 2020 15:44:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E20E7206E9;
+        Mon, 20 Jul 2020 15:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259889;
-        bh=dxPAn9gjsJi3cfQmbFjDRfi/Ywh6j3TDJZWaFzsP95U=;
+        s=default; t=1595260766;
+        bh=DDI2nDmvoR0X6aSmr35gKN4b4QhRAHSVx8YSHM9RKPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WTMnzJBJ+MzSp2UrOZzanoP0FRy4k3RL2r9/jXvKqMSLwuYHCh+QU90Iz/EAebDs9
-         Q4OB59HCkZ5VebqEctR5k1eXzBQsPX0U/i7qJvdNEOjU4VTOq9Wg2swoU9ybpxxH+4
-         MUrfXry+D5rYlrUv34CINRBVK77/dOP29y1AlwCY=
+        b=Q7udnnS05rFCIsl3aJY+2Ok8MDNkG9mZswa47d78s5h+zq19uEiPG8q/2zw+dgSBv
+         ytLFFJE7MCft24KM6fN5MBU+0Tdw/Q5CXk7Omdy8xj5QQECQyOMYOXlQvy0ekMy3db
+         WstFZBO+r4h+f39HQyFTidPz2zF+am+VAQHl9naE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.14 030/125] KVM: arm64: Stop clobbering x0 for HVC_SOFT_RESTART
-Date:   Mon, 20 Jul 2020 17:36:09 +0200
-Message-Id: <20200720152804.435058832@linuxfoundation.org>
+        stable@vger.kernel.org, Gregor Pintar <grpintar@gmail.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 088/215] ALSA: usb-audio: Add quirk for Focusrite Scarlett 2i2
+Date:   Mon, 20 Jul 2020 17:36:10 +0200
+Message-Id: <20200720152824.389170890@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +44,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Scull <ascull@google.com>
+From: Gregor Pintar <grpintar@gmail.com>
 
-commit b9e10d4a6c9f5cbe6369ce2c17ebc67d2e5a4be5 upstream.
+[ Upstream commit 6f4ea2074ddf689ac6f892afa58515032dabf2e4 ]
 
-HVC_SOFT_RESTART is given values for x0-2 that it should installed
-before exiting to the new address so should not set x0 to stub HVC
-success or failure code.
+Force it to use asynchronous playback.
 
-Fixes: af42f20480bf1 ("arm64: hyp-stub: Zero x0 on successful stub handling")
-Cc: stable@vger.kernel.org
-Signed-off-by: Andrew Scull <ascull@google.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200706095259.1338221-1-ascull@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Same quirk has already been added for Focusrite Scarlett Solo (2nd gen)
+with a commit 46f5710f0b88 ("ALSA: usb-audio: Add quirk for Focusrite
+Scarlett Solo").
 
+This also seems to prevent regular clicks when playing at 44100Hz
+on Scarlett 2i2 (2nd gen). I did not notice any side effects.
+
+Moved both quirks to snd_usb_audioformat_attributes_quirk() as suggested.
+
+Signed-off-by: Gregor Pintar <grpintar@gmail.com>
+Reviewed-by: Alexander Tsoy <alexander@tsoy.me>
+Link: https://lore.kernel.org/r/20200420214030.2361-1-grpintar@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/hyp-init.S |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/usb/quirks-table.h | 84 ----------------------------------------
+ sound/usb/quirks.c       | 13 +++++++
+ 2 files changed, 13 insertions(+), 84 deletions(-)
 
---- a/arch/arm64/kvm/hyp-init.S
-+++ b/arch/arm64/kvm/hyp-init.S
-@@ -147,11 +147,15 @@ ENTRY(__kvm_handle_stub_hvc)
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 5089f2de2f02d..562179492a338 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2776,90 +2776,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.type = QUIRK_MIDI_NOVATION
+ 	}
+ },
+-{
+-	/*
+-	 * Focusrite Scarlett Solo 2nd generation
+-	 * Reports that playback should use Synch: Synchronous
+-	 * while still providing a feedback endpoint. Synchronous causes
+-	 * snapping on some sample rates.
+-	 * Force it to use Synch: Asynchronous.
+-	 */
+-	USB_DEVICE(0x1235, 0x8205),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+-		.ifnum = QUIRK_ANY_INTERFACE,
+-		.type = QUIRK_COMPOSITE,
+-		.data = (const struct snd_usb_audio_quirk[]) {
+-			{
+-				.ifnum = 1,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = & (const struct audioformat) {
+-					.formats = SNDRV_PCM_FMTBIT_S32_LE,
+-					.channels = 2,
+-					.iface = 1,
+-					.altsetting = 1,
+-					.altset_idx = 1,
+-					.attributes = 0,
+-					.endpoint = 0x01,
+-					.ep_attr = USB_ENDPOINT_XFER_ISOC |
+-						   USB_ENDPOINT_SYNC_ASYNC,
+-					.protocol = UAC_VERSION_2,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000 |
+-						 SNDRV_PCM_RATE_88200 |
+-						 SNDRV_PCM_RATE_96000 |
+-						 SNDRV_PCM_RATE_176400 |
+-						 SNDRV_PCM_RATE_192000,
+-					.rate_min = 44100,
+-					.rate_max = 192000,
+-					.nr_rates = 6,
+-					.rate_table = (unsigned int[]) {
+-						44100, 48000, 88200,
+-						96000, 176400, 192000
+-					},
+-					.clock = 41
+-				}
+-			},
+-			{
+-				.ifnum = 2,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = & (const struct audioformat) {
+-					.formats = SNDRV_PCM_FMTBIT_S32_LE,
+-					.channels = 2,
+-					.iface = 2,
+-					.altsetting = 1,
+-					.altset_idx = 1,
+-					.attributes = 0,
+-					.endpoint = 0x82,
+-					.ep_attr = USB_ENDPOINT_XFER_ISOC |
+-						   USB_ENDPOINT_SYNC_ASYNC |
+-						   USB_ENDPOINT_USAGE_IMPLICIT_FB,
+-					.protocol = UAC_VERSION_2,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000 |
+-						 SNDRV_PCM_RATE_88200 |
+-						 SNDRV_PCM_RATE_96000 |
+-						 SNDRV_PCM_RATE_176400 |
+-						 SNDRV_PCM_RATE_192000,
+-					.rate_min = 44100,
+-					.rate_max = 192000,
+-					.nr_rates = 6,
+-					.rate_table = (unsigned int[]) {
+-						44100, 48000, 88200,
+-						96000, 176400, 192000
+-					},
+-					.clock = 41
+-				}
+-			},
+-			{
+-				.ifnum = 3,
+-				.type = QUIRK_IGNORE_INTERFACE
+-			},
+-			{
+-				.ifnum = -1
+-			}
+-		}
+-	}
+-},
  
- 1:	cmp	x0, #HVC_RESET_VECTORS
- 	b.ne	1f
--reset:
-+
- 	/*
--	 * Reset kvm back to the hyp stub. Do not clobber x0-x4 in
--	 * case we coming via HVC_SOFT_RESTART.
-+	 * Set the HVC_RESET_VECTORS return code before entering the common
-+	 * path so that we do not clobber x0-x2 in case we are coming via
-+	 * HVC_SOFT_RESTART.
- 	 */
-+	mov	x0, xzr
-+reset:
-+	/* Reset kvm back to the hyp stub. */
- 	mrs	x5, sctlr_el2
- 	ldr	x6, =SCTLR_ELx_FLAGS
- 	bic	x5, x5, x6		// Clear SCTL_M and etc
-@@ -162,7 +166,6 @@ reset:
- 	/* Install stub vectors */
- 	adr_l	x5, __hyp_stub_vectors
- 	msr	vbar_el2, x5
--	mov	x0, xzr
- 	eret
+ /* Access Music devices */
+ {
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 5341d045e6a48..e2b0de0473103 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1780,6 +1780,19 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		 */
+ 		fp->attributes &= ~UAC_EP_CS_ATTR_FILL_MAX;
+ 		break;
++	case USB_ID(0x1235, 0x8202):  /* Focusrite Scarlett 2i2 2nd gen */
++	case USB_ID(0x1235, 0x8205):  /* Focusrite Scarlett Solo 2nd gen */
++		/*
++		 * Reports that playback should use Synch: Synchronous
++		 * while still providing a feedback endpoint.
++		 * Synchronous causes snapping on some sample rates.
++		 * Force it to use Synch: Asynchronous.
++		 */
++		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			fp->ep_attr &= ~USB_ENDPOINT_SYNCTYPE;
++			fp->ep_attr |= USB_ENDPOINT_SYNC_ASYNC;
++		}
++		break;
+ 	}
+ }
  
- 1:	/* Bad stub call */
+-- 
+2.25.1
+
 
 
