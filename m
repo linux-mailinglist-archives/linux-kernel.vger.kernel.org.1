@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9E12265AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CF52265B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731308AbgGTP4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:56:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58762 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730307AbgGTP4H (ORCPT
+        id S1731305AbgGTP4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731741AbgGTP4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:56:07 -0400
+        Mon, 20 Jul 2020 11:56:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96802C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:56:11 -0700 (PDT)
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260565;
+        s=2020; t=1595260570;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fuyy0zLiX9oqGaNGjgjh+XXT41N87KSvgPNDfMsD0N4=;
-        b=ZecZm1YU70HSXnGpMlZe9VTWjCaEHdsnteUyILUtdbVSezQ/LavSa+TajTUy5KRZ9C3onc
-        hMDNuKBipOpId9Jil8SHeSTr0qElVmULMjmmkQ+IjmE3pn5Dg0j/K9VTlhchhm9Wl4tXCd
-        v22Txi3y+7yNBG9ASOHc4xJ9TR6SJ5agxXBdTEaSlYx8/FynKdBS2KWsOE7Om748qruIak
-        py3DwiZwK/fl3WhWeLdLtiYdOyWFDg9kA0cc55hVYMTeKHm7ZxgZrvxddzWIa3XcKbNa3P
-        p33KscI4xTzQEmdZKq757dpfWdo8Sc9YHbHYEsdq04rEDZOpYfdnWqRc/iXoxQ==
+        bh=csm6qsmcvrkuC3wqo2RObLqWMOC0odk2hhFpp4R4S68=;
+        b=I7BgZSnv43hlG/8MAWSzdbawh2+/ymgU6baklhFOO96spk58wM7RcSneVgAmuDUYHCtf2R
+        QglGd9/4K4BqjrFBBtHBbXbBkOzlBaPp/CbTuk7IaSM+fQxyBsH/X4kEYAfY5DSh1iUhk2
+        ALJhBpO0xAkbnvoVMjGl9XhdRlBsnXhpJM2lfXDSwQ72WuCepYL2Cdi8rNtCaH5S63bOXG
+        5zR92mmXyVRxRY3a+ptoQ7W7lMWGnlFYxV5Mq2a2htP4Dl8FjnUPZtJ5hKu43qROnR/OsT
+        l6NBZPfQ4QUDbPVy9EgWffLfNP24ixVctpSNKB/ToFBy1BykMSiKlstTWzP4NQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260565;
+        s=2020e; t=1595260570;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fuyy0zLiX9oqGaNGjgjh+XXT41N87KSvgPNDfMsD0N4=;
-        b=ohg76ZgGDwrBYFBW0kVzECDbTJf5R9GJy9xLHaOPNpUmMnY4vYlkCahnBj5+50STdHp1Va
-        q3TWG4k4jOMYpECQ==
+        bh=csm6qsmcvrkuC3wqo2RObLqWMOC0odk2hhFpp4R4S68=;
+        b=HPtNFSpYcYbtURCsvIqNiXS4p9eGFcLbf5SeYCeVrGmrS5umnwW7q/tvdGN3HFOPTaj2/b
+        lLK5SsAsSMdRymCQ==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -42,9 +45,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v4 07/24] lockdep: Add preemption enabled/disabled assertion APIs
-Date:   Mon, 20 Jul 2020 17:55:13 +0200
-Message-Id: <20200720155530.1173732-8-a.darwish@linutronix.de>
+Subject: [PATCH v4 08/24] seqlock: lockdep assert non-preemptibility on seqcount_t write
+Date:   Mon, 20 Jul 2020 17:55:14 +0200
+Message-Id: <20200720155530.1173732-9-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -55,70 +58,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asserting that preemption is enabled or disabled is a critical sanity
-check.  Developers are usually reluctant to add such a check in a
-fastpath as reading the preemption count can be costly.
+Preemption must be disabled before entering a sequence count write side
+critical section.  Failing to do so, the seqcount read side can preempt
+the write side section and spin for the entire scheduler tick.  If that
+reader belongs to a real-time scheduling class, it can spin forever and
+the kernel will livelock.
 
-Extend the lockdep API with macros asserting that preemption is disabled
-or enabled. If lockdep is disabled, or if the underlying architecture
-does not support kernel preemption, this assert has no runtime overhead.
+Assert through lockdep that preemption is disabled for seqcount writers.
 
-References: f54bb2ec02c8 ("locking/lockdep: Add IRQs disabled/enabled assertion APIs: ...")
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- include/linux/lockdep.h | 19 +++++++++++++++++++
- lib/Kconfig.debug       |  1 +
- 2 files changed, 20 insertions(+)
+ include/linux/seqlock.h | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 7aafba0ddcf9..39a35699d0d6 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -549,6 +549,22 @@ do {									\
- 	WARN_ON_ONCE(debug_locks && !this_cpu_read(hardirq_context));	\
- } while (0)
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index e885702d8b82..54bc20496392 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -266,6 +266,12 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
+ 	kcsan_nestable_atomic_end();
+ }
  
-+#define lockdep_assert_preemption_enabled()				\
-+do {									\
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
-+		     debug_locks			&&		\
-+		     (preempt_count() != 0		||		\
-+		      !this_cpu_read(hardirqs_enabled)));		\
-+} while (0)
++static inline void __write_seqcount_begin_nested(seqcount_t *s, int subclass)
++{
++	raw_write_seqcount_begin(s);
++	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
++}
 +
-+#define lockdep_assert_preemption_disabled()				\
-+do {									\
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
-+		     debug_locks			&&		\
-+		     (preempt_count() == 0		&&		\
-+		      this_cpu_read(hardirqs_enabled)));		\
-+} while (0)
+ /**
+  * write_seqcount_begin_nested() - start a seqcount_t write section with
+  *                                 custom lockdep nesting level
+@@ -276,8 +282,19 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
+  */
+ static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
+ {
+-	raw_write_seqcount_begin(s);
+-	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
++	lockdep_assert_preemption_disabled();
++	__write_seqcount_begin_nested(s, subclass);
++}
 +
- #else
- # define might_lock(lock) do { } while (0)
- # define might_lock_read(lock) do { } while (0)
-@@ -557,6 +573,9 @@ do {									\
- # define lockdep_assert_irqs_enabled() do { } while (0)
- # define lockdep_assert_irqs_disabled() do { } while (0)
- # define lockdep_assert_in_irq() do { } while (0)
-+
-+# define lockdep_assert_preemption_enabled() do { } while (0)
-+# define lockdep_assert_preemption_disabled() do { } while (0)
- #endif
++/*
++ * A write_seqcount_begin() variant w/o lockdep non-preemptibility checks.
++ *
++ * Use for internal seqlock.h code where it's known that preemption is
++ * already disabled. For example, seqlock_t write side functions.
++ */
++static inline void __write_seqcount_begin(seqcount_t *s)
++{
++	__write_seqcount_begin_nested(s, 0);
+ }
  
- #ifdef CONFIG_PROVE_RAW_LOCK_NESTING
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 9ad9210d70a1..5379931ba3b5 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1117,6 +1117,7 @@ config PROVE_LOCKING
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
- 	select DEBUG_LOCK_ALLOC
-+	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
- 	select TRACE_IRQFLAGS
- 	default n
- 	help
+ /**
+@@ -575,7 +592,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
+ static inline void write_seqlock(seqlock_t *sl)
+ {
+ 	spin_lock(&sl->lock);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ }
+ 
+ /**
+@@ -601,7 +618,7 @@ static inline void write_sequnlock(seqlock_t *sl)
+ static inline void write_seqlock_bh(seqlock_t *sl)
+ {
+ 	spin_lock_bh(&sl->lock);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ }
+ 
+ /**
+@@ -628,7 +645,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
+ static inline void write_seqlock_irq(seqlock_t *sl)
+ {
+ 	spin_lock_irq(&sl->lock);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ }
+ 
+ /**
+@@ -649,7 +666,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&sl->lock, flags);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ 	return flags;
+ }
+ 
 -- 
 2.20.1
 
