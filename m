@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD4F226C02
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE8F226BA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbgGTPj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59184 "EHLO mail.kernel.org"
+        id S1731473AbgGTQn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:43:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728518AbgGTPjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:54 -0400
+        id S1730016AbgGTPmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:42:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 777AF22B4E;
-        Mon, 20 Jul 2020 15:39:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C11D82064B;
+        Mon, 20 Jul 2020 15:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259594;
-        bh=Ii21Y4dB2dtPOuktMfoSercnM/W9406kERuSR4p265M=;
+        s=default; t=1595259728;
+        bh=FI7gps7flBvDC7mqdfUc+hItbWd/wRfn0NGUD3v/seY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KImI5IiPFeUaFpc0x84DI59NrEMTCFylIFDMSFO+c2GRVPlmGlT5Uti2dZZ9/B/l/
-         ELnOf5nDjog2Ti2J8odB/OK1N7AAG+BscJvJG5qUA1uGQBmoA0vL/c8WMR4TaMM9X3
-         HK7QJ8E/9ri+6iV/H5azOyDWQD7ZEjkGdLkKBAsk=
+        b=KRVL1HBMxcRsEXUAOKSSCdvAxMd1pxp6fIr2D91w1SY28wES6JMgDel97nDLZdHv9
+         jYVwOMCByS0FXoeaQO/6g61nDLdPgaSUWGtfnXFTqPx7sY4WLIH/ahJt2Pkk628cDv
+         a0Jde3wkQPrPAmkt2Fl3+5p1nQYuOwu93bLtxfzQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yariv <oigevald+kernel@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.4 37/58] HID: magicmouse: do not set up autorepeat
-Date:   Mon, 20 Jul 2020 17:36:53 +0200
-Message-Id: <20200720152749.056128636@linuxfoundation.org>
+        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 4.9 58/86] perf stat: Zero all the ena and run array slot stats for interval mode
+Date:   Mon, 20 Jul 2020 17:36:54 +0200
+Message-Id: <20200720152756.075872523@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +48,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Jin Yao <yao.jin@linux.intel.com>
 
-commit 6363d2065cd399cf9d6dc9d08c437f8658831100 upstream.
+commit 0e0bf1ea1147fcf74eab19c2d3c853cc3740a72f upstream.
 
-Neither the trackpad, nor the mouse want input core to generate autorepeat
-events for their buttons, so let's reset the bit (as hid-input sets it for
-these devices based on the usage vendor code).
+As the code comments in perf_stat_process_counter() say, we calculate
+counter's data every interval, and the display code shows ps->res_stats
+avg value. We need to zero the stats for interval mode.
 
-Cc: stable@vger.kernel.org
-Reported-by: Yariv <oigevald+kernel@gmail.com>
-Tested-by: Yariv <oigevald+kernel@gmail.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+But the current code only zeros the res_stats[0], it doesn't zero the
+res_stats[1] and res_stats[2], which are for ena and run of counter.
+
+This patch zeros the whole res_stats[] for interval mode.
+
+Fixes: 51fd2df1e882 ("perf stat: Fix interval output values")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jin Yao <yao.jin@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20200409070755.17261-1-yao.jin@linux.intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hid/hid-magicmouse.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/perf/util/stat.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/hid/hid-magicmouse.c
-+++ b/drivers/hid/hid-magicmouse.c
-@@ -451,6 +451,12 @@ static int magicmouse_setup_input(struct
- 		__set_bit(MSC_RAW, input->mscbit);
- 	}
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -341,8 +341,10 @@ int perf_stat_process_counter(struct per
+ 	 * interval mode, otherwise overall avg running
+ 	 * averages will be shown for each interval.
+ 	 */
+-	if (config->interval)
+-		init_stats(ps->res_stats);
++	if (config->interval) {
++		for (i = 0; i < 3; i++)
++			init_stats(&ps->res_stats[i]);
++	}
  
-+	/*
-+	 * hid-input may mark device as using autorepeat, but neither
-+	 * the trackpad, nor the mouse actually want it.
-+	 */
-+	__clear_bit(EV_REP, input->evbit);
-+
- 	return 0;
- }
- 
+ 	if (counter->per_pkg)
+ 		zero_per_pkg(counter);
 
 
