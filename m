@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F13822572E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58420225733
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgGTFrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 01:47:18 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:44673 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725872AbgGTFrS (ORCPT
+        id S1726734AbgGTFt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 01:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgGTFtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 01:47:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U3BbMp-_1595224030;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3BbMp-_1595224030)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 20 Jul 2020 13:47:10 +0800
-Subject: Re: [PATCH v16 18/22] mm/lru: replace pgdat lru_lock with lruvec lock
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Rong Chen <rong.a.chen@intel.com>
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-19-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0Ud+Dj-Q8Sxv8eDQhjM3fFHwnU_ZFEVG54debBennUmxAg@mail.gmail.com>
- <62dfd262-a7ac-d18e-216a-2988c690b256@linux.alibaba.com>
- <c339f46e-ae04-4e65-2713-a5c8be56051a@linux.alibaba.com>
- <CAKgT0UestD7cU+3aqg3a9JT4bTXVYQpjGbwoC2-bOBHPY5xn6A@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <27eb389d-b5f9-fe03-2e57-15c351629efc@linux.alibaba.com>
-Date:   Mon, 20 Jul 2020 13:47:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Mon, 20 Jul 2020 01:49:25 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F54DC0619D2;
+        Sun, 19 Jul 2020 22:49:25 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id 207so8505487pfu.3;
+        Sun, 19 Jul 2020 22:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B7LmlwjhyROxGu+ou1P/4GlA52VraI1gAuhKVajVWMw=;
+        b=HHezWH7s44GjRZbiyvcinfZIpq2gDyPgY/X/U0OTsDyL7WGdonMs71Xt6Tcws68NLe
+         YrLyUTxu2mlN6Veq/QmPMUUUdBXtGag91IFNgO+1cuKgfExnB5vT8+g2PxeG6K75LJWs
+         VRryt1BTVsH5nETAaE6kl07Fv4cyIUaa8YHr7B/u2AiSsKCwfklJOncosV0oR5r3dUBH
+         yD2yXyEwJTpUQ5djX3UE7jMpv1y5CDC/MbySjSfSgZIFamHn1Sf2jVCZ2S/v3ZQ9vHfO
+         j4SiUKZVvEhNaKGs2wqNYem1u/expzMx73MhwP2+Sa3yJ6G2SDzt1SPDMw0CuVBlpF1u
+         EKGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B7LmlwjhyROxGu+ou1P/4GlA52VraI1gAuhKVajVWMw=;
+        b=WG3+UHBQRyyJc16XQsGMWkmuEpkN+Hc7HztDhug3VQ2adzBZLi/wtWTBA0Gy2TcxoD
+         4b0DyRQ41AbBvItPmEgGgMzm6F1Lntf2RvIeVnyu0UoPzkGRP7xiKKxyyX6gxmU88uKx
+         QnWYzocgjs535f9xLjTbJv+f9oB+CCaE90si7XRoBhGJHzgX8XtyZxj664ejIStwi89J
+         8vVDxvYNUhFDCpSMENTQauBWKoBI1iLpv41dq9m2wa+Pf9Wn9kBELyqovT9BSrVX3r6v
+         N41nJfnDQKTTfiVuGivVb1f9zRakwwAMFtFG5BQlfrmMiydNUHy5e3IQPHp0G+jwf/0M
+         c0FA==
+X-Gm-Message-State: AOAM530mHs4ly4mypbpdz8gX68Sokftg82KTI1hGlQHcH2WpUV+2rgSw
+        BzKs9TaS9Qtvjl4fwvesgYFPRmCT5deAeQ==
+X-Google-Smtp-Source: ABdhPJxi960BymfHLyIWfBVjQA9Thw7VCOgyY8wgl3sbvRUvyXljiGpZ/Fi6P0vbzfe3vzqW+Fo9iw==
+X-Received: by 2002:a62:31c7:: with SMTP id x190mr18825075pfx.100.1595224164759;
+        Sun, 19 Jul 2020 22:49:24 -0700 (PDT)
+Received: from xiaomi.mioffice.cn ([209.9.72.214])
+        by smtp.gmail.com with ESMTPSA id i7sm13627833pgh.58.2020.07.19.22.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Jul 2020 22:49:24 -0700 (PDT)
+From:   Qiwu Huang <yanziily@gmail.com>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jiangfei1@xiaomi.com,
+        Qiwu Huang <huangqiwu@xiaomi.com>
+Subject: [PATCH v4 0/4] add some power supply properties about wireless/wired charging
+Date:   Mon, 20 Jul 2020 13:47:13 +0800
+Message-Id: <cover.1595214246.git.huangqiwu@xiaomi.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UestD7cU+3aqg3a9JT4bTXVYQpjGbwoC2-bOBHPY5xn6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Qiwu Huang <huangqiwu@xiaomi.com>
 
+quick_charge_type reports quick charge type based on charging power.
+tx_adapter shows wireless charging adapter type.
+signal_strength shows degree of coupling between tx and rx when wireless charging.
+reverse_chg_mode supply interface to enable/disable wireless reverse charging.
 
-在 2020/7/19 下午11:14, Alexander Duyck 写道:
->> Compare to move to tail, how about to move it to head of struct, which is
->> close to lru list? Did you have some data of the place change?
-> I don't have specific data, just anecdotal evidence from the past that
-> usually you want to keep locks away from read-mostly items since they
-> cause obvious cache thrash. My concern was more with the other fields
-> in the structure such as pgdat since it should be a static value and
-> having it evicted would likely be more expensive than just leaving the
-> cacheline as it is.
-> 
+Qiwu Huang (4):
+  power: supply: core: add quick charge type property
+  power: supply: core: add wireless charger adapter type property
+  power: supply: core: add wireless signal strength property
+  power: supply: core: property to control reverse charge
 
-Thanks for comments, Alex.
+ Documentation/ABI/testing/sysfs-class-power | 71 +++++++++++++++++++++
+ drivers/power/supply/power_supply_sysfs.c   |  4 ++
+ include/linux/power_supply.h                | 31 +++++++++
+ 3 files changed, 106 insertions(+)
 
-So, sounds like moving the lru_lock to head of struct lruvec could be better.
+-- 
+2.27.0
 
->> -       __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
->> +       if (delta_munlocked)
->> +               __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
->>         if (lruvec)
->>                 unlock_page_lruvec_irq(lruvec);
-> Why not just wrap the entire thing in a check for "lruvec"? Yes you
-> could theoretically be modding with a value of 0, but it avoids a
-> secondary unnecessary check and branching.
-
-Right, and the delta_munlocked value could be checked inside the accounting
-func
-
-Thanks!
