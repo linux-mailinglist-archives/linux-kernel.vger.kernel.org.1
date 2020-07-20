@@ -2,140 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923CB226333
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FBE226344
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgGTPYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:24:02 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:47690 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728469AbgGTPX6 (ORCPT
+        id S1728838AbgGTPZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:25:57 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58610 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgGTPZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:23:58 -0400
-Received: from prsriva-linux.hsd1.wa.comcast.net (c-24-19-135-168.hsd1.wa.comcast.net [24.19.135.168])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C007F20B4911;
-        Mon, 20 Jul 2020 08:23:57 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C007F20B4911
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595258638;
-        bh=J74HKsE6BQB61ViBOZwKU/akj9IUtIuEcshXkxPv29w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTk/w6cv15Tx8/ktbyQ53lq9phIP4OVRmHCbmrsUVjV19MtxDhu4Z0HLaGQS3i6KJ
-         41OyVSqjACTGPJQNIN2Dg9Hh9KYibl2yWVECcfdIonozDXmi44D8boksPA7wva2vL+
-         zHacS2a7t5KqTCM+XpipvI2GTFUzIAAl8shx4gEg=
-From:   Prakhar Srivastava <prsriva@linux.microsoft.com>
-To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, robh+dt@kernel.org,
-        frowand.list@gmail.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, masahiroy@kernel.org, james.morse@arm.com,
-        bhsharma@redhat.com, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        gregkh@linuxfoundation.org, nramas@linux.microsoft.com,
-        prsriva@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        balajib@linux.microsoft.com, bauerman@linux.ibm.com,
-        robh@kernel.org
-Subject: [PATCH V3 6/6] Add the property used for carrying forward the IMA measurement logs and update the code to use the defined property string.
-Date:   Mon, 20 Jul 2020 08:23:42 -0700
-Message-Id: <20200720152342.337990-7-prsriva@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200720152342.337990-1-prsriva@linux.microsoft.com>
-References: <20200720152342.337990-1-prsriva@linux.microsoft.com>
+        Mon, 20 Jul 2020 11:25:56 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KFPpvb013547;
+        Mon, 20 Jul 2020 10:25:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595258751;
+        bh=ao8BlmMy90h2RgJvinWkQ1VowSR9siCrviTWF7w3VIA=;
+        h=Subject:From:To:References:Date:In-Reply-To;
+        b=Fxzjk4pKB03BZhfihhejJV/0jYEJ2NfKzhAtuqw/1dohc7GDWsw0wdlR0UC4rQ/+Z
+         XcCoHehLKdysvdODa5iH8QZHhlZ9yNuZAjGff41M2uUHH4cQRD9FW8msPDL53KUgER
+         1PEA7Vd3ksgVpanbBixpkZ55rkNSRwxRUfFXf2sI=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06KFPpjv006911
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 10:25:51 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
+ Jul 2020 10:25:51 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 20 Jul 2020 10:25:51 -0500
+Received: from [10.250.74.234] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KFPogP012081;
+        Mon, 20 Jul 2020 10:25:50 -0500
+Subject: Re: [PATCH 1/2 v2] net: hsr: fix incorrect lsdu size in the tag of
+ HSR frames for small frames
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <nsekhar@ti.com>,
+        <vinicius.gomes@intel.com>
+References: <20200717145510.30433-1-m-karicheri2@ti.com>
+ <0e064d93-546d-e999-e36a-499d37137ba4@ti.com>
+ <ad869a7c-fe39-8b75-c235-d65005cd9c32@ti.com>
+Message-ID: <a1a6c820-d096-8236-5af9-49ae04d32704@ti.com>
+Date:   Mon, 20 Jul 2020 11:25:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <ad869a7c-fe39-8b75-c235-d65005cd9c32@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
----
- arch/arm64/kernel/machine_kexec_file.c | 19 ++++++++++---------
- arch/powerpc/kexec/ima.c               |  8 +++++---
- 2 files changed, 15 insertions(+), 12 deletions(-)
+Hi Grygoii,
 
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index 066670c43626..59058901e641 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -24,14 +24,15 @@
- #include <asm/byteorder.h>
- 
- /* relevant device tree properties */
--#define FDT_PROP_KEXEC_ELFHDR	"linux,elfcorehdr"
--#define FDT_PROP_MEM_RANGE	"linux,usable-memory-range"
--#define FDT_PROP_INITRD_START	"linux,initrd-start"
--#define FDT_PROP_INITRD_END	"linux,initrd-end"
--#define FDT_PROP_BOOTARGS	"bootargs"
--#define FDT_PROP_KASLR_SEED	"kaslr-seed"
--#define FDT_PROP_RNG_SEED	"rng-seed"
--#define RNG_SEED_SIZE		128
-+#define FDT_PROP_KEXEC_ELFHDR		"linux,elfcorehdr"
-+#define FDT_PROP_MEM_RANGE		"linux,usable-memory-range"
-+#define FDT_PROP_INITRD_START		"linux,initrd-start"
-+#define FDT_PROP_INITRD_END		"linux,initrd-end"
-+#define FDT_PROP_BOOTARGS		"bootargs"
-+#define FDT_PROP_KASLR_SEED		"kaslr-seed"
-+#define FDT_PROP_RNG_SEED		"rng-seed"
-+#define FDT_PROP_IMA_KEXEC_BUFFER	"linux,ima-kexec-buffer"
-+#define RNG_SEED_SIZE			128
- 
- const struct kexec_file_ops * const kexec_file_loaders[] = {
- 	&kexec_image_ops,
-@@ -157,7 +158,7 @@ static int setup_dtb(struct kimage *image,
- 	if (image->arch.ima_buffer_size > 0) {
- 
- 		ret = fdt_appendprop_addrrange(dtb, 0, off,
--				"linux,ima-kexec-buffer",
-+				FDT_PROP_IMA_KEXEC_BUFFER,
- 				image->arch.ima_buffer_addr,
- 				image->arch.ima_buffer_size);
- 		if (ret)
-diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-index a9e4e9f04273..7d6c43b2eacb 100644
---- a/arch/powerpc/kexec/ima.c
-+++ b/arch/powerpc/kexec/ima.c
-@@ -12,6 +12,8 @@
- #include <linux/memblock.h>
- #include <linux/libfdt.h>
- 
-+#define FDT_PROP_IMA_KEXEC_BUFFER	"linux,ima-kexec-buffer"
-+
- /**
-  * remove_ima_buffer - remove the IMA buffer property and reservation from @fdt
-  *
-@@ -25,7 +27,7 @@ void remove_ima_buffer(void *fdt, int chosen_node)
- 	size_t size;
- 	const void *prop;
- 
--	prop = fdt_getprop(fdt, chosen_node, "linux,ima-kexec-buffer", &len);
-+	prop = fdt_getprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER, &len);
- 	if (!prop)
- 		return;
- 
-@@ -45,7 +47,7 @@ void remove_ima_buffer(void *fdt, int chosen_node)
- 	addr = of_read_number(prop, addr_cells);
- 	size = of_read_number(prop + 4 * addr_cells, size_cells);
- 
--	fdt_delprop(fdt, chosen_node, "linux,ima-kexec-buffer");
-+	fdt_delprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER);
- 	if (ret)
- 		return;
- 
-@@ -134,7 +136,7 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
- 	if (ret)
- 		return ret;
- 
--	ret = fdt_setprop(fdt, chosen_node, "linux,ima-kexec-buffer", value,
-+	ret = fdt_setprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER, value,
- 			  entry_size);
- 	if (ret < 0)
- 		return -EINVAL;
+On 7/20/20 10:08 AM, Murali Karicheri wrote:
+> Grygorii,
+> 
+> On 7/17/20 1:39 PM, Grygorii Strashko wrote:
+>>
+>>
+>> On 17/07/2020 17:55, Murali Karicheri wrote:
+>>> For small Ethernet frames with size less than minimum size 66 for HSR
+>>> vs 60 for regular Ethernet frames, hsr driver currently doesn't pad the
+>>> frame to make it minimum size. This results in incorrect LSDU size being
+>>> populated in the HSR tag for these frames. Fix this by padding the frame
+>>> to the minimum size applicable for HSR.
+>>>
+>>> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+>>> ---
+>>>   no change from original version
+>>>   Sending this bug fix ahead of PRP patch series as per comment
+>>>   net/hsr/hsr_forward.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>>   Sending this bug fix ahead of PRP patch series as per comment
+>>> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+>>> index ed13760463de..e42fd356f073 100644
+>>> --- a/net/hsr/hsr_forward.c
+>>> +++ b/net/hsr/hsr_forward.c
+>>> @@ -127,6 +127,9 @@ static void hsr_fill_tag(struct sk_buff *skb, 
+>>> struct hsr_frame_info *frame,
+>>>       int lane_id;
+>>>       int lsdu_size;
+>>> +    /* pad to minimum packet size which is 60 + 6 (HSR tag) */
+>>> +    skb_put_padto(skb, ETH_ZLEN + HSR_HLEN);
+>>
+>> It may fail.
+>> And i worry that it might be not the right place to do that
+>> (if packet is small it will be called for every copy of the packet).
+>> May be it has to be done once when packet enters LRE device?
+>>
+> A better place may be to add it at the beginning of
+> hsr_fill_frame_info() at which point there is one copy and after that
+> code enters hsr_forward_do() to replicate. I don't think we can place it
+> anywhere before that code.
+> 
+> hsr_dev_xmit()
+>     - hsr_forward_skb()
+>        - hsr_fill_frame_info()
+> 
+> Inside hsr_fill_frame_info() we could do
+> 
+>      if (ethhdr->h_proto == htons(ETH_P_8021Q)) {
+>          frame->is_vlan = true;
+>          /* FIXME: */
+>          netdev_warn_once(skb->dev, "VLAN not yet supported");
+>      }
+> +    min_size = ETH_ZLEN + HSR_HLEN;
+> +       if (frame->is_vlan)
+> +        min_size += 4;
+> +    ret = skb_put_padto(skb, min_size))
+> +    if (ret)
+> +         return ret;
+> 
+> At this point, it will be ready to tag the frame. Frame will be either a
+> supervision frame which is already tagged or standard frame from upper
+> layer. Either case, padto() is required. So looks like the right place
+> to avoid doing it twice.
+> 
+> And packet would get dropped at the caller if skb_put_padto() fails. So
+> we could return the return value to the caller.
+> 
+> This also eliminates similar padto() call in 
+> send_hsr_supervision_frame() as well.
+> 
+> What do you think?
+
+Dave has already applied the patch. So I will send a follow up
+patch that fixes the original issue to check for the return type.
+
+The patch to optimize this at the correct location (second part
+of your concern) can be a separate patch that will send as a follow up
+to the PRP series as that code touches this as well. So better to
+optimize this after the PRP series IMO.
+
+I plan to fix similar issue in the PRP series as well ( not
+checking for return type) and re-spin. Don't want to delay merge
+of PRP series for this optimization that can be addressed
+separately as I have said.
+
+Murali
+> 
+> Murali
+>>> +
+>>>       if (port->type == HSR_PT_SLAVE_A)
+>>>           lane_id = 0;
+>>>       else
+>>>
+>>
+> 
+
 -- 
-2.25.1
-
+Murali Karicheri
+Texas Instruments
