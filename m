@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13EC2265ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE9C226465
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731200AbgGTP6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58898 "EHLO mail.kernel.org"
+        id S1729374AbgGTPol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:44:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732071AbgGTP6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:39 -0400
+        id S1729782AbgGTPof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:44:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BADF322BEF;
-        Mon, 20 Jul 2020 15:58:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74D1F22CB3;
+        Mon, 20 Jul 2020 15:44:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260719;
-        bh=DaD5F5TIAmMnZErr+q6tgTlPEviG7/zD+kAInAHuR0w=;
+        s=default; t=1595259874;
+        bh=rnB7oV8v4NfwAOxGZ3yJ0hQ68m7fINDU3JLiiRZH5vs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EsMPp9i1o/fZWIjgczVdYEheVv69vh93+YQBzI2GLAgttNxe7xETWsBb+4x8kEyf2
-         lFSwNTCfWzJTNng3jbL3UcDMstMWHxL2ZvX2xU9+Q7YLIxshM9oDsABP/2yJ37JJ+V
-         atBdS9Ya1Ag91YBuN5tgdL5A+VAZx9W0duIr1VCA=
+        b=1TVqKmBSD6scyqpmWEzxDV/hzAQCv/1xFVlEbD+48unX9qp9AKA6IevRGkvN9vMeG
+         Yn5/z98nmZBuUvfJj3hqL83JfliACd1SiXFpFbwXypuHE/5/PqZPsDgLWkzATfdaX2
+         g5ZEiMM1u3MDezj6JcUZnoHbbzlezIKlLt7AcPUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 063/215] Revert "usb/xhci-plat: Set PM runtime as active on resume"
-Date:   Mon, 20 Jul 2020 17:35:45 +0200
-Message-Id: <20200720152823.209141346@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 007/125] gpu: host1x: Detach driver on unregister
+Date:   Mon, 20 Jul 2020 17:35:46 +0200
+Message-Id: <20200720152803.298135404@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 57a1cd87efb9279ab58aae2e5c41920150e31873.
+From: Thierry Reding <treding@nvidia.com>
 
-Eugeniu Rosca writes:
+[ Upstream commit d9a0a05bf8c76e6dc79230669a8b5d685b168c30 ]
 
-On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
->After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
->Set PM runtime as active on resume") into downstream v4.14.x, we started
->to consistently experience below panic [1] on every second s2ram of
->R-Car H3 Salvator-X Renesas reference board.
->
->After some investigations, we concluded the following:
-> - the issue does not exist in vanilla v5.8-rc4+
-> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
->   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
->   link support"). Getting evidence for that is easy. Reverting
->   987351e1ea7772 in vanilla leads to a similar backtrace [2].
->
->Questions:
-> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
->   link support") to v4.14.187 looks challenging enough, so probably not
->   worth it. Anybody to contradict this?
-> - Assuming no plans to backport the missing mainline commit to v4.14.x,
->   should the following three v4.14.186 commits be reverted on v4.14.x?
->   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
->   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
->   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
+Currently when a host1x device driver is unregistered, it is not
+detached from the host1x controller, which means that the device
+will stay around and when the driver is registered again, it may
+bind to the old, stale device rather than the new one that was
+created from scratch upon driver registration. This in turn can
+cause various weird crashes within the driver core because it is
+confronted with a device that was already deleted.
 
+Fix this by detaching the driver from the host1x controller when
+it is unregistered. This ensures that the deleted device also is
+no longer present in the device list that drivers will bind to.
+
+Reported-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-plat.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/gpu/host1x/bus.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 60d06e9b600f8..52c625c023410 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -410,15 +410,7 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/gpu/host1x/bus.c b/drivers/gpu/host1x/bus.c
+index f9cde03030fd9..c2a9dcf6f4907 100644
+--- a/drivers/gpu/host1x/bus.c
++++ b/drivers/gpu/host1x/bus.c
+@@ -615,8 +615,17 @@ EXPORT_SYMBOL(host1x_driver_register_full);
+  */
+ void host1x_driver_unregister(struct host1x_driver *driver)
+ {
++	struct host1x *host1x;
++
+ 	driver_unregister(&driver->driver);
  
--	ret = xhci_resume(xhci, 0);
--	if (ret)
--		return ret;
--
--	pm_runtime_disable(dev);
--	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
--
--	return 0;
-+	return xhci_resume(xhci, 0);
- }
- 
- static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
++	mutex_lock(&devices_lock);
++
++	list_for_each_entry(host1x, &devices, list)
++		host1x_detach_driver(host1x, driver);
++
++	mutex_unlock(&devices_lock);
++
+ 	mutex_lock(&drivers_lock);
+ 	list_del_init(&driver->list);
+ 	mutex_unlock(&drivers_lock);
 -- 
 2.25.1
 
