@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E69225C4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE3F225C53
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgGTKBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:01:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727120AbgGTKBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:01:19 -0400
-Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.194.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FB1B21775;
-        Mon, 20 Jul 2020 10:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595239278;
-        bh=LVubc+F0JQI4FQaSy7JIShrF/KXQ3v3Jg/s4/IEFm8o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RfDRxT0LglMSisisyD29I5hbPDUDhHBF/mLSSNWuh950m1n7hZY6rKeN9DgcmxrDc
-         Bj/CQ3C67v6hzRfQw9ydcgEUF8s9MASPhnZEgtWzD1oFJiekLmyT5bE4cSu3+ZjYqB
-         W/r+tioH9xGDGzjD3QNFFnbEWExF27ijOziYLqaQ=
-Received: by wens.tw (Postfix, from userid 1000)
-        id 29FF95FC86; Mon, 20 Jul 2020 18:01:16 +0800 (CST)
-From:   Chen-Yu Tsai <wens@kernel.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH v2] regulator: gpio: Honor regulator-boot-on property
-Date:   Mon, 20 Jul 2020 18:01:13 +0800
-Message-Id: <20200720100113.6481-1-wens@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728250AbgGTKB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgGTKBz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 06:01:55 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F75C0619D4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:01:55 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id t11so8790818pfq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IBVdyP/pegZa7dgnXrwm5PyIQ+8xTCyFcnvPtdN5UVI=;
+        b=uEn13EOKkQKFmK34APcGHbkL6i0Bc78BZn67EQvfn41Fc9a/MMheX8xL7adrdOlRhe
+         hA2C2jqTAw/OZQy5HoNYNIepnDobJJplfM9mycMWrip+JIS2XLNFGzIzAkuRh7ZUhaG8
+         y3q1VEXw7Cn2jnWMWlkYLFIpb7vCyn0pJ33WI7EQYk3hsxdmVtgX94P5euF9A6tqDoUy
+         fwdDQqX4/TzfjC/i4+SRlySFWwVcW1jE+qt8KCTytCVjIiEMnvJzZtfSBYFKDvA8QMk1
+         h9tKOxaoLTZRumfefxVu+hY8zE/HdKWaHTcyuBxVMhuwcc6fx/+CCeheDEyf3gKcMOxQ
+         qvEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IBVdyP/pegZa7dgnXrwm5PyIQ+8xTCyFcnvPtdN5UVI=;
+        b=NVq2U/f9J86C4whjj10TkNCskVzMinsRIyEqQVDQFD8kHUAnCtkBE+4ZbPCsLlb7lw
+         u2XynLXNWVIQp3DVJt8eBFBylCVN0RAgEd5VqjNDJpDOv/LHAt/xsASk4mUlTM9cGTz0
+         Xmv4JdDQq2qbFfGFDgI7DmSlt/3N1+1vdSimQFdQYQ4Ne6jBWZ6QwzqUBe5fHVUMCEXk
+         YLK9w2OuhbHVaJQGZkM07wDapWdzhXatWY9ejQHiPFga5HM+xbi+A0Jzq/88NO6YjX4w
+         ++oCONcRFE8RpFzDuTSL+mVUjRtRhRSvAAwImky09y9kz1oAYmkADRpLMG9aRVAUDhD7
+         hfgA==
+X-Gm-Message-State: AOAM532oAy9pyoeOGYEcMoCMJtwfpdqcyyNrVmBRRIoBEVSKL/iSD/RR
+        T2na+cP9LGod4OSRXbDJe3xrsg==
+X-Google-Smtp-Source: ABdhPJzhEikt8tP6/CpS6b+B437wPhrsq9S5Jz+w2SuVdMMdAy5NITpEubsktWnoJlAezd0lmVwv8A==
+X-Received: by 2002:a62:cd89:: with SMTP id o131mr18638388pfg.195.1595239314908;
+        Mon, 20 Jul 2020 03:01:54 -0700 (PDT)
+Received: from localhost ([223.179.133.67])
+        by smtp.gmail.com with ESMTPSA id g8sm14821824pgr.70.2020.07.20.03.01.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Jul 2020 03:01:53 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 15:31:31 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
+        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
+        Jonathan <jonathan@marek.ca>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
+Message-ID: <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu>
+References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
+ <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
+User-Agent: NeoMutt/20170609 (1.8.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+On 15-07-20, 08:36, Rob Clark wrote:
+> I can take the first two into msm-next, the 3rd will need to wait
+> until dev_pm_opp_set_bw() lands
 
-When requesting the enable GPIO, the driver should do so with the
-correct output level matching some expected state. This is especially
-important if the regulator is a critical one, such as a supply for
-the boot CPU. This is currently done by checking for the enable-at-boot
-property, but this is not documented in the device tree binding, nor
-does it match the common regulator properties.
+You can base that on a8351c12c6c7 in linux-next, I will make sure not to rebase
+it anymore.
 
-Honor the common regulator-boot-on property by checking the boot_on
-constraint setting within the DT probe path. This is the same as what
-is done in the fixed regulator driver.
-
-Also drop support for the undocumented enable-at-boot property. This
-property was not documented in the original commit introducing DT
-support, nor is it now, and there are no in-tree device trees that use
-this property.
-
-Fixes: 006694d099e8 ("regulator: gpio-regulator: Allow use of GPIO controlled regulators though DT")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
----
- drivers/regulator/gpio-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/regulator/gpio-regulator.c b/drivers/regulator/gpio-regulator.c
-index 110ee6fe76c4..5646b7a26288 100644
---- a/drivers/regulator/gpio-regulator.c
-+++ b/drivers/regulator/gpio-regulator.c
-@@ -148,7 +148,7 @@ of_get_gpio_regulator_config(struct device *dev, struct device_node *np,
- 
- 	config->supply_name = config->init_data->constraints.name;
- 
--	if (of_property_read_bool(np, "enable-at-boot"))
-+	if (config->init_data->constraints.boot_on)
- 		config->enabled_at_boot = true;
- 
- 	of_property_read_u32(np, "startup-delay-us", &config->startup_delay);
 -- 
-2.27.0
-
+viresh
