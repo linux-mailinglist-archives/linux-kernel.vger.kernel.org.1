@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30FF225B97
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E460C225B9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgGTJ0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S1728051AbgGTJ1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728321AbgGTJ0B (ORCPT
+        with ESMTP id S1727769AbgGTJ1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:26:01 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FEFC061794;
-        Mon, 20 Jul 2020 02:26:01 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id d16so12230659edz.12;
-        Mon, 20 Jul 2020 02:26:01 -0700 (PDT)
+        Mon, 20 Jul 2020 05:27:42 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BABFC061794;
+        Mon, 20 Jul 2020 02:27:42 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id ga4so17292191ejb.11;
+        Mon, 20 Jul 2020 02:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CiLttDBw7yOBmSO3iZK+sga3eBgEOoGVcIYrCjxc/YE=;
-        b=NAXXdHCpbKeZWffm7h6Q9EzaAYdJ4rr5s5qJ7Awj8r7YID3I6nc22/CBjjVnoYiUmy
-         EQh9VQWbtomDr/ogMBDFJEA8R+gkxI4f1gPLEY8drpPXQgODbtb1rN4qdN2pudpV/3Kj
-         mosD0Y/tMqtCKUJKpCkTMUIA3n6ggLv8Snd9lr2RbRiN4qJOl+Kq8WlDsTOHRSOkF+sB
-         cbYIJZENLpdPnrv3Zs9b7jCmuoW55YCuTWLju4TY1HMTEMuyy5ehrz1a2Pbv+bcpMGjx
-         esoVktDBwEhZh8FCJlOhKxXmMRGu+NMHXyy9LtqQb4trgdWcHyVyPhlPA2c3fkyEx2tw
-         2V1Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i2oJzehZb8OInu2docosJSP0SU12+CFSPAkmMBNpOsA=;
+        b=sjpOSPXSl4bzZSUip1JJKRH6wjLEc6y6wTdpLgdOUYoOVTw9J/QeSW/DChRIrpNJam
+         VLkvCDhOHBUTpvpX+whQNiXXO3U/5pb/FzFY+yG48cXjw+aWI+UgoVbDnI/vtnAuyelD
+         jPHtRKIAzPj/qYvKggd8FI93EQKQFvKSMa0UTIxo7A38JEPEDsfjQA4MV8pVzw1++aSL
+         zmViUplQkVmBSLyZyd1/ck7Ouz/wqr5peAp18XDAavNSb3GqTBDCiz5qljmYwi76l5eX
+         G8aPD/w//2aXt74/0neYP/6YGvg09NoFGZt0bGt5s8UibQaovAyQOjS6J56ORwrVkwOK
+         4bKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CiLttDBw7yOBmSO3iZK+sga3eBgEOoGVcIYrCjxc/YE=;
-        b=eZbgxXkp8Tu8uU/zSRJTpCRw/unI18p8gy+S+UR6ss1x9/JzzatX4YkhbD+boz1BxA
-         b/av50g1jR8W1WYTLOQHuSi61Cg3kBgFmzvWFmtLffzuNy+0UpVFUyFPuKKdlj3S+M8U
-         S989VRPMgFU2WHjlVurd4Udum0+H4/Kj7ei+k/OJ+/NMuYdtlw+aO91bvCJyrfLVGZJl
-         bywDZy4esV1ssKs1/XwhuN5ndsOylVZ8mqVQz794CZ5HV1i4It640OyxCHCbYpE5voFt
-         oNSPluwkapY+VDfOFAXvMaB56ye+xRzFgC6zWsc8rjKj4B5piJ/f9fkaSHkc8May4zAP
-         W6WQ==
-X-Gm-Message-State: AOAM531yMFiEXrGxCSfrIF2PZqcR45fGCrDFZmquSxZxmXukhfpr8+hT
-        ESIRG38fBaceGEiSHpe/B+s=
-X-Google-Smtp-Source: ABdhPJzXt9R4tT48JqmdVSedCQBJigP8+gs00JQAmUN1UUFQasyJneEZ1Jy2WKkykbwmoPDITj+jrw==
-X-Received: by 2002:aa7:d848:: with SMTP id f8mr20354162eds.329.1595237159980;
-        Mon, 20 Jul 2020 02:25:59 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id z22sm15246250edx.72.2020.07.20.02.25.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 02:25:58 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 11:25:56 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rajesh Gumasta <rgumasta@nvidia.com>
-Cc:     ldewangan@nvidia.com, jonathanh@nvidia.com, vkoul@kernel.org,
-        dan.j.williams@intel.com, p.zabel@pengutronix.de,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kyarlagadda@nvidia.com
-Subject: Re: [Patch v1 0/4] Add Nvidia Tegra GPC-DMA driver
-Message-ID: <20200720092556.GA2141917@ulmo>
-References: <1595226856-19241-1-git-send-email-rgumasta@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2oJzehZb8OInu2docosJSP0SU12+CFSPAkmMBNpOsA=;
+        b=bPMT9sh9AKGhxk6OxOynGPF87SHEK9GyxJc5AWxEdgXwvTdYKRaO2IEyirY5AMqwy/
+         alzAMB/N0euvQhOV705rGhECPYZQ8qUtZZ7ZQpRaRffSlLTwhVngYEfl5Zc4yeMSfmBw
+         LAoW6w2uDHFfXTEaE4NdbTmDmvSayMpfmwxvJwseaH32T6VeILFqkduKYhMuODkXxIeP
+         Z7NRWY98sO9v5+DjyYv/2HL3SktJ6l3rMgm0XOZ82Bag3Cml7VS5IYTOXnW93Ic6p6r/
+         SPqfy4/Bih8Ttz9xrzhZl2sEMPTTiFmqzf7NstN1VPJqe3O48HDK1DrPciBkYqCoH5le
+         BCyw==
+X-Gm-Message-State: AOAM5321Yi8o03xFlCguVmtwlg1Yo/askkiLpD+zRCJbECiLpuG5x1g9
+        w0a6MEjWmxbW23VTqX9tapbfFsqaSYZUQ8ue3VU=
+X-Google-Smtp-Source: ABdhPJyQHHakoLdELgPvkwJTPziVgkhT8/+bkeNWSKGuEAZEoPVZam3reeNo7zKlDysNI061zW+zgDRMoXPZab8/IOI=
+X-Received: by 2002:a17:906:6847:: with SMTP id a7mr19449731ejs.306.1595237260974;
+ Mon, 20 Jul 2020 02:27:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
-Content-Disposition: inline
-In-Reply-To: <1595226856-19241-1-git-send-email-rgumasta@nvidia.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+References: <cover.1594708863.git.frank@allwinnertech.com> <b8761e036b25f20873534e5f8d10b37b5d2ce72c.1594708864.git.frank@allwinnertech.com>
+ <4771acd6-ecd3-b8e1-8605-75d78720b1d3@linaro.org> <CAEExFWv9_1kec_b+t+nnvT3cziXzmVa8GzJT3pQAZiCf4KA0ig@mail.gmail.com>
+ <836e1b23-1c75-57fe-6e45-f7141272071c@linaro.org>
+In-Reply-To: <836e1b23-1c75-57fe-6e45-f7141272071c@linaro.org>
+From:   Frank Lee <tiny.windzz@gmail.com>
+Date:   Mon, 20 Jul 2020 17:27:29 +0800
+Message-ID: <CAEExFWsJBizFArd+9Mh6D=o6rvD7GLPZ-1pNFzTvBiE+uKwVhQ@mail.gmail.com>
+Subject: Re: [PATCH v4 08/16] thermal: sun8i: add TEMP_CALIB_MASK for
+ calibration data in sun50i_h6_ths_calibrate
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Frank Lee <frank@allwinnertech.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?6buE54OB55Sf?= <huangshuosheng@allwinnertech.com>,
+        liyong@allwinnertech.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HI,
+On Fri, Jul 17, 2020 at 3:56 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 17/07/2020 09:35, Frank Lee wrote:
+> > On Fri, Jul 17, 2020 at 12:26 PM Daniel Lezcano
+> > <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 14/07/2020 09:13, Frank Lee wrote:
+> >>> From: Yangtao Li <frank@allwinnertech.com>
+> >>>
+> >>> For sun50i_h6_ths_calibrate(), the data read from nvmem needs a round of
+> >>> calculation. On the other hand, the newer SOC may store other data in
+> >>> the space other than 12bit sensor data. Add mask operation to read data
+> >>> to avoid conversion error.
+> >>>
+> >>> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> >>> Reviewed-by: Yangtao Li <tiny.windzz@gmail.com>
+> >>
+> >> Can you clarify these SoB ?
+> >
+> > Previously I used 'Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>',
+> > maybe this should be removed directly?
+> >
+> >>
+> >> Frank Lee==Yangtao Li==frank@allwinnertech.com==tiny.windzz@gmail.com ?
+> >>
+> >
+> > Yeah.
+>
+> You are not supposed to add reviewed-by yourself. Please remove it.
 
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Should I resend the entire series or just the thermal patch?
+What about those that have been applied.
 
-On Mon, Jul 20, 2020 at 12:04:12PM +0530, Rajesh Gumasta wrote:
-> Add support for Nvida Tegra general purpose DMA driver for
-> Tegra186 and Tegra194 platform.
->=20
-> Patch 1: Add dt-binding document for Tegra GPCDMA driver
-> Patch 2: Add Tegra GPCDMA driver
-> Patch 3: Enable Tegra GPCDMA as module
-> Patch 4: Add GPCDMA DT node for Tegra186 and Tegra194
->=20
-> Rajesh Gumasta (4):
->   dt-bindings: dma: Add DT binding document
->   dma: tegra: Adding Tegra GPC DMA controller driver
->   arm64: configs: enable tegra gpc dma
->   arm64: tegra: Add GPCDMA node in dt
->=20
->  .../bindings/dma/nvidia,tegra-gpc-dma.yaml         |   99 ++
->  arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi     |    4 +
->  arch/arm64/boot/dts/nvidia/tegra186.dtsi           |   46 +
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi           |   44 +
->  arch/arm64/configs/defconfig                       |    1 +
->  drivers/dma/Kconfig                                |   12 +
->  drivers/dma/Makefile                               |    1 +
->  drivers/dma/tegra-gpc-dma.c                        | 1512 ++++++++++++++=
-++++++
->  8 files changed, 1719 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra-gp=
-c-dma.yaml
->  create mode 100644 drivers/dma/tegra-gpc-dma.c
-
-Hi Rajesh,
-
-can you provide instructions on how to test that this driver does what
-it's supposed to? I could probably figure out how to run this with the
-kernel's built-in dmatest module, but if you could provide a set of
-parameters that you've used or other instructions on how to validate
-this it would greatly help.
-
-Thanks,
-Thierry
-
->=20
-> --=20
-> 2.7.4
->=20
-
---xHFwDpU9dbj6ez1V
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8VYxcACgkQ3SOs138+
-s6HStBAAl7MTbsKWtMWdKW2SWSsxw6tyr1UuYJ1uhnbPdtFnBsmk41jHmQ28PUCC
-qaA5Vqrge9tK4CMvblYQWyZ0hCfa/19A0fq4S9naRX0JlyQuNgZlnBfTWdBdVof+
-kVTiTgJFmZ750fGEXR37aA3un0nXPrpai/Xn6ILBXxx0pyb6H1b5NaKbRAVys5lR
-9BwP72HAgbs9yAQmc3oo1Id0Uh2FJdUoLk2ZldVIbWcTLBzefGZxNQOaZyMQuE3d
-7yyzgQA6278biQhQjwKYfp6zdmEXl61BJKl8Jf5L99vgCLPvIw2+cLtlhGLX6svm
-kgICSknw1s+M7/f5Nh+6LqhgOVv/rMrMcSMwMGrLtaSIBLOHwGnmH/7/JFjGBEL6
-jZ91eo2XVZbRkNv73fp1xkbI6BKfgaFdZcLcjZPYIss3ZBfXCUiyAHPlE2B819cB
-fnDg1n71Vo99WKdt4OA79bE8TEIsAhnl3Kgl2KHzZaETmbKMblbZms7BguvcQbp9
-r3XNu0ZjNdRtMNm63wuHpKq8KsWgVGp5AMJnmygSQya6RmxtBbmVc5STVoDawQGu
-ffYfHXg8oBULPkqfSnIU4kUgi222MJ9SgtW9Rz5gGdtzafBWuzZyl+ivl/Y+/cYa
-QDLODVGYrtGhhmhIYeAfswQ0gx7U7yUrn8OZMqzIb3fkYCELC14=
-=sOy/
------END PGP SIGNATURE-----
-
---xHFwDpU9dbj6ez1V--
+Thx,
+Yangtao
