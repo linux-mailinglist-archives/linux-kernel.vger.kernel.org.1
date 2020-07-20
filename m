@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9028F226B1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A650B226B1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731702AbgGTQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1731485AbgGTQjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:39:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730061AbgGTPtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:49:19 -0400
+        id S1731018AbgGTPt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:49:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC11622D0A;
-        Mon, 20 Jul 2020 15:49:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBF8A2064B;
+        Mon, 20 Jul 2020 15:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260158;
-        bh=GpWsUwAiIxAmSdNkfAV+/g4Oc5D3gZ30oJese6yzi6A=;
+        s=default; t=1595260166;
+        bh=W62ia5m/lLG3h2WMA0WMI8k8XLQQOyoychS7NhLSahU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p4QtA7P8pFnEpHxmH/fbUs30Ds3XMTS6QWXAwwfc2YJ/Vm6yiZ0JUakSU3+4L0xuS
-         QRPHuo796DUSydjI19h4VOuUOvvRWPf7fOHfE3nRxbYfj8bC1K9yK15L9Ph2ahX1mw
-         zosflom/0NK9mF/25cFxj8KFQRCWDjwpanvCPB+g=
+        b=db3kCuPU61BoUfO4PjG/uVRVZVvAGM0owW1spyykBt4n/HSML86h0rVtGx2auKD1H
+         A1AZEK7s59EMRM8hEgk8Wew9jOQZoL6Rh3K16SI0r5DZWfyMpWHg7do4AU3r0Q7Buk
+         GkvWV6Qix9KBDlZLQc8zsPwYKSsH7T7QlSFrggjk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finley Xiao <finley.xiao@rock-chips.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 4.14 120/125] thermal/drivers/cpufreq_cooling: Fix wrong frequency converted from power
-Date:   Mon, 20 Jul 2020 17:37:39 +0200
-Message-Id: <20200720152808.841224489@linuxfoundation.org>
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        Samuel Mendoza-Jonas <samjonas@amazon.com>,
+        Frank van der Linden <fllinden@amazon.com>
+Subject: [PATCH 4.14 123/125] x86/cpu: Move x86_cache_bits settings
+Date:   Mon, 20 Jul 2020 17:37:42 +0200
+Message-Id: <20200720152809.008857024@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
 References: <20200720152802.929969555@linuxfoundation.org>
@@ -45,53 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finley Xiao <finley.xiao@rock-chips.com>
+From: Suraj Jitindar Singh <surajjs@amazon.com>
 
-commit 371a3bc79c11b707d7a1b7a2c938dc3cc042fffb upstream.
+This patch is to fix the backport of the upstream patch:
+cc51e5428ea5 x86/speculation/l1tf: Increase l1tf memory limit for Nehalem+
 
-The function cpu_power_to_freq is used to find a frequency and set the
-cooling device to consume at most the power to be converted. For example,
-if the power to be converted is 80mW, and the em table is as follow.
-struct em_cap_state table[] = {
-	/* KHz     mW */
-	{ 1008000, 36, 0 },
-	{ 1200000, 49, 0 },
-	{ 1296000, 59, 0 },
-	{ 1416000, 72, 0 },
-	{ 1512000, 86, 0 },
-};
-The target frequency should be 1416000KHz, not 1512000KHz.
+When this was backported to the 4.9 and 4.14 stable branches the line
++       c->x86_cache_bits = c->x86_phys_bits;
+was applied in the wrong place, being added to the
+identify_cpu_without_cpuid() function instead of the get_cpu_cap()
+function which it was correctly applied to in the 4.4 backport.
 
-Fixes: 349d39dc5739 ("thermal: cpu_cooling: merge frequency and power tables")
-Cc: <stable@vger.kernel.org> # v4.13+
-Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200619090825.32747-1-finley.xiao@rock-chips.com
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+This means that x86_cache_bits is not set correctly resulting in the
+following warning due to the cache bits being left uninitalised (zero).
+
+ WARNING: CPU: 0 PID: 7566 at arch/x86/kvm/mmu.c:284 kvm_mmu_set_mmio_spte_mask+0x4e/0x60 [kvm
+ Modules linked in: kvm_intel(+) kvm irqbypass ipv6 crc_ccitt binfmt_misc evdev lpc_ich mfd_core ioatdma pcc_cpufreq dca ena acpi_power_meter hwmon acpi_pad button ext4 crc16 mbcache jbd2 fscrypto nvme nvme_core dm_mirror dm_region_hash dm_log dm_mod dax
+ Hardware name: Amazon EC2 i3.metal/Not Specified, BIOS 1.0 10/16/2017
+ task: ffff88ff77704c00 task.stack: ffffc9000edac000
+ RIP: 0010:kvm_mmu_set_mmio_spte_mask+0x4e/0x60 [kvm
+ RSP: 0018:ffffc9000edafc60 EFLAGS: 00010206
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000ffffff45
+ RDX: 000000000000002e RSI: 0008000000000001 RDI: 0008000000000001
+ RBP: ffffffffa036f000 R08: ffffffffffffff80 R09: ffffe8ffffccb3c0
+ R10: 0000000000000038 R11: 0000000000000000 R12: 0000000000005b80
+ R13: ffffffffa0370e40 R14: 0000000000000001 R15: ffff88bf7c0927e0
+ FS:  00007fa316f24740(0000) GS:ffff88bf7f600000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007fa316ea0000 CR3: 0000003f7e986004 CR4: 00000000003606f0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  kvm_mmu_module_init+0x166/0x230 [kvm
+  kvm_arch_init+0x5d/0x150 [kvm
+  kvm_init+0x1c/0x2d0 [kvm
+  ? hardware_setup+0x4a6/0x4a6 [kvm_intel
+  vmx_init+0x23/0x6aa [kvm_intel
+  ? hardware_setup+0x4a6/0x4a6 [kvm_intel
+  do_one_initcall+0x3e/0x15d
+  do_init_module+0x5b/0x1e5
+  load_module+0x19e6/0x1dc0
+  ? SYSC_init_module+0x13b/0x170
+  SYSC_init_module+0x13b/0x170
+  do_syscall_64+0x67/0x110
+  entry_SYSCALL_64_after_hwframe+0x41/0xa6
+ RIP: 0033:0x7fa316828f3a
+ RSP: 002b:00007ffc9d65c1f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000af
+ RAX: ffffffffffffffda RBX: 00007fa316b08849 RCX: 00007fa316828f3a
+ RDX: 00007fa316b08849 RSI: 0000000000071328 RDI: 00007fa316e37000
+ RBP: 0000000000b47e80 R08: 0000000000000003 R09: 0000000000000000
+ R10: 00007fa316822dba R11: 0000000000000246 R12: 0000000000b46340
+ R13: 0000000000b464c0 R14: 0000000000000000 R15: 0000000000040000
+ Code: e9 65 06 00 75 25 48 b8 00 00 00 00 00 00 00 40 48 09 c6 48 09 c7 48 89 35 f8 65 06 00 48 89 3d f9 65 06 00 c3 0f 0b 0f 0b eb d2 <0f> 0b eb d7 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44
+
+Fixes: 4.9.x  ef3d45c95764 x86/speculation/l1tf: Increase l1tf memory limit for Nehalem+
+Fixes: 4.14.x ec4034835eaf x86/speculation/l1tf: Increase l1tf memory limit for Nehalem+
+Cc: stable@vger.kernel.org # 4.9.x-4.14.x
+Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+Reviewed-by: Samuel Mendoza-Jonas <samjonas@amazon.com>
+Reviewed-by: Frank van der Linden <fllinden@amazon.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/thermal/cpu_cooling.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kernel/cpu/common.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/thermal/cpu_cooling.c
-+++ b/drivers/thermal/cpu_cooling.c
-@@ -280,11 +280,11 @@ static u32 cpu_power_to_freq(struct cpuf
- 	int i;
- 	struct freq_table *freq_table = cpufreq_cdev->freq_table;
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -854,6 +854,7 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+ 	else if (cpu_has(c, X86_FEATURE_PAE) || cpu_has(c, X86_FEATURE_PSE36))
+ 		c->x86_phys_bits = 36;
+ #endif
++	c->x86_cache_bits = c->x86_phys_bits;
  
--	for (i = 1; i <= cpufreq_cdev->max_level; i++)
--		if (power > freq_table[i].power)
-+	for (i = 0; i < cpufreq_cdev->max_level; i++)
-+		if (power >= freq_table[i].power)
- 			break;
- 
--	return freq_table[i - 1].frequency;
-+	return freq_table[i].frequency;
+ 	if (c->extended_cpuid_level >= 0x8000000a)
+ 		c->x86_capability[CPUID_8000_000A_EDX] = cpuid_edx(0x8000000a);
+@@ -894,7 +895,6 @@ static void identify_cpu_without_cpuid(s
+ 			}
+ 		}
+ #endif
+-	c->x86_cache_bits = c->x86_phys_bits;
  }
  
- /**
+ #define NO_SPECULATION		BIT(0)
 
 
