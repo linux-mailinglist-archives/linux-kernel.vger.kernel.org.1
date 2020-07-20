@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EBF2263B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA510226423
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgGTPjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58750 "EHLO mail.kernel.org"
+        id S1730067AbgGTPmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:42:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729541AbgGTPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:37 -0400
+        id S1730054AbgGTPmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:42:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B16D022CB2;
-        Mon, 20 Jul 2020 15:39:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E82E82065E;
+        Mon, 20 Jul 2020 15:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259576;
-        bh=4LYVKqyKN9xV8M9TBHUesmBHO5eygQaHSnBzaG4HhQA=;
+        s=default; t=1595259739;
+        bh=KVERyIVniKZI9PZuy0pPdXHajTF/Ms0p1vqQa5OrA10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AUi/DP00Ksp0MFTxjPRPw/0WNRIMClirTpdywylbrYU7sm8NtJeK5HnEjCDqhag2L
-         0brVbmV+9BWrdeYOdHDPLD+LKAV2JZ/sZzbQAwvKfb/uCGGgCQhw5TYURGXOsxkRfm
-         qcRbtsH0dCzmMgyWZIe2PAM7foMzhRO1myaCdDWA=
+        b=XASPxTJFIM5gEU7U/StW5RIi0W1AZwR64eSqecEv/qRusFpaDJPmZuE6GQQkY8May
+         NTdCC4gTorGoFXk+GBrUsyt2p973/etDD4ojGpaMs2xdmcN5q4UTQTmgR6/HPwLEFC
+         1KbJ6jkpRmc2iaSDK1AmQbPyeAtxKjWM3mSd1j+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+0f4ecfe6a2c322c81728@syzkaller.appspotmail.com,
-        syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com,
+        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 40/58] ALSA: usb-audio: Fix race against the error recovery URB submission
-Date:   Mon, 20 Jul 2020 17:36:56 +0200
-Message-Id: <20200720152749.218145840@linuxfoundation.org>
+Subject: [PATCH 4.9 61/86] usb: core: Add a helper function to check the validity of EP type in URB
+Date:   Mon, 20 Jul 2020 17:36:57 +0200
+Message-Id: <20200720152756.241710263@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,88 +45,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit 9b7e5208a941e2e491a83eb5fa83d889e888fa2f upstream.
+commit e901b9873876ca30a09253731bd3a6b00c44b5b0 upstream.
 
-USB MIDI driver has an error recovery mechanism to resubmit the URB in
-the delayed timer handler, and this may race with the standard start /
-stop operations.  Although both start and stop operations themselves
-don't race with each other due to the umidi->mutex protection, but
-this isn't applied to the timer handler.
+This patch adds a new helper function to perform a sanity check of the
+given URB to see whether it contains a valid endpoint.  It's a light-
+weight version of what usb_submit_urb() does, but without the kernel
+warning followed by the stack trace, just returns an error code.
 
-For fixing this potential race, the following changes are applied:
+Especially for a driver that doesn't parse the descriptor but fills
+the URB with the fixed endpoint (e.g. some quirks for non-compliant
+devices), this kind of check is preferable at the probe phase before
+actually submitting the urb.
 
-- Since the timer handler can't use the mutex, we apply the
-  umidi->disc_lock protection at each input stream URB submission;
-  this also needs to change the GFP flag to GFP_ATOMIC
-- Add a check of the URB refcount and skip if already submitted
-- Move the timer cancel call at disconnection to the beginning of the
-  procedure; this assures the in-flight timer handler is gone properly
-  before killing all pending URBs
-
-Reported-by: syzbot+0f4ecfe6a2c322c81728@syzkaller.appspotmail.com
-Reported-by: syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200710160656.16819-1-tiwai@suse.de
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/midi.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/usb/core/urb.c |   30 ++++++++++++++++++++++++++----
+ include/linux/usb.h    |    2 ++
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1475,6 +1475,8 @@ void snd_usbmidi_disconnect(struct list_
- 	spin_unlock_irq(&umidi->disc_lock);
- 	up_write(&umidi->disc_rwsem);
+--- a/drivers/usb/core/urb.c
++++ b/drivers/usb/core/urb.c
+@@ -183,6 +183,31 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
  
-+	del_timer_sync(&umidi->error_timer);
+ /*-------------------------------------------------------------------*/
+ 
++static const int pipetypes[4] = {
++	PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
++};
 +
- 	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
- 		struct snd_usb_midi_endpoint *ep = &umidi->endpoints[i];
- 		if (ep->out)
-@@ -1501,7 +1503,6 @@ void snd_usbmidi_disconnect(struct list_
- 			ep->in = NULL;
- 		}
- 	}
--	del_timer_sync(&umidi->error_timer);
- }
- EXPORT_SYMBOL(snd_usbmidi_disconnect);
- 
-@@ -2258,16 +2259,22 @@ void snd_usbmidi_input_stop(struct list_
- }
- EXPORT_SYMBOL(snd_usbmidi_input_stop);
- 
--static void snd_usbmidi_input_start_ep(struct snd_usb_midi_in_endpoint *ep)
-+static void snd_usbmidi_input_start_ep(struct snd_usb_midi *umidi,
-+				       struct snd_usb_midi_in_endpoint *ep)
++/**
++ * usb_urb_ep_type_check - sanity check of endpoint in the given urb
++ * @urb: urb to be checked
++ *
++ * This performs a light-weight sanity check for the endpoint in the
++ * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
++ * a negative error code.
++ */
++int usb_urb_ep_type_check(const struct urb *urb)
++{
++	const struct usb_host_endpoint *ep;
++
++	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
++	if (!ep)
++		return -EINVAL;
++	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
++		return -EINVAL;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
++
+ /**
+  * usb_submit_urb - issue an asynchronous transfer request for an endpoint
+  * @urb: pointer to the urb describing the request
+@@ -322,9 +347,6 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
+  */
+ int usb_submit_urb(struct urb *urb, gfp_t mem_flags)
  {
- 	unsigned int i;
-+	unsigned long flags;
+-	static int			pipetypes[4] = {
+-		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
+-	};
+ 	int				xfertype, max;
+ 	struct usb_device		*dev;
+ 	struct usb_host_endpoint	*ep;
+@@ -443,7 +465,7 @@ int usb_submit_urb(struct urb *urb, gfp_
+ 	 */
  
- 	if (!ep)
- 		return;
- 	for (i = 0; i < INPUT_URBS; ++i) {
- 		struct urb *urb = ep->urbs[i];
--		urb->dev = ep->umidi->dev;
--		snd_usbmidi_submit_urb(urb, GFP_KERNEL);
-+		spin_lock_irqsave(&umidi->disc_lock, flags);
-+		if (!atomic_read(&urb->use_count)) {
-+			urb->dev = ep->umidi->dev;
-+			snd_usbmidi_submit_urb(urb, GFP_ATOMIC);
-+		}
-+		spin_unlock_irqrestore(&umidi->disc_lock, flags);
- 	}
+ 	/* Check that the pipe's type matches the endpoint's type */
+-	if (usb_pipetype(urb->pipe) != pipetypes[xfertype])
++	if (usb_urb_ep_type_check(urb))
+ 		dev_WARN(&dev->dev, "BOGUS urb xfer, pipe %x != type %x\n",
+ 			usb_pipetype(urb->pipe), pipetypes[xfertype]);
+ 
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1655,6 +1655,8 @@ static inline int usb_urb_dir_out(struct
+ 	return (urb->transfer_flags & URB_DIR_MASK) == URB_DIR_OUT;
  }
  
-@@ -2283,7 +2290,7 @@ void snd_usbmidi_input_start(struct list
- 	if (umidi->input_running || !umidi->opened[1])
- 		return;
- 	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i)
--		snd_usbmidi_input_start_ep(umidi->endpoints[i].in);
-+		snd_usbmidi_input_start_ep(umidi, umidi->endpoints[i].in);
- 	umidi->input_running = 1;
- }
- EXPORT_SYMBOL(snd_usbmidi_input_start);
++int usb_urb_ep_type_check(const struct urb *urb);
++
+ void *usb_alloc_coherent(struct usb_device *dev, size_t size,
+ 	gfp_t mem_flags, dma_addr_t *dma);
+ void usb_free_coherent(struct usb_device *dev, size_t size,
 
 
