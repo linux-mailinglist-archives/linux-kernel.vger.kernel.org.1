@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE7A22643C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA3F2264B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgGTPnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:43:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36554 "EHLO mail.kernel.org"
+        id S1730359AbgGTPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:47:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730222AbgGTPnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:43:15 -0400
+        id S1730738AbgGTPrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:47:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF78120773;
-        Mon, 20 Jul 2020 15:43:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2624C22BF3;
+        Mon, 20 Jul 2020 15:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259795;
-        bh=CysoPQXyyeinrWy/LrdwTgb8/9D4sNEHlCT6YBq27Io=;
+        s=default; t=1595260033;
+        bh=OoESAnnsNphandLeCs8CakH27dQGYZJjXEuVriqzIbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Blm7qv2U3CTz5Qcw1xLYfgwQaLkHvC/WwyCiuyB7yHIBFXXMlBx1oEaFTTMoRutZi
-         0yKpDC7Jllb9RJJfm9jvba6ca5MhbnT7FnPFOS4sAgKl85wfZQxxSYxiknF54CnlLF
-         oCOPF69mPgOZjvwAQ2ilKgyUcGYqILr1M51Ma/as=
+        b=otAkzqO5f8ZonqpyuJ0rxYRaOHDVW9nRn5pdgU0Shl1x308uEtY62wrKd76g6NzEi
+         ru5dOCAOBpY3M1RVWbxTLBx80OQuzpaVKyjJQn4Xnbx+CMvlCF7D45c9YTNB5AGkJA
+         Rob8jM2EEGmCb4+27hiHqp5eusRWjPijhfXJ7RfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Mori Hess <fmh6jj@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Doug Anderson <dianders@chromium.org>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.9 65/86] usb: dwc2: Fix shutdown callback in platform
+        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 082/125] arm64: dts: meson: add missing gxl rng clock
 Date:   Mon, 20 Jul 2020 17:37:01 +0200
-Message-Id: <20200720152756.440677520@linuxfoundation.org>
+Message-Id: <20200720152806.979464857@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-commit 4fdf228cdf6925af45a2066d403821e0977bfddb upstream.
+[ Upstream commit 95ca6f06dd4827ff63be5154120c7a8511cd9a41 ]
 
-To avoid lot of interrupts from dwc2 core, which can be asserted in
-specific conditions need to disable interrupts on HW level instead of
-disable IRQs on Kernel level, because of IRQ can be shared between
-drivers.
+The peripheral clock of the RNG is missing for gxl while it is present
+for gxbb.
 
-Cc: stable@vger.kernel.org
-Fixes: a40a00318c7fc ("usb: dwc2: add shutdown callback to platform variant")
-Tested-by: Frank Mori Hess <fmh6jj@gmail.com>
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
-Reviewed-by: Doug Anderson <dianders@chromium.org>
-Reviewed-by: Frank Mori Hess <fmh6jj@gmail.com>
-Signed-off-by: Minas Harutyunyan <hminas@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1b3f6d148692 ("ARM64: dts: meson-gx: add clock CLKID_RNG0 to hwrng node")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/20200617125346.1163527-1-jbrunet@baylibre.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/platform.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/amlogic/meson-gxl.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -507,7 +507,8 @@ static void dwc2_driver_shutdown(struct
- {
- 	struct dwc2_hsotg *hsotg = platform_get_drvdata(dev);
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+index 3c30579449608..3ee6c4bae08f6 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+@@ -245,6 +245,11 @@ clkc: clock-controller@0 {
+ 	};
+ };
  
--	disable_irq(hsotg->irq);
-+	dwc2_disable_global_interrupts(hsotg);
-+	synchronize_irq(hsotg->irq);
- }
- 
- static const struct of_device_id dwc2_of_match_table[] = {
++&hwrng {
++	clocks = <&clkc CLKID_RNG0>;
++	clock-names = "core";
++};
++
+ &i2c_A {
+ 	clocks = <&clkc CLKID_I2C>;
+ };
+-- 
+2.25.1
+
 
 
