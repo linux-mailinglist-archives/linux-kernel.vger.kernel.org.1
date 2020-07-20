@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC2F2265C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3C02265CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731637AbgGTP5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731582AbgGTP5A (ORCPT
+        id S1731426AbgGTP5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:57:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58982 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731879AbgGTP5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0330C061794;
-        Mon, 20 Jul 2020 08:56:59 -0700 (PDT)
+        Mon, 20 Jul 2020 11:57:15 -0400
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260618;
+        s=2020; t=1595260632;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uclKhm3C3HWRsWu3kv+xtaxPcHBGBDKRm9M/IiUD/fg=;
-        b=v1TCrN7a6i4F79ocfMgeLLNWWn5H2ouDIUUyWyMVYnZYY8GvS7F7f7uGgAa5V45kS4yeUl
-        /a48BhDUtDvVOM6456JHge7Lw3Db6HZhoCmFtYeQv9g/wrRV187NQngN35/XP2K/MM2Y66
-        2Nml72hcndYDeyoTlkuus1LtzqFMLq5wws6zOfXIKauMSYyV1b9R0shDW9+zwD59UcSLiR
-        oyGqWgPPC6V7igT8Z5uvGdzuGeffdJkaNSBWdfyt0j3lSHDDUJJ42KJ4WFxVRRo0XwYEyC
-        t0GJA7Mf1R1eQ3/yQIJrQ8CkQmKO484A1SYlxQW5rdvTzP6PB87jrTBfMiFs7Q==
+        bh=gjBiJEwyrXxSA52xQ4637SX/LhV+HHIgWPKRBeE4gMY=;
+        b=JskSG97Z/unX95AAX1Jjm8Ns2OCTdph2TdGmq7EjoOMw1O61ho5o8HCe/PmnmOfdOiwR2G
+        BAsE7ccRZJ7pWjZ3VdLhvEECDsBDRViQVWGtpX4InMXunbRn5Tg3NmEaJRgAm9hGMkOLxe
+        JeHcLNVy4dFf3lCaiG8fzYzTppDSBz9h7raXMnteivQLU1PBq+U5Qc7wJbCZD88zLiEdpy
+        X5qNp0CIf/qFUSd8YsJ5sEizCPj4nbe1u2L//pv0VGFAQiRdzVbOhcqXUxFxZA+ySe451Y
+        H8nZGMewmjzoYpUAuAhrk4nN523cJpX5kaF+tK8c73MzKJtO54oleP2UVbnzdw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260618;
+        s=2020e; t=1595260632;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uclKhm3C3HWRsWu3kv+xtaxPcHBGBDKRm9M/IiUD/fg=;
-        b=Y78QWRZnhKYxklESsDYd76ZuXXIFBDKATthEsq0dxV74+o0RZ2QM1RmkzhmTKDHyzIhzGJ
-        s1kapUUFht/uFMBw==
+        bh=gjBiJEwyrXxSA52xQ4637SX/LhV+HHIgWPKRBeE4gMY=;
+        b=jdzmhHQAFG9KA3OF557zjFKSsF37vGbpIRGkC/fQGHD705Uf+6rpXA+JGWNNl1GCAuSa5c
+        fRs+2KqfTW/5LyDg==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -45,12 +42,12 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v4 18/24] vfs: Use sequence counter with associated spinlock
-Date:   Mon, 20 Jul 2020 17:55:24 +0200
-Message-Id: <20200720155530.1173732-19-a.darwish@linutronix.de>
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org
+Subject: [PATCH v4 21/24] NFSv4: Use sequence counter with associated spinlock
+Date:   Mon, 20 Jul 2020 17:55:27 +0200
+Message-Id: <20200720155530.1173732-22-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -76,72 +73,36 @@ neither storage size nor runtime overhead.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- fs/dcache.c               | 2 +-
- fs/fs_struct.c            | 4 ++--
- include/linux/dcache.h    | 2 +-
- include/linux/fs_struct.h | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ fs/nfs/nfs4_fs.h   | 2 +-
+ fs/nfs/nfs4state.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 361ea7ab30ea..ea0485861d93 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -1746,7 +1746,7 @@ static struct dentry *__d_alloc(struct super_block *sb, const struct qstr *name)
- 	dentry->d_lockref.count = 1;
- 	dentry->d_flags = 0;
- 	spin_lock_init(&dentry->d_lock);
--	seqcount_init(&dentry->d_seq);
-+	seqcount_spinlock_init(&dentry->d_seq, &dentry->d_lock);
- 	dentry->d_inode = NULL;
- 	dentry->d_parent = dentry;
- 	dentry->d_sb = sb;
-diff --git a/fs/fs_struct.c b/fs/fs_struct.c
-index ca639ed967b7..04b3f5b9c629 100644
---- a/fs/fs_struct.c
-+++ b/fs/fs_struct.c
-@@ -117,7 +117,7 @@ struct fs_struct *copy_fs_struct(struct fs_struct *old)
- 		fs->users = 1;
- 		fs->in_exec = 0;
- 		spin_lock_init(&fs->lock);
--		seqcount_init(&fs->seq);
-+		seqcount_spinlock_init(&fs->seq, &fs->lock);
- 		fs->umask = old->umask;
- 
- 		spin_lock(&old->lock);
-@@ -163,6 +163,6 @@ EXPORT_SYMBOL(current_umask);
- struct fs_struct init_fs = {
- 	.users		= 1,
- 	.lock		= __SPIN_LOCK_UNLOCKED(init_fs.lock),
--	.seq		= SEQCNT_ZERO(init_fs.seq),
-+	.seq		= SEQCNT_SPINLOCK_ZERO(init_fs.seq, &init_fs.lock),
- 	.umask		= 0022,
+diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
+index 2b7f6dcd2eb8..210e590e1f71 100644
+--- a/fs/nfs/nfs4_fs.h
++++ b/fs/nfs/nfs4_fs.h
+@@ -117,7 +117,7 @@ struct nfs4_state_owner {
+ 	unsigned long	     so_flags;
+ 	struct list_head     so_states;
+ 	struct nfs_seqid_counter so_seqid;
+-	seqcount_t	     so_reclaim_seqcount;
++	seqcount_spinlock_t  so_reclaim_seqcount;
+ 	struct mutex	     so_delegreturn_mutex;
  };
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index a81f0c3cf352..65d975bf9390 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -89,7 +89,7 @@ extern struct dentry_stat_t dentry_stat;
- struct dentry {
- 	/* RCU lookup touched fields */
- 	unsigned int d_flags;		/* protected by d_lock */
--	seqcount_t d_seq;		/* per dentry seqlock */
-+	seqcount_spinlock_t d_seq;	/* per dentry seqlock */
- 	struct hlist_bl_node d_hash;	/* lookup hash list */
- 	struct dentry *d_parent;	/* parent directory */
- 	struct qstr d_name;
-diff --git a/include/linux/fs_struct.h b/include/linux/fs_struct.h
-index cf1015abfbf2..783b48dedb72 100644
---- a/include/linux/fs_struct.h
-+++ b/include/linux/fs_struct.h
-@@ -9,7 +9,7 @@
- struct fs_struct {
- 	int users;
- 	spinlock_t lock;
--	seqcount_t seq;
-+	seqcount_spinlock_t seq;
- 	int umask;
- 	int in_exec;
- 	struct path root, pwd;
+ 
+diff --git a/fs/nfs/nfs4state.c b/fs/nfs/nfs4state.c
+index a8dc25ce48bb..b1dba24918f8 100644
+--- a/fs/nfs/nfs4state.c
++++ b/fs/nfs/nfs4state.c
+@@ -509,7 +509,7 @@ nfs4_alloc_state_owner(struct nfs_server *server,
+ 	nfs4_init_seqid_counter(&sp->so_seqid);
+ 	atomic_set(&sp->so_count, 1);
+ 	INIT_LIST_HEAD(&sp->so_lru);
+-	seqcount_init(&sp->so_reclaim_seqcount);
++	seqcount_spinlock_init(&sp->so_reclaim_seqcount, &sp->so_lock);
+ 	mutex_init(&sp->so_delegreturn_mutex);
+ 	return sp;
+ }
 -- 
 2.20.1
 
