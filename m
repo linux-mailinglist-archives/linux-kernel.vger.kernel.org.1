@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0E622684D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D130226675
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388156AbgGTQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53848 "EHLO mail.kernel.org"
+        id S1732441AbgGTQDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388148AbgGTQNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:13:45 -0400
+        id S1732425AbgGTQDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:03:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A06DA20734;
-        Mon, 20 Jul 2020 16:13:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6B9E20672;
+        Mon, 20 Jul 2020 16:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261625;
-        bh=tC1G5VM5FfFophslm6pkzLu96fYci1vgWUsC2Z1iWhs=;
+        s=default; t=1595260999;
+        bh=Z9eIgK61mjS4Ul2PRXMOZ1S4VcotxUTrQE+5+4dWKuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c8nH8AEp6BXyxvcchngWEyct2ARSVHdwqoS3pnzzQnfG45CQJg0HaO8jPBdWmhX2e
-         rBRoEMqh4mOR3I8IZWAzR6gcf0VB57okH6Zm4RRWmxlQXpcslQGYLJVxzyr0PXql/z
-         cN67b41ZQMoOdHFx4wWU+Y0FEeGTcv+vUH4ablPI=
+        b=m128PxrXx8FKh8jM6YB2Spm6E0Yb3phMNIeaRcWzpuZSCnwviVw6Eq2JkPvaWGjW7
+         N7WOTx92FPlDinoNFyTxq0M2KYcYF4mflCk6bTw0ckXh30KqA7WSLJqw+dt3SHYWsz
+         +U1UaZSi0xfiarj/Gtx+v34I7WSyoJHqeIQrDhYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chirantan Ekbote <chirantan@chromium.org>,
+        stable@vger.kernel.org, Stefan Priebe <s.priebe@profihost.ag>,
         Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.7 184/244] fuse: Fix parameter for FS_IOC_{GET,SET}FLAGS
+Subject: [PATCH 5.4 173/215] fuse: ignore data argument of mount(..., MS_REMOUNT)
 Date:   Mon, 20 Jul 2020 17:37:35 +0200
-Message-Id: <20200720152834.593335193@linuxfoundation.org>
+Message-Id: <20200720152828.408019065@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chirantan Ekbote <chirantan@chromium.org>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit 31070f6ccec09f3bd4f1e28cd1e592fa4f3ba0b6 upstream.
+commit e8b20a474cf2c42698d1942f939ff2128819f151 upstream.
 
-The ioctl encoding for this parameter is a long but the documentation says
-it should be an int and the kernel drivers expect it to be an int.  If the
-fuse driver treats this as a long it might end up scribbling over the stack
-of a userspace process that only allocated enough space for an int.
+The command
 
-This was previously discussed in [1] and a patch for fuse was proposed in
-[2].  From what I can tell the patch in [2] was nacked in favor of adding
-new, "fixed" ioctls and using those from userspace.  However there is still
-no "fixed" version of these ioctls and the fact is that it's sometimes
-infeasible to change all userspace to use the new one.
+  mount -o remount -o unknownoption /mnt/fuse
 
-Handling the ioctls specially in the fuse driver seems like the most
-pragmatic way for fuse servers to support them without causing crashes in
-userspace applications that call them.
+succeeds on kernel versions prior to v5.4 and fails on kernel version at or
+after.  This is because fuse_parse_param() rejects any unrecognised options
+in case of FS_CONTEXT_FOR_RECONFIGURE, just as for FS_CONTEXT_FOR_MOUNT.
 
-[1]: https://lore.kernel.org/linux-fsdevel/20131126200559.GH20559@hall.aurel32.net/T/
-[2]: https://sourceforge.net/p/fuse/mailman/message/31771759/
+This causes a regression in case the fuse filesystem is in fstab, since
+remount sends all options found there to the kernel; even ones that are
+meant for the initial mount and are consumed by the userspace fuse server.
 
-Signed-off-by: Chirantan Ekbote <chirantan@chromium.org>
-Fixes: 59efec7b9039 ("fuse: implement ioctl support")
-Cc: <stable@vger.kernel.org>
+Fix this by ignoring mount options, just as fuse_remount_fs() did prior to
+the conversion to the new API.
+
+Reported-by: Stefan Priebe <s.priebe@profihost.ag>
+Fixes: c30da2e981a7 ("fuse: convert to use the new mount API")
+Cc: <stable@vger.kernel.org> # v5.4
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fuse/file.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/fuse/inode.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -18,6 +18,7 @@
- #include <linux/swap.h>
- #include <linux/falloc.h>
- #include <linux/uio.h>
-+#include <linux/fs.h>
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -473,6 +473,13 @@ static int fuse_parse_param(struct fs_co
+ 	struct fuse_fs_context *ctx = fc->fs_private;
+ 	int opt;
  
- static struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
- 				      struct fuse_page_desc **desc)
-@@ -2758,7 +2759,16 @@ long fuse_do_ioctl(struct file *file, un
- 		struct iovec *iov = iov_page;
- 
- 		iov->iov_base = (void __user *)arg;
--		iov->iov_len = _IOC_SIZE(cmd);
++	/*
++	 * Ignore options coming from mount(MS_REMOUNT) for backward
++	 * compatibility.
++	 */
++	if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE)
++		return 0;
 +
-+		switch (cmd) {
-+		case FS_IOC_GETFLAGS:
-+		case FS_IOC_SETFLAGS:
-+			iov->iov_len = sizeof(int);
-+			break;
-+		default:
-+			iov->iov_len = _IOC_SIZE(cmd);
-+			break;
-+		}
- 
- 		if (_IOC_DIR(cmd) & _IOC_WRITE) {
- 			in_iov = iov;
+ 	opt = fs_parse(fc, &fuse_fs_parameters, param, &result);
+ 	if (opt < 0)
+ 		return opt;
 
 
