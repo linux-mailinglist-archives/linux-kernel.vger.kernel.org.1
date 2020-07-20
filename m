@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE5C226BE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F5E226BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731372AbgGTQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:45:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33018 "EHLO mail.kernel.org"
+        id S2389098AbgGTQpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:45:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729859AbgGTPlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:19 -0400
+        id S1729179AbgGTPlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:41:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0655C2065E;
-        Mon, 20 Jul 2020 15:41:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BA9F22D72;
+        Mon, 20 Jul 2020 15:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259678;
-        bh=4F5ltSzsWVSxcuxanMxE12FRG4qg+lECWp25g442HZc=;
+        s=default; t=1595259681;
+        bh=s6wQ1t3yKP/ifpNYjFTHv8Kz36NhoOFHrqTrO+1lVdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=engvtWoYSrhm+XvmupKTh2Gu9ZWGrFIAinCMUOcPolxtdl6jT6Dp73LqwxJsxmUaV
-         Sxjye+ZTgc8XB3xiAu+g0ufa97lbwfINQXwCih4SZ54VgxHMnaWHP+bzub7zFYPHWt
-         7X0AmDVbLp6mqbM8Kgf04ba7HzNOLhBQy/xkLUNs=
+        b=uUHpgkfjdZvCQp54hjmuZm31eTfRd421iyYd+/u6GBFi8kZdiDNTkynJ68M2utE6O
+         4+N0kss9Sidj75U7h7rf3pBf6W5BQvRxuIqK96qezU71R9ZwaIdXDBt795++3ZCREa
+         Vi2/tC3MCGkNYHj4GCOoHXifFauWMs4es7yX3K+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.9 41/86] iio:magnetometer:ak8974: Fix alignment and data leak issues
-Date:   Mon, 20 Jul 2020 17:36:37 +0200
-Message-Id: <20200720152755.232415653@linuxfoundation.org>
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.9 42/86] iio: magnetometer: ak8974: Fix runtime PM imbalance on error
+Date:   Mon, 20 Jul 2020 17:36:38 +0200
+Message-Id: <20200720152755.281969112@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
 References: <20200720152753.138974850@linuxfoundation.org>
@@ -45,69 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 838e00b13bfd4cac8b24df25bfc58e2eb99bcc70 upstream.
+commit 0187294d227dfc42889e1da8f8ce1e44fc25f147 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data.
+When devm_regmap_init_i2c() returns an error code, a pairing
+runtime PM usage counter decrement is needed to keep the
+counter balanced. For error paths after ak8974_set_power(),
+ak8974_detect() and ak8974_reset(), things are the same.
 
-This data is allocated with kzalloc so no data can leak appart from
-previous readings.
+However, When iio_triggered_buffer_setup() returns an error
+code, there will be two PM usgae counter decrements.
 
-Fixes: 7c94a8b2ee8cf ("iio: magn: add a driver for AK8974")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Fixes: 7c94a8b2ee8c ("iio: magn: add a driver for AK8974")
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/magnetometer/ak8974.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/magnetometer/ak8974.c |   19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
 --- a/drivers/iio/magnetometer/ak8974.c
 +++ b/drivers/iio/magnetometer/ak8974.c
-@@ -153,6 +153,11 @@ struct ak8974 {
- 	bool drdy_irq;
- 	struct completion drdy_complete;
- 	bool drdy_active_low;
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		__le16 channels[3];
-+		s64 ts __aligned(8);
-+	} scan;
- };
- 
- static const char ak8974_reg_avdd[] = "avdd";
-@@ -494,7 +499,6 @@ static void ak8974_fill_buffer(struct ii
- {
- 	struct ak8974 *ak8974 = iio_priv(indio_dev);
- 	int ret;
--	s16 hw_values[8]; /* Three axes + 64bit padding */
- 
- 	pm_runtime_get_sync(&ak8974->i2c->dev);
- 	mutex_lock(&ak8974->lock);
-@@ -504,13 +508,13 @@ static void ak8974_fill_buffer(struct ii
- 		dev_err(&ak8974->i2c->dev, "error triggering measure\n");
- 		goto out_unlock;
+@@ -675,19 +675,21 @@ static int ak8974_probe(struct i2c_clien
+ 	ak8974->map = devm_regmap_init_i2c(i2c, &ak8974_regmap_config);
+ 	if (IS_ERR(ak8974->map)) {
+ 		dev_err(&i2c->dev, "failed to allocate register map\n");
++		pm_runtime_put_noidle(&i2c->dev);
++		pm_runtime_disable(&i2c->dev);
+ 		return PTR_ERR(ak8974->map);
  	}
--	ret = ak8974_getresult(ak8974, hw_values);
-+	ret = ak8974_getresult(ak8974, ak8974->scan.channels);
+ 
+ 	ret = ak8974_set_power(ak8974, AK8974_PWR_ON);
  	if (ret) {
- 		dev_err(&ak8974->i2c->dev, "error getting measures\n");
- 		goto out_unlock;
+ 		dev_err(&i2c->dev, "could not power on\n");
+-		goto power_off;
++		goto disable_pm;
  	}
  
--	iio_push_to_buffers_with_timestamp(indio_dev, hw_values,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &ak8974->scan,
- 					   iio_get_time_ns(indio_dev));
+ 	ret = ak8974_detect(ak8974);
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "neither AK8974 nor AMI305 found\n");
+-		goto power_off;
++		goto disable_pm;
+ 	}
  
-  out_unlock:
+ 	ret = ak8974_selftest(ak8974);
+@@ -697,14 +699,9 @@ static int ak8974_probe(struct i2c_clien
+ 	ret = ak8974_reset(ak8974);
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "AK8974 reset failed\n");
+-		goto power_off;
++		goto disable_pm;
+ 	}
+ 
+-	pm_runtime_set_autosuspend_delay(&i2c->dev,
+-					 AK8974_AUTOSUSPEND_DELAY);
+-	pm_runtime_use_autosuspend(&i2c->dev);
+-	pm_runtime_put(&i2c->dev);
+-
+ 	indio_dev->dev.parent = &i2c->dev;
+ 	indio_dev->channels = ak8974_channels;
+ 	indio_dev->num_channels = ARRAY_SIZE(ak8974_channels);
+@@ -757,6 +754,11 @@ no_irq:
+ 		goto cleanup_buffer;
+ 	}
+ 
++	pm_runtime_set_autosuspend_delay(&i2c->dev,
++					 AK8974_AUTOSUSPEND_DELAY);
++	pm_runtime_use_autosuspend(&i2c->dev);
++	pm_runtime_put(&i2c->dev);
++
+ 	return 0;
+ 
+ cleanup_buffer:
+@@ -765,7 +767,6 @@ disable_pm:
+ 	pm_runtime_put_noidle(&i2c->dev);
+ 	pm_runtime_disable(&i2c->dev);
+ 	ak8974_set_power(ak8974, AK8974_PWR_OFF);
+-power_off:
+ 	regulator_bulk_disable(ARRAY_SIZE(ak8974->regs), ak8974->regs);
+ 
+ 	return ret;
 
 
