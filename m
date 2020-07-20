@@ -2,171 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B67C226CAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9915A226CDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730035AbgGTQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728827AbgGTQ75 (ORCPT
+        id S1731438AbgGTRIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 13:08:34 -0400
+Received: from rcdn-iport-7.cisco.com ([173.37.86.78]:18567 "EHLO
+        rcdn-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728735AbgGTRIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:59:57 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7C1C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:59:57 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e8so10550194pgc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:59:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XTpfTRtjLabMYQDaBkpj4hw5ufV0kY4GfLGgilGMUUo=;
-        b=n5sv0TUVhgDbWOe+6Utv6xdRSmrGuQ8DoVuv3SnLuAFeCIMRYpoSFxkNXF2HrRBzpU
-         RN/R6q024UeVvtqhHlrd++5kYTWFl2b5kU07P8or67od+CO1HhCd2hjHj2JxhsDSy0mN
-         P+y2j+rmotIi6vTQiieLsv3+0ZKMqkUqJJrSegeGDr4uv8qLKDDRVMNSLaDwNejEsigB
-         TQCXUQ2tHQY/3JHVTDoAqtTc+Oy0o3kaXYcj5pg6cy8RtHy18UvrKChwIW2r5RkZG3Z5
-         OYu90iDD84Enw8/pUI28ijHRZhe8nfmFC+mkX2D+p4UvQflDDxz5D1ex/zEoaIe7lMPH
-         NSEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XTpfTRtjLabMYQDaBkpj4hw5ufV0kY4GfLGgilGMUUo=;
-        b=neWgxdNBRSlWjXvEOZBpsiaH1Qmu/xsb/goeNIdui4t4ZnAwNlWRu2CWxmgOPom9ES
-         UfSECdfq6wnl6ERnMK33C2Ri5WSbV0KmvPR7XshWESbLhdjiQPreJ9cwXBJs6q0LFO36
-         n1u8EPrJhoTnApPYl9Wj73SiCugrFD9Rw25pu4vqquJY7kOFpq+GXodiWcNgoALwXigY
-         MyhbYc/7YSsu+pQvQxhsWSaJEvpKOw/dZU0KMdkVQYyrYpzZjESHLj/bcQw/vC+5ZB5Y
-         tfyyFAwZHurAAPoJfzyp7/vlv9C5VklFmP8QC5383R3tB8l2dwbwHV8jRwJCp5IBVqmO
-         Bfxw==
-X-Gm-Message-State: AOAM533URz0aO8TS34Poh8PLQNqrHSPrVLrfBAJDewafVD43TpAc0cBs
-        mQ5FhQ1Eq5DYlJPq6gGMWl7v5A==
-X-Google-Smtp-Source: ABdhPJzRTVraKqfSfPPhCXufOsemlddmRnH6ao+bP8KnXOPYPmpAB1Y4Bxwp5DYGDcwSzpXCKZfx7Q==
-X-Received: by 2002:a63:e14c:: with SMTP id h12mr19548473pgk.110.1595264397195;
-        Mon, 20 Jul 2020 09:59:57 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id t5sm15152737pgl.38.2020.07.20.09.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 09:59:56 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 10:59:54 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, sibis@codearora.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v8 3/5] remoteproc: Pass size and offset as arguments to
- segment dump function
-Message-ID: <20200720165954.GB1113627@xps15>
-References: <1594938035-7327-1-git-send-email-rishabhb@codeaurora.org>
- <1594938035-7327-4-git-send-email-rishabhb@codeaurora.org>
+        Mon, 20 Jul 2020 13:08:31 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Jul 2020 13:08:29 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=2398; q=dns/txt; s=iport;
+  t=1595264909; x=1596474509;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=VX3c/+Mxe9HMyKrf6gzXcvD3vCStJB5sHZuUnRwt/mk=;
+  b=Op/V/+g1IzbX7ZMEo9X8IJbH86i04l8NDIwQsNZPOICnjYirQQr7Om+A
+   y7LPHwYbUoBXxby+TvvAQaWMbZPmOB7/6lXRuGa6giqXpcq60AUSGx1m/
+   zHRUtRIlYcahWtG8hOCv7RS6bvMeYEltvNv0rVX29iAgHz+zVCvUaNHWX
+   w=;
+IronPort-PHdr: =?us-ascii?q?9a23=3A2k0rjhXisYcjptYXSkk1s2gacU3V8LGuZFwc94?=
+ =?us-ascii?q?YnhrRSc6+q45XlOgnF6O5wiEPSBNyHuf1BguvS9avnXD9I7ZWAtSUEd5pBH1?=
+ =?us-ascii?q?8AhN4NlgMtSMiCFQXgLfHsYiB7eaYKVFJs83yhd0QAHsH4ag7dp3Sz6XgZHR?=
+ =?us-ascii?q?CsfQZwL/7+T4jVicn/3uuu+prVNgNPgjf1Yb57IBis6wvLscxDiop5IaF3wR?=
+ =?us-ascii?q?zM8XY=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0CrBQCLzBVf/5FdJa1gHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgUqBUlEHgUcvLAqEKYNGA41LigKOXIJTA1ULAQEBDAEBLQI?=
+ =?us-ascii?q?EAQGETAIXgggCJDgTAgMBAQsBAQUBAQECAQYEbYVcDIVyAQEBAxIREQwBATc?=
+ =?us-ascii?q?BDwIBCBgCAiYCAgIfERUQAgQBDQUbB4MEgkwDLQEBoDcCgTmIYXaBMoMBAQE?=
+ =?us-ascii?q?FhQ0NC4IOCRR6KoJqg1WGM4IagTgcgk0+ghqCI4MWM4ItgUcBjXOCXzyiKE0?=
+ =?us-ascii?q?GBIJdlHOEcAMVCYJ6iT6TEC2RVI0EkXsCBAIEBQIOAQEFgWojgVdwUCoBc4F?=
+ =?us-ascii?q?LUBcCDY4eg3GKVnQ3AgYBBwEBAwl8jgIBgRABAQ?=
+X-IronPort-AV: E=Sophos;i="5.75,375,1589241600"; 
+   d="scan'208";a="790727111"
+Received: from rcdn-core-9.cisco.com ([173.37.93.145])
+  by rcdn-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 20 Jul 2020 17:01:13 +0000
+Received: from XCH-ALN-001.cisco.com (xch-aln-001.cisco.com [173.36.7.11])
+        by rcdn-core-9.cisco.com (8.15.2/8.15.2) with ESMTPS id 06KH1DKp004879
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 17:01:13 GMT
+Received: from xhs-rtp-002.cisco.com (64.101.210.229) by XCH-ALN-001.cisco.com
+ (173.36.7.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 20 Jul
+ 2020 12:01:13 -0500
+Received: from xhs-aln-003.cisco.com (173.37.135.120) by xhs-rtp-002.cisco.com
+ (64.101.210.229) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 20 Jul
+ 2020 13:01:12 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (173.37.151.57)
+ by xhs-aln-003.cisco.com (173.37.135.120) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 20 Jul 2020 12:01:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jV4dDuK638lYiLJypWbKUOtbraHutmEw+NNQR1teB/OGahbMm+p0zwdSJ8Rcn9V1Emfw1g6jf8oIFywfLiPklnK49tEIFdcyAvERT8D9u7dRgm0NR6Xy7gxNOqMAXU5/r6YiyZzwcOSQU1SQCGqobzO1S5qjvuETFR2EKx/a8JrtD8whH29y0MGlO/PHx7HbiYtPQ+Xt0ExcNtCeMtABaaGbnQqZzfNwVAQ49fRs8bAE5kaApOy7CzmsAai8iKGRgN9Me5MsDgUFn6Ko1MqM+tjkDVpri2k+0eckPlBOHpXr2K3dbIrh0sECEXpaSLDM1IWAsPfEoerVqZUa51qHag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VX3c/+Mxe9HMyKrf6gzXcvD3vCStJB5sHZuUnRwt/mk=;
+ b=Zz/npAafgC8HqSHudTsDOmlErbUnr3q60/MR/UnU5fuGcYCBlPMHyLsO1LbvP+Bv5GrsbP+yvC+L+y0Vwr0upSG+PUS4Vt2l/zWRXHOJq1+ZdLwo+bFBk6jhjFdqYdZQ6Q/aPDDDNx+igiDZlOVLODRrFneFSpc8WVFXzmyqLN7YznbltndKue/7nuu/8AKgt5VCH4Dl4uXV0+KjWVgX2usHAcJaQ3HUWpSXfmkgx7Iwyf88jT81zvnEOCyVB31XR6TY6rv2oLni7SOS4WeURA7vg3RU+xmTjAjyrmqKhvCloLqdxsmD5wfQnniqHb4Ke2ZMEX67C5rS6sVviclV/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VX3c/+Mxe9HMyKrf6gzXcvD3vCStJB5sHZuUnRwt/mk=;
+ b=zCG7KMAry1RiEPGBywgtax2xRxEXpbv9A4duziRJ71QVSrn2fvRpwDBWYHWeqjrB/GHKFkgHryKv6H+T1HyvBX/D2qi22h6QozJM7Pa69hY+Le1jhmi/em4bUKButq0G/iBuav/UPsE1KL8kz7LkW+5NrNIrTGv4x75cOoshMO4=
+Received: from CY4PR1101MB2101.namprd11.prod.outlook.com
+ (2603:10b6:910:24::18) by CY4PR11MB1255.namprd11.prod.outlook.com
+ (2603:10b6:903:30::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18; Mon, 20 Jul
+ 2020 17:01:11 +0000
+Received: from CY4PR1101MB2101.namprd11.prod.outlook.com
+ ([fe80::6c4e:645e:fcf9:f766]) by CY4PR1101MB2101.namprd11.prod.outlook.com
+ ([fe80::6c4e:645e:fcf9:f766%11]) with mapi id 15.20.3195.025; Mon, 20 Jul
+ 2020 17:01:10 +0000
+From:   "Sriram Krishnan (srirakr2)" <srirakr2@cisco.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Malcolm Bumgardner (mbumgard)" <mbumgard@cisco.com>,
+        "Umesha G M (ugm)" <ugm@cisco.com>,
+        "Niranjan M M (nimm)" <nimm@cisco.com>,
+        "Daniel Walker (danielwa)" <danielwa@cisco.com>
+Subject: Re: [PATCH v2] AF_PACKET doesnt strip VLAN information
+Thread-Topic: [PATCH v2] AF_PACKET doesnt strip VLAN information
+Thread-Index: AQHWXRxVWAaissRR4kW2xbRd/pNvc6kP2PgOgACm0ICAAJDsAA==
+Date:   Mon, 20 Jul 2020 17:01:09 +0000
+Message-ID: <EFC5EACE-753A-430E-84D5-E22C3F8C5106@cisco.com>
+References: <20200718091732.8761-1-srirakr2@cisco.com>
+ <CA+FuTSdfvctFD3AVMHzQV9efQERcKVE1TcYVD_T84eSgq9x4OA@mail.gmail.com>
+ <CY4PR1101MB21013DCD55B754E29AF4A838907B0@CY4PR1101MB2101.namprd11.prod.outlook.com>
+ <CAF=yD-+gCkPVkXwcH6KiKYGV77TvpZiDo=3YyXeuGFk=TR2dcw@mail.gmail.com>
+In-Reply-To: <CAF=yD-+gCkPVkXwcH6KiKYGV77TvpZiDo=3YyXeuGFk=TR2dcw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.39.20071300
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=cisco.com;
+x-originating-ip: [106.51.23.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f70b15a2-2605-4840-7b81-08d82cce8048
+x-ms-traffictypediagnostic: CY4PR11MB1255:
+x-ld-processed: 5ae1af62-9505-4097-a69a-c1553ef7840e,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR11MB1255772781983656C6915970907B0@CY4PR11MB1255.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MOLuYBEuNN5VrRJZld7vUGm91CvzcmSPyZKrwkEQDatT2orkVDba5GVuw0iveJpBfsd0+6kz9wBAivR+UtFOoP3Q6wTh6W8Ik+Nl1uY0VoVLvtOwDB/F0bJb+n2tbqn26Qb17uptYQtb92lNIokwjMVkNXF1yb2Y+N4KeWG2Enn/W3x6b4ZaDinr3sgfHQmfHn167eWdNS9ryBvGGYcg+oDWE/nJZ7ZgOcNjO6QZlbRMuKi7OZp9gOpv6ZJ8yVxuROXzUMPsVlL1fB5qinJ2vZGv6vy2plXVn0uyXw4gFopPADl/wLIuxiP5A/6OV0ETtNixf1Z2kn618z95z3cv+g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2101.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(6486002)(4326008)(478600001)(91956017)(83380400001)(6512007)(2906002)(8936002)(54906003)(110136005)(36756003)(8676002)(5660300002)(64756008)(66446008)(66476007)(66556008)(66946007)(316002)(76116006)(107886003)(55236004)(186003)(26005)(33656002)(6506007)(53546011)(86362001)(2616005)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: TE1pElfmz6IaoRSJrEX72PoKPSQddai0YN2xIAD2Uj12ShCicVPdkwGzAc4FGi7Ck0p6SgaupqONZ9sG4c+NFYL2Vx0so0eqJNACgqE6AGJc+OraCXjZ70yG7XaGPiQZLpIEHYTm7QVg3TDosLH+xto8CkFTOQbawHX0uLR61dLzZzn1/hyzlGlz74Au5r3n4w1nrhV5QLpkVzeyMSSsYeK9xJwBL3U8iFH6fjEuZuJRwNHnKZxPzJd72xJPcMtLAo/UIEi88Bsvd5XpLSF+ENN/ii5ZTor2dGznp7yGACUa7FHfQS9DJscNvUA4lvk1zYY9ciooGjrDJDOPgk22FW22QpPrrWWNyLQFUmQ3WBhF7UXyQdFpG37+Y++6Hh3oU1kEG6QdgqkluBU4/NA0jCTcPWzMAR6FEO2xyc3sw3QZBEfR3Hec1RtryKFnbvXKN9VFifitK0ZKXA2qOiavfvfI7WnSNAgmpsIu/CpOqWA=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EF9E762792042549AB7B66B438024889@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594938035-7327-4-git-send-email-rishabhb@codeaurora.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2101.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f70b15a2-2605-4840-7b81-08d82cce8048
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 17:01:09.8255
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: f5iLwI1PnTalode6cAsTuKOiMJB47c3WZsadnPql44kpooGHQTef9XBioePdHs5f4EpRMa7ljlGLklDsrwrOcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1255
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.36.7.11, xch-aln-001.cisco.com
+X-Outbound-Node: rcdn-core-9.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:20:33PM -0700, Rishabh Bhatnagar wrote:
-> Change the segment dump API signature to include size and offset
-> arguments. Refactor the qcom_q6v5_mss driver to use these
-> arguments while copying the segment. Doing this lays the ground
-> work for "inline" coredump functionality being added in the next
-> patch.
-> 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->  drivers/remoteproc/qcom_q6v5_mss.c       | 10 +++++-----
->  drivers/remoteproc/remoteproc_coredump.c |  5 +++--
->  include/linux/remoteproc.h               |  5 +++--
->  3 files changed, 11 insertions(+), 9 deletions(-)
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 037cd45..6baa3ae 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -1199,7 +1199,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
->  
->  static void qcom_q6v5_dump_segment(struct rproc *rproc,
->  				   struct rproc_dump_segment *segment,
-> -				   void *dest)
-> +				   void *dest, size_t cp_offset, size_t size)
->  {
->  	int ret = 0;
->  	struct q6v5 *qproc = rproc->priv;
-> @@ -1219,16 +1219,16 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
->  	}
->  
->  	if (!ret)
-> -		ptr = ioremap_wc(qproc->mpss_phys + offset, segment->size);
-> +		ptr = ioremap_wc(qproc->mpss_phys + offset + cp_offset, size);
->  
->  	if (ptr) {
-> -		memcpy(dest, ptr, segment->size);
-> +		memcpy(dest, ptr, size);
->  		iounmap(ptr);
->  	} else {
-> -		memset(dest, 0xff, segment->size);
-> +		memset(dest, 0xff, size);
->  	}
->  
-> -	qproc->current_dump_size += segment->size;
-> +	qproc->current_dump_size += size;
->  
->  	/* Reclaim mba after copying segments */
->  	if (qproc->current_dump_size == qproc->total_dump_size) {
-> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
-> index ded0244..390f563 100644
-> --- a/drivers/remoteproc/remoteproc_coredump.c
-> +++ b/drivers/remoteproc/remoteproc_coredump.c
-> @@ -72,7 +72,8 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
->  				      dma_addr_t da, size_t size,
->  				      void (*dumpfn)(struct rproc *rproc,
->  						     struct rproc_dump_segment *segment,
-> -						     void *dest),
-> +						     void *dest, size_t offset,
-> +						     size_t size),
->  				      void *priv)
->  {
->  	struct rproc_dump_segment *segment;
-> @@ -183,7 +184,7 @@ void rproc_coredump(struct rproc *rproc)
->  		elf_phdr_set_p_align(class, phdr, 0);
->  
->  		if (segment->dump) {
-> -			segment->dump(rproc, segment, data + offset);
-> +			segment->dump(rproc, segment, data + offset, 0, segment->size);
->  		} else {
->  			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
->  			if (!ptr) {
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index e7b7bab..eb08139 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -451,7 +451,7 @@ struct rproc_dump_segment {
->  
->  	void *priv;
->  	void (*dump)(struct rproc *rproc, struct rproc_dump_segment *segment,
-> -		     void *dest);
-> +		     void *dest, size_t offset, size_t size);
->  	loff_t offset;
->  };
->  
-> @@ -630,7 +630,8 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
->  				      dma_addr_t da, size_t size,
->  				      void (*dumpfn)(struct rproc *rproc,
->  						     struct rproc_dump_segment *segment,
-> -						     void *dest),
-> +						     void *dest, size_t offset,
-> +						     size_t size),
->  				      void *priv);
->  int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 machine);
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+SSBoYXZlIG1vdmVkIHRoZSBjb2RlIHRvIHRoZSBkcml2ZXIgYW5kIHB1c2hlZCBhIG5ldyBwYXRj
+aCBkdWUgdG8gdGhlIGJlbG93IGhpZ2hsaWdodGVkIGlzc3Vlcy4NCg0KU3RlcGhlbiBILA0KUGxl
+YXNlIGxldCBtZSBrbm93IGlmIHlvdSBoYXZlIGFueSBjb25jZXJucyBsb2NhbGlzaW5nIHRoZSBj
+aGFuZ2VzIHRvIHRoZSBuZXR2c2MgZHJpdmVyLg0KDQoNClRoYW5rcywNClNyaXJhbQ0KDQrvu79P
+biAyMC8wNy8yMCwgNzoyMyBQTSwgIldpbGxlbSBkZSBCcnVpam4iIDx3aWxsZW1kZWJydWlqbi5r
+ZXJuZWxAZ21haWwuY29tPiB3cm90ZToNCg0KICAgIE9uIE1vbiwgSnVsIDIwLCAyMDIwIGF0IDEy
+OjI3IEFNIFNyaXJhbSBLcmlzaG5hbiAoc3JpcmFrcjIpDQogICAgPHNyaXJha3IyQGNpc2NvLmNv
+bT4gd3JvdGU6DQogICAgPg0KICAgID4gK1N0ZXBoZW4gSGVtbWluZ2VyDQogICAgPg0KICAgID4g
+SGkgV2lsbGVtLA0KICAgID4gVGhhbmtzIGZvciBsb29raW5nIGludG8gdGhlIGNvZGUsIEkgdW5k
+ZXJzdGFuZCB0aGF0IHRoaXMgaXMgbW9yZSBvZiBhIGdlbmVyaWMgcHJvYmxlbSB3aGVyZWluIG1h
+bnkgb2YgdGhlIGZpbHRlcmluZyBmdW5jdGlvbnMgYXNzdW1lIHRoZSB2bGFuIHRhZyB0byBiZSBp
+biB0aGUgc2tiIHJhdGhlciB0aGFuIGluIHRoZSBwYWNrZXQuIEhlbmNlIHdlIG1vdmVkIHRoZSBm
+aXggZnJvbSB0aGUgZHJpdmVyIHRvIHRoZSBjb21tb24gQUYgcGFja2V0IHRoYXQgb3VyIHNvbHV0
+aW9uIHVzZXMuDQogICAgPg0KICAgID4gSSByZWNhbGwgZnJvbSB0aGUgdjEgb2YgdGhlIHBhdGNo
+IHlvdSBoYWQgbWVudGlvbmVkIG90aGVyIGNvbW1vbiBhcmVhcyB3aGVyZSB0aGlzIGZpeCBtaWdo
+dCBiZSByZWxldmFudCAoc3VjaCBhcyB0YXAvdHVuKSwgYnV0IEknbSBhZnJhaWQgSSBjYW50IGNv
+bXByZWhlbnNpdmVseSB0ZXN0IHRob3NlIHBhdGNoZXMgb3V0LiBQbGVhc2UgbGV0IG1lIGtub3cg
+eW91ciB0aG91Z2h0cw0KDQogICAgUGxlYXNlIHVzZSBwbGFpbiB0ZXh0IHRvIHJlc3BvbmQuIEhU
+TUwgcmVwbGllcyBkbyBub3QgcmVhY2ggdGhlIGxpc3QuDQoNCiAgICBDYW4geW91IGJlIG1vcmUg
+cHJlY2lzZSBpbiB3aGljaCBvdGhlciBjb2RlIGJlc2lkZXMgdGhlIGh5cGVyLXYgZHJpdmVyDQog
+ICAgaXMgYWZmZWN0ZWQ/IERvIHlvdSBoYXZlIGFuIGV4YW1wbGU/DQoNCiAgICBUaGlzIGlzIGEg
+cmVzdWJtaXQgb2YgdGhlIG9yaWdpbmFsIHBhdGNoLiBNeSBwcmV2aW91cw0KICAgIHF1ZXN0aW9u
+cy9jb25jZXJucyByZW1haW4gdmFsaWQ6DQoNCiAgICAtIGlmIHRoZSBmdW5jdGlvbiBjYW4gbm93
+IGZhaWwsIGFsbCBjYWxsZXJzIG11c3QgYmUgdXBkYXRlZCB0byBkZXRlY3QNCiAgICBhbmQgaGFu
+ZGxlIHRoYXQNCg0KICAgIC0gYW55IHNvbHV0aW9uIHNob3VsZCBwcm9iYWJseSBhZGRyZXNzIGFs
+bCBpbnB1dHMgaW50byB0aGUgdHggcGF0aDoNCiAgICBwYWNrZXQgc29ja2V0cywgdHVudGFwLCB2
+aXJ0aW8tbmV0DQoNCiAgICAtIHRoaXMgb25seSBhZGRyZXNzZXMgcGFja2V0IHNvY2tldHMgd2l0
+aCBFVEhfUF9BTEwvRVRIX1BfTk9ORS4gTm90DQogICAgc29ja2V0cyB0aGF0IHNldCBFVEhfUF84
+MDIxUQ0KDQogICAgLSB3aGljaCBjb2RlIGluIHRoZSB0cmFuc21pdCBzdGFjayByZXF1aXJlcyB0
+aGUgdGFnIHRvIGJlIGluIHRoZSBza2IsDQogICAgYW5kIGRvZXMgdGhpcyBwcm9ibGVtIGFmdGVy
+IHRoaXMgcGF0Y2ggc3RpbGwgcGVyc2lzdCBmb3IgUS1pbi1RPw0KDQo=
