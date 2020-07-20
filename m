@@ -2,53 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF69B2257A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA452257A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgGTGeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:34:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgGTGeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:34:00 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D6FE21775;
-        Mon, 20 Jul 2020 06:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595226840;
-        bh=ZwOeL3EPgtxnw9BleSgHpslrspXGbH6eZ9G5FUI9tNI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uLi390TykNl3+X/IzwX6uYWWyFfmdB/yK++H3Yb8EF2QDrxBB8NxGJRddyZrHve3U
-         W4S/i4ojU6STz9UX2p2HufluJHs6oQCjowBhfLO28jAm6CGtOES1/bnigmZaRg+JUo
-         XALHEvdS+mgaApCcPDcaYbh5Hi/JeKWXDKQlso+s=
-Date:   Mon, 20 Jul 2020 12:03:56 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     kishon@ti.com, wsa+renesas@sang-engineering.com,
-        geert+renesas@glider.be, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] phy: renesas: rcar-gen3-usb2: fix an issue and
- minor update
-Message-ID: <20200720063356.GD12965@vkoul-mobl>
-References: <1594986297-12434-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        id S1727002AbgGTGee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:34:34 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7093 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgGTGee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 02:34:34 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f153abc0001>; Sun, 19 Jul 2020 23:33:32 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sun, 19 Jul 2020 23:34:33 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sun, 19 Jul 2020 23:34:33 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Jul
+ 2020 06:34:28 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 20 Jul 2020 06:34:28 +0000
+Received: from rgumasta-linux.nvidia.com (Not Verified[10.19.66.108]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f153af10006>; Sun, 19 Jul 2020 23:34:28 -0700
+From:   Rajesh Gumasta <rgumasta@nvidia.com>
+To:     <ldewangan@nvidia.com>, <jonathanh@nvidia.com>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <thierry.reding@gmail.com>,
+        <p.zabel@pengutronix.de>, <dmaengine@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kyarlagadda@nvidia.com>, <rgumasta@nvidia.com>
+Subject: [Patch v1 0/4] Add Nvidia Tegra GPC-DMA driver
+Date:   Mon, 20 Jul 2020 12:04:12 +0530
+Message-ID: <1595226856-19241-1-git-send-email-rgumasta@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594986297-12434-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595226813; bh=tTR6a02OlDP0FwB/hPvaq3dm/G5G+xebE9R5HCR/jVE=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=fjZzzyn7ROBm9LIA9IgpO3skziaEIlUdXyJT+uQSICXEQa4tspkYc3GqxSNIDThoh
+         57xiwM67DQtblP5jFGBrTgXHbL73UQEcMrYY/oqm8lLdmdc+9BVVYr7f1e4BDV8wGx
+         A204iBPwifhIvctBgJqlYYhuVREYjMB8IboHtGm+RUv8WGFvp1CCWQ2jIsI53QkZMZ
+         G1SijWfJQdKSQlWnp44sdb9Osa/hXENdorEgK7IL4e/avU+EUW2x3+mNaro0fpUqLu
+         9NHF46xASBhKOqL9sDaieETsJrp7E0p8FY7XZoB7uFOYk13MwlZse0kKtTVV64w3sH
+         Fbg4o05gaTG5w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-07-20, 20:44, Yoshihiro Shimoda wrote:
-> The patch 1 can fix an issue which SError happen if CONFIG_DEBUG_SHIRQ
-> is enabled.
-> The patch 2 is a incremental patch from patch 1. It's better to avoid
-> unexpected behaviors if request_irq() failed.
+Add support for Nvida Tegra general purpose DMA driver for
+Tegra186 and Tegra194 platform.
 
-Applied, thanks
+Patch 1: Add dt-binding document for Tegra GPCDMA driver
+Patch 2: Add Tegra GPCDMA driver
+Patch 3: Enable Tegra GPCDMA as module
+Patch 4: Add GPCDMA DT node for Tegra186 and Tegra194
+
+Rajesh Gumasta (4):
+  dt-bindings: dma: Add DT binding document
+  dma: tegra: Adding Tegra GPC DMA controller driver
+  arm64: configs: enable tegra gpc dma
+  arm64: tegra: Add GPCDMA node in dt
+
+ .../bindings/dma/nvidia,tegra-gpc-dma.yaml         |   99 ++
+ arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi     |    4 +
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           |   46 +
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |   44 +
+ arch/arm64/configs/defconfig                       |    1 +
+ drivers/dma/Kconfig                                |   12 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/tegra-gpc-dma.c                        | 1512 ++++++++++++++++++++
+ 8 files changed, 1719 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra-gpc-dma.yaml
+ create mode 100644 drivers/dma/tegra-gpc-dma.c
 
 -- 
-~Vinod
+2.7.4
+
