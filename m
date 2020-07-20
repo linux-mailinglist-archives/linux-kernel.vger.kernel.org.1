@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DFF2265C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0972265EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731397AbgGTP4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:56:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56394 "EHLO mail.kernel.org"
+        id S1731797AbgGTP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:58:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731825AbgGTP4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:56:44 -0400
+        id S1729743AbgGTP6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:58:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0A302065E;
-        Mon, 20 Jul 2020 15:56:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 364BB206E9;
+        Mon, 20 Jul 2020 15:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260604;
-        bh=EGhIgVIAG6evw4B0i/8BjerJYr4VaR5XyLTu0Dr1Er4=;
+        s=default; t=1595260716;
+        bh=jWTJMZSpFMXv1eN4iBy7F5NdaPw4rqs4cZcmn3E18Tk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=at6Lua5ttpAMofbWGNHUA5uCLWRuauH83SNgBHlHQ7BEgCdC9NS5Qf0BC2mwRHjFW
-         Ol+EbisnIhAI495LcQiNUNIOw8PD4ItXEAHdA9ZLASArwVokQ6mOaMRVMfRGJG+hEo
-         rcp9iWMJqOSeGUlt04wytn/eiFOll/XO68+MngKM=
+        b=yCTjPVmA3s/H3OrZ4tUtuDP9QPCucxzkCaDJSznKIFO2DNRP1RtQPg8CMMIEEUxmK
+         JU4kFa2Mw+LwrQbHwzfiyDcBh0rVwGy9cRp5blI3fboslQ1wDIZR5RYXg7wNXxMgYr
+         lQS/TU1P8Gw8MgXxSjQ7ULqcLgS7cWzbDy/FDUN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 028/215] arm64: arch_timer: Allow an workaround descriptor to disable compat vdso
-Date:   Mon, 20 Jul 2020 17:35:10 +0200
-Message-Id: <20200720152821.520281513@linuxfoundation.org>
+        stable@vger.kernel.org, Bernard Zhao <bernard@vivo.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 030/215] drm/msm: fix potential memleak in error branch
+Date:   Mon, 20 Jul 2020 17:35:12 +0200
+Message-Id: <20200720152821.618140315@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -44,46 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Bernard Zhao <bernard@vivo.com>
 
-commit c1fbec4ac0d701f350a581941d35643d5a9cd184 upstream.
+[ Upstream commit 177d3819633cd520e3f95df541a04644aab4c657 ]
 
-As we are about to disable the vdso for compat tasks in some circumstances,
-let's allow a workaround descriptor to express exactly that.
+In function msm_submitqueue_create, the queue is a local
+variable, in return -EINVAL branch, queue didn`t add to ctx`s
+list yet, and also didn`t kfree, this maybe bring in potential
+memleak.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200706163802.1836732-3-maz@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+[trivial commit msg fixup]
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/arch_timer.h  |    1 +
- drivers/clocksource/arm_arch_timer.c |    3 +++
- 2 files changed, 4 insertions(+)
+ drivers/gpu/drm/msm/msm_submitqueue.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/arch_timer.h
-+++ b/arch/arm64/include/asm/arch_timer.h
-@@ -58,6 +58,7 @@ struct arch_timer_erratum_workaround {
- 	u64 (*read_cntvct_el0)(void);
- 	int (*set_next_event_phys)(unsigned long, struct clock_event_device *);
- 	int (*set_next_event_virt)(unsigned long, struct clock_event_device *);
-+	bool disable_compat_vdso;
- };
+diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
+index 001fbf537440a..a1d94be7883a0 100644
+--- a/drivers/gpu/drm/msm/msm_submitqueue.c
++++ b/drivers/gpu/drm/msm/msm_submitqueue.c
+@@ -71,8 +71,10 @@ int msm_submitqueue_create(struct drm_device *drm, struct msm_file_private *ctx,
+ 	queue->flags = flags;
  
- DECLARE_PER_CPU(const struct arch_timer_erratum_workaround *,
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -562,6 +562,9 @@ void arch_timer_enable_workaround(const
- 	if (wa->read_cntvct_el0) {
- 		clocksource_counter.archdata.clock_mode = VDSO_CLOCKMODE_NONE;
- 		vdso_default = VDSO_CLOCKMODE_NONE;
-+	} else if (wa->disable_compat_vdso && vdso_default != VDSO_CLOCKMODE_NONE) {
-+		vdso_default = VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT;
-+		clocksource_counter.archdata.clock_mode = vdso_default;
+ 	if (priv->gpu) {
+-		if (prio >= priv->gpu->nr_rings)
++		if (prio >= priv->gpu->nr_rings) {
++			kfree(queue);
+ 			return -EINVAL;
++		}
+ 
+ 		queue->prio = prio;
  	}
- }
- 
+-- 
+2.25.1
+
 
 
