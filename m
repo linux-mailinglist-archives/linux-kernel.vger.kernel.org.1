@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B199E2255A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B222255A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgGTB4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 21:56:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726225AbgGTB4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 21:56:12 -0400
-Received: from dragon (unknown [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EB0820809;
-        Mon, 20 Jul 2020 01:56:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595210171;
-        bh=W8YzRx78vB3k/uKqwUom8cLKtr60pKZvb50g41M28uI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sMTz2hhUZp9w8dXrJkd1hWjfwAxDM8zB73GZ8411ME0c7BLSdbyZLmqPCQF8suXmL
-         5azAd7pqFNBmVzLxN36ONOJ14dGUssXSKfgBcyAwACZ+wh9Sj/fNFG01R/uvk6eZEI
-         PZ4LGToxAiEHuvqwIymw1f4BtJ5KIqiF98x3ShHM=
-Date:   Mon, 20 Jul 2020 09:55:54 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Anson Huang <Anson.Huang@nxp.com>,
-        Georg.Waibel@wiedemann-group.com, abel.vesa@nxp.com,
-        aisheng.dong@nxp.com, andrew.smirnov@gmail.com, chen.fang@nxp.com,
-        daniel.baluta@nxp.com, festevam@gmail.com, fugang.duan@nxp.com,
-        georg.waibel@wiedemann-group.de, horia.geanta@nxp.com,
-        j.remmet@phytec.de, kernel@pengutronix.de,
-        laurent.pinchart@ideasonboard.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        peng.fan@nxp.com, s.hauer@pengutronix.de, sfr@canb.auug.org.au,
-        yuehaibing@huawei.com, Linux-imx@nxp.com
-Subject: Re: [PATCH V6 6/6] clk: imx6sl: Fix build warning reported by kernel
- test robot
-Message-ID: <20200720015553.GB11560@dragon>
-References: <1594098579-25050-1-git-send-email-Anson.Huang@nxp.com>
- <1594098579-25050-7-git-send-email-Anson.Huang@nxp.com>
- <159486121748.1987609.16422613903444902156@swboyd.mtv.corp.google.com>
+        id S1727060AbgGTB5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 21:57:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8327 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726225AbgGTB5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 21:57:12 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9B4F05A83FAD185F2C1B;
+        Mon, 20 Jul 2020 09:57:10 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.238) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
+ 09:57:02 +0800
+Subject: Re: [PATCH] net: neterion: vxge: reduce stack usage in
+ VXGE_COMPLETE_VPATH_TX
+To:     Stephen Hemminger <stephen@networkplumber.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-next@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <jdmason@kudzu.us>,
+        <christophe.jaillet@wanadoo.fr>, <john.wanghui@huawei.com>
+References: <20200716173247.78912-1-cuibixuan@huawei.com>
+ <20200719100522.220a6f5a@hermes.lan>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <71b4229e-f442-9e8c-d8ab-c5610db881b9@huawei.com>
+Date:   Mon, 20 Jul 2020 09:57:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159486121748.1987609.16422613903444902156@swboyd.mtv.corp.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200719100522.220a6f5a@hermes.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.238]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 06:00:17PM -0700, Stephen Boyd wrote:
-> Quoting Anson Huang (2020-07-06 22:09:39)
-> > Use readl_relaxed() instead of __raw_readl(), and use BIT(x)
-> > instead of (1 << X) to fix below build warning reported by kernel
-> > test robot:
-> > 
-> > drivers/clk/imx/clk-imx6sl.c:149:49: warning: Shifting signed 32-bit
-> > value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
-> >      while (!(__raw_readl(anatop_base + PLL_ARM) & BM_PLL_ARM_LOCK))
-> > 
-> > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > ---
-> 
-> The subject is poor. Please improve it so that it summarizes the change
-> instead of the reaction to a warning from a robot.
-> 
-> > New patch.
-> > ---
-> >  drivers/clk/imx/clk-imx6sl.c | 15 ++++++++-------
-> >  1 file changed, 8 insertions(+), 7 deletions(-)
-> > 
-> 
-> This should come earlier in the series too so that the build warning
-> doesn't come out before this patch is applied.
 
-Anson,
 
-Please update the series per request from Stephen.  I have dropped the
-series from my branch.
+On 2020/7/20 1:05, Stephen Hemminger wrote:
+> On Thu, 16 Jul 2020 17:32:47 +0000
+> Bixuan Cui <cuibixuan@huawei.com> wrote:
+> 
+>> Fix the warning: [-Werror=-Wframe-larger-than=]
+>>
+>> drivers/net/ethernet/neterion/vxge/vxge-main.c:
+>> In function'VXGE_COMPLETE_VPATH_TX.isra.37':
+>> drivers/net/ethernet/neterion/vxge/vxge-main.c:119:1:
+>> warning: the frame size of 1056 bytes is larger than 1024 bytes
+>>
+>> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> Dropping the NR_SKB_COMPLETED to 16 won't have much impact
+> on performance, and shrink the size.
+> 
+> Doing 16 skb's at a time instead of 128 probably costs
+> less than one allocation. Especially since it is unlikely
+> that the device completed that many transmits at once.
+> 
+> 
+I will send the v2 patch based on your suggestions.
+thanks
 
-Shawn
