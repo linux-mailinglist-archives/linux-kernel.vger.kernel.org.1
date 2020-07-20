@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B0E2256F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6F42256F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgGTFGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 01:06:47 -0400
-Received: from mail-dm6nam10on2089.outbound.protection.outlook.com ([40.107.93.89]:57509
+        id S1726636AbgGTFHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 01:07:00 -0400
+Received: from mail-dm6nam10on2054.outbound.protection.outlook.com ([40.107.93.54]:46049
         "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725287AbgGTFGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 01:06:47 -0400
+        id S1725287AbgGTFG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 01:06:59 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T2FpbzMEBXvCTjdoTnaGyq57hWccr7+LfVCiKsJnB/5HDPJZD6BpUjHd+K9VH5gESG8eA/6mXexM/YZPgk2S+FpR7RIN97tcNIkEBJwbv/IMzS8g3yqb8odhOgaTfywEpqlG+xD6yhLGRKmq5OUxjX4SULb7vb7qB5TyWKyEXgrb48g5TffTKv9hdpUo9nlYrfL5vc+2Qpy9Dic35goxW/+RQucjt/DwgpJHsMh87DQje35OzIsYG1HL45q0deM7lf27yTNclINLW2E6UVIMV7IwgP3I5ydf84sA7mF8CtrPW/7O2JEmxNbeMmL7cdyxWSAWEMogWlVsScOmRV/v+w==
+ b=DpV4f5s3QSAuPU0j84pWVdYU33H31nv9RTrOZpuSJREJQkgQVLaB5LKiUEd/6bCcvUp2RHTfSnAM725cni79pj+ISGgBJq7HMCRlIgYrbaOjBBAFTUO1BZ5ROfR/1ikw6J+cphY2J5qhzOhfAMd1gnyvdOSaKHUGUOQE7m2lo9MzUzKooVfN6ooEVtObNNU1HhLLlP2P6v6TIOHCCHPlFFRtpT8prcyIykp4USLo8LulcTePaAaCnO1kYcUV0DvgWhKYxTLjTQdq4mx5QjTyZuj7gZsZTp1fqAU7Qe1I+JfkjXXJ7wvUSeQbokczJvqFEH9wW1lcsNSKRuDdFZAX1g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wfCk201FvWlIusiJ20M931+ZD+2bvTDB4nRyCEUoB8M=;
- b=OByj50mcM/BrQMcib2oFVE0H7N41gBMMbm/ZAUZbzzS5nnFuwKT9HtkFEBspJyFJVrypC/BABSe/TQO30fz8vHXfzV6ghOpu7BXC1jnJ27AdUQYYZUhyvoqeRlwGE+bmRYgD+ZWnkq75vuHKHovqIUwwROuE/RiqJ6U9LHC1eRUhnHTBjQXpMskmN/fzLhS01z0tsNVE24bQayI8pIVQQR/wDh0w6biQ+aP2LahPby5KnuMg4MIloQ0ucRTomzfg4Yy8XJt8AlfRMj4wX5siOA6L0Lk9DYdgA0or2+YglrsRuNSQcHp0eEMeoa6kdkkLbJi16Tkgoerz2nLYBGB2Rg==
+ bh=twvrfswfDYU6++VZizB6yPQWICq6rL1wnHe+si4wPD0=;
+ b=YmDAWr6Ihp3uPSNAhkeD8LZLMr4icY+2gKQeFecjffu6mAsdMLDSk0ZWTnUEfAa2IDVuYhdkKt5k6h/7gBT92AdbKq9gBWds8o/zJN/prQ4DmuoaN82F4aq/qTS8+4DjA8Z4atPX7fL32kiShHWGqCXFAMlLGj5DxNtsTEkbGL22pg9FYZSXSVvoxYALRyU+tQLWOquxVnkTNijOY0jrrXDxmh8VuUgK23ATMkLyxbG1pXUjpHkSKpuqJz8l5p355CuwsicMAJtGrlG2OtR8BgrOpFCOBvdppSvqtovEZ9wtVpFWK8YOPUntvxiG9+2egGyKXKDQvFHwylu4VV79wg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wfCk201FvWlIusiJ20M931+ZD+2bvTDB4nRyCEUoB8M=;
- b=Pi2p3IuTAtg5SXyAwW07NLsa9hDsx6ZO7S6NBDA2ubkQeXvJG6Pc9QyJg+PkCjtrH2+VX8WwIW9iLB52erMGQc88B96aQmQ+ZigJIs5BjiSmBG+SkLSkJv48OIoHlEuQIthL37irewwAQGygfJUaxlUTUNOTF1lmAZDBs06UHh0=
+ bh=twvrfswfDYU6++VZizB6yPQWICq6rL1wnHe+si4wPD0=;
+ b=gD9AdZcWGyxIzHVbL7puIZ2HLAfM342gWbfv4x0nkVpnh+4TXHFBGSOsh46GDBE0KZAMrRwB4h/s8WO1zbqfQWRnHHu2p028O/LhHyEFoZF0TxhTAF4KYaolj2s6X1X6Jlq+5NmOMLr2ocGY+HHx/tv+jeVRrrCJK4LfLcw6mBE=
 Authentication-Results: amd.com; dkim=none (message not signed)
  header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
 Received: from MWHPR12MB1599.namprd12.prod.outlook.com (2603:10b6:301:10::12)
  by MWHPR12MB1853.namprd12.prod.outlook.com (2603:10b6:300:113::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Mon, 20 Jul
- 2020 05:06:44 +0000
+ 2020 05:06:56 +0000
 Received: from MWHPR12MB1599.namprd12.prod.outlook.com
  ([fe80::25b9:83b0:4b17:2c63]) by MWHPR12MB1599.namprd12.prod.outlook.com
  ([fe80::25b9:83b0:4b17:2c63%12]) with mapi id 15.20.3195.025; Mon, 20 Jul
- 2020 05:06:44 +0000
+ 2020 05:06:56 +0000
 From:   Akshu Agrawal <akshu.agrawal@amd.com>
 To:     akshu.agrawal@amd.com
-Cc:     sboyd@kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org (open list:ACPI),
+Cc:     sboyd@kernel.org, Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/4] ACPI: APD: Add a fmw property is_raven
-Date:   Mon, 20 Jul 2020 10:34:58 +0530
-Message-Id: <20200720050500.23357-4-akshu.agrawal@amd.com>
+Subject: [v2 4/4] clk: x86: Support RV architecture
+Date:   Mon, 20 Jul 2020 10:34:59 +0530
+Message-Id: <20200720050500.23357-5-akshu.agrawal@amd.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200720050500.23357-1-akshu.agrawal@amd.com>
 References: <20200720050500.23357-1-akshu.agrawal@amd.com>
@@ -57,81 +56,131 @@ X-ClientProxiedBy: MAXPR0101CA0054.INDPRD01.PROD.OUTLOOK.COM
  (2603:10b6:301:10::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from local.mshome.net (122.171.179.172) by MAXPR0101CA0054.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Mon, 20 Jul 2020 05:06:42 +0000
+Received: from local.mshome.net (122.171.179.172) by MAXPR0101CA0054.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Mon, 20 Jul 2020 05:06:54 +0000
 X-Mailer: git-send-email 2.20.1
 X-Originating-IP: [122.171.179.172]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3c40a289-6ade-4d64-9b0d-08d82c6ab23b
+X-MS-Office365-Filtering-Correlation-Id: 7198c5b0-a6a2-4494-f77c-08d82c6ab95c
 X-MS-TrafficTypeDiagnostic: MWHPR12MB1853:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB18537AF7CAD8ECAD9000E942F87B0@MWHPR12MB1853.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1853CE0FABEAB3E4E9DFDA37F87B0@MWHPR12MB1853.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tmzuXdqr8b9umwm0+KoC4PTS3CWXFct8tv1BUpUkVBAdEho9g0b17GiIrP/HPLyaZAauVXKU0N+TAf0bDdEYaEacLq7a1c5r0AmnSzeF0HyuJwx3WGt+q4VyUp44rmlNsvnQBmnwnbfpnhjvsecAy8o9SFaDFh3ff2deL+wJFhBMmWLYnGtefQ6Cfy5BRAlmZrDvd5b9caoPrCQjd1acMANejtbgMi9JioeQ5Xt8Ht0g7n01i7VAQl7LlZkQiw8/hOBspdDbkq1IIUJZMDrNc7+bGIh63SQIXOi2/PaJ1lenZYApazpZPNF796bxf7q8E8RoYa07lzVyM9bsAPirgA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1599.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(6486002)(26005)(36756003)(478600001)(2906002)(8936002)(5660300002)(66946007)(66556008)(66476007)(6512007)(6506007)(86362001)(6666004)(37006003)(186003)(52116002)(316002)(1076003)(956004)(2616005)(8676002)(34206002)(4326008)(16526019)(44832011)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 06muF35z3zoMGweEbr4tI26PtHRIKwOuV+b+WmaHSGaNPDg72a2CeY71cC8kEg8rlWqBRHeYuhBB16+T8qRZSzLcb555NknXAaM7a0DaX9opeZxFVc4Kb7orQajnaFsP3QCJ93vln3ZPVSu5lOF+HTUZVG/fl9XAUzfsY6U6v51tBWSt3awwLp9FIaxCxMsb6j/xX/+FCRaly00mAXcJV1T9UnXT93t4bQhumn1f385JikYqb8i++u13RVLo+jbxf2bP0UGqYy/qMu5h8mjAN3vz1bUFvuKhhnd58+eFwVuPYFwE7H8Fbcd0Hi3hSoqoZaJP71SEh37OKfbFNr4udVvsNJfNa9Y4MqWuog5ncP3Oym430mllK1c/qECyK/6h1aItUhc9zhX3U9415ZTXt8EeO+HmPIaVJZm+UCGOrmzIeqjsWI14X2ekN8aaeg2SfcgSfy4qwhrGvyVWXP12aiYuXzCWt9lE8U8Kc1rd9O4=
+X-Microsoft-Antispam-Message-Info: U4omR5Dvh5uyUxh32BVc2xb6WXcHwP4qoRRaqlEG92AFWERJwwpiRlyUNlc2QcBZCOujyNfCN3/T0ec9wOWIIQbVzWOAd9Yx3nR0nhzlEAYq4CEdxwe2UlGiLGcv03SQuAGB0auHRCio5NfTvbGmcJpRfw3GQAefk5JqBQ2BXvgr9yc4Pd0AnfUZGiTaOnik0XWvVUpyuAv4g/ucuwodFq4JS5+Klszo3Iwn16qoYqzaKUKPKxqepDh/nDhdyAg0UWvomNTAhM2Le9Qr4UONTuadnkcb5EwHFR2YQUBDnHem0kz4g+KFxlvw5rg3HGPUQ4Waz2bnEWQ5qLWV4tNChQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1599.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(6486002)(26005)(36756003)(478600001)(2906002)(8936002)(5660300002)(66946007)(66556008)(66476007)(6512007)(6506007)(86362001)(37006003)(186003)(83380400001)(52116002)(316002)(1076003)(956004)(2616005)(8676002)(34206002)(4326008)(16526019)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: gyD/OV5XGsHF9HBll1DCUMMnwCjRTH96m8969/+dt4lo5S4zLfvSytTVl3jHCFjsx1SixVGU+MYQAFs8IvABaYkxjoiOAU8ZDKWUg9esn1t3zEEcz+RqCETJ1bFsMB3W2/fvDegbMLQLEIVf7hzDkZzEANa9GvDtDxT4rkWrBqWKFbTt4UtcpkwgCE1UQ/a2GxkWOj6Ou7YTn+dJ4MfIAZlfMAmlF1mw15Jj/qpFohNhfx8+NfjK+MKZqSG0o+Yy1MA42bNLmYAuPcWDunPo8D4nyUNTQmcdf1+ucfGbb1F/y5TsYBBnxJnqhuFwUqtbd3/jI3MRKXJiyS7S1Ih8dN7gefIro2rFreSZwIJEuJ+9DZzrYkuruXPe21go883lI9wORHvXVqqXPmB9Kd3u5+xArIAENZGqUwzi7FhsQX5qL2G5L9B86nMKQV1maEExWWHS40gMBaGxxaJmvcmQYHiSgTtyjWbhc4/QUZ76kf8=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c40a289-6ade-4d64-9b0d-08d82c6ab23b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7198c5b0-a6a2-4494-f77c-08d82c6ab95c
 X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1599.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 05:06:44.5169
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 05:06:56.3837
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B1/bbYfB7xSN90jb1VZPNJWdd2cretchN1Y3nzW8ASgAY1R/MttIlpFMJzXbIg8I0pfiLIF33MklX7NSkYXUoA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: cjZQAt/4/2IWH1DpozrGllE2S0grJGbDR201SRrAETNzt+W/7aroXT/UBHYDrfBQYRSQ8fF2SoJzFWVB9ZBzOw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1853
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since there is slight difference in AMD RV based soc in misc
-clk architecture. The fmw property will help in differentiating
-the SoCs.
+There is minor difference between previous family of SoC and
+the current one. Which is the there is only 48Mh fixed clk.
+There is no mux and no option to select another freq as there in previous.
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
- drivers/acpi/acpi_apd.c               | 4 ++++
- include/linux/platform_data/clk-fch.h | 1 +
- 2 files changed, 5 insertions(+)
+v2: Consolidated the loops in remove.
 
-diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
-index 2d99e46add1a..d879ba28826c 100644
---- a/drivers/acpi/acpi_apd.c
-+++ b/drivers/acpi/acpi_apd.c
-@@ -82,6 +82,7 @@ static int misc_check_res(struct acpi_resource *ares, void *data)
- static int fch_misc_setup(struct apd_private_data *pdata)
- {
- 	struct acpi_device *adev = pdata->adev;
-+	const union acpi_object *obj;
- 	struct platform_device *clkdev;
- 	struct fch_clk_data *clk_data;
- 	struct resource_entry *rentry;
-@@ -98,6 +99,9 @@ static int fch_misc_setup(struct apd_private_data *pdata)
- 	if (ret < 0)
- 		return -ENOENT;
+ drivers/clk/x86/clk-fch.c | 53 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 38 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/clk/x86/clk-fch.c b/drivers/clk/x86/clk-fch.c
+index b252f0cf0628..d68bca7b213f 100644
+--- a/drivers/clk/x86/clk-fch.c
++++ b/drivers/clk/x86/clk-fch.c
+@@ -26,6 +26,10 @@
+ #define ST_CLK_GATE	3
+ #define ST_MAX_CLKS	4
  
-+	acpi_dev_get_property(adev, "is-rv", ACPI_TYPE_INTEGER, &obj);
-+	clk_data->is_rv = obj->integer.value;
++#define RV_CLK_48M	0
++#define RV_CLK_GATE	1
++#define RV_MAX_CLKS	2
 +
- 	list_for_each_entry(rentry, &resource_list, node) {
- 		clk_data->base = devm_ioremap(&adev->dev, rentry->res->start,
- 					      resource_size(rentry->res));
-diff --git a/include/linux/platform_data/clk-fch.h b/include/linux/platform_data/clk-fch.h
-index 850ca776156d..b9f682459f08 100644
---- a/include/linux/platform_data/clk-fch.h
-+++ b/include/linux/platform_data/clk-fch.h
-@@ -12,6 +12,7 @@
+ static const char * const clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
+ static struct clk_hw *hws[ST_MAX_CLKS];
  
- struct fch_clk_data {
- 	void __iomem *base;
-+	u32 is_rv;
- };
+@@ -37,33 +41,52 @@ static int fch_clk_probe(struct platform_device *pdev)
+ 	if (!fch_data || !fch_data->base)
+ 		return -EINVAL;
  
- #endif /* __CLK_FCH_H */
+-	hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz", NULL, 0,
+-						     48000000);
+-	hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz", NULL, 0,
+-						     25000000);
++	if (!fch_data->is_rv) {
++		hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
++			NULL, 0, 48000000);
++		hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz",
++			NULL, 0, 25000000);
++
++		hws[ST_CLK_MUX] = clk_hw_register_mux(NULL, "oscout1_mux",
++			clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
++			0, fch_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0,
++			NULL);
+ 
+-	hws[ST_CLK_MUX] = clk_hw_register_mux(NULL, "oscout1_mux",
+-		clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
+-		0, fch_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
++		clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
+ 
+-	clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
++		hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
++			"oscout1_mux", 0, fch_data->base + MISCCLKCNTL1,
++			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
+ 
+-	hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1", "oscout1_mux",
+-		0, fch_data->base + MISCCLKCNTL1, OSCCLKENB,
+-		CLK_GATE_SET_TO_DISABLE, NULL);
++		devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE],
++			"oscout1", NULL);
++	} else {
++		hws[RV_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
++			NULL, 0, 48000000);
+ 
+-	devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE], "oscout1",
+-				    NULL);
++		hws[RV_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
++			"clk48MHz", 0, fch_data->base + MISCCLKCNTL1,
++			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
++
++		devm_clk_hw_register_clkdev(&pdev->dev, hws[RV_CLK_GATE],
++			"oscout1", NULL);
++	}
+ 
+ 	return 0;
+ }
+ 
+ static int fch_clk_remove(struct platform_device *pdev)
+ {
+-	int i;
++	int i, clks;
++	struct fch_clk_data *fch_data;
+ 
+-	for (i = 0; i < ST_MAX_CLKS; i++)
++	fch_data = dev_get_platdata(&pdev->dev);
++
++	clks = (!fch_data->is_rv) ? ST_MAX_CLKS : RV_MAX_CLKS;
++
++	for (i = 0; i < clks; i++)
+ 		clk_hw_unregister(hws[i]);
++
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
