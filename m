@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F7B22669A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AC62267D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732860AbgGTQEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:04:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39404 "EHLO mail.kernel.org"
+        id S2388355AbgGTQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732834AbgGTQEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:04:31 -0400
+        id S2388323AbgGTQPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:15:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71E5920684;
-        Mon, 20 Jul 2020 16:04:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 640A420684;
+        Mon, 20 Jul 2020 16:14:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261071;
-        bh=dL51J9ZjJIx7T182G+ExsZ/CAI778fDI4ysS9fKS0DU=;
+        s=default; t=1595261700;
+        bh=jfhBl+FshSwPpKFBstLBcpw43dci/9aHGo71Qsm30m4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JeJq/JyPCqoqr95iGTHFOjlc7dTwhm/SRaCTjsKKgdxDt/RHYmkVCl5QEk+YvB7hB
-         FDX0OYDnyvnUhWjHIAHHZ7KNWLuPFtrEguykfwxViMDEnxCQ0woBRkGIt/wh+4tWB9
-         LXQ1rT2mFU89HexxvIjpl5cYieP8ptKO/iLDJy5M=
+        b=a4cAxz0qnPxVztIAFLjk9vR9zwBshDm0I8z6FCHoNx7rguclC9LcXALE8w2kVkokK
+         /xIYChzo9BTk9D1YmytHS+UCNcMjwR07fMSTv1SUW6eRC8Eb10QPIVf9aY2GIxxaG5
+         r9dM1LaBFm4QnBexG1OyuvgIiwzS3YvAYqTbGYb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH 5.4 168/215] serial: mxs-auart: add missed iounmap() in probe failure and remove
-Date:   Mon, 20 Jul 2020 17:37:30 +0200
-Message-Id: <20200720152828.162219093@linuxfoundation.org>
+        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.7 180/244] ovl: relax WARN_ON() when decoding lower directory file handle
+Date:   Mon, 20 Jul 2020 17:37:31 +0200
+Message-Id: <20200720152834.405203482@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
 
-commit d8edf8eb5f6e921fe6389f96d2cd05862730a6ff upstream.
+commit 124c2de2c0aee96271e4ddab190083d8aa7aa71a upstream.
 
-This driver calls ioremap() in probe, but it misses calling iounmap() in
-probe's error handler and remove.
-Add the missed calls to fix it.
+Decoding a lower directory file handle to overlay path with cold
+inode/dentry cache may go as follows:
 
-Fixes: 47d37d6f94cc ("serial: Add auart driver for i.MX23/28")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200709135608.68290-1-hslester96@gmail.com
+1. Decode real lower file handle to lower dir path
+2. Check if lower dir is indexed (was copied up)
+3. If indexed, get the upper dir path from index
+4. Lookup upper dir path in overlay
+5. If overlay path found, verify that overlay lower is the lower dir
+   from step 1
+
+On failure to verify step 5 above, user will get an ESTALE error and a
+WARN_ON will be printed.
+
+A mismatch in step 5 could be a result of lower directory that was renamed
+while overlay was offline, after that lower directory has been copied up
+and indexed.
+
+This is a scripted reproducer based on xfstest overlay/052:
+
+  # Create lower subdir
+  create_dirs
+  create_test_files $lower/lowertestdir/subdir
+  mount_dirs
+  # Copy up lower dir and encode lower subdir file handle
+  touch $SCRATCH_MNT/lowertestdir
+  test_file_handles $SCRATCH_MNT/lowertestdir/subdir -p -o $tmp.fhandle
+  # Rename lower dir offline
+  unmount_dirs
+  mv $lower/lowertestdir $lower/lowertestdir.new/
+  mount_dirs
+  # Attempt to decode lower subdir file handle
+  test_file_handles $SCRATCH_MNT -p -i $tmp.fhandle
+
+Since this WARN_ON() can be triggered by user we need to relax it.
+
+Fixes: 4b91c30a5a19 ("ovl: lookup connected ancestor of dir in inode cache")
+Cc: <stable@vger.kernel.org> # v4.16+
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/tty/serial/mxs-auart.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/tty/serial/mxs-auart.c
-+++ b/drivers/tty/serial/mxs-auart.c
-@@ -1701,21 +1701,21 @@ static int mxs_auart_probe(struct platfo
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		ret = irq;
--		goto out_disable_clks;
-+		goto out_iounmap;
+---
+ fs/overlayfs/export.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/fs/overlayfs/export.c
++++ b/fs/overlayfs/export.c
+@@ -478,7 +478,7 @@ static struct dentry *ovl_lookup_real_in
+ 	if (IS_ERR_OR_NULL(this))
+ 		return this;
+ 
+-	if (WARN_ON(ovl_dentry_real_at(this, layer->idx) != real)) {
++	if (ovl_dentry_real_at(this, layer->idx) != real) {
+ 		dput(this);
+ 		this = ERR_PTR(-EIO);
  	}
- 
- 	s->port.irq = irq;
- 	ret = devm_request_irq(&pdev->dev, irq, mxs_auart_irq_handle, 0,
- 			       dev_name(&pdev->dev), s);
- 	if (ret)
--		goto out_disable_clks;
-+		goto out_iounmap;
- 
- 	platform_set_drvdata(pdev, s);
- 
- 	ret = mxs_auart_init_gpios(s, &pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to initialize GPIOs.\n");
--		goto out_disable_clks;
-+		goto out_iounmap;
- 	}
- 
- 	/*
-@@ -1723,7 +1723,7 @@ static int mxs_auart_probe(struct platfo
- 	 */
- 	ret = mxs_auart_request_gpio_irq(s);
- 	if (ret)
--		goto out_disable_clks;
-+		goto out_iounmap;
- 
- 	auart_port[s->port.line] = s;
- 
-@@ -1749,6 +1749,9 @@ out_free_qpio_irq:
- 	mxs_auart_free_gpio_irq(s);
- 	auart_port[pdev->id] = NULL;
- 
-+out_iounmap:
-+	iounmap(s->port.membase);
-+
- out_disable_clks:
- 	if (is_asm9260_auart(s)) {
- 		clk_disable_unprepare(s->clk);
-@@ -1764,6 +1767,7 @@ static int mxs_auart_remove(struct platf
- 	uart_remove_one_port(&auart_driver, &s->port);
- 	auart_port[pdev->id] = NULL;
- 	mxs_auart_free_gpio_irq(s);
-+	iounmap(s->port.membase);
- 	if (is_asm9260_auart(s)) {
- 		clk_disable_unprepare(s->clk);
- 		clk_disable_unprepare(s->clk_ahb);
 
 
