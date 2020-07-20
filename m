@@ -2,182 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A5322621E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3603226209
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgGTO2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728802AbgGTO2r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:28:47 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947EBC061794;
-        Mon, 20 Jul 2020 07:28:47 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z3so9119274pfn.12;
-        Mon, 20 Jul 2020 07:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3FlUkctU/9Z8JymGDkG+Bf/RRrvEHqZ+B4t/lCBxEH4=;
-        b=cm5XgV/yWFRRE9EHS24/EqW66GsPEs3000VF0aMvp2QSusnxfH2P/N4LTQUujMF1lm
-         tt8o/sRaKVJvTG/iFb3yhYuU0kldoxnm4qPQ0LRe0leRrGZAApAziZVNeLfDewWpDy5f
-         xhRvGSkzenzm6zNKBtqPMohpWbINR40PZKwL2najXJv/1nQM+Sl0hgRo8EWIe3Mtltx9
-         iHq6HNwDU49y7+AqKuKnMSr5YTVl+ZuN2ejZlRSIKMXM2yKbqc2NgkbOtVoHQXYK/Ow7
-         4Y2F4pG1Nl/Xd1o88dc795XHR5KzUsCG6GnSJOmSkuyLDufEefqpkWcGpk64gX1p74mH
-         4n5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3FlUkctU/9Z8JymGDkG+Bf/RRrvEHqZ+B4t/lCBxEH4=;
-        b=RgwQFkgEDla5Cj68CYGV/Gxdle6SV5ICy2lDqlzSQmdahVS5N5iwK0PydUHvtIW0O/
-         lJMmmUjYxMRo5N9ILM3+7PJD2xPdndcGxXo2sP7EcaWwxyCKuKRtMPQWxyhwScQ/C+nG
-         DvzQzCO2Hl+epcF+gPqhrJR3ywk7Tggr5E+iqTaOuy0EAW/AYwX7xCNwwkQkdkIL92Mf
-         bVkmIwUPven1oaDQvMJJYCvTqT+3grgHXrmtHgK9HwDfzP+WOW0re0tt4R7q5V95oP95
-         UgLLgVjWfu4thliTrIRlHqwxV+Q+As7spc6mbYPWBDUfdz8tR76Clm0wuMVOFqznLo5M
-         0uqQ==
-X-Gm-Message-State: AOAM5309X04ZN7buHIDQsAuEv6G2IL/SabpMYjtdpotXNmvGtZuZanJF
-        CaZeFfuHbJ8RdbUChOr3QSE=
-X-Google-Smtp-Source: ABdhPJxkd48eXlvOgVHcFNHC7hs+LWba48WNoCpqQ0EXWeCyVxMv2V7/q3ybFxEBtrVMabJk1BAYAA==
-X-Received: by 2002:a63:c049:: with SMTP id z9mr14766666pgi.353.1595255327105;
-        Mon, 20 Jul 2020 07:28:47 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id i67sm17581282pfg.13.2020.07.20.07.28.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 07:28:46 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Bruce Chang <brucechang@via.com.tw>,
-        Harald Welte <HaraldWelte@viatech.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1] mmc: via-sdmmc: use generic power management
-Date:   Mon, 20 Jul 2020 19:56:04 +0530
-Message-Id: <20200720142603.577323-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728739AbgGTO00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:26:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:50158 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725934AbgGTO0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:26:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67341D6E;
+        Mon, 20 Jul 2020 07:26:22 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14B763F718;
+        Mon, 20 Jul 2020 07:26:20 -0700 (PDT)
+References: <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org> <20200718171406.GB16791@redhat.com> <20200718174448.4btbjcvp6wbbdgts@wittgenstein> <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org> <20200720064326.GA6612@redhat.com> <20200720082657.GC6612@redhat.com> <20200720084106.GJ10769@hirez.programming.kicks-ass.net> <20200720105924.GE43129@hirez.programming.kicks-ass.net> <20200720112623.GF43129@hirez.programming.kicks-ass.net> <jhjwo2yidit.mognet@arm.com> <20200720131747.GD119549@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     peterz@infradead.org
+Cc:     Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+In-reply-to: <20200720131747.GD119549@hirez.programming.kicks-ass.net>
+Date:   Mon, 20 Jul 2020 15:26:16 +0100
+Message-ID: <jhjv9iii7p3.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PM have to manage PCI states and device's PM states
-themselves. They also need to take care of configuration registers.
 
-With improved and powerful support of generic PM, PCI Core takes care of
-above mentioned, device-independent, jobs.
+On 20/07/20 14:17, peterz@infradead.org wrote:
+> On Mon, Jul 20, 2020 at 01:20:26PM +0100, Valentin Schneider wrote:
+>> On 20/07/20 12:26, peterz@infradead.org wrote:
+>
+>> > +	/*
+>> > +	 * We must re-load prev->state in case ttwu_remote() changed it
+>> > +	 * before we acquired rq->lock.
+>> > +	 */
+>> > +	tmp_state = prev->state;
+>> > +	if (unlikely(prev_state != tmp_state)) {
+>> > +		/*
+>> > +		 * ptrace_{,un}freeze_traced() think it is cool to change
+>> > +		 * ->state around behind our backs between TASK_TRACED and
+>> > +		 *  __TASK_TRACED.
+>> > +		 *
+>> > +		 * This is safe because this, as well as any __TASK_TRACED
+>> > +		 * wakeups are under siglock.
+>> > +		 *
+>> > +		 * For any other case, a changed prev_state must be to
+>> > +		 * TASK_RUNNING, such that when it blocks, the load has
+>> > +		 * happened before the smp_mb().
+>> > +		 *
+>> > +		 * Also see the comment with deactivate_task().
+>> > +		 */
+>> > +		SCHED_WARN_ON(tmp_state && (prev_state & __TASK_TRACED &&
+>> > +					   !(tmp_state & __TASK_TRACED)));
+>> > +
+>>
+>> IIUC if the state changed and isn't TASK_RUNNING it *has* to have
+>> __TASK_TRACED, so can't that be
+>>
+>>   SCHED_WARN_ON(tmp_state && !(tmp_state & __TASK_TRACED));
+>
+> Suppose task->state == TASK_UNINTERRUPTIBLE, and task != current, and
+> then someone goes and does task->state = __TASK_TRACED.
+>
+> That is, your statement is correct given the current code, but we also
+> want to verify no new code comes along and does something 'creative'.
+>
 
-This driver makes use of PCI helper functions like
-pci_save/restore_state(), pci_enable/disable_device(),
-pci_enable_wake() and pci_set_power_state() and to do required operations.
-In generic mode, they are no longer needed.
+That is what I was trying to go for; AFAICT your approach only warns if
+__TASK_TRACED gets removed between the two loads (IOW it was already
+there). The way I was seeing it is:
 
-Change function parameter in both .suspend() and .resume() to
-"struct device*" type. Use dev_get_drvdata() to get drv data.
+- We only get here if prev_state != tmp_state; IOW we know we raced with
+  something
+- if (tmp_state), then it wasn't with ttwu_remote()
+- thus it must only be with ptrace shenanigans, IOW __TASK_TRACED must be
+  there.
 
-Compile-tested only.
+Now, what I suggested still doesn't detect what you pointed out, or some
+crazier thing that sets __TASK_TRACED *and* some other stuff. IIUC the
+ptrace transformation does TASK_TRACED -> __TASK_TRACED, so we could have
+it as:
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/mmc/host/via-sdmmc.c | 33 ++++++++-------------------------
- 1 file changed, 8 insertions(+), 25 deletions(-)
+  /* TODO: name me */
+  #define foobar TASK_TRACED ^ __TASK_TRACED
 
-diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-index ef95bce50889..49dab9f42b6d 100644
---- a/drivers/mmc/host/via-sdmmc.c
-+++ b/drivers/mmc/host/via-sdmmc.c
-@@ -1220,9 +1220,7 @@ static void via_sd_remove(struct pci_dev *pcidev)
- 		pci_name(pcidev), (int)pcidev->vendor, (int)pcidev->device);
- }
- 
--#ifdef CONFIG_PM
--
--static void via_init_sdc_pm(struct via_crdr_mmc_host *host)
-+static void __maybe_unused via_init_sdc_pm(struct via_crdr_mmc_host *host)
- {
- 	struct sdhcreg *pm_sdhcreg;
- 	void __iomem *addrbase;
-@@ -1256,30 +1254,27 @@ static void via_init_sdc_pm(struct via_crdr_mmc_host *host)
- 	via_print_sdchc(host);
- }
- 
--static int via_sd_suspend(struct pci_dev *pcidev, pm_message_t state)
-+static int __maybe_unused via_sd_suspend(struct device *dev)
- {
- 	struct via_crdr_mmc_host *host;
- 
--	host = pci_get_drvdata(pcidev);
-+	host = dev_get_drvdata(dev);
- 
- 	via_save_pcictrlreg(host);
- 	via_save_sdcreg(host);
- 
--	pci_save_state(pcidev);
--	pci_enable_wake(pcidev, pci_choose_state(pcidev, state), 0);
--	pci_disable_device(pcidev);
--	pci_set_power_state(pcidev, pci_choose_state(pcidev, state));
-+	device_wakeup_enable(dev);
- 
- 	return 0;
- }
- 
--static int via_sd_resume(struct pci_dev *pcidev)
-+static int __maybe_unused via_sd_resume(struct device *dev)
- {
- 	struct via_crdr_mmc_host *sdhost;
- 	int ret = 0;
- 	u8 gatt;
- 
--	sdhost = pci_get_drvdata(pcidev);
-+	sdhost = dev_get_drvdata(dev);
- 
- 	gatt = VIA_CRDR_PCICLKGATT_PAD_PWRON;
- 	if (sdhost->power == MMC_VDD_165_195)
-@@ -1294,32 +1289,20 @@ static int via_sd_resume(struct pci_dev *pcidev)
- 
- 	msleep(100);
- 
--	pci_set_power_state(pcidev, PCI_D0);
--	pci_restore_state(pcidev);
--	ret = pci_enable_device(pcidev);
--	if (ret)
--		return ret;
--
- 	via_restore_pcictrlreg(sdhost);
- 	via_init_sdc_pm(sdhost);
- 
- 	return ret;
- }
- 
--#else /* CONFIG_PM */
--
--#define via_sd_suspend NULL
--#define via_sd_resume NULL
--
--#endif /* CONFIG_PM */
-+static SIMPLE_DEV_PM_OPS(via_sd_pm_ops, via_sd_suspend, via_sd_resume);
- 
- static struct pci_driver via_sd_driver = {
- 	.name = DRV_NAME,
- 	.id_table = via_ids,
- 	.probe = via_sd_probe,
- 	.remove = via_sd_remove,
--	.suspend = via_sd_suspend,
--	.resume = via_sd_resume,
-+	.driver.pm = &via_sd_pm_ops,
- };
- 
- module_pci_driver(via_sd_driver);
--- 
-2.27.0
+  ...
 
+  /* not TASK_RUNNING; check against allowed transformations
+  SCHED_WARN_ON(tmp_state && ((prev_state ^ tmp_state) & ~foobar));
+
+
+That said...
+
+> Or is the heat getting to me?
+
+... that may apply to me as well :-)
