@@ -2,224 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A792258A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0261E2258AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgGTHcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:32:47 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55702 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgGTHcr (ORCPT
+        id S1726803AbgGTHgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgGTHgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:32:47 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06K7WI1d021738;
-        Mon, 20 Jul 2020 02:32:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595230338;
-        bh=/jWIiALzK5V8fvNl6MphNcf2kmWQpId+dgZUsAkatZo=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=Nq90Hzd6Wbf2o2UFZXbEwdU6FyZSUD0LYkHs/SNRN8N1Fr4tpmG3JWlx7WzPNOPBV
-         BL2lMJOvHcyjlo70f0AY/JmO0Tyrn2EDf6CScFYn/7NlexcDbVYXkaq0ZUgxT3T4TQ
-         CdYcPTEZZnujGkppNZLotdZXfGglX7y8kj2SK4r8=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06K7WIid074617
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Jul 2020 02:32:18 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
- Jul 2020 02:32:18 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 20 Jul 2020 02:32:18 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06K7WEUK125332;
-        Mon, 20 Jul 2020 02:32:15 -0500
-Subject: Re: [PATCH] firmware: ti_sci: Replace HTTP links with HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>, <nm@ti.com>,
-        <ssantosh@kernel.org>, <tglx@linutronix.de>,
-        <jason@lakedaemon.net>, <maz@kernel.org>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200718105538.9542-1-grandmaster@al2klimov.de>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <7b6caa87-8672-b5d5-ef8d-2fd38a4b53e6@ti.com>
-Date:   Mon, 20 Jul 2020 10:32:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 20 Jul 2020 03:36:05 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB4EC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 00:36:05 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o2so24148808wmh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 00:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c0ZDB5Wq9R/JvtsXNF5Wt7Eqi2IUySqHftkrwWUiswg=;
+        b=Sw5IEcisrBVJmb4gyxwaCG0cAqNnsc5yffyEHrr0+8UBL3kzg1SE1kRMGSlnDoSxyc
+         806TppootrHhX/rF15kUD9CNz9VhxEDkhC/iYXtHASrvbcC16hX823XSYN5lopruVMM3
+         KoDgWHHnik2fpBfH31SHOtwqVOrcajQeBV9Ns=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=c0ZDB5Wq9R/JvtsXNF5Wt7Eqi2IUySqHftkrwWUiswg=;
+        b=umALpbydJCQQWMwV6dnDVaQ50oVWL593to2PaL9IcvJOQO5c4tO4oyg/5/oP+ahRm3
+         THqt6bqRG+0me41vnlkOYNw4Ba/IxuCk8OyGqXx+JPlTu9GtQCCh/T/xSdAujWKitIYj
+         DKU5kDyaTr8jsVy9ejB3rSDE/pDd4jFDrPs78ibkxAFx1vH1TVXAc9I2X6VQ3HTEuyjx
+         wAt6QrNxtedN6nOwqSMRt6OGK3yMoUigPbWAiRm8DvPx28XmhQ5GGONEpuOOeOahABTn
+         9CrAr3kPmH3YyL14Qwjr6P/JJH3xemqLfznCXRouQDaVEgP5EqWf7s2Qrxqb4iAidAQ4
+         udxQ==
+X-Gm-Message-State: AOAM53365UiVbv4wod9wjjmgwUlRbL6jUg+eTU6RK9uaKHf+kGv/I0rH
+        LkI5sqGYz/DGa3R3CeMH7OSZB5zLgCE=
+X-Google-Smtp-Source: ABdhPJzmQ6e/1d88R0TDasxOj7GnF+ar1riWOZ2iimadli/xJPeOijGgXkcxuoFB6lfdwcaowN5kUg==
+X-Received: by 2002:a1c:9d0c:: with SMTP id g12mr20981175wme.107.1595230564111;
+        Mon, 20 Jul 2020 00:36:04 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f197sm32565618wme.33.2020.07.20.00.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 00:36:03 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 09:36:01 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sam@ravnborg.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm: core: Convert device logging to drm_* functions.
+Message-ID: <20200720073601.GV3278063@phenom.ffwll.local>
+Mail-Followup-To: Suraj Upadhyay <usuraj35@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sam@ravnborg.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200718150955.GA23103@blackclown>
 MIME-Version: 1.0
-In-Reply-To: <20200718105538.9542-1-grandmaster@al2klimov.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200718150955.GA23103@blackclown>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
-
-One comment below.
-
-On 18/07/2020 13:55, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+On Sat, Jul 18, 2020 at 08:39:55PM +0530, Suraj Upadhyay wrote:
+> Convert device logging with dev_* functions into drm_* functions.
 > 
-> Deterministic algorithm:
-> For each file:
->    If not .svg:
->      For each line:
->        If doesn't contain `\bxmlns\b`:
->          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->              If both the HTTP and HTTPS versions
->              return 200 OK and serve the same content:
->                Replace HTTP with HTTPS.
+> The patch has been generated with the coccinelle script below.
+> The script focuses on instances of dev_* functions where the drm device
+> context is clearly visible in its arguments.
 > 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> @@expression E1; expression list E2; @@
+> -dev_warn(E1->dev, E2)
+> +drm_warn(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_info(E1->dev, E2)
+> +drm_info(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_err(E1->dev, E2)
+> +drm_err(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_info_once(E1->dev, E2)
+> +drm_info_once(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_notice_once(E1->dev, E2)
+> +drm_notice_once(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_warn_once(E1->dev, E2)
+> +drm_warn_once(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_err_once(E1->dev, E2)
+> +drm_err_once(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_err_ratelimited(E1->dev, E2)
+> +drm_err_ratelimited(E1, E2)
+> 
+> @@expression E1; expression list E2; @@
+> -dev_dbg(E1->dev, E2)
+> +drm_dbg(E1, E2)
+> 
+> Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 > ---
->   Continuing my work started at 93431e0607e5.
->   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
-> 
->   If there are any URLs to be removed completely
->   or at least not (just) HTTPSified:
->   Just clearly say so and I'll *undo my change*.
->   See also: https://lkml.org/lkml/2020/6/27/64
-> 
->   If there are any valid, but yet not changed URLs:
->   See: https://lkml.org/lkml/2020/6/26/837
-> 
->   If you apply the patch, please let me know.
-> 
-> 
->   .../devicetree/bindings/interrupt-controller/ti,sci-intr.txt    | 2 +-
->   drivers/firmware/ti_sci.c                                       | 2 +-
->   drivers/firmware/ti_sci.h                                       | 2 +-
->   drivers/irqchip/irq-ti-sci-inta.c                               | 2 +-
->   drivers/irqchip/irq-ti-sci-intr.c                               | 2 +-
->   drivers/reset/reset-ti-sci.c                                    | 2 +-
->   include/linux/soc/ti/ti_sci_inta_msi.h                          | 2 +-
->   include/linux/soc/ti/ti_sci_protocol.h                          | 2 +-
->   8 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt
-> index 1a8718f8855d..178fca08278f 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt
-> @@ -55,7 +55,7 @@ Required Properties:
->   			corresponds to a range of host irqs.
->   
->   For more details on TISCI IRQ resource management refer:
-> -http://downloads.ti.com/tisci/esd/latest/2_tisci_msgs/rm/rm_irq.html
-> +https://downloads.ti.com/tisci/esd/latest/2_tisci_msgs/rm/rm_irq.html
->   
->   Example:
->   --------
-> diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-> index 4126be9e3216..53cee17d0115 100644
-> --- a/drivers/firmware/ti_sci.c
-> +++ b/drivers/firmware/ti_sci.c
-> @@ -2,7 +2,7 @@
->   /*
->    * Texas Instruments System Control Interface Protocol Driver
->    *
-> - * Copyright (C) 2015-2016 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2015-2016 Texas Instruments Incorporated - https://www.ti.com/
->    *	Nishanth Menon
->    */
->   
-> diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
-> index f0d068c03944..57cd04062994 100644
-> --- a/drivers/firmware/ti_sci.h
-> +++ b/drivers/firmware/ti_sci.h
-> @@ -6,7 +6,7 @@
->    * The system works in a message response protocol
->    * See: http://processors.wiki.ti.com/index.php/TISCI for details
+> Changes:
+> 	v2: Fixed error in coccinelle script and diff,
+> 	    i.e. removed the underscore.
+> 		drv_dbg_ -> drm_dbg
 
-^^^^
+Applied to drm-misc-next, thanks for your patch. Will probably go to 5.10
+because drm is already in feature freeze.
+-Daniel
 
-You should probably replace that one as well to be https while doing the 
-rest of the changes, even though the wiki is being deprecated during 
-this year.
-
--Tero
-
->    *
-> - * Copyright (C)  2015-2016 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C)  2015-2016 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   #ifndef __TI_SCI_H
-> diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
-> index 7e3ebf6ed2cd..85de19fe9b6e 100644
-> --- a/drivers/irqchip/irq-ti-sci-inta.c
-> +++ b/drivers/irqchip/irq-ti-sci-inta.c
-> @@ -2,7 +2,7 @@
->   /*
->    * Texas Instruments' K3 Interrupt Aggregator irqchip driver
->    *
-> - * Copyright (C) 2018-2019 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2018-2019 Texas Instruments Incorporated - https://www.ti.com/
->    *	Lokesh Vutla <lokeshvutla@ti.com>
->    */
->   
-> diff --git a/drivers/irqchip/irq-ti-sci-intr.c b/drivers/irqchip/irq-ti-sci-intr.c
-> index 59d51a20bbd8..5ea148faf2ab 100644
-> --- a/drivers/irqchip/irq-ti-sci-intr.c
-> +++ b/drivers/irqchip/irq-ti-sci-intr.c
-> @@ -2,7 +2,7 @@
->   /*
->    * Texas Instruments' K3 Interrupt Router irqchip driver
->    *
-> - * Copyright (C) 2018-2019 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2018-2019 Texas Instruments Incorporated - https://www.ti.com/
->    *	Lokesh Vutla <lokeshvutla@ti.com>
->    */
->   
-> diff --git a/drivers/reset/reset-ti-sci.c b/drivers/reset/reset-ti-sci.c
-> index bf68729ab729..b799aefad547 100644
-> --- a/drivers/reset/reset-ti-sci.c
-> +++ b/drivers/reset/reset-ti-sci.c
-> @@ -1,7 +1,7 @@
->   /*
->    * Texas Instrument's System Control Interface (TI-SCI) reset driver
->    *
-> - * Copyright (C) 2015-2017 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2015-2017 Texas Instruments Incorporated - https://www.ti.com/
->    *	Andrew F. Davis <afd@ti.com>
->    *
->    * This program is free software; you can redistribute it and/or modify
-> diff --git a/include/linux/soc/ti/ti_sci_inta_msi.h b/include/linux/soc/ti/ti_sci_inta_msi.h
-> index 11fb5048f5f6..e3aa8b14612e 100644
-> --- a/include/linux/soc/ti/ti_sci_inta_msi.h
-> +++ b/include/linux/soc/ti/ti_sci_inta_msi.h
-> @@ -2,7 +2,7 @@
->   /*
->    * Texas Instruments' K3 TI SCI INTA MSI helper
->    *
-> - * Copyright (C) 2018-2019 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2018-2019 Texas Instruments Incorporated - https://www.ti.com/
->    *	Lokesh Vutla <lokeshvutla@ti.com>
->    */
->   
-> diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
-> index 9531ec823298..0fc452dd96d4 100644
-> --- a/include/linux/soc/ti/ti_sci_protocol.h
-> +++ b/include/linux/soc/ti/ti_sci_protocol.h
-> @@ -2,7 +2,7 @@
->   /*
->    * Texas Instruments System Control Interface Protocol
->    *
-> - * Copyright (C) 2015-2016 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2015-2016 Texas Instruments Incorporated - https://www.ti.com/
->    *	Nishanth Menon
->    */
->   
+> 
+>  drivers/gpu/drm/drm_edid.c           | 6 ++----
+>  drivers/gpu/drm/drm_gem_cma_helper.c | 4 ++--
+>  drivers/gpu/drm/drm_mipi_dbi.c       | 7 +++----
+>  3 files changed, 7 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 52b357e75c3d..6840f0530a38 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -1844,9 +1844,7 @@ static void connector_bad_edid(struct drm_connector *connector,
+>  	if (connector->bad_edid_counter++ && !drm_debug_enabled(DRM_UT_KMS))
+>  		return;
+>  
+> -	dev_warn(connector->dev->dev,
+> -		 "%s: EDID is invalid:\n",
+> -		 connector->name);
+> +	drm_warn(connector->dev, "%s: EDID is invalid:\n", connector->name);
+>  	for (i = 0; i < num_blocks; i++) {
+>  		u8 *block = edid + i * EDID_LENGTH;
+>  		char prefix[20];
+> @@ -5298,7 +5296,7 @@ int drm_add_edid_modes(struct drm_connector *connector, struct edid *edid)
+>  	}
+>  	if (!drm_edid_is_valid(edid)) {
+>  		clear_eld(connector);
+> -		dev_warn(connector->dev->dev, "%s: EDID invalid.\n",
+> +		drm_warn(connector->dev, "%s: EDID invalid.\n",
+>  			 connector->name);
+>  		return 0;
+>  	}
+> diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+> index 06a5b9ee1fe0..822edeadbab3 100644
+> --- a/drivers/gpu/drm/drm_gem_cma_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+> @@ -105,8 +105,8 @@ struct drm_gem_cma_object *drm_gem_cma_create(struct drm_device *drm,
+>  	cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
+>  				      GFP_KERNEL | __GFP_NOWARN);
+>  	if (!cma_obj->vaddr) {
+> -		dev_dbg(drm->dev, "failed to allocate buffer with size %zu\n",
+> -			size);
+> +		drm_dbg(drm, "failed to allocate buffer with size %zu\n",
+> +			 size);
+>  		ret = -ENOMEM;
+>  		goto error;
+>  	}
+> diff --git a/drivers/gpu/drm/drm_mipi_dbi.c b/drivers/gpu/drm/drm_mipi_dbi.c
+> index 0e55d8716e3d..a7a611894243 100644
+> --- a/drivers/gpu/drm/drm_mipi_dbi.c
+> +++ b/drivers/gpu/drm/drm_mipi_dbi.c
+> @@ -225,9 +225,8 @@ int mipi_dbi_buf_copy(void *dst, struct drm_framebuffer *fb,
+>  		drm_fb_xrgb8888_to_rgb565(dst, src, fb, clip, swap);
+>  		break;
+>  	default:
+> -		dev_err_once(fb->dev->dev, "Format is not supported: %s\n",
+> -			     drm_get_format_name(fb->format->format,
+> -						 &format_name));
+> +		drm_err_once(fb->dev, "Format is not supported: %s\n",
+> +			     drm_get_format_name(fb->format->format, &format_name));
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -295,7 +294,7 @@ static void mipi_dbi_fb_dirty(struct drm_framebuffer *fb, struct drm_rect *rect)
+>  				   width * height * 2);
+>  err_msg:
+>  	if (ret)
+> -		dev_err_once(fb->dev->dev, "Failed to update display %d\n", ret);
+> +		drm_err_once(fb->dev, "Failed to update display %d\n", ret);
+>  
+>  	drm_dev_exit(idx);
+>  }
+> -- 
+> 2.17.1
 > 
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
