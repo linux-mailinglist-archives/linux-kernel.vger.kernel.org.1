@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B8B226A1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCF3226A20
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731723AbgGTPzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58700 "EHLO
+        id S1731728AbgGTP4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:56:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58724 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731225AbgGTPzn (ORCPT
+        with ESMTP id S1731731AbgGTPzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:43 -0400
+        Mon, 20 Jul 2020 11:55:53 -0400
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260541;
+        s=2020; t=1595260551;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=osTtrNUr4OHk/B4zAgkYVq1r5kpsvFsCr0rPGrUYJ3o=;
-        b=cVVTSp/yxcUkuUT49JWGd0r+9986GyT5GOZQD6zLLS7JkcAKnHGz9oYf1FP67YJ6amNKfx
-        wj/IxFAlJW4QYey51hJ5jShODthCuI4yn7Ofmpak9lFjDU8+T/nFn9//xthonl2FzFRNJf
-        Z+8q17yC3OcApu1DrgwhcLWm5006nD7evxF49tPLb9jRZFKmRya/29bFsVBRWyiwVwbfvb
-        6XnSj358njN6AJgxEqxozYLM/J4z/fS9zIuXpBlWwBXJB2NFRDt07mueqs1sR441EGYrIy
-        tA8QYdZP4XinaOsRkb2BYdlt1OTM+6AudDclRB5OVSllsXRmChIyWLehTXh4hg==
+        bh=WoUJnr4URy+0EwDgNtGsLyT4yoY91spHNMewIh6xqZU=;
+        b=HOLvJQfPfaARhiarvOeloF1vEAChe6B+hY8/1EYC1w8Mfoqv35NnG8DB13uYYFrRlAMP9F
+        l9qYuVrAUM5riuh8n1SehtJyikNWwP1uM1UUxUFeQyGzVTXGYN9R8H9ET8R5+jyyDwsaRr
+        yYIkXaQN96KbW3kmHuJrDdrRXW6t74gHRx4zZLtURswOZQ9S7sfbaxrOR1x+xNtErlOfNt
+        8lrsb+Cf366+lDokSdkeHaBMEK6bgptR2io5m0ZAQdswcr3ZxY0/GBUpYcxMFMMcKHAPVn
+        kWCgYKqDbqkAYi8oo5PAFrtmG8tIAW3dPfc5E2na5662RxvYDBxkxc/wCuTrZQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260541;
+        s=2020e; t=1595260551;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=osTtrNUr4OHk/B4zAgkYVq1r5kpsvFsCr0rPGrUYJ3o=;
-        b=KkPA6RbwZMRD0z7JCvjKoZ5vai1cuanX0ola+cD+7oYDkJwTyjNpjUeA+gHtGdEIHNyfdu
-        u6bZViCZw/6soPAA==
+        bh=WoUJnr4URy+0EwDgNtGsLyT4yoY91spHNMewIh6xqZU=;
+        b=6384ay2/3CWYlLnOcoi/UrWoRythVAzuDmZ3Dn5x4ARbXYak+K21ZU9RkjcwChZ3Zqr6Z0
+        y2SP+NlNWeLOcsAg==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -41,11 +41,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Sebastian A. Siewior" <bigeasy@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH v4 02/24] seqlock: Properly format kernel-doc code samples
-Date:   Mon, 20 Jul 2020 17:55:08 +0200
-Message-Id: <20200720155530.1173732-3-a.darwish@linutronix.de>
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH v4 04/24] seqlock: Reorder seqcount_t and seqlock_t API definitions
+Date:   Mon, 20 Jul 2020 17:55:10 +0200
+Message-Id: <20200720155530.1173732-5-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -56,172 +55,290 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align the code samples and note sections inside kernel-doc comments with
-tabs. This way they can be properly parsed and rendered by Sphinx. It
-also makes the code samples easier to read from text editors.
+The seqlock.h seqcount_t and seqlock_t API definitions are presented in
+the chronological order of their development rather than the order that
+makes most sense to readers. This makes it hard to follow and understand
+the header file code.
+
+Group and reorder all of the exported seqlock.h functions according to
+their function.
+
+First, group together the seqcount_t standard read path functions:
+
+    - __read_seqcount_begin()
+    - raw_read_seqcount_begin()
+    - read_seqcount_begin()
+
+since each function is implemented exactly in terms of the one above
+it. Then, group the special-case seqcount_t readers on their own as:
+
+    - raw_read_seqcount()
+    - raw_seqcount_begin()
+
+since the only difference between the two functions is that the second
+one masks the sequence counter LSB while the first one does not. Note
+that raw_seqcount_begin() can actually be implemented in terms of
+raw_read_seqcount(), which will be done in a follow-up commit.
+
+Then, group the seqcount_t write path functions, instead of injecting
+unrelated seqcount_t latch functions between them, and order them as:
+
+    - raw_write_seqcount_begin()
+    - raw_write_seqcount_end()
+    - write_seqcount_begin_nested()
+    - write_seqcount_begin()
+    - write_seqcount_end()
+    - raw_write_seqcount_barrier()
+    - write_seqcount_invalidate()
+
+which is the expected natural order. This also isolates the seqcount_t
+latch functions into their own area, at the end of the sequence counters
+section, and before jumping to the next one: sequential locks
+(seqlock_t).
+
+Do a similar grouping and reordering for seqlock_t "locking" readers vs.
+the "conditionally locking or lockless" ones.
+
+No implementation code was changed in any of the reordering above.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- include/linux/seqlock.h | 108 +++++++++++++++++++++-------------------
- 1 file changed, 56 insertions(+), 52 deletions(-)
+ include/linux/seqlock.h | 174 ++++++++++++++++++++--------------------
+ 1 file changed, 86 insertions(+), 88 deletions(-)
 
 diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 299d68f10325..6c4f68ef1393 100644
+index d724b5e5408d..4c1456008d89 100644
 --- a/include/linux/seqlock.h
 +++ b/include/linux/seqlock.h
-@@ -263,32 +263,32 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
-  * atomically, avoiding compiler optimizations; b) to document which writes are
-  * meant to propagate to the reader critical section. This is necessary because
-  * neither writes before and after the barrier are enclosed in a seq-writer
-- * critical section that would ensure readers are aware of ongoing writes.
-+ * critical section that would ensure readers are aware of ongoing writes::
-  *
-- *      seqcount_t seq;
-- *      bool X = true, Y = false;
-+ *	seqcount_t seq;
-+ *	bool X = true, Y = false;
-  *
-- *      void read(void)
-- *      {
-- *              bool x, y;
-+ *	void read(void)
-+ *	{
-+ *		bool x, y;
-  *
-- *              do {
-- *                      int s = read_seqcount_begin(&seq);
-+ *		do {
-+ *			int s = read_seqcount_begin(&seq);
-  *
-- *                      x = X; y = Y;
-+ *			x = X; y = Y;
-  *
-- *              } while (read_seqcount_retry(&seq, s));
-+ *		} while (read_seqcount_retry(&seq, s));
-  *
-- *              BUG_ON(!x && !y);
-+ *		BUG_ON(!x && !y);
-  *      }
-  *
-  *      void write(void)
-  *      {
-- *              WRITE_ONCE(Y, true);
-+ *		WRITE_ONCE(Y, true);
-  *
-- *              raw_write_seqcount_barrier(seq);
-+ *		raw_write_seqcount_barrier(seq);
-  *
-- *              WRITE_ONCE(X, false);
-+ *		WRITE_ONCE(X, false);
-  *      }
-  */
- static inline void raw_write_seqcount_barrier(seqcount_t *s)
-@@ -325,64 +325,68 @@ static inline int raw_read_seqcount_latch(seqcount_t *s)
-  * Very simply put: we first modify one copy and then the other. This ensures
-  * there is always one copy in a stable state, ready to give us an answer.
-  *
-- * The basic form is a data structure like:
-+ * The basic form is a data structure like::
-  *
-- * struct latch_struct {
-- *	seqcount_t		seq;
-- *	struct data_struct	data[2];
-- * };
-+ *	struct latch_struct {
-+ *		seqcount_t		seq;
-+ *		struct data_struct	data[2];
-+ *	};
-  *
-  * Where a modification, which is assumed to be externally serialized, does the
-- * following:
-+ * following::
-  *
-- * void latch_modify(struct latch_struct *latch, ...)
-- * {
-- *	smp_wmb();	<- Ensure that the last data[1] update is visible
-- *	latch->seq++;
-- *	smp_wmb();	<- Ensure that the seqcount update is visible
-+ *	void latch_modify(struct latch_struct *latch, ...)
-+ *	{
-+ *		smp_wmb();	// Ensure that the last data[1] update is visible
-+ *		latch->seq++;
-+ *		smp_wmb();	// Ensure that the seqcount update is visible
-  *
-- *	modify(latch->data[0], ...);
-+ *		modify(latch->data[0], ...);
-  *
-- *	smp_wmb();	<- Ensure that the data[0] update is visible
-- *	latch->seq++;
-- *	smp_wmb();	<- Ensure that the seqcount update is visible
-+ *		smp_wmb();	// Ensure that the data[0] update is visible
-+ *		latch->seq++;
-+ *		smp_wmb();	// Ensure that the seqcount update is visible
-  *
-- *	modify(latch->data[1], ...);
-- * }
-+ *		modify(latch->data[1], ...);
-+ *	}
-  *
-- * The query will have a form like:
-+ * The query will have a form like::
-  *
-- * struct entry *latch_query(struct latch_struct *latch, ...)
-- * {
-- *	struct entry *entry;
-- *	unsigned seq, idx;
-+ *	struct entry *latch_query(struct latch_struct *latch, ...)
-+ *	{
-+ *		struct entry *entry;
-+ *		unsigned seq, idx;
-  *
-- *	do {
-- *		seq = raw_read_seqcount_latch(&latch->seq);
-+ *		do {
-+ *			seq = raw_read_seqcount_latch(&latch->seq);
-  *
-- *		idx = seq & 0x01;
-- *		entry = data_query(latch->data[idx], ...);
-+ *			idx = seq & 0x01;
-+ *			entry = data_query(latch->data[idx], ...);
-  *
-- *		smp_rmb();
-- *	} while (seq != latch->seq);
-+ *			smp_rmb();
-+ *		} while (seq != latch->seq);
-  *
-- *	return entry;
-- * }
-+ *		return entry;
-+ *	}
-  *
-  * So during the modification, queries are first redirected to data[1]. Then we
-  * modify data[0]. When that is complete, we redirect queries back to data[0]
-  * and we can modify data[1].
-  *
-- * NOTE: The non-requirement for atomic modifications does _NOT_ include
-- *       the publishing of new entries in the case where data is a dynamic
-- *       data structure.
-+ * NOTE:
-  *
-- *       An iteration might start in data[0] and get suspended long enough
-- *       to miss an entire modification sequence, once it resumes it might
-- *       observe the new entry.
-+ *	The non-requirement for atomic modifications does _NOT_ include
-+ *	the publishing of new entries in the case where data is a dynamic
-+ *	data structure.
-  *
-- * NOTE: When data is a dynamic data structure; one should use regular RCU
-- *       patterns to manage the lifetimes of the objects within.
-+ *	An iteration might start in data[0] and get suspended long enough
-+ *	to miss an entire modification sequence, once it resumes it might
-+ *	observe the new entry.
+@@ -128,23 +128,6 @@ static inline unsigned __read_seqcount_begin(const seqcount_t *s)
+ 	return ret;
+ }
+ 
+-/**
+- * raw_read_seqcount - Read the raw seqcount
+- * @s: pointer to seqcount_t
+- * Returns: count to be passed to read_seqcount_retry
+- *
+- * raw_read_seqcount opens a read critical section of the given
+- * seqcount without any lockdep checking and without checking or
+- * masking the LSB. Calling code is responsible for handling that.
+- */
+-static inline unsigned raw_read_seqcount(const seqcount_t *s)
+-{
+-	unsigned ret = READ_ONCE(s->sequence);
+-	smp_rmb();
+-	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
+-	return ret;
+-}
+-
+ /**
+  * raw_read_seqcount_begin - start seq-read critical section w/o lockdep
+  * @s: pointer to seqcount_t
+@@ -176,6 +159,23 @@ static inline unsigned read_seqcount_begin(const seqcount_t *s)
+ 	return raw_read_seqcount_begin(s);
+ }
+ 
++/**
++ * raw_read_seqcount - Read the raw seqcount
++ * @s: pointer to seqcount_t
++ * Returns: count to be passed to read_seqcount_retry
 + *
-+ * NOTE:
++ * raw_read_seqcount opens a read critical section of the given
++ * seqcount without any lockdep checking and without checking or
++ * masking the LSB. Calling code is responsible for handling that.
++ */
++static inline unsigned raw_read_seqcount(const seqcount_t *s)
++{
++	unsigned ret = READ_ONCE(s->sequence);
++	smp_rmb();
++	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
++	return ret;
++}
++
+ /**
+  * raw_seqcount_begin - begin a seq-read critical section
+  * @s: pointer to seqcount_t
+@@ -234,8 +234,6 @@ static inline int read_seqcount_retry(const seqcount_t *s, unsigned start)
+ 	return __read_seqcount_retry(s, start);
+ }
+ 
+-
+-
+ static inline void raw_write_seqcount_begin(seqcount_t *s)
+ {
+ 	kcsan_nestable_atomic_begin();
+@@ -250,6 +248,23 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
+ 	kcsan_nestable_atomic_end();
+ }
+ 
++static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
++{
++	raw_write_seqcount_begin(s);
++	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
++}
++
++static inline void write_seqcount_begin(seqcount_t *s)
++{
++	write_seqcount_begin_nested(s, 0);
++}
++
++static inline void write_seqcount_end(seqcount_t *s)
++{
++	seqcount_release(&s->dep_map, _RET_IP_);
++	raw_write_seqcount_end(s);
++}
++
+ /**
+  * raw_write_seqcount_barrier - do a seq write barrier
+  * @s: pointer to seqcount_t
+@@ -300,6 +315,21 @@ static inline void raw_write_seqcount_barrier(seqcount_t *s)
+ 	kcsan_nestable_atomic_end();
+ }
+ 
++/**
++ * write_seqcount_invalidate - invalidate in-progress read-side seq operations
++ * @s: pointer to seqcount_t
 + *
-+ *	When data is a dynamic data structure; one should use regular RCU
-+ *	patterns to manage the lifetimes of the objects within.
-  */
- static inline void raw_write_seqcount_latch(seqcount_t *s)
++ * After write_seqcount_invalidate, no read-side seq operations will complete
++ * successfully and see data older than this.
++ */
++static inline void write_seqcount_invalidate(seqcount_t *s)
++{
++	smp_wmb();
++	kcsan_nestable_atomic_begin();
++	s->sequence+=2;
++	kcsan_nestable_atomic_end();
++}
++
+ static inline int raw_read_seqcount_latch(seqcount_t *s)
+ {
+ 	/* Pairs with the first smp_wmb() in raw_write_seqcount_latch() */
+@@ -395,38 +425,6 @@ static inline void raw_write_seqcount_latch(seqcount_t *s)
+        smp_wmb();      /* increment "sequence" before following stores */
+ }
+ 
+-static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
+-{
+-	raw_write_seqcount_begin(s);
+-	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
+-}
+-
+-static inline void write_seqcount_begin(seqcount_t *s)
+-{
+-	write_seqcount_begin_nested(s, 0);
+-}
+-
+-static inline void write_seqcount_end(seqcount_t *s)
+-{
+-	seqcount_release(&s->dep_map, _RET_IP_);
+-	raw_write_seqcount_end(s);
+-}
+-
+-/**
+- * write_seqcount_invalidate - invalidate in-progress read-side seq operations
+- * @s: pointer to seqcount_t
+- *
+- * After write_seqcount_invalidate, no read-side seq operations will complete
+- * successfully and see data older than this.
+- */
+-static inline void write_seqcount_invalidate(seqcount_t *s)
+-{
+-	smp_wmb();
+-	kcsan_nestable_atomic_begin();
+-	s->sequence+=2;
+-	kcsan_nestable_atomic_end();
+-}
+-
+ /*
+  * Sequential locks (seqlock_t)
+  *
+@@ -555,6 +553,43 @@ static inline void read_sequnlock_excl(seqlock_t *sl)
+ 	spin_unlock(&sl->lock);
+ }
+ 
++static inline void read_seqlock_excl_bh(seqlock_t *sl)
++{
++	spin_lock_bh(&sl->lock);
++}
++
++static inline void read_sequnlock_excl_bh(seqlock_t *sl)
++{
++	spin_unlock_bh(&sl->lock);
++}
++
++static inline void read_seqlock_excl_irq(seqlock_t *sl)
++{
++	spin_lock_irq(&sl->lock);
++}
++
++static inline void read_sequnlock_excl_irq(seqlock_t *sl)
++{
++	spin_unlock_irq(&sl->lock);
++}
++
++static inline unsigned long __read_seqlock_excl_irqsave(seqlock_t *sl)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&sl->lock, flags);
++	return flags;
++}
++
++#define read_seqlock_excl_irqsave(lock, flags)				\
++	do { flags = __read_seqlock_excl_irqsave(lock); } while (0)
++
++static inline void
++read_sequnlock_excl_irqrestore(seqlock_t *sl, unsigned long flags)
++{
++	spin_unlock_irqrestore(&sl->lock, flags);
++}
++
+ /**
+  * read_seqbegin_or_lock - begin a sequence number check or locking block
+  * @lock: sequence lock
+@@ -584,43 +619,6 @@ static inline void done_seqretry(seqlock_t *lock, int seq)
+ 		read_sequnlock_excl(lock);
+ }
+ 
+-static inline void read_seqlock_excl_bh(seqlock_t *sl)
+-{
+-	spin_lock_bh(&sl->lock);
+-}
+-
+-static inline void read_sequnlock_excl_bh(seqlock_t *sl)
+-{
+-	spin_unlock_bh(&sl->lock);
+-}
+-
+-static inline void read_seqlock_excl_irq(seqlock_t *sl)
+-{
+-	spin_lock_irq(&sl->lock);
+-}
+-
+-static inline void read_sequnlock_excl_irq(seqlock_t *sl)
+-{
+-	spin_unlock_irq(&sl->lock);
+-}
+-
+-static inline unsigned long __read_seqlock_excl_irqsave(seqlock_t *sl)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&sl->lock, flags);
+-	return flags;
+-}
+-
+-#define read_seqlock_excl_irqsave(lock, flags)				\
+-	do { flags = __read_seqlock_excl_irqsave(lock); } while (0)
+-
+-static inline void
+-read_sequnlock_excl_irqrestore(seqlock_t *sl, unsigned long flags)
+-{
+-	spin_unlock_irqrestore(&sl->lock, flags);
+-}
+-
+ static inline unsigned long
+ read_seqbegin_or_lock_irqsave(seqlock_t *lock, int *seq)
  {
 -- 
 2.20.1
