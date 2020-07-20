@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38920226EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4202A226EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgGTTEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:04:41 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:58816 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgGTTEl (ORCPT
+        id S1729620AbgGTTFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgGTTFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:04:41 -0400
-Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 53CDB2A4;
-        Mon, 20 Jul 2020 21:04:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1595271878;
-        bh=KNtCu6HocOzqYYKCsCcla3s8hAt3olADl6cr5CFqkeg=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=WbDdGeNdkv05sl6Ov9CNPMuHACNQnhIp4Dc0zQjfZs5rfGa8+Quj9JrD/WxX8AiHu
-         353+vdl1fuLoKhPVVOEVYYISYvegNPtONOh+T/ZQyeJxp7YGFkX7TX3bmyI3fMX1NM
-         mwsN7iYnwSsPCXJcaqIN3/dP9piBOsd4zev3wN88=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH][next] media: i2c: fix error check on max9286_read call
-To:     Colin King <colin.king@canonical.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200720161335.339174-1-colin.king@canonical.com>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <ac2e793b-0f29-ac7b-d29f-3a4695c2eedc@ideasonboard.com>
-Date:   Mon, 20 Jul 2020 20:04:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 20 Jul 2020 15:05:12 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F26C061794;
+        Mon, 20 Jul 2020 12:05:12 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id g26so6433808qka.3;
+        Mon, 20 Jul 2020 12:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6xNou+cHACWFvHGNXzPofMh+CBZIQ8xW+dhFT3jGEbo=;
+        b=qGH3EGZrbBYJFFXLpy9788889L91tGMGugiOZhBG5mkmuOaHr8qDM4J+IGuyanGPhu
+         Vxw9qvA8wjLil9OOQMqcA36LhPMFBJkuR0e9m5fhddTmTp9pHfA5IGt9YTi+3ndcaQuR
+         L4iHvaYG3FlYLQNaKPSDnM/F4BFGwLPeEeqHRxhnjrRM0rM5cBpm0jx1vXcUuQGFT8e3
+         gDjYTnWK7GtT4p+w6abgKeVqvOO0ncOtFM2MFragZvc27GLYAM0zDQ9xVdCtz4YlFta7
+         IhjYfdyVkfF3bEeAeEZ5QtiyT0AN2J4NIEHs561V0bBVGf9tE1zwOcx6W6cHIDxqNI8F
+         TQ3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=6xNou+cHACWFvHGNXzPofMh+CBZIQ8xW+dhFT3jGEbo=;
+        b=hyHMdevaBGNI0RExZtvqrNxVzTO56PWJhF1K8eH7vnlyr5in+aMbfqvzGGSHxYb0Nk
+         JvVdhzCnhD7m9Cjp3s2Kuk8JpAO5uoJGTkg2PRt6bWFd2KwhqN/nj3VTktM9svpFQEF0
+         /8tyv871D3q7z7gtZZBWR4X/sdffvRBd3vYwPvgdEcsGYFCqpky27t2WbfjwYbiMNk44
+         kwlzIlHLmDdnvi96QliJ+L1GyFoIPMuLHYCS9QNw9PeRDeHZdULjhqAIldrao95RGjHy
+         DfS7+CLnYiF+Gyf35pqMmRDQPbjHXUB+l/EOxZCWeu4KLZpdruWyEwWbPJRXiUn/CyvV
+         rC0A==
+X-Gm-Message-State: AOAM531QnWJdqdIrzujGLmpTr5qQ55OMUHZSGsCnqsxeT2E07M72ZDML
+        1byPTWSaf1jILN8WaDNI1A==
+X-Google-Smtp-Source: ABdhPJzrXQwdWF+qa2wzWCIT1nZ5JLyIGIeu284ZR14tqRjIjGzf7/7OV2hINf0xqBRSi/yBapdmYQ==
+X-Received: by 2002:a37:80c:: with SMTP id 12mr7349989qki.149.1595271911228;
+        Mon, 20 Jul 2020 12:05:11 -0700 (PDT)
+Received: from PWN (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id r2sm19318751qtn.27.2020.07.20.12.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 12:05:10 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 15:05:08 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH v1] usbhid: Fix slab-out-of-bounds
+ write in hiddev_ioctl_usage()
+Message-ID: <20200720190508.GA1946@PWN>
+Reply-To: 20200720121257.GJ2571@kadam
+References: <20200718231218.170730-1-yepeilin.cs@gmail.com>
+ <20200720115400.GI2549@kadam>
+ <20200720121257.GJ2571@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20200720161335.339174-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720121257.GJ2571@kadam>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+On Mon, Jul 20, 2020 at 03:12:57PM +0300, Dan Carpenter wrote:
+> So another option would be to just add HIDIOCGUSAGE and HIDIOCSUSAGE to
+> the earlier check.  That risks breaking userspace.  Another option is to
+> just add a check like you did earlier to the HIDIOCGUSAGE case.
+> Probably just do option #2 and resend.
 
-On 20/07/2020 17:13, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the error return from the call to max9286_read is masked
-> with 0xf0 so the following check for a negative error return is
-> never true.  Fix this by checking for an error first, then masking
-> the return value for subsequent conflink_mask checking.
+Sure, I will just add the same check to the HIDIOCGUSAGE case for the
+time being. Thank you for the detailed explanation.
 
-Ooops!
+Here's what I found after digging a bit further though:
 
-> Addresses-Coverity: ("Logically dead code")
-> fixes: 66d8c9d2422d ("media: i2c: Add MAX9286 driver")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+hid_parser_main() calls different functions in order to process
+different type of items:
 
-Thanks,
+drivers/hid/hid-core.c:1193:
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+	static int (*dispatch_type[])(struct hid_parser *parser,
+				      struct hid_item *item) = {
+		hid_parser_main,
+		hid_parser_global,
+		hid_parser_local,
+		hid_parser_reserved
+	};
 
-> ---
->  drivers/media/i2c/max9286.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 47f280518fdb..b364a3f60486 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -405,10 +405,11 @@ static int max9286_check_config_link(struct max9286_priv *priv,
->  	 * to 5 milliseconds.
->  	 */
->  	for (i = 0; i < 10; i++) {
-> -		ret = max9286_read(priv, 0x49) & 0xf0;
-> +		ret = max9286_read(priv, 0x49);
->  		if (ret < 0)
->  			return -EIO;
->  
-> +		ret &= 0xf0;
->  		if (ret == conflink_mask)
->  			break;
->  
-> 
+In this case, hid_parser_main() calls hid_add_field(), which in turn
+calls hid_register_field(), which allocates the `field` object as you
+mentioned:
 
+drivers/hid/hid-core.c:102:
+
+	field = kzalloc((sizeof(struct hid_field) +
+			 usages * sizeof(struct hid_usage) +
+			 values * sizeof(unsigned)), GFP_KERNEL);
+
+Here, `values` equals to `global.report_count`. See how it is being
+called:
+
+drivers/hid/hid-core.c:303:
+
+	field = hid_register_field(report, usages, parser->global.report_count);
+
+In hid_parser_main(), `global.report_count` can be set by calling
+hid_parser_global().
+
+However, the syzkaller reproducer made hid_parser_main() to call
+hid_parser_global() __before__ `global.report_count` is properly set. It's
+zero. So hid_register_field() allocated `field` with `values` equals to
+zero - No room for value[] at all. I believe this caused the bug.
+
+Apparently hid_parser_main() doesn't care about which item (main, local,
+global and reserved) gets processed first. I am new to this code and I
+don't know whether this is by design, but this arbitrarity is
+apparently causing some issues.
+
+As another example, in hid_add_field():
+
+drivers/hid/hid-core.c:289:
+
+	report->size += parser->global.report_size * parser->global.report_count;
+
+If `global.report_count` is zero, `report->size` gets increased by zero.
+Is this working as intended? It seems weird to me.
+
+Thank you,
+
+Peilin Ye
