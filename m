@@ -2,115 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E983E22629D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F032262A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgGTOyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        id S1728210AbgGTOzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbgGTOyg (ORCPT
+        with ESMTP id S1726506AbgGTOzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:54:36 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2518C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:54:35 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g75so22545196wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:54:35 -0700 (PDT)
+        Mon, 20 Jul 2020 10:55:45 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6A8C061794;
+        Mon, 20 Jul 2020 07:55:45 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id k27so10407988pgm.2;
+        Mon, 20 Jul 2020 07:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2HQ9WNdGoOa/CwIT79FZmwN2wIlYigkcboh5TFIst00=;
-        b=liI8qj382ayQB0NSb2owvG3UxSLUff0mldH1n6TLUcWypVFzXS2rgB/iXysgz3XNOx
-         Is1y5KLq2ozy3dggJrJhcSH3SZg/rUCORgYHs9av6RFC4v8CpHObZI3BErLMGcCjGpjq
-         miRojRYwoBWVi8xxEnRrZI2dqQ2PXxy9dRMnQ9zQB9/rkizwJLACyRKFX7ZZDYvkel3E
-         gGTOH1MFfpsf9pPvntMP2BmlonSpqYBDDwHRDAdpTJEhbiHlhJ3eeaX0FOj/VsMBg0MO
-         JhA+sltxOCZyrbwtPjXTYSez+E+5LZL3XmrtJf2bTy3i42XRO4rat9dr4SM+/d3258OL
-         DaKQ==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fnqbnijwClMci6tPbDEsjP556VCP5ZOUnv3MSoBXeYE=;
+        b=obmB5/lPOQz3AzvyG/2VXvcAL2NVyqvUp/WDzPZuC0X99oO+puiKNH5SmvXqtGUMxQ
+         ZwLaTqnZRihuuAE0kDCE93oc7+UZUbVmuWofEIHX8Wk43IgRMCJtfexfk4af/TnkNUa+
+         b1KMQtXkMeHVhEg04OcRwqnmI+j3jqVgZaOaFAr9leMZRePpyIzF3lT5VjaqULUNABQa
+         NHk3CJ55gwjmcvnt31dtPgmR/H8DalAa1EqiI9biTgNvDKbKNzV/Z2dJRgmFgIyawQ/i
+         6lLh13kuGX5UA5j4JZyyd2d92BOZ2hTMEAphuPyZXA4ZQKmj/ym/xzdcbiiOAgv5+jVX
+         z0WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2HQ9WNdGoOa/CwIT79FZmwN2wIlYigkcboh5TFIst00=;
-        b=OOD5AcCs/pkVkPSsRzKjR17/Ksp0j0GOYSG9Y1McuF/MO+vzNMu0y7k+PTw+mEj+ET
-         NR0rwR8ArubfoH/hXffXctHPokreuQ3kasmcmeUz7A0qiPxXjiYBeN3RnOJZgQcOMP/Z
-         ouatz67Px9hBIjKFol6+KQiHQtdocwVkdtLPKphJmElvF2WBOytN01NzcfRi+5+HMpr6
-         CPJ5NTHAtI1WB7114YHXXu1+MPIlE/seBM//ixjCi6S4Pfs/zNHtNLjjV05s42+aYQn4
-         E+5xfaJh3Jnkq5EagfYmG7RsN5bldhD6T4OMhshO3b4UWMC6Lbd2jRxGJ+31V76EtYdD
-         r29g==
-X-Gm-Message-State: AOAM532SSiPWemvlHToZ+k4o13/cHM861xFGkykfH3PjyKmoUmWyhBn3
-        ACNBVqJGvwusSO/jYDvLUqJTRQ==
-X-Google-Smtp-Source: ABdhPJzy+0wOfpiE6LNYySlZaHbDcWwb4VOTDYMPwGCSTSlzWPwT2BICiSwU4oN658n/kwOnVQzUJg==
-X-Received: by 2002:a7b:cb92:: with SMTP id m18mr21097163wmi.94.1595256874417;
-        Mon, 20 Jul 2020 07:54:34 -0700 (PDT)
-Received: from dell ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id 62sm17771123wrq.31.2020.07.20.07.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 07:54:33 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 15:54:32 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     ricky_wu@realtek.com, Arnd Bergmann <arnd@arndb.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, rui_feng@realsil.com.cn,
-        Bjorn Helgaas <bhelgaas@google.com>, kdlnx@doth.eu,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH] misc: rtsx: Add support new chip rts5228 mmc: rtsx: Add
- support MMC_CAP2_NO_MMC
-Message-ID: <20200720145432.GB621928@dell>
-References: <20200706070259.32565-1-ricky_wu@realtek.com>
- <CACRpkdbkpwMaS3FR1F1-WU5AjwvBchwLDKDhgHAA+-sKZLRpsg@mail.gmail.com>
- <20200720145202.GA621928@dell>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fnqbnijwClMci6tPbDEsjP556VCP5ZOUnv3MSoBXeYE=;
+        b=mfXoiyghSM6oJdtYNNu0WY9aa7Uni/jefydyqDaIcLPNPoj5Eh03KKYT5DNLorRKuw
+         Fuv13CWtmCxTVa53sHdEVdbAUDgcz01+Eb2IbJvIOxc9P/X6IKv6prvt/58LH3nakIGl
+         5+LzvJObqvucF2QoK9Y2Hih5pOS55J3fFK/sy1PTpNOrQVOuS/8VgC4vNjHS91/mf2ZK
+         W6euXKRIpKZqmPj7wkJ3Ex9fXglKbLgMSuCii/GPrjjJzR+wY8x0Eml98SSp+Udm1ZBR
+         UfCXbiwGpiOHg3IKw/5NLULGwdEiph+s6QMQMdk0lFVEeC5YTpwgpX1wQISitE4yijuI
+         RWDg==
+X-Gm-Message-State: AOAM530bfPlzvVnSMVQMq95Uo45TrGbHK+pRIQiS3USrOB0xAeLNVZuZ
+        cAG6fQMqh9teBS6rMM2tSyo=
+X-Google-Smtp-Source: ABdhPJzdpCZ2gP92UV6oH70h6AIHA4wJstXUDN042hpqclo3Yv6f70pl/T6XbIaPYF0u9pBA55X8iw==
+X-Received: by 2002:a63:8c5c:: with SMTP id q28mr18771110pgn.111.1595256945183;
+        Mon, 20 Jul 2020 07:55:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h23sm17008916pfo.166.2020.07.20.07.55.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 07:55:44 -0700 (PDT)
+Subject: Re: [PATCH 1/6] syscalls: use uaccess_kernel in addr_limit_user_check
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Peter Maydell <peter.maydell@linaro.org>
+References: <20200714105505.935079-1-hch@lst.de>
+ <20200714105505.935079-2-hch@lst.de> <20200718013849.GA157764@roeck-us.net>
+ <20200718094846.GA8593@lst.de>
+ <fe1d4a6d-e32d-6994-a08b-40134000e988@roeck-us.net>
+ <20200720100104.GA20196@lst.de>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <c6099697-5ccd-22b4-f5cb-cbe1c14644a9@roeck-us.net>
+Date:   Mon, 20 Jul 2020 07:55:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200720100104.GA20196@lst.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200720145202.GA621928@dell>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020, Lee Jones wrote:
-
-> On Mon, 20 Jul 2020, Linus Walleij wrote:
+On 7/20/20 3:01 AM, Christoph Hellwig wrote:
+> To try to reproduce your report I built a mps2_defconfig kernel
+> and then run the qemu command line manually extraced from your
+> script below, using a mainline qemu built for arm-softmmu, but it
+> crashes with the following message even for the baseline kernel.
 > 
-> > On Mon, Jul 6, 2020 at 9:03 AM <ricky_wu@realtek.com> wrote:
-> > 
-> > >  drivers/misc/cardreader/Makefile   |   2 +-
-> > >  drivers/misc/cardreader/rts5228.c  | 740 +++++++++++++++++++++++++++++
-> > >  drivers/misc/cardreader/rts5228.h  | 168 +++++++
-> > >  drivers/misc/cardreader/rtsx_pcr.c |  89 ++--
-> > >  drivers/misc/cardreader/rtsx_pcr.h |   5 +
-> > 
-> > This drivers/misc/cardreader business is a big confusion for my mind.
-> > 
-> > Is it really that fantastic that it needs to be a unique special case?
-> > 
-> > To me it looks like a drivers/mfd thing which should have separate
-> > drivers/regulator/rts5228.c (LDOs)
-> > drivers/clk/rts5228.c (clocks)
-> > subdrivers.
-> > 
-> > See for example drivers/mfd/sta2x11-mfd.c thay spawns a few
-> > devices off a PCI card.
+> qemu: fatal: Lockup: can't escalate 3 to HardFault (current priority -1)
 > 
-> Thanks for Cc'ing me Linus.
+> R00=00000000 R01=00000000 R02=00000000 R03=00000000
+> R04=00000000 R05=00000000 R06=00000000 R07=00000000
+> R08=00000000 R09=00000000 R10=00000000 R11=00000000
+> R12=00000000 R13=ffffffe0 R14=fffffff9 R15=00000000
+> XPSR=40000003 -Z-- A handler
+> FPSCR: 00000000
 > 
-> Can you please bounce the diff to me too?
+> Does anyone have an idea what this means?
+> 
 
-Never mind, I found it.
+Ah, sorry, you can't use the upstream version of qemu to test mps2-an385
+Linux images. You'll have to use a version from https://github.com/groeck/qemu.
+I'd recommend to use the v5.0.0-local branch.
 
-So you may use MFD to register the (regulator, clk, card reader) child
-devices, but pretty much none of that *functional* code belongs in
-drivers/mfd.
+I had to make some changes to qemu to be able to boot mps2-an385.
+I tried to submit those changes into upstream qemu, but that was
+rejected because, as I was told, the qemu implementation
+would no longer reflect the real hardware with those changes in
+place.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Guenter
