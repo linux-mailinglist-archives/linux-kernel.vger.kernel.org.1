@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63AA2267CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D0A226808
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388332AbgGTQOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:14:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
+        id S1733207AbgGTQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387612AbgGTQOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:14:47 -0400
+        id S2387832AbgGTQQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:16:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B16C2176B;
-        Mon, 20 Jul 2020 16:14:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A0082064B;
+        Mon, 20 Jul 2020 16:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261686;
-        bh=Np+j03ykyif20VWP1W2T8FI6kv/Xhb/bRgfjC8cnNxM=;
+        s=default; t=1595261797;
+        bh=gtZEHtUNqFQ1blNIPEmqlbrDBTKZATeDlaf5BnoS8no=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HaogEOShVet0U9XJvZytsjpHhTa7jTL/8rypaNdEq6858Cg5Gkwi6s4cer4U/S6vS
-         m6I8SiD5VioyxjkhjSKm/qfpQEQgBoqCKJIz0JKzGD2CqJrN2sYbFNAYEgeMTL7Aay
-         SFjUgv42U3482ks49fIEdsYEVqGYuGvZNPQ69Qr8=
+        b=enfeiATsysbXBCvbsnRQHXcfFuhWBuo2qGk3JPLkVtnXEWWXOxC5tmeVnh7Rb/g7T
+         N5owIQViM81IQYiAJ1JZfdL3WlVoAmwslTRdQm2wgQZwpbk28ucc5GlC1EcIY6UH8R
+         oVk9GriarckDgmolX4CsaiGTiQJ6/gJIYz+hNauc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ammy Yi <ammy.yi@intel.com>
-Subject: [PATCH 5.7 204/244] intel_th: Fix a NULL dereference when hub driver is not loaded
-Date:   Mon, 20 Jul 2020 17:37:55 +0200
-Message-Id: <20200720152835.555247227@linuxfoundation.org>
+        Walter Lozano <walter.lozano@collabora.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: [PATCH 5.7 205/244] opp: Increase parsed_static_opps in _of_add_opp_table_v1()
+Date:   Mon, 20 Jul 2020 17:37:56 +0200
+Message-Id: <20200720152835.603815751@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
 References: <20200720152825.863040590@linuxfoundation.org>
@@ -45,91 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+From: Walter Lozano <walter.lozano@collabora.com>
 
-commit e78e1fdb282726beaf88aa75943682217e6ded0e upstream.
+commit 6544abc520f0fff701e9da382110dc29676c683a upstream.
 
-Connecting master to an output port when GTH driver module is not loaded
-triggers a NULL dereference:
+Currently, when using _of_add_opp_table_v2 parsed_static_opps is
+increased and this value is used in _opp_remove_all_static() to
+check if there are static opp entries that need to be freed.
+Unfortunately this does not happen when using _of_add_opp_table_v1(),
+which leads to warnings.
 
-> RIP: 0010:intel_th_set_output+0x35/0x70 [intel_th]
-> Call Trace:
->  ? sth_stm_link+0x12/0x20 [intel_th_sth]
->  stm_source_link_store+0x164/0x270 [stm_core]
->  dev_attr_store+0x17/0x30
->  sysfs_kf_write+0x3e/0x50
->  kernfs_fop_write+0xda/0x1b0
->  __vfs_write+0x1b/0x40
->  vfs_write+0xb9/0x1a0
->  ksys_write+0x67/0xe0
->  __x64_sys_write+0x1a/0x20
->  do_syscall_64+0x57/0x1d0
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This patch increases parsed_static_opps in _of_add_opp_table_v1() in a
+similar way as in _of_add_opp_table_v2().
 
-Make sure the module in question is loaded and return an error if not.
-
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Fixes: 39f4034693b7c ("intel_th: Add driver infrastructure for Intel(R) Trace Hub devices")
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reported-by: Ammy Yi <ammy.yi@intel.com>
-Tested-by: Ammy Yi <ammy.yi@intel.com>
-Cc: stable@vger.kernel.org # v4.4
-Link: https://lore.kernel.org/r/20200706161339.55468-5-alexander.shishkin@linux.intel.com
+Fixes: 03758d60265c ("opp: Replace list_kref with a local counter")
+Cc: v5.6+ <stable@vger.kernel.org> # v5.6+
+Signed-off-by: Walter Lozano <walter.lozano@collabora.com>
+[ Viresh: Do the operation with lock held and set the value to 1 instead
+	  of incrementing it ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hwtracing/intel_th/core.c |   21 ++++++++++++++++++---
- drivers/hwtracing/intel_th/sth.c  |    4 +---
- 2 files changed, 19 insertions(+), 6 deletions(-)
+ drivers/opp/of.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/hwtracing/intel_th/core.c
-+++ b/drivers/hwtracing/intel_th/core.c
-@@ -1021,15 +1021,30 @@ int intel_th_set_output(struct intel_th_
- {
- 	struct intel_th_device *hub = to_intel_th_hub(thdev);
- 	struct intel_th_driver *hubdrv = to_intel_th_driver(hub->dev.driver);
-+	int ret;
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -733,6 +733,10 @@ static int _of_add_opp_table_v1(struct d
+ 		return -EINVAL;
+ 	}
  
- 	/* In host mode, this is up to the external debugger, do nothing. */
- 	if (hub->host_mode)
- 		return 0;
- 
--	if (!hubdrv->set_output)
--		return -ENOTSUPP;
-+	/*
-+	 * hub is instantiated together with the source device that
-+	 * calls here, so guaranteed to be present.
-+	 */
-+	hubdrv = to_intel_th_driver(hub->dev.driver);
-+	if (!hubdrv || !try_module_get(hubdrv->driver.owner))
-+		return -EINVAL;
- 
--	return hubdrv->set_output(hub, master);
-+	if (!hubdrv->set_output) {
-+		ret = -ENOTSUPP;
-+		goto out;
-+	}
++	mutex_lock(&opp_table->lock);
++	opp_table->parsed_static_opps = 1;
++	mutex_unlock(&opp_table->lock);
 +
-+	ret = hubdrv->set_output(hub, master);
-+
-+out:
-+	module_put(hubdrv->driver.owner);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(intel_th_set_output);
- 
---- a/drivers/hwtracing/intel_th/sth.c
-+++ b/drivers/hwtracing/intel_th/sth.c
-@@ -161,9 +161,7 @@ static int sth_stm_link(struct stm_data
- {
- 	struct sth_device *sth = container_of(stm_data, struct sth_device, stm);
- 
--	intel_th_set_output(to_intel_th_device(sth->dev), master);
--
--	return 0;
-+	return intel_th_set_output(to_intel_th_device(sth->dev), master);
- }
- 
- static int intel_th_sw_init(struct sth_device *sth)
+ 	val = prop->value;
+ 	while (nr) {
+ 		unsigned long freq = be32_to_cpup(val++) * 1000;
 
 
