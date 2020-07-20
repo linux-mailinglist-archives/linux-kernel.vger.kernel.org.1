@@ -2,99 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD545225CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0840D225CE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgGTKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:45:35 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:43951 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgGTKpe (ORCPT
+        id S1728431AbgGTKtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728232AbgGTKta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:45:34 -0400
-Received: from mail-qt1-f177.google.com ([209.85.160.177]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1M42Ss-1jxTIZ46T2-0003I2; Mon, 20 Jul 2020 12:45:32 +0200
-Received: by mail-qt1-f177.google.com with SMTP id k18so12496427qtm.10;
-        Mon, 20 Jul 2020 03:45:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533wRoO7L7l3KNVDnVj0MwnUMTxSvrDR9zZRWI7GE7+hSau13fCt
-        qWGj+BIafh4uxeweRJra5r2JMpfrj+32ZJE7QWU=
-X-Google-Smtp-Source: ABdhPJyveE09U5DOyjZw3YD0auFd/AcGtjZ7tGnHfjeOnNRKPaTJocr9ClHFJbUiY0/o5kQ5Bq1u1bhlyLaVg4bN9i4=
-X-Received: by 2002:ac8:83d:: with SMTP id u58mr16596516qth.188.1595241930633;
- Mon, 20 Jul 2020 03:45:30 -0700 (PDT)
+        Mon, 20 Jul 2020 06:49:30 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65640C061794;
+        Mon, 20 Jul 2020 03:49:30 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id p25so8237431vsg.4;
+        Mon, 20 Jul 2020 03:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wY0dHi09vd294neiN4XqhltRnFObgHpOmPvIePnDyJM=;
+        b=RrNm2gxit1WQD7b8BvDuwQffEaYmpn/vOp/taHp46yvimJgrOfz3utD5aYhN8uC4rS
+         vauBkp0fwEf6gu5qAafT/vKfwzhmyO5A1y/1jsKTGP5YRpnuHom+2N78zHpetio6xwID
+         Go2lex9NktC9gL78KhMmvM7rzdStaXMnL18Q6xiAI8nwkAwlFHGvFg1a7KUoHNE9gOCp
+         7r8HWjaFftONV/lclo4aGwmp5jd6k7dYeBzRTsXzVjd7Lc4DkG03Cr2Pg35v7ibf9E4q
+         Uc84PeelRGufa/hIMHsQ1Mp6Dn3Zw+piIbCU+aUBqgYBkmHbzqh7bUTebMNhBI0VtTds
+         XPAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wY0dHi09vd294neiN4XqhltRnFObgHpOmPvIePnDyJM=;
+        b=jSdHEOUf/bpTKrabIVaOE2LbbW0jcnkpjZOmbe7Z0Ql2nAsQn73R+UHXI0uG9a0pD1
+         SO+X8nXcYN0wJMjuXX6kwzH627E72cAkLD3ptSA9VJbf/8I8lMNXBZoskk3i/+oxrZxn
+         bBUzTUMTE0NSQHheYd4AeH+79469m3r5fYOTsVWUfv/3V6fh3DsUDmbQT/v5hMwr+ZZy
+         HuZVakTP0Uou3irtehyAGS/oGnzATcBPEFjTGaxmyLY1WUztQNPGTYMWqch8bD7Y4Yrh
+         kznvi8CuloqmlmkHnqNSTUCuAeX7pbHDw2aF2mFl29sQECyRq3LylXzhAzaSKxqKOzK/
+         UVeA==
+X-Gm-Message-State: AOAM532djGNSHRTBWhiuSoYUVtX5O7gtKX8ryR+kDWh6dUGcKh3cYkU8
+        04wBZtCVkwZUQhFvCW9i+o2Xh3Gc9Oj4vbHGRQi3F2kd
+X-Google-Smtp-Source: ABdhPJzy6/qnz/BhMCoMM7wOU6HD05HnbnXTb2JWl5+U3NV9DvoVnpkNcjUAX5xaOI2d8kWV7iuWh2hlJ2KL3XCSKCI=
+X-Received: by 2002:a67:ef1e:: with SMTP id j30mr14619614vsr.127.1595242169547;
+ Mon, 20 Jul 2020 03:49:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200720074249.596364-1-jiaxun.yang@flygoat.com> <20200720074249.596364-4-jiaxun.yang@flygoat.com>
-In-Reply-To: <20200720074249.596364-4-jiaxun.yang@flygoat.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 20 Jul 2020 12:45:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a13vZJyOGZ1FpS98ytVC57P6NgmQpSfhf2h9b7meQLtcw@mail.gmail.com>
-Message-ID: <CAK8P3a13vZJyOGZ1FpS98ytVC57P6NgmQpSfhf2h9b7meQLtcw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] MIPS: Loongson64: Enlarge IO_SPACE_LIMIT
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200622120229.89610-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <20200622120229.89610-1-vaibhavgupta40@gmail.com>
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Date:   Mon, 20 Jul 2020 16:17:39 +0530
+Message-ID: <CAP+cEOMZsLhneqnvDwmWZ6ps8boANX_wvZXVaptDonOEoULqXA@mail.gmail.com>
+Subject: Re: [PATCH v1] [media] saa7134: use generic power management
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:wxeTemO9I9qgRPajk466puVV0AUS0rUjtzK82g1IgJxYsxM8hZf
- 8drL7XzB88nzF7YnDKnnLRQDeDRnuXPzCp7vEtn6RKhDI7DJ5bBBEKZ0X/S4wfZHnhHLlJv
- oM9nOlCLLhEoldO5rJwP5lzqo2KxWCMD+Mf5ZxKXnbExaXaGe8bEbsjqT0og9CEnpOItzl+
- 1vnmr+IHLQwxhkhzzHHLw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nVSe/g0VnjQ=:UFJn06VN8QV8JK/lm+7VCg
- xn2/3+TfCt6XbD0xE2iE9jNYkXX1CMbmjJRRYj5j3XiGbBmMGJU4x14S2Mt6XcZbRHkQ04K0W
- mp/dfifUhNJny1E19dYiFZ6GYWKY0UXeZkRHesmfzRnq/jTzRj0varPZYnB+Asi+Ga9TCD8xd
- sL7mG5LrMw6K8DRKmiLKeRQIAsy9u/V4BHHziqSEq7fypx94brn8WIQEDLlCNbF0EXiOnU60P
- sz4bk5W5JKjND9wDyIzZpf2ZrtWGxmguumXJckHsF+gGXLf76aa7H/3Q5m8UG7qudpCMWZqY+
- TrntflQNP0qBMip4trQZYHLNm/oUqYM7z187y0sDRVuxzAg2HS4YPNYemV5oDuwDZ5tgbjqRW
- u6uRhGXz54kDgbgQeO8FMAgG+gFOA4J4rRWv5BFOzPD+qh8GjVdnelZKJTe9hkLd9xlSn01gg
- SYdXPG26m8aFfreY/okFPk7Tv8y48i6z1Z6++ylyDsHNtuftepOqtM5nFNVMVN/WalFDr7n+S
- VBbh9Zfy55Y9LKPeLwjQdTX/byCazPOXjhdjOl17lPMcyUl0bbkSInZpRrAANd7k21s+T61Rm
- HctU9rAV38lbAUxL5iGn0l9uix8dPRJyhaPGqOH5RjC6ZTPSAX7FTFvOWcXqc5xUTgUANO08U
- VcCMpRriu6MnA1MKqbrZi2Zzu1wieN3XIQR4EZobn3uffDiLpXRu2FKhqLnlG6W89thz4RHg1
- VvWGpUaDy9Bc6duKBln/29htbyb2aKW/qyWOq79Ox1Zt/ES7qkYKyk5MPSNQ12CAav97cmTxM
- LzJF7H/O2wBlf16pwfoHhRabQZdeTl8xV9wcq4E2CXu+Qd2aP5na4lCCzpWnc1d4xs/dcDvqP
- kfCF5Si1cohX7BUjIwNR5oief6deYeYTm6Ak8FnPmGATPc+oUEzBvecWFLXx1ndU06nALNoLH
- sj9uQR2mv3NbxXURIJNHOKPyvkuFmvZC2LXxo8wGUgNaCarjfRSm1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 9:44 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+On Mon, Jun 22, 2020 at 5:36 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
 >
-> It can be very big on LS7A PCH systems.
+> With the support of generic PM callbacks, drivers no longer need to use
+> legacy .suspend() and .resume() in which they had to maintain PCI states
+> changes and device's power state themselves. The required operations are
+> done by PCI core.
 >
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Compile-tested only.
+>
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 > ---
->   * On MIPS I/O ports are memory mapped, so we access them using normal
-> diff --git a/arch/mips/include/asm/mach-loongson64/spaces.h b/arch/mips/include/asm/mach-loongson64/spaces.h
-> index 3de0ac9d8829..b99b43854929 100644
-> --- a/arch/mips/include/asm/mach-loongson64/spaces.h
-> +++ b/arch/mips/include/asm/mach-loongson64/spaces.h
-> @@ -11,8 +11,7 @@
->  #define PCI_IOSIZE     SZ_16M
->  #define MAP_BASE       (PCI_IOBASE + PCI_IOSIZE)
+>  drivers/media/pci/saa7134/saa7134-core.c | 25 ++++++++----------------
+>  1 file changed, 8 insertions(+), 17 deletions(-)
 >
-> -/* Reserved at the start of PCI_IOBASE for legacy drivers */
-> -#define MMIO_LOWER_RESERVED    0x10000
-> +#define IO_SPACE_LIMIT 0x00ffffff
-
-Does this mean that firmware may already have assigned "high" I/O space
-numbers for devices? I'm not sure how well device drivers can generally
-deal with port numbers that don't fit into a 16-bit integer.
-
-Is it possible to run a 32-bit kernel on these machines? If yes, than
-taking up 16MB of virtual addresses may also become a problem.
-
-In practice, one should rarely need more than a few kb worth of
-port numbers, unless you expect to see hundreds of legacy PCI
-devices.
-
-       Arnd
+> diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
+> index e4623ed2f831..eb01109d4f98 100644
+> --- a/drivers/media/pci/saa7134/saa7134-core.c
+> +++ b/drivers/media/pci/saa7134/saa7134-core.c
+> @@ -1370,10 +1370,8 @@ static void saa7134_finidev(struct pci_dev *pci_dev)
+>         kfree(dev);
+>  }
+>
+> -#ifdef CONFIG_PM
+> -
+>  /* resends a current buffer in queue after resume */
+> -static int saa7134_buffer_requeue(struct saa7134_dev *dev,
+> +static int __maybe_unused saa7134_buffer_requeue(struct saa7134_dev *dev,
+>                                   struct saa7134_dmaqueue *q)
+>  {
+>         struct saa7134_buf *buf, *next;
+> @@ -1397,8 +1395,9 @@ static int saa7134_buffer_requeue(struct saa7134_dev *dev,
+>         return 0;
+>  }
+>
+> -static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
+> +static int __maybe_unused saa7134_suspend(struct device *dev_d)
+>  {
+> +       struct pci_dev *pci_dev = to_pci_dev(dev_d);
+>         struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
+>         struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
+>
+> @@ -1428,21 +1427,15 @@ static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
+>         if (dev->remote && dev->remote->dev->users)
+>                 saa7134_ir_close(dev->remote->dev);
+>
+> -       pci_save_state(pci_dev);
+> -       pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
+> -
+>         return 0;
+>  }
+>
+> -static int saa7134_resume(struct pci_dev *pci_dev)
+> +static int __maybe_unused saa7134_resume(struct device *dev_d)
+>  {
+> -       struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
+> +       struct v4l2_device *v4l2_dev = dev_get_drvdata(dev_d);
+>         struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
+>         unsigned long flags;
+>
+> -       pci_set_power_state(pci_dev, PCI_D0);
+> -       pci_restore_state(pci_dev);
+> -
+>         /* Do things that are done in saa7134_initdev ,
+>                 except of initializing memory structures.*/
+>
+> @@ -1490,7 +1483,6 @@ static int saa7134_resume(struct pci_dev *pci_dev)
+>
+>         return 0;
+>  }
+> -#endif
+>
+>  /* ----------------------------------------------------------- */
+>
+> @@ -1522,15 +1514,14 @@ EXPORT_SYMBOL(saa7134_ts_unregister);
+>
+>  /* ----------------------------------------------------------- */
+>
+> +static SIMPLE_DEV_PM_OPS(saa7134_pm_ops, saa7134_suspend, saa7134_resume);
+> +
+>  static struct pci_driver saa7134_pci_driver = {
+>         .name     = "saa7134",
+>         .id_table = saa7134_pci_tbl,
+>         .probe    = saa7134_initdev,
+>         .remove   = saa7134_finidev,
+> -#ifdef CONFIG_PM
+> -       .suspend  = saa7134_suspend,
+> -       .resume   = saa7134_resume
+> -#endif
+> +       .driver.pm = &saa7134_pm_ops,
+>  };
+>
+>  static int __init saa7134_init(void)
+> --
+> 2.27.0
+>
