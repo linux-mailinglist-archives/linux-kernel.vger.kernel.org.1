@@ -2,107 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588D6227270
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AE2227273
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726994AbgGTWkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S1727107AbgGTWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgGTWkV (ORCPT
+        with ESMTP id S1726127AbgGTWoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:40:21 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCCEC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:40:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r12so19238471wrj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:40:21 -0700 (PDT)
+        Mon, 20 Jul 2020 18:44:15 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C67EC0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:44:15 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id n2so13942076edr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tdzStXPHhn/lPCcmGPCaBvtaXY8ZKM9Cp45GAKfxt9s=;
-        b=Y54+52P/XnjtilisJNCnGinNUWBD1b9Cvz+O4isdAveWxDMPbnyfUL7l8PH2vQGasT
-         vl3INNIKsFFzrET9BFHvb+Ue0N3aZ4z75lX0PzZpTLERLsjAXYUd84XeeCJt+whtg/n+
-         AzY6AQ64NTNFlEgiVdsU6QsgFUBdbR2SjY+cAGcED1wahHvRR8vY5/ICQ9L4an3LDNVC
-         /k3EpFMu853pFmtQOWpfE/xLcgBsChLYtYfh1k2d+lqevnP98D0iDMW/11k5723XfJlD
-         MuEksnUiyX+c/oF2wwGA43PgPCDU027fBzfMN8/XRYzdP+waUPU1Zvxwrg0fvUn05JNG
-         1PBg==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vYYj1xkqdAsQ1FACIja4W5B8GUjTG6OnchmcXRlXDAM=;
+        b=LhvbkMttHCYSIkbtKIEJKfKLYcHeua/U3mDmokc6dBBiJsdTOS9eQQVY9fXHQEpNSg
+         bsBZjEcH/UvUgiyXF/bGXcjZfuUC/BGaS5rd6vGmLmfV0UaHgRLXjT0EXKUmsIqGPCBy
+         Sb8dlD85mrzgrlGYZs+ZHYMQF4zJNXtsCPBXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tdzStXPHhn/lPCcmGPCaBvtaXY8ZKM9Cp45GAKfxt9s=;
-        b=XvQEVRHZB28IxpNye2vCp8OzBzYimwp2d23J09f4eNZfOBcEPgQ1cQS+CQSsQ3GA01
-         57Q+HhYQdMvFX7CRYMJKFHW4RVw0d6vm21D3qkkIIbzwdJBLUaLcfS3Pw0CCpv5q8GWo
-         aVhK28joSgGpdpCWsNxxHeu48CN0GL9vZbq2OEmDrzKIMuaOPssuw3PLD0PXdrsD+T5v
-         lE1qBkJITQA8x21lnOg5BLp5gHkVANiWEI0NXKZBE1LtMF0pKJ62AFNNu5tQ9/bxSf58
-         ueAPnr1oe4pw2JeTS/9qOmNIBX8BCW5NvwBTBRVqhQnDHoxEFAyFnZZVfv3mMp8eRzZT
-         OQlw==
-X-Gm-Message-State: AOAM5306G4fh7QdB/kZU83gybUAL+xLDJetFGzcpRnmd1LyIdphIfiRY
-        5kLLuXox/alR5zCzi2Q/LvTtYcuA
-X-Google-Smtp-Source: ABdhPJxMuvjHZthcawt8WUmiSHPwNllUGkXx5YnfTh7/mggvie8pQKteaMNu69ak3ikuRjX9cBkcVQ==
-X-Received: by 2002:a5d:4bc4:: with SMTP id l4mr22765783wrt.97.1595284819931;
-        Mon, 20 Jul 2020 15:40:19 -0700 (PDT)
-Received: from [192.168.0.74] ([178.233.178.9])
-        by smtp.gmail.com with ESMTPSA id i67sm1153944wma.12.2020.07.20.15.40.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 15:40:19 -0700 (PDT)
-Subject: Re: Speaker pops with max98357a on rk3399-gru-kevin since v5.7
-To:     Tzung-Bi Shih <tzungbi@google.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org
-References: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
- <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
-From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
-Message-ID: <846feea6-e2b6-3a0e-b05f-d70e898f9ea5@gmail.com>
-Date:   Tue, 21 Jul 2020 01:40:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vYYj1xkqdAsQ1FACIja4W5B8GUjTG6OnchmcXRlXDAM=;
+        b=mQr5p29MdRnCDY+7r5mhJk5qJUfH4hnOWnX5H3SnD1cQYSrZ/6Uy5j0sKvQZrrTTNy
+         No+rLrFX8jQWhYJINH0Y5KD7J6lbWb1cEloAjfLJii7RYB7JAe/AvJm1PvIUHcf5c0Y7
+         TZJ1ndVPuCXBxn1wqbWPYMe6uZQreB4tILTSq6LVC5IQl0Do5VEYD/Jo1B0gsdobl9Ye
+         BICLNm3rE09GtZ1Qbl0Q5u0iUTOrkacqpZfswH38VZwjXDJlirXFVMEDQi0a5gDwsH84
+         04aDNj6G82yyKRYciIkbRu9GxIgoXKdcwy4VkdHunPc6ZdBPjQvDxYJ1OqgrnwGZGtPr
+         e07A==
+X-Gm-Message-State: AOAM530zBtimx8ikcpaacqsmOqX5W4jQilaa55gG+jxgoFhCFn6uFaRh
+        RkArhBdSW68C7NXLj27o/D2LWQ==
+X-Google-Smtp-Source: ABdhPJwOkJhYIctISfI3yYileJE3UyfLzhW9ibOBRJkJLPhkuKeNd9eypzHHnF3uimZ4IxjR5U9Q/Q==
+X-Received: by 2002:a05:6402:3d0:: with SMTP id t16mr22865489edw.287.1595285053947;
+        Mon, 20 Jul 2020 15:44:13 -0700 (PDT)
+Received: from google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id cc9sm16719027edb.14.2020.07.20.15.44.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 15:44:13 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Tue, 21 Jul 2020 00:44:11 +0200
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Implement bpf_local_storage for
+ inodes
+Message-ID: <20200720224411.GA1873800@google.com>
+References: <20200709101239.3829793-1-kpsingh@chromium.org>
+ <20200709101239.3829793-3-kpsingh@chromium.org>
+ <20200715215751.6llgungzff66iwxh@kafai-mbp>
+ <20200715225911.GA1194150@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715225911.GA1194150@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2020 05:27, Tzung-Bi Shih wrote:
-> I am not convinced the pop comes from 128f825aeab7.
+On 16-Jul 00:59, KP Singh wrote:
+> On 15-Jul 14:57, Martin KaFai Lau wrote:
+> > On Thu, Jul 09, 2020 at 12:12:37PM +0200, KP Singh wrote:
+> > > From: KP Singh <kpsingh@google.com>
+> > > 
+> > > Similar to bpf_local_storage for sockets, add local storage for inodes.
+> > > The life-cycle of storage is managed with the life-cycle of the inode.
+> > > i.e. the storage is destroyed along with the owning inode.
+> > > 
+> > > The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
+> > > security blob which are now stackable and can co-exist with other LSMs.
+> > > 
+> > > Signed-off-by: KP Singh <kpsingh@google.com>
+> > 
+> > [ ... ]
+> > 
+> > 
+> > > +static void *bpf_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +	struct inode *inode;
+> > > +	int err = -EINVAL;
+> > > +
+> > > +	if (key) {
+> > > +		inode = *(struct inode **)(key);
+> > The bpf_inode_storage_lookup_elem() here and the (update|delete)_elem() below
+> > are called from the userspace syscall.  How the userspace may provide this key?
+> 
+> I realized this when I replied about the _fd_ name in the sk helpers.
+> I am going to mark them as unsupported for now for inodes.
+> 
+> We could, probably and separately, use a combination of the device
+> and inode number as a key from userspace.
 
-Maybe some pre-existing defect in rk3399_gru_sound got exposed by
-128f825aeab7 or the machine driver needs some changes to complement
-that commit?
+I actually implemented these as:
 
-> (I don't have a rk3399-gru-kevin so I got another test machine with MAX98357A.)
-> (I was testing with and without an audio server.)
+static int bpf_fd_inode_storage_delete_elem(struct bpf_map *map, void *key)
+{
+	struct file *f;
+	int fd;
 
-Your observations are also a bit different from mine, which IMO also
-suggests the machine driver is the true culprit -- I'd guess the pops
-you hear would be from a different problem in your test machine's
-machine driver?
+	fd = *(int *)key;
+	f = fcheck(fd);
+	if (!f)
+		return -EINVAL;
 
-(Let me restate my observations to contrast with yours, as I feel my
-previous explanation was too wordy:)
+	return inode_storage_delete(f->f_inode, map);
+}
 
-> Observations:
-> - I can hear the pop either with or without 128f825aeab7 (with and
-> without sdmode-delay).
+This keeps it similar to sk_storage and the userspace can just pass an
+fd.
 
-I never hear pops without 128f825aeab7, but always hear pops with it.
-(no change when I remove "sdmode-delay" from the device-tree)
+- KP
 
-> - The pop noise is not always.  Higher probability after stopping
-> playback than before starting.
-
-I always hear one pop when starting playback, and two pops (with a few
-seconds between them) when stopping playback.
+> 
+> - KP
+> 
+> > 
+> > > +		sdata = inode_storage_lookup(inode, map, true);
+> > > +		return sdata ? sdata->data : NULL;
+> > > +	}
+> > > +
+> > > +	return ERR_PTR(err);
+> > > +}
+> > > +
+> > > +static int bpf_inode_storage_update_elem(struct bpf_map *map, void *key,
+> > > +					 void *value, u64 map_flags)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +	struct inode *inode;
+> > > +	int err = -EINVAL;
+> > > +
+> > > +	if (key) {
+> > > +		inode = *(struct inode **)(key);
+> > > +		sdata = map->ops->map_local_storage_update(inode, map, value,
+> > > +							   map_flags);
+> > > +		return PTR_ERR_OR_ZERO(sdata);
+> > > +	}
+> > > +	return err;
+> > > +}
+> > > +
+> > > +static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +
+> > > +	sdata = inode_storage_lookup(inode, map, false);
+> > > +	if (!sdata)
+> > > +		return -ENOENT;
+> > > +
+> > > +	bpf_selem_unlink_map_elem(SELEM(sdata));
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int bpf_inode_storage_delete_elem(struct bpf_map *map, void *key)
+> > > +{
+> > > +	struct inode *inode;
+> > > +	int err = -EINVAL;
+> > > +
+> > > +	if (key) {
+> > > +		inode = *(struct inode **)(key);
+> > > +		err = inode_storage_delete(inode, map);
+> > > +	}
+> > > +
+> > > +	return err;
+> > > +}
+> > > +
+> > 
+> > [ ... ]
+> > 
+> > > +static int inode_storage_map_btf_id;
+> > > +const struct bpf_map_ops inode_storage_map_ops = {
+> > > +	.map_alloc_check = bpf_local_storage_map_alloc_check,
+> > > +	.map_alloc = inode_storage_map_alloc,
+> > > +	.map_free = inode_storage_map_free,
+> > > +	.map_get_next_key = notsupp_get_next_key,
+> > > +	.map_lookup_elem = bpf_inode_storage_lookup_elem,
+> > > +	.map_update_elem = bpf_inode_storage_update_elem,
+> > > +	.map_delete_elem = bpf_inode_storage_delete_elem,
+> > > +	.map_check_btf = bpf_local_storage_map_check_btf,
+> > > +	.map_btf_name = "bpf_local_storage_map",
+> > > +	.map_btf_id = &inode_storage_map_btf_id,
+> > > +	.map_local_storage_alloc = inode_storage_alloc,
+> > > +	.map_selem_alloc = inode_selem_alloc,
+> > > +	.map_local_storage_update = inode_storage_update,
+> > > +	.map_local_storage_unlink = unlink_inode_storage,
+> > > +};
+> > > +
