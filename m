@@ -2,186 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAC8226C15
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF043226C4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388855AbgGTQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:46:37 -0400
-Received: from mail.efficios.com ([167.114.26.124]:40442 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729732AbgGTQqc (ORCPT
+        id S1731479AbgGTQsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389136AbgGTQsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:46:32 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4A2722C34AA;
-        Mon, 20 Jul 2020 12:46:31 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id y8N1uMCN0ppf; Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id CCD872C3619;
-        Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CCD872C3619
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1595263590;
-        bh=qGPk0zNFwo5cVQw8ZAK/QyIsHyu6OZPMekpsDrpVWP0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=HXiT5Rdi/FF5QIH6XZv4gJJ1Kju6lX5VX4hzPj+hydfPtz1E9pzRTxh8iaYZG2R73
-         eg3S6CBN/N3CzdOA1wtGesnftvZPn/jreiYbon5BVt5Xo07uYCDrp3r6+T6NpduFg1
-         +WaAaCvuMdvcOz7ILW26ZFzs7SSho+yUvlWOXk4X3/jZCbCPPaJVfE8ksX3ESVXYZy
-         UJHjbMPAPdnxAbLqWKXe13jwyDGaE1j2dwhFeLRbe2rF5E+yQnFrtHCIHes82YNUuZ
-         hMFVlmdcxzHjcByqw0tk6PQeH+vfVINABK0AxVRl9R/75dRRzYKUr7TbPkcu/OxiEL
-         QX9rO3DoP+RtQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id lJkhJIb6W00t; Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id B98062C34A7;
-        Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
-Date:   Mon, 20 Jul 2020 12:46:30 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mon, 20 Jul 2020 12:48:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D71C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:48:05 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595263684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z6vhOjdN6ywMQ1hCQjAk0Q+j5ecrOFBEW6Ip0+YJdCs=;
+        b=ZA4pvD8rKQSzPPdkdFAcnZFPytP4oQ6eY5AKeNeRHWsEmtPGBljL1eqqSSr/py+SuOmbHV
+        uMhrQ2O+OB/szVg5LhHX+wV48fg2tpPlGQTQ7pTMX1EGuI2yMrhjxvVAvntdX64SZCr7sh
+        YoL8iyqMm8JNxfZUJ7JKbidKgMC4gY2xSepIAtfsNjNqSUK4nBdJILfnsIoQtuI1DCbgdO
+        13pWLy6OdD8n0ZKgecuU3DdYKq1+ijlpVBtB9VunawoYBhdF6UnWR8Vq2TAqvw56aj8Oww
+        Xn1wNan4LZtDfEpZZldYF87XAWZkKwO4Rglglvx2qzaQ8JLWDcBrewJPNAM8cw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595263684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z6vhOjdN6ywMQ1hCQjAk0Q+j5ecrOFBEW6Ip0+YJdCs=;
+        b=+53pArHvqhHYDCu9EiME9XT473fok4zzq+rTpbwcFEYnB92nsOc3WKhpTJOKyEpZwRHijA
+        7OJ0ZF0qD5no/6Bw==
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, hpa@zytor.com,
         Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Message-ID: <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1595213677.kxru89dqy2.astroid@bobo.none>
-References: <1594868476.6k5kvx8684.astroid@bobo.none> <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net> <20200716085032.GO10769@hirez.programming.kicks-ass.net> <1594892300.mxnq3b9a77.astroid@bobo.none> <20200716110038.GA119549@hirez.programming.kicks-ass.net> <1594906688.ikv6r4gznx.astroid@bobo.none> <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com> <1595213677.kxru89dqy2.astroid@bobo.none>
-Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
- membarrier_mm_sync_core_before_usermode
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/idt: Make sure idt_table takes a whole page
+In-Reply-To: <20200720161112.GB620@8bytes.org>
+References: <0CEC6A66-FD50-4B6B-9521-A40E5B9DA10F@zytor.com> <7FB389D0-77D4-482E-8A21-8662DDB00268@amacapital.net> <0B7CF270-EC04-4907-821A-A01F24BEF156@zytor.com> <20200719023405.GA564835@rani.riverdale.lan> <87pn8rokjz.fsf@nanos.tec.linutronix.de> <20200720161112.GB620@8bytes.org>
+Date:   Mon, 20 Jul 2020 18:48:03 +0200
+Message-ID: <87sgdmm8u4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
-Thread-Index: 9hzlA0XuD7jqnfPzlJuu2D9uF0Nx4Q==
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 19, 2020, at 11:03 PM, Nicholas Piggin npiggin@gmail.com wrote:
+Joerg Roedel <joro@8bytes.org> writes:
+> On Sun, Jul 19, 2020 at 12:39:44PM +0200, Thomas Gleixner wrote:
+>>  		*(.bss..page_aligned)					\
+>> +		. = ALIGN(PAGE_SIZE);					\
+>>  		*(.dynbss)						\
+>>  		*(BSS_MAIN)						\
+>>  		*(COMMON)						\
+>
+> I thougt about that too (and doing the same for .data..page_aligned),
+> but decided that 'page_aligned' does not imply 'page_sized', so that
+> putting other variables on the same page is fine in general and saves
+> some memory. The problem why it breaks here is only because x86 maps a
+> variabe which is not page-sized RO, so my thinking was that it should be
+> fixed right there, at the variable.
+>
+> But if the above is fine too I prepare a patch which also aligns the end
+> of .data..page_aligned.
 
-> Excerpts from Mathieu Desnoyers's message of July 17, 2020 11:42 pm:
->> ----- On Jul 16, 2020, at 7:26 PM, Nicholas Piggin npiggin@gmail.com wrote:
->> [...]
->>> 
->>> membarrier does replace barrier instructions on remote CPUs, which do
->>> order accesses performed by the kernel on the user address space. So
->>> membarrier should too I guess.
->>> 
->>> Normal process context accesses like read(2) will do so because they
->>> don't get filtered out from IPIs, but kernel threads using the mm may
->>> not.
->> 
->> But it should not be an issue, because membarrier's ordering is only with
->> respect
->> to submit and completion of io_uring requests, which are performed through
->> system calls from the context of user-space threads, which are called from the
->> right mm.
-> 
-> Is that true? Can io completions be written into an address space via a
-> kernel thread? I don't know the io_uring code well but it looks like
-> that's asynchonously using the user mm context.
+If you do
 
-Indeed, the io completion appears to be signaled asynchronously between kernel
-and user-space. Therefore, both kernel and userspace code need to have proper
-memory barriers in place to signal completion, otherwise user-space could read
-garbage after it notices completion of a read.
+  struct foo foo __attribute__ ((aligned(__alignof__(PAGE_SIZE))));
 
-I did not review the entire io_uring implementation, but the publish side
-for completion appears to be:
+then this ends up page aligned in the data section and the linker can
+place another object right next to it.
 
-static void __io_commit_cqring(struct io_ring_ctx *ctx)
-{
-        struct io_rings *rings = ctx->rings;
+But with explicit sections which store only page aligned objects there
+is an implicit guarantee that the object is alone in the page in which
+it is placed. That works for all objects except the last one. That's
+inconsistent.
 
-        /* order cqe stores with ring update */
-        smp_store_release(&rings->cq.tail, ctx->cached_cq_tail);
-
-        if (wq_has_sleeper(&ctx->cq_wait)) {
-                wake_up_interruptible(&ctx->cq_wait);
-                kill_fasync(&ctx->cq_fasync, SIGIO, POLL_IN);
-        }
-}
-
-The store-release on tail should be paired with a load_acquire on the
-reader-side (it's called "read_barrier()" in the code):
-
-tools/io_uring/queue.c:
-
-static int __io_uring_get_cqe(struct io_uring *ring,
-                              struct io_uring_cqe **cqe_ptr, int wait)
-{
-        struct io_uring_cq *cq = &ring->cq;
-        const unsigned mask = *cq->kring_mask;
-        unsigned head;
-        int ret;
-
-        *cqe_ptr = NULL;
-        head = *cq->khead;
-        do {
-                /*
-                 * It's necessary to use a read_barrier() before reading
-                 * the CQ tail, since the kernel updates it locklessly. The
-                 * kernel has the matching store barrier for the update. The
-                 * kernel also ensures that previous stores to CQEs are ordered
-                 * with the tail update.
-                 */
-                read_barrier();
-                if (head != *cq->ktail) {
-                        *cqe_ptr = &cq->cqes[head & mask];
-                        break;
-                }
-                if (!wait)
-                        break;
-                ret = io_uring_enter(ring->ring_fd, 0, 1,
-                                        IORING_ENTER_GETEVENTS, NULL);
-                if (ret < 0)
-                        return -errno;
-        } while (1);
-
-        return 0;
-}
-
-So as far as membarrier memory ordering dependencies are concerned, it relies
-on the store-release/load-acquire dependency chain in the completion queue to
-order against anything that was done prior to the completed requests.
-
-What is in-flight while the requests are being serviced provides no memory
-ordering guarantee whatsoever.
-
-> How about other memory accesses via kthread_use_mm? Presumably there is
-> still ordering requirement there for membarrier,
-
-Please provide an example case with memory accesses via kthread_use_mm where
-ordering matters to support your concern.
-
-> so I really think
-> it's a fragile interface with no real way for the user to know how
-> kernel threads may use its mm for any particular reason, so membarrier
-> should synchronize all possible kernel users as well.
-
-I strongly doubt so, but perhaps something should be clarified in the documentation
-if you have that feeling.
+By enforcing page sized objects for this section you might also wreckage
+memory sanitizers, because your object is artificially larger than it
+should be and out of bound access becomes legit.
 
 Thanks,
 
-Mathieu
-
-> 
-> Thanks,
-> Nick
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+        tglx
