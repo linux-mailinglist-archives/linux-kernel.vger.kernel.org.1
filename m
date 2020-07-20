@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C612271EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83342271F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgGTV6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:58:40 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:32779 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgGTV6j (ORCPT
+        id S1726755AbgGTWBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:01:50 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:50766 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgGTWBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:58:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595282319; x=1626818319;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=45dWPGxVKj5CeUsx8GRPCPcqJSQ4hOGmZ2+CaHH+JPY=;
-  b=rBtZ/URdIoWEPlNIpgt6Ej4VMv/TH2OmrlBCJaIltdxykWTuVTsMdNxE
-   8nG4L18KKgu7wZsNKS4D/pvmFGzWNqirraY5Aq1/dWp1FhXaWxbMmTv9g
-   A1woOAmRmNch+Lm/fH9ZSk2YBH+toVcgu7yLr9WrvKxsop19iy7xdWTI8
-   uCVKawb9IKBxWOJekDS8YFcBDd7idvkw34Di+UyvKiQXX8zNi/CYpf64H
-   NeLvQJi4pN47/FwEZuksKYLdVKtQ1TEn/WkeYjlSh3kmfrsL0y1Ir9M8U
-   OFsI9FMnI7ixm7YVvG9H5xEO74C+pcXSNHUem+njEAt5Aa71dcGsktmta
-   w==;
-IronPort-SDR: Wgd3wbnyVO27AwQAmYOUlZr66JtXUrmiIA+gM9K3UgDRDEmeRnZqiNxZIwX1pAysXksb5t0Pml
- BwXFLGAlavSHAv3Q6EoDf6NPgwS6v3QUXfQVDW1teo9xT6fkgH5e2DI0s8mPnZTgm4lWU9ULzq
- 7Uj6qf9ps3+BQGcJb5lNATTcNyoFLv3S8kk981EY2+pPPUEsG40mB+eIkitkzR+6WlrSMdOaHb
- LH928S2aEYFFCtOPms97q9CvY8H6IAuUoYm+I8tKsgBq4hOmSLxeLAe4cAY7gRHmGXlGxVhcur
- ihk=
-X-IronPort-AV: E=Sophos;i="5.75,375,1589212800"; 
-   d="scan'208";a="142957049"
-Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jul 2020 05:58:30 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XTUsPh9OEFxQoRXZsbsw48QZp62W41cqAvIYQlaiYahm0KfCgI5tORj2Vn7djT6RCIMQ3z17Mx7NYZv+ZdBSl9lzNTVcmsWVZo+OOqgvL7GaGHupt0PeYRBic6oz4V/aobxpd/GgBafhL5sBpJ43mMVKX0spZo5yoDjXH17GkA116tE1WhBHfWr5J1osg3uGBK779ZxLjR59xBKMhFkVncUbbtb6sN+DBnyNN/P56oU+H+l+F87+bwHJSAcY0+hDC4a1s7/OwHm6Zexf5H/Se/+8YDN6G/dqBwyxgWB0StfU8sXmA3m6jbRSEy44UdsbZC3smWXiBl4+6OIwIRJuww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=45dWPGxVKj5CeUsx8GRPCPcqJSQ4hOGmZ2+CaHH+JPY=;
- b=HvF9a7wGfm2twjOr96LT9OZK3hWtzWj1x3dIuShW9g/S2TnZSLqc5NeTnn/+vje6gLfnhqTgM3jGBBEspionT49o7q86IqPxcaQsrZHP6IRZDHIvW5vnf9WoO5aQUCgxbaT65HF+zfnOXyNuCcZmfXZojiluESXRD+1GzPu6/NodhDP4hW0wjgOP+mCzhFY1Nre8jnTzyxcjVGWEeWbUyQiBKp21Z323mSRTgWSgf1c7Jd+z5fErdiTJt+NH+zto2vHDAihPcPidJ7d/jaiNbnCVarGGZvHcm+TvqSOMclc/YpkdRwSYq+0pyzHeaEbDhiEmaIn8adpERah4epN+rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=45dWPGxVKj5CeUsx8GRPCPcqJSQ4hOGmZ2+CaHH+JPY=;
- b=oBmQS4TfMNS4BFGSFyenHq9gkBX7AKTqFZgmIiP+eNj07XIAL8NL7Hoe2opUy7YEVRiYOTP/bTDOREX5K9NMN/EojFj2t848mqaLeNOm/CifD2XYeJnzcfvZXwOn2ZksIGRfmxnU8oEWBqRzqsq0c6Us9E03fph8KDqyra7ZDZ8=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB3861.namprd04.prod.outlook.com (2603:10b6:a02:ac::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.24; Mon, 20 Jul
- 2020 21:58:29 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::98a4:d2c9:58c5:dee4]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::98a4:d2c9:58c5:dee4%5]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 21:58:29 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Sagi Grimberg <sagi@grimberg.me>
-CC:     Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Mon, 20 Jul 2020 18:01:49 -0400
+X-Greylist: delayed 1215 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Jul 2020 18:01:49 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EI4HV6io6QvxPNiiP4h3U+USCze8na4pN1lXIYxzsKE=; b=hR02xQhhHkzb0x75CmE926uQPi
+        kl8Qui+dyXxqehG+rEIaDSxHS5IkQAoE+3VCIQZM+SJ6igXfHmxalPZozHDne+U6Wb9olrPFi/QTL
+        w7nu84wzNw7+EzIxnYSIwatdu20/yhGJYD5R1DiN5L068fm8V1mvO3mbNcSGY76JTd/IC8YN3IC7A
+        pu6YaSkr3LvhIORG9nK5gDlVAd6kt2Z/XBXIhiIO3tFsBtEveBTG4RQ4EFidyCm7iKocAsKTBEfnO
+        wrWbv7OUVOImZ1Dx38WrbJ0MgJJcRukmDbnbLxlB3q7GYA177bJk5/cso0881QsVNzQOxnfMKrV6U
+        AJxIQ3ZA==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1jxdXL-0002HX-UZ; Mon, 20 Jul 2020 15:41:28 -0600
+To:     Sagi Grimberg <sagi@grimberg.me>, Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
         Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
         Max Gurtovoy <maxg@mellanox.com>,
         Stephen Bates <sbates@raithlin.com>
-Subject: Re: [PATCH v15 7/9] nvmet-passthru: Add passthru code to process
- commands
-Thread-Topic: [PATCH v15 7/9] nvmet-passthru: Add passthru code to process
- commands
-Thread-Index: AQHWW7Bs3rS14btVx0e0NQ0AiEjaXQ==
-Date:   Mon, 20 Jul 2020 21:58:29 +0000
-Message-ID: <BYAPR04MB4965E4374C4A99F326507A88867B0@BYAPR04MB4965.namprd04.prod.outlook.com>
 References: <20200716203319.16022-1-logang@deltatee.com>
  <20200716203319.16022-8-logang@deltatee.com> <20200720141606.GF4627@lst.de>
  <e939dd43-9e7f-8ef0-162b-2a27f53e6e1a@grimberg.me>
- <5cc390cf-9b0b-b48b-7447-37934be51ee0@deltatee.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: grimberg.me; dkim=none (message not signed)
- header.d=none;grimberg.me; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1fc5a610-276b-433f-2423-08d82cf809a5
-x-ms-traffictypediagnostic: BYAPR04MB3861:
-x-microsoft-antispam-prvs: <BYAPR04MB386198FC620D47F5ABF1CFC0867B0@BYAPR04MB3861.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Adh52lO7BWuTC0+1+T965zdIQ0RBJdBj3trxrNNMTezC8fFOybXFLJYSGwWeF1uZTVo+G8EzAX8QsZ7gUV30QvrUeh+OoGeR4upZhbsJ1iWO1x6hVLGSH37ocqh0O7/SehnYSp4AimL3lsYwYIjHE/fxsF/ksQ6Oq1SdnPZn5LuWWwcTJGwf9g+uUHNw+oo+gqjU8srYyOf9bdKDsREsX2jy1tfnI3MhXxao5PFyeyBH26b4ck4B5UrQK7TLjVaSPTMfMdumXdSdqgpCFKZ+uv4BaXtWCQct7kSgHoz+BrxxV2CLn7jaVmFkswGRBvWl0xyNuTvo3o4t9e2TdqwqbA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(346002)(39860400002)(366004)(136003)(7696005)(8936002)(66946007)(71200400001)(4744005)(4326008)(55016002)(9686003)(33656002)(66556008)(66446008)(76116006)(86362001)(316002)(5660300002)(2906002)(8676002)(64756008)(6916009)(186003)(66476007)(6506007)(53546011)(52536014)(478600001)(54906003)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ARnRtBDA/SfUYVALMbwzVpAwEHYfd5YccC1pKIbPwC5fUe5aNj9VYqMhowa00BGwgB77Zd0QOyCZp4t5cJvoyPs78vr4KbN68TbQTYmWDC1umkaJB1Qpqv6/j5cjEtPtVUMeleWFzX94T4OprDuhqH4n1ckUBGMH2lIJSm+EtxTcTRBX4VsFcmUNSOuRXlS+KhZ2yZ2RdK0eAop8RmLWtwJ/OtHGDLtmkBq/sXUDhr6ELt83P5lQNSpX2FMEJ62sLkH6JJfl+EX1Vs6WXePRuLNdweTAgpnmnhvOb4K3ZXRdailVtvsHIGnHjM2T1qSgEvfCq/g3M9rx/Gt63WBznzMPr74ZA0d55bHQTewCiweZ/6PTw+l2lYeInW+zEfVUKlN/bHM3ZpbYVwUx4QBmwNaJarARlq8Cg9IeNS/i/5u7ULp6ukFngz1ibrTg1M3b/1K065Fbx+7et78lRwpz0lScdKbdo/ZmPLybjZiek7s=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <5cc390cf-9b0b-b48b-7447-37934be51ee0@deltatee.com>
+Date:   Mon, 20 Jul 2020 15:41:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fc5a610-276b-433f-2423-08d82cf809a5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 21:58:29.6315
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PBs5w+BJi8Sa/h/AECz5ctPtjhuJW9ZWMGV3qZRFoj1XexiaIcIm/s73BokpgQkSauSZI8L/mkSPl6lD4KYGBhye1OUFWlXeFuRDnAGXZwE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3861
+In-Reply-To: <e939dd43-9e7f-8ef0-162b-2a27f53e6e1a@grimberg.me>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, maxg@mellanox.com, Chaitanya.Kulkarni@wdc.com, axboe@fb.com, kbusch@kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, hch@lst.de, sagi@grimberg.me
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v15 7/9] nvmet-passthru: Add passthru code to process
+ commands
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/20 14:41, Logan Gunthorpe wrote:=0A=
->> That is a neat idea! should be easy to do (and we can then lose the host=
-=0A=
->> xarray stuff). I don't mind having it on a later patch, but it should be=
-=0A=
->> easy enough to do even before...=0A=
->>=0A=
-> I sort of follow this. I can try to work something up but it will=0A=
-> probably take me a few iterations to get it to where you want it. So,=0A=
-> roughly, we'd create a passthrough_q in core with the controller's IO=0A=
-> tagset and then cleanup the fabrics hosts to use that instead of each=0A=
-> independently creating their connect_q?=0A=
-> =0A=
-> Though, I don't understand how this relates to the host xarray stuff=0A=
-> that Sagi mentioned...=0A=
-=0A=
-I didn't understand it either how having a passthru q can get rid of the=0A=
-struct nvme_ns search when nsid is embedded in the nvme_cmd in=0A=
-the I/O path ?=0A=
-=0A=
-Sagi can you please explain ?=0A=
+Thanks for the review Christoph. I think I should be able to make all
+the requested changes in the next week or two.
+
+On 2020-07-20 1:35 p.m., Sagi Grimberg wrote:
+> 
+>> I'm still not so happy about having to look up the namespace and still
+>> wonder if we should generalize the connect_q to a passthrough_q.  But
+>> I guess we can do that later and then reduce some of the exports here..
+> 
+> That is a neat idea! should be easy to do (and we can then lose the host
+> xarray stuff). I don't mind having it on a later patch, but it should be
+> easy enough to do even before...
+> 
+
+I sort of follow this. I can try to work something up but it will
+probably take me a few iterations to get it to where you want it. So,
+roughly, we'd create a passthrough_q in core with the controller's IO
+tagset and then cleanup the fabrics hosts to use that instead of each
+independently creating their connect_q?
+
+Though, I don't understand how this relates to the host xarray stuff
+that Sagi mentioned...
+
+Logan
