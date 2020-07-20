@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23E722668E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD802267CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732248AbgGTQEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
+        id S2388316AbgGTQOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732814AbgGTQEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:04:09 -0400
+        id S2387909AbgGTQOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:14:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DB3F22CBB;
-        Mon, 20 Jul 2020 16:04:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0042520684;
+        Mon, 20 Jul 2020 16:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261049;
-        bh=ziDjWA78GexGTFmRBjgcQWCMqFaXoIEHipWA9nK9X5I=;
+        s=default; t=1595261680;
+        bh=Rsssxhr5ZDxVKD9RnrovIRqJwtyh3+qcK/WyD3wN0Z8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jk8J7g7SIq6ZLAMkAstxZHWvZ0OmPZ+I5ELdUgvmSSWI5MaLMnd8WlWTcfz0Dok6b
-         7A1BOolgZb+3zTKbSqgXLDAePzpFW9kCoZiFvuXvuaGA/cFCWJrz0aVwy+9yat039P
-         EEuXz9j0WaaY++lgvyEERnj2ZEh4Tj0O7TYpPw6Y=
+        b=wSaoo7ta+ib9FPBqSOLGP7lJhyL/SjDfbXCCDYk+bS90c1ff/Or/tMaaaHUnrBH3G
+         f6Zed94NOTYCFb9QmkzzFyzZfcbROl/IjoHLCfr7IDhnYXZqiUu75+YnCCZJ3wfgQY
+         9lrwDtQzQjS5FXJS7fbnR85u7kPDcJ7CEueIJA/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 5.4 190/215] intel_th: pci: Add Tiger Lake PCH-H support
-Date:   Mon, 20 Jul 2020 17:37:52 +0200
-Message-Id: <20200720152829.224189561@linuxfoundation.org>
+Subject: [PATCH 5.7 202/244] intel_th: pci: Add Tiger Lake PCH-H support
+Date:   Mon, 20 Jul 2020 17:37:53 +0200
+Message-Id: <20200720152835.460662100@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,7 +62,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/hwtracing/intel_th/pci.c
 +++ b/drivers/hwtracing/intel_th/pci.c
-@@ -230,6 +230,11 @@ static const struct pci_device_id intel_
+@@ -234,6 +234,11 @@ static const struct pci_device_id intel_
  		.driver_data = (kernel_ulong_t)&intel_th_2x,
  	},
  	{
