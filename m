@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505B122641C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19282264A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgGTPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34672 "EHLO mail.kernel.org"
+        id S1730711AbgGTPq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:46:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729391AbgGTPmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:42:06 -0400
+        id S1730308AbgGTPqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:46:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA94B20773;
-        Mon, 20 Jul 2020 15:42:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 901392064B;
+        Mon, 20 Jul 2020 15:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259725;
-        bh=PYcGYWEKJHL1xvHc6lIFXf1DqZyj0ZTcjXP8hIo7Ouk=;
+        s=default; t=1595260012;
+        bh=MWUrtPM5nHIkXkdryef7R2aGNqdQ+yXU5ZLChvXzslk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D+oiGUbYSnz6nmHlv7xe+jI2fgs2879BRY7j7DMO5V5o97FEiOrLkc7UBb5nguGPX
-         5NqOqz8UGe6TssXcOJaM1T7yNMKaYEl3MmGqAcis84vpjBjFXgm0fOsXaQ4rmeGFvD
-         H43UfkwnVeqGOvDHZ5MZqfy2f49+7XAXIc2c6P+8=
+        b=07mb4x1e1pg7nH6bL24rLGjqkaqIrROKRtF1apXKaYKjvBxiK6HnT+TYZdLvvks1+
+         J2qy5jBI0Z/nr6cNNcrunhEXwHn9WtfEi+qSBTdyuEYNtkMOKQKyDX2YTLhTGaBnlI
+         gMFnCsYcUTaPXZxMSvl8xatA0UyzuTs569GAJ4pE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 57/86] ARM: dts: socfpga: Align L2 cache-controller nodename with dtschema
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 074/125] Revert "usb/ehci-platform: Set PM runtime as active on resume"
 Date:   Mon, 20 Jul 2020 17:36:53 +0200
-Message-Id: <20200720152756.026656813@linuxfoundation.org>
+Message-Id: <20200720152806.577103728@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+This reverts commit 5410d158ca2a50bcf3f48c57f6cd73f4cf479e69.
 
-[ Upstream commit d7adfe5ffed9faa05f8926223086b101e14f700d ]
+Eugeniu Rosca writes:
 
-Fix dtschema validator warnings like:
-    l2-cache@fffff000: $nodename:0:
-        'l2-cache@fffff000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>Set PM runtime as active on resume") into downstream v4.14.x, we started
+>to consistently experience below panic [1] on every second s2ram of
+>R-Car H3 Salvator-X Renesas reference board.
+>
+>After some investigations, we concluded the following:
+> - the issue does not exist in vanilla v5.8-rc4+
+> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>   link support"). Getting evidence for that is easy. Reverting
+>   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>
+>Questions:
+> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>   link support") to v4.14.187 looks challenging enough, so probably not
+>   worth it. Anybody to contradict this?
+> - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>   should the following three v4.14.186 commits be reverted on v4.14.x?
+>   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
 
-Fixes: 475dc86d08de ("arm: dts: socfpga: Add a base DTSI for Altera's Arria10 SOC")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/socfpga.dtsi         | 2 +-
- arch/arm/boot/dts/socfpga_arria10.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/ehci-platform.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
-index f0702d8063d9b..9a2db3df5edef 100644
---- a/arch/arm/boot/dts/socfpga.dtsi
-+++ b/arch/arm/boot/dts/socfpga.dtsi
-@@ -676,7 +676,7 @@ ocram-ecc@ffd08144 {
- 			};
- 		};
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+index 6fcd332880143..f1908ea9fbd86 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -390,11 +390,6 @@ static int ehci_platform_resume(struct device *dev)
+ 	}
  
--		L2: l2-cache@fffef000 {
-+		L2: cache-controller@fffef000 {
- 			compatible = "arm,pl310-cache";
- 			reg = <0xfffef000 0x1000>;
- 			interrupts = <0 38 0x04>;
-diff --git a/arch/arm/boot/dts/socfpga_arria10.dtsi b/arch/arm/boot/dts/socfpga_arria10.dtsi
-index f520cbff5e1c9..4d496479e1353 100644
---- a/arch/arm/boot/dts/socfpga_arria10.dtsi
-+++ b/arch/arm/boot/dts/socfpga_arria10.dtsi
-@@ -567,7 +567,7 @@ sdr: sdr@ffc25000 {
- 			reg = <0xffcfb100 0x80>;
- 		};
- 
--		L2: l2-cache@fffff000 {
-+		L2: cache-controller@fffff000 {
- 			compatible = "arm,pl310-cache";
- 			reg = <0xfffff000 0x1000>;
- 			interrupts = <0 18 IRQ_TYPE_LEVEL_HIGH>;
+ 	ehci_resume(hcd, priv->reset_on_resume);
+-
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-
+ 	return 0;
+ }
+ #endif /* CONFIG_PM_SLEEP */
 -- 
 2.25.1
 
