@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B1F226B14
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69572226B7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389064AbgGTQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732718AbgGTQik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:38:40 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2634122CBB;
-        Mon, 20 Jul 2020 16:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595263119;
-        bh=wlqo7kAx+og7PtKyjy/9X5uYlujAIR96QYTi8/c6yXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KedFP10soudJd9FGCXk2UQ6mwGYV9FfLgr9Jehpfqo3DeBMYh9Cg2T64ka4vLb/9E
-         yZE0kTEtUh1mwFGolpaTN3qJTAigCNeN60HjhesQSQimi39aadhKkQmY9ZpzWdIGAc
-         DM8CICk2pF95QKtAIcFlAv4SRPp0hIAXO+8S+9xE=
-Date:   Mon, 20 Jul 2020 09:38:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: get rid of the address_space override in setsockopt
-Message-ID: <20200720163836.GB1292162@gmail.com>
-References: <20200720124737.118617-1-hch@lst.de>
+        id S2389071AbgGTQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731196AbgGTQlR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:41:17 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFE2C061794;
+        Mon, 20 Jul 2020 09:41:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=vIy+LTW5jYYBV4hfqVnhhtl8us5VhtAtJu0nO6I1cmE=; b=zaXxxhUwzfepAs+QKhex2X36fE
+        DuGzdqN4ZfvkT7AKp2dhrmQcXq3vupumdc9035lGjEKd5Go59nUEwulRTxU8Trpb/Ex3nsuM2YqRV
+        D4I5n7Dn2fB5WtStJHI3ygoGBDaJ4OkixvGAC49N6P/2HqrpJnIQiqfzUBDxTauDaNA7JR7QsRkFs
+        ntz+Lasmq+m+5tdKvnM5Ill/Tzzu4mroMqdF0sqp9EWd27QCQqkaGa4bsWrwJXLk+g0vAFME87GWW
+        KkVHf6BzkLee7//0dkWecbqpW92OMBV1MC39ZmdYB0dCq/nq/hk3r5VxQMe3y/9ag4u5zbyyZcLwH
+        ke/1Zf/g==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxYqn-0005vn-4l; Mon, 20 Jul 2020 16:41:13 +0000
+Subject: Re: linux-next: Tree for Jul 20 (scsi/ufs/exynos)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Santosh Yaraganavi <santosh.sy@samsung.com>,
+        Vinayak Holikatti <h.vinayak@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Seungwon Jeon <essuuj@gmail.com>
+References: <20200720194225.17de9962@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e6112633-61c9-fa80-8479-fe90bb360868@infradead.org>
+Date:   Mon, 20 Jul 2020 09:41:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720124737.118617-1-hch@lst.de>
+In-Reply-To: <20200720194225.17de9962@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 02:47:13PM +0200, Christoph Hellwig wrote:
-> Hi Dave,
+On 7/20/20 2:42 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> setsockopt is the last place in architecture-independ code that still
-> uses set_fs to force the uaccess routines to operate on kernel pointers.
-> 
-> This series adds a new sockptr_t type that can contained either a kernel
-> or user pointer, and which has accessors that do the right thing, and
-> then uses it for setsockopt, starting by refactoring some low-level
-> helpers and moving them over to it before finally doing the main
-> setsockopt method.
-> 
-> Note that I could not get the eBPF selftests to work, so this has been
-> tested with a testing patch that always copies the data first and passes
-> a kernel pointer.  This is something that works for most common sockopts
-> (and is something that the ePBF support relies on), but unfortunately
-> in various corner cases we either don't use the passed in length, or in
-> one case actually copy data back from setsockopt, so we unfortunately
-> can't just always do the copy in the highlevel code, which would have
-> been much nicer.
+> Changes since 20200717:
 > 
 
-Please mention what git tree your patchset applies to.
+on x86_64:
 
-- Eric
+WARNING: unmet direct dependencies detected for PHY_SAMSUNG_UFS
+  Depends on [n]: OF [=n] && (ARCH_EXYNOS || COMPILE_TEST [=y])
+  Selected by [y]:
+  - SCSI_UFS_EXYNOS [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && SCSI_UFSHCD_PLATFORM [=y] && (ARCH_EXYNOS || COMPILE_TEST [=y])
+
+
+There are no build errors since <linux/of.h> provides stubs for
+functions when CONFIG_OF is not enabled.
+
+But new warnings are not OK.
+
+thanks.
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
