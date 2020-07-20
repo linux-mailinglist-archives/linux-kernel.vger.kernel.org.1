@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C5C226572
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0F82263BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgGTPyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52580 "EHLO mail.kernel.org"
+        id S1729600AbgGTPjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730946AbgGTPx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:53:59 -0400
+        id S1729579AbgGTPjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:39:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0599206E9;
-        Mon, 20 Jul 2020 15:53:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F351322CB2;
+        Mon, 20 Jul 2020 15:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260438;
-        bh=/Jj+U6siC94ko60rqolLaoqkcuyH+GqVj3Q8RrcO8fA=;
+        s=default; t=1595259583;
+        bh=2fTVezv4O6yvsr4HZJ8DPV6mH40wJ6H95Ue85X0zVfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C3cU2AV88jgN5XB/hV7GFqk95mFcj5Utrai7HlgpS7HC+45XA65UaSSj/OfNEDgSi
-         zirAoI0SxJS93hh744no6CapTm/PnAwBWMUM6EIEav9iTnCs9y3un0zgK7VzGTPiPD
-         mmaJZEf1aeReMqFRQ1ehELSfzpJNhWsdHxlg8dXE=
+        b=QymMZEjy+NvB5tw/qZ6An9kyNSgaX3xWeHyZt/sYmDbAGcH1TNfUy3j251HbK4/OG
+         nXet3aFEYzjFBmxHVu+qk/ewpQOkhVuSTTmuQi5/DXeNJ1HVvC62vaK4cfCzUzc1N4
+         /bMewwDT6zHhj9l8bjWBq+jODqTxws6nTEXokM5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 4.19 071/133] soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new data
-Date:   Mon, 20 Jul 2020 17:36:58 +0200
-Message-Id: <20200720152807.144144806@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qiang <qiang.zhang@windriver.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.4 43/58] usb: gadget: function: fix missing spinlock in f_uac1_legacy
+Date:   Mon, 20 Jul 2020 17:36:59 +0200
+Message-Id: <20200720152749.382430374@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,103 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maulik Shah <mkshah@codeaurora.org>
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-commit f5ac95f9ca2f439179a5baf48e1c0f22f83d936e upstream.
+commit 8778eb0927ddcd3f431805c37b78fa56481aeed9 upstream.
 
-TCSes have previously programmed data when rpmh_flush() is called.
-This can cause old data to trigger along with newly flushed.
+Add a missing spinlock protection for play_queue, because
+the play_queue may be destroyed when the "playback_work"
+work func and "f_audio_out_ep_complete" callback func
+operate this paly_queue at the same time.
 
-Fix this by cleaning SLEEP and WAKE TCSes before new data is flushed.
-
-With this there is no need to invoke rpmh_rsc_invalidate() call from
-rpmh_invalidate().
-
-Simplify rpmh_invalidate() by moving invalidate_batch() inside.
-
-Fixes: 600513dfeef3 ("drivers: qcom: rpmh: cache sleep/wake state requests")
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/1586703004-13674-4-git-send-email-mkshah@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: c6994e6f067cf ("USB: gadget: add USB Audio Gadget driver")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/soc/qcom/rpmh.c |   41 ++++++++++++++++++-----------------------
- 1 file changed, 18 insertions(+), 23 deletions(-)
+ drivers/usb/gadget/function/f_uac1.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -318,19 +318,6 @@ static int flush_batch(struct rpmh_ctrlr
- 	return ret;
- }
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -336,7 +336,9 @@ static int f_audio_out_ep_complete(struc
  
--static void invalidate_batch(struct rpmh_ctrlr *ctrlr)
--{
--	struct batch_cache_req *req, *tmp;
--	unsigned long flags;
--
--	spin_lock_irqsave(&ctrlr->cache_lock, flags);
--	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
--		kfree(req);
--	INIT_LIST_HEAD(&ctrlr->batch_cache);
--	ctrlr->dirty = true;
--	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
--}
--
- /**
-  * rpmh_write_batch: Write multiple sets of RPMH commands and wait for the
-  * batch to finish.
-@@ -470,6 +457,13 @@ int rpmh_flush(const struct device *dev)
- 		return 0;
- 	}
- 
-+	/* Invalidate the TCSes first to avoid stale data */
-+	do {
-+		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
-+	} while (ret == -EAGAIN);
-+	if (ret)
-+		return ret;
-+
- 	/* First flush the cached batch requests */
- 	ret = flush_batch(ctrlr);
- 	if (ret)
-@@ -501,24 +495,25 @@ int rpmh_flush(const struct device *dev)
- EXPORT_SYMBOL(rpmh_flush);
- 
- /**
-- * rpmh_invalidate: Invalidate all sleep and active sets
-- * sets.
-+ * rpmh_invalidate: Invalidate sleep and wake sets in batch_cache
-  *
-  * @dev: The device making the request
-  *
-- * Invalidate the sleep and active values in the TCS blocks.
-+ * Invalidate the sleep and wake values in batch_cache.
-  */
- int rpmh_invalidate(const struct device *dev)
- {
- 	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
--	int ret;
--
--	invalidate_batch(ctrlr);
-+	struct batch_cache_req *req, *tmp;
-+	unsigned long flags;
- 
--	do {
--		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
--	} while (ret == -EAGAIN);
-+	spin_lock_irqsave(&ctrlr->cache_lock, flags);
-+	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
-+		kfree(req);
-+	INIT_LIST_HEAD(&ctrlr->batch_cache);
-+	ctrlr->dirty = true;
-+	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
- 
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL(rpmh_invalidate);
+ 	/* Copy buffer is full, add it to the play_queue */
+ 	if (audio_buf_size - copy_buf->actual < req->actual) {
++		spin_lock_irq(&audio->lock);
+ 		list_add_tail(&copy_buf->list, &audio->play_queue);
++		spin_unlock_irq(&audio->lock);
+ 		schedule_work(&audio->playback_work);
+ 		copy_buf = f_audio_buffer_alloc(audio_buf_size);
+ 		if (IS_ERR(copy_buf))
 
 
