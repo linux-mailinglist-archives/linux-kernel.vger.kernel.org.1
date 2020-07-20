@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6246222653A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8945A226499
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731292AbgGTPv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:51:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49058 "EHLO mail.kernel.org"
+        id S1730667AbgGTPqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:46:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731285AbgGTPvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:51:54 -0400
+        id S1730664AbgGTPq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:46:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 342F0206E9;
-        Mon, 20 Jul 2020 15:51:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C0702065E;
+        Mon, 20 Jul 2020 15:46:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260313;
-        bh=2SI/obxwnO+F9HcxmYMvx5zfZB5dUmpSq9hdVd+K+0A=;
+        s=default; t=1595259986;
+        bh=zsOsrZPmZ+wzBNHgbq+dUtl76rka1sDLeA+nyTO+bA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z3p5LuVwasnqcT82CRwuT74wjLAtk+allki5MV8FuXRsXVEgwvY1fNPz6cv1wIqwv
-         yz7se1JeTOFf/GQePaqarfwPjMmBXdK+2ha26vzbGZyf1sWdbKUqMbHeTu6nOPOeuB
-         EMnqccYkFKF5YhV5b2LAgdjxRIbx1Csz8txz5fD4=
+        b=JXVrAk5vudvXgdFAmhJa33vFdAdrJ9ojlu7ZEh/41hscKTAw+Oej1RywPO7PW8k/Z
+         2vhm0KX1R9qv0EV8cgpHFXbAG/h7X9afAfM4dYLgbELhsHK3L9pHIdAvMEvDsr7N2U
+         8S2Y46EOZfcVg5BA2KPrj0gJ9PGUc36073NfjwUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoffer Nielsen <cn@obviux.dk>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 057/133] ALSA: usb-audio: Add registration quirk for Kingston HyperX Cloud Flight S
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 065/125] iio: mma8452: Add missed iio_device_unregister() call in mma8452_probe()
 Date:   Mon, 20 Jul 2020 17:36:44 +0200
-Message-Id: <20200720152806.481069031@linuxfoundation.org>
+Message-Id: <20200720152806.165916820@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoffer Nielsen <cn@obviux.dk>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 73094608b8e214952444fb104651704c98a37aeb ]
+commit d7369ae1f4d7cffa7574d15e1f787dcca184c49d upstream.
 
-Similar to the Kingston HyperX AMP, the Kingston HyperX Cloud
-Alpha S (0951:0x16ea) uses two interfaces, but only the second
-interface contains the capture stream. This patch delays the
-registration until the second interface appears.
+The function iio_device_register() was called in mma8452_probe().
+But the function iio_device_unregister() was not called after
+a call of the function mma8452_set_freefall_mode() failed.
+Thus add the missed function call for one error case.
 
-Signed-off-by: Christoffer Nielsen <cn@obviux.dk>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAOtG2YHOM3zy+ed9KS-J4HkZo_QGzcUG9MigSp4e4_-13r6B=Q@mail.gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1a965d405fc6 ("drivers:iio:accel:mma8452: added cleanup provision in case of failure.")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/accel/mma8452.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 15d7d1e92245c..e9ec6166acc65 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1528,6 +1528,7 @@ struct registration_quirk {
- static const struct registration_quirk registration_quirks[] = {
- 	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
- 	REG_QUIRK_ENTRY(0x0951, 0x16ed, 2),	/* Kingston HyperX Cloud Alpha S */
-+	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
- 	{ 0 }					/* terminator */
- };
+--- a/drivers/iio/accel/mma8452.c
++++ b/drivers/iio/accel/mma8452.c
+@@ -1583,10 +1583,13 @@ static int mma8452_probe(struct i2c_clie
  
--- 
-2.25.1
-
+ 	ret = mma8452_set_freefall_mode(data, false);
+ 	if (ret < 0)
+-		goto buffer_cleanup;
++		goto unregister_device;
+ 
+ 	return 0;
+ 
++unregister_device:
++	iio_device_unregister(indio_dev);
++
+ buffer_cleanup:
+ 	iio_triggered_buffer_cleanup(indio_dev);
+ 
 
 
