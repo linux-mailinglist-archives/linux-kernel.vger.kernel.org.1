@@ -2,166 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E74E2261E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BD62261CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728622AbgGTOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbgGTOUv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:20:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65443C061794;
-        Mon, 20 Jul 2020 07:20:51 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id q5so18040534wru.6;
-        Mon, 20 Jul 2020 07:20:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Bm9L63iBwJd16q+caoTmv0R1SR0y61xF5dvWpp6hpmU=;
-        b=HN1xxTjELbqLhuo3+zWrPLpQnNFC6hpvaC7nDU7Fo+50M1PXc3jj0JQaZK1GFUBwOk
-         Bbi1W46ksRhsz7hJmv3xTmvC9tTI+Fqx2wG/8rup0ED8XjRbjDlV5hZImdE3jpi/fbHN
-         gYU5eC76h5GHoZ6bz+8rpwdoMWVgsPW18cd5b8cmBMs/pUTVCYAqnEnpUWxnYqLxyhEw
-         O7H2zZr5eOHXcHenBFnHQioeeDowZbn+TRq7S92f7PWQoDRJwuMRyInZPoOhxy0R8HJm
-         O4BZq80NNkeU1kcs+zjWYSZRWqyiz7ghS72yUsDG1ibXNk2XZC5OJXsaI+LEokdewrdO
-         8lkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:autocrypt:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Bm9L63iBwJd16q+caoTmv0R1SR0y61xF5dvWpp6hpmU=;
-        b=o0uUWKPVpvw8aLbJEZNvlMnLAo+DPbsHqq/R5igTI1NIckrTSCKa+HnKUNHvMHLn6C
-         VOdp3aHWrTdBcLzfQySVWxDu6Ww/Nm+VPNaDePQPCsKsQNZpQ7qz1Qg7dErTjBuvIOcA
-         UXav/dpIG7vFgI3pxcwY088WX55RA/myC0h5XPNbRvUeObM+KfpIPfEJWd/9JYmJ1/wb
-         HuQcCjKj8ZDTck5ZpDbH6XXJa5K1x6KafnNCAT1/rMXx1byPKkTy9FrsoN920Bn7gnXi
-         sBia0mDQKDoSfUgPWd1H+HO7K3eCtgEriTfpRD4lhI8/nPlzd2cABoLgH8Y9IHXzBt9m
-         dF2Q==
-X-Gm-Message-State: AOAM532fmIrA0qSbrYVBI8HGjIO5jTRXAjjI6WX69MEdsv7I5hgQQRNN
-        szmY3x8qPjJW/hSs9ZM9S/nuMpcv
-X-Google-Smtp-Source: ABdhPJwu1JlQnG5w4Bz1Bf5GsQXGwPL5Q5UxmyteaJmuAQ0OL45+0b3QbluoT2htmzHK8jWMe2bj6w==
-X-Received: by 2002:adf:e38d:: with SMTP id e13mr22481408wrm.304.1595254849822;
-        Mon, 20 Jul 2020 07:20:49 -0700 (PDT)
-Received: from [192.168.43.23] ([5.100.193.69])
-        by smtp.gmail.com with ESMTPSA id h14sm32371097wrt.36.2020.07.20.07.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 07:20:49 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1595021626.git.asml.silence@gmail.com>
- <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
- <edd8e7e4-efcf-0af1-c5d6-104635b65eb3@gmail.com>
- <a2eaec48-8211-07e2-2d8a-edc8af755ebc@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 0/2] task_put batching
-Message-ID: <24a882ce-943c-4f96-d034-2347c5aeb1d4@gmail.com>
-Date:   Mon, 20 Jul 2020 17:18:56 +0300
+        id S1728497AbgGTOT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:19:27 -0400
+Received: from mout.web.de ([212.227.15.3]:36291 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726782AbgGTOT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:19:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1595254748;
+        bh=OExZunafEjPoP/mn9AZfuMf11tWR5wYwJKvm6Ui+qd8=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=nCsQwJeXM3JTRNYoaAgymHldDMNxKi9xNxlf0c68SWP6/7G7Pnu6ENy0vqEydLohv
+         U43dpQR2UEm2etr3HyMzpsrEcGNV1wb4nipviOOC5jkU/SAJbysk6+cWj5b4OSkJZi
+         JGOAHXYTv6ZjdDgPDDCGIPl61Q5lSDUwX8vwnjxk=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.85.87]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MbyJ4-1kEdVi0W3C-00JGTj; Mon, 20
+ Jul 2020 16:19:08 +0200
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>, Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] clk: ti: clkctrl: add the missed kfree() for
+ _ti_omap4_clkctrl_setup()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+Message-ID: <ddf4efea-0a4b-de0a-e0cd-bdc04f5859d6@web.de>
+Date:   Mon, 20 Jul 2020 16:19:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <a2eaec48-8211-07e2-2d8a-edc8af755ebc@kernel.dk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:H4VJpDEaIHRf6gXge9wZRkoVyHFbgCXbOtheUaUJxJOnEaWmmQq
+ l4FyCXqCpk/Sf0HrUobIiCacbtrQbmg+AV6as9pzez1TA7oSxzWrhn4JPc6By1Vrc1ttig8
+ crOZM+nhe4snQs1a8VIdv6nCSRIx5KvF3wa/claaEj3Kwa6L7VBI4zVTgxYVsQFtb8OF8eT
+ IWvWPZuTO2i1xY4pRJYJw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:czClYcnBbjc=:i8f68ub+ju+uVxKRcUaR5A
+ FMkDquBSkC1GscPwxGLiqTM93QVpzxP/h5LJAFankxYZ9jGJojzXe8H6+xO0pTE+pqvjtx+kD
+ kBXSe+dJ6ltRXb9nD5qYGN3aUf4++DC/smsPlDZrO8xAL4C+wGIakLXKzdxKaXrDb+roxGD8q
+ 7Ln86edGwMywnH+AtbzQoQD7ZYlSgMa2Zf61B7lSk8gZNRSxt5wxHA6RWyZL0dNXalqme+/oh
+ DbSmuvAfXKuO2fpddBZCx7+IQGvAD24E6r8DtVpOKrV+4/uApBW3PRtDCrVHiZYOwUvSpnJ+p
+ s3qqS18WrCIL6XjijzxiwcE4HOWpHdHhwnTXjNgIsAkLDotmjkUt0Ge2e1c+nwj73EDjyG4jZ
+ 7h1RC6iAkgXrAhmD6Fn7gEoGU3VZWLG4MYFh7g2M7grYeSbE3zJ8HykrJqGtqTDRnrCAxYcCI
+ pLWTZ6HzTCPrdAl1Lnf5ZJqlNEU9KmbJd03/yWc9Vxql9NIVT3JRsM54Lh0OorLG2odZxIHQK
+ nDEkJhTGob26E6l2c18+UOpAGJi5cWAq1iUqSWySSJBKiU/Z4D9BALtFufPiXC+c7OK3U3JLy
+ p1e4ZllFwnHK3hRaED3vuA7Rl+n3CIfJP/eYVPs2L0yKuTI+1GmdxQC01x+tbSlwYGd9Sas34
+ CbTDm68hTfjb9peI8QmaIYKGLTCIvRUB1u0cEnNLe8pjIGDe7KYBGeqWTWWH8v61hBaFXVXQa
+ zdjNF6gjUtt8szcGf/tb5AXNGp1bdAo4GaQ1wmuJxFaLyYZgiwMnk45zxfWChBv9tr7P3uZrX
+ /oNXUvNu+bFARUnqA6/pUHVrkjVm9mvfChkscFsMhagmqjQ7+srI34uOrIuLOQGSLRBEy/4cG
+ 2Kl67QpQxIdnng+hbG/6lv7LP64sRyxoVZgJ0YH9w90EHIlYOvKbs8uhXFgwAQqzAkQPq4oFV
+ +IlHPg18NWmbROsa3JenDFhrVpVHIf2Z7bLqlW5bS5yeHCNhUmXk7Zee4BzW3ASRKTe2VV8x+
+ 94xrz4N/nPL1LS10DXEhnwyuoROrzEqMu3Rj8b+Q96/6lZprNijUijatBYndXFzfLxR8RzCWc
+ 0U60Tv//ZED+OgdOu3N9J8GuLKxGlK9whmJNSLUKEpj/fznxRBDLGxSgBuBV+BgzIWoZF/ViL
+ rWNaYsyZwvkmcjPi9HojifWf1Z9kZwpKMDpgzK6t4NqdRc6ZCsy78T8o5VDKEGv8VxcYPK4Z1
+ 8LIw2SXFzxyIZg7DL0CkJB17FcZtwXw07geVo7A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2020 21:49, Jens Axboe wrote:
-> On 7/19/20 5:15 AM, Pavel Begunkov wrote:
->> On 18/07/2020 17:37, Jens Axboe wrote:
->>> On 7/18/20 2:32 AM, Pavel Begunkov wrote:
->>>> For my a bit exaggerated test case perf continues to show high CPU
->>>> cosumption by io_dismantle(), and so calling it io_iopoll_complete().
->>>> Even though the patch doesn't yield throughput increase for my setup,
->>>> probably because the effect is hidden behind polling, but it definitely
->>>> improves relative percentage. And the difference should only grow with
->>>> increasing number of CPUs. Another reason to have this is that atomics
->>>> may affect other parallel tasks (e.g. which doesn't use io_uring)
->>>>
->>>> before:
->>>> io_iopoll_complete: 5.29%
->>>> io_dismantle_req:   2.16%
->>>>
->>>> after:
->>>> io_iopoll_complete: 3.39%
->>>> io_dismantle_req:   0.465%
->>>
->>> Still not seeing a win here, but it's clean and it _should_ work. For
->>
->> Well, if this thing is useful, it'd be hard to quantify, because active
->> polling would hide it. I think, it'd need to apply a lot of isolated
-> 
-> It should be very visible in my setup, as we're CPU limited, not device
-> limited. Hence it makes it very easy to show CPU gains, as they directly
-> translate into improved performance.
+=E2=80=A6
+> +++ b/drivers/clk/ti/clkctrl.c
+> @@ -655,8 +655,10 @@ static void __init _ti_omap4_clkctrl_setup(struct d=
+evice_node *node)
+>  		}
+>
+>  		hw =3D kzalloc(sizeof(*hw), GFP_KERNEL);
+> -		if (!hw)
+> +		if (!hw) {
+> +			kfree(clkctrl_name);
+>  			return;
+> +		}
+=E2=80=A6
 
-IIRC, atomics for x64 in a single thread don't hurt too much. Disregarding
-this patch, it would be good to have a many-threaded benchmark to look
-after scalability.
+I suggest to use an additional label instead.
 
->> pressure on cache synchronisation (e.g. spam with barriers), or try to
->> create and measure an atomic heavy task pinned to another core. Don't
->> worth the effort IMHO.
->> `
->> Just out of curiosity, let me ask how do you test it?
->> - is it a VM?
->> - how many cores and threads do you use?
->> - how many io_uring instances you have? Per thread?
->> - Is it all goes to a single NVMe SSD?
-> 
-> It's not a VM, it's a normal box. I'm using just one CPU, one thread,
-> and just one NVMe device. That's my goto test for seeing if we reclaimed
-> some CPU cycles.
+ 		if (!hw)
+-			return;
++			goto free_control_name;
 
-Got it, thanks
 
--- 
-Pavel Begunkov
+By the way:
+How do you think about to replace the label =E2=80=9Ccleanup=E2=80=9D by o=
+ther jump targets
+for better exception handling in this function implementation?
+
+Regards,
+Markus
