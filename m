@@ -2,194 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19356226611
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1095226608
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732346AbgGTQAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
+        id S1732259AbgGTP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732237AbgGTP7v (ORCPT
+        with ESMTP id S1732208AbgGTP7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:59:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94334C0619D2;
-        Mon, 20 Jul 2020 08:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=10VRYCf+X0T5z2Mm4tKRRm7BN7GX5B7QP0oqeGQ3VHk=; b=N32TaqnPGTYyL3tptrjXUcK4Bw
-        u/x5h3vZxh5F/yaK3rJqefBmJZFOuuge05j+epNumOLaZ5Y4C8jvnzqD7JU5Mr2mJwWrfHJzkaSuf
-        Kw75ktWVqKaEm39YW60rAlh3DFTh6jNnxzCmU29TPejKqZ3wWXuZ/Irr7BMEJ2mc+n4A4wMHyfndn
-        8BmIARbKLdvpSSHv+yyo8VyXga2KAjo7VcAsQMLuoMni3ZpTseyGg4VZVKXy9Cz5qYZUNRbG/u9Va
-        zehOBMnUsGipesKDsl8DW/vdCHizUr483W3eHI6wOQN1mhGXt+go0gUW0HuDyqpXXFttPUKRwBgPE
-        KawhYODg==;
-Received: from [2001:4bb8:105:4a81:db56:edb1:dbf2:5cc3] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxYCf-0007sO-3P; Mon, 20 Jul 2020 15:59:46 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: [PATCH 24/24] fs: add a kern_stat helper
-Date:   Mon, 20 Jul 2020 17:59:02 +0200
-Message-Id: <20200720155902.181712-25-hch@lst.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720155902.181712-1-hch@lst.de>
-References: <20200720155902.181712-1-hch@lst.de>
+        Mon, 20 Jul 2020 11:59:24 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FD6C061794;
+        Mon, 20 Jul 2020 08:59:24 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u5so9243642pfn.7;
+        Mon, 20 Jul 2020 08:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ryf43iyDiDyn0uFaTxwELJzpnL6UWonqLXTALV9Cnnw=;
+        b=Zz6k3bpYZzbAH34Z959/Ux4JWTL06wDdmR8kJizzW2UcsAlkwsHc+bEyzL78uDyA7M
+         Ag/g8ivAtIy1hC/AGirVgdN0ZfFFH/d7KtR5gVyGXVKHqCHzaoXn3mG7qcRmDHpFvkjb
+         dc/waQ9JuYm3LghRcLgqepkt8gi+CQxyDHq2WfOdx5QpxxPl4prcnDgyLL8Hpf+k031j
+         kqd0ZRNiHqUfs8UI3dYUaWfkpXw6v1SHoW7jANoDIApoJqhPahtFKAjryZhIzEITRd48
+         8N0ylGRkkv3I7fqy9PGDTf6PwMWbUaI9MNRbFvQI7Qb/7jIHYNhWZU7YIArOpqGTDP3n
+         VSFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ryf43iyDiDyn0uFaTxwELJzpnL6UWonqLXTALV9Cnnw=;
+        b=Y8oBJtDBWYaIafifMYMWF94+S2hpI87QuauTtDdZLV9SdRyj6eWJc+CPCvQSPsPVCJ
+         h4LBdF3MbEKv2Z5GZU+aix+Ayhwxs4Aqrclhmg4rvEV1DxAw544PvBuw30vDMvGFj2Co
+         sXD+OPaPtVgeIH65a4C+I8CzfQpMZizpuDVQSqrBGrPtzNjT4hO0KXlVU6npGceKaHid
+         9GtuN1O0Whhnmz7q1T1KdDZwNe6+mjLlXNqOR1HMPZ+RnbHXnLikAize4jRXmFA6OQbf
+         vx8hCDQPRTe++PY+4akQaKEu7GyewTL8J+d/an6cBbGOLxCBBWOBjikSbkxGw7sCWCUS
+         moTQ==
+X-Gm-Message-State: AOAM530LkbXy9me7wub+cMnptTuMxhCvnUmgcRGozHN34mrD0tZXk4Kc
+        f7i56th4vpTiDPEwMxEblLk1v1U3pu8=
+X-Google-Smtp-Source: ABdhPJxa9sYlM956HuH86QlTRYKS7pkWbPJH14405GddAXhI75eFRVT3DZMcEEclbys6Uz4cry5NLw==
+X-Received: by 2002:a63:215e:: with SMTP id s30mr18028733pgm.87.1595260763104;
+        Mon, 20 Jul 2020 08:59:23 -0700 (PDT)
+Received: from [192.168.219.16] (ip72-219-184-175.oc.oc.cox.net. [72.219.184.175])
+        by smtp.gmail.com with ESMTPSA id x3sm17259999pfn.154.2020.07.20.08.59.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 08:59:22 -0700 (PDT)
+Subject: Re: [PATCH net] net: bcmgenet: add missed clk_disable_unprepare in
+ bcmgenet_probe
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1595237794-11530-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Doug Berger <opendmb@gmail.com>
+Message-ID: <7b499451-623c-cabf-2c95-fc7019895b3d@gmail.com>
+Date:   Mon, 20 Jul 2020 09:02:22 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1595237794-11530-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a simple helper to stat/lstat with a kernel space file name and
-switch the early init code over to it.
+On 7/20/2020 2:36 AM, Zhang Changzhong wrote:
+> The driver forgets to call clk_disable_unprepare() in error path after
+> a success calling for clk_prepare_enable().
+> 
+> Fix to goto err_clk_disable if clk_prepare_enable() is successful.
+> 
+> Fixes: c80d36ff63a5 ("net: bcmgenet: Use devm_clk_get_optional() to get the clocks")
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> ---
+>  drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+> index 368e05b..79d27be 100644
+> --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+> +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+> @@ -4000,14 +4000,14 @@ static int bcmgenet_probe(struct platform_device *pdev)
+>  	if (IS_ERR(priv->clk_wol)) {
+>  		dev_dbg(&priv->pdev->dev, "failed to get enet-wol clock\n");
+>  		err = PTR_ERR(priv->clk_wol);
+> -		goto err;
+> +		goto err_clk_disable;
+>  	}
+>  
+>  	priv->clk_eee = devm_clk_get_optional(&priv->pdev->dev, "enet-eee");
+>  	if (IS_ERR(priv->clk_eee)) {
+>  		dev_dbg(&priv->pdev->dev, "failed to get enet-eee clock\n");
+>  		err = PTR_ERR(priv->clk_eee);
+> -		goto err;
+> +		goto err_clk_disable;
+>  	}
+>  
+>  	/* If this is an internal GPHY, power it on now, before UniMAC is
+> 
+Acked-by: Doug Berger <opendmb@gmail.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/md/md-autodetect.c |  2 +-
- fs/stat.c                  | 32 ++++++++++++++++++++++----------
- include/linux/fs.h         |  1 +
- init/initramfs.c           |  3 ++-
- 4 files changed, 26 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/md/md-autodetect.c b/drivers/md/md-autodetect.c
-index 14b6e86814c061..5bd52ec05ed821 100644
---- a/drivers/md/md-autodetect.c
-+++ b/drivers/md/md-autodetect.c
-@@ -151,7 +151,7 @@ static void __init md_setup_drive(struct md_setup_args *args)
- 		if (strncmp(devname, "/dev/", 5) == 0)
- 			devname += 5;
- 		snprintf(comp_name, 63, "/dev/%s", devname);
--		if (vfs_stat(comp_name, &stat) == 0 && S_ISBLK(stat.mode))
-+		if (kern_stat(comp_name, &stat, 0) == 0 && S_ISBLK(stat.mode))
- 			dev = new_decode_dev(stat.rdev);
- 		if (!dev) {
- 			pr_warn("md: Unknown device name: %s\n", devname);
-diff --git a/fs/stat.c b/fs/stat.c
-index dacecdda2e7967..3c976b92db00ca 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -151,7 +151,7 @@ int vfs_fstat(int fd, struct kstat *stat)
- /**
-  * vfs_statx - Get basic and extra attributes by filename
-  * @dfd: A file descriptor representing the base dir for a relative filename
-- * @filename: The name of the file of interest
-+ * @name: The name of the file of interest
-  * @flags: Flags to control the query
-  * @stat: The result structure to fill in.
-  * @request_mask: STATX_xxx flags indicating what the caller wants
-@@ -163,16 +163,16 @@ int vfs_fstat(int fd, struct kstat *stat)
-  *
-  * 0 will be returned on success, and a -ve error code if unsuccessful.
-  */
--static int vfs_statx(int dfd, const char __user *filename, int flags,
-+static int vfs_statx(int dfd, struct filename *name, int flags,
- 	      struct kstat *stat, u32 request_mask)
- {
- 	struct path path;
- 	unsigned lookup_flags = 0;
--	int error;
-+	int error = -EINVAL;
- 
- 	if (flags & ~(AT_SYMLINK_NOFOLLOW | AT_NO_AUTOMOUNT | AT_EMPTY_PATH |
- 		      AT_STATX_SYNC_TYPE))
--		return -EINVAL;
-+		goto out_putname;
- 
- 	if (!(flags & AT_SYMLINK_NOFOLLOW))
- 		lookup_flags |= LOOKUP_FOLLOW;
-@@ -182,9 +182,9 @@ static int vfs_statx(int dfd, const char __user *filename, int flags,
- 		lookup_flags |= LOOKUP_EMPTY;
- 
- retry:
--	error = user_path_at(dfd, filename, lookup_flags, &path);
-+	error = filename_lookup(dfd, name, lookup_flags, &path, NULL);
- 	if (error)
--		goto out;
-+		return error;
- 
- 	error = vfs_getattr(&path, stat, request_mask, flags);
- 	stat->mnt_id = real_mount(path.mnt)->mnt_id;
-@@ -197,15 +197,25 @@ static int vfs_statx(int dfd, const char __user *filename, int flags,
- 		lookup_flags |= LOOKUP_REVAL;
- 		goto retry;
- 	}
--out:
-+out_putname:
-+	if (!IS_ERR(name))
-+		putname(name);
- 	return error;
- }
- 
-+int __init kern_stat(const char *filename, struct kstat *stat, int flags)
-+{
-+	return vfs_statx(AT_FDCWD, getname_kernel(filename),
-+			 flags | AT_NO_AUTOMOUNT, stat, STATX_BASIC_STATS);
-+}
-+
- int vfs_fstatat(int dfd, const char __user *filename,
- 			      struct kstat *stat, int flags)
- {
--	return vfs_statx(dfd, filename, flags | AT_NO_AUTOMOUNT,
--			 stat, STATX_BASIC_STATS);
-+	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
-+
-+	return vfs_statx(dfd, getname_flags(filename, lookup_flags, NULL),
-+			 flags | AT_NO_AUTOMOUNT, stat, STATX_BASIC_STATS);
- }
- 
- #ifdef __ARCH_WANT_OLD_STAT
-@@ -569,6 +579,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
- int do_statx(int dfd, const char __user *filename, unsigned flags,
- 	     unsigned int mask, struct statx __user *buffer)
- {
-+	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
- 	struct kstat stat;
- 	int error;
- 
-@@ -577,7 +588,8 @@ int do_statx(int dfd, const char __user *filename, unsigned flags,
- 	if ((flags & AT_STATX_SYNC_TYPE) == AT_STATX_SYNC_TYPE)
- 		return -EINVAL;
- 
--	error = vfs_statx(dfd, filename, flags, &stat, mask);
-+	error = vfs_statx(dfd, getname_flags(filename, lookup_flags, NULL),
-+			  flags, &stat, mask);
- 	if (error)
- 		return error;
- 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 0e0cd6a988bb38..d1f8edb39cf969 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3671,5 +3671,6 @@ int __init kern_link(const char *oldname, const char *newname);
- int __init kern_symlink(const char *oldname, const char *newname);
- int kern_unlink(const char *pathname);
- int __init kern_rmdir(const char *pathname);
-+int __init kern_stat(const char *filename, struct kstat *stat, int flags);
- 
- #endif /* _LINUX_FS_H */
-diff --git a/init/initramfs.c b/init/initramfs.c
-index d72594298133a7..6c605f23900fa1 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -296,7 +296,8 @@ static void __init clean_path(char *path, umode_t fmode)
- {
- 	struct kstat st;
- 
--	if (!vfs_lstat(path, &st) && (st.mode ^ fmode) & S_IFMT) {
-+	if (kern_stat(path, &st, AT_SYMLINK_NOFOLLOW) &&
-+	    (st.mode ^ fmode) & S_IFMT) {
- 		if (S_ISDIR(st.mode))
- 			kern_rmdir(path);
- 		else
--- 
-2.27.0
-
+Thanks!
