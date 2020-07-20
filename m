@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AB2226A37
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F5B226A2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732755AbgGTQbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731251AbgGTP5J (ORCPT
+        id S2388829AbgGTQb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:31:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58998 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731437AbgGTP5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B319C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:57:09 -0700 (PDT)
+        Mon, 20 Jul 2020 11:57:19 -0400
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260628;
+        s=2020; t=1595260637;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u8dxK0yYYZ2TmdZueYqwzVlsb3EwKsvtatP/Xk9jtMk=;
-        b=dc7urap3yvHuZhPsL/67K/n3FtxXJ/aPt04GyjFsl4IZJtOdPIdsLUe8pHl+n5IghMHhMV
-        u8lTTWweg7jogoTmIkSCBrLHf4BS1wX7tSXtgzSS54Ns3y9qTk5k+iUX53T4GUYqXxJg6i
-        MDOK6XSRvRYv5DSQ7x0r8Qer2LVigwRVM103OOXF7naomiZ2DeHFaJOkw7kXaD6ftv1DE7
-        bssi8t02hE2/fimi7fMmANrX2WQdtGWj0LzuBv2RMaIN/sU1amY2Zzs+hQTk2tA4EnxDiq
-        OrcwR1MiJ8vCYS3DdivOhYE4N5pWABkLzQZU5k3c3HksiSJvOrlEmGaceuoymg==
+        bh=mpdDlH3EimGLSv4f750ktc+2OOIPAdppOAHvCqowA5Q=;
+        b=fKkNvz+sadq6MPtMrYCh1hy00dP2dOSzfdRQN7EFfsRTJkll8GG15efprHHbZHbujucspz
+        GrrBR8wSSY1IkWuuVUKvLiq7s6VTWcmcpECI0Lr0z0YgfkUPvmMgHfqwEpxZV1mA5SFe2/
+        x+bv7GZCzTUwybveKzvh9CV1eFaanAC5UVLD0ziL0ZBau7GlzpZaiWZARmQWaoy7CRFFyC
+        srNwxWbDPcgEtC4g3fos/GNmjaLPZjGYVUreGlcMG4o9z6mQsWlV/jUBFhkmEsNaXSbwXJ
+        Q4GVBCAT7ohlN2Keax5E6zkEMnWihieJdWOPv4dlx3LnQQN86yhTMWbkkgJu8Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260628;
+        s=2020e; t=1595260637;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u8dxK0yYYZ2TmdZueYqwzVlsb3EwKsvtatP/Xk9jtMk=;
-        b=fBBCXzrf8tqAAmIAhpByHL7L93QgpN13azazim0BD4wXDwOmwejjBdArYwBrUtXwFovGqi
-        UNtJT7iVFACx+lAQ==
+        bh=mpdDlH3EimGLSv4f750ktc+2OOIPAdppOAHvCqowA5Q=;
+        b=5h+33h9aI9H+JMNqGwWtY/kxX9VViJN4xQBCWUDdC+EEq5nuc6hhdknJAEfGXsKfSBKIMN
+        DCxM+f/3wIts5rBw==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -45,10 +42,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v4 20/24] iocost: Use sequence counter with associated spinlock
-Date:   Mon, 20 Jul 2020 17:55:26 +0200
-Message-Id: <20200720155530.1173732-21-a.darwish@linutronix.de>
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v4 22/24] userfaultfd: Use sequence counter with associated spinlock
+Date:   Mon, 20 Jul 2020 17:55:28 +0200
+Message-Id: <20200720155530.1173732-23-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -73,41 +71,32 @@ If lockdep is disabled this lock association is compiled out and has
 neither storage size nor runtime overhead.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
 ---
- block/blk-iocost.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/userfaultfd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 8ac4aad66ebc..8e940c27c27c 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -406,7 +406,7 @@ struct ioc {
- 	enum ioc_running		running;
- 	atomic64_t			vtime_rate;
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 52de29000c7e..26e8b23594fb 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -61,7 +61,7 @@ struct userfaultfd_ctx {
+ 	/* waitqueue head for events */
+ 	wait_queue_head_t event_wqh;
+ 	/* a refile sequence protected by fault_pending_wqh lock */
+-	struct seqcount refile_seq;
++	seqcount_spinlock_t refile_seq;
+ 	/* pseudo fd refcounting */
+ 	refcount_t refcount;
+ 	/* userfaultfd syscall flags */
+@@ -1998,7 +1998,7 @@ static void init_once_userfaultfd_ctx(void *mem)
+ 	init_waitqueue_head(&ctx->fault_wqh);
+ 	init_waitqueue_head(&ctx->event_wqh);
+ 	init_waitqueue_head(&ctx->fd_wqh);
+-	seqcount_init(&ctx->refile_seq);
++	seqcount_spinlock_init(&ctx->refile_seq, &ctx->fault_pending_wqh.lock);
+ }
  
--	seqcount_t			period_seqcount;
-+	seqcount_spinlock_t		period_seqcount;
- 	u32				period_at;	/* wallclock starttime */
- 	u64				period_at_vtime; /* vtime starttime */
- 
-@@ -873,7 +873,6 @@ static void ioc_now(struct ioc *ioc, struct ioc_now *now)
- 
- static void ioc_start_period(struct ioc *ioc, struct ioc_now *now)
- {
--	lockdep_assert_held(&ioc->lock);
- 	WARN_ON_ONCE(ioc->running != IOC_RUNNING);
- 
- 	write_seqcount_begin(&ioc->period_seqcount);
-@@ -2001,7 +2000,7 @@ static int blk_iocost_init(struct request_queue *q)
- 
- 	ioc->running = IOC_IDLE;
- 	atomic64_set(&ioc->vtime_rate, VTIME_PER_USEC);
--	seqcount_init(&ioc->period_seqcount);
-+	seqcount_spinlock_init(&ioc->period_seqcount, &ioc->lock);
- 	ioc->period_at = ktime_to_us(ktime_get());
- 	atomic64_set(&ioc->cur_period, 0);
- 	atomic_set(&ioc->hweight_gen, 0);
+ SYSCALL_DEFINE1(userfaultfd, int, flags)
 -- 
 2.20.1
 
