@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426A8225E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC74225E13
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728778AbgGTMCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:02:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30306 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728058AbgGTMCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:02:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595246550; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=queCfgOJI3AAE09b/o9QMvwXMlpczM7BLcztMQjytbU=; b=q3fvqii+vzY/Vuoc1EzdEg2zpgPkCKKKcc/glT8T0UcK/KZAhYDDIUuwWdAdYk/WQvnbN8hE
- nzBJd57eciOV+VBTijWWqZnCjZhh2Qt0cUmpmP1+/rgMUxGrqa9LJIeQpOBkwszt1UrCvIHP
- z8WH/SjvEVsK/H/OTNKswFEgmBE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-west-2.postgun.com with SMTP id
- 5f1587c0cf983e60a86a734f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 12:02:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E7F7AC43395; Mon, 20 Jul 2020 12:02:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 862B1C433CA;
-        Mon, 20 Jul 2020 12:02:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 862B1C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH] drm/msm: dsi: dev_pm_opp_put_clkname() only when an opp_table exists
-Date:   Mon, 20 Jul 2020 17:31:49 +0530
-Message-Id: <1595246509-6584-1-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1728770AbgGTMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:02:12 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:45252 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728058AbgGTMCJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:02:09 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06KBgOfD013639;
+        Mon, 20 Jul 2020 12:01:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=CsvqhpsFDg/xFVvqvQZRc0FebpxDspvp1KpFdQRqkyw=;
+ b=j6XPYQ+CgaxcbVd/qcTmMejykJaPCN5iE4bxglhxsTG5zXgy13cm7xl70LztuQZdom47
+ b3xMgh6nBmHvppQ2jSdFYBGRX2/Nk/fouKCyWHEKXaxYxCDgGIyfafjd4vED5a3CFGUH
+ wU96ZdDNASOOjrLLetqRrQrlEAnfmcb9EZQPedD13vremWh+nvN3O9N7jOzq7JGw0Te7
+ UyhByVUK47p6R1CXHCl78ULhwvIQwvCu9sVhwC6/N1VWNmemShEW8DyHHAJ/vwEbOPCM
+ fGO+3QeV5tZ80dR6RDWtZxC1aWXfqNBAgNkNV1fsTi12+GQ4LBhi9HpSOh0dDu0Y7nK1 Zw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32brgr6fvs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 12:01:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06KBwxG0187955;
+        Mon, 20 Jul 2020 12:01:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 32da2cu49v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 12:01:58 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06KC1uO5016185;
+        Mon, 20 Jul 2020 12:01:57 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Jul 2020 12:01:56 +0000
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] nfsd: netns.h: delete a duplicated word
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200720001403.26974-1-rdunlap@infradead.org>
+Date:   Mon, 20 Jul 2020 08:01:55 -0400
+Cc:     linux-kernel@vger.kernel.org, Bruce Fields <bfields@fieldses.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <1549CEA9-F6D9-47F2-B466-C1FCAF3A8464@oracle.com>
+References: <20200720001403.26974-1-rdunlap@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9687 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9687 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200082
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Its possible for msm_dsi_host_init() to fail early, before
-dev_pm_opp_set_clkname() is called. In such cases, unconditionally
-calling dev_pm_opp_put_clkname() in msm_dsi_host_destroy() results
-in a crash. Put an additional check so that dev_pm_opp_put_clkname()
-is called only when an opp_table exists.
 
-Fixes: f99131fa7a23 ("drm/msm: dsi: Use OPP API to set clk/perf state")
-Reported-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- drivers/gpu/drm/msm/dsi/dsi_host.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-index 0a14c4a..4f580f7 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -1936,7 +1936,8 @@ void msm_dsi_host_destroy(struct mipi_dsi_host *host)
- 
- 	if (msm_host->has_opp_table)
- 		dev_pm_opp_of_remove_table(&msm_host->pdev->dev);
--	dev_pm_opp_put_clkname(msm_host->opp_table);
-+	if (msm_host->opp_table)
-+		dev_pm_opp_put_clkname(msm_host->opp_table);
- 	pm_runtime_disable(&msm_host->pdev->dev);
- }
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+> On Jul 19, 2020, at 8:14 PM, Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+> Drop the repeated word "the" in a comment.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "J. Bruce Fields" <bfields@fieldses.org>
+> Cc: Chuck Lever <chuck.lever@oracle.com>
+> Cc: linux-nfs@vger.kernel.org
+
+Acked-by: Chuck Lever <chuck.lever@oracle.com>
+
+
+> ---
+> fs/nfsd/netns.h |    2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20200717.orig/fs/nfsd/netns.h
+> +++ linux-next-20200717/fs/nfsd/netns.h
+> @@ -171,7 +171,7 @@ struct nfsd_net {
+> 	unsigned int             longest_chain_cachesize;
+> 
+> 	struct shrinker		nfsd_reply_cache_shrinker;
+> -	/* utsname taken from the the process that starts the server */
+> +	/* utsname taken from the process that starts the server */
+> 	char			nfsd_name[UNX_MAXNODENAME+1];
+> };
+> 
+
+--
+Chuck Lever
+
+
 
