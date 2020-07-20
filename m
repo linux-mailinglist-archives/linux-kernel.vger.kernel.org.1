@@ -2,74 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10E72260AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153782260E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgGTNVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 09:21:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        id S1726649AbgGTN2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 09:28:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgGTNVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 09:21:44 -0400
-Received: from embeddedor (unknown [200.39.29.188])
+        id S1725815AbgGTN2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 09:28:20 -0400
+Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.194.72])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCEBE20729;
-        Mon, 20 Jul 2020 13:21:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 421F120729;
+        Mon, 20 Jul 2020 13:28:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595251304;
-        bh=KcVtPrttpoJMaGyQ/DdWgPvlUJcXW5mZq+GFmiTN9VE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LwaCeIZuT5YgJyMS1ovaGKArkbglL0qRz6fANRdGQS9GVsVETuf68yUuDs7lIMbK3
-         8JVH9ASc8cu/jn4/Gdsq7r/sUZRhGVXWzAj06vFE5sZ05t07PsJVA9RY7GBalea1kW
-         sZV5Z8dHncVHkUJZ3U5DxG9t0osNJdJZa2I7VYn4=
-Date:   Mon, 20 Jul 2020 08:27:18 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Seungwon Jeon <essuuj@gmail.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH v2][next] phy: samsung-ufs: Fix IS_ERR argument
-Message-ID: <20200720132718.GA13413@embeddedor>
+        s=default; t=1595251700;
+        bh=NJ2250te8v8tlFOpV4OLmV7BWL8Xr/txR4PHTbvuTSc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O7PlODg5hjUPIR3iNkhJ1WhJw3YJQ7pknCH6+wrbRPJi5hGiOcdeMmyBhpzXu6X2w
+         +GGXhN+GeejEXiIvJJ3xu42rfGpwI74LxDPmA8l0UH7ulnWOEFT9US9PGdI0gNCTia
+         oCxYTc+47UxBjAx93qtnPOa/bu2Qr8VmYbOq5oOU=
+Received: by wens.tw (Postfix, from userid 1000)
+        id CFAD55FC86; Mon, 20 Jul 2020 21:28:17 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH v3] regulator: gpio: Honor regulator-boot-on property
+Date:   Mon, 20 Jul 2020 21:28:09 +0800
+Message-Id: <20200720132809.26908-1-wens@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix IS_ERR argument in samsung_ufs_phy_symbol_clk_init(). The proper
-argument to be passed to IS_ERR() is phy->rx1_symbol_clk.
+From: Chen-Yu Tsai <wens@csie.org>
 
-This bug was detected with the help of Coccinelle.
+When requesting the enable GPIO, the driver should do so with the
+correct output level matching some expected state. This is especially
+important if the regulator is a critical one, such as a supply for
+the boot CPU. This is currently done by checking for the enable-at-boot
+property, but this is not documented in the device tree binding, nor
+does it match the common regulator properties.
 
-Fixes: bca21e930451 ("phy: samsung-ufs: add UFS PHY driver for samsung SoC")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Honor the common regulator-boot-on property by checking the boot_on
+constraint setting within the DT probe path. This is the same as what
+is done in the fixed regulator driver.
+
+Also add a comment stating that the enable-at-boot property should not
+be used.
+
+Fixes: 006694d099e8 ("regulator: gpio-regulator: Allow use of GPIO controlled regulators though DT")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 ---
-Changes in v2:
- - Update subject line and changelog text.
+Changes since v2:
+  - Keep enable-at-boot property support
+  - Add comment stating enable-at-boot should not be used
 
- drivers/phy/samsung/phy-samsung-ufs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v1:
+  - Reworded commit log
+  - Fixed typo in subject
+---
+ drivers/regulator/gpio-regulator.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/phy/samsung/phy-samsung-ufs.c b/drivers/phy/samsung/phy-samsung-ufs.c
-index 43ef77d1d96c..9832599a0283 100644
---- a/drivers/phy/samsung/phy-samsung-ufs.c
-+++ b/drivers/phy/samsung/phy-samsung-ufs.c
-@@ -147,7 +147,7 @@ static int samsung_ufs_phy_symbol_clk_init(struct samsung_ufs_phy *phy)
- 	}
+diff --git a/drivers/regulator/gpio-regulator.c b/drivers/regulator/gpio-regulator.c
+index 110ee6fe76c4..044e45ee9629 100644
+--- a/drivers/regulator/gpio-regulator.c
++++ b/drivers/regulator/gpio-regulator.c
+@@ -148,6 +148,13 @@ of_get_gpio_regulator_config(struct device *dev, struct device_node *np,
  
- 	phy->rx1_symbol_clk = devm_clk_get(phy->dev, "rx1_symbol_clk");
--	if (IS_ERR(phy->rx0_symbol_clk)) {
-+	if (IS_ERR(phy->rx1_symbol_clk)) {
- 		dev_err(phy->dev, "failed to get rx1_symbol_clk clock\n");
- 		return PTR_ERR(phy->rx1_symbol_clk);
- 	}
+ 	config->supply_name = config->init_data->constraints.name;
+ 
++	if (config->init_data->constraints.boot_on)
++		config->enabled_at_boot = true;
++
++	/*
++	 * Do not use: undocumented device tree property.
++	 * This is kept around solely for device tree ABI stability.
++	 */
+ 	if (of_property_read_bool(np, "enable-at-boot"))
+ 		config->enabled_at_boot = true;
+ 
 -- 
 2.27.0
 
