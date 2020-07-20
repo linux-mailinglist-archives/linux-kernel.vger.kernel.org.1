@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547B8226BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C5F226C43
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388960AbgGTQoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:44:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33994 "EHLO mail.kernel.org"
+        id S1729349AbgGTPi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729945AbgGTPlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:44 -0400
+        id S1729318AbgGTPi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:38:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFE892065E;
-        Mon, 20 Jul 2020 15:41:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45CC322CAF;
+        Mon, 20 Jul 2020 15:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259703;
-        bh=dr6vadShhVxDUp5feV3jXXDwSy9MNJ9WhHtlCUjCzHo=;
+        s=default; t=1595259535;
+        bh=5ne+sNpcnmECSNmX2RunIzgW66pQk1+y/sfjGuTWTE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wlWkOOGh1wOBFMd24NdXNgQIUc1Lhv8JVEWKqDWufVGBU5fOGfNT1xrfdzExJtUCM
-         Jw393CzMt33WZCln3Yp/gV444k6QEi2fNWfvQ9PX6lvRbCY3Jrr+3czg77GKWI3lfj
-         tST4hxmVDU5h58gTc5zH3krOqJNL6JPQzVLsRzPs=
+        b=Y1LLVfkXrVfHgTClG/522KxhsMtK6l7TyxW/OFxzuG5dR9l+8zYNUHZJanQ3u5XqX
+         xritlaNI1CzeZKeYKwHJQRu14I2JR9jIcJMTfzf3F3yE1+AEkMuVlV/i9T3N9zGv8K
+         uy2chDRATY8Zs1lOT4LRRnT8UpfgUuHMiFndUp7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 32/86] tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()
-Date:   Mon, 20 Jul 2020 17:36:28 +0200
-Message-Id: <20200720152754.775270760@linuxfoundation.org>
+        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.4 13/58] KVM: x86: bit 8 of non-leaf PDPEs is not reserved
+Date:   Mon, 20 Jul 2020 17:36:29 +0200
+Message-Id: <20200720152747.800794113@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 6a2febec338df7e7699a52d00b2e1207dcf65b28 ]
+commit 5ecad245de2ae23dc4e2dbece92f8ccfbaed2fa7 upstream.
 
-MD5 keys are read with RCU protection, and tcp_md5_do_add()
-might update in-place a prior key.
+Bit 8 would be the "global" bit, which does not quite make sense for non-leaf
+page table entries.  Intel ignores it; AMD ignores it in PDEs and PDPEs, but
+reserves it in PML4Es.
 
-Normally, typical RCU updates would allocate a new piece
-of memory. In this case only key->key and key->keylen might
-be updated, and we do not care if an incoming packet could
-see the old key, the new one, or some intermediate value,
-since changing the key on a live flow is known to be problematic
-anyway.
+Probably, earlier versions of the AMD manual documented it as reserved in PDPEs
+as well, and that behavior made it into KVM as well as kvm-unit-tests; fix it.
 
-We only want to make sure that in the case key->keylen
-is changed, cpus in tcp_md5_hash_key() wont try to use
-uninitialized data, or crash because key->keylen was
-read twice to feed sg_init_one() and ahash_request_set_crypt()
-
-Fixes: 9ea88a153001 ("tcp: md5: check md5 signature without socket lock")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Reported-by: Nadav Amit <namit@vmware.com>
+Fixes: a0c0feb57992 ("KVM: x86: reserve bit 8 of non-leaf PDPEs and PML4Es in 64-bit mode on AMD", 2014-09-03)
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/tcp.c      |    7 +++++--
- net/ipv4/tcp_ipv4.c |    3 +++
- 2 files changed, 8 insertions(+), 2 deletions(-)
 
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3207,10 +3207,13 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
- 
- int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct tcp_md5sig_key *key)
- {
-+	u8 keylen = key->keylen;
- 	struct scatterlist sg;
- 
--	sg_init_one(&sg, key->key, key->keylen);
--	ahash_request_set_crypt(hp->md5_req, &sg, NULL, key->keylen);
-+	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
-+
-+	sg_init_one(&sg, key->key, keylen);
-+	ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
- 	return crypto_ahash_update(hp->md5_req);
- }
- EXPORT_SYMBOL(tcp_md5_hash_key);
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -938,6 +938,9 @@ int tcp_md5_do_add(struct sock *sk, cons
- 	if (key) {
- 		/* Pre-existing entry - just update that one. */
- 		memcpy(key->key, newkey, newkeylen);
-+
-+		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
-+
- 		key->keylen = newkeylen;
- 		return 0;
- 	}
+---
+ arch/x86/kvm/mmu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/x86/kvm/mmu.c
++++ b/arch/x86/kvm/mmu.c
+@@ -3679,7 +3679,7 @@ __reset_rsvds_bits_mask(struct kvm_vcpu
+ 			nonleaf_bit8_rsvd | rsvd_bits(7, 7) |
+ 			rsvd_bits(maxphyaddr, 51);
+ 		rsvd_check->rsvd_bits_mask[0][2] = exb_bit_rsvd |
+-			nonleaf_bit8_rsvd | gbpages_bit_rsvd |
++			gbpages_bit_rsvd |
+ 			rsvd_bits(maxphyaddr, 51);
+ 		rsvd_check->rsvd_bits_mask[0][1] = exb_bit_rsvd |
+ 			rsvd_bits(maxphyaddr, 51);
 
 
