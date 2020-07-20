@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD6E2265F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941BE226477
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732105AbgGTP7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59304 "EHLO mail.kernel.org"
+        id S1730510AbgGTPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732098AbgGTP66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:58 -0400
+        id S1730498AbgGTPpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:45:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26F48206E9;
-        Mon, 20 Jul 2020 15:58:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D2F820773;
+        Mon, 20 Jul 2020 15:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260737;
-        bh=EcLwh5Z9khVNMG0tHfXgROpmZ+znCt+itR1cvSBOP5E=;
+        s=default; t=1595259916;
+        bh=baWO5rVjBPThrb1OlfN7ms8T0GJW+Kh/YpfW3Pae/JU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7idoDaqHCs2UWFgOPB4INrR1ZefjtSNlzHEetIhEOMg0fq3bng9PcafLyqBIvxO8
-         yIfXtAB5A0iH2aRVTLL70P2rByMFE1CxIKhhAbN6jrijiRcuutU0Hgsm0ZIpt9SxmO
-         MxuDKwIFvpRuCDT9cC6q6MkXFSTah9+ckcsD26sw=
+        b=RcJ47KbjqGMr2EqUjlLJdjQbHZgDKrljjQGLY86K93/OIeMqf8C18qwBixRkG5t1C
+         60N9CyI3dHn+h8IGWVp2+eJ3p2/c+kQm7bsQem+1vcNqJZhHmHH6+jct+0PbPd3wEq
+         WmZuWBaVbxXSiEaAG/uMttr7tdMYRjgJuQgwVLv0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim <elatllat@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jianxin Pan <jianxin.pan@amlogic.com>,
-        Dongjin Kim <tobetter@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 078/215] arm64: dts: g12-common: add parkmode_disable_ss_quirk on DWC3 controller
-Date:   Mon, 20 Jul 2020 17:36:00 +0200
-Message-Id: <20200720152823.922254052@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+934037347002901b8d2a@syzkaller.appspotmail.com,
+        Zheng Bin <zhengbin13@huawei.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 022/125] nbd: Fix memory leak in nbd_add_socket
+Date:   Mon, 20 Jul 2020 17:36:01 +0200
+Message-Id: <20200720152804.065584760@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,44 +46,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Zheng Bin <zhengbin13@huawei.com>
 
-[ Upstream commit a81bcfb6ac20cdd2e8dec3da14c8bbe1d18f6321 ]
+[ Upstream commit 579dd91ab3a5446b148e7f179b6596b270dace46 ]
 
-When high load on the DWC3 SuperSpeed port, the controller crashes with:
-[  221.141621] xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command.
-[  221.157631] xhci-hcd xhci-hcd.0.auto: Host halt failed, -110
-[  221.157635] xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
-[  221.159901] xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command.
-[  221.159961] hub 2-1.1:1.0: hub_ext_port_status failed (err = -22)
-[  221.160076] xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
-[  221.165946] usb 2-1.1-port1: cannot reset (err = -22)
+When adding first socket to nbd, if nsock's allocation failed, the data
+structure member "config->socks" was reallocated, but the data structure
+member "config->num_connections" was not updated. A memory leak will occur
+then because the function "nbd_config_put" will free "config->socks" only
+when "config->num_connections" is not zero.
 
-Setting the parkmode_disable_ss_quirk quirk fixes the issue.
-
-Reported-by: Tim <elatllat@gmail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Cc: Jianxin Pan <jianxin.pan@amlogic.com>
-CC: Dongjin Kim <tobetter@gmail.com>
-Link: https://lore.kernel.org/r/20200221091532.8142-4-narmstrong@baylibre.com
+Fixes: 03bf73c315ed ("nbd: prevent memory leak")
+Reported-by: syzbot+934037347002901b8d2a@syzkaller.appspotmail.com
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/block/nbd.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-index 2199a54c720cb..1234bc7974294 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -2381,6 +2381,7 @@
- 				dr_mode = "host";
- 				snps,dis_u2_susphy_quirk;
- 				snps,quirk-frame-length-adjustment;
-+				snps,parkmode-disable-ss-quirk;
- 			};
- 		};
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 8f56e6b2f114f..f22fad977c913 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -960,25 +960,26 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	     test_bit(NBD_BOUND, &config->runtime_flags))) {
+ 		dev_err(disk_to_dev(nbd->disk),
+ 			"Device being setup by another task");
+-		sockfd_put(sock);
+-		return -EBUSY;
++		err = -EBUSY;
++		goto put_socket;
++	}
++
++	nsock = kzalloc(sizeof(*nsock), GFP_KERNEL);
++	if (!nsock) {
++		err = -ENOMEM;
++		goto put_socket;
+ 	}
  
+ 	socks = krealloc(config->socks, (config->num_connections + 1) *
+ 			 sizeof(struct nbd_sock *), GFP_KERNEL);
+ 	if (!socks) {
+-		sockfd_put(sock);
+-		return -ENOMEM;
++		kfree(nsock);
++		err = -ENOMEM;
++		goto put_socket;
+ 	}
+ 
+ 	config->socks = socks;
+ 
+-	nsock = kzalloc(sizeof(struct nbd_sock), GFP_KERNEL);
+-	if (!nsock) {
+-		sockfd_put(sock);
+-		return -ENOMEM;
+-	}
+-
+ 	nsock->fallback_index = -1;
+ 	nsock->dead = false;
+ 	mutex_init(&nsock->tx_lock);
+@@ -990,6 +991,10 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	atomic_inc(&config->live_connections);
+ 
+ 	return 0;
++
++put_socket:
++	sockfd_put(sock);
++	return err;
+ }
+ 
+ static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
 -- 
 2.25.1
 
