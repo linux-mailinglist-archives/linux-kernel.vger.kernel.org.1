@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934082271F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F1F2271FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgGTWGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:06:04 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24845 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgGTWGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:06:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595282763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ui4TgDlV8SNq6AEy7rMKlPf4tS22AT8vC1X2BWWDx3M=;
-        b=Kdy0A+XPVkITxNJa63G6ruR2pGHfTbpFW06mn/saYxqUvx0jd7sT9pnwquPq1gYygP8mus
-        HiLM73BgnIv5LDOe69Uq+EGfqYIdj4bqPYw33TF7/+UTWrc6vuC0N2tN8QolJVrX67yUgS
-        sktPR2hqMzXznf8xc/s9jX3htNkGOBI=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-o0DmeRstNG-tb8L153dEWA-1; Mon, 20 Jul 2020 18:06:01 -0400
-X-MC-Unique: o0DmeRstNG-tb8L153dEWA-1
-Received: by mail-qt1-f200.google.com with SMTP id t36so12904291qtc.16
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 15:06:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ui4TgDlV8SNq6AEy7rMKlPf4tS22AT8vC1X2BWWDx3M=;
-        b=BRF5epEwbohfmMNp8Z8IsZlDMWCSFJa0fCU/sYh84KKGxgKTDq27ztXH2EV5paTrJe
-         LIKIlbu6iB/nZ8bYz8MKNgqNmQpLXR6PKUVRyPq0xdv1mxe+I75ph7cU3L87TR4VBTuH
-         g6yXVAHB5I6Vqb93MsiwJYcQbL9eN+VySZRHYLdm0mfbKej2lUd1og3/0gpAAFbTWPel
-         TgjpYNB45RGzdVG2m+/NG/svMFLIdsvL4fqjo/Q0Sp1JHQBwsONIsDWkMB3EcEsPxSuw
-         4dcSz7g1TvkCx+a4yWrVNaFac50kN6ZOsK5uu01zNSBF/ccgttUZZ+7TTNKvsSHQ+5WO
-         nHbQ==
-X-Gm-Message-State: AOAM533Jnyp8aZ4xVJy4I+bTHxwLGXlibPFYysBfGyI6zBd6h2Vl6RDR
-        DjzHXqmdLNFY8Kzan9f+ZF35neD2zUhsZhDwu3IIs0dy0n+uWLowW67Z9jr+G9MDJjbmCnJseKW
-        qMdvJ0ssiFYhurQxYa/yID63J
-X-Received: by 2002:ac8:5691:: with SMTP id h17mr27088654qta.35.1595282760686;
-        Mon, 20 Jul 2020 15:06:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxktMziFRW26sqcuKCe1BiUW9KgrudLEhWcfpNy5hfiS8Zzypyg7oYWH9pVueXeHLJsRJoD/g==
-X-Received: by 2002:ac8:5691:: with SMTP id h17mr27088613qta.35.1595282760176;
-        Mon, 20 Jul 2020 15:06:00 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c8:6f::1f4f])
-        by smtp.gmail.com with ESMTPSA id y12sm18742348qto.87.2020.07.20.15.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 15:05:59 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 18:05:57 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Rich Felker <dalias@libc.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-sh@vger.kernel.org
-Subject: Re: [PATCH 20/25] mm/sh: Use mm_fault_accounting()
-Message-ID: <20200720220557.GP535743@xz-x1>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615222306.8502-1-peterx@redhat.com>
- <20200720212524.GL14669@brightrain.aerifal.cx>
+        id S1726930AbgGTWGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgGTWGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:06:52 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B425820729;
+        Mon, 20 Jul 2020 22:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595282811;
+        bh=6x2B6tHzk/AK+Gp4nhiVnHJOFQxF6ZQYhvHBPpGLxx8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GfYo84e5NH9ySeUlI335uKO6IHp9m/oJPecOGmfcLn7P6RguHpvYx/9GZHtn+Am9+
+         bMucw9MVP6y/46wsq4bkniwV2aKUaPzLds6Cih4EusxY4SAlt9Pkh3Ol1JcI5nrKUZ
+         k/NpJoetfBLQT8T8U2fLrpiIykP7D2DHzkLU00N0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 99A843522C1A; Mon, 20 Jul 2020 15:06:51 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 15:06:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     peterz@infradead.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
+Message-ID: <20200720220651.GV9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200717044427.68747-1-ebiggers@kernel.org>
+ <20200718014204.GN5369@dread.disaster.area>
+ <20200718140811.GA1179836@rowland.harvard.edu>
+ <20200720013320.GP5369@dread.disaster.area>
+ <20200720145211.GC1228057@rowland.harvard.edu>
+ <20200720153911.GX12769@casper.infradead.org>
+ <20200720160433.GQ9247@paulmck-ThinkPad-P72>
+ <20200720164850.GF119549@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720212524.GL14669@brightrain.aerifal.cx>
+In-Reply-To: <20200720164850.GF119549@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rich,
+On Mon, Jul 20, 2020 at 06:48:50PM +0200, peterz@infradead.org wrote:
+> On Mon, Jul 20, 2020 at 09:04:34AM -0700, Paul E. McKenney wrote:
+> > 2.	If we were to say "unlock" instead of "release", consistency
+> > 	would demand that we also say "lock" instead of "acquire".
+> > 	But "lock" is subtlely different than "acquire", and there is
+> > 	a history of people requesting further divergence.
+> 
+> This, acquire/release are RCpc, while (with the exception of Power)
+> LOCK/UNLOCK are RCsc.
+> 
+> ( Or did we settle on RCtso for our release/acquire order? I have vague
+> memories of a long-ish thread, but seem to have forgotten the outcome,
+> if any. )
+> 
+> Lots of subtlety and head-aches right about there. Anyway, it would be
+> awesome if we can get Power into the RCsc locking camp :-)
 
-On Mon, Jul 20, 2020 at 05:25:24PM -0400, Rich Felker wrote:
-> What's the status on the rest of this series? Do you need any action
-> from my side (arch/sh) at this time?
+I will let you take that one up with the Power folks.
 
-This series should have been queued by Andrew in -next.  So iiuc no further
-action is needed.
+But I should give an example of a current difference between lock and
+acquire, and just to spread the blame, I will pick on an architecture
+other than Power.  ;-)
 
-Thanks for asking,
+With lock acquisition, the following orders the access to X and Z:
 
--- 
-Peter Xu
+	WRITE_ONCE(X, 1);
+	spin_lock(&my_lock);
+	smp_mb__after_lock();
+	r1 = READ_ONCE(Z);
 
+But if we replace the lock acquisition with a load acquire, there are
+no ordering guarantees for the accesses to X and Z:
+
+	WRITE_ONCE(X, 1);
+	r2 = smp_load_acquire(&Y);
+	smp_mb__after_lock();  // Yeah, there is no lock.  ;-)
+	r3 = READ_ONCE(Z);
+
+There -is- ordering between the accesses to Y and Z, but not to X and Z.
+This is not a theoretical issue.  The x86 platform really can reorder
+the access to X to follow that of both Y and Z.
+
+So the memory-model divergence between lock acquisition and acquire
+loads is very real in the here and now.
+
+							Thanx, Paul
