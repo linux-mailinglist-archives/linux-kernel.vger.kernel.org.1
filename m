@@ -2,97 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D980225BA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D95225AA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgGTJ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgGTJ3n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:29:43 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9385C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:29:43 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x9so8436826plr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=B2DSO/aWAoJzWSJL4puh7QjtP9M2G0vX5SgGCTFfnts=;
-        b=NikpLS+N3qR2sHdhR++q/DgmRGoIAbwJDPZKGfWUAcTIcUw9TlzB5FnpPDt1sPSC8M
-         Mk1NNk5XGn7yY2BPr8ug25MWnXMYXXuIY6FffQ9Cuct0k6OhyykTdx6MnypRI9vKclRx
-         P8GI+xWh/nlO6Y8TpDcDUh1fqoYJqxCoGaVCI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=B2DSO/aWAoJzWSJL4puh7QjtP9M2G0vX5SgGCTFfnts=;
-        b=ladolUT9O9x7pj706DmBkSzDTXJpwz7snxThJwCwzZ3wWdf0f88AVdoQusgtGuFkAm
-         2y5SZcI7w5R+9af80EL4CAPFxNUSJfq6ybGZf9GygF2dVep5TUim3G76CMVGJtAV7IQP
-         aq1H8avVu5BXjqvVZQejrfFFRha34f/wGhcGi4xspcI3bwRF8wy16plmdjDAQllpT2rd
-         tGu4I8RTBZmgCZjw9vcWf3+z8Ldq7CN2wHbm/+lBnqU/FU0r3MeZX999xyYlcvY7DP2o
-         wx1oqml6cUY6awU3izMi7U/PITYjwO6LohlO4g+1rTa5zBI0LVgwHWJDJlyKx9gI4drH
-         oFkg==
-X-Gm-Message-State: AOAM530WqCdTnW3aUTXUspnBrY/IXHUAg3W/GSWtho8+S2YdjlkPyPIW
-        yvw52QvYfCwwbQp6LYvaTg8pEg==
-X-Google-Smtp-Source: ABdhPJyUJqTu1oMIZdT1XQQeuBWfeUW3vYNGSn8M+KxvAA1dCrmEuEg2ct9wwK30sAebekF1pTzQeA==
-X-Received: by 2002:a17:90a:66c7:: with SMTP id z7mr23079390pjl.172.1595237383150;
-        Mon, 20 Jul 2020 02:29:43 -0700 (PDT)
-Received: from jjsu-p920.tpe.corp.google.com ([2401:fa00:1:10:a6ae:11ff:fe11:67])
-        by smtp.gmail.com with ESMTPSA id v2sm11197363pje.19.2020.07.20.02.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 02:29:42 -0700 (PDT)
-From:   Jian-Jia Su <jjsu@chromium.org>
-To:     linux-media@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jian-Jia Su <jjsu@chromium.org>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: v4l2-dev/ioctl: Fix document for VIDIOC_QUERYCAP
-Date:   Mon, 20 Jul 2020 17:29:33 +0800
-Message-Id: <20200720092933.2089288-1-jjsu@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+        id S1727951AbgGTJBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:01:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8334 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725815AbgGTJBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 05:01:11 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 33C62D6F8F64A458F9B3;
+        Mon, 20 Jul 2020 17:01:04 +0800 (CST)
+Received: from NRM-11.huawei.com (10.175.101.78) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 20 Jul 2020 17:00:57 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <brcm80211-dev-list@cypress.com>, <linux-wireless@vger.kernel.org>,
+        <davem@davemloft.net>, <kvalo@codeaurora.org>, <kuba@kernel.org>,
+        <franky.lin@broadcom.com>, <wright.feng@cypress.com>
+CC:     Wang Yufen <wangyufen@huawei.com>
+Subject: [PATCH net-next] brcm80211: fix possible memleak in brcmf_proto_msgbuf_attach
+Date:   Mon, 20 Jul 2020 17:33:28 +0800
+Message-ID: <1595237608-66045-1-git-send-email-wangyufen@huawei.com>
+X-Mailer: git-send-email 1.8.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.78]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V4L2_CAP_VIDEO_M2M is documented as 0x00004000
-V4L2_CAP_VIDEO_M2M_MPLANE is documented as 0x00008000
-This is different from the definition in include/uapi/linux/videodev2.h
+When brcmf_proto_msgbuf_attach fail and msgbuf->txflow_wq != NULL,
+we should destroy the workqueue.
 
-Signed-off-by: Jian-Jia Su <jjsu@chromium.org>
+Fixes: 05491d2ccf20 ("brcm80211: move under broadcom vendor directory")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 ---
- Documentation/userspace-api/media/v4l/vidioc-querycap.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-index 666ac4d420519..90347367ef06a 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-@@ -168,11 +168,11 @@ specification the ioctl returns an ``EINVAL`` error code.
-       - The device supports the :ref:`multi-planar API <planar-apis>`
- 	through the :ref:`Video Output <output>` interface.
-     * - ``V4L2_CAP_VIDEO_M2M``
--      - 0x00004000
-+      - 0x00008000
-       - The device supports the single-planar API through the Video
- 	Memory-To-Memory interface.
-     * - ``V4L2_CAP_VIDEO_M2M_MPLANE``
--      - 0x00008000
-+      - 0x00004000
-       - The device supports the :ref:`multi-planar API <planar-apis>`
- 	through the Video Memory-To-Memory interface.
-     * - ``V4L2_CAP_VIDEO_OVERLAY``
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+index 8bb4f1f..1bb270e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+@@ -1619,6 +1619,8 @@ int brcmf_proto_msgbuf_attach(struct brcmf_pub *drvr)
+ 					  BRCMF_TX_IOCTL_MAX_MSG_SIZE,
+ 					  msgbuf->ioctbuf,
+ 					  msgbuf->ioctbuf_handle);
++		if (msgbuf->txflow_wq)
++			destroy_workqueue(msgbuf->txflow_wq);
+ 		kfree(msgbuf);
+ 	}
+ 	return -ENOMEM;
 -- 
-2.28.0.rc0.105.gf9edc3c819-goog
+1.8.3
 
