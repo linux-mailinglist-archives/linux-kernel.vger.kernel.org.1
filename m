@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC3A226568
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CF02264C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731486AbgGTPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
+        id S1730396AbgGTPsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730314AbgGTPxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:53:36 -0400
+        id S1729951AbgGTPsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C81BF2064B;
-        Mon, 20 Jul 2020 15:53:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DB742064B;
+        Mon, 20 Jul 2020 15:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260416;
-        bh=Mdl/K+7xLaxusjBhgs4IxBfsL816xmLFcY8NBTjFunY=;
+        s=default; t=1595260086;
+        bh=mKAnN6wshqDhljgJ2o/PsmJw0PWkgYvZ6Jviu0X33z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dgwhw/EArEmYy/gs20JZUkQTqr9QNUjJQKwmugQqMJuI8YwFtB6DyfhLotMigs6pQ
-         uLw7vzTziliDf351auHNJ3tWwy64TbE/0hacy2iSp40B7wklmNJyJufS5uEQRNHyNn
-         IC1cUlBJY5+R+sqjRxXGoy5t1rSjOMoOsYbdKdlc=
+        b=2DY2/LWuWHm+6OyAniKbkQNpSiVY7h2x5SDLArxrw+hlzEh7yxljYMv0BEUS4F5Se
+         R3Ptu42ZXtrGxvzMU9NueAVYaGJPlOv+pQuiGihRiwYb+8uNLnwZD5ze8KYJbNmeGj
+         IJRLuirb+7fnsgPCtXlA2pTFa/qq4S13OSMHKaZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qiang <qiang.zhang@windriver.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.19 093/133] usb: gadget: function: fix missing spinlock in f_uac1_legacy
-Date:   Mon, 20 Jul 2020 17:37:20 +0200
-Message-Id: <20200720152808.216140250@linuxfoundation.org>
+        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 102/125] USB: serial: cypress_m8: enable Simply Automated UPB PIM
+Date:   Mon, 20 Jul 2020 17:37:21 +0200
+Message-Id: <20200720152807.954044143@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+From: James Hilliard <james.hilliard1@gmail.com>
 
-commit 8778eb0927ddcd3f431805c37b78fa56481aeed9 upstream.
+commit 5c45d04c5081c1830d674f4d22d4400ea2083afe upstream.
 
-Add a missing spinlock protection for play_queue, because
-the play_queue may be destroyed when the "playback_work"
-work func and "f_audio_out_ep_complete" callback func
-operate this paly_queue at the same time.
+This is a UPB (Universal Powerline Bus) PIM (Powerline Interface Module)
+which allows for controlling multiple UPB compatible devices from Linux
+using the standard serial interface.
 
-Fixes: c6994e6f067cf ("USB: gadget: add USB Audio Gadget driver")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Based on vendor application source code there are two different models
+of USB based PIM devices in addition to a number of RS232 based PIM's.
+
+The vendor UPB application source contains the following USB ID's:
+
+	#define USB_PCS_VENDOR_ID 0x04b4
+	#define USB_PCS_PIM_PRODUCT_ID 0x5500
+
+	#define USB_SAI_VENDOR_ID 0x17dd
+	#define USB_SAI_PIM_PRODUCT_ID 0x5500
+
+The first set of ID's correspond to the PIM variant sold by Powerline
+Control Systems while the second corresponds to the Simply Automated
+Incorporated PIM. As the product ID for both of these match the default
+cypress HID->COM RS232 product ID it assumed that they both use an
+internal variant of this HID->COM RS232 converter hardware. However
+as the vendor ID for the Simply Automated variant is different we need
+to also add it to the cypress_M8 driver so that it is properly
+detected.
+
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Link: https://lore.kernel.org/r/20200616220403.1807003-1-james.hilliard1@gmail.com
+Cc: stable@vger.kernel.org
+[ johan: amend VID define entry ]
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/function/f_uac1_legacy.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/cypress_m8.c |    2 ++
+ drivers/usb/serial/cypress_m8.h |    3 +++
+ 2 files changed, 5 insertions(+)
 
---- a/drivers/usb/gadget/function/f_uac1_legacy.c
-+++ b/drivers/usb/gadget/function/f_uac1_legacy.c
-@@ -336,7 +336,9 @@ static int f_audio_out_ep_complete(struc
+--- a/drivers/usb/serial/cypress_m8.c
++++ b/drivers/usb/serial/cypress_m8.c
+@@ -63,6 +63,7 @@ static const struct usb_device_id id_tab
  
- 	/* Copy buffer is full, add it to the play_queue */
- 	if (audio_buf_size - copy_buf->actual < req->actual) {
-+		spin_lock_irq(&audio->lock);
- 		list_add_tail(&copy_buf->list, &audio->play_queue);
-+		spin_unlock_irq(&audio->lock);
- 		schedule_work(&audio->playback_work);
- 		copy_buf = f_audio_buffer_alloc(audio_buf_size);
- 		if (IS_ERR(copy_buf))
+ static const struct usb_device_id id_table_cyphidcomrs232[] = {
+ 	{ USB_DEVICE(VENDOR_ID_CYPRESS, PRODUCT_ID_CYPHIDCOM) },
++	{ USB_DEVICE(VENDOR_ID_SAI, PRODUCT_ID_CYPHIDCOM) },
+ 	{ USB_DEVICE(VENDOR_ID_POWERCOM, PRODUCT_ID_UPS) },
+ 	{ USB_DEVICE(VENDOR_ID_FRWD, PRODUCT_ID_CYPHIDCOM_FRWD) },
+ 	{ }						/* Terminating entry */
+@@ -77,6 +78,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(VENDOR_ID_DELORME, PRODUCT_ID_EARTHMATEUSB) },
+ 	{ USB_DEVICE(VENDOR_ID_DELORME, PRODUCT_ID_EARTHMATEUSB_LT20) },
+ 	{ USB_DEVICE(VENDOR_ID_CYPRESS, PRODUCT_ID_CYPHIDCOM) },
++	{ USB_DEVICE(VENDOR_ID_SAI, PRODUCT_ID_CYPHIDCOM) },
+ 	{ USB_DEVICE(VENDOR_ID_POWERCOM, PRODUCT_ID_UPS) },
+ 	{ USB_DEVICE(VENDOR_ID_FRWD, PRODUCT_ID_CYPHIDCOM_FRWD) },
+ 	{ USB_DEVICE(VENDOR_ID_DAZZLE, PRODUCT_ID_CA42) },
+--- a/drivers/usb/serial/cypress_m8.h
++++ b/drivers/usb/serial/cypress_m8.h
+@@ -25,6 +25,9 @@
+ #define VENDOR_ID_CYPRESS		0x04b4
+ #define PRODUCT_ID_CYPHIDCOM		0x5500
+ 
++/* Simply Automated HID->COM UPB PIM (using Cypress PID 0x5500) */
++#define VENDOR_ID_SAI			0x17dd
++
+ /* FRWD Dongle - a GPS sports watch */
+ #define VENDOR_ID_FRWD			0x6737
+ #define PRODUCT_ID_CYPHIDCOM_FRWD	0x0001
 
 
