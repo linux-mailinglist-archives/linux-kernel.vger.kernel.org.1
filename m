@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221F5225797
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FD922579C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgGTG0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:26:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31673 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727049AbgGTG0n (ORCPT
+        id S1726842AbgGTG3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgGTG3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:26:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595226402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=ErQnGDyC+brwu9pgt6aMqEG7pR0PIXFNaAVP0pSF45w=;
-        b=QlUvEiOnsGmyUzp4Q08QEgVig8o+sTjCOpFaA7hhU2Iy9pGO3pKB74/W2gr2cfWqyrgGQh
-        4/8P4KPuPDMPUhW8X1yaVb4J/fi7qO5CZDM27z3lIl6OsN0l/xqbiSUa7imxvs+guTxCLi
-        c5RYvqo8kunSzMznnZ50rqBr/Oza6yU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-111-XuO9sbkuOwKkbXDBpXW7-Q-1; Mon, 20 Jul 2020 02:26:40 -0400
-X-MC-Unique: XuO9sbkuOwKkbXDBpXW7-Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 20 Jul 2020 02:29:32 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566CAC0619D2;
+        Sun, 19 Jul 2020 23:29:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 407BD800469;
-        Mon, 20 Jul 2020 06:26:39 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-150.pek2.redhat.com [10.72.12.150])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 58D877852B;
-        Mon, 20 Jul 2020 06:26:37 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, mike.kravetz@oracle.com,
-        akpm@linux-foundation.org, bhe@redhat.com
-Subject: [PATCH 5/5] mm/hugetl.c: warn out if expected count of huge pages adjustment is not achieved
-Date:   Mon, 20 Jul 2020 14:26:23 +0800
-Message-Id: <20200720062623.13135-6-bhe@redhat.com>
-In-Reply-To: <20200720062623.13135-1-bhe@redhat.com>
-References: <20200720062623.13135-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9Bf04Br6z9sRN;
+        Mon, 20 Jul 2020 16:29:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595226569;
+        bh=IQm4VCVJJxzuueje8oABD90T4M0Kps5whbuKkqdbdWM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZCWRWlXZkbAShrzQbHsGOxSKQHoiUoY1Zz6y9cOfjtNpTkg3pJgL/f85wvjM9dGZm
+         vzoaAwONULs9QY5Y9r96qyqBL3SOrn36pJXbJBLBw8SDqL7WkqiG+cennhBj0ujO9h
+         ZHIcZKrnG7peNmkUun7ZJVYbjkRrU5I0d5EFZMotPI8dbjDHBO+swnXV2ZAYlSZKiK
+         aaCqIb4JE9eC/EzLaRTWHaEE5YZo51ysQUJYR9GDZZW5em+ZJPCRmFZ56cxz1OW600
+         COyCoCB3i9OQRgbK1IqK8NTwmXhVpjsU8iTbuoteWC5ml8uMvz+v5ddmBBmlJHIA8K
+         SbQjMgrC2B6RQ==
+Date:   Mon, 20 Jul 2020 16:29:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: linux-next: manual merge of the tip tree with the crypto tree
+Message-ID: <20200720162927.4aedff0f@canb.auug.org.au>
+In-Reply-To: <CAFULd4YGFGSVqmHuor89e_hk9wT5pso3jcRiBkHP4ppx+W-D7g@mail.gmail.com>
+References: <20200717144656.4bdbf81f@canb.auug.org.au>
+        <CAFULd4Ye2d-8BY7aY+_2tYwcXsfSCe3O6aJ4LF0KhvWTjVt0rA@mail.gmail.com>
+        <20200717064401.GB2504@gondor.apana.org.au>
+        <CAFULd4b9O+KJKwjQTB1PTuxMEDSDMov0rQaE85+9pfRrd02dKw@mail.gmail.com>
+        <20200720140346.109a3006@canb.auug.org.au>
+        <CAFULd4YGFGSVqmHuor89e_hk9wT5pso3jcRiBkHP4ppx+W-D7g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/u9r8LB0V3ZHSwZH+WSKkuri";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A customer complained that no any message is printed out when failed to
-allocate explicitly specified number of persistent huge pages. That
-specifying can be done by writing into /proc/sys/vm/nr_hugepages to
-increase the persisten huge pages.
+--Sig_/u9r8LB0V3ZHSwZH+WSKkuri
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In the current code, it takes the best effort way to allocate the expected
-number of huge pages. If only succeeding to get part of them, no any
-information is printed out.
+Hi Uros,
 
-Here try to send out warning message if the expected number of huge pages
-adjustment is not achieved, including increasing and decreasing the count
-of persistent huge pages.
+On Mon, 20 Jul 2020 08:13:51 +0200 Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> On Mon, Jul 20, 2020 at 6:03 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> > > Please find attached the incremental patch that puts back integer
+> > > parts of inst.h. This resolves the conflict with the tip tree. =20
+> >
+> > The tip tree change needs the XMM parts kept as well, sorry. =20
+>=20
+> Strange, because I did test my patch with the tip tree from
+> 'origin/master' at commit a282cddefe90c4b21ef2c22a76a7c3ebd3ec6b86 and
+> the compilation produced the same lonely rdpid %eax in
+> .altinstr_replacement section. AFAICS, the header is included only for
+> RDPID macro, where XMM registers are unused.
+>=20
+> > So I ended up just removing the actual now unused crypto instruction
+> > macros. =20
+>=20
+> To avoid any further troubles, this is also OK with me.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- mm/hugetlb.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Sorry, I see what happened now.  Since your patch was not in the crypto
+tree yet, I did a fixup to the tip tree merge based on your patch, but
+did it by hand and didn't remove the XMM bits from the REG_TYPE
+macro ...
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 467894d8332a..1dfb5d9e4e06 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2661,7 +2661,7 @@ static int adjust_pool_surplus(struct hstate *h, nodemask_t *nodes_allowed,
- static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
- 			      nodemask_t *nodes_allowed)
- {
--	unsigned long min_count, ret;
-+	unsigned long min_count, ret, old_max;
- 	NODEMASK_ALLOC(nodemask_t, node_alloc_noretry, GFP_KERNEL);
- 
- 	/*
-@@ -2723,6 +2723,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
- 	 * pool might be one hugepage larger than it needs to be, but
- 	 * within all the constraints specified by the sysctls.
- 	 */
-+	old_max = persistent_huge_pages(h);
- 	while (h->surplus_huge_pages && count > persistent_huge_pages(h)) {
- 		if (!adjust_pool_surplus(h, nodes_allowed, -1))
- 			break;
-@@ -2779,6 +2780,16 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
- 	}
- out:
- 	h->max_huge_pages = persistent_huge_pages(h);
-+	if (count != h->max_huge_pages) {
-+		char buf[32];
-+
-+		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
-+		pr_warn("HugeTLB: %s %lu of page size %s failed. Only %s %lu hugepages.\n",
-+			count > old_max ? "increasing" : "decreasing",
-+			abs(count - old_max), buf,
-+			count > old_max ? "increased" : "decreased",
-+			abs(old_max - h->max_huge_pages));
-+	}
- 	spin_unlock(&hugetlb_lock);
- 
- 	NODEMASK_FREE(node_alloc_noretry);
--- 
-2.17.2
+So your original patch is probably all good (especially since you
+actually tested it :-))
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/u9r8LB0V3ZHSwZH+WSKkuri
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8VOccACgkQAVBC80lX
+0GxaeQf/bdfrfIOUWIKd3Ve63BGwZfzhgtieghs4RfP61VpEsNZvT/QZj5UFYrdx
+JjrCzL6K7YJGEEmKXPywb//LtAt9lyZBKsSTQmC1ygRK752EdoXuN6IRheSLM97q
+mCIvnI9VQyVzSF/Aip+Odb7pMv46aa5rlhqvuy76PSJyPCZZ6QszKActm1JWVIE4
+XB9F50aM0GObqpvN63bJxeikl4nxI5Do59LMpM+lB8pDF2CQTBYl+MeIvoT3ecs5
+TjuAjjgVariB2hhwijwmu0Avi3cQYbCSFx0bEejeWPo7x7PuVohUTbLxHDD30I0E
+sbs4hCxNGgtwafOKnMneOuMSKDARiQ==
+=r0/d
+-----END PGP SIGNATURE-----
+
+--Sig_/u9r8LB0V3ZHSwZH+WSKkuri--
