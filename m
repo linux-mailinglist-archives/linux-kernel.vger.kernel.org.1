@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8866B226486
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376BE226523
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730005AbgGTPps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40208 "EHLO mail.kernel.org"
+        id S1731208AbgGTPvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730559AbgGTPpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:45 -0400
+        id S1731190AbgGTPvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:51:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 277342064B;
-        Mon, 20 Jul 2020 15:45:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E933F22BEF;
+        Mon, 20 Jul 2020 15:51:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259944;
-        bh=+fMBqmd+8jSPdbKzDkNB+4cM/uWpUcqZuRt8XevMLqY=;
+        s=default; t=1595260266;
+        bh=uYxb9P/P8dua0vjr/LUf8CIp6XXI6TswYw3wgxuE2qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWZHm0BIINBIGmBR8RvYQxHmhpRTsSrvSbGyIYinLrD5CkDYsyxvdk8vWnJnnrn77
-         HCklKSOzJWPxerNoCKybCMTcht1CjoFuxrPGl20JlESFUj67/K/QAqFq9tO/zFiv1p
-         hbqAIzOq15AKtrAdzszYpXexfrHN4hE9wZNHLN5s=
+        b=M7DH+agUF/+aciooAfq3ABvNqStZ6c086GZUsROwEGTayf0nCVcK4cuxJq0IGUXkR
+         V/O70sfl8T1wNq3LxzmE/Ej+flgNRVfK1F4ym3Kya/R0ExY4+RJ+Q0uM7JObVm3Xk3
+         CBiifevZCl++BbfydszgbwdiKY+fcDh96ghswwqs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 049/125] tcp: md5: allow changing MD5 keys in all socket states
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 041/133] Revert "usb/ohci-platform: Fix a warning when hibernating"
 Date:   Mon, 20 Jul 2020 17:36:28 +0200
-Message-Id: <20200720152805.381418685@linuxfoundation.org>
+Message-Id: <20200720152805.704517976@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+This reverts commit c83258a757687ffccce37ed73dba56cc6d4b8a1b.
 
-[ Upstream commit 1ca0fafd73c5268e8fc4b997094b8bb2bfe8deea ]
+Eugeniu Rosca writes:
 
-This essentially reverts commit 721230326891 ("tcp: md5: reject TCP_MD5SIG
-or TCP_MD5SIG_EXT on established sockets")
+On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>Set PM runtime as active on resume") into downstream v4.14.x, we started
+>to consistently experience below panic [1] on every second s2ram of
+>R-Car H3 Salvator-X Renesas reference board.
+>
+>After some investigations, we concluded the following:
+> - the issue does not exist in vanilla v5.8-rc4+
+> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>   link support"). Getting evidence for that is easy. Reverting
+>   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>
+>Questions:
+> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>   link support") to v4.14.187 looks challenging enough, so probably not
+>   worth it. Anybody to contradict this?
+> - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>   should the following three v4.14.186 commits be reverted on v4.14.x?
+>   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
 
-Mathieu reported that many vendors BGP implementations can
-actually switch TCP MD5 on established flows.
-
-Quoting Mathieu :
-   Here is a list of a few network vendors along with their behavior
-   with respect to TCP MD5:
-
-   - Cisco: Allows for password to be changed, but within the hold-down
-     timer (~180 seconds).
-   - Juniper: When password is initially set on active connection it will
-     reset, but after that any subsequent password changes no network
-     resets.
-   - Nokia: No notes on if they flap the tcp connection or not.
-   - Ericsson/RedBack: Allows for 2 password (old/new) to co-exist until
-     both sides are ok with new passwords.
-   - Meta-Switch: Expects the password to be set before a connection is
-     attempted, but no further info on whether they reset the TCP
-     connection on a change.
-   - Avaya: Disable the neighbor, then set password, then re-enable.
-   - Zebos: Would normally allow the change when socket connected.
-
-We can revert my prior change because commit 9424e2e7ad93 ("tcp: md5: fix potential
-overestimation of TCP option space") removed the leak of 4 kernel bytes to
-the wire that was the main reason for my patch.
-
-While doing my investigations, I found a bug when a MD5 key is changed, leading
-to these commits that stable teams want to consider before backporting this revert :
-
- Commit 6a2febec338d ("tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()")
- Commit e6ced831ef11 ("tcp: md5: refine tcp_md5_do_add()/tcp_md5_hash_key() barriers")
-
-Fixes: 721230326891 "tcp: md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on established sockets"
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/usb/host/ohci-platform.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2759,10 +2759,7 @@ static int do_tcp_setsockopt(struct sock
- #ifdef CONFIG_TCP_MD5SIG
- 	case TCP_MD5SIG:
- 	case TCP_MD5SIG_EXT:
--		if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
--			err = tp->af_specific->md5_parse(sk, optname, optval, optlen);
--		else
--			err = -EINVAL;
-+		err = tp->af_specific->md5_parse(sk, optname, optval, optlen);
- 		break;
- #endif
- 	case TCP_USER_TIMEOUT:
+diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
+index f40112c5920d1..65a1c3fdc88c6 100644
+--- a/drivers/usb/host/ohci-platform.c
++++ b/drivers/usb/host/ohci-platform.c
+@@ -301,11 +301,6 @@ static int ohci_platform_resume(struct device *dev)
+ 	}
+ 
+ 	ohci_resume(hcd, false);
+-
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-
+ 	return 0;
+ }
+ #endif /* CONFIG_PM_SLEEP */
+-- 
+2.25.1
+
 
 
