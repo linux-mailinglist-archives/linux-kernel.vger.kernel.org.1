@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA9F2255D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AFD2255D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgGTCTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 22:19:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58352 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726225AbgGTCTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 22:19:04 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7516433879410B5B614F;
-        Mon, 20 Jul 2020 10:19:03 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.91) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
- 10:18:58 +0800
-Subject: Re: [PATCH -next] debugobjects: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marco Elver <elver@google.com>, Qian Cai <cai@lca.pw>,
-        <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>
-References: <20200716084747.8034-1-miaoqinglang@huawei.com>
- <87h7u5riq7.fsf@nanos.tec.linutronix.de>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <f43d2530-3e21-6bf9-ef68-dae1bb7f173a@huawei.com>
-Date:   Mon, 20 Jul 2020 10:18:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726848AbgGTCVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 22:21:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43015 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgGTCVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 22:21:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595211691; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=OGtn5y+5u6/tNGv1oaw5tRw65wC3jFL4Nm1dcyL638w=; b=dJ4rXGQCNpsqHw5QGobSBqO5omJ8x/GstLrLCcspcsLx7SxpOSql9lzr5MEkHkVCObJB1foP
+ JB13g6BmrENRa3ikI4H3lMSP8reWX7EsXr81LIoY3GWzwRCiz1nsInZjdmIcIKAsUS1msw/N
+ 255Ky2aqH1s9EGNrLmfiPO9QdHE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
+ 5f14ffabee6926bb4f7af1e9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 02:21:31
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA4D7C433C9; Mon, 20 Jul 2020 02:21:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA653C433C6;
+        Mon, 20 Jul 2020 02:21:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA653C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
+From:   Tingwei Zhang <tingwei@codeaurora.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] tracing: export event trace and trace_marker
+Date:   Mon, 20 Jul 2020 10:21:13 +0800
+Message-Id: <20200720022117.9375-1-tingwei@codeaurora.org>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-In-Reply-To: <87h7u5riq7.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ftrace has ability to export trace packets to other destionation. Currently,
+only function trace can be exported. This series extends the support to
+event trace and trace_maker. STM is one possible destination to export ftrace.
+Use seperate channel for each CPU to avoid mixing up packets from different
+CPUs together.
 
+Tingwei Zhang (4):
+  stm class: ftrace: change dependency to TRACING
+  tracing: add trace_export support for event trace
+  tracing: add trace_export support for trace_marker
+  stm class: ftrace: use different channel accroding to CPU
 
-ÔÚ 2020/7/18 4:26, Thomas Gleixner Ð´µÀ:
-> Qinglang Miao <miaoqinglang@huawei.com> writes:
->> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   lib/debugobjects.c | 12 +-----------
->>   1 file changed, 1 insertion(+), 11 deletions(-)
->>
->> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
->> index 5d2bbfc55..916a5c492 100644
->> --- a/lib/debugobjects.c
->> +++ b/lib/debugobjects.c
->> @@ -1023,17 +1023,7 @@ static int debug_stats_show(struct seq_file *m, void *v)
->>   	return 0;
->>   }
->>   
->> -static int debug_stats_open(struct inode *inode, struct file *filp)
->> -{
->> -	return single_open(filp, debug_stats_show, NULL);
->> -}
->> -
->> -static const struct file_operations debug_stats_fops = {
->> -	.open		= debug_stats_open,
->> -	.read_iter		= seq_read_iter,
-> 
-> This does not apply against mainline, so I assume this malformatted
-> thing comes from Christophs seq_read_iter changes in -next.
-> 
-> The seq_read_iter here makes no sense whatsoever if the same thing can
-> be achieved by using
-> 
->> +DEFINE_SHOW_ATTRIBUTE(debug_stats);
-> 
-> and fixing it at the generic level.
-> 
-> Thanks,
-> 
->          tglx
-> .
-> 
-Because the swicth from seq_read to seq_read_iter would rather be 
-implemented in macro or coccinelle script as you mentioned in another 
-mail, I can send a new patch against mainline instead if you don't mind.
+ drivers/hwtracing/stm/Kconfig  |  2 +-
+ drivers/hwtracing/stm/ftrace.c |  5 +++--
+ kernel/trace/trace.c           | 26 +++++++++++++++-----------
+ 3 files changed, 19 insertions(+), 14 deletions(-)
 
-Thanks.
-
-Qinglang
-
-.
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
