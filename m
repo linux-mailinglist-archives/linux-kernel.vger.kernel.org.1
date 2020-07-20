@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24052268CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FE32268D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388693AbgGTQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388514AbgGTQUd (ORCPT
+        id S1733244AbgGTQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:21:22 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44543 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388350AbgGTQVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:20:33 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD5CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uC/tilAEaHjArnaAm1aUzbWB0T6K1yC5bOJBtaxkp14=; b=W7lnT5RyfkfkI3q/mMftN3ZL3l
-        gFNEwDpe9DMFL1phWV6FT62H2N0ShCnxXYBb46Hwmv4fUDuywjvoaC2JQ5nEhFf727nMIY+YGxFyY
-        UkCQwpwpgpsafutV83CLTkk9HX+p7uyLgtbUDq1PYdxIgwIRn3LiY4ICjtIg/ErnOedfdtug9CpFR
-        U3xsuHOXzc7WbxMZ7r/qrOPg9nR+8I7ZYQwncujiEyDxGLwdZt3oxXAWiZkSAgU3p+L+VryhSNS/R
-        JMBnr3aTQiVjqBVggs3HOe2Sj1Q98+ieFvw4a20RuZxcDmFIGbeFIYwIf2A8xwUMDGkN060+dACe2
-        HZSak66w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxYWg-0002Yz-Md; Mon, 20 Jul 2020 16:20:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E03C7307B8F;
-        Mon, 20 Jul 2020 18:20:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C8C5F23426BB1; Mon, 20 Jul 2020 18:20:24 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 18:20:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-Subject: Re: [PATCH V6 03/14] perf/x86/intel: Introduce the fourth fixed
- counter
-Message-ID: <20200720162024.GT10769@hirez.programming.kicks-ass.net>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-4-kan.liang@linux.intel.com>
+        Mon, 20 Jul 2020 12:21:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jxYXS-0006Tl-9I; Mon, 20 Jul 2020 16:21:14 +0000
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+From:   Colin Ian King <colin.king@canonical.com>
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ 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
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: re: net: phy: continue searching for C45 MMDs even if first returned
+ ffff:ffff
+Message-ID: <4131864f-9e3e-9814-5f4d-16c93648bce2@canonical.com>
+Date:   Mon, 20 Jul 2020 17:21:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717140554.22863-4-kan.liang@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 07:05:43AM -0700, kan.liang@linux.intel.com wrote:
->  /*
-> + * There is no event-code assigned to the fixed-mode PMCs.
-> + *
-> + * For a fixed-mode PMC, which has an equivalent event on a general-purpose
-> + * PMC, the event-code of the equivalent event is used for the fixed-mode PMC,
-> + * e.g., Instr_Retired.Any and CPU_CLK_Unhalted.Core.
-> + *
-> + * For a fixed-mode PMC, which doesn't have an equivalent event, a
-> + * pseudo-encoding is used, e.g., CPU_CLK_Unhalted.Ref and TOPDOWN.SLOTS.
-> + * The pseudo event-code for a fixed-mode PMC must be 0x00.
-> + * The pseudo umask-code is 0x0X. The X indicates the index of the fixed
-> + * counter.
+Hi,
 
-Isn't it X+1 ? Such that 0x0000 is an invalid event? After all, the
-pseudo event for Fixed2 is 0x0300.
+Static analysis by Coverity has found a potential issue with the
+following commit in /drivers/net/phy/phy_device.c:
 
-> + *
-> + * The counts are available in separate MSRs:
->   */
+commit bba238ed037c60242332dd1e4c5778af9eba4d9b
+Author: Vladimir Oltean <vladimir.oltean@nxp.com>
+Date:   Sun Jul 12 19:48:15 2020 +0300
+
+    net: phy: continue searching for C45 MMDs even if first returned
+ffff:ffff
+
+The analysis is as follows:
+
+735         * for 802.3 c45 complied PHYs, so don't probe it at first.
+736         */
+
+dead_error_condition: The condition (devs_in_pkg & 0x1fffffffU) ==
+0x1fffffffU cannot be true.
+
+737        for (i = 1; i < MDIO_MMD_NUM && devs_in_pkg == 0 &&
+
+const: At condition (devs_in_pkg & 0x1fffffffU) == 0x1fffffffU, the
+value of devs_in_pkg must be equal to 0.
+
+738             (devs_in_pkg & 0x1fffffff) == 0x1fffffff; i++) {
+
+Logically dead code (DEADCODE)dead_error_line: Execution cannot reach
+this statement: if (i == 30 || i == 31) {
+
+To summarize, if devs_in_pkg is zero, then (devs_in_pkg & 0x1fffffffU)
+== 0x1fffffffU can never be true, so the loop is never iterated over.
+
+Colin
