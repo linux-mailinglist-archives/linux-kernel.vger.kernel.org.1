@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2D8226E7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B65226E88
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgGTSoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 14:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgGTSoT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:44:19 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47556C061794;
-        Mon, 20 Jul 2020 11:44:19 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id y9so3387479oot.9;
-        Mon, 20 Jul 2020 11:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aCbgyprCpv5zpqintIcYum/YWgpLdnYdNsT160BVscU=;
-        b=MqA1QBncRXeHqrSw+D9BJYzKgHEiDmWtVKqX3bSjZgXmBmd6zpF4cQWCzZq10h0CA3
-         athEZ1vHT98oFgV1u5Xrq7SIUdYFFDJweUOqE/9dAedg5r1E+1wUR4GCgjrB96tcY/oW
-         eRPMgsTx93B4fM1CBPPt+BYnUy+SKpvnDZb84tQzPwV8RrB/O6GPq9FpLKtvGOAsM390
-         C7MWF2OlPkVQwDk7XXBKHOaIfJP+cSPOMetp2zdeIqSqvIGGFuwHmUWypGeLDGvbZ5XA
-         /LJYfKsKKQ3GagLFgzCqrfWNONB11jIfoxaDh7WFhi8q1GPz+bzP6N2POUhiM43D/SpJ
-         PZCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aCbgyprCpv5zpqintIcYum/YWgpLdnYdNsT160BVscU=;
-        b=LIrWcHEJSXZNux0yE+Og8ay3acuYUIOVCil8DnQqRZOpdUCDlO+ObAcPJwujkNR5FD
-         /BoZeS2otxmO2mEzizf5u/zM62Vpj1lCxIuAExWVIYfe4YE07HrY9uSIuonUTi4Mm3DP
-         /IFzaukDUxjhz1wICCgqUftlitj6NEVrmv7oQNAnIwA0zcWmUFhgnDeVoUxhlWTP2WIR
-         J6qBKaQGAKWfA04u+a2uyrog8gNxGKsBvdU4MjxW+FZNeBWcXngZW1L7XbRYQIic/ntn
-         QeXdG8LqELd1onZ5+AdEqfTlAbQlHfDck7WyRveJvoXXrWCjAaXEYBzre7oUj0q48iOM
-         sdtA==
-X-Gm-Message-State: AOAM530JHQ5TemDWKyvFoMH7pxny39GOsb4YY/0eiZWcZGykTMGt5OBp
-        ZzP9epea+Sg0+R/NziaOguzcOCGxepR2n8khmBO6zQ==
-X-Google-Smtp-Source: ABdhPJxxdpu7f6maFj8dhB9dVzclW3hoj40UmwmfiLyTPbY4FdQO2aoMX/tGthJiy4XqhpNjr1TPi/shKoe1NFr1EKE=
-X-Received: by 2002:a4a:b006:: with SMTP id f6mr20757376oon.13.1595270658680;
- Mon, 20 Jul 2020 11:44:18 -0700 (PDT)
+        id S1730152AbgGTStG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 14:49:06 -0400
+Received: from ozlabs.org ([203.11.71.1]:48509 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726506AbgGTStG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 14:49:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9W3M0pHVz9sRN;
+        Tue, 21 Jul 2020 04:49:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595270943;
+        bh=zq27nOBYvcnduPT0qa/MnnpZ+wkF+HYh9Y4xkg2KTGg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q+RRQpkumPavfz8CkH17wXbg65W4nTRiiXA52DSTRMXdsmgBtSWocDsVimYIuwjbc
+         DOPcCKFKcCc1WTaMfNKUGRtZJJ1E1fH9p9tukxg3i05H8NH3pqBVjgBluoLEQ2eldI
+         hteo6gi1egVxa3wgGoDgr+88TvTruWEqBReT6BpArXdXSMLKM1JqXXbdpLl1bjcEIw
+         HByplhMDx+f0/KiP/5Gm0siPXHFa447bVvFxf/Znc33PZlnKZl4fgFXmxA1YVKRsP/
+         jLpeKuLkvbyhDTowByjoxuveFPbUEI/oBT7Y2W5Fk5e0de8pWVa8qGUY4QZ0h3ilN+
+         W0zO1OshhPQBA==
+Date:   Tue, 21 Jul 2020 04:49:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: linux-next: Tree for Jul 20 (kernel/bpf/net_namespace)
+Message-ID: <20200721044902.24ebe681@canb.auug.org.au>
+In-Reply-To: <a97220b2-9864-eb49-6e27-0ec5b7e5b977@infradead.org>
+References: <20200720194225.17de9962@canb.auug.org.au>
+        <a97220b2-9864-eb49-6e27-0ec5b7e5b977@infradead.org>
 MIME-Version: 1.0
-References: <20200717222819.26198-1-nramas@linux.microsoft.com>
- <20200717222819.26198-5-nramas@linux.microsoft.com> <CAEjxPJ7xQtZToF4d2w_o8SXFKG9kPZaWTWTFqyC-7GwBWnQa0A@mail.gmail.com>
- <c0fbfcf3-ec36-872a-c389-b3fea214848c@linux.microsoft.com>
- <CAEjxPJ7VH18bEo6+U1GWrx=tHVGr=6XtF5_ygcfQYgdtZ74J+g@mail.gmail.com>
- <bea0cb52-2e13-fb14-b66c-b57287c23c3f@linux.microsoft.com>
- <CAEjxPJ6Rt7u3shLbxoPRHgr-D=CD9d_eXRB07A9qN7RmJwZAwA@mail.gmail.com>
- <CAEjxPJ6-jHha+CeqSdQ2O0bpyQe_9buj2ENZz6FNj6S87XSSfg@mail.gmail.com> <dccfc56b-c3ab-327e-19b2-7a70d15afe5b@linux.microsoft.com>
-In-Reply-To: <dccfc56b-c3ab-327e-19b2-7a70d15afe5b@linux.microsoft.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Mon, 20 Jul 2020 14:44:07 -0400
-Message-ID: <CAEjxPJ6_pxEh6HG9F3r=4B5ZgEpNPkgLHHfJp6ze=F1wKt4wCw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] LSM: Define SELinux function to measure security state
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/xmO6y7t9HQPsaBUCZn1yWr5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 2:27 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
->
-> On 7/20/20 10:49 AM, Stephen Smalley wrote:
->
-> >>>
-> >>> Looks like the template used is ima-ng which doesn't include the
-> >>> measured buffer. Please set template to "ima-buf" in the policy.
-> >>>
-> >>> For example,
-> >>> measure func=LSM_STATE template=ima-buf
-> >>
-> >> It seems like one shouldn't need to manually specify it if it is the
-> >> only template that yields a useful result for the LSM_STATE function?
-> >
-> > Actually, if we used ima-ng template for selinux-policy-hash, then
-> > instead of needing to hash the policy
-> > first and passing the hash to IMA, we could just pass the policy as
-> > the buffer and IMA would take care of the hashing, right?
->
-> That is correct.
->
-> The IMA hook I've added to measure LSM structures is a generic one that
-> can be used by any security module (SM). I feel it would be better to
-> not have policy or state or any such SM specific logic in IMA, but leave
-> that to the individual SM to handle.
->
-> What do you think?
+--Sig_/xmO6y7t9HQPsaBUCZn1yWr5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It is correct to remain security module agnostic.  However, I think
-you can remain LSM-neutral while still avoiding the double hashing of
-the policy here.  Can't you just pass in the policy itself as the
-buffer and let IMA hash it?  Then you can let the policy author decide
-on the template to be used (ima-buf versus ima-ng).  If you want to
-support the use of different templates for different "kinds" of LSM
-state (e.g. state versus policy) you could either provide two funcs
-(LSM_STATE, LSM_POLICY) or otherwise support selection based on some
-other attribute.
+Hi all,
+
+On Mon, 20 Jul 2020 08:51:54 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
+>
+> on i386 or x86_64:
+>=20
+> # CONFIG_INET is not set
+> # CONFIG_NET_NS is not set
+>=20
+> ld: kernel/bpf/net_namespace.o: in function `bpf_netns_link_release':
+> net_namespace.c:(.text+0x32c): undefined reference to `bpf_sk_lookup_enab=
+led'
+> ld: kernel/bpf/net_namespace.o: in function `netns_bpf_link_create':
+> net_namespace.c:(.text+0x8b7): undefined reference to `bpf_sk_lookup_enab=
+led'
+> ld: kernel/bpf/net_namespace.o: in function `netns_bpf_pernet_pre_exit':
+> net_namespace.c:(.ref.text+0xa3): undefined reference to `bpf_sk_lookup_e=
+nabled'
+
+Caused by commit
+
+  1559b4aa1db4 ("inet: Run SK_LOOKUP BPF program on socket lookup")
+
+from the bpf-next tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xmO6y7t9HQPsaBUCZn1yWr5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8V5x4ACgkQAVBC80lX
+0Gw+bggAiG4QOWZgOHvyQPMwPYQT4XXnuO9bHIMt3T4rB7ldivNqz0Q0xIa1cbqE
+T29KxH1MZJMoNIvqwysHBV4yDD92GcZrgwrtsXUdGFvchzECx1MUXmSOynmA2wOr
+IS2HcUwh908AQ1oKhyxbAUKqUjgWlfmBKz8OMSV2NvTaCf0dl91QonqNzN6oYk8n
+YMG3sOH9xmFKFJvuUzoa0OmD/jnCShiL6COIA+BzoHjOE5voZPHSufNaOkzALiA4
+Fe4kLkOSQchdk4pddWIoyzoLQSDtfenYVruI4DRGNhKTZ3epUAsndiP2H5bvL2NR
+G1OK60saE5fCoMYoNBjw8ePh6RlBag==
+=Dcix
+-----END PGP SIGNATURE-----
+
+--Sig_/xmO6y7t9HQPsaBUCZn1yWr5--
