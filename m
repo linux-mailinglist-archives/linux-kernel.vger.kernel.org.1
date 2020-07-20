@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4375225ACA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0384D225ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgGTJFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
+        id S1727910AbgGTJFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728171AbgGTJFH (ORCPT
+        with ESMTP id S1725815AbgGTJFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:05:07 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA0FC0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:05:06 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id q5so17016725wru.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:05:06 -0700 (PDT)
+        Mon, 20 Jul 2020 05:05:52 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFD3C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:05:52 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f18so17069843wrs.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DkRWC0cI8O7GbXOYyHnGL5QyWF9IbOGv2nZauF5wCkI=;
-        b=bU8EMgFph/+KkpB7s9feIuGmNFweYyoKifyCutks+uAGpXf0FdKEY221dDMC3pPPwE
-         EPkm1IKadr74GCklQzZfCzYiRvTrA13cuP+tlXZk6Oe5X9gotE0Y+WlClqT1cPrDC4OM
-         7jmWVUA8x9OunWjWq9OJ8SarD2APdKH/QtcZV5e+VnQflCvT1hJdUE6lpE65l3tBdT7l
-         nb+mQR++sRVlL/ajK5nBUJuVjt8vGtSP6iA28jN4WtD4+dXXapcXVl52DnbCiEwxs6eS
-         MQC2pHVUz5nCy6TOdB4yzYWTviKb8UQbCcdAvXUmWBDeH96GVHAo2pNgsvwKblF3jOCT
-         u1WA==
+        bh=Lbt2NZjVgJVbHyKKlO7Y0VLphzLwIFCRX5v5V2YxWak=;
+        b=GcbiaOAeBe2tPvviFsXR8H7kc2sKKC2sByRKGmzpKpbaNeTqrWq32Rr8wArek+2iDk
+         la+0PONHXk5//Se4I35qyfV9AutlwpTNgxNaDYZM7CQNFu9tThP1OtuMJ5Qog1fkqmR8
+         spg5cOgGvNjotGhBN5/mf+RSFOe9G9ix87MXOXZx1QG3Q9QgeTQ6j2Scuxs2/bosx6G1
+         JbzHbMFCr3lLz34arqsGcHcYIzrsENRpJPrqGPtADvVUBDp13mOaxB97Fr0aTJ3ZLnRK
+         eo/xTr2KyMWi5I6vL/FYy28MCCD4PgdHd9XT17E8maWZ0fNrhdGaWBqh+yN5JtyMQRQX
+         Wzxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DkRWC0cI8O7GbXOYyHnGL5QyWF9IbOGv2nZauF5wCkI=;
-        b=AVp4ky/05KTM0m/uosIsC7ZOeqFptcs0rS0oCO6z3z5iez97E0YJlcx3OVj3XjDyeL
-         jLVhAhr4kGu7gmSrtE9Vtbxws0OWO8BRnJdy4/7RJVaYm9xijRMA/RUGffAXoh8hwbzp
-         ZqDoSqbe6S5qPp2OGf/fSbqcwBqjyLS/dmX0KLZskJE5KNjegqYtFQXNMaAVgrFePRcz
-         eQfnPV3iBtmICy9mmi+cO8FiGPGuHKMX7z5G1xvf17AlkRPjvCo1iv7QwgzHoj9oGkz0
-         RBbfz9VUHQEa+zu19hQRQa0ZaOuxi6DtgVPvmOGVFHwJEs0GfYNZdzB71hqOz8zbuSrF
-         i+Ow==
-X-Gm-Message-State: AOAM533NBpxqEVb/ygXXs9YIsQthO27KcMnBPLoA0i4+enWQDGn+tKIV
-        L8JOzh1bnJIlXHUunZwfRaFNlW9iF9g=
-X-Google-Smtp-Source: ABdhPJxjaq34hzFmwVQqgEd8EEjoU54tk8kNmyK8IbWqdlkGCdZ95EJD2792qPaZuzt6PY2tbOPt+w==
-X-Received: by 2002:adf:a15c:: with SMTP id r28mr1900499wrr.151.1595235905139;
-        Mon, 20 Jul 2020 02:05:05 -0700 (PDT)
+        bh=Lbt2NZjVgJVbHyKKlO7Y0VLphzLwIFCRX5v5V2YxWak=;
+        b=LkXohKeOarke2jMrKcT9wYdBXJRI+gIFs0FAl7ypX+eaFVZmUFqvN9TPJYlcyxABnM
+         4alsF5O1SOkl5TyQKlXvf6+Vg+jCdjizdIQy98AmEIh6+AZFJidTTMzklAOE+8fAHSXM
+         4SH0aWh7bFsJO0wcLe/dYLTEiT3z42rnBSTAgCI1ePWQJXmFVsIp/nhT3epyfKIJANMz
+         q4mlZBXYV42HgK03Fga/O+XW9IqXUSLYbPJ14OrBApgV9QlNFUSdgQNlgOW/IpnHMQev
+         awb5A5Ce0DKuYDCNIAc7v2C0UyJ/42z9mGK5jrZCkfxDS4IKV2iQueD6Qkzp3DQACV1M
+         8Hxg==
+X-Gm-Message-State: AOAM532sOT/YJKYtLedW9CjDMr4SiSkkB4FW7XhlMeO3TqEBfEjvhul8
+        kyqs/rJT/VUuJT61tbLeZbdDBE21Qrc=
+X-Google-Smtp-Source: ABdhPJxgK5q+APJlgm/OA/uKJaq+smok1QGy1u0RKZZbMaozV0iP2lnDgDAuO9QMgCyBwZ0kv1osag==
+X-Received: by 2002:adf:82b2:: with SMTP id 47mr4940896wrc.17.1595235950876;
+        Mon, 20 Jul 2020 02:05:50 -0700 (PDT)
 Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id z1sm31934372wru.30.2020.07.20.02.05.03
+        by smtp.googlemail.com with ESMTPSA id s203sm32961639wms.32.2020.07.20.02.05.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Jul 2020 02:05:04 -0700 (PDT)
-Subject: Re: [PATCH v5 0/4] nvmem: qfprom: Patches for fuse blowing on
- Qualcomm SoCs
-To:     Douglas Anderson <dianders@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     sparate@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        mturney@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        Jeffrey Hugo <jhugo@codeaurora.org>, dhavalp@codeaurora.org,
-        rnayak@codeaurora.org, mkurumel@codeaurora.org,
-        Ravi Kumar Bokka <rbokka@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200710143520.1206846-1-dianders@chromium.org>
+        Mon, 20 Jul 2020 02:05:50 -0700 (PDT)
+Subject: Re: [PATCH] nvmem: update Kconfig description
+To:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <20200717123527.26291-1-mcroce@linux.microsoft.com>
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <3aff0624-b698-4711-aaa1-6d2fb661b085@linaro.org>
-Date:   Mon, 20 Jul 2020 10:05:03 +0100
+Message-ID: <59f157d5-1978-6309-37f1-99e9e79c7672@linaro.org>
+Date:   Mon, 20 Jul 2020 10:05:49 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200710143520.1206846-1-dianders@chromium.org>
+In-Reply-To: <20200717123527.26291-1-mcroce@linux.microsoft.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,99 +71,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/07/2020 15:35, Douglas Anderson wrote:
-> This series enables blowing of fuses on Qualcomm SoCs by extending the
-> existing qfprom driver with write support.
+On 17/07/2020 13:35, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> A few notes:
-> - Though I don't have any firsthand knowledge of it, it's my
->    understanding that these changes could be used on any Qualcomm SoC.
->    However, it's likely not very useful on most boards because the
->    bootloader protects against this.  Thus the write support here is
->    likely only useful with a cooperating bootloader.
-> - Blowing fuses is truly a one-way process.  If you mess around with
->    this and do something wrong you could irreparably brick your chip.
->    You have been warned.
+> nvmem can't be built as module anymore, update its Kconfig description.
 > 
-> Versions 1 and 2 of this series were posted by Ravi Kumar Bokka.  I
-> posted version 3 containing my changes / fixups with his consent.  I
-> have left authorship as Ravi but added my own Signed-off-by.
-> 
-> Version 4 is a minor spin over version 3.
-> 
-> Version 5 is an even more minor spin and just bumps up some timings to
-> fix a failure reported by Ravi on one device.  I've collected Rob
-> Herring's reviews and (as far as I know) this is ready to land.
-> 
-> Changes in v5:
-> - QFPROM_FUSE_BLOW_POLL_US 10 => 100
-> - QFPROM_FUSE_BLOW_TIMEOUT_US 100 => 1000
-> 
-> Changes in v4:
-> - Maintainer now listed as Srinivas.
-> - Example under "soc" to get #address-cells and #size-cells.
-> - Clock name is "core", not "sec".
-> - Example under "soc" to get #address-cells and #size-cells.
-> - Only get clock/regulator if all address ranges are provided.
-> - Don't use optional version of clk_get now.
-> - Clock name is "core", not "sec".
-> - Cleaned up error message if couldn't get clock.
-> - Fixed up minor version mask.
-> - Use GENMASK to generate masks.
-> - Clock name is "core", not "sec".
-> 
-> Changes in v3:
-> - Split conversion to yaml into separate patch new in v3.
-> - Use 'const' for compatible instead of a 1-entry enum.
-> - Changed filename to match compatible string.
-> - Add #address-cells and #size-cells to list of properties.
-> - Fixed up example.
-> - Add an extra reg range (at 0x6000 offset for SoCs checked)
-> - Define two options for reg: 1 item or 4 items.
-> - No reg-names.
-> - Add "clocks" and "clock-names" to list of properties.
-> - Clock is now "sec", not "secclk".
-> - Add "vcc-supply" to list of properties.
-> - Fixed up example.
-> - Don't provide "reset" value for things; just save/restore.
-> - Use the major/minor version read from 0x6000.
-> - Reading should still read "corrected", not "raw".
-> - Added a sysfs knob to allow you to read "raw" instead of "corrected"
-> - Simplified the SoC data structure.
-> - No need for quite so many levels of abstraction for clocks/regulator.
-> - Don't set regulator voltage.  Rely on device tree to make sure it's right.
-> - Properly undo things in the case of failure.
-> - Don't just keep enabling the regulator over and over again.
-> - Enable / disable the clock each time
-> - Polling every 100 us but timing out in 10 us didn't make sense; swap.
-> - No reason for 100 us to be SoC specific.
-> - No need for reg-names.
-> - We shouldn't be creating two separate nvmem devices.
-> - Name is now 'efuse' to match what schema checker wants.
-> - Reorganized ranges to match driver/bindings changes.
-> - Added 4th range as per driver/binding changes.
-> - No more reg-names as per driver/binding changes.
-> - Clock name is now just "sec" as per driver/binding changes.
-> 
-> Ravi Kumar Bokka (4):
->    dt-bindings: nvmem: qfprom: Convert to yaml
->    dt-bindings: nvmem: Add properties needed for blowing fuses
->    nvmem: qfprom: Add fuse blowing support
+> Fixes: 2a37ce25d9f2 ("nvmem: disallow modular CONFIG_NVMEM")
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 
-Applied above 3 with merge conflict fixed.
-dts patches should go via arm-soc tree, Bjorn could pick that up!
+Applied
 
-
-Thanks,
+thanks,
 srini
->    arm64: dts: qcom: sc7180: Add properties to qfprom for fuse blowing
+
+> ---
+>   drivers/nvmem/Kconfig | 3 ---
+>   1 file changed, 3 deletions(-)
 > 
->   .../bindings/nvmem/qcom,qfprom.yaml           |  96 ++++++
->   .../devicetree/bindings/nvmem/qfprom.txt      |  35 --
->   arch/arm64/boot/dts/qcom/sc7180-idp.dts       |   4 +
->   arch/arm64/boot/dts/qcom/sc7180.dtsi          |  10 +-
->   drivers/nvmem/qfprom.c                        | 314 +++++++++++++++++-
->   5 files changed, 411 insertions(+), 48 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
->   delete mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.txt
+> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+> index d7b7f6d688e7..954d3b4a52ab 100644
+> --- a/drivers/nvmem/Kconfig
+> +++ b/drivers/nvmem/Kconfig
+> @@ -7,9 +7,6 @@ menuconfig NVMEM
+>   	  This framework is designed to provide a generic interface to NVMEM
+>   	  from both the Linux Kernel and the userspace.
+>   
+> -	  This driver can also be built as a module. If so, the module
+> -	  will be called nvmem_core.
+> -
+>   	  If unsure, say no.
+>   
+>   if NVMEM
 > 
