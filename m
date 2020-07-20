@@ -2,97 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7FD226CC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5DE226CCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 19:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731004AbgGTRDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 13:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgGTRDO (ORCPT
+        id S2388827AbgGTRDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 13:03:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45940 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726989AbgGTRDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Jul 2020 13:03:14 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16861C061794;
-        Mon, 20 Jul 2020 10:03:14 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a15so3637538wrh.10;
-        Mon, 20 Jul 2020 10:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2z6vfRN45O58360WXxB9JosENc0eD1jtyLCvWHGh1YY=;
-        b=NDSdkoTtQtN9k8e5yU0/Q6OJPgewxcja66aFKP8Z7ADQhogTJURkNUpGl91G2fpCCU
-         oIkZoqpmJ/x1DP3gXTsvgKPG2qkgxg7rLWiYBSMsPyfyECt8X4/CYlT8TvVEBnGbPnvO
-         yhxBYdlA2ZXvEuMIGUxXzn75G7Kua2nEsR2NMUAkmMiJg5uOmfWYmmVFAbfbQbesJWEt
-         LlS6Ou/POWTJOLnbo/h7xECwdjuxZ1t2atpEjWmxDllEDUmevYK9J1jM8unZROSC3aJf
-         TER0ScfQ2MpTlWMVo4cYQaU10tOokxlhrgFoiZVHfW2W4jXw8xxyOoPY/JVpEy8KWQ/C
-         V9Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2z6vfRN45O58360WXxB9JosENc0eD1jtyLCvWHGh1YY=;
-        b=rNTqgr0YeqS5MJRRck2jJ1YubKfKVvWigWXM0S4618NGxcbRyAxKc1sh2Foej0fZhu
-         +ofG0U/2CfPSX+VWDj3uj15ovuULmAC+By0O20VKi9DN6TBuyGNnFetAAojkKMYHdZXJ
-         5pHH16LjotwTm7CPZmIW2NOnuUu8WKzN7s+ho9VGkfeKaszCeeNfP0tz9InarT8w/L/J
-         MphzfIxTe1IAqrDFpa5PaEdjD0dvRAkkHyoyuiKXaqE4LwkLisVvfxZr/70kLXHerrUb
-         zv/nz2PnjpEhjQeS/9YhEnONw+r16lkXzrLeBfU6TOFPDVcYjnRQ94DNXZ88PBgO/jx6
-         jRRQ==
-X-Gm-Message-State: AOAM532a58aXQpjytQf7UTc9NmbqDEbbcmi+t6LMo1xibH88B85pNdpA
-        pLPaRhplkjA5QV+QcU6j+nGVIyhcOqvYfaT2DQ0=
-X-Google-Smtp-Source: ABdhPJzLTTWPjYGX0RzMnJeUOLrnHeGFH1UOcpvlUTIsjffcPcqfeW0pNI6XGZeS+hFgMQxoz0bLNak5dIzAX9LyPrY=
-X-Received: by 2002:adf:f0ce:: with SMTP id x14mr22109097wro.137.1595264592763;
- Mon, 20 Jul 2020 10:03:12 -0700 (PDT)
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KH1P4J136235;
+        Mon, 20 Jul 2020 13:03:03 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32d5h4uqu9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 13:03:03 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KH1rOx138946;
+        Mon, 20 Jul 2020 13:03:02 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32d5h4uqtv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 13:03:02 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KH0o6q009402;
+        Mon, 20 Jul 2020 17:03:01 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01dal.us.ibm.com with ESMTP id 32brq87gwg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 17:03:01 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KH2xEv18874680
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 17:02:59 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D619C7805E;
+        Mon, 20 Jul 2020 17:02:59 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 51ABA78064;
+        Mon, 20 Jul 2020 17:02:58 +0000 (GMT)
+Received: from swastik.ibm.com (unknown [9.160.78.37])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 17:02:58 +0000 (GMT)
+Subject: Re: [PATCH v3 07/12] ima: Fail rule parsing when
+ appraise_flag=blacklist is unsupportable
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Nayna Jain <nayna@linux.ibm.com>
+References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
+ <20200709061911.954326-8-tyhicks@linux.microsoft.com>
+ <76d2b27b-3b59-1852-046a-b1718c62b167@linux.vnet.ibm.com>
+ <20200717181133.GM3673@sequoia>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <bdd8d85e-8ae9-6095-bb58-24653862f682@linux.vnet.ibm.com>
+Date:   Mon, 20 Jul 2020 13:02:57 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
- <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk> <20200709085501.GA64935@infradead.org>
- <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk> <20200709140053.GA7528@infradead.org>
- <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk> <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
- <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk> <20200710130912.GA7491@infradead.org>
- <CA+1E3rJSiS58TE=hHv5wVv-umJ19_7zKv-JqZTNzD=xi3MoX1g@mail.gmail.com> <20200710134350.GA14704@infradead.org>
-In-Reply-To: <20200710134350.GA14704@infradead.org>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Mon, 20 Jul 2020 22:32:45 +0530
-Message-ID: <CA+1E3r+DgR=vVCsUv0cCbPC4MV3Rxfyzee-HWwTogSQ-7F=MoA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Kanchan Joshi <joshi.k@samsung.com>,
-        viro@zeniv.linux.org.uk, bcrl@kvack.org, Damien.LeMoal@wdc.com,
-        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
-        "Matias Bj??rling" <mb@lightnvm.io>, linux-kernel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200717181133.GM3673@sequoia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007200111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 7:13 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Fri, Jul 10, 2020 at 06:59:45PM +0530, Kanchan Joshi wrote:
-> > > block doesn't work for the case of writes to files that don't have
-> > > to be aligned in any way.  And that I think is the more broadly
-> > > applicable use case than zone append on block devices.
-> >
-> > But when can it happen that we do zone-append on a file (zonefs I
-> > asssume), and device returns a location (write-pointer essentially)
-> > which is not in multiple of 512b?
->
-> All the time.  You open a file with O_APPEND.  You write a record to
-> it of any kind of size, then the next write will return the position
-> it got written at, which can be anything.
-I understand if this is about cached write and we are talking about
-O_APPEND in general.
-But for direct block I/O write and ZoneFS writes, page-cache is not
-used, so write(and zone-append result) will be aligned to underlying
-block size.
-Even though this patchset uses O_APPEND, it filters regular files and
-non zoned-block devices by using new FMODE_ZONE_APPEND flag.
 
--- 
-Joshi
+On 7/17/20 2:11 PM, Tyler Hicks wrote:
+> On 2020-07-17 13:40:22, Nayna wrote:
+>> On 7/9/20 2:19 AM, Tyler Hicks wrote:
+>>> The "appraise_flag" option is only appropriate for appraise actions
+>>> and its "blacklist" value is only appropriate when
+>>> CONFIG_IMA_APPRAISE_MODSIG is enabled and "appraise_flag=blacklist" is
+>>> only appropriate when "appraise_type=imasig|modsig" is also present.
+>>> Make this clear at policy load so that IMA policy authors don't assume
+>>> that other uses of "appraise_flag=blacklist" are supported.
+>>>
+>>> Fixes: 273df864cf74 ("ima: Check against blacklisted hashes for files with modsig")
+>>> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+>>> Cc: Nayna Jain <nayna@linux.ibm.com>
+>>> ---
+>>>
+>>> * v3
+>>>     - New patch
+>>>
+>>>    security/integrity/ima/ima_policy.c | 13 ++++++++++++-
+>>>    1 file changed, 12 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>>> index 81da02071d41..9842e2e0bc6d 100644
+>>> --- a/security/integrity/ima/ima_policy.c
+>>> +++ b/security/integrity/ima/ima_policy.c
+>>> @@ -1035,6 +1035,11 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>>>    		return false;
+>>>    	}
+>>> +	/* Ensure that combinations of flags are compatible with each other */
+>>> +	if (entry->flags & IMA_CHECK_BLACKLIST &&
+>>> +	    !(entry->flags & IMA_MODSIG_ALLOWED))
+>>> +		return false;
+>>> +
+>>>    	return true;
+>>>    }
+>>> @@ -1371,8 +1376,14 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>>>    				result = -EINVAL;
+>>>    			break;
+>>>    		case Opt_appraise_flag:
+>>> +			if (entry->action != APPRAISE) {
+>>> +				result = -EINVAL;
+>>> +				break;
+>>> +			}
+>>> +
+>>>    			ima_log_string(ab, "appraise_flag", args[0].from);
+>>> -			if (strstr(args[0].from, "blacklist"))
+>>> +			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+>>> +			    strstr(args[0].from, "blacklist"))
+>>>    				entry->flags |= IMA_CHECK_BLACKLIST;
+>> If IMA_APPRAISE_MODSIG is disabled, it will allow the following rule to
+>> load, which is not as expected.
+>>
+>> "appraise func=xxx_CHECK appraise_flag=blacklist appraise_type=imasig"
+>>
+>> Missing is the "else" condition to immediately reject the policy rule.
+> Thanks for the review. You're right. This change is needed:
+>
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 9842e2e0bc6d..cf3ddb38dfa8 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -1385,6 +1385,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>   			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+>   			    strstr(args[0].from, "blacklist"))
+>   				entry->flags |= IMA_CHECK_BLACKLIST;
+> +			else
+> +				result = -EINVAL;
+>   			break;
+>   		case Opt_permit_directio:
+>   			entry->flags |= IMA_PERMIT_DIRECTIO;
+>
+Reviewed-by: Nayna Jain<nayna@linux.ibm.com>
+
+Tested-by: Nayna Jain<nayna@linux.ibm.com>
+
+Thanks & Regards,
+
+       - Nayna
+
