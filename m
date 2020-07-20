@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBA12254FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 02:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9E5225502
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 02:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgGTAiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 20:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgGTAiV (ORCPT
+        id S1726783AbgGTAmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 20:42:52 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:40906 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726312AbgGTAmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 20:38:21 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BFEC0619D2;
-        Sun, 19 Jul 2020 17:38:21 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id s26so8204317pfm.4;
-        Sun, 19 Jul 2020 17:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:mime-version:message-id
-         :content-transfer-encoding;
-        bh=XFq1tbFsgX2AZdMgYvw8N+gQKnN3+VgEwdSA0SX4/tw=;
-        b=mKUpi/C/VrbkHgaAlfwHD+1TzhYa5ul9sEEkCLJouYkaK5jdWeGoRgaXfbw07dzvX2
-         NzyjGf4e8K0QeJ2EDCqXqSQJIOSUgchdsOZcx6pUC26pIDCvP5XCwEsy4wIRtUaVmzrr
-         kPZGnmnUm1qxmh2p4NkAaXSIxKcrHlAWA1EfQ2ayfOL3U1OuCne6OD72Yug7GE646uuP
-         Mk9QZhIb+UM3SQFn5yCYG0ubBU7qfQjsAnANXBJdGyHYKz4U9e3x9t0aJFNQLYwVTGzN
-         MY3+Hn7teHGvhHaBOLkQmK16Rj4yVCZEc1OdpXfMwapUOQoZyox8ZEh2W2gj5N/T//Hn
-         Vh6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:mime-version:message-id
-         :content-transfer-encoding;
-        bh=XFq1tbFsgX2AZdMgYvw8N+gQKnN3+VgEwdSA0SX4/tw=;
-        b=syZ0nG86x5KI5/qw0BrtFd32IJlISdmmX19e6QQbQgf90R+95Q+Uf71hPDtqnAJk52
-         312gAMAtObuqftm7Nj1Gq5gb5ihAhcN2F5bowgRHNeXxxi2Q3jX4KAG30l//W5olrkE2
-         SvY42v5h/tF0P+f7y4Ewhr5svRo9xKTNoDfImWgP/MIuyUzjVVs/1ofnpvr83zRKVFgw
-         p+QR5hlkdMd9ZTtx/uZ3uZSObDHLJfUhrC7lc37ByDWSgPhQAm+VTPkT1MFMG8TDheh2
-         8A9/uSbEUCzwBTtn8VnyyJJLiPLhQp5lXBP0uLuux8OKx/Xm1orItktaK7HgY/cSOEor
-         hWaQ==
-X-Gm-Message-State: AOAM5307JgEFnPjMICYHXajAuqcoLTn/9GckWeaMsk640UH6z0GAsLn1
-        YMNFR+LB3wVf6/4jzYAc2tw=
-X-Google-Smtp-Source: ABdhPJwKnuIipkmIajupZTNxeEfnOBQT2VjNliL94btuuxQncHtcH3EQkViU0lPNZOjdJTZ6aogM6g==
-X-Received: by 2002:a05:6a00:1596:: with SMTP id u22mr17321339pfk.102.1595205500660;
-        Sun, 19 Jul 2020 17:38:20 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id z11sm14633320pfk.46.2020.07.19.17.38.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 17:38:20 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 10:38:15 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: io_uring kthread_use_mm / mmget_not_zero possible abuse
-To:     Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
+        Sun, 19 Jul 2020 20:42:51 -0400
+X-UUID: c46ce339d45c4d388c09cfcd1ab30a55-20200720
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=FaqUdYxqi1XjkwCj1byDtXnVHu3nPZv58uEtqHctoQA=;
+        b=nZRDTWr33CGvAhssr2lkL1TfnZATu1W6t085u7HJekr0LaK0WmyKwKNPP1RnchMIUrMjgzQvGzIQFa6WakMLsN4JEqLCGTCOo9hYBFJ6+EY2KYeDVfhaokteUr26JS8DHKG/IFf+EWpSd6xEYlhg27wXvRKY8J9TZ4ixeo96fz8=;
+X-UUID: c46ce339d45c4d388c09cfcd1ab30a55-20200720
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chun-hung.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 297892602; Mon, 20 Jul 2020 08:42:44 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 20 Jul 2020 08:42:42 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 20 Jul 2020 08:42:42 +0800
+From:   Chun-Hung Wu <chun-hung.wu@mediatek.com>
+To:     <mirq-linux@rere.qmqm.pl>, Jonathan Hunter <jonathanh@nvidia.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Pan Bian <bianpan2016@163.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>
+CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>
+Subject: [PATCH v7 0/4] mmc: mediatek: add mmc cqhci support
+Date:   Mon, 20 Jul 2020 08:42:35 +0800
+Message-ID: <1595205759-5825-1-git-send-email-chun-hung.wu@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Message-Id: <1595203632.x8vplwce1a.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 1F865C90232599EFD426CA02B8A9A03CDAD99D6D654D6106C365D8346E3413832000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I last looked at this (predating io_uring), as far as I remember it wa=
-s=20
-not permitted to actually switch to (use_mm) an mm user context that was=20
-pinned with mmget_not_zero. Those pins were only allowed to look at page=20
-tables, vmas, etc., but not actually run the CPU in that mm context.
+VGhpcyBzZXJpZXMgcHJvdmlkZXMgTWVkaWFUZWsgY3FoY2kgaW1wbGVtZW50YXRpb25zIGFzIGJl
+bG93Og0KICAtIFJlZmluZSBtc2RjIHRpbWVvdXQgYXBpIHRvIHJlZHVjZSByZWR1bmRhbnQgY29k
+ZQ0KICAtIE1lZGlhVGVrIGNvbW1hbmQgcXVldWUgc3VwcG9ydA0KICAtIGR0LWJpbmRpbmdzIGZv
+ciBtdDY3NzkNCg0KdjEgLT4gdjI6DQogIC0gQWRkIG1vcmUgcGF0Y2ggZGV0YWlscyBpbiBjb21t
+aXQgbWVzc2FnZQ0KICAtIFNlcGFyYXRlIG1zZGMgdGltZW91dCBhcGkgcmVmaW5lIHRvIGluZGl2
+aWR1YWwgcGF0Y2gNCg0KdjIgLT4gdjM6DQogIC0gUmVtb3ZlIENSLUlkLCBDaGFuZ2UtSWQgYW5k
+IEZlYXR1cmUgaW4gcGF0Y2hlcw0KICAtIEFkZCBTaWduZWQtb2ZmLWJ5IGluIHBhdGNoZXMNCg0K
+djMgLT4gdjQ6DQogIC0gUmVmaW5lIENRRSBiaW5kaW5ncyBpbiBtbWNfb2ZfcGFyc2UgKFVsZiBI
+YW5zc29uKQ0KICAtIFJlbW92ZSByZWR1bmRhbnQgaG9zdCBDUUUgYmluZGluZ3MgKExpbnV4IFdh
+bGxlaWopDQoNCnY0IC0+IHY1Og0KICAtIEFkZCBBY2tlZC1ieSBhbmQgbW9yZSBtYWludGFpbmVy
+cw0KDQp2NSAtPiB2NjoNCiAgLSBNb3ZlIENRRSBiaW5kaW5ncyBiYWNrIHRvIHZlbmRvciBkcml2
+ZXINCiAgLSBBZGQgbXQ2Nzc5IG1tYyBzdXBwb3J0IGFzIGFuIGluZGl2aWR1YWwgcGF0Y2gNCiAg
+LSBFcnJvciBoYW5kbGluZyBmb3IgY3FfaG9zdCBkZXZtX2t6YWxsbygpDQoNCnY2IC0+IHY3Og0K
+ICAtIFNlbGVjdCBNTUNfQ1FIQ0kgZm9yIE1NQ19NVEsNCiAgLSBSZW1vdmUgdW5uZWNlc3Nhcnkg
+b3B0aW9uIE1NQ19DUUhDSSBpbiBtdGstc2QuYw0KICAtIEFkZCBlcnJvciBoYW5kbGluZyBmb3Ig
+Y3FoY2lfaW5pdCgpDQogIC0gVXNlIG5hdGl2ZSBjcWhjaSBkdC1iaW5kaW5ncyAnc3VwcG9ydHMt
+Y3FlJw0KDQpDaHVuLUh1bmcgV3UgKDQpOg0KICBbMS80XSBtbWM6IG1lZGlhdGVrOiBhZGQgTVQ2
+Nzc5IE1NQyBkcml2ZXIgc3VwcG9ydA0KICBbMi80XSBtbWM6IG1lZGlhdGVrOiByZWZpbmUgbXNk
+YyB0aW1lb3V0IGFwaQ0KICBbMy80XSBtbWM6IG1lZGlhdGVrOiBjb21tYW5kIHF1ZXVlIHN1cHBv
+cnQNCiAgWzQvNF0gZHQtYmluZGluZ3M6IG1tYzogbWVkaWF0ZWs6IEFkZCBkb2N1bWVudCBmb3Ig
+bXQ2Nzc5DQoNCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbW1jL210ay1zZC50
+eHQgfCAgIDEgKw0KIGRyaXZlcnMvbW1jL2hvc3QvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgMSArDQogZHJpdmVycy9tbWMvaG9zdC9tdGstc2QuYyAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgMTYwICsrKysrKysrKysrKysrKysrKysrKy0tDQogMyBmaWxlcyBjaGFuZ2VkLCAx
+NTIgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pDQoNCi0tIA0KMS45LjENCg==
 
-sparc/kernel/smp_64.c depends heavily on this, e.g.,
-
-void smp_flush_tlb_mm(struct mm_struct *mm)
-{
-        u32 ctx =3D CTX_HWBITS(mm->context);
-        int cpu =3D get_cpu();
-
-        if (atomic_read(&mm->mm_users) =3D=3D 1) {
-                cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
-                goto local_flush_and_out;
-        }
-
-        smp_cross_call_masked(&xcall_flush_tlb_mm,
-                              ctx, 0, 0,
-                              mm_cpumask(mm));
-
-local_flush_and_out:
-        __flush_tlb_mm(ctx, SECONDARY_CONTEXT);
-
-        put_cpu();
-}
-
-If a kthread comes in concurrently between the mm_users test and the=20
-mm_cpumask reset, and does mmget_not_zero(); kthread_use_mm() then we have=20
-another CPU switched to mm context but not in the mm_cpumask. It's then=20
-possible for our thread to schedule on that CPU and not go through a=20
-switch_mm (because kthread_unuse_mm will make it lazy, then we can switch=20
-back to our user thread and un-lazy it).
-
-powerpc has something similar.
-
-I don't think this is documented anywhere and certainly isn't checked for=20
-unfortunately, so I don't really blame io_uring.
-
-The simplest fix is for io_uring to carry mm_users references. If that can'=
-t=20
-be done or we decide to lift the limitation on mmget_not_zero references, w=
-e=20
-can come up with a way to synchronize things.
-
-On powerpc for example, we IPI all targets in mm_cpumask before clearing=20
-them, so we could disable interrupts while kthread_use_mm does the mm switc=
-h=20
-sequence, and have the IPI handler check that current->mm hasn't been set t=
-o=20
-mm, for example.
-
-sparc is a bit harder because it doesn't IPI targets if it thinks it can=20
-avoid it. But powerpc found that just doing one IPI isn't a big burden here=
-=20
-so maybe we change sparc to do that too. I would be inclined to fix this=20
-mmget_not_zero quirk if we can, unless someone has a very good way to test=20
-and enforce it, it'll just happen again.
-
-Comments?
-
-Thanks,
-Nick
