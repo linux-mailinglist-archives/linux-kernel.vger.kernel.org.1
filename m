@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6670E226764
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CDE226879
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387783AbgGTQLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
+        id S2388263AbgGTQTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733093AbgGTQLR (ORCPT
+        with ESMTP id S2387796AbgGTQLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:11:17 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99302C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:11:16 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 9012C344; Mon, 20 Jul 2020 18:11:13 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 18:11:12 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, hpa@zytor.com,
-        Andy Lutomirski <luto@amacapital.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/idt: Make sure idt_table takes a whole page
-Message-ID: <20200720161112.GB620@8bytes.org>
-References: <0CEC6A66-FD50-4B6B-9521-A40E5B9DA10F@zytor.com>
- <7FB389D0-77D4-482E-8A21-8662DDB00268@amacapital.net>
- <0B7CF270-EC04-4907-821A-A01F24BEF156@zytor.com>
- <20200719023405.GA564835@rani.riverdale.lan>
- <87pn8rokjz.fsf@nanos.tec.linutronix.de>
+        Mon, 20 Jul 2020 12:11:24 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD86C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:11:24 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id a12so18147055ion.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:11:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=BYqUr1CXn/LWbIDpCFv95fWgX/X0sTMN+KIEoKgBT9g=;
+        b=BQchVYHnt5hj8+P/O/cuHxnVgddKs3pyZkKWOh5J6SMY22W8AJIRR7krPhr7M7MXnj
+         F/Ud8Kh7hO9fD5nZqhlkBEhQ1vbil0jhOjxHGgwDmlBVPKvjaDigBtOKE8QVJWWma3YK
+         FlHwdEORKOaiKW9zaO6h4COzjoDdLYQxOyblL2GwPQrgn9ZTQ4+XuwbIbmW9g3p8aiDK
+         tpIkINkuVtBf8AMJPqGcpNXTv0WxHFoefO2WZ4PV2+4aGmW2/TCD7g6HAsLmpsY9fyIa
+         hP6f9DGDYQzeYc7FsKqwRQJDyJjZN+mGL4lS3RW7yn9+ECZVrmhW6XzvFHEGYjvXM8YX
+         P6Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BYqUr1CXn/LWbIDpCFv95fWgX/X0sTMN+KIEoKgBT9g=;
+        b=T5fEW+qptqUVfdX2okdqNo266ad63KTNIhMKSau8B2tTd4UcGJk2Af+1I8zCQRAP8B
+         fj8/1Ip3eO2DoLLmHpYHk92IuPoOdwqP5xr3GOPN5YdXsR1c4iRrHZAXdmh2pVZxwUOm
+         X8QlGL/8wuzpDKhHaUgJwC9Tb1YTRCxwVYS8fi3eCgvsb1iTJkx79uKawqTOnX7bSozv
+         7DTmVDXTZyfdQhOoYqf3VsZuXDCcCPz4tSF8NyCGbYEnN64iyT0p5n6nLXfOImRNQiGQ
+         WN7btul667PEnxPgMKCn/hXX+TB2chbKQOz+MVutn+F0EONpFUeXBYFHoiGWPeT7zK6R
+         lx4Q==
+X-Gm-Message-State: AOAM532sB4jnn8cq6pgRJGbGXNd+csqNZ6/Er32Fy55mR5QUmqWW847N
+        vsBrtvYd3tp7bt0Jya+hkfBgkOCoHvu/OA==
+X-Google-Smtp-Source: ABdhPJxE9tIgYp1nGsXBaolEaOkucSVFotXZks2yPE9czV87tx+DxvBw0F4pZ4M+UPtq4KQzbX0BCA==
+X-Received: by 2002:a02:694c:: with SMTP id e73mr27185708jac.17.1595261483087;
+        Mon, 20 Jul 2020 09:11:23 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t7sm9034365iol.2.2020.07.20.09.11.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 09:11:22 -0700 (PDT)
+Subject: Re: [PATCH 0/2] task_put batching
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1595021626.git.asml.silence@gmail.com>
+ <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
+ <b01e7f2d-d9a6-5593-3afb-5008d96695c6@gmail.com>
+ <a2aa8de0-a2d0-3381-3415-4b523c2b66a5@kernel.dk>
+ <5b20b94d-13f7-66ee-610a-6f37ec8caa8d@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <35740763-8123-a0d7-3cc6-593c7fcc63e7@kernel.dk>
+Date:   Mon, 20 Jul 2020 10:11:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pn8rokjz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <5b20b94d-13f7-66ee-610a-6f37ec8caa8d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 12:39:44PM +0200, Thomas Gleixner wrote:
-> The right fix is trivial. See below.
+On 7/20/20 10:06 AM, Pavel Begunkov wrote:
+> On 20/07/2020 18:49, Jens Axboe wrote:
+>> On 7/20/20 9:22 AM, Pavel Begunkov wrote:
+>>> On 18/07/2020 17:37, Jens Axboe wrote:
+>>>> On 7/18/20 2:32 AM, Pavel Begunkov wrote:
+>>>>> For my a bit exaggerated test case perf continues to show high CPU
+>>>>> cosumption by io_dismantle(), and so calling it io_iopoll_complete().
+>>>>> Even though the patch doesn't yield throughput increase for my setup,
+>>>>> probably because the effect is hidden behind polling, but it definitely
+>>>>> improves relative percentage. And the difference should only grow with
+>>>>> increasing number of CPUs. Another reason to have this is that atomics
+>>>>> may affect other parallel tasks (e.g. which doesn't use io_uring)
+>>>>>
+>>>>> before:
+>>>>> io_iopoll_complete: 5.29%
+>>>>> io_dismantle_req:   2.16%
+>>>>>
+>>>>> after:
+>>>>> io_iopoll_complete: 3.39%
+>>>>> io_dismantle_req:   0.465%
+>>>>
+>>>> Still not seeing a win here, but it's clean and it _should_ work. For
+>>>> some reason I end up getting the offset in task ref put growing the
+>>>> fput_many(). Which doesn't (on the surface) make a lot of sense, but
+>>>> may just mean that we have some weird side effects.
+>>>
+>>> It grows because the patch is garbage, the second condition is always false.
+>>> See the diff. Could you please drop both patches?
+>>
+>> Hah, indeed. With this on top, it looks like it should in terms of
+>> performance and profiles.
 > 
-> Thanks,
+> It just shows, that it doesn't really matters for a single-threaded app,
+> as expected. Worth to throw some contention though. I'll think about
+> finding some time to get/borrow a multi-threaded one.
+
+But it kind of did here, ended up being mostly a wash in terms of perf
+here as my testing reported. With the incremental applied, it's up a bit
+over before the task put batching.
+
+>> I can just fold this into the existing one, if you'd like.
 > 
->         tglx
-> ----
->  arch/x86/kernel/vmlinux.lds.S     |    1 +
->  include/asm-generic/vmlinux.lds.h |    1 +
->  2 files changed, 2 insertions(+)
-> 
-> --- a/arch/x86/kernel/vmlinux.lds.S
-> +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -358,6 +358,7 @@ SECTIONS
->  	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {
->  		__bss_start = .;
->  		*(.bss..page_aligned)
-> +		. = ALIGN(PAGE_SIZE);
->  		*(BSS_MAIN)
->  		BSS_DECRYPTED
->  		. = ALIGN(PAGE_SIZE);
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -738,6 +738,7 @@
->  	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
->  		BSS_FIRST_SECTIONS					\
->  		*(.bss..page_aligned)					\
-> +		. = ALIGN(PAGE_SIZE);					\
->  		*(.dynbss)						\
->  		*(BSS_MAIN)						\
->  		*(COMMON)						\
+> Would be nice. I'm going to double-check the counter and re-measure anyway.
+> BTW, how did you find it? A tool or a proc file would be awesome.
 
-I thougt about that too (and doing the same for .data..page_aligned),
-but decided that 'page_aligned' does not imply 'page_sized', so that
-putting other variables on the same page is fine in general and saves
-some memory. The problem why it breaks here is only because x86 maps a
-variabe which is not page-sized RO, so my thinking was that it should be
-fixed right there, at the variable.
+For this kind of testing, I just use t/io_uring out of fio. It's probably
+the lowest overhead kind of tool:
 
-But if the above is fine too I prepare a patch which also aligns the end
-of .data..page_aligned.
+# sudo taskset -c 0 t/io_uring -b512 -p1 /dev/nvme2n1
 
-Thanks,
-
-	Joerg
+-- 
+Jens Axboe
 
