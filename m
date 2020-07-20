@@ -2,90 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8B22257F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539A72257F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgGTGnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:43:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55294 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725805AbgGTGng (ORCPT
+        id S1726935AbgGTGoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:44:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57134 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725805AbgGTGoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:43:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595227415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ciF2+1AsFOhctkHIotBDF5T5LP3R/nd9/VEpQ+S2kN4=;
-        b=HDnSr4SFCsRhkfCxDVGLmCJ1hmQMaigcXsgLRvmD3q1/hWohdz0IlVhKBaOn13t6mRinSZ
-        o2SSzG7kwUi/4YZ5tJ9WZl5x0/or+QYh0/swl8RFG2iag6ll+kfetW6LsVf/qqHXJsTW3m
-        6wR/GgWxmU6r51wzgDH7BSQGWj9i288=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-hXXR15E0ORa6kVV3b1X2jg-1; Mon, 20 Jul 2020 02:43:33 -0400
-X-MC-Unique: hXXR15E0ORa6kVV3b1X2jg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02482106B245;
-        Mon, 20 Jul 2020 06:43:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.147])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 04F7478526;
-        Mon, 20 Jul 2020 06:43:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 20 Jul 2020 08:43:30 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 08:43:26 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-Message-ID: <20200720064326.GA6612@redhat.com>
-References: <6b253b55-586d-0bc4-9f58-c45c631abc60@kernel.org>
- <5a8c4c38-7aeb-981a-8d3b-a7a5c8ca5564@kernel.org>
- <20200717122651.GA6067@redhat.com>
- <20200717124017.GB6067@redhat.com>
- <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
- <20200718171406.GB16791@redhat.com>
- <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
- <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+        Mon, 20 Jul 2020 02:44:14 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06K6WXnc110456;
+        Mon, 20 Jul 2020 02:44:09 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32bvqu99s9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 02:44:09 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06K6Xfp0116411;
+        Mon, 20 Jul 2020 02:44:08 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32bvqu99rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 02:44:08 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06K6TJ28007607;
+        Mon, 20 Jul 2020 06:44:07 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma05wdc.us.ibm.com with ESMTP id 32brq86wem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 06:44:07 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06K6i3uR54854138
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 06:44:03 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8089C6E056;
+        Mon, 20 Jul 2020 06:44:06 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 665AA6E053;
+        Mon, 20 Jul 2020 06:44:02 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.114.242])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 06:44:01 +0000 (GMT)
+Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
+Date:   Mon, 20 Jul 2020 12:14:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200719181320.785305-1-jolsa@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_01:2020-07-17,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 clxscore=1011 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200047
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/20, Jiri Slaby wrote:
->
-> You tackled it, we cherry-picked dbfb089d360 to our kernels. Ccing more
-> people.
 
-Thanks... so with this patch __schedule() does
 
-	prev_state = prev->state;
+On 7/19/20 11:43 PM, Jiri Olsa wrote:
+> hi,
+> this patchset is adding the support to reused metric in
+> another metric.
+> 
+> For example, to define IPC by using CPI with change like:
+> 
+>      {
+>          "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
+> -        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
+> +        "MetricExpr": "1/CPI",
+>          "MetricGroup": "TopDownL1",
+>          "MetricName": "IPC"
+>      },
+> 
+> I won't be able to find all the possible places we could
+> use this at, so I wonder you guys (who was asking for this)
+> would try it and come up with comments if there's something
+> missing or we could already use it at some places.
+> 
+> It's based on Arnaldo's tmp.perf/core.
+> 
+> v3 changes:
+>   - added some acks
+>   - some patches got merged
+>   - added missing zalloc include [John Garry]
+>   - added ids array outside the egroup object [Ian]
+>   - removed wrong m->has_constraint assignment [Ian]
+>   - renamed 'list' to 'metric_list' [Ian]
+>   - fixed group metric and added test for it [Paul A. Clarke]
+>   - fixed memory leak [Arnaldo]
+>   - using lowercase keys for metrics in hashmap, because jevents
+>     converts metric_expr to lowercase
+> 
+> Also available in here:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   perf/metric
+> 
 
-	...
+Hi Jiri,
+   I am trying to review these patches and also test it in power box. I am testing your `perf/metric` branch.
+With your current patches,some of hv-24x7 events not giving appropriate result
+while doing "--metric-only" command. I can't see corresponding output for all chips.
 
-	if (!preempt && prev_state && prev_state == prev->state) {
-		if (signal_pending_state(prev_state, prev)) {
-			prev->state = TASK_RUNNING;
-		} else {
+This is output on power9 machine:
 
-and ptrace_freeze_traced() can change ->state in between. This means
-that this task can return from __schedule() with ->state != RUNNING,
-this can explain BUG_ON(task_is_stopped_or_traced) in do_notify_parent()
-you reported.
+Without your patches on upstream kernel:
 
-Oleg.
+command# ./perf stat --metric-only -M PowerBUS_Frequency -I 1000 -C 0
+#           time GHz  PowerBUS_Frequency_0 GHz  PowerBUS_Frequency_1 
+     1.000073877                        2.0                        2.0 
+     2.000240551                        2.0                        1.9 
+^C     2.452590532                        0.9                        0.9 
 
+ Performance counter stats for 'CPU(s) 0':
+
+                       4.8                        4.8 
+
+       2.452654834 seconds time elapsed
+
+With your patches on perf/metric branch:
+
+command# ./perf stat --metric-only -M PowerBUS_Frequency -I 1000 -C 0
+assertion failed at util/metricgroup.c:709
+#           time GHz  PowerBUS_Frequency_0 
+     1.000073875                        2.0 
+     2.000380706                        2.0 
+^C     2.658962182                        1.3 
+
+ Performance counter stats for 'CPU(s) 0':
+
+                       5.2 
+
+Please let me know, if I am missing something. 
+
+Thanks,
+Kajol Jain
+
+> thanks,
+> jirka
+> 
+> 
+> ---
+> Jiri Olsa (19):
+>       perf metric: Fix memory leak in expr__add_id function
+>       perf metric: Add expr__add_id function
+>       perf metric: Change expr__get_id to return struct expr_id_data
+>       perf metric: Add expr__del_id function
+>       perf metric: Add macros for iterating map events
+>       perf metric: Add add_metric function
+>       perf metric: Rename __metricgroup__add_metric to __add_metric
+>       perf metric: Collect referenced metrics in struct metric_ref_node
+>       perf metric: Collect referenced metrics in struct metric_expr
+>       perf metric: Add referenced metrics to hash data
+>       perf metric: Compute referenced metrics
+>       perf metric: Add events for the current list
+>       perf metric: Add cache_miss_cycles to metric parse test
+>       perf metric: Add DCache_L2 to metric parse test
+>       perf metric: Add recursion check when processing nested metrics
+>       perf metric: Make compute_single function more precise
+>       perf metric: Add metric group test
+>       perf metric: Rename struct egroup to metric
+>       perf metric: Rename group_list to metric_list
+> 
+>  tools/perf/tests/parse-metric.c | 206 +++++++++++++++++++++++++++++++++++++++++++++++++----
+>  tools/perf/util/expr.c          | 143 ++++++++++++++++++++++++++++++++-----
+>  tools/perf/util/expr.h          |  30 +++++++-
+>  tools/perf/util/expr.y          |  16 +++--
+>  tools/perf/util/metricgroup.c   | 466 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------
+>  tools/perf/util/metricgroup.h   |   6 ++
+>  tools/perf/util/stat-shadow.c   |  20 ++++--
+>  7 files changed, 751 insertions(+), 136 deletions(-)
+> 
