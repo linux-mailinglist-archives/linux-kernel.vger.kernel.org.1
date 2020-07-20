@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465A922681B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99923226806
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388568AbgGTQQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:16:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57808 "EHLO mail.kernel.org"
+        id S2388149AbgGTQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:16:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388535AbgGTQQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:16:32 -0400
+        id S2388565AbgGTQQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:16:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F98E2064B;
-        Mon, 20 Jul 2020 16:16:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBABB2064B;
+        Mon, 20 Jul 2020 16:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261791;
-        bh=1P/lOpBfA6OD5FzelCYjXb9v1tWEcxHKO/CA64aHoI8=;
+        s=default; t=1595261794;
+        bh=ebxHgfFKVyhOruLi0OxNK2vq06D8LezsBVbx0iunYLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ktk3HLjHi5WciXVLuQAS0MTC+LrPCvey2E0EB0wdQBKBSgvvjNeaWH51zMOXOpbOm
-         hZZ5Ag0zsmCNG7TuLK7ZzLyG38B5AxMmt9Uj6uSepmKaG/ndq18KLYp4JfEZEBrUF0
-         aLmUiRLMW0tU/VzLtVA1Uq+oBgZe8va7tNbpHeDQ=
+        b=dz2L13jR7136L8Oet2tCGyd9gcYRETat6ZtfJABYoFNS1V5xAcjBplo9uuETrKY+D
+         H9WiDBnHn92UKUwLkuFbWsk9aRXBTbYtrQeH2HVgQFJV1oSA8Ql7GKCkjofuYSMKDy
+         5IHRi07sZj6dBS34o5ilEGKGZdz7AESFmxYgrJRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>
-Subject: [PATCH 5.7 213/244] arm64: dts: agilex: add status to qspi dts node
-Date:   Mon, 20 Jul 2020 17:38:04 +0200
-Message-Id: <20200720152835.981202493@linuxfoundation.org>
+Subject: [PATCH 5.7 214/244] arm64: dts: stratix10: add status to qspi dts node
+Date:   Mon, 20 Jul 2020 17:38:05 +0200
+Message-Id: <20200720152836.026379867@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
 References: <20200720152825.863040590@linuxfoundation.org>
@@ -44,22 +44,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit 60176e6be0bb6f629b15aea7dcab5a95ecb158e9 upstream.
+commit 263a0269a59c0b4145829462a107fe7f7327105f upstream.
 
 Add status = "okay" to QSPI node.
 
-Fixes: c4c8757b2d895 ("arm64: dts: agilex: add QSPI support for Intel Agilex")
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.5
+Fixes: 0cb140d07fc75 ("arm64: dts: stratix10: Add QSPI support for Stratix10")
+Cc: linux-stable <stable@vger.kernel.org> # >= v5.6
 Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts      |    1 +
+ arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-+++ b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-@@ -98,6 +98,7 @@
+--- a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts
++++ b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts
+@@ -155,6 +155,7 @@
+ };
+ 
+ &qspi {
++	status = "okay";
+ 	flash@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+--- a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
++++ b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
+@@ -188,6 +188,7 @@
  };
  
  &qspi {
