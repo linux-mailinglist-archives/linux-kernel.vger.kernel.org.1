@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD59226459
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBE82264FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730393AbgGTPoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38192 "EHLO mail.kernel.org"
+        id S1731045AbgGTPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:49:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730385AbgGTPoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:19 -0400
+        id S1731036AbgGTPtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:49:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 476222064B;
-        Mon, 20 Jul 2020 15:44:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A07822482;
+        Mon, 20 Jul 2020 15:49:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259858;
-        bh=yyl96vjlmSmH5Y5qIXm5qvZTpqD4Eb0LGQhvzz+9sJQ=;
+        s=default; t=1595260185;
+        bh=uORrc+8HBjJ7VP7+P3vFQQKH9HLm2dnB8CiN/Kk4KhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VwrMfs/obWy8Gtxn1/cFlkyM0h3+viPZs1bjBeFl9nE1W2KkXz7g8ohHVj4q+uYWZ
-         O1roYPhnQQ5gEblSlcwb7dM8f8f1XbNSyCicPH+Kmkio/P3hy8VhP50JEv6RqK2/2+
-         hLLQVSoHJY8DTMTVqxu/HqOdfpiSjiyNiUekHoIw=
+        b=qRpDf0WyL30YjGY6vxxljbOZoaJxzDATbAtOXlznVT6Wd7N362rD612BAXHzWhy2i
+         MeLIDTSjtAmHcQBv69iJdmnpkJwA2H56wlZ1IaJ2gR95tV2UKVoYv1SNAIM8UjlcQ8
+         JBAqJDJgXgZRBUM7T0SJC4YfDd6JiLEdezOQfqjE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Edich <andre.edich@microchip.com>,
-        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 019/125] smsc95xx: avoid memory leak in smsc95xx_bind
-Date:   Mon, 20 Jul 2020 17:35:58 +0200
-Message-Id: <20200720152803.905294995@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 012/133] tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()
+Date:   Mon, 20 Jul 2020 17:35:59 +0200
+Message-Id: <20200720152804.324509468@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Edich <andre.edich@microchip.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 3ed58f96a70b85ef646d5427258f677f1395b62f ]
+[ Upstream commit 6a2febec338df7e7699a52d00b2e1207dcf65b28 ]
 
-In a case where the ID_REV register read is failed, the memory for a
-private data structure has to be freed before returning error from the
-function smsc95xx_bind.
+MD5 keys are read with RCU protection, and tcp_md5_do_add()
+might update in-place a prior key.
 
-Fixes: bbd9f9ee69242 ("smsc95xx: add wol support for more frame types")
-Signed-off-by: Andre Edich <andre.edich@microchip.com>
-Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Normally, typical RCU updates would allocate a new piece
+of memory. In this case only key->key and key->keylen might
+be updated, and we do not care if an incoming packet could
+see the old key, the new one, or some intermediate value,
+since changing the key on a live flow is known to be problematic
+anyway.
+
+We only want to make sure that in the case key->keylen
+is changed, cpus in tcp_md5_hash_key() wont try to use
+uninitialized data, or crash because key->keylen was
+read twice to feed sg_init_one() and ahash_request_set_crypt()
+
+Fixes: 9ea88a153001 ("tcp: md5: check md5 signature without socket lock")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/smsc95xx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv4/tcp.c      |    7 +++++--
+ net/ipv4/tcp_ipv4.c |    3 +++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index 859dfb4a9a576..bc6bcea67bff3 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -1307,7 +1307,8 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
- 	/* detect device revision as different features may be available */
- 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
- 	if (ret < 0)
--		return ret;
-+		goto free_pdata;
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3756,10 +3756,13 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
+ 
+ int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct tcp_md5sig_key *key)
+ {
++	u8 keylen = key->keylen;
+ 	struct scatterlist sg;
+ 
+-	sg_init_one(&sg, key->key, key->keylen);
+-	ahash_request_set_crypt(hp->md5_req, &sg, NULL, key->keylen);
++	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
 +
- 	val >>= 16;
- 	pdata->chip_id = val;
- 	pdata->mdix_ctrl = get_mdix_status(dev->net);
--- 
-2.25.1
-
++	sg_init_one(&sg, key->key, keylen);
++	ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
+ 	return crypto_ahash_update(hp->md5_req);
+ }
+ EXPORT_SYMBOL(tcp_md5_hash_key);
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1065,6 +1065,9 @@ int tcp_md5_do_add(struct sock *sk, cons
+ 	if (key) {
+ 		/* Pre-existing entry - just update that one. */
+ 		memcpy(key->key, newkey, newkeylen);
++
++		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
++
+ 		key->keylen = newkeylen;
+ 		return 0;
+ 	}
 
 
