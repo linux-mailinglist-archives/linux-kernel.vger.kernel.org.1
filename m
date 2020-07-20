@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED0A226556
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B472264CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731430AbgGTPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51174 "EHLO mail.kernel.org"
+        id S1730886AbgGTPsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731404AbgGTPwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:52:55 -0400
+        id S1730089AbgGTPsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 246FE2065E;
-        Mon, 20 Jul 2020 15:52:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AB222064B;
+        Mon, 20 Jul 2020 15:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260374;
-        bh=crJYIvivXNC90Eok6L3CAdfejlbjG3R3FNRn61Sp718=;
+        s=default; t=1595260096;
+        bh=0vN9ldW4dl4UP1zx716nsKtBzsTg8JvdS54xIkDdDHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvvgyrYm8hy92+kONm9fpkkY2JGgYxu0JLe96jgl/J4pAMafxGni0R2vtp026gZd1
-         NgeFyh+5tkfHmxt726bTPIVIEA7XXb9A8p4aWEctqDVIbLgLKqeBHNZcAL2KFLuJPf
-         K8gj0Hf7Bu6unKiTOFQuETy9wm0d0OJGEI7JTVzc=
+        b=SLpOz8pnWhAc0SQPh/m1YDd52fcedlpZHMbpMC9+qyD2ngK8m/ilTSbGml/WzLK0N
+         I6A3oPYEF9+JbHdVDfFDhEIu9F3WKnYmAvdSIudMM8IZQVQatrVFDeLqjFvpbGOMi4
+         wDV8z9MalK+PfcMB6gDYrstgd+4CHYs8lKJCNSPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.19 080/133] mtd: rawnand: oxnas: Release all devices in the _remove() path
+        stable@vger.kernel.org, Kevin Buettner <kevinb@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dave Airlie <airlied@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 088/125] copy_xstate_to_kernel: Fix typo which caused GDB regression
 Date:   Mon, 20 Jul 2020 17:37:07 +0200
-Message-Id: <20200720152807.570110342@linuxfoundation.org>
+Message-Id: <20200720152807.272231710@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Kevin Buettner <kevinb@redhat.com>
 
-commit 0a5f45e57e35d0840bedb816974ce2e63406cd8b upstream.
+commit 5714ee50bb4375bd586858ad800b1d9772847452 upstream.
 
-oxnans_nand_remove() should release all MTD devices and clean all NAND
-devices, not only the first one registered.
+This fixes a regression encountered while running the
+gdb.base/corefile.exp test in GDB's test suite.
 
-Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-39-miquel.raynal@bootlin.com
+In my testing, the typo prevented the sw_reserved field of struct
+fxregs_state from being output to the kernel XSAVES area.  Thus the
+correct mask corresponding to XCR0 was not present in the core file for
+GDB to interrogate, resulting in the following behavior:
+
+   [kev@f32-1 gdb]$ ./gdb -q testsuite/outputs/gdb.base/corefile/corefile testsuite/outputs/gdb.base/corefile/corefile.core
+   Reading symbols from testsuite/outputs/gdb.base/corefile/corefile...
+   [New LWP 232880]
+
+   warning: Unexpected size of section `.reg-xstate/232880' in core file.
+
+With the typo fixed, the test works again as expected.
+
+Signed-off-by: Kevin Buettner <kevinb@redhat.com>
+Fixes: 9e4636545933 ("copy_xstate_to_kernel(): don't leave parts of destination uninitialized")
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Dave Airlie <airlied@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/oxnas_nand.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mtd/nand/raw/oxnas_nand.c
-+++ b/drivers/mtd/nand/raw/oxnas_nand.c
-@@ -184,9 +184,13 @@ err_clk_unprepare:
- static int oxnas_nand_remove(struct platform_device *pdev)
- {
- 	struct oxnas_nand_ctrl *oxnas = platform_get_drvdata(pdev);
-+	struct nand_chip *chip;
-+	int i;
- 
--	if (oxnas->chips[0])
--		nand_release(oxnas->chips[0]);
-+	for (i = 0; i < oxnas->nchips; i++) {
-+		chip = oxnas->chips[i];
-+		nand_release(chip);
-+	}
- 
- 	clk_disable_unprepare(oxnas->clk);
- 
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1029,7 +1029,7 @@ int copy_xstate_to_kernel(void *kbuf, st
+ 		copy_part(offsetof(struct fxregs_state, st_space), 128,
+ 			  &xsave->i387.st_space, &kbuf, &offset_start, &count);
+ 	if (header.xfeatures & XFEATURE_MASK_SSE)
+-		copy_part(xstate_offsets[XFEATURE_MASK_SSE], 256,
++		copy_part(xstate_offsets[XFEATURE_SSE], 256,
+ 			  &xsave->i387.xmm_space, &kbuf, &offset_start, &count);
+ 	/*
+ 	 * Fill xsave->i387.sw_reserved value for ptrace frame:
 
 
