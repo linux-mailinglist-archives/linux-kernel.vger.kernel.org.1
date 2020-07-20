@@ -2,50 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B842225DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 13:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F80225DF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 13:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgGTL4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 07:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48972 "EHLO mail.kernel.org"
+        id S1728687AbgGTL4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 07:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728524AbgGTL4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 07:56:20 -0400
+        id S1728469AbgGTL4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 07:56:25 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63D552070A;
-        Mon, 20 Jul 2020 11:56:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D1CC20773;
+        Mon, 20 Jul 2020 11:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595246179;
-        bh=kiM6xMfehVEfecKw4+hAdRIWugd3GJbh8ANcQA1rzIQ=;
+        s=default; t=1595246184;
+        bh=/UaHuvv/N6zEnDH3a7uxqwhmtAhJjPRJyrmfudr9r4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSqsuHTwHxJl8kln8dfKXMRoRtFElqWOfhc72T5E7rm/3rdfc/4CmNmWBLkzyLxz1
-         xKBNCxXHZB3AA/D+tCn9yi9gWo+y5+UMzWVCiORP24wyteZ1U+vdJNMAozvR7rXsFy
-         VGXVuMyOXqZauzvhoa8eZ4CjAU2n+QMCP7W2D1pM=
+        b=JgpMW2ZHb8ZkEKMlQlIKL2GYAEYHFnR2OPW2FX1bGSOOH5BPUbgD74/ljwX/cK7w1
+         RAEeANkHk+VP9qURl4vMyo92BPscXjjMkJA/nemw/7LYmrOaUmV3zsewyLjKtoogmv
+         xlUMv/7geCOuzDv5gmRJkjPmTpVmqwfChleN71U4=
 From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Leo Yan <leo.yan@linaro.org>, Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 0/7] arm64: perf: Proper cap_user_time* support
-Date:   Mon, 20 Jul 2020 12:56:08 +0100
-Message-Id: <159524224815.3493066.352647020593379203.b4-ty@kernel.org>
+To:     joro@8bytes.org, robh+dt@kernel.org,
+        Krishna Reddy <vdumpa@nvidia.com>, robin.murphy@arm.com,
+        jonathanh@nvidia.com, treding@nvidia.com
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, linux-tegra@vger.kernel.org,
+        bhuntsman@nvidia.com, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, bbiswas@nvidia.com,
+        talho@nvidia.com, praithatha@nvidia.com, yhsu@nvidia.com,
+        nicoleotsuka@gmail.com, nicolinc@nvidia.com,
+        linux-kernel@vger.kernel.org, snikam@nvidia.com,
+        devicetree@vger.kernel.org, mperttunen@nvidia.com
+Subject: Re: [PATCH v11 0/5] NVIDIA ARM SMMU Implementation
+Date:   Mon, 20 Jul 2020 12:56:09 +0100
+Message-Id: <159523385148.790143.14826100945729579786.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200716051130.4359-1-leo.yan@linaro.org>
-References: <20200716051130.4359-1-leo.yan@linaro.org>
+In-Reply-To: <20200718193457.30046-1-vdumpa@nvidia.com>
+References: <20200718193457.30046-1-vdumpa@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -53,32 +48,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020 13:11:23 +0800, Leo Yan wrote:
-> This patch set is rebased for Peter's patch set to support
-> cap_user_time/cap_user_time_short ABI for Arm64, and export Arm arch
-> timer counter related parameters from kernel to Perf tool.
+On Sat, 18 Jul 2020 12:34:52 -0700, Krishna Reddy wrote:
+> Changes in v11:
+> Addressed Rob comment on DT binding patch to set min/maxItems of reg property in else part.
+> Rebased on top of https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-joerg/arm-smmu/updates.
 > 
-> After get feedback from Ahmed, this patch set contains Ahmed's new patch
-> to refine sched clock data accessing with raw_read_seqcount_latch().
+> Changes in v10:
+> Perform SMMU base ioremap before calling implementation init.
+> Check for Global faults across both ARM MMU-500s during global interrupt.
+> Check for context faults across all contexts of both ARM MMU-500s during context fault interrupt.
+> Add new DT binding nvidia,smmu-500 for NVIDIA implementation.
+> https://lkml.org/lkml/2020/7/8/57
 > 
 > [...]
 
-Applied to will (for-next/perf), thanks!
+Applied to will (for-joerg/arm-smmu/updates), thanks!
 
-[1/7] sched_clock: Expose struct clock_read_data
-      https://git.kernel.org/will/c/1b86abc1c645
-[2/7] time/sched_clock: Use raw_read_seqcount_latch()
-      https://git.kernel.org/will/c/aadd6e5caaac
-[3/7] arm64: perf: Implement correct cap_user_time
-      https://git.kernel.org/will/c/950b74ddefc4
-[4/7] arm64: perf: Only advertise cap_user_time for arch_timer
-      https://git.kernel.org/will/c/279a811eb520
-[5/7] perf: Add perf_event_mmap_page::cap_user_time_short ABI
-      https://git.kernel.org/will/c/6c0246a4588d
-[6/7] arm64: perf: Add cap_user_time_short
-      https://git.kernel.org/will/c/c8f9eb0d6eba
-[7/7] tools headers UAPI: Update tools's copy of linux/perf_event.h
-      https://git.kernel.org/will/c/5271d915a99c
+[1/5] iommu/arm-smmu: move TLB timeout and spin count macros
+      https://git.kernel.org/will/c/cd8479cf0de9
+[2/5] iommu/arm-smmu: ioremap smmu mmio region before implementation init
+      https://git.kernel.org/will/c/6c019f4e697e
+[3/5] iommu/arm-smmu: add NVIDIA implementation for ARM MMU-500 usage
+      https://git.kernel.org/will/c/aab5a1c88276
+[4/5] dt-bindings: arm-smmu: add binding for Tegra194 SMMU
+      https://git.kernel.org/will/c/3d2deb0cdb69
+[5/5] iommu/arm-smmu: Add global/context fault implementation hooks
+      https://git.kernel.org/will/c/aa7ec73297df
 
 Cheers,
 -- 
