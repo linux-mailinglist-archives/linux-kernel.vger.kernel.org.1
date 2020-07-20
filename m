@@ -2,151 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C4A226AF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DE8226AFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389017AbgGTQhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:37:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730889AbgGTQhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:37:51 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9248320734;
-        Mon, 20 Jul 2020 16:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595263070;
-        bh=smDDaCk04kMr6EUzVkdVBl94CFmKvpleITLelmvA8+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JJC8sbphJDydEPEmQ9bsAOdVV0pki83XX29vWiTOyf6AsmPXVOTyRrnnrci7D6Bhd
-         g+Lq7h/M7GIp2Q3yjvb33D7hXLYV7+QkF/cJUlgxrp5Jsp6dTPG3ALVp7AD8PFZTTR
-         fVVidPSEdf7dnCSggZDPP0jvSNjJIbQpG4SHFy4k=
-Date:   Mon, 20 Jul 2020 09:37:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: [PATCH 03/24] net: add a new sockptr_t type
-Message-ID: <20200720163748.GA1292162@gmail.com>
-References: <20200720124737.118617-1-hch@lst.de>
- <20200720124737.118617-4-hch@lst.de>
+        id S2388993AbgGTQiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:38:16 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:15323 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388950AbgGTQiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:38:11 -0400
+X-Originating-IP: 42.109.212.217
+Received: from localhost (unknown [42.109.212.217])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7114824000E;
+        Mon, 20 Jul 2020 16:38:04 +0000 (UTC)
+Date:   Mon, 20 Jul 2020 22:08:02 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     Tudor.Ambarus@microchip.com
+Cc:     p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, broonie@kernel.org, Nicolas.Ferre@microchip.com,
+        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+        matthias.bgg@gmail.com, michal.simek@xilinx.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, boris.brezillon@collabora.com,
+        nsekhar@ti.com
+Subject: Re: [PATCH v10 07/17] mtd: spi-nor: sfdp: parse xSPI Profile 1.0
+ table
+Message-ID: <20200720163802.veql43cmal7sunit@yadavpratyush.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <20200623183030.26591-8-p.yadav@ti.com>
+ <1450d8c8-cda4-51e3-9f57-0b2f00825f11@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720124737.118617-4-hch@lst.de>
+In-Reply-To: <1450d8c8-cda4-51e3-9f57-0b2f00825f11@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 02:47:16PM +0200, Christoph Hellwig wrote:
-> Add a uptr_t type that can hold a pointer to either a user or kernel
-> memory region, and simply helpers to copy to and from it.  For
-> architectures like x86 that have non-overlapping user and kernel
-> address space it just is a union and uses a TASK_SIZE check to
-> select the proper copy routine.  For architectures with overlapping
-> address spaces a flag to indicate the address space is used instead.
+Hi Tudor,
+
+On 08/07/20 04:01PM, Tudor.Ambarus@microchip.com wrote:
+> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > This table is indication that the flash is xSPI compliant and hence
+> > supports octal DTR mode. Extract information like the fast read opcode,
+> > dummy cycles, the number of dummy cycles needed for a Read Status
+> > Register command, and the number of address bytes needed for a Read
+> > Status Register command.
+> > 
+> > We don't know what speed the controller is running at. Find the fast
+> > read dummy cycles for the fastest frequency the flash can run at to be
+> > sure we are never short of dummy cycles. If nothing is available,
+> > default to 20. Flashes that use a different value should update it in
+> > their fixup hooks.
+> > 
+> > Since we want to set read settings, expose spi_nor_set_read_settings()
+> > in core.h.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c |  2 +-
+> >  drivers/mtd/spi-nor/core.h | 10 ++++
+> >  drivers/mtd/spi-nor/sfdp.c | 98 ++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 109 insertions(+), 1 deletion(-)
+> > 
+[...]
+> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> > index 3f709de5ea67..d5a24e61813c 100644
+> > --- a/drivers/mtd/spi-nor/sfdp.c
+> > +++ b/drivers/mtd/spi-nor/sfdp.c
+[...]
+> > @@ -66,6 +70,16 @@ struct sfdp_bfpt_erase {
+> >         u32                     shift;
+> >  };
+> > 
+> > +/* xSPI Profile 1.0 table (from JESD216D.01). */
+> > +#define PROFILE1_DWORD1_RD_FAST_CMD            GENMASK(15, 8)
+> > +#define PROFILE1_DWORD1_RDSR_DUMMY             BIT(28)
+> > +#define PROFILE1_DWORD1_RDSR_ADDR_BYTES                BIT(29)
+> > +#define PROFILE1_DWORD4_DUMMY_200MHZ           GENMASK(11, 7)
+> > +#define PROFILE1_DWORD5_DUMMY_166MHZ           GENMASK(31, 27)
+> > +#define PROFILE1_DWORD5_DUMMY_133MHZ           GENMASK(21, 17)
+> > +#define PROFILE1_DWORD5_DUMMY_100MHZ           GENMASK(11, 7)
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  include/linux/sockptr.h | 121 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 121 insertions(+)
->  create mode 100644 include/linux/sockptr.h
+> we should order these macros in a consistent way. I see that previous macros
+> are declared in order starting from MSB to LSB.
 > 
-> diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
-> new file mode 100644
-> index 00000000000000..e41dfa52555dec
-> --- /dev/null
-> +++ b/include/linux/sockptr.h
-> @@ -0,0 +1,121 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020 Christoph Hellwig.
-> + *
-> + * Support for "universal" pointers that can point to either kernel or userspace
-> + * memory.
-> + */
-> +#ifndef _LINUX_SOCKPTR_H
-> +#define _LINUX_SOCKPTR_H
-> +
-> +#include <linux/slab.h>
-> +#include <linux/uaccess.h>
-> +
-> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> +typedef union {
-> +	void		*kernel;
-> +	void __user	*user;
-> +} sockptr_t;
-> +
-> +static inline bool sockptr_is_kernel(sockptr_t sockptr)
-> +{
-> +	return (unsigned long)sockptr.kernel >= TASK_SIZE;
-> +}
-> +
-> +static inline sockptr_t KERNEL_SOCKPTR(void *p)
-> +{
-> +	return (sockptr_t) { .kernel = p };
-> +}
-> +#else /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
-> +typedef struct {
-> +	union {
-> +		void		*kernel;
-> +		void __user	*user;
-> +	};
-> +	bool		is_kernel : 1;
-> +} sockptr_t;
-> +
-> +static inline bool sockptr_is_kernel(sockptr_t sockptr)
-> +{
-> +	return sockptr.is_kernel;
-> +}
-> +
-> +static inline sockptr_t KERNEL_SOCKPTR(void *p)
-> +{
-> +	return (sockptr_t) { .kernel = p, .is_kernel = true };
-> +}
-> +#endif /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
-> +
-> +static inline sockptr_t USER_SOCKPTR(void __user *p)
-> +{
-> +	return (sockptr_t) { .user = p };
-> +}
-> +
-> +static inline bool sockptr_is_null(sockptr_t sockptr)
-> +{
-> +	return !sockptr.user && !sockptr.kernel;
-> +}
-> +
-> +static inline int copy_from_sockptr(void *dst, sockptr_t src, size_t size)
-> +{
-> +	if (!sockptr_is_kernel(src))
-> +		return copy_from_user(dst, src.user, size);
-> +	memcpy(dst, src.kernel, size);
-> +	return 0;
-> +}
+> > +#define PROFILE1_DUMMY_DEFAULT                 20
+> 
+> we need to explain why the default dummy value is 20.
 
-How does this not introduce a massive security hole when
-CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE?
+No reason other than the fact that it is the default for the first flash 
+that uses Profile 1.0 parsing (S28HS512T). AFAIK a similar reasoning is 
+followed for the default being 8 for 1-1-4 or 1-1-8 modes.
 
-AFAICS, userspace can pass in a pointer >= TASK_SIZE,
-and this code makes it be treated as a kernel pointer.
+I can't think of any reasonable way of deciding on a default value since 
+it varies from flash to flash.
+ 
+> How about declaring all these macros immediately above of spi_nor_parse_profile1()?
+> 
+> > +
+> >  #define SMPT_CMD_ADDRESS_LEN_MASK              GENMASK(23, 22)
+> >  #define SMPT_CMD_ADDRESS_LEN_0                 (0x0UL << 22)
+> >  #define SMPT_CMD_ADDRESS_LEN_3                 (0x1UL << 22)
+> > @@ -1106,6 +1120,86 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+> >         return ret;
+> >  }
+> > 
+> > +/**
+> > + * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
+> > + * @nor:               pointer to a 'struct spi_nor'
+> > + * @param_header:      pointer to the 'struct sfdp_parameter_header' describing
+> > + *                     the 4-Byte Address Instruction Table length and version.
+> > + * @params:            pointer to the 'struct spi_nor_flash_parameter' to be.
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +static int spi_nor_parse_profile1(struct spi_nor *nor,
+> > +                                 const struct sfdp_parameter_header *profile1_header,
+> > +                                 struct spi_nor_flash_parameter *params)
+> > +{
+> > +       u32 *table, opcode, addr;
+> 
+> s/table/dwords?
+> 
+> u8 opcode?
+> 
+> > +       size_t len;
+> > +       int ret, i;
+> > +       u8 dummy;
+> > +
+> > +       len = profile1_header->length * sizeof(*table);
+> > +       table = kmalloc(len, GFP_KERNEL);
+> > +       if (!table)
+> > +               return -ENOMEM;
+> > +
+> > +       addr = SFDP_PARAM_HEADER_PTP(profile1_header);
+> > +       ret = spi_nor_read_sfdp(nor, addr, len, table);
+> > +       if (ret)
+> > +               goto out;
+> > +
+> > +       /* Fix endianness of the table DWORDs. */
+> > +       for (i = 0; i < profile1_header->length; i++)
+> > +               table[i] = le32_to_cpu(table[i]);
+> 
+> le32_to_cpu_array(table, profile1_header->length);
+> 
+> > +
+> > +       /* Get 8D-8D-8D fast read opcode and dummy cycles. */
+> > +       opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, table[0]);
+> > +
+> > +       /*
+> > +        * We don't know what speed the controller is running at. Find the
+> > +        * dummy cycles for the fastest frequency the flash can run at to be
+> > +        * sure we are never short of dummy cycles. A value of 0 means the
+> > +        * frequency is not supported.
+> > +        *
+> > +        * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
+> > +        * flashes set the correct value if needed in their fixup hooks.
+> > +        */
+> > +       dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, table[3]);
+> > +       if (!dummy)
+> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, table[4]);
+> > +       if (!dummy)
+> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, table[4]);
+> > +       if (!dummy)
+> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, table[4]);
+> > +       if (!dummy)
+> > +               dummy = PROFILE1_DUMMY_DEFAULT;
+> > +
+> > +       /* Round up to an even value to avoid tripping controllers up. */
+> > +       dummy = ROUND_UP_TO(dummy, 2);
+> > +
+[...]
 
-- Eric
+-- 
+Regards,
+Pratyush Yadav
