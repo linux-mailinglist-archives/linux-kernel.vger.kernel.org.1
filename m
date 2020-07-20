@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB92522722C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C3A22722E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgGTWVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:21:35 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:46039 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgGTWVe (ORCPT
+        id S1727901AbgGTWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:22:16 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:34933 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgGTWWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:21:34 -0400
-Received: by mail-io1-f68.google.com with SMTP id e64so19300901iof.12;
-        Mon, 20 Jul 2020 15:21:33 -0700 (PDT)
+        Mon, 20 Jul 2020 18:22:15 -0400
+Received: by mail-io1-f65.google.com with SMTP id v8so19331770iox.2;
+        Mon, 20 Jul 2020 15:22:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bKYIymgYEsaoAp0VGuX+X+GdB+8XUwPd9yIWMXOJP1w=;
-        b=hyTu/7AZwsxWFKuXgHnq/8w3UkGTp2ZOT/wjdl+ecTqi+F7gHTc8szOv8BUYE1Wb1Y
-         Ie+uzbEwe0V02SvAEE7ajlFj85aMVKwxkFEhKDLQGmTiSNa/VuBjNT7Z8vudFQ3MJcWp
-         tBhgE+Q2Vdvym3BNc+bZ9GOv6l/pcphSDrXm3sJ+599u5xfFRmSwelKG3seOIvy65HCp
-         +cucKDdr4xMvr6ifw0ElxIybvbQKYvKPzIMcPK20KFdTzRoJ2EfIV6TJkVeoUM1b9erd
-         Da9Vc4U6BsIV8MAB/oxGFC1Aav0ABecPMzqpWF+hNBhGHwobBcbmaBzbDx3eJXkMixi2
-         D8VQ==
-X-Gm-Message-State: AOAM53133vsFyVUtIjvoUKePadMO4QtB+CaVrymcgsdU93ON2X3PhOMu
-        mVx/asb3fUiOSckQVflzfg==
-X-Google-Smtp-Source: ABdhPJyw7PV9vqQm9bNholJCp9qVWUHQhJ4HzWTR9RO+AmibGdJC53lLZ6Ro0lZ/VF/HqsMbn+QlAg==
-X-Received: by 2002:a05:6638:1187:: with SMTP id f7mr29447388jas.21.1595283693108;
-        Mon, 20 Jul 2020 15:21:33 -0700 (PDT)
+        bh=1TOa/60ANKufyEkSnLRxvVlSHtDFv9RQ3Ysqa0fln/Y=;
+        b=P916qdXZzQjHYCcF2vk3DHbdWeHOx7e1Ck87lIIqaVKLyAWAv6NlsINe6A/QYhi0Ps
+         gAgVI/6GQFvFncnre8UJrnMSLqU04rEjITvf8+XUBeWQvouDhoDgdaw5geB/W+UgUuft
+         yTWvoXQvXHtwy7TlBdNuWn0qEY752suX4RJ2Tiv6OU/TM/rGRxCc5L4SfSryfiFp0IsS
+         SsZQsuD82gieIH7+yuz5qiHjQdkuOGA/152OL9hlwj5FBoitkCpF0mSRx+3nM+K93Hem
+         G0v0pDAGz2S4GoIOsuSFKI9QRLPzEZ57mzd2o5Kg+G1+NSzvl+K43NnpknRuPtYxPtpo
+         iMww==
+X-Gm-Message-State: AOAM532+ZmX+hBQPjLkTUQpAKM0GEA8BWT8kaRmNmh3JypQdXk6TKIpM
+        JCvPChIWEJ65VgbRxa/6W0YR2Q89cQ==
+X-Google-Smtp-Source: ABdhPJyJeCLpbJ6mwgxBthab2PyLawiy90UiXQqSNbmnm+A/l98UNK3qqZcteAfpD7RSr0XceYKj0A==
+X-Received: by 2002:a6b:8e56:: with SMTP id q83mr25162174iod.61.1595283734976;
+        Mon, 20 Jul 2020 15:22:14 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id n1sm9463052ilo.68.2020.07.20.15.21.31
+        by smtp.gmail.com with ESMTPSA id u15sm9602118iog.18.2020.07.20.15.22.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 15:21:32 -0700 (PDT)
-Received: (nullmailer pid 3055517 invoked by uid 1000);
-        Mon, 20 Jul 2020 22:21:31 -0000
-Date:   Mon, 20 Jul 2020 16:21:31 -0600
+        Mon, 20 Jul 2020 15:22:14 -0700 (PDT)
+Received: (nullmailer pid 3056611 invoked by uid 1000);
+        Mon, 20 Jul 2020 22:22:13 -0000
+Date:   Mon, 20 Jul 2020 16:22:13 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        devicetree@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-renesas-soc@vger.kernel.org,
-        Magnus Damm <magnus.damm@gmail.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-serial@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 4/8] dt-bindings: mmc: renesas,sdhi: Add r8a774e1 support
-Message-ID: <20200720222131.GA3055470@bogus>
-References: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594230511-24790-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     virtualization@lists.linux-foundation.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        devicetree@vger.kernel.org, jasowang@redhat.com
+Subject: Re: [PATCH] VIRTIO CORE AND NET DRIVERS: Replace HTTP links with
+ HTTPS ones
+Message-ID: <20200720222213.GA3056536@bogus>
+References: <20200709064755.24051-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1594230511-24790-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200709064755.24051-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Jul 2020 18:48:27 +0100, Lad Prabhakar wrote:
-> Document SDHI controller for RZ/G2H (R8A774E1) SoC, which is compatible
-> with R-Car Gen3 SoC family.
+On Thu, 09 Jul 2020 08:47:55 +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 > ---
->  Documentation/devicetree/bindings/mmc/renesas,sdhi.txt | 1 +
->  1 file changed, 1 insertion(+)
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+> 
+>  Documentation/devicetree/bindings/virtio/mmio.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
