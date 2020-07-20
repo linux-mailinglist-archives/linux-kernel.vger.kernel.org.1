@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4B1226271
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D50226272
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgGTOqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:46:46 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41959 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726381AbgGTOqq (ORCPT
+        id S1728806AbgGTOqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGTOqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:46:46 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-245-SN1XnP0RO0aqHvsPMj43uQ-1; Mon, 20 Jul 2020 15:46:42 +0100
-X-MC-Unique: SN1XnP0RO0aqHvsPMj43uQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 20 Jul 2020 15:46:41 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 20 Jul 2020 15:46:41 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Adrian Bunk' <bunk@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-CC:     Josh Triplett <josh@joshtriplett.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "alex.gaynor@gmail.com" <alex.gaynor@gmail.com>,
-        "geofft@ldpreload.com" <geofft@ldpreload.com>,
-        "jbaublitz@redhat.com" <jbaublitz@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: RE: Linux kernel in-tree Rust support
-Thread-Topic: Linux kernel in-tree Rust support
-Thread-Index: AQHWXfoH6gudBx9BoECMK8tCqgiy+KkQis3Q
-Date:   Mon, 20 Jul 2020 14:46:41 +0000
-Message-ID: <b7d81a68c0b34acd84b6a78b6d37a776@AcuMS.aculab.com>
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
- <20200712123151.GB25970@localhost> <20200712193944.GA81641@localhost>
- <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
- <20200719181919.GA4179@localhost>
-In-Reply-To: <20200719181919.GA4179@localhost>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 20 Jul 2020 10:46:47 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9435CC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:46:47 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o2so25503920wmh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=bMY2bd7PftOqDtQBakPHJtZ+KfpWJcFf+u/c3vx0/DI=;
+        b=Ifu9G7i5rsqyLIlW6JlN5zQrTfuHUixB6ByUZF4vvPANK9lqkf1rlUeUuRb4axmBqK
+         T/xX8mpLoQMQ/Y84dHCnXXyomrVzvAEDHEwZOfOAa4HgOGLNlWriAZwo+sM5dftglChk
+         4FsXPV1gMjq9wU3OvYwJjj+A6Cx1UcE1FYKHN9Oa5i/Qdyum8BLuXBveD+U1TdB/roKk
+         QGsn7vcNxluF+FcslZjfjgentxP59frVS3EQvWsKqaNQO7k/WltlwYvS9GPQFiG/7G0I
+         A0V1GchomdB4vd/yTxcCk4cyNUkx7dY/aKhT/28j6MXzJz6T1pxqNfL62x5FzQ11DXux
+         EyUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=bMY2bd7PftOqDtQBakPHJtZ+KfpWJcFf+u/c3vx0/DI=;
+        b=ABZqhOCF5hKZS4j7gciNW9OEnu6oM+JbhXYAO5Fy5iqR+RcoyFDT2YCDAEB0B25z1n
+         q7Gc+vzFGItPX4q3dUcOyjvcOSa5MNhauagRepJ/yJZ4q9OcUIxEwmS2TrAUaq70jaPj
+         1be+L85hz+y8L/9TPLzX3poUNYEl2ndZmZ1Im4RZUGm05TXwDOuuM+dtKoZDrEfQYABX
+         iMOIKRBdfm86oei3I1u3pdaRBglo+Lj1i/x4CqJaP9CI7nq3u8NJRGW5TxOHsF17o//n
+         JZcFr4bHT6rZO22cbMVkTNiJLvNYkryUzt+Hi4/7xZyPTkOKrghSN5gSaU190GhYvklB
+         5nuA==
+X-Gm-Message-State: AOAM533nSTzBXDrBd9eZGlJ5ILiwSBCNhHcMY7ytMo2JwyL5NzDwEsJv
+        cky897XAKlzxvAuL2VWlzKyLCj203g==
+X-Google-Smtp-Source: ABdhPJx/fqm8FZYrXJUrVv9fHFF6lRYTD7UrXijvZynTORUjibzGxBTYQQCdHqoTCQX//xqQrm8QDg==
+X-Received: by 2002:a1c:98c1:: with SMTP id a184mr22266672wme.116.1595256406180;
+        Mon, 20 Jul 2020 07:46:46 -0700 (PDT)
+Received: from [192.168.200.34] (ip5b436a54.dynamic.kabel-deutschland.de. [91.67.106.84])
+        by smtp.gmail.com with ESMTPSA id b8sm2579413wrv.4.2020.07.20.07.46.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 07:46:45 -0700 (PDT)
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH_2/5=5d_drm=3a_rockchip=3a_add_missing_regi?=
+ =?UTF-8?B?c3RlcnMgZm9yIFJLMzE4OOOAkOivt+azqOaEj++8jOmCruS7tueUsWxpbnV4LXJv?=
+ =?UTF-8?Q?ckchip-bounces+andy=2eyan=3drock-chips=2ecom=40lists=2einfradead?=
+ =?UTF-8?B?Lm9yZ+S7o+WPkeOAkQ==?=
+To:     Andy Yan <andy.yan@rock-chips.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-kernel@lists.infradead.org
+References: <20200718200323.3559-1-knaerzche@gmail.com>
+ <20200718200323.3559-3-knaerzche@gmail.com>
+ <871ce1ac-2d5b-c0a2-60a6-6aba0f296c18@rock-chips.com>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <12296860-d6ed-5135-7c4e-545362829051@gmail.com>
+Date:   Mon, 20 Jul 2020 16:46:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <871ce1ac-2d5b-c0a2-60a6-6aba0f296c18@rock-chips.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWRyaWFuIEJ1bmsNCj4gU2VudDogMTkgSnVseSAyMDIwIDE5OjE5DQouLi4NCj4gVGhl
-IGNvcnJlY3QgcmFuZ2UgZm9yIGEgbWFuZGF0b3J5IHRvb2wgYXJlIHRoZSA2IHRvIDEyIHllYXJz
-IGZvciBnY2MuDQo+IA0KPiBEZWJpYW4gc3RhYmxlIGFuZCBVYnVudHUgTFRTIGFyZSBwcm92aWRp
-bmcgKGRpZmZlcmVudCkgbWVjaGFuaXNtcw0KPiBmb3IgaW5zdGFsbGluZyB0aGUga2VybmVsIGZy
-b20gdGhlIG5leHQgc3RhYmxlL0xUUyByZWxlYXNlIDIgeWVhcnMNCj4gbGF0ZXJbMV0gZm9yIHN1
-cHBvcnRpbmcgbmV3IGhhcmR3YXJlLg0KPiBJZiBrZXJuZWwgNS4xMiBMVFMgY2Fubm90IGJlIGNv
-bXBpbGVkIG9uIFVidW50dSAyMC4wNCBMVFMgd2l0aA0KPiB0aGUgMjAxOSBnY2MgOSB0aGVyZSB3
-b3VsZCBiZSBwYWluIGRvd25zdHJlYW0uDQoNCldlIGhhdmUgY3VzdG9tZXJzIHRoYXQgYXJlIChz
-dGlsbCkgdXNpbmcgUkhFTDYgKDIuNi4zMiBlcmEpLg0KU2luY2Ugd2UgaGF2ZSB0byBidWlsZCBD
-KysgcHJvZ3JhbXMgdGhhdCB3aWxsIHJ1biBvbiB0aG9zZQ0Kc3lzdGVtcyB3ZSBoYXZlIHN5c3Rl
-bXMgd2l0aCB2ZXJ5IG9sZCB0b29sY2hhaW5zLg0KKFllcywgeW91IGNhbiBidWlsZCBpbiBhIGNo
-cm9vdCBvciBhbiBhIFZNIGJ1dCB0aGF0IG5lZWRzDQpzZXR0aW5nIHVwIHF1aXRlIGNhcmVmdWxs
-eSAtIGVhc2llciB0byBrZWVwIHRoZSBvbGQgbWFjaGluZS4pDQoNCkl0IGlzIHJhdGhlciBhIFBJ
-VEEgd2hlbiBrZXJuZWwgYnVpbGRzIGRlcHJlY2F0ZSB0aGUgaW5zdGFsbGVkIGdjYy4NCk5vdyBJ
-J20gbm90IHN1cmUgYSA1Lngga2VybmVsIHdpbGwgcnVuIHdpdGggdGhlIHVzZXJzcGFjZSBmcm9t
-IFJIRUw2Lg0KQnV0IEkga25vdyBpdCBydW5zIHdpdGggdGhhdCBmcm9tIFVidW50dSAxMy4wNC4N
-CkluIGEgZmV3IHllYXJzIEknbGwgYmUgYWJsZSB0byB1c2UgdGhlIDEzLjA0IHN5c3RlbSBmb3Ig
-cmVsZWFzZSBidWlsZHMNCmJ1dCBpdCBpcyBzdGlsbCBmYXIgdG9vIG5ldyBmb3IgdGhhdC4NCkhv
-d2V2ZXIgSSBjYW4gbm8gbG9uZ2VyIGJ1aWxkICdjdXJyZW50JyBjdXN0b20ga2VybmVscyBvbiBp
-dC4NCkkndmUgb3RoZXIgKG5ld2VyKSBzeXN0ZW1zIGJ1dCB0aGV5IGFyZW4ndCBhbnkgKG1heWJl
-IG11Y2gpIGZhc3Rlci4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
-ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
-UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi Andy,
+
+Am 20.07.20 um 10:22 schrieb Andy Yan:
+> Hi Alex:
+>
+> On 7/19/20 4:03 AM, Alex Bee wrote:
+>> This patch adds dither_up, dsp_lut_en, data_blank and dsp_data_swap
+>> registers to enable their respective functionality for RK3188's VOP.
+>>
+>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+>> ---
+>>   drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c 
+>> b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+>> index b046910129fb..971a6bda7458 100644
+>> --- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+>> +++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+>> @@ -512,6 +512,10 @@ static const struct vop_common rk3188_common = {
+>>       .dither_down_en = VOP_REG(RK3188_DSP_CTRL0, 0x1, 11),
+>>       .dither_down_mode = VOP_REG(RK3188_DSP_CTRL0, 0x1, 10),
+>>       .dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x3, 24),
+>> +    .dither_up = VOP_REG(RK3188_DSP_CTRL0, 0x1, 9),
+>> +    .dsp_lut_en = VOP_REG(RK3188_SYS_CTRL, 0x1, 28),
+>> +    .data_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 25),
+>> +    .dsp_data_swap = VOP_REG(RK3188_DSP_CTRL1, 0x1f, 26),
+>
+>
+>
+> I can't find the definition of dsp_data_swap, or I missed something?
+>
+Note that .dsp_data_swap is not defined with that name in TRM (as it is 
+not in RK3288/RK3328), since potentially more the one bit would have to 
+be set for this (currently only RB_SWAP (0x2) is implemented in the VOP 
+driver).
+
+To be some kind of future proof (if BG_SWAP, RG_SWAP, DELTA_SWAP or 
+DUMMY_SWAP ever get implemented) it should be aligned with what is 
+defined for RK3288/RK3328 now to automatically benefit from that 
+additions. And it would, since RK3288_DSP_CTRL0 BIT12, BIT13, BIT14, 
+BIT15, BIT16 exactly matches with RK3188_DSP_CTRL1 BIT26, BIT27, BIT28, 
+BIT29, BIT30.
+
+Current implementation sets BIT13 for RK3288 and with this patch BIT27 
+for RK3188 to enable RB_SWAP.
+
+>
+>
+>>   };
+>>     static const struct vop_win_data rk3188_vop_win_data[] = {
+>
+>
+Regards,
+
+Alex
 
