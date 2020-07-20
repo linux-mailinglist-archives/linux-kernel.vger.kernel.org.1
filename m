@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97FE227149
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94378227155
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbgGTVmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728266AbgGTViu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:38:50 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4605022CB3;
-        Mon, 20 Jul 2020 21:38:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595281129;
-        bh=hyoWTlXaRJHz9u15BbwMpNHvU6B/qEq0Zc3o3cyjtOg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XlSdhg/BEh5G5sEuTfae3MCcynrZcNNYCl1Zy1Zeerqh7ydb+7wzQ0RZzeNAATw67
-         60wc1D7PMXXHHyVr/rqTcb/Wy17dgITPSg77sH4A1WpfLYLNXlhciynRAIZSkoVB48
-         mBmxpoBXDxc/HA5IM+AGfuFyYj9DYnAaD5V0GxIA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Olga Kornievskaia <kolga@netapp.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 34/34] SUNRPC reverting d03727b248d0 ("NFSv4 fix CLOSE not waiting for direct IO compeletion")
-Date:   Mon, 20 Jul 2020 17:38:07 -0400
-Message-Id: <20200720213807.407380-34-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200720213807.407380-1-sashal@kernel.org>
-References: <20200720213807.407380-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+        id S1727098AbgGTVm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:42:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35328 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728236AbgGTVip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 17:38:45 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KKWocY152958;
+        Mon, 20 Jul 2020 17:38:25 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5x49up3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 17:38:25 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KKl885030148;
+        Mon, 20 Jul 2020 17:38:25 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5x49una-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 17:38:24 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KLZBL4020699;
+        Mon, 20 Jul 2020 21:38:22 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 32dbmn06yb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 21:38:22 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KLcKd744040416
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 21:38:20 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D90BA4054;
+        Mon, 20 Jul 2020 21:38:20 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 856E2A4060;
+        Mon, 20 Jul 2020 21:38:18 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.145.253])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 21:38:18 +0000 (GMT)
+Message-ID: <1595281097.5055.79.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 00/12] ima: Fix rule parsing bugs and extend
+ KEXEC_CMDLINE rule support
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        kexec@lists.infradead.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Nayna Jain <nayna@linux.ibm.com>
+Date:   Mon, 20 Jul 2020 17:38:17 -0400
+In-Reply-To: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
+References: <20200709061911.954326-1-tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ mlxscore=0 suspectscore=2 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 impostorscore=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <kolga@netapp.com>
+[Cc'ing Sasha]
 
-[ Upstream commit 65caafd0d2145d1dd02072c4ced540624daeab40 ]
+On Thu, 2020-07-09 at 01:18 -0500, Tyler Hicks wrote:
 
-Reverting commit d03727b248d0 "NFSv4 fix CLOSE not waiting for
-direct IO compeletion". This patch made it so that fput() by calling
-inode_dio_done() in nfs_file_release() would wait uninterruptably
-for any outstanding directIO to the file (but that wait on IO should
-be killable).
+> I envision patches 1-7 going to stable. The series is ordered in a way
+> that has all the fixes up front, followed by cleanups, followed by the
+> feature patch. The breakdown of patches looks like so:
+> 
+>  Memory leak fixes: 1-3
+>  Parser strictness fixes: 4-7
+>  Code cleanups made possible by the fixes: 8-11
+>  Extend KEXEC_CMDLINE rule support: 12
 
-The problem the patch was also trying to address was REMOVE returning
-ERR_ACCESS because the file is still opened, is supposed to be resolved
-by server returning ERR_FILE_OPEN and not ERR_ACCESS.
+I agree they should be backported, but they don't apply cleanly before
+linux-5.6.  The changes aren't that major.  Some patch hunks apply
+cleanly, but won't compile, while others patch hunks need to be
+dropped based on when the feature was upstreamed.  For these reasons,
+I'm not Cc'ing stable.
 
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/nfs/direct.c | 13 ++++---------
- fs/nfs/file.c   |  1 -
- 2 files changed, 4 insertions(+), 10 deletions(-)
+Feature upstreamed:
+- LSM policy update: linux 5.3
+- key command line: linux 5.3
+- blacklist: linux 5.5
+- keyrings: linux 5.6
 
-diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
-index 70cf8c5760c73..6b0bf4ebd8124 100644
---- a/fs/nfs/direct.c
-+++ b/fs/nfs/direct.c
-@@ -367,6 +367,8 @@ static void nfs_direct_complete(struct nfs_direct_req *dreq)
- {
- 	struct inode *inode = dreq->inode;
- 
-+	inode_dio_end(inode);
-+
- 	if (dreq->iocb) {
- 		long res = (long) dreq->error;
- 		if (dreq->count != 0) {
-@@ -378,10 +380,7 @@ static void nfs_direct_complete(struct nfs_direct_req *dreq)
- 
- 	complete(&dreq->completion);
- 
--	igrab(inode);
- 	nfs_direct_req_release(dreq);
--	inode_dio_end(inode);
--	iput(inode);
- }
- 
- static void nfs_direct_read_completion(struct nfs_pgio_header *hdr)
-@@ -511,10 +510,8 @@ static ssize_t nfs_direct_read_schedule_iovec(struct nfs_direct_req *dreq,
- 	 * generic layer handle the completion.
- 	 */
- 	if (requested_bytes == 0) {
--		igrab(inode);
--		nfs_direct_req_release(dreq);
- 		inode_dio_end(inode);
--		iput(inode);
-+		nfs_direct_req_release(dreq);
- 		return result < 0 ? result : -EIO;
- 	}
- 
-@@ -926,10 +923,8 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
- 	 * generic layer handle the completion.
- 	 */
- 	if (requested_bytes == 0) {
--		igrab(inode);
--		nfs_direct_req_release(dreq);
- 		inode_dio_end(inode);
--		iput(inode);
-+		nfs_direct_req_release(dreq);
- 		return result < 0 ? result : -EIO;
- 	}
- 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index 7b31367532054..95dc90570786c 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -83,7 +83,6 @@ nfs_file_release(struct inode *inode, struct file *filp)
- 	dprintk("NFS: release(%pD2)\n", filp);
- 
- 	nfs_inc_stats(inode, NFSIOS_VFSRELEASE);
--	inode_dio_wait(inode);
- 	nfs_file_clear_open_context(filp);
- 	return 0;
- }
--- 
-2.25.1
+For Linux 5.3:
+- Dependency on backporting commit 483ec26eed42 ("ima: ima/lsm policy
+rule loading logic bug fixes") to apply " ima: Free the entire rule if
+it fails to parse".
 
+Mimi
