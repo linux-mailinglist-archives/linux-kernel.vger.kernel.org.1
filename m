@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DB8226160
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A28222614E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgGTNzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 09:55:38 -0400
-Received: from mga07.intel.com ([134.134.136.100]:51259 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgGTNzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 09:55:38 -0400
-IronPort-SDR: NbAdbsw3YoAujPSdTUak3dEY1mM6NoXLwRqE2GcLSJz3XLmlpHU0866UbMDopC0NHGELliojKB
- PaE9K7Kb2pNw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9687"; a="214588086"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="214588086"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 06:55:33 -0700
-IronPort-SDR: cafc5xPM8ONBkAaZB0Q9pImfEN8WiXRs4WjQuiVhzMoPaJwebvr/KtZ5bnfgEvcV1S1F82lqV8
- iKat1zvA3wnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="283521068"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by orsmga003.jf.intel.com with ESMTP; 20 Jul 2020 06:55:33 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, yu-cheng.yu@intel.com,
-        bigeasy@linutronix.de, gorcunov@gmail.com, hpa@zytor.com,
-        eranian@google.com, ak@linux.intel.com, chang.seok.bae@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] x86/fpu/xstate: Fix an xstate size check warning
-Date:   Mon, 20 Jul 2020 06:50:51 -0700
-Message-Id: <1595253051-75374-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726698AbgGTNtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 09:49:53 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:9252 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725936AbgGTNtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 09:49:53 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KDimtX000539;
+        Mon, 20 Jul 2020 09:49:40 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 32cv13vhqr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 09:49:40 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 06KDncjp061593
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 20 Jul 2020 09:49:38 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 20 Jul
+ 2020 06:49:37 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 20 Jul 2020 06:49:37 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06KDnYqS003178;
+        Mon, 20 Jul 2020 09:49:34 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: trigger: make stub functions static inline
+Date:   Mon, 20 Jul 2020 16:51:33 +0300
+Message-ID: <20200720135133.72154-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200714142456.67054-1-alexandru.ardelean@analog.com>
+References: <20200714142456.67054-1-alexandru.ardelean@analog.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ clxscore=1015 adultscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-An xstate size check warning is triggered on the machine which supports
-Architectural LBRs.
+Make sure that the trigger function stubs are all static inline.
+Otherwise we might see compiler warnings about declared but unused
+functions.
 
-[    0.000000] XSAVE consistency problem, dumping leaves
-[    0.000000] WARNING: CPU: 0 PID: 0 at
-arch/x86/kernel/fpu/xstate.c:649 fpu__init_system_xstate+0x4d4/0xd0e
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted intel-arch_lbr+
-[    0.000000] RIP: 0010:fpu__init_system_xstate+0x4d4/0xd0e
-
-The xstate size check routine, init_xstate_size(), compares the size
-retrieved from the hardware with the size of task->fpu, which is
-calculated by the software.
-
-The size from the hardware is the total size of the enabled xstates in
-XCR0 | IA32_XSS. Architectural LBR state is a dynamic supervisor
-feature, which sets the corresponding bit in the IA32_XSS at boot time.
-The size from the hardware includes the size of the Architectural LBR
-state.
-
-However, a dynamic supervisor feature doesn't allocate a buffer in the
-task->fpu. The size of task->fpu doesn't include the size of the
-Architectural LBR state. The mismatch will trigger the warning.
-
-Three options as below were considered to fix the issue:
-- Correct the size from the hardware by subtracting the size of the
-  dynamic supervisor features.
-  The purpose of the check is to compare the size CPU told with the size
-  of the XSAVE buffer, which is calculated by the software. If the
-  software mucks with the number from hardware, it removes the value of
-  the check.
-  This option is not a good option.
-- Prevent the hardware from counting the size of the dynamic supervisor
-  feature by temporarily removing the corresponding bits in IA32_XSS.
-  Two extra MSR writes are required to flip the IA32_XSS. The option is
-  not pretty, but it is workable. The check is only called once at early
-  boot time. The synchronization or context-switching doesn't need to be
-  worried.
-  This option is implemented here.
-- Remove the check entirely, because the check hasn't found any real
-  problems. The option may be an alternative as option 2.
-  This option is not implemented here.
-
-Add a new function, get_xsaves_size_no_dynamic(), which retrieves the
-total size without the dynamic supervisor features from the hardware.
-The size will be used to compare with the size of task->fpu.
-
-Fixes: f0dccc9da4c0 ("x86/fpu/xstate: Support dynamic supervisor feature for LBR")
-Reported-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Fixes 77712e5fbe2e4: ("Staging: iio: Staticise non-exported functions")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 ---
- arch/x86/kernel/fpu/xstate.c | 33 ++++++++++++++++++++++++++++++++-
- 1 file changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 10cf878..a4e4ac4 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -611,6 +611,10 @@ static void check_xstate_against_struct(int nr)
-  * This essentially double-checks what the cpu told us about
-  * how large the XSAVE buffer needs to be.  We are recalculating
-  * it to be safe.
-+ *
-+ * Dynamic XSAVE features allocate their own buffers and are not
-+ * covered by these checks. Only the size of the buffer for task->fpu
-+ * is checked here.
-  */
- static void do_extra_xstate_size_checks(void)
+Changelog v1 -> v2:
+* fix commit description & title
+* added proper Fixes tag
+
+ drivers/iio/iio_core_trigger.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/iio_core_trigger.h b/drivers/iio/iio_core_trigger.h
+index 9d1a92cc6480..374816bc3e73 100644
+--- a/drivers/iio/iio_core_trigger.h
++++ b/drivers/iio/iio_core_trigger.h
+@@ -30,7 +30,7 @@ int iio_trigger_detach_poll_func(struct iio_trigger *trig,
+  * iio_device_register_trigger_consumer() - set up an iio_dev to use triggers
+  * @indio_dev: iio_dev associated with the device that will consume the trigger
+  **/
+-static int iio_device_register_trigger_consumer(struct iio_dev *indio_dev)
++static inline int iio_device_register_trigger_consumer(struct iio_dev *indio_dev)
  {
-@@ -673,6 +677,33 @@ static unsigned int __init get_xsaves_size(void)
- 	return ebx;
+ 	return 0;
+ }
+@@ -39,7 +39,7 @@ static int iio_device_register_trigger_consumer(struct iio_dev *indio_dev)
+  * iio_device_unregister_trigger_consumer() - reverse the registration process
+  * @indio_dev: iio_dev associated with the device that consumed the trigger
+  **/
+-static void iio_device_unregister_trigger_consumer(struct iio_dev *indio_dev)
++static inline void iio_device_unregister_trigger_consumer(struct iio_dev *indio_dev)
+ {
  }
  
-+/*
-+ * Get the total size of the enabled xstates without the dynamic supervisor
-+ * features.
-+ */
-+static unsigned int __init get_xsaves_size_no_dynamic(void)
-+{
-+	u64 mask = xfeatures_mask_dynamic();
-+	unsigned int size;
-+
-+	if (!mask)
-+		return get_xsaves_size();
-+
-+	/* Disable dynamic features. */
-+	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor());
-+
-+	/*
-+	 * Ask the hardware what size is required of the buffer.
-+	 * This is the size required from the task->fpu buffer.
-+	 */
-+	size = get_xsaves_size();
-+
-+	/* Re-enable dynamic features so XSAVES will work on them again. */
-+	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor() | mask);
-+
-+	return size;
-+}
-+
- static unsigned int __init get_xsave_size(void)
- {
- 	unsigned int eax, ebx, ecx, edx;
-@@ -710,7 +741,7 @@ static int __init init_xstate_size(void)
- 	xsave_size = get_xsave_size();
- 
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		possible_xstate_size = get_xsaves_size();
-+		possible_xstate_size = get_xsaves_size_no_dynamic();
- 	else
- 		possible_xstate_size = xsave_size;
- 
 -- 
-2.7.4
+2.17.1
 
