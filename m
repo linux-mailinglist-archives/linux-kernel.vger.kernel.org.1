@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A2E22607C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA58226080
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgGTNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 09:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        id S1726715AbgGTNMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 09:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgGTNLp (ORCPT
+        with ESMTP id S1726076AbgGTNMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 09:11:45 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF485C061794;
-        Mon, 20 Jul 2020 06:11:44 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id g13so12841676qtv.8;
-        Mon, 20 Jul 2020 06:11:44 -0700 (PDT)
+        Mon, 20 Jul 2020 09:12:18 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228C1C061794;
+        Mon, 20 Jul 2020 06:12:18 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f2so17770660wrp.7;
+        Mon, 20 Jul 2020 06:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3cui7NTSv7/kxnwczpZltAgKV4Z+Rc/nVHOHoo00mt0=;
-        b=uNRe80qDgULTIFXx4OHuYhkc0Mpj53lEAjIFOUYGUnu52k6u5XpbNzpADcrAj0TwhH
-         PtwJgfCjC7RnjsHiFKPUsKfB3wrHmwAYnYsXriN6INNNR8F2yLyKUqJVV0lGR87bQaC5
-         tiRlIvqeO2GfTOc7ZyeEQ3vrX7jI36egwEP8OeWMJuOdLHzYINcGTKvNPXRAoTM7KA03
-         gXwNxtBed+6vnedhvVlPZyWoEKvvCLjJfryO7BO7nSSYOHdsjLWfQOEKc0UMahq3mofn
-         HVRztVJmh+fxfT3g4X3EpUEoiPltJZJOCc2XXsGznYjzE0Fl6IdUwNKc50Hrpsz8HVPe
-         uUYA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I74xvJtzsjaudxa1pxR363b/RUGO1Y/C083f203Hn7A=;
+        b=Mh/wpx6se2TY3xjfuT4WtX01b4++wFyyvqYyF5kKVHeRaqzaZcp1UF4lbZGxMPjE5Z
+         c7B4tfEtirkSpO22dByuNkIFDkkhmaT4evS6BrE6jltrjTDdva3p256bmEXRF9B3/Jsf
+         qREOo8z6eJDoMVdQfShivC+YISM78l8jiFZnQJ70p2J6FlCBgTv3y404DYyZS5uVx6Av
+         /bXgNO83O8w1hbqrkjQhoPz6DDH27d8tjgC2Gu3xHMqEVhfjDlObJwTLBDpgXynJMqFE
+         ty9Sb0KXjH/TLOUAzW4jGQgikuR6volcQ53gYsb69BbF7CsTnXqIxPXsacGAERh1j0xz
+         V6ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3cui7NTSv7/kxnwczpZltAgKV4Z+Rc/nVHOHoo00mt0=;
-        b=e2J6IMy+Pl1y7tZFkHpFvHtQ9MffJmi3sD12OAIOI6npMEOCCnB274f8D5M2UCULEH
-         qon6d0/4q7RDJgpylSdBdWN1KievkwXe9hj/36zbhWzddWO0GF6/8BaPf6vwiWwpCsJI
-         y3M/KpQUTOqYJVEuUvhpGWZtsO81I5+pR8/WFJ1krAgampu1H60mXSPux3jIvJWEVxje
-         1L+6XJPkn/utsg3aqgabWnyRVC565uqPJ9oPa2X3OhWJwR+kiyjQa6hXmoVBliib2vs4
-         iNqIJFGeJjf0BT50NvShCY3/qeCPwLRX5v7LGNznW7lKYSHf+dQyaPtMg4/bYglKQwTm
-         MT/Q==
-X-Gm-Message-State: AOAM530iwx4GuVX5EevIYPOySdgH8WiFtkkCTf5HkLA4Jlc4mYZ6XmV5
-        3iCzi04vDw5eXq3kDuhGiDFkwLkt6ms=
-X-Google-Smtp-Source: ABdhPJzkTvyvK2oiUrfiK08SdQcxW/halGCzgjN0K8Lo2vmt1zrrynU7udSjN8SZNGSXjGsqZBRI2w==
-X-Received: by 2002:ac8:5411:: with SMTP id b17mr23502044qtq.238.1595250704133;
-        Mon, 20 Jul 2020 06:11:44 -0700 (PDT)
-Received: from localhost.localdomain ([2001:1284:f013:97d4:431e:ed87:df3d:c941])
-        by smtp.gmail.com with ESMTPSA id h18sm9409224qkh.61.2020.07.20.06.11.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I74xvJtzsjaudxa1pxR363b/RUGO1Y/C083f203Hn7A=;
+        b=XT33Pz/TO+9fFvYOGVRqlizK7bQuZk3ggL4xOiW0a09WAX/tQaedTGyihyMmZebsfU
+         7JI04zDPiobwyJ9o2rRb0oHNO7SVg2LHhmcbZcA0LPEFlSrimfTRB2hE8Ox3/03YG6qY
+         VLgbQ41Zulh2VKlN0iNBeVpm2P5QGXXXRV5SzL6EzK8ZnsRaRxnIwhs+vbtNdrII975c
+         M1nSdi3mJ3zpllD1hSptf6J3SmBtnunUMJeM2oHCfbq3Eo9Um1HAVuGR8kuEriKV9C7O
+         JzCLOLHiRTwIpRNw7uNbBr5k5RxsaqLpVWs/aDAL3OY7MlKOVytmxjKTBmKJAKNAKHgo
+         6isg==
+X-Gm-Message-State: AOAM533PaP5FzLdMIYx+h+m6xcpo8nsSQI0l7tB0EFdSg7Mlz44UMNiX
+        HTI2TM+2g/2fUrnRQvAgMJA=
+X-Google-Smtp-Source: ABdhPJw9OqceBedFy/lUsoQxaiIvRQLMWn8OErAt8tUirgIKJSf/VYRP2xcZNP10zxf5lKN91cSXbw==
+X-Received: by 2002:adf:f542:: with SMTP id j2mr22255065wrp.61.1595250736743;
+        Mon, 20 Jul 2020 06:12:16 -0700 (PDT)
+Received: from skynet.lan (67.red-88-15-120.dynamicip.rima-tde.net. [88.15.120.67])
+        by smtp.gmail.com with ESMTPSA id j24sm2725293wrb.49.2020.07.20.06.12.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 06:11:42 -0700 (PDT)
-Received: by localhost.localdomain (Postfix, from userid 1000)
-        id 5B162C50C5; Mon, 20 Jul 2020 10:11:40 -0300 (-03)
-Date:   Mon, 20 Jul 2020 10:11:40 -0300
-From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com, davem@davemloft.net,
-        kuba@kernel.org, corbet@lwn.net, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for v5.9] sctp: Replace HTTP links with HTTPS ones
-Message-ID: <20200720131140.GC2491@localhost.localdomain>
-References: <20200719202644.61663-1-grandmaster@al2klimov.de>
+        Mon, 20 Jul 2020 06:12:16 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com, kishon@ti.com, vkoul@kernel.org,
+        robh+dt@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
+        krzk@kernel.org, gregkh@linuxfoundation.org, alcooperx@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v8 0/2] phy: bcm63xx-usbh: Add BCM63xx USBH driver
+Date:   Mon, 20 Jul 2020 15:12:07 +0200
+Message-Id: <20200720131209.1236590-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200719202644.61663-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 10:26:44PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
-> 
->  If there are any URLs to be removed completely
->  or at least not (just) HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
-> 
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
-> 
->  If you apply the patch, please let me know.
-> 
->  Sorry again to all maintainers who complained about subject lines.
->  Now I realized that you want an actually perfect prefixes,
->  not just subsystem ones.
->  I tried my best...
->  And yes, *I could* (at least half-)automate it.
->  Impossible is nothing! :)
+Add BCM63xx USBH PHY driver for BMIPS.
 
-The subject prefix is right for sctp, but the patch tag should have
-been "PATCH net-next" instead. :-)
+v8: readd Simon as author and remove his email address from the source code.
+v7: remove Simon from authors and introduce changes suggested by Rob:
+  - Move clock conditions to the main section.
+  - Set missing additionalProperties to false.
+v6: introduce changes suggested by Rob and Vinod:
+ - Remove BMIPS_GENERIC default from kconfig.
+ - Print registered message as debug.
+ - Add another if case to device tree binding for SoCs with just 1 clock.
+ - Ignored "additionalProperties: false" suggestion since it triggers a
+  warning. This has been reported, but I haven't received any answer yet.
+v5: use devm_reset_control_get_exclusive.
+v4: fix dt-bindings documentation and improve device mode config.
+v3: introduce changes suggested by Florian:
+ - Add support for device mode.
+v2: introduce changes suggested by Florian:
+ - phy-cells changed to 1.
+ - Drop OF dependency (use device_get_match_data).
+ - Drop __initconst from variant tables.
+ - Use devm_clk_get_optional.
 
-Thankfully, they can fix it for us.
+Álvaro Fernández Rojas (2):
+  dt-bindings: phy: add bcm63xx-usbh bindings
+  phy: bcm63xx-usbh: Add BCM63xx USBH driver
 
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+ .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   |  79 +++
+ drivers/phy/broadcom/Kconfig                  |   8 +
+ drivers/phy/broadcom/Makefile                 |   1 +
+ drivers/phy/broadcom/phy-bcm63xx-usbh.c       | 457 ++++++++++++++++++
+ 4 files changed, 545 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+ create mode 100644 drivers/phy/broadcom/phy-bcm63xx-usbh.c
+
+-- 
+2.27.0
+
