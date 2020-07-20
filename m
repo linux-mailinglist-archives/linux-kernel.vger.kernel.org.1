@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF403226366
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607A22265A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgGTPeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
+        id S1730971AbgGTPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgGTPeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:34:16 -0400
+        id S1731724AbgGTPzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE98222C9D;
-        Mon, 20 Jul 2020 15:34:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 240F022CBE;
+        Mon, 20 Jul 2020 15:55:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259255;
-        bh=c/hjOojMTg3TNs8kx9IKYYH+HETNBY0OjLn1K7YlN4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jL3QpF7M/yHNP/7k2IedRR+xDd57JWgIlNQuItFwKeKF0i6B4XZhno5DnLE6v3yS8
-         r8S1AYm/l1voF1muUjyl4sOydD9FZLyHmQ1ZrOTemwhdAv5cp2AbSKf0o6qpngdVb/
-         ZGoa7A2NbW7NYzpRLuXG8hvtITFqu8jI+E2Uuw0A=
-Date:   Mon, 20 Jul 2020 17:34:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prakhar Srivastava <prsriva@linux.microsoft.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, masahiroy@kernel.org, james.morse@arm.com,
-        bhsharma@redhat.com, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        balajib@linux.microsoft.com, bauerman@linux.ibm.com,
-        robh@kernel.org
-Subject: Re: [PATCH V3 6/6] Add the property used for carrying forward the
- IMA measurement logs and update the code to use the defined property string.
-Message-ID: <20200720153400.GC1481119@kroah.com>
-References: <20200720152342.337990-1-prsriva@linux.microsoft.com>
- <20200720152342.337990-7-prsriva@linux.microsoft.com>
+        s=default; t=1595260549;
+        bh=ppTfgYb09TB9qxq+h+9fQ/bwVJO7A7SzJInWDp8mVuI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=irsAUX3Ui8+Hz9nqcQ+UIFxs0c/SJf8VEAL2RvLt5olBfDwiNHH14HVrfHn03LU3p
+         xej4w9o+eCqiaOxC3YBjCdftKbYKc0HPiqPNwk73ZQ6DrmX6Q1kN/A+bylAvdVrTZ9
+         N2j2nJR1rR+96Gftt8RIUKP/ordYTe5XzvI3FigE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.4 001/215] crypto: atmel - Fix selection of CRYPTO_AUTHENC
+Date:   Mon, 20 Jul 2020 17:34:43 +0200
+Message-Id: <20200720152820.208935209@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720152342.337990-7-prsriva@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 08:23:42AM -0700, Prakhar Srivastava wrote:
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Again, subject line, no changelog :(
+commit d158367682cd822aca811971e988be6a8d8f679f upstream.
 
-> ---
->  arch/arm64/kernel/machine_kexec_file.c | 19 ++++++++++---------
->  arch/powerpc/kexec/ima.c               |  8 +++++---
->  2 files changed, 15 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-> index 066670c43626..59058901e641 100644
-> --- a/arch/arm64/kernel/machine_kexec_file.c
-> +++ b/arch/arm64/kernel/machine_kexec_file.c
-> @@ -24,14 +24,15 @@
->  #include <asm/byteorder.h>
->  
->  /* relevant device tree properties */
-> -#define FDT_PROP_KEXEC_ELFHDR	"linux,elfcorehdr"
-> -#define FDT_PROP_MEM_RANGE	"linux,usable-memory-range"
-> -#define FDT_PROP_INITRD_START	"linux,initrd-start"
-> -#define FDT_PROP_INITRD_END	"linux,initrd-end"
-> -#define FDT_PROP_BOOTARGS	"bootargs"
-> -#define FDT_PROP_KASLR_SEED	"kaslr-seed"
-> -#define FDT_PROP_RNG_SEED	"rng-seed"
-> -#define RNG_SEED_SIZE		128
-> +#define FDT_PROP_KEXEC_ELFHDR		"linux,elfcorehdr"
-> +#define FDT_PROP_MEM_RANGE		"linux,usable-memory-range"
-> +#define FDT_PROP_INITRD_START		"linux,initrd-start"
-> +#define FDT_PROP_INITRD_END		"linux,initrd-end"
-> +#define FDT_PROP_BOOTARGS		"bootargs"
-> +#define FDT_PROP_KASLR_SEED		"kaslr-seed"
-> +#define FDT_PROP_RNG_SEED		"rng-seed"
-> +#define FDT_PROP_IMA_KEXEC_BUFFER	"linux,ima-kexec-buffer"
-> +#define RNG_SEED_SIZE			128
+The following error is raised when CONFIG_CRYPTO_DEV_ATMEL_AES=y and
+CONFIG_CRYPTO_DEV_ATMEL_AUTHENC=m:
+drivers/crypto/atmel-aes.o: In function `atmel_aes_authenc_setkey':
+atmel-aes.c:(.text+0x9bc): undefined reference to `crypto_authenc_extractkeys'
+Makefile:1094: recipe for target 'vmlinux' failed
 
-Why did you reformat all of these?
+Fix it by moving the selection of CRYPTO_AUTHENC under
+config CRYPTO_DEV_ATMEL_AES.
 
->  
->  const struct kexec_file_ops * const kexec_file_loaders[] = {
->  	&kexec_image_ops,
-> @@ -157,7 +158,7 @@ static int setup_dtb(struct kimage *image,
->  	if (image->arch.ima_buffer_size > 0) {
->  
->  		ret = fdt_appendprop_addrrange(dtb, 0, off,
-> -				"linux,ima-kexec-buffer",
-> +				FDT_PROP_IMA_KEXEC_BUFFER,
->  				image->arch.ima_buffer_addr,
->  				image->arch.ima_buffer_size);
->  		if (ret)
-> diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-> index a9e4e9f04273..7d6c43b2eacb 100644
-> --- a/arch/powerpc/kexec/ima.c
-> +++ b/arch/powerpc/kexec/ima.c
-> @@ -12,6 +12,8 @@
->  #include <linux/memblock.h>
->  #include <linux/libfdt.h>
->  
-> +#define FDT_PROP_IMA_KEXEC_BUFFER	"linux,ima-kexec-buffer"
-> +
+Fixes: 89a82ef87e01 ("crypto: atmel-authenc - add support to...")
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Why are you mixing arm64 and powerpc patches together that do not do the
-same thing???
+---
+ drivers/crypto/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Shouldn't there be a common place for these strings and not spread out
-all over the kernel in random places?
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -493,7 +493,6 @@ endif # if CRYPTO_DEV_UX500
+ config CRYPTO_DEV_ATMEL_AUTHENC
+ 	tristate "Support for Atmel IPSEC/SSL hw accelerator"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	select CRYPTO_AUTHENC
+ 	select CRYPTO_DEV_ATMEL_AES
+ 	select CRYPTO_DEV_ATMEL_SHA
+ 	help
+@@ -508,6 +507,7 @@ config CRYPTO_DEV_ATMEL_AES
+ 	select CRYPTO_AES
+ 	select CRYPTO_AEAD
+ 	select CRYPTO_BLKCIPHER
++	select CRYPTO_AUTHENC
+ 	help
+ 	  Some Atmel processors have AES hw accelerator.
+ 	  Select this if you want to use the Atmel module for
 
-thanks,
 
-greg k-h
