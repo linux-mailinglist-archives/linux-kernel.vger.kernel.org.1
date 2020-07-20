@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D93E226EE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF4A226EEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730201AbgGTTSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:18:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728874AbgGTTSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:18:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5726C2176B;
-        Mon, 20 Jul 2020 19:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595272733;
-        bh=Om8xZs9mcJXOyX/qFodq9Pq+msKkoq6y3fF20Bxe1Lw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pcYZHK/Nzn/xdJPoiofCtqIUj3KqPXi57fGrFg3rG/OyA3Q2vwOj6D/g/s/UE20Ml
-         AYLHIADELU1DDkA08Xf/ijoVazGAaTr+a1s+gRD+W98JlKhjPzcNQq2JDrwOijcAVy
-         LdPRq4BOeg9jsaWpQmL2oM6UCmpmEgqSnK0MDDZ0=
-Date:   Mon, 20 Jul 2020 21:19:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Eads, Gage" <gage.eads@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Topel, Bjorn" <bjorn.topel@intel.com>
-Subject: Re: [PATCH 01/20] dlb2: add skeleton for DLB 2.0 driver
-Message-ID: <20200720191903.GD1529125@kroah.com>
-References: <20200712134331.8169-1-gage.eads@intel.com>
- <20200712134331.8169-2-gage.eads@intel.com>
- <20200712155810.GC186665@kroah.com>
- <SN6PR11MB2574E9B6F6957D765BC18F29F67C0@SN6PR11MB2574.namprd11.prod.outlook.com>
- <20200718064656.GB245355@kroah.com>
- <SN6PR11MB25746161DC8D54AD5BD30F96F67B0@SN6PR11MB2574.namprd11.prod.outlook.com>
+        id S1730990AbgGTTTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729797AbgGTTTh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 15:19:37 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B17C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:19:36 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so21451195ljm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c27QdDaalrBPTYx6Hz4qEdOcDXJQt2hGAF2f+ujhjF4=;
+        b=KuwTS0CtDg/KT6Vr6p1o4UTZ7HWalRZpW11IdhJWv6Yc5j/TD5gQ7zm5Jjh6B8XI5h
+         yfJNFC7eK2lRmItt7PjIn51fAIMXuBYxgWFd3bm23wg5S6Tq4aHjL48ntwLG1xpskAHd
+         IC9EtdXCtrNqzLjo5l8RV9NjG1QYz/6dbUsCE6VVhWXw48lAjBR5EyNpzl8NDfqOktSX
+         EPmX6U04po198OszhbuhONTWOov4Xd3WFtEE0kzJi4eP9qCQ8vQq88ZBwSDh8+1T4FRD
+         hbv4wlJXAUpI8yWYfRaNYst5gn2EOYKYC/8BLagM5mfRI31ySXxAV9tBd5D4Cr90agjs
+         Lvrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c27QdDaalrBPTYx6Hz4qEdOcDXJQt2hGAF2f+ujhjF4=;
+        b=UnSOZVT7QHt5ZB/tKvsTIASDLH5EUdrjYI2JR2UV2VUZ/d/3shs5ZFVgZswJlzvQB6
+         vXiyyEw/NrFZXDDo8SX1wz88U/iZC/kmMMgtLPUpb1nmVs09nv+YqITiAeF6ARpUQ00b
+         sH/BvGtUwil6hNY9OYwyEtwQNijyeUn+RMWTXV3eBIf6La+jALwjnxz/MKF5+IL4MH8m
+         VGAj6eS1NKcguqgCCgtY2GxkYp+e65C8Ll0iCeWDVUXRPbCV8NiZ+8tuznjcCWA+ZSPG
+         5s9yVf7RmnNhHnRY1WosKpjhEOvd5WFpYZigI/V86i8zZov+llH7eG2lXHjhDSyLcLeK
+         397g==
+X-Gm-Message-State: AOAM5336AMbmcDUxD/Q+jrvsHmzSA97uwvlOpseBIoXzF0jxEAGOFzVH
+        4V/+lhgK6ttVR5H9yG89vZxHNl4t/1voGD6nsv5rcw==
+X-Google-Smtp-Source: ABdhPJytd1L3t3odiIQNSjrPSpGOSnIfawPzcqrPm7XkSZxsxS8d6ysT2xoLHLvMBq1OahMA3S7JIs4XecxrzglTgn8=
+X-Received: by 2002:a2e:7401:: with SMTP id p1mr11812893ljc.366.1595272774987;
+ Mon, 20 Jul 2020 12:19:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR11MB25746161DC8D54AD5BD30F96F67B0@SN6PR11MB2574.namprd11.prod.outlook.com>
+References: <CA+G9fYuzqA0N6O-52uH9aHjsfF6HfhuxMby1Y6Yz7jGMAHW0zw@mail.gmail.com>
+ <CAK8P3a1SHQKNNCVj9Gp25BLuXUC2nf7FuVrqfpPYQkvMbhjzFg@mail.gmail.com>
+ <ad7ba016-c3eb-a833-e4d3-4cdcb53ca786@arm.com> <CAF6AEGsBRxFC918nNzJZnxMpFnNC6qcNGvMjjM8U3AAn6CusNA@mail.gmail.com>
+In-Reply-To: <CAF6AEGsBRxFC918nNzJZnxMpFnNC6qcNGvMjjM8U3AAn6CusNA@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 21 Jul 2020 00:49:23 +0530
+Message-ID: <CA+G9fYv9K3FqR6D9=2jvQ3s_eSTL=K-x4QW4-P7=AgfjjHCBwA@mail.gmail.com>
+Subject: Re: [Freedreno] arm64: Internal error: Oops: qcom_iommu_tlb_inv_context
+ free_io_pgtable_ops on db410c
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sean Paul <sean@poorly.run>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Vinod Koul <vinod.koul@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andy Gross <agross@kernel.org>, lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Eric Anholt <eric@anholt.net>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:02:05PM +0000, Eads, Gage wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Saturday, July 18, 2020 1:47 AM
-> > To: Eads, Gage <gage.eads@intel.com>
-> > Cc: linux-kernel@vger.kernel.org; arnd@arndb.de; Karlsson, Magnus
-> > <magnus.karlsson@intel.com>; Topel, Bjorn <bjorn.topel@intel.com>
-> > Subject: Re: [PATCH 01/20] dlb2: add skeleton for DLB 2.0 driver
-> > 
-> > On Fri, Jul 17, 2020 at 06:18:46PM +0000, Eads, Gage wrote:
+On Mon, 20 Jul 2020 at 21:27, Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Mon, Jul 20, 2020 at 4:28 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> >
+> > On 2020-07-20 08:17, Arnd Bergmann wrote:
+> > > On Mon, Jul 20, 2020 at 8:36 AM Naresh Kamboju
+> > > <naresh.kamboju@linaro.org> wrote:
+<>
+> > >> [    5.444121] Unable to handle kernel NULL pointer dereference at
+> > >> virtual address 0000000000000018
+> > >> [    5.456615]   ESR = 0x96000004
+> > >> [    5.464471]   SET = 0, FnV = 0
+> > >> [    5.464487]   EA = 0, S1PTW = 0
+> > >> [    5.466521] Data abort info:
+> > >> [    5.469971]   ISV = 0, ISS = 0x00000004
+> > >> [    5.472768]   CM = 0, WnR = 0
+> > >> [    5.476172] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000bacba000
+> > >> [    5.479349] [0000000000000018] pgd=0000000000000000, p4d=0000000000000000
+> > >> [    5.485820] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> > >> [    5.492448] Modules linked in: crct10dif_ce adv7511(+)
+> > >> qcom_spmi_temp_alarm cec msm(+) mdt_loader qcom_camss videobuf2_dma_sg
+> > >> drm_kms_helper v4l2_fwnode videobuf2_memops videobuf2_v4l2 qcom_rng
+> > >> videobuf2_common i2c_qcom_cci display_connector socinfo drm qrtr ns
+> > >> rmtfs_mem fuse
+> > >> [    5.500256] CPU: 0 PID: 286 Comm: systemd-udevd Not tainted 5.8.0-rc5 #1
+> > >> [    5.522484] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> > >> [    5.529170] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+> > >> [    5.535856] pc : qcom_iommu_tlb_inv_context+0x18/0xa8
+> > >> [    5.541148] lr : free_io_pgtable_ops+0x28/0x58
+<>
+> > >> [    5.628297] Call trace:
+> > >> [    5.633592]  qcom_iommu_tlb_inv_context+0x18/0xa8
 > > >
+> > > This means that dev_iommu_fwspec_get() has returned NULL
+> > > in qcom_iommu_tlb_inv_context(), either because dev->iommu
+> > > is NULL, or because dev->iommu->fwspec is NULL.
 > > >
-> > > > -----Original Message-----
-> > > > From: Greg KH <gregkh@linuxfoundation.org>
-> > > > Sent: Sunday, July 12, 2020 10:58 AM
-> > > > To: Eads, Gage <gage.eads@intel.com>
-> > > > Cc: linux-kernel@vger.kernel.org; arnd@arndb.de; Karlsson, Magnus
-> > > > <magnus.karlsson@intel.com>; Topel, Bjorn <bjorn.topel@intel.com>
-> > > > Subject: Re: [PATCH 01/20] dlb2: add skeleton for DLB 2.0 driver
-> > > >
-> > > > On Sun, Jul 12, 2020 at 08:43:12AM -0500, Gage Eads wrote:
-> > > > > +static int dlb2_probe(struct pci_dev *pdev,
-> > > > > +		      const struct pci_device_id *pdev_id) {
-> > > > > +	struct dlb2_dev *dlb2_dev;
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	dev_dbg(&pdev->dev, "probe\n");
-> > > >
-> > > > ftrace is your friend.  Remove all of your debugging code now, you don't
-> > need
-> > > > it anymore, especially for stuff like this where you didn't even need it in
-> > the
-> > > > first place :(
+> > > qcom_iommu_tlb_inv_context() does not check for a NULL
+> > > pointer before using the returned object.
 > > >
-> > > I'll remove this and other similar dev_dbg() calls. This was an oversight on
-> > my part.
-> > >
-> > > I have other instances that a kprobe can't easily replace, such as printing
-> > structure contents, that are useful for tracing the usage of the driver. It looks
-> > like other misc drivers use dev_dbg() similarly -- do you consider this an
-> > acceptable use of a debug print?
-> > 
-> > Why can't a kernel tracepoint print a structure?
-> 
-> I meant the command-line installed kprobes[1], but instrumenting the driver is
-> certainly an option. We don't require the much lower overhead of a tracepoint,
-> so I didn't choose it. This driver handles the (performance-insensitive)
-> device configuration, while the fast-path operations take place in user-space.
-> 
-> Another reason is the "hardware access library" files use only non-GPL external
-> symbols, and some tracepoint functions are exported GPL. Though it's probably
-> feasible to lift that tracing code up into a (GPLv2-only) caller function.
+> > > The bug is either in the lack of error handling, or the fact
+> > > that it's possible to get into this function for a device
+> > > that has not been fully set up.
+> >
+> > Not quite - the device *was* properly set up, but has already been
+> > properly torn down again in the removal path by iommu_release_device().
+> > The problem is that qcom-iommu kept the device pointer as its TLB cookie
+> > for the domain, but the domain has a longer lifespan than the validity
+> > of that device - that's a fundamental design flaw in the driver.
+>
+> fwiw, I just sent "iommu/qcom: Use domain rather than dev as tlb
+> cookie".. untested but looks like a straightforward enough change to
+> switch over to using the domain rather than dev as cookie
 
-Stop going through crazy gyrations for something that your own legal
-team has told you not to do anymore in the first place.
+The proposed patch tested and confirmed the reported problem fixed.
 
-No "hardware access library" files please, that's not how Linux drivers
-are written.
+ref:
+https://lore.kernel.org/linux-iommu/CA+G9fYtj1RBYcPhXZRm-qm5ygtdLj1jD8vFZSqQvwi_DNJLBwQ@mail.gmail.com/T/#m36a1fca18098f6c34275d928f9ba9c40c6d7fd63
+https://lkft.validation.linaro.org/scheduler/job/1593950#L3392
 
-you all know better...
 
-> But if tracepoints are the preferred method and/or you think the driver would
-> benefit, I'll make the change.
+>
+> BR,
+> -R
 
-I don't think you need any of that stuff, now that the code works
-properly, right?
 
-greg k-h
+- Naresh
