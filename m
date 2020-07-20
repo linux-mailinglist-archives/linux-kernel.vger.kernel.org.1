@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1A1226B17
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B47226B62
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731731AbgGTQjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:39:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45778 "EHLO mail.kernel.org"
+        id S1729595AbgGTPou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:44:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgGTPti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:49:38 -0400
+        id S1730429AbgGTPol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:44:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38FCA206E9;
-        Mon, 20 Jul 2020 15:49:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E98362176B;
+        Mon, 20 Jul 2020 15:44:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260177;
-        bh=QWomaSWkjjnUOE3JHpwZM6v7w6P+3b2LhhvfZ9XRwW0=;
+        s=default; t=1595259880;
+        bh=+FFRpCGBVYGGelObaKd24kLkurRJe2LrOSrGWEhyLSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=awxVHk95MMPFcoKgGAK/FS6C6j3ANdx4US/YGYZ+p6ZDV2Dpajly3V7xcgS5rSNmW
-         9b82QrmHGGF6MVbFD1igD07ULdUD5lF5xghx1X0/DU5ZyOlkoIWhksqxSfkgDdOYBK
-         y1cNYbyRwPwP/XmWmysS4FEmiaJCBYq4ZZDBFkOg=
+        b=KoSZEXphzr3GjT4ty4QX1ltc3RmN6FHQyBTn77+GMCXzcCTUg6scYc/iMkR4VK+j+
+         u/1wwQOB8vVB/ctpi7hFXUgDLeSaJLpYfwslJWbWlEkWaGONEq4C2nT4cU6X7LUrKy
+         voraSkrnIWDbFFdI/ZWloP5baR31A+fhRzNmpJvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Changbin Du <changbin.du@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jianmin Wang <jianmin@iscas.ac.cn>
-Subject: [PATCH 4.19 001/133] perf: Make perf able to build with latest libbfd
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 009/125] spi: spidev: fix a potential use-after-free in spidev_release()
 Date:   Mon, 20 Jul 2020 17:35:48 +0200
-Message-Id: <20200720152803.800974142@linuxfoundation.org>
+Message-Id: <20200720152803.400402939@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,62 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changbin Du <changbin.du@gmail.com>
+From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-commit 0ada120c883d4f1f6aafd01cf0fbb10d8bbba015 upstream.
+[ Upstream commit 06096cc6c5a84ced929634b0d79376b94c65a4bd ]
 
-libbfd has changed the bfd_section_* macros to inline functions
-bfd_section_<field> since 2019-09-18. See below two commits:
-  o http://www.sourceware.org/ml/gdb-cvs/2019-09/msg00064.html
-  o https://www.sourceware.org/ml/gdb-cvs/2019-09/msg00072.html
+If an spi device is unbounded from the driver before the release
+process, there will be an NULL pointer reference when it's
+referenced in spi_slave_abort().
 
-This fix make perf able to build with both old and new libbfd.
+Fix it by checking it's already freed before reference.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200128152938.31413-1-changbin.du@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jianmin Wang <jianmin@iscas.ac.cn>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Link: https://lore.kernel.org/r/20200618032125.4650-2-zhenzhong.duan@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/srcline.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/spi/spidev.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
---- a/tools/perf/util/srcline.c
-+++ b/tools/perf/util/srcline.c
-@@ -191,16 +191,30 @@ static void find_address_in_section(bfd
- 	bfd_vma pc, vma;
- 	bfd_size_type size;
- 	struct a2l_data *a2l = data;
-+	flagword flags;
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 5edf4029a3486..167047760d79a 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -607,15 +607,20 @@ err_find_dev:
+ static int spidev_release(struct inode *inode, struct file *filp)
+ {
+ 	struct spidev_data	*spidev;
++	int			dofree;
  
- 	if (a2l->found)
- 		return;
+ 	mutex_lock(&device_list_lock);
+ 	spidev = filp->private_data;
+ 	filp->private_data = NULL;
  
--	if ((bfd_get_section_flags(abfd, section) & SEC_ALLOC) == 0)
-+#ifdef bfd_get_section_flags
-+	flags = bfd_get_section_flags(abfd, section);
-+#else
-+	flags = bfd_section_flags(section);
-+#endif
-+	if ((flags & SEC_ALLOC) == 0)
- 		return;
++	spin_lock_irq(&spidev->spi_lock);
++	/* ... after we unbound from the underlying device? */
++	dofree = (spidev->spi == NULL);
++	spin_unlock_irq(&spidev->spi_lock);
++
+ 	/* last close? */
+ 	spidev->users--;
+ 	if (!spidev->users) {
+-		int		dofree;
  
- 	pc = a2l->addr;
-+#ifdef bfd_get_section_vma
- 	vma = bfd_get_section_vma(abfd, section);
-+#else
-+	vma = bfd_section_vma(section);
-+#endif
-+#ifdef bfd_get_section_size
- 	size = bfd_get_section_size(section);
-+#else
-+	size = bfd_section_size(section);
-+#endif
+ 		kfree(spidev->tx_buffer);
+ 		spidev->tx_buffer = NULL;
+@@ -623,19 +628,14 @@ static int spidev_release(struct inode *inode, struct file *filp)
+ 		kfree(spidev->rx_buffer);
+ 		spidev->rx_buffer = NULL;
  
- 	if (pc < vma || pc >= vma + size)
- 		return;
+-		spin_lock_irq(&spidev->spi_lock);
+-		if (spidev->spi)
+-			spidev->speed_hz = spidev->spi->max_speed_hz;
+-
+-		/* ... after we unbound from the underlying device? */
+-		dofree = (spidev->spi == NULL);
+-		spin_unlock_irq(&spidev->spi_lock);
+-
+ 		if (dofree)
+ 			kfree(spidev);
++		else
++			spidev->speed_hz = spidev->spi->max_speed_hz;
+ 	}
+ #ifdef CONFIG_SPI_SLAVE
+-	spi_slave_abort(spidev->spi);
++	if (!dofree)
++		spi_slave_abort(spidev->spi);
+ #endif
+ 	mutex_unlock(&device_list_lock);
+ 
+-- 
+2.25.1
+
 
 
