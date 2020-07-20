@@ -2,120 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32817225B6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57782225B6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgGTJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgGTJX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:23:58 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6738CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:23:58 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o2so24480657wmh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nLaI7SKqPmkCBwaiQh58vRC+ysbWJDB3m7E0+rdbv3A=;
-        b=obAnsss+nlP86FHUb5s8+uhL+5pjtkD9xG7fKn6GelmnWvgY5KoRp1oFKBAn6v7D+b
-         g7DeUgSySgnCm60xJRk70mknhnE6CJ6o3xJau2iJKzn+AIHm20LUovbz3dceaOpxBh7I
-         +cypOtf3PFEyOqirsvSURucYoXT/maPOH9uDyJML3pT/5eAfFwjBSmyzohUR3zJoZNvq
-         MGMMgPTPamiXiczSfsPl+F6xNfyr6diNyM2/bvzOyO2ZGsp+QGXzcwNZlNDqFtgHMtjm
-         WyZLRlV56zGG4G986rk93+Pt1WFwvB1d3eRcth5Ac0k99brZVLmR/pDPdvGsSFlEHPhY
-         nyOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nLaI7SKqPmkCBwaiQh58vRC+ysbWJDB3m7E0+rdbv3A=;
-        b=eTLUn7PYVo1C01Da71fzJv5RF88obb4OALRvweu/ECh5k/6fw9P0ybQY0wAChTz9NG
-         awXC082ANVl9esI9GkJQMs2KCgHFdYJx5Zyc+6zPtv3EF71EuvkQ4wbl0qk5oC/5H/em
-         J2uG9GjnlBI10a00mj1Wexk/sbT2FR2LTrWSKtI+fGi1edD9DGkSpdT7VKag8Ej9+rOM
-         TnCyaEgWPlsMS7NnXm25qblJLW4ex5VCbH8TX34K2Xww0VgxcJ5Mif+Qkph6OO2WsFDf
-         F2xNWrEfmgwr6A79m/47m5l5el0QYXE54I3fKCOsj8/OZdvQO9jEgcP0kyV5UbYnIb1V
-         6KIQ==
-X-Gm-Message-State: AOAM533rK6L4k3bBP7TWYxR7SrZ/FbUm8OAyFnH0j39AOHP2D3niZKhC
-        IncPNislVIt/3o2OJy9LQg/STg==
-X-Google-Smtp-Source: ABdhPJzkFoxqVa8pR1mDs4a+spsOvWgEprH0ioCHkRabVmP8EVd/JeUsi1P9xaCGElP2GWdbnfXVag==
-X-Received: by 2002:a1c:59c2:: with SMTP id n185mr21663373wmb.104.1595237037144;
-        Mon, 20 Jul 2020 02:23:57 -0700 (PDT)
-Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id c17sm17623763wrc.42.2020.07.20.02.23.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Jul 2020 02:23:56 -0700 (PDT)
-Subject: Re: [PATCH v4 06/16] dt-bindings: nvmem: SID: add binding for A100's
- SID controller
-To:     Frank Lee <frank@allwinnertech.com>, robh+dt@kernel.org,
-        mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tiny.windzz@gmail.com, huangshuosheng@allwinnertech.com,
-        liyong@allwinnertech.com
-References: <cover.1594708863.git.frank@allwinnertech.com>
- <6899200489cb4236650ba90646057874b82ed6b7.1594708864.git.frank@allwinnertech.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <76773e96-7a63-1362-dcf9-8cc49e386603@linaro.org>
-Date:   Mon, 20 Jul 2020 10:23:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728242AbgGTJY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727769AbgGTJY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 05:24:58 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B05072176B;
+        Mon, 20 Jul 2020 09:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595237097;
+        bh=DZJgFWT9EBpxUAxDadsCWuChLAtXVn8oZMtP9QRL6C8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZTwUZAfjeouKDVccICNkfWj3AXzdsSuDk2rXgQ1No8faUuhgdJkyGv8pNjSwr1p8s
+         KG+pxfIgNxDLMiwrUoHqNrpWJhB5PtUOQUvLH6+XLLQNsMur9U/3CoZ5gGNVXCI9pB
+         je+UNlkcrWBPmVpDOLe0ai7+vZwqHYtU7Ofhrs9o=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH 0/6] mm: introduce secretmemfd system call to create "secret" memory areas
+Date:   Mon, 20 Jul 2020 12:24:29 +0300
+Message-Id: <20200720092435.17469-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <6899200489cb4236650ba90646057874b82ed6b7.1594708864.git.frank@allwinnertech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mike Rapoport <rppt@linux.ibm.com>
+
+Hi,
+
+This is the third version of "secret" mappings implementation backed by a
+file descriptor. 
+
+The file descriptor is created using a dedicated secretmemfd system call
+The desired protection mode for the memory is configured using flags
+parameter of the system call. The mmap() of the file descriptor created
+with secretmemfd() will create a "secret" memory mapping. The pages in that
+mapping will be marked as not present in the direct map and will have
+desired protection bits set in the user page table. For instance, current
+implementation allows uncached mappings.
+
+Although normally Linux userspace mappings are protected from other users, 
+such secret mappings are useful for environments where a hostile tenant is
+trying to trick the kernel into giving them access to other tenants
+mappings.
+
+Additionally, the secret mappings may be used as a mean to protect guest
+memory in a virtual machine host.
+
+For demonstration of secret memory usage we've created a userspace library
+[1] that does two things: the first is act as a preloader for openssl to
+redirect all the OPENSSL_malloc calls to secret memory meaning any secret
+keys get automatically protected this way and the other thing it does is
+expose the API to the user who needs it. We anticipate that a lot of the
+use cases would be like the openssl one: many toolkits that deal with
+secret keys already have special handling for the memory to try to give
+them greater protection, so this would simply be pluggable into the
+toolkits without any need for user application modification.
+
+I've hesitated whether to continue to use new flags to memfd_create() or to
+add a new system call and I've decided to use a new system call after I've
+started to look into man pages update. There would have been two completely
+independent descriptions and I think it would have been very confusing.
+
+Hiding secret memory mappings behind an anonymous file allows (ab)use of
+the page cache for tracking pages allocated for the "secret" mappings as
+well as using address_space_operations for e.g. page migration callbacks.
+
+The anonymous file may be also used implicitly, like hugetlb files, to
+implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+ABIs in the future.
+
+As the fragmentation of the direct map was one of the major concerns raised
+during the previous postings, I've added an amortizing cache of PMD-size
+pages to each file descriptor and an ability to reserve large chunks of the
+physical memory at boot time and then use this memory as an allocation pool
+for the secret memory areas.
+
+In addition, I've tried to find some numbers that show the benefit of using
+larger pages in the direct map, but I couldn't find anything so I've run a
+couple of benchmarks from phoronix-test-suite on my laptop (i7-8650U with
+32G RAM).
+
+I've tested three variants: the default with 28G of the physical memory
+covered with 1G pages, then I disabled 1G pages using "nogbpages" in the
+kernel command line and at last I've forced the entire direct map to use 4K
+pages using a simple patch to arch/x86/mm/init.c.
+I've made runs of the benchmarks with SSD and tmpfs.
+
+Surprisingly, the results does not show huge advantage for large pages. For
+instance, here the results for kernel build with 'make -j8', in seconds:
+
+                        |  1G    |  2M    |  4K
+------------------------+--------+--------+---------
+ssd, mitigations=on	| 308.75 | 317.37 | 314.9 
+ssd, mitigations=off	| 305.25 | 295.32 | 304.92 
+ram, mitigations=on	| 301.58 | 322.49 | 306.54 
+ram, mitigations=off	| 299.32 | 288.44 | 310.65
+
+All the results I have are available at [2].
+If anybody is interested in plain text, please let me know.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/rppt/secret-memory-preloader.git/
+[2] https://docs.google.com/spreadsheets/d/1tdD-cu8e93vnfGsTFxZ5YdaEfs2E1GELlvWNOGkJV2U/edit?usp=sharing
+
+Mike Rapoport (6):
+  mm: add definition of PMD_PAGE_ORDER
+  mmap: make mlock_future_check() global
+  mm: introduce secretmemfd system call to create "secret" memory areas
+  arch, mm: wire up secretmemfd system call were relevant
+  mm: secretmem: use PMD-size pages to amortize direct map fragmentation
+  mm: secretmem: add ability to reserve memory at boot
+
+ arch/arm64/include/asm/unistd32.h      |   2 +
+ arch/arm64/include/uapi/asm/unistd.h   |   1 +
+ arch/riscv/include/asm/unistd.h        |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+ fs/dax.c                               |  10 +-
+ include/linux/pgtable.h                |   3 +
+ include/linux/syscalls.h               |   1 +
+ include/uapi/asm-generic/unistd.h      |   7 +-
+ include/uapi/linux/magic.h             |   1 +
+ include/uapi/linux/secretmem.h         |   9 +
+ mm/Kconfig                             |   4 +
+ mm/Makefile                            |   1 +
+ mm/internal.h                          |   3 +
+ mm/mmap.c                              |   5 +-
+ mm/secretmem.c                         | 450 +++++++++++++++++++++++++
+ 16 files changed, 491 insertions(+), 9 deletions(-)
+ create mode 100644 include/uapi/linux/secretmem.h
+ create mode 100644 mm/secretmem.c
 
 
-On 14/07/2020 08:08, Frank Lee wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
-> 
-> Add a binding for A100's SID controller.
-> 
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> ---
+base-commit: f932d58abc38c898d7d3fe635ecb2b821a256f54
+-- 
+2.26.2
 
-Applied thanks,
-srini
->   .../nvmem/allwinner,sun4i-a10-sid.yaml        | 19 +++++++++++--------
->   1 file changed, 11 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> index daf1321d76ad..6687ab720304 100644
-> --- a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> @@ -15,14 +15,17 @@ allOf:
->   
->   properties:
->     compatible:
-> -    enum:
-> -      - allwinner,sun4i-a10-sid
-> -      - allwinner,sun7i-a20-sid
-> -      - allwinner,sun8i-a83t-sid
-> -      - allwinner,sun8i-h3-sid
-> -      - allwinner,sun50i-a64-sid
-> -      - allwinner,sun50i-h5-sid
-> -      - allwinner,sun50i-h6-sid
-> +    oneOf:
-> +      - const: allwinner,sun4i-a10-sid
-> +      - const: allwinner,sun7i-a20-sid
-> +      - const: allwinner,sun8i-a83t-sid
-> +      - const: allwinner,sun8i-h3-sid
-> +      - const: allwinner,sun50i-a64-sid
-> +      - items:
-> +          - const: allwinner,sun50i-a100-sid
-> +          - const: allwinner,sun50i-a64-sid
-> +      - const: allwinner,sun50i-h5-sid
-> +      - const: allwinner,sun50i-h6-sid
->   
->     reg:
->       maxItems: 1
-> 
