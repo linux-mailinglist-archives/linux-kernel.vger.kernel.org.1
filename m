@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AFF225965
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D39E225961
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgGTHyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:54:08 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:41307 "EHLO
+        id S1728240AbgGTHx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:53:59 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:41309 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728181AbgGTHxw (ORCPT
+        with ESMTP id S1728182AbgGTHxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Jul 2020 03:53:52 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
         with SMTP; 20 Jul 2020 10:53:45 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06K7rjgT008217;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06K7rjgV008217;
         Mon, 20 Jul 2020 10:53:45 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06K6srvQ031184;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06K6srfP031186;
         Mon, 20 Jul 2020 09:54:53 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06K6sr5P031183;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06K6srXs031185;
         Mon, 20 Jul 2020 09:54:53 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
@@ -29,9 +29,9 @@ To:     mst@redhat.com, jasowang@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com,
         Eli Cohen <eli@mellanox.com>
-Subject: [PATCH V2 vhost next 05/10] vhost: Fix documentation
-Date:   Mon, 20 Jul 2020 09:54:38 +0300
-Message-Id: <20200720065443.31112-6-eli@mellanox.com>
+Subject: [PATCH V2 vhost next 06/10] vdpa: Modify get_vq_state() to return error code
+Date:   Mon, 20 Jul 2020 09:54:39 +0300
+Message-Id: <20200720065443.31112-7-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200720065443.31112-1-eli@mellanox.com>
 References: <20200720065443.31112-1-eli@mellanox.com>
@@ -42,36 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix documentation to match actual function prototypes.
+Modify get_vq_state() so it returns an error code. In case of hardware
+acceleration, the available index may be retrieved from the device, an
+operation that can possibly fail.
 
 Reviewed-by: Parav Pandit <parav@mellanox.com>
 Signed-off-by: Eli Cohen <eli@mellanox.com>
 ---
- drivers/vhost/iotlb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/vdpa/ifcvf/ifcvf_main.c  | 5 +++--
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 5 +++--
+ drivers/vhost/vdpa.c             | 5 ++++-
+ include/linux/vdpa.h             | 4 ++--
+ 4 files changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/vhost/iotlb.c b/drivers/vhost/iotlb.c
-index 1f0ca6e44410..0d4213a54a88 100644
---- a/drivers/vhost/iotlb.c
-+++ b/drivers/vhost/iotlb.c
-@@ -149,7 +149,7 @@ EXPORT_SYMBOL_GPL(vhost_iotlb_free);
-  * vhost_iotlb_itree_first - return the first overlapped range
-  * @iotlb: the IOTLB
-  * @start: start of IOVA range
-- * @end: end of IOVA range
-+ * @last: last byte in IOVA range
-  */
- struct vhost_iotlb_map *
- vhost_iotlb_itree_first(struct vhost_iotlb *iotlb, u64 start, u64 last)
-@@ -162,7 +162,7 @@ EXPORT_SYMBOL_GPL(vhost_iotlb_itree_first);
-  * vhost_iotlb_itree_first - return the next overlapped range
-  * @iotlb: the IOTLB
-  * @start: start of IOVA range
-- * @end: end of IOVA range
-+ * @last: last byte IOVA range
-  */
- struct vhost_iotlb_map *
- vhost_iotlb_itree_next(struct vhost_iotlb_map *map, u64 start, u64 last)
+diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+index 69032ee97824..d9b5f465ac81 100644
+--- a/drivers/vdpa/ifcvf/ifcvf_main.c
++++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+@@ -235,12 +235,13 @@ static u16 ifcvf_vdpa_get_vq_num_max(struct vdpa_device *vdpa_dev)
+ 	return IFCVF_QUEUE_MAX;
+ }
+ 
+-static void ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
+-				    struct vdpa_vq_state *state)
++static int ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
++				   struct vdpa_vq_state *state)
+ {
+ 	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+ 
+ 	state->avail_index = ifcvf_get_vq_state(vf, qid);
++	return 0;
+ }
+ 
+ static int ifcvf_vdpa_set_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index 599519039f8d..ddf6086d43c2 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -427,14 +427,15 @@ static int vdpasim_set_vq_state(struct vdpa_device *vdpa, u16 idx,
+ 	return 0;
+ }
+ 
+-static void vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
+-				 struct vdpa_vq_state *state)
++static int vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
++				struct vdpa_vq_state *state)
+ {
+ 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+ 	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
+ 	struct vringh *vrh = &vq->vring;
+ 
+ 	state->avail_index = vrh->last_avail_idx;
++	return 0;
+ }
+ 
+ static u32 vdpasim_get_vq_align(struct vdpa_device *vdpa)
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index af98c11c9d26..fadad74f882e 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -360,7 +360,10 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+ 	}
+ 
+ 	if (cmd == VHOST_GET_VRING_BASE) {
+-		ops->get_vq_state(v->vdpa, idx, &vq_state);
++		r = ops->get_vq_state(v->vdpa, idx, &vq_state);
++		if (r)
++			return r;
++
+ 		vq->last_avail_idx = vq_state.avail_index;
+ 	}
+ 
+diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+index 7b088bebffe8..000d71a9f988 100644
+--- a/include/linux/vdpa.h
++++ b/include/linux/vdpa.h
+@@ -185,8 +185,8 @@ struct vdpa_config_ops {
+ 	bool (*get_vq_ready)(struct vdpa_device *vdev, u16 idx);
+ 	int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
+ 			    const struct vdpa_vq_state *state);
+-	void (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
+-			     struct vdpa_vq_state *state);
++	int (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
++			    struct vdpa_vq_state *state);
+ 	struct vdpa_notification_area
+ 	(*get_vq_notification)(struct vdpa_device *vdev, u16 idx);
+ 
 -- 
 2.26.0
 
