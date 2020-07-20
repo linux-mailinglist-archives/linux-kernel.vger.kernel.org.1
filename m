@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C3B2269AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A528226B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388766AbgGTQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:28:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
+        id S1729669AbgGTQlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732245AbgGTP7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:59:34 -0400
+        id S1729861AbgGTPpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:45:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA1762176B;
-        Mon, 20 Jul 2020 15:59:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96FD62065E;
+        Mon, 20 Jul 2020 15:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260772;
-        bh=tcGMKR5WdAThsy1xT6ryAEhkxohIpEi3AlS1Ix3p688=;
+        s=default; t=1595259900;
+        bh=QrB0GLO1+eGEiV2vHlBovMDa1m16XB2JbX9lRJbpMvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w3TpsZvjYEQCY9IuuKIropNm4/SrMcG7q3appc0b5863zFYX5MrwmjlQqTQbzJFlu
-         akLE7f9g5q1D5ldOX4RN4otdzqjRBkZtow7HCUFUh2ejJh3D1PfMEEnSu9dhiKswM2
-         RqMJ+0Y9BkJHv7ig9Na0uuIwG4b/1cqI0KnqqImc=
+        b=YVA4zx6lHIikqquWC3cgyDwF03BrTUte2vK4BaxCnDP7x+4g2OzQ1L/gVhdiaYLNX
+         p4xxtOF7cePgl56fcymapfn0Nru2UMN0aXdxReIOhGBt0/0hRHRA+ygAigr5NXWqOF
+         +PXXwEnJCGLbH4X6+97ChxYyz4HtjrYfN5ticJ0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/215] ACPI: video: Use native backlight on Acer TravelMate 5735Z
-Date:   Mon, 20 Jul 2020 17:36:12 +0200
-Message-Id: <20200720152824.488069546@linuxfoundation.org>
+        Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.14 034/125] Revert "ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb"
+Date:   Mon, 20 Jul 2020 17:36:13 +0200
+Message-Id: <20200720152804.626578633@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +44,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Menzel <pmenzel@molgen.mpg.de>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit c41c36e900a337b4132b12ccabc97f5578248b44 ]
+This reverts commit 97efdabe90f035d16d3f79218055e87c76ec02e6 which is
+commit 2bbcaaee1fcbd83272e29f31e2bb7e70d8c49e05 upstream.
 
-Currently, changing the brightness of the internal display of the Acer
-TravelMate 5735Z does not work. Pressing the function keys or changing the
-slider, GNOME Shell 3.36.2 displays the OSD (five steps), but the
-brightness does not change.
+It is being reverted upstream, just hasn't made it there yet and is
+causing lots of problems.
 
-The Acer TravelMate 5735Z shipped with Windows 7 and as such does not
-trigger our "win8 ready" heuristic for preferring the native backlight
-interface.
-
-Still ACPI backlight control doesn't work on this model, where as the
-native (intel_video) backlight interface does work by adding
-`acpi_backlight=native` or `acpi_backlight=none` to Linux’ command line.
-
-So, add a quirk to force using native backlight control on this model.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=207835
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Hans de Goede <hdegoede@redhat.com>
+Cc: Qiujun Huang <hqjagain@gmail.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/video_detect.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/wireless/ath/ath9k/hif_usb.c |   48 +++++++------------------------
+ drivers/net/wireless/ath/ath9k/hif_usb.h |    5 ---
+ 2 files changed, 11 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
-index 8daeeb5e3eb67..5bcb4c01ec5f0 100644
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -345,6 +345,16 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
- 		DMI_MATCH(DMI_BOARD_NAME, "JV50"),
- 		},
- 	},
-+	{
-+	 /* https://bugzilla.kernel.org/show_bug.cgi?id=207835 */
-+	 .callback = video_detect_force_native,
-+	 .ident = "Acer TravelMate 5735Z",
-+	 .matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate 5735Z"),
-+		DMI_MATCH(DMI_BOARD_NAME, "BA51_MV"),
-+		},
-+	},
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -641,9 +641,9 @@ err:
  
- 	/*
- 	 * Desktops which falsely report a backlight and which our heuristics
--- 
-2.25.1
-
+ static void ath9k_hif_usb_rx_cb(struct urb *urb)
+ {
+-	struct rx_buf *rx_buf = (struct rx_buf *)urb->context;
+-	struct hif_device_usb *hif_dev = rx_buf->hif_dev;
+-	struct sk_buff *skb = rx_buf->skb;
++	struct sk_buff *skb = (struct sk_buff *) urb->context;
++	struct hif_device_usb *hif_dev =
++		usb_get_intfdata(usb_ifnum_to_if(urb->dev, 0));
+ 	int ret;
+ 
+ 	if (!skb)
+@@ -683,15 +683,14 @@ resubmit:
+ 	return;
+ free:
+ 	kfree_skb(skb);
+-	kfree(rx_buf);
+ }
+ 
+ static void ath9k_hif_usb_reg_in_cb(struct urb *urb)
+ {
+-	struct rx_buf *rx_buf = (struct rx_buf *)urb->context;
+-	struct hif_device_usb *hif_dev = rx_buf->hif_dev;
+-	struct sk_buff *skb = rx_buf->skb;
++	struct sk_buff *skb = (struct sk_buff *) urb->context;
+ 	struct sk_buff *nskb;
++	struct hif_device_usb *hif_dev =
++		usb_get_intfdata(usb_ifnum_to_if(urb->dev, 0));
+ 	int ret;
+ 
+ 	if (!skb)
+@@ -749,7 +748,6 @@ resubmit:
+ 	return;
+ free:
+ 	kfree_skb(skb);
+-	kfree(rx_buf);
+ 	urb->context = NULL;
+ }
+ 
+@@ -795,7 +793,7 @@ static int ath9k_hif_usb_alloc_tx_urbs(s
+ 	init_usb_anchor(&hif_dev->mgmt_submitted);
+ 
+ 	for (i = 0; i < MAX_TX_URB_NUM; i++) {
+-		tx_buf = kzalloc(sizeof(*tx_buf), GFP_KERNEL);
++		tx_buf = kzalloc(sizeof(struct tx_buf), GFP_KERNEL);
+ 		if (!tx_buf)
+ 			goto err;
+ 
+@@ -832,9 +830,8 @@ static void ath9k_hif_usb_dealloc_rx_urb
+ 
+ static int ath9k_hif_usb_alloc_rx_urbs(struct hif_device_usb *hif_dev)
+ {
+-	struct rx_buf *rx_buf = NULL;
+-	struct sk_buff *skb = NULL;
+ 	struct urb *urb = NULL;
++	struct sk_buff *skb = NULL;
+ 	int i, ret;
+ 
+ 	init_usb_anchor(&hif_dev->rx_submitted);
+@@ -842,12 +839,6 @@ static int ath9k_hif_usb_alloc_rx_urbs(s
+ 
+ 	for (i = 0; i < MAX_RX_URB_NUM; i++) {
+ 
+-		rx_buf = kzalloc(sizeof(*rx_buf), GFP_KERNEL);
+-		if (!rx_buf) {
+-			ret = -ENOMEM;
+-			goto err_rxb;
+-		}
+-
+ 		/* Allocate URB */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (urb == NULL) {
+@@ -862,14 +853,11 @@ static int ath9k_hif_usb_alloc_rx_urbs(s
+ 			goto err_skb;
+ 		}
+ 
+-		rx_buf->hif_dev = hif_dev;
+-		rx_buf->skb = skb;
+-
+ 		usb_fill_bulk_urb(urb, hif_dev->udev,
+ 				  usb_rcvbulkpipe(hif_dev->udev,
+ 						  USB_WLAN_RX_PIPE),
+ 				  skb->data, MAX_RX_BUF_SIZE,
+-				  ath9k_hif_usb_rx_cb, rx_buf);
++				  ath9k_hif_usb_rx_cb, skb);
+ 
+ 		/* Anchor URB */
+ 		usb_anchor_urb(urb, &hif_dev->rx_submitted);
+@@ -895,8 +883,6 @@ err_submit:
+ err_skb:
+ 	usb_free_urb(urb);
+ err_urb:
+-	kfree(rx_buf);
+-err_rxb:
+ 	ath9k_hif_usb_dealloc_rx_urbs(hif_dev);
+ 	return ret;
+ }
+@@ -908,21 +894,14 @@ static void ath9k_hif_usb_dealloc_reg_in
+ 
+ static int ath9k_hif_usb_alloc_reg_in_urbs(struct hif_device_usb *hif_dev)
+ {
+-	struct rx_buf *rx_buf = NULL;
+-	struct sk_buff *skb = NULL;
+ 	struct urb *urb = NULL;
++	struct sk_buff *skb = NULL;
+ 	int i, ret;
+ 
+ 	init_usb_anchor(&hif_dev->reg_in_submitted);
+ 
+ 	for (i = 0; i < MAX_REG_IN_URB_NUM; i++) {
+ 
+-		rx_buf = kzalloc(sizeof(*rx_buf), GFP_KERNEL);
+-		if (!rx_buf) {
+-			ret = -ENOMEM;
+-			goto err_rxb;
+-		}
+-
+ 		/* Allocate URB */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (urb == NULL) {
+@@ -937,14 +916,11 @@ static int ath9k_hif_usb_alloc_reg_in_ur
+ 			goto err_skb;
+ 		}
+ 
+-		rx_buf->hif_dev = hif_dev;
+-		rx_buf->skb = skb;
+-
+ 		usb_fill_int_urb(urb, hif_dev->udev,
+ 				  usb_rcvintpipe(hif_dev->udev,
+ 						  USB_REG_IN_PIPE),
+ 				  skb->data, MAX_REG_IN_BUF_SIZE,
+-				  ath9k_hif_usb_reg_in_cb, rx_buf, 1);
++				  ath9k_hif_usb_reg_in_cb, skb, 1);
+ 
+ 		/* Anchor URB */
+ 		usb_anchor_urb(urb, &hif_dev->reg_in_submitted);
+@@ -970,8 +946,6 @@ err_submit:
+ err_skb:
+ 	usb_free_urb(urb);
+ err_urb:
+-	kfree(rx_buf);
+-err_rxb:
+ 	ath9k_hif_usb_dealloc_reg_in_urbs(hif_dev);
+ 	return ret;
+ }
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.h
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.h
+@@ -86,11 +86,6 @@ struct tx_buf {
+ 	struct list_head list;
+ };
+ 
+-struct rx_buf {
+-	struct sk_buff *skb;
+-	struct hif_device_usb *hif_dev;
+-};
+-
+ #define HIF_USB_TX_STOP  BIT(0)
+ #define HIF_USB_TX_FLUSH BIT(1)
+ 
 
 
