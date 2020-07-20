@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E37226194
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F775226195
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgGTOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:06:47 -0400
-Received: from verein.lst.de ([213.95.11.211]:47139 "EHLO verein.lst.de"
+        id S1728163AbgGTOHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:07:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgGTOGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:06:46 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 840C368C4E; Mon, 20 Jul 2020 16:06:44 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 16:06:43 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [PATCH v15 4/9] nvmet-passthru: Introduce NVMet passthru
- Kconfig option
-Message-ID: <20200720140643.GD4627@lst.de>
-References: <20200716203319.16022-1-logang@deltatee.com> <20200716203319.16022-5-logang@deltatee.com>
+        id S1726046AbgGTOHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:07:21 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3E2C20B1F;
+        Mon, 20 Jul 2020 14:07:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595254041;
+        bh=w0+DZGFDydbPGiykrRNE0uBxfs1HEY3VFFmgRswPWLw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mk3Rua/LU/vFgtK3rCuvE8WIYlVT00Jy3FL9/Tj1diNzUjeKPeoiBs3LSOjAObF81
+         hfP5pTClEg2K3vScVVIDJIJMrN7xU9zzya51ccjcM0BYd408AOUpeYwgHGvzRewq35
+         mFvHUligmn1ObgIfCrHnKqaOnJrvAXXqeC6/VtCk=
+Date:   Mon, 20 Jul 2020 17:07:16 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] RDS: Replace HTTP links with HTTPS ones
+Message-ID: <20200720140716.GB1080481@unreal>
+References: <20200719155845.59947-1-grandmaster@al2klimov.de>
+ <20200720045626.GF127306@unreal>
+ <20200720075848.26bc3dfe@lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716203319.16022-5-logang@deltatee.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200720075848.26bc3dfe@lwn.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 02:33:14PM -0600, Logan Gunthorpe wrote:
-> From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> 
-> This patch updates KConfig file for the NVMeOF target where we add new
-> option so that user can selectively enable/disable passthru code.
-> 
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> [logang@deltatee.com: fixed some of the wording in the help message]
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+On Mon, Jul 20, 2020 at 07:58:48AM -0600, Jonathan Corbet wrote:
+> On Mon, 20 Jul 2020 07:56:26 +0300
+> Leon Romanovsky <leon@kernel.org> wrote:
+>
+> > >  Documentation/networking/rds.rst | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > Why can't it be done in one mega-patch?
+> > It is insane to see patch for every file/link.
+> >
+> > We have more than 4k files with http:// in it.
+>
+> Do *you* want to review that megapatch?  The number of issues that have
+> come up make it clear that these patches do, indeed, need review...
 
-The Kconfig should go last for split up patches.
+Can you point me to the issues?
+What can go wrong with such a simple replacement?
+
+I can review per-folder patches if it helps.
+
+Thanks
+
+>
+> jon
