@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B602263BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6490D22654D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgGTPju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
+        id S1731387AbgGTPwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:52:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729593AbgGTPjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:46 -0400
+        id S1730785AbgGTPwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECA3022D04;
-        Mon, 20 Jul 2020 15:39:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17B8E2064B;
+        Mon, 20 Jul 2020 15:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259586;
-        bh=R0FwqxG8ES+ytRK/W3QTjkRyesWmEBLa/Mw0OsP60e0=;
+        s=default; t=1595260355;
+        bh=PORYz7Wbze4EhD0RcXJzdnktzYcKspJ3cuEg6I8qGx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UM2cZ707APNbN9T7ms5x+u8jSrZ0w1I2jnMa4nCqewe2tCkq0IGgWxksXyrq/XBSq
-         FG1bmXu+sjJRyOMBEDX44neMY12p/tssRChpoCXXwme9eTjEpH5c11CqjbOgYgHIHi
-         QNk++H+WTHYkmpXcBzVExjNb+/dBKQ6rzHyOc0VI=
+        b=yasDwTZqt2GqwKX82zd9wxbqB0sx/4sSzpbfjx1sBGEEhv580vzLq3JsOHXUlnjb/
+         TU3ttku5OJJNmLCzarZJg3JcuZQbvxt3X4ujsSyLHn9QMalMSGwPF3b1pmuyvV1VAM
+         VlGaR+Op5vAznqtuUdcRqoAEE7LKGYUbhFLBx13A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 44/58] USB: serial: iuu_phoenix: fix memory corruption
+        stable@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 4.19 073/133] soc: qcom: rpmh-rsc: Allow using free WAKE TCS for active request
 Date:   Mon, 20 Jul 2020 17:37:00 +0200
-Message-Id: <20200720152749.444649755@linuxfoundation.org>
+Message-Id: <20200720152807.236993516@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Maulik Shah <mkshah@codeaurora.org>
 
-commit e7b931bee739e8a77ae216e613d3b99342b6dec0 upstream.
+commit 38427e5a47bf83299da930bd474c6cb2632ad810 upstream.
 
-The driver would happily overwrite its write buffer with user data in
-256 byte increments due to a removed buffer-space sanity check.
+When there are more than one WAKE TCS available and there is no dedicated
+ACTIVE TCS available, invalidating all WAKE TCSes and waiting for current
+transfer to complete in first WAKE TCS blocks using another free WAKE TCS
+to complete current request.
 
-Fixes: 5fcf62b0f1f2 ("tty: iuu_phoenix: fix locking.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.31
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Remove rpmh_rsc_invalidate() to happen from tcs_write() when WAKE TCSes
+is re-purposed to be used for Active mode. Clear only currently used
+WAKE TCS's register configuration.
+
+Fixes: 2de4b8d33eab (drivers: qcom: rpmh-rsc: allow active requests from wake TCS)
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/1586703004-13674-7-git-send-email-mkshah@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/iuu_phoenix.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/soc/qcom/rpmh-rsc.c |   23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
---- a/drivers/usb/serial/iuu_phoenix.c
-+++ b/drivers/usb/serial/iuu_phoenix.c
-@@ -717,14 +717,16 @@ static int iuu_uart_write(struct tty_str
- 	struct iuu_private *priv = usb_get_serial_port_data(port);
- 	unsigned long flags;
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -148,7 +148,7 @@ int rpmh_rsc_invalidate(struct rsc_drv *
+ static struct tcs_group *get_tcs_for_msg(struct rsc_drv *drv,
+ 					 const struct tcs_request *msg)
+ {
+-	int type, ret;
++	int type;
+ 	struct tcs_group *tcs;
  
--	if (count > 256)
--		return -ENOMEM;
--
- 	spin_lock_irqsave(&priv->lock, flags);
+ 	switch (msg->state) {
+@@ -169,19 +169,10 @@ static struct tcs_group *get_tcs_for_msg
+ 	 * If we are making an active request on a RSC that does not have a
+ 	 * dedicated TCS for active state use, then re-purpose a wake TCS to
+ 	 * send active votes.
+-	 * NOTE: The driver must be aware that this RSC does not have a
+-	 * dedicated AMC, and therefore would invalidate the sleep and wake
+-	 * TCSes before making an active state request.
+ 	 */
+ 	tcs = get_tcs_of_type(drv, type);
+-	if (msg->state == RPMH_ACTIVE_ONLY_STATE && !tcs->num_tcs) {
++	if (msg->state == RPMH_ACTIVE_ONLY_STATE && !tcs->num_tcs)
+ 		tcs = get_tcs_of_type(drv, WAKE_TCS);
+-		if (tcs->num_tcs) {
+-			ret = rpmh_rsc_invalidate(drv);
+-			if (ret)
+-				return ERR_PTR(ret);
+-		}
+-	}
  
-+	count = min(count, 256 - priv->writelen);
-+	if (count == 0)
-+		goto out;
-+
- 	/* fill the buffer */
- 	memcpy(priv->writebuf + priv->writelen, buf, count);
- 	priv->writelen += count;
-+out:
- 	spin_unlock_irqrestore(&priv->lock, flags);
+ 	return tcs;
+ }
+@@ -406,8 +397,16 @@ static int tcs_write(struct rsc_drv *drv
  
- 	return count;
+ 	tcs->req[tcs_id - tcs->offset] = msg;
+ 	set_bit(tcs_id, drv->tcs_in_use);
+-	if (msg->state == RPMH_ACTIVE_ONLY_STATE && tcs->type != ACTIVE_TCS)
++	if (msg->state == RPMH_ACTIVE_ONLY_STATE && tcs->type != ACTIVE_TCS) {
++		/*
++		 * Clear previously programmed WAKE commands in selected
++		 * repurposed TCS to avoid triggering them. tcs->slots will be
++		 * cleaned from rpmh_flush() by invoking rpmh_rsc_invalidate()
++		 */
++		write_tcs_reg_sync(drv, RSC_DRV_CMD_ENABLE, tcs_id, 0);
++		write_tcs_reg_sync(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, tcs_id, 0);
+ 		enable_tcs_irq(drv, tcs_id, true);
++	}
+ 	spin_unlock(&drv->lock);
+ 
+ 	__tcs_buffer_write(drv, tcs_id, 0, msg);
 
 
