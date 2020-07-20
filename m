@@ -2,125 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FC322659C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3E72265A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731667AbgGTPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731641AbgGTPzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:08 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0960B22BEF;
-        Mon, 20 Jul 2020 15:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260508;
-        bh=CPfkp2QBSP3gKifkBSkUyRSWEi+JHbUnJ+ZB0izj7DY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a5D8vvsdPtuyNYv8qE1jt1t3R9hwgKBR8Ede9nALJ4GZh3UC88Nws0YRzwzNNeorI
-         I6F07W869uTS3luWta0bx2aHQA6vGJ8h5e5sxVfXxpGZN+kyk/pEq36G0rCjq/iKmZ
-         /FYTeONkLgSEhZ5hG4MefWUaAVfzMFvXZKz/EBg0=
-Date:   Mon, 20 Jul 2020 16:55:02 +0100
-From:   Will Deacon <will@kernel.org>
-To:     boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Joel Fernandes <joelaf@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
+        id S1731715AbgGTPzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730669AbgGTPzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0D9C061794;
+        Mon, 20 Jul 2020 08:55:33 -0700 (PDT)
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595260531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2jbWthf/sjZFiaxrDbdSXd7IDu0n+zAeGRM5n6XQ12Q=;
+        b=cm5VzJaz5qrAkoZitAhzUZDycS7yfhS15HX/+qK23ajutc5u5UwdCxFcqwQzLus/vh7EWX
+        UyDw/ZPHkHN0liJK3lBqbLf/i9L+sWnoSe6WIs1Gwx0jp3TkBs4IYDOE1YG7MPnC878s3w
+        miPatgXK3fxnduOAlyFX1rDdxV+nxkYn47JxWpPmVWWwd7Glvmu7qAv3Wyil3jAmMaDY0v
+        t9TgnD9Echr0UPz3HIcpF4TyuPgtaatVtc/2O94aTqnAy7T4WnHmjJF6O1OnQ9sedFqgKE
+        SgF9i7DxWT0Af0lsIBTlGl05ZNKEBKMpJB1XK2TR2FaerXgz/IbL3NL1yn2O4g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595260531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2jbWthf/sjZFiaxrDbdSXd7IDu0n+zAeGRM5n6XQ12Q=;
+        b=ZAFWlyQoaZ+tWxi7yUUbv462J9muSHDnco6CRcWa+luXz/lRxaZdbaNGE+wDp+0kF4FYvu
+        h9M+wZzjsYe0YpDw==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Richard Henderson <rth@twiddle.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kernel-team@android.com
-Subject: Re: [PATCH v3 02/19] compiler.h: Split {READ,WRITE}_ONCE definitions
- out into rwonce.h
-Message-ID: <20200720155501.GA12064@willie-the-truck>
-References: <20200710165203.31284-1-will@kernel.org>
- <20200710165203.31284-3-will@kernel.org>
- <20200713122322.GD72639@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v4 00/24] seqlock: Extend seqcount API with associated locks
+Date:   Mon, 20 Jul 2020 17:55:06 +0200
+Message-Id: <20200720155530.1173732-1-a.darwish@linutronix.de>
+In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713122322.GD72639@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 08:23:22PM +0800, boqun.feng@gmail.com wrote:
-> On Fri, Jul 10, 2020 at 05:51:46PM +0100, Will Deacon wrote:
-> > diff --git a/include/asm-generic/rwonce.h b/include/asm-generic/rwonce.h
-> > new file mode 100644
-> > index 000000000000..92cc2f223cb3
-> > --- /dev/null
-> > +++ b/include/asm-generic/rwonce.h
-> > @@ -0,0 +1,91 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Prevent the compiler from merging or refetching reads or writes. The
-> > + * compiler is also forbidden from reordering successive instances of
-> > + * READ_ONCE and WRITE_ONCE, but only when the compiler is aware of some
-> > + * particular ordering. One way to make the compiler aware of ordering is to
-> > + * put the two invocations of READ_ONCE or WRITE_ONCE in different C
-> > + * statements.
-> > + *
-> > + * These two macros will also work on aggregate data types like structs or
-> > + * unions.
-> > + *
-> > + * Their two major use cases are: (1) Mediating communication between
-> > + * process-level code and irq/NMI handlers, all running on the same CPU,
-> > + * and (2) Ensuring that the compiler does not fold, spindle, or otherwise
-> > + * mutilate accesses that either do not require ordering or that interact
-> > + * with an explicit memory barrier or atomic instruction that provides the
-> > + * required ordering.
-> > + */
-> > +#ifndef __ASM_GENERIC_RWONCE_H
-> > +#define __ASM_GENERIC_RWONCE_H
-> > +
-> > +#ifndef __ASSEMBLY__
-> > +
-> > +#include <linux/compiler_types.h>
-> > +#include <linux/kasan-checks.h>
-> > +#include <linux/kcsan-checks.h>
-> > +
-> > +#include <asm/barrier.h>
-> > +
-> > +/*
-> > + * Use __READ_ONCE() instead of READ_ONCE() if you do not require any
-> > + * atomicity or dependency ordering guarantees. Note that this may result
-> > + * in tears!
-> > + */
-> > +#define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
-> > +
-> > +#define __READ_ONCE_SCALAR(x)						\
-> > +({									\
-> > +	__unqual_scalar_typeof(x) __x = __READ_ONCE(x);			\
-> > +	smp_read_barrier_depends();					\
-> > +	(typeof(x))__x;							\
-> > +})
-> > +
-> > +#define READ_ONCE(x)							\
-> > +({									\
-> > +	compiletime_assert_rwonce_type(x);				\
-> 
-> Does it make sense if we also move the definition of this compile time
-> assertion into rwonce.h too?
+Hi,
 
-Yes, that looks straightforward enough. Thanks for the suggestion!
+This is v4 of the seqlock patch series:
 
-I'll also try to get this lot into -next this week.
+   [PATCH v1 00/25]
+   https://lore.kernel.org/lkml/20200519214547.352050-1-a.darwish@linutronix.de
 
-Will
+   [PATCH v2 00/06] (bugfixes-only, merged)
+   https://lore.kernel.org/lkml/20200603144949.1122421-1-a.darwish@linutronix.de
+
+   [PATCH v2 00/18]
+   https://lore.kernel.org/lkml/20200608005729.1874024-1-a.darwish@linutronix.de
+
+   [PATCH v3 00/20]
+   https://lore.kernel.org/lkml/20200630054452.3675847-1-a.darwish@linutronix.de
+
+It is based over:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git :: locking/core
+
+Changelog
+=========
+
+ - Unconditionally use C11 _Generic() expressions for seqcount_locktype_t
+   switching. Thanks to Peter, pushing for 6ec4476ac825 ("Raise gcc
+   version requirement to 4.9").
+
+ - Compress the new seqcount_locktype_t code code by using generative
+   macros, as suggested by Peter here:
+
+   https://lkml.kernel.org/r/20200708122938.GQ4800@hirez.programming.kicks-ass.net
+
+   Keep *all* functions that are to be invoked by call-sites out of such
+   generative macros though. This simplifies the generative macros code,
+   and (more importantly) make the newly exported seqlock.h API explicit.
+
+ - Make all documentation "RST-lite", for better readability from text
+   editors.
+
+ - Add additional clean-ups at the start of the series for better
+   overall readability of seqlock.h code, and for future extensibility.
+
+Thanks,
+
+8<--------------
+
+Ahmed S. Darwish (24):
+  Documentation: locking: Describe seqlock design and usage
+  seqlock: Properly format kernel-doc code samples
+  seqlock: seqcount_t latch: End read sections with
+    read_seqcount_retry()
+  seqlock: Reorder seqcount_t and seqlock_t API definitions
+  seqlock: Add kernel-doc for seqcount_t and seqlock_t APIs
+  seqlock: Implement raw_seqcount_begin() in terms of
+    raw_read_seqcount()
+  lockdep: Add preemption enabled/disabled assertion APIs
+  seqlock: lockdep assert non-preemptibility on seqcount_t write
+  seqlock: Extend seqcount API with associated locks
+  seqlock: Align multi-line macros newline escapes at 72 columns
+  dma-buf: Remove custom seqcount lockdep class key
+  dma-buf: Use sequence counter with associated wound/wait mutex
+  sched: tasks: Use sequence counter with associated spinlock
+  netfilter: conntrack: Use sequence counter with associated spinlock
+  netfilter: nft_set_rbtree: Use sequence counter with associated rwlock
+  xfrm: policy: Use sequence counters with associated lock
+  timekeeping: Use sequence counter with associated raw spinlock
+  vfs: Use sequence counter with associated spinlock
+  raid5: Use sequence counter with associated spinlock
+  iocost: Use sequence counter with associated spinlock
+  NFSv4: Use sequence counter with associated spinlock
+  userfaultfd: Use sequence counter with associated spinlock
+  kvm/eventfd: Use sequence counter with associated spinlock
+  hrtimer: Use sequence counter with associated raw spinlock
+
+ Documentation/locking/index.rst               |    1 +
+ Documentation/locking/seqlock.rst             |  222 ++++
+ block/blk-iocost.c                            |    5 +-
+ drivers/dma-buf/dma-resv.c                    |   15 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |    2 -
+ drivers/md/raid5.c                            |    2 +-
+ drivers/md/raid5.h                            |    2 +-
+ fs/dcache.c                                   |    2 +-
+ fs/fs_struct.c                                |    4 +-
+ fs/nfs/nfs4_fs.h                              |    2 +-
+ fs/nfs/nfs4state.c                            |    2 +-
+ fs/userfaultfd.c                              |    4 +-
+ include/linux/dcache.h                        |    2 +-
+ include/linux/dma-resv.h                      |    4 +-
+ include/linux/fs_struct.h                     |    2 +-
+ include/linux/hrtimer.h                       |    2 +-
+ include/linux/kvm_irqfd.h                     |    2 +-
+ include/linux/lockdep.h                       |   19 +
+ include/linux/sched.h                         |    2 +-
+ include/linux/seqlock.h                       | 1139 +++++++++++++----
+ include/net/netfilter/nf_conntrack.h          |    2 +-
+ init/init_task.c                              |    3 +-
+ kernel/fork.c                                 |    2 +-
+ kernel/time/hrtimer.c                         |   13 +-
+ kernel/time/timekeeping.c                     |   19 +-
+ lib/Kconfig.debug                             |    1 +
+ net/netfilter/nf_conntrack_core.c             |    5 +-
+ net/netfilter/nft_set_rbtree.c                |    4 +-
+ net/xfrm/xfrm_policy.c                        |   10 +-
+ virt/kvm/eventfd.c                            |    2 +-
+ 30 files changed, 1173 insertions(+), 323 deletions(-)
+ create mode 100644 Documentation/locking/seqlock.rst
+
+base-commit: a9232dc5607dbada801f2fe83ea307cda762969a
+--
+2.20.1
