@@ -2,348 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1190122574F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CE0225754
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgGTGHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:07:00 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7506 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgGTGHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:07:00 -0400
-IronPort-SDR: zAEJIIXIiCmFHi8eJZT+lfgu5nJhMCjmkfedDXZSpP5hLG2J5XdiyenMqyI6zxi0HoiodbKqJV
- 9LPKintPUSWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9687"; a="149015360"
-X-IronPort-AV: E=Sophos;i="5.75,373,1589266800"; 
-   d="scan'208";a="149015360"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2020 23:06:59 -0700
-IronPort-SDR: eFtD+xHfrrkktCRUlkKydb4OTCZdu7wdXII3Q1X/lZ63OzStopi+YxOjmtapxfhJsTBY7dZYDA
- 9GEJEA7L4Dmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,373,1589266800"; 
-   d="scan'208";a="327430436"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2020 23:06:53 -0700
-Subject: Re: [RFC PATCH 10/16] sched: Trivial forced-newidle balancer(Internet
- mail)
-To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pjt@google.com" <pjt@google.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kerrnel@google.com" <kerrnel@google.com>,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "vineethrp@gmail.com" <vineethrp@gmail.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <980b600006945a45ce1ec34ef206fc04bcf0b5dc.1593530334.git.vpillai@digitalocean.com>
- <750BB828-1AAE-4DED-A460-CF8ADDE3CFDA@tencent.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <288368e3-9f6b-21bf-287a-f2446073f6fb@linux.intel.com>
-Date:   Mon, 20 Jul 2020 14:06:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726675AbgGTGJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:09:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34188 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725805AbgGTGJN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 02:09:13 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06K65Vgu116672;
+        Mon, 20 Jul 2020 02:09:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d2m2uq4f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 02:09:10 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06K66ASq120782;
+        Mon, 20 Jul 2020 02:09:09 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d2m2uq39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 02:09:09 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06K66VEA003323;
+        Mon, 20 Jul 2020 06:09:07 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 32brq814vf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 06:09:06 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06K6946M44630240
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 06:09:04 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 815ACA4059;
+        Mon, 20 Jul 2020 06:09:04 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D71B9A404D;
+        Mon, 20 Jul 2020 06:09:02 +0000 (GMT)
+Received: from drishya.in.ibm.com (unknown [9.85.113.150])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 20 Jul 2020 06:09:02 +0000 (GMT)
+Date:   Mon, 20 Jul 2020 11:39:00 +0530
+From:   Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>, linuxppc-dev@ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/5] cpuidle-pseries: Add function to parse extended CEDE
+ records
+Message-ID: <20200720060900.GC4000@drishya.in.ibm.com>
+Reply-To: svaidy@linux.ibm.com
+References: <1594120299-31389-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1594120299-31389-3-git-send-email-ego@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <750BB828-1AAE-4DED-A460-CF8ADDE3CFDA@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <1594120299-31389-3-git-send-email-ego@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_01:2020-07-17,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ clxscore=1015 suspectscore=1 phishscore=0 spamscore=0 lowpriorityscore=0
+ mlxlogscore=999 bulkscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200045
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/20 12:06, benbjiang(蒋彪) wrote:
-> Hi,
+* Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-07-07 16:41:36]:
+
+> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 > 
->> On Jul 1, 2020, at 5:32 AM, Vineeth Remanan Pillai <vpillai@digitalocean.com> wrote:
->>
->> From: Peter Zijlstra <peterz@infradead.org>
->>
->> When a sibling is forced-idle to match the core-cookie; search for
->> matching tasks to fill the core.
->>
->> rcu_read_unlock() can incur an infrequent deadlock in
->> sched_core_balance(). Fix this by using the RCU-sched flavor instead.
->>
->> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> Acked-by: Paul E. McKenney <paulmck@kernel.org>
->> ---
->> include/linux/sched.h |   1 +
->> kernel/sched/core.c   | 131 +++++++++++++++++++++++++++++++++++++++++-
->> kernel/sched/idle.c   |   1 +
->> kernel/sched/sched.h  |   6 ++
->> 4 files changed, 138 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index 3c8dcc5ff039..4f9edf013df3 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -688,6 +688,7 @@ struct task_struct {
->> #ifdef CONFIG_SCHED_CORE
->> 	struct rb_node			core_node;
->> 	unsigned long			core_cookie;
->> +	unsigned int			core_occupation;
->> #endif
->>
->> #ifdef CONFIG_CGROUP_SCHED
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 4d6d6a678013..fb9edb09ead7 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -201,6 +201,21 @@ static struct task_struct *sched_core_find(struct rq *rq, unsigned long cookie)
->> 	return match;
->> }
->>
->> +static struct task_struct *sched_core_next(struct task_struct *p, unsigned long cookie)
->> +{
->> +	struct rb_node *node = &p->core_node;
->> +
->> +	node = rb_next(node);
->> +	if (!node)
->> +		return NULL;
->> +
->> +	p = container_of(node, struct task_struct, core_node);
->> +	if (p->core_cookie != cookie)
->> +		return NULL;
->> +
->> +	return p;
->> +}
->> +
->> /*
->>  * The static-key + stop-machine variable are needed such that:
->>  *
->> @@ -4233,7 +4248,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->> 	struct task_struct *next, *max = NULL;
->> 	const struct sched_class *class;
->> 	const struct cpumask *smt_mask;
->> -	int i, j, cpu;
->> +	int i, j, cpu, occ = 0;
->> 	bool need_sync;
->>
->> 	if (!sched_core_enabled(rq))
->> @@ -4332,6 +4347,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->> 				goto done;
->> 			}
->>
->> +			if (!is_idle_task(p))
->> +				occ++;
->> +
->> 			rq_i->core_pick = p;
->>
->> 			/*
->> @@ -4357,6 +4375,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->>
->> 						cpu_rq(j)->core_pick = NULL;
->> 					}
->> +					occ = 1;
->> 					goto again;
->> 				} else {
->> 					/*
->> @@ -4393,6 +4412,8 @@ next_class:;
->> 		if (is_idle_task(rq_i->core_pick) && rq_i->nr_running)
->> 			rq_i->core_forceidle = true;
->>
->> +		rq_i->core_pick->core_occupation = occ;
->> +
->> 		if (i == cpu)
->> 			continue;
->>
->> @@ -4408,6 +4429,114 @@ next_class:;
->> 	return next;
->> }
->>
->> +static bool try_steal_cookie(int this, int that)
->> +{
->> +	struct rq *dst = cpu_rq(this), *src = cpu_rq(that);
->> +	struct task_struct *p;
->> +	unsigned long cookie;
->> +	bool success = false;
->> +
->> +	local_irq_disable();
->> +	double_rq_lock(dst, src);
->> +
->> +	cookie = dst->core->core_cookie;
->> +	if (!cookie)
->> +		goto unlock;
->> +
->> +	if (dst->curr != dst->idle)
->> +		goto unlock;
->> +
->> +	p = sched_core_find(src, cookie);
->> +	if (p == src->idle)
->> +		goto unlock;
->> +
->> +	do {
->> +		if (p == src->core_pick || p == src->curr)
->> +			goto next;
->> +
->> +		if (!cpumask_test_cpu(this, &p->cpus_mask))
->> +			goto next;
->> +
->> +		if (p->core_occupation > dst->idle->core_occupation)
->> +			goto next;
->> +
->> +		p->on_rq = TASK_ON_RQ_MIGRATING;
->> +		deactivate_task(src, p, 0);
->> +		set_task_cpu(p, this);
->> +		activate_task(dst, p, 0);
->> +		p->on_rq = TASK_ON_RQ_QUEUED;
->> +
->> +		resched_curr(dst);
->> +
->> +		success = true;
->> +		break;
->> +
->> +next:
->> +		p = sched_core_next(p, cookie);
->> +	} while (p);
->> +
->> +unlock:
->> +	double_rq_unlock(dst, src);
->> +	local_irq_enable();
->> +
->> +	return success;
->> +}
->> +
->> +static bool steal_cookie_task(int cpu, struct sched_domain *sd)
->> +{
->> +	int i;
->> +
->> +	for_each_cpu_wrap(i, sched_domain_span(sd), cpu) {
-> Since (i == cpu) should be skipped, should we start iteration at cpu+1? like,
-> 	for_each_cpu_wrap(i, sched_domain_span(sd), cpu+1) {
-> 		…
-> 	}
-> In that way, we could avoid hitting following if(i == cpu) always.
-
-IMHO, this won't work, as cpuid is not continuous.
-
->> +		if (i == cpu)
->> +			continue;
->> +
->> +		if (need_resched())
->> +			break;
-> Should we return true here to accelerate the breaking of sched_core_balance? 
-> Otherwise the breaking would be delayed to the next level sd iteration.
->> +
->> +		if (try_steal_cookie(cpu, i))
->> +			return true;
->> +	}
->> +
->> +	return false;
->> +}
->> +
->> +static void sched_core_balance(struct rq *rq)
->> +{
->> +	struct sched_domain *sd;
->> +	int cpu = cpu_of(rq);
->> +
->> +	rcu_read_lock_sched();
->> +	raw_spin_unlock_irq(rq_lockp(rq));
->> +	for_each_domain(cpu, sd) {
->> +		if (!(sd->flags & SD_LOAD_BALANCE))
->> +			break;
->> +
->> +		if (need_resched())
->> +			break;
-> If rescheded here, we missed the chance to do further forced-newidle balance, 
-> and the idle-core could be idle for a long time, because lacking of pulling chance.
-> Could it be possible to add a new forced-newidle balance chance in task_tick_idle?
-> which could make it more efficient.
-
-This flag indicates there is another thread deserves to run, So I guess the core won't
-be idle for a long time.
-
-Thanks,
--Aubrey
+> Currently we use CEDE with latency-hint 0 as the only other idle state
+> on a dedicated LPAR apart from the polling "snooze" state.
 > 
->> +		if (steal_cookie_task(cpu, sd))
->> +			break;
->> +	}
->> +	raw_spin_lock_irq(rq_lockp(rq));
->> +	rcu_read_unlock_sched();
->> +}
->> +
->> +static DEFINE_PER_CPU(struct callback_head, core_balance_head);
->> +
->> +void queue_core_balance(struct rq *rq)
->> +{
->> +	if (!sched_core_enabled(rq))
->> +		return;
->> +
->> +	if (!rq->core->core_cookie)
->> +		return;
->> +
->> +	if (!rq->nr_running) /* not forced idle */
->> +		return;
->> +
->> +	queue_balance_callback(rq, &per_cpu(core_balance_head, rq->cpu), sched_core_balance);
->> +}
->> +
->> #else /* !CONFIG_SCHED_CORE */
->>
->> static struct task_struct *
->> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
->> index a8d40ffab097..dff6ba220ed7 100644
->> --- a/kernel/sched/idle.c
->> +++ b/kernel/sched/idle.c
->> @@ -395,6 +395,7 @@ static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool fir
->> {
->> 	update_idle_core(rq);
->> 	schedstat_inc(rq->sched_goidle);
->> +	queue_core_balance(rq);
->> }
->>
->> #ifdef CONFIG_SMP
->> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->> index 293aa1ae0308..464559676fd2 100644
->> --- a/kernel/sched/sched.h
->> +++ b/kernel/sched/sched.h
->> @@ -1089,6 +1089,8 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
->> bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
->> void sched_core_adjust_sibling_vruntime(int cpu, bool coresched_enabled);
->>
->> +extern void queue_core_balance(struct rq *rq);
->> +
->> #else /* !CONFIG_SCHED_CORE */
->>
->> static inline bool sched_core_enabled(struct rq *rq)
->> @@ -1101,6 +1103,10 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
->> 	return &rq->__lock;
->> }
->>
->> +static inline void queue_core_balance(struct rq *rq)
->> +{
->> +}
->> +
->> #endif /* CONFIG_SCHED_CORE */
->>
->> #ifdef CONFIG_SCHED_SMT
->> -- 
->> 2.17.1
->>
->>
+> The platform might support additional extended CEDE idle states, which
+> can be discovered through the "ibm,get-system-parameter" rtas-call
+> made with CEDE_LATENCY_TOKEN.
 > 
+> This patch adds a function to obtain information about the extended
+> CEDE idle states from the platform and parse the contents to populate
+> an array of extended CEDE states. These idle states thus discovered
+> will be added to the cpuidle framework in the next patch.
+> 
+> dmesg on a POWER9 LPAR, demonstrating the output of parsing the
+> extended CEDE latency parameters.
+> 
+> [    5.913180] xcede : xcede_record_size = 10
+> [    5.913183] xcede : Record 0 : hint = 1, latency =0x400 tb-ticks, Wake-on-irq = 1
+> [    5.913188] xcede : Record 1 : hint = 2, latency =0x3e8000 tb-ticks, Wake-on-irq = 0
+> [    5.913193] cpuidle : Skipping the 2 Extended CEDE idle states
+> 
+> Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+
+Reviewed-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+
+>
+> ---
+>  drivers/cpuidle/cpuidle-pseries.c | 129 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 127 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
+> index 39d4bb6..c13549b 100644
+> --- a/drivers/cpuidle/cpuidle-pseries.c
+> +++ b/drivers/cpuidle/cpuidle-pseries.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/runlatch.h>
+>  #include <asm/idle.h>
+>  #include <asm/plpar_wrappers.h>
+> +#include <asm/rtas.h>
+> 
+>  struct cpuidle_driver pseries_idle_driver = {
+>  	.name             = "pseries_idle",
+> @@ -105,9 +106,120 @@ static void check_and_cede_processor(void)
+>  	}
+>  }
+> 
+> -#define NR_CEDE_STATES		1  /* CEDE with latency-hint 0 */
+> +struct xcede_latency_records {
+> +	u8  latency_hint;
+> +	u64 wakeup_latency_tb_ticks;
+> +	u8  responsive_to_irqs;
+> +};
+> +
+> +/*
+> + * XCEDE : Extended CEDE states discovered through the
+> + *         "ibm,get-systems-parameter" rtas-call with the token
+> + *         CEDE_LATENCY_TOKEN
+> + */
+> +#define MAX_XCEDE_STATES		4
+> +#define	XCEDE_LATENCY_RECORD_SIZE	10
+> +#define XCEDE_LATENCY_PARAM_MAX_LENGTH	(2 + 2 + \
+> +					(MAX_XCEDE_STATES * XCEDE_LATENCY_RECORD_SIZE))
+> +
+> +#define CEDE_LATENCY_TOKEN		45
+> +
+> +#define NR_CEDE_STATES		(MAX_XCEDE_STATES + 1) /* CEDE with latency-hint 0 */
+>  #define NR_DEDICATED_STATES	(NR_CEDE_STATES + 1) /* Includes snooze */
+> 
+> +struct xcede_latency_records xcede_records[MAX_XCEDE_STATES];
+> +unsigned int nr_xcede_records;
+> +char xcede_parameters[XCEDE_LATENCY_PARAM_MAX_LENGTH];
+> +
+> +static int parse_cede_parameters(void)
+> +{
+> +	int ret = -1, i;
+> +	u16 payload_length;
+> +	u8 xcede_record_size;
+> +	u32 total_xcede_records_size;
+> +	char *payload;
+> +
+> +	memset(xcede_parameters, 0, XCEDE_LATENCY_PARAM_MAX_LENGTH);
+> +
+> +	ret = rtas_call(rtas_token("ibm,get-system-parameter"), 3, 1,
+> +			NULL, CEDE_LATENCY_TOKEN, __pa(xcede_parameters),
+> +			XCEDE_LATENCY_PARAM_MAX_LENGTH);
+> +
+> +	if (ret) {
+> +		pr_err("xcede: Error parsing CEDE_LATENCY_TOKEN\n");
+> +		return ret;
+> +	}
+> +
+> +	payload_length = be16_to_cpu(*(__be16 *)(&xcede_parameters[0]));
+> +	payload = &xcede_parameters[2];
+> +
+> +	/*
+> +	 * If the platform supports the cede latency settings
+> +	 * information system parameter it must provide the following
+> +	 * information in the NULL terminated parameter string:
+> +	 *
+> +	 * a. The first byte is the length ???N??? of each cede
+> +	 *    latency setting record minus one (zero indicates a length
+> +	 *    of 1 byte).
+> +	 *
+> +	 * b. For each supported cede latency setting a cede latency
+> +	 *    setting record consisting of the first ???N??? bytes as per
+> +	 *    the following table.
+> +	 *
+> +	 *	-----------------------------
+> +	 *	| Field           | Field  |
+> +	 *	| Name            | Length |
+> +	 *	-----------------------------
+> +	 *	| Cede Latency    | 1 Byte |
+> +	 *	| Specifier Value |        |
+> +	 *	-----------------------------
+> +	 *	| Maximum wakeup  |        |
+> +	 *	| latency in      | 8 Bytes|
+> +	 *	| tb-ticks        |        |
+> +	 *	-----------------------------
+> +	 *	| Responsive to   |        |
+> +	 *	| external        | 1 Byte |
+> +	 *	| interrupts      |        |
+> +	 *	-----------------------------
+> +	 *
+> +	 * This version has cede latency record size = 10.
+> +	 */
+> +	xcede_record_size = (u8)payload[0] + 1;
+
+This is standard PAPR interface that has been defined long time ago.
+However, new H_CEDE hints that map to new platform features will
+appear in the same interface and Linux needs to prepare and be ready
+to check and exploit the new hints if they are useful for the given
+setup.
+
+
+> +
+> +	if (xcede_record_size != XCEDE_LATENCY_RECORD_SIZE) {
+> +		pr_err("xcede : Expected record-size %d. Observed size %d.\n",
+> +		       XCEDE_LATENCY_RECORD_SIZE, xcede_record_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	pr_info("xcede : xcede_record_size = %d\n", xcede_record_size);
+> +
+> +	/*
+> +	 * Since the payload_length includes the last NULL byte and
+> +	 * the xcede_record_size, the remaining bytes correspond to
+> +	 * array of all cede_latency settings.
+> +	 */
+> +	total_xcede_records_size = payload_length - 2;
+> +	nr_xcede_records = total_xcede_records_size / xcede_record_size;
+> +
+> +	payload++;
+> +	for (i = 0; i < nr_xcede_records; i++) {
+> +		struct xcede_latency_records *record = &xcede_records[i];
+> +
+> +		record->latency_hint = (u8)payload[0];
+> +		record->wakeup_latency_tb_ticks  =
+> +			be64_to_cpu(*(__be64 *)(&payload[1]));
+> +		record->responsive_to_irqs = (u8)payload[9];
+> +		payload += xcede_record_size;
+> +		pr_info("xcede : Record %d : hint = %u, latency =0x%llx tb-ticks, Wake-on-irq = %u\n",
+> +			i, record->latency_hint,
+> +			record->wakeup_latency_tb_ticks,
+> +			record->responsive_to_irqs);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  u8 cede_latency_hint[NR_DEDICATED_STATES];
+>  static int dedicated_cede_loop(struct cpuidle_device *dev,
+>  				struct cpuidle_driver *drv,
+> @@ -238,6 +350,19 @@ static int pseries_cpuidle_driver_init(void)
+>  	return 0;
+>  }
+> 
+> +static int add_pseries_idle_states(void)
+> +{
+> +	int nr_states = 2; /* By default we have snooze, CEDE */
+> +
+> +	if (parse_cede_parameters())
+> +		return nr_states;
+> +
+> +	pr_info("cpuidle : Skipping the %d Extended CEDE idle states\n",
+> +		nr_xcede_records);
+> +
+> +	return nr_states;
+
+More logic will be added to this function in the subsequent patches to
+actually make use of the information that is obtained from the platform
+firmware.
+
+--Vaidy
 
