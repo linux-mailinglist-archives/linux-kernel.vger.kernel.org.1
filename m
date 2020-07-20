@@ -2,151 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB531225ACF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CD7225AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgGTJGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:06:22 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:42287 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725815AbgGTJGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:06:21 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id xRkVjXSTlNPeYxRkWjmdDD; Mon, 20 Jul 2020 11:06:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1595235979; bh=2FJzit5n0YE2hjdQJPBoYTGdU63MnCmR4nSVSBKTdvs=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=hHV30ov/BaNpJP4l3l+bgYqd8QGPp+Jhiltcq7BEX49RPGrIdYwXAHbPi1pJqnNqz
-         crGm3BTHdr/F3McCy/vfOocsquzupr9RSRxs5PWwblwUKy69GOIaQ64zldYgO06Ba4
-         SwLWUVoKmXTQU2XVpy8TJoa5iLdGmhd1Glz26tiTW97QXEiAPMRW798nkwHAuJooP5
-         Y6QkHuKFoH64sMQ6Ko2WY4mbExcFracOpYKGAA1NaI1GQNWnZ9dIGoRzcOFIsndTxl
-         6FyvXf4ci7TShOqHQaYClc18ILZ6F0pVfxrjtWKVp+QNEwECOY8lORZk8unq+aK1ym
-         sFHuOTefGsq0g==
-Subject: Re: [PATCH v2 1/4] media: v4l2-ctrls: Add encoder constant quality
- control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20200616201446.15996-1-stanimir.varbanov@linaro.org>
- <20200616201446.15996-2-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <075e4109-00ed-4c47-009a-84915ed6f75a@xs4all.nl>
-Date:   Mon, 20 Jul 2020 11:06:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728119AbgGTJGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:06:46 -0400
+Received: from mail-eopbgr00071.outbound.protection.outlook.com ([40.107.0.71]:30692
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728199AbgGTJGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 05:06:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZBQc0YByJfxTFnErQeXzGAWwOa+c6yySDPS1UnTRl6IJuI5L6phCyFB3HyeOkjW+CXnddsobua8HNURI15rNQPzTzfVuKL0tEuRvqo9pB9FbRl0gyryyA0jLRvinrTIch4dIwD0tzqRURMQjJ5Jp2AkBtMYuR8YG18y49jnoKPcX1x4h3CtOVSZPzVwjTL0nNv4zCkMgwGY1jI/kQ4UxSaCEfLEfGfqrXTQ20NtCfvg4q1XUM46htOzDOJ5xoMjR94vgT/9wkUaUr6/EsHcQ49zfZ+Pf3pCcXbpfuk+y8BQO4lfcE6hJTqZ4S6ZEfXoWXWBgto8kgLdc7R2jEvnSFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6cdBvoqcm2N7236Wx/8Y1vELz+K7/q5quSaRCjCdGkM=;
+ b=ez7dLVE6YIMA+dGJZskxl9ctB4Fnt85xa965GcvN3PYn7jxKO6VxyFu4+niXWVWRUsHwAZLMrM46DlmbfojLs194rRDLlPoCCiyfjnTeCvav2Y6c3w/iu/hw0q+xbPFsMnMR5WGd66/pi+gedxL3e8tw6uaHVaKn0GmmIMx19FbhJCi07GXYPenqO5NY4thrR3rs4v50VPWdsp7DPjqvtxs4fFHymEpA8wGMkz4QhingVb4FdfgeP1R0B8UJqQRt9J1igkpg/tkejVeEep978BGF2UfAaHxstoKJ4RIK2iPcn8E3JtWUwrWexArVIeQtvVwzwvdVNV03h+V/XPEmhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6cdBvoqcm2N7236Wx/8Y1vELz+K7/q5quSaRCjCdGkM=;
+ b=gfKdszcWfsOmgo7WLZ9Tmgb3/UixA0Wx2j86VCkEDRVDP0mgg75HwfZRpiw70TjjKSiZ1Fz84XUwbH03PnWwiZ9Hl/YhAs5osB4c3iEksB8BofO+OXa2YNw5cmnI+043F0oaisBcuC8UfWWjSmusByn6U0zMdfnBX+bYmFT41nA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM4PR0401MB2401.eurprd04.prod.outlook.com
+ (2603:10a6:200:47::26) by AM0PR0402MB3762.eurprd04.prod.outlook.com
+ (2603:10a6:208:3::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.23; Mon, 20 Jul
+ 2020 09:06:25 +0000
+Received: from AM4PR0401MB2401.eurprd04.prod.outlook.com
+ ([fe80::d0eb:f746:90e:44b3]) by AM4PR0401MB2401.eurprd04.prod.outlook.com
+ ([fe80::d0eb:f746:90e:44b3%12]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
+ 09:06:25 +0000
+From:   franck.lenormand@oss.nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
+Cc:     franck.lenormand@oss.nxp.com, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, aisheng.dong@nxp.com, abel.vesa@nxp.com,
+        Anson.Huang@nxp.com, linux@rempel-privat.de,
+        leonard.crestez@nxp.com, daniel.baluta@nxp.com,
+        qiangqing.zhang@nxp.com, peng.fan@nxp.com
+Subject: [PATCH 6/7] dt-bindings: arm: imx: Documentation of the SC secvio driver
+Date:   Mon, 20 Jul 2020 11:06:16 +0200
+Message-Id: <1595235977-106241-7-git-send-email-franck.lenormand@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1595235977-106241-1-git-send-email-franck.lenormand@oss.nxp.com>
+References: <1595235977-106241-1-git-send-email-franck.lenormand@oss.nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:15::28) To AM4PR0401MB2401.eurprd04.prod.outlook.com
+ (2603:10a6:200:47::26)
 MIME-Version: 1.0
-In-Reply-To: <20200616201446.15996-2-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfMuEScfQvDFOW+ycP4h2PWMq17WlTRaO/n6Hu9nNK+v1KYxd2WYRhfEAWz33YFpy40PtD+0AhTQ8C4PWrd5IrLi5XAjJJrwgzbM2BQC0uQO9BVfQvft/
- XeL5hbB1x2PB//eCGGXNVSiaWVspG7VyEQmwBLXmbMIstTkYkjmlc7+jjz6u2L7oRkKtTaeUN3by1tN8QLllWUfgrFZvq+i1AHUfAuTgJLuGdHMZExVbJp3o
- pH7OPVhk2qAwZPqIC615i+6AyT2JO5GJPAUog7ZKrCIhye8eM70uw98sPz0y1wcLOFshhCr8rRp3knInRIOBV/YQ9cQ1c4HYrtX34pFApnhP/smz5Gk7/rr9
- /NHUIUP9lupWLq6MJSlZ+tgOwmXC8WrvrEWbyTMKn/PNOTefnyYcG8zGWfMqfYKboY4oCrFdmackg3kiA8ecxeCxuSfUtmtDsULeYu9BCOMK5sgTbpekmAQV
- vDUG7VZ7AUlYAFvY3tw5512XRYolHmn5AAZibg==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from SOPDPUATS05.ea.freescale.net (81.1.10.98) by AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3195.18 via Frontend Transport; Mon, 20 Jul 2020 09:06:24 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [81.1.10.98]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 856ced29-09e2-4725-d395-08d82c8c2e3f
+X-MS-TrafficTypeDiagnostic: AM0PR0402MB3762:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR0402MB376218A9F270D9EB58EE7C48D37B0@AM0PR0402MB3762.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 72yyxv8BWCJadDFRdfcZI53As5N+2zN7gLgi7Hkt5J0NZmQ6TiBX3Bzg/srKBszm3SjSNspM50Jy2riqv3UtfleoHGqGKGtKPZjn4HuCtovfErFoJ5Md/nmpmFaR7/+lCs9UJco1+oglVU1g5SkqD/XbASF9GviopPAnm/0NCA2wlHUi/wGV3YojDngGiDkcWpjh5Bz9orqevAkNm///MUslmFtA/dqIHqv36SdrOOxL4gg9xCFlMotammfG8zAqOTNYLxQ5Hu7r0JxOW7lsbH4eVjUM+h7d8ulxm7z1/X8Xugvwm+ZkZHo0bjdjXm1rYTrnlaLap7Il1GYrKaRfOj686CSDm6KpuEDt6FwnZg/STyPXt7RT12nZJ0Nh6PoT7zQseuPUyeGuBenpUHps8Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0401MB2401.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(346002)(39860400002)(376002)(6512007)(316002)(66476007)(66946007)(66556008)(2906002)(6666004)(9686003)(8676002)(8936002)(86362001)(83380400001)(5660300002)(26005)(186003)(16526019)(2616005)(6506007)(956004)(966005)(6486002)(478600001)(52116002)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: iePU5r+udav6sjWGcMkmseP563BiMmCEOxCCm57QN3Y6GNudT9Ri48Yn+wbdXPnFf+ijqvGlmsFm78KegWSw9KbNMVMFDNvQWnHCBNYwq/BM6Uw1zgVyKwGavV1vu4UrDoHSeRkrWhdNxSeuchHdpEDhpZLxkY30hhVRYCoUx2dm+mWz62pm8NGIgNsdcRE7o/cTlaWc7X6JjKSX3CGVFeTezvPcR9z7R/R1bIcecgw+AYvaBcPEFYpnWUEEdBCbm1Gy8mproaGK0L8+iCjyMQLfrW1vAZpSiCZJAJ00bkC45tZoccetCfgi468welqvOfR3pX1+AHD5zd6v03vWAzxH3lexZC5y+omQgB5JA0Pth05eBf3I0Ao3uvQUqnAGO49Cv4X/gEk+0SnkOR+k4lxhBhFAfF8Z0DNXZn9/WhCJ9BrEmWljU3FKHOQOfrxCnzFl/1dP58yLDoy28OV85p56iFtPt2y17CKdntV+qD8=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 856ced29-09e2-4725-d395-08d82c8c2e3f
+X-MS-Exchange-CrossTenant-AuthSource: AM4PR0401MB2401.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 09:06:25.8102
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m4puxKMEP7qxIoWvsvgNIvc51WnweNq6fDHykOwrsQNBanPEAr+uQGGzm+/FnzXLqhDyTJSeidSiClgIwNNCuH/18kRKpauDP4y9kzZd+mw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3762
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2020 22:14, Stanimir Varbanov wrote:
-> From: Maheshwar Ajja <majja@codeaurora.org>
-> 
-> When V4L2_CID_MPEG_VIDEO_BITRATE_MODE value is
-> V4L2_MPEG_VIDEO_BITRATE_MODE_CQ, encoder will produce
-> constant quality output indicated by
-> V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY control value.
-> Encoder will choose appropriate quantization parameter
-> and bitrate to produce requested frame quality level.
-> 
-> Signed-off-by: Maheshwar Ajja <majja@codeaurora.org>
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+From: Franck LENORMAND <franck.lenormand@nxp.com>
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+This patch adds the documentation for the SECurity VIOlation
+driver using the SCU on imx8x and imx8q.
 
-Thanks!
+Signed-off-by: Franck LENORMAND <franck.lenormand@oss.nxp.com>
+---
+ .../bindings/arm/freescale/fsl,imx-sc-secvio.yaml  | 34 ++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/freescale/fsl,imx-sc-secvio.yaml
 
-	Hans
-
-> ---
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 10 ++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c                   |  2 ++
->  include/uapi/linux/v4l2-controls.h                     |  2 ++
->  3 files changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index d0d506a444b1..b9d3f7ae6486 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -581,6 +581,8 @@ enum v4l2_mpeg_video_bitrate_mode -
->        - Variable bitrate
->      * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_CBR``
->        - Constant bitrate
-> +    * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_CQ``
-> +      - Constant quality
->  
->  
->  
-> @@ -592,6 +594,14 @@ enum v4l2_mpeg_video_bitrate_mode -
->      the average video bitrate. It is ignored if the video bitrate mode
->      is set to constant bitrate.
->  
-> +``V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY (integer)``
-> +    Constant quality level control. This control is applicable when
-> +    ``V4L2_CID_MPEG_VIDEO_BITRATE_MODE`` value is
-> +    ``V4L2_MPEG_VIDEO_BITRATE_MODE_CQ``. Valid range is 1 to 100
-> +    where 1 indicates lowest quality and 100 indicates highest quality.
-> +    Encoder will decide the appropriate quantization parameter and
-> +    bitrate to produce requested frame quality.
-> +
->  ``V4L2_CID_MPEG_VIDEO_TEMPORAL_DECIMATION (integer)``
->      For every captured frame, skip this many subsequent frames (default
->      0).
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 3f3fbcd60cc6..bc00d02e411f 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -200,6 +200,7 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
->  	static const char * const mpeg_video_bitrate_mode[] = {
->  		"Variable Bitrate",
->  		"Constant Bitrate",
-> +		"Constant Quality",
->  		NULL
->  	};
->  	static const char * const mpeg_stream_type[] = {
-> @@ -832,6 +833,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_GOP_CLOSURE:	return "Video GOP Closure";
->  	case V4L2_CID_MPEG_VIDEO_PULLDOWN:	return "Video Pulldown";
->  	case V4L2_CID_MPEG_VIDEO_BITRATE_MODE:	return "Video Bitrate Mode";
-> +	case V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY:	return "Constant Quality";
->  	case V4L2_CID_MPEG_VIDEO_BITRATE:	return "Video Bitrate";
->  	case V4L2_CID_MPEG_VIDEO_BITRATE_PEAK:	return "Video Peak Bitrate";
->  	case V4L2_CID_MPEG_VIDEO_TEMPORAL_DECIMATION: return "Video Temporal Decimation";
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 62271418c1be..0f7e4388dcce 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -375,6 +375,7 @@ enum v4l2_mpeg_video_aspect {
->  enum v4l2_mpeg_video_bitrate_mode {
->  	V4L2_MPEG_VIDEO_BITRATE_MODE_VBR = 0,
->  	V4L2_MPEG_VIDEO_BITRATE_MODE_CBR = 1,
-> +	V4L2_MPEG_VIDEO_BITRATE_MODE_CQ  = 2,
->  };
->  #define V4L2_CID_MPEG_VIDEO_BITRATE		(V4L2_CID_MPEG_BASE+207)
->  #define V4L2_CID_MPEG_VIDEO_BITRATE_PEAK	(V4L2_CID_MPEG_BASE+208)
-> @@ -742,6 +743,7 @@ enum v4l2_cid_mpeg_video_hevc_size_of_length_field {
->  #define V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L6_BR	(V4L2_CID_MPEG_BASE + 642)
->  #define V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES	(V4L2_CID_MPEG_BASE + 643)
->  #define V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR	(V4L2_CID_MPEG_BASE + 644)
-> +#define V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY		(V4L2_CID_MPEG_BASE + 645)
->  
->  /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
->  #define V4L2_CID_MPEG_CX2341X_BASE				(V4L2_CTRL_CLASS_MPEG | 0x1000)
-> 
+diff --git a/Documentation/devicetree/bindings/arm/freescale/fsl,imx-sc-secvio.yaml b/Documentation/devicetree/bindings/arm/freescale/fsl,imx-sc-secvio.yaml
+new file mode 100644
+index 00000000..59b9a86
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/freescale/fsl,imx-sc-secvio.yaml
+@@ -0,0 +1,34 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/freescale/fsl,imx-sc-secvio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX Security Violation driver
++
++maintainers:
++  - Franck LENORMAND <franck.lenormand@nxp.com>
++
++description: |
++  Receive security violation from the SNVS via the SCU firmware. Allow to
++  register notifier for additional processing
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx-sc-secvio
++  nvmem:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to the nvmem provider.
++
++required:
++  - compatible
++  - nvmem
++
++examples:
++  - |
++    sc_secvio: sc-secvio
++        compatible = "fsl,imx-sc-secvio";
++        nvmem = <&ocotp>
++    };
+-- 
+2.7.4
 
