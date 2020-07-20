@@ -2,198 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059C42268EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24052268CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388603AbgGTQW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S2388693AbgGTQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388434AbgGTQWq (ORCPT
+        with ESMTP id S2388514AbgGTQUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:22:46 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F495C061794;
-        Mon, 20 Jul 2020 09:22:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k27so10517552pgm.2;
-        Mon, 20 Jul 2020 09:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nnDDY7IX3v4medtpXGPdXY1iT0mYb0tLN6RrGWdwErQ=;
-        b=A17M+Gb9yAQCkiEsHp1GN5Hgm6to1S70lc+I5sny7onNXnTMXpIGw0rxYa3HyRAFTF
-         EHzuXZiN0PrVqSXi/QmZ03PpuxD3wqo0Ej0MHbfYpufERXznei6xPYaU2pnpr1hEw/P3
-         YXdYohfyeDlnFXpgWw0Gj/3uIueARBVT7JkmuVXfoU+CAYtgBaBBntTcYkNOJtuLAhBS
-         3CeUProdPmHFMcuj8pjLxjbKYjndPF4TKbcwUepCmwBSSHdw/1VqtNpJTqu1n7W73/j/
-         Ohc2uW7Wkl9CfjwBq4+3cw5TTMOAX/vmAuNeTiC4xAHSGmffrUWcOew6eoDXU29nlS7i
-         SgvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nnDDY7IX3v4medtpXGPdXY1iT0mYb0tLN6RrGWdwErQ=;
-        b=kvYiCGY2FEhzCGwU3+PB54ZD2/OR3+xcfk8l9R1MIj0JLLUpp0lh5OM4K2gvjBxZR8
-         ippgZV6QncMMxAlnfWOMRK+QmVs12rFVjOk4kwG7DRFgsLd5owHvZJKoo1Jmz6Qj2scL
-         WFZrjU62OeNYNQJgEsXxL4m4wmbnqonwNnr1wCUAU8YOA44ct+3JdDS964RA+R/khv4v
-         f0PTc++7X4VBlacndXQ8x5e1PnK/Nnb0lYZ4x9Dcxpu2yHHj1q2hrvHKo/IuCeROWXSj
-         yIGHAb4XaJjkTlWoXIFONt5MGvL8WsUOyPS34V+bYSaLI6pYWYmEjNfHol2dP3CtFNET
-         b0lA==
-X-Gm-Message-State: AOAM530vqxAs7BkCtv/ZaPy2NII6vaU1SDcIgVD1sO3GgOJ5rKaxL7VL
-        ToJMSLVTOiknN2GJNOgJ+is=
-X-Google-Smtp-Source: ABdhPJyV19tnS/w6rmKS67FPtr8WvyuBYwXnr0WSfBWxPzcPsoHAVVNX2vFNeLQe7tQxnvt+Ak0Alg==
-X-Received: by 2002:a62:7e51:: with SMTP id z78mr20531383pfc.3.1595262165631;
-        Mon, 20 Jul 2020 09:22:45 -0700 (PDT)
-Received: from varodek.localdomain ([110.225.71.189])
-        by smtp.gmail.com with ESMTPSA id z25sm17314468pfg.140.2020.07.20.09.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 09:22:44 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Chris Lee <christopher.lee@cspi.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org
-Subject: [PATCH v1] ethernet: myri10ge: use generic power management
-Date:   Mon, 20 Jul 2020 21:49:31 +0530
-Message-Id: <20200720161930.777974-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 20 Jul 2020 12:20:33 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD5CC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:20:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uC/tilAEaHjArnaAm1aUzbWB0T6K1yC5bOJBtaxkp14=; b=W7lnT5RyfkfkI3q/mMftN3ZL3l
+        gFNEwDpe9DMFL1phWV6FT62H2N0ShCnxXYBb46Hwmv4fUDuywjvoaC2JQ5nEhFf727nMIY+YGxFyY
+        UkCQwpwpgpsafutV83CLTkk9HX+p7uyLgtbUDq1PYdxIgwIRn3LiY4ICjtIg/ErnOedfdtug9CpFR
+        U3xsuHOXzc7WbxMZ7r/qrOPg9nR+8I7ZYQwncujiEyDxGLwdZt3oxXAWiZkSAgU3p+L+VryhSNS/R
+        JMBnr3aTQiVjqBVggs3HOe2Sj1Q98+ieFvw4a20RuZxcDmFIGbeFIYwIf2A8xwUMDGkN060+dACe2
+        HZSak66w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxYWg-0002Yz-Md; Mon, 20 Jul 2020 16:20:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E03C7307B8F;
+        Mon, 20 Jul 2020 18:20:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C8C5F23426BB1; Mon, 20 Jul 2020 18:20:24 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 18:20:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com
+Subject: Re: [PATCH V6 03/14] perf/x86/intel: Introduce the fourth fixed
+ counter
+Message-ID: <20200720162024.GT10769@hirez.programming.kicks-ass.net>
+References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+ <20200717140554.22863-4-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717140554.22863-4-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PM have to manage PCI states and device's PM states
-themselves. They also need to take care of configuration registers.
+On Fri, Jul 17, 2020 at 07:05:43AM -0700, kan.liang@linux.intel.com wrote:
+>  /*
+> + * There is no event-code assigned to the fixed-mode PMCs.
+> + *
+> + * For a fixed-mode PMC, which has an equivalent event on a general-purpose
+> + * PMC, the event-code of the equivalent event is used for the fixed-mode PMC,
+> + * e.g., Instr_Retired.Any and CPU_CLK_Unhalted.Core.
+> + *
+> + * For a fixed-mode PMC, which doesn't have an equivalent event, a
+> + * pseudo-encoding is used, e.g., CPU_CLK_Unhalted.Ref and TOPDOWN.SLOTS.
+> + * The pseudo event-code for a fixed-mode PMC must be 0x00.
+> + * The pseudo umask-code is 0x0X. The X indicates the index of the fixed
+> + * counter.
 
-With improved and powerful support of generic PM, PCI Core takes care of
-above mentioned, device-independent, jobs.
+Isn't it X+1 ? Such that 0x0000 is an invalid event? After all, the
+pseudo event for Fixed2 is 0x0300.
 
-This driver makes use of PCI helper functions like
-pci_save/restore_state(), pci_enable/disable_device(),
-pci_set_power_state() and pci_set_master() to do required operations. In
-generic mode, they are no longer needed.
-
-Change function parameter in both .suspend() and .resume() to
-"struct device*" type. Use to_pci_dev() and dev_get_drvdata() to get
-"struct pci_dev*" variable and drv data.
-
-Compile-tested only.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- .../net/ethernet/myricom/myri10ge/myri10ge.c  | 37 ++++---------------
- 1 file changed, 8 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index e1e1f4e3639e..4a5beafa0493 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -3257,13 +3257,12 @@ static void myri10ge_mask_surprise_down(struct pci_dev *pdev)
- 	}
- }
- 
--#ifdef CONFIG_PM
--static int myri10ge_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused myri10ge_suspend(struct device *dev)
- {
- 	struct myri10ge_priv *mgp;
- 	struct net_device *netdev;
- 
--	mgp = pci_get_drvdata(pdev);
-+	mgp = dev_get_drvdata(dev);
- 	if (mgp == NULL)
- 		return -EINVAL;
- 	netdev = mgp->dev;
-@@ -3276,14 +3275,13 @@ static int myri10ge_suspend(struct pci_dev *pdev, pm_message_t state)
- 		rtnl_unlock();
- 	}
- 	myri10ge_dummy_rdma(mgp, 0);
--	pci_save_state(pdev);
--	pci_disable_device(pdev);
- 
--	return pci_set_power_state(pdev, pci_choose_state(pdev, state));
-+	return 0;
- }
- 
--static int myri10ge_resume(struct pci_dev *pdev)
-+static int __maybe_unused myri10ge_resume(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct myri10ge_priv *mgp;
- 	struct net_device *netdev;
- 	int status;
-@@ -3293,7 +3291,6 @@ static int myri10ge_resume(struct pci_dev *pdev)
- 	if (mgp == NULL)
- 		return -EINVAL;
- 	netdev = mgp->dev;
--	pci_set_power_state(pdev, PCI_D0);	/* zeros conf space as a side effect */
- 	msleep(5);		/* give card time to respond */
- 	pci_read_config_word(mgp->pdev, PCI_VENDOR_ID, &vendor);
- 	if (vendor == 0xffff) {
-@@ -3301,23 +3298,9 @@ static int myri10ge_resume(struct pci_dev *pdev)
- 		return -EIO;
- 	}
- 
--	pci_restore_state(pdev);
--
--	status = pci_enable_device(pdev);
--	if (status) {
--		dev_err(&pdev->dev, "failed to enable device\n");
--		return status;
--	}
--
--	pci_set_master(pdev);
--
- 	myri10ge_reset(mgp);
- 	myri10ge_dummy_rdma(mgp, 1);
- 
--	/* Save configuration space to be restored if the
--	 * nic resets due to a parity error */
--	pci_save_state(pdev);
--
- 	if (netif_running(netdev)) {
- 		rtnl_lock();
- 		status = myri10ge_open(netdev);
-@@ -3331,11 +3314,8 @@ static int myri10ge_resume(struct pci_dev *pdev)
- 	return 0;
- 
- abort_with_enabled:
--	pci_disable_device(pdev);
- 	return -EIO;
--
- }
--#endif				/* CONFIG_PM */
- 
- static u32 myri10ge_read_reboot(struct myri10ge_priv *mgp)
- {
-@@ -4017,15 +3997,14 @@ static const struct pci_device_id myri10ge_pci_tbl[] = {
- 
- MODULE_DEVICE_TABLE(pci, myri10ge_pci_tbl);
- 
-+static SIMPLE_DEV_PM_OPS(myri10ge_pm_ops, myri10ge_suspend, myri10ge_resume);
-+
- static struct pci_driver myri10ge_driver = {
- 	.name = "myri10ge",
- 	.probe = myri10ge_probe,
- 	.remove = myri10ge_remove,
- 	.id_table = myri10ge_pci_tbl,
--#ifdef CONFIG_PM
--	.suspend = myri10ge_suspend,
--	.resume = myri10ge_resume,
--#endif
-+	.driver.pm = &myri10ge_pm_ops,
- };
- 
- #ifdef CONFIG_MYRI10GE_DCA
--- 
-2.27.0
-
+> + *
+> + * The counts are available in separate MSRs:
+>   */
