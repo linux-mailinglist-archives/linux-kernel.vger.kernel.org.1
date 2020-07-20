@@ -2,202 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406BA22564D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE66225653
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgGTDuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 23:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S1726359AbgGTDyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 23:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgGTDuJ (ORCPT
+        with ESMTP id S1726123AbgGTDyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 23:50:09 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49AEBC0619D4;
-        Sun, 19 Jul 2020 20:50:09 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so9497102pjb.2;
-        Sun, 19 Jul 2020 20:50:09 -0700 (PDT)
+        Sun, 19 Jul 2020 23:54:02 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E84C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 20:54:01 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id a32so12004952qtb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 20:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nG0iPsD5QdkdQaph/ibFlBdWV0TfbW/UttIf3Q4vXdA=;
-        b=jViuHJvrdhaQg3FS2W9I3rv84tB4aLPhLI24ZW+zHZOYroh3hmghwhhaWfmGcUhoEM
-         EzDrkgOA0EtoZTqqCb8R/lkm9WTeNzQd6gvP8RmSqhs4l6WrxHb+0hwDW+Gyu9WJGlsU
-         vyLDQ1ZCM3Qvk7yhttgnoC+uoD1rm2Ibf8RYSjwggtjDnAa/SnnxlGhPkVQBmS2eyxw0
-         QDjPaflW20UIuQdt9ijtJs2HSSaI2RUW13NqGIWILx21eGP0DNSzgXqpgNf9DjgSy0wx
-         BcODhOpJIXvyIPMEUk1N8PsTAltTcbQIPMuOn71RCapv5JmulHHTE4DClOKK9989we70
-         VHWw==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1u53c2F+veno3CGunFwdcO+tqxJwq9yQaGLu7xcFrPw=;
+        b=lCn9MecqKLH0aBUp1HeYdTzb2uHoRNWigJVVPjRVUHLgJ+8zbh1ts3tAs6W18HQuLa
+         k7mIenZ1M46bCFLadYhwwSt9vUORW78dzM3Wjr0ltd9r6Xbq49RbQaDZpXEdZ1Bj0VIM
+         vlBgzHsXKUVolLSZ/3xwgJQC3ifqRAPV8/30E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nG0iPsD5QdkdQaph/ibFlBdWV0TfbW/UttIf3Q4vXdA=;
-        b=st1jC5dGmpTRohJkenfuKAmLA3SWfMl8V1zRmpNYpUx9wLLSpt2fMXz7HqaRV210sb
-         pwFjGluJmk35KxXP/jJz9u7xyUguFOBFrqWSSRbOvpnrsNp3s8EKG2qnBtEAKWD/8rV2
-         3+Nsd0DwxgjD1R2QgNvqMHPJsYQ9f832n3p/p+JQ6yW9UW3mXZOGkcs+6t3DCOUDkyaW
-         kBqS+OfRX6eVGpfXKc93YAU7C/fDBQEanD5R6rlThudffhRhPKLJhK6mzIWuSnuA4g4f
-         vEpjBZC6bJucJLHr5L0Arwl76GJuVKSWZwQzUIwhjP+2LUovS5qYVsq+L2RCQL9Sz4j5
-         0BWA==
-X-Gm-Message-State: AOAM533IvfHsptSwifORPSJNo54oBKa5YHCXmNbuv/eIGOsvb3OuvKD5
-        cpfpjwzGR3EOreZJC9+CKlhxJ/BT
-X-Google-Smtp-Source: ABdhPJwf8BzhJpEXLmJ/cI0ofcipsewX/PEGNwbcMs2ksgdgIZVORiXquhl5ZYtY2fUMnpcopdIi0A==
-X-Received: by 2002:a17:90b:4d0f:: with SMTP id mw15mr21480190pjb.68.1595217008347;
-        Sun, 19 Jul 2020 20:50:08 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id z11sm15183445pfj.104.2020.07.19.20.50.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1u53c2F+veno3CGunFwdcO+tqxJwq9yQaGLu7xcFrPw=;
+        b=i5QYot5atz6CodAgw0J4Vwsk/aQCJ7mdV7vPjFMcE7Xca6O168Uy7Yy4cWR5BJdcyv
+         ZfE2hYewe7mzTdncYEw5QY7v0D8D2G0SJiViscu1jE9zfQjiOm17YSMCe0qixbAx3uzY
+         IEHrTsMI6VWc1n+uACEjQxIjMre2GIoVPYyaYX/J96v+sL+cP91smADj+IB1/8SH6rkd
+         WAMG0eNVfGzQN9EMJfUOCblkeihKsyl0qm8NDOXW365IK43R2S8E27R/7w2+b5MZJFwV
+         s+UYamF+nVaWyzl3cuqzIYxa8YGmYmbnzzE+oBP+62i7VMvyKBPj1WFIcqxe28Xc48yA
+         ORKA==
+X-Gm-Message-State: AOAM533xfFr+cE9zOwBvpyyYTWO4soU/HKOJWJhD0yEAxuTgAkvgFeND
+        pOGBoZ08StHO7ufgnKRcuIdirg==
+X-Google-Smtp-Source: ABdhPJwDHLSH2y/AbtzDgt0oZGGlu+ay0EjVNCPBEg8+27FSL0CTH4IT/h9DQ3Wv+nyDzxuKgsjX6g==
+X-Received: by 2002:ac8:6f73:: with SMTP id u19mr22366570qtv.36.1595217240670;
+        Sun, 19 Jul 2020 20:54:00 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id t5sm17237283qkh.46.2020.07.19.20.53.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 20:50:07 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        linux-kernel@vger.kernel.org (open list), olteanv@gmail.com
-Subject: [PATCH net-next v2 4/4] net: dsa: Setup dsa_netdev_ops
-Date:   Sun, 19 Jul 2020 20:49:54 -0700
-Message-Id: <20200720034954.66895-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200720034954.66895-1-f.fainelli@gmail.com>
-References: <20200720034954.66895-1-f.fainelli@gmail.com>
+        Sun, 19 Jul 2020 20:53:59 -0700 (PDT)
+Date:   Sun, 19 Jul 2020 23:53:59 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
+        pjt@google.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, subhra.mazumdar@oracle.com,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineethrp@gmail.com,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [RFC PATCH 14/16] irq: Add support for core-wide protection of
+ IRQ and softirq
+Message-ID: <20200720035359.GA4187092@google.com>
+References: <cover.1593530334.git.vpillai@digitalocean.com>
+ <c783b3890b6df669a72c7c4a3012950d009b8034.1593530334.git.vpillai@digitalocean.com>
+ <871rl9r9xr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rl9r9xr.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have all the infrastructure in place for calling into the
-dsa_ptr->netdev_ops function pointers, install them when we configure
-the DSA CPU/management interface and tear them down. The flow is
-unchanged from before, but now we preserve equality of tests when
-network device drivers do tests like dev->netdev_ops == &foo_ops which
-was not the case before since we were allocating an entirely new
-structure.
+On Sat, Jul 18, 2020 at 01:36:16AM +0200, Thomas Gleixner wrote:
+> Vineeth, Joel!
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/net/dsa.h |  1 -
- net/dsa/master.c  | 52 ++++++++++++-----------------------------------
- 2 files changed, 13 insertions(+), 40 deletions(-)
+Hi Thomas,
 
-diff --git a/include/net/dsa.h b/include/net/dsa.h
-index 343642ca4f63..f1b63d06d132 100644
---- a/include/net/dsa.h
-+++ b/include/net/dsa.h
-@@ -230,7 +230,6 @@ struct dsa_port {
- 	 * Original copy of the master netdev net_device_ops
- 	 */
- 	const struct dsa_netdevice_ops *netdev_ops;
--	const struct net_device_ops *orig_ndo_ops;
- 
- 	bool setup;
- };
-diff --git a/net/dsa/master.c b/net/dsa/master.c
-index 480a61460c23..0a90911ae31b 100644
---- a/net/dsa/master.c
-+++ b/net/dsa/master.c
-@@ -220,12 +220,17 @@ static int dsa_master_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 		break;
- 	}
- 
--	if (cpu_dp->orig_ndo_ops && cpu_dp->orig_ndo_ops->ndo_do_ioctl)
--		err = cpu_dp->orig_ndo_ops->ndo_do_ioctl(dev, ifr, cmd);
-+	if (dev->netdev_ops->ndo_do_ioctl)
-+		err = dev->netdev_ops->ndo_do_ioctl(dev, ifr, cmd);
- 
- 	return err;
- }
- 
-+static const struct dsa_netdevice_ops dsa_netdev_ops = {
-+	.ndo_do_ioctl = dsa_master_ioctl,
-+	.ndo_get_phys_port_name = dsa_master_get_phys_port_name,
-+};
-+
- static int dsa_master_ethtool_setup(struct net_device *dev)
- {
- 	struct dsa_port *cpu_dp = dev->dsa_ptr;
-@@ -260,38 +265,10 @@ static void dsa_master_ethtool_teardown(struct net_device *dev)
- 	cpu_dp->orig_ethtool_ops = NULL;
- }
- 
--static int dsa_master_ndo_setup(struct net_device *dev)
--{
--	struct dsa_port *cpu_dp = dev->dsa_ptr;
--	struct dsa_switch *ds = cpu_dp->ds;
--	struct net_device_ops *ops;
--
--	if (dev->netdev_ops->ndo_get_phys_port_name)
--		return 0;
--
--	ops = devm_kzalloc(ds->dev, sizeof(*ops), GFP_KERNEL);
--	if (!ops)
--		return -ENOMEM;
--
--	cpu_dp->orig_ndo_ops = dev->netdev_ops;
--	if (cpu_dp->orig_ndo_ops)
--		memcpy(ops, cpu_dp->orig_ndo_ops, sizeof(*ops));
--
--	ops->ndo_get_phys_port_name = dsa_master_get_phys_port_name;
--	ops->ndo_do_ioctl = dsa_master_ioctl;
--
--	dev->netdev_ops  = ops;
--
--	return 0;
--}
--
--static void dsa_master_ndo_teardown(struct net_device *dev)
-+static void dsa_netdev_ops_set(struct net_device *dev,
-+			       const struct dsa_netdevice_ops *ops)
- {
--	struct dsa_port *cpu_dp = dev->dsa_ptr;
--
--	if (cpu_dp->orig_ndo_ops)
--		dev->netdev_ops = cpu_dp->orig_ndo_ops;
--	cpu_dp->orig_ndo_ops = NULL;
-+	dev->dsa_ptr->netdev_ops = ops;
- }
- 
- static ssize_t tagging_show(struct device *d, struct device_attribute *attr,
-@@ -353,9 +330,7 @@ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- 	if (ret)
- 		return ret;
- 
--	ret = dsa_master_ndo_setup(dev);
--	if (ret)
--		goto out_err_ethtool_teardown;
-+	dsa_netdev_ops_set(dev, &dsa_netdev_ops);
- 
- 	ret = sysfs_create_group(&dev->dev.kobj, &dsa_group);
- 	if (ret)
-@@ -364,8 +339,7 @@ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- 	return ret;
- 
- out_err_ndo_teardown:
--	dsa_master_ndo_teardown(dev);
--out_err_ethtool_teardown:
-+	dsa_netdev_ops_set(dev, NULL);
- 	dsa_master_ethtool_teardown(dev);
- 	return ret;
- }
-@@ -373,7 +347,7 @@ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- void dsa_master_teardown(struct net_device *dev)
- {
- 	sysfs_remove_group(&dev->dev.kobj, &dsa_group);
--	dsa_master_ndo_teardown(dev);
-+	dsa_netdev_ops_set(dev, NULL);
- 	dsa_master_ethtool_teardown(dev);
- 	dsa_master_reset_mtu(dev);
- 
--- 
-2.25.1
+> Vineeth Remanan Pillai <vpillai@digitalocean.com> writes:
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> >
+> > Lastly, we also check in the schedule loop if we are about to schedule
+> > an untrusted process while the core is in such a state. This is possible
+> > if a trusted thread enters the scheduler by way of yielding CPU. This
+> > would involve no transitions through the irq_exit() point to do any
+> > waiting, so we have to explicitly do the waiting there.
+> 
+> Lot's of 'we' and 'this patch' in this changelog. Care to read
+> Documentation/process/submitting-patches.rst ?
+
+Sure, will fix it.
+
+[..] 
+> is the usual kernel coding style.
+> > +		static_branch_disable(&sched_core_irq_pause);
+> > +
+> > +	return 1;
+> > +}
+> > +__setup("sched_core_irq_pause=", set_sched_core_irq_pause);
+> > +#endif
+> > +
+> >  asmlinkage __visible void __softirq_entry __do_softirq(void)
+> >  {
+> >  	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+> > @@ -273,6 +291,16 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+> >  	/* Reset the pending bitmask before enabling irqs */
+> >  	set_softirq_pending(0);
+> >  
+> > +#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
+> > +	/*
+> > +	 * Core scheduling mitigations require entry into softirq to send stall
+> > +	 * IPIs to sibling hyperthreads if needed (ex, sibling is running
+> > +	 * untrusted task). If we are here from irq_exit(), no IPIs are sent.
+> > +	 */
+> > +	if (static_branch_likely(&sched_core_irq_pause))
+> > +		sched_core_irq_enter();
+> 
+> So you already have a #ifdef CONFIG_SCHED_CORE_IRQ_PAUSE section
+> above. Why on earth can't you just provide helper functions and stubs
+> for the CONFIG_SCHED_CORE_IRQ_PAUSE=n case there instead of sprinkling
+> #ifdeffery all over the place?
+
+These ifdeffery and checkpatch / command line parameter issues were added by
+Vineeth before he sent out my patch. I'll let him comment on these, agreed
+they all need fixing!
+
+> > +#endif
+> > +
+> >  	local_irq_enable();
+> 
+> How is __do_softirq() relevant at all?
+> 
+> __do_softirq() is called from:
+> 
+>    1) the tail of interrupt handling
+>    2) the tail of local_bh_enable()
+>    3) the ksoftirq thread
+> 
+> None of this is relevant for what you are trying to do:
+> 
+>  #1: Iscovered by the interrupt handling code simply because this nests
+>      into the interrupt handling.
+> 
+>  #2: local_bh_enable() only ends up there when invoked from thread
+>      context.
+> 
+>      This would only make sense if one sibling is in the kernel and the
+>      other in user space or guest mode. Isn't that forbidden by core
+>      scheduling in the first place?
+
+One sibling being in the kernel, while the other sibling is in userspace is
+not yet forbidden by core-scheduling. We need to add support for that.
+
+I think after reading your email and thinking about this last few days, we
+can make it work by sending IPIs on both syscall and IRQ entries.
+
+>  #3: See #2
+> 
+> But what's worse is that this is called from an interrupt disabled
+> region. So you brilliantly created a trivial source of livelocks.
+> stomp_machine() being the most obvious candidate. But it's easy enough
+> to come up with more subtle ones.
+> 
+> The point is that you want to bring out the sibling thread from user
+> space or guest mode when the other HT thread:
+> 
+>   A) invokes a syscall or traps into the hypervisor which is
+>      semantically equivalent (not code wise).
+> 
+>   B) handles an interrupt/exception
+> 
+> So #A covers #2 and #3 above and #B covers #1 above.
+
+Right. #A) was never implemented. But now I'm going to do it!
+
+> But you have the same livelock problem with doing this core wait thingy
+> within any interrupt disabled region.
+
+Right, which we fixed by moving the waiting code to
+prepare_exit_to_usermode() in the other test patch I sent to fix Aubrey's
+deadlock, but as you suggested I will make it work with the new generic entry
+code.
+
+> What you really want to do is on syscall and interrupt/exception entry:
+> 
+>    if (other_sibling_in_user_or_guest())
+>    	send_IPI();
+
+Ok.
+
+> Of course it's conveniant to piggy pack that onto the reschedule IPI,
+> but that sucks. What you want is a dedicated IPI which does:
+> 
+> magic_ipi()
+> 	set_thread_flag(TIF_CORE_SCHED_EXIT);
+
+I tried IPIs before and ran into a few issues mostly related to CSD locking
+if I remember, I will try again.
+
+> And on the exit side you want to look at the entry code generalisation I
+> just posted:
+> 
+>   https://lore.kernel.org/r/20200716182208.180916541@linutronix.de
+
+Thank you, I went over this code and it makes sense we work based on that.
+
+> Add TIF_CORE_SCHED_EXIT to EXIT_TO_USER_MODE_WORK and to
+> EXIT_TO_GUEST_MODE_WORK and handle it in exit_to_guest_mode_work() and
+> exit_to_user_mode_loop() with interrupts enabled.
+> 
+
+There's already state to determine if waiting is needed or not, we have
+counters that determine if any sibling HT in the core is handling an IRQ or
+not, and if so I wait before exiting to user mode. The outer-most IRQ entry
+is being tracked so we don't send IPIs on every entry.
+
+But I got an idea from your email. Whenever a 'tagged' task becomes current,
+I can set a TIF flag marking that it is a tagged task and needs special
+handling when exiting to user mode (or guest). Then on exiting to usermode
+(or guest), I can check if any waiting is needed and wait there in the
+interrupt enabled regions you are suggesting. This should simplify the code
+since currently we have that complex if expression to determine if the task
+is "special".
+
+> Trying to do this in fully interrupt disabled context is just a recipe
+> for disaster.
+> 
+> The entry case condition wants to have a TIF bit as well, i.e.
+> 
+>     if (thread_test_bit(TIF_CORE_SCHED_REQUIRED) {
+>           sched_ipi_dance() {
+>              if (other_sibling_in_user_or_guest())
+>                 send_IPI();
+>           }
+>     }
+
+I did not understand this bit. Could you explain more about it? Are you
+talking about the IPIs sent from the schedule() loop in this series?
+
+> I know you hate this, but we are not going to add tons of unholy hackery
+> to make this "work" by some definition of work.
+> 
+> The only way to make this work without making a complete mess and
+> killing performance is to do this on a best effort basis. It really does
+> not matter whether the result of the orchestration is perfect or
+> not. What matters is that you destroy any predictability. If the
+> orchestration terminates early occasionally then the resulting damage is
+> a purely academic exercise.
+> 
+> Making it work reliably without hard to debug livelocks and other
+> horrors is not so academic.
+> 
+> So please stop overengineering this and just take the pragmatic approach
+> of making it mostly correct. That will prevent 99.999% of realistic
+> attacks.
+
+Agreed. Actually that's what I was aiming for. Even the IPIs are sent only
+if needed. I did a lot of benchmarking and did not see a performance hit.
+
+> It might not prevent the carefully orchestrated academic paper attack
+> which utilizes the 0.001% failure rate by artificially enforcing a
+> scenario which cannot be enforced in a real world environment.
+> 
+
+Got it.
+
+thanks,
+
+ - Joel
 
