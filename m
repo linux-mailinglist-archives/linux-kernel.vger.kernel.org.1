@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71365225CA2
+	by mail.lfdr.de (Postfix) with ESMTP id DE04D225CA3
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgGTKcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgGTKcm (ORCPT
+        id S1728379AbgGTKcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:32:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33729 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbgGTKcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:32:42 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9018C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:32:41 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id z127so3080406ooa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lnX79mYJmyrE/RnvKanwQSfM458bOzNMGnNrsOPIF5w=;
-        b=O0g0o7KTTbdJiBqqIjUJrFtc62oziBefAxNOln+ixpMaXwQJuiD3Dh9eRTqNu0Qxe2
-         ppsuwKzvISW+r8oXfUl8uMmWcwwW169qGxzSKmowz6DluzALKtIhOw1gMsXrC9jpy9IA
-         jmF2QMeE1G0kn+//vRGnLl4eeYPCnwduLhPg78gXcHJKXBq0DMtgJ0J11tycquMaD7WH
-         MZLrxwkl3+4ghmylKz7oJKJTMJBsPH5eb15zo1u2zlYVvdTwIdPvLmuWQVtQVLVFQdiL
-         prQpAesCHy5u/IKGzkBfHoLZENSUMbg0rrPQKJ/CSImfDT02oL6eJghd4erPW/5ZBuqZ
-         uPhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lnX79mYJmyrE/RnvKanwQSfM458bOzNMGnNrsOPIF5w=;
-        b=JAuXszgC2fhvpuaUHZEz39BRv7nWxS2dadBln1K3c24rWSIRk8U4u1Og+67C/38wiA
-         bmCeI9HQTWuwEfIAfhK3oxMQY2W08rczwKC580rME6iUnkvkBmB7OUCDbZTejkRg8Fwf
-         GkiFtPR0w6hM56RDGTSLj8XclX8Jj0taNsu1JbzNeDExO5LfJXtVB/xu/JQgucn/gcem
-         h3gPq0zd7g0jWuNW9SxPvq7p6yZjUd3fyXcOm5c3yA1TvwUHQuyiYVo4omM85d/PasDp
-         5fO0QryFUsvp5asPpCQf+No/r+/zKw7kkfsjHR9HJDBcaB97qHY2Iy4nSG0Rizn1oGE6
-         7gcA==
-X-Gm-Message-State: AOAM533tR5GceG1Ok3snvn6F7SeIzGJfKwDRrjVKpWMnUEG8b0RQo6+o
-        ElN5P8phyxMvl7l45/rKudY/9c7D5z0EjaQyMWR3GQ==
-X-Google-Smtp-Source: ABdhPJyElkE2WLDKIVGFvndbGhlz9PvLSjJPWq3V83r0fFHJCdu+r9AtGdU6gWmh5XAvLHzqH/kX2V28WRTNozqSocs=
-X-Received: by 2002:a4a:e6c6:: with SMTP id v6mr18863704oot.14.1595241160603;
- Mon, 20 Jul 2020 03:32:40 -0700 (PDT)
+        Mon, 20 Jul 2020 06:32:46 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jxT66-0007BB-85; Mon, 20 Jul 2020 10:32:38 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
+        Paulo Alcantara <pc@cjr.nz>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] initrd: fix spelling mistake "depreated" -> "deprecated"
+Date:   Mon, 20 Jul 2020 11:32:37 +0100
+Message-Id: <20200720103237.271462-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200709132344.760-1-john.ogness@linutronix.de>
- <20200709132344.760-5-john.ogness@linutronix.de> <20200718121053.GA691245@elver.google.com>
- <87eep6sd1e.fsf@jogness.linutronix.de>
-In-Reply-To: <87eep6sd1e.fsf@jogness.linutronix.de>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 20 Jul 2020 12:32:29 +0200
-Message-ID: <CANpmjNNnu2a3MqCgjieQEOFrXvs21pfxybvPkicLKO4jaBnpgA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] printk: use the lockless ringbuffer
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 at 12:20, John Ogness <john.ogness@linutronix.de> wrote:
->
-> On 2020-07-18, Marco Elver <elver@google.com> wrote:
-> > It seems this causes a regression observed at least with newline-only
-> > printks.
-> > [...]
-> > ------ >8 ------
-> >
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -1039,6 +1039,10 @@ asmlinkage __visible void __init start_kernel(void)
-> >       sfi_init_late();
-> >       kcsan_init();
-> >
-> > +     pr_info("EXPECT BLANK LINE --vv\n");
-> > +     pr_info("\n");
-> > +     pr_info("EXPECT BLANK LINE --^^\n");
-> > +
-> >       /* Do the rest non-__init'ed, we're now alive */
-> >       arch_call_rest_init();
->
-> Thanks for the example. This is an unintentional regression in the
-> series. I will submit a patch to fix this.
->
-> Note that this regression does not exist when the followup series [0]
-> (reimplementing LOG_CONT) is applied. All the more reason that the 1st
-> series should be fixed before pushing the 2nd series to linux-next.
+From: Colin Ian King <colin.king@canonical.com>
 
-Great, thank you for clarifying! :-)
+There are spelling mistakes in the pr_warning messages. Fix them.
 
--- Marco
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ init/do_mounts.c    | 2 +-
+ init/do_mounts_rd.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> John Ogness
->
-> [0] https://lkml.kernel.org/r/20200717234818.8622-1-john.ogness@linutronix.de
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index 4f4ceb358055..a7f22cf58c7e 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -37,7 +37,7 @@ dev_t ROOT_DEV;
+ 
+ static int __init load_ramdisk(char *str)
+ {
+-	pr_warn("ignoring the depreated load_ramdisk= option\n");
++	pr_warn("ignoring the deprecated load_ramdisk= option\n");
+ 	return 1;
+ }
+ __setup("load_ramdisk=", load_ramdisk);
+diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
+index 7b64390c0750..8307fdb5d136 100644
+--- a/init/do_mounts_rd.c
++++ b/init/do_mounts_rd.c
+@@ -17,7 +17,7 @@
+ 
+ static int __init prompt_ramdisk(char *str)
+ {
+-	pr_warn("ignoring the depreated prompt_ramdisk= option\n");
++	pr_warn("ignoring the deprecated prompt_ramdisk= option\n");
+ 	return 1;
+ }
+ __setup("prompt_ramdisk=", prompt_ramdisk);
+-- 
+2.27.0
+
