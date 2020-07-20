@@ -2,151 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0E522622F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB30226233
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgGTOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:32:18 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:51415 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgGTOcS (ORCPT
+        id S1728546AbgGTOdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:33:47 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:17101 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726520AbgGTOdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:32:18 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 22so22499620wmg.1;
-        Mon, 20 Jul 2020 07:32:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sVT35zDtcFJ4SrtuOpV/KcbsxZIq+XtepIT4986OMVM=;
-        b=LxK48p+OMAS7Gxt6WdlrLJHQPQMnpBHJfBz4plMZ2sZTYTcOxBTc1GBl8DeNuzq+30
-         ZKqLFC3ekbs4kH/JKyGPLApkvJfFaEcZSyakf3cGo5PjpOfwnOL5d99dLVstHAWBtDJZ
-         J8UP6gVpG7+FUJXzcqTprFmdDRUKNQBxUL6QPJkRD6FDmT95YNsgPPtuVXcks2ApXCxc
-         iHc0aX/915plhyMY9IOrzVKHOPQio2WlH+nr2/mOlS3wvwGD/lXH5ioE/sayyVGN18WA
-         FWN8VBZkaFXMB7mPcodFSXZmayqmIN82opwtp4XRbbBwlo2gKl2/FrH/CVbQlyPycPsg
-         tHyA==
-X-Gm-Message-State: AOAM533Uj3UWD6mSt9QCAMITgcUnRJY7hbZBXm2BLAK9AFIrQnySk8Bo
-        L+vQJhinpzFpXUCWU4iN1VI53k57
-X-Google-Smtp-Source: ABdhPJwxjULIzhcpgO60wcS3l6o8v6D2AqgNgfIOwRnKNgJLdchd2VS7oB9RDrRo6h+7EZZqSyJXzg==
-X-Received: by 2002:a7b:c5c5:: with SMTP id n5mr19779821wmk.103.1595255536295;
-        Mon, 20 Jul 2020 07:32:16 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id t141sm34654245wmt.26.2020.07.20.07.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 07:32:14 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 16:32:13 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: kworker/0:3+pm hogging CPU
-Message-ID: <20200720143213.GJ4074@dhcp22.suse.cz>
-References: <20200720083956.GA4074@dhcp22.suse.cz>
- <20200720135857.GB1228057@rowland.harvard.edu>
+        Mon, 20 Jul 2020 10:33:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595255625; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=fr4KTF1zO28tUBurYye7Fu+K8QzPk0xO7FJyoSXYS6E=;
+ b=ofTk0MJiu/9nSIPZcT7Y/GWSqVjP/j91qOIpeyWmGmIhatEKxL/LUfUN2+p8cIcIioEhkpfH
+ mPwUFHEL0RIEuR0KAcfDdtCzexNTVDfiYytDtkDukknpLdD4P84HN7lo/z/6x0JcwepndOau
+ YRRT8CrLktTusXZbXVwHgRVOoo8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f15ab451e603dbb444a0011 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 14:33:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F2711C433A1; Mon, 20 Jul 2020 14:33:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 90B08C433C6;
+        Mon, 20 Jul 2020 14:33:38 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-In-Reply-To: <20200720135857.GB1228057@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 20 Jul 2020 20:03:38 +0530
+From:   dikshita@codeaurora.org
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>, mchehab@kernel.org,
+        ezequiel@collabora.com, boris.brezillon@collabora.com,
+        ribalda@kernel.org, paul.kocialkowski@bootlin.com,
+        posciak@chromium.org, linux-media@vger.kernel.org,
+        stanimir.varbanov@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, vgarodia@codeaurora.org,
+        majja@codeaurora.org, linux-media-owner@vger.kernel.org
+Subject: Re: [RFC PATCH 0/1] Add LTR controls
+In-Reply-To: <d37e4e83-b7ae-7d44-c75f-2055f11ae898@xs4all.nl>
+References: <1591871121-25420-1-git-send-email-dikshita@codeaurora.org>
+ <f07c4aab69d2b333c0e36c50c526c0a85322e708.camel@ndufresne.ca>
+ <1a9904b6-60a5-0faa-8a5e-c9dc00802184@xs4all.nl>
+ <40040141fc3027c3eb1fdebc1a0e8ade@codeaurora.org>
+ <d37e4e83-b7ae-7d44-c75f-2055f11ae898@xs4all.nl>
+Message-ID: <dd365fe82523c4e44af4353f4f457137@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-07-16 14:25, Hans Verkuil wrote:
+> On 16/06/2020 20:41, dikshita@codeaurora.org wrote:
+>> Hi Hans, Nicolas,
+>> 
+>> Thanks for your comments.
+>> 
+>> On 2020-06-12 14:41, Hans Verkuil wrote:
+>>> Hi Dikshita, Nicolas,
+>>> 
+>>> On 11/06/2020 16:22, Nicolas Dufresne wrote:
+>>>> Le jeudi 11 juin 2020 à 15:55 +0530, Dikshita Agarwal a écrit :
+>>>>> LTR (Long Term Reference) frames are the frames that are encoded
+>>>>> sometime in the past
+>>>>> and stored in the DPB buffer list to be used as reference to encode
+>>>>> future frames.
+>>>>> One usage of LTR encoding is to reduce error propagation for video
+>>>>> transmission
+>>>>> in packet lossy networks.  For example, encoder may want to specify
+>>>>> some key frames as
+>>>>> LTR pictures and use them as reference frames for encoding. With
+>>>>> extra protection
+>>>>> selectively on these LTR frames or synchronization with the 
+>>>>> receiver
+>>>>> of reception of
+>>>>> the LTR frames during transmission, decoder can receive reference
+>>>>> frames more reliably
+>>>>> than other non-reference frames. As a result, transmission error 
+>>>>> can
+>>>>> be effectively
+>>>>> restricted within certain frames rather than propagated to future
+>>>>> frames.
+>>>>> 
+>>>>> We are introducing below V4l2 Controls for this feature
+>>>>> 1. V4L2_CID_MPEG_VIDEO_LTRCOUNT
+>>>>>     a. This is used to query or configure the number of LTR frames.
+>>>>>        This is a static control and is controlled by the client.
+>>>>>     b. The LTR index varies from 0 to the max LTR-1.
+>>>>>     c. If LTR Count is more than max supported LTR count (max LTR) 
+>>>>> by
+>>>>> driver, it will be rejected.
+>>>>>     d. Auto Marking : If LTR count is non zero,
+>>>>>         1) first LTR count frames would be mark as LTR 
+>>>>> automatically
+>>>>> after
+>>>>>       	   every IDR frame (inclusive).
+>>>>>         2) For multilayer encoding: first LTR count base layer
+>>>>> reference frames starting after
+>>>>>            every IDR frame (inclusive) in encoding order would be
+>>>>> marked as LTR frames by the encoder.
+>>>>>         3) Auto marking of LTR due to IDR should consider following
+>>>>> conditions:
+>>>>>             1. The frame is not already set to be marked as LTR.
+>>>>>             2. The frame is part of the base layer in the
+>>>>> hierarchical layer case.
+>>>>>             3. The number of frames currently marked as LTR is less
+>>>>> than the maximum LTR frame index plus 1.
+>>>>>     e. Encoder needs to handle explicit Mark/Use command when 
+>>>>> encoder
+>>>>> is still doing "auto" marking
+>>> 
+>>> I don't follow this, quite possibly due to lack of experience with
+>>> encoders.
+>>> 
+>>> I kind of would expect to see two modes: either automatic where
+>>> encoders can
+>>> mark up to LTR_COUNT frames as long term reference, and userspace 
+>>> just
+>>> sets
+>>> LTR_COUNT and doesn't have to do anything else.
+>>> 
+>>> Or it is manual mode where userspace explicitly marks long term
+>>> reference
+>>> frames.
+>>> 
+>>> From the proposal above it looks like you can mix auto and manual
+>>> modes.
+>>> 
+>>> BTW, how do you 'unmark' long term reference frames?
+>>> 
+>>> This feature is for stateful encoders, right?
+>>> 
+>>>> 
+>>>> Perhaps we are missing a LONG_TERM_REFERENCE_MODE ? I bet some 
+>>>> encoder
+>>>> can select by themself long term references and even some encoders 
+>>>> may
+>>>> not let the user decide.
+>>>> 
+>>>> (not huge han of LTR acronyme, but that could be fine too, assuming
+>>>> you
+>>>> add more _).
+>>>> 
+>> 
+>> Userspace sets LTR count which signifies the number of LTR frames
+>> encoder needs to generate or keep.
+>> The encoder has to build-up its internal buffer reference list (aka 
+>> DBP
+>> list or recon buffer list).
+>> In order to achieve that encoder will fill It's LTR (long term
+>> references) list and STR (short term references) list
+>> by auto marking n frames as LTR frames(n is equal to LTR count) based 
+>> on
+>> auto-marking dictated by the encoder spec.
+>> The client then can replace those automatically marked frames with new
+>> frames using V4L2_CID_MPEG_VIDEO_MARKLTRFRAME and can ask
+>> encoder to refer the newly marked frame for encoding the next frame
+>> using V4L2_CID_MPEG_VIDEO_USELTRFRAME.
+>> 
+>>>>> 
+>>>>> 2. V4L2_CID_MPEG_VIDEO_MARKLTRFRAME :
+>>>>>     a. This signals to mark the current frame as LTR frame. It is a
+>>>>> dynamic control and also provide the LTR index to be used.
+>>>>>     b. the LTR index provided by this control should never exceed 
+>>>>> the
+>>>>> max LTR-1. Else it will be rejected.
+>>>> 
+>>>> The "current" frame seems a bit loose. Perhaps you wanted to use
+>>>> buffer
+>>>> flags ? A bit like what we have to signal TOP/BOTTOM fields in
+>>>> alternate interlacing.
+>>> 
+>>> I was thinking the same thing. Using a control for this doesn't seem
+>>> right.
+>>> 
+>> 
+>> the client sets this to replace automatically marked frames by the
+>> encoder with a particular frame.
+>> this provides an index that ranges from 0 to LTR count-1 and then the
+>> particular frame will be marked with that index.
+>> this can be achieved through request by associating this control with 
+>> a
+>> specific buffer to make it synchronized.
+>> 
+>>>> 
+>>>>> 
+>>>>> 3. V4L2_CID_MPEG_VIDEO_USELTRFRAME :
+>>>>>     a. This specifies the LTR frame(s) to be used for encoding the
+>>>>> current frame. This is a dynamic control.
+>>>>>     b. LTR Use Bitmap : this consists of bits [0, 15]. A total of N
+>>>>> LSB bits of this field are valid,
+>>>>>        where N is the maximum number of LTRs supported. All the 
+>>>>> other
+>>>>> bits are invalid and should be rejected.
+>>>>>        The LSB corresponds to the LTR index 0. Bit N-1 from the LSB
+>>>>> corresponds to the LTR index max LTR-1.
+>>> 
+>>> How would userspace know this? Esp. with auto marking since userspace
+>>> would have
+>>> to predict how auto marking works (if I understand this correctly).
+>>> 
+>> 
+>> Client sets LTR count which tells about the number of LTR frames
+>> automatically marked by the encoder.
+>> so client can use LTR index (0 to LTR count -1) to ask encoder to 
+>> refer
+>> any particular
+>> frame (marked automatically by driver or marked by client with
+>> V4L2_CID_MPEG_VIDEO_MARKLTRFRAME) as a reference to encode the next
+>> frame.
+>> 
+>>> For which HW encoder is this meant?
+>>> 
+>> This is primarily meant for H264 and HEVC.
+> 
+> The venus encoder?
+yes
+> 
+> Some more questions:
+> 
+> 1) How many LTR frames do h.264 and hevc allow?
+According to spec, MAX LTR allowed by H.264 is 15 and HEVC allows max 32 
+LTR frames.
+> 2) Given N LTR frames, is there a ordering of those frames? E.g.
+>    the LTR frame with index 0 is processed/used differently from
+>    LTR frame with index 1? Or are they all equal in that it is just a 
+> pool
+>    of LTR frames that the encoder can use as it wishes?
+they are different frames marked to be used as LTR and stored in 
+available indices.
+Userspace notifies encoder which LTR frame index to use via USE LTR 
+control.
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon 20-07-20 09:58:57, Alan Stern wrote:
-[...]
-> Can you provide the contents of /sys/kernel/debug/usb/devices and also a 
-
-attached.
-
-> usbmon trace showing a few rounds of this recurring activity?
-
-This is not my area so I will need some help here. I assume I should
-look for debug/usb/usbmon which contains quite some files for me
-0s  0u  1s  1t  1u  2s  2t  2u
-most of them provide data when cating them.
-
-> section of the dmesg log with dynamic debugging enabled for the usbcore 
-> module, as well.
-
-Could you give me more details steps please?
--- 
-Michal Hocko
-SUSE Labs
-
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="usb.devices"
-
-
-T:  Bus=01 Lev=00 Prnt=00 Port=00 Cnt=00 Dev#=  1 Spd=480  MxCh=12
-B:  Alloc=  0/800 us ( 0%), #Int=  0, #Iso=  0
-D:  Ver= 2.00 Cls=09(hub  ) Sub=00 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=1d6b ProdID=0002 Rev= 5.08
-S:  Manufacturer=Linux 5.8.0-rc6-00001-g5714ee50bb43 xhci-hcd
-S:  Product=xHCI Host Controller
-S:  SerialNumber=0000:00:14.0
-C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
-I:* If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=00 Driver=hub
-E:  Ad=81(I) Atr=03(Int.) MxPS=   4 Ivl=256ms
-
-T:  Bus=01 Lev=01 Prnt=01 Port=06 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=0a5c ProdID=5800 Rev= 1.01
-S:  Manufacturer=Broadcom Corp
-S:  Product=5880
-S:  SerialNumber=0123456789ABCD
-C:* #Ifs= 2 Cfg#= 0 Atr=e0 MxPwr=100mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=fe(app. ) Sub=00 Prot=00 Driver=(none)
-E:  Ad=81(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=85(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=0b(scard) Sub=00 Prot=00 Driver=usbfs
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=86(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-
-T:  Bus=01 Lev=01 Prnt=01 Port=07 Cnt=02 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 2.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=8087 ProdID=0a2b Rev= 0.01
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=81(I) Atr=03(Int.) MxPS=  64 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-
-T:  Bus=02 Lev=00 Prnt=00 Port=00 Cnt=00 Dev#=  1 Spd=5000 MxCh= 6
-B:  Alloc=  0/800 us ( 0%), #Int=  0, #Iso=  0
-D:  Ver= 3.00 Cls=09(hub  ) Sub=00 Prot=03 MxPS= 9 #Cfgs=  1
-P:  Vendor=1d6b ProdID=0003 Rev= 5.08
-S:  Manufacturer=Linux 5.8.0-rc6-00001-g5714ee50bb43 xhci-hcd
-S:  Product=xHCI Host Controller
-S:  SerialNumber=0000:00:14.0
-C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
-I:* If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=00 Driver=hub
-E:  Ad=81(I) Atr=03(Int.) MxPS=   4 Ivl=256ms
-
---fdj2RfSjLxBAspz7--
+Thanks,
+Dikshita
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>> 
+>> Thanks,
+>> Dikshita
+>> 
+>>>> 
+>>>> Note, I haven't captured very well the userspace control flow, 
+>>>> perhaps
+>>>> this could be enhanced through writing some documentation.
+>>>> 
+>>>> As per all other generic encoder controls, we need to make sure it
+>>>> will
+>>>> be usable and flexible enough for multiple HW blocks, as it can be
+>>>> tedious to extend later otherwise. It is important that along with
+>>>> this
+>>>> RFC you provide some comparisons with with other HW / SW APIs in 
+>>>> order
+>>>> to help justify the design decisions. I also think there should be
+>>>> link made V4L2_CID_MPEG_VIDEO_GOP_* , number of B-Frames etc.
+>>> 
+>>> I agree with Nicolas.
+>>> 
+>>> Regards,
+>>> 
+>>> 	Hans
+>>> 
+>>>> 
+>>>> regards,
+>>>> Nicolas
+>>>> 
+>>>>> 
+>>>>> Dikshita Agarwal (1):
+>>>>>   media: v4l2-ctrls:  add control for ltr
+>>>>> 
+>>>>>  drivers/media/v4l2-core/v4l2-ctrls.c | 6 ++++++
+>>>>>  include/uapi/linux/v4l2-controls.h   | 4 ++++
+>>>>>  2 files changed, 10 insertions(+)
+>>>>> 
+>>>> 
