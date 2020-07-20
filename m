@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AF8227262
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5188D22726B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 00:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgGTW13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 18:27:29 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:41680 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgGTW12 (ORCPT
+        id S1727033AbgGTWet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 18:34:49 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38096 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgGTWet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:27:28 -0400
-Received: by mail-io1-f65.google.com with SMTP id p205so19295094iod.8;
-        Mon, 20 Jul 2020 15:27:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dmZWPiwMYUt+IEOD9Wmpq4+HBAIL3pN57wPHpCepilk=;
-        b=NVgjAt10Bh+KGXIpX9dITjy+osGa6XRraIDegnMKhiACafJJDKDj5incm/9RRzqJcb
-         /pf+Zvl133Mt9whgbBQVZKzyCJ9NlU8LrvjSLiTqD2XG0ZyTKBPdkS7oXl6kHJ46eFnQ
-         PGM+6PX/RmUxtnXwD6Cz7pQyquzt54SnJ7GgGsDU/0F6NxnsI2ZGgz4doct9qFVNV6DB
-         4zxQjgC3gC1SKkYLXiu0+YXFvobC2L7Sm17Spi7c3TCrtqm8SFUck9aFAPPOb68tHxwi
-         vPVpAriaUwq/KCJewWhc0YVC2f+oRdmqvq1XmlIQ0jg3qFqdu5GXP0HIXbZHfEoKVTR2
-         VdTA==
-X-Gm-Message-State: AOAM532iegcP7sCMAY/HtiSF0udAiphoI0R27ifhYc+aMh1tboDtkAv3
-        WEMv7+32cwbKFgMARE62sA==
-X-Google-Smtp-Source: ABdhPJzT/wiVQZfvilkAhuT/SHp5hylwqI28PubTIp6kEeIwB33d4SeJdoyIdotXOPRW4VF+nUs4vw==
-X-Received: by 2002:a02:c88c:: with SMTP id m12mr14461904jao.2.1595284047756;
-        Mon, 20 Jul 2020 15:27:27 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id c7sm9727477ilo.85.2020.07.20.15.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 15:27:26 -0700 (PDT)
-Received: (nullmailer pid 3063847 invoked by uid 1000);
-        Mon, 20 Jul 2020 22:27:25 -0000
-Date:   Mon, 20 Jul 2020 16:27:25 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Chu Lin <linchuyuan@google.com>, belgaied@google.com,
-        jasonling@google.com, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhongqil@google.com
-Subject: Re: [PATCH] dt-bindings: hwmon: adm1272: add
- adm1272-adm1275-temp1-en binding
-Message-ID: <20200720222725.GA3061855@bogus>
-References: <20200710004258.296017-1-linchuyuan@google.com>
- <20200719222222.GA78762@roeck-us.net>
+        Mon, 20 Jul 2020 18:34:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06KMMRkB021497;
+        Mon, 20 Jul 2020 22:34:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=J1Q1jxTQ9tgAsI8azWPhhYPMvBAeaRSq3GTglc5dUP0=;
+ b=Y/DrWO/wBrD9bM7MXK8XCna0gnNAFsnva0ofblAzgEH8Pl9sFLt+gmaZrUUVZ5vNMcjq
+ i0N9mdZ3DfpLtgK8Nv2BmjTQzqasSQk3EppwMHU7wgix8XhMDiCQgglLyq3JlIK7VZfs
+ L0bNHH4C+l480D/JwRlLKLdH3wVBfh/I/Z802bsd40NJz0S2EBqJ+av4Nq7UxKr+8mHm
+ m7No1nDL6pV0w5RG+Iu2MltsXi/iT/xeK9wuJMR3Hx3HdPUvC/19PZLQ13nGlzcA3GjN
+ v7EsFZR8oGazlbCr9c3BOxvc6Fe2H7sS3j5BlLlnheC6yhNH4+qZMdGV+ssQUfW23gOy AA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 32bs1m9n4b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 22:34:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06KMKg8T026710;
+        Mon, 20 Jul 2020 22:32:43 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 32djyx4aup-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 22:32:43 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06KMWgo0005807;
+        Mon, 20 Jul 2020 22:32:42 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Jul 2020 15:32:41 -0700
+Subject: Re: [PATCH 1/5] mm/hugetlb.c: Fix typo of glb_reserve
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org
+References: <20200720062623.13135-1-bhe@redhat.com>
+ <20200720062623.13135-2-bhe@redhat.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <0834fb69-7cc0-8c0f-d5aa-8ed6ffe9a2e2@oracle.com>
+Date:   Mon, 20 Jul 2020 15:32:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200719222222.GA78762@roeck-us.net>
+In-Reply-To: <20200720062623.13135-2-bhe@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9688 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200140
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9688 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
+ spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200140
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 03:22:22PM -0700, Guenter Roeck wrote:
-> On Fri, Jul 10, 2020 at 12:42:58AM +0000, Chu Lin wrote:
-> > Problem:
-> > 	adm1272 and adm1278 supports temperature sampling. The
-> > current way of enabling it requires the user manually unbind the device
-> > from the driver, flip the temperature sampling control bit and then bind
-> > the device back to the driver. It would be nice if we can control this in a
-> > better way by reading the dt.
-> > 
-> > Solution:
-> > 	Introducing device tree binding adm1272-adm1278-temp1-en. If the
-> > flag is set, flip the temp1_en control bit on probing.
-> > 
-> > Testing:
-> > make dt_binding_check
-> > 
-> > Signed-off-by: Chu Lin <linchuyuan@google.com>
-> > ---
-> >  Documentation/devicetree/bindings/hwmon/adm1275.txt | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/hwmon/adm1275.txt b/Documentation/devicetree/bindings/hwmon/adm1275.txt
-> > index 1ecd03f3da4d..4403fe30f005 100644
-> > --- a/Documentation/devicetree/bindings/hwmon/adm1275.txt
-> > +++ b/Documentation/devicetree/bindings/hwmon/adm1275.txt
-> > @@ -15,6 +15,8 @@ Optional properties:
-> >  
-> >  - shunt-resistor-micro-ohms
-> >  	Shunt resistor value in micro-Ohm
-> > +- adm1272-adm1278-temp1-en
-> > +	Enable temperature sampling. This is supported on adm1272 and adm1278
+On 7/19/20 11:26 PM, Baoquan He wrote:
+> The local variable is for global reservation of region.
 > 
-> I suspect this should be something like "analog,temp1-enable". 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  mm/hugetlb.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index f24acb3af741..191a585bb315 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3649,7 +3649,7 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
+>  	struct resv_map *resv = vma_resv_map(vma);
+>  	struct hugepage_subpool *spool = subpool_vma(vma);
+>  	unsigned long reserve, start, end;
+> -	long gbl_reserve;
+> +	long glb_reserve;
 
-Yes.
+I see both 'gbl' and 'glb' being used for global in variable names.  grep will
+actually return more hits for gbl than glb.  Unless there is consensus that
+'glb' should be used for global, I would prefer not to make this change.
 
-> Either case,
-> I would suggest to resend the series and copy DT maintainers at least on
-> this patch.
-
-Only the DT list matters.
-
-Rob
+-- 
+Mike Kravetz
