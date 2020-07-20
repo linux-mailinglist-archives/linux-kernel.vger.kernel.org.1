@@ -2,171 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A70226444
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC35C2264B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730294AbgGTPnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729188AbgGTPni (ORCPT
+        id S1730751AbgGTPrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:47:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21165 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730733AbgGTPrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:43:38 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90191C061794;
-        Mon, 20 Jul 2020 08:43:37 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f139so25644644wmf.5;
-        Mon, 20 Jul 2020 08:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=autVWWtMkcWJD2mnHeXx5OQfP35st6FKtCjEISqTu28=;
-        b=JjmqZtktLvk5Qc3N7R2sS1d6oGjjgW6kfwGPqn1Syigos8hcDhGKPO5zhOGp+p3mdM
-         7oFKNkkQZHy4DktD0yhGa/K5vU5uaVMuJjOzPVn+5YIFKs57KtNwbZbuRvelWsEaccIw
-         zvfTew212u4gLW5o5Px6DA8QVeHMU1ytQhfyDQrdJkrZXhBXGRmM8Lrx+Vnn29D5nKJA
-         NVj5ydC0Wf/yr/gH3kB+6lCRjT5wi6q/7Wfow+gFR8X8oIg1LvNCY9qKphQA1W8OPhZ7
-         qbmvTMCpGd6c734qKKg3v1DXdQBwVnv0ndrx1jbr275X5hPbR8dk3/R7fplUPwwA13g9
-         iwpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=autVWWtMkcWJD2mnHeXx5OQfP35st6FKtCjEISqTu28=;
-        b=JZYPmGnfhJTBst3WuOULUS4sxXOO0nLCmEfHsdxrsg8JLyC3pdeGJJPgFCL7gPn8MR
-         ntXvSB2AFOV59MDOTw7AJQp8Zzdcmie5OS6FyWEaAyzAXtLTPs+GSHU3WCw036YKaTZp
-         WIKlkOKWhxwOggzPJdrjwVPFaKWlXXCpmyz2qEdSC1NXdWtxNfXGJoSOfE9AnFPRVvb8
-         OYSwvEZiNhddF8C6wBntEv0lfZEDkk+uG3R31Qp0Out3pHYUi/FeoeubH6z9gOkMUvPN
-         TYVg9V70QoyxkbMjeLAPMa00MI39scJ2dhXm0TzcNLpOjTSSMe5hh/0myQhvNzLNTGJ0
-         RWWA==
-X-Gm-Message-State: AOAM5322DzB+zY9d5mZpblMNXubBuYTB7JtdGsOU4bcdwacSWeBkoR3i
-        htTjxX2zhwOiJ60NWk93TnqafshCBag=
-X-Google-Smtp-Source: ABdhPJzHR5BO0TIk52hY7BBc/k3XRAgpQOahFxFCGnpt58cP2vReN2cLRt0KiZXlFZBCmuhiMR+Qaw==
-X-Received: by 2002:a7b:c857:: with SMTP id c23mr23660652wml.155.1595259815959;
-        Mon, 20 Jul 2020 08:43:35 -0700 (PDT)
-Received: from ziggy.stardust (81.172.57.81.dyn.user.ono.com. [81.172.57.81])
-        by smtp.gmail.com with ESMTPSA id e5sm16981210wrc.37.2020.07.20.08.43.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 08:43:35 -0700 (PDT)
-Subject: Re: [PATCH v7 2/4] mmc: mediatek: refine msdc timeout api
-To:     Chun-Hung Wu <chun-hung.wu@mediatek.com>, mirq-linux@rere.qmqm.pl,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Pan Bian <bianpan2016@163.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Mathieu Malaterre <malat@debian.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>
-Cc:     kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <1595205759-5825-1-git-send-email-chun-hung.wu@mediatek.com>
- <1595205759-5825-3-git-send-email-chun-hung.wu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <eb1d5973-55f2-3fb4-bf9c-03b98bd6955b@gmail.com>
-Date:   Mon, 20 Jul 2020 17:43:33 +0200
+        Mon, 20 Jul 2020 11:47:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595260023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hQ1H7l9Ohk9cYexEWkkOl7WIuCDqSZlPZluQHWvxb1I=;
+        b=CMJQmbau19PE96nWqtHBVGYW1fHCBZQPFxWt7Ywsx/b6jPZHRwWaKbRFkmUF/k5/Qk58uF
+        EIUJXgEGXhEqJ66T/R1zVAVElGX+FMtHoE3gXN5vRiOCBxNk0S7Nmtcg6pk71cpxfjkOh4
+        GHolbTCVqZ7+OndxGu9mnHQs6A9aFqo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-kQ0JMy5zMwax-kYED5mPiQ-1; Mon, 20 Jul 2020 11:46:59 -0400
+X-MC-Unique: kQ0JMy5zMwax-kYED5mPiQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DC0818A1DFE;
+        Mon, 20 Jul 2020 15:46:58 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-113-230.rdu2.redhat.com [10.10.113.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46C8C7EF81;
+        Mon, 20 Jul 2020 15:46:57 +0000 (UTC)
+Subject: Re: [PATCH v6] xfs: Fix false positive lockdep warning with
+ sb_internal & fs_reclaim
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        Eric Sandeen <sandeen@redhat.com>
+References: <20200707191629.13911-1-longman@redhat.com>
+ <20200713164112.GZ7606@magnolia>
+ <104087053.24407245.1595259123778.JavaMail.zimbra@redhat.com>
+ <20200720154043.GV7625@magnolia>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <d5218324-ee26-464b-8db6-3ca05ba98f3d@redhat.com>
+Date:   Mon, 20 Jul 2020 11:46:56 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <1595205759-5825-3-git-send-email-chun-hung.wu@mediatek.com>
+In-Reply-To: <20200720154043.GV7625@magnolia>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/20/20 11:40 AM, Darrick J. Wong wrote:
+> On Mon, Jul 20, 2020 at 11:32:03AM -0400, Waiman Long wrote:
+>>
+>> ----- Original Message -----
+>> From: "Darrick J. Wong" <darrick.wong@oracle.com>
+>> To: "Waiman Long" <longman@redhat.com>
+>> Cc: linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, "Dave Chinner" <david@fromorbit.com>, "Qian Cai" <cai@lca.pw>, "Eric Sandeen" <sandeen@redhat.com>
+>> Sent: Monday, July 13, 2020 12:41:12 PM
+>> Subject: Re: [PATCH v6] xfs: Fix false positive lockdep warning with sb_internal & fs_reclaim
+>>
+>> On Tue, Jul 07, 2020 at 03:16:29PM -0400, Waiman Long wrote:
+>>> Depending on the workloads, the following circular locking dependency
+>>> warning between sb_internal (a percpu rwsem) and fs_reclaim (a pseudo
+>>> lock) may show up:
+>>>
+>>> ======================================================
+>>> WARNING: possible circular locking dependency detected
+>>> 5.0.0-rc1+ #60 Tainted: G        W
+>>> ------------------------------------------------------
+>>> fsfreeze/4346 is trying to acquire lock:
+>>> 0000000026f1d784 (fs_reclaim){+.+.}, at:
+>>> fs_reclaim_acquire.part.19+0x5/0x30
+>>>
+>>> but task is already holding lock:
+>>> 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
+>>>
+>>> which lock already depends on the new lock.
+>>>    :
+>>>   Possible unsafe locking scenario:
+>>>
+>>>         CPU0                    CPU1
+>>>         ----                    ----
+>>>    lock(sb_internal);
+>>>                                 lock(fs_reclaim);
+>>>                                 lock(sb_internal);
+>>>    lock(fs_reclaim);
+>>>
+>>>   *** DEADLOCK ***
+>>>
+>>> 4 locks held by fsfreeze/4346:
+>>>   #0: 00000000b478ef56 (sb_writers#8){++++}, at: percpu_down_write+0xb4/0x650
+>>>   #1: 000000001ec487a9 (&type->s_umount_key#28){++++}, at: freeze_super+0xda/0x290
+>>>   #2: 000000003edbd5a0 (sb_pagefaults){++++}, at: percpu_down_write+0xb4/0x650
+>>>   #3: 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
+>>>
+>>> stack backtrace:
+>>> Call Trace:
+>>>   dump_stack+0xe0/0x19a
+>>>   print_circular_bug.isra.10.cold.34+0x2f4/0x435
+>>>   check_prev_add.constprop.19+0xca1/0x15f0
+>>>   validate_chain.isra.14+0x11af/0x3b50
+>>>   __lock_acquire+0x728/0x1200
+>>>   lock_acquire+0x269/0x5a0
+>>>   fs_reclaim_acquire.part.19+0x29/0x30
+>>>   fs_reclaim_acquire+0x19/0x20
+>>>   kmem_cache_alloc+0x3e/0x3f0
+>>>   kmem_zone_alloc+0x79/0x150
+>>>   xfs_trans_alloc+0xfa/0x9d0
+>>>   xfs_sync_sb+0x86/0x170
+>>>   xfs_log_sbcount+0x10f/0x140
+>>>   xfs_quiesce_attr+0x134/0x270
+>>>   xfs_fs_freeze+0x4a/0x70
+>>>   freeze_super+0x1af/0x290
+>>>   do_vfs_ioctl+0xedc/0x16c0
+>>>   ksys_ioctl+0x41/0x80
+>>>   __x64_sys_ioctl+0x73/0xa9
+>>>   do_syscall_64+0x18f/0xd23
+>>>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>>>
+>>> This is a false positive as all the dirty pages are flushed out before
+>>> the filesystem can be frozen.
+>>>
+>>> One way to avoid this splat is to add GFP_NOFS to the affected allocation
+>>> calls by using the memalloc_nofs_save()/memalloc_nofs_restore() pair.
+>>> This shouldn't matter unless the system is really running out of memory.
+>>> In that particular case, the filesystem freeze operation may fail while
+>>> it was succeeding previously.
+>>>
+>>> Without this patch, the command sequence below will show that the lock
+>>> dependency chain sb_internal -> fs_reclaim exists.
+>>>
+>>>   # fsfreeze -f /home
+>>>   # fsfreeze --unfreeze /home
+>>>   # grep -i fs_reclaim -C 3 /proc/lockdep_chains | grep -C 5 sb_internal
+>>>
+>>> After applying the patch, such sb_internal -> fs_reclaim lock dependency
+>>> chain can no longer be found. Because of that, the locking dependency
+>>> warning will not be shown.
+>>>
+>>> Suggested-by: Dave Chinner <david@fromorbit.com>
+>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Looks good to me,
+>> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+>>
+>> Will this patch be merged into the xfs tree soon?
+> It should appear in for-next in the next day or so.  I am trying to push
+> there only every other couple of weeks to reduce the amount of developer
+> tree rebasing that has to go on when people are trying to land a complex
+> series.
+>
+> --D
 
+Thanks for the clarification.
 
-On 20/07/2020 02:42, Chun-Hung Wu wrote:
-> Extract msdc timeout api common part to have
-> better code architecture and avoid redundant code.
-> 
-> Signed-off-by: Chun-Hung Wu <chun-hung.wu@mediatek.com>
+Cheers,
+Longman
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->   drivers/mmc/host/mtk-sd.c | 32 ++++++++++++++++++++++----------
->   1 file changed, 22 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index ed37a3c..347ed72 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -723,21 +723,21 @@ static void msdc_unprepare_data(struct msdc_host *host, struct mmc_request *mrq)
->   	}
->   }
->   
-> -/* clock control primitives */
-> -static void msdc_set_timeout(struct msdc_host *host, u32 ns, u32 clks)
-> +static u64 msdc_timeout_cal(struct msdc_host *host, u64 ns, u64 clks)
->   {
-> -	u32 timeout, clk_ns;
-> +	u64 timeout, clk_ns;
->   	u32 mode = 0;
->   
-> -	host->timeout_ns = ns;
-> -	host->timeout_clks = clks;
->   	if (host->mmc->actual_clock == 0) {
->   		timeout = 0;
->   	} else {
-> -		clk_ns  = 1000000000UL / host->mmc->actual_clock;
-> -		timeout = (ns + clk_ns - 1) / clk_ns + clks;
-> +		clk_ns  = 1000000000ULL;
-> +		do_div(clk_ns, host->mmc->actual_clock);
-> +		timeout = ns + clk_ns - 1;
-> +		do_div(timeout, clk_ns);
-> +		timeout += clks;
->   		/* in 1048576 sclk cycle unit */
-> -		timeout = (timeout + (0x1 << 20) - 1) >> 20;
-> +		timeout = DIV_ROUND_UP(timeout, (0x1 << 20));
->   		if (host->dev_comp->clk_div_bits == 8)
->   			sdr_get_field(host->base + MSDC_CFG,
->   				      MSDC_CFG_CKMOD, &mode);
-> @@ -747,9 +747,21 @@ static void msdc_set_timeout(struct msdc_host *host, u32 ns, u32 clks)
->   		/*DDR mode will double the clk cycles for data timeout */
->   		timeout = mode >= 2 ? timeout * 2 : timeout;
->   		timeout = timeout > 1 ? timeout - 1 : 0;
-> -		timeout = timeout > 255 ? 255 : timeout;
->   	}
-> -	sdr_set_field(host->base + SDC_CFG, SDC_CFG_DTOC, timeout);
-> +	return timeout;
-> +}
-> +
-> +/* clock control primitives */
-> +static void msdc_set_timeout(struct msdc_host *host, u64 ns, u64 clks)
-> +{
-> +	u64 timeout;
-> +
-> +	host->timeout_ns = ns;
-> +	host->timeout_clks = clks;
-> +
-> +	timeout = msdc_timeout_cal(host, ns, clks);
-> +	sdr_set_field(host->base + SDC_CFG, SDC_CFG_DTOC,
-> +		      (u32)(timeout > 255 ? 255 : timeout));
->   }
->   
->   static void msdc_gate_clock(struct msdc_host *host)
-> 
