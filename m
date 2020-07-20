@@ -2,84 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE26226E2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB56E226E31
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgGTSWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 14:22:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:14583 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGTSWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:22:30 -0400
-IronPort-SDR: DtF6HfjvTVhHH8JeSiALDcbEKbl5CLxt/ri2DNfTZsI0vfrQ9rpHwYlspGbjMAWMrgYUmlBWDN
- A5s79CnszPXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="130064290"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="130064290"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 11:22:30 -0700
-IronPort-SDR: X84hHlpj1r0oBN7evSFEINY094cRPdzBDUPAKI5Qpy4BMWas2U9HnwUqS0ZCnLFzcb4r8bw30/
- xh8qmud4WO1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="327617059"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 20 Jul 2020 11:22:29 -0700
-Received: from [10.255.230.139] (kliang2-mobl.ccr.corp.intel.com [10.255.230.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id DF8CF580299;
-        Mon, 20 Jul 2020 11:22:28 -0700 (PDT)
-Subject: Re: [PATCH V6 03/14] perf/x86/intel: Introduce the fourth fixed
- counter
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-4-kan.liang@linux.intel.com>
- <20200720162024.GT10769@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <fbf09b63-4b6d-ebdf-33fc-f93695b3f94a@linux.intel.com>
-Date:   Mon, 20 Jul 2020 14:22:27 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729658AbgGTSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 14:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGTSX5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 14:23:57 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A95C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 11:23:56 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o18so19065696eje.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 11:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mYtPOu3+6Et/kxltzHexe0n0N7DSpTjVRyHcPXRKmCw=;
+        b=ui/WFmlokRzdDA5JN1GR5fdBq/UdFuxXFmj7ASkGwvwdeQH5Cd+w3vTSFoF5gUlaiV
+         CD10FNPrnEwqMrxIDzhDOwx/IwCPewbSoTDhySKiU6dVEW2iERwIbgt90LUUMOV5ygij
+         Stq7qqJdjVdfpcdGrmY9qJGlH/NiV4hXKLOUEZhdc9Xo7tdC9mvggPOoyBx4+QPpNNCW
+         hs7Dq+C+Ex5KscAQsqdKfPyjrq/1i1twgoKM+hNMYCu+1bsZ2HOcSCxVkkgt+giJ1g70
+         K5BcJkaB/SamNI6vcJEMYUq1b56zYYMsEbMi89iq6qcBnrdqMS4TUrVFwdR154adJR6q
+         OShg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mYtPOu3+6Et/kxltzHexe0n0N7DSpTjVRyHcPXRKmCw=;
+        b=Dxoy30FStc1bJnPY0dqQlxMA4Kl3YAZQ9v3yF1ZEbFpIi71MAXPnS0iPEagHBNkVPu
+         bZ9jH8/Zgau37EYTcQd0N8EP785JMxHt7S9D2zoHpPbsJWvuxx2Qwn39HFPSLB/VpSwA
+         HLVtozv0fzYbVVtGP+7NAIMv7K/wV9+6/mn1iL64gOCENoBQIpJ/7p3xQqaQq144gnRq
+         jOeQzBsY2ChjpuYfaCrr4omiXY4Mx9Ck6bxDT9CryzIfhIVqNXByQBb6QZW6d/ClTPxM
+         Lk/RZC+PDCXp8L6gOjtfzIZGrnIPwMRrloMDOYClh98sjyOF2wPpvNEDiX7iVn/YdDLu
+         9Hog==
+X-Gm-Message-State: AOAM532aMKgtjVvgLUr73cyM9inAa6Dr6TVaWbiGyddjdaYY2aLn+XA8
+        D7jna8rtsXKl7LLAGX7GPXdlRJbXGhaZE9MJb9CXiA==
+X-Google-Smtp-Source: ABdhPJw6kbpkvhqkdMCphSGiRLzzPUV18DZOTQU5dB0cdi0CwxIGyDs6TiAqw4ENGTmfmH4/sgAjvJ6lBMmDeYEKedQ=
+X-Received: by 2002:a17:906:c007:: with SMTP id e7mr21842223ejz.481.1595269434577;
+ Mon, 20 Jul 2020 11:23:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200720162024.GT10769@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200507085544.GB1097552@kroah.com> <1591791827-23871-1-git-send-email-Frankie.Chang@mediatek.com>
+ <1591791827-23871-3-git-send-email-Frankie.Chang@mediatek.com>
+In-Reply-To: <1591791827-23871-3-git-send-email-Frankie.Chang@mediatek.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Mon, 20 Jul 2020 11:23:43 -0700
+Message-ID: <CAHRSSEydixN=4JQW3PGsTVaYZG+1aVZA6JOE9c9GufiWrkDycQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] binder: add trace at free transaction.
+To:     Frankie Chang <Frankie.Chang@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 10, 2020 at 5:24 AM Frankie Chang
+<Frankie.Chang@mediatek.com> wrote:
+>
+> From: "Frankie.Chang" <Frankie.Chang@mediatek.com>
+>
+> Since the original trace_binder_transaction_received cannot
+> precisely present the real finished time of transaction, adding a
+> trace_binder_txn_latency_free at the point of free transaction
+> may be more close to it.
+>
+> Signed-off-by: Frankie.Chang <Frankie.Chang@mediatek.com>
+> ---
+>  drivers/android/binder.c       |    2 ++
+>  drivers/android/binder_trace.h |   27 +++++++++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
+>
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 1592396..5ec9af8 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -1523,6 +1523,7 @@ static void binder_free_transaction(struct binder_transaction *t)
+>          * If the transaction has no target_proc, then
+>          * t->buffer->transaction has already been cleared.
+>          */
+> +       trace_binder_txn_latency_free(t);
+>         binder_free_txn_fixups(t);
+>         kfree(t);
+>         binder_stats_deleted(BINDER_STAT_TRANSACTION);
+> @@ -3094,6 +3095,7 @@ static void binder_transaction(struct binder_proc *proc,
+>         kfree(tcomplete);
+>         binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
+>  err_alloc_tcomplete_failed:
+> +       trace_binder_txn_latency_free(t);
+>         kfree(t);
+>         binder_stats_deleted(BINDER_STAT_TRANSACTION);
+>  err_alloc_t_failed:
+> diff --git a/drivers/android/binder_trace.h b/drivers/android/binder_trace.h
+> index 6731c3c..8ac87d1 100644
+> --- a/drivers/android/binder_trace.h
+> +++ b/drivers/android/binder_trace.h
+> @@ -95,6 +95,33 @@
+>                   __entry->thread_todo)
+>  );
+>
+> +TRACE_EVENT(binder_txn_latency_free,
+> +       TP_PROTO(struct binder_transaction *t),
+> +       TP_ARGS(t),
+> +       TP_STRUCT__entry(
+> +               __field(int, debug_id)
+> +               __field(int, from_proc)
+> +               __field(int, from_thread)
+> +               __field(int, to_proc)
+> +               __field(int, to_thread)
+> +               __field(unsigned int, code)
+> +               __field(unsigned int, flags)
+> +       ),
+> +       TP_fast_assign(
+> +               __entry->debug_id = t->debug_id;
+> +               __entry->from_proc = t->from ? t->from->proc->pid : 0;
+> +               __entry->from_thread = t->from ? t->from->pid : 0;
+> +               __entry->to_proc = t->to_proc ? t->to_proc->pid : 0;
+> +               __entry->to_thread = t->to_thread ? t->to_thread->pid : 0;
 
+t->to_proc and t->to_thread are not safe to dereference without
+holding t->lock. If the target process dies, these fields can be set
+to NULL
 
-On 7/20/2020 12:20 PM, Peter Zijlstra wrote:
-> On Fri, Jul 17, 2020 at 07:05:43AM -0700, kan.liang@linux.intel.com wrote:
->>   /*
->> + * There is no event-code assigned to the fixed-mode PMCs.
->> + *
->> + * For a fixed-mode PMC, which has an equivalent event on a general-purpose
->> + * PMC, the event-code of the equivalent event is used for the fixed-mode PMC,
->> + * e.g., Instr_Retired.Any and CPU_CLK_Unhalted.Core.
->> + *
->> + * For a fixed-mode PMC, which doesn't have an equivalent event, a
->> + * pseudo-encoding is used, e.g., CPU_CLK_Unhalted.Ref and TOPDOWN.SLOTS.
->> + * The pseudo event-code for a fixed-mode PMC must be 0x00.
->> + * The pseudo umask-code is 0x0X. The X indicates the index of the fixed
->> + * counter.
-> 
-> Isn't it X+1 ? Such that 0x0000 is an invalid event? After all, the
-> pseudo event for Fixed2 is 0x0300.
-
-I will fix the inaccurate description as below in V7.
-
-+ * The pseudo umask-code is 0xX. The X equals the index of the fixed
-+ * counter + 1, e.g., the fixed counter 2 has the pseudo-encoding 0x0300.
-
-Thanks,
-Kan
+> +               __entry->code = t->code;
+> +               __entry->flags = t->flags;
+> +       ),
+> +       TP_printk("transaction=%d from %d:%d to %d:%d flags=0x%x code=0x%x",
+> +                 __entry->debug_id, __entry->from_proc, __entry->from_thread,
+> +                 __entry->to_proc, __entry->to_thread, __entry->code,
+> +                 __entry->flags)
+> +);
+> +
+>  TRACE_EVENT(binder_transaction,
+>         TP_PROTO(bool reply, struct binder_transaction *t,
+>                  struct binder_node *target_node),
+> --
+> 1.7.9.5
