@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491F8226BDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02346226B34
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389089AbgGTQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:44:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33218 "EHLO mail.kernel.org"
+        id S1730115AbgGTQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729878AbgGTPlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:24 -0400
+        id S1729852AbgGTPrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:47:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DDF02064B;
-        Mon, 20 Jul 2020 15:41:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A46C2064B;
+        Mon, 20 Jul 2020 15:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259684;
-        bh=qtLQF2L4PLhu5M/VlmHYnqF+xmNBY7OKRaBtkjH+mmc=;
+        s=default; t=1595260055;
+        bh=Swp8vPi5pt2DL5xSBSuUFqwdNoRvMuvcU4GsNIbyCe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MY2WwImS1NtFq+foyoQhJ0V7zOUvOSgblWYUaq95/Tc44lHA45vwHjpaTd8lY2eWW
-         w30shNGr9ImatJoqRW0EDlVOPLyvaYuu5PigBR8Kvd8PtI3EkE70IBXyCMk8tEDNDV
-         XlJNjK1bdDadtC1A/fOqOr6SZFNtI8PD6UP7WVK0=
+        b=xf0ojegXZsH49EYPpWMqpGOU08L5iJnPuqOe0yhSDVw4tFtehJvqvmBme8hCqxbSd
+         uyvXvq+3ciUqx9jB74jMY8l8Bq6+Fl1A3M2odDRVkagGLyAirVsePak3Sjn9cf3FYN
+         /rIzr1qB+W50mPN156X8z8pyym0r4PFkPBMQwKZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.9 43/86] iio: mma8452: Add missed iio_device_unregister() call in mma8452_probe()
+        stable@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 060/125] arm64: alternative: Use true and false for boolean values
 Date:   Mon, 20 Jul 2020 17:36:39 +0200
-Message-Id: <20200720152755.332410679@linuxfoundation.org>
+Message-Id: <20200720152805.933322350@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-commit d7369ae1f4d7cffa7574d15e1f787dcca184c49d upstream.
+[ Upstream commit 3c4d9137eefecf273a520d392071ffc9df0a9a7a ]
 
-The function iio_device_register() was called in mma8452_probe().
-But the function iio_device_unregister() was not called after
-a call of the function mma8452_set_freefall_mode() failed.
-Thus add the missed function call for one error case.
+Return statements in functions returning bool should use true or false
+instead of an integer value. This code was detected with the help of
+Coccinelle.
 
-Fixes: 1a965d405fc6 ("drivers:iio:accel:mma8452: added cleanup provision in case of failure.")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/mma8452.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/alternative.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/accel/mma8452.c
-+++ b/drivers/iio/accel/mma8452.c
-@@ -1576,10 +1576,13 @@ static int mma8452_probe(struct i2c_clie
+diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
+index 5c4bce4ac381a..b9045d8d05d88 100644
+--- a/arch/arm64/kernel/alternative.c
++++ b/arch/arm64/kernel/alternative.c
+@@ -47,11 +47,11 @@ static bool branch_insn_requires_update(struct alt_instr *alt, unsigned long pc)
+ 	unsigned long replptr;
  
- 	ret = mma8452_set_freefall_mode(data, false);
- 	if (ret < 0)
--		goto buffer_cleanup;
-+		goto unregister_device;
+ 	if (kernel_text_address(pc))
+-		return 1;
++		return true;
  
- 	return 0;
+ 	replptr = (unsigned long)ALT_REPL_PTR(alt);
+ 	if (pc >= replptr && pc <= (replptr + alt->alt_len))
+-		return 0;
++		return false;
  
-+unregister_device:
-+	iio_device_unregister(indio_dev);
-+
- buffer_cleanup:
- 	iio_triggered_buffer_cleanup(indio_dev);
- 
+ 	/*
+ 	 * Branching into *another* alternate sequence is doomed, and
+-- 
+2.25.1
+
 
 
