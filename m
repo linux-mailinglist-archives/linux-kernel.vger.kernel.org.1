@@ -2,236 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980F8225E1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A849225E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgGTMEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
+        id S1728706AbgGTMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728572AbgGTMEA (ORCPT
+        with ESMTP id S1728532AbgGTMHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:04:00 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3FAC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 05:04:00 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id i6so11238774qkn.22
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 05:04:00 -0700 (PDT)
+        Mon, 20 Jul 2020 08:07:35 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFC4C061794;
+        Mon, 20 Jul 2020 05:07:35 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id f16so9992958pjt.0;
+        Mon, 20 Jul 2020 05:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=hO0JBht5uOWoAmAL+7KjQJEygdsPtbQCk3P9CwJY3U0=;
-        b=iASTdcQELQt5EHouNROxJiilxT9/qvLao4euOotIELKn+JKd2bFuPD35SyCXv2SKll
-         iCpAlQTC73rHoQYS/Stg++GW+NUQL9jmUnqNYJs3m92A7o8hXkwIbEccv316BhSSq8AJ
-         6I1nNyMPAJEfixzma7UCoteglEopqFTMgPsVEUp4BGvYTUcqqr/1u5RHNuL0CIY04PzF
-         3juqjNwEVOFGyt8xMKdtrCPAaGctzOSx2XpklygjI847Ut8P5BnWXc/bY4NgSeZYJCyb
-         rwtPlR7HHdVQ/N8FkmmKA1i5lz56P/+33a/b4vovmYH3VX7SZf8BmxM9cF9f+d2r9aHR
-         57Sg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rWZKrOwq0rwjH5TwZ+UuKWlHddegJY7Nfmtdu4+t0zs=;
+        b=XzUCvGslWr8de/Lj8121/tEpnZIfr0ColO1QujuDd9enBJsHTsaoQhN+0ZH/29Wtpf
+         u4b9lZRjGc02DRjbZ6I5Zg+w/FOn+3Uk87EPegYpYGXH1Ss8wKvggR5hXVSkK9USTHxc
+         RWcpG5sfF2gHaZ0tNIQjvJ9jxtnBUJjQfjM9g0UyzaZPQbtBId1QEb1/jI4CO6FI4l1F
+         F3ufHVkPlhFeR1YJBosKSgagBgsy+9wxBZSwQ3+JEVwAmn1nTqlN+TR+W2khuxL+hcCu
+         cdwd+U2jp+1p4lHdYacGNIYSunMdY5dalww2HdoEhX8fPlavAXTeoubhsKHOHO90DM6A
+         SVWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=hO0JBht5uOWoAmAL+7KjQJEygdsPtbQCk3P9CwJY3U0=;
-        b=T0dnaUyeACeiNk6SgU/BZBltIZlgI8Bb2x1ZP0PQ66IhseklW0TDA+NTsZw+ARJzHW
-         YqtYkgUbe0u4hOXnCnl6zEfZE2AYZxWdbQPt3vUVN07P+8UktKNT9AOQfv4956B+9MUV
-         zw5j7jD5GDsyr9pSR6vjckzq9saL/mWYdum+Js5R6g6nK5PEmQFms1sPJ1lhzmPRt5i4
-         stMErrKujsidABi1Oowl/EIV5FMJGnhKXXfmUGWMd3QOjXV68TmZdSgTV6J0o+XYeSx8
-         5TO0GkYPLarh1RJA5f7WcyUSWWM4ZW9MHuqNUcjz3FTN5Ie6XK4HjqlTB2YYbxHuIMpU
-         z2EA==
-X-Gm-Message-State: AOAM531SPcDQ2plEkaEtsVeUpggPKQijl32+5d8s0/O/0AKMWXjOoTew
-        WI21PXipEHAOKJbNCVOAhiSKWXvfAQ==
-X-Google-Smtp-Source: ABdhPJztHUn5DXkQS6vqLz66ATv3qE3aee0hEBpdJCpLhs51YXxPPcA/j/aML7lIT37wssYPOnoaeTsFNQ==
-X-Received: by 2002:a0c:b9a8:: with SMTP id v40mr21901301qvf.90.1595246639491;
- Mon, 20 Jul 2020 05:03:59 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 14:03:48 +0200
-Message-Id: <20200720120348.2406588-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH tip/locking/core] kcsan: Improve IRQ state trace reporting
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org
-Cc:     bp@alien8.de, tglx@linutronix.de, mingo@kernel.org,
-        paulmck@kernel.org, dvyukov@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rWZKrOwq0rwjH5TwZ+UuKWlHddegJY7Nfmtdu4+t0zs=;
+        b=RnMQviLzU09ts1i7gP3nvvdbL36bGeaLSsX+ZXFuJFIM/HbDggIQZGqrIKa0Q7dEts
+         R86pmFs/M2XsPyXXrTiSb9rngAeThyGbGxjaMEQE5NTr/8JHS2zqxBPrvek9Vh5W5vle
+         es0mhUaFCQPYwpNOLe9jM37K2aryAhavRCiWrOmhMb2G7E3ri4yGwDt8wNb65FmLa93R
+         J7bvfvBGFQCSr2Ac7TDENGvN9tq+qSRKeW2jvGI6rqgHB+Uo8h2eNqbUxnsJ4IrBMpP5
+         +fMuOeM4JGUjkbD2pn9LV2oU15KsQZRrYbNVM3+fzH3momHqYT77Jw7wYAhsyu1cXii0
+         B+uA==
+X-Gm-Message-State: AOAM533I0Yr7b4vMITr682LwY0zcN3Xa4xs8vMrnRGySq9v4i38xXL4V
+        fP1K4K2GYCD4+iLzOngPDj8=
+X-Google-Smtp-Source: ABdhPJxlzUQmni1k1ndNykvfDgcQIktn9Uean9Z/i0ROVcwVzRJcUpiMgWJzkxVJaBf28RxXfI2F1g==
+X-Received: by 2002:a17:90a:e017:: with SMTP id u23mr15893404pjy.137.1595246854880;
+        Mon, 20 Jul 2020 05:07:34 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id 141sm16777668pfw.72.2020.07.20.05.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 05:07:34 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-serial@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v1] serial: pch_uart: use generic power management
+Date:   Mon, 20 Jul 2020 17:34:15 +0530
+Message-Id: <20200720120414.399961-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To improve the general usefulness of the IRQ state trace information
-with KCSAN enabled, save and restore the trace information when entering
-and exiting the KCSAN runtime as well as when generating a KCSAN report.
+Drivers using legacy PM have to manage PCI states and device's PM states
+themselves. They also need to take care of configuration registers.
 
-Without this, reporting the IRQ state trace (whether via a KCSAN report
-or outside of KCSAN via a lockdep report) is rather useless due to
-continuously being touched by KCSAN. This is because if KCSAN is
-enabled, every instrumented memory access causes changes to IRQ state
-tracking information (either by KCSAN disabling/enabling interrupts or
-taking report_lock when generating a report).
+With improved and powerful support of generic PM, PCI Core takes care of
+above mentioned, device-independent, jobs.
 
-Before "lockdep: Prepare for NMI IRQ state tracking", KCSAN avoided
-touching the IRQ state trace via raw_local_irq_save/restore() and
-lockdep_off/on().
+This driver makes use of PCI helper functions like
+pci_save/restore_state(), pci_enable_device() and pci_set_power_state()
+to do required operations. In generic mode, they are no longer needed.
 
-Fixes: 248591f5d257 ("kcsan: Make KCSAN compatible with new IRQ state tracking")
-Signed-off-by: Marco Elver <elver@google.com>
+Change function parameter in both .suspend() and .resume() to
+"struct device*" type. Use dev_get_drvdata() to get drv data.
+
+Compile-tested only.
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
+ drivers/tty/serial/pch_uart.c | 34 ++++++++++------------------------
+ 1 file changed, 10 insertions(+), 24 deletions(-)
 
-
-Hi, Peter,
-
-If this is reasonable, please take it into the branch that currently has
-the series around "lockdep: Prepare for NMI IRQ state tracking"
-(tip/locking/core?).
-
-Thanks,
--- Marco
-
-
----
- include/linux/sched.h | 13 +++++++++++++
- kernel/kcsan/core.c   | 39 +++++++++++++++++++++++++++++++++++++++
- kernel/kcsan/kcsan.h  |  7 +++++++
- kernel/kcsan/report.c |  3 +++
- 4 files changed, 62 insertions(+)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 692e327d7455..ca5324b1657c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1199,6 +1199,19 @@ struct task_struct {
- #endif
- #ifdef CONFIG_KCSAN
- 	struct kcsan_ctx		kcsan_ctx;
-+#ifdef CONFIG_TRACE_IRQFLAGS
-+	struct {
-+		unsigned int		irq_events;
-+		unsigned long		hardirq_enable_ip;
-+		unsigned long		hardirq_disable_ip;
-+		unsigned int		hardirq_enable_event;
-+		unsigned int		hardirq_disable_event;
-+		unsigned long		softirq_disable_ip;
-+		unsigned long		softirq_enable_ip;
-+		unsigned int		softirq_disable_event;
-+		unsigned int		softirq_enable_event;
-+	} kcsan_save_irqtrace;
-+#endif
- #endif
+diff --git a/drivers/tty/serial/pch_uart.c b/drivers/tty/serial/pch_uart.c
+index 40fa7a27722d..67aca8cb9cd4 100644
+--- a/drivers/tty/serial/pch_uart.c
++++ b/drivers/tty/serial/pch_uart.c
+@@ -1857,41 +1857,24 @@ static void pch_uart_pci_remove(struct pci_dev *pdev)
+ 	kfree(priv);
+ 	return;
+ }
+-#ifdef CONFIG_PM
+-static int pch_uart_pci_suspend(struct pci_dev *pdev, pm_message_t state)
++
++static int __maybe_unused pch_uart_pci_suspend(struct device *dev)
+ {
+-	struct eg20t_port *priv = pci_get_drvdata(pdev);
++	struct eg20t_port *priv = dev_get_drvdata(dev);
  
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 732623c30359..7e8347c14530 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -291,6 +291,36 @@ static inline unsigned int get_delay(void)
- 				0);
+ 	uart_suspend_port(&pch_uart_driver, &priv->port);
+ 
+-	pci_save_state(pdev);
+-	pci_set_power_state(pdev, pci_choose_state(pdev, state));
+ 	return 0;
  }
  
-+void kcsan_save_irqtrace(struct task_struct *task)
-+{
-+#ifdef CONFIG_TRACE_IRQFLAGS
-+	task->kcsan_save_irqtrace.irq_events = task->irq_events;
-+	task->kcsan_save_irqtrace.hardirq_enable_ip = task->hardirq_enable_ip;
-+	task->kcsan_save_irqtrace.hardirq_disable_ip = task->hardirq_disable_ip;
-+	task->kcsan_save_irqtrace.hardirq_enable_event = task->hardirq_enable_event;
-+	task->kcsan_save_irqtrace.hardirq_disable_event = task->hardirq_disable_event;
-+	task->kcsan_save_irqtrace.softirq_disable_ip = task->softirq_disable_ip;
-+	task->kcsan_save_irqtrace.softirq_enable_ip = task->softirq_enable_ip;
-+	task->kcsan_save_irqtrace.softirq_disable_event = task->softirq_disable_event;
-+	task->kcsan_save_irqtrace.softirq_enable_event = task->softirq_enable_event;
-+#endif
-+}
-+
-+void kcsan_restore_irqtrace(struct task_struct *task)
-+{
-+#ifdef CONFIG_TRACE_IRQFLAGS
-+	task->irq_events = task->kcsan_save_irqtrace.irq_events;
-+	task->hardirq_enable_ip = task->kcsan_save_irqtrace.hardirq_enable_ip;
-+	task->hardirq_disable_ip = task->kcsan_save_irqtrace.hardirq_disable_ip;
-+	task->hardirq_enable_event = task->kcsan_save_irqtrace.hardirq_enable_event;
-+	task->hardirq_disable_event = task->kcsan_save_irqtrace.hardirq_disable_event;
-+	task->softirq_disable_ip = task->kcsan_save_irqtrace.softirq_disable_ip;
-+	task->softirq_enable_ip = task->kcsan_save_irqtrace.softirq_enable_ip;
-+	task->softirq_disable_event = task->kcsan_save_irqtrace.softirq_disable_event;
-+	task->softirq_enable_event = task->kcsan_save_irqtrace.softirq_enable_event;
-+#endif
-+}
-+
- /*
-  * Pull everything together: check_access() below contains the performance
-  * critical operations; the fast-path (including check_access) functions should
-@@ -336,9 +366,11 @@ static noinline void kcsan_found_watchpoint(const volatile void *ptr,
- 	flags = user_access_save();
+-static int pch_uart_pci_resume(struct pci_dev *pdev)
++static int __maybe_unused pch_uart_pci_resume(struct device *dev)
+ {
+-	struct eg20t_port *priv = pci_get_drvdata(pdev);
+-	int ret;
+-
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-
+-	ret = pci_enable_device(pdev);
+-	if (ret) {
+-		dev_err(&pdev->dev,
+-		"%s-pci_enable_device failed(ret=%d) ", __func__, ret);
+-		return ret;
+-	}
++	struct eg20t_port *priv = dev_get_drvdata(dev);
  
- 	if (consumed) {
-+		kcsan_save_irqtrace(current);
- 		kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_MAYBE,
- 			     KCSAN_REPORT_CONSUMED_WATCHPOINT,
- 			     watchpoint - watchpoints);
-+		kcsan_restore_irqtrace(current);
- 	} else {
- 		/*
- 		 * The other thread may not print any diagnostics, as it has
-@@ -396,6 +428,12 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 		goto out;
- 	}
+ 	uart_resume_port(&pch_uart_driver, &priv->port);
  
-+	/*
-+	 * Save and restore the IRQ state trace touched by KCSAN, since KCSAN's
-+	 * runtime is entered for every memory access, and potentially useful
-+	 * information is lost if dirtied by KCSAN.
-+	 */
-+	kcsan_save_irqtrace(current);
- 	if (!kcsan_interrupt_watcher)
- 		local_irq_save(irq_flags);
- 
-@@ -539,6 +577,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- out_unlock:
- 	if (!kcsan_interrupt_watcher)
- 		local_irq_restore(irq_flags);
-+	kcsan_restore_irqtrace(current);
- out:
- 	user_access_restore(ua_flags);
+ 	return 0;
  }
-diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
-index 763d6d08d94b..29480010dc30 100644
---- a/kernel/kcsan/kcsan.h
-+++ b/kernel/kcsan/kcsan.h
-@@ -9,6 +9,7 @@
- #define _KERNEL_KCSAN_KCSAN_H
+-#else
+-#define pch_uart_pci_suspend NULL
+-#define pch_uart_pci_resume NULL
+-#endif
  
- #include <linux/kcsan.h>
-+#include <linux/sched.h>
+ static const struct pci_device_id pch_uart_pci_id[] = {
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x8811),
+@@ -1945,13 +1928,16 @@ static int pch_uart_pci_probe(struct pci_dev *pdev,
+ 	return ret;
+ }
  
- /* The number of adjacent watchpoints to check. */
- #define KCSAN_CHECK_ADJACENT 1
-@@ -22,6 +23,12 @@ extern unsigned int kcsan_udelay_interrupt;
-  */
- extern bool kcsan_enabled;
- 
-+/*
-+ * Save/restore IRQ flags state trace dirtied by KCSAN.
-+ */
-+void kcsan_save_irqtrace(struct task_struct *task);
-+void kcsan_restore_irqtrace(struct task_struct *task);
++static SIMPLE_DEV_PM_OPS(pch_uart_pci_pm_ops,
++			 pch_uart_pci_suspend,
++			 pch_uart_pci_resume);
 +
- /*
-  * Initialize debugfs file.
-  */
-diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index 6b2fb1a6d8cd..9d07e175de0f 100644
---- a/kernel/kcsan/report.c
-+++ b/kernel/kcsan/report.c
-@@ -308,6 +308,9 @@ static void print_verbose_info(struct task_struct *task)
- 	if (!task)
- 		return;
+ static struct pci_driver pch_uart_pci_driver = {
+ 	.name = "pch_uart",
+ 	.id_table = pch_uart_pci_id,
+ 	.probe = pch_uart_pci_probe,
+ 	.remove = pch_uart_pci_remove,
+-	.suspend = pch_uart_pci_suspend,
+-	.resume = pch_uart_pci_resume,
++	.driver.pm = &pch_uart_pci_pm_ops,
+ };
  
-+	/* Restore IRQ state trace for printing. */
-+	kcsan_restore_irqtrace(task);
-+
- 	pr_err("\n");
- 	debug_show_held_locks(task);
- 	print_irqtrace_events(task);
+ static int __init pch_uart_module_init(void)
 -- 
-2.28.0.rc0.105.gf9edc3c819-goog
+2.27.0
 
