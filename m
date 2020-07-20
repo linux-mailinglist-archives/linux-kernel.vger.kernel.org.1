@@ -2,151 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608C522585E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB74225866
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 09:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgGTHWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 03:22:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49608 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725815AbgGTHWs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 03:22:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595229767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bek0ySfXXA3P6GFLDS22HsXDbXvDBBttNAFibaiJYz4=;
-        b=DJtzgqwtPEgycDYv6gnm5YLtNkv9/b1QAVj9gcdzwqjpIINnp0iukqPoPjrNTmQcoskRLi
-        BaALf95SYRYQQ+QcGwkYR7dAjHsUqHboz9fgYroavOj/R3PSl5DS6w4PX8pldmQ1YAW/WJ
-        fT7AkkaBD724Nc0pokWB4OX8uEMzcBQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-o3Lg3hjPPIKBP0zYwEvylA-1; Mon, 20 Jul 2020 03:22:43 -0400
-X-MC-Unique: o3Lg3hjPPIKBP0zYwEvylA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B354E91D;
-        Mon, 20 Jul 2020 07:22:41 +0000 (UTC)
-Received: from krava (unknown [10.40.192.229])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EEA6C1A8F7;
-        Mon, 20 Jul 2020 07:22:37 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 09:22:37 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
-Message-ID: <20200720072237.GC760733@krava>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1726680AbgGTHZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 03:25:03 -0400
+Received: from smtpbgsg2.qq.com ([54.254.200.128]:54148 "EHLO smtpbgsg2.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725815AbgGTHZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 03:25:03 -0400
+X-QQ-mid: bizesmtp26t1595229856t2mpv0ul
+Received: from xr-hulk-k8s-node1933.gh.sankuai (unknown [101.236.11.2])
+        by esmtp10.qq.com (ESMTP) with 
+        id ; Mon, 20 Jul 2020 15:24:12 +0800 (CST)
+X-QQ-SSF: 01100000002000E0ZJ10B00A0000000
+X-QQ-FEAT: Me8y4DzRu2RX/O/JFOYvPdOlGujgeCqHlvABdNdCmzjsjIe5hfbTo09jNbvZM
+        GH/j9Qq5iPHLdCA2f0U6RAwaJlYRst8mQDcIVR+TPTNi4Tb1OwxK8UmDiIioEcricqVZt1r
+        qe87ERixS7WkaSKBJsdn5lI9TQrcrvdpHKSUPzOTbh1jEUDHfSAPHNX9R82rz8Wsjlz95bK
+        7E2zuey5YwiWedfsQ1kjtTMb0L0o0i+SoAeO/r+zpeaS6fSQXjY5Ia30JY1yRyOF9AMd/pY
+        vDF6t313o0Gtwq3S2dNH0S1RoWifE1k4oF8iA3y2hrsSPm8AFnNdgBiob3j8Uem1Dq/r1uP
+        ZE92aptGhSSsqxTSN1BLuhi2Wrfog==
+X-QQ-GoodBg: 0
+From:   Wang Long <w@laoqinren.net>
+To:     corbet@lwn.net
+Cc:     w@laoqinren.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: driver-api: update kernel connector
+Date:   Mon, 20 Jul 2020 15:24:12 +0800
+Message-Id: <1595229852-114071-1-git-send-email-w@laoqinren.net>
+X-Mailer: git-send-email 1.8.3.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:laoqinren.net:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 12:14:00PM +0530, kajoljain wrote:
-> 
-> 
-> On 7/19/20 11:43 PM, Jiri Olsa wrote:
-> > hi,
-> > this patchset is adding the support to reused metric in
-> > another metric.
-> > 
-> > For example, to define IPC by using CPI with change like:
-> > 
-> >      {
-> >          "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
-> > -        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
-> > +        "MetricExpr": "1/CPI",
-> >          "MetricGroup": "TopDownL1",
-> >          "MetricName": "IPC"
-> >      },
-> > 
-> > I won't be able to find all the possible places we could
-> > use this at, so I wonder you guys (who was asking for this)
-> > would try it and come up with comments if there's something
-> > missing or we could already use it at some places.
-> > 
-> > It's based on Arnaldo's tmp.perf/core.
-> > 
-> > v3 changes:
-> >   - added some acks
-> >   - some patches got merged
-> >   - added missing zalloc include [John Garry]
-> >   - added ids array outside the egroup object [Ian]
-> >   - removed wrong m->has_constraint assignment [Ian]
-> >   - renamed 'list' to 'metric_list' [Ian]
-> >   - fixed group metric and added test for it [Paul A. Clarke]
-> >   - fixed memory leak [Arnaldo]
-> >   - using lowercase keys for metrics in hashmap, because jevents
-> >     converts metric_expr to lowercase
-> > 
-> > Also available in here:
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >   perf/metric
-> > 
-> 
-> Hi Jiri,
->    I am trying to review these patches and also test it in power box. I am testing your `perf/metric` branch.
-> With your current patches,some of hv-24x7 events not giving appropriate result
-> while doing "--metric-only" command. I can't see corresponding output for all chips.
+This patch changes:
+1) Fix typo in kernel connector documentation.
+	s/cn_netlink_send_multi/cn_netlink_send_mult/
+2) update definition of struct cn_msg
 
-hi,
-is that just for --metric-only option?
+Signed-off-by: Wang Long <w@laoqinren.net>
+---
+ Documentation/driver-api/connector.rst | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> 
-> This is output on power9 machine:
-> 
-> Without your patches on upstream kernel:
-> 
-> command# ./perf stat --metric-only -M PowerBUS_Frequency -I 1000 -C 0
-> #           time GHz  PowerBUS_Frequency_0 GHz  PowerBUS_Frequency_1 
->      1.000073877                        2.0                        2.0 
->      2.000240551                        2.0                        1.9 
-> ^C     2.452590532                        0.9                        0.9 
-> 
->  Performance counter stats for 'CPU(s) 0':
-> 
->                        4.8                        4.8 
-> 
->        2.452654834 seconds time elapsed
-> 
-> With your patches on perf/metric branch:
-> 
-> command# ./perf stat --metric-only -M PowerBUS_Frequency -I 1000 -C 0
-> assertion failed at util/metricgroup.c:709
-> #           time GHz  PowerBUS_Frequency_0 
->      1.000073875                        2.0 
->      2.000380706                        2.0 
-> ^C     2.658962182                        1.3 
-> 
->  Performance counter stats for 'CPU(s) 0':
-> 
->                        5.2 
-> 
-> Please let me know, if I am missing something. 
+diff --git a/Documentation/driver-api/connector.rst b/Documentation/driver-api/connector.rst
+index c100c74..23d06819 100644
+--- a/Documentation/driver-api/connector.rst
++++ b/Documentation/driver-api/connector.rst
+@@ -26,7 +26,7 @@ netlink based networking for inter-process communication in a significantly
+ easier way::
+ 
+   int cn_add_callback(struct cb_id *id, char *name, void (*callback) (struct cn_msg *, struct netlink_skb_parms *));
+-  void cn_netlink_send_multi(struct cn_msg *msg, u16 len, u32 portid, u32 __group, int gfp_mask);
++  void cn_netlink_send_mult(struct cn_msg *msg, u16 len, u32 portid, u32 __group, int gfp_mask);
+   void cn_netlink_send(struct cn_msg *msg, u32 portid, u32 __group, int gfp_mask);
+ 
+   struct cb_id
+@@ -48,7 +48,8 @@ be dereferenced to `struct cn_msg *`::
+ 	__u32			seq;
+ 	__u32			ack;
+ 
+-	__u32			len;	/* Length of the following data */
++	__u16			len;	/* Length of the following data */
++	__u16			flags;
+ 	__u8			data[0];
+   };
+ 
+-- 
+1.8.3.1
 
-hum, I'll need to add test for metric with hv-24x7 events
 
-thanks,
-jirka
+
 
