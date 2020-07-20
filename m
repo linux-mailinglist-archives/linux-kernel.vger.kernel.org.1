@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F3F226C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B8D226C23
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbgGTQrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58398 "EHLO mail.kernel.org"
+        id S1729486AbgGTPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729461AbgGTPjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:22 -0400
+        id S1726426AbgGTPjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:39:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D960B22CB2;
-        Mon, 20 Jul 2020 15:39:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D76222CAF;
+        Mon, 20 Jul 2020 15:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259561;
-        bh=3nBhr8KvHL41nT9MeEU1tSZse/nQrdOPicJryuGPjBg=;
+        s=default; t=1595259563;
+        bh=Goq3gE73MFyJrQ8A7qmzhAcc5rjHku2kdxLwaQUMtBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kH2KUwpjL8WoEV5LEsuFWPY1VauNtZil6hWac9bIaqOt4lZ6Ltb1ky8WUq7/T8lgi
-         rdpBwEja+SCq+GNTAQUzvdNIRj5NESt0/QphG+fEz1c5e1/zlNZgawGOdwqAWj3ZLm
-         6hgb42Nd6prEa6KlLFhaSYw7MG5lh3e5NyE9HWfQ=
+        b=KFyA5l8iFX8gySpwTv/Ej42Ocg2ydvgVnn0yh/Or3DUzIEVimctRfD3fMrBmg7Ozx
+         MWK+tzIgS2lZ1f6QwNX4TbkC6YthYV4vpzvKrbuzzRM3thDEpDAgGlHbAltiV9UO2M
+         +Pz+zaiXQqrIseT8imPApaeTIgYaX+y+eCff8zgU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH 4.4 54/58] MIPS: Fix build for LTS kernel caused by backporting lpj adjustment
-Date:   Mon, 20 Jul 2020 17:37:10 +0200
-Message-Id: <20200720152749.964925568@linuxfoundation.org>
+        stable@vger.kernel.org, Vishwas M <vishwas.reddy.vr@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 55/58] hwmon: (emc2103) fix unable to change fan pwm1_enable attribute
+Date:   Mon, 20 Jul 2020 17:37:11 +0200
+Message-Id: <20200720152750.024884509@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
 References: <20200720152747.127988571@linuxfoundation.org>
@@ -45,59 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Vishwas M <vishwas.reddy.vr@gmail.com>
 
-Commit ed26aacfb5f71eecb20a ("mips: Add udelay lpj numbers adjustment")
-has backported to 4.4~5.4, but the "struct cpufreq_freqs" (and also the
-cpufreq notifier machanism) of 4.4~4.19 are different from the upstream
-kernel. These differences cause build errors, and this patch can fix the
-build.
+commit 14b0e83dc4f1e52b94acaeb85a18fd7fdd46d2dc upstream.
 
-Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Stable <stable@vger.kernel.org> # 4.4/4.9/4.14/4.19
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
+This patch fixes a bug which does not let FAN mode to be changed from
+sysfs(pwm1_enable). i.e pwm1_enable can not be set to 3, it will always
+remain at 0.
+
+This is caused because the device driver handles the result of
+"read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg)" incorrectly. The
+driver thinks an error has occurred if the (result != 0). This has been
+fixed by changing the condition to (result < 0).
+
+Signed-off-by: Vishwas M <vishwas.reddy.vr@gmail.com>
+Link: https://lore.kernel.org/r/20200707142747.118414-1-vishwas.reddy.vr@gmail.com
+Fixes: 9df7305b5a86 ("hwmon: Add driver for SMSC EMC2103 temperature monitor and fan controller")
+Cc: stable@vger.kernel.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/time.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/hwmon/emc2103.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/mips/kernel/time.c
-+++ b/arch/mips/kernel/time.c
-@@ -40,10 +40,8 @@ static unsigned long glb_lpj_ref_freq;
- static int cpufreq_callback(struct notifier_block *nb,
- 			    unsigned long val, void *data)
- {
--	struct cpufreq_freqs *freq = data;
--	struct cpumask *cpus = freq->policy->cpus;
--	unsigned long lpj;
- 	int cpu;
-+	struct cpufreq_freqs *freq = data;
- 
- 	/*
- 	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
-@@ -64,6 +62,7 @@ static int cpufreq_callback(struct notif
- 		}
+--- a/drivers/hwmon/emc2103.c
++++ b/drivers/hwmon/emc2103.c
+@@ -452,7 +452,7 @@ static ssize_t set_pwm_enable(struct dev
  	}
  
-+	cpu = freq->cpu;
- 	/*
- 	 * Adjust global lpj variable and per-CPU udelay_val number in
- 	 * accordance with the new CPU frequency.
-@@ -74,12 +73,8 @@ static int cpufreq_callback(struct notif
- 						glb_lpj_ref_freq,
- 						freq->new);
- 
--		for_each_cpu(cpu, cpus) {
--			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
--					    per_cpu(pcp_lpj_ref_freq, cpu),
--					    freq->new);
--			cpu_data[cpu].udelay_val = (unsigned int)lpj;
--		}
-+		cpu_data[cpu].udelay_val = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
-+					   per_cpu(pcp_lpj_ref_freq, cpu), freq->new);
+ 	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
+-	if (result) {
++	if (result < 0) {
+ 		count = result;
+ 		goto err;
  	}
- 
- 	return NOTIFY_OK;
 
 
