@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33442255C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B761E2255C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 04:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgGTCKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 22:10:10 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33928 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726225AbgGTCKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 22:10:10 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 47382CF4D255012AAD7D;
-        Mon, 20 Jul 2020 10:10:08 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 20 Jul 2020 10:10:02 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <minyard@acm.org>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>
-CC:     <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <guohanjun@huawei.com>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] ipmi/watchdog: add missing newlines when printing parameters by sysfs
-Date:   Mon, 20 Jul 2020 10:03:25 +0800
-Message-ID: <1595210605-27888-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1727095AbgGTCE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 22:04:58 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55234 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgGTCE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 22:04:58 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 50DB320B4909;
+        Sun, 19 Jul 2020 19:04:57 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 50DB320B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1595210697;
+        bh=zRG1ESiLAHDyNiv0B4tmWGwGfmW3Odsif5Z4IcufgBY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=K+4absWZa2gX4t8pSglBLKmy/9E9YldShr3PWP/443G4ykMhPoClGFe6LPQLlAz1Z
+         7wtteeoDMdm3MhE7YxZUJYW7Vpbnhg56YIBwY3+Url2otVTqvZ8qZUC5zIGh91QDZU
+         zNFBIl6ZDaZDBnk4jkUi8AycwnLUjaJgGD3xypcE=
+Subject: Re: [PATCH v3 4/5] LSM: Define SELinux function to measure security
+ state
+To:     kernel test robot <lkp@intel.com>, zohar@linux.ibm.com,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com
+Cc:     kbuild-all@lists.01.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200717222819.26198-5-nramas@linux.microsoft.com>
+ <202007181027.UwJXCNXk%lkp@intel.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <61a4c849-5cb7-0a58-2bb9-61f55a98657a@linux.microsoft.com>
+Date:   Sun, 19 Jul 2020 19:04:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+In-Reply-To: <202007181027.UwJXCNXk%lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I cat some ipmi_watchdog parameters by sysfs, it displays as
-follows. It's better to add a newline for easy reading.
+On 7/17/20 8:14 PM, kernel test robot wrote:
+> Hi Lakshmi,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on integrity/next-integrity]
+> [cannot apply to pcmoore-selinux/next security/next-testing linus/master v5.8-rc5 next-20200717]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 
-root@(none):/# cat /sys/module/ipmi_watchdog/parameters/action
-resetroot@(none):/# cat /sys/module/ipmi_watchdog/parameters/preaction
-pre_noneroot@(none):/# cat /sys/module/ipmi_watchdog/parameters/preop
-preop_noneroot@(none):/#
+Thank you for catching this.
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/char/ipmi/ipmi_watchdog.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+I did not see these failures with the compiler and make options I'd used.
 
-diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-index 55986e1..3e05a1d 100644
---- a/drivers/char/ipmi/ipmi_watchdog.c
-+++ b/drivers/char/ipmi/ipmi_watchdog.c
-@@ -232,12 +232,16 @@ static int set_param_str(const char *val, const struct kernel_param *kp)
- static int get_param_str(char *buffer, const struct kernel_param *kp)
- {
- 	action_fn fn = (action_fn) kp->arg;
--	int       rv;
-+	int rv, len;
- 
- 	rv = fn(NULL, buffer);
- 	if (rv)
- 		return rv;
--	return strlen(buffer);
-+
-+	len = strlen(buffer);
-+	len += sprintf(buffer + len, "\n");
-+
-+	return len;
- }
- 
- 
--- 
-1.7.12.4
+Am able to reproduce the errors with the instructions you'd provided.
+Will post the updated patches shortly.
+
+thanks,
+  -lakshmi
 
