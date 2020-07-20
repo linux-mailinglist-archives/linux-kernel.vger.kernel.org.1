@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C18722648A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33405226525
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730592AbgGTPp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:45:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40326 "EHLO mail.kernel.org"
+        id S1731214AbgGTPvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730570AbgGTPpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:50 -0400
+        id S1731203AbgGTPvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:51:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8753C2064B;
-        Mon, 20 Jul 2020 15:45:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A38522064B;
+        Mon, 20 Jul 2020 15:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259950;
-        bh=GwgIP+ig8wbE/vDuBsQcjivBJySfzTgXP/rgU1Yd5/0=;
+        s=default; t=1595260269;
+        bh=n5GM2xtcQsiskfkd81xbgvJBOG5hvwow6kFdJJsoFUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JnQaVGIsPdXJmAuHB/uxAdmv54oGvVOjJmrWcGZowC3biqi/A+HYXPHVRADJSchmX
-         xQzn2jk1GSTf6SO+3lCWOX7juOqvlUR3MGQKtG920xh1E81Kf47v44EwpyrfzfUEJG
-         vfmjNFvRHyw9fOsV/RzBFdqiYnzePs3ALTWSjQNc=
+        b=PhU9p0P37STqv3uqeDaZQvGfCX+VY9FoQ30YMkwAHyRbQs01W6YQuazmHsB2FsW2w
+         q5Nx8MaZhmz2gaE11mGibN04gUjPCPhxjGCNJszrnijNpTWE1kLNgo54Z7kfyTjXL/
+         oEKIFPcHy6yUO+NdgoVMj8Zg5K1IPdolTVcMkKVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+d411cff6ab29cc2c311b@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 050/125] net_sched: fix a memory leak in atm_tc_init()
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 042/133] Revert "usb/xhci-plat: Set PM runtime as active on resume"
 Date:   Mon, 20 Jul 2020 17:36:29 +0200
-Message-Id: <20200720152805.430717873@linuxfoundation.org>
+Message-Id: <20200720152805.751847223@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+This reverts commit 661f5686a1c805e9b1bff65c312c38ef97faa91d.
 
-[ Upstream commit 306381aec7c2b5a658eebca008c8a1b666536cba ]
+Eugeniu Rosca writes:
 
-When tcf_block_get() fails inside atm_tc_init(),
-atm_tc_put() is called to release the qdisc p->link.q.
-But the flow->ref prevents it to do so, as the flow->ref
-is still zero.
+On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>Set PM runtime as active on resume") into downstream v4.14.x, we started
+>to consistently experience below panic [1] on every second s2ram of
+>R-Car H3 Salvator-X Renesas reference board.
+>
+>After some investigations, we concluded the following:
+> - the issue does not exist in vanilla v5.8-rc4+
+> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>   link support"). Getting evidence for that is easy. Reverting
+>   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>
+>Questions:
+> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>   link support") to v4.14.187 looks challenging enough, so probably not
+>   worth it. Anybody to contradict this?
+> - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>   should the following three v4.14.186 commits be reverted on v4.14.x?
+>   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume"
 
-Fix this by moving the p->link.ref initialization before
-tcf_block_get().
-
-Fixes: 6529eaba33f0 ("net: sched: introduce tcf block infractructure")
-Reported-and-tested-by: syzbot+d411cff6ab29cc2c311b@syzkaller.appspotmail.com
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_atm.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci-plat.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
---- a/net/sched/sch_atm.c
-+++ b/net/sched/sch_atm.c
-@@ -545,15 +545,15 @@ static int atm_tc_init(struct Qdisc *sch
- 	if (!p->link.q)
- 		p->link.q = &noop_qdisc;
- 	pr_debug("atm_tc_init: link (%p) qdisc %p\n", &p->link, p->link.q);
-+	p->link.vcc = NULL;
-+	p->link.sock = NULL;
-+	p->link.common.classid = sch->handle;
-+	p->link.ref = 1;
+diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+index 65972c186c641..adc437ca83b88 100644
+--- a/drivers/usb/host/xhci-plat.c
++++ b/drivers/usb/host/xhci-plat.c
+@@ -408,15 +408,7 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
- 	err = tcf_block_get(&p->link.block, &p->link.filter_list);
- 	if (err)
- 		return err;
- 
--	p->link.vcc = NULL;
--	p->link.sock = NULL;
--	p->link.common.classid = sch->handle;
--	p->link.ref = 1;
- 	tasklet_init(&p->task, sch_atm_dequeue, (unsigned long)sch);
- 	return 0;
+-	ret = xhci_resume(xhci, 0);
+-	if (ret)
+-		return ret;
+-
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-
+-	return 0;
++	return xhci_resume(xhci, 0);
  }
+ 
+ static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
+-- 
+2.25.1
+
 
 
