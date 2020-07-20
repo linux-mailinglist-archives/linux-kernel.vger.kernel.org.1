@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3156922674D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F99622697C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731822AbgGTQKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:10:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
+        id S1732264AbgGTQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731840AbgGTQK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:10:28 -0400
+        id S1731830AbgGTQAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:00:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B48C02064B;
-        Mon, 20 Jul 2020 16:10:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A6F320773;
+        Mon, 20 Jul 2020 16:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261428;
-        bh=u0ikDbyX9GOqbbaXAuuFaHnxV4s/a95o1MGijX8LtEs=;
+        s=default; t=1595260805;
+        bh=WBOpl+qCM21lOclAgoFINRbipzR2TN0rGGdG9h3cQaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d0v46QKZVDQF0JjXUGKd+NpPB74F6SBLpP3WH5Bv60+3FgPdc3od23Nc65IhW7b0a
-         N1i92nWyTEmYQSGz/Ug4EvO6F0JfllfmFMzHTVVpKlYwl266UfXBJKkHyrSvJumnSy
-         c300lGDGjB7JNkf/EjZsE78dobPkRwwXhDivq2eE=
+        b=S2mQzJ22gy7BNuq7+1nsV4hvRdx+vT3PnzZ1WPqI5SmTOHqvMYbGDJ5zRBlh4at6g
+         pdkc3g+LpXOgAAXdX0WxpSXo5l9n4aSLtppdfSwLLdoL683kJ15g7QwfKgWKYsR38m
+         pbYW8QBuD6dxByW2jkeugbQyQAr6xasUYKteQu5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 072/244] net: ethernet: mvneta: Add back interface mode validation
-Date:   Mon, 20 Jul 2020 17:35:43 +0200
-Message-Id: <20200720152829.265726913@linuxfoundation.org>
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 062/215] Revert "usb/ehci-platform: Set PM runtime as active on resume"
+Date:   Mon, 20 Jul 2020 17:35:44 +0200
+Message-Id: <20200720152823.160345861@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,78 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+This reverts commit 335d720bb4bd9d2808cae5af6f3c636c87f19596.
 
-[ Upstream commit 41c2b6b4f0f807803bb49f65835d136941a70f85 ]
+Eugeniu Rosca writes:
 
-When writing the serdes configuration register was moved to
-mvneta_config_interface() the whole code block was removed from
-mvneta_port_power_up() in the assumption that its only purpose was to
-write the serdes configuration register. As mentioned by Russell King
-its purpose was also to check for valid interface modes early so that
-later in the driver we do not have to care for unexpected interface
-modes.
-Add back the test to let the driver bail out early on unhandled
-interface modes.
+On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>Set PM runtime as active on resume") into downstream v4.14.x, we started
+>to consistently experience below panic [1] on every second s2ram of
+>R-Car H3 Salvator-X Renesas reference board.
+>
+>After some investigations, we concluded the following:
+> - the issue does not exist in vanilla v5.8-rc4+
+> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>   link support"). Getting evidence for that is easy. Reverting
+>   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>
+>Questions:
+> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>   link support") to v4.14.187 looks challenging enough, so probably not
+>   worth it. Anybody to contradict this?
+> - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>   should the following three v4.14.186 commits be reverted on v4.14.x?
+>   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
 
-Fixes: b4748553f53f ("net: ethernet: mvneta: Fix Serdes configuration for SoCs without comphy")
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvneta.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ drivers/usb/host/ehci-platform.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 7faeb4bfc282e..b2da295e2fc01 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -5003,10 +5003,18 @@ static void mvneta_conf_mbus_windows(struct mvneta_port *pp,
- }
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+index e9a49007cce4a..e4fc3f66d43bf 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -455,10 +455,6 @@ static int ehci_platform_resume(struct device *dev)
  
- /* Power up the port */
--static void mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
-+static int mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
- {
- 	/* MAC Cause register should be cleared */
- 	mvreg_write(pp, MVNETA_UNIT_INTR_CAUSE, 0);
-+
-+	if (phy_mode != PHY_INTERFACE_MODE_QSGMII &&
-+	    phy_mode != PHY_INTERFACE_MODE_SGMII &&
-+	    !phy_interface_mode_is_8023z(phy_mode) &&
-+	    !phy_interface_mode_is_rgmii(phy_mode))
-+		return -EINVAL;
-+
-+	return 0;
- }
+ 	ehci_resume(hcd, priv->reset_on_resume);
  
- /* Device initialization routine */
-@@ -5192,7 +5200,11 @@ static int mvneta_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		goto err_netdev;
- 
--	mvneta_port_power_up(pp, phy_mode);
-+	err = mvneta_port_power_up(pp, pp->phy_interface);
-+	if (err < 0) {
-+		dev_err(&pdev->dev, "can't power up port\n");
-+		return err;
-+	}
- 
- 	/* Armada3700 network controller does not support per-cpu
- 	 * operation, so only single NAPI should be initialized.
-@@ -5346,7 +5358,11 @@ static int mvneta_resume(struct device *device)
- 		}
- 	}
- 	mvneta_defaults_set(pp);
--	mvneta_port_power_up(pp, pp->phy_interface);
-+	err = mvneta_port_power_up(pp, pp->phy_interface);
-+	if (err < 0) {
-+		dev_err(device, "can't power up port\n");
-+		return err;
-+	}
- 
- 	netif_device_attach(dev);
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-
+ 	if (priv->quirk_poll)
+ 		quirk_poll_init(priv);
  
 -- 
 2.25.1
