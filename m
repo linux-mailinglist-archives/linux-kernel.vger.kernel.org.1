@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EFA226803
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508F22266B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388557AbgGTQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
+        id S1732994AbgGTQFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:05:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388535AbgGTQQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:16:29 -0400
+        id S1728587AbgGTQFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:05:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 793CB2064B;
-        Mon, 20 Jul 2020 16:16:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A9382065E;
+        Mon, 20 Jul 2020 16:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261789;
-        bh=VjMVfVMbfkUwYPRfFvQ/y8lTlLvLih9l3qIfd7dySXU=;
+        s=default; t=1595261132;
+        bh=BFkFJTDuBhrUoughrCS66pdZVgGgeSro+Mo6cklGwsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HiYrvzlIQjDCrM+2CqKTJIzWkQjsdXULw9bB3FCDhXGQr5Q7QzeRPi+DeR01cLe81
-         Ss08TvYNTsEm3CTj77d32A0ztnQcTPIjMeBnESsHh6z5gfKkaS03n78Z5HuwtrAcYg
-         uo28yU9a5Yt1YnHuxzVflxJzKhdvenI2iq2N5mNI=
+        b=0AA9nwr8cAOuI3pkrBgAaNDkOgnRVA28MnfIkxNDJa6RBVg9S0lJaSzXrVhYS1CNr
+         tMoEvMjCszewOxSdeqIVn1Ua6ATLhbLDLRNDWQ44AtyHNRRTQgturCaJdtFid0FF/U
+         hhDznntv9v3r/moXOiyS7R6dvaFY9xvyeoo+uHfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.7 212/244] ARM: dts: imx6qdl-gw551x: fix audio SSI
-Date:   Mon, 20 Jul 2020 17:38:03 +0200
-Message-Id: <20200720152835.940079177@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Weimer <fweimer@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.4 202/215] sched: Fix unreliable rseq cpu_id for new tasks
+Date:   Mon, 20 Jul 2020 17:38:04 +0200
+Message-Id: <20200720152829.775097950@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +44,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Harvey <tharvey@gateworks.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-commit 4237c625304b212a3f30adf787901082082511ec upstream.
+commit ce3614daabea8a2d01c1dd17ae41d1ec5e5ae7db upstream.
 
-The audio codec on the GW551x routes to ssi1.  It fixes audio capture on
-the device.
+While integrating rseq into glibc and replacing glibc's sched_getcpu
+implementation with rseq, glibc's tests discovered an issue with
+incorrect __rseq_abi.cpu_id field value right after the first time
+a newly created process issues sched_setaffinity.
 
-Cc: stable@vger.kernel.org
-Fixes: 3117e851cef1 ("ARM: dts: imx: Add TDA19971 HDMI Receiver to GW551x")
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+For the records, it triggers after building glibc and running tests, and
+then issuing:
+
+  for x in {1..2000} ; do posix/tst-affinity-static  & done
+
+and shows up as:
+
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 138, expected 0
+error: Unexpected CPU 138, expected 0
+error: Unexpected CPU 138, expected 0
+error: Unexpected CPU 138, expected 0
+
+This is caused by the scheduler invoking __set_task_cpu() directly from
+sched_fork() and wake_up_new_task(), thus bypassing rseq_migrate() which
+is done by set_task_cpu().
+
+Add the missing rseq_migrate() to both functions. The only other direct
+use of __set_task_cpu() is done by init_idle(), which does not involve a
+user-space task.
+
+Based on my testing with the glibc test-case, just adding rseq_migrate()
+to wake_up_new_task() is sufficient to fix the observed issue. Also add
+it to sched_fork() to keep things consistent.
+
+The reason why this never triggered so far with the rseq/basic_test
+selftest is unclear.
+
+The current use of sched_getcpu(3) does not typically require it to be
+always accurate. However, use of the __rseq_abi.cpu_id field within rseq
+critical sections requires it to be accurate. If it is not accurate, it
+can cause corruption in the per-cpu data targeted by rseq critical
+sections in user-space.
+
+Reported-By: Florian Weimer <fweimer@redhat.com>
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-By: Florian Weimer <fweimer@redhat.com>
+Cc: stable@vger.kernel.org # v4.18+
+Link: https://lkml.kernel.org/r/20200707201505.2632-1-mathieu.desnoyers@efficios.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx6qdl-gw551x.dtsi |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
-@@ -110,7 +110,7 @@
- 		simple-audio-card,frame-master = <&sound_codec>;
- 
- 		sound_cpu: simple-audio-card,cpu {
--			sound-dai = <&ssi2>;
-+			sound-dai = <&ssi1>;
- 		};
- 
- 		sound_codec: simple-audio-card,codec {
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2889,6 +2889,7 @@ int sched_fork(unsigned long clone_flags
+ 	 * Silence PROVE_RCU.
+ 	 */
+ 	raw_spin_lock_irqsave(&p->pi_lock, flags);
++	rseq_migrate(p);
+ 	/*
+ 	 * We're setting the CPU for the first time, we don't migrate,
+ 	 * so use __set_task_cpu().
+@@ -2953,6 +2954,7 @@ void wake_up_new_task(struct task_struct
+ 	 * as we're not fully set-up yet.
+ 	 */
+ 	p->recent_used_cpu = task_cpu(p);
++	rseq_migrate(p);
+ 	__set_task_cpu(p, select_task_rq(p, task_cpu(p), SD_BALANCE_FORK, 0));
+ #endif
+ 	rq = __task_rq_lock(p, &rf);
 
 
