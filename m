@@ -2,171 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C119E22554D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3CE225555
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgGTBS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 21:18:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44992 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgGTBS6 (ORCPT
+        id S1726710AbgGTBVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 21:21:55 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60604 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgGTBVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 21:18:58 -0400
-Received: from mail-pg1-f200.google.com ([209.85.215.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <alex.hung@canonical.com>)
-        id 1jxKSF-00036H-OX
-        for linux-kernel@vger.kernel.org; Mon, 20 Jul 2020 01:18:55 +0000
-Received: by mail-pg1-f200.google.com with SMTP id j9so12673844pgm.8
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 18:18:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dTQyUG61kX2XCwIUiPSY5cCF6yJekK9Ymo10gmabLSw=;
-        b=WDFN4pyDKWLGvwmHxU7HaweQNruRKPGvT0HIENPRnmKLMR4P0ccFTsIT7lIIy3F4Se
-         ETfabA9DgLAqKKJX1rrTW2a7AqxxtCCnDBscRLMwm7n/uFGSdAvN3U4QR/NktOxiKTL6
-         xyUAPaM0InF0rn/zmAGXlCZ7WRUR+ElB7GkdrxFnv3utM1bY9WbYUgjiGpFeDFWffXdU
-         OGw3HUP0S8UH1w/DTYl6HdprIj9VntF1MbLrhN8Ky+TcRBCa6MhaJFn39WT3k7OrgObG
-         FPMlpvtY/gnL/yFC1Zvo+m+ongO33mOKpX0xr3+pq8bU/h9XGL3dUyfc1ergYoVQTIJf
-         ppww==
-X-Gm-Message-State: AOAM532r4cYLgPMcWWXu5os5FzuCOztz1slzD3Aw6D8zSiB+U89jytyS
-        kpOPCqN+dTjHvCeQs0PRR4swrHC2+y+Dbcg4cbluueRh5un5nFCTd7smyy/nNOi88I1Ezb8UZ98
-        dtrKRWWphphkVFbpo/Yz1r4b7NOoABqRs4VDhtbZQzA==
-X-Received: by 2002:a65:490d:: with SMTP id p13mr16441330pgs.183.1595207934350;
-        Sun, 19 Jul 2020 18:18:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwudbwMDOJLkji0WfrSzxkPuyTod60uCI/xIM8pY05aS+io4K0fWco4Zfmkc0P1TnvefU0aMw==
-X-Received: by 2002:a65:490d:: with SMTP id p13mr16441307pgs.183.1595207933994;
-        Sun, 19 Jul 2020 18:18:53 -0700 (PDT)
-Received: from [192.168.0.119] (d66-222-144-129.abhsia.telus.net. [66.222.144.129])
-        by smtp.gmail.com with ESMTPSA id 15sm10012333pjs.8.2020.07.19.18.18.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Jul 2020 18:18:53 -0700 (PDT)
-Subject: Re: [PATCH] RFC: ACPI / OSI: remove workarounds for hybrid graphics
- laptops
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Linux ACPI Mailing List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Lyude Paul <lyude@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-References: <20200717190547.648604-1-kherbst@redhat.com>
- <e7a8cb3a-e9f8-b78a-93f0-c09e5eb5ed10@canonical.com>
- <CACO55tvLCrqeV8MsVDbTaWP2EPAeZtfU08Kb2fVGCD6X+g3-rg@mail.gmail.com>
-From:   Alex Hung <alex.hung@canonical.com>
-Message-ID: <8ad1866d-eb61-a30c-5875-5ffbfd2e17e1@canonical.com>
-Date:   Sun, 19 Jul 2020 19:18:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 19 Jul 2020 21:21:55 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06K1L50A020461;
+        Mon, 20 Jul 2020 01:21:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=TqwG6GjCZJvPd6btCK+p4+IwmQ2IazMol2QhJmaXixI=;
+ b=CMvn9Pdm4NpPy1CJyEq5HKdrbXga/aliGzH/pEw+/Mea6QYmHy+gNYsgZzg/LMpCtTL0
+ V+d3cgdm+uBGNTG1bbpkkJlygO2n/kWwXloTlKX+tNZw1AYZ0CYMqxbVRag/skoqJcHL
+ 5ojhfrenW40DVraMis+dRuWio0ZRe4oXzZk3VN+tJTVMJTDm+SQNPVGX8xvNsj4Vushw
+ h4olQ1KA0Dt7laYjykN345xq7bQSBFQyGOOjfVuN3+uA+Jm+OE1LApsKtthU6gMxs6jS
+ ffRsNTHtFzW40PMhy99X8JATKh8Fdtyk95nyMdS1UUAzHqie0RhWkyRHd6Pa+4MCLp6Z nw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32brgr453g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 01:21:50 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06K1Km2J124688;
+        Mon, 20 Jul 2020 01:21:49 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 32cqm7rr39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 01:21:49 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06K1LnXu010343;
+        Mon, 20 Jul 2020 01:21:49 GMT
+Received: from localhost (/10.159.155.187)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 19 Jul 2020 18:21:48 -0700
+Date:   Sun, 19 Jul 2020 18:21:47 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] xfs: xfs_btree_staging.h: delete duplicated words
+Message-ID: <20200720012147.GU3151642@magnolia>
+References: <20200720001509.656-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CACO55tvLCrqeV8MsVDbTaWP2EPAeZtfU08Kb2fVGCD6X+g3-rg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720001509.656-1-rdunlap@infradead.org>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9687 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0 suspectscore=5
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200007
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9687 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=5 adultscore=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007200007
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-19 1:50 p.m., Karol Herbst wrote:
-> On Fri, Jul 17, 2020 at 9:52 PM Alex Hung <alex.hung@canonical.com> wrote:
->>
->> On 2020-07-17 1:05 p.m., Karol Herbst wrote:
->>> It's hard to figure out what systems are actually affected and right now I
->>> don't see a good way of removing those...
->>>
->>> But I'd like to see thos getting removed and drivers fixed instead (which
->>> happened at least for nouveau).
->>>
->>> And as mentioned before, I prefer people working on fixing issues instead
->>> of spending time to add firmware level workarounds which are hard to know
->>> to which systems they apply to, hard to remove and basically a big huge
->>> pain to work with.> In the end I have no idea how to even figure out what systems are affected
->>> and which not by this, so I have no idea how to even verify we can safely
->>> remove this (which just means those are impossible to remove unless we risk
->>> breaking systems, which again makes those supper annoying to deal with).
->>>
->>> Also from the comments it's hard to get what those bits really do. Are they
->>> just preventing runtime pm or do the devices are powered down when booting?
->>> I am sure it's the former, still...
->>>
->>> Please, don't do this again.
->>>
->>> For now, those workaround prevent power savings on systems those workaround
->>> applies to, which might be any so those should get removed asap and if
->>> new issues arrise removing those please do a proper bug report and we can
->>> look into it and come up with a proper fix (and keep this patch out until
->>> we resolve all of those).
->>>
->>> Signed-off-by: Karol Herbst <kherbst@redhat.com>
->>> CC: Alex Hung <alex.hung@canonical.com>
->>> CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
->>> CC: Len Brown <lenb@kernel.org>
->>> CC: Lyude Paul <lyude@redhat.com>
->>> CC: linux-kernel@vger.kernel.org
->>> CC: dri-devel@lists.freedesktop.org
->>> CC: nouveau@lists.freedesktop.org
->>> ---
->>>  drivers/acpi/osi.c | 24 ------------------------
->>>  1 file changed, 24 deletions(-)
->>>
->>> diff --git a/drivers/acpi/osi.c b/drivers/acpi/osi.c
->>> index 9f68538091384..d4405e1ca9b97 100644
->>> --- a/drivers/acpi/osi.c
->>> +++ b/drivers/acpi/osi.c
->>> @@ -44,30 +44,6 @@ osi_setup_entries[OSI_STRING_ENTRIES_MAX] __initdata = {
->>>       {"Processor Device", true},
->>>       {"3.0 _SCP Extensions", true},
->>>       {"Processor Aggregator Device", true},
->>> -     /*
->>> -      * Linux-Dell-Video is used by BIOS to disable RTD3 for NVidia graphics
->>> -      * cards as RTD3 is not supported by drivers now.  Systems with NVidia
->>> -      * cards will hang without RTD3 disabled.
->>> -      *
->>> -      * Once NVidia drivers officially support RTD3, this _OSI strings can
->>> -      * be removed if both new and old graphics cards are supported.
->>> -      */
->>> -     {"Linux-Dell-Video", true},
->>> -     /*
->>> -      * Linux-Lenovo-NV-HDMI-Audio is used by BIOS to power on NVidia's HDMI
->>> -      * audio device which is turned off for power-saving in Windows OS.
->>> -      * This power management feature observed on some Lenovo Thinkpad
->>> -      * systems which will not be able to output audio via HDMI without
->>> -      * a BIOS workaround.
->>> -      */
->>> -     {"Linux-Lenovo-NV-HDMI-Audio", true},
->>> -     /*
->>> -      * Linux-HPI-Hybrid-Graphics is used by BIOS to enable dGPU to
->>> -      * output video directly to external monitors on HP Inc. mobile
->>> -      * workstations as Nvidia and AMD VGA drivers provide limited
->>> -      * hybrid graphics supports.
->>> -      */
->>> -     {"Linux-HPI-Hybrid-Graphics", true},
->>>  };
->>>
->>>  static u32 acpi_osi_handler(acpi_string interface, u32 supported)
->>>
->>
->> The changes were discussed and tested a while ago, and no crashes were
->> observed. Thanks for solving PM issues in nouveau.
->>
->> Acked-by: Alex Hung <alex.hung@canonical.com>
->>
+On Sun, Jul 19, 2020 at 05:15:09PM -0700, Randy Dunlap wrote:
+> Drop the repeated words "with" and "be" in comments.
 > 
-> By any chance, do you have a list of systems implementing those workarounds?
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+> Cc: linux-xfs@vger.kernel.org
+
+Ha.
+Ha.
+
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+
+--D
+--D
+
+> ---
+>  fs/xfs/libxfs/xfs_btree_staging.h |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-
-I don't keep a list but the workaround, in theory, should only apply to
-the systems with the specific nvidia hardware.
-
-I reminded OEMs and ODMs that these _OSI strings were temporary
-solutions, and highlighted we were going to remove them after our
-discussion last year. If they were paying attentions recent systems
-shouldn't have these _OSI strings.
-
--- 
-Cheers,
-Alex Hung
+> --- linux-next-20200717.orig/fs/xfs/libxfs/xfs_btree_staging.h
+> +++ linux-next-20200717/fs/xfs/libxfs/xfs_btree_staging.h
+> @@ -18,7 +18,7 @@ struct xbtree_afakeroot {
+>  	unsigned int		af_blocks;
+>  };
+>  
+> -/* Cursor interactions with with fake roots for AG-rooted btrees. */
+> +/* Cursor interactions with fake roots for AG-rooted btrees. */
+>  void xfs_btree_stage_afakeroot(struct xfs_btree_cur *cur,
+>  		struct xbtree_afakeroot *afake);
+>  void xfs_btree_commit_afakeroot(struct xfs_btree_cur *cur, struct xfs_trans *tp,
+> @@ -45,7 +45,7 @@ struct xbtree_ifakeroot {
+>  	unsigned int		if_extents;
+>  };
+>  
+> -/* Cursor interactions with with fake roots for inode-rooted btrees. */
+> +/* Cursor interactions with fake roots for inode-rooted btrees. */
+>  void xfs_btree_stage_ifakeroot(struct xfs_btree_cur *cur,
+>  		struct xbtree_ifakeroot *ifake,
+>  		struct xfs_btree_ops **new_ops);
+> @@ -90,7 +90,7 @@ struct xfs_btree_bload {
+>  
+>  	/*
+>  	 * Number of free records to leave in each leaf block.  If the caller
+> -	 * sets this to -1, the slack value will be calculated to be be halfway
+> +	 * sets this to -1, the slack value will be calculated to be halfway
+>  	 * between maxrecs and minrecs.  This typically leaves the block 75%
+>  	 * full.  Note that slack values are not enforced on inode root blocks.
+>  	 */
