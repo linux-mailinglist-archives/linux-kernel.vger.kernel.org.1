@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCD8225B07
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11609225B0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgGTJOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S1728156AbgGTJOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728017AbgGTJOp (ORCPT
+        with ESMTP id S1728017AbgGTJOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:14:45 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90358C0619D2;
-        Mon, 20 Jul 2020 02:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EpGd6SEaYQtDfwRuX/5QX4nSgxOOCJks5zLX/RcylHI=; b=o2uXRpBUKCj/3z9C8xL2NxsLDH
-        rKrqEdke9+y7xe207kiZRU9MC379GI4gZovgu/FmbG8gR4nxsro7LQolBc01s12sEEIchddhnfxqX
-        4jvm2gzcB0p4+cybVE9RXmvefsfzt+TJzrw4vh31pRkw3wYYWOHR58N1G9eRMxyMfSV0cBNxHPVTs
-        dcl+yj/dT4hQbBaJBaRevoQTSOhR1OCJy4AfJvmbxWldkPMMaIvh4YXDb8kYYQL/TUyMLrLp14kAw
-        x44frFLYDRGbXy3JcYGVMHEuSC28p3zVgHSHp9eYgwXrRvBo4vQxaRluocS9a3q41UoK9ZFf2Azor
-        X4lLH7RQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxRsb-0005jK-4L; Mon, 20 Jul 2020 09:14:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BED2A306CEE;
-        Mon, 20 Jul 2020 11:14:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B0D04205A7673; Mon, 20 Jul 2020 11:14:35 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 11:14:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 02/17] x86/fpu: Refactor
- arch_set_user_pkey_access() for PKS support
-Message-ID: <20200720091435.GM10769@hirez.programming.kicks-ass.net>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-3-ira.weiny@intel.com>
- <20200717085442.GX10769@hirez.programming.kicks-ass.net>
- <20200717205254.GQ3008823@iweiny-DESK2.sc.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717205254.GQ3008823@iweiny-DESK2.sc.intel.com>
+        Mon, 20 Jul 2020 05:14:49 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63264C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:14:49 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id k5so9786638pjg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 02:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=OgGatn92pn/mnj6HtZstu6jkm6gd4UA0RdQ6VPZ+TmQ=;
+        b=ORFXjj2peS1SWBYqeUz/r7LE24pHwRsT7JPbfVH5mFcqrhoaN2VaPtjoL8nkwzOySk
+         zxoLTupZcFLfRAyHU32QRUsPLAVJ+FATtKxtkPL2wJ+Z4Pexien2UZBWRMJcnUhxGjaj
+         AsKkGlbbX94dWxrc3TLBH54mRxZoI9Cs0loEJxPJGA650ol7C2FFM/D7RTGfn4IqRx52
+         oLPHVoglWudrxthhhXOZzkwJ/9XqKyhOttot/Sp9toFv/yCwY5EzJmECihM9JvONgHYk
+         zmQPIxPvUFdULB5auiQgL3eMCV1uP+/YHigcto7hprR+wN3qOh+Ql4wuQ0mDnFpw9ZsT
+         5JTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OgGatn92pn/mnj6HtZstu6jkm6gd4UA0RdQ6VPZ+TmQ=;
+        b=oQLbEA+JqFn6GfJAlN2O6HUU/YXXuP3xf0z1Az7D7iVosqGZKUPJmIt6KfRdaFtYoQ
+         FMZLRLhVpfQrWJUScF07hSGEG4PBdbEEqv/JAmO6ZTrt6/MViM7xXgV/KehLlF4R/m1a
+         U37SGhsEK/+xOvssMtIW0/is4Z+Z3SCdE4KW/X8NofZ//mbg84F0Q9FSIoq8ZSFVtOSB
+         EnjiKvnvPL53DDg7TPqPsgArsBHpTwG3xnaS1t1yqr/gi19f3FCKapQOaphEwwDSsEWz
+         YFVmJUh+4aCouhLKkGrj00854N0igM1mjM5JcnkMmZqqEicfcpnDvLh9yReF75zZqwBa
+         n8kA==
+X-Gm-Message-State: AOAM533y6/rhbjUMxXNtx9mKk1Y/gFQUrlVv+YognU0XIt+vVldkMmzq
+        E0c6kcfkxbbg1quePG/FbrRi1yGdo7mEGQ==
+X-Google-Smtp-Source: ABdhPJzM+4thIezZhVyXpy0+FfrJpNjkiinA17WMz2ifXMSx/ZTjIapWv8xXyQjatRoREGNSR5cF7w==
+X-Received: by 2002:a17:90a:26ac:: with SMTP id m41mr21877321pje.169.1595236488926;
+        Mon, 20 Jul 2020 02:14:48 -0700 (PDT)
+Received: from DV.bbrouter ([117.242.250.233])
+        by smtp.gmail.com with ESMTPSA id w9sm16276548pfq.178.2020.07.20.02.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 02:14:48 -0700 (PDT)
+From:   Darshan D V <darshandv10@gmail.com>
+To:     gregkh@linuxfoundation.org, yuehaibing@huawei.com, ardb@kernel.org,
+        contact@christina-quast.de
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        darshandv10@gmail.com
+Subject: [PATCH 1/2] staging: rtl8192e: add space before open parenthesis
+Date:   Mon, 20 Jul 2020 14:44:41 +0530
+Message-Id: <20200720091442.19532-1-darshandv10@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 01:52:55PM -0700, Ira Weiny wrote:
-> On Fri, Jul 17, 2020 at 10:54:42AM +0200, Peter Zijlstra wrote:
+Fix the coding style error by adding a space before
+open parenthesis '(' in a conditional statement.
 
-> > Then we at least have a little clue wtf the thing does.. Yes I started
-> > with a rename and then got annoyed at the implementation too.
-> 
-> On the code I think this is fair.  I've also updated the calling function to be
-> a bit cleaner as well.
-> 
-> However, I think the name 'update' is a bit misleading.  Here is the new
-> calling code:
-> 
-> ...
->         pkru = read_pkru();
-> 	pkru = update_pkey_reg(pkru, pkey, init_val);
-> 	write_pkru(pkru);
-> ...
-> 
-> 
-> I think it is odd to have a function called update_pkey_reg() called right
-> before a write_pkru().  Can we call this update_pkey_value?  or just 'val'?
-> Because write_pkru() actually updates the register.
+Signed-off-by: Darshan D V <darshandv10@gmail.com>
+---
+ drivers/staging/rtl8192e/rtllib_crypt_ccmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fair enough, update_pkey_val() works fine for me.
+diff --git a/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c b/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+index 0cbf4a1a326b..b2af802b9451 100644
+--- a/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
++++ b/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+@@ -278,7 +278,7 @@ static int rtllib_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+ 		int aad_len, ret;
+ 
+ 		req = aead_request_alloc(key->tfm, GFP_ATOMIC);
+-		if(!req)
++		if (!req)
+ 			return -ENOMEM;
+ 
+ 		aad_len = ccmp_init_iv_and_aad(hdr, pn, iv, aad);
+-- 
+2.17.1
+
