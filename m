@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F49D226636
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E44522669D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732517AbgGTQBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732504AbgGTQBQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:01:16 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBD1C0619D2;
-        Mon, 20 Jul 2020 09:01:16 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d7so91827plq.13;
-        Mon, 20 Jul 2020 09:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=blhYAOxQCphYO3jI+YeVotO7czKJYFL74Ds0qrEVcIc=;
-        b=fWrhvXKAg1kJChsxZ1jYIUSTKtg4gaaEQr5sl+NGPsKkCdDrgp83AO1GIKz4DuZGhE
-         KGH7Q8vahRQI/SxukHnIsj9ps1FiAhvX2ZafHZE3uW7fltcpqOsH2pV+vKQNCVgZFxND
-         cKFkJh9reCXNTEXlUVGy5DlKupLJNCDqefq2S5AF5yN2Cc5XZQpsRFigdijhyMpLltqy
-         y/fKQs4YYznv7ieD7x3qJUwRV0dBkU9EjUaUC45nrnyOjDePQ74zxkCOGIEEVvaI3rHk
-         ndrCU6p1a0DYlMWliEV5CVyVO/N0sSO7qzqMd/SKZbh4YwHiSYLKRU3klEEp4bSr20oG
-         DCRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=blhYAOxQCphYO3jI+YeVotO7czKJYFL74Ds0qrEVcIc=;
-        b=pzo4cY22iygPhhewLaWmPwxsR9tWZMV/2aDf9smxrV0wShSD8uTZs+2VgnpRVHDmJI
-         i73iUhmWrb++QRsOXkJ0LBDxIY3h8Ts+lJgNYJDLk7+08M5+ItunoA4VIQRrA42Rhrnn
-         5ZEya43tCaIxC5foLM+cL3jDm4Y1iP2/nAWmymyE0iaMw7d08KvmOrQfTJxRiyDZeW+L
-         yrX07l38EOlkqGtFqeYfDN6wxPL2cqkYOsGOnEzmqFPWeyaO9TZVLZl0vX8gaVY6Syw1
-         yw12fDWAlYfIonmOUyMFMtxPRTien4OnCEFDl8qM10r05H4JUsvEB+zZ59VgBqLobMJz
-         EMJg==
-X-Gm-Message-State: AOAM533lbQjQkwz9L04q80vrZ1/sMNp6AJpI7n4HW8DD/0iBfA0nv/35
-        HSIZo7bQyuAaXYyxL9xps1tlVr4wOLA=
-X-Google-Smtp-Source: ABdhPJykF07itmKHQRGZ+7zqDGPw/ug1gO4hOMWPJh1NTIHSGdsUBYkFE4J79KpNyZsOyW09xbvz6w==
-X-Received: by 2002:a17:90a:d30e:: with SMTP id p14mr45550pju.173.1595260875400;
-        Mon, 20 Jul 2020 09:01:15 -0700 (PDT)
-Received: from [192.168.219.16] (ip72-219-184-175.oc.oc.cox.net. [72.219.184.175])
-        by smtp.gmail.com with ESMTPSA id x23sm17040539pfn.4.2020.07.20.09.01.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 09:01:14 -0700 (PDT)
-Subject: Re: [PATCH net] net: bcmgenet: fix error returns in bcmgenet_probe()
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1595229523-9725-1-git-send-email-zhangchangzhong@huawei.com>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <08bdec5c-b62c-07b3-35c1-9dd15478de81@gmail.com>
-Date:   Mon, 20 Jul 2020 09:04:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732878AbgGTQEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732463AbgGTQEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:04:35 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FB1320684;
+        Mon, 20 Jul 2020 16:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595261074;
+        bh=qdORIBFauGX+RlOa8U16iXHiLl+0wTtPgvKAEkWyzl0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LEGcdINyNzKCbCQ5wXX5ZfNJtY1BviG61dvpY5itgMnb+pGqfBoafq2w7cs8b+pa1
+         W0vSJhrpcc6VZhyj5E/PTxTxJlEIKfe9giRYmNze5HTCnvFSt9xhyZ5bjJL9yl0vww
+         xEwnV3+E0AKOEYt5J9leynZvBhNfL36vSmHnj5UE=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0B1D93522A8C; Mon, 20 Jul 2020 09:04:34 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 09:04:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
+Message-ID: <20200720160433.GQ9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200717044427.68747-1-ebiggers@kernel.org>
+ <20200718014204.GN5369@dread.disaster.area>
+ <20200718140811.GA1179836@rowland.harvard.edu>
+ <20200720013320.GP5369@dread.disaster.area>
+ <20200720145211.GC1228057@rowland.harvard.edu>
+ <20200720153911.GX12769@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1595229523-9725-1-git-send-email-zhangchangzhong@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720153911.GX12769@casper.infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/2020 12:18 AM, Zhang Changzhong wrote:
-> The driver forgets to call clk_disable_unprepare() in error path after
-> a success calling for clk_prepare_enable().
+On Mon, Jul 20, 2020 at 04:39:11PM +0100, Matthew Wilcox wrote:
+> On Mon, Jul 20, 2020 at 10:52:11AM -0400, Alan Stern wrote:
+> > On Mon, Jul 20, 2020 at 11:33:20AM +1000, Dave Chinner wrote:
+> > > On Sat, Jul 18, 2020 at 10:08:11AM -0400, Alan Stern wrote:
+> > > > > This is one of the reasons that the LKMM documetnation is so damn
+> > > > > difficult to read and understand: just understanding the vocabulary
+> > > > > it uses requires a huge learning curve, and it's not defined
+> > > > > anywhere. Understanding the syntax of examples requires a huge
+> > > > > learning curve, because it's not defined anywhere. 
+> > > > 
+> > > > Have you seen tools/memory-model/Documentation/explanation.txt?
+> > > 
+> > > <raises eyebrow>
+> > > 
+> > > Well, yes. Several times. I look at it almost daily, but that
+> > > doesn't mean it's approachable, easy to read or even -that I
+> > > understand what large parts of it say-. IOWs, that's one of the 
+> > > problematic documents that I've been saying have a huge learning
+> > > curve.
+> > 
+> > Can you be more specific?  For example, exactly where does it start to 
+> > become unapproachable or difficult to read?
+> > 
+> > Don't forget that this document was meant to help mitigate the LKMM's 
+> > learning curve.  If it isn't successful, I want to improve it.
 > 
-> Fix to goto err_clk_disable if clk_prepare_enable() is successful.
+> I can't speak for Dave, but the introduction to that documentation makes
+> it clear to me that it's not the document I want to read.
 > 
-> Fixes: 99d55638d4b0 ("net: bcmgenet: enable NETIF_F_HIGHDMA flag")
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  drivers/net/ethernet/broadcom/genet/bcmgenet.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> : This document describes the ideas underlying the LKMM.  It is meant
+> : for people who want to understand how the model was designed.  It does
+> : not go into the details of the code in the .bell and .cat files;
+> : rather, it explains in English what the code expresses symbolically.
 > 
-> diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-> index 368e05b..903811e 100644
-> --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-> +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-> @@ -3988,7 +3988,7 @@ static int bcmgenet_probe(struct platform_device *pdev)
->  	if (err)
->  		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
->  	if (err)
-> -		goto err;
-> +		goto err_clk_disable;
->  
->  	/* Mii wait queue */
->  	init_waitqueue_head(&priv->wq);
+> I don't want to know how the model was designed.  I want to write a
+> device driver, or filesystem, or whatever.
 > 
-Acked-by: Doug Berger <opendmb@gmail.com>
+> Honestly, even the term "release semantics" trips me up _every_ time.
+> It's a barrier to understanding because I have to translate it into "Oh,
+> he means it's like an unlock".  Why can't you just say "unlock semantics"?
 
-Thanks!
+One way to think of it is "release" as in "release a lock".
+
+But to answer your question:
+
+1.	The rest of the industry settled on "release" for that form
+	of atomics a very long time ago.  Yes, we could insist on
+	Linux-kernel exceptionalism, but that doesn't seem consistent
+	with the large number of people coming into the kernel, even if
+	only briefly.
+
+2.	If we were to say "unlock" instead of "release", consistency
+	would demand that we also say "lock" instead of "acquire".
+	But "lock" is subtlely different than "acquire", and there is
+	a history of people requesting further divergence.
+
+3.	At least one architecture has started using GCC intrinsics
+	to implement atomics.  I would expect more to follow.  And
+	the GCC intrinsics say "_release".
+
+4.	More cynically (and I do not bleach my hair, so yes, I do have the
+	hair color for it), the Linux kernel community is sufficiently
+	creative in its (ab)use of whatever tools happen to be lying
+	around that any name will become misleading over time in any case.
+
+							Thanx, Paul
