@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B21522678D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC792267AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387614AbgGTQMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:12:39 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:45783 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2387993AbgGTQMh (ORCPT
+        id S2388155AbgGTQNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:13:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44351 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388103AbgGTQNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:12:37 -0400
-Received: (qmail 1236056 invoked by uid 1000); 20 Jul 2020 12:12:36 -0400
-Date:   Mon, 20 Jul 2020 12:12:36 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
-Message-ID: <20200720161236.GF1228057@rowland.harvard.edu>
-References: <20200717044427.68747-1-ebiggers@kernel.org>
- <20200718014204.GN5369@dread.disaster.area>
- <20200718140811.GA1179836@rowland.harvard.edu>
- <20200720013320.GP5369@dread.disaster.area>
- <20200720145211.GC1228057@rowland.harvard.edu>
- <20200720153911.GX12769@casper.infradead.org>
+        Mon, 20 Jul 2020 12:13:39 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jxYQ3-0005Nh-KW; Mon, 20 Jul 2020 16:13:35 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] media: i2c: fix error check on max9286_read call
+Date:   Mon, 20 Jul 2020 17:13:35 +0100
+Message-Id: <20200720161335.339174-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720153911.GX12769@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 04:39:11PM +0100, Matthew Wilcox wrote:
-> Honestly, even the term "release semantics" trips me up _every_ time.
-> It's a barrier to understanding because I have to translate it into "Oh,
-> he means it's like an unlock".  Why can't you just say "unlock semantics"?
+From: Colin Ian King <colin.king@canonical.com>
 
-It's not as bad as all that; people do talk about acquiring and 
-releasing locks, and presumably you don't have any trouble understanding 
-those terms.  In fact this usage is quite common -- and I believe it's 
-where the names "acquire semantics" and "release semantics" came from 
-originally.
+Currently the error return from the call to max9286_read is masked
+with 0xf0 so the following check for a negative error return is
+never true.  Fix this by checking for an error first, then masking
+the return value for subsequent conflink_mask checking.
 
-Alan Stern
+Addresses-Coverity: ("Logically dead code")
+fixes: 66d8c9d2422d ("media: i2c: Add MAX9286 driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/i2c/max9286.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+index 47f280518fdb..b364a3f60486 100644
+--- a/drivers/media/i2c/max9286.c
++++ b/drivers/media/i2c/max9286.c
+@@ -405,10 +405,11 @@ static int max9286_check_config_link(struct max9286_priv *priv,
+ 	 * to 5 milliseconds.
+ 	 */
+ 	for (i = 0; i < 10; i++) {
+-		ret = max9286_read(priv, 0x49) & 0xf0;
++		ret = max9286_read(priv, 0x49);
+ 		if (ret < 0)
+ 			return -EIO;
+ 
++		ret &= 0xf0;
+ 		if (ret == conflink_mask)
+ 			break;
+ 
+-- 
+2.27.0
+
