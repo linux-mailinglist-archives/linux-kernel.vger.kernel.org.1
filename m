@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D73226C0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C3B2269AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729689AbgGTPkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59604 "EHLO mail.kernel.org"
+        id S2388766AbgGTQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729658AbgGTPkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:40:14 -0400
+        id S1732245AbgGTP7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03BE522CB3;
-        Mon, 20 Jul 2020 15:40:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA1762176B;
+        Mon, 20 Jul 2020 15:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259614;
-        bh=PM2qco3AhDYbAW67Wclmbb4zJkBAlFrUSZOS3nlXwbk=;
+        s=default; t=1595260772;
+        bh=tcGMKR5WdAThsy1xT6ryAEhkxohIpEi3AlS1Ix3p688=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfIvofO8H12zPc0+cr8LDOmb0IvserdcFwXb7b40T+8rf6/QyPHdMY4v0N+YccO0D
-         deVqMoIJWkbdwW4zzc2JJD3MfpTD2sZjNTnA02tj7wtWdSZ6Rf1QNrODdCncu8BDVJ
-         I4n4d82vwLTfYwik1LG5sJtJqkAfQfTUhExMRT/A=
+        b=w3TpsZvjYEQCY9IuuKIropNm4/SrMcG7q3appc0b5863zFYX5MrwmjlQqTQbzJFlu
+         akLE7f9g5q1D5ldOX4RN4otdzqjRBkZtow7HCUFUh2ejJh3D1PfMEEnSu9dhiKswM2
+         RqMJ+0Y9BkJHv7ig9Na0uuIwG4b/1cqI0KnqqImc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, xidongwang <wangxidong_97@163.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 16/86] ALSA: opl3: fix infoleak in opl3
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 090/215] ACPI: video: Use native backlight on Acer TravelMate 5735Z
 Date:   Mon, 20 Jul 2020 17:36:12 +0200
-Message-Id: <20200720152753.958045712@linuxfoundation.org>
+Message-Id: <20200720152824.488069546@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xidongwang <wangxidong_97@163.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
 
-commit ad155712bb1ea2151944cf06a0e08c315c70c1e3 upstream.
+[ Upstream commit c41c36e900a337b4132b12ccabc97f5578248b44 ]
 
-The stack object “info” in snd_opl3_ioctl() has a leaking problem.
-It has 2 padding bytes which are not initialized and leaked via
-“copy_to_user”.
+Currently, changing the brightness of the internal display of the Acer
+TravelMate 5735Z does not work. Pressing the function keys or changing the
+slider, GNOME Shell 3.36.2 displays the OSD (five steps), but the
+brightness does not change.
 
-Signed-off-by: xidongwang <wangxidong_97@163.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1594006058-30362-1-git-send-email-wangxidong_97@163.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The Acer TravelMate 5735Z shipped with Windows 7 and as such does not
+trigger our "win8 ready" heuristic for preferring the native backlight
+interface.
 
+Still ACPI backlight control doesn't work on this model, where as the
+native (intel_video) backlight interface does work by adding
+`acpi_backlight=native` or `acpi_backlight=none` to Linux’ command line.
+
+So, add a quirk to force using native backlight control on this model.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=207835
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/drivers/opl3/opl3_synth.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/acpi/video_detect.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/sound/drivers/opl3/opl3_synth.c
-+++ b/sound/drivers/opl3/opl3_synth.c
-@@ -104,6 +104,8 @@ int snd_opl3_ioctl(struct snd_hwdep * hw
- 		{
- 			struct snd_dm_fm_info info;
+diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+index 8daeeb5e3eb67..5bcb4c01ec5f0 100644
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -345,6 +345,16 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+ 		DMI_MATCH(DMI_BOARD_NAME, "JV50"),
+ 		},
+ 	},
++	{
++	 /* https://bugzilla.kernel.org/show_bug.cgi?id=207835 */
++	 .callback = video_detect_force_native,
++	 .ident = "Acer TravelMate 5735Z",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate 5735Z"),
++		DMI_MATCH(DMI_BOARD_NAME, "BA51_MV"),
++		},
++	},
  
-+			memset(&info, 0, sizeof(info));
-+
- 			info.fm_mode = opl3->fm_mode;
- 			info.rhythm = opl3->rhythm;
- 			if (copy_to_user(argp, &info, sizeof(struct snd_dm_fm_info)))
+ 	/*
+ 	 * Desktops which falsely report a backlight and which our heuristics
+-- 
+2.25.1
+
 
 
