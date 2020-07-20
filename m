@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155CB225677
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 06:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFA0225678
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 06:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgGTERS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 00:17:18 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11939 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725263AbgGTERS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 00:17:18 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f151ac10003>; Sun, 19 Jul 2020 21:17:05 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Sun, 19 Jul 2020 21:17:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Sun, 19 Jul 2020 21:17:17 -0700
-Received: from [10.25.99.163] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Jul
- 2020 04:17:09 +0000
-CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
-        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
-        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
-        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 09/10] arm64: tegra: Audio graph header for Tegra210
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
- <1595135417-16589-10-git-send-email-spujar@nvidia.com>
- <871rl72gjb.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <b5484f5d-6ed4-e04b-3e62-8f4f3893ed67@nvidia.com>
-Date:   Mon, 20 Jul 2020 09:47:05 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <871rl72gjb.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595218625; bh=lWBM6E+QzEDtmyDZPFCowyLU1JN5PwFJvJc2iSnzkRY=;
-        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=XdHGmzsL8bTrzEavdy6VRGHQjucOqIxSPTh0Gcs2yztT/WBPcnyX62goRm7gglP4E
-         HQ6VzjmW6/wPxBfbEaxkAsu6Qrn0xGujlp8yn8FAweNG/mTHqn5UjDr+fCGiONiIjp
-         3RPA1F4Pxct3ZhednRhm472Pw2YLhj39QWZMcM3h/MSdh9LnFMuJxozIsYbg5YiwB4
-         wgE2JWD0plPzssbrRkHeg1wZ4f+dag888kCTciNMQ7QMvWFvh7n5u/SrOvdJK8d7uw
-         aIfrKC1q7uyH+Oq+hR89MoAusG1fq/hwiiKr6sIvi+dE4++sbNDnk3F8w2IqGavB/R
-         ZV/ZWRnLXGIoA==
+        id S1726068AbgGTERs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 00:17:48 -0400
+Received: from smtpbgbr2.qq.com ([54.207.22.56]:50743 "EHLO smtpbgbr2.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725263AbgGTERs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 00:17:48 -0400
+X-QQ-mid: bizesmtp13t1595218663tzhoomcv
+Received: from xr-hulk-k8s-node1933.gh.sankuai (unknown [101.236.11.3])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 20 Jul 2020 12:17:38 +0800 (CST)
+X-QQ-SSF: 01100000002000E0ZJ10B00A0000000
+X-QQ-FEAT: ApWHnP2uAbDrPqhz4t8peVyuKrevRO0rmzPpxGwUILfB1QiweeWb2lohcBunj
+        3Ti0bsnizRMwYzX+RdtDJFuTcYMOkDypr+XnJZLoVvAvk257AhjHy9Wv+qtB3fopbC9yaRq
+        QO5+AuQ8uque5ARK2Zus6vbjhSRGBAWrDwKEagYKx6WzM/jHvGs21//CmlVzAFTwZhTxSaO
+        2PUMDd8cQtwEnZ2mvgxoK6h09cIQsRidSYefNkW7S7QkZbpzFQaAfhoKX99XZfH2mg8IGE4
+        KGb7Tkv8dABY8O77K3naCLjfCsLsIGQP+npNIbEaz+iEalWkheF28bveJc4LUdd4EKhSjuW
+        7Zyr+9k
+X-QQ-GoodBg: 0
+From:   Wang Long <w@laoqinren.net>
+To:     willy@infradead.org
+Cc:     w@laoqinren.net, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v1] xarray: update document for error space returned by xarray normal API
+Date:   Mon, 20 Jul 2020 12:17:38 +0800
+Message-Id: <1595218658-53727-1-git-send-email-w@laoqinren.net>
+X-Mailer: git-send-email 1.8.3.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:laoqinren.net:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the current xarray code, the negative value -1 and -4095 represented
+as an error.
+
+xa_is_err(xa_mk_internal(-4095)) and xa_is_err(xa_mk_internal(-1))
+are all return true.
+
+This patch update the document.
+
+Signed-off-by: Wang Long <w@laoqinren.net>
+---
+ include/linux/xarray.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index b4d70e7..0588fb9 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -36,7 +36,7 @@
+  * 257: Zero entry
+  *
+  * Errors are also represented as internal entries, but use the negative
+- * space (-4094 to -2).  They're never stored in the slots array; only
++ * space (-4095 to -1).  They're never stored in the slots array; only
+  * returned by the normal API.
+  */
+ 
+-- 
+1.8.3.1
 
 
-On 7/20/2020 5:40 AM, Kuninori Morimoto wrote:
-> External email: Use caution opening links or attachments
->
->
-> Hi Sameer
->
->> +&tegra_admaif {
->> +     admaif_port: port {
->> +             admaif0: endpoint@0 {
->> +                     remote-endpoint = <&xbar_admaif0>;
->> +             };
->> +             admaif1: endpoint@1 {
->> +                     remote-endpoint = <&xbar_admaif1>;
->> +             };
-> (snip)
->> +             admaif8: endpoint@8 {
->> +                     remote-endpoint = <&xbar_admaif8>;
->> +             };
->> +             admaif9: endpoint@9 {
->> +                     remote-endpoint = <&xbar_admaif9>;
->> +             };
->> +     };
->> +};
-> I'm not familiar with your system, so, one question.
-> Does this ADMAIF has total 10 interface which is used in the same time ?
-> or select one of 10 connections when use ?
 
-One ore more ADMAIF interfaces can be used simultaneously. In fact all 
-of them can be used at the same time.
-
->
-> Thank you for your help !!
->
-> Best regards
-> ---
-> Kuninori Morimoto
 
