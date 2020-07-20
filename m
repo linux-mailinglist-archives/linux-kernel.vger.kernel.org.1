@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336E522666E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EC122686B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729460AbgGTQDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:03:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37328 "EHLO mail.kernel.org"
+        id S2387916AbgGTQTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:19:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732419AbgGTQDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:03:08 -0400
+        id S2387919AbgGTQML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:12:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EB7720672;
-        Mon, 20 Jul 2020 16:03:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90D972064B;
+        Mon, 20 Jul 2020 16:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260988;
-        bh=3DIIuFvolpU1ejUNjM2ZXn6NWLeSQpweIh1U63zDc4M=;
+        s=default; t=1595261531;
+        bh=ljPinwxMhgKUb/ZdokjiJAlhPb5Jl6rugKv8RbTRG4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n8y1E+mw5V1IiSF+LyBxTJ6sPij4VQz7fun6mYSwvqr+428XIqfUseKQKPqx46R1J
-         2rNsxB/b21uSmZbNiSNdMakC4K+BsmvBR4NDzNSPA7NDJs8Srm38JeMau4K6ZbDmHT
-         MnPaXPaqQJc+K4vkKdjcF+27ltFCf9juHrpjKQ+g=
+        b=PkGYj2r/GaZV/bCJkKagUJlRXJ90rk4mIVeHFGVlYqM3UJJTMIeYjsqWtobom2wbB
+         JMKgc7dIsAn1TEUmaszYHfik41gSv3e2e07e9cwQd9YkbpKG00jNuJo+wNyHGAXcBo
+         9QHt1TT1outYa0810vb7X2EtYIMZOBaXfses3HCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.4 138/215] mtd: rawnand: oxnas: Unregister all devices on error
-Date:   Mon, 20 Jul 2020 17:37:00 +0200
-Message-Id: <20200720152826.752938150@linuxfoundation.org>
+        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 5.7 150/244] HID: quirks: Ignore Simply Automated UPB PIM
+Date:   Mon, 20 Jul 2020 17:37:01 +0200
+Message-Id: <20200720152832.990593887@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: James Hilliard <james.hilliard1@gmail.com>
 
-commit b60391eb17b2956ff2fc4c348e5a464da21ff9cb upstream.
+commit 1ee1369b46de1083238fced60ff718f59de4b8aa upstream.
 
-On error, the oxnas probe path just frees the device which failed and
-aborts the probe, leaving unreleased resources.
+As this is a cypress HID->COM RS232 style device that is handled
+by the cypress_M8 driver we also need to add it to the ignore list
+in hid-quirks.
 
-Fix this situation by calling mtd_device_unregister()/nand_cleanup()
-on these.
-
-Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-38-miquel.raynal@bootlin.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/oxnas_nand.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/hid/hid-ids.h    |    2 ++
+ drivers/hid/hid-quirks.c |    1 +
+ 2 files changed, 3 insertions(+)
 
---- a/drivers/mtd/nand/raw/oxnas_nand.c
-+++ b/drivers/mtd/nand/raw/oxnas_nand.c
-@@ -82,6 +82,7 @@ static int oxnas_nand_probe(struct platf
- 	struct resource *res;
- 	int count = 0;
- 	int err = 0;
-+	int i;
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -1006,6 +1006,8 @@
+ #define USB_DEVICE_ID_ROCCAT_RYOS_MK_PRO	0x3232
+ #define USB_DEVICE_ID_ROCCAT_SAVU	0x2d5a
  
- 	/* Allocate memory for the device structure (and zero it) */
- 	oxnas = devm_kzalloc(&pdev->dev, sizeof(*oxnas),
-@@ -161,6 +162,13 @@ err_cleanup_nand:
- 	nand_cleanup(chip);
- err_release_child:
- 	of_node_put(nand_np);
++#define USB_VENDOR_ID_SAI		0x17dd
 +
-+	for (i = 0; i < oxnas->nchips; i++) {
-+		chip = oxnas->chips[i];
-+		WARN_ON(mtd_device_unregister(nand_to_mtd(chip)));
-+		nand_cleanup(chip);
-+	}
-+
- err_clk_unprepare:
- 	clk_disable_unprepare(oxnas->clk);
- 	return err;
+ #define USB_VENDOR_ID_SAITEK		0x06a3
+ #define USB_DEVICE_ID_SAITEK_RUMBLEPAD	0xff17
+ #define USB_DEVICE_ID_SAITEK_PS1000	0x0621
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -833,6 +833,7 @@ static const struct hid_device_id hid_ig
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_PETZL, USB_DEVICE_ID_PETZL_HEADLAMP) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_PHILIPS, USB_DEVICE_ID_PHILIPS_IEEE802154_DONGLE) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_POWERCOM, USB_DEVICE_ID_POWERCOM_UPS) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_SAI, USB_DEVICE_ID_CYPRESS_HIDCOM) },
+ #if IS_ENABLED(CONFIG_MOUSE_SYNAPTICS_USB)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_TP) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_INT_TP) },
 
 
