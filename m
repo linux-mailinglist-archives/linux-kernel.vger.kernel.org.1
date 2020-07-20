@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5402263B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFB4226558
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729439AbgGTPjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
+        id S1731435AbgGTPw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:52:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729363AbgGTPjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:14 -0400
+        id S1731429AbgGTPw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3002822CAF;
-        Mon, 20 Jul 2020 15:39:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1805206E9;
+        Mon, 20 Jul 2020 15:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259553;
-        bh=UFQESJFHqzaPnmS+Dqahl5WTHWoKJlV7XIsLTqYVWEE=;
+        s=default; t=1595260377;
+        bh=Fm46hoXFhlO53sH9H9Ig3yawJJYkLxSZR5k2JOeOLNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C1f+qEk9sRofEab34rv+WOMFIYQhsdvdVSiWyK5bf3uqC6CwyMml5+UezBQsTzbL0
-         gD1hFGdC2lJ2rvPCpsjEXWVO2HXqElpkax/M8OJwZCTN+alX7Xnw6P/Qabs/lgJuLU
-         JUuwt9zr35MCTZwyhGhwZm+lntDS13i1+rMl2ZNs=
+        b=AUkU0xbmdOJdVyjuZ+YKT9OC4QxpooHelPjwS+9+5E1wht1gmGFr6zDXDf7Z5AeuZ
+         aTVY+o8zKlwiXysIF2y6hxXD+Af//WzRYTxbHPmivQztBE1dhqSoKYQsC6HGGaHrnN
+         Tc/Jg1a7HzZpWhrTofgpJ9XXuaOEVydjS083PTfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH 4.4 51/58] mei: bus: dont clean driver pointer
-Date:   Mon, 20 Jul 2020 17:37:07 +0200
-Message-Id: <20200720152749.814682798@linuxfoundation.org>
+        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4.19 081/133] slimbus: core: Fix mismatch in of_node_get/put
+Date:   Mon, 20 Jul 2020 17:37:08 +0200
+Message-Id: <20200720152807.621484917@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Saravana Kannan <saravanak@google.com>
 
-commit e852c2c251ed9c23ae6e3efebc5ec49adb504207 upstream.
+commit 01360857486c0e4435dea3aa2f78b47213b7cf6a upstream.
 
-It's not needed to set driver to NULL in mei_cl_device_remove()
-which is bus_type remove() handler as this is done anyway
-in __device_release_driver().
+Adding missing corresponding of_node_put
 
-Actually this is causing an endless loop in driver_detach()
-on ubuntu patched kernel, while removing (rmmod) the mei_hdcp module.
-The reason list_empty(&drv->p->klist_devices.k_list) is always not-empty.
-as the check is always true in  __device_release_driver()
-	if (dev->driver != drv)
-		return;
-
-The non upstream patch is causing this behavior, titled:
-'vfio -- release device lock before userspace requests'
-
-Nevertheless the fix is correct also for the upstream.
-
-Link: https://patchwork.ozlabs.org/project/ubuntu-kernel/patch/20180912085046.3401-2-apw@canonical.com/
-Cc: <stable@vger.kernel.org>
-Cc: Andy Whitcroft <apw@canonical.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20200628225359.2185929-1-tomas.winkler@intel.com
+Fixes: 7588a511bdb4 ("slimbus: core: add support to device tree helper")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+[Srini: added fixes tag, removed NULL check and updated log]
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200511151334.362-3-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/mei/bus.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/slimbus/core.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -626,9 +626,8 @@ static int mei_cl_device_remove(struct d
- 		ret = cldrv->remove(cldev);
- 
- 	module_put(THIS_MODULE);
--	dev->driver = NULL;
--	return ret;
- 
-+	return ret;
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -236,6 +236,7 @@ EXPORT_SYMBOL_GPL(slim_register_controll
+ /* slim_remove_device: Remove the effect of slim_add_device() */
+ static void slim_remove_device(struct slim_device *sbdev)
+ {
++	of_node_put(sbdev->dev.of_node);
+ 	device_unregister(&sbdev->dev);
  }
  
- static ssize_t name_show(struct device *dev, struct device_attribute *a,
 
 
