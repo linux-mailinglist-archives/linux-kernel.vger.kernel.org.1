@@ -2,60 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F381F22562F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589CB225638
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgGTDfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 23:35:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60976 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726109AbgGTDfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 23:35:11 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 30396483EE3751D14E82;
-        Mon, 20 Jul 2020 11:35:07 +0800 (CST)
-Received: from huawei.com (10.175.100.227) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
- 11:35:05 +0800
-From:   Tang Yizhou <tangyizhou@huawei.com>
-To:     <linux-mm@kvack.org>
-CC:     <linux-next@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <akpm@linux-foundation.org>
-Subject: [PATCH -next] mm/gup.c: Fix the comment of return value for populate_vma_page_range()
-Date:   Mon, 20 Jul 2020 11:43:03 +0800
-Message-ID: <20200720034303.29920-1-tangyizhou@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.100.227]
-X-CFilter-Loop: Reflected
+        id S1726312AbgGTDn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 23:43:59 -0400
+Received: from smtpbguseast2.qq.com ([54.204.34.130]:33994 "EHLO
+        smtpbguseast2.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbgGTDn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 23:43:59 -0400
+X-QQ-mid: bizesmtp9t1595216603t3onmsz3u
+Received: from xr-hulk-k8s-node1933.gh.sankuai (unknown [101.236.11.3])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 20 Jul 2020 11:43:19 +0800 (CST)
+X-QQ-SSF: 01100000002000E0ZJ10000A0000000
+X-QQ-FEAT: 4yulX1Vb0J3hDzZoCD6i6EfQxAGUUkZSS/SmHM2vIOrZ6/kG7/90xoT067wrk
+        UjRBng8c5DbhMFXeyLcNxk/+TykLA5L7cBepqoW1O1lBiZTyO8T8ZM9Gk6LMNtU1SMGG1P5
+        rWUSynvZPSEUvS1j3yC/EXJKHUhF2uORFrPNW2miyDrIpTgvYl1rTf1KaOtFWH6c7CL4ta6
+        z8xxeDoOZfJR1ZdhfTjAoCsXlt5/B6BUSPAt3ZnYCffWe1O3uxo/tLM8RAB9aiDR2sC+2bA
+        S1FWx5v8eJUpZYs7mfwhnpeOS/P8Ukpvk2dwXu3yzR25/98k0j25ZeNYA=
+X-QQ-GoodBg: 0
+From:   Wang Long <w@laoqinren.net>
+To:     willy@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] xarray: update document for error space returned by xarray normal API
+Date:   Mon, 20 Jul 2020 11:43:19 +0800
+Message-Id: <1595216599-45197-1-git-send-email-w@laoqinren.net>
+X-Mailer: git-send-email 1.8.3.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:laoqinren.net:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value of populate_vma_page_range() is consistent with
-__get_user_pages(), and so is the function comment of return value.
+In the current xarray code, the negative value -1 and -4095 represented
+as an error.
 
-Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
+xa_is_error(xa_mk_internal(-4095)) and xa_is_error(xa_mk_internal(-1))
+are all return true.
+
+This patch update the document.
+
+Signed-off-by: Wang Long <w@laoqinren.net>
 ---
- mm/gup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/xarray.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 2cc5eba44362..a55f1ec712e9 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1386,7 +1386,8 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index b4d70e7..0588fb9 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -36,7 +36,7 @@
+  * 257: Zero entry
   *
-  * This takes care of mlocking the pages too if VM_LOCKED is set.
-  *
-- * return 0 on success, negative error code on error.
-+ * Return either number of pages pinned in the vma, or a negative error
-+ * code on error.
-  *
-  * vma->vm_mm->mmap_lock must be held.
-  *
+  * Errors are also represented as internal entries, but use the negative
+- * space (-4094 to -2).  They're never stored in the slots array; only
++ * space (-4095 to -1).  They're never stored in the slots array; only
+  * returned by the normal API.
+  */
+ 
 -- 
-2.17.1
+1.8.3.1
+
+
+
 
