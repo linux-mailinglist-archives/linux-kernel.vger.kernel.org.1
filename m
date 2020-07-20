@@ -2,65 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A6D2268EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C14722696D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388700AbgGTQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388695AbgGTQWr (ORCPT
+        id S2388538AbgGTQZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:25:20 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:59611 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732580AbgGTQZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:22:47 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC46C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OxMDt2k/5hf5ul+MN4+NkwJ2ux1u4+nbqRvCh4zpOvQ=; b=PipfBR+swWLK2QDSix3ch+lDRU
-        Zwhc/NbLhmSQCjgnW5VKdE90MIkXW+eufv/Vkd5p4JPqkImZ09ofQfPvwtpSx8p0lD2KZnjE4ogdn
-        bv3TfwDqdCCbk+hOtJmj2XwMN4HEE/mFtxh9QTYp5yiWXzJO+v0Rc5RXCrMWV4LwMk1W2xaMxb524
-        ZmRuBzt799Xka0qVccRuwEp9cTlWjASkVRPmBeTLfQtSDYidvWs23qakEi6TA5fLMQEEO1YzxsVaM
-        Tigbj6aqohrzszGQVe5vq1v5ye9MF4/CAJjALPeMJXO3qUc7Z+xGRmJEKUqZ769QSie65686S9K2Y
-        B1H/4Asw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxYYs-0002rc-PT; Mon, 20 Jul 2020 16:22:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 37377307B99;
-        Mon, 20 Jul 2020 18:22:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1C8BF23426BB8; Mon, 20 Jul 2020 18:22:41 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 18:22:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-Subject: Re: [PATCH V6 06/14] perf/x86/intel: Use switch in
- intel_pmu_disable/enable_event
-Message-ID: <20200720162241.GU10769@hirez.programming.kicks-ass.net>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-7-kan.liang@linux.intel.com>
+        Mon, 20 Jul 2020 12:25:11 -0400
+X-Originating-IP: 42.109.212.217
+Received: from localhost (unknown [42.109.212.217])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 9F2B360007;
+        Mon, 20 Jul 2020 16:25:04 +0000 (UTC)
+Date:   Mon, 20 Jul 2020 21:54:56 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     Tudor.Ambarus@microchip.com
+Cc:     p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, broonie@kernel.org, Nicolas.Ferre@microchip.com,
+        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+        matthias.bgg@gmail.com, michal.simek@xilinx.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, boris.brezillon@collabora.com,
+        nsekhar@ti.com
+Subject: Re: [PATCH v10 08/17] mtd: spi-nor: core: use dummy cycle and
+ address width info from SFDP
+Message-ID: <20200720162456.juud5ytn3tnbwloa@yadavpratyush.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <20200623183030.26591-9-p.yadav@ti.com>
+ <d4b5178e-debb-1397-caae-f20086f5c3fc@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200717140554.22863-7-kan.liang@linux.intel.com>
+In-Reply-To: <d4b5178e-debb-1397-caae-f20086f5c3fc@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 07:05:46AM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> Many items are checked in the intel_pmu_disable/enable_event. More items
-> will be added later, e.g. perf metrics events.
-> 
-> Use switch, which is more efficient, to replace the if-else.
+Hi Tudor,
 
-Perhaps explain how; does this actually generate a jump-table?
+On 08/07/20 04:03PM, Tudor.Ambarus@microchip.com wrote:
+> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > The xSPI Profile 1.0 table specifies how many dummy cycles and address
+> > bytes are needed for the Read Status Register command in octal DTR mode.
+> > Use that information to send the correct Read SR command.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c | 25 +++++++++++++++++++++++--
+> >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 7d24e63fcca8..f2748f1d9957 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -357,6 +357,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
+> >  static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+> >  {
+> >         int ret;
+> > +       u8 addr_bytes = nor->params->rdsr_addr_nbytes;
+> > +       u8 dummy = nor->params->rdsr_dummy;
+> 
+> no need to introduce local variables for a single dereference
+
+Ok.
+ 
+> > 
+> >         if (nor->spimem) {
+> >                 struct spi_mem_op op =
+> > @@ -365,10 +367,21 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+> >                                    SPI_MEM_OP_NO_DUMMY,
+> >                                    SPI_MEM_OP_DATA_IN(1, sr, 1));
+> > 
+> > +               if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
+> > +                       op.addr.nbytes = addr_bytes;
+> > +                       op.addr.val = 0;
+> 
+> isn't addr already initialized to 0?
+
+Yes, it is. But I figured it won't hurt to be explicit about what we 
+intend the address to be.
+
+> > +                       op.dummy.nbytes = dummy;
+> > +               }
+> > +
+> > +               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> > +
+> >                 ret = spi_mem_exec_op(nor->spimem, &op);
+> >         } else {
+> > -               ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
+> > -                                                   sr, 1);
+> > +               if (spi_nor_protocol_is_dtr(nor->reg_proto))
+> > +                       ret = -ENOTSUPP;
+> > +               else
+> > +                       ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
+> > +                                                           sr, 1);
+> >         }
+> 
+> doesn't this belong to a previous patch?
+
+It does. Will fix.
+ 
+> > 
+> >         if (ret)
+> > @@ -388,6 +401,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+> >  static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+> >  {
+> >         int ret;
+> > +       u8 addr_bytes = nor->params->rdsr_addr_nbytes;
+> > +       u8 dummy = nor->params->rdsr_dummy;
+> > 
+> >         if (nor->spimem) {
+> >                 struct spi_mem_op op =
+> > @@ -396,6 +411,12 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+> >                                    SPI_MEM_OP_NO_DUMMY,
+> >                                    SPI_MEM_OP_DATA_IN(1, fsr, 1));
+> > 
+> > +               if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
+> > +                       op.addr.nbytes = addr_bytes;
+> > +                       op.addr.val = 0;
+> > +                       op.dummy.nbytes = dummy;
+> > +               }
+> > +
+> >                 spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> > 
+> >                 ret = spi_mem_exec_op(nor->spimem, &op);
+
+-- 
+Regards,
+Pratyush Yadav
