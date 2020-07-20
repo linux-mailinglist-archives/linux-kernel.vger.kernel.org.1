@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4775222626A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3044B22626E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgGTOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:46:03 -0400
-Received: from sonic303-2.consmr.mail.bf2.yahoo.com ([74.6.131.41]:46875 "EHLO
-        sonic303-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726381AbgGTOqD (ORCPT
+        id S1728714AbgGTOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:46:29 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33343 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGTOq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:46:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595256361; bh=Sq0m1vvm2SZTihycyLIp46MmEaT+M4u+5ZuM67ujUHw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=DADLqsmF7B0m6ozQ3t8Ed9y+F6AfmAp7SJMBjxlGcsqi4TyBxhvs68cg0QUTHyDjkfkVOChQSxnQYLradGzyxSqsmTqHWZAbiQSGKVqC/22tQ4Qs+rfhwqLvA0sJ4iOuDpBfCbCH3QuJ05jGylJ2/EQQlw33XiUooG7FImXccHqj1Fdf9gN+mxNwr5XT2qn1HfLRe7SpAgVqfc1honT1J5sRUyIafldpTbz65nWwuXNK5P1lEXnDvf/ayzpfU6/5aY7L2PfK7wcU99ukcfcdBVZHo+SU9qRdMNPToIgOtoGK/2I4wRzpaCM/wSdwrvMDBemImurJ4Z8tyjHCtOgx8A==
-X-YMail-OSG: 2CC_FtkVM1mntexO0COSA.XaGhyxR31rN808SbXHiO.4S1Voub_wae2maDUdyxC
- pyTXBnnXuQpBwVzVRpc3ZcdeNwzfRLN7Wr8X4rx3MCPO9dL7WyzPTKViXDyus4AKhAvLWDxVc5eb
- t_F0oyoGhwiBnR3bdJKDqWcqlo7stvF2PvsM.W9mQxH7eVMNqFbZiU7cwNUhNtkND4SqubmoZeuA
- 7qN6rF82rfvTq8MDpTD15htqF1yCRITYAJZ0tgGyBciRz3paTN6IFq68Z3G8rJ.nRaNR3jBsIkoY
- .GXAonORJwhVfOsi4oDHisxIejXmGBQeKyVt6MBdHbzfZjYmK1DM36H1s0R09EWjcDq_tBabbJ7Z
- 4efMTWFTIzqpy2YC0dA.MX2nZ2jIMVcq89DkSxtnQEwpGpHF3NPSp00mjQioyrnlwdtC7pzMu6B7
- elyBIspsTh1C.IUcjQdpIbQJrLF0YcexwK2gEtr.vwzcprQH9b8ISVJb0Gkehw_pVvEmg1yGJx30
- AxQVZvuukUHp9B8CY9tz2yXrVey90DtRmJ62aa9qZ4bBbid8iy3cfSD26.fAxytPGSZDVW6julNf
- abBl0alLRc8zs8wgQ0kdqZWEWYxI42jdcUBOgjVprZgOyQDmuwrrj58BSUN6JdqMqDGuRwcyScC7
- ZFFaXhtO4NX9jdaGrgypPzXHMRVgVAWv_mKwM9AIDP2ovEpVLuwTUfBO7wwviaB_mi5a55IWTAyy
- kDoka4je1dvzFir1RKs4.nXk6xZmEsR.qOid6nxXyqttI1eps1ITyG7BElkwpW_5FsjeaGaAjnbZ
- x60jaIpa.e5iB55PdbrE9tvKuM7QWmz_QDrz3YfOv3Q5MTa1mBohdd0YZnUQoWM9R2uOFQPQaXFV
- XcvQU0s1bk8nm4rzZR0nGoCqBdwvV2g1c0s9eHSf4a5qAMD1jC4NZdrDS5QexgVBr7w0rG8FJQId
- YwH2QrId6tyd2c2wmMPvbUcaXANEjUFzDE4mCB3fQZyLpiiGhPq03ndH3LLqAcD..jDILZY2gUYO
- ZLE_e7hh7zI7rFzrdx86BjADOQM3Lq6wceaclgpos9eJfJLovZ6lqSYnNJBVbRQswa1xDheOVG1g
- M.YcGDkDEfcoWcwM2iiqOfo6h2xzWuba5r1eiDJM5ZmQJ85c05n52E5xJF10cRfNWbpElftn83BE
- 4gKnianywcuowcptgPasO9LsGQ7VyuRxwEftLnOuCdYQT29EHDwzJAR2PLrq5WxegKBqiefX.vF0
- 3QeFm7lG995g9kh7lftCvOKdIej7euOqLqdFgIGoU.jXSqpqSojC2ro2.v4zLK7rSiG0-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Mon, 20 Jul 2020 14:46:01 +0000
-Date:   Mon, 20 Jul 2020 14:46:00 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <annahbruun6@gmail.com>
-Reply-To: mrsminaabrunel653@gmail.com
-Message-ID: <851366762.3022576.1595256360284@mail.yahoo.com>
-Subject: My Dear in the lord
+        Mon, 20 Jul 2020 10:46:29 -0400
+Received: by mail-wr1-f67.google.com with SMTP id f18so18185562wrs.0;
+        Mon, 20 Jul 2020 07:46:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IGLhuE1I9i7Yo8OigpC7QhgxIbZi2g1cVwzzK6Rb1Yo=;
+        b=r3vqvgCfGmgLE2LhnLObe/jisRv5yWev5NMGIiJtc9m9dWohoMKE+iX4p9ajt1lyym
+         o9z5fR6PMaIcY19LIXw8rxtK6qfgC9AcpaEB27aJQOYaaDuibrPVe0lsPZWXJwqIyNph
+         UR7aaTKlRDgj+DQ7BMqOguRbl03ne2CW8GeXsEyFRLfHz+0bmY9UPZSCO9aiUwaeLulY
+         /y6qxR0xvoV2fX1/rfqIEnBa+kpbZKaAuEtg/pqMJVBvosh2Icv4uoy1oSaIrUZGniSk
+         I3InKIUef8GO7wWqGSzRhAOXrOQNCxg/QIoYO8Omu8pYyuXdFuSPfjKMDBjWjXzW8mqO
+         wbNg==
+X-Gm-Message-State: AOAM530CqstJDz6+laaONi/c1hpJacmIyWj+M5/o31hYQR8C69dDkUus
+        /VH0qOZkteTD7JE5Kfbi9RE=
+X-Google-Smtp-Source: ABdhPJwg2gFFhtn5o/2zvN0TVwn3vMzSIOrfZPa3ncwCkT5UBcBh/GBWgc1FaHrJBnY5aH63XjWGNg==
+X-Received: by 2002:a5d:484b:: with SMTP id n11mr21603310wrs.320.1595256386888;
+        Mon, 20 Jul 2020 07:46:26 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.200])
+        by smtp.googlemail.com with ESMTPSA id x18sm33410979wrq.13.2020.07.20.07.46.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Jul 2020 07:46:26 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 16:46:23 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, willy.mh.wolff.ml@gmail.com,
+        k.konieczny@samsung.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        s.nawrocki@samsung.com, kgene@kernel.org
+Subject: Re: [PATCH v2 1/2] memory: samsung: exynos5422-dmc: Adjust polling
+ interval and uptreshold
+Message-ID: <20200720144623.GB22791@kozik-lap>
+References: <20200710191122.11029-1-lukasz.luba@arm.com>
+ <20200710191122.11029-2-lukasz.luba@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <851366762.3022576.1595256360284.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200710191122.11029-2-lukasz.luba@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 10, 2020 at 08:11:21PM +0100, Lukasz Luba wrote:
+> In order to react faster and make better decisions under some workloads,
+> benchmarking the memory subsystem behavior, adjust the polling interval
+> and upthreshold value used by the simple_ondemand governor.
+> 
+> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
+> Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/memory/samsung/exynos5422-dmc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-My Dear in the lord
+Feel free to take it via devfreq tree.
 
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Rome the c=
-apital city of Italy in Southern Europe. The money was from the sale of his=
- company and death benefits payment and entitlements of my deceased husband=
- by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+Best regards,
+Krzysztof
