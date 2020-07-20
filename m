@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1A2263DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3307C2264FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgGTPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60646 "EHLO mail.kernel.org"
+        id S1731064AbgGTPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729802AbgGTPk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:40:58 -0400
+        id S1731050AbgGTPtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:49:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B278520773;
-        Mon, 20 Jul 2020 15:40:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1242922CBE;
+        Mon, 20 Jul 2020 15:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259658;
-        bh=HQ0RL3PqNuqnPSDpWahWC774iELBt8xrsGRygVPHgJ0=;
+        s=default; t=1595260192;
+        bh=Xq+DVluseIMdDGOJV7I8HuuLQKdFe4JI53qn6gkGMes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ae2B5aIIqiZtrG/PO8OXJnZQ1Q9fgLoVLFz6c02exID6NVmBaA3wsY1dqmoXx9uTE
-         CmMADztzMe01Eu4/Wd+1Lyzq+jwM1DOn+agytFIbGi2NirBUa+t/lRqiPpUtxS5RSw
-         f7G5ELapS3O2q5B35ZHgZyob+YzuUozXC64ErkPM=
+        b=kM1tUk/JJlM4vigvnlqRy3BkomY6iUVvn4DJzM9mkCtq1khjrW1LqmktQflcK0mOy
+         Wp9zxhnXiOUjmyJTI78qGVDoW/Q2kOnijREALzNT4GaFAEmaYdIwi2AoGcrycbivec
+         MOkdzZ6nkLaPQDs9MLyV4rPOtfA/E6KhGJUfO2mI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>
-Subject: [PATCH 4.9 05/86] s390/kasan: fix early pgm check handler execution
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Marco Elver <elver@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 014/133] tcp: md5: refine tcp_md5_do_add()/tcp_md5_hash_key() barriers
 Date:   Mon, 20 Jul 2020 17:36:01 +0200
-Message-Id: <20200720152753.400716769@linuxfoundation.org>
+Message-Id: <20200720152804.420438618@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +46,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 998f5bbe3dbdab81c1cfb1aef7c3892f5d24f6c7 ]
+[ Upstream commit e6ced831ef11a2a06e8d00aad9d4fc05b610bf38 ]
 
-Currently if early_pgm_check_handler is called it ends up in pgm check
-loop. The problem is that early_pgm_check_handler is instrumented by
-KASAN but executed without DAT flag enabled which leads to addressing
-exception when KASAN checks try to access shadow memory.
+My prior fix went a bit too far, according to Herbert and Mathieu.
 
-Fix that by executing early handlers with DAT flag on under KASAN as
-expected.
+Since we accept that concurrent TCP MD5 lookups might see inconsistent
+keys, we can use READ_ONCE()/WRITE_ONCE() instead of smp_rmb()/smp_wmb()
 
-Reported-and-tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Clearing all key->key[] is needed to avoid possible KMSAN reports,
+if key->keylen is increased. Since tcp_md5_do_add() is not fast path,
+using __GFP_ZERO to clear all struct tcp_md5sig_key is simpler.
+
+data_race() was added in linux-5.8 and will prevent KCSAN reports,
+this can safely be removed in stable backports, if data_race() is
+not yet backported.
+
+v2: use data_race() both in tcp_md5_hash_key() and tcp_md5_do_add()
+
+Fixes: 6a2febec338d ("tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Marco Elver <elver@google.com>
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/early.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv4/tcp.c      |    6 +++---
+ net/ipv4/tcp_ipv4.c |   14 ++++++++++----
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/arch/s390/kernel/early.c b/arch/s390/kernel/early.c
-index a651c2bc94ef8..f862cc27fe98f 100644
---- a/arch/s390/kernel/early.c
-+++ b/arch/s390/kernel/early.c
-@@ -288,6 +288,8 @@ static noinline __init void setup_lowcore_early(void)
- 	psw_t psw;
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3756,13 +3756,13 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
  
- 	psw.mask = PSW_MASK_BASE | PSW_DEFAULT_KEY | PSW_MASK_EA | PSW_MASK_BA;
-+	if (IS_ENABLED(CONFIG_KASAN))
-+		psw.mask |= PSW_MASK_DAT;
- 	psw.addr = (unsigned long) s390_base_ext_handler;
- 	S390_lowcore.external_new_psw = psw;
- 	psw.addr = (unsigned long) s390_base_pgm_handler;
--- 
-2.25.1
-
+ int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct tcp_md5sig_key *key)
+ {
+-	u8 keylen = key->keylen;
++	u8 keylen = READ_ONCE(key->keylen); /* paired with WRITE_ONCE() in tcp_md5_do_add */
+ 	struct scatterlist sg;
+ 
+-	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
+-
+ 	sg_init_one(&sg, key->key, keylen);
+ 	ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
++
++	/* tcp_md5_do_add() might change key->key under us */
+ 	return crypto_ahash_update(hp->md5_req);
+ }
+ EXPORT_SYMBOL(tcp_md5_hash_key);
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1063,12 +1063,18 @@ int tcp_md5_do_add(struct sock *sk, cons
+ 
+ 	key = tcp_md5_do_lookup_exact(sk, addr, family, prefixlen);
+ 	if (key) {
+-		/* Pre-existing entry - just update that one. */
++		/* Pre-existing entry - just update that one.
++		 * Note that the key might be used concurrently.
++		 */
+ 		memcpy(key->key, newkey, newkeylen);
+ 
+-		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
++		/* Pairs with READ_ONCE() in tcp_md5_hash_key().
++		 * Also note that a reader could catch new key->keylen value
++		 * but old key->key[], this is the reason we use __GFP_ZERO
++		 * at sock_kmalloc() time below these lines.
++		 */
++		WRITE_ONCE(key->keylen, newkeylen);
+ 
+-		key->keylen = newkeylen;
+ 		return 0;
+ 	}
+ 
+@@ -1084,7 +1090,7 @@ int tcp_md5_do_add(struct sock *sk, cons
+ 		rcu_assign_pointer(tp->md5sig_info, md5sig);
+ 	}
+ 
+-	key = sock_kmalloc(sk, sizeof(*key), gfp);
++	key = sock_kmalloc(sk, sizeof(*key), gfp | __GFP_ZERO);
+ 	if (!key)
+ 		return -ENOMEM;
+ 	if (!tcp_alloc_md5sig_pool()) {
 
 
