@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AD322645B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCFF2265E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgGTPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38254 "EHLO mail.kernel.org"
+        id S1732021AbgGTP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:58:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729130AbgGTPoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:21 -0400
+        id S1731599AbgGTP6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:58:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C17042064B;
-        Mon, 20 Jul 2020 15:44:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 601E72065E;
+        Mon, 20 Jul 2020 15:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259861;
-        bh=jbrqa1TlsxACgyIJ8RubZ7MWTCEb+XfE2GmkyHrhL9A=;
+        s=default; t=1595260694;
+        bh=U96DsrVJZj0nKlPKw5oqQP2nOz9oZwby6gkSTE66v/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aQBUvSGoRwkuwgKZRWDzwTt57xDgGleMpWYA+4U9r44J1bioL6zME24zEyRdBNqw5
-         P8oHN4zS+2r9e3lhLrcYV25OpnILkX5PLz8CfaoxdIzWxIFQhrGoF01cbksj2J79Eq
-         l8WQ5CfEIkfd57uG40roLsYxqxwWHXXVqIzAFGaw=
+        b=PDlHroCfFuNEvnvXjRJzhp07y7E/lLmNPWneQBRiJ/6H4SvugjBj7bCquV4pGofh4
+         PGx8IVzTxwDTXy/ibuHo6+ZMnxhrX0uvrrfGW0DK4KSvyFgLVWrpn+IRNbpmiL/grA
+         /KluO/OVbddCUjK1C8qKLM7p4mekCk47ButaMc9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Ma <peng.ma@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 002/125] spi: spi-fsl-dspi: Adding shutdown hook
-Date:   Mon, 20 Jul 2020 17:35:41 +0200
-Message-Id: <20200720152803.059182758@linuxfoundation.org>
+Subject: [PATCH 5.4 060/215] net: ethernet: mvneta: Add back interface mode validation
+Date:   Mon, 20 Jul 2020 17:35:42 +0200
+Message-Id: <20200720152823.064205838@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Ma <peng.ma@nxp.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-[ Upstream commit dc234825997ec6ff05980ca9e2204f4ac3f8d695 ]
+[ Upstream commit 41c2b6b4f0f807803bb49f65835d136941a70f85 ]
 
-We need to ensure dspi controller could be stopped in order for kexec
-to start the next kernel.
-So add the shutdown operation support.
+When writing the serdes configuration register was moved to
+mvneta_config_interface() the whole code block was removed from
+mvneta_port_power_up() in the assumption that its only purpose was to
+write the serdes configuration register. As mentioned by Russell King
+its purpose was also to check for valid interface modes early so that
+later in the driver we do not have to care for unexpected interface
+modes.
+Add back the test to let the driver bail out early on unhandled
+interface modes.
 
-Signed-off-by: Peng Ma <peng.ma@nxp.com>
-Link: https://lore.kernel.org/r/20200424061216.27445-1-peng.ma@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: b4748553f53f ("net: ethernet: mvneta: Fix Serdes configuration for SoCs without comphy")
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsl-dspi.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/net/ethernet/marvell/mvneta.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index ca013dd4ff6bb..d5b56b7814fe3 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -49,6 +49,9 @@
- #define SPI_MCR_PCSIS		(0x3F << 16)
- #define SPI_MCR_CLR_TXF	(1 << 11)
- #define SPI_MCR_CLR_RXF	(1 << 10)
-+#define SPI_MCR_DIS_TXF		(1 << 13)
-+#define SPI_MCR_DIS_RXF		(1 << 12)
-+#define SPI_MCR_HALT		(1 << 0)
- 
- #define SPI_TCR			0x08
- #define SPI_TCR_GET_TCNT(x)	(((x) & 0xffff0000) >> 16)
-@@ -1074,6 +1077,24 @@ static int dspi_remove(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index d443cd19e8951..ccb2abd18d6c7 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -4496,10 +4496,18 @@ static void mvneta_conf_mbus_windows(struct mvneta_port *pp,
  }
  
-+static void dspi_shutdown(struct platform_device *pdev)
-+{
-+	struct spi_controller *ctlr = platform_get_drvdata(pdev);
-+	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
+ /* Power up the port */
+-static void mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
++static int mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
+ {
+ 	/* MAC Cause register should be cleared */
+ 	mvreg_write(pp, MVNETA_UNIT_INTR_CAUSE, 0);
 +
-+	/* Disable RX and TX */
-+	regmap_update_bits(dspi->regmap, SPI_MCR,
-+			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF,
-+			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF);
++	if (phy_mode != PHY_INTERFACE_MODE_QSGMII &&
++	    phy_mode != PHY_INTERFACE_MODE_SGMII &&
++	    !phy_interface_mode_is_8023z(phy_mode) &&
++	    !phy_interface_mode_is_rgmii(phy_mode))
++		return -EINVAL;
 +
-+	/* Stop Running */
-+	regmap_update_bits(dspi->regmap, SPI_MCR, SPI_MCR_HALT, SPI_MCR_HALT);
-+
-+	dspi_release_dma(dspi);
-+	clk_disable_unprepare(dspi->clk);
-+	spi_unregister_controller(dspi->master);
-+}
-+
- static struct platform_driver fsl_dspi_driver = {
- 	.driver.name    = DRIVER_NAME,
- 	.driver.of_match_table = fsl_dspi_dt_ids,
-@@ -1081,6 +1102,7 @@ static struct platform_driver fsl_dspi_driver = {
- 	.driver.pm = &dspi_pm,
- 	.probe          = dspi_probe,
- 	.remove		= dspi_remove,
-+	.shutdown	= dspi_shutdown,
- };
- module_platform_driver(fsl_dspi_driver);
++	return 0;
+ }
+ 
+ /* Device initialization routine */
+@@ -4683,7 +4691,11 @@ static int mvneta_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		goto err_netdev;
+ 
+-	mvneta_port_power_up(pp, phy_mode);
++	err = mvneta_port_power_up(pp, pp->phy_interface);
++	if (err < 0) {
++		dev_err(&pdev->dev, "can't power up port\n");
++		return err;
++	}
+ 
+ 	/* Armada3700 network controller does not support per-cpu
+ 	 * operation, so only single NAPI should be initialized.
+@@ -4836,7 +4848,11 @@ static int mvneta_resume(struct device *device)
+ 		}
+ 	}
+ 	mvneta_defaults_set(pp);
+-	mvneta_port_power_up(pp, pp->phy_interface);
++	err = mvneta_port_power_up(pp, pp->phy_interface);
++	if (err < 0) {
++		dev_err(device, "can't power up port\n");
++		return err;
++	}
+ 
+ 	netif_device_attach(dev);
  
 -- 
 2.25.1
