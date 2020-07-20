@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5321222571E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38124225722
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 07:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgGTFjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 01:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgGTFjk (ORCPT
+        id S1726349AbgGTFmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 01:42:51 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49593 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725845AbgGTFmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 01:39:40 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE15C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 22:39:39 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id q85so3415408vke.4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 22:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Mra/ak9D1+r3t7wzeEyhfxM6IMDYdP7DqDfcxJZ5WCA=;
-        b=q/BeaS6UMn4+h7XAy10XUDWX0sTf0GOY6JjFrVVsyzaFn5scLjVx6NpXfZpbWZSW3I
-         DhbYEXoJOV3WSsOZbdu44Z8teUBZNSupURzgAHu6Bo33JbJQxzj09w412BJ7xhhR5l4a
-         cTk8QdN13dvQSeGgQjrHLmkCFaPls0hPoxsg7LvhjcuTLQob36unB9kWB6vcKnHm6o2j
-         ibxieKxN6dl1NQopfoaCYTPmumk26LfNwtBAGWBAcQIXo9gTf9GFW1k1hkHsiRS9x649
-         lBi4ja7HhiihDwb/8nSneVhtWisEX6G3seVWAq3J+OupTWiEqh3XrsheQmgVWAugC86L
-         GQwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Mra/ak9D1+r3t7wzeEyhfxM6IMDYdP7DqDfcxJZ5WCA=;
-        b=eFNzRLsnS5+cgi3E7ya/HwbeFAUwwqhxVI9QsgRBObcup40Z774baVagLk/fHqge/o
-         i6VxDvMddzZtD3K1pQ62dhFZKXoqSngv/roRFKfH681+lZ9EgKlgw/gVtQn+qWLdo/8V
-         95/wRaYdasn3VPPlQGrGVb8ttVv8WViB+7iyBZg/SeSQbkGaTzvPkTBrAThY468O4F+m
-         ErnsrhfMoOPg+2XjIc3ZdkjL3XJmpIM4ZZ4U4WLMEJAleZKazpxE9bCIBPZNp3carvGX
-         5MENcnS0A30VjntITsSgE7VYSUqhAQbfKa/HNJEp9Buh7EZK980cIUJ0pNbBxKHrfoPZ
-         Cgiw==
-X-Gm-Message-State: AOAM530izbn0+oqRkbUN4S8cTzdTqndTHPBGxHp5TJCH/ZCiEhTWfFb8
-        g7U/Mk5cEB1G7MR3HzpLlk7e6m6cGuEr2xB87IBLEw==
-X-Google-Smtp-Source: ABdhPJwSL6+wbKxKzMbtERU799L37vOP/8fRp8XD+9XcElsSqaL4bAmBMNeevdVdVjS+F17sPVX7xGuiPuIkJ6k33wg=
-X-Received: by 2002:a1f:f848:: with SMTP id w69mr15006496vkh.86.1595223578965;
- Sun, 19 Jul 2020 22:39:38 -0700 (PDT)
+        Mon, 20 Jul 2020 01:42:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0U3CmdbJ_1595223766;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3CmdbJ_1595223766)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 20 Jul 2020 13:42:47 +0800
+Subject: Re: [PATCH] mm/vmstat: don't do count if no needs
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20200720052348.428564-1-alex.shi@linux.alibaba.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <1ef9baa0-9788-5917-2590-a8c3fc593b81@linux.alibaba.com>
+Date:   Mon, 20 Jul 2020 13:42:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200717164217.18819-1-daniel.lezcano@linaro.org> <20200717164217.18819-2-daniel.lezcano@linaro.org>
-In-Reply-To: <20200717164217.18819-2-daniel.lezcano@linaro.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Mon, 20 Jul 2020 11:09:26 +0530
-Message-ID: <CAHLCerNbA+cQJB++xbSaKhANX3n0PhCwgBL8Qeg4ZPDaUOcBBQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] thermal: core: Move initialization after core initcall
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200720052348.428564-1-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:12 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> The generic netlink is initialized at subsys_initcall, so far after
-> the thermal init routine and the thermal generic netlink family
-> initialization.
->
-> On =C5=9Dome platforms, that leads to a memory corruption.
->
-> The fix was sent to netdev@ to move the genetlink framework
-> initialization at core_initcall.
->
-> Move the thermal core initialization to postcore level which is very
-> close to core level.
->
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/thermal/thermal_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_cor=
-e.c
-> index c2e7d7aaa354..79551bb6cd4c 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1617,4 +1617,4 @@ static int __init thermal_init(void)
->         mutex_destroy(&poweroff_lock);
->         return result;
->  }
-> -core_initcall(thermal_init);
-> +postcore_initcall(thermal_init);
 
-For posterity, we moved to core_initcall from fs_initcall since we had
-removed netlink support from the thermal framework and we wanted to
-initialise it as quickly as possible after cpufreq to allow early
-mitigation possibility.
+From 4cb977d34227e4bafa95b8da5e47dbd8b6141d26 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Mon, 20 Jul 2020 11:50:12 +0800
+Subject: [PATCH v2] mm/vmstat: don't do count if no needs
 
-Given the addition of the new netlink-based API to thermal framework,
-I think moving to postcore_initcall is an acceptable compromise.
+For couple of vmstat account funcs, the caller usually doesn't check the
+delta value, if delta == 0, irq or atomic operator is a waste. That's
+better to be skipped, also add unlikey() since !delta is less happened.
 
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/vmstat.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-> --
-> 2.17.1
->
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 3fb23a21f6dd..b02d99dff443 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -321,6 +321,9 @@ void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
+ 	long x;
+ 	long t;
+ 
++	if (unlikely(!delta))
++		return;
++
+ 	x = delta + __this_cpu_read(*p);
+ 
+ 	t = __this_cpu_read(pcp->stat_threshold);
+@@ -341,6 +344,9 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+ 	long x;
+ 	long t;
+ 
++	if (unlikely(!delta))
++		return;
++
+ 	x = delta + __this_cpu_read(*p);
+ 
+ 	t = __this_cpu_read(pcp->stat_threshold);
+@@ -484,6 +490,9 @@ static inline void mod_zone_state(struct zone *zone,
+ 	s8 __percpu *p = pcp->vm_stat_diff + item;
+ 	long o, n, t, z;
+ 
++	if (unlikely(!delta))
++		return;
++
+ 	do {
+ 		z = 0;  /* overflow to zone counters */
+ 
+@@ -518,6 +527,9 @@ static inline void mod_zone_state(struct zone *zone,
+ void mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
+ 			 long delta)
+ {
++	if (unlikely(!delta))
++		return;
++
+ 	mod_zone_state(zone, item, delta, 0);
+ }
+ EXPORT_SYMBOL(mod_zone_page_state);
+@@ -541,6 +553,9 @@ static inline void mod_node_state(struct pglist_data *pgdat,
+ 	s8 __percpu *p = pcp->vm_node_stat_diff + item;
+ 	long o, n, t, z;
+ 
++	if (unlikely(!delta))
++		return;
++
+ 	do {
+ 		z = 0;  /* overflow to node counters */
+ 
+@@ -604,6 +619,9 @@ void mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
+ {
+ 	unsigned long flags;
+ 
++	if (unlikely(!delta))
++		return;
++
+ 	local_irq_save(flags);
+ 	__mod_zone_page_state(zone, item, delta);
+ 	local_irq_restore(flags);
+@@ -647,6 +665,9 @@ void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+ {
+ 	unsigned long flags;
+ 
++	if (unlikely(!delta))
++		return;
++
+ 	local_irq_save(flags);
+ 	__mod_node_page_state(pgdat, item, delta);
+ 	local_irq_restore(flags);
+-- 
+2.18.4
+
