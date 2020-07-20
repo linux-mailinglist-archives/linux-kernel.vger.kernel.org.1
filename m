@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9472268B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885F622673E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730603AbgGTQJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48022 "EHLO mail.kernel.org"
+        id S2387609AbgGTQKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387588AbgGTQJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:09:53 -0400
+        id S1732900AbgGTQJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:09:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 327182064B;
-        Mon, 20 Jul 2020 16:09:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED6A42065E;
+        Mon, 20 Jul 2020 16:09:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261392;
-        bh=lye9nEJslbJYSdaSkBheYwWegDQY9ewGWMpaayLWwxY=;
+        s=default; t=1595261395;
+        bh=za21BTmLuUrLxiNm+BJdCpjd7tubdIm6RmXG4QxQBx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uLNhHeD4OWEOLe9JL7J3uFCXveUprDo2UuKimQ3xfxag2nbdjg0yAzjMUqdoi9bhK
-         9thuEXJzLBylJi3+NgBzFbVHFg8SbQBFMVfhv4GdBYgR567qVlMturyWhfA5/Wdb1C
-         bD0e4KDplOEYMuXbmCwdsuojSd6iceFK0kbkjsQ0=
+        b=pFm0ShJ6R0Fsc6VsDFbYy09m6sDv+7eCSCQlCWvyV/CaVe/wd25bS9OdPl1qTVXGk
+         VuwXL7WW/vaz4u41WS6rSR1cNLpkouPcr/H/7sSml59I8Pfx5pCU0OYPIHAPOXR7YM
+         ThSyuzjjWeIR22+lVCw2ouxFu8rg6Nw4WaQliRQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Ian Abbott <abbotti@mev.co.uk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 099/244] staging: comedi: verify array index is correct before using it
-Date:   Mon, 20 Jul 2020 17:36:10 +0200
-Message-Id: <20200720152830.541231823@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anatoly Pugachev <matorola@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 100/244] serial: core: Initialise spin lock before use in uart_configure_port()
+Date:   Mon, 20 Jul 2020 17:36:11 +0200
+Message-Id: <20200720152830.589414341@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
 References: <20200720152825.863040590@linuxfoundation.org>
@@ -43,52 +49,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit ef75e14a6c935eec82abac07ab68e388514e39bc ]
+[ Upstream commit f743061a85f5e9989df22ccbf07c80c98fc90e08 ]
 
-This code reads from the array before verifying that "trig" is a valid
-index.  If the index is wildly out of bounds then reading from an
-invalid address could lead to an Oops.
+The comment near to uart_port_spin_lock_init() says:
 
-Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200709102936.GA20875@mwanda
+  Ensure that the serial console lock is initialised early.
+  If this port is a console, then the spinlock is already initialised.
+
+and there is nothing about enabled or disabled consoles. The commit
+a3cb39d258ef ("serial: core: Allow detach and attach serial device
+for console") made a change, which follows the comment, and also to
+prevent reinitialisation of the lock in use, when user detaches and
+attaches back the same console device. But this change discovers
+another issue, that uart_add_one_port() tries to access a spin lock
+that now may be uninitialised. This happens when a driver expects
+the serial core to register a console on its behalf. In this case
+we must initialise a spin lock before use.
+
+Fixes: a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
+Reported-by: Marc Zyngier <maz@kernel.org>
+Reported-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Reported-by: Anatoly Pugachev <matorola@gmail.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Tested-by: Tony Lindgren <tony@atomide.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20200706214903.56148-1-andriy.shevchenko@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1500.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/tty/serial/serial_core.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/comedi/drivers/addi_apci_1500.c b/drivers/staging/comedi/drivers/addi_apci_1500.c
-index 45ad4ba92f94f..689acd69a1b9c 100644
---- a/drivers/staging/comedi/drivers/addi_apci_1500.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
-@@ -456,9 +456,9 @@ static int apci1500_di_cfg_trig(struct comedi_device *dev,
- 	unsigned int lo_mask = data[5] << shift;
- 	unsigned int chan_mask = hi_mask | lo_mask;
- 	unsigned int old_mask = (1 << shift) - 1;
--	unsigned int pm = devpriv->pm[trig] & old_mask;
--	unsigned int pt = devpriv->pt[trig] & old_mask;
--	unsigned int pp = devpriv->pp[trig] & old_mask;
-+	unsigned int pm;
-+	unsigned int pt;
-+	unsigned int pp;
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 66a5e2faf57ea..ca5e6212bf1ce 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -1916,6 +1916,12 @@ static inline bool uart_console_enabled(struct uart_port *port)
+ 	return uart_console(port) && (port->cons->flags & CON_ENABLED);
+ }
  
- 	if (trig > 1) {
- 		dev_dbg(dev->class_dev,
-@@ -471,6 +471,10 @@ static int apci1500_di_cfg_trig(struct comedi_device *dev,
- 		return -EINVAL;
- 	}
- 
-+	pm = devpriv->pm[trig] & old_mask;
-+	pt = devpriv->pt[trig] & old_mask;
-+	pp = devpriv->pp[trig] & old_mask;
++static void __uart_port_spin_lock_init(struct uart_port *port)
++{
++	spin_lock_init(&port->lock);
++	lockdep_set_class(&port->lock, &port_lock_key);
++}
 +
- 	switch (data[2]) {
- 	case COMEDI_DIGITAL_TRIG_DISABLE:
- 		/* clear trigger configuration */
+ /*
+  * Ensure that the serial console lock is initialised early.
+  * If this port is a console, then the spinlock is already initialised.
+@@ -1925,8 +1931,7 @@ static inline void uart_port_spin_lock_init(struct uart_port *port)
+ 	if (uart_console(port))
+ 		return;
+ 
+-	spin_lock_init(&port->lock);
+-	lockdep_set_class(&port->lock, &port_lock_key);
++	__uart_port_spin_lock_init(port);
+ }
+ 
+ #if defined(CONFIG_SERIAL_CORE_CONSOLE) || defined(CONFIG_CONSOLE_POLL)
+@@ -2372,6 +2377,13 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
+ 		/* Power up port for set_mctrl() */
+ 		uart_change_pm(state, UART_PM_STATE_ON);
+ 
++		/*
++		 * If this driver supports console, and it hasn't been
++		 * successfully registered yet, initialise spin lock for it.
++		 */
++		if (port->cons && !(port->cons->flags & CON_ENABLED))
++			__uart_port_spin_lock_init(port);
++
+ 		/*
+ 		 * Ensure that the modem control lines are de-activated.
+ 		 * keep the DTR setting that is set in uart_set_options()
 -- 
 2.25.1
 
