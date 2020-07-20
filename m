@@ -2,144 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B31226ED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019B3226EE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730816AbgGTTRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S1730939AbgGTTSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgGTTRA (ORCPT
+        with ESMTP id S1729093AbgGTTSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:17:00 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E735C061794;
-        Mon, 20 Jul 2020 12:17:00 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id e12so14100340qtr.9;
-        Mon, 20 Jul 2020 12:17:00 -0700 (PDT)
+        Mon, 20 Jul 2020 15:18:13 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66522C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:18:13 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q15so575072wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZY4P2StN02i9zxiuCmah02SFOxscsBn3x480+rE92BE=;
-        b=F28QR+9Zzm0roouNa+pdVdhRBMtPLP8uaMFAVzvMQkm1Kv0EaR/K6lMQRh9Ri299bS
-         ZtsdVBd3SvpaRAG0yMQzvFN32O0GsJ43Gpx7akMZ62K3ddLXXtdlP+NcxCCyU+nTgTKz
-         Zjtx2z6EauSPnrEHx2VCb9p28vFxbZvHxu4Er4yWh/bWfdXnC5jgQH1LyxHGTRhuSY6W
-         win8CwCqZKHYEPmjahxQh1DgBf/WWK+v5RBRnbB+YUZjyyWKJjgpilizDUf8aja3vQEy
-         xrEyJqOOSunZL+CmpMS5H+o0Dnn1qpds9WN+sgBaoK2Goet9+KZdMoeio+nB88U8f7PI
-         mP3g==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yaZqAO3nKIfmNsrLqv5DBCPJCzdK9eS546Xyk4jyW9M=;
+        b=H+amt+npvX6KeGem+yMAg+AytnxNVrgytC9J++r9xdn9WFECt5ptyKvMmOQuW3wOgb
+         hY3oCDsRRs58U3AMFtvo/WBy2nyN1AeFd1mHzp4unfFJnsGNk3ASB0zLJg8aw3LI1nXb
+         NHncGxOI2uDd8RdVVDqvEMOrSmyIYRUUUGYMk5UkZfInVQR5LBPMGrF2KInKIo/WhyjM
+         K1O27qZe3NoHk8/GEYFCs4mBc4Isj2i14W5qLzMlMIyns9vXbwK1cIbbCIpI3Wd3c6Z5
+         A4tmfx3nhFBLCqh50edU/PtGJa+wlPyxfV2P7XjMmITxBbIyuGG12KoNlwp7jUxHE1du
+         5T1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ZY4P2StN02i9zxiuCmah02SFOxscsBn3x480+rE92BE=;
-        b=rdXR92+75RIEuDv0g8jS597QvGdLzRRu1HJzNFmzRFI0KUht1i1tCf7IrtEWfkUfIY
-         cNUMo33FVn8x6XfG5iXvn8blZGLQokBFdoWKqvj8dpWW4UwwhJ646MIHSX0xcEYRWDou
-         4wt7BOLwY/SKxP5d5gL4y8dIgbAOhp9V2Oe0Jp1L8RJnyiuHKWuaHbJCV+6wUZ2Cas1s
-         cHmwrzpVOYSQIXSiVdxyaynqFE5hVwWO6E3vWuCq3BjfwjniyOE1iNtYkuy/5JNoc3Vg
-         X0VtWQTL+FcoUsFcPlxbzV+Bt6wqfDCedSKBWBNe8RbBl+uIjc11qHYZDoxSj9iGAkRr
-         wpMg==
-X-Gm-Message-State: AOAM532N/STtbr88gdwSdfLzAuZ+KjezNtaQ9OZ7c/dvykn443+dxufF
-        JT1hyopGar999BnfWvX5jw==
-X-Google-Smtp-Source: ABdhPJy3nesTMpxh3lXG9vD395BscPdn44YrLAJo2RIXxBzNeiY4nr3RSj0p6V0uAyk27kBDJgoSjw==
-X-Received: by 2002:ac8:4f13:: with SMTP id b19mr25858680qte.146.1595272619590;
-        Mon, 20 Jul 2020 12:16:59 -0700 (PDT)
-Received: from PWN (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id f41sm21133029qtk.55.2020.07.20.12.16.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yaZqAO3nKIfmNsrLqv5DBCPJCzdK9eS546Xyk4jyW9M=;
+        b=Drsjo2z2xXJUNrbbIk2ddtCOErWNvGhSQdgCRSGfVqmPvPqY+fzDjd33EuRgZemPMM
+         yz0xbQgM+DzL5kkqEsrl/O0ppr4Egu0UShF12oIEkCmwpJqaP5zC4orpQU7POG7GE5I0
+         nDylclA2QuLpfXOAQZ5cGpma3RPA7GuALmsV2mwRYZnRKKuuRd5i0OJfM78tZz9zugHU
+         JnoHV7QdI5s/M6WoG4OgztbsJkbZrd1Ft2F1uXjPcot5o/PXJ64UHYOQSVutnJGCr8Qe
+         SHsiONV5Eg2UeQcyi9gDfoiZYq4pWtQlkCMQtE6Z3kK7qqGiBLs2Kc97+EcxNoYa1s1z
+         oBqA==
+X-Gm-Message-State: AOAM533CtmOxgDtVMqxggnBgNjlcKHPe0b8Ag7cXHSdkTPqN8Syrl1WR
+        RwH1Q6mvKWOQxV0N1BBt5Ywvzw==
+X-Google-Smtp-Source: ABdhPJyB+VEQK9W7zD6JNKPCUQ4pMpb8V5cDoJ5UL/o7pV3Co5i/hs4T/c0jP1Ob9UO3dySLw1b33Q==
+X-Received: by 2002:a1c:a557:: with SMTP id o84mr728057wme.42.1595272692062;
+        Mon, 20 Jul 2020 12:18:12 -0700 (PDT)
+Received: from localhost.localdomain (50.red-80-27-209.dynamicip.rima-tde.net. [80.27.209.50])
+        by smtp.gmail.com with ESMTPSA id t4sm666716wmf.4.2020.07.20.12.18.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 12:16:59 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 15:16:56 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v1] usbhid: Fix slab-out-of-bounds
- write in hiddev_ioctl_usage()
-Message-ID: <20200720191656.GA3366@PWN>
-Reply-To: 20200720121257.GJ2571@kadam
-References: <20200718231218.170730-1-yepeilin.cs@gmail.com>
- <20200720115400.GI2549@kadam>
- <20200720121257.GJ2571@kadam>
+        Mon, 20 Jul 2020 12:18:10 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-omap@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH v2] pinctrl: core: print gpio in pins debugfs file
+Date:   Mon, 20 Jul 2020 21:17:41 +0200
+Message-Id: <20200720191740.1974132-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720121257.GJ2571@kadam>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I made some mistakes in the previous e-mail. Please ignore that. There
-are a lot of things going on...Sorry for that.
+If there is a gpio range mapping for the pin, then print out the gpio
+number for the pin in the debugfs 'pins' file.
 
-On Mon, Jul 20, 2020 at 03:12:57PM +0300, Dan Carpenter wrote:
-> So another option would be to just add HIDIOCGUSAGE and HIDIOCSUSAGE to
-> the earlier check.  That risks breaking userspace.  Another option is to
-> just add a check like you did earlier to the HIDIOCGUSAGE case.
-> Probably just do option #2 and resend.
+Here is an example output on the BeagleBone Black from:
+/sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pins
 
-Sure, I will just add the same check to the HIDIOCGUSAGE case for the
-time being. Thank you for the detailed explanation.
+pin 100 (PIN100) gpiochip:gpio-96-127 line-name:P1.36 [PWM0A] 44e10990 00000001 pinctrl-single 
+pin 101 (PIN101) gpiochip:gpio-96-127 line-name:P1.33 [PRU0.1] 44e10994 00000027 pinctrl-single 
+pin 102 (PIN102) gpiochip:gpio-96-127 line-name:P2.32 [PRU0.2] 44e10998 00000027 pinctrl-single 
+pin 103 (PIN103) gpiochip:gpio-96-127 line-name:P2.30 [PRU0.3] 44e1099c 00000027 pinctrl-single 
+pin 104 (PIN104) gpiochip:gpio-96-127 line-name:P1.31 [PRU0.4] 44e109a0 0000002c pinctrl-single 
+pin 105 (PIN105) gpiochip:gpio-96-127 line-name:P2.34 [PRU0.5] 44e109a4 00000027 pinctrl-single 
+pin 106 (PIN106) gpiochip:gpio-96-127 line-name:P2.28 [PRU0.6] 44e109a8 00000027 pinctrl-single 
+pin 107 (PIN107) gpiochip:gpio-96-127 line-name:P1.29 [PRU0.7] 44e109ac 00000027 pinctrl-single 
+pin 108 (PIN108) gpiochip:gpio-0-31 line-name:P2.31 [SPI1_CS] 44e109b0 00000027 pinctrl-single 
+pin 109 (PIN109) gpiochip:gpio-0-31 line-name:P1.20 [PRU0.16] 44e109b4 00000027 pinctrl-single 
+pin 110 (PIN110) NA 44e109b8 00000030 pinctrl-single 
+pin 111 (PIN111) NA 44e109bc 00000028 pinctrl-single 
+pin 112 (PIN112) NA 44e109c0 00000030 pinctrl-single 
+pin 113 (PIN113) NA 44e109c4 00000028 pinctrl-single 
+pin 114 (PIN114) NA 44e109c8 00000028 pinctrl-single 
+pin 115 (PIN115) NA 44e109cc 00000028 pinctrl-single 
 
-Here's what I found after digging a bit further though:
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Suggested-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+---
+ drivers/pinctrl/core.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-hid_open_report() calls different functions in order to process
-different type of items:
+v2 changes:
+- only include GPIO information if CONFIG_GPIOLIB
+- print gpiochip and line name instead of global GPIO number
 
-drivers/hid/hid-core.c:1193:
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 821242bb4b16..b61fab96c5c2 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -27,6 +27,7 @@
+ #include <linux/pinctrl/machine.h>
+ 
+ #ifdef CONFIG_GPIOLIB
++#include "../gpio/gpiolib.h"
+ #include <asm-generic/gpio.h>
+ #endif
+ 
+@@ -1601,6 +1602,11 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
+ 	struct pinctrl_dev *pctldev = s->private;
+ 	const struct pinctrl_ops *ops = pctldev->desc->pctlops;
+ 	unsigned i, pin;
++	struct pinctrl_gpio_range *range;
++	unsigned int gpio_num;
++	struct gpio_chip *chip;
++	struct gpio_desc *gdesc;
++
+ 
+ 	seq_printf(s, "registered pins: %d\n", pctldev->desc->npins);
+ 
+@@ -1618,6 +1624,30 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
+ 
+ 		seq_printf(s, "pin %d (%s) ", pin, desc->name);
+ 
++#ifdef CONFIG_GPIOLIB
++		gpio_num = 0;
++		list_for_each_entry(range, &pctldev->gpio_ranges, node) {
++			if ((pin >= range->pin_base) &&
++			    (pin < (range->pin_base + range->npins))) {
++				gpio_num = range->base + (pin - range->pin_base);
++				break;
++			}
++		}
++		if (gpio_num > 0) {
++			chip = gpio_to_chip(gpio_num);
++			if (chip != NULL) {
++				if (chip->label)
++					seq_printf(s, "gpiochip:%s ", chip->label);
++			}
++			gdesc = gpio_to_desc(gpio_num);
++			if (gdesc != NULL)
++				if (gdesc->name)
++					seq_printf(s, "line-name:%s ", gdesc->name);
++		} else {
++			seq_puts(s, "NA ");
++		}
++#endif
++
+ 		/* Driver-specific info per pin */
+ 		if (ops->pin_dbg_show)
+ 			ops->pin_dbg_show(pctldev, s, pin);
+-- 
+2.25.1
 
-        static int (*dispatch_type[])(struct hid_parser *parser,
-                                      struct hid_item *item) = {
-                hid_parser_main,
-                hid_parser_global,
-                hid_parser_local,
-                hid_parser_reserved
-        };
-
-In this case, hid_parser_main() calls hid_add_field(), which in turn
-calls hid_register_field(), which allocates the `field` object as you
-mentioned:
-
-drivers/hid/hid-core.c:102:
-
-        field = kzalloc((sizeof(struct hid_field) +
-                         usages * sizeof(struct hid_usage) +
-                         values * sizeof(unsigned)), GFP_KERNEL);
-
-Here, `values` equals to `global.report_count`. See how it is being
-called:
-
-drivers/hid/hid-core.c:303:
-
-        field = hid_register_field(report, usages, parser->global.report_count);
-
-In hid_open_report(), `global.report_count` can be set by calling
-hid_parser_global().
-
-However, the syzkaller reproducer made hid_open_report() to call
-hid_parser_main() __before__ `global.report_count` is properly set. It's
-zero. So hid_register_field() allocated `field` with `values` equals to
-zero - No room for value[] at all. I believe this caused the bug.
-
-Apparently hid_open_report() doesn't care about which item (main, local,
-global and reserved) gets processed first. I am new to this code and I
-don't know whether this is by design, but this arbitrarity is
-apparently causing some issues.
-
-As another example, in hid_add_field():
-
-drivers/hid/hid-core.c:289:
-
-        report->size += parser->global.report_size * parser->global.report_count;
-
-If `global.report_count` is zero, `report->size` gets increased by zero.
-Is this working as intended? It seems weird to me.
-
-Thank you,
-
-Peilin Ye
