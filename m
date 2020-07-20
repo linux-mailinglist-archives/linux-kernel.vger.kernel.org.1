@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F1C22702B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2D0227030
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgGTVJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:09:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58574 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726381AbgGTVJe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:09:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595279373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mlHthLgSXx+0yukG47QpZktLnXxCHnNa5qkendynQ2U=;
-        b=WWarP0NI0eAqiVyUopWQyBPrp9wat8QuH4IMT4MJAmqqIK5eZ2e2dzQQfOy5nk5IDfFA5n
-        2LEAhmBiqCeUuJ2uvzFHjwrJiYwN+2xqLNu7f+8lT0jnrbFOqyRpCwJd580r0wPaOwuF21
-        vbjnX0p+WsOA0CFczMqH2XSEPRJvqt4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-305-nSOylXgzOdqC6eVgTMJPiw-1; Mon, 20 Jul 2020 17:09:31 -0400
-X-MC-Unique: nSOylXgzOdqC6eVgTMJPiw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC3D41902EA0;
-        Mon, 20 Jul 2020 21:09:30 +0000 (UTC)
-Received: from gimli.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CB2176214;
-        Mon, 20 Jul 2020 21:09:27 +0000 (UTC)
-Subject: [PATCH] vfio/pci: Hold igate across releasing eventfd contexts
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        cohuck@redhat.com, prime.zeng@hisilicon.com
-Date:   Mon, 20 Jul 2020 15:09:27 -0600
-Message-ID: <159527934542.26615.503005826695043299.stgit@gimli.home>
-User-Agent: StGit/0.19-dirty
+        id S1726618AbgGTVMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:12:42 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:44190 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726012AbgGTVMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 17:12:42 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 172A5BC1AB;
+        Mon, 20 Jul 2020 21:12:37 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     catalin.marinas@arm.com, will@kernel.org, corbet@lwn.net,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH v2] arm64: Replace HTTP links with HTTPS ones
+Date:   Mon, 20 Jul 2020 23:12:31 +0200
+Message-Id: <20200720211231.63831-1-grandmaster@al2klimov.de>
+In-Reply-To: <CAMj1kXEzaa3BtNF9kgB=UGMx-uvosGwcUbdT3O2qZ1K0XhyUiQ@mail.gmail.com>
+References: <CAMj1kXEzaa3BtNF9kgB=UGMx-uvosGwcUbdT3O2qZ1K0XhyUiQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to release and immediately re-acquire igate while clearing
-out the eventfd ctxs.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- drivers/vfio/pci/vfio_pci.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ Now better?
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index b0258b79bb5b..dabca0450e6d 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -523,14 +523,12 @@ static void vfio_pci_release(void *device_data)
- 		vfio_pci_vf_token_user_add(vdev, -1);
- 		vfio_spapr_pci_eeh_release(vdev->pdev);
- 		vfio_pci_disable(vdev);
-+
- 		mutex_lock(&vdev->igate);
- 		if (vdev->err_trigger) {
- 			eventfd_ctx_put(vdev->err_trigger);
- 			vdev->err_trigger = NULL;
- 		}
--		mutex_unlock(&vdev->igate);
--
--		mutex_lock(&vdev->igate);
- 		if (vdev->req_trigger) {
- 			eventfd_ctx_put(vdev->req_trigger);
- 			vdev->req_trigger = NULL;
+ Documentation/arm64/arm-acpi.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/arm64/arm-acpi.rst b/Documentation/arm64/arm-acpi.rst
+index 872dbbc73d4a..8f675c38c244 100644
+--- a/Documentation/arm64/arm-acpi.rst
++++ b/Documentation/arm64/arm-acpi.rst
+@@ -273,7 +273,7 @@ only use the _DSD Device Properties UUID [5]:
+ 
+    - UUID: daffd814-6eba-4d8c-8a91-bc9bbf4aa301
+ 
+-   - http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
++   - https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+ 
+ The UEFI Forum provides a mechanism for registering device properties [4]
+ so that they may be used across all operating systems supporting ACPI.
+-- 
+2.27.0
 
