@@ -2,166 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402F9227116
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CC92271E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 23:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbgGTVlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 17:41:39 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:34514 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728773AbgGTVlb (ORCPT
+        id S1726735AbgGTVtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 17:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgGTVtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 17:41:31 -0400
-Date:   Mon, 20 Jul 2020 17:41:28 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     helgaas@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
-        bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org
-Subject: Re: [RFC PATCH 24/35] sh: Change PCIBIOS_SUCCESSFUL to 0
-Message-ID: <20200720214128.GN14669@brightrain.aerifal.cx>
-References: <20200713122247.10985-1-refactormyself@gmail.com>
- <20200713122247.10985-25-refactormyself@gmail.com>
+        Mon, 20 Jul 2020 17:49:45 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5342C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 14:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Q/pmUl9G9tnIINckX+tsc4ZNDGVpCit7S6QnO2IEd7w=; b=Gadm/98gBnXxEvK0+FpIzGCCvW
+        FDiBWH+ibqVz6jGQaLhPole6CbO2mFOmoIxn+F5jveIZNcb7MSBi8u/b49zwggvxfKroIVAbGjjPa
+        n5ZHitwtSJFL26qAyZ09T+mjzYf885xBwFFswSVyPR9tnOF++n8z32YVwbp6sPLd+ol/m7T0GLZYt
+        SLamz/Fesla3Ozg8zFXPyCkpggBKftZmOVvbroAMoJzO8NqOUc4tRUPkKqxwsuoN199gBpkELsa4W
+        3vogAveu0epEF2qsUHs/ZBPNPJ+0O+e0AZfIHihRMFj4m8w7pc3aT98VQuFGpKpKNKMOVYacHXdCU
+        pCnAEfhg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxdez-0007Qr-I1; Mon, 20 Jul 2020 21:49:21 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5A83A983454; Mon, 20 Jul 2020 23:49:18 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 23:49:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>, sfr@canb.auug.org.au
+Subject: Re: [tip:sched/fifo 44/45] ERROR: modpost: "sched_setscheduler"
+ undefined!
+Message-ID: <20200720214918.GM5523@worktop.programming.kicks-ass.net>
+References: <202006192249.AYnVBGCH%lkp@intel.com>
+ <20200709124505.GT597537@hirez.programming.kicks-ass.net>
+ <20200709115818.36a956a4@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200713122247.10985-25-refactormyself@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200709115818.36a956a4@oasis.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 02:22:36PM +0200, Saheed O. Bolarinwa wrote:
-> In reference to the PCI spec (Chapter 2), PCIBIOS* is an x86 concept.
-> Their scope should be limited within arch/x86.
+On Thu, Jul 09, 2020 at 11:58:18AM -0400, Steven Rostedt wrote:
+> On Thu, 9 Jul 2020 14:45:05 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Change all PCIBIOS_SUCCESSFUL to 0
+> > On Fri, Jun 19, 2020 at 10:15:51PM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/fifo
+> > > head:   8b700983de82f79e05b2c1136d6513ea4c9b22c4
+> > > commit: 616d91b68cd56bcb1954b6a5af7d542401fde772 [44/45] sched: Remove sched_setscheduler*() EXPORTs
+> > > config: x86_64-rhel (attached as .config)
+> > > compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         git checkout 616d91b68cd56bcb1954b6a5af7d542401fde772
+> > >         # save the attached .config to linux build tree
+> > >         make W=1 ARCH=x86_64 
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All errors (new ones prefixed by >>, old ones prefixed by <<):
+> > >   
+> > > >> ERROR: modpost: "sched_setscheduler" [kernel/trace/ring_buffer_benchmark.ko] undefined!  
+> > 
+> > Steve, do you have any preference on how to go about fixing this one?
 > 
-> Signed-off-by: "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-> ---
->  arch/sh/drivers/pci/common.c        | 2 +-
->  arch/sh/drivers/pci/ops-dreamcast.c | 4 ++--
->  arch/sh/drivers/pci/ops-sh4.c       | 4 ++--
->  arch/sh/drivers/pci/ops-sh7786.c    | 8 ++++----
->  arch/sh/drivers/pci/pci.c           | 2 +-
->  5 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/sh/drivers/pci/common.c b/arch/sh/drivers/pci/common.c
-> index fe163ecd0719..ee27cdfd3e68 100644
-> --- a/arch/sh/drivers/pci/common.c
-> +++ b/arch/sh/drivers/pci/common.c
-> @@ -61,7 +61,7 @@ int __init pci_is_66mhz_capable(struct pci_channel *hose,
->  			continue;
->  		if (early_read_config_word(hose, top_bus, current_bus,
->  					   pci_devfn, PCI_VENDOR_ID, &vid) !=
-> -		    PCIBIOS_SUCCESSFUL)
-> +		    0)
->  			continue;
->  		if (vid == 0xffff)
->  			continue;
-> diff --git a/arch/sh/drivers/pci/ops-dreamcast.c b/arch/sh/drivers/pci/ops-dreamcast.c
-> index 517a8a9702f6..431cd006951f 100644
-> --- a/arch/sh/drivers/pci/ops-dreamcast.c
-> +++ b/arch/sh/drivers/pci/ops-dreamcast.c
-> @@ -56,7 +56,7 @@ static int gapspci_read(struct pci_bus *bus, unsigned int devfn, int where, int
->  	case 4: *val = inl(GAPSPCI_BBA_CONFIG+where); break;
->  	}
->  
-> -        return PCIBIOS_SUCCESSFUL;
-> +	return 0;
->  }
->  
->  static int gapspci_write(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 val)
-> @@ -70,7 +70,7 @@ static int gapspci_write(struct pci_bus *bus, unsigned int devfn, int where, int
->  	case 4: outl((u32)val, GAPSPCI_BBA_CONFIG+where); break;
->  	}
->  
-> -        return PCIBIOS_SUCCESSFUL;
-> +	return 0;
->  }
->  
->  struct pci_ops gapspci_pci_ops = {
-> diff --git a/arch/sh/drivers/pci/ops-sh4.c b/arch/sh/drivers/pci/ops-sh4.c
-> index a205be3bfc4a..4d757e5f38c6 100644
-> --- a/arch/sh/drivers/pci/ops-sh4.c
-> +++ b/arch/sh/drivers/pci/ops-sh4.c
-> @@ -49,7 +49,7 @@ static int sh4_pci_read(struct pci_bus *bus, unsigned int devfn,
->  		return PCIBIOS_FUNC_NOT_SUPPORTED;
->  	}
->  
-> -	return PCIBIOS_SUCCESSFUL;
-> +	return 0;
->  }
->  
->  /*
-> @@ -90,7 +90,7 @@ static int sh4_pci_write(struct pci_bus *bus, unsigned int devfn,
->  
->  	pci_write_reg(chan, data, SH4_PCIPDR);
->  
-> -	return PCIBIOS_SUCCESSFUL;
-> +	return 0;
->  }
->  
->  struct pci_ops sh4_pci_ops = {
-> diff --git a/arch/sh/drivers/pci/ops-sh7786.c b/arch/sh/drivers/pci/ops-sh7786.c
-> index a10f9f4ebd7f..7c329e467360 100644
-> --- a/arch/sh/drivers/pci/ops-sh7786.c
-> +++ b/arch/sh/drivers/pci/ops-sh7786.c
-> @@ -52,7 +52,7 @@ static int sh7786_pcie_config_access(unsigned char access_type,
->  			else
->  				pci_write_reg(chan, *data, PCI_REG(reg));
->  
-> -			return PCIBIOS_SUCCESSFUL;
-> +			return 0;
->  		} else if (dev > 1)
->  			return PCIBIOS_DEVICE_NOT_FOUND;
->  	}
-> @@ -83,7 +83,7 @@ static int sh7786_pcie_config_access(unsigned char access_type,
->  	/* Disable the configuration access */
->  	pci_write_reg(chan, 0, SH4A_PCIEPCTLR);
->  
-> -	return PCIBIOS_SUCCESSFUL;
-> +	return 0;
->  }
->  
->  static int sh7786_pcie_read(struct pci_bus *bus, unsigned int devfn,
-> @@ -101,7 +101,7 @@ static int sh7786_pcie_read(struct pci_bus *bus, unsigned int devfn,
->  	raw_spin_lock_irqsave(&pci_config_lock, flags);
->  	ret = sh7786_pcie_config_access(PCI_ACCESS_READ, bus,
->  					devfn, where, &data);
-> -	if (ret != PCIBIOS_SUCCESSFUL) {
-> +	if (ret != 0) {
->  		*val = 0xffffffff;
->  		goto out;
->  	}
-> @@ -137,7 +137,7 @@ static int sh7786_pcie_write(struct pci_bus *bus, unsigned int devfn,
->  	raw_spin_lock_irqsave(&pci_config_lock, flags);
->  	ret = sh7786_pcie_config_access(PCI_ACCESS_READ, bus,
->  					devfn, where, &data);
-> -	if (ret != PCIBIOS_SUCCESSFUL)
-> +	if (ret != 0)
->  		goto out;
->  
->  	dev_dbg(&bus->dev, "pcie-config-write: bus=%3d devfn=0x%04x "
-> diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
-> index c7784e156964..77130f035fdd 100644
-> --- a/arch/sh/drivers/pci/pci.c
-> +++ b/arch/sh/drivers/pci/pci.c
-> @@ -204,7 +204,7 @@ pcibios_bus_report_status_early(struct pci_channel *hose,
->  			continue;
->  		ret = early_read_config_word(hose, top_bus, current_bus,
->  					     pci_devfn, PCI_STATUS, &status);
-> -		if (ret != PCIBIOS_SUCCESSFUL)
-> +		if (ret != 0)
->  			continue;
->  		if (status == 0xffff)
->  			continue;
-> -- 
-> 2.18.2
+> Well, I use to manually set the priority of the test, but I guess we
+> can switch the parameters to accepting a "high, medium, and low" that
+> will correspond to your setting of the other sched_setscheduler() calls
+> that were replaced.
 
-Acked-by: Rich Felker <dalias@libc.org>
+Steve, would this work for you, or would you prefer renaming the
+parameters as well?
 
-(for both this and the following one in the series)
+---
+ kernel/trace/ring_buffer_benchmark.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
+index 8df0aa810950..0ee3d41ceee4 100644
+--- a/kernel/trace/ring_buffer_benchmark.c
++++ b/kernel/trace/ring_buffer_benchmark.c
+@@ -455,21 +455,19 @@ static int __init ring_buffer_benchmark_init(void)
+ 	 * Run them as low-prio background tasks by default:
+ 	 */
+ 	if (!disable_reader) {
+-		if (consumer_fifo >= 0) {
+-			struct sched_param param = {
+-				.sched_priority = consumer_fifo
+-			};
+-			sched_setscheduler(consumer, SCHED_FIFO, &param);
+-		} else
++		if (consumer_fifo > 1)
++			sched_set_fifo(consumer);
++		else if (consumer_fifo >= 0)
++			sched_set_fifo_low(consumer);
++		else
+ 			set_user_nice(consumer, consumer_nice);
+ 	}
+ 
+-	if (producer_fifo >= 0) {
+-		struct sched_param param = {
+-			.sched_priority = producer_fifo
+-		};
+-		sched_setscheduler(producer, SCHED_FIFO, &param);
+-	} else
++	if (producer_fifo > 1)
++		sched_set_fifo(producer);
++	else if (producer_fifo >= 0)
++		sched_set_fifo_low(producer);
++	else
+ 		set_user_nice(producer, producer_nice);
+ 
+ 	return 0;
+
