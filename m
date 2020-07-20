@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8959226A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D39226A2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388945AbgGTQdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:33:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55754 "EHLO mail.kernel.org"
+        id S1731639AbgGTP5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731789AbgGTP4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:56:20 -0400
+        id S1731850AbgGTP44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:56:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4945C22BEF;
-        Mon, 20 Jul 2020 15:56:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A7222065E;
+        Mon, 20 Jul 2020 15:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260579;
-        bh=dsu5b9IIjFUsGX50qBLDgmJ2Ketn/JuBNyJ68a8xfzk=;
+        s=default; t=1595260616;
+        bh=EEaYoc/pEyzEgkAYaFBflSjPGHg/lWurb1kBnI+GpFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2iapsulwR8of0jvVl2uFjjpLgG1OiQESS9u3q3wIqy9pUTaZ9iV9UzKx/ldnQWAi4
-         dkkrjEmkB/yVhXyYmwRXyGA/EV1ZC85OlDe4+vRojdAq8lQRYCyWtDHZnBh5V4q0Rx
-         tt2tCTS54YNxs3mtEbOqn7RWEL+1fEIYFZJ6suko=
+        b=s8rTWwi1ty2K10FlslRcW0KXl2nHQt/boegtH8GD3BGK+IZleLy0bVA+l1FcUsOmI
+         /zqLy0Bp59r86SVH8hFRhu1/eVcqCLKzUQlwXAPc1AXAnB4ajZJloRx/3wOgRk/b8r
+         cztSXajUayEYWYFZ2fSkVAS9Fm4xqLZHC6JBE5QY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 5.4 002/215] crypto: atmel - Fix build error of CRYPTO_AUTHENC
-Date:   Mon, 20 Jul 2020 17:34:44 +0200
-Message-Id: <20200720152820.257058678@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 005/215] bridge: mcast: Fix MLD2 Report IPv6 payload length check
+Date:   Mon, 20 Jul 2020 17:34:47 +0200
+Message-Id: <20200720152820.400624245@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -45,59 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: "Linus Lüssing" <linus.luessing@c0d3.blue>
 
-commit aee1f9f3c30e1e20e7f74729ced61eac7d74ca68 upstream.
+[ Upstream commit 5fc6266af7b427243da24f3443a50cd4584aac06 ]
 
-If CRYPTO_DEV_ATMEL_AUTHENC is m, CRYPTO_DEV_ATMEL_SHA is m,
-but CRYPTO_DEV_ATMEL_AES is y, building will fail:
+Commit e57f61858b7c ("net: bridge: mcast: fix stale nsrcs pointer in
+igmp3/mld2 report handling") introduced a bug in the IPv6 header payload
+length check which would potentially lead to rejecting a valid MLD2 Report:
 
-drivers/crypto/atmel-aes.o: In function `atmel_aes_authenc_init_tfm':
-atmel-aes.c:(.text+0x670): undefined reference to `atmel_sha_authenc_get_reqsize'
-atmel-aes.c:(.text+0x67a): undefined reference to `atmel_sha_authenc_spawn'
-drivers/crypto/atmel-aes.o: In function `atmel_aes_authenc_setkey':
-atmel-aes.c:(.text+0x7e5): undefined reference to `atmel_sha_authenc_setkey'
+The check needs to take into account the 2 bytes for the "Number of
+Sources" field in the "Multicast Address Record" before reading it.
+And not the size of a pointer to this field.
 
-Make CRYPTO_DEV_ATMEL_AUTHENC depend on CRYPTO_DEV_ATMEL_AES,
-and select CRYPTO_DEV_ATMEL_SHA and CRYPTO_AUTHENC for it under there.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
-Fixes: 89a82ef87e01 ("crypto: atmel-authenc - add support to...")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: e57f61858b7c ("net: bridge: mcast: fix stale nsrcs pointer in igmp3/mld2 report handling")
+Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Signed-off-by: Linus LÃ¼ssing <linus.luessing@c0d3.blue>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
 ---
- drivers/crypto/Kconfig |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/bridge/br_multicast.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -491,10 +491,9 @@ if CRYPTO_DEV_UX500
- endif # if CRYPTO_DEV_UX500
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -1007,7 +1007,7 @@ static int br_ip6_multicast_mld2_report(
+ 		nsrcs_offset = len + offsetof(struct mld2_grec, grec_nsrcs);
  
- config CRYPTO_DEV_ATMEL_AUTHENC
--	tristate "Support for Atmel IPSEC/SSL hw accelerator"
-+	bool "Support for Atmel IPSEC/SSL hw accelerator"
- 	depends on ARCH_AT91 || COMPILE_TEST
--	select CRYPTO_DEV_ATMEL_AES
--	select CRYPTO_DEV_ATMEL_SHA
-+	depends on CRYPTO_DEV_ATMEL_AES
- 	help
- 	  Some Atmel processors can combine the AES and SHA hw accelerators
- 	  to enhance support of IPSEC/SSL.
-@@ -507,7 +506,8 @@ config CRYPTO_DEV_ATMEL_AES
- 	select CRYPTO_AES
- 	select CRYPTO_AEAD
- 	select CRYPTO_BLKCIPHER
--	select CRYPTO_AUTHENC
-+	select CRYPTO_AUTHENC if CRYPTO_DEV_ATMEL_AUTHENC
-+	select CRYPTO_DEV_ATMEL_SHA if CRYPTO_DEV_ATMEL_AUTHENC
- 	help
- 	  Some Atmel processors have AES hw accelerator.
- 	  Select this if you want to use the Atmel module for
+ 		if (skb_transport_offset(skb) + ipv6_transport_len(skb) <
+-		    nsrcs_offset + sizeof(_nsrcs))
++		    nsrcs_offset + sizeof(__nsrcs))
+ 			return -EINVAL;
+ 
+ 		_nsrcs = skb_header_pointer(skb, nsrcs_offset,
 
 
