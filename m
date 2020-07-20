@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8278B2269FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4AA2269F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388807AbgGTQbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57466 "EHLO mail.kernel.org"
+        id S2388652AbgGTQbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729978AbgGTP5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:33 -0400
+        id S1731471AbgGTP5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:57:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0D8E20773;
-        Mon, 20 Jul 2020 15:57:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1A8A22BEF;
+        Mon, 20 Jul 2020 15:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260652;
-        bh=1CVY6Ixyfc3N1iXZi/C5GQOuWmGjDONCEAmLWXAlKvI=;
+        s=default; t=1595260661;
+        bh=crdC/FcSNnFfmvavFML0b9RIg1+uRvGXlo87yIAceSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gw88Awx5jr0H174cEFTYblMstGnsV1k6/I93kaaUSBkQ9LRfQC66IaizbYkB6wC9X
-         n+PzflibWfx84koX/UaK9mPqII5FeES1oKdUfwCj6fBFaC8smi/KnYR/+i5xM4uTqm
-         JMaR2XRcpSSLsraUbM9WD0KVDT26nEN5+3dARDmw=
+        b=kgxgMPUPVzcfSzr/yUJ8RR2DJKbFxSzhEG8QXjV5Q+cXCfIL9iIoWDx4yas9WasWA
+         Hs11lMzNkzYQTpKKM0MsmJIoICpWulaDnDEcSGIpkCs/HyW7wxbF8F06GnjmG1dMom
+         oEn2qOgheGg6XH0iHJpwQ5DT4vUyx1Dzy6FNbVTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 5.4 046/215] iio:magnetometer:ak8974: Fix alignment and data leak issues
-Date:   Mon, 20 Jul 2020 17:35:28 +0200
-Message-Id: <20200720152822.389114777@linuxfoundation.org>
+        stable@vger.kernel.org, Matt Ranostay <matt.ranostay@konsulko.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 049/215] iio: core: add missing IIO_MOD_H2/ETHANOL string identifiers
+Date:   Mon, 20 Jul 2020 17:35:31 +0200
+Message-Id: <20200720152822.534195030@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -45,69 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Matt Ranostay <matt.ranostay@konsulko.com>
 
-commit 838e00b13bfd4cac8b24df25bfc58e2eb99bcc70 upstream.
+commit 25f02d3242ab4d16d0cee2dec0d89cedb3747fa9 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data.
+Add missing strings to iio_modifier_names[] for proper modification
+of channels.
 
-This data is allocated with kzalloc so no data can leak appart from
-previous readings.
-
-Fixes: 7c94a8b2ee8cf ("iio: magn: add a driver for AK8974")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: b170f7d48443d (iio: Add modifiers for ethanol and H2 gases)
+Signed-off-by: Matt Ranostay <matt.ranostay@konsulko.com>
 Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/magnetometer/ak8974.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/industrialio-core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iio/magnetometer/ak8974.c
-+++ b/drivers/iio/magnetometer/ak8974.c
-@@ -185,6 +185,11 @@ struct ak8974 {
- 	bool drdy_irq;
- 	struct completion drdy_complete;
- 	bool drdy_active_low;
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		__le16 channels[3];
-+		s64 ts __aligned(8);
-+	} scan;
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -130,6 +130,8 @@ static const char * const iio_modifier_n
+ 	[IIO_MOD_PM2P5] = "pm2p5",
+ 	[IIO_MOD_PM4] = "pm4",
+ 	[IIO_MOD_PM10] = "pm10",
++	[IIO_MOD_ETHANOL] = "ethanol",
++	[IIO_MOD_H2] = "h2",
  };
  
- static const char ak8974_reg_avdd[] = "avdd";
-@@ -581,7 +586,6 @@ static void ak8974_fill_buffer(struct ii
- {
- 	struct ak8974 *ak8974 = iio_priv(indio_dev);
- 	int ret;
--	__le16 hw_values[8]; /* Three axes + 64bit padding */
- 
- 	pm_runtime_get_sync(&ak8974->i2c->dev);
- 	mutex_lock(&ak8974->lock);
-@@ -591,13 +595,13 @@ static void ak8974_fill_buffer(struct ii
- 		dev_err(&ak8974->i2c->dev, "error triggering measure\n");
- 		goto out_unlock;
- 	}
--	ret = ak8974_getresult(ak8974, hw_values);
-+	ret = ak8974_getresult(ak8974, ak8974->scan.channels);
- 	if (ret) {
- 		dev_err(&ak8974->i2c->dev, "error getting measures\n");
- 		goto out_unlock;
- 	}
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, hw_values,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &ak8974->scan,
- 					   iio_get_time_ns(indio_dev));
- 
-  out_unlock:
+ /* relies on pairs of these shared then separate */
 
 
