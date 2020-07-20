@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937C5226471
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A4D226512
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbgGTPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:45:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39120 "EHLO mail.kernel.org"
+        id S1730813AbgGTPuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:50:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729621AbgGTPo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:44:57 -0400
+        id S1731134AbgGTPu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:50:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0A292064B;
-        Mon, 20 Jul 2020 15:44:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1725522482;
+        Mon, 20 Jul 2020 15:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259897;
-        bh=LJUl+vg1sUAgM3/aWo+82X5SN5T2AVXyXPOjZo5Upcs=;
+        s=default; t=1595260227;
+        bh=x3TI26fq0rdV96diUqs7jM7Bnoi9nSesyt0CbLUsbv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fyTJkPJtmfFUa1FKXpKLBS1dGIkjN9nGjIFpTtXP+ZV0E/wNEl0VvZEuDy3uuBnQR
-         uFl3DwPEhungTyiYhOGm+Pgcuu+yqVJWQYY5uchefKajlqkkMYLybnpdJORswGxoTx
-         i96we0FDdUpun7J3NdB3zllsrAcqDlHUs6znopPo=
+        b=tcDE2PG9yzc1F/y/rjel8ki8JqlGA09kC8ItUJvYl7oqC0p1A84u8DnlPKm/azeH5
+         xJAeP9QWM/4FqwPvygN51t7yA/9xmF/SamrSsfr6T+LqLeN2nPSZXzDnbNvMdZaAr8
+         1mztRZbvrY76uFuW10fE33iAbB5Nszyple45Zm7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.14 033/125] KVM: x86: Mark CR4.TSD as being possibly owned by the guest
-Date:   Mon, 20 Jul 2020 17:36:12 +0200
-Message-Id: <20200720152804.584712772@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 026/133] gfs2: read-only mounts should grab the sd_freeze_gl glock
+Date:   Mon, 20 Jul 2020 17:36:13 +0200
+Message-Id: <20200720152804.994057015@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 7c83d096aed055a7763a03384f92115363448b71 upstream.
+[ Upstream commit b780cc615ba4795a7ef0e93b19424828a5ad456a ]
 
-Mark CR4.TSD as being possibly owned by the guest as that is indeed the
-case on VMX.  Without TSD being tagged as possibly owned by the guest, a
-targeted read of CR4 to get TSD could observe a stale value.  This bug
-is benign in the current code base as the sole consumer of TSD is the
-emulator (for RDTSC) and the emulator always "reads" the entirety of CR4
-when grabbing bits.
+Before this patch, only read-write mounts would grab the freeze
+glock in read-only mode, as part of gfs2_make_fs_rw. So the freeze
+glock was never initialized. That meant requests to freeze, which
+request the glock in EX, were granted without any state transition.
+That meant you could mount a gfs2 file system, which is currently
+frozen on a different cluster node, in read-only mode.
 
-Add a build-time assertion in to ensure VMX doesn't hand over more CR4
-bits without also updating x86.
+This patch makes read-only mounts lock the freeze glock in SH mode,
+which will block for file systems that are frozen on another node.
 
-Fixes: 52ce3c21aec3 ("x86,kvm,vmx: Don't trap writes to CR4.TSD")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200703040422.31536-2-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/kvm_cache_regs.h |    2 +-
- arch/x86/kvm/vmx.c            |    2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ fs/gfs2/ops_fstype.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/kvm_cache_regs.h
-+++ b/arch/x86/kvm/kvm_cache_regs.h
-@@ -5,7 +5,7 @@
- #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
- #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
- 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
--	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE)
-+	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE | X86_CR4_TSD)
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index ed77b10bdfb53..9448c8461e576 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -1160,7 +1160,17 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
+ 		goto fail_per_node;
+ 	}
  
- static inline unsigned long kvm_register_read(struct kvm_vcpu *vcpu,
- 					      enum kvm_reg reg)
---- a/arch/x86/kvm/vmx.c
-+++ b/arch/x86/kvm/vmx.c
-@@ -5592,6 +5592,8 @@ static void vmx_set_constant_host_state(
- 
- static void set_cr4_guest_host_mask(struct vcpu_vmx *vmx)
- {
-+	BUILD_BUG_ON(KVM_CR4_GUEST_OWNED_BITS & ~KVM_POSSIBLE_CR4_GUEST_BITS);
+-	if (!sb_rdonly(sb)) {
++	if (sb_rdonly(sb)) {
++		struct gfs2_holder freeze_gh;
 +
- 	vmx->vcpu.arch.cr4_guest_owned_bits = KVM_CR4_GUEST_OWNED_BITS;
- 	if (enable_ept)
- 		vmx->vcpu.arch.cr4_guest_owned_bits |= X86_CR4_PGE;
++		error = gfs2_glock_nq_init(sdp->sd_freeze_gl, LM_ST_SHARED,
++					   GL_EXACT, &freeze_gh);
++		if (error) {
++			fs_err(sdp, "can't make FS RO: %d\n", error);
++			goto fail_per_node;
++		}
++		gfs2_glock_dq_uninit(&freeze_gh);
++	} else {
+ 		error = gfs2_make_fs_rw(sdp);
+ 		if (error) {
+ 			fs_err(sdp, "can't make FS RW: %d\n", error);
+-- 
+2.25.1
+
 
 
