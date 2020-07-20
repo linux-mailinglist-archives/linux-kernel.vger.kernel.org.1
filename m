@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977A52264D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72D52265A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730920AbgGTPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44378 "EHLO mail.kernel.org"
+        id S1731709AbgGTPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729932AbgGTPsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:48:40 -0400
+        id S1731692AbgGTPza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65B2222482;
-        Mon, 20 Jul 2020 15:48:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45763206E9;
+        Mon, 20 Jul 2020 15:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260119;
-        bh=3nBhr8KvHL41nT9MeEU1tSZse/nQrdOPicJryuGPjBg=;
+        s=default; t=1595260529;
+        bh=W53BsZm+C62+lVYag4YGNaCS3zxpPusbjcwi4DiGubg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxErNIKOeZuxLSakdEJ7lXO/EX9G8+RsW4wOmgeKsH9lErUF3/Uw+LJu8xzLL3mc3
-         T4ScW5H0S/5vYUzy220dR5FCB2FClaEBfcZ09wKY2cDktVoMcqrrcLLvMl56GqziKg
-         eya3YhOOs5UK2PD66QfW+EKGGLN+vhGa6GfaBTyI=
+        b=nBFmgJ0/dg32hWwAdWR5h5QnoREU16wEnqGUuUuy3cncbJ4zq+vzcL+sOhBPv28r5
+         JsABvAVY6myB0TVeaH/5B4adqtL5PROK4XtG+xN9o1b284wssr6Vcr5UbYSETl9Npx
+         aIBHqAvxRcjIbqA34/7k9ZKRAZigy4tu1844k9Oc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH 4.14 113/125] MIPS: Fix build for LTS kernel caused by backporting lpj adjustment
+        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 4.19 105/133] ovl: fix unneeded call to ovl_change_flags()
 Date:   Mon, 20 Jul 2020 17:37:32 +0200
-Message-Id: <20200720152808.479775453@linuxfoundation.org>
+Message-Id: <20200720152808.822466751@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Amir Goldstein <amir73il@gmail.com>
 
-Commit ed26aacfb5f71eecb20a ("mips: Add udelay lpj numbers adjustment")
-has backported to 4.4~5.4, but the "struct cpufreq_freqs" (and also the
-cpufreq notifier machanism) of 4.4~4.19 are different from the upstream
-kernel. These differences cause build errors, and this patch can fix the
-build.
+commit 81a33c1ee941c3bb9ffc6bac8f676be13351344e upstream.
 
-Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Stable <stable@vger.kernel.org> # 4.4/4.9/4.14/4.19
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
+The check if user has changed the overlay file was wrong, causing unneeded
+call to ovl_change_flags() including taking f_lock on every file access.
+
+Fixes: d989903058a8 ("ovl: do not generate duplicate fsnotify events for "fake" path")
+Cc: <stable@vger.kernel.org> # v4.19+
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/time.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ fs/overlayfs/file.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/arch/mips/kernel/time.c
-+++ b/arch/mips/kernel/time.c
-@@ -40,10 +40,8 @@ static unsigned long glb_lpj_ref_freq;
- static int cpufreq_callback(struct notifier_block *nb,
- 			    unsigned long val, void *data)
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -24,13 +24,16 @@ static char ovl_whatisit(struct inode *i
+ 		return 'm';
+ }
+ 
++/* No atime modificaton nor notify on underlying */
++#define OVL_OPEN_FLAGS (O_NOATIME | FMODE_NONOTIFY)
++
+ static struct file *ovl_open_realfile(const struct file *file,
+ 				      struct inode *realinode)
  {
--	struct cpufreq_freqs *freq = data;
--	struct cpumask *cpus = freq->policy->cpus;
--	unsigned long lpj;
- 	int cpu;
-+	struct cpufreq_freqs *freq = data;
+ 	struct inode *inode = file_inode(file);
+ 	struct file *realfile;
+ 	const struct cred *old_cred;
+-	int flags = file->f_flags | O_NOATIME | FMODE_NONOTIFY;
++	int flags = file->f_flags | OVL_OPEN_FLAGS;
  
- 	/*
- 	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
-@@ -64,6 +62,7 @@ static int cpufreq_callback(struct notif
- 		}
+ 	old_cred = ovl_override_creds(inode->i_sb);
+ 	realfile = open_with_fake_path(&file->f_path, flags, realinode,
+@@ -51,8 +54,7 @@ static int ovl_change_flags(struct file
+ 	struct inode *inode = file_inode(file);
+ 	int err;
+ 
+-	/* No atime modificaton on underlying */
+-	flags |= O_NOATIME | FMODE_NONOTIFY;
++	flags |= OVL_OPEN_FLAGS;
+ 
+ 	/* If some flag changed that cannot be changed then something's amiss */
+ 	if (WARN_ON((file->f_flags ^ flags) & ~OVL_SETFL_MASK))
+@@ -105,7 +107,7 @@ static int ovl_real_fdget_meta(const str
  	}
  
-+	cpu = freq->cpu;
- 	/*
- 	 * Adjust global lpj variable and per-CPU udelay_val number in
- 	 * accordance with the new CPU frequency.
-@@ -74,12 +73,8 @@ static int cpufreq_callback(struct notif
- 						glb_lpj_ref_freq,
- 						freq->new);
+ 	/* Did the flags change since open? */
+-	if (unlikely((file->f_flags ^ real->file->f_flags) & ~O_NOATIME))
++	if (unlikely((file->f_flags ^ real->file->f_flags) & ~OVL_OPEN_FLAGS))
+ 		return ovl_change_flags(real->file, file->f_flags);
  
--		for_each_cpu(cpu, cpus) {
--			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
--					    per_cpu(pcp_lpj_ref_freq, cpu),
--					    freq->new);
--			cpu_data[cpu].udelay_val = (unsigned int)lpj;
--		}
-+		cpu_data[cpu].udelay_val = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
-+					   per_cpu(pcp_lpj_ref_freq, cpu), freq->new);
- 	}
- 
- 	return NOTIFY_OK;
+ 	return 0;
 
 
