@@ -2,258 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD88F2262DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFF42262FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbgGTPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:04:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64694 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726675AbgGTPEi (ORCPT
+        id S1726928AbgGTPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgGTPJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:04:38 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KF4LK4171685;
-        Mon, 20 Jul 2020 11:04:37 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d2m3arsb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 11:04:36 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KF4RI7172033;
-        Mon, 20 Jul 2020 11:04:28 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d2m3armh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 11:04:27 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KEk1x6006386;
-        Mon, 20 Jul 2020 15:04:15 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04dal.us.ibm.com with ESMTP id 32d5dpm8vw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 15:04:15 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KF4BJo44695902
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 15:04:11 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B690C6E04E;
-        Mon, 20 Jul 2020 15:04:11 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E23E6E054;
-        Mon, 20 Jul 2020 15:04:10 +0000 (GMT)
-Received: from cpe-172-100-175-116.stny.res.rr.com.com (unknown [9.85.188.6])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Jul 2020 15:04:10 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     freude@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH v9 15/15] s390/vfio-ap: handle probe/remove not due to host AP config changes
-Date:   Mon, 20 Jul 2020 11:03:44 -0400
-Message-Id: <20200720150344.24488-16-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200720150344.24488-1-akrowiak@linux.ibm.com>
-References: <20200720150344.24488-1-akrowiak@linux.ibm.com>
+        Mon, 20 Jul 2020 11:09:40 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD97C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:09:40 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a14so9190350pfi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P2mRU9DML+WlUjG+x0KgX1XxnekTukVWP0rhuq7mq9o=;
+        b=pF2xi4w6gHUB6KW6oVO8ioBNFr4YuhVG9jm+hW8Zh4OrXm28Dd17IN8/kmz4H2P4oc
+         ISGLz5n0zY0gA4ad2Nx38ctTepSAW3OALHb1zN8K6Foel9279E6gvQzFhrN82mLQEUZx
+         JtTx7YTY52uGnM7rUnkEKUNfZ5yXRDy+6YhHrJT25y0ZJp+NFT+LL0kSBcOM/HN1FHI2
+         7rKtd/WT8rLzBvDXhQRMK6ZbtG+d6L2A3iOCg7XUWIB+Qu4xFimDWE0vVwJjo/C5Z7bA
+         qnFxGBBONqB9BmFEE4Ur0rP0MBBcQcngNzyZVAUsoN4RkyGlSQwe/Ba/aWdcLt2yeJwY
+         cw9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P2mRU9DML+WlUjG+x0KgX1XxnekTukVWP0rhuq7mq9o=;
+        b=m3ouAFCZ9uMVPX3NtuNf38+10XHpUE0JTWZW5XWuAI86gcVAtH51f58dvx5yKLIbZB
+         k88WcBr5BsA3GnT9oRFtZ6QAYrizRxfaaxs/A+1YwxRml9wAFhEedIEi2b29F46rw01N
+         7jJ0WnFAw/gMnxJ6VtdMJBU2lmBz2BKQviU5yhMw77MuVUFuQ+icrhYnT+oUMJohk5Ig
+         xgiBBQuHFxZUCI5YFDd0z6FExGCET5Ba3Nj/chvBynq7je9dsmQ/ue41Ewj2DLXtFvip
+         OL6k0/0qE/TXulx7McXGvfWgF0tII1w8168e/WPW02fV9gcfXXRpjehMTfMO4/6d0jSm
+         mnZw==
+X-Gm-Message-State: AOAM530yY74EFhkKxXg71/dVvys6jRJ578M5pZC7a6qn9RpO0EiJQ/xL
+        7AzEdc1rz8zO2Hb0zkVKnsE=
+X-Google-Smtp-Source: ABdhPJws8JrM5TULRLzImq9oyGdayyre0j2HUv0+tiud6sIC2oAR/xrn7Ia6p4g9JrdCMX4x7qpP9Q==
+X-Received: by 2002:aa7:9155:: with SMTP id 21mr19004277pfi.306.1595257779413;
+        Mon, 20 Jul 2020 08:09:39 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id f207sm17723624pfa.107.2020.07.20.08.09.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 08:09:38 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1] firewire: ohci: use generic power management
+Date:   Mon, 20 Jul 2020 20:37:16 +0530
+Message-Id: <20200720150715.624520-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- clxscore=1015 suspectscore=3 phishscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 bulkscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007200104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AP queue devices are probed or removed for reasons other than changes
-to the host AP configuration. For example:
+Drivers using legacy PM have to manage PCI states and device's PM states
+themselves. They also need to take care of configuration registers.
 
-* The state of an AP adapter can be dynamically changed from standby to
-  online via the SE or by execution of the SCLP Configure AP command. When
-  the state changes, each queue device associated with the card device
-  representing the adapter will get created and probed.
+With improved and powerful support of generic PM, PCI Core takes care of
+above mentioned, device-independent, jobs.
 
-* The state of an AP adapter can be dynamically changed from online to
-  standby via the SE or by execution of the SCLP Deconfigure AP command.
-  When the state changes, each queue device associated with the card device
-  representing the adapter will get removed.
+This driver makes use of PCI helper functions like
+pci_save/restore_state(), pci_disable_device() and pci_set_power_state() to
+do required operations. In generic mode, they are no longer needed.
 
-* Each queue device associated with a card device will get removed
-  when the type of the AP adapter represented by the card device
-  dynamically changes.
+Change function parameter in both .suspend() and .resume() to
+"struct device*" type. Use to_pci_dev() to get "struct pci_dev*" variable.
 
-* Each queue device associated with a card device will get removed
-  when the status of the queue represented by the queue device changes
-  from operating to check stop.
+Compile-tested only.
 
-* AP queue devices can be manually bound to or unbound from the vfio_ap
-  device driver by a root user via the sysfs bind/unbind attributes of the
-  driver.
-
-In response to a queue device probe or remove that is not the result of a
-change to the host's AP configuration, if a KVM guest is using the matrix
-mdev to which the APQN of the queue device is assigned, the vfio_ap device
-driver must respond accordingly. In an ideal world, the queue device being
-probed would be hot plugged into the guest. Likewise, the queue
-corresponding to the queue device being removed would
-be hot unplugged from the guest. Unfortunately, the AP architecture
-precludes plugging or unplugging individual queues, so let's handle
-the probe or remove of an AP queue device as follows:
-
-Handling Probe
---------------
-There are two requirements that must be met in order to give a
-guest access to the queue corresponding to the queue device being probed:
-
-* Each APQN derived from the APID of the queue device and the APQIs of the
-  domains already assigned to the guest's AP configuration must reference
-  a queue device bound to the vfio_ap device driver.
-
-* Each APQN derived from the APQI of the queue device and the APIDs of the
-  adapters assigned to the guest's AP configuration must reference a queue
-  device bound to the vfio_ap device driver.
-
-If the above conditions are met, the APQN will be assigned to the guest's
-AP configuration and the guest will be given access to the queue.
-
-Handling Remove
----------------
-Since the AP architecture precludes us from taking access to an individual
-queue from a guest, we are left with the choice of taking access away from
-either the adapter or the domain to which the queue is connected. Access to
-the adapter will be taken away because it is likely that most of the time,
-the remove callback will be invoked because the adapter state has
-transitioned from online to standby. In such a case, no queue connected
-to the adapter will be available to access.
-
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- drivers/s390/crypto/vfio_ap_ops.c | 84 +++++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
+ drivers/firewire/ohci.c | 43 ++++++++++++-----------------------------
+ 1 file changed, 12 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index e6480f31a42b..b6a1e280991d 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1682,6 +1682,61 @@ static void vfio_ap_queue_link_mdev(struct vfio_ap_queue *q)
- 	}
+diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
+index 54fdc39cd0bc..2d19db5e81a1 100644
+--- a/drivers/firewire/ohci.c
++++ b/drivers/firewire/ohci.c
+@@ -3169,8 +3169,7 @@ static int ohci_set_iso_channels(struct fw_iso_context *base, u64 *channels)
+ 	return ret;
  }
  
-+static bool vfio_ap_mdev_assign_shadow_apid(struct ap_matrix_mdev *matrix_mdev,
-+					    unsigned long apid)
-+{
-+	unsigned long apqi;
-+
-+	for_each_set_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm,
-+			     matrix_mdev->shadow_apcb.aqm_max + 1) {
-+		if (!vfio_ap_get_queue(AP_MKQID(apid, apqi)))
-+			return false;
-+	}
-+
-+	set_bit_inv(apid, matrix_mdev->shadow_apcb.apm);
-+
-+	return true;
-+}
-+
-+static bool vfio_ap_mdev_assign_shadow_apqi(struct ap_matrix_mdev *matrix_mdev,
-+					    unsigned long apqi)
-+{
-+	unsigned long apid;
-+
-+	for_each_set_bit_inv(apid, matrix_mdev->shadow_apcb.apm,
-+			     matrix_mdev->shadow_apcb.apm_max + 1) {
-+		if (!vfio_ap_get_queue(AP_MKQID(apid, apqi)))
-+			return false;
-+	}
-+
-+	set_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm);
-+
-+	return true;
-+}
-+
-+static void vfio_ap_mdev_hot_plug_queue(struct vfio_ap_queue *q)
-+{
-+	bool commit = false;
-+	unsigned long apid = AP_QID_CARD(q->apqn);
-+	unsigned long apqi = AP_QID_QUEUE(q->apqn);
-+
-+	if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
-+		return;
-+
-+	if (!test_bit_inv(apid, q->matrix_mdev->matrix.apm) ||
-+	    !test_bit_inv(apqi, q->matrix_mdev->matrix.aqm))
-+		return;
-+
-+	if (!test_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm))
-+		commit |= vfio_ap_mdev_assign_shadow_apid(q->matrix_mdev, apid);
-+
-+	if (!test_bit_inv(apqi, q->matrix_mdev->shadow_apcb.aqm))
-+		commit |= vfio_ap_mdev_assign_shadow_apqi(q->matrix_mdev, apqi);
-+
-+	if (commit)
-+		vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
-+}
-+
- int vfio_ap_mdev_probe_queue(struct ap_queue *queue)
+-#ifdef CONFIG_PM
+-static void ohci_resume_iso_dma(struct fw_ohci *ohci)
++static void __maybe_unused ohci_resume_iso_dma(struct fw_ohci *ohci)
  {
- 	struct vfio_ap_queue *q;
-@@ -1695,11 +1750,35 @@ int vfio_ap_mdev_probe_queue(struct ap_queue *queue)
- 	q->apqn = queue->qid;
- 	q->saved_isc = VFIO_AP_ISC_INVALID;
- 	vfio_ap_queue_link_mdev(q);
-+	/* Make sure we're not in the middle of an AP configuration change. */
-+	if (!(matrix_dev->flags & AP_MATRIX_CFG_CHG))
-+		vfio_ap_mdev_hot_plug_queue(q);
- 	mutex_unlock(&matrix_dev->lock);
+ 	int i;
+ 	struct iso_context *ctx;
+@@ -3187,7 +3186,6 @@ static void ohci_resume_iso_dma(struct fw_ohci *ohci)
+ 			ohci_start_iso(&ctx->base, 0, ctx->sync, ctx->tags);
+ 	}
+ }
+-#endif
+ 
+ static int queue_iso_transmit(struct iso_context *ctx,
+ 			      struct fw_iso_packet *packet,
+@@ -3793,39 +3791,24 @@ static void pci_remove(struct pci_dev *dev)
+ 	dev_notice(&dev->dev, "removed fw-ohci device\n");
+ }
+ 
+-#ifdef CONFIG_PM
+-static int pci_suspend(struct pci_dev *dev, pm_message_t state)
++static int __maybe_unused pci_suspend(struct device *dev)
+ {
+-	struct fw_ohci *ohci = pci_get_drvdata(dev);
+-	int err;
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct fw_ohci *ohci = pci_get_drvdata(pdev);
+ 
+ 	software_reset(ohci);
+-	err = pci_save_state(dev);
+-	if (err) {
+-		ohci_err(ohci, "pci_save_state failed\n");
+-		return err;
+-	}
+-	err = pci_set_power_state(dev, pci_choose_state(dev, state));
+-	if (err)
+-		ohci_err(ohci, "pci_set_power_state failed with %d\n", err);
+-	pmac_ohci_off(dev);
++	pmac_ohci_off(pdev);
  
  	return 0;
  }
  
-+void vfio_ap_mdev_hot_unplug_queue(struct vfio_ap_queue *q)
-+{
-+	unsigned long apid = AP_QID_CARD(q->apqn);
-+	unsigned long apqi = AP_QID_QUEUE(q->apqn);
-+
-+	if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
-+		return;
-+
-+	/*
-+	 * If the APQN is assigned to the guest, then let's
-+	 * go ahead and unplug the adapter since the
-+	 * architecture does not provide a means to unplug
-+	 * an individual queue.
-+	 */
-+	if (test_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm) &&
-+	    test_bit_inv(apqi, q->matrix_mdev->shadow_apcb.aqm)) {
-+		if (vfio_ap_mdev_unassign_guest_apid(q->matrix_mdev, apid))
-+			vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
-+	}
-+}
-+
- void vfio_ap_mdev_remove_queue(struct ap_queue *queue)
+-static int pci_resume(struct pci_dev *dev)
++static int __maybe_unused pci_resume(struct device *dev)
  {
- 	struct vfio_ap_queue *q;
-@@ -1707,6 +1786,11 @@ void vfio_ap_mdev_remove_queue(struct ap_queue *queue)
+-	struct fw_ohci *ohci = pci_get_drvdata(dev);
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct fw_ohci *ohci = pci_get_drvdata(pdev);
+ 	int err;
  
- 	mutex_lock(&matrix_dev->lock);
- 	q = dev_get_drvdata(&queue->ap_dev.device);
+-	pmac_ohci_on(dev);
+-	pci_set_power_state(dev, PCI_D0);
+-	pci_restore_state(dev);
+-	err = pci_enable_device(dev);
+-	if (err) {
+-		ohci_err(ohci, "pci_enable_device failed\n");
+-		return err;
+-	}
++	pmac_ohci_on(pdev);
+ 
+ 	/* Some systems don't setup GUID register on resume from ram  */
+ 	if (!reg_read(ohci, OHCI1394_GUIDLo) &&
+@@ -3842,7 +3825,6 @@ static int pci_resume(struct pci_dev *dev)
+ 
+ 	return 0;
+ }
+-#endif
+ 
+ static const struct pci_device_id pci_table[] = {
+ 	{ PCI_DEVICE_CLASS(PCI_CLASS_SERIAL_FIREWIRE_OHCI, ~0) },
+@@ -3851,15 +3833,14 @@ static const struct pci_device_id pci_table[] = {
+ 
+ MODULE_DEVICE_TABLE(pci, pci_table);
+ 
++static SIMPLE_DEV_PM_OPS(pci_pm_ops, pci_suspend, pci_resume);
 +
-+	/* Make sure we're not in the middle of an AP configuration change. */
-+	if (!(matrix_dev->flags & AP_MATRIX_CFG_CHG))
-+		vfio_ap_mdev_hot_unplug_queue(q);
-+
- 	dev_set_drvdata(&queue->ap_dev.device, NULL);
- 	apid = AP_QID_CARD(q->apqn);
- 	apqi = AP_QID_QUEUE(q->apqn);
+ static struct pci_driver fw_ohci_pci_driver = {
+ 	.name		= ohci_driver_name,
+ 	.id_table	= pci_table,
+ 	.probe		= pci_probe,
+ 	.remove		= pci_remove,
+-#ifdef CONFIG_PM
+-	.resume		= pci_resume,
+-	.suspend	= pci_suspend,
+-#endif
++	.driver.pm	= &pci_pm_ops,
+ };
+ 
+ static int __init fw_ohci_init(void)
 -- 
-2.21.1
+2.27.0
 
