@@ -2,94 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03565227345
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 01:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD72022735F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgGTXuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 19:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgGTXuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 19:50:10 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53968C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 16:50:10 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id w17so13693125otl.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 16:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K6pANJbBIpZEsh1nQyh0JxNSkniZqlV6WQFGpOqrBB0=;
-        b=KP8zbU3YvI+0BVknkJUveCvpB7HyaZRRRgG2NHoPNiB0In6TWi/R9UpKDhMxQzNENB
-         jAXdIZic/5H9TNLXPgZs7xjLGYS+pYvuFdVPrJ29W2HEiEa4tq6wbs+QPSVea56Yz2SJ
-         KhOZNjsOew49k4U2hWD7aPXD1nzbN6/41RvKA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K6pANJbBIpZEsh1nQyh0JxNSkniZqlV6WQFGpOqrBB0=;
-        b=R2BKs8rMv6nORiYD0pK3L1yLATCt4TVq8u2D28j3Ugxbjun4fVys+X7Rvhet8OPRTH
-         /ZTLF3DbONMKqwWt9E/KmvZtvY53gOwgPpj7nzyKWwfyBPyGliajUJQ1C2l7qkwEaAUx
-         Q/1Yd7ARGYjeyT9r1S7xE5TKYib7CPuyH+Coc7HD0HN8p0mMEKiCkhurKTfZkmmeSXaa
-         TTXN9g88xvWs9/hPuZEVU8xvlnS5HYFQ9c8UNc/IjTaxHN3nS/cKCrCFBP3dkC9eR5T5
-         F9jWb5wZWhsU0bnj65dQFae2mjMDq7eSdu5LGybsidcXit4ceeB77ZgZ6+fLhC2rNDOE
-         80HQ==
-X-Gm-Message-State: AOAM531ddkuBZwnMltwsXCDy2qDFDzpZsKDlncTC19RxqU26ccBDmgFK
-        WUyOx+4a7fjqI0mq6JAzREQFaQ==
-X-Google-Smtp-Source: ABdhPJzTk+0gVu0yhsMbxg6GE7fosczEpFrAss0oSAuZms4ImOHB7Z7U5TwfixOgc3i5YTWvYUGHFA==
-X-Received: by 2002:a9d:674a:: with SMTP id w10mr20151416otm.305.1595289009715;
-        Mon, 20 Jul 2020 16:50:09 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c7sm280422otm.19.2020.07.20.16.50.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 16:50:09 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/86] 4.9.231-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <513ce41e-9a8d-f9aa-eb45-f37add7399ad@linuxfoundation.org>
-Date:   Mon, 20 Jul 2020 17:50:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1727779AbgGUAAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 20:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726390AbgGUAAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 20:00:18 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE7DA208E4;
+        Mon, 20 Jul 2020 23:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595289105;
+        bh=7ruEEyKDUeYqw7QTMZfSVf0o3+tXFE6jymo2C5c1vDA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vigIZWauYeJjqcJLOmY21S4+ieHufF0KzoPQtCFsoYZikeJcCItEoqiDzxWfjzJ4L
+         CCTGDKwWEXkIVnZ3ZjfFbI0ZMZk4NUYjPhYjJGyoEOqJA/+dDuZ4LHPZ/wycAjslmQ
+         UUfxBqUqlaSpzZJ132C/8qiw5mg9Guv+GcWQFJZw=
+Date:   Mon, 20 Jul 2020 16:51:44 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: kernel BUG at include/linux/swapops.h:LINE!
+Message-Id: <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
+In-Reply-To: <0000000000004c38cd05aad1d13f@google.com>
+References: <000000000000bc4fd705a6e090e2@google.com>
+        <0000000000004c38cd05aad1d13f@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/20 9:35 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.231 release.
-> There are 86 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 22 Jul 2020 15:27:31 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.231-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Sun, 19 Jul 2020 14:10:19 -0700 syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com> wrote:
 
-Compiled and booted on my test system. No dmesg regressions.
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    4c43049f Add linux-next specific files for 20200716
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12c56087100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2c76d72659687242
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c48f34012b06c4ac67dd
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1344abeb100000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com
 
-thanks,
--- Shuah
+Thanks.
+
+__handle_mm_fault
+  ->pmd_migration_entry_wait
+    ->migration_entry_to_page
+
+stumbled onto an unlocked page.
+
+I don't immediately see a cause.  Perhaps Matthew's "THP prep patches",
+perhaps something else.
+
+Is it possible to perform a bisection?
+
+> ------------[ cut here ]------------
+> kernel BUG at include/linux/swapops.h:197!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 19938 Comm: syz-executor.2 Not tainted 5.8.0-rc5-next-20200716-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
+> RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
+> RIP: 0010:pmd_migration_entry_wait+0x493/0x520 mm/migrate.c:368
+> Code: 4d 8d 66 ff e9 1f fe ff ff e8 b9 c4 be ff 49 8d 5f ff e9 58 fe ff ff e8 ab c4 be ff 4d 8d 66 ff e9 a9 fe ff ff e8 9d c4 be ff <0f> 0b e8 96 c4 be ff 0f 0b e8 8f c4 be ff 4c 8d 65 ff eb a7 48 89
+> RSP: 0018:ffffc9001095fb70 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81b56a24
+> RDX: ffff888092022240 RSI: ffffffff81b56b43 RDI: 0000000000000001
+> RBP: ffffea0008468080 R08: 0000000000000000 R09: ffffea0008468087
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffffea0008468080
+> R13: ffff888015d2e0c0 R14: 0000000000000000 R15: 0000000000000000
+> FS:  00007f55eb477700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000080 CR3: 000000021ad87000 CR4: 00000000001526e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  __handle_mm_fault mm/memory.c:4349 [inline]
+>  handle_mm_fault+0x23cf/0x45e0 mm/memory.c:4465
+>  do_user_addr_fault+0x598/0xbf0 arch/x86/mm/fault.c:1294
+>  handle_page_fault arch/x86/mm/fault.c:1351 [inline]
+>  exc_page_fault+0xab/0x170 arch/x86/mm/fault.c:1404
+>  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:544
+> RIP: 0010:copy_user_generic_unrolled+0x89/0xc0 arch/x86/lib/copy_user_64.S:91
+> Code: 38 4c 89 47 20 4c 89 4f 28 4c 89 57 30 4c 89 5f 38 48 8d 76 40 48 8d 7f 40 ff c9 75 b6 89 d1 83 e2 07 c1 e9 03 74 12 4c 8b 06 <4c> 89 07 48 8d 76 08 48 8d 7f 08 ff c9 75 ee 21 d2 74 10 89 d1 8a
+> RSP: 0018:ffffc9001095fe48 EFLAGS: 00010202
+> RAX: 0000000000000001 RBX: 0000000020000080 RCX: 0000000000000001
+> RDX: 0000000000000000 RSI: ffffc9001095fea8 RDI: 0000000020000080
+> RBP: ffffc9001095fea8 R08: 0000000400000003 R09: ffffc9001095feaf
+> R10: fffff5200212bfd5 R11: 0000000000000000 R12: 0000000000000008
+> R13: 0000000020000088 R14: 00007ffffffff000 R15: 0000000000000000
+>  copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
+>  raw_copy_to_user arch/x86/include/asm/uaccess_64.h:74 [inline]
+>  _copy_to_user+0x11e/0x160 lib/usercopy.c:30
+>  copy_to_user include/linux/uaccess.h:168 [inline]
+>  do_pipe2+0x128/0x1b0 fs/pipe.c:1014
+>  __do_sys_pipe fs/pipe.c:1035 [inline]
+>  __se_sys_pipe fs/pipe.c:1033 [inline]
+>  __x64_sys_pipe+0x2f/0x40 fs/pipe.c:1033
+>  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45c1d9
+> Code: Bad RIP value.
+> RSP: 002b:00007f55eb476c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000016
+> RAX: ffffffffffffffda RBX: 0000000000022ac0 RCX: 000000000045c1d9
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000080
+> RBP: 000000000078c070 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c04c
+> R13: 00007ffcfc120ecf R14: 00007f55eb4779c0 R15: 000000000078c04c
+> Modules linked in:
+> ---[ end trace ea73d933d66ff0d4 ]---
+> RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
+> RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
+> RIP: 0010:pmd_migration_entry_wait+0x493/0x520 mm/migrate.c:368
+> Code: 4d 8d 66 ff e9 1f fe ff ff e8 b9 c4 be ff 49 8d 5f ff e9 58 fe ff ff e8 ab c4 be ff 4d 8d 66 ff e9 a9 fe ff ff e8 9d c4 be ff <0f> 0b e8 96 c4 be ff 0f 0b e8 8f c4 be ff 4c 8d 65 ff eb a7 48 89
+> RSP: 0018:ffffc9001095fb70 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81b56a24
+> RDX: ffff888092022240 RSI: ffffffff81b56b43 RDI: 0000000000000001
+> RBP: ffffea0008468080 R08: 0000000000000000 R09: ffffea0008468087
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffffea0008468080
+> R13: ffff888015d2e0c0 R14: 0000000000000000 R15: 0000000000000000
+> FS:  00007f55eb477700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000080 CR3: 000000021ad87000 CR4: 00000000001526e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
