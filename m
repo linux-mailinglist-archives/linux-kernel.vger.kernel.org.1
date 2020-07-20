@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3FD226183
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20F3226185
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgGTOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:01:55 -0400
-Received: from verein.lst.de ([213.95.11.211]:47092 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgGTOBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:01:55 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8993568BFE; Mon, 20 Jul 2020 16:01:51 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 16:01:51 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [PATCH v15 1/9] nvme-core: Clear any SGL flags in passthru
- commands
-Message-ID: <20200720140151.GA4627@lst.de>
-References: <20200716203319.16022-1-logang@deltatee.com> <20200716203319.16022-2-logang@deltatee.com>
+        id S1728355AbgGTOCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:02:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26752 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725815AbgGTOCf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:02:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595253754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mVYe0PcPmkjOf6CORnuWXSv9MuS8EVP6/4K4yP8XJ8g=;
+        b=PEgoS3anGnRBbW6qQhm0VusQOWFfhXJbvb7r4gevFHqXUeON3wLZhr7hI0yD7Ufzju6jKo
+        ekQFyfUGJ6oxrScoQmyf6QgXdvP5FW5WRI+zGw6ZE+LHXOFTMYm8iPvoioKmaKEdYqwRUD
+        8rswB8lCNrYT67E2UEbmNYrQLZ/mFng=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-WpRavCHzOTeF7Mv6KdB5tw-1; Mon, 20 Jul 2020 10:02:30 -0400
+X-MC-Unique: WpRavCHzOTeF7Mv6KdB5tw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93775100960F;
+        Mon, 20 Jul 2020 14:02:28 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.147])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 02D9B7305A;
+        Mon, 20 Jul 2020 14:02:25 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 20 Jul 2020 16:02:28 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 16:02:24 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     peterz@infradead.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
+Message-ID: <20200720140224.GD6612@redhat.com>
+References: <20200717122651.GA6067@redhat.com>
+ <20200717124017.GB6067@redhat.com>
+ <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
+ <20200718171406.GB16791@redhat.com>
+ <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
+ <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com>
+ <20200720082657.GC6612@redhat.com>
+ <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+ <20200720105924.GE43129@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716203319.16022-2-logang@deltatee.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200720105924.GE43129@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 02:33:11PM -0600, Logan Gunthorpe wrote:
-> The host driver should decide whether to use SGLs or PRPs and they
-> currently assume the flags are cleared after the call to
-> nvme_setup_cmd(). However, passed-through commands may erroneously
-> set these bits; so clear them for all cases.
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-> ---
->  drivers/nvme/host/core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index f49085bcaa42..63a59186e68b 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -759,6 +759,8 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req,
->  	case REQ_OP_DRV_IN:
->  	case REQ_OP_DRV_OUT:
->  		memcpy(cmd, nvme_req(req)->cmd, sizeof(*cmd));
-> +		/* passthru commands should let the driver set the SGL flags */
-> +		cmd->common.flags &= ~NVME_CMD_SGL_ALL;
->  		break;
+On 07/20, Peter Zijlstra wrote:
+>
+> Also, is there any way to not have ptrace do this?
 
-This probably wants to be split into a little helper like the
-other cases.
+Well, we need to ensure that even SIGKILL can't wake the tracee up while
+debugger plays with its registers/etc.
+
+> How performance
+> critical is this ptrace path?
+
+This is a slow path.
+
+We can probably change ptrace_check_attach() to call ptrace_freeze_traced()
+after wait_task_inactive(), but I would like to not do this... Because we
+actually want to avoid wait_task_inactive() when possible.
+
+Perhaps ptrace_freeze_traced() can __task_rq_lock() to avoid the race with
+__schedule() ? No, it reads prev_state before rq_lock().
+
+> Because I really hate having to add code
+> to __schedule() to deal with this horrible thing.
+
+Oh yes, I agree.
+
+I have to admit, I do not understand the usage of prev_state in schedule(),
+it looks really, really subtle...
+
+Oleg.
+
