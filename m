@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3115F2267D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A446226902
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388370AbgGTQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
+        id S2388551AbgGTQXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:23:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388353AbgGTQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:15:03 -0400
+        id S1732869AbgGTQEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:04:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47AF822D2C;
-        Mon, 20 Jul 2020 16:15:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D36CF2064B;
+        Mon, 20 Jul 2020 16:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261702;
-        bh=Umw0qQZ9A4r2/DbuUka5YKnWlE1/51GOA2v+b7VIqYE=;
+        s=default; t=1595261079;
+        bh=AafClQ3XCULb3Pi+0Rkj4mf/rKWsLAfTk+Fa6ONzUOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bOcDOvNAZi+NyCPo4xLkUnvYYG8gVq9czAzK9zvlrc3EBn8fjwdHfM84GJHduovyT
-         gM1J8yjNOWUbfaHwHbr5E9uWoEbrKdsz2InFks6+wFWATvNky4/Mjxj9f2xQeBdhp4
-         /XdBFAG2f2/Y/WXPSZSsO3P46hScQzReCATj7TjY=
+        b=wHSM4RHc+P4bzKu9fLe81YhDSL91gImn6LV6CcV/1w52SBJc1bUF0CdbL/oqAwJD0
+         WqcPW/fhPgEF+7j54ZyzXnuoxkicThWFbMlJZocxMnEAdwFKWtwgim4yR76irkbKO7
+         eScScjf/IIiAVw1eoqWTL+guYyo3hIF6HxKZnCLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
         Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.7 181/244] ovl: fix unneeded call to ovl_change_flags()
-Date:   Mon, 20 Jul 2020 17:37:32 +0200
-Message-Id: <20200720152834.455914160@linuxfoundation.org>
+Subject: [PATCH 5.4 171/215] ovl: relax WARN_ON() when decoding lower directory file handle
+Date:   Mon, 20 Jul 2020 17:37:33 +0200
+Message-Id: <20200720152828.308224453@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
-References: <20200720152825.863040590@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +45,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Amir Goldstein <amir73il@gmail.com>
 
-commit 81a33c1ee941c3bb9ffc6bac8f676be13351344e upstream.
+commit 124c2de2c0aee96271e4ddab190083d8aa7aa71a upstream.
 
-The check if user has changed the overlay file was wrong, causing unneeded
-call to ovl_change_flags() including taking f_lock on every file access.
+Decoding a lower directory file handle to overlay path with cold
+inode/dentry cache may go as follows:
 
-Fixes: d989903058a8 ("ovl: do not generate duplicate fsnotify events for "fake" path")
-Cc: <stable@vger.kernel.org> # v4.19+
+1. Decode real lower file handle to lower dir path
+2. Check if lower dir is indexed (was copied up)
+3. If indexed, get the upper dir path from index
+4. Lookup upper dir path in overlay
+5. If overlay path found, verify that overlay lower is the lower dir
+   from step 1
+
+On failure to verify step 5 above, user will get an ESTALE error and a
+WARN_ON will be printed.
+
+A mismatch in step 5 could be a result of lower directory that was renamed
+while overlay was offline, after that lower directory has been copied up
+and indexed.
+
+This is a scripted reproducer based on xfstest overlay/052:
+
+  # Create lower subdir
+  create_dirs
+  create_test_files $lower/lowertestdir/subdir
+  mount_dirs
+  # Copy up lower dir and encode lower subdir file handle
+  touch $SCRATCH_MNT/lowertestdir
+  test_file_handles $SCRATCH_MNT/lowertestdir/subdir -p -o $tmp.fhandle
+  # Rename lower dir offline
+  unmount_dirs
+  mv $lower/lowertestdir $lower/lowertestdir.new/
+  mount_dirs
+  # Attempt to decode lower subdir file handle
+  test_file_handles $SCRATCH_MNT -p -i $tmp.fhandle
+
+Since this WARN_ON() can be triggered by user we need to relax it.
+
+Fixes: 4b91c30a5a19 ("ovl: lookup connected ancestor of dir in inode cache")
+Cc: <stable@vger.kernel.org> # v4.16+
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/overlayfs/file.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ fs/overlayfs/export.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -32,13 +32,16 @@ static char ovl_whatisit(struct inode *i
- 		return 'm';
- }
+--- a/fs/overlayfs/export.c
++++ b/fs/overlayfs/export.c
+@@ -482,7 +482,7 @@ static struct dentry *ovl_lookup_real_in
+ 	if (IS_ERR_OR_NULL(this))
+ 		return this;
  
-+/* No atime modificaton nor notify on underlying */
-+#define OVL_OPEN_FLAGS (O_NOATIME | FMODE_NONOTIFY)
-+
- static struct file *ovl_open_realfile(const struct file *file,
- 				      struct inode *realinode)
- {
- 	struct inode *inode = file_inode(file);
- 	struct file *realfile;
- 	const struct cred *old_cred;
--	int flags = file->f_flags | O_NOATIME | FMODE_NONOTIFY;
-+	int flags = file->f_flags | OVL_OPEN_FLAGS;
- 
- 	old_cred = ovl_override_creds(inode->i_sb);
- 	realfile = open_with_fake_path(&file->f_path, flags, realinode,
-@@ -59,8 +62,7 @@ static int ovl_change_flags(struct file
- 	struct inode *inode = file_inode(file);
- 	int err;
- 
--	/* No atime modificaton on underlying */
--	flags |= O_NOATIME | FMODE_NONOTIFY;
-+	flags |= OVL_OPEN_FLAGS;
- 
- 	/* If some flag changed that cannot be changed then something's amiss */
- 	if (WARN_ON((file->f_flags ^ flags) & ~OVL_SETFL_MASK))
-@@ -113,7 +115,7 @@ static int ovl_real_fdget_meta(const str
+-	if (WARN_ON(ovl_dentry_real_at(this, layer->idx) != real)) {
++	if (ovl_dentry_real_at(this, layer->idx) != real) {
+ 		dput(this);
+ 		this = ERR_PTR(-EIO);
  	}
- 
- 	/* Did the flags change since open? */
--	if (unlikely((file->f_flags ^ real->file->f_flags) & ~O_NOATIME))
-+	if (unlikely((file->f_flags ^ real->file->f_flags) & ~OVL_OPEN_FLAGS))
- 		return ovl_change_flags(real->file, file->f_flags);
- 
- 	return 0;
 
 
