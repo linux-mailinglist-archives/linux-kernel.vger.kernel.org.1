@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F73A2264A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6B2264A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730687AbgGTPqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41544 "EHLO mail.kernel.org"
+        id S1730704AbgGTPqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730138AbgGTPqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:44 -0400
+        id S1730694AbgGTPqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:46:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C6402065E;
-        Mon, 20 Jul 2020 15:46:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C018E2065E;
+        Mon, 20 Jul 2020 15:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260004;
-        bh=wMn9wjQUD0rMUL4y+UmL4VufUkCmHW5CbQxVvrrPA8Y=;
+        s=default; t=1595260009;
+        bh=a/wF/P/zlabevIzH5R9RAFZsgw4KRZvxNRAL8nXyJvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+CMufkJJZtzjJNELmJ+3CI8f7ZB7DukH5qCS/26NlnKkwJhPucU9q1i7koRV11hR
-         kf4EUaZ50NNEIumoGRnPQvXyY4M/VoThOvnENiuZgVk3GdSitNuDzqKGT2WkLu1iXz
-         p8wJZJvcY4xp1pLBR6pC8CiMS0GGH0iZbM7tqXUc=
+        b=1IFJ0D8c05jYjIddAzmjVT5cqpG3pyNl129hOlDMgWWty4CGCxoCf2zj7o4/7oJ0c
+         DesI7aW8YWlFQha7k/9zWTk0WNRLPtDVVRGMQTEZ/qxslGxihI3XAo2WmCQeR/kEJ7
+         20QsKUgqXZfXejLW3qFtaZzM1IYdQJKTmAmUHLug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 072/125] of: of_mdio: Correct loop scanning logic
-Date:   Mon, 20 Jul 2020 17:36:51 +0200
-Message-Id: <20200720152806.477897543@linuxfoundation.org>
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 073/125] Revert "usb/ohci-platform: Fix a warning when hibernating"
+Date:   Mon, 20 Jul 2020 17:36:52 +0200
+Message-Id: <20200720152806.529047725@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
 References: <20200720152802.929969555@linuxfoundation.org>
@@ -45,52 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+This reverts commit baef809ea497a4f21fa67814b61094bbcc191c39.
 
-[ Upstream commit 5a8d7f126c97d04d893f5e5be2b286437a0d01b0 ]
+Eugeniu Rosca writes:
 
-Commit 209c65b61d94 ("drivers/of/of_mdio.c:fix of_mdiobus_register()")
-introduced a break of the loop on the premise that a successful
-registration should exit the loop. The premise is correct but not to
-code, because rc && rc != -ENODEV is just a special error condition,
-that means we would exit the loop even with rc == -ENODEV which is
-absolutely not correct since this is the error code to indicate to the
-MDIO bus layer that scanning should continue.
+On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>Set PM runtime as active on resume") into downstream v4.14.x, we started
+>to consistently experience below panic [1] on every second s2ram of
+>R-Car H3 Salvator-X Renesas reference board.
+>
+>After some investigations, we concluded the following:
+> - the issue does not exist in vanilla v5.8-rc4+
+> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>   link support"). Getting evidence for that is easy. Reverting
+>   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>
+>Questions:
+> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>   link support") to v4.14.187 looks challenging enough, so probably not
+>   worth it. Anybody to contradict this?
+> - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>   should the following three v4.14.186 commits be reverted on v4.14.x?
+>   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
 
-Fix this by explicitly checking for rc = 0 as the only valid condition
-to break out of the loop.
-
-Fixes: 209c65b61d94 ("drivers/of/of_mdio.c:fix of_mdiobus_register()")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/of_mdio.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/usb/host/ohci-platform.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/of/of_mdio.c b/drivers/of/of_mdio.c
-index 69da2f6896dae..8b7d3e64b8cab 100644
---- a/drivers/of/of_mdio.c
-+++ b/drivers/of/of_mdio.c
-@@ -256,10 +256,15 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
- 				 child->name, addr);
- 
- 			if (of_mdiobus_child_is_phy(child)) {
-+				/* -ENODEV is the return code that PHYLIB has
-+				 * standardized on to indicate that bus
-+				 * scanning should continue.
-+				 */
- 				rc = of_mdiobus_register_phy(mdio, child, addr);
--				if (rc && rc != -ENODEV)
-+				if (!rc)
-+					break;
-+				if (rc != -ENODEV)
- 					goto unregister;
--				break;
- 			}
- 		}
+diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
+index 742cefa22c2b5..61fe2b985070f 100644
+--- a/drivers/usb/host/ohci-platform.c
++++ b/drivers/usb/host/ohci-platform.c
+@@ -355,11 +355,6 @@ static int ohci_platform_resume(struct device *dev)
  	}
+ 
+ 	ohci_resume(hcd, false);
+-
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-
+ 	return 0;
+ }
+ #endif /* CONFIG_PM_SLEEP */
 -- 
 2.25.1
 
