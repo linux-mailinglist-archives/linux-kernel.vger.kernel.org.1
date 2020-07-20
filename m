@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D45F226475
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C93226375
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730500AbgGTPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39518 "EHLO mail.kernel.org"
+        id S1728558AbgGTPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729678AbgGTPpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:14 -0400
+        id S1726389AbgGTPhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:37:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53DD42065E;
-        Mon, 20 Jul 2020 15:45:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA0B322CB2;
+        Mon, 20 Jul 2020 15:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259913;
-        bh=nbwn6TZZ0LFmygzzXGwmza/qSf14tzLEA/vC7zv4svw=;
+        s=default; t=1595259445;
+        bh=0QmjNHIxQwQS03YAMYCOr/QYcQjnpNugdb16DA+i87M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DJqcNCSRPbB0SP9OwmxCWoibApD/TI+Nc1lFWzJpnvb+2IIj58ccifKXGYwaNUvpa
-         iADePgLnH4Lyzz0Pe4OByPnOoIuwNfdc3DC6g2kRi6M2XqnQQ3zl/FvMoesvFp0DB+
-         i7C1NkcSAOuONJeb9cCIQvRGZhehJV9HGjpDk1VQ=
+        b=UKCMuBNVlY9FIzD4Fs0sXwvx1+/ACNXWwshlOUjLQa7gj0gRO+TA8I23LBEIMlFLI
+         wKFpZ59DEeRbQAN2b0e92mFhk9v15ectNGPSlVw4ZTMK5sLhh7Bzd6U/Oinotsc0DW
+         izLZEFFtKuoSS8diUyqWSFMBQQgQWFq9Ci5ea//w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 4.14 039/125] ARC: elf: use right ELF_ARCH
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 02/58] spi: spidev: fix a race between spidev_release and spidev_remove
 Date:   Mon, 20 Jul 2020 17:36:18 +0200
-Message-Id: <20200720152804.891376434@linuxfoundation.org>
+Message-Id: <20200720152747.250050727@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,28 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-commit b7faf971081a4e56147f082234bfff55135305cb upstream.
+[ Upstream commit abd42781c3d2155868821f1b947ae45bbc33330d ]
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Imagine below scene, spidev is referenced after it's freed.
 
+spidev_release()                spidev_remove()
+...
+                                spin_lock_irq(&spidev->spi_lock);
+                                    spidev->spi = NULL;
+                                spin_unlock_irq(&spidev->spi_lock);
+mutex_lock(&device_list_lock);
+dofree = (spidev->spi == NULL);
+if (dofree)
+    kfree(spidev);
+mutex_unlock(&device_list_lock);
+                                mutex_lock(&device_list_lock);
+                                list_del(&spidev->device_entry);
+                                device_destroy(spidev_class, spidev->devt);
+                                clear_bit(MINOR(spidev->devt), minors);
+                                if (spidev->users == 0)
+                                    kfree(spidev);
+                                mutex_unlock(&device_list_lock);
+
+Fix it by resetting spidev->spi in device_list_lock's protection.
+
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Link: https://lore.kernel.org/r/20200618032125.4650-1-zhenzhong.duan@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/include/asm/elf.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spidev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arc/include/asm/elf.h
-+++ b/arch/arc/include/asm/elf.h
-@@ -26,7 +26,7 @@
- #define  R_ARC_32_PCREL		0x31
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 3709088d4d244..80beb8406f200 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -769,13 +769,13 @@ static int spidev_remove(struct spi_device *spi)
+ {
+ 	struct spidev_data	*spidev = spi_get_drvdata(spi);
  
- /*to set parameters in the core dumps */
--#define ELF_ARCH		EM_ARCOMPACT
-+#define ELF_ARCH		EM_ARC_INUSE
- #define ELF_CLASS		ELFCLASS32
++	/* prevent new opens */
++	mutex_lock(&device_list_lock);
+ 	/* make sure ops on existing fds can abort cleanly */
+ 	spin_lock_irq(&spidev->spi_lock);
+ 	spidev->spi = NULL;
+ 	spin_unlock_irq(&spidev->spi_lock);
  
- #ifdef CONFIG_CPU_BIG_ENDIAN
+-	/* prevent new opens */
+-	mutex_lock(&device_list_lock);
+ 	list_del(&spidev->device_entry);
+ 	device_destroy(spidev_class, spidev->devt);
+ 	clear_bit(MINOR(spidev->devt), minors);
+-- 
+2.25.1
+
 
 
