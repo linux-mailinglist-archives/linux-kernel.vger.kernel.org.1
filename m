@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA9522640D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E2E22653E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgGTPlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34184 "EHLO mail.kernel.org"
+        id S1731322AbgGTPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729269AbgGTPlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:49 -0400
+        id S1730041AbgGTPwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E12E2064B;
-        Mon, 20 Jul 2020 15:41:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A12A32064B;
+        Mon, 20 Jul 2020 15:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259708;
-        bh=KS087m6knmPHkIkshHeQow837Jdyt/kSvWAM/RURMO0=;
+        s=default; t=1595260322;
+        bh=dMpZKAoREPt/Ph4s1EySu309CYTNsehZNf+8JaSdUCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJA6PPcoy+vpCI0ki+/LbCFbBH8HoQ2UrpwKRgz9tjN08ixNgHiyiqovPyqgGPw8l
-         MI/yT/CCI1uXHSBljVodjtM37qmchVK6rJLvxuIFlNYDIegoid/vCORBNlYktSLJ4b
-         szfw79Iqh4gX60yOrsrgqTvMu1SEBSqLN8bDXsC0=
+        b=M0SotcvCudK0dcDVXHivGVJLzjKTWRGuh/CHp9TQGMqy3TDRRlJ6QA5A5MppHTDXn
+         48OK+yYaeOvYo8hDuVzBNcffA+NH+oujrKAGLO7Npr78a2FlbFWopVAJ/NKcma6o5w
+         0jXd+WBwo1MLoOfeLxZUjXXyiFCwvymHKrjbwRPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 51/86] Revert "usb/ohci-platform: Fix a warning when hibernating"
+        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 060/133] arm64: dts: meson: add missing gxl rng clock
 Date:   Mon, 20 Jul 2020 17:36:47 +0200
-Message-Id: <20200720152755.730521409@linuxfoundation.org>
+Message-Id: <20200720152806.628720493@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 104592a5233d77322c3e527e3925dc7c5a30a6af.
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-Eugeniu Rosca writes:
+[ Upstream commit 95ca6f06dd4827ff63be5154120c7a8511cd9a41 ]
 
-On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
->After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
->Set PM runtime as active on resume") into downstream v4.14.x, we started
->to consistently experience below panic [1] on every second s2ram of
->R-Car H3 Salvator-X Renesas reference board.
->
->After some investigations, we concluded the following:
-> - the issue does not exist in vanilla v5.8-rc4+
-> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
->   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
->   link support"). Getting evidence for that is easy. Reverting
->   987351e1ea7772 in vanilla leads to a similar backtrace [2].
->
->Questions:
-> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
->   link support") to v4.14.187 looks challenging enough, so probably not
->   worth it. Anybody to contradict this?
-> - Assuming no plans to backport the missing mainline commit to v4.14.x,
->   should the following three v4.14.186 commits be reverted on v4.14.x?
->   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
->   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
->   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
+The peripheral clock of the RNG is missing for gxl while it is present
+for gxbb.
 
+Fixes: 1b3f6d148692 ("ARM64: dts: meson-gx: add clock CLKID_RNG0 to hwrng node")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/20200617125346.1163527-1-jbrunet@baylibre.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-platform.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-gxl.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
-index 9e3fdb1421f75..898b74086c129 100644
---- a/drivers/usb/host/ohci-platform.c
-+++ b/drivers/usb/host/ohci-platform.c
-@@ -340,11 +340,6 @@ static int ohci_platform_resume(struct device *dev)
- 	}
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+index 8f0bb3c44bd6d..5d7724b3a6123 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+@@ -266,6 +266,11 @@ clkc: clock-controller {
+ 	};
+ };
  
- 	ohci_resume(hcd, false);
--
--	pm_runtime_disable(dev);
--	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
--
- 	return 0;
- }
- #endif /* CONFIG_PM_SLEEP */
++&hwrng {
++	clocks = <&clkc CLKID_RNG0>;
++	clock-names = "core";
++};
++
+ &i2c_A {
+ 	clocks = <&clkc CLKID_I2C>;
+ };
 -- 
 2.25.1
 
