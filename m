@@ -2,205 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D5B22599C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C002259A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgGTIDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 04:03:55 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39773 "EHLO
+        id S1726811AbgGTIGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 04:06:06 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37069 "EHLO
         mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgGTIDy (ORCPT
+        with ESMTP id S1725815AbgGTIGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 04:03:54 -0400
-Received: by mail-wm1-f66.google.com with SMTP id w3so24159303wmi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 01:03:52 -0700 (PDT)
+        Mon, 20 Jul 2020 04:06:06 -0400
+Received: by mail-wm1-f66.google.com with SMTP id o2so24236749wmh.2;
+        Mon, 20 Jul 2020 01:06:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SCp+/XZDVL0wkNkxGTqNgGD9sSplSI9ZITaC7QY4D4U=;
-        b=AtA5BoHt8bb/kd1EeAiZg7cxVQ4fu/sfstlJ48O0u/Qk1rXhhWfzw/TFP1iyKWhKJv
-         UN4m0PB5krO81yuo22ETHLCYYjCkZdsr0r+DnveIMBsDvzR9LyWn6Ia73Jwp6llHB/NR
-         RcZca9MeQTGGKlshbCQpC6Bg4zhpt+OUF78cxh49p3ap3dIFJi1Qomwgxr/p9qX4RSGp
-         ey8I6J/BkY82L0vb5bZMbCKzo/OLOOT0OatEk7IC+usU9AEvh67LRv7M5mfOcAygmUpQ
-         TKZfzaBmpM4q7oSlp8JkZ7o+sgAeoEMPlNNoxUIEfQQNbnIRLKRnk4cqV2VKFkYTTE55
-         DgGQ==
-X-Gm-Message-State: AOAM530NY9uXW2A+wqMi2c+KmLx0KctBv+NnaHsBOj/uAFB+TghTMiM+
-        sqiMRO4cIKpNLeiRnZnzW2c=
-X-Google-Smtp-Source: ABdhPJyMUtqmYEBlnEJdT0uhyDhEpNMWJ7KyrVLKKNz+E6ScrpotZKob1pDYkqcBGjIrJAeHCVU0oQ==
-X-Received: by 2002:a1c:f407:: with SMTP id z7mr20175927wma.8.1595232231924;
-        Mon, 20 Jul 2020 01:03:51 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id 31sm12975600wrj.94.2020.07.20.01.03.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 01:03:50 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 10:03:49 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
- false warnings
-Message-ID: <20200720080349.GC18535@dhcp22.suse.cz>
-References: <20200714173920.3319063-1-guro@fb.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vg09xK5q93RhjkSo+BtXD7JwKBjiF9ZCt45w+OmMMVY=;
+        b=fUTMldOGfkrptj+n6jUNqqziKMMf/cgU3ebuM7YHLJZ0XgOOJqWml/zNAXU9MZAt1a
+         mGZvgYzT/+3kYDfQLwSwmS+97D3X71N0LmiMg3B5PnXTfT/0q4jEw+ErAXYjQu39erMv
+         PbSgzLHrqupo1/SbayKs7x3vx2lM2nE46s3LgQ2TmVm+ZkJXuxqz7NI3BWncEoacBi4W
+         3tC4eBog3hxZ4MDad6D6MPar6pq5JdCYA3wpVYVNh5IRU/TZf7xK3PDgIHBjkIQX+I5R
+         8xh6BibHYZ5Pd+acRH32bmKIZlUob72pbi5dVB2V9g6pE1J188m3hqVTBDOtLLNTNlyR
+         jLsw==
+X-Gm-Message-State: AOAM531qDr6XfPxZ57hpenTGrvUIwQWgLD3OZ9TpTfXB+rzzmUYaao2z
+        dP8m+sbw2MRjojiVe49Jaz++uIB7z3g=
+X-Google-Smtp-Source: ABdhPJxJ8ZIsf7AKkJqYCmB3NDTY1+PGtOCnwv5Wvo5iWqmnU/v7hbUEipw+IMyAcld5Qa3frDje4g==
+X-Received: by 2002:a7b:c3d0:: with SMTP id t16mr21900753wmj.117.1595232364225;
+        Mon, 20 Jul 2020 01:06:04 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.200])
+        by smtp.googlemail.com with ESMTPSA id l67sm34178337wml.13.2020.07.20.01.06.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Jul 2020 01:06:03 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 10:06:01 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
+        Marian Mihailescu <mihailescu2m@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH] ARM: dts: exynos: Disable frequency scaling for FSYS bus
+Message-ID: <20200720080601.GA3845@kozik-lap>
+References: <CGME20200714064824eucas1p2ea0d2ee2c109c351fe489050905b4104@eucas1p2.samsung.com>
+ <20200714064759.31772-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200714173920.3319063-1-guro@fb.com>
+In-Reply-To: <20200714064759.31772-1-m.szyprowski@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-07-20 10:39:20, Roman Gushchin wrote:
-> I've noticed a number of warnings like "vmstat_refresh: nr_free_cma
-> -5" or "vmstat_refresh: nr_zone_write_pending -11" on our production
-> hosts. The numbers of these warnings were relatively low and stable,
-> so it didn't look like we are systematically leaking the counters.
-> The corresponding vmstat counters also looked sane.
+On Tue, Jul 14, 2020 at 08:47:59AM +0200, Marek Szyprowski wrote:
+> Commit 1019fe2c7280 ("ARM: dts: exynos: Adjust bus related OPPs to the
+> values correct for Exynos5422 Odroids") changed the parameters of the
+> OPPs for the FSYS bus. Besides the frequency adjustments, it also removed
+> the 'shared-opp' property from the OPP table used for FSYS_APB and FSYS
+> busses.
 > 
-> These warnings are generated by the vmstat_refresh() function, which
-> assumes that atomic zone and numa counters can't go below zero.
-> However, on a SMP machine it's not quite right: due to per-cpu
-> caching it can in theory be as low as -(zone threshold) * NR_CPUs.
+> This revealed that in fact the FSYS bus frequency scaling never worked.
+> When one OPP table is marked as 'opp-shared', only the first bus which
+> selects the OPP sets the rate of its clock. Then OPP core assumes that
+> the other busses have been changed to that OPP and no change to their
+> clock rates are needed. Thus when FSYS_APB bus, which was registered
+> first, set the rate for its clock, the OPP core did not change the FSYS
+> bus clock later.
 > 
-> For instance, let's say all cma pages are in use and NR_FREE_CMA_PAGES
-> reached 0. Then we've reclaimed a small number of cma pages on each
-> CPU except CPU0, so that most percpu NR_FREE_CMA_PAGES counters are
-> slightly positive (the atomic counter is still 0). Then somebody on
-> CPU0 consumes all these pages. The number of pages can easily exceed
-> the threshold and a negative value will be committed to the atomic
-> counter.
+> The mentioned commit removed that behavior, what introduced a regression
+> on some OdroidXU3 boards. Frequency scaling of the FSYS bus causes
+> instability of the USB host operation, what can be observed as network
+> hangs. To restore old behavior, simply disable frequency scaling for the
+> FSYS bus.
 > 
-> To fix the problem and avoid generating false warnings, let's just
-> relax the condition and warn only if the value is less than minus
-> the maximum theoretically possible drift value, which is 125 *
-> number of online CPUs. It will still allow to catch systematic leaks,
-> but will not generate bogus warnings.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Cc: Hugh Dickins <hughd@google.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-One minor nit which can be handled by a separate patch but now that you
-are touching this code...
-
+> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
+> Fixes: 1019fe2c7280 ("ARM: dts: exynos: Adjust bus related OPPs to the values correct for Exynos5422 Odroids")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 > ---
->  Documentation/admin-guide/sysctl/vm.rst |  4 ++--
->  mm/vmstat.c                             | 30 ++++++++++++++++---------
->  2 files changed, 21 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-> index 4b9d2e8e9142..95fb80d0c606 100644
-> --- a/Documentation/admin-guide/sysctl/vm.rst
-> +++ b/Documentation/admin-guide/sysctl/vm.rst
-> @@ -822,8 +822,8 @@ e.g. cat /proc/sys/vm/stat_refresh /proc/meminfo
->  
->  As a side-effect, it also checks for negative totals (elsewhere reported
->  as 0) and "fails" with EINVAL if any are found, with a warning in dmesg.
-> -(At time of writing, a few stats are known sometimes to be found negative,
-> -with no ill effects: errors and warnings on these stats are suppressed.)
-> +(On a SMP machine some stats can temporarily become negative, with no ill
-> +effects: errors and warnings on these stats are suppressed.)
->  
->  
->  numa_stat
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index a21140373edb..8f0ef8aaf8ee 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -169,6 +169,8 @@ EXPORT_SYMBOL(vm_node_stat);
->  
->  #ifdef CONFIG_SMP
->  
-> +#define MAX_THRESHOLD 125
+>  arch/arm/boot/dts/exynos5422-odroid-core.dtsi | 6 ------
+>  1 file changed, 6 deletions(-)
 
-This would deserve a comment. 88f5acf88ae6a didn't really explain why
-this specific value has been selected but the specific value shouldn't
-really matter much. I would go with the following at least.
-"
-Maximum sync threshold for per-cpu vmstat counters. 
-"
-> +
->  int calculate_pressure_threshold(struct zone *zone)
->  {
->  	int threshold;
-> @@ -186,11 +188,9 @@ int calculate_pressure_threshold(struct zone *zone)
->  	threshold = max(1, (int)(watermark_distance / num_online_cpus()));
->  
->  	/*
-> -	 * Maximum threshold is 125
-> +	 * Threshold is capped by MAX_THRESHOLD
->  	 */
-> -	threshold = min(125, threshold);
-> -
-> -	return threshold;
-> +	return min(MAX_THRESHOLD, threshold);
->  }
->  
->  int calculate_normal_threshold(struct zone *zone)
-> @@ -610,6 +610,9 @@ void dec_node_page_state(struct page *page, enum node_stat_item item)
->  }
->  EXPORT_SYMBOL(dec_node_page_state);
->  #else
-> +
-> +#define MAX_THRESHOLD 0
-> +
->  /*
->   * Use interrupt disable to serialize counter updates
->   */
-> @@ -1810,7 +1813,7 @@ static void refresh_vm_stats(struct work_struct *work)
->  int vmstat_refresh(struct ctl_table *table, int write,
->  		   void *buffer, size_t *lenp, loff_t *ppos)
->  {
-> -	long val;
-> +	long val, max_drift;
->  	int err;
->  	int i;
->  
-> @@ -1821,17 +1824,22 @@ int vmstat_refresh(struct ctl_table *table, int write,
->  	 * pages, immediately after running a test.  /proc/sys/vm/stat_refresh,
->  	 * which can equally be echo'ed to or cat'ted from (by root),
->  	 * can be used to update the stats just before reading them.
-> -	 *
-> -	 * Oh, and since global_zone_page_state() etc. are so careful to hide
-> -	 * transiently negative values, report an error here if any of
-> -	 * the stats is negative, so we know to go looking for imbalance.
->  	 */
->  	err = schedule_on_each_cpu(refresh_vm_stats);
->  	if (err)
->  		return err;
-> +
-> +	/*
-> +	 * Since global_zone_page_state() etc. are so careful to hide
-> +	 * transiently negative values, report an error here if any of
-> +	 * the stats is negative and are less than the maximum drift value,
-> +	 * so we know to go looking for imbalance.
-> +	 */
-> +	max_drift = num_online_cpus() * MAX_THRESHOLD;
-> +
->  	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
->  		val = atomic_long_read(&vm_zone_stat[i]);
-> -		if (val < 0) {
-> +		if (val < -max_drift) {
->  			pr_warn("%s: %s %ld\n",
->  				__func__, zone_stat_name(i), val);
->  			err = -EINVAL;
-> @@ -1840,7 +1848,7 @@ int vmstat_refresh(struct ctl_table *table, int write,
->  #ifdef CONFIG_NUMA
->  	for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++) {
->  		val = atomic_long_read(&vm_numa_stat[i]);
-> -		if (val < 0) {
-> +		if (val < -max_drift) {
->  			pr_warn("%s: %s %ld\n",
->  				__func__, numa_stat_name(i), val);
->  			err = -EINVAL;
-> -- 
-> 2.26.2
+Thanks Willy and Marek for digging into this, applied.
 
--- 
-Michal Hocko
-SUSE Labs
+A follow up question would be if other boards (Exynos4412) require the
+same?
+
+Best regards,
+Krzysztof
+
