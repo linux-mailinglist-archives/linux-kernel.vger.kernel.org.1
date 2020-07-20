@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF572263B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7D92264E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgGTPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
+        id S1730994AbgGTPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:49:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729512AbgGTPjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:32 -0400
+        id S1729386AbgGTPtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:49:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 045DF22CBB;
-        Mon, 20 Jul 2020 15:39:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33B1C206E9;
+        Mon, 20 Jul 2020 15:49:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259571;
-        bh=5PEKRoAOKVBycOnhm8UGdi1OJVGEjJ+BLfGgfmXXvxw=;
+        s=default; t=1595260149;
+        bh=Ii21Y4dB2dtPOuktMfoSercnM/W9406kERuSR4p265M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sof0Tx7Ihe0HoQGL7w9LDcBwLyMkquISBFZNXJe8HCw/ihNmKSsFwCQXdpDqT8n05
-         +XJMt6wFgg+TolyY3SL4znfuH3HzH8NTCs7EYIsspKFA611eYFFCjrnhgf20LhZ4Wo
-         v/+pvy6ccZv96/RWUodhQrBZMfru/jsOzOSuHEAQ=
+        b=ZEbaydjhJyAuZUP1r2VgqgIYFSkx36RWvIJWxTbwTZm82RRcddvUKvStVYKhV8ak7
+         tJ5Mzd/lrJlmgrDduB/ZLPMbHV9VOryMxnmQAXu29xwMK/YKmDckwt7c71icb350DB
+         O6w2YYm3+mx9JyK4c9UAIECHTxl+kyorraezLbS8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 4.4 57/58] misc: atmel-ssc: lock with mutex instead of spinlock
+        stable@vger.kernel.org, Yariv <oigevald+kernel@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.14 094/125] HID: magicmouse: do not set up autorepeat
 Date:   Mon, 20 Jul 2020 17:37:13 +0200
-Message-Id: <20200720152750.111855945@linuxfoundation.org>
+Message-Id: <20200720152807.562768192@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,115 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-commit b037d60a3b1d1227609fd858fa34321f41829911 upstream.
+commit 6363d2065cd399cf9d6dc9d08c437f8658831100 upstream.
 
-Uninterruptible context is not needed in the driver and causes lockdep
-warning because of mutex taken in of_alias_get_id(). Convert the lock to
-mutex to avoid the issue.
+Neither the trackpad, nor the mouse want input core to generate autorepeat
+events for their buttons, so let's reset the bit (as hid-input sets it for
+these devices based on the usage vendor code).
 
 Cc: stable@vger.kernel.org
-Fixes: 099343c64e16 ("ARM: at91: atmel-ssc: add device tree support")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Link: https://lore.kernel.org/r/50f0d7fa107f318296afb49477c3571e4d6978c5.1592998403.git.mirq-linux@rere.qmqm.pl
+Reported-by: Yariv <oigevald+kernel@gmail.com>
+Tested-by: Yariv <oigevald+kernel@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/atmel-ssc.c |   24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/hid/hid-magicmouse.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -13,7 +13,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/spinlock.h>
-+#include <linux/mutex.h>
- #include <linux/atmel-ssc.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -21,7 +21,7 @@
- #include <linux/of.h>
- 
- /* Serialize access to ssc_list and user count */
--static DEFINE_SPINLOCK(user_lock);
-+static DEFINE_MUTEX(user_lock);
- static LIST_HEAD(ssc_list);
- 
- struct ssc_device *ssc_request(unsigned int ssc_num)
-@@ -29,7 +29,7 @@ struct ssc_device *ssc_request(unsigned
- 	int ssc_valid = 0;
- 	struct ssc_device *ssc;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_for_each_entry(ssc, &ssc_list, list) {
- 		if (ssc->pdev->dev.of_node) {
- 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
-@@ -44,18 +44,18 @@ struct ssc_device *ssc_request(unsigned
+--- a/drivers/hid/hid-magicmouse.c
++++ b/drivers/hid/hid-magicmouse.c
+@@ -451,6 +451,12 @@ static int magicmouse_setup_input(struct
+ 		__set_bit(MSC_RAW, input->mscbit);
  	}
  
- 	if (!ssc_valid) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		pr_err("ssc: ssc%d platform device is missing\n", ssc_num);
- 		return ERR_PTR(-ENODEV);
- 	}
- 
- 	if (ssc->user) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		dev_dbg(&ssc->pdev->dev, "module busy\n");
- 		return ERR_PTR(-EBUSY);
- 	}
- 	ssc->user++;
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	clk_prepare(ssc->clk);
- 
-@@ -67,14 +67,14 @@ void ssc_free(struct ssc_device *ssc)
- {
- 	bool disable_clk = true;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	if (ssc->user)
- 		ssc->user--;
- 	else {
- 		disable_clk = false;
- 		dev_dbg(&ssc->pdev->dev, "device already free\n");
- 	}
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	if (disable_clk)
- 		clk_unprepare(ssc->clk);
-@@ -194,9 +194,9 @@ static int ssc_probe(struct platform_dev
- 		return -ENXIO;
- 	}
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_add_tail(&ssc->list, &ssc_list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	platform_set_drvdata(pdev, ssc);
- 
-@@ -210,9 +210,9 @@ static int ssc_remove(struct platform_de
- {
- 	struct ssc_device *ssc = platform_get_drvdata(pdev);
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_del(&ssc->list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
++	/*
++	 * hid-input may mark device as using autorepeat, but neither
++	 * the trackpad, nor the mouse actually want it.
++	 */
++	__clear_bit(EV_REP, input->evbit);
++
  	return 0;
  }
+ 
 
 
