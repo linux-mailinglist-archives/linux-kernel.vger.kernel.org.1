@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FF1226645
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6F02268BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731700AbgGTQBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35196 "EHLO mail.kernel.org"
+        id S2387751AbgGTQLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:11:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731073AbgGTQBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:01:40 -0400
+        id S2387736AbgGTQLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:11:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15BEB20672;
-        Mon, 20 Jul 2020 16:01:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69D1D2064B;
+        Mon, 20 Jul 2020 16:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260899;
-        bh=Wx7PdpUCk4pt6D9wXcsrxs6ytZVrxI8u6eKHPIONvs0=;
+        s=default; t=1595261462;
+        bh=SBlFkReosziBxuvkdEK8X2H748jr3WdZloS1SoahGPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bRnbIgY5zUNgW4JYj05Bqstp7KHg1ajpQtTi8l4vjj1911Z92HWW6Fzo886J5Q1Xf
-         m8sgB15L/MoPg6iRvXMMacJopc57WMBynPc7EkTZnmuMcm7rsQe/Su2AUUGTH7NdWu
-         HXd/sPvWWn1mzMNY+ZdFcnqeqP0VAFZwu8pPpgOU=
+        b=A6YWPR7lqBzj9bMej6ruB7eKr+v+PRL6ggNkv+hra8Evq10i2y2YKUwVAxjqomM9r
+         BZYLyhInj3gAcXyTmulQj5u8lzs2DqFZLZiZKSDUBzhDGjU4nz1mNzKjI9PvDtgkqJ
+         95Uv3Yhgw63QOZ7mFe2LvV1Qv7sQNRR5q8keVd/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hien Dang <hien.dang.eb@renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/215] dmaengine: sh: usb-dmac: set tx_result parameters
-Date:   Mon, 20 Jul 2020 17:36:17 +0200
-Message-Id: <20200720152824.734501006@linuxfoundation.org>
+        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 107/244] NFS: Fix interrupted slots by sending a solo SEQUENCE operation
+Date:   Mon, 20 Jul 2020 17:36:18 +0200
+Message-Id: <20200720152830.917630970@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Anna Schumaker <Anna.Schumaker@Netapp.com>
 
-[ Upstream commit 466257d9968ac79575831250b039dc07566c7b13 ]
+[ Upstream commit 913fadc5b105c3619d9e8d0fe8899ff1593cc737 ]
 
-A client driver (renesas_usbhs) assumed that
-dmaengine_tx_status() could return the residue even if
-the transfer was completed. However, this was not correct
-usage [1] and this caused to break getting the residue after
-the commit 24461d9792c2 ("dmaengine: virt-dma: Fix access after
-free in vchan_complete()") actually. So, this is possible to get
-wrong received size if the usb controller gets a short packet.
-For example, g_zero driver causes "bad OUT byte" errors.
+We used to do this before 3453d5708b33, but this was changed to better
+handle the NFS4ERR_SEQ_MISORDERED error code. This commit fixed the slot
+re-use case when the server doesn't receive the interrupted operation,
+but if the server does receive the operation then it could still end up
+replying to the client with mis-matched operations from the reply cache.
 
-To use the tx_result from the renesas_usbhs driver when
-the transfer is completed, set the tx_result parameters.
+We can fix this by sending a SEQUENCE to the server while recovering from
+a SEQ_MISORDERED error when we detect that we are in an interrupted slot
+situation.
 
-Notes that the renesas_usbhs driver needs to update for it.
-
-[1]
-https://lore.kernel.org/dmaengine/20200616165550.GP2324254@vkoul-mobl/
-
-Reported-by: Hien Dang <hien.dang.eb@renesas.com>
-Fixes: 24461d9792c2 ("dmaengine: virt-dma: Fix access after free in vchan_complete()")
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/1592482053-19433-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 3453d5708b33 (NFSv4.1: Avoid false retries when RPC calls are interrupted)
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/sh/usb-dmac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/nfs/nfs4proc.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-index b218a013c2600..8f7ceb698226c 100644
---- a/drivers/dma/sh/usb-dmac.c
-+++ b/drivers/dma/sh/usb-dmac.c
-@@ -586,6 +586,8 @@ static void usb_dmac_isr_transfer_end(struct usb_dmac_chan *chan)
- 		desc->residue = usb_dmac_get_current_residue(chan, desc,
- 							desc->sg_index - 1);
- 		desc->done_cookie = desc->vd.tx.cookie;
-+		desc->vd.tx_result.result = DMA_TRANS_NOERROR;
-+		desc->vd.tx_result.residue = desc->residue;
- 		vchan_cookie_complete(&desc->vd);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index e32717fd1169a..2e2dac29a9e91 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -774,6 +774,14 @@ static void nfs4_slot_sequence_acked(struct nfs4_slot *slot,
+ 	slot->seq_nr_last_acked = seqnr;
+ }
  
- 		/* Restart the next transfer if this driver has a next desc */
++static void nfs4_probe_sequence(struct nfs_client *client, const struct cred *cred,
++				struct nfs4_slot *slot)
++{
++	struct rpc_task *task = _nfs41_proc_sequence(client, cred, slot, true);
++	if (!IS_ERR(task))
++		rpc_put_task_async(task);
++}
++
+ static int nfs41_sequence_process(struct rpc_task *task,
+ 		struct nfs4_sequence_res *res)
+ {
+@@ -790,6 +798,7 @@ static int nfs41_sequence_process(struct rpc_task *task,
+ 		goto out;
+ 
+ 	session = slot->table->session;
++	clp = session->clp;
+ 
+ 	trace_nfs4_sequence_done(session, res);
+ 
+@@ -804,7 +813,6 @@ static int nfs41_sequence_process(struct rpc_task *task,
+ 		nfs4_slot_sequence_acked(slot, slot->seq_nr);
+ 		/* Update the slot's sequence and clientid lease timer */
+ 		slot->seq_done = 1;
+-		clp = session->clp;
+ 		do_renew_lease(clp, res->sr_timestamp);
+ 		/* Check sequence flags */
+ 		nfs41_handle_sequence_flag_errors(clp, res->sr_status_flags,
+@@ -852,10 +860,18 @@ static int nfs41_sequence_process(struct rpc_task *task,
+ 		/*
+ 		 * Were one or more calls using this slot interrupted?
+ 		 * If the server never received the request, then our
+-		 * transmitted slot sequence number may be too high.
++		 * transmitted slot sequence number may be too high. However,
++		 * if the server did receive the request then it might
++		 * accidentally give us a reply with a mismatched operation.
++		 * We can sort this out by sending a lone sequence operation
++		 * to the server on the same slot.
+ 		 */
+ 		if ((s32)(slot->seq_nr - slot->seq_nr_last_acked) > 1) {
+ 			slot->seq_nr--;
++			if (task->tk_msg.rpc_proc != &nfs4_procedures[NFSPROC4_CLNT_SEQUENCE]) {
++				nfs4_probe_sequence(clp, task->tk_msg.rpc_cred, slot);
++				res->sr_slot = NULL;
++			}
+ 			goto retry_nowait;
+ 		}
+ 		/*
 -- 
 2.25.1
 
