@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCF9226A02
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AB2226A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731621AbgGTP5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:57:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58948 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731865AbgGTP5F (ORCPT
+        id S1732755AbgGTQbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731251AbgGTP5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:05 -0400
+        Mon, 20 Jul 2020 11:57:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B319C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 08:57:09 -0700 (PDT)
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260623;
+        s=2020; t=1595260628;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xAbB9oKLEGHYN+w+z0ndpRUVlVFavwl3/3bbk6nkTI4=;
-        b=aE6HVWQ7elJ3Wu43Nx5S0EQ9uUnwoWtplV7pqe9NN1rsZuauKrP9qAmb6mHlhJ7U1sFSgw
-        AxExVzSlqPCo7f2hJBEUQ9fxPD9kfIMD9fn/jzMWs+qYfqBdFwIBDMFtaR+nroor6T2IO7
-        B/lq1xpYO7qfSDgiEwK/u5bUU4jAo1f4liQajoKBqfgyKSWxKOhglHIcUJDJ/uovzhkW3t
-        /r/U3lkl0ScjCT828osOd2wnToGbfvCzbQjnfJFcm9G20jbVFIei/qonANgpXdfibLORrG
-        LXIwwdJ69ykwevM0BHecoxt3L9lD15kOCm2dUBPivw0BpPHrBTBCvQOtdWMd2Q==
+        bh=u8dxK0yYYZ2TmdZueYqwzVlsb3EwKsvtatP/Xk9jtMk=;
+        b=dc7urap3yvHuZhPsL/67K/n3FtxXJ/aPt04GyjFsl4IZJtOdPIdsLUe8pHl+n5IghMHhMV
+        u8lTTWweg7jogoTmIkSCBrLHf4BS1wX7tSXtgzSS54Ns3y9qTk5k+iUX53T4GUYqXxJg6i
+        MDOK6XSRvRYv5DSQ7x0r8Qer2LVigwRVM103OOXF7naomiZ2DeHFaJOkw7kXaD6ftv1DE7
+        bssi8t02hE2/fimi7fMmANrX2WQdtGWj0LzuBv2RMaIN/sU1amY2Zzs+hQTk2tA4EnxDiq
+        OrcwR1MiJ8vCYS3DdivOhYE4N5pWABkLzQZU5k3c3HksiSJvOrlEmGaceuoymg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260623;
+        s=2020e; t=1595260628;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xAbB9oKLEGHYN+w+z0ndpRUVlVFavwl3/3bbk6nkTI4=;
-        b=8sQVdjG9J9NWk5nP1uFu8LkSAunXaXDWeXbROR0vV/v1xYMoVS1qTisuyD7tE97Y+Dlut3
-        5SAPGx+i1aRtshCQ==
+        bh=u8dxK0yYYZ2TmdZueYqwzVlsb3EwKsvtatP/Xk9jtMk=;
+        b=fBBCXzrf8tqAAmIAhpByHL7L93QgpN13azazim0BD4wXDwOmwejjBdArYwBrUtXwFovGqi
+        UNtJT7iVFACx+lAQ==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -42,10 +45,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH v4 19/24] raid5: Use sequence counter with associated spinlock
-Date:   Mon, 20 Jul 2020 17:55:25 +0200
-Message-Id: <20200720155530.1173732-20-a.darwish@linutronix.de>
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v4 20/24] iocost: Use sequence counter with associated spinlock
+Date:   Mon, 20 Jul 2020 17:55:26 +0200
+Message-Id: <20200720155530.1173732-21-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -70,37 +73,41 @@ If lockdep is disabled this lock association is compiled out and has
 neither storage size nor runtime overhead.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/md/raid5.c | 2 +-
- drivers/md/raid5.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ block/blk-iocost.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index ab8067f9ce8c..892aefe88fa7 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -6935,7 +6935,7 @@ static struct r5conf *setup_conf(struct mddev *mddev)
- 	} else
- 		goto abort;
- 	spin_lock_init(&conf->device_lock);
--	seqcount_init(&conf->gen_lock);
-+	seqcount_spinlock_init(&conf->gen_lock, &conf->device_lock);
- 	mutex_init(&conf->cache_size_mutex);
- 	init_waitqueue_head(&conf->wait_for_quiescent);
- 	init_waitqueue_head(&conf->wait_for_stripe);
-diff --git a/drivers/md/raid5.h b/drivers/md/raid5.h
-index f90e0704bed9..a2c9e9e9f5ac 100644
---- a/drivers/md/raid5.h
-+++ b/drivers/md/raid5.h
-@@ -589,7 +589,7 @@ struct r5conf {
- 	int			prev_chunk_sectors;
- 	int			prev_algo;
- 	short			generation; /* increments with every reshape */
--	seqcount_t		gen_lock;	/* lock against generation changes */
-+	seqcount_spinlock_t	gen_lock;	/* lock against generation changes */
- 	unsigned long		reshape_checkpoint; /* Time we last updated
- 						     * metadata */
- 	long long		min_offset_diff; /* minimum difference between
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 8ac4aad66ebc..8e940c27c27c 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -406,7 +406,7 @@ struct ioc {
+ 	enum ioc_running		running;
+ 	atomic64_t			vtime_rate;
+ 
+-	seqcount_t			period_seqcount;
++	seqcount_spinlock_t		period_seqcount;
+ 	u32				period_at;	/* wallclock starttime */
+ 	u64				period_at_vtime; /* vtime starttime */
+ 
+@@ -873,7 +873,6 @@ static void ioc_now(struct ioc *ioc, struct ioc_now *now)
+ 
+ static void ioc_start_period(struct ioc *ioc, struct ioc_now *now)
+ {
+-	lockdep_assert_held(&ioc->lock);
+ 	WARN_ON_ONCE(ioc->running != IOC_RUNNING);
+ 
+ 	write_seqcount_begin(&ioc->period_seqcount);
+@@ -2001,7 +2000,7 @@ static int blk_iocost_init(struct request_queue *q)
+ 
+ 	ioc->running = IOC_IDLE;
+ 	atomic64_set(&ioc->vtime_rate, VTIME_PER_USEC);
+-	seqcount_init(&ioc->period_seqcount);
++	seqcount_spinlock_init(&ioc->period_seqcount, &ioc->lock);
+ 	ioc->period_at = ktime_to_us(ktime_get());
+ 	atomic64_set(&ioc->cur_period, 0);
+ 	atomic_set(&ioc->hweight_gen, 0);
 -- 
 2.20.1
 
