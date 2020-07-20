@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6913226746
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6670E226764
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387648AbgGTQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:10:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387633AbgGTQKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:10:11 -0400
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3404E2064B;
-        Mon, 20 Jul 2020 16:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261410;
-        bh=U7uXjX8IfjoIHHcZ94LBnWRXLP1OX+olQJgVuZvrYz8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mywFm7Q0v6qrIqaQ80nhFbUpcFOGRvUhHtCEA/fayqjg0rtYs/pYaWNKJfRqyw3i7
-         XLoxMzbKuZ6U1GcIcAVpCuXX8oodHcdxaDHqTU0uV8Uk8ODLH1CZk2FLTVg8JWrWk5
-         azVsSx9XhFktMuRsA0P0lAJSD1h4gOcHR2w6hAVE=
-Received: by mail-ej1-f42.google.com with SMTP id w9so4531276ejc.8;
-        Mon, 20 Jul 2020 09:10:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532UX6QmOkkBaR02RKknpIS2MC84vWZupOPQ9JrLRy6icZs/0LNG
-        BQfwcdpj72qj4FEDNwQgY8s9dOLej04/Eu4NUQ==
-X-Google-Smtp-Source: ABdhPJzjWZka7dLZIstGqrBjwKgkCw0Jts0It8B2AGaHIdJ5T0KmMrd6sjOYVhE+rD/LgFxqtR3lEzkplYm7brWs4pA=
-X-Received: by 2002:a17:906:404e:: with SMTP id y14mr21106907ejj.260.1595261408723;
- Mon, 20 Jul 2020 09:10:08 -0700 (PDT)
+        id S2387783AbgGTQLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733093AbgGTQLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:11:17 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99302C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:11:16 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 9012C344; Mon, 20 Jul 2020 18:11:13 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 18:11:12 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, hpa@zytor.com,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/idt: Make sure idt_table takes a whole page
+Message-ID: <20200720161112.GB620@8bytes.org>
+References: <0CEC6A66-FD50-4B6B-9521-A40E5B9DA10F@zytor.com>
+ <7FB389D0-77D4-482E-8A21-8662DDB00268@amacapital.net>
+ <0B7CF270-EC04-4907-821A-A01F24BEF156@zytor.com>
+ <20200719023405.GA564835@rani.riverdale.lan>
+ <87pn8rokjz.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20200506084039.249977-1-eizan@chromium.org> <20200506184018.v2.1.I27dac0775ba64deff6a91837f39bfba83dccdf84@changeid>
-In-Reply-To: <20200506184018.v2.1.I27dac0775ba64deff6a91837f39bfba83dccdf84@changeid>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 21 Jul 2020 00:09:57 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9qSpH51kkopofoQTfSqYqGWcQVN8KrJJKQDWozoMK+NQ@mail.gmail.com>
-Message-ID: <CAAOTY_9qSpH51kkopofoQTfSqYqGWcQVN8KrJJKQDWozoMK+NQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] [media] mtk-mdp: add driver to probe mdp components
-To:     Eizan Miyamoto <eizan@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pn8rokjz.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Eizan:
+On Sun, Jul 19, 2020 at 12:39:44PM +0200, Thomas Gleixner wrote:
+> The right fix is trivial. See below.
+> 
+> Thanks,
+> 
+>         tglx
+> ----
+>  arch/x86/kernel/vmlinux.lds.S     |    1 +
+>  include/asm-generic/vmlinux.lds.h |    1 +
+>  2 files changed, 2 insertions(+)
+> 
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -358,6 +358,7 @@ SECTIONS
+>  	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {
+>  		__bss_start = .;
+>  		*(.bss..page_aligned)
+> +		. = ALIGN(PAGE_SIZE);
+>  		*(BSS_MAIN)
+>  		BSS_DECRYPTED
+>  		. = ALIGN(PAGE_SIZE);
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -738,6 +738,7 @@
+>  	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
+>  		BSS_FIRST_SECTIONS					\
+>  		*(.bss..page_aligned)					\
+> +		. = ALIGN(PAGE_SIZE);					\
+>  		*(.dynbss)						\
+>  		*(BSS_MAIN)						\
+>  		*(COMMON)						\
 
-Eizan Miyamoto <eizan@chromium.org> =E6=96=BC 2020=E5=B9=B45=E6=9C=886=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:41=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Broadly, this patch (1) adds a driver for various MTK MDP components to
-> go alongside the main MTK MDP driver, and (2) hooks them all together
-> using the component framework.
->
-> (1) Up until now, the MTK MDP driver controls 8 devices in the device
-> tree on its own. When running tests for the hardware video decoder, we
-> found that the iommus and LARBs were not being properly configured. To
-> configure them, a driver for each be added to mtk_mdp_comp so that
-> mtk_iommu_add_device() can (eventually) be called from dma_configure()
-> inside really_probe().
->
-> (2) The integration into the component framework allows us to defer the
-> registration with the v4l2 subsystem until all the MDP-related devices
-> have been probed, so that the relevant device node does not become
-> available until initialization of all the components is complete.
->
-> Some notes about how the component framework has been integrated:
->
-> - The driver for the rdma0 component serves double duty as the "master"
->   (aggregate) driver as well as a component driver. This is a non-ideal
->   compromise until a better solution is developed. This device is
->   differentiated from the rest by checking for a "mediatek,vpu" property
->   in the device node.
->
-> - The list of mdp components remains hard-coded as mtk_mdp_comp_dt_ids[]
->   in mtk_mdp_core.c, and as mtk_mdp_comp_driver_dt_match[] in
->   mtk_mdp_comp.c. This unfortunate duplication of information is
->   addressed in a following patch in this series.
->
-> - The component driver calls component_add() for each device that is
->   probed.
->
-> - In mtk_mdp_probe (the "master" device), we scan the device tree for
->   any matching nodes against mtk_mdp_comp_dt_ids, and add component
->   matches for them. The match criteria is a matching device node
->   pointer.
->
-> - When the set of components devices that have been probed corresponds
->   with the list that is generated by the "master", the callback to
->   mtk_mdp_master_bind() is made, which then calls the component bind
->   functions.
->
-> - Inside mtk_mdp_master_bind(), once all the component bind functions
->   have been called, we can then register our device to the v4l2
->   subsystem.
->
-> - The call to pm_runtime_enable() in the master device is called after
->   all the components have been registered by their bind() functions
->   called by mtk_mtp_master_bind(). As a result, the list of components
->   will not change while power management callbacks mtk_mdp_suspend()/
->   resume() are accessing the list of components.
+I thougt about that too (and doing the same for .data..page_aligned),
+but decided that 'page_aligned' does not imply 'page_sized', so that
+putting other variables on the same page is fine in general and saves
+some memory. The problem why it breaks here is only because x86 maps a
+variabe which is not page-sized RO, so my thinking was that it should be
+fixed right there, at the variable.
 
-For the component binding problem, MDP is similar to DRM driver [1],
-and DRM is probed by mmsys driver [2] (mmsys is a device which control
-display clock, display routing, mdp clock, mdp routing). Maybe you
-could refer to what DRM does.
+But if the above is fine too I prepare a patch which also aligns the end
+of .data..page_aligned.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/gpu/drm/mediatek/mtk_drm_drv.c?h=3Dv5.8-rc6
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?h=3Dv5.8-rc6&id=3D667c769246b01c53ad0925d603d2a2531abd3ef2
+Thanks,
 
-Regards,
-Chun-Kuang.
+	Joerg
 
->
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
