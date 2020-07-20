@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DA2225AD5
+	by mail.lfdr.de (Postfix) with ESMTP id C0883225AD6
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgGTJGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:06:37 -0400
+        id S1728205AbgGTJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:06:40 -0400
 Received: from mail-eopbgr00049.outbound.protection.outlook.com ([40.107.0.49]:23200
         "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725815AbgGTJGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:06:33 -0400
+        id S1728194AbgGTJGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 05:06:36 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E7jg0KldnLkHrvv3VP5lBHPe1MF6kc+AHYUgdtg/t1c8Bm9cmgyWT6/dX8OQIw4zlWrNjM3gsdbgGze9OOT10gTkQbnYva1hXE9WjDpGIwh4ZuG+GUtTjbMERIyRYNOmmM4yo+4obisB7TnpafEtt0gc7S6BUWgTG32Q7TCiK2wFjy3h1+skAUN9FbWur0XRCQvFc/3qSb00t5XkhZVqsMtMfX2/IMNxkTRzNmu0Z97G2xvEb3gmMDPCTBvsv+P9R+aSTXTfy4dPO9FgIJkU0eeE75yjWlzt/OEY3qzZ9Q/WG5GFfsonrnPs5QzDOrAQ/uaB5TJja/mZmQnZqyWZFg==
+ b=PPDI0A1iDC2HZ6Q3FS84rCTrlsfX6jyJ8h9w3e/6TVgn+FemBiSsn/8pcvwLYOBKCzvd7dL07OwaT6I31u7HODPqLKFg8S6LQ3865coLzydJgN1cYdTI812X881aNyfbw3krYIjQjSa37GoE3n0Ze+d86Paw75hfoIPbUJSATvZjRDAzjkaF88SexOTrDL0kpWDFXBWCQUygCqjLgY9z1ThQkgLxZdcCgVK1GGFEvjNy+3p2qJ1p5ob1gNiYRH7MJL7hMIHLx/uUv36i7k1FtHx+xVTxAg7lFAZZhwY0+c1M/O7umuTgK1D5UwtL/+HVVOOkx9F87ezOsTLK/WUkaA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V4tkTVJhaQJgyRDVhhwmuMUkig9/nJ7H48p80baDRGc=;
- b=XJQABKjdEHJhDQRbQqMj1sCg/16OiSnaI+SeZG4XTl6V0qZeC/yAL2d3AFKZbFyJqcSaM+yVyx3GixAtCDruhKkoLvCPVVxj+DM/x7W2Xpa/HEJXklFWAiQndB+7oMpb4/b/ZAEyPmcisxFEIPU3fT+YR/rS+ouv52FgyLHtq72U3dOBKQ0oGf+TFogZ4mqAkRUYfkMO16/nLzepZ1ZF8ceGS3YYA3wZb20QColfOInVhpFGfkNkwUd2bZObnSo1AGHCfuZUcYth7Bdt8nkTwGib6BJ0ZUQJmXHPduImIsUxrjiONBcY1a6feLSESkbl30Tp0Ad3NbrZgTgsGQhLoQ==
+ bh=uteGmeVdh6mwbpu9EYw+XDYU2Cv6F6tTCTsYliI4J9c=;
+ b=KgWBCETE3T/7wzqo+MG9W8x+SS5km8+U76xHdeh8MZShwsluIkaHlLJahZRxoWGjT2e5te/PWwgREvvFp8Y4cVw/T5lUbmSgy5Ep/pzJKI6rRoh+nx7oQKp6GM4wwT41xfC/hFOsC/JJiCouSC7mkYvYa9IYCIgRpZJgkmd24g07ZGA75oR+qAZfHS8N5obbzKeByQmhiU1yhSnHb/2u3gAFY3RoDwJAALy9Ceuj9B2jmYBI9B9y8BldBc+zVql4fH2rmYOjb544wWFhT8SEjOknhuPqjYZrzEznmk75YMH8UW84y353LIlnwe4z6YI1peHQ7k8jw4+Pdg1IckMxbA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V4tkTVJhaQJgyRDVhhwmuMUkig9/nJ7H48p80baDRGc=;
- b=QabxsoiYGK70lQzUMszk09vUPynH+YORHHdIDXbH1cA760pzOD2ilAStrRcaZ3P9J/fDlX+sM920dy/y08rzBY9N3pvfPFSlDAW0DhxdNcqFBO0CglcHbzCoAZu9VSv0WgaUzsFTNK++IZSQKmpmAQ0PeTJHIQH4N9qYtTdyCT0=
+ bh=uteGmeVdh6mwbpu9EYw+XDYU2Cv6F6tTCTsYliI4J9c=;
+ b=WetFEqyNdpJUNv/eIqldqgAnWXaTh90iwwYC5wYoaTzBeEPjhSO5ZbWTwCXjOOjnkMsNzKR/V3VY9K3OWXMp0emYos92GaazjuMr/yF0XoSDbgtJ8HijHeDQkp1K0SWw5XsnOCcJhVZ1YmK6ddl3OvWEPicUahuWa98Jpdo61gw=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM4PR0401MB2401.eurprd04.prod.outlook.com
  (2603:10a6:200:47::26) by AM0PR0402MB3762.eurprd04.prod.outlook.com
  (2603:10a6:208:3::13) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.23; Mon, 20 Jul
- 2020 09:06:23 +0000
+ 2020 09:06:24 +0000
 Received: from AM4PR0401MB2401.eurprd04.prod.outlook.com
  ([fe80::d0eb:f746:90e:44b3]) by AM4PR0401MB2401.eurprd04.prod.outlook.com
  ([fe80::d0eb:f746:90e:44b3%12]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 09:06:23 +0000
+ 09:06:24 +0000
 From:   franck.lenormand@oss.nxp.com
 To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
 Cc:     franck.lenormand@oss.nxp.com, kernel@pengutronix.de,
@@ -46,9 +46,9 @@ Cc:     franck.lenormand@oss.nxp.com, kernel@pengutronix.de,
         Anson.Huang@nxp.com, linux@rempel-privat.de,
         leonard.crestez@nxp.com, daniel.baluta@nxp.com,
         qiangqing.zhang@nxp.com, peng.fan@nxp.com
-Subject: [PATCH 4/7] firmware: imx: scu-irq: Add API to retrieve status of IRQ
-Date:   Mon, 20 Jul 2020 11:06:14 +0200
-Message-Id: <1595235977-106241-5-git-send-email-franck.lenormand@oss.nxp.com>
+Subject: [PATCH 5/7] dt-bindings: firmware: imx-scu: Add SECVIO resource
+Date:   Mon, 20 Jul 2020 11:06:15 +0200
+Message-Id: <1595235977-106241-6-git-send-email-franck.lenormand@oss.nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595235977-106241-1-git-send-email-franck.lenormand@oss.nxp.com>
 References: <1595235977-106241-1-git-send-email-franck.lenormand@oss.nxp.com>
@@ -58,32 +58,32 @@ X-ClientProxiedBy: AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM
  (2603:10a6:200:47::26)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from SOPDPUATS05.ea.freescale.net (81.1.10.98) by AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3195.18 via Frontend Transport; Mon, 20 Jul 2020 09:06:22 +0000
+Received: from SOPDPUATS05.ea.freescale.net (81.1.10.98) by AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3195.18 via Frontend Transport; Mon, 20 Jul 2020 09:06:23 +0000
 X-Mailer: git-send-email 2.7.4
 X-Originating-IP: [81.1.10.98]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cc80cd42-f709-4a1d-f569-08d82c8c2ce8
+X-MS-Office365-Filtering-Correlation-Id: 351b431d-64f6-421d-b296-08d82c8c2d94
 X-MS-TrafficTypeDiagnostic: AM0PR0402MB3762:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR0402MB3762B03B98484BD381E977C6D37B0@AM0PR0402MB3762.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:363;
+X-Microsoft-Antispam-PRVS: <AM0PR0402MB3762A842D91603496DE1C8F9D37B0@AM0PR0402MB3762.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GEHLTrrlNKfq1NOWiYa+vBxcQ8ZrfATja6z3ezsRH0v0+yxeaOYtsleTIKUqrGNfPJQwfgkiPRxn5fmuctYfJcpoPWdrGczxY6RjanMgAH5145ygYvHqJajAdWndyz4Vz6O4vl6wrddwp63hvVcD4X8IbNNKQvv4mKB8eTOEV6h1B6nCtHXNxMfQkxw7IwrFBOJB2zmoelrQIHEpaIwGyWueddRVyMMT/OZJZt99nS2IYJv1cO+kTYyiAqt6rIqSfjRXQjQ6vPJ3cy7glKt5D4a0cotcIG3Emz3ZiCgQUe8uY3+ACBjXqDuE2u6Aac32NJzc1qCwjUFGKCWTtKXjJg==
+X-Microsoft-Antispam-Message-Info: dNVNYfAY0vfj3fvQKo4MStlxebMpvoKU9fexi9ieWoy8aT10DNPEGknsh/O1lQsbprw2r95SfJYwrlMzsME0C7XuEfVEKXS2BhtdAx6A6TqYT3BrGDlDokgJ0wwdQyiRQGTmS747s9UCPQMqoVAuTyJ90cU1dFrPZLI2UiKDoVq2WrpD2JRkPgirCWs0HqqqLbjPEu2aIHE4qwo6yp9eFeiHCZh69UojNw477ysUfEzuttRkJNh7hOgl8AL+YCSSIzfuMWjZSgVhigXoxMP9JgJNZzF7O3472qp+dkSFtgIMELL+zZlI33mN07JI1a5fyQvNKcCf+LG0ns1rys3zhg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0401MB2401.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(346002)(39860400002)(376002)(6512007)(316002)(66476007)(66946007)(66556008)(2906002)(6666004)(9686003)(8676002)(8936002)(86362001)(83380400001)(5660300002)(26005)(186003)(16526019)(2616005)(6506007)(956004)(6486002)(478600001)(52116002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: a3ltl6OX+LAOv9PblBoivGfdt9iqntoQ5pfFK7qU2O3s7EimLyXyMphGbNC5PXB3bNs0LEHx/RtNY1t6ttKna36uyjrDTcsFgNqPJyPnoLuQ33WbXGxa2BtcauYxdVTR4LFa9xQQzsWDb5fNYBFw8r70gqNGXMmg5IdWkqZBvhX0VeBSZYDOS4wDY78GuuGCAaxFtNtC5RawaH9JpDnaTrg5EeK5UltJHofFu1901vOKPWeyHqqJvjdiXdgkePhIMY4/lAlKWBdbkTGrTlEYbaseJGNHaL4oFtDowu3KIbcVK8gci/AhQ4Zjk9E20FX+OmDvSZkCXcHl1a2Nv9v8aja6yJ0IIZ2TPossg7JrZMJevDe3JcDu6qn25TQIAKg2vWYhIbP4SbTk5JTw6HeRmxeWwLC0tLfYEnbtYwGhNZjG0o8qNR1Kp86SDhwpTshR3UZXs3hTHTNin7rviU2zCDqQn+0euqZ3GNRV/sNCLjw=
+X-MS-Exchange-AntiSpam-MessageData: 6bnvE/Ka6KLLmC0b3FSE8YtNXmPPQQsZoGr9/J5EOUFvn9mxJkrqpsqB9wPOKtOw7h0TqvMb/iY1jCceHkJ3kiCPoGX9j3fbKqBI3eV+Xy3VXJbBe4tOgubVmCraJQmlmEyrcpJOvTYR4ETfovSqjlqs4ShOlqNJTpNuFk4ljehodnXEph4+jeGNw8COR6s3mIwr3PFVoWfIizImUMi/Xt504l7XA+Fh+n8wwyJlG9lkytpez9DXGHW1wDM4arfR408PE24GklBpFsDTNPQoFUbjPo/RrZX8ZlbS9NDezi/wpe+0p/kejzYRFQAtOIiyxYxk+NzpwKPIsXEwI0E4edI2KzJDMJsTxcHbTybXFDHK5zfpH3bmoWRpDG8PbUn05L1Mem1QxY4QBCjYpwtshckw7kKrNd8bPvVdbC8nqy3HuXb4oYZmm11bgLggrMgiS3XdgMODylxzAuWmbMS+4tzWAcOgsESVrPcHN8d/Ct0=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc80cd42-f709-4a1d-f569-08d82c8c2ce8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 351b431d-64f6-421d-b296-08d82c8c2d94
 X-MS-Exchange-CrossTenant-AuthSource: AM4PR0401MB2401.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 09:06:23.5122
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 09:06:24.6407
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vpQ52HhxwrSck5wTO6Emz/tdHrdX1PGv042EyER7fwvqI0PiHWMlRRW+xZL+/xn+Z9/M8l6ihX5YayicQzGps21C6b7EEWMJ88fRRO3Nx/w=
+X-MS-Exchange-CrossTenant-UserPrincipalName: rmAc0zJHY8nsWpJMb0CtsaAABUrbs62eMAwYDvTh7x+etCaMlTIsYIQJawMyO/riDOhBjAUeviwGmVneJoNBRtMuCcYWkN8U6Y1rrDLAi5o=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3762
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -92,87 +92,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Franck LENORMAND <franck.lenormand@oss.nxp.com>
 
-This patch adds the API to retrieve the status of an IRQ.
-
-It also adds values used to process SECVIO IRQ from the SCU.
+The SNVS can trigger interruption when detecting a SECurity
+VIOlation.
+This patch adds the definition of the resource.
 
 Signed-off-by: Franck LENORMAND <franck.lenormand@oss.nxp.com>
 ---
- drivers/firmware/imx/imx-scu-irq.c | 37 ++++++++++++++++++++++++++++++++++++-
- include/linux/firmware/imx/sci.h   |  4 ++++
- 2 files changed, 40 insertions(+), 1 deletion(-)
+ include/dt-bindings/firmware/imx/rsrc.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/imx/imx-scu-irq.c b/drivers/firmware/imx/imx-scu-irq.c
-index db655e8..4de6486 100644
---- a/drivers/firmware/imx/imx-scu-irq.c
-+++ b/drivers/firmware/imx/imx-scu-irq.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
+diff --git a/include/dt-bindings/firmware/imx/rsrc.h b/include/dt-bindings/firmware/imx/rsrc.h
+index 54278d5..fe5f25f 100644
+--- a/include/dt-bindings/firmware/imx/rsrc.h
++++ b/include/dt-bindings/firmware/imx/rsrc.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
  /*
-- * Copyright 2019 NXP
-+ * Copyright 2019-2020 NXP
-  *
-  * Implementation of the SCU IRQ functions using MU.
-  *
-@@ -95,6 +95,41 @@ static void imx_scu_irq_work_handler(struct work_struct *work)
- 	}
- }
+  * Copyright (C) 2016 Freescale Semiconductor, Inc.
+- * Copyright 2017-2018 NXP
++ * Copyright 2017-2018, 2020 NXP
+  */
  
-+/**
-+ * imx_scu_irq_get_status() - Get the status of the IRQs of a group
-+ *
-+ * @group: The group of IRQ to retrieve status
-+ * @irq_status: Status of the IRQs retrieved
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int imx_scu_irq_get_status(u8 group, u32 *irq_status)
-+{
-+	struct imx_sc_msg_irq_get_status msg;
-+	struct imx_sc_rpc_msg *hdr = &msg.hdr;
-+	int ret;
-+
-+	hdr->ver = IMX_SC_RPC_VERSION;
-+	hdr->svc = IMX_SC_RPC_SVC_IRQ;
-+	hdr->func = IMX_SC_IRQ_FUNC_STATUS;
-+	hdr->size = 2;
-+
-+	msg.data.req.resource = mu_resource_id;
-+	msg.data.req.group = group;
-+
-+	ret = imx_scu_call_rpc(imx_sc_irq_ipc_handle, &msg, true);
-+	if (ret)
-+		return ret;
-+
-+	if (irq_status)
-+		*irq_status = msg.data.resp.status;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(imx_scu_irq_get_status);
-+
- int imx_scu_irq_group_enable(u8 group, u32 mask, u8 enable)
- {
- 	struct imx_sc_msg_irq_enable msg;
-diff --git a/include/linux/firmware/imx/sci.h b/include/linux/firmware/imx/sci.h
-index 97245e5..a27d069 100644
---- a/include/linux/firmware/imx/sci.h
-+++ b/include/linux/firmware/imx/sci.h
-@@ -17,8 +17,12 @@
- #include <linux/firmware/imx/svc/rm.h>
- #include <linux/firmware/imx/svc/seco.h>
- 
-+#define IMX_SC_IRQ_GROUP_WAKE       3U /* Wakeup interrupts */
-+#define IMX_SC_IRQ_SECVIO            BIT(6)    /* Security violation */
-+
- int imx_scu_enable_general_irq_channel(struct device *dev);
- int imx_scu_irq_register_notifier(struct notifier_block *nb);
- int imx_scu_irq_unregister_notifier(struct notifier_block *nb);
- int imx_scu_irq_group_enable(u8 group, u32 mask, u8 enable);
-+int imx_scu_irq_get_status(u8 group, u32 *irq_status);
- #endif /* _SC_SCI_H */
+ #ifndef __DT_BINDINGS_RSCRC_IMX_H
+@@ -50,6 +50,7 @@
+ #define IMX_SC_R_DC_1_BLIT2		38
+ #define IMX_SC_R_DC_1_BLIT_OUT		39
+ #define IMX_SC_R_DC_1_WARP		42
++#define IMX_SC_R_SECVIO			44
+ #define IMX_SC_R_DC_1_VIDEO0		45
+ #define IMX_SC_R_DC_1_VIDEO1		46
+ #define IMX_SC_R_DC_1_FRAC0		47
 -- 
 2.7.4
 
