@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B8D226C23
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AD0226B93
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgGTPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58446 "EHLO mail.kernel.org"
+        id S1730155AbgGTPm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:42:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbgGTPjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:39:24 -0400
+        id S1730143AbgGTPmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:42:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D76222CAF;
-        Mon, 20 Jul 2020 15:39:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 573EB2064B;
+        Mon, 20 Jul 2020 15:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259563;
-        bh=Goq3gE73MFyJrQ8A7qmzhAcc5rjHku2kdxLwaQUMtBY=;
+        s=default; t=1595259773;
+        bh=v5pzLyl2SJd1PntkNmxFPTeULXZvmlFGi3ShJso8gxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KFyA5l8iFX8gySpwTv/Ej42Ocg2ydvgVnn0yh/Or3DUzIEVimctRfD3fMrBmg7Ozx
-         MWK+tzIgS2lZ1f6QwNX4TbkC6YthYV4vpzvKrbuzzRM3thDEpDAgGlHbAltiV9UO2M
-         +Pz+zaiXQqrIseT8imPApaeTIgYaX+y+eCff8zgU=
+        b=LQSvCNyB13Zq4fLSiZ0KQgdHTnq/iiqEJ1wFnPLCAyLm38cGyAh3QlpkwVA81BuKV
+         yOiLmDB2StDU1uWOXu1UIuyx4PASgaO5vnas2+jewNcsFe3FnpX6rU/qnd2E9937XU
+         Hz0OGUbgwnUgTSu4QB+2U6UYumaM576zN0lFl6cA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishwas M <vishwas.reddy.vr@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 55/58] hwmon: (emc2103) fix unable to change fan pwm1_enable attribute
+        stable@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH 4.9 75/86] mei: bus: dont clean driver pointer
 Date:   Mon, 20 Jul 2020 17:37:11 +0200
-Message-Id: <20200720152750.024884509@linuxfoundation.org>
+Message-Id: <20200720152756.978576850@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vishwas M <vishwas.reddy.vr@gmail.com>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-commit 14b0e83dc4f1e52b94acaeb85a18fd7fdd46d2dc upstream.
+commit e852c2c251ed9c23ae6e3efebc5ec49adb504207 upstream.
 
-This patch fixes a bug which does not let FAN mode to be changed from
-sysfs(pwm1_enable). i.e pwm1_enable can not be set to 3, it will always
-remain at 0.
+It's not needed to set driver to NULL in mei_cl_device_remove()
+which is bus_type remove() handler as this is done anyway
+in __device_release_driver().
 
-This is caused because the device driver handles the result of
-"read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg)" incorrectly. The
-driver thinks an error has occurred if the (result != 0). This has been
-fixed by changing the condition to (result < 0).
+Actually this is causing an endless loop in driver_detach()
+on ubuntu patched kernel, while removing (rmmod) the mei_hdcp module.
+The reason list_empty(&drv->p->klist_devices.k_list) is always not-empty.
+as the check is always true in  __device_release_driver()
+	if (dev->driver != drv)
+		return;
 
-Signed-off-by: Vishwas M <vishwas.reddy.vr@gmail.com>
-Link: https://lore.kernel.org/r/20200707142747.118414-1-vishwas.reddy.vr@gmail.com
-Fixes: 9df7305b5a86 ("hwmon: Add driver for SMSC EMC2103 temperature monitor and fan controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+The non upstream patch is causing this behavior, titled:
+'vfio -- release device lock before userspace requests'
+
+Nevertheless the fix is correct also for the upstream.
+
+Link: https://patchwork.ozlabs.org/project/ubuntu-kernel/patch/20180912085046.3401-2-apw@canonical.com/
+Cc: <stable@vger.kernel.org>
+Cc: Andy Whitcroft <apw@canonical.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Link: https://lore.kernel.org/r/20200628225359.2185929-1-tomas.winkler@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hwmon/emc2103.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/mei/bus.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/hwmon/emc2103.c
-+++ b/drivers/hwmon/emc2103.c
-@@ -452,7 +452,7 @@ static ssize_t set_pwm_enable(struct dev
- 	}
+--- a/drivers/misc/mei/bus.c
++++ b/drivers/misc/mei/bus.c
+@@ -639,9 +639,8 @@ static int mei_cl_device_remove(struct d
+ 		ret = cldrv->remove(cldev);
  
- 	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
--	if (result) {
-+	if (result < 0) {
- 		count = result;
- 		goto err;
- 	}
+ 	module_put(THIS_MODULE);
+-	dev->driver = NULL;
+-	return ret;
+ 
++	return ret;
+ }
+ 
+ static ssize_t name_show(struct device *dev, struct device_attribute *a,
 
 
