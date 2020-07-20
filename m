@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC7F2265D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A706E2265D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731937AbgGTP5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
+        id S1731946AbgGTP5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:57:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731627AbgGTP5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:30 -0400
+        id S1731931AbgGTP5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:57:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14BB72065E;
-        Mon, 20 Jul 2020 15:57:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 975402065E;
+        Mon, 20 Jul 2020 15:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260649;
-        bh=egxt+OqgdvW57MofFR/h1DolS9Q1TbBM33DDluq4gHE=;
+        s=default; t=1595260655;
+        bh=bYcsp+lTAjYQXjg17ZAbSyfn2+pSwrVpblngizYvBnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yugVC8FI/y9+Jvc+wMxY01RADixhc+Z5RfBkLZluvwy9QG+QoR3hPV0EW1ERCy3+F
-         K+RSuV/eCO5nBKCtDyUr2n17dZLKN+aj4wXRHhBnl1pMwm3P+ry0W9i8bDgMxHbKC+
-         VsguS6vaqtelVw4lZx81kknopWR9sahkwkR2iNGQ=
+        b=VWZVSjHT+Ox6f8Qrs/+/CsGP1r6Ly9IMKzL3mimIB3eDE/50fqiIQo6fMMTnsH6SE
+         v+nk37paGQ0MNhHb4qPZ4n9RNY3V7uoADGCu1F3VNDttEi9hQpRII4UXBYOV4mTEr0
+         cxlOpIAsUzkVLi4+qCz+0mIYgqMuMPekt7jf6f0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 045/215] arm64/alternatives: dont patch up internal branches
-Date:   Mon, 20 Jul 2020 17:35:27 +0200
-Message-Id: <20200720152822.340606082@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alison Schofield <amsfield22@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.4 047/215] iio:humidity:hdc100x Fix alignment and data leak issues
+Date:   Mon, 20 Jul 2020 17:35:29 +0200
+Message-Id: <20200720152822.437100100@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -45,64 +46,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 5679b28142193a62f6af93249c0477be9f0c669b ]
+commit ea5e7a7bb6205d24371373cd80325db1bc15eded upstream.
 
-Commit f7b93d42945c ("arm64/alternatives: use subsections for replacement
-sequences") moved the alternatives replacement sequences into subsections,
-in order to keep the as close as possible to the code that they replace.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data.
+This data is allocated with kzalloc so no data can leak apart
+from previous readings.
 
-Unfortunately, this broke the logic in branch_insn_requires_update,
-which assumed that any branch into kernel executable code was a branch
-that required updating, which is no longer the case now that the code
-sequences that are patched in are in the same section as the patch site
-itself.
+Fixes: 16bf793f86b2 ("iio: humidity: hdc100x: add triggered buffer support for HDC100X")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Cc: Alison Schofield <amsfield22@gmail.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-So the only way to discriminate branches that require updating and ones
-that don't is to check whether the branch targets the replacement sequence
-itself, and so we can drop the call to kernel_text_address() entirely.
-
-Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
-Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
-Link: https://lore.kernel.org/r/20200709125953.30918-1-ardb@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/alternative.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+ drivers/iio/humidity/hdc100x.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-index d1757ef1b1e74..73039949b5ce2 100644
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@ -43,20 +43,8 @@ bool alternative_is_applied(u16 cpufeature)
-  */
- static bool branch_insn_requires_update(struct alt_instr *alt, unsigned long pc)
- {
--	unsigned long replptr;
--
--	if (kernel_text_address(pc))
--		return true;
--
--	replptr = (unsigned long)ALT_REPL_PTR(alt);
--	if (pc >= replptr && pc <= (replptr + alt->alt_len))
--		return false;
--
--	/*
--	 * Branching into *another* alternate sequence is doomed, and
--	 * we're not even trying to fix it up.
--	 */
--	BUG();
-+	unsigned long replptr = (unsigned long)ALT_REPL_PTR(alt);
-+	return !(pc >= replptr && pc <= (replptr + alt->alt_len));
- }
+--- a/drivers/iio/humidity/hdc100x.c
++++ b/drivers/iio/humidity/hdc100x.c
+@@ -38,6 +38,11 @@ struct hdc100x_data {
  
- #define align_down(x, a)	((unsigned long)(x) & ~(((unsigned long)(a)) - 1))
--- 
-2.25.1
-
+ 	/* integration time of the sensor */
+ 	int adc_int_us[2];
++	/* Ensure natural alignment of timestamp */
++	struct {
++		__be16 channels[2];
++		s64 ts __aligned(8);
++	} scan;
+ };
+ 
+ /* integration time in us */
+@@ -319,7 +324,6 @@ static irqreturn_t hdc100x_trigger_handl
+ 	struct i2c_client *client = data->client;
+ 	int delay = data->adc_int_us[0] + data->adc_int_us[1];
+ 	int ret;
+-	s16 buf[8];  /* 2x s16 + padding + 8 byte timestamp */
+ 
+ 	/* dual read starts at temp register */
+ 	mutex_lock(&data->lock);
+@@ -330,13 +334,13 @@ static irqreturn_t hdc100x_trigger_handl
+ 	}
+ 	usleep_range(delay, delay + 1000);
+ 
+-	ret = i2c_master_recv(client, (u8 *)buf, 4);
++	ret = i2c_master_recv(client, (u8 *)data->scan.channels, 4);
+ 	if (ret < 0) {
+ 		dev_err(&client->dev, "cannot read sensor data\n");
+ 		goto err;
+ 	}
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   iio_get_time_ns(indio_dev));
+ err:
+ 	mutex_unlock(&data->lock);
 
 
