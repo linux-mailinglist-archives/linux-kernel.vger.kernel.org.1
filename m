@@ -2,124 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AB722563A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FEB225645
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgGTDoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 23:44:39 -0400
-Received: from mail-vi1eur05on2045.outbound.protection.outlook.com ([40.107.21.45]:49960
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S1726633AbgGTDqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 23:46:21 -0400
+Received: from mail-eopbgr1310085.outbound.protection.outlook.com ([40.107.131.85]:47584
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726127AbgGTDoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 23:44:38 -0400
+        id S1726123AbgGTDqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 23:46:20 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SDkSgB6zaYfAhhCeG99mpMVX7R33uWda2uoDeTtH38yX50L2v4xTWvITPXwBPWokhN+7nGYelUHhDL5sVENJazmusl5WGu9RV/Vbkmfw6qZIH6z9f+tXHTwM/8UshCW9H9WmnAB4NNBQuymaER4MD4Attlr81lqr7IeIwBGFBppbynPXMRg2kNJGyrHn53TGOfj0fUqk7eu7kLHWTVzhjwO9s5PPuVOA+oskIBj59wfLR5xc7A/UsJEyYtfo3xzDREPNuFFFEg7rFK9CJw8Ldntbm8aL/w47EKlSej4L97FGPic5Rph9yGpVuIHWCOcyna2YihDHfQO+rmRx8NcwlQ==
+ b=KSVUVnlYw+POUATSaOKMepxwJQCbNqSmpBcVVm3ll0zMKbz/hHM0/NO+hEAOmyuhGKw86+RTem/pL1BHqlUbaKXs/WwD5quQCZBFPLsrviUCTfEVWwF/H8ccaBtd1bjsDhtH0u8KV7QVBP3HVID6cSn3KPA5v9J9iT8L5Gczqaj8DpfyUZMXF+kHWKrsMvscpS76cE8kA1Lx0EBZvJNNrmygoc3BbIfjiobMmyIlPnFuFBaUVSpzVeEaQHPOGbwU0s58RHkb5MfIhAamVTWIObFMOv0TQbiLVO1Ctdn2+EfgR1dq0tcgsZhgocS/Ru4mxxHfh9gda/mS9/iZsWj6mA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=81XaqxWskLIFMWzeMsB9y1VKvhvKU4zYXBbgdNvaors=;
- b=h5UuTDJyx6jSTKEBwYgQILKumRvJJJ2VJq2cuu+mDi2xEorGWVZQpH+QSLoVlqDcwxXzyqkvMzQ4ioniQMidoTq4kI6bYDgh5Jk9HDjS5HnzaNFM61fsupHW3y7Tm5hakk5jTCzp6wZ6NupwScUKGJSh/P/3PxYTrwSmGQhp9Q37r7g2TRDsymJOepeh2V/4v4ChE3pqH3zZam1H12guUMVNZGPIcGjIbO8yT8z/j8JlkOLFlOMrPXJ9SNziV/1jAud6n79WHjQtErVFN+s6CGSSvlhZLB1+ejUdJBKQ4ao00v5kft5EjvfNzlDMS/ABPfwkfljxSy2V1ul1gpDm6Q==
+ bh=fgKcaSx9e6Wgyj3SgEVBicEOJnG/0XvaqOASV2Wld98=;
+ b=mMLK5DMJuAeCWg+jydQTPYLY7LNnJK3Gj5ctFkH2us8/wg+i6wixupPOrQYCo/28JJ0Y5XTtqa6Y1PLbi6EUZb+Fd9/LY1UdXZmwcoAWzzV+YhkP9o7856VSgY3yiX5Knk3wiNKc9jd6KBmOXL/tKUXKOuErAPwOSBVtH/4OPjGJHQ0yB/0DG/Qo1n+3kLzyEFdghBaEOC1ImFcDBtSTVlzB21F+1vijo2fUYwwn0MuaTl3hBY2NhHdAvU0JV0V/kbHV7x0V54mko+APghumpYHWsn8lILLk5O0aiHM7ol9vqCuxu5Pcu/5qCaAY6ndgO/3rudLPxjaYhTlI5Lyl6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=81XaqxWskLIFMWzeMsB9y1VKvhvKU4zYXBbgdNvaors=;
- b=E/oE4JWrUArK4uegsaoK4nWv3NwVtCzFz50rQKR3eJYNGxlnFzPiAMdD1L3VlEHj6WSV0ygJwAJwRvTi95AzmyA+8O+ydnXYuXeqVbG0sbtg0LfJjwHf+ohu+f0EVtBVPwRV+S77gPt9rLnb1SXcW8qCCxM+sXMw6Zx428C5m+w=
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
- by AM6PR04MB5368.eurprd04.prod.outlook.com (2603:10a6:20b:9c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Mon, 20 Jul
- 2020 03:44:34 +0000
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::1101:adaa:ee89:af2a]) by AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::1101:adaa:ee89:af2a%3]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 03:44:34 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Philippe Schenker <philippe.schenker@toradex.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "festevam@gmail.com" <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, Jun Li <jun.li@nxp.com>
-Subject: RE: [PATCH v2 2/3] usb: chipidea: imx: support disabling runtime-pm
-Thread-Topic: [PATCH v2 2/3] usb: chipidea: imx: support disabling runtime-pm
-Thread-Index: AQHWWfIPNKRf0OmdJ0GCrPpelAWmTKkHzuSggAChQYCAB2sK0A==
-Date:   Mon, 20 Jul 2020 03:44:34 +0000
-Message-ID: <AM7PR04MB71572600CE73140FE13CB17C8B7B0@AM7PR04MB7157.eurprd04.prod.outlook.com>
-References: <20200714151822.250783-1-philippe.schenker@toradex.com>
-         <20200714151822.250783-2-philippe.schenker@toradex.com>
-         <AM7PR04MB7157793C6395C200DF5646C98B7E0@AM7PR04MB7157.eurprd04.prod.outlook.com>
- <08251297f72fe745be43205d0a73631f009681cc.camel@toradex.com>
-In-Reply-To: <08251297f72fe745be43205d0a73631f009681cc.camel@toradex.com>
-Accept-Language: en-US
-Content-Language: en-US
+ bh=fgKcaSx9e6Wgyj3SgEVBicEOJnG/0XvaqOASV2Wld98=;
+ b=L6IBJn/SeHUACUIsfrI35esmvFTOlKT9zSiegPPxWZ7QhcvCMz6c7r6YDVQ16OhDyHiljpEhvqMgHz9Do7kNpjMN5BdVXKWKtLV6mCFu1Fqx0YRBLqHKJ8C/HqLacETkOTh/FcHBwp2XFbM1lnLmFjgf7a1JAMitT9rRwxO1C84=
+Received: from HK2PR01MB3281.apcprd01.prod.exchangelabs.com
+ (2603:1096:202:22::12) by HK2PR01MB3394.apcprd01.prod.exchangelabs.com
+ (2603:1096:202:25::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.23; Mon, 20 Jul
+ 2020 03:46:16 +0000
+Received: from HK2PR01MB3281.apcprd01.prod.exchangelabs.com
+ ([fe80::dce:9650:6c58:8b77]) by HK2PR01MB3281.apcprd01.prod.exchangelabs.com
+ ([fe80::dce:9650:6c58:8b77%4]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
+ 03:46:16 +0000
+From:   =?iso-2022-jp?B?Sm9obnNvbiBDSCBDaGVuICgbJEJERD48Ui4bKEIp?= 
+        <JohnsonCH.Chen@moxa.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>
+CC:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Scott Wood <scottwood@freescale.com>
+Subject: RE: linux-next: Tree for Jul 17 (drivers/rtc/rtc-ds1374.o)
+Thread-Topic: linux-next: Tree for Jul 17 (drivers/rtc/rtc-ds1374.o)
+Thread-Index: AQHWXKQ1iSSgQh4Y6UGMkRd+5h1jW6kP00MA
+Date:   Mon, 20 Jul 2020 03:46:15 +0000
+Message-ID: <HK2PR01MB32812019FB4521DC22313B10FA7B0@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
+References: <20200717214036.67fa5379@canb.auug.org.au>
+        <d36fac01-2a7b-c3f1-84ef-3a1560d18790@infradead.org>
+ <20200718113853.6bd63897@canb.auug.org.au>
+In-Reply-To: <20200718113853.6bd63897@canb.auug.org.au>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: toradex.com; dkim=none (message not signed)
- header.d=none;toradex.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [116.232.9.225]
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=moxa.com;
+x-originating-ip: [123.51.145.16]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 39d2141d-377d-404b-c440-08d82c5f37f2
-x-ms-traffictypediagnostic: AM6PR04MB5368:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB5368A339C78882CB4A048F7B8B7B0@AM6PR04MB5368.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-office365-filtering-correlation-id: ff539962-4a2c-4f01-6803-08d82c5f7473
+x-ms-traffictypediagnostic: HK2PR01MB3394:
+x-microsoft-antispam-prvs: <HK2PR01MB33948810D5DBFCB22785FB51FA7B0@HK2PR01MB3394.apcprd01.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KsZZdk+5uqhvzSP9dJMd5bToRg4Vb6yTWZ4UVnkqgyBMtytP5UOUgHi3XOZ3w3EgFyHHoV0tcPqUBkaApKEr0zxWY3Kmw/J4rMuui/iGwCXZeyOlOtDwymHYvg2+/1ZHbpkJANZuJLDuo2aL7eE1Mj6/HMoG2K/i5IiZXrZ4D1Vm2nGT49yXOp7Dgoa5VKRs8hjysuFLn+wKWnp01RIIu0x7l0+ORo3leTtlL04d9O+wC8rESKprBKaTbffPxb5wmjOzitzLdRGzC0ghAqGGUDiBg3BNw8lKsp9MGOP7GmLLwFJ6+BGkL705MiIhEQLBepFYlViwVChHQImEmr5c9w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(316002)(5660300002)(66446008)(44832011)(186003)(6506007)(8936002)(7696005)(8676002)(66556008)(86362001)(66476007)(66946007)(64756008)(26005)(76116006)(7416002)(33656002)(54906003)(110136005)(71200400001)(478600001)(4326008)(52536014)(2906002)(83380400001)(55016002)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: mAAVKc2t2qKKG5eq2u20UcBPe1WXusQNKW0ELxrezWfyde8M5AXbqbs1WwVagKdnPwE5B8PZ7UmPaRZKI5UzUR6Rr69uzy3gFM4gtXTEeFBsCAm+VzhllwAaEJ0hWdW1DDJMCBYXtHyOhwv97McJw1DJu7ydrKQfX8XqzovQb/dw3C0tfniar5wWdbRHBwYancyDxOeibOLzX02zRvY5ckRolT4zvh4A0BrbafWzxgAFhnxbTU1qTM2DHabqo+QSpA5wGcJnbvYWFzGHeP/BhVYEDlw1rBJNULU8+tCCz5Ug0BIMg40H6jZ86uWe11SSowRSNxlyB92HA2CNUuJ3pnf9x8x09JZK+3aqmvvt3SoGjQiy/hmewzqLyuLjjubnjh1CgsxiDzvE8RCPLOJOfOzkaS5xIECYHle1ndtfD4yYtu0DjEXB9cskCIjNkkMPkv0GfcYn9zEYTSYukyckDpDF77y35EhaL87Gl8yfQY0=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: WMc/gfyo30y82V1p1jN2w513PGlubAJyeIY0y4M3ZOG6ekqiN70Erdi4DvlimY2QAmJttZuIbqAKVC//mWNuva2P2/t+VjH9wnoPA9Ym8WhRjsN2A1KISqTERUTHDGeizv/ptIwWxtFxfh6swMKcF4DrJntjmNfvFSi0HEFb49qbw2TSRYeWEzsiNfOAf1gfnn/GobUVi1Zak56AJH3xxlWS5v9YLTTxImhzSHmyZuVb60RgxCggjlIbAAWQT0OtnSEjLYA7t0VMePFnD9IMXs8TBZfcg1QO9fRaikjxfte0+CiCxRRGDPR+XxFkHnQVp7IBxUBdCUXA9jaQVP37lA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR01MB3281.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(366004)(346002)(396003)(39850400004)(26005)(85182001)(478600001)(71200400001)(186003)(86362001)(110136005)(5660300002)(2906002)(4326008)(8676002)(66946007)(316002)(76116006)(66446008)(66476007)(64756008)(66556008)(33656002)(52536014)(6506007)(54906003)(8936002)(53546011)(9686003)(55016002)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: HnQGPVZLQPkt0Ymn5cFka/6Bm/9AY7gWByultUV5xeqxojmmQ7wANc6eroH+sfRgISq4boEIatCuCFEmQ5NN2Vi58V8qzlVbPjH4TlXD3Hpc4M1vA1i/cRXVVP87VVw8fArhD/EE/0z31oFKrXkJSOEDh3orpnAFZ3tE9zm54QRr0CaTYwICfVoRoGcjyRuBhs7PbRb918ZlPLUR7m7WLcB/ZsAKwliG7P/YZ1vmXn7ew/CtlYzwpahnMNokFC7N7iTheIJ7cOrvyWOTg/Lpv628mutpmVEmHUSWEr0jflms4iptOKduNTngmF0oY0pQ456/MhnmVFObVtayceL9uwgMy4fDHVlPeUn6dmKYHvrPrtcscWLrA5X2XPKChnrheP+4lZgDoyN6pHeiJXAbHBRzqatVShiG4UXrCDwtyG6YZthYMyCcS9WPdbuCd1bWtY7Qpdaln63HiyUxDcj+2PngNa+KgbjiQVjgAs/2fNM=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-OriginatorOrg: moxa.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7157.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39d2141d-377d-404b-c440-08d82c5f37f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 03:44:34.3364
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR01MB3281.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff539962-4a2c-4f01-6803-08d82c5f7473
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 03:46:15.8631
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qUqEroUUXk4c65DKe6Ms1PpvF/g1uwvt+8ppVo1g9cqOIdtTMCzDTETZd6Lt0gMcyln12qDLYF9pfl2mdg/yqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5368
+X-MS-Exchange-CrossTenant-userprincipalname: oxh0tT6oACoybb4ezZnanlkAdBnaT5YsmXag5BG4IdI+ceyxLQ5ARq39EYnXZr8AZFEJOdPUpikTHN/iDW5j/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR01MB3394
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA0KPiBPbiBXZWQsIDIwMjAtMDctMTUgYXQgMDA6NTEgKzAwMDAsIFBldGVyIENoZW4gd3JvdGU6
-DQo+ID4NCj4gPiA+IFRoZSBUb3JhZGV4IENvbGlicmkgaU1YNlVMTCBib2FyZCBoYXMgYSBzcGVj
-aWFsIFVTQiBoYXJkd2FyZSBkZXNpZ24uDQo+ID4gPiBXaXRoIHJ1bnRpbWUtcG0gZW5hYmxlZCBV
-U0IgcmVzZXQgaXRzZWxmIGNvbnRpbnVvdXNseS4gRnVydGhlcm1vcmUNCj4gPiA+IHRoZSBPVEcg
-cG9ydCBpcyBhbHNvIG5vdCBlbnVtZXJhdGluZyBkZXZpY2VzIGlmIHRoZSBDaGlwaWRlYSBJUCBp
-cw0KPiA+ID4gaW4gcnVudGltZSBzbGVlcCBtb2RlIGFuZCBhIGRldmljZSBvciBob3N0IGdldHMg
-cGx1Z2dlZCBpbi4NCj4gPiA+DQo+ID4NCj4gPiBIaSBQaGlsaXBwZSwNCj4gPg0KPiA+IFlvdSBt
-YXkgZGVzY3JpYmUgdGhlIGRldGFpbCB3aGF0J3MgdGhlIHNwZWNpYWwgVVNCIGhhcmR3YXJlIGRl
-c2lnbiBmb3INCj4gPiB5b3VyIGJvYXJkLA0KPiANCj4gSWYgSSBvbmx5IGtuZXcgdGhlIHJvb3Qt
-Y2F1c2Ugb2YgdGhhdCBwcm9ibGVtIC0gdW5mb3J0dW5hdGVseSBJIGRvbid0Lg0KPiBUaGF0J3Mg
-YWxzbyB3aHkgSSBoYXZlIHN1Y2ggYSBoYXJkIHRpbWUgdG8gZGVzY3JpYmUgaXQuDQo+IA0KPiA+
-IGFuZCB3aHkgaXQgY2F1c2VzIHRoZSBwcm9ibGVtLCBhbmQgd2h5IGRpc2FibGUgcnVudGltZSBw
-bSBjb3VsZCBmaXgNCj4gPiB0aGlzIGlzc3VlLCB0aGVuLA0KPiANCj4gSSBjYW5ub3QgcHJvdmlk
-ZSB0aGUgJ3doeScgcGFydCB5ZXQuIEknbGwgdHJ5IHNvbWV0aGluZyBtb3JlIGFuZCBob3BlIEkg
-Y2FuIHByb3ZpZGUNCj4geW91IGd1eXMgd2l0aCB0aGUgZXhhY3QgZGVzY3JpcHRpb24uDQo+IA0K
-PiA+IHRoZSBvdGhlciB1c2VycyBjb3VsZCBrbm93IGlmIGl0IGNvdWxkIGFwcGx5IHRvIHRoZWly
-IHBsYXRmb3JtcyBvciBub3QNCj4gPiBpbiBmdXR1cmUuDQo+IA0KPiBJIG9ubHkgZm91bmQgb3V0
-IGFib3V0IGl0IGJlY2F1c2UgeW91IHdlcmUgcG9pbnRpbmcgbWUgaW4gdGhhdCBkaXJlY3Rpb24u
-IEkgZGVidWdnZWQNCj4gZm9yIGhvdXJzIG5vdyBhbmQgZGlkbid0IGNhbWUgdG8gdGhlIHJvb3Qt
-Y2F1c2Ugb2YgdGhlIGlzc3VlLiBJIHRoaW5rIHRvIHJlYWxseQ0KPiB1bmRlcnN0YW5kIGl0IEkg
-d291bGQgbmVlZCB0byBrbm93IG11Y2ggbW9yZSBhYm91dCB0aGUgQ2hpcGlkZWEgSVAuDQo+IA0K
-PiBJJ2xsIGdldCBiYWNrIHRvIHlvdSBndXlzIHdpdGggYSBwcm9wb3NhbCBmb3IgYSBuZXcgZGVz
-Y3JpcHRpb24uDQo+IA0KDQpQaGlsaXBwZSwgaXMgaXQgcG9zc2libGUgdG8gc2hhcmUgeW91ciBV
-U0IgaGFyZHdhcmUgZGVzaWduIGF0IDZVTEw/DQpBbmQgaG93IGNpX2hkcmNfZ2FkZ2V0X2Nvbm5l
-Y3QgaXMgY2FsbGVkIHdoZW4gdGhlIHJ1bnRpbWUgcG0gaXMgZGlzYWJsZWQ/DQoNClRoYW5rcywN
-ClBldGVyDQogDQo=
+Hi Stephen,=20
+
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Sent: Saturday, July 18, 2020 9:39 AM
+> To: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Linux Next Mailing List <linux-next@vger.kernel.org>; Linux Kernel Ma=
+iling
+> List <linux-kernel@vger.kernel.org>; linux-rtc@vger.kernel.org; Alessandr=
+o
+> Zummo <a.zummo@towertech.it>; Alexandre Belloni
+> <alexandre.belloni@bootlin.com>; Scott Wood <scottwood@freescale.com>;
+> Johnson CH Chen (=1B$BDD><R.=1B(B) <JohnsonCH.Chen@moxa.com>
+> Subject: Re: linux-next: Tree for Jul 17 (drivers/rtc/rtc-ds1374.o)
+>=20
+> Hi Randy,
+>=20
+> [Please trim your emails a bit more, thanks]
+>=20
+> On Fri, 17 Jul 2020 09:49:05 -0700 Randy Dunlap <rdunlap@infradead.org>
+> wrote:
+> > on x86_64:
+> > # CONFIG_WATCHDOG is not set
+> >
+
+Thanks for your information.
+
+It seems RTC_DRV_DS1374_WDT should be depended on RTC_DRV_DS1374 && WATCHDO=
+G_CORE. Otherwise error will happen if RTC_DRV_DS1374_WDT is enabled but WA=
+TCHDOG_CORE not. I'll put this into v5 if there are no other suggestions.
+
+Should I add " Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>" into v=
+5? So many thanks!
+
+> > ld: drivers/rtc/rtc-ds1374.o: in function `ds1374_probe':
+> > rtc-ds1374.c:(.text+0x736): undefined reference to
+> `watchdog_init_timeout'
+> > ld: rtc-ds1374.c:(.text+0x77e): undefined reference to
+> `devm_watchdog_register_device'
+>=20
+> Caused by commit
+>=20
+>   d3de4beb14a8 ("rtc: ds1374: wdt: Use watchdog core for watchdog
+> part")
+>=20
+> from the rtc tree.
+> --
+> Cheers,
+> Stephen Rothwell
+
+Best regards,
+Johnson
