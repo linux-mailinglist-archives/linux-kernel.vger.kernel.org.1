@@ -2,267 +2,456 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75395225FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A5A22600C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729509AbgGTMwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:52:20 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:14508 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729164AbgGTMwR (ORCPT
+        id S1729544AbgGTMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:52:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53762 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729431AbgGTMwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:52:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595249560; x=1626785560;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=D47ZWtuYp+ltbQojuMH+iHGB5jbrwXJ47spBJNYF4A8=;
-  b=BWzHT04bYJXja6KZqtJ0S8geiHCvve9XC8AJRYVIxoBkPKjYNYyrWPcZ
-   t6ePsRA8sDJzAyKATSp8Sryp/TCty/3zfD+6W0+/L5thavq4U36GfiL5t
-   hcDzM314s9Za8T0EgkD+9cGbFTmVQWm9FZ3s53wpEegtrxZ1gqDRhfTn/
-   1r/ZBvOpin8WtX274Nmvo9XFYWu3OuKW1xPHu6P1s4Pb4xdbtpvCg9GXk
-   QhT8+0eZ2DmJB9eflAIs1mUuoMjuO0Scg0w+UG7tQRU4KEGcYnRt9/8dD
-   rRHvyC1WOBw5bf6A81LIYK9KWnw0hhAtGddCl5v8+Zx6UT79h2YMV4CLy
-   w==;
-IronPort-SDR: RkJkO0T171DVzCEbxJMLTt/Sq9E/vLMI3L4e9lgtL3FqZbJAl5kgJVRech5JK4c3QXdSPbsMhj
- fDirVRkpxt84BM92lVZAVk3pwR8wWGLveHnQJYMbgti8kL1i+rUjrxIDlxSIQkw7B4kIGRruAw
- 2k7VEa+jMOYoZ7Fwf8THP7u3EHc1cSLNOOmqC9gAjBpjU3omQhT3wP0aRrGs3hf8EBWRGs9AXg
- Ae/n01b2bCM15XZ7o4rIpsxVke0ze1yE6qHHnd68OrzvS6ko9+K1Rimm+yCiOwdQOSHb0qTp8q
- cxI=
-X-IronPort-AV: E=Sophos;i="5.75,375,1589212800"; 
-   d="scan'208";a="245953116"
-Received: from mail-mw2nam10lp2108.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.108])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Jul 2020 20:52:38 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SzFZF/lfpe4a9REIXGgQEetIebXFkM92i567Y4KBL3yOY2hePY8C/hU7cD+wmaKg9YWk9eAA2jrknzbthLDDj8PNTJWbmq3DK9R/yaLBtY/Xc4iDX+2XaANRb5BCuvg1B11zTjez7fm5PcH2EMAt9GwETDYpZEjMUQF6bjhhhiFG1VGsLxPQtOaOk+Py7vkJX8QqUBaEcV+KBfhkjLfevl9dcTpJN9AmC6OcFqI380GNmMgoqkinh57CzhvxnH4nWiF36PkNpjpy+nYtFqIRVCODt1aOCbLdILff1jdfH4BZsI3WqP8Gc5EGVU9A/6nai2BFbk6rxgHmDqeifdebJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z6hcO4I+d+qxoKtx0AcJauw0wfpphPYyjnWIrZ8b+IU=;
- b=RoLBWuZ8RbAUzd8bIubl6j804+JRAAsI1zj7gTrtSdthOM6J9eRidRK0jdY6xbCkVpxpaZ5fgoFwYtxJUG/wJZSjA1LQrQtA8Zpf+yBR65XhxLVJIk8RPDBp5+FEaorcfMrEHaoo3fvjhB7uJVCquV8cyhVdFhfaurmGrVtm5NoDN2hNCkWSGJP/OHV9u+XDZmQ0g/ACRraYTcI3yEPIFkpFXKvEm7SlNvJQrml+/G3panRszIMcJBEWmr0bmGBkd30XpdHY59eH8RmL6eANhtUOKALHEpOEu5xVnWNeybc9R2OiHdh0e35817BBcnSUD49pbpDmaxoB8dK5MYUgTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z6hcO4I+d+qxoKtx0AcJauw0wfpphPYyjnWIrZ8b+IU=;
- b=Mslx0ZmYycTG0AQBLO6F6rUlAGyMO8WLbRkthDJ+HocK+AdU3heWKZ7cmPE7UbNMCA6udHf7RrTD/GOvveuyHcl+R0f7heobftr5VRPXDin9VOVO2EshjN1I1LivrN4jilVoumhQmR9ncj7vJtZs5QAt2+QUc9FLrpZML6K4wSA=
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
- by CY4PR04MB1256.namprd04.prod.outlook.com (2603:10b6:910:52::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Mon, 20 Jul
- 2020 12:52:14 +0000
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::d9e5:135e:cfd9:4de0]) by CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::d9e5:135e:cfd9:4de0%7]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 12:52:14 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>
-CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v1 3/3] skd: use generic power management
-Thread-Topic: [PATCH v1 3/3] skd: use generic power management
-Thread-Index: AQHWXBHK3yyvSpv7dkelMB844h700w==
-Date:   Mon, 20 Jul 2020 12:52:14 +0000
-Message-ID: <CY4PR04MB37516C5544A7DCAD84921937E77B0@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200717080910.342741-1-vaibhavgupta40@gmail.com>
- <20200717080910.342741-4-vaibhavgupta40@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.182.57]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 57e251df-62e9-4c4d-0d15-08d82cabb9d5
-x-ms-traffictypediagnostic: CY4PR04MB1256:
-x-microsoft-antispam-prvs: <CY4PR04MB125644EB7B2087FB0C42CDC4E77B0@CY4PR04MB1256.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:785;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +dggwR7RAp1pcTWBtyMk3UE9GKBsdev7CRHA7uFpseFgVocA0WELXQB1S3TIBHKjoQckmicl2aidXkDNPuiJkqhTut19trHMCDVlerKOkbo90QDl6UtOhv9pDcV/W31/dDoO6JYhSUS7boEc4Q+DU4Yer6NszJVO7wxEnQdm59yPnv5avltGxy9aFAC5w5ZECX8KtafULNRAdQLxRFpOrW5IQZVIBeMr8xKMpk1JnKPfke0rv3Rsz79ibdv+Xc/qOjeZ/jzbXL7wPlE9GAfX8pdM6LONCRFY3z67uQri+tqSDFoVxtn+i61pPSAcEndROJ/jFdNMN8gPXwNTTMG2O8ORtKhLhTeqBhACPGx5/EVhu0cTrAYuX3KBWa9Q4sr3
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(366004)(376002)(346002)(396003)(8936002)(110136005)(71200400001)(54906003)(64756008)(8676002)(2906002)(52536014)(478600001)(66946007)(91956017)(66556008)(66476007)(76116006)(66446008)(5660300002)(7416002)(86362001)(316002)(7696005)(9686003)(26005)(186003)(33656002)(4326008)(53546011)(6506007)(55016002)(83380400001)(41533002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Eqja+DbiWCvHFUS2ySq+9svMHn+1LT1FTxg9vt3kvGtOQjeG3xHDPz7GNKVNJPwi0YfiLWI5rgP4YsMHj4bE8gm7I2lF1OJCCemLmtfCGd5+tNuSwidBiP+SER+PHuAaaVQNN/Taxg8TCyiZlP4uuLg1OyFOGE+IemT7gAfAQub4EHmiX+vG85S5fLYukIvFFNbI9DhqArutX2uhHYpfBpRauktXQTcVZGm5Yl0eZt6pxqXtY5fklyZcM+YNQ21Qe1HarUWZv7hjf1XkeTTnJR5TYGpfDQIEZ5VG395j7xTJt4m2OUBIDEgc0nbldV/J2gdoCoc45ao6GitBJnWBKYpNKIzavnL7PkOKKg/TGFZ5OtYQgLI7OEF5dNx9i+3Y/Bbe7KQJWDA/IYwZkwXexzMNzWqsGIwA3ZCFQ6vpPrm+DxHHg+LAWqOPU/wttnW8BAEYZ3pWb9Fm/h2bm9+F3UUBOERj34FJldhtG5Rkoauv44TM2bEpiZiOzo7yZazx
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 20 Jul 2020 08:52:41 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KCjnC4051649;
+        Mon, 20 Jul 2020 08:52:28 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32d5h4kr28-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 08:52:28 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KCVjme005895;
+        Mon, 20 Jul 2020 08:52:27 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32d5h4kr1h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 08:52:27 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KCpqJg019540;
+        Mon, 20 Jul 2020 12:52:25 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 32brbh2nd8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 12:52:25 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KCqMn157409700
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 12:52:22 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C340B4204C;
+        Mon, 20 Jul 2020 12:52:22 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88AEA42041;
+        Mon, 20 Jul 2020 12:52:19 +0000 (GMT)
+Received: from hbathini.in.ibm.com (unknown [9.85.112.199])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 12:52:19 +0000 (GMT)
+Subject: [PATCH v4 05/12] powerpc/drmem: make lmb walk a bit more flexible
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>
+Date:   Mon, 20 Jul 2020 18:22:18 +0530
+Message-ID: <159524953218.20855.2416133823763690974.stgit@hbathini.in.ibm.com>
+In-Reply-To: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+References: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57e251df-62e9-4c4d-0d15-08d82cabb9d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 12:52:14.0662
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ugbjO/jMHvBQFVf05F8UOFw8dG8lJ0hO6+99qLTWF6gNHzJ0P7MpP0aicUO/9Go3kPhhe72a82fu8aitFW/Wrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB1256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_07:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007200084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/07/17 17:10, Vaibhav Gupta wrote:=0A=
-> Drivers using legacy PM have to manage PCI states and device's PM states=
-=0A=
-> themselves. They also need to take care of configuration registers.=0A=
-> =0A=
-> With improved and powerful support of generic PM, PCI Core takes care of=
-=0A=
-> above mentioned, device-independent, jobs.=0A=
-> =0A=
-> This driver makes use of PCI helper functions like=0A=
-> pci_save/restore_state(), pci_enable/disable_device(),=0A=
-> pci_request/release_regions(), pci_set_power_state() and=0A=
-> pci_set_master() to do required operations. In generic mode, they are no=
-=0A=
-> longer needed.=0A=
-> =0A=
-> Change function parameter in both .suspend() and .resume() to=0A=
-> "struct device*" type. Use to_pci_dev() to get "struct pci_dev*" variable=
-.=0A=
-> =0A=
-> Compile-tested only.=0A=
-=0A=
-I do not think this belongs into the commit message. This was mentioned in =
-the=0A=
-cover letter.=0A=
-=0A=
-> =0A=
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>=0A=
-> ---=0A=
->  drivers/block/skd_main.c | 36 ++++++++++--------------------------=0A=
->  1 file changed, 10 insertions(+), 26 deletions(-)=0A=
-> =0A=
-> diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c=0A=
-> index 51569c199a6c..d8d1042e7338 100644=0A=
-> --- a/drivers/block/skd_main.c=0A=
-> +++ b/drivers/block/skd_main.c=0A=
-> @@ -3315,12 +3315,12 @@ static void skd_pci_remove(struct pci_dev *pdev)=
-=0A=
->  	return;=0A=
->  }=0A=
->  =0A=
-> -static int skd_pci_suspend(struct pci_dev *pdev, pm_message_t state)=0A=
-> +static int __maybe_unused skd_pci_suspend(struct device *dev)=0A=
->  {=0A=
->  	int i;=0A=
-> -	struct skd_device *skdev;=0A=
-> +	struct pci_dev *pdev =3D to_pci_dev(dev);=0A=
-> +	struct skd_device *skdev =3D pci_get_drvdata(pdev);=0A=
-=0A=
-You can just add the pdev declaration here. The other 2 changes are not nee=
-ded.=0A=
-=0A=
->  =0A=
-> -	skdev =3D pci_get_drvdata(pdev);=0A=
-=0A=
-You can keep this as is.=0A=
-=0A=
->  	if (!skdev) {=0A=
->  		dev_err(&pdev->dev, "no device data for PCI\n");=0A=
->  		return -EIO;=0A=
-> @@ -3337,35 +3337,23 @@ static int skd_pci_suspend(struct pci_dev *pdev, =
-pm_message_t state)=0A=
->  	if (skdev->pcie_error_reporting_is_enabled)=0A=
->  		pci_disable_pcie_error_reporting(pdev);=0A=
->  =0A=
-> -	pci_release_regions(pdev);=0A=
-> -	pci_save_state(pdev);=0A=
-> -	pci_disable_device(pdev);=0A=
-> -	pci_set_power_state(pdev, pci_choose_state(pdev, state));=0A=
->  	return 0;=0A=
->  }=0A=
->  =0A=
-> -static int skd_pci_resume(struct pci_dev *pdev)=0A=
-> +static int __maybe_unused skd_pci_resume(struct device *dev)=0A=
->  {=0A=
->  	int i;=0A=
->  	int rc =3D 0;=0A=
-> -	struct skd_device *skdev;=0A=
->  =0A=
-> -	skdev =3D pci_get_drvdata(pdev);=0A=
-=0A=
-Same comment as above. Keep these as is and add only pdev declaration.=0A=
-=0A=
-> +	struct pci_dev *pdev =3D to_pci_dev(dev);=0A=
-> +	struct skd_device *skdev =3D pci_get_drvdata(pdev);=0A=
->  	if (!skdev) {=0A=
->  		dev_err(&pdev->dev, "no device data for PCI\n");=0A=
->  		return -1;=0A=
->  	}=0A=
->  =0A=
-> -	pci_set_power_state(pdev, PCI_D0);=0A=
-> -	pci_enable_wake(pdev, PCI_D0, 0);=0A=
-> -	pci_restore_state(pdev);=0A=
-> +	device_wakeup_disable(dev);=0A=
->  =0A=
-> -	rc =3D pci_enable_device(pdev);=0A=
-> -	if (rc)=0A=
-> -		return rc;=0A=
-> -	rc =3D pci_request_regions(pdev, DRV_NAME);=0A=
-> -	if (rc)=0A=
-> -		goto err_out;=0A=
->  	rc =3D dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));=0A=
->  	if (rc)=0A=
->  		rc =3D dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));=0A=
-> @@ -3374,7 +3362,6 @@ static int skd_pci_resume(struct pci_dev *pdev)=0A=
->  		goto err_out_regions;=0A=
->  	}=0A=
->  =0A=
-> -	pci_set_master(pdev);=0A=
->  	rc =3D pci_enable_pcie_error_reporting(pdev);=0A=
->  	if (rc) {=0A=
->  		dev_err(&pdev->dev,=0A=
-> @@ -3427,10 +3414,6 @@ static int skd_pci_resume(struct pci_dev *pdev)=0A=
->  		pci_disable_pcie_error_reporting(pdev);=0A=
->  =0A=
->  err_out_regions:=0A=
-> -	pci_release_regions(pdev);=0A=
-> -=0A=
-> -err_out:=0A=
-> -	pci_disable_device(pdev);=0A=
->  	return rc;=0A=
->  }=0A=
->  =0A=
-> @@ -3450,13 +3433,14 @@ static void skd_pci_shutdown(struct pci_dev *pdev=
-)=0A=
->  	skd_stop_device(skdev);=0A=
->  }=0A=
->  =0A=
-> +static SIMPLE_DEV_PM_OPS(skd_pci_pm_ops, skd_pci_suspend, skd_pci_resume=
-);=0A=
-> +=0A=
->  static struct pci_driver skd_driver =3D {=0A=
->  	.name		=3D DRV_NAME,=0A=
->  	.id_table	=3D skd_pci_tbl,=0A=
->  	.probe		=3D skd_pci_probe,=0A=
->  	.remove		=3D skd_pci_remove,=0A=
-> -	.suspend	=3D skd_pci_suspend,=0A=
-> -	.resume		=3D skd_pci_resume,=0A=
-> +	.driver.pm	=3D &skd_pci_pm_ops,=0A=
->  	.shutdown	=3D skd_pci_shutdown,=0A=
->  };=0A=
->  =0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Currently, numa & prom are the users of drmem lmb walk code. Loading
+kdump with kexec_file also needs to walk the drmem LMBs to setup the
+usable memory ranges for kdump kernel. But there are couple of issues
+in using the code as is. One, walk_drmem_lmb() code is built into the
+.init section currently, while kexec_file needs it later. Two, there
+is no scope to pass data to the callback function for processing and/
+or erroring out on certain conditions.
+
+Fix that by, moving drmem LMB walk code out of .init section, adding
+scope to pass data to the callback function and bailing out when
+an error is encountered in the callback function.
+
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+Tested-by: Pingfan Liu <piliu@redhat.com>
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+---
+
+v3 -> v4:
+* Unchanged. Added Reviewed-by tag from Thiago.
+
+v2 -> v3:
+* Unchanged. Added Tested-by tag from Pingfan.
+
+v1 -> v2:
+* No changes.
+
+
+ arch/powerpc/include/asm/drmem.h |    9 ++--
+ arch/powerpc/kernel/prom.c       |   13 +++---
+ arch/powerpc/mm/drmem.c          |   87 +++++++++++++++++++++++++-------------
+ arch/powerpc/mm/numa.c           |   13 +++---
+ 4 files changed, 78 insertions(+), 44 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
+index 414d209..17ccc64 100644
+--- a/arch/powerpc/include/asm/drmem.h
++++ b/arch/powerpc/include/asm/drmem.h
+@@ -90,13 +90,14 @@ static inline bool drmem_lmb_reserved(struct drmem_lmb *lmb)
+ }
+ 
+ u64 drmem_lmb_memory_max(void);
+-void __init walk_drmem_lmbs(struct device_node *dn,
+-			void (*func)(struct drmem_lmb *, const __be32 **));
++int walk_drmem_lmbs(struct device_node *dn, void *data,
++		    int (*func)(struct drmem_lmb *, const __be32 **, void *));
+ int drmem_update_dt(void);
+ 
+ #ifdef CONFIG_PPC_PSERIES
+-void __init walk_drmem_lmbs_early(unsigned long node,
+-			void (*func)(struct drmem_lmb *, const __be32 **));
++int __init
++walk_drmem_lmbs_early(unsigned long node, void *data,
++		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
+ #endif
+ 
+ static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index 9cc49f2..7df78de 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -468,8 +468,9 @@ static bool validate_mem_limit(u64 base, u64 *size)
+  * This contains a list of memory blocks along with NUMA affinity
+  * information.
+  */
+-static void __init early_init_drmem_lmb(struct drmem_lmb *lmb,
+-					const __be32 **usm)
++static int  __init early_init_drmem_lmb(struct drmem_lmb *lmb,
++					const __be32 **usm,
++					void *data)
+ {
+ 	u64 base, size;
+ 	int is_kexec_kdump = 0, rngs;
+@@ -484,7 +485,7 @@ static void __init early_init_drmem_lmb(struct drmem_lmb *lmb,
+ 	 */
+ 	if ((lmb->flags & DRCONF_MEM_RESERVED) ||
+ 	    !(lmb->flags & DRCONF_MEM_ASSIGNED))
+-		return;
++		return 0;
+ 
+ 	if (*usm)
+ 		is_kexec_kdump = 1;
+@@ -499,7 +500,7 @@ static void __init early_init_drmem_lmb(struct drmem_lmb *lmb,
+ 		 */
+ 		rngs = dt_mem_next_cell(dt_root_size_cells, usm);
+ 		if (!rngs) /* there are no (base, size) duple */
+-			return;
++			return 0;
+ 	}
+ 
+ 	do {
+@@ -524,6 +525,8 @@ static void __init early_init_drmem_lmb(struct drmem_lmb *lmb,
+ 		if (lmb->flags & DRCONF_MEM_HOTREMOVABLE)
+ 			memblock_mark_hotplug(base, size);
+ 	} while (--rngs);
++
++	return 0;
+ }
+ #endif /* CONFIG_PPC_PSERIES */
+ 
+@@ -534,7 +537,7 @@ static int __init early_init_dt_scan_memory_ppc(unsigned long node,
+ #ifdef CONFIG_PPC_PSERIES
+ 	if (depth == 1 &&
+ 	    strcmp(uname, "ibm,dynamic-reconfiguration-memory") == 0) {
+-		walk_drmem_lmbs_early(node, early_init_drmem_lmb);
++		walk_drmem_lmbs_early(node, NULL, early_init_drmem_lmb);
+ 		return 0;
+ 	}
+ #endif
+diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+index 59327ce..b2eeea3 100644
+--- a/arch/powerpc/mm/drmem.c
++++ b/arch/powerpc/mm/drmem.c
+@@ -14,6 +14,8 @@
+ #include <asm/prom.h>
+ #include <asm/drmem.h>
+ 
++static int n_root_addr_cells, n_root_size_cells;
++
+ static struct drmem_lmb_info __drmem_info;
+ struct drmem_lmb_info *drmem_info = &__drmem_info;
+ 
+@@ -189,12 +191,13 @@ int drmem_update_dt(void)
+ 	return rc;
+ }
+ 
+-static void __init read_drconf_v1_cell(struct drmem_lmb *lmb,
++static void read_drconf_v1_cell(struct drmem_lmb *lmb,
+ 				       const __be32 **prop)
+ {
+ 	const __be32 *p = *prop;
+ 
+-	lmb->base_addr = dt_mem_next_cell(dt_root_addr_cells, &p);
++	lmb->base_addr = of_read_number(p, n_root_addr_cells);
++	p += n_root_addr_cells;
+ 	lmb->drc_index = of_read_number(p++, 1);
+ 
+ 	p++; /* skip reserved field */
+@@ -205,29 +208,33 @@ static void __init read_drconf_v1_cell(struct drmem_lmb *lmb,
+ 	*prop = p;
+ }
+ 
+-static void __init __walk_drmem_v1_lmbs(const __be32 *prop, const __be32 *usm,
+-			void (*func)(struct drmem_lmb *, const __be32 **))
++static int
++__walk_drmem_v1_lmbs(const __be32 *prop, const __be32 *usm, void *data,
++		     int (*func)(struct drmem_lmb *, const __be32 **, void *))
+ {
+ 	struct drmem_lmb lmb;
+ 	u32 i, n_lmbs;
++	int ret = 0;
+ 
+ 	n_lmbs = of_read_number(prop++, 1);
+-	if (n_lmbs == 0)
+-		return;
+-
+ 	for (i = 0; i < n_lmbs; i++) {
+ 		read_drconf_v1_cell(&lmb, &prop);
+-		func(&lmb, &usm);
++		ret = func(&lmb, &usm, data);
++		if (ret)
++			break;
+ 	}
++
++	return ret;
+ }
+ 
+-static void __init read_drconf_v2_cell(struct of_drconf_cell_v2 *dr_cell,
++static void read_drconf_v2_cell(struct of_drconf_cell_v2 *dr_cell,
+ 				       const __be32 **prop)
+ {
+ 	const __be32 *p = *prop;
+ 
+ 	dr_cell->seq_lmbs = of_read_number(p++, 1);
+-	dr_cell->base_addr = dt_mem_next_cell(dt_root_addr_cells, &p);
++	dr_cell->base_addr = of_read_number(p, n_root_addr_cells);
++	p += n_root_addr_cells;
+ 	dr_cell->drc_index = of_read_number(p++, 1);
+ 	dr_cell->aa_index = of_read_number(p++, 1);
+ 	dr_cell->flags = of_read_number(p++, 1);
+@@ -235,17 +242,16 @@ static void __init read_drconf_v2_cell(struct of_drconf_cell_v2 *dr_cell,
+ 	*prop = p;
+ }
+ 
+-static void __init __walk_drmem_v2_lmbs(const __be32 *prop, const __be32 *usm,
+-			void (*func)(struct drmem_lmb *, const __be32 **))
++static int
++__walk_drmem_v2_lmbs(const __be32 *prop, const __be32 *usm, void *data,
++		     int (*func)(struct drmem_lmb *, const __be32 **, void *))
+ {
+ 	struct of_drconf_cell_v2 dr_cell;
+ 	struct drmem_lmb lmb;
+ 	u32 i, j, lmb_sets;
++	int ret = 0;
+ 
+ 	lmb_sets = of_read_number(prop++, 1);
+-	if (lmb_sets == 0)
+-		return;
+-
+ 	for (i = 0; i < lmb_sets; i++) {
+ 		read_drconf_v2_cell(&dr_cell, &prop);
+ 
+@@ -259,21 +265,29 @@ static void __init __walk_drmem_v2_lmbs(const __be32 *prop, const __be32 *usm,
+ 			lmb.aa_index = dr_cell.aa_index;
+ 			lmb.flags = dr_cell.flags;
+ 
+-			func(&lmb, &usm);
++			ret = func(&lmb, &usm, data);
++			if (ret)
++				break;
+ 		}
+ 	}
++
++	return ret;
+ }
+ 
+ #ifdef CONFIG_PPC_PSERIES
+-void __init walk_drmem_lmbs_early(unsigned long node,
+-			void (*func)(struct drmem_lmb *, const __be32 **))
++int __init walk_drmem_lmbs_early(unsigned long node, void *data,
++		int (*func)(struct drmem_lmb *, const __be32 **, void *))
+ {
+ 	const __be32 *prop, *usm;
+-	int len;
++	int len, ret = -ENODEV;
+ 
+ 	prop = of_get_flat_dt_prop(node, "ibm,lmb-size", &len);
+ 	if (!prop || len < dt_root_size_cells * sizeof(__be32))
+-		return;
++		return ret;
++
++	/* Get the address & size cells */
++	n_root_addr_cells = dt_root_addr_cells;
++	n_root_size_cells = dt_root_size_cells;
+ 
+ 	drmem_info->lmb_size = dt_mem_next_cell(dt_root_size_cells, &prop);
+ 
+@@ -281,20 +295,21 @@ void __init walk_drmem_lmbs_early(unsigned long node,
+ 
+ 	prop = of_get_flat_dt_prop(node, "ibm,dynamic-memory", &len);
+ 	if (prop) {
+-		__walk_drmem_v1_lmbs(prop, usm, func);
++		ret = __walk_drmem_v1_lmbs(prop, usm, data, func);
+ 	} else {
+ 		prop = of_get_flat_dt_prop(node, "ibm,dynamic-memory-v2",
+ 					   &len);
+ 		if (prop)
+-			__walk_drmem_v2_lmbs(prop, usm, func);
++			ret = __walk_drmem_v2_lmbs(prop, usm, data, func);
+ 	}
+ 
+ 	memblock_dump_all();
++	return ret;
+ }
+ 
+ #endif
+ 
+-static int __init init_drmem_lmb_size(struct device_node *dn)
++static int init_drmem_lmb_size(struct device_node *dn)
+ {
+ 	const __be32 *prop;
+ 	int len;
+@@ -303,12 +318,12 @@ static int __init init_drmem_lmb_size(struct device_node *dn)
+ 		return 0;
+ 
+ 	prop = of_get_property(dn, "ibm,lmb-size", &len);
+-	if (!prop || len < dt_root_size_cells * sizeof(__be32)) {
++	if (!prop || len < n_root_size_cells * sizeof(__be32)) {
+ 		pr_info("Could not determine LMB size\n");
+ 		return -1;
+ 	}
+ 
+-	drmem_info->lmb_size = dt_mem_next_cell(dt_root_size_cells, &prop);
++	drmem_info->lmb_size = of_read_number(prop, n_root_size_cells);
+ 	return 0;
+ }
+ 
+@@ -329,24 +344,36 @@ static const __be32 *of_get_usable_memory(struct device_node *dn)
+ 	return prop;
+ }
+ 
+-void __init walk_drmem_lmbs(struct device_node *dn,
+-			    void (*func)(struct drmem_lmb *, const __be32 **))
++int walk_drmem_lmbs(struct device_node *dn, void *data,
++		    int (*func)(struct drmem_lmb *, const __be32 **, void *))
+ {
+ 	const __be32 *prop, *usm;
++	int ret = -ENODEV;
++
++	if (!of_root)
++		return ret;
++
++	/* Get the address & size cells */
++	of_node_get(of_root);
++	n_root_addr_cells = of_n_addr_cells(of_root);
++	n_root_size_cells = of_n_size_cells(of_root);
++	of_node_put(of_root);
+ 
+ 	if (init_drmem_lmb_size(dn))
+-		return;
++		return ret;
+ 
+ 	usm = of_get_usable_memory(dn);
+ 
+ 	prop = of_get_property(dn, "ibm,dynamic-memory", NULL);
+ 	if (prop) {
+-		__walk_drmem_v1_lmbs(prop, usm, func);
++		ret = __walk_drmem_v1_lmbs(prop, usm, data, func);
+ 	} else {
+ 		prop = of_get_property(dn, "ibm,dynamic-memory-v2", NULL);
+ 		if (prop)
+-			__walk_drmem_v2_lmbs(prop, usm, func);
++			ret = __walk_drmem_v2_lmbs(prop, usm, data, func);
+ 	}
++
++	return ret;
+ }
+ 
+ static void __init init_drmem_v1_lmbs(const __be32 *prop)
+diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+index 9fcf2d1..88eb689 100644
+--- a/arch/powerpc/mm/numa.c
++++ b/arch/powerpc/mm/numa.c
+@@ -644,8 +644,9 @@ static inline int __init read_usm_ranges(const __be32 **usm)
+  * Extract NUMA information from the ibm,dynamic-reconfiguration-memory
+  * node.  This assumes n_mem_{addr,size}_cells have been set.
+  */
+-static void __init numa_setup_drmem_lmb(struct drmem_lmb *lmb,
+-					const __be32 **usm)
++static int __init numa_setup_drmem_lmb(struct drmem_lmb *lmb,
++					const __be32 **usm,
++					void *data)
+ {
+ 	unsigned int ranges, is_kexec_kdump = 0;
+ 	unsigned long base, size, sz;
+@@ -657,7 +658,7 @@ static void __init numa_setup_drmem_lmb(struct drmem_lmb *lmb,
+ 	 */
+ 	if ((lmb->flags & DRCONF_MEM_RESERVED)
+ 	    || !(lmb->flags & DRCONF_MEM_ASSIGNED))
+-		return;
++		return 0;
+ 
+ 	if (*usm)
+ 		is_kexec_kdump = 1;
+@@ -669,7 +670,7 @@ static void __init numa_setup_drmem_lmb(struct drmem_lmb *lmb,
+ 	if (is_kexec_kdump) {
+ 		ranges = read_usm_ranges(usm);
+ 		if (!ranges) /* there are no (base, size) duple */
+-			return;
++			return 0;
+ 	}
+ 
+ 	do {
+@@ -686,6 +687,8 @@ static void __init numa_setup_drmem_lmb(struct drmem_lmb *lmb,
+ 		if (sz)
+ 			memblock_set_node(base, sz, &memblock.memory, nid);
+ 	} while (--ranges);
++
++	return 0;
+ }
+ 
+ static int __init parse_numa_properties(void)
+@@ -787,7 +790,7 @@ static int __init parse_numa_properties(void)
+ 	 */
+ 	memory = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
+ 	if (memory) {
+-		walk_drmem_lmbs(memory, numa_setup_drmem_lmb);
++		walk_drmem_lmbs(memory, NULL, numa_setup_drmem_lmb);
+ 		of_node_put(memory);
+ 	}
+ 
+
