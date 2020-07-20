@@ -2,130 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5251C225F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8F0225F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgGTMtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:49:45 -0400
-Received: from mout.web.de ([212.227.15.14]:37055 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728743AbgGTMtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:49:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1595249363;
-        bh=AHmNfJS+mHBQaE2Wm+D3CXhES2+POrXjo7/PczLeBu8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ItIoDYI1AOqnuKrU1Ut2b+ED1favjQMPZD87RGTt5NV2gDJTwSmGNNqQ48A/QOeRw
-         uNmD0jI+b5Vl4RKvZGzKMGl9z/8FrHmQE/6hrAiKfr2IVPSfDE6KsTgjuNzE77gmBI
-         ZNX0BQYmG2nL26BsgumYqvZdgT4a+gnaUgkbHlXc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.85.87]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0Lvk9E-1ktl9z2cd2-017RtL; Mon, 20
- Jul 2020 14:49:23 +0200
-Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: Avoid memory leak on
- cc->cpages
-To:     Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>
-References: <6074306e-e909-e17f-900c-320245a8f869@web.de>
- <8be91065-7c85-9501-f1c2-3cf11aab85a5@huawei.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <cd74c280-80e2-910b-0770-72e19d68573f@web.de>
-Date:   Mon, 20 Jul 2020 14:49:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729408AbgGTMuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:50:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60030 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729391AbgGTMt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:49:57 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KCYhqA103217;
+        Mon, 20 Jul 2020 08:49:44 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32bw903jmw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 08:49:44 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KChKM5133823;
+        Mon, 20 Jul 2020 08:49:43 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32bw903jkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 08:49:43 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KCeeQI029943;
+        Mon, 20 Jul 2020 12:49:41 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 32brq82ntj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 12:49:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KCncjK16187444
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 12:49:38 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F28F4C040;
+        Mon, 20 Jul 2020 12:49:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A8774C046;
+        Mon, 20 Jul 2020 12:49:35 +0000 (GMT)
+Received: from hbathini.in.ibm.com (unknown [9.85.112.199])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 12:49:35 +0000 (GMT)
+Subject: [PATCH v4 00/12] ppc64: enable kdump support for kexec_file_load
+ syscall
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Date:   Mon, 20 Jul 2020 18:19:34 +0530
+Message-ID: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <8be91065-7c85-9501-f1c2-3cf11aab85a5@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QXnBLnkvHco5KeL1z1qol69sM9TrLUJZ3+uRoBBIec9C3CBVXtQ
- STrO0geYL1PQ7kCYzJpqeErGP8IteuoJaEJatSHXToa1335jMR3+Y9O24DymQtjO0VJDcNV
- e8hvS/XVbjINNxlCp/CXvNKJoOIcvDi8Hpvsq8OPpNmlMZm4buGjwKQHiwzAjPMNso07b6x
- 9YS6BodWfcxUxkS3U8NSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:l2I0rgVWuMk=:4rJhMW2iLqpY9lKVUGpRlQ
- oazIc5Wji9ZkMv2HyRXA9pYjPNdnkb8E6m3uvmutojrFThYbnDoveeak4lslCYKhYa8kJPMbD
- eBc23DNrDE87F9zVdvfFd/kW4QqLBCmzTfSKua/u8uSwWhNDClM+0ZF4w6XTE68UdLzCVtRKi
- tCEszf4Yp9Rf96WB7Dm5kmz44vhrNFpPjdWHsQPN6iESnYqVrl4WJ5KXuy+5SXyRAbW5tivAY
- zt6CC7TAOq5j0vHIM3QF2z8wzZPGcMgYFADpODpv5Z4wq7lzMLFSU+ArBJnf06DMADOapm+AI
- KKXNyJTu+bFxyID3B8yV8rV+9KJ+JSS7+JDBq26KaIye+GC8SUUbcLkXL18s4O7fB+DjJPkd8
- QswOwNSm3mXctKd0iIbA3Z9YpDAk/hZ0cWpo/h/+sxzfF/PsdOxRnPhNXF2Q60V3Qquv8EJYI
- tBdhlCMfPb7NJWkpsDadY1/0CG9Z+r+1I9VoVxvVbG5rpzDk52nAzG+Sk3TzjbviNLBxNaCdq
- odlWt07ukCXnp2/6C18Pl+jRfO/UpkLs3PKbqWU80GuhtjmMihZLEFFz37sCXs38l7KvwUYPo
- jtIp513IWcsUgdT8DTegF7s91pbMk9K1pLWUsd7if8mKf1yYvXxkcpzwM77muFk5dEYFgICKt
- vBMO2eQomvuZxl4f1LoBeBNjlLYn3Tq/HPhgL/ucQun0U7+o2kHEJGzgBqxOY1O78ZvNlE6m9
- YJV0X6hPtiJTIer0ThUOxgI8RQVbVD03jBC5rtUgvDtJPKr125j8v475dGN5DXnGkGKbge7g3
- xVKkJ3/OGTVGFB4VxtjZlrCK0uIjgioz9DOOIU79TLMtCdZy1nYizcIZrdUqxxBTYlkLnkcr4
- lIjzZLkDD6E7LBZBaSkibF5ewiL8phlBzpPoK/NZp8rDP6gbw9X93tHBhJNrcBjpwoda45HnP
- zLxy+5AbMwC1F8h+9pS0cbMAp+7k9/BdrkIYCiCY5kr/Ie30v8rANVurWpt29jRZK8Rw6zIsD
- XgI3uesg6IGRVaRSKIwiDT+SAlr59KBLF2wpcCtUClv4DUXOPROKGeSkdLHgEa/OyfYvF0viR
- DLxDlBYmzU0gJB8sah0qdW90UuabxVi0oYPaMyQxPmkDDyA/nxGHC28lqL+xThgx+NxlzzYl1
- KpqbqJ17/nP+AMHePmYninavG2+CtIOMIPBxs6f02cRO+8oGQdTiB66qLlMlcpjbqbG34BqXJ
- Z7ydNM4RIRY/94+q/SzgZA0rIPuRmXIbCV6MC9w==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_07:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> Memory allocated for storing compressed pages' poitner should be
->>> released after f2fs_write_compressed_pages(), otherwise it will
->>> cause memory leak issue.
->>
->> * Would an imperative wording be more appropriate (without a typo)
->> =C2=A0 for the change description?
->>
->> * Will the tag =E2=80=9CFixes=E2=80=9D become helpful for the commit me=
-ssage?
->
-> It looks this is replied from patch-robot? since I found all comments
-> you replied are almost the same.
+This patch series enables kdump support for kexec_file_load system
+call (kexec -s -p) on PPC64. The changes are inspired from kexec-tools
+code but heavily modified for kernel consumption.
 
-I dare to repeat such suggestions because several patches contain
-improvable details (not only in the affected source code).
+The first patch adds a weak arch_kexec_locate_mem_hole() function to
+override locate memory hole logic suiting arch needs. There are some
+special regions in ppc64 which should be avoided while loading buffer
+& there are multiple callers to kexec_add_buffer making it complicated
+to maintain range sanity and using generic lookup at the same time.
 
-Regards,
-Markus
+The second patch marks ppc64 specific code within arch/powerpc/kexec
+and arch/powerpc/purgatory to make the subsequent code changes easy
+to understand.
+
+The next patch adds helper function to setup different memory ranges
+needed for loading kdump kernel, booting into it and exporting the
+crashing kernel's elfcore.
+
+The fourth patch overrides arch_kexec_locate_mem_hole() function to
+locate memory hole for kdump segments by accounting for the special
+memory regions, referred to as excluded memory ranges, and sets
+kbuf->mem when a suitable memory region is found.
+
+The fifth patch moves walk_drmem_lmbs() out of .init section with
+a few changes to reuse it for setting up kdump kernel's usable memory
+ranges. The next patch uses walk_drmem_lmbs() to look up the LMBs
+and set linux,drconf-usable-memory & linux,usable-memory properties
+in order to restrict kdump kernel's memory usage.
+
+The seventh patch adds relocation support for the purgatory. Patch 8
+helps setup the stack for the purgatory. The next patch setups up
+backup region as a segment while loading kdump kernel and teaches
+purgatory to copy it from source to destination.
+
+Patch 10 builds the elfcore header for the running kernel & passes
+the info to kdump kernel via "elfcorehdr=" parameter to export as
+/proc/vmcore file. The next patch sets up the memory reserve map
+for the kexec kernel and also claims kdump support for kdump as
+all the necessary changes are added.
+
+The last patch fixes a lookup issue for `kexec -l -s` case when
+memory is reserved for crashkernel.
+
+There is scope to improve purgatory to print messages, verify sha256,
+move code common across archs - like arch_kexec_apply_relocations_add
+and sha256 digest verification, build purgatory as position independent
+code & other Makefile improvements in purgatory which can be dealt with
+in a separate patch series as a follow-up.
+
+Tested the changes successfully on P8, P9 lpars, couple of OpenPOWER
+boxes, one with secureboot enabled and a simulator.
+
+v3 -> v4:
+* Updated get_node_path() to be an iterative function instead of a
+  recursive one.
+* Added comment explaining why low memory is added to kdump kernel's
+  usable memory ranges though it doesn't fall in crashkernel region.
+* Fixed stack_buf to be quadword aligned in accordance with ABI.
+* Added missing of_node_put() in setup_purgatory_ppc64().
+* Added a FIXME tag to indicate issue in adding opal/rtas regions to
+  core image.
+
+v2 -> v3:
+* Fixed TOC pointer calculation for purgatory by using section info
+  that has relocations applied.
+* Fixed arch_kexec_locate_mem_hole() function to fallback to generic
+  kexec_locate_mem_hole() lookup if exclude ranges list is empty.
+* Dropped check for backup_start in trampoline_64.S as purgatory()
+  function takes care of it anyway.
+
+v1 -> v2:
+* Introduced arch_kexec_locate_mem_hole() for override and dropped
+  weak arch_kexec_add_buffer().
+* Addressed warnings reported by lkp.
+* Added patch to address kexec load issue when memory is reserved
+  for crashkernel.
+* Used the appropriate license header for the new files added.
+* Added an option to merge ranges to minimize reallocations while
+  adding memory ranges.
+* Dropped within_crashkernel parameter for add_opal_mem_range() &
+  add_rtas_mem_range() functions as it is not really needed.
+
+---
+
+Hari Bathini (12):
+      kexec_file: allow archs to handle special regions while locating memory hole
+      powerpc/kexec_file: mark PPC64 specific code
+      powerpc/kexec_file: add helper functions for getting memory ranges
+      ppc64/kexec_file: avoid stomping memory used by special regions
+      powerpc/drmem: make lmb walk a bit more flexible
+      ppc64/kexec_file: restrict memory usage of kdump kernel
+      ppc64/kexec_file: add support to relocate purgatory
+      ppc64/kexec_file: setup the stack for purgatory
+      ppc64/kexec_file: setup backup region for kdump kernel
+      ppc64/kexec_file: prepare elfcore header for crashing kernel
+      ppc64/kexec_file: add appropriate regions for memory reserve map
+      ppc64/kexec_file: fix kexec load failure with lack of memory hole
+
+
+ arch/powerpc/include/asm/crashdump-ppc64.h |   10 
+ arch/powerpc/include/asm/drmem.h           |    9 
+ arch/powerpc/include/asm/kexec.h           |   33 +
+ arch/powerpc/include/asm/kexec_ranges.h    |   25 
+ arch/powerpc/include/asm/purgatory.h       |   11 
+ arch/powerpc/kernel/prom.c                 |   13 
+ arch/powerpc/kexec/Makefile                |    2 
+ arch/powerpc/kexec/elf_64.c                |   36 +
+ arch/powerpc/kexec/file_load.c             |   60 +
+ arch/powerpc/kexec/file_load_64.c          | 1554 ++++++++++++++++++++++++++++
+ arch/powerpc/kexec/ranges.c                |  410 +++++++
+ arch/powerpc/mm/drmem.c                    |   87 +-
+ arch/powerpc/mm/numa.c                     |   13 
+ arch/powerpc/purgatory/Makefile            |   28 -
+ arch/powerpc/purgatory/purgatory_64.c      |   36 +
+ arch/powerpc/purgatory/trampoline.S        |  117 --
+ arch/powerpc/purgatory/trampoline_64.S     |  170 +++
+ include/linux/kexec.h                      |   29 -
+ kernel/kexec_file.c                        |   16 
+ 19 files changed, 2464 insertions(+), 195 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/crashdump-ppc64.h
+ create mode 100644 arch/powerpc/include/asm/kexec_ranges.h
+ create mode 100644 arch/powerpc/include/asm/purgatory.h
+ create mode 100644 arch/powerpc/kexec/file_load_64.c
+ create mode 100644 arch/powerpc/kexec/ranges.c
+ create mode 100644 arch/powerpc/purgatory/purgatory_64.c
+ delete mode 100644 arch/powerpc/purgatory/trampoline.S
+ create mode 100644 arch/powerpc/purgatory/trampoline_64.S
+
