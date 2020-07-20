@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A9C226226
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9497D226259
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728586AbgGTOaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:30:30 -0400
-Received: from muru.com ([72.249.23.125]:37538 "EHLO muru.com"
+        id S1728527AbgGTOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:41:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54030 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGTOaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:30:30 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 2115E81BA;
-        Mon, 20 Jul 2020 14:30:28 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 07:30:33 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Carlos Hernandez <ceh@ti.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH] clocksource/drivers/timer-ti-dm: Fix suspend and resume
- for am3 and am4
-Message-ID: <20200720143033.GD10993@atomide.com>
-References: <20200713162601.6829-1-tony@atomide.com>
- <1ac1ac81-1335-8ba2-590c-8f57c2df1910@linaro.org>
- <f96cb9d8-c940-672a-b1d2-a26570d6f775@ti.com>
+        id S1725815AbgGTOlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:41:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BA16EB82E;
+        Mon, 20 Jul 2020 14:41:23 +0000 (UTC)
+Date:   Mon, 20 Jul 2020 07:29:23 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Joel Fernandes <joelaf@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH RFC] rcu/segcblist: Add counters to segcblist
+ datastructure
+Message-ID: <20200720142923.mrudcweyttlmnhqp@linux-p48b>
+References: <20200719034210.2382053-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <f96cb9d8-c940-672a-b1d2-a26570d6f775@ti.com>
+In-Reply-To: <20200719034210.2382053-1-joel@joelfernandes.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Carlos Hernandez <ceh@ti.com> [200717 21:35]:
-> On 7/17/20 6:29 AM, Daniel Lezcano wrote:
-> > On 13/07/2020 18:26, Tony Lindgren wrote:
-> > > Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-> > > Reported-by: Carlos Hernandez <ceh@ti.com>
-> > > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > > ---
-> > Carlos, were you able to test this patch ?
-> 
-> Tested the patch on top of 5.8-rc5.
-> 
-> cbdb2617290d (HEAD) clocksource/drivers/timer-ti-dm: Fix suspend and resume
-> for am3 and am4
-> 11ba468877bb (tag: v5.8-rc5) Linux 5.8-rc5
-> 
-> It works on am335x-evm but fails on am437x-evm
+On Sat, 18 Jul 2020, Joel Fernandes (Google) wrote:
 
-Thanks for testing.
+>+/* Move from's segment length to to's segment. */
+>+static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
+>+{
+>+	long len = rcu_segcblist_get_seglen(rsclp, from);
+>+
+>+	if (!len || from == to)
+>+		return;
 
-> am4:
-> 
-> CCCCCCCC** 1196 printk messages dropped **
+Nit: You probably wanna do the parameter sanity checks before the
+atomic_read.
 
-The above does not look normal..
-
-> 44000000.ocp:L3 Custom Error: MASTER DSS TARGET GPMC (Read)
-> ** 34 printk messages dropped **
-
-..but the above points to the GPMC module failing to suspend.
-This seems to be some other GPMC specific issue not related
-to the system timers.
-
-FYI, I have not seen the error above with am437x-sk-evm. But
-then again, the sk-evm is probably not using GPMC.
-
-Regards,
-
-Tony
+Thanks,
+Davidlohr
