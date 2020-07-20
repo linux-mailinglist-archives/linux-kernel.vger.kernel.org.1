@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E762E226EA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38920226EA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgGTTCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:02:55 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30271 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgGTTCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:02:54 -0400
-IronPort-SDR: 2ZpN6OTaCMM8tQ+CKZBaVMIhfC1VQ2/ifZkuaKJNXEZFUJfBp/mD5IrJlk4UWi8rZx//qZfhoi
- KaNrvplFrSOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="151337478"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="151337478"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 12:02:53 -0700
-IronPort-SDR: CqcdSqdzBE48X13xHT08Le1SiJa9oSrPGw/UWMKkGmAAZrt953WTZBHj4glxQHHYKOefE9QZKC
- funQyprRdaig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="327627634"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 20 Jul 2020 12:02:53 -0700
-Received: from [10.255.230.139] (kliang2-mobl.ccr.corp.intel.com [10.255.230.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id C507E580824;
-        Mon, 20 Jul 2020 12:02:52 -0700 (PDT)
-Subject: Re: [PATCH V6 06/14] perf/x86/intel: Use switch in
- intel_pmu_disable/enable_event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-7-kan.liang@linux.intel.com>
- <20200720162241.GU10769@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <f6be644e-5ec8-edd8-a451-0e0cbd0943eb@linux.intel.com>
-Date:   Mon, 20 Jul 2020 15:02:50 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1729342AbgGTTEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:04:41 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:58816 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgGTTEl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 15:04:41 -0400
+Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 53CDB2A4;
+        Mon, 20 Jul 2020 21:04:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1595271878;
+        bh=KNtCu6HocOzqYYKCsCcla3s8hAt3olADl6cr5CFqkeg=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=WbDdGeNdkv05sl6Ov9CNPMuHACNQnhIp4Dc0zQjfZs5rfGa8+Quj9JrD/WxX8AiHu
+         353+vdl1fuLoKhPVVOEVYYISYvegNPtONOh+T/ZQyeJxp7YGFkX7TX3bmyI3fMX1NM
+         mwsN7iYnwSsPCXJcaqIN3/dP9piBOsd4zev3wN88=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH][next] media: i2c: fix error check on max9286_read call
+To:     Colin King <colin.king@canonical.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200720161335.339174-1-colin.king@canonical.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <ac2e793b-0f29-ac7b-d29f-3a4695c2eedc@ideasonboard.com>
+Date:   Mon, 20 Jul 2020 20:04:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200720162241.GU10769@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200720161335.339174-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Colin,
 
-
-On 7/20/2020 12:22 PM, Peter Zijlstra wrote:
-> On Fri, Jul 17, 2020 at 07:05:46AM -0700, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> Many items are checked in the intel_pmu_disable/enable_event. More items
->> will be added later, e.g. perf metrics events.
->>
->> Use switch, which is more efficient, to replace the if-else.
+On 20/07/2020 17:13, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Perhaps explain how; does this actually generate a jump-table?
+> Currently the error return from the call to max9286_read is masked
+> with 0xf0 so the following check for a negative error return is
+> never true.  Fix this by checking for an error first, then masking
+> the return value for subsequent conflink_mask checking.
 
-As my understanding, some optimizing compilers may compile a switch 
-statement into a jump-table. So it depends.
+Ooops!
 
-Another advantage of switch statement is to improve the readability of 
-the code. I think I missed it in the commit message.
-
-I will change the commit message as below in V7.
-
-"Currently, the if-else is used in the intel_pmu_disable/enable_event to 
-check the type of an event. It works well, but with more and more types 
-added later, e.g., perf metrics, compared to the switch statement, the 
-if-else may impair the readability of the code.
-
-Also, some optimizing compilers may compile a switch statement into a 
-jump-table which is more efficient than if-else.
-
-Use switch to replace the if-else in the intel_pmu_disable/enable_event()."
-
+> Addresses-Coverity: ("Logically dead code")
+> fixes: 66d8c9d2422d ("media: i2c: Add MAX9286 driver")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Thanks,
-Kan
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> ---
+>  drivers/media/i2c/max9286.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 47f280518fdb..b364a3f60486 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -405,10 +405,11 @@ static int max9286_check_config_link(struct max9286_priv *priv,
+>  	 * to 5 milliseconds.
+>  	 */
+>  	for (i = 0; i < 10; i++) {
+> -		ret = max9286_read(priv, 0x49) & 0xf0;
+> +		ret = max9286_read(priv, 0x49);
+>  		if (ret < 0)
+>  			return -EIO;
+>  
+> +		ret &= 0xf0;
+>  		if (ret == conflink_mask)
+>  			break;
+>  
+> 
+
