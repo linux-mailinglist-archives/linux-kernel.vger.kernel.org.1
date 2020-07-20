@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC08226390
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC126226403
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgGTPiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:38:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
+        id S1729201AbgGTPlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:41:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729087AbgGTPiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:38:11 -0400
+        id S1729910AbgGTPlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:41:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0405922B4E;
-        Mon, 20 Jul 2020 15:38:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E4362064B;
+        Mon, 20 Jul 2020 15:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259490;
-        bh=dXssBx4W+l8RClRgWqHGMlGzIqvB09LnZ0zFuEuYNW8=;
+        s=default; t=1595259692;
+        bh=6TvSZAHBNwIOER1p9mZeazrQSDICKsX8iOf9RBznyvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z+3WxiM664c2RTo+ZlVHmQovwRHi3/qgiMhutkSkOegc1DFmonRls0RJvlM3HwuCT
-         mSk7G5jY14FB8UNa1IXcGP3fps9YYjcVe0J8XpGl0gPoOp4joOgHuxolla4JHg44ed
-         JfGNu7TXECr0vqAgTXqwM20axjTbbM+UZayZP2uc=
+        b=Pg7tdM2HIwnQuaBhFJnmOovFaSHeZaralRH/jbpShcDyEJr1N4x/OgRr6iI+WczIo
+         OUJx7pKhxDgL5YAIk0JJXm9ONKFYecf/qCoveACL09YBwy1G9phcRxPl7lkTbjRZ4t
+         FP6iwzVOlHw2gWXp4tn86GmZNYUxn+xf2udl4cG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 26/58] tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Andrew F. Davis" <afd@ti.com>, Stable@vger.kernel.org
+Subject: [PATCH 4.9 46/86] iio:health:afe4403 Fix timestamp alignment and prevent data leak.
 Date:   Mon, 20 Jul 2020 17:36:42 +0200
-Message-Id: <20200720152748.455368338@linuxfoundation.org>
+Message-Id: <20200720152755.478243355@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +44,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 6a2febec338df7e7699a52d00b2e1207dcf65b28 ]
+commit 3f9c6d38797e9903937b007a341dad0c251765d6 upstream.
 
-MD5 keys are read with RCU protection, and tcp_md5_do_add()
-might update in-place a prior key.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses a 32 byte array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data with alignment
+explicitly requested.  This data is allocated with kzalloc so no
+data can leak appart from previous readings.
 
-Normally, typical RCU updates would allocate a new piece
-of memory. In this case only key->key and key->keylen might
-be updated, and we do not care if an incoming packet could
-see the old key, the new one, or some intermediate value,
-since changing the key on a live flow is known to be problematic
-anyway.
-
-We only want to make sure that in the case key->keylen
-is changed, cpus in tcp_md5_hash_key() wont try to use
-uninitialized data, or crash because key->keylen was
-read twice to feed sg_init_one() and ahash_request_set_crypt()
-
-Fixes: 9ea88a153001 ("tcp: md5: check md5 signature without socket lock")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: eec96d1e2d31 ("iio: health: Add driver for the TI AFE4403 heart monitor")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Andrew F. Davis <afd@ti.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/tcp.c      |    5 ++++-
- net/ipv4/tcp_ipv4.c |    3 +++
- 2 files changed, 7 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3088,9 +3088,12 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
+---
+ drivers/iio/health/afe4403.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+--- a/drivers/iio/health/afe4403.c
++++ b/drivers/iio/health/afe4403.c
+@@ -71,6 +71,7 @@ static const struct reg_field afe4403_re
+  * @regulator: Pointer to the regulator for the IC
+  * @trig: IIO trigger for this device
+  * @irq: ADC_RDY line interrupt number
++ * @buffer: Used to construct data layout to push into IIO buffer.
+  */
+ struct afe4403_data {
+ 	struct device *dev;
+@@ -80,6 +81,8 @@ struct afe4403_data {
+ 	struct regulator *regulator;
+ 	struct iio_trigger *trig;
+ 	int irq;
++	/* Ensure suitable alignment for timestamp */
++	s32 buffer[8] __aligned(8);
+ };
  
- int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct tcp_md5sig_key *key)
- {
-+	u8 keylen = key->keylen;
- 	struct scatterlist sg;
+ enum afe4403_chan_id {
+@@ -318,7 +321,6 @@ static irqreturn_t afe4403_trigger_handl
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct afe4403_data *afe = iio_priv(indio_dev);
+ 	int ret, bit, i = 0;
+-	s32 buffer[8];
+ 	u8 tx[4] = {AFE440X_CONTROL0, 0x0, 0x0, AFE440X_CONTROL0_READ};
+ 	u8 rx[3];
  
--	sg_init_one(&sg, key->key, key->keylen);
-+	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
-+
-+	sg_init_one(&sg, key->key, keylen);
- 	return crypto_hash_update(&hp->md5_desc, &sg, key->keylen);
- }
- EXPORT_SYMBOL(tcp_md5_hash_key);
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -933,6 +933,9 @@ int tcp_md5_do_add(struct sock *sk, cons
- 	if (key) {
- 		/* Pre-existing entry - just update that one. */
- 		memcpy(key->key, newkey, newkeylen);
-+
-+		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
-+
- 		key->keylen = newkeylen;
- 		return 0;
+@@ -335,9 +337,9 @@ static irqreturn_t afe4403_trigger_handl
+ 		if (ret)
+ 			goto err;
+ 
+-		buffer[i++] = (rx[0] << 16) |
+-				(rx[1] << 8) |
+-				(rx[2]);
++		afe->buffer[i++] = (rx[0] << 16) |
++				   (rx[1] << 8) |
++				   (rx[2]);
  	}
+ 
+ 	/* Disable reading from the device */
+@@ -346,7 +348,8 @@ static irqreturn_t afe4403_trigger_handl
+ 	if (ret)
+ 		goto err;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buffer, pf->timestamp);
++	iio_push_to_buffers_with_timestamp(indio_dev, afe->buffer,
++					   pf->timestamp);
+ err:
+ 	iio_trigger_notify_done(indio_dev->trig);
+ 
 
 
