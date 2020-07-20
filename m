@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68287226A3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCF9226A02
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388862AbgGTQcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:32:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58898 "EHLO
+        id S1731621AbgGTP5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:57:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58948 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731831AbgGTP4v (ORCPT
+        with ESMTP id S1731865AbgGTP5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:56:51 -0400
+        Mon, 20 Jul 2020 11:57:05 -0400
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260608;
+        s=2020; t=1595260623;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fDImi88zFV81pjdnOgUX9XebIgS39WaOUsCCEI1b+mc=;
-        b=iD4xnpX0iRZgogyjOiHVrZQNGX7nsG9CgZhEFPYHTEdTFe8WWzp+BUtL1SZzNO5LEdU91C
-        MfN7kWQWUa/ZSUut/7hgdhQz0nxS7tHis1FOPupATFdK+Is3TQHURz7RqUXFGfeayWmMZa
-        E7gpnw3gLweWsoXyedn5AU1ITR2cR1wG9zkNnHCk4rejk/9hI+z0Y9q/E0mZ4zHe2/tS5V
-        OGCClXH2nwmhnSIgORzreuKhFhMzQBeZiXuhPgRAOdr8uT7Toc/rnBBpKCi0eh5GtJgSiI
-        nnWVpwdm7ETkC5djyIsNSJZdVK4K6FVvm9ANOth6AVAs1YAZpursJ+XOOFXglQ==
+        bh=xAbB9oKLEGHYN+w+z0ndpRUVlVFavwl3/3bbk6nkTI4=;
+        b=aE6HVWQ7elJ3Wu43Nx5S0EQ9uUnwoWtplV7pqe9NN1rsZuauKrP9qAmb6mHlhJ7U1sFSgw
+        AxExVzSlqPCo7f2hJBEUQ9fxPD9kfIMD9fn/jzMWs+qYfqBdFwIBDMFtaR+nroor6T2IO7
+        B/lq1xpYO7qfSDgiEwK/u5bUU4jAo1f4liQajoKBqfgyKSWxKOhglHIcUJDJ/uovzhkW3t
+        /r/U3lkl0ScjCT828osOd2wnToGbfvCzbQjnfJFcm9G20jbVFIei/qonANgpXdfibLORrG
+        LXIwwdJ69ykwevM0BHecoxt3L9lD15kOCm2dUBPivw0BpPHrBTBCvQOtdWMd2Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260608;
+        s=2020e; t=1595260623;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fDImi88zFV81pjdnOgUX9XebIgS39WaOUsCCEI1b+mc=;
-        b=g6j7cwiXCKepe4U21OZ5BfpK36kd8eTsYX4jbS3n9Cu1A5VTcDUF0yLW52NzEAkZ3nlWem
-        2GCVU32cKO8fF8Bg==
+        bh=xAbB9oKLEGHYN+w+z0ndpRUVlVFavwl3/3bbk6nkTI4=;
+        b=8sQVdjG9J9NWk5nP1uFu8LkSAunXaXDWeXbROR0vV/v1xYMoVS1qTisuyD7tE97Y+Dlut3
+        5SAPGx+i1aRtshCQ==
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -42,13 +42,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v4 16/24] xfrm: policy: Use sequence counters with associated lock
-Date:   Mon, 20 Jul 2020 17:55:22 +0200
-Message-Id: <20200720155530.1173732-17-a.darwish@linutronix.de>
+        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org
+Subject: [PATCH v4 19/24] raid5: Use sequence counter with associated spinlock
+Date:   Mon, 20 Jul 2020 17:55:25 +0200
+Message-Id: <20200720155530.1173732-20-a.darwish@linutronix.de>
 In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
  <20200720155530.1173732-1-a.darwish@linutronix.de>
@@ -60,76 +57,50 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 A sequence counter write side critical section must be protected by some
-form of locking to serialize writers. If the serialization primitive is
-not disabling preemption implicitly, preemption has to be explicitly
-disabled before entering the sequence counter write side critical
-section.
+form of locking to serialize writers. A plain seqcount_t does not
+contain the information of which lock must be held when entering a write
+side critical section.
 
-A plain seqcount_t does not contain the information of which lock must
-be held when entering a write side critical section.
-
-Use the new seqcount_spinlock_t and seqcount_mutex_t data types instead,
-which allow to associate a lock with the sequence counter. This enables
-lockdep to verify that the lock used for writer serialization is held
-when the write side critical section is entered.
+Use the new seqcount_spinlock_t data type, which allows to associate a
+spinlock with the sequence counter. This enables lockdep to verify that
+the spinlock used for writer serialization is held when the write side
+critical section is entered.
 
 If lockdep is disabled this lock association is compiled out and has
 neither storage size nor runtime overhead.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- net/xfrm/xfrm_policy.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/md/raid5.c | 2 +-
+ drivers/md/raid5.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index 564aa6492e7c..732a940468b0 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -122,7 +122,7 @@ struct xfrm_pol_inexact_bin {
- 	/* list containing '*:*' policies */
- 	struct hlist_head hhead;
- 
--	seqcount_t count;
-+	seqcount_spinlock_t count;
- 	/* tree sorted by daddr/prefix */
- 	struct rb_root root_d;
- 
-@@ -155,7 +155,7 @@ static struct xfrm_policy_afinfo const __rcu *xfrm_policy_afinfo[AF_INET6 + 1]
- 						__read_mostly;
- 
- static struct kmem_cache *xfrm_dst_cache __ro_after_init;
--static __read_mostly seqcount_t xfrm_policy_hash_generation;
-+static __read_mostly seqcount_mutex_t xfrm_policy_hash_generation;
- 
- static struct rhashtable xfrm_policy_inexact_table;
- static const struct rhashtable_params xfrm_pol_inexact_params;
-@@ -719,7 +719,7 @@ xfrm_policy_inexact_alloc_bin(const struct xfrm_policy *pol, u8 dir)
- 	INIT_HLIST_HEAD(&bin->hhead);
- 	bin->root_d = RB_ROOT;
- 	bin->root_s = RB_ROOT;
--	seqcount_init(&bin->count);
-+	seqcount_spinlock_init(&bin->count, &net->xfrm.xfrm_policy_lock);
- 
- 	prev = rhashtable_lookup_get_insert_key(&xfrm_policy_inexact_table,
- 						&bin->k, &bin->head,
-@@ -1906,7 +1906,7 @@ static int xfrm_policy_match(const struct xfrm_policy *pol,
- 
- static struct xfrm_pol_inexact_node *
- xfrm_policy_lookup_inexact_addr(const struct rb_root *r,
--				seqcount_t *count,
-+				seqcount_spinlock_t *count,
- 				const xfrm_address_t *addr, u16 family)
- {
- 	const struct rb_node *parent;
-@@ -4153,7 +4153,7 @@ void __init xfrm_init(void)
- {
- 	register_pernet_subsys(&xfrm_net_ops);
- 	xfrm_dev_init();
--	seqcount_init(&xfrm_policy_hash_generation);
-+	seqcount_mutex_init(&xfrm_policy_hash_generation, &hash_resize_mutex);
- 	xfrm_input_init();
- 
- #ifdef CONFIG_INET_ESPINTCP
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index ab8067f9ce8c..892aefe88fa7 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -6935,7 +6935,7 @@ static struct r5conf *setup_conf(struct mddev *mddev)
+ 	} else
+ 		goto abort;
+ 	spin_lock_init(&conf->device_lock);
+-	seqcount_init(&conf->gen_lock);
++	seqcount_spinlock_init(&conf->gen_lock, &conf->device_lock);
+ 	mutex_init(&conf->cache_size_mutex);
+ 	init_waitqueue_head(&conf->wait_for_quiescent);
+ 	init_waitqueue_head(&conf->wait_for_stripe);
+diff --git a/drivers/md/raid5.h b/drivers/md/raid5.h
+index f90e0704bed9..a2c9e9e9f5ac 100644
+--- a/drivers/md/raid5.h
++++ b/drivers/md/raid5.h
+@@ -589,7 +589,7 @@ struct r5conf {
+ 	int			prev_chunk_sectors;
+ 	int			prev_algo;
+ 	short			generation; /* increments with every reshape */
+-	seqcount_t		gen_lock;	/* lock against generation changes */
++	seqcount_spinlock_t	gen_lock;	/* lock against generation changes */
+ 	unsigned long		reshape_checkpoint; /* Time we last updated
+ 						     * metadata */
+ 	long long		min_offset_diff; /* minimum difference between
 -- 
 2.20.1
 
