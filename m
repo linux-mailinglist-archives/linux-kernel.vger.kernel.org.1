@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F6322656D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8181B2263AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731507AbgGTPxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52344 "EHLO mail.kernel.org"
+        id S1729396AbgGTPjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:39:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731500AbgGTPxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:53:48 -0400
+        id S1729363AbgGTPjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:39:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9A952064B;
-        Mon, 20 Jul 2020 15:53:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53E7A22CAF;
+        Mon, 20 Jul 2020 15:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260427;
-        bh=0vN9ldW4dl4UP1zx716nsKtBzsTg8JvdS54xIkDdDHE=;
+        s=default; t=1595259540;
+        bh=gHMFfJOi8qxKoVrEySmfFxRRRt2jZd3dP9BATkzoiZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IM5/tzigPEOfjV2AvP4/H0JllRlkfsfAe8OMeAPKk2G+vXQwbaPiFrWt9wyDeaxdx
-         t3CkbBjbpaRgPVw+QFNfmvYUm13USg9i1r6sWpaXHigMI75X6J6rHd9GoNo8kdOTJs
-         yrKQ6nGKqcZgTCT6irCQO1GhFB7RfRtYSfSVvsBU=
+        b=vRrqM03MjXa/dGaquKOnoZTS64lrb6U0qzzym6jjD0S6k49qrTHd42bYOImd7OKH2
+         WMcyVhDe+le1RTzOlLrBNgMqEwuA0yDpIwPJgu1gpP58KpVSFrfouRmLs8OVX/on7c
+         gNkmc+TYTsC2LPaoi44oIPVa8xT5CAqgpMCaIJmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Buettner <kevinb@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Airlie <airlied@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 067/133] copy_xstate_to_kernel: Fix typo which caused GDB regression
+        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 38/58] usb: core: Add a helper function to check the validity of EP type in URB
 Date:   Mon, 20 Jul 2020 17:36:54 +0200
-Message-Id: <20200720152806.970814032@linuxfoundation.org>
+Message-Id: <20200720152749.118768122@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Buettner <kevinb@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 5714ee50bb4375bd586858ad800b1d9772847452 upstream.
+commit e901b9873876ca30a09253731bd3a6b00c44b5b0 upstream.
 
-This fixes a regression encountered while running the
-gdb.base/corefile.exp test in GDB's test suite.
+This patch adds a new helper function to perform a sanity check of the
+given URB to see whether it contains a valid endpoint.  It's a light-
+weight version of what usb_submit_urb() does, but without the kernel
+warning followed by the stack trace, just returns an error code.
 
-In my testing, the typo prevented the sw_reserved field of struct
-fxregs_state from being output to the kernel XSAVES area.  Thus the
-correct mask corresponding to XCR0 was not present in the core file for
-GDB to interrogate, resulting in the following behavior:
+Especially for a driver that doesn't parse the descriptor but fills
+the URB with the fixed endpoint (e.g. some quirks for non-compliant
+devices), this kind of check is preferable at the probe phase before
+actually submitting the urb.
 
-   [kev@f32-1 gdb]$ ./gdb -q testsuite/outputs/gdb.base/corefile/corefile testsuite/outputs/gdb.base/corefile/corefile.core
-   Reading symbols from testsuite/outputs/gdb.base/corefile/corefile...
-   [New LWP 232880]
-
-   warning: Unexpected size of section `.reg-xstate/232880' in core file.
-
-With the typo fixed, the test works again as expected.
-
-Signed-off-by: Kevin Buettner <kevinb@redhat.com>
-Fixes: 9e4636545933 ("copy_xstate_to_kernel(): don't leave parts of destination uninitialized")
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Dave Airlie <airlied@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/fpu/xstate.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/core/urb.c |   30 ++++++++++++++++++++++++++----
+ include/linux/usb.h    |    2 ++
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1029,7 +1029,7 @@ int copy_xstate_to_kernel(void *kbuf, st
- 		copy_part(offsetof(struct fxregs_state, st_space), 128,
- 			  &xsave->i387.st_space, &kbuf, &offset_start, &count);
- 	if (header.xfeatures & XFEATURE_MASK_SSE)
--		copy_part(xstate_offsets[XFEATURE_MASK_SSE], 256,
-+		copy_part(xstate_offsets[XFEATURE_SSE], 256,
- 			  &xsave->i387.xmm_space, &kbuf, &offset_start, &count);
- 	/*
- 	 * Fill xsave->i387.sw_reserved value for ptrace frame:
+--- a/drivers/usb/core/urb.c
++++ b/drivers/usb/core/urb.c
+@@ -185,6 +185,31 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
+ 
+ /*-------------------------------------------------------------------*/
+ 
++static const int pipetypes[4] = {
++	PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
++};
++
++/**
++ * usb_urb_ep_type_check - sanity check of endpoint in the given urb
++ * @urb: urb to be checked
++ *
++ * This performs a light-weight sanity check for the endpoint in the
++ * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
++ * a negative error code.
++ */
++int usb_urb_ep_type_check(const struct urb *urb)
++{
++	const struct usb_host_endpoint *ep;
++
++	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
++	if (!ep)
++		return -EINVAL;
++	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
++		return -EINVAL;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
++
+ /**
+  * usb_submit_urb - issue an asynchronous transfer request for an endpoint
+  * @urb: pointer to the urb describing the request
+@@ -324,9 +349,6 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
+  */
+ int usb_submit_urb(struct urb *urb, gfp_t mem_flags)
+ {
+-	static int			pipetypes[4] = {
+-		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
+-	};
+ 	int				xfertype, max;
+ 	struct usb_device		*dev;
+ 	struct usb_host_endpoint	*ep;
+@@ -445,7 +467,7 @@ int usb_submit_urb(struct urb *urb, gfp_
+ 	 */
+ 
+ 	/* Check that the pipe's type matches the endpoint's type */
+-	if (usb_pipetype(urb->pipe) != pipetypes[xfertype])
++	if (usb_urb_ep_type_check(urb))
+ 		dev_WARN(&dev->dev, "BOGUS urb xfer, pipe %x != type %x\n",
+ 			usb_pipetype(urb->pipe), pipetypes[xfertype]);
+ 
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1655,6 +1655,8 @@ static inline int usb_urb_dir_out(struct
+ 	return (urb->transfer_flags & URB_DIR_MASK) == URB_DIR_OUT;
+ }
+ 
++int usb_urb_ep_type_check(const struct urb *urb);
++
+ void *usb_alloc_coherent(struct usb_device *dev, size_t size,
+ 	gfp_t mem_flags, dma_addr_t *dma);
+ void usb_free_coherent(struct usb_device *dev, size_t size,
 
 
