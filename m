@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0619722608C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B07A2260A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgGTNSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 09:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgGTNSA (ORCPT
+        id S1726828AbgGTNTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 09:19:38 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:37746 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgGTNTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 09:18:00 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895E6C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fka4lgVIRhwxWY7wdGf+lk4haYXHjArIUWvf5xU498Y=; b=ofeKnhF0/s4PM7m8Ts7xEgAm6e
-        4XrK/EID/UoZrHIy/XUy80Kfb2IsCqgIozBD+tgBLQIk4X/hzgi/XKoV87bcYRGyH8Gk8babQ6SEw
-        VRR9r2xkDJMxuE1mX6MywVCKdScWqgW2WgXyf3QPZn30ZBYQBfslwnZmqSKSaaoodSy18XjuZ8EZO
-        exHhxhNrizW3i2EOpmHDAzbynm0srJK6PTYw5qMswZoAoCvLMFIfFviLMXUkLp+mZGCtTq/zlKue+
-        hRxAqkju2pOYZCsfH3CElYC6st8qlBATrA8RbK08wAFvOKOQ5AN3K5ewGH9Ae7bY8XENNVtCLvsXB
-        2eulvBhQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxVfy-0000P8-9l; Mon, 20 Jul 2020 13:17:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E40B6300446;
-        Mon, 20 Jul 2020 15:17:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CDD592215BE46; Mon, 20 Jul 2020 15:17:47 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 15:17:47 +0200
-From:   peterz@infradead.org
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-Message-ID: <20200720131747.GD119549@hirez.programming.kicks-ass.net>
-References: <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org>
- <20200718171406.GB16791@redhat.com>
- <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
- <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
- <20200720064326.GA6612@redhat.com>
- <20200720082657.GC6612@redhat.com>
- <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
- <20200720105924.GE43129@hirez.programming.kicks-ass.net>
- <20200720112623.GF43129@hirez.programming.kicks-ass.net>
- <jhjwo2yidit.mognet@arm.com>
+        Mon, 20 Jul 2020 09:19:38 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KDJXt2105006;
+        Mon, 20 Jul 2020 08:19:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595251173;
+        bh=lQkmrXkxmjgvdDGKUkqI+tRS+w+c5jgpkKk07Nq2HRI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=AbJ0kI+TCQee61e3e6pY9QSWfXUCY9+i+Zc1llG4XnVxSYXZ3RE4u0ONjsNWLqpH5
+         47CDUzDjlYqkh0X+XmoQN3TK7SOUV/abBeLXbuFoxFW/IGvnU0Qd2KFXMuJJAutZcU
+         ye3eVwpy98iH/IdlcDGhr2T4cjgg1hAY2ndgLxEg=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06KDJXHI061226
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jul 2020 08:19:33 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
+ Jul 2020 08:19:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 20 Jul 2020 08:19:33 -0500
+Received: from [10.250.74.234] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KDJWNR014210;
+        Mon, 20 Jul 2020 08:19:32 -0500
+Subject: Re: [net-next PATCH v3 1/7] hsr: enhance netlink socket interface to
+ support PRP
+To:     David Miller <davem@davemloft.net>
+CC:     <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
+        <vinicius.gomes@intel.com>
+References: <20200717151511.329-1-m-karicheri2@ti.com>
+ <20200717151511.329-2-m-karicheri2@ti.com>
+ <20200717.185611.1278374862685166021.davem@davemloft.net>
+From:   Murali Karicheri <m-karicheri2@ti.com>
+Message-ID: <fac7f266-98e5-2750-7230-d4e6bc94b4d4@ti.com>
+Date:   Mon, 20 Jul 2020 09:19:32 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjwo2yidit.mognet@arm.com>
+In-Reply-To: <20200717.185611.1278374862685166021.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 01:20:26PM +0100, Valentin Schneider wrote:
-> On 20/07/20 12:26, peterz@infradead.org wrote:
 
-> > +	/*
-> > +	 * We must re-load prev->state in case ttwu_remote() changed it
-> > +	 * before we acquired rq->lock.
-> > +	 */
-> > +	tmp_state = prev->state;
-> > +	if (unlikely(prev_state != tmp_state)) {
-> > +		/*
-> > +		 * ptrace_{,un}freeze_traced() think it is cool to change
-> > +		 * ->state around behind our backs between TASK_TRACED and
-> > +		 *  __TASK_TRACED.
-> > +		 *
-> > +		 * This is safe because this, as well as any __TASK_TRACED
-> > +		 * wakeups are under siglock.
-> > +		 *
-> > +		 * For any other case, a changed prev_state must be to
-> > +		 * TASK_RUNNING, such that when it blocks, the load has
-> > +		 * happened before the smp_mb().
-> > +		 *
-> > +		 * Also see the comment with deactivate_task().
-> > +		 */
-> > +		SCHED_WARN_ON(tmp_state && (prev_state & __TASK_TRACED &&
-> > +					   !(tmp_state & __TASK_TRACED)));
-> > +
+
+On 7/17/20 9:56 PM, David Miller wrote:
+> From: Murali Karicheri <m-karicheri2@ti.com>
+> Date: Fri, 17 Jul 2020 11:15:05 -0400
 > 
-> IIUC if the state changed and isn't TASK_RUNNING it *has* to have
-> __TASK_TRACED, so can't that be
+>> @@ -32,7 +33,9 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
+>>   		       struct netlink_ext_ack *extack)
+>>   {
+>>   	struct net_device *link[2];
+>> -	unsigned char multicast_spec, hsr_version;
+>> +	unsigned char multicast_spec;
+>> +	enum hsr_version proto_version;
+>> +	u8 proto = HSR_PROTOCOL_HSR;
 > 
->   SCHED_WARN_ON(tmp_state && !(tmp_state & __TASK_TRACED));
+> Please use reverse christmas tree ordering for local variables.
+> 
+Ok.
+> Thank you.
+> 
 
-Suppose task->state == TASK_UNINTERRUPTIBLE, and task != current, and
-then someone goes and does task->state = __TASK_TRACED.
-
-That is, your statement is correct given the current code, but we also
-want to verify no new code comes along and does something 'creative'.
-
-Or is the heat getting to me?
+-- 
+Murali Karicheri
+Texas Instruments
