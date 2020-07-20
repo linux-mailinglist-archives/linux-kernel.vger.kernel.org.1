@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42747225E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4414C225E19
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbgGTMCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:02:08 -0400
-Received: from mail-eopbgr80045.outbound.protection.outlook.com ([40.107.8.45]:64152
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728058AbgGTMCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:02:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KnhVuAwR4itdcWrWOteQrQR5qK8RyvMSIaMSXOBxKlJqrvtTn/Dj/uzsJhpjNqctGxqj2qI+fhqkym9vvpheeYJnNytYujoKTwHa4QLWANdJp92yEC0/T74Jyhfx+s9ecUL8g1s2u6AFo/cpyK1BQLps4imtign7Z+UvavLfEHCy6ub49nkWiBOv2UvsGINF/eVmlKzn6veYEc0cnkzCcAgbHkVdNb+3KVd9chFXPuJzVqtoXEWkilvqWP2FChhxw3sa6UPlL96HYz5vfsJ/TdkrwgBGomjjFJ/F8EtItZj5kTkLtghzpQzkXkpdUBT3/w286/gJ/T3LgfdhqOGIHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AjFs0J90QAFsHMFr24nq+atxqAuvvFgfwmdwv2MJpKk=;
- b=BURj9bxyBkZDsCN861JiufIcT1MOh0HGGrWZiFNthEs7Yxrm9wsCIhET4gUHSMrs62CI0BhlyDzKvRSGM5KZzWN2XidKoS1wCqcb0oQXfwN7+gKzPaFlqbvKdZBPZ9rAcOonv+khw2pzec+aB3jzpVtRNdh4ncEqXIPzV5klC5nn9b1LVgRiuZFJv1fe2ySzrv8yNwL4zJsqJyutZLHsj4gjKDRv/Z32KYWAaclkxJkOYk1s0NpXswCOAlgQBg8A510iRSotabgVEQ+sgqfdeXlDxfdLpOCGMSy/SU2tTNVqSsbbUs08zBKDJtPBso4ldKMTLrjVQYKVrWRsj3CzWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AjFs0J90QAFsHMFr24nq+atxqAuvvFgfwmdwv2MJpKk=;
- b=Ew8zAkM3ymHIsrpYQYMki/5C8LZcqCYne18f9qypN4RY1qzBDr9+jX4b8LfAA+sGQa03jG9TCf29pv5YZrB1RxAV8CmiK2fSVuF9FaorMDDxA8s0n8skSXfVpKAqxKwMurPW+4z2/1r97jLgu1/SB+LNPg7soNCtsGKyGF6HqwQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB2974.eurprd04.prod.outlook.com (2603:10a6:802:a::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Mon, 20 Jul
- 2020 12:02:01 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::8459:4be8:7034:7a81]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::8459:4be8:7034:7a81%6]) with mapi id 15.20.3195.023; Mon, 20 Jul 2020
- 12:02:01 +0000
-Subject: Re: [PATCH -next] crypto: caam: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200716090403.13507-1-miaoqinglang@huawei.com>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <00ab6498-a1cb-afb2-b1e4-75389bfbbd4c@nxp.com>
-Date:   Mon, 20 Jul 2020 15:01:59 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200716090403.13507-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM4PR0902CA0021.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::31) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
+        id S1728793AbgGTMDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:03:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728572AbgGTMDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:03:19 -0400
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B95E2070A
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595246598;
+        bh=G9Go/h/TN87jUJHBbkQ7/aM1p1Ah9QACNvcCV5mAehw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NW8s8qye5v+UBECClmFRA5LNt4VVJCRRnlo14fRyn45CMucG0DuHKylq1gtfM7anf
+         457Imq4UjfdFd9pRoK0fgSLgXgNEvzkSTd0fmyI9wfr1zKPGSPQOg/mQHPKEOeMvM4
+         xa0iAwY1MqCNr7CKYATdbmBZlL3QC2EcFJMWivSY=
+Received: by mail-lj1-f178.google.com with SMTP id q4so20001545lji.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 05:03:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533bfF+7Zqi5QC+gYdSmDcsHetw3lNId1H6ROwqgzlp1lx/uY4+6
+        4QOq8h3P02pHzdSensaoAdxF1Yi5CXODq2ZUTPo=
+X-Google-Smtp-Source: ABdhPJw9rUEELsOQ4urbK5iR4R2KAP7EfM7/dGOeeJPzwwVPtxv4q34bpXByMXPMyskhaV72gYWJtePoHuNHjR9Ilx8=
+X-Received: by 2002:a2e:8684:: with SMTP id l4mr10714566lji.75.1595246596992;
+ Mon, 20 Jul 2020 05:03:16 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (84.117.251.185) by AM4PR0902CA0021.eurprd09.prod.outlook.com (2603:10a6:200:9b::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Mon, 20 Jul 2020 12:02:00 +0000
-X-Originating-IP: [84.117.251.185]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9a7c8934-27ff-4c7a-0023-08d82ca4b5f2
-X-MS-TrafficTypeDiagnostic: VI1PR04MB2974:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB297444BA56A2F7479AEA2603987B0@VI1PR04MB2974.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:154;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X5Cvv4E4MYm1ud947Huy/i/AVGrzf8kiplcHBftiXxLheh1r4d8A1T5Yw3yq1zyIl31Br4iWgADEqX2k7JT+HH1gYvpV4zApiECPq3WUypsqfMwTBEY8w8i+8qTGBuJsG/+gUsYp7Go4zJkimi2Xd1WJbEfmTBhpaTAmUr3do3IoA3+wUUR6ZjVeoGkfWZXd7b6bGlxvRkkr7SZqnFzRFGxURJV8z59WygB49ZoEaVKbB2GZwUsR6pV+qv7NgdGCUT3M3RSu+fuj4en6oi868ajjl+sXkHjmxawGvMEjejPa0bBltWtK7/fndKy0KC6YG4m9cPKN7VvEYTJS7UAiqCDTF/Zf/9Aj89QEIZoekeFh2dTbUhFXFbBwF8swN3YT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(136003)(396003)(39860400002)(376002)(52116002)(31686004)(16576012)(316002)(956004)(2616005)(26005)(6486002)(66946007)(54906003)(5660300002)(110136005)(36756003)(8936002)(16526019)(186003)(6636002)(53546011)(8676002)(4326008)(66556008)(31696002)(66476007)(2906002)(4744005)(86362001)(478600001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: eLy9NwnDkc/IUqzNGKlTfDrHrWaVg3lsrFJEQhInOok4nmuEdg2RIqkBuLku3MDlwFLIDPU7q7Srnes67c1q+OiP6PmtUTmfMgy1VwuXkjG8+R9yeUI/zAiymG0bMHu+8Zxh0t0+8fPFJPFpdJQN78pRX2ogweRw9sej4PbaJHLq2ZBEXBq73tHM5BOMg4g4FGNawqY+UqPP1QAnxZyi2pYRZC0cKnJT0Z7UzTNmY+CSzMQxM88CigDc2nJrzbGQkF/lGEuxTOUx5BKhc82An38aAMGlhisUm3B8ieDrVZJgHY7tFuELnJcmIRnFbv5knugDW/UkaMB3q4h3H0HxK/bnZo3q9dDrxz+Bmztj25tAoh8LmUVgyns48hpiO06AnbMhVhKALmUCS5fjhAd4ug8/X7kk6+7nb0/O7qBgLXBLoL3d5KQzN2DVfupsgDClZSY6vqLCVEZ5np12aEHWEytiDEQyB/CDfQIOIl1H1qoeEN12Ks+q4UrbmuZJIHdB
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a7c8934-27ff-4c7a-0023-08d82ca4b5f2
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 12:02:01.5107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7itZkNXO22hkRHjTQpmEpZ3tK9jCyNiSpGLpYw9OIGHONk+ECgdU1zdo8ugT9vA4ZkjHsXYdFaoZmZv5dF+JIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB2974
+References: <20200720100113.6481-1-wens@kernel.org> <20200720110610.GA4601@sirena.org.uk>
+In-Reply-To: <20200720110610.GA4601@sirena.org.uk>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Mon, 20 Jul 2020 20:03:06 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65zdCfOP-vGzrVXuzRyUC1ejG5CX=dfrh9MGTuV00VgPQ@mail.gmail.com>
+Message-ID: <CAGb2v65zdCfOP-vGzrVXuzRyUC1ejG5CX=dfrh9MGTuV00VgPQ@mail.gmail.com>
+Subject: Re: [PATCH v2] regulator: gpio: Honor regulator-boot-on property
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/2020 12:00 PM, Qinglang Miao wrote:
-> From: Liu Shixin <liushixin2@huawei.com>
-> 
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
+On Mon, Jul 20, 2020 at 7:06 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Jul 20, 2020 at 06:01:13PM +0800, Chen-Yu Tsai wrote:
+>
+> > Also drop support for the undocumented enable-at-boot property. This
+> > property was not documented in the original commit introducing DT
+> > support, nor is it now, and there are no in-tree device trees that use
+> > this property.
+>
+> There may still be out of tree users, an ABI is an ABI.
 
-This patch depends on linux-next
-commit 4d4901c6d748 ("seq_file: switch over direct seq_read method calls to seq_read_iter")
+Ok. Should I add a comment stating this should not be used in new files?
+Or just leave it as it?
 
-Horia
+ChenYu
