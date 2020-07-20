@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA94226377
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D404F226521
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgGTPhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55576 "EHLO mail.kernel.org"
+        id S1731202AbgGTPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728448AbgGTPh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:37:28 -0400
+        id S1729864AbgGTPvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:51:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F00F22CB2;
-        Mon, 20 Jul 2020 15:37:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A2052065E;
+        Mon, 20 Jul 2020 15:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259448;
-        bh=3AQAN1Qxu/m9Dtqgi0RZiG7hIv+XF0YYpsIK7Wz9AgQ=;
+        s=default; t=1595260263;
+        bh=m4gtIDFXrWLQ8g7latXn3rvipiUVHNA2h9iCYgBpJ7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SohF6jMqMXyCvT/WMA8rPuwD5FctOs2r5MsNe6RuK2bdNMTZwEMJ750fTIZ/2CZV1
-         JjSQLJR0hKXieyTAFFox5JP9gJTSySrViu2IKCs18hWXBeCzfsCefMMK1SPh1Vv2o9
-         7GdsLJRzJzfFukfLc+WttvhowiEEBo5t7jwVT+HQ=
+        b=lk7Ql9Ry7zTvzc9BszaWlYGpD54ZEjzX+/GXekJ1y2+W+5gsov8flkfQ5gv1H/TpH
+         wQJ0mxQz+bMMrzGl+cAtM4RcDzRYBi2O2OHigdp+PLLzUowL4a1bN9RjiChsDC6kCJ
+         O/t6fXrAijJWueEBNIFhk+dGV9gWPZN5ULMzOvqs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 03/58] spi: spidev: fix a potential use-after-free in spidev_release()
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 032/133] iio: mma8452: Add missed iio_device_unregister() call in mma8452_probe()
 Date:   Mon, 20 Jul 2020 17:36:19 +0200
-Message-Id: <20200720152747.297093674@linuxfoundation.org>
+Message-Id: <20200720152805.282492452@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 06096cc6c5a84ced929634b0d79376b94c65a4bd ]
+commit d7369ae1f4d7cffa7574d15e1f787dcca184c49d upstream.
 
-If an spi device is unbounded from the driver before the release
-process, there will be an NULL pointer reference when it's
-referenced in spi_slave_abort().
+The function iio_device_register() was called in mma8452_probe().
+But the function iio_device_unregister() was not called after
+a call of the function mma8452_set_freefall_mode() failed.
+Thus add the missed function call for one error case.
 
-Fix it by checking it's already freed before reference.
+Fixes: 1a965d405fc6 ("drivers:iio:accel:mma8452: added cleanup provision in case of failure.")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Link: https://lore.kernel.org/r/20200618032125.4650-2-zhenzhong.duan@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spidev.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/iio/accel/mma8452.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 80beb8406f200..7969f5484aee8 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -635,15 +635,20 @@ err_find_dev:
- static int spidev_release(struct inode *inode, struct file *filp)
- {
- 	struct spidev_data	*spidev;
-+	int			dofree;
+--- a/drivers/iio/accel/mma8452.c
++++ b/drivers/iio/accel/mma8452.c
+@@ -1651,10 +1651,13 @@ static int mma8452_probe(struct i2c_clie
  
- 	mutex_lock(&device_list_lock);
- 	spidev = filp->private_data;
- 	filp->private_data = NULL;
+ 	ret = mma8452_set_freefall_mode(data, false);
+ 	if (ret < 0)
+-		goto buffer_cleanup;
++		goto unregister_device;
  
-+	spin_lock_irq(&spidev->spi_lock);
-+	/* ... after we unbound from the underlying device? */
-+	dofree = (spidev->spi == NULL);
-+	spin_unlock_irq(&spidev->spi_lock);
+ 	return 0;
+ 
++unregister_device:
++	iio_device_unregister(indio_dev);
 +
- 	/* last close? */
- 	spidev->users--;
- 	if (!spidev->users) {
--		int		dofree;
+ buffer_cleanup:
+ 	iio_triggered_buffer_cleanup(indio_dev);
  
- 		kfree(spidev->tx_buffer);
- 		spidev->tx_buffer = NULL;
-@@ -651,19 +656,14 @@ static int spidev_release(struct inode *inode, struct file *filp)
- 		kfree(spidev->rx_buffer);
- 		spidev->rx_buffer = NULL;
- 
--		spin_lock_irq(&spidev->spi_lock);
--		if (spidev->spi)
--			spidev->speed_hz = spidev->spi->max_speed_hz;
--
--		/* ... after we unbound from the underlying device? */
--		dofree = (spidev->spi == NULL);
--		spin_unlock_irq(&spidev->spi_lock);
--
- 		if (dofree)
- 			kfree(spidev);
-+		else
-+			spidev->speed_hz = spidev->spi->max_speed_hz;
- 	}
- #ifdef CONFIG_SPI_SLAVE
--	spi_slave_abort(spidev->spi);
-+	if (!dofree)
-+		spi_slave_abort(spidev->spi);
- #endif
- 	mutex_unlock(&device_list_lock);
- 
--- 
-2.25.1
-
 
 
