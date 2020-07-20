@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E00226B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7360A226AAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389009AbgGTQkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41466 "EHLO mail.kernel.org"
+        id S2388767AbgGTQgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730671AbgGTPqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:42 -0400
+        id S1730826AbgGTPwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC5EE2064B;
-        Mon, 20 Jul 2020 15:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39A002064B;
+        Mon, 20 Jul 2020 15:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260001;
-        bh=9TRkhmqSLkl/P6HzOwstbiyOpyW6vM8hv5RwUxK6nrg=;
+        s=default; t=1595260352;
+        bh=myHCa524zoo1jw5NMVYDWu+Lc7xTCNOtw0THBRXeBHs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dnsAznPO7E3QHaobZNfuaHpM0zIGBTzwqAt70cBxAc9Q7WCUuOzXQ4l9Ywp3lj0DB
-         fnuTYVmUB0vebxWDyR3fmdR0e/9TDbiwkC24b5CReYvhRkt9+luMwcJMXaXXPF6suv
-         pfHZT9ChcT07W0Oi/txwMzdzw7ZwOTAZVlwS+NuU=
+        b=rDdbiggymn8+FSPWRZn04EsSIuoxZzSRHrkZ8Fdo/Crz70LbOJ+fqSFuUdSSKgETG
+         /buvwaqJIROCk7wfi8vD0/4v0QULxJwd64ko3+hO4W2HpC2osNO4+8FR5wTJIxckom
+         PYsaUW83Yu4cr09oCDJxcTX5Y2Yq3TEJprgs5vBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Michael Kao <michael.kao@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 071/125] net: dsa: bcm_sf2: Fix node reference count
-Date:   Mon, 20 Jul 2020 17:36:50 +0200
-Message-Id: <20200720152806.443262648@linuxfoundation.org>
+Subject: [PATCH 4.19 064/133] Revert "thermal: mediatek: fix register index error"
+Date:   Mon, 20 Jul 2020 17:36:51 +0200
+Message-Id: <20200720152806.827799327@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +46,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-[ Upstream commit 8dbe4c5d5e40fe140221024f7b16bec9f310bf70 ]
+[ Upstream commit a8f62f183021be389561570ab5f8c701a5e70298 ]
 
-of_find_node_by_name() will do an of_node_put() on the "from" argument.
-With CONFIG_OF_DYNAMIC enabled which checks for device_node reference
-counts, we would be getting a warning like this:
+This reverts commit eb9aecd90d1a39601e91cd08b90d5fee51d321a6
 
-[    6.347230] refcount_t: increment on 0; use-after-free.
-[    6.352498] WARNING: CPU: 3 PID: 77 at lib/refcount.c:156
-refcount_inc_checked+0x38/0x44
-[    6.360601] Modules linked in:
-[    6.363661] CPU: 3 PID: 77 Comm: kworker/3:1 Tainted: G        W
-5.4.46-gb78b3e9956e6 #13
-[    6.372546] Hardware name: BCM97278SV (DT)
-[    6.376649] Workqueue: events deferred_probe_work_func
-[    6.381796] pstate: 60000005 (nZCv daif -PAN -UAO)
-[    6.386595] pc : refcount_inc_checked+0x38/0x44
-[    6.391133] lr : refcount_inc_checked+0x38/0x44
-...
-[    6.478791] Call trace:
-[    6.481243]  refcount_inc_checked+0x38/0x44
-[    6.485433]  kobject_get+0x3c/0x4c
-[    6.488840]  of_node_get+0x24/0x34
-[    6.492247]  of_irq_find_parent+0x3c/0xe0
-[    6.496263]  of_irq_parse_one+0xe4/0x1d0
-[    6.500191]  irq_of_parse_and_map+0x44/0x84
-[    6.504381]  bcm_sf2_sw_probe+0x22c/0x844
-[    6.508397]  platform_drv_probe+0x58/0xa8
-[    6.512413]  really_probe+0x238/0x3fc
-[    6.516081]  driver_probe_device+0x11c/0x12c
-[    6.520358]  __device_attach_driver+0xa8/0x100
-[    6.524808]  bus_for_each_drv+0xb4/0xd0
-[    6.528650]  __device_attach+0xd0/0x164
-[    6.532493]  device_initial_probe+0x24/0x30
-[    6.536682]  bus_probe_device+0x38/0x98
-[    6.540524]  deferred_probe_work_func+0xa8/0xd4
-[    6.545061]  process_one_work+0x178/0x288
-[    6.549078]  process_scheduled_works+0x44/0x48
-[    6.553529]  worker_thread+0x218/0x270
-[    6.557285]  kthread+0xdc/0xe4
-[    6.560344]  ret_from_fork+0x10/0x18
-[    6.563925] ---[ end trace 68f65caf69bb152a ]---
+The above patch is supposed to fix a register index error on mt2701. It
+is not clear if the problem solved is a hang or just an invalid value
+returned, my guess is the second. The patch introduces, though, a new
+hang on MT8173 device making them unusable. So, seems reasonable, revert
+the patch because introduces a worst issue.
 
-Fix this by adding a of_node_get() to increment the reference count
-prior to the call.
+The reason I send a revert instead of trying to fix the issue for MT8173
+is because the information needed to fix the issue is in the datasheet
+and is not public. So I am not really able to fix it.
 
-Fixes: afa3b592953b ("net: dsa: bcm_sf2: Ensure correct sub-node is parsed")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes the following bug when CONFIG_MTK_THERMAL is set on MT8173
+devices.
+
+[    2.222488] Unable to handle kernel paging request at virtual address ffff8000125f5001
+[    2.230421] Mem abort info:
+[    2.233207]   ESR = 0x96000021
+[    2.236261]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    2.241571]   SET = 0, FnV = 0
+[    2.244623]   EA = 0, S1PTW = 0
+[    2.247762] Data abort info:
+[    2.250640]   ISV = 0, ISS = 0x00000021
+[    2.254473]   CM = 0, WnR = 0
+[    2.257544] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000041850000
+[    2.264251] [ffff8000125f5001] pgd=000000013ffff003, pud=000000013fffe003, pmd=000000013fff9003, pte=006800001100b707
+[    2.274867] Internal error: Oops: 96000021 [#1] PREEMPT SMP
+[    2.280432] Modules linked in:
+[    2.283483] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc6+ #162
+[    2.289914] Hardware name: Google Elm (DT)
+[    2.294003] pstate: 20000005 (nzCv daif -PAN -UAO)
+[    2.298792] pc : mtk_read_temp+0xb8/0x1c8
+[    2.302793] lr : mtk_read_temp+0x7c/0x1c8
+[    2.306794] sp : ffff80001003b930
+[    2.310100] x29: ffff80001003b930 x28: 0000000000000000
+[    2.315404] x27: 0000000000000002 x26: ffff0000f9550b10
+[    2.320709] x25: ffff0000f9550a80 x24: 0000000000000090
+[    2.326014] x23: ffff80001003ba24 x22: 00000000610344c0
+[    2.331318] x21: 0000000000002710 x20: 00000000000001f4
+[    2.336622] x19: 0000000000030d40 x18: ffff800011742ec0
+[    2.341926] x17: 0000000000000001 x16: 0000000000000001
+[    2.347230] x15: ffffffffffffffff x14: ffffff0000000000
+[    2.352535] x13: ffffffffffffffff x12: 0000000000000028
+[    2.357839] x11: 0000000000000003 x10: ffff800011295ec8
+[    2.363143] x9 : 000000000000291b x8 : 0000000000000002
+[    2.368447] x7 : 00000000000000a8 x6 : 0000000000000004
+[    2.373751] x5 : 0000000000000000 x4 : ffff800011295cb0
+[    2.379055] x3 : 0000000000000002 x2 : ffff8000125f5001
+[    2.384359] x1 : 0000000000000001 x0 : ffff0000f9550a80
+[    2.389665] Call trace:
+[    2.392105]  mtk_read_temp+0xb8/0x1c8
+[    2.395760]  of_thermal_get_temp+0x2c/0x40
+[    2.399849]  thermal_zone_get_temp+0x78/0x160
+[    2.404198]  thermal_zone_device_update.part.0+0x3c/0x1f8
+[    2.409589]  thermal_zone_device_update+0x34/0x48
+[    2.414286]  of_thermal_set_mode+0x58/0x88
+[    2.418375]  thermal_zone_of_sensor_register+0x1a8/0x1d8
+[    2.423679]  devm_thermal_zone_of_sensor_register+0x64/0xb0
+[    2.429242]  mtk_thermal_probe+0x690/0x7d0
+[    2.433333]  platform_drv_probe+0x5c/0xb0
+[    2.437335]  really_probe+0xe4/0x448
+[    2.440901]  driver_probe_device+0xe8/0x140
+[    2.445077]  device_driver_attach+0x7c/0x88
+[    2.449252]  __driver_attach+0xac/0x178
+[    2.453082]  bus_for_each_dev+0x78/0xc8
+[    2.456909]  driver_attach+0x2c/0x38
+[    2.460476]  bus_add_driver+0x14c/0x230
+[    2.464304]  driver_register+0x6c/0x128
+[    2.468131]  __platform_driver_register+0x50/0x60
+[    2.472831]  mtk_thermal_driver_init+0x24/0x30
+[    2.477268]  do_one_initcall+0x50/0x298
+[    2.481098]  kernel_init_freeable+0x1ec/0x264
+[    2.485450]  kernel_init+0x1c/0x110
+[    2.488931]  ret_from_fork+0x10/0x1c
+[    2.492502] Code: f9401081 f9400402 b8a67821 8b010042 (b9400042)
+[    2.498599] ---[ end trace e43e3105ed27dc99 ]---
+[    2.503367] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    2.511020] SMP: stopping secondary CPUs
+[    2.514941] Kernel Offset: disabled
+[    2.518421] CPU features: 0x090002,25006005
+[    2.522595] Memory Limit: none
+[    2.525644] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]--
+
+Cc: Michael Kao <michael.kao@mediatek.com>
+Fixes: eb9aecd90d1a ("thermal: mediatek: fix register index error")
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200707103412.1010823-1-enric.balletbo@collabora.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/bcm_sf2.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/thermal/mtk_thermal.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index b40ebc27e1ece..9f355673f630c 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -1175,6 +1175,8 @@ static int bcm_sf2_sw_probe(struct platform_device *pdev)
- 	 */
- 	set_bit(0, priv->cfp.used);
+diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+index f64643629d8b5..0691f260f6eab 100644
+--- a/drivers/thermal/mtk_thermal.c
++++ b/drivers/thermal/mtk_thermal.c
+@@ -431,8 +431,7 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+ 	u32 raw;
  
-+	/* Balance of_node_put() done by of_find_node_by_name() */
-+	of_node_get(dn);
- 	ports = of_find_node_by_name(dn, "ports");
- 	if (ports) {
- 		bcm_sf2_identify_ports(priv, ports);
+ 	for (i = 0; i < conf->bank_data[bank->id].num_sensors; i++) {
+-		raw = readl(mt->thermal_base +
+-			    conf->msr[conf->bank_data[bank->id].sensors[i]]);
++		raw = readl(mt->thermal_base + conf->msr[i]);
+ 
+ 		temp = raw_to_mcelsius(mt,
+ 				       conf->bank_data[bank->id].sensors[i],
+@@ -569,8 +568,7 @@ static void mtk_thermal_init_bank(struct mtk_thermal *mt, int num,
+ 
+ 	for (i = 0; i < conf->bank_data[num].num_sensors; i++)
+ 		writel(conf->sensor_mux_values[conf->bank_data[num].sensors[i]],
+-		       mt->thermal_base +
+-		       conf->adcpnp[conf->bank_data[num].sensors[i]]);
++		       mt->thermal_base + conf->adcpnp[i]);
+ 
+ 	writel((1 << conf->bank_data[num].num_sensors) - 1,
+ 	       mt->thermal_base + TEMP_MONCTL0);
 -- 
 2.25.1
 
