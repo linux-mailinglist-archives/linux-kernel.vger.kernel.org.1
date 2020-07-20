@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE201226B74
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FCA2269B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbgGTPqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:46:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
+        id S1732218AbgGTQ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:29:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730624AbgGTPqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:13 -0400
+        id S1732207AbgGTP7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1B3A206E9;
-        Mon, 20 Jul 2020 15:46:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 273152065E;
+        Mon, 20 Jul 2020 15:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259972;
-        bh=HiOwwL2PD7FMOr0KZzLMBCmQbQEHfWXdnGdrVeZt+Ic=;
+        s=default; t=1595260763;
+        bh=CxQlNwpzu/HtjbDgXa4Hn6fTEwibh3vRBOmu6FNrMz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLIjisXL5utLz7idy2NoB6MpPZlx9eBU0ZI3q2mZpY+0frl+9/iIc6jIxwxhc+W1M
-         nfS/t+GvLkwrRVDhyoRiXrV3s+GRV4v5h/7MaqYjnN2FzRIjH6r/cFigjvVxvwbuIK
-         M05KwD4nEWLjIq4rvhAWE8JbXSPmESvEAwIRwQFc=
+        b=lm3EB6u2A/62h9wd3/dQuPS6SvoFCD6gYnGgdoAaQFs0GVF4cX46qqjGB7ij2o/XZ
+         KrTrjOWqNC5gndaN8WclHpDoTkftdT+1Qdt38R6S25mqB/WBm+mzEIZjf3R9FP/fg9
+         cSi58jPwisqjNFbfhm/ugsx49lxHPb61crKDsxOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.14 029/125] KVM: arm64: Fix definition of PAGE_HYP_DEVICE
-Date:   Mon, 20 Jul 2020 17:36:08 +0200
-Message-Id: <20200720152804.386719090@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Emmanuel Pescosta <emmanuelpescosta099@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 087/215] ALSA: usb-audio: Add registration quirk for Kingston HyperX Cloud Alpha S
+Date:   Mon, 20 Jul 2020 17:36:09 +0200
+Message-Id: <20200720152824.342120264@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Emmanuel Pescosta <emmanuelpescosta099@gmail.com>
 
-commit 68cf617309b5f6f3a651165f49f20af1494753ae upstream.
+[ Upstream commit fd60e0683e8e9107e09cd2e4798f3e27e85d2705 ]
 
-PAGE_HYP_DEVICE is intended to encode attribute bits for an EL2 stage-1
-pte mapping a device. Unfortunately, it includes PROT_DEVICE_nGnRE which
-encodes attributes for EL1 stage-1 mappings such as UXN and nG, which are
-RES0 for EL2, and DBM which is meaningless as TCR_EL2.HD is not set.
+Similar to the Kingston HyperX AMP, the Kingston HyperX Cloud
+Alpha S (0951:16d8) uses two interfaces, but only the second
+interface contains the capture stream. This patch delays the
+registration until the second interface appears.
 
-Fix the definition of PAGE_HYP_DEVICE so that it doesn't set RES0 bits
-at EL2.
-
-Acked-by: Marc Zyngier <maz@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200708162546.26176-1-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Emmanuel Pescosta <emmanuelpescosta099@gmail.com>
+Link: https://lore.kernel.org/r/20200404153843.9288-1-emmanuelpescosta099@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/pgtable-prot.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/include/asm/pgtable-prot.h
-+++ b/arch/arm64/include/asm/pgtable-prot.h
-@@ -65,7 +65,7 @@
- #define PAGE_HYP		__pgprot(_HYP_PAGE_DEFAULT | PTE_HYP | PTE_HYP_XN)
- #define PAGE_HYP_EXEC		__pgprot(_HYP_PAGE_DEFAULT | PTE_HYP | PTE_RDONLY)
- #define PAGE_HYP_RO		__pgprot(_HYP_PAGE_DEFAULT | PTE_HYP | PTE_RDONLY | PTE_HYP_XN)
--#define PAGE_HYP_DEVICE		__pgprot(PROT_DEVICE_nGnRE | PTE_HYP)
-+#define PAGE_HYP_DEVICE		__pgprot(_PROT_DEFAULT | PTE_ATTRINDX(MT_DEVICE_nGnRE) | PTE_HYP | PTE_HYP_XN)
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index ad557ab65e043..5341d045e6a48 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1801,6 +1801,7 @@ struct registration_quirk {
  
- #define PAGE_S2			__pgprot(_PROT_DEFAULT | PTE_S2_MEMATTR(MT_S2_NORMAL) | PTE_S2_RDONLY)
- #define PAGE_S2_DEVICE		__pgprot(_PROT_DEFAULT | PTE_S2_MEMATTR(MT_S2_DEVICE_nGnRE) | PTE_S2_RDONLY | PTE_UXN)
+ static const struct registration_quirk registration_quirks[] = {
+ 	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
++	REG_QUIRK_ENTRY(0x0951, 0x16ed, 2),	/* Kingston HyperX Cloud Alpha S */
+ 	{ 0 }					/* terminator */
+ };
+ 
+-- 
+2.25.1
+
 
 
