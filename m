@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9387622652B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B55226380
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731244AbgGTPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48346 "EHLO mail.kernel.org"
+        id S1728944AbgGTPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:37:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731234AbgGTPvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:51:23 -0400
+        id S1728939AbgGTPhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:37:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C8DB2064B;
-        Mon, 20 Jul 2020 15:51:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BE6222CB2;
+        Mon, 20 Jul 2020 15:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260283;
-        bh=nBlrAHqeGQBA0lnHqR2Olyd8e7caxmdF2n7El7K/J4k=;
+        s=default; t=1595259466;
+        bh=h4F2yTZK3IdWQB8sDn+EJnNGdU9kh0BdJhV7LLDa+lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VmGS1SD4W1Yx0yXajSCCkDJ9bbpIAVWlZB57xl47rz4aCQNMY5WthVmUTVbPiWzO9
-         W2G0CuMRsABnhYw23pT/yKMHUOoGpi0CDGjPuhRfmYB6DyNxXMcij0CJhvQhZ9Trri
-         g4v1OL1W+hb2R8m08syWWU7AnRd5pOeZIDkrsMHg=
+        b=p5xOmopzso9SfFZcBtKx7i20IZmjWw7RX/M23KdUcIWPrV6VSLQkOFTkw8yRbalXo
+         wpimQdYBI+8qPXKbSPsDykC/Qvj9d6N3PrMdVbHH24RUpTQ7Xf6M9cQzkOPyt0qR+5
+         hRn62kjalAxobCVZLyT0h6ZjKI/EdZXgnA0myp0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 047/133] ARM: at91: pm: add quirk for sam9x60s ulp1
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 4.4 18/58] ARC: elf: use right ELF_ARCH
 Date:   Mon, 20 Jul 2020 17:36:34 +0200
-Message-Id: <20200720152805.987275494@linuxfoundation.org>
+Message-Id: <20200720152748.047496033@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +42,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit bb1a0e87e1c54cd884e9b92b1cec06b186edc7a0 ]
+commit b7faf971081a4e56147f082234bfff55135305cb upstream.
 
-On SAM9X60 2 nop operations has to be introduced after setting
-WAITMODE bit in CKGR_MOR.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/1579522208-19523-9-git-send-email-claudiu.beznea@microchip.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-at91/pm_suspend.S | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arc/include/asm/elf.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-index a7c6ae13c9453..d650a5a1dfee9 100644
---- a/arch/arm/mach-at91/pm_suspend.S
-+++ b/arch/arm/mach-at91/pm_suspend.S
-@@ -220,6 +220,10 @@ ENDPROC(at91_backup_mode)
- 	orr	tmp1, tmp1, #AT91_PMC_KEY
- 	str	tmp1, [pmc, #AT91_CKGR_MOR]
+--- a/arch/arc/include/asm/elf.h
++++ b/arch/arc/include/asm/elf.h
+@@ -27,7 +27,7 @@
+ #define  R_ARC_S25W_PCREL	0x11
  
-+	/* Quirk for SAM9X60's PMC */
-+	nop
-+	nop
-+
- 	wait_mckrdy
+ /*to set parameters in the core dumps */
+-#define ELF_ARCH		EM_ARCOMPACT
++#define ELF_ARCH		EM_ARC_INUSE
+ #define ELF_CLASS		ELFCLASS32
  
- 	/* Enable the crystal oscillator */
--- 
-2.25.1
-
+ #ifdef CONFIG_CPU_BIG_ENDIAN
 
 
