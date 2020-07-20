@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275D4226431
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850892264E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgGTPmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35940 "EHLO mail.kernel.org"
+        id S1730980AbgGTPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729572AbgGTPmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:42:50 -0400
+        id S1730950AbgGTPtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:49:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8A7320773;
-        Mon, 20 Jul 2020 15:42:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F29172065E;
+        Mon, 20 Jul 2020 15:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259769;
-        bh=k2UT7uagiliQDfjyRsMa9yjUVZz/9q3qcrZoCBnozWQ=;
+        s=default; t=1595260144;
+        bh=ku0H3nGm57QQGb45T2GBTCMR67dnBUJ2UBBuo0ehwSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hKYKZeTuKuMe1CLngheOirndc7bdLvqTux7riM+ptfnV2fz1qDvZMXqSUi8W2tRZG
-         eQXyXfZeUaJ3XSufOyPNrmk7Z7SOIogITGuEMdPg1ZPXSFTaNCWSxieeuTer/ejgyv
-         pIZYsc9orULUlu7jGLUSMnuaWx7GkbzGd8KCneYs=
+        b=yV13brUJ3nEB7G//7zH9CebVp93YMoxLuxI0GNHzZnVAyFxRrZ8J1n+06UUIqQEq6
+         HWqUCIeti6ynJhfTxZq12mlCpoQEE6UeBL9EAsPaXNvpAdKMEnp7RhrQJImnVXbckO
+         PilmGBO5Bn/i6cU0hmIjjPD87T5fW4RYft4DdhUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chirantan Ekbote <chirantan@chromium.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.9 74/86] fuse: Fix parameter for FS_IOC_{GET,SET}FLAGS
-Date:   Mon, 20 Jul 2020 17:37:10 +0200
-Message-Id: <20200720152756.924482252@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.14 092/125] mtd: rawnand: oxnas: Unregister all devices on error
+Date:   Mon, 20 Jul 2020 17:37:11 +0200
+Message-Id: <20200720152807.464303992@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chirantan Ekbote <chirantan@chromium.org>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 31070f6ccec09f3bd4f1e28cd1e592fa4f3ba0b6 upstream.
+commit b60391eb17b2956ff2fc4c348e5a464da21ff9cb upstream.
 
-The ioctl encoding for this parameter is a long but the documentation says
-it should be an int and the kernel drivers expect it to be an int.  If the
-fuse driver treats this as a long it might end up scribbling over the stack
-of a userspace process that only allocated enough space for an int.
+On error, the oxnas probe path just frees the device which failed and
+aborts the probe, leaving unreleased resources.
 
-This was previously discussed in [1] and a patch for fuse was proposed in
-[2].  From what I can tell the patch in [2] was nacked in favor of adding
-new, "fixed" ioctls and using those from userspace.  However there is still
-no "fixed" version of these ioctls and the fact is that it's sometimes
-infeasible to change all userspace to use the new one.
+Fix this situation by calling mtd_device_unregister()/nand_cleanup()
+on these.
 
-Handling the ioctls specially in the fuse driver seems like the most
-pragmatic way for fuse servers to support them without causing crashes in
-userspace applications that call them.
-
-[1]: https://lore.kernel.org/linux-fsdevel/20131126200559.GH20559@hall.aurel32.net/T/
-[2]: https://sourceforge.net/p/fuse/mailman/message/31771759/
-
-Signed-off-by: Chirantan Ekbote <chirantan@chromium.org>
-Fixes: 59efec7b9039 ("fuse: implement ioctl support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-38-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fuse/file.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/oxnas_nand.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -17,6 +17,7 @@
- #include <linux/swap.h>
- #include <linux/falloc.h>
- #include <linux/uio.h>
-+#include <linux/fs.h>
+--- a/drivers/mtd/nand/oxnas_nand.c
++++ b/drivers/mtd/nand/oxnas_nand.c
+@@ -89,6 +89,7 @@ static int oxnas_nand_probe(struct platf
+ 	struct resource *res;
+ 	int count = 0;
+ 	int err = 0;
++	int i;
  
- static const struct file_operations fuse_direct_io_file_operations;
- 
-@@ -2520,7 +2521,16 @@ long fuse_do_ioctl(struct file *file, un
- 		struct iovec *iov = iov_page;
- 
- 		iov->iov_base = (void __user *)arg;
--		iov->iov_len = _IOC_SIZE(cmd);
+ 	/* Allocate memory for the device structure (and zero it) */
+ 	oxnas = devm_kzalloc(&pdev->dev, sizeof(*oxnas),
+@@ -168,6 +169,13 @@ err_cleanup_nand:
+ 	nand_cleanup(chip);
+ err_release_child:
+ 	of_node_put(nand_np);
 +
-+		switch (cmd) {
-+		case FS_IOC_GETFLAGS:
-+		case FS_IOC_SETFLAGS:
-+			iov->iov_len = sizeof(int);
-+			break;
-+		default:
-+			iov->iov_len = _IOC_SIZE(cmd);
-+			break;
-+		}
- 
- 		if (_IOC_DIR(cmd) & _IOC_WRITE) {
- 			in_iov = iov;
++	for (i = 0; i < oxnas->nchips; i++) {
++		chip = oxnas->chips[i];
++		WARN_ON(mtd_device_unregister(nand_to_mtd(chip)));
++		nand_cleanup(chip);
++	}
++
+ err_clk_unprepare:
+ 	clk_disable_unprepare(oxnas->clk);
+ 	return err;
 
 
