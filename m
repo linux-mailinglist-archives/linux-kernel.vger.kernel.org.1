@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3603226209
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD2D226208
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgGTO00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:26:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:50158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgGTO0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:26:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67341D6E;
-        Mon, 20 Jul 2020 07:26:22 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14B763F718;
-        Mon, 20 Jul 2020 07:26:20 -0700 (PDT)
-References: <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org> <20200718171406.GB16791@redhat.com> <20200718174448.4btbjcvp6wbbdgts@wittgenstein> <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org> <20200720064326.GA6612@redhat.com> <20200720082657.GC6612@redhat.com> <20200720084106.GJ10769@hirez.programming.kicks-ass.net> <20200720105924.GE43129@hirez.programming.kicks-ass.net> <20200720112623.GF43129@hirez.programming.kicks-ass.net> <jhjwo2yidit.mognet@arm.com> <20200720131747.GD119549@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     peterz@infradead.org
-Cc:     Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-In-reply-to: <20200720131747.GD119549@hirez.programming.kicks-ass.net>
-Date:   Mon, 20 Jul 2020 15:26:16 +0100
-Message-ID: <jhjv9iii7p3.mognet@arm.com>
+        id S1728729AbgGTO0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:26:21 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34891 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgGTO0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:26:20 -0400
+Received: by mail-wr1-f67.google.com with SMTP id z2so18106664wrp.2;
+        Mon, 20 Jul 2020 07:26:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BNgYPqhxRYjSVXbbLgxK/P3mGTeHM4UuVOZDXwpk69E=;
+        b=h8XeQ5h2pR2NlhQGgB8rdlGtiPG93XKUs0pmFoRmn+S855ilNrMwQzNAN+Ez2LwQId
+         5miTZUr/XESwU4/r3/sqSEd0RWOCR14fThGrWXJBSTHpPK04/8USTdsK9Gj0vvtQcAC5
+         up80bN1yOnrN/GKsTFGnyfaNHdZRTkThY/ZMjbBiACiB0cusnTsIxvUK3WTI95DskTrJ
+         xkB02FiMwITNnDZOTd1SpwN4Wdd+ww/sQtLj6j6Ql7r7cdSVj0Phpoi1vTfHa/shjPzi
+         rRIjztgoFuu8OUvhW3JxIq4UN3VdtT2RakBkyZTTCWoaYgqP4+VDxktquxOf3I7Ub3Ko
+         TumA==
+X-Gm-Message-State: AOAM530+BoW2Po/02cbZ2kcLkEpcEiJsU32Th6E0Vzv1JI5y1lQ2PGd1
+        rScKO+vwG0R0g1A49iGI9adHuYfQ
+X-Google-Smtp-Source: ABdhPJw6mW1qUYBRfjMsIXYJ4SbujclQOLMqVmDd8akFz2pItNEPdQYgsTHNVkaIm8YpNCKM6dEqdQ==
+X-Received: by 2002:a5d:44d1:: with SMTP id z17mr22240315wrr.259.1595255178174;
+        Mon, 20 Jul 2020 07:26:18 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id 31sm15239867wrj.94.2020.07.20.07.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 07:26:17 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 14:26:16 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH] hyperv: hyperv.h: drop a duplicated word
+Message-ID: <20200720142616.usjwfqdvtquou2y6@liuwe-devbox-debian-v2>
+References: <20200719002841.20369-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200719002841.20369-1-rdunlap@infradead.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jul 18, 2020 at 05:28:41PM -0700, Randy Dunlap wrote:
+> Drop the repeated word "the" in a comment.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: linux-hyperv@vger.kernel.org
 
-On 20/07/20 14:17, peterz@infradead.org wrote:
-> On Mon, Jul 20, 2020 at 01:20:26PM +0100, Valentin Schneider wrote:
->> On 20/07/20 12:26, peterz@infradead.org wrote:
->
->> > +	/*
->> > +	 * We must re-load prev->state in case ttwu_remote() changed it
->> > +	 * before we acquired rq->lock.
->> > +	 */
->> > +	tmp_state = prev->state;
->> > +	if (unlikely(prev_state != tmp_state)) {
->> > +		/*
->> > +		 * ptrace_{,un}freeze_traced() think it is cool to change
->> > +		 * ->state around behind our backs between TASK_TRACED and
->> > +		 *  __TASK_TRACED.
->> > +		 *
->> > +		 * This is safe because this, as well as any __TASK_TRACED
->> > +		 * wakeups are under siglock.
->> > +		 *
->> > +		 * For any other case, a changed prev_state must be to
->> > +		 * TASK_RUNNING, such that when it blocks, the load has
->> > +		 * happened before the smp_mb().
->> > +		 *
->> > +		 * Also see the comment with deactivate_task().
->> > +		 */
->> > +		SCHED_WARN_ON(tmp_state && (prev_state & __TASK_TRACED &&
->> > +					   !(tmp_state & __TASK_TRACED)));
->> > +
->>
->> IIUC if the state changed and isn't TASK_RUNNING it *has* to have
->> __TASK_TRACED, so can't that be
->>
->>   SCHED_WARN_ON(tmp_state && !(tmp_state & __TASK_TRACED));
->
-> Suppose task->state == TASK_UNINTERRUPTIBLE, and task != current, and
-> then someone goes and does task->state = __TASK_TRACED.
->
-> That is, your statement is correct given the current code, but we also
-> want to verify no new code comes along and does something 'creative'.
->
+Applied to hyperv-next. Thanks.
 
-That is what I was trying to go for; AFAICT your approach only warns if
-__TASK_TRACED gets removed between the two loads (IOW it was already
-there). The way I was seeing it is:
-
-- We only get here if prev_state != tmp_state; IOW we know we raced with
-  something
-- if (tmp_state), then it wasn't with ttwu_remote()
-- thus it must only be with ptrace shenanigans, IOW __TASK_TRACED must be
-  there.
-
-Now, what I suggested still doesn't detect what you pointed out, or some
-crazier thing that sets __TASK_TRACED *and* some other stuff. IIUC the
-ptrace transformation does TASK_TRACED -> __TASK_TRACED, so we could have
-it as:
-
-  /* TODO: name me */
-  #define foobar TASK_TRACED ^ __TASK_TRACED
-
-  ...
-
-  /* not TASK_RUNNING; check against allowed transformations
-  SCHED_WARN_ON(tmp_state && ((prev_state ^ tmp_state) & ~foobar));
-
-
-That said...
-
-> Or is the heat getting to me?
-
-... that may apply to me as well :-)
+Wei.
