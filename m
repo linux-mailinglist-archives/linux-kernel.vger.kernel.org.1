@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BF722669F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3408F2266AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730318AbgGTQEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39828 "EHLO mail.kernel.org"
+        id S1732001AbgGTQFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:05:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732882AbgGTQEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:04:45 -0400
+        id S1732365AbgGTQFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:05:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 855182064B;
-        Mon, 20 Jul 2020 16:04:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4E942064B;
+        Mon, 20 Jul 2020 16:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261085;
-        bh=tZbcvL0Yom+uemumx//KXJkqlGT24AfbHXyZqMG8DTY=;
+        s=default; t=1595261115;
+        bh=30CXrEdiYVz1AylAF1x57ZnlAb8SkFQ3PCeoPQOpcKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0VN8r6BxjphBUiuVbAd3cxtJudvOaFaLfpnW5q0vfLRuUGggBajFjng/7eNT/7Y+3
-         zz7aXWUOphqz2bjLc5mA+WB51g8xl8NnXfLx5HXfRiBW0XFxGHo4+f+KMFOrEqFFk+
-         aEmXo/8kCfdzbcHCsmcL89yeIEjXi7ahls5OJEsY=
+        b=NYjIoAdqbIyd68KGe+Bo+tyYILmG+U7XZ/KJDONGXU52XZNvsdpwD5P/3KGFDQKy0
+         zLeXYyFEi2H3k484crt/yvCA2RvjY9Ug3jKwiFyR6tQ9Z8s/psgfb4lFAUCEloZJJk
+         fDaL+/7BnB1iJqzi9xzVFXAlz2ZVXgjTK0JqfCn0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 5.4 196/215] misc: atmel-ssc: lock with mutex instead of spinlock
-Date:   Mon, 20 Jul 2020 17:37:58 +0200
-Message-Id: <20200720152829.495186822@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        Alex Hung <alex.hung@canonical.com>
+Subject: [PATCH 5.4 197/215] thermal: int3403_thermal: Downgrade error message
+Date:   Mon, 20 Jul 2020 17:37:59 +0200
+Message-Id: <20200720152829.533853136@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -43,115 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Alex Hung <alex.hung@canonical.com>
 
-commit b037d60a3b1d1227609fd858fa34321f41829911 upstream.
+commit f3d7fb38976b1b0a8462ba1c7cbd404ddfaad086 upstream.
 
-Uninterruptible context is not needed in the driver and causes lockdep
-warning because of mutex taken in of_alias_get_id(). Convert the lock to
-mutex to avoid the issue.
+Downgrade "Unsupported event" message from dev_err to dev_dbg to avoid
+flooding with this message on some platforms.
 
-Cc: stable@vger.kernel.org
-Fixes: 099343c64e16 ("ARM: at91: atmel-ssc: add device tree support")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Link: https://lore.kernel.org/r/50f0d7fa107f318296afb49477c3571e4d6978c5.1592998403.git.mirq-linux@rere.qmqm.pl
+Cc: stable@vger.kernel.org # v5.4+
+Suggested-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Alex Hung <alex.hung@canonical.com>
+[ rzhang: fix typo in changelog ]
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Link: https://lore.kernel.org/r/20200615223957.183153-1-alex.hung@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/atmel-ssc.c |   24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/thermal/intel/int340x_thermal/int3403_thermal.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -10,7 +10,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/spinlock.h>
-+#include <linux/mutex.h>
- #include <linux/atmel-ssc.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -20,7 +20,7 @@
- #include "../../sound/soc/atmel/atmel_ssc_dai.h"
- 
- /* Serialize access to ssc_list and user count */
--static DEFINE_SPINLOCK(user_lock);
-+static DEFINE_MUTEX(user_lock);
- static LIST_HEAD(ssc_list);
- 
- struct ssc_device *ssc_request(unsigned int ssc_num)
-@@ -28,7 +28,7 @@ struct ssc_device *ssc_request(unsigned
- 	int ssc_valid = 0;
- 	struct ssc_device *ssc;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_for_each_entry(ssc, &ssc_list, list) {
- 		if (ssc->pdev->dev.of_node) {
- 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
-@@ -44,18 +44,18 @@ struct ssc_device *ssc_request(unsigned
+--- a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
++++ b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+@@ -74,7 +74,7 @@ static void int3403_notify(acpi_handle h
+ 						   THERMAL_TRIP_CHANGED);
+ 		break;
+ 	default:
+-		dev_err(&priv->pdev->dev, "Unsupported event [0x%x]\n", event);
++		dev_dbg(&priv->pdev->dev, "Unsupported event [0x%x]\n", event);
+ 		break;
  	}
- 
- 	if (!ssc_valid) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		pr_err("ssc: ssc%d platform device is missing\n", ssc_num);
- 		return ERR_PTR(-ENODEV);
- 	}
- 
- 	if (ssc->user) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		dev_dbg(&ssc->pdev->dev, "module busy\n");
- 		return ERR_PTR(-EBUSY);
- 	}
- 	ssc->user++;
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	clk_prepare(ssc->clk);
- 
-@@ -67,14 +67,14 @@ void ssc_free(struct ssc_device *ssc)
- {
- 	bool disable_clk = true;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	if (ssc->user)
- 		ssc->user--;
- 	else {
- 		disable_clk = false;
- 		dev_dbg(&ssc->pdev->dev, "device already free\n");
- 	}
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	if (disable_clk)
- 		clk_unprepare(ssc->clk);
-@@ -237,9 +237,9 @@ static int ssc_probe(struct platform_dev
- 		return -ENXIO;
- 	}
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_add_tail(&ssc->list, &ssc_list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	platform_set_drvdata(pdev, ssc);
- 
-@@ -258,9 +258,9 @@ static int ssc_remove(struct platform_de
- 
- 	ssc_sound_dai_remove(ssc);
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_del(&ssc->list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	return 0;
  }
 
 
