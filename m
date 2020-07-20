@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF62F22643E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335BB2264C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgGTPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S1730845AbgGTPsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730232AbgGTPnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:43:18 -0400
+        id S1729951AbgGTPsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6736520773;
-        Mon, 20 Jul 2020 15:43:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E111D2064B;
+        Mon, 20 Jul 2020 15:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259798;
-        bh=Kw8w+drgcw3Yfrna/TXKpN8leHNO6ocxjKC8e/mJB4I=;
+        s=default; t=1595260083;
+        bh=SsaHeLoR+9/H3CXpx889o+cGkyCf/Z5mb0WwxpVf56c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K6k08OhzJ87JZT9K7FuPOxtpu8VzuO+jLxA/jwRYo2MdOZWM15Qj1RUguDXs8CzNh
-         sz2cEj8wXO6cpZk8n3+WaXo+tqlrTnYI1p2KyXfPp0ACzJb0U1hibmZfrUBlVvn3Lu
-         gNlTTz2QxkprT3IjaQijZz9w63S6J7VaDeBMKoNQ=
+        b=f8Q2GfYgkgziVLo8kF8VFW5OVacfneKQV61bFa2iLyqdUTJ6KeoUfQ6LSXKCDSfGt
+         OvlnVfNVJVO7lMuVR4JSdHNFFDvKpVPHfLW1Oc5ixP/cKeIENvvGq4sbSgJDtMRmdx
+         dzPhorM+yrmIgisBe0rDCJqU5xRCYAqNf1fEZR0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Luis Machado <luis.machado@linaro.org>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.9 83/86] arm64: ptrace: Override SPSR.SS when single-stepping is enabled
-Date:   Mon, 20 Jul 2020 17:37:19 +0200
-Message-Id: <20200720152757.450412524@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 101/125] USB: serial: iuu_phoenix: fix memory corruption
+Date:   Mon, 20 Jul 2020 17:37:20 +0200
+Message-Id: <20200720152807.900400249@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,110 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit 3a5a4366cecc25daa300b9a9174f7fdd352b9068 upstream.
+commit e7b931bee739e8a77ae216e613d3b99342b6dec0 upstream.
 
-Luis reports that, when reverse debugging with GDB, single-step does not
-function as expected on arm64:
+The driver would happily overwrite its write buffer with user data in
+256 byte increments due to a removed buffer-space sanity check.
 
-  | I've noticed, under very specific conditions, that a PTRACE_SINGLESTEP
-  | request by GDB won't execute the underlying instruction. As a consequence,
-  | the PC doesn't move, but we return a SIGTRAP just like we would for a
-  | regular successful PTRACE_SINGLESTEP request.
-
-The underlying problem is that when the CPU register state is restored
-as part of a reverse step, the SPSR.SS bit is cleared and so the hardware
-single-step state can transition to the "active-pending" state, causing
-an unexpected step exception to be taken immediately if a step operation
-is attempted.
-
-In hindsight, we probably shouldn't have exposed SPSR.SS in the pstate
-accessible by the GPR regset, but it's a bit late for that now. Instead,
-simply prevent userspace from configuring the bit to a value which is
-inconsistent with the TIF_SINGLESTEP state for the task being traced.
-
-Cc: <stable@vger.kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Keno Fischer <keno@juliacomputing.com>
-Link: https://lore.kernel.org/r/1eed6d69-d53d-9657-1fc9-c089be07f98c@linaro.org
-Reported-by: Luis Machado <luis.machado@linaro.org>
-Tested-by: Luis Machado <luis.machado@linaro.org>
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 5fcf62b0f1f2 ("tty: iuu_phoenix: fix locking.")
+Cc: stable <stable@vger.kernel.org>     # 2.6.31
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/include/asm/debug-monitors.h |    2 ++
- arch/arm64/kernel/debug-monitors.c      |   20 ++++++++++++++++----
- arch/arm64/kernel/ptrace.c              |    4 ++--
- 3 files changed, 20 insertions(+), 6 deletions(-)
+ drivers/usb/serial/iuu_phoenix.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/arch/arm64/include/asm/debug-monitors.h
-+++ b/arch/arm64/include/asm/debug-monitors.h
-@@ -116,6 +116,8 @@ void disable_debug_monitors(enum dbg_act
+--- a/drivers/usb/serial/iuu_phoenix.c
++++ b/drivers/usb/serial/iuu_phoenix.c
+@@ -704,14 +704,16 @@ static int iuu_uart_write(struct tty_str
+ 	struct iuu_private *priv = usb_get_serial_port_data(port);
+ 	unsigned long flags;
  
- void user_rewind_single_step(struct task_struct *task);
- void user_fastforward_single_step(struct task_struct *task);
-+void user_regs_reset_single_step(struct user_pt_regs *regs,
-+				 struct task_struct *task);
+-	if (count > 256)
+-		return -ENOMEM;
+-
+ 	spin_lock_irqsave(&priv->lock, flags);
  
- void kernel_enable_single_step(struct pt_regs *regs);
- void kernel_disable_single_step(void);
---- a/arch/arm64/kernel/debug-monitors.c
-+++ b/arch/arm64/kernel/debug-monitors.c
-@@ -149,17 +149,20 @@ postcore_initcall(debug_monitors_init);
- /*
-  * Single step API and exception handling.
-  */
--static void set_regs_spsr_ss(struct pt_regs *regs)
-+static void set_user_regs_spsr_ss(struct user_pt_regs *regs)
- {
- 	regs->pstate |= DBG_SPSR_SS;
- }
--NOKPROBE_SYMBOL(set_regs_spsr_ss);
-+NOKPROBE_SYMBOL(set_user_regs_spsr_ss);
- 
--static void clear_regs_spsr_ss(struct pt_regs *regs)
-+static void clear_user_regs_spsr_ss(struct user_pt_regs *regs)
- {
- 	regs->pstate &= ~DBG_SPSR_SS;
- }
--NOKPROBE_SYMBOL(clear_regs_spsr_ss);
-+NOKPROBE_SYMBOL(clear_user_regs_spsr_ss);
++	count = min(count, 256 - priv->writelen);
++	if (count == 0)
++		goto out;
 +
-+#define set_regs_spsr_ss(r)	set_user_regs_spsr_ss(&(r)->user_regs)
-+#define clear_regs_spsr_ss(r)	clear_user_regs_spsr_ss(&(r)->user_regs)
+ 	/* fill the buffer */
+ 	memcpy(priv->writebuf + priv->writelen, buf, count);
+ 	priv->writelen += count;
++out:
+ 	spin_unlock_irqrestore(&priv->lock, flags);
  
- /* EL1 Single Step Handler hooks */
- static LIST_HEAD(step_hook);
-@@ -388,6 +391,15 @@ void user_fastforward_single_step(struct
- 		clear_regs_spsr_ss(task_pt_regs(task));
- }
- 
-+void user_regs_reset_single_step(struct user_pt_regs *regs,
-+				 struct task_struct *task)
-+{
-+	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
-+		set_user_regs_spsr_ss(regs);
-+	else
-+		clear_user_regs_spsr_ss(regs);
-+}
-+
- /* Kernel API */
- void kernel_enable_single_step(struct pt_regs *regs)
- {
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1447,8 +1447,8 @@ static int valid_native_regs(struct user
-  */
- int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task)
- {
--	if (!test_tsk_thread_flag(task, TIF_SINGLESTEP))
--		regs->pstate &= ~DBG_SPSR_SS;
-+	/* https://lore.kernel.org/lkml/20191118131525.GA4180@willie-the-truck */
-+	user_regs_reset_single_step(regs, task);
- 
- 	if (is_compat_thread(task_thread_info(task)))
- 		return valid_compat_regs(regs);
+ 	return count;
 
 
