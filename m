@@ -2,367 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721852262C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FF32262BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgGTPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:04:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28704 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725934AbgGTPEF (ORCPT
+        id S1726601AbgGTPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgGTPDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:04:05 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KF32Ym144608;
-        Mon, 20 Jul 2020 11:04:01 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32d5h4r60m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 11:04:01 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06KF3HK1145775;
-        Mon, 20 Jul 2020 11:04:00 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32d5h4r600-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 11:04:00 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KEkDbS030482;
-        Mon, 20 Jul 2020 15:03:59 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 32brq8xgb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 15:03:59 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KF3rtb14746274
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 15:03:53 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B15BB6E04C;
-        Mon, 20 Jul 2020 15:03:55 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B97A6E050;
-        Mon, 20 Jul 2020 15:03:54 +0000 (GMT)
-Received: from cpe-172-100-175-116.stny.res.rr.com.com (unknown [9.85.188.6])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Jul 2020 15:03:54 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     freude@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH v9 03/15] s390/vfio-ap: manage link between queue struct and matrix mdev
-Date:   Mon, 20 Jul 2020 11:03:32 -0400
-Message-Id: <20200720150344.24488-4-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200720150344.24488-1-akrowiak@linux.ibm.com>
-References: <20200720150344.24488-1-akrowiak@linux.ibm.com>
+        Mon, 20 Jul 2020 11:03:30 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3934C061794;
+        Mon, 20 Jul 2020 08:03:30 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k23so17893507iom.10;
+        Mon, 20 Jul 2020 08:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pcfxvqUoA5Q84iZVIjEC8f/UAFuiPguvgTdlO6gr+z8=;
+        b=LhPnnGZz+comE1cgyo/Ade5S1kE4zEhoPaaFmdVrbq0kxfF79/KbgosYjWd3jhGj6z
+         PZ864OAiQJyZ8WPWu6phfbFiY0PR+batdntkmBkfGuUeF74RfofIncSfeHpmTOePF1pk
+         Ui72NQbpRw423r3rcUPqaiB/ILqEoJezxU+i2HJrkDVxCMHcaCT2tK0OwO7SS2KWX0dI
+         0NaiTW6dGdv3Ns2/bPxEVvBTpatUK2feYLsXNNkX3CxHcyhzEaXKMpxvhWxbF2avLfGW
+         rKAvuWuQy6krRYFHtP+y+ytu/TgFRuu8J0nceHE6k6yko8K9n5dtO1b6ghj3Q0EYWq68
+         rR2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pcfxvqUoA5Q84iZVIjEC8f/UAFuiPguvgTdlO6gr+z8=;
+        b=EUqb2uaQh6VGIkhtoaD1nBum/8JCW0WDJB5pBNmvFWpgl8o65jFLreW6Zbcf3tK3pA
+         NHX/HYP7BCpvc6FfNIFp9uzRM9ak2SSswVONLvNTip4I+U5w618jYQJk5V4vHEInaAkz
+         MK7n96jXC0KIuXSpNt3KPAHOADWyepS8DNbsKFpOIkd2hn3koskB2W+UNhJRt1pGU26A
+         x3xGQclC1njiWgmVyHVg1VjTWnlY+P8bwxu0TGjrNoXvZcJoCQ7F7Kd47KpBr9YkUqfN
+         WBci8AlRp0WMFTotD6H/USLza2K0nuLeLL3SOsvU6SQ4vUU28qfX4Sh2hhfMSE3qrzTO
+         W1AQ==
+X-Gm-Message-State: AOAM5301BzOZ30p0/h5jgcTsaQepuQ9jAm9mwSJplhlDaEOy9BunMz47
+        C6026salnyo/Av+yWRBBdAFgYL/YvcSHJJkxYntXnD9k
+X-Google-Smtp-Source: ABdhPJzIbmtiIdLPMhyi/GvPa8hA5p1L8XEl7Yhw3/V97KBA7XMRywAMZ5AtZBSscwPbiDM0aPGhETkFHsZErsQ6ju8=
+X-Received: by 2002:a5d:8d12:: with SMTP id p18mr23344299ioj.148.1595257409980;
+ Mon, 20 Jul 2020 08:03:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=11
- mlxlogscore=999 clxscore=1015 mlxscore=0 malwarescore=0 bulkscore=0
- phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007200102
+References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
+ <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com> <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu>
+In-Reply-To: <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 20 Jul 2020 08:03:32 -0700
+Message-ID: <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
+        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
+        Jonathan <jonathan@marek.ca>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's create links between each queue device bound to the vfio_ap device
-driver and the matrix mdev to which the queue is assigned. The idea is to
-facilitate efficient retrieval of the objects representing the queue
-devices and matrix mdevs as well as to verify that a queue assigned to
-a matrix mdev is bound to the driver.
+On Mon, Jul 20, 2020 at 3:01 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 15-07-20, 08:36, Rob Clark wrote:
+> > I can take the first two into msm-next, the 3rd will need to wait
+> > until dev_pm_opp_set_bw() lands
+>
+> You can base that on a8351c12c6c7 in linux-next, I will make sure not to rebase
+> it anymore.
+>
 
-The links will be created as follows:
+I can't really base on something newer than drm-next
 
-   * When the queue device is probed, if its APQN is assigned to a matrix
-     mdev, the structures representing the queue device and the matrix mdev
-     will be linked.
-
-   * When an adapter or domain is assigned to a matrix mdev, for each new
-     APQN assigned that references a queue device bound to the vfio_ap
-     device driver, the structures representing the queue device and the
-     matrix mdev will be linked.
-
-The links will be removed as follows:
-
-   * When the queue device is removed, if its APQN is assigned to a matrix
-     mdev, the structures representing the queue device and the matrix mdev
-     will be unlinked.
-
-   * When an adapter or domain is unassigned from a matrix mdev, for each
-     APQN unassigned that references a queue device bound to the vfio_ap
-     device driver, the structures representing the queue device and the
-     matrix mdev will be unlinked.
-
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c     | 132 +++++++++++++++++++++++++-
- drivers/s390/crypto/vfio_ap_private.h |   2 +
- 2 files changed, 129 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index ad3925f04f61..2e37ee82e422 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -50,6 +50,19 @@ static struct vfio_ap_queue *vfio_ap_get_queue(unsigned long apqn)
- 	return q;
- }
- 
-+static struct vfio_ap_queue *vfio_ap_get_mdev_queue(struct ap_matrix_mdev *matrix_mdev,
-+						    unsigned long apqn)
-+{
-+	struct vfio_ap_queue *q;
-+
-+	hash_for_each_possible(matrix_mdev->qtable, q, mdev_qnode, apqn) {
-+		if (q && (q->apqn == apqn))
-+			return q;
-+	}
-+
-+	return NULL;
-+}
-+
- /**
-  * vfio_ap_wait_for_irqclear
-  * @apqn: The AP Queue number
-@@ -160,7 +173,6 @@ static struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q)
- 		  status.response_code);
- end_free:
- 	vfio_ap_free_aqic_resources(q);
--	q->matrix_mdev = NULL;
- 	return status;
- }
- 
-@@ -262,7 +274,6 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	struct vfio_ap_queue *q;
- 	struct ap_queue_status qstatus = {
- 			       .response_code = AP_RESPONSE_Q_NOT_AVAIL, };
--	struct ap_matrix_mdev *matrix_mdev;
- 
- 	/* If we do not use the AIV facility just go to userland */
- 	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
-@@ -273,14 +284,11 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 
- 	if (!vcpu->kvm->arch.crypto.pqap_hook)
- 		goto out_unlock;
--	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
--				   struct ap_matrix_mdev, pqap_hook);
- 
- 	q = vfio_ap_get_queue(apqn);
- 	if (!q)
- 		goto out_unlock;
- 
--	q->matrix_mdev = matrix_mdev;
- 	status = vcpu->run->s.regs.gprs[1];
- 
- 	/* If IR bit(16) is set we enable the interrupt */
-@@ -320,6 +328,7 @@ static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
- 
- 	matrix_mdev->mdev = mdev;
- 	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
-+	hash_init(matrix_mdev->qtable);
- 	mdev_set_drvdata(mdev, matrix_mdev);
- 	matrix_mdev->pqap_hook.hook = handle_pqap;
- 	matrix_mdev->pqap_hook.owner = THIS_MODULE;
-@@ -548,6 +557,87 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev)
- 	return 0;
- }
- 
-+enum qlink_type {
-+	LINK_APID,
-+	LINK_APQI,
-+	UNLINK_APID,
-+	UNLINK_APQI,
-+};
-+
-+static void vfio_ap_mdev_link_queue(struct ap_matrix_mdev *matrix_mdev,
-+				    unsigned long apid, unsigned long apqi)
-+{
-+	struct vfio_ap_queue *q;
-+
-+	q = vfio_ap_get_queue(AP_MKQID(apid, apqi));
-+	if (q) {
-+		q->matrix_mdev = matrix_mdev;
-+		hash_add(matrix_mdev->qtable,
-+			 &q->mdev_qnode, q->apqn);
-+	}
-+}
-+
-+static void vfio_ap_mdev_unlink_queue(unsigned long apid, unsigned long apqi)
-+{
-+	struct vfio_ap_queue *q;
-+
-+	q = vfio_ap_get_queue(AP_MKQID(apid, apqi));
-+	if (q) {
-+		q->matrix_mdev = NULL;
-+		hash_del(&q->mdev_qnode);
-+	}
-+}
-+
-+/**
-+ * vfio_ap_mdev_link_queues
-+ *
-+ * @matrix_mdev: The matrix mdev to link.
-+ * @type:	 The type of @qlink_id.
-+ * @qlink_id:	 The APID or APQI of the queues to link.
-+ *
-+ * Sets or clears the links between the queues with the specified @qlink_id
-+ * and the @matrix_mdev:
-+ *     @type == LINK_APID: Set the links between the @matrix_mdev and the
-+ *                         queues with the specified @qlink_id (APID)
-+ *     @type == LINK_APQI: Set the links between the @matrix_mdev and the
-+ *                         queues with the specified @qlink_id (APQI)
-+ *     @type == UNLINK_APID: Clear the links between the @matrix_mdev and the
-+ *                           queues with the specified @qlink_id (APID)
-+ *     @type == UNLINK_APQI: Clear the links between the @matrix_mdev and the
-+ *                           queues with the specified @qlink_id (APQI)
-+ */
-+static void vfio_ap_mdev_link_queues(struct ap_matrix_mdev *matrix_mdev,
-+				     enum qlink_type type,
-+				     unsigned long qlink_id)
-+{
-+	unsigned long id;
-+
-+	switch (type) {
-+	case LINK_APID:
-+		for_each_set_bit_inv(id, matrix_mdev->matrix.aqm,
-+				     matrix_mdev->matrix.aqm_max + 1)
-+			vfio_ap_mdev_link_queue(matrix_mdev, qlink_id, id);
-+		break;
-+	case UNLINK_APID:
-+		for_each_set_bit_inv(id, matrix_mdev->matrix.aqm,
-+				     matrix_mdev->matrix.aqm_max + 1)
-+			vfio_ap_mdev_unlink_queue(qlink_id, id);
-+		break;
-+	case LINK_APQI:
-+		for_each_set_bit_inv(id, matrix_mdev->matrix.apm,
-+				     matrix_mdev->matrix.apm_max + 1)
-+			vfio_ap_mdev_link_queue(matrix_mdev, id, qlink_id);
-+		break;
-+	case UNLINK_APQI:
-+		for_each_set_bit_inv(id, matrix_mdev->matrix.apm,
-+				     matrix_mdev->matrix.apm_max + 1)
-+			vfio_ap_mdev_link_queue(matrix_mdev, id, qlink_id);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+	}
-+}
-+
- /**
-  * assign_adapter_store
-  *
-@@ -617,6 +707,7 @@ static ssize_t assign_adapter_store(struct device *dev,
- 	if (ret)
- 		goto share_err;
- 
-+	vfio_ap_mdev_link_queues(matrix_mdev, LINK_APID, apid);
- 	ret = count;
- 	goto done;
- 
-@@ -668,6 +759,7 @@ static ssize_t unassign_adapter_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 	clear_bit_inv((unsigned long)apid, matrix_mdev->matrix.apm);
-+	vfio_ap_mdev_link_queues(matrix_mdev, UNLINK_APID, apid);
- 	mutex_unlock(&matrix_dev->lock);
- 
- 	return count;
-@@ -758,6 +850,7 @@ static ssize_t assign_domain_store(struct device *dev,
- 	if (ret)
- 		goto share_err;
- 
-+	vfio_ap_mdev_link_queues(matrix_mdev, LINK_APQI, apqi);
- 	ret = count;
- 	goto done;
- 
-@@ -810,6 +903,7 @@ static ssize_t unassign_domain_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 	clear_bit_inv((unsigned long)apqi, matrix_mdev->matrix.aqm);
-+	vfio_ap_mdev_link_queues(matrix_mdev, UNLINK_APQI, apqi);
- 	mutex_unlock(&matrix_dev->lock);
- 
- 	return count;
-@@ -1282,6 +1376,29 @@ void vfio_ap_mdev_unregister(void)
- 	mdev_unregister_device(&matrix_dev->device);
- }
- 
-+/**
-+ * vfio_ap_queue_link_mdev
-+ *
-+ * @q: The queue to link with the matrix mdev.
-+ *
-+ * Links @q with the matrix mdev to which the queue's APQN is assigned.
-+ */
-+static void vfio_ap_queue_link_mdev(struct vfio_ap_queue *q)
-+{
-+	unsigned long apid = AP_QID_CARD(q->apqn);
-+	unsigned long apqi = AP_QID_QUEUE(q->apqn);
-+	struct ap_matrix_mdev *matrix_mdev;
-+
-+	list_for_each_entry(matrix_mdev, &matrix_dev->mdev_list, node) {
-+		if (test_bit_inv(apid, matrix_mdev->matrix.apm) &&
-+		    test_bit_inv(apqi, matrix_mdev->matrix.aqm)) {
-+			q->matrix_mdev = matrix_mdev;
-+			hash_add(matrix_mdev->qtable, &q->mdev_qnode, q->apqn);
-+			break;
-+		}
-+	}
-+}
-+
- int vfio_ap_mdev_probe_queue(struct ap_queue *queue)
- {
- 	struct vfio_ap_queue *q;
-@@ -1290,9 +1407,12 @@ int vfio_ap_mdev_probe_queue(struct ap_queue *queue)
- 	if (!q)
- 		return -ENOMEM;
- 
-+	mutex_lock(&matrix_dev->lock);
- 	dev_set_drvdata(&queue->ap_dev.device, q);
- 	q->apqn = queue->qid;
- 	q->saved_isc = VFIO_AP_ISC_INVALID;
-+	vfio_ap_queue_link_mdev(q);
-+	mutex_unlock(&matrix_dev->lock);
- 
- 	return 0;
- }
-@@ -1309,6 +1429,8 @@ void vfio_ap_mdev_remove_queue(struct ap_queue *queue)
- 	apqi = AP_QID_QUEUE(q->apqn);
- 	vfio_ap_mdev_reset_queue(apid, apqi, 1);
- 	vfio_ap_irq_disable(q);
-+	if (q->matrix_mdev)
-+		hash_del(&q->mdev_qnode);
- 	kfree(q);
- 	mutex_unlock(&matrix_dev->lock);
- }
-diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-index a2aa05bec718..57da703b549a 100644
---- a/drivers/s390/crypto/vfio_ap_private.h
-+++ b/drivers/s390/crypto/vfio_ap_private.h
-@@ -87,6 +87,7 @@ struct ap_matrix_mdev {
- 	struct kvm *kvm;
- 	struct kvm_s390_module_hook pqap_hook;
- 	struct mdev_device *mdev;
-+	DECLARE_HASHTABLE(qtable, 8);
- };
- 
- extern int vfio_ap_mdev_register(void);
-@@ -98,6 +99,7 @@ struct vfio_ap_queue {
- 	int	apqn;
- #define VFIO_AP_ISC_INVALID 0xff
- 	unsigned char saved_isc;
-+	struct hlist_node mdev_qnode;
- };
- 
- int vfio_ap_mdev_probe_queue(struct ap_queue *queue);
--- 
-2.21.1
-
+BR,
+-R
