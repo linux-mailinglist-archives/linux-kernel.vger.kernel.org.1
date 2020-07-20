@@ -2,164 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F0D2256DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 06:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6142256D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 06:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgGTE4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 00:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgGTE4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 00:56:50 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35294C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 21:56:50 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 1so8445517pfn.9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 21:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=bYXHL6tBkIar+w8mWcyE6FXql8F7mBZJXR0egF1QDH8=;
-        b=OlNVwPf+HMgvwAVg65akrh38rFGIXJkh4W7fjrmb8Q6+eGdEkN7iRxqnWHHBugAyui
-         UiKvFQPSNuv2CfU/eTXBR8QMxczNJuqPQHxajXZDoUuC247S1SIs5G3bTfAblK+DB/5Y
-         V5L9IUuxNKj9e89BVTirtanIOsh2ugtXQMWxJZM5t/i5F8gLIc6jFw3lUcyK0rEj4epO
-         uoAE/+m5iWV4EkL19wDu7+4aYDARDNpEK/4AdJ6tHX/KDSXGTZveivM5gRufKW/QT9Iw
-         0t6e1SamXsDG8u3+w+xuaxApEod6iVdG/fqM0MHxautVDAns595npEuiXd4C5K4C513R
-         DmfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=bYXHL6tBkIar+w8mWcyE6FXql8F7mBZJXR0egF1QDH8=;
-        b=BIzQUMWyb82CcD+A034y0CMk8UvnuInpbdwAE0e51sZK72Za1TefSNp9g37ff6SWAv
-         8dJ6a2/DzJZQa08EdFNSdmwNieg37hcjWtgXMF4lkwaBSl3Qs9l9PWO50AgT8kZ4mZZe
-         lS8vOBw36HwgSWeFDeF1pVulwmswnkVUp5Mfaez9NJ4PfVzsfksMDfBtAXK1yrCDLS/5
-         KvlHO9MfqYWAmMMHKgWEhEItKh50A6WebmmJMDkkR8USGjPHZdWDi28FuKRG7RQgNCwR
-         u3vSAm1oltwvdZQ82lA5tPQVcGokS2Cq0e0ZtUalCs1rHFPT2ELsySL1GMxZtCgydBHX
-         /eow==
-X-Gm-Message-State: AOAM532RD7NtLjPH5RQNlxL2B0TkUtD3U7SWvgK/vCiWJ0vb4cjKopOk
-        b2lji32wkxcYCo2r9ACMcRs=
-X-Google-Smtp-Source: ABdhPJwlx0yapsh6n0sVA8bpe1PYfFq2VO7v9/ovvTdDCF0wsJHOdujATw4X8LrzvQ6DzKdU6JQe+g==
-X-Received: by 2002:aa7:9e89:: with SMTP id p9mr18826525pfq.110.1595221009631;
-        Sun, 19 Jul 2020 21:56:49 -0700 (PDT)
-Received: from localhost.localdomain ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id w2sm10177532pjt.19.2020.07.19.21.56.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 19 Jul 2020 21:56:49 -0700 (PDT)
-From:   js1304@gmail.com
-X-Google-Original-From: iamjoonsoo.kim@lge.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: [PATCH v2 4/4] mm/gup: use a standard migration target allocation callback
-Date:   Mon, 20 Jul 2020 13:56:18 +0900
-Message-Id: <1595220978-9890-4-git-send-email-iamjoonsoo.kim@lge.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595220978-9890-1-git-send-email-iamjoonsoo.kim@lge.com>
-References: <1595220978-9890-1-git-send-email-iamjoonsoo.kim@lge.com>
+        id S1726330AbgGTE4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 00:56:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgGTE4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 00:56:32 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C620D20758;
+        Mon, 20 Jul 2020 04:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595220991;
+        bh=WpIzzTN6scE+2UyxOf2po3oTZMeSCPUMdXbQ6YleutA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ceHbdgk5deba4gxNstdXo0DOLPpRIEt5yb2TkzfUCzLpZcuJJi26TLNNeZ6O1+g7i
+         SVybg+YC7wjkXApW0jXI/mVdHMUTNjj5XCAooiwVJDzIEFyx+jqZ1G4or2+4EzrOT5
+         0bvkNyBGQhjqX7yfB3Km7pW2/V1DmlYJmw5jDBCI=
+Date:   Mon, 20 Jul 2020 07:56:26 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        corbet@lwn.net, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] RDS: Replace HTTP links with HTTPS ones
+Message-ID: <20200720045626.GF127306@unreal>
+References: <20200719155845.59947-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200719155845.59947-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On Sun, Jul 19, 2020 at 05:58:45PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+>
+>  If there are any URLs to be removed completely
+>  or at least not (just) HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+>
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+>
+>  If you apply the patch, please let me know.
+>
+>  Sorry again to all maintainers who complained about subject lines.
+>  Now I realized that you want an actually perfect prefixes,
+>  not just subsystem ones.
+>  I tried my best...
+>  And yes, *I could* (at least half-)automate it.
+>  Impossible is nothing! :)
+>
+>
+>  Documentation/networking/rds.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-There is a well-defined migration target allocation callback. Use it.
+Why can't it be done in one mega-patch?
+It is insane to see patch for every file/link.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
----
- mm/gup.c | 54 ++++++------------------------------------------------
- 1 file changed, 6 insertions(+), 48 deletions(-)
+We have more than 4k files with http:// in it.
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 4ba822a..628ca4c 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1608,52 +1608,6 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
- }
- 
- #ifdef CONFIG_CMA
--static struct page *new_non_cma_page(struct page *page, unsigned long private)
--{
--	/*
--	 * We want to make sure we allocate the new page from the same node
--	 * as the source page.
--	 */
--	int nid = page_to_nid(page);
--	/*
--	 * Trying to allocate a page for migration. Ignore allocation
--	 * failure warnings. We don't force __GFP_THISNODE here because
--	 * this node here is the node where we have CMA reservation and
--	 * in some case these nodes will have really less non CMA
--	 * allocation memory.
--	 *
--	 * Note that CMA region is prohibited by allocation scope.
--	 */
--	gfp_t gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN;
--
--	if (PageHighMem(page))
--		gfp_mask |= __GFP_HIGHMEM;
--
--#ifdef CONFIG_HUGETLB_PAGE
--	if (PageHuge(page)) {
--		struct hstate *h = page_hstate(page);
--
--		gfp_mask = htlb_modify_alloc_mask(h, gfp_mask);
--		return alloc_huge_page_nodemask(h, nid, NULL, gfp_mask);
--	}
--#endif
--	if (PageTransHuge(page)) {
--		struct page *thp;
--		/*
--		 * ignore allocation failure warnings
--		 */
--		gfp_t thp_gfpmask = GFP_TRANSHUGE | __GFP_NOWARN;
--
--		thp = __alloc_pages_node(nid, thp_gfpmask, HPAGE_PMD_ORDER);
--		if (!thp)
--			return NULL;
--		prep_transhuge_page(thp);
--		return thp;
--	}
--
--	return __alloc_pages_node(nid, gfp_mask, 0);
--}
--
- static long check_and_migrate_cma_pages(struct task_struct *tsk,
- 					struct mm_struct *mm,
- 					unsigned long start,
-@@ -1668,6 +1622,10 @@ static long check_and_migrate_cma_pages(struct task_struct *tsk,
- 	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
-+	struct migration_target_control mtc = {
-+		.nid = NUMA_NO_NODE,
-+		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN,
-+	};
- 
- check_again:
- 	for (i = 0; i < nr_pages;) {
-@@ -1713,8 +1671,8 @@ static long check_and_migrate_cma_pages(struct task_struct *tsk,
- 		for (i = 0; i < nr_pages; i++)
- 			put_page(pages[i]);
- 
--		if (migrate_pages(&cma_page_list, new_non_cma_page,
--				  NULL, 0, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
-+		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
- 			/*
- 			 * some of the pages failed migration. Do get_user_pages
- 			 * without migration.
--- 
-2.7.4
+➜  kernel git:(m/hw-cleanup) git grep -c http: | tr -d ':[:digit:]' | sort | uniq |wc -l
+4292
 
+
+>
+> diff --git a/Documentation/networking/rds.rst b/Documentation/networking/rds.rst
+> index 44936c27ab3a..c80d832509e2 100644
+> --- a/Documentation/networking/rds.rst
+> +++ b/Documentation/networking/rds.rst
+> @@ -11,7 +11,7 @@ This readme tries to provide some background on the hows and whys of RDS,
+>  and will hopefully help you find your way around the code.
+>
+>  In addition, please see this email about RDS origins:
+> -http://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html
+> +https://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html
+>
+>  RDS Architecture
+>  ================
+> --
+> 2.27.0
+>
