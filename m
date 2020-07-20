@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C522267B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0372C226855
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388223AbgGTQOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:14:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54340 "EHLO mail.kernel.org"
+        id S2388306AbgGTQSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388183AbgGTQOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:14:04 -0400
+        id S2388215AbgGTQOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:14:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD5792065E;
-        Mon, 20 Jul 2020 16:14:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B101206E9;
+        Mon, 20 Jul 2020 16:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261644;
-        bh=dfSo/QP5zeIS5qIsUXzFXCdzFyh8OX64kBCuA7fdD/I=;
+        s=default; t=1595261650;
+        bh=T2oPo8LAh9+OKVE8js2mytpEYXrIjhHOARoq03obnY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mk7v+Nwt7t7tmBxYD08TOG8scAZ2njFkn5zAxKjolaruNYerumOhrkUwt/u02JOEk
-         vFANivLkGSrTAJwUePSGyhNOWT8XdFAFqrembmU617i2ZHmM107cVC+OCzEV9rZEmH
-         y6joDNh9wqedvhpav1JS9WV3i8aDanYOlLn/AkWY=
+        b=VGj2oO+FZxZUAdgg4pcCdnaBMBxDXfFqtA5vz4xNRnMOmofi1UXwUrUL3p3N5njhS
+         hMoMlmjB1GthxSSr7wyDjs9TapNF5cueK2R9bRbR95W3YopOGEkEpg1n9KdPk87tIw
+         kJ5HwZ8HU5NEZbONG7Ow3aPdNIBbv64JYJ5MRwLY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Esben Haabendal <esben@geanix.com>
-Subject: [PATCH 5.7 191/244] uio_pdrv_genirq: Remove warning when irq is not specified
-Date:   Mon, 20 Jul 2020 17:37:42 +0200
-Message-Id: <20200720152834.925997767@linuxfoundation.org>
+Subject: [PATCH 5.7 192/244] uio_pdrv_genirq: fix use without device tree and no interrupt
+Date:   Mon, 20 Jul 2020 17:37:43 +0200
+Message-Id: <20200720152834.976166443@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
 References: <20200720152825.863040590@linuxfoundation.org>
@@ -44,17 +44,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Esben Haabendal <esben@geanix.com>
 
-commit 324ac45f25e634eca6346953ae531e8da3e0c73d upstream.
+commit bf12fdf0ab728ca8e5933aac46dd972c0dd0421e upstream.
 
-Since e3a3c3a20555 ("UIO: fix uio_pdrv_genirq with device tree but no
-interrupt"), the uio_pdrv_genirq has supported use without interrupt,
-so the change in 7723f4c5ecdb ("driver core: platform: Add an error
-message to") added false warnings for those cases.
+While e3a3c3a20555 ("UIO: fix uio_pdrv_genirq with device tree but no
+interrupt") added support for using uio_pdrv_genirq for devices without
+interrupt for device tree platforms, the removal of uio_pdrv in
+26dac3c49d56 ("uio: Remove uio_pdrv and use uio_pdrv_genirq instead")
+broke the support for non device tree platforms.
 
-Fixes: 7723f4c5ecdb ("driver core: platform: Add an error message to platform_get_irq*()")
+This change fixes this, so that uio_pdrv_genirq can be used without
+interrupt on all platforms.
+
+This still leaves the support that uio_pdrv had for custom interrupt
+handler lacking, as uio_pdrv_genirq does not handle it (yet).
+
+Fixes: 26dac3c49d56 ("uio: Remove uio_pdrv and use uio_pdrv_genirq instead")
 Signed-off-by: Esben Haabendal <esben@geanix.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200701145659.3978-2-esben@geanix.com
+Link: https://lore.kernel.org/r/20200701145659.3978-3-esben@geanix.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
@@ -63,14 +70,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/uio/uio_pdrv_genirq.c
 +++ b/drivers/uio/uio_pdrv_genirq.c
-@@ -159,7 +159,7 @@ static int uio_pdrv_genirq_probe(struct
- 	priv->pdev = pdev;
- 
+@@ -161,7 +161,7 @@ static int uio_pdrv_genirq_probe(struct
  	if (!uioinfo->irq) {
--		ret = platform_get_irq(pdev, 0);
-+		ret = platform_get_irq_optional(pdev, 0);
+ 		ret = platform_get_irq_optional(pdev, 0);
  		uioinfo->irq = ret;
- 		if (ret == -ENXIO && pdev->dev.of_node)
+-		if (ret == -ENXIO && pdev->dev.of_node)
++		if (ret == -ENXIO)
  			uioinfo->irq = UIO_IRQ_NONE;
+ 		else if (ret == -EPROBE_DEFER)
+ 			return ret;
 
 
