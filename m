@@ -2,85 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9DB225E6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9A3225E46
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 14:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728788AbgGTMVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 08:21:48 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60894 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbgGTMVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:21:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595247707; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GDx0nZdKB25CRIUyjKxQQDbAK/QAtU1kBJYtFizHoOM=; b=ok0JDRixPb88LL+tXmg+BfCITQZs4tLbSjRqOR5nutj10N2WCpc+n7kI/Hp9Fwm7u8v844+D
- TIpobhMCDdVMOBtgUmalSAM7LmJ+V/o4GwqSEtLP1VHkezOe+OyKgbctk3IGXgzoKnSgVfZ7
- MPbMuNz94zSMYkdRxgaHn8xSjtQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f158b89cf983e60a87591ab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 12:18:17
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E1450C433CB; Mon, 20 Jul 2020 12:18:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8710EC433C9;
-        Mon, 20 Jul 2020 12:18:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8710EC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH] drm/msm/dpu: dev_pm_opp_put_clkname() only when an opp_table exists
-Date:   Mon, 20 Jul 2020 17:47:56 +0530
-Message-Id: <1595247476-12968-1-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1728700AbgGTMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 08:18:33 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58923 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728532AbgGTMSd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:18:33 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DA422580458;
+        Mon, 20 Jul 2020 08:18:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 20 Jul 2020 08:18:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=Zou6qAflmxW7TQM12J8BVt0wUlM
+        oX2IiWZ/QdAdyc6w=; b=npmmPscEfVl5ZO2ikn3bQb/N4pTyVSJ2vHu2kyeuf0n
+        w14Sch7ufOxs6SGCWUjJFR1WVBKYIM1wws8FpeOW2Ve3xzl415Mkwr8ytvV2O4ys
+        A6kHcOIPSNXCgMojs2HSxveUte3rJb/gs/NQYV6E5D2N9BEg9oV9lDN6LLISMFs3
+        ElVAyxnvA5S+vzpx8iuRjWX4cuye0QPQT0H3BZZuOu41TNhdRP6PUsLtfhiSgZvG
+        NSQgitjikhvkv6TmV+dQmHwpgsv/PBeiHOiMbQDp2B61gM+BT47nXp5w5AKDMfQs
+        QeFNIO+yVdh6DHNlXkGcFgs9B/m7op7lWiEGaW5KWuQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Zou6qA
+        flmxW7TQM12J8BVt0wUlMoX2IiWZ/QdAdyc6w=; b=fHRc77/VHodwY8LztJRtyc
+        irPG7DCEVBhT7wiGzL6S09HFpEIFQvjJmSHxUQ8inp0zNwnwQhSt2ZdttkkoEY6J
+        U4kUmSxra9dtv0BIHJK6ZSe0aCFn2E/sRc0MKbyXBDExbyjDNJt5hD8jN5/kmsWu
+        R36xXYuzJhhHKzqgNNCSDuB8SMZbxJgJFPxZDoxPkVGjRJXBNVfcKWOuqpIcgrwa
+        PP0arTKIilV3Sv7MvqZSK7ZuBWG1fAkqKDFiJcvaFMH4XL28TsGHgOuGn43RnISN
+        oKt4hlIBV8X0B8ofhUAEtEphjoY490FVOrPLKt9960rJHGYgiHV/Uh5WI63Z+ogw
+        ==
+X-ME-Sender: <xms:losVX5hCPh19khmNPb3zPXfCZwsFO5q8MFdqvWJKdHiyWMoYux0cvw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrgeeggddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
+    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:losVX-AGbd_1MQjVjVNRarCnMDU54x_PSKRwKWOgKlDxP85euYyAbA>
+    <xmx:losVX5GFeaPu47-7ChqNyztbRcmzFbrdXW17EtHC0bwonbNhs2oynw>
+    <xmx:losVX-SQTe01C_qjCrsbu9kl-fOMb3pO9DT6XU_jWhfL0bstrejA9Q>
+    <xmx:l4sVX1n0SJLXV_AQ1CnI41d3QOaJp8O3DfPx-ZuEtabwzPduj48R6w>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 424FF3280059;
+        Mon, 20 Jul 2020 08:18:30 -0400 (EDT)
+Date:   Mon, 20 Jul 2020 14:18:40 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     stable@vger.kernel.org,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Finley Xiao <finley.xiao@rock-chips.com>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [For-STABLE] thermal/drivers/cpufreq_cooling: Fix wrong
+ frequency converted from power
+Message-ID: <20200720121840.GB2984743@kroah.com>
+References: <bc3978d0b7472c140e4d87f61138168a2a7b995c.1594194577.git.viresh.kumar@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc3978d0b7472c140e4d87f61138168a2a7b995c.1594194577.git.viresh.kumar@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Its possible that dpu_bind() fails early enough before
-dev_pm_opp_set_clkname() is called. In such cases, unconditionally
-calling dev_pm_opp_put_clkname() in dpu_unbind() can result in
-a crash. Put an additional check so that dev_pm_opp_put_clkname()
-is called only when an opp_table exists.
+On Wed, Jul 08, 2020 at 01:23:43PM +0530, Viresh Kumar wrote:
+> From: Finley Xiao <finley.xiao@rock-chips.com>
+> 
+> commit 371a3bc79c11b707d7a1b7a2c938dc3cc042fffb upstream.
+> 
+> The function cpu_power_to_freq is used to find a frequency and set the
+> cooling device to consume at most the power to be converted. For example,
+> if the power to be converted is 80mW, and the em table is as follow.
+> struct em_cap_state table[] = {
+> 	/* KHz     mW */
+> 	{ 1008000, 36, 0 },
+> 	{ 1200000, 49, 0 },
+> 	{ 1296000, 59, 0 },
+> 	{ 1416000, 72, 0 },
+> 	{ 1512000, 86, 0 },
+> };
+> The target frequency should be 1416000KHz, not 1512000KHz.
+> 
+> Fixes: 349d39dc5739 ("thermal: cpu_cooling: merge frequency and power tables")
+> Cc: <stable@vger.kernel.org> # v4.13+
+> Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Link: https://lore.kernel.org/r/20200619090825.32747-1-finley.xiao@rock-chips.com
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> Hi Greg,
+> 
+> I am resending this as I got your emails of this failing on 4.14, 4.19
+> and 5.4. This should be applied to all three of them.
+> 
+> @Finley: I hope I have done it correctly, please do check it as this
+> required me to rewrite the code to adapt to previous kernels.
+> 
+>  drivers/thermal/cpu_cooling.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/cpu_cooling.c b/drivers/thermal/cpu_cooling.c
+> index 908a8014cf76..1f4387a5ceae 100644
+> --- a/drivers/thermal/cpu_cooling.c
+> +++ b/drivers/thermal/cpu_cooling.c
+> @@ -280,11 +280,11 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
+>  	int i;
+>  	struct freq_table *freq_table = cpufreq_cdev->freq_table;
+>  
+> -	for (i = 1; i <= cpufreq_cdev->max_level; i++)
+> -		if (power > freq_table[i].power)
+> +	for (i = 0; i < cpufreq_cdev->max_level; i++)
+> +		if (power >= freq_table[i].power)
+>  			break;
+>  
+> -	return freq_table[i - 1].frequency;
+> +	return freq_table[i].frequency;
+>  }
+>  
+>  /**
+> -- 
+> 2.25.0.rc1.19.g042ed3e048af
+> 
 
-Fixes: aa3950767d05 ("drm/msm/dpu: Use OPP API to set clk/perf state")
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Now queued up, thanks.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index f2bbce4..843a1c1 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -1079,7 +1079,8 @@ static void dpu_unbind(struct device *dev, struct device *master, void *data)
- 
- 	if (dpu_kms->has_opp_table)
- 		dev_pm_opp_of_remove_table(dev);
--	dev_pm_opp_put_clkname(dpu_kms->opp_table);
-+	if (dpu_kms->opp_table)
-+		dev_pm_opp_put_clkname(dpu_kms->opp_table);
- }
- 
- static const struct component_ops dpu_ops = {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+greg k-h
