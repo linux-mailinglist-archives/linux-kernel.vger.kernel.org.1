@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0F322560D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD2F225622
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 05:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgGTDDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 23:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgGTDDJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 23:03:09 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE72C0619D2;
-        Sun, 19 Jul 2020 20:03:09 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 1so8339881pfn.9;
-        Sun, 19 Jul 2020 20:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=lpszrUk3g++VjwDkyO+kB0nakBB1oFxNo5alny9wgU0=;
-        b=myC+IRvRSrv66HdgEQPlUWHOsZTOJPaMknWaQKmuH5kea7GMJebrhfBfK5shocJ7PE
-         PbTFzBcDYU6JsNuY0veglvqtKVZRc2OdteWXoXs6j1LUMLCxWBGNex5bm7LZAznIww+M
-         DedHXMjUF0Hhn3VXVH6FSTFq7opNi8xo0u1GLPHi0XR+wLucj198wmueAIfPYaYh/8Fg
-         8jlF5d8e7TD837BcvSgddivhN74F2jWyzVvtNisugRI1YKExssY/BOpG2zSuAIz/rjwL
-         q3Nr+g54MEA0pJwLAnuUqZILGu8bacFa705Ph3pT0sYF0FPwYnzyfXi4jHkqUTeM/gm0
-         BqSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=lpszrUk3g++VjwDkyO+kB0nakBB1oFxNo5alny9wgU0=;
-        b=NkRrWLPtgcOSzPrmXjckX9ROSAOWSiCMVHUyhlNsG+rQNYF2OyRBgQpe6p76FuoqnL
-         e3DP5XY98nnyf+4ReTfO/+Gcu1TwEW/m+i3zFEavaGMHu+b0tCi033dMa04LurtZOmdr
-         7s4K4k5mvG2ZOZBp4HBClNazzFRqmjsacRSS9XDz79wX/Dwj+B0gAAb8+hlwQk0196Hf
-         wLtxZpOQqeC/IrPIiaUy6MzhN+q6BqY9reZNeFcu+Dr7MurK8knVZRRMwAJCBK2HCTF+
-         hvpu3wkxWxJTPs2Hr2tCaZH04L2RrnP28d/iKMi6Wv6Xg4wFzb9yoqJHeZHEXksufLmK
-         nqyQ==
-X-Gm-Message-State: AOAM531UVCqmJXd6otWtAfAqA4J9CvQROtsY+OYisSNPspgjpc+D55e+
-        C2ktY/IHYZ0NyGtRHWoFLvM=
-X-Google-Smtp-Source: ABdhPJwMg06qZ+4wVzgvV5FRM4DFOwuOxF3uoQRaPM8dKXqbFpuZN/leQ1NFOn0AUHknX5kL6q7syw==
-X-Received: by 2002:a63:d02:: with SMTP id c2mr16849420pgl.338.1595214188892;
-        Sun, 19 Jul 2020 20:03:08 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id u66sm14887329pfb.191.2020.07.19.20.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2020 20:03:08 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 13:03:03 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
- membarrier_mm_sync_core_before_usermode
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-References: <1594868476.6k5kvx8684.astroid@bobo.none>
-        <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
-        <20200716085032.GO10769@hirez.programming.kicks-ass.net>
-        <1594892300.mxnq3b9a77.astroid@bobo.none>
-        <20200716110038.GA119549@hirez.programming.kicks-ass.net>
-        <1594906688.ikv6r4gznx.astroid@bobo.none>
-        <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com>
-MIME-Version: 1.0
-Message-Id: <1595213677.kxru89dqy2.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        id S1726983AbgGTDU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 23:20:57 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:41796 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726499AbgGTDU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 23:20:57 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAB3fwMICxVf3jTfAQ--.59253S2;
+        Mon, 20 Jul 2020 11:10:00 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     jdmason@kudzu.us, davem@davemloft.net, kuba@kernel.org,
+        snelson@pensando.io, hkallweit1@gmail.com, mhabets@solarflare.com,
+        vulab@iscas.ac.cn, mst@redhat.com, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] net: vxge-main: Remove unnecessary cast in kfree()
+Date:   Mon, 20 Jul 2020 03:09:59 +0000
+Message-Id: <20200720030959.7365-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAB3fwMICxVf3jTfAQ--.59253S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrWxurW8uryruw4DurWUXFb_yoWkAwbE9F
+        WIqr1rWrs8G3y2kw4UCrn3Zr9I9Fs8X34fuayxKrZxAayDJrZ8Ar18XFsavr95Wr1fGF9x
+        Jwn2yryfW340qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7
+        v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
+        7I0E8cxan2IY04v7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUenmRUUUUU
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAgIDA1Jhbk1DqQAAs6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Mathieu Desnoyers's message of July 17, 2020 11:42 pm:
-> ----- On Jul 16, 2020, at 7:26 PM, Nicholas Piggin npiggin@gmail.com wrot=
-e:
-> [...]
->>=20
->> membarrier does replace barrier instructions on remote CPUs, which do
->> order accesses performed by the kernel on the user address space. So
->> membarrier should too I guess.
->>=20
->> Normal process context accesses like read(2) will do so because they
->> don't get filtered out from IPIs, but kernel threads using the mm may
->> not.
->=20
-> But it should not be an issue, because membarrier's ordering is only with=
- respect
-> to submit and completion of io_uring requests, which are performed throug=
-h
-> system calls from the context of user-space threads, which are called fro=
-m the
-> right mm.
+Remove unnecassary casts in the argument to kfree.
 
-Is that true? Can io completions be written into an address space via a
-kernel thread? I don't know the io_uring code well but it looks like=20
-that's asynchonously using the user mm context.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-How about other memory accesses via kthread_use_mm? Presumably there is=20
-still ordering requirement there for membarrier, so I really think
-it's a fragile interface with no real way for the user to know how=20
-kernel threads may use its mm for any particular reason, so membarrier
-should synchronize all possible kernel users as well.
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+index 9b63574b6202..3a43ec603a8b 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+@@ -1075,7 +1075,7 @@ static int vxge_mac_list_del(struct vxge_vpath *vpath, struct macInfo *mac)
+ 	list_for_each_safe(entry, next, &vpath->mac_addr_list) {
+ 		if (((struct vxge_mac_addrs *)entry)->macaddr == del_mac) {
+ 			list_del(entry);
+-			kfree((struct vxge_mac_addrs *)entry);
++			kfree(entry);
+ 			vpath->mac_addr_cnt--;
+ 
+ 			if (is_multicast_ether_addr(mac->macaddr))
+@@ -2912,7 +2912,7 @@ static void vxge_free_mac_add_list(struct vxge_vpath *vpath)
+ 
+ 	list_for_each_safe(entry, next, &vpath->mac_addr_list) {
+ 		list_del(entry);
+-		kfree((struct vxge_mac_addrs *)entry);
++		kfree(entry);
+ 	}
+ }
+ 
+-- 
+2.17.1
 
-Thanks,
-Nick
