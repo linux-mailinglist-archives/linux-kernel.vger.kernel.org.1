@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F85226906
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE332268F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732845AbgGTQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:04:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
+        id S2387730AbgGTQXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732834AbgGTQEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:04:23 -0400
+        id S1732995AbgGTQFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:05:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4292A2064B;
-        Mon, 20 Jul 2020 16:04:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD05F2064B;
+        Mon, 20 Jul 2020 16:05:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595261062;
-        bh=brtp9yHjy3ziQVxTsjjgYfS8uVlOTxN4qyMt/fPozVw=;
+        s=default; t=1595261140;
+        bh=yJdQ9x0NnxcJSbyMWotm4xSTdoYpqFfOHOchrswNJ7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DOrIA4Z6uEULndJDGR7KYV+ajywV9gZUXslF3OMucS+5kzXyxVFrvFLX0rE+v7zvB
-         GeuyIlp6u9I9FWCHB77V8em2M8Ih2EvwpfIpzcxV7+U6GFbIQIDFXmDvINATybiY8m
-         OMrTybk/fvKFK9LCw3Cyb/lEqdl9nfHrzemluYSI=
+        b=Ps8LA+8pnyrFAQXUEpYhWBgeKehfYY+HnuOQ9Onm2ss2Zg9y2WSWWKnjlOApfs2Q8
+         D+Uxjb9eDEUqUgM/OClBIA+eRtGT7oIygKsNhwehvMYxp7MtCA50iADg8iI49abz3V
+         nriBGfZ7oUqPwFKRN7BAzpn6rpygy3gNaMMysmI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Robin Gong <yibin.gong@nxp.com>, Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.4 194/215] dmaengine: mcf-edma: Fix NULL pointer exception in mcf_edma_tx_handler
-Date:   Mon, 20 Jul 2020 17:37:56 +0200
-Message-Id: <20200720152829.412085710@linuxfoundation.org>
+        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
+        Angelo Dureghello <angelo@sysam.it>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.4 195/215] dmaengine: fsl-edma-common: correct DSIZE_32BYTE
+Date:   Mon, 20 Jul 2020 17:37:57 +0200
+Message-Id: <20200720152829.446376498@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -43,55 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Robin Gong <yibin.gong@nxp.com>
 
-commit 8995aa3d164ddd9200e6abcf25c449cf5298c858 upstream.
+commit e142087b15960a4e1e5932942e5abae1f49d2318 upstream.
 
-On Toradex Colibri VF50 (Vybrid VF5xx) with fsl-edma driver NULL pointer
-exception happens occasionally on serial output initiated by login
-timeout.
+Correct EDMA_TCD_ATTR_DSIZE_32BYTE define since it's broken by the below:
+'0x0005 --> BIT(3) | BIT(0))'
 
-This was reproduced only if kernel was built with significant debugging
-options and EDMA driver is used with serial console.
-
-Issue looks like a race condition between interrupt handler
-fsl_edma_tx_handler() (called as a result of fsl_edma_xfer_desc()) and
-terminating the transfer with fsl_edma_terminate_all().
-
-The fsl_edma_tx_handler() handles interrupt for a transfer with already
-freed edesc and idle==true.
-
-The mcf-edma driver shares design and lot of code with fsl-edma.  It
-looks like being affected by same problem.  Fix this pattern the same
-way as fix for fsl-edma driver.
-
-Fixes: e7a3ff92eaf1 ("dmaengine: fsl-edma: add ColdFire mcf5441x edma support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Robin Gong <yibin.gong@nxp.com>
-Link: https://lore.kernel.org/r/1591881665-25592-1-git-send-email-krzk@kernel.org
+Fixes: 4d6d3a90e4ac ("dmaengine: fsl-edma: fix macros")
+Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+Tested-by: Angelo Dureghello <angelo@sysam.it>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/1593449998-32091-1-git-send-email-yibin.gong@nxp.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma/mcf-edma.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/dma/fsl-edma-common.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/dma/mcf-edma.c
-+++ b/drivers/dma/mcf-edma.c
-@@ -35,6 +35,13 @@ static irqreturn_t mcf_edma_tx_handler(i
- 			mcf_chan = &mcf_edma->chans[ch];
- 
- 			spin_lock(&mcf_chan->vchan.lock);
-+
-+			if (!mcf_chan->edesc) {
-+				/* terminate_all called before */
-+				spin_unlock(&mcf_chan->vchan.lock);
-+				continue;
-+			}
-+
- 			if (!mcf_chan->edesc->iscyclic) {
- 				list_del(&mcf_chan->edesc->vdesc.node);
- 				vchan_cookie_complete(&mcf_chan->edesc->vdesc);
+--- a/drivers/dma/fsl-edma-common.h
++++ b/drivers/dma/fsl-edma-common.h
+@@ -33,7 +33,7 @@
+ #define EDMA_TCD_ATTR_DSIZE_16BIT	BIT(0)
+ #define EDMA_TCD_ATTR_DSIZE_32BIT	BIT(1)
+ #define EDMA_TCD_ATTR_DSIZE_64BIT	(BIT(0) | BIT(1))
+-#define EDMA_TCD_ATTR_DSIZE_32BYTE	(BIT(3) | BIT(0))
++#define EDMA_TCD_ATTR_DSIZE_32BYTE	(BIT(2) | BIT(0))
+ #define EDMA_TCD_ATTR_SSIZE_8BIT	0
+ #define EDMA_TCD_ATTR_SSIZE_16BIT	(EDMA_TCD_ATTR_DSIZE_16BIT << 8)
+ #define EDMA_TCD_ATTR_SSIZE_32BIT	(EDMA_TCD_ATTR_DSIZE_32BIT << 8)
 
 
