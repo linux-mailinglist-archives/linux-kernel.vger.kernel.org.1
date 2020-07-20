@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D983226478
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA94226377
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbgGTPpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39670 "EHLO mail.kernel.org"
+        id S1728848AbgGTPhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730506AbgGTPpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:45:19 -0400
+        id S1728448AbgGTPh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:37:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 962202176B;
-        Mon, 20 Jul 2020 15:45:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F00F22CB2;
+        Mon, 20 Jul 2020 15:37:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259919;
-        bh=gT5151k0Ubtk/tBEyVBe8PhGWzMR8W2gtoTZ7OzRg98=;
+        s=default; t=1595259448;
+        bh=3AQAN1Qxu/m9Dtqgi0RZiG7hIv+XF0YYpsIK7Wz9AgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCOtXmm7csWjZA3mXh5gCv2w2GuqyhbQrg7Npl3kEMlw3U673ox6B50KwEa86DCLE
-         3xqCaBMoMaRcwhZnkT1QPtePPpETGQH+fCZT7FDeWV7W2Ly9fc93VxJ5l3OCNeienS
-         28FBoikojhYM9DJhRB9dyanopgx+b3xL6Sn3gKiE=
+        b=SohF6jMqMXyCvT/WMA8rPuwD5FctOs2r5MsNe6RuK2bdNMTZwEMJ750fTIZ/2CZV1
+         JjSQLJR0hKXieyTAFFox5JP9gJTSySrViu2IKCs18hWXBeCzfsCefMMK1SPh1Vv2o9
+         7GdsLJRzJzfFukfLc+WttvhowiEEBo5t7jwVT+HQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 4.14 040/125] s390/mm: fix huge pte soft dirty copying
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 03/58] spi: spidev: fix a potential use-after-free in spidev_release()
 Date:   Mon, 20 Jul 2020 17:36:19 +0200
-Message-Id: <20200720152804.950738586@linuxfoundation.org>
+Message-Id: <20200720152747.297093674@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,35 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janosch Frank <frankja@linux.ibm.com>
+From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-commit 528a9539348a0234375dfaa1ca5dbbb2f8f8e8d2 upstream.
+[ Upstream commit 06096cc6c5a84ced929634b0d79376b94c65a4bd ]
 
-If the pmd is soft dirty we must mark the pte as soft dirty (and not dirty).
-This fixes some cases for guest migration with huge page backings.
+If an spi device is unbounded from the driver before the release
+process, there will be an NULL pointer reference when it's
+referenced in spi_slave_abort().
 
-Cc: <stable@vger.kernel.org> # 4.8
-Fixes: bc29b7ac1d9f ("s390/mm: clean up pte/pmd encoding")
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix it by checking it's already freed before reference.
 
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Link: https://lore.kernel.org/r/20200618032125.4650-2-zhenzhong.duan@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/mm/hugetlbpage.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spidev.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
---- a/arch/s390/mm/hugetlbpage.c
-+++ b/arch/s390/mm/hugetlbpage.c
-@@ -117,7 +117,7 @@ static inline pte_t __rste_to_pte(unsign
- 					     _PAGE_YOUNG);
- #ifdef CONFIG_MEM_SOFT_DIRTY
- 		pte_val(pte) |= move_set_bit(rste, _SEGMENT_ENTRY_SOFT_DIRTY,
--					     _PAGE_DIRTY);
-+					     _PAGE_SOFT_DIRTY);
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 80beb8406f200..7969f5484aee8 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -635,15 +635,20 @@ err_find_dev:
+ static int spidev_release(struct inode *inode, struct file *filp)
+ {
+ 	struct spidev_data	*spidev;
++	int			dofree;
+ 
+ 	mutex_lock(&device_list_lock);
+ 	spidev = filp->private_data;
+ 	filp->private_data = NULL;
+ 
++	spin_lock_irq(&spidev->spi_lock);
++	/* ... after we unbound from the underlying device? */
++	dofree = (spidev->spi == NULL);
++	spin_unlock_irq(&spidev->spi_lock);
++
+ 	/* last close? */
+ 	spidev->users--;
+ 	if (!spidev->users) {
+-		int		dofree;
+ 
+ 		kfree(spidev->tx_buffer);
+ 		spidev->tx_buffer = NULL;
+@@ -651,19 +656,14 @@ static int spidev_release(struct inode *inode, struct file *filp)
+ 		kfree(spidev->rx_buffer);
+ 		spidev->rx_buffer = NULL;
+ 
+-		spin_lock_irq(&spidev->spi_lock);
+-		if (spidev->spi)
+-			spidev->speed_hz = spidev->spi->max_speed_hz;
+-
+-		/* ... after we unbound from the underlying device? */
+-		dofree = (spidev->spi == NULL);
+-		spin_unlock_irq(&spidev->spi_lock);
+-
+ 		if (dofree)
+ 			kfree(spidev);
++		else
++			spidev->speed_hz = spidev->spi->max_speed_hz;
+ 	}
+ #ifdef CONFIG_SPI_SLAVE
+-	spi_slave_abort(spidev->spi);
++	if (!dofree)
++		spi_slave_abort(spidev->spi);
  #endif
- 		pte_val(pte) |= move_set_bit(rste, _SEGMENT_ENTRY_NOEXEC,
- 					     _PAGE_NOEXEC);
+ 	mutex_unlock(&device_list_lock);
+ 
+-- 
+2.25.1
+
 
 
