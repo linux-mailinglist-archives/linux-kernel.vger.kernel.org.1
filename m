@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD275226640
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4A3226781
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732235AbgGTQBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        id S1733137AbgGTQMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:12:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731073AbgGTQBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:01:31 -0400
+        id S2387889AbgGTQMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:12:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB2CA22D02;
-        Mon, 20 Jul 2020 16:01:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37EBF2064B;
+        Mon, 20 Jul 2020 16:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260891;
-        bh=03I4/cVaQmrkswviRdPNtFlcOl81leKqOafE+i78oiE=;
+        s=default; t=1595261519;
+        bh=WWdC/8JRDZCpZNHg7v589mBckIuYNk/cwpy8NeYCGjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ml2gD/BY151+vHRu4tfPq0IXBVue0DurRlWpJ20mbeDm6LCwOlLadc1MoheuaV5Nk
-         EQUdA3i3Fo3CoKWF61fRXyYys+GLFPqlSIqURVOHujeabutsYeUgWoElbCihZCVWbP
-         gPP6p6paizZ/aPOGkfXtvNrFLTgyC1lozFOMt8Q8=
+        b=a8o0bm9ZNd27kh6OW8NzVNlBKBAHjjqBLObavN/4DXTTNn+kYtDD/w/LX8In1mkMo
+         RlId9siPFlJ61LQnrm3TZOp2qzxiFVzRHQk1l3QUGNO+UMxFhA/aJ4KFI1/0OepR+Q
+         +yWAAZBFjASQXKD3fnkcPmk76a+NYqBBD+WhPTXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Renato Lui Geh <renatogeh@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 102/215] iio: adc: ad7780: Fix a resource handling path in ad7780_probe()
-Date:   Mon, 20 Jul 2020 17:36:24 +0200
-Message-Id: <20200720152825.059287518@linuxfoundation.org>
+Subject: [PATCH 5.7 114/244] keys: asymmetric: fix error return code in software_key_query()
+Date:   Mon, 20 Jul 2020 17:36:25 +0200
+Message-Id: <20200720152831.265834535@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,36 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit b0536f9826a5ed3328d527b4fc1686867a9f3041 ]
+[ Upstream commit 6cbba1f9114a8134cff9138c79add15012fd52b9 ]
 
-If 'ad7780_init_gpios()' fails, we must not release some resources that
-have not been allocated yet. Return directly instead.
+Fix to return negative error code -ENOMEM from kmalloc() error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 5bb30e7daf00 ("staging: iio: ad7780: move regulator to after GPIO init")
-Fixes: 9085daa4abcc ("staging: iio: ad7780: add gain & filter gpio support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Renato Lui Geh <renatogeh@gmail.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: f1774cb8956a ("X.509: parse public key parameters from x509 for akcipher")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ad7780.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/asymmetric_keys/public_key.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iio/adc/ad7780.c b/drivers/iio/adc/ad7780.c
-index 217a5a5c3c6d9..7e741294de7b8 100644
---- a/drivers/iio/adc/ad7780.c
-+++ b/drivers/iio/adc/ad7780.c
-@@ -309,7 +309,7 @@ static int ad7780_probe(struct spi_device *spi)
+diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+index d7f43d4ea925a..e5fae4e838c06 100644
+--- a/crypto/asymmetric_keys/public_key.c
++++ b/crypto/asymmetric_keys/public_key.c
+@@ -119,6 +119,7 @@ static int software_key_query(const struct kernel_pkey_params *params,
+ 	if (IS_ERR(tfm))
+ 		return PTR_ERR(tfm);
  
- 	ret = ad7780_init_gpios(&spi->dev, st);
- 	if (ret)
--		goto error_cleanup_buffer_and_trigger;
-+		return ret;
- 
- 	st->reg = devm_regulator_get(&spi->dev, "avdd");
- 	if (IS_ERR(st->reg))
++	ret = -ENOMEM;
+ 	key = kmalloc(pkey->keylen + sizeof(u32) * 2 + pkey->paramlen,
+ 		      GFP_KERNEL);
+ 	if (!key)
 -- 
 2.25.1
 
