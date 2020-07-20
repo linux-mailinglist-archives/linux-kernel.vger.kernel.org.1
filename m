@@ -2,253 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74D72257A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4032257A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgGTGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:33:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6316 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725805AbgGTGdO (ORCPT
+        id S1726947AbgGTGeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgGTGeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:33:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06K6UdVp090276;
-        Mon, 20 Jul 2020 02:33:09 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32bw8yrxy6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 02:33:09 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06K6W0Xd094790;
-        Mon, 20 Jul 2020 02:33:08 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32bw8yrxxd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 02:33:08 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06K6TrxA001796;
-        Mon, 20 Jul 2020 06:33:07 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 32brq7tad4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Jul 2020 06:33:06 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06K6VoH855378026
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Jul 2020 06:31:50 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3727A405F;
-        Mon, 20 Jul 2020 06:31:49 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 451BAA405B;
-        Mon, 20 Jul 2020 06:31:48 +0000 (GMT)
-Received: from drishya.in.ibm.com (unknown [9.85.113.150])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 20 Jul 2020 06:31:48 +0000 (GMT)
-Date:   Mon, 20 Jul 2020 12:01:45 +0530
-From:   Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>, linuxppc-dev@ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 4/5] cpuidle-pseries : Include extended CEDE states in
- cpuidle framework
-Message-ID: <20200720063145.GE4000@drishya.in.ibm.com>
-Reply-To: svaidy@linux.ibm.com
-References: <1594120299-31389-1-git-send-email-ego@linux.vnet.ibm.com>
- <1594120299-31389-5-git-send-email-ego@linux.vnet.ibm.com>
+        Mon, 20 Jul 2020 02:34:18 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B05C0619D2;
+        Sun, 19 Jul 2020 23:34:17 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id s26so8549613pfm.4;
+        Sun, 19 Jul 2020 23:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7GFd7Yku8i+FF1S4CUo1hrbA5Zh0OraFGwFf9HMOIw4=;
+        b=mVP/VDVoII2NYltj2o/cI4fLTlW/fCOt78CYJjBWGV3FlC1cg7w1KI0zfcsoirtrHe
+         JvbZzVZHR2sXINXqeeAhp+A2yvDPsaqmcWaYJK9TVh1vtyXed+oyhPkBs9lU21w7n0aP
+         dwUT3+UKIgLVzg9F7+fC6tFRIys/i902EF85yBj7exUlO6atH0OgZxtlC4nK2ke7/5Bf
+         BKDFGs/x2NojAd3JV1QyMpLSgzC6wh/oTwKzRGYGpJqie//kXCGszMeOOJ868KE7zm12
+         oRHjiy1/BDf9BqgLxoi1KB9zL7qD3zIBWDnX527KiIslcSBIuVd0Yo25ZcxgP5Tv3iEf
+         v3cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7GFd7Yku8i+FF1S4CUo1hrbA5Zh0OraFGwFf9HMOIw4=;
+        b=ZI+5psT4Tw3zHBg6wlTSYcCDe6yIi5/k7w6vywBFTxy7EPQ9x3vQN+fQvwGUXsQMm0
+         7E7dHuSfbx/EP+i5HGNkpzDiglKtTbq4RYr6FV0n5z/0liY8tyygRHOFnCG9dN0y1NQr
+         6rEeQfLmwJt2z+xSDAXdeCJvi/2pCiEyNXbGqxHfpA2zBBKiLj1RuVIGoBhS3e+TEWNx
+         cZTPfGwrMHIP7zPV7/jpPPbGIyYtNin1AeC88gxYyhMXoqPV87K/Oa1+9zvgEpVloKY3
+         O2FMGfURRiWXEV1ugiSCGFxt9Uwok5SzVKmPePgG+ZBWY62mMG4b5EKUaJ89vVG68AD4
+         DbcQ==
+X-Gm-Message-State: AOAM5311ACZ+4q/dLPlwfTIwYsKp/ftPyYAo6PhXONUs5Gp3EXFJQ/Bb
+        iuS59FgTYepfIG7Teeljvlg=
+X-Google-Smtp-Source: ABdhPJxQmF5oq+pWAT2xYH05CJxxqZ93CWM8ckA5SEl9IkhpdbaKMKvlrTVaOBfMKylYBl9Qs/PVgA==
+X-Received: by 2002:aa7:9a03:: with SMTP id w3mr17729156pfj.228.1595226857292;
+        Sun, 19 Jul 2020 23:34:17 -0700 (PDT)
+Received: from gmail.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id 195sm7901326pfb.206.2020.07.19.23.34.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Jul 2020 23:34:16 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 12:02:53 +0530
+From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
+To:     "chenxiang (M)" <chenxiang66@hisilicon.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        John Garry <john.garry@huawei.com>,
+        Don Brace <don.brace@microsemi.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
+Subject: Re: [PATCH v1 07/15] scsi: hisi_sas_v3_hw: use generic power
+ management
+Message-ID: <20200720063253.GA4237@gmail.com>
+References: <20200717063438.175022-1-vaibhavgupta40@gmail.com>
+ <20200717063438.175022-8-vaibhavgupta40@gmail.com>
+ <367bd5d3-f0a6-2bd7-2945-3095c827dbe6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1594120299-31389-5-git-send-email-ego@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-20_01:2020-07-17,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxscore=0
- suspectscore=1 bulkscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007200045
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <367bd5d3-f0a6-2bd7-2945-3095c827dbe6@hisilicon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-07-07 16:41:38]:
+On Mon, Jul 20, 2020 at 02:16:45PM +0800, chenxiang (M) wrote:
+> Hi Vaibhav,
+> 
+> 在 2020/7/17 14:34, Vaibhav Gupta 写道:
+> > With legacy PM, drivers themselves were responsible for managing the
+> > device's power states and takes care of register states.
+> > 
+> > After upgrading to the generic structure, PCI core will take care of
+> > required tasks and drivers should do only device-specific operations.
+> > 
+> > The driver was calling pci_save/restore_state(), pci_choose_state(),
+> > pci_enable/disable_device() and pci_set_power_state() which is no more
+> > needed.
+> > 
+> > Compile-tested only.
+> > 
+> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> 
+> Reviewed-by: Xiang Chen <chenxiang66@hisilicon.com>
+> Just a small comment, below.
+> 
+> > ---
+> >   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 32 ++++++++------------------
+> >   1 file changed, 10 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> > index 55e2321a65bc..45605a520bc8 100644
+> > --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> > +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> > @@ -3374,13 +3374,13 @@ enum {
+> >   	hip08,
+> >   };
+> > -static int hisi_sas_v3_suspend(struct pci_dev *pdev, pm_message_t state)
+> > +static int __maybe_unused hisi_sas_v3_suspend(struct device *dev_d)
+> >   {
+> > +	struct pci_dev *pdev = to_pci_dev(dev_d);
+> >   	struct sas_ha_struct *sha = pci_get_drvdata(pdev);
+> >   	struct hisi_hba *hisi_hba = sha->lldd_ha;
+> >   	struct device *dev = hisi_hba->dev;
+> >   	struct Scsi_Host *shost = hisi_hba->shost;
+> > -	pci_power_t device_state;
+> >   	int rc;
+> >   	if (!pdev->pm_cap) {
+> > @@ -3406,21 +3406,15 @@ static int hisi_sas_v3_suspend(struct pci_dev *pdev, pm_message_t state)
+> >   	hisi_sas_init_mem(hisi_hba);
+> > -	device_state = pci_choose_state(pdev, state);
+> > -	dev_warn(dev, "entering operating state [D%d]\n",
+> > -			device_state);
+> 
+> Please retain above print to keep consistence with the print in function
+> hisi_sas_v3_resume().
+>
+Okay, Thanks for the review :)
+This is will be fixed in v2 patch-series along with other changes.
 
-> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+-- Vaibhav Gupta 
+> > -	pci_save_state(pdev);
+> > -	pci_disable_device(pdev);
+> > -	pci_set_power_state(pdev, device_state);
+> > -
+> >   	hisi_sas_release_tasks(hisi_hba);
+> >   	sas_suspend_ha(sha);
+> >   	return 0;
+> >   }
+> > -static int hisi_sas_v3_resume(struct pci_dev *pdev)
+> > +static int __maybe_unused hisi_sas_v3_resume(struct device *dev_d)
+> >   {
+> > +	struct pci_dev *pdev = to_pci_dev(dev_d);
+> >   	struct sas_ha_struct *sha = pci_get_drvdata(pdev);
+> >   	struct hisi_hba *hisi_hba = sha->lldd_ha;
+> >   	struct Scsi_Host *shost = hisi_hba->shost;
+> > @@ -3430,16 +3424,8 @@ static int hisi_sas_v3_resume(struct pci_dev *pdev)
+> >   	dev_warn(dev, "resuming from operating state [D%d]\n",
+> >   		 device_state);
+> > -	pci_set_power_state(pdev, PCI_D0);
+> > -	pci_enable_wake(pdev, PCI_D0, 0);
+> > -	pci_restore_state(pdev);
+> > -	rc = pci_enable_device(pdev);
+> > -	if (rc) {
+> > -		dev_err(dev, "enable device failed during resume (%d)\n", rc);
+> > -		return rc;
+> > -	}
+> > +	device_wakeup_disable(dev_d);
+> > -	pci_set_master(pdev);
+> >   	scsi_unblock_requests(shost);
+> >   	clear_bit(HISI_SAS_REJECT_CMD_BIT, &hisi_hba->flags);
+> > @@ -3447,7 +3433,6 @@ static int hisi_sas_v3_resume(struct pci_dev *pdev)
+> >   	rc = hw_init_v3_hw(hisi_hba);
+> >   	if (rc) {
+> >   		scsi_remove_host(shost);
+> > -		pci_disable_device(pdev);
+> >   		return rc;
+> >   	}
+> >   	hisi_hba->hw->phys_init(hisi_hba);
+> > @@ -3468,13 +3453,16 @@ static const struct pci_error_handlers hisi_sas_err_handler = {
+> >   	.reset_done	= hisi_sas_reset_done_v3_hw,
+> >   };
+> > +static SIMPLE_DEV_PM_OPS(hisi_sas_v3_pm_ops,
+> > +			 hisi_sas_v3_suspend,
+> > +			 hisi_sas_v3_resume);
+> > +
+> >   static struct pci_driver sas_v3_pci_driver = {
+> >   	.name		= DRV_NAME,
+> >   	.id_table	= sas_v3_pci_table,
+> >   	.probe		= hisi_sas_v3_probe,
+> >   	.remove		= hisi_sas_v3_remove,
+> > -	.suspend	= hisi_sas_v3_suspend,
+> > -	.resume		= hisi_sas_v3_resume,
+> > +	.driver.pm	= &hisi_sas_v3_pm_ops,
+> >   	.err_handler	= &hisi_sas_err_handler,
+> >   };
 > 
-> This patch exposes those extended CEDE states to the cpuidle framework
-> which are responsive to external interrupts and do not need an H_PROD.
 > 
-> Since as per the PAPR, all the extended CEDE states are non-responsive
-> to timers, we indicate this to the cpuidle subsystem via the
-> CPUIDLE_FLAG_TIMER_STOP flag for all those extende CEDE states which
-> can wake up on external interrupts.
-> 
-> With the patch, we are able to see the extended CEDE state with
-> latency hint = 1 exposed via the cpuidle framework.
-> 
-> 	$ cpupower idle-info
-> 	CPUidle driver: pseries_idle
-> 	CPUidle governor: menu
-> 	analyzing CPU 0:
-> 
-> 	Number of idle states: 3
-> 	Available idle states: snooze CEDE XCEDE1
-> 	snooze:
-> 	Flags/Description: snooze
-> 	Latency: 0
-> 	Usage: 33429446
-> 	Duration: 27006062
-> 	CEDE:
-> 	Flags/Description: CEDE
-> 	Latency: 1
-> 	Usage: 10272
-> 	Duration: 110786770
-> 	XCEDE1:
-> 	Flags/Description: XCEDE1
-> 	Latency: 12
-> 	Usage: 26445
-> 	Duration: 1436433815
-> 
-> Benchmark results:
-> TLDR: Over all we do not see any additional benefit from having XCEDE1 over
-> CEDE.
-> 
-> ebizzy :
-> 2 threads bound to a big-core. With this patch, we see a 3.39%
-> regression compared to with only CEDE0 latency fixup.
-> x With only CEDE0 latency fixup
-> * With CEDE0 latency fixup + CEDE1
->     N           Min           Max        Median           Avg        Stddev
-> x  10       2893813       5834474       5832448     5327281.3     1055941.4
-> *  10       2907329       5834923       5831398     5146614.6     1193874.8
-> 
-> context_switch2:
-> With the context_switch2 there are no observable regressions in the
-> results.
-> 
-> context_switch2 CPU0 CPU1 (Same Big-core, different small-cores).
-> No difference with and without patch.
-> x without_patch
-> * with_patch
->     N           Min           Max        Median           Avg        Stddev
-> x 500        343644        348778        345444     345584.02     1035.1658
-> * 500        344310        347646        345776     345877.22     802.19501
-> 
-> context_switch2 CPU0 CPU8 (different big-cores). Minor 0.05% improvement
-> with patch
-> x without_patch
-> * with_patch
->     N           Min           Max        Median           Avg        Stddev
-> x 500        287562        288756        288162     288134.76     262.24328
-> * 500        287874        288960        288306     288274.66     187.57034
-> 
-> schbench:
-> No regressions observed with schbench
-> 
-> Without Patch:
-> Latency percentiles (usec)
-> 	50.0th: 29
-> 	75.0th: 40
-> 	90.0th: 50
-> 	95.0th: 61
-> 	*99.0th: 13648
-> 	99.5th: 14768
-> 	99.9th: 15664
-> 	min=0, max=29812
-> 
-> With Patch:
-> Latency percentiles (usec)
-> 	50.0th: 30
-> 	75.0th: 40
-> 	90.0th: 51
-> 	95.0th: 59
-> 	*99.0th: 13616
-> 	99.5th: 14512
-> 	99.9th: 15696
-> 	min=0, max=15996
-> 
-> Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-
-Reviewed-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-
-> ---
->  drivers/cpuidle/cpuidle-pseries.c | 50 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-> diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
-> index 502f906..6f893cd 100644
-> --- a/drivers/cpuidle/cpuidle-pseries.c
-> +++ b/drivers/cpuidle/cpuidle-pseries.c
-> @@ -362,9 +362,59 @@ static int add_pseries_idle_states(void)
->  	for (i = 0; i < nr_xcede_records; i++) {
->  		u64 latency_tb = xcede_records[i].wakeup_latency_tb_ticks;
->  		u64 latency_us = tb_to_ns(latency_tb) / NSEC_PER_USEC;
-> +		char name[CPUIDLE_NAME_LEN];
-> +		unsigned int latency_hint = xcede_records[i].latency_hint;
-> +		u64 residency_us;
-> +
-> +		if (!xcede_records[i].responsive_to_irqs) {
-> +			pr_info("cpuidle : Skipping XCEDE%d. Not responsive to IRQs\n",
-> +				latency_hint);
-> +			continue;
-> +		}
-> 
->  		if (latency_us < min_latency_us)
->  			min_latency_us = latency_us;
-> +		snprintf(name, CPUIDLE_NAME_LEN, "XCEDE%d", latency_hint);
-> +
-> +		/*
-> +		 * As per the section 14.14.1 of PAPR version 2.8.1
-> +		 * says that alling H_CEDE with the value of the cede
-> +		 * latency specifier set greater than zero allows the
-> +		 * processor timer facility to be disabled (so as not
-> +		 * to cause gratuitous wake-ups - the use of H_PROD,
-> +		 * or other external interrupt is required to wake the
-> +		 * processor in this case).
-> +		 *
-> +		 * So, inform the cpuidle-subsystem that the timer
-> +		 * will be stopped for these states.
-> +		 *
-> +		 * Also, bump up the latency by 10us, since cpuidle
-> +		 * would use timer-offload framework which will need
-> +		 * to send an IPI to wakeup a CPU whose timer has
-> +		 * expired.
-> +		 */
-> +		if (latency_hint > 0) {
-> +			dedicated_states[nr_states].flags = CPUIDLE_FLAG_TIMER_STOP;
-> +			latency_us += 10;
-> +		}
-> +
-> +		/*
-> +		 * Thumb rule : Reside in the XCEDE state for at least
-> +		 * 10x the time required to enter and exit that state.
-> +		 */
-> +		residency_us = latency_us * 10;
-> +
-> +		strlcpy(dedicated_states[nr_states].name, (const char *)name,
-> +			CPUIDLE_NAME_LEN);
-> +		strlcpy(dedicated_states[nr_states].desc, (const char *)name,
-> +			CPUIDLE_NAME_LEN);
-> +		dedicated_states[nr_states].exit_latency = latency_us;
-> +		dedicated_states[nr_states].target_residency = residency_us;
-> +		dedicated_states[nr_states].enter = &dedicated_cede_loop;
-> +		cede_latency_hint[nr_states] = latency_hint;
-> +		pr_info("cpuidle : Added %s. latency-hint = %d\n",
-> +			name, latency_hint);
-> +		nr_states++;
-
-This patch demonstrates the various use cases of the previous patches
-in the series that helps interface with the platform firmware better.
-On current platforms these benefits are very limited, but the
-framework built by the previous patches helps Linux exploit new and
-enhanced idle states that will be available on newer platform and
-firmware.
-
---Vaidy
