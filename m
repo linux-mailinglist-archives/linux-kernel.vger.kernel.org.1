@@ -2,120 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28964226E0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E40226E12
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 20:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731525AbgGTSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 14:11:57 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43566 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728448AbgGTSL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:11:56 -0400
-IronPort-SDR: u7sYJoWp2O7QGiQwMLAZKOnQ+5ykIWM0VY5xt4VxHeooygyj+g6SgT2G2FWccEv2129IGSGiMG
- /ESKN0lANMTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="168125131"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="168125131"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 11:11:56 -0700
-IronPort-SDR: /fmlAY/iMfOEmHME3kfN5aV2UTzJmnU3t0dOXwf453J0OwODoOVpLilOEqCiqe0xWv1hu005GJ
- e36h0EfmZBNw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="362102923"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 20 Jul 2020 11:11:56 -0700
-Received: from [10.255.230.139] (kliang2-mobl.ccr.corp.intel.com [10.255.230.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 87F91580299;
-        Mon, 20 Jul 2020 11:11:55 -0700 (PDT)
-Subject: Re: [PATCH V6 07/14] perf/x86/intel: Generic support for hardware
- TopDown metrics
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-8-kan.liang@linux.intel.com>
- <20200720174103.GV10769@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <c814c39a-3cd2-f4d3-0b89-fbe4993e1fcc@linux.intel.com>
-Date:   Mon, 20 Jul 2020 14:11:54 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731082AbgGTSNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 14:13:05 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49268 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgGTSNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 14:13:05 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KIC9AX046558;
+        Mon, 20 Jul 2020 13:12:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595268729;
+        bh=4KiZbT+DgSaObYOpScRgrA6GAU+kccEbndY0uV9caOs=;
+        h=From:To:CC:Subject:Date;
+        b=w5rlct7zKGxmme+hGSBvRAztq7+B/mpHXTY6TmK5lhME8Ipr+bCa+pKXwQFMnu1tI
+         8eKUhbTZKJBUctn0GRgrUw9g0X9FdhfnnfjWKQqsqQ/GJb5S43y6c2SgnkvBGsmGgr
+         iONtnqPoZ99nKO5XZ1Csh2IB7ITX5H+KEQ8Cr6t0=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KIC9Xh090919;
+        Mon, 20 Jul 2020 13:12:09 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
+ Jul 2020 13:12:08 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 20 Jul 2020 13:12:08 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KIC8tD050355;
+        Mon, 20 Jul 2020 13:12:08 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: tas2770: Convert tas2770 binding to yaml
+Date:   Mon, 20 Jul 2020 13:12:01 -0500
+Message-ID: <20200720181202.31000-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200720174103.GV10769@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the tas2770 binding to yaml format.
+Add in the reset-gpio to the binding as it is in the code but not
+documented in the binding.
 
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/sound/tas2770.txt     | 37 ---------
+ .../devicetree/bindings/sound/tas2770.yaml    | 76 +++++++++++++++++++
+ 2 files changed, 76 insertions(+), 37 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/tas2770.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2770.yaml
 
-On 7/20/2020 1:41 PM, Peter Zijlstra wrote:
-> On Fri, Jul 17, 2020 at 07:05:47AM -0700, kan.liang@linux.intel.com wrote:
-> 
->> For the event mapping, a special 0x00 event code is used, which is
->> reserved for fake events. The metric events start from umask 0x10.
-> 
->> +#define INTEL_PMC_IDX_METRIC_BASE		(INTEL_PMC_IDX_FIXED + 16)
->> +#define INTEL_PMC_IDX_TD_RETIRING		(INTEL_PMC_IDX_METRIC_BASE + 0)
->> +#define INTEL_PMC_IDX_TD_BAD_SPEC		(INTEL_PMC_IDX_METRIC_BASE + 1)
->> +#define INTEL_PMC_IDX_TD_FE_BOUND		(INTEL_PMC_IDX_METRIC_BASE + 2)
->> +#define INTEL_PMC_IDX_TD_BE_BOUND		(INTEL_PMC_IDX_METRIC_BASE + 3)
-> 
-> So this is internal and we can change it around if/when needed, right?
-> 
-
-Yes
-
->> +#define INTEL_PMC_IDX_METRIC_END		INTEL_PMC_IDX_TD_BE_BOUND
->> +#define INTEL_PMC_MSK_TOPDOWN			((0xfull << INTEL_PMC_IDX_METRIC_BASE) | \
->> +						INTEL_PMC_MSK_FIXED_SLOTS)
->> +
->> +/*
->> + * There is no event-code assigned to the TopDown events.
->> + *
->> + * For the slots event, use the pseudo code of the fixed counter 3.
->> + *
->> + * For the metric events, the pseudo event-code is 0x00.
->> + * The pseudo umask-code starts from 0x10.
->> + */
->> +#define INTEL_TD_SLOTS				0x0400	/* TOPDOWN.SLOTS */
->> +/* Level 1 metrics */
->> +#define INTEL_TD_METRIC_RETIRING		0x1000	/* Retiring metric */
->> +#define INTEL_TD_METRIC_BAD_SPEC		0x1100	/* Bad speculation metric */
->> +#define INTEL_TD_METRIC_FE_BOUND		0x1200	/* FE bound metric */
->> +#define INTEL_TD_METRIC_BE_BOUND		0x1300	/* BE bound metric */
->> +#define INTEL_TD_METRIC_MAX			INTEL_TD_METRIC_BE_BOUND
->> +#define INTEL_TD_METRIC_NUM			4
-> 
-> But this is ABI, once we merge this, it's stuck.
-> 
-> Also, per how Fixed2 is 0x0300, should not Fixed16 (aka
-> METRICS_RETIRING) be 0x1100 ?
-> 
-> But aside of that, are we sure the hardware will never grow a Fixed16?
-> Or do we want to be paranoid and move the metrics events up in the
-> pseudo event space?
-> 
-
-Right, we cannot guarantee that the number of fixed counters is always 
-less than 16.
-
-I will move the metrics events to the middle of the pseudo event space.
-
-+#define INTEL_TD_METRIC_RETIRING	0x8000	/* Retiring metric */
-+#define INTEL_TD_METRIC_BAD_SPEC	0x8100	/* Bad speculation metric */
-+#define INTEL_TD_METRIC_FE_BOUND	0x8200	/* FE bound metric */
-+#define INTEL_TD_METRIC_BE_BOUND	0x8300	/* BE bound metric */
-
-Thanks,
-Kan
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.txt b/Documentation/devicetree/bindings/sound/tas2770.txt
+deleted file mode 100644
+index ede6bb3d9637..000000000000
+--- a/Documentation/devicetree/bindings/sound/tas2770.txt
++++ /dev/null
+@@ -1,37 +0,0 @@
+-Texas Instruments TAS2770 Smart PA
+-
+-The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
+-efficiently driving high peak power into small loudspeakers.
+-Integrated speaker voltage and current sense provides for
+-real time monitoring of loudspeaker behavior.
+-
+-Required properties:
+-
+- - compatible:	   - Should contain "ti,tas2770".
+- - reg:		       - The i2c address. Should contain <0x4c>, <0x4d>,<0x4e>, or <0x4f>.
+- - #address-cells  - Should be <1>.
+- - #size-cells     - Should be <0>.
+- - ti,asi-format:  - Sets TDM RX capture edge. 0->Rising; 1->Falling.
+- - ti,imon-slot-no:- TDM TX current sense time slot.
+- - ti,vmon-slot-no:- TDM TX voltage sense time slot.
+-
+-Optional properties:
+-
+-- interrupt-parent: the phandle to the interrupt controller which provides
+-                     the interrupt.
+-- interrupts: interrupt specification for data-ready.
+-
+-Examples:
+-
+-    tas2770@4c {
+-                compatible = "ti,tas2770";
+-                reg = <0x4c>;
+-                #address-cells = <1>;
+-                #size-cells = <0>;
+-                interrupt-parent = <&msm_gpio>;
+-                interrupts = <97 0>;
+-                ti,asi-format = <0>;
+-                ti,imon-slot-no = <0>;
+-                ti,vmon-slot-no = <2>;
+-        };
+-
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
+new file mode 100644
+index 000000000000..8192450d72dc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2019-20 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/tas2770.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Texas Instruments TAS2770 Smart PA
++
++maintainers:
++  - Shi Fu <shifu0704@thundersoft.com>
++
++description: |
++  The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
++  efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2770
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
++
++  reset-gpio:
++    description: GPIO used to reset the device.
++
++  interrupts:
++    maxItems: 1
++
++  ti,imon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX current sense time slot.
++
++  ti,vmon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX voltage sense time slot.
++
++  ti,asi-format:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Sets TDM RX capture edge.
++    enum:
++          - 0 # Rising edge
++          - 1 # Falling edge
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c0 {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec: codec@4c {
++       compatible = "ti,tas2770";
++       reg = <0x4c>;
++       #sound-dai-cells = <1>;
++       interrupt-parent = <&gpio1>;
++       interrupts = <14>;
++       reset-gpio = <&gpio1 15 0>;
++       ti,imon-slot-no = <0>;
++       ti,vmon-slot-no = <2>;
++     };
++   };
++
+-- 
+2.27.0
 
