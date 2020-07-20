@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58199226361
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1B22635B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgGTPeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgGTPeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:34:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E0A722CB2;
-        Mon, 20 Jul 2020 15:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259253;
-        bh=RDQvEVMo9Esg/EJN/JsDQdAebh/9O69cXGy8sr7qtf4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=10CPOQGurSx5h/FlcNSzXyphPYka9pVPfb23owr4m+5VV4OMCQ+286ek39c4dacNE
-         CQv2aWiUgK0BWNSu+DG/AN9JxeZqtyXgA4WBdEjsz/Ueb0Yn+1SAU+olCzXIxbzRN8
-         9LCSgrA6ltGEsoKqfUy6XkxgK49kJiMSf/XXwoeg=
-Date:   Mon, 20 Jul 2020 17:32:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prakhar Srivastava <prsriva@linux.microsoft.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, masahiroy@kernel.org, james.morse@arm.com,
-        bhsharma@redhat.com, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        balajib@linux.microsoft.com, bauerman@linux.ibm.com,
-        robh@kernel.org
-Subject: Re: [PATCH V3 5/6] Update the Kconfig to support carrying forward
- the IMA Measurement log and and update the setup_dtb call to add the
- linux,ima-kexec-buffer property to the DTB.
-Message-ID: <20200720153217.GB1481119@kroah.com>
-References: <20200720152342.337990-1-prsriva@linux.microsoft.com>
- <20200720152342.337990-6-prsriva@linux.microsoft.com>
+        id S1728603AbgGTPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:32:23 -0400
+Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:43212
+        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgGTPcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:32:23 -0400
+Received: from localhost (localhost [IPv6:::1])
+        by www.teo-en-ming.com (Postfix) with ESMTPA id 5DF22413B95;
+        Mon, 20 Jul 2020 23:32:22 +0800 (+08)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720152342.337990-6-prsriva@linux.microsoft.com>
+Date:   Mon, 20 Jul 2020 23:32:22 +0800
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ceo@teo-en-ming.com
+Subject: Cisco ASA firewall appliances use open source software
+Message-ID: <8dbfdc97e925d8360a9acee62dce80f0@teo-en-ming.com>
+X-Sender: ceo@teo-en-ming.com
+User-Agent: Roundcube Webmail/1.2.3
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 08:23:41AM -0700, Prakhar Srivastava wrote:
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+Subject: Cisco ASA firewall appliances use open source software
 
-Your subject line is whack.
+Cisco Adaptive Security Appliance Software, version 9.8
+Copyright (c) 1996-2019 by Cisco Systems, Inc.
+For licenses and notices for open source software used in this product, 
+please visit
+http://www.cisco.com/go/asa-opensource
+
+Mr. Turritopsis Dohrnii Teo En Ming is a Singaporean Targeted 
+Individual, age 42 years old as of 20 July 2020 Monday Singapore Time.
+
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link: 
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
+United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
+2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
