@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3383E226496
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803E522652A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730653AbgGTPqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
+        id S1730918AbgGTPvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730004AbgGTPqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:18 -0400
+        id S1730070AbgGTPvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:51:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3260622CB3;
-        Mon, 20 Jul 2020 15:46:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBAE72064B;
+        Mon, 20 Jul 2020 15:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259978;
-        bh=9UHgg0Mi5NuW88aXQ6kQzMfktcgDb8vMG3IDerjZilg=;
+        s=default; t=1595260280;
+        bh=mc4hgWFiyS5cm0An1H3bX+ZTsInr0ZMhIEiUCiIdrVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EeTGKGLa/NichUGU60cNnbpyYN73LEvWw5TFtu1XLoZcHsZAwjT60948G2YqDrjNH
-         6gCUwuXpUozIvlrXXOPkiuEw2piL+6K0Km8cxUkeiMcNYIszE5p9hb8Hy21jR1jSWJ
-         bQas6TkNcsCJJmE9bOLuHBWozZ4ISGgQbwiHhMQk=
+        b=KIJptgaQDTjOrCnc6XPlAyw3Q8f0GL6BkcGZZjf/gxP856325xx6obn/HGaGyUjDJ
+         tIDCLqv9dp7+K3q6r7eunYY/p+KmfSb5PYtUBTNf0z/15dkF8Y8o2lFSALr+T2vHwT
+         in6d+P3QzyoTBv0BHpDa8j8chjsQMoKeuoiyReBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 054/125] cgroup: Fix sock_cgroup_data on big-endian.
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 046/133] HID: quirks: Remove ITE 8595 entry from hid_have_special_driver
 Date:   Mon, 20 Jul 2020 17:36:33 +0200
-Message-Id: <20200720152805.636333936@linuxfoundation.org>
+Message-Id: <20200720152805.940091930@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 14b032b8f8fce03a546dcf365454bec8c4a58d7d ]
+[ Upstream commit 3045696d0ce663d67c95dcb8206d3de57f6841ec ]
 
-In order for no_refcnt and is_data to be the lowest order two
-bits in the 'val' we have to pad out the bitfield of the u8.
+The ITE 8595 chip used in various 2-in-1 keyboard docks works fine with
+the hid-generic driver (minus the RF_KILL key) and also keeps working fine
+when swapping drivers, so there is no need to have it in the
+hid_have_special_driver list.
 
-Fixes: ad0f75e5f57c ("cgroup: fix cgroup_sk_alloc() for sk_clone_lock()")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Note the other 2 USB ids in hid-ite.c were never added to
+hid_have_special_driver.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/cgroup-defs.h |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-quirks.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -683,6 +683,7 @@ struct sock_cgroup_data {
- 		struct {
- 			u8	is_data : 1;
- 			u8	no_refcnt : 1;
-+			u8	unused : 6;
- 			u8	padding;
- 			u16	prioidx;
- 			u32	classid;
-@@ -692,6 +693,7 @@ struct sock_cgroup_data {
- 			u32	classid;
- 			u16	prioidx;
- 			u8	padding;
-+			u8	unused : 6;
- 			u8	no_refcnt : 1;
- 			u8	is_data : 1;
- 		} __packed;
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index f4bab7004aff7..7216285659566 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -400,9 +400,6 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HOLTEK_ALT, USB_DEVICE_ID_HOLTEK_ALT_MOUSE_A081) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HOLTEK_ALT, USB_DEVICE_ID_HOLTEK_ALT_MOUSE_A0C2) },
+ #endif
+-#if IS_ENABLED(CONFIG_HID_ITE)
+-	{ HID_USB_DEVICE(USB_VENDOR_ID_ITE, USB_DEVICE_ID_ITE8595) },
+-#endif
+ #if IS_ENABLED(CONFIG_HID_ICADE)
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_ION, USB_DEVICE_ID_ICADE) },
+ #endif
+-- 
+2.25.1
+
 
 
