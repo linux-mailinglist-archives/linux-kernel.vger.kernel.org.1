@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAFE22661E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194C0226527
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732414AbgGTQA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33346 "EHLO mail.kernel.org"
+        id S1731227AbgGTPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732389AbgGTQAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:00:22 -0400
+        id S1731216AbgGTPvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:51:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F24920672;
-        Mon, 20 Jul 2020 16:00:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1880D2064B;
+        Mon, 20 Jul 2020 15:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260821;
-        bh=fTLJLi1c1zjg5L73PstXXjHtQB6oA924h0P4wbCalBo=;
+        s=default; t=1595260274;
+        bh=+xKl/IWddWdPuuKN9FO2RLO4rAgiVkoXAKfL4t8pdqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ip9TM+smyKoQytOA3zANRrVYzzzl/kpj1zANGq7yydmlm17/nqLkgh3xjF/GeJqDb
-         oLEhZTiDeu0trzaZtTaUOGLnX4of6Jm9rvCrY2sPBZ5cs1hekAv3vqxBHYazfjAqp6
-         FzMX8AHbWwiEpUavENdcsRUFQCzUUSvFCvcVlkgk=
+        b=p2Kl+RjMCYNNhigUJT7982vLAPT1ABYriFOTkXUV+DRaqgoC50yBDj+GazthgirOo
+         339z2/BEJQFRinne6fruFg+vE2r+XOeg3Xg3O5Vl4aqQzT/8qu7PEVkegpZk5FjH1d
+         cy/jElZfPjlQRCZddGVQUqsSf2l/OAKzHy7k5ufw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>, Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 109/215] clk: AST2600: Add mux for EMMC clock
+Subject: [PATCH 4.19 044/133] net: sfp: add support for module quirks
 Date:   Mon, 20 Jul 2020 17:36:31 +0200
-Message-Id: <20200720152825.383265538@linuxfoundation.org>
+Message-Id: <20200720152805.844576086@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,101 +46,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie James <eajames@linux.ibm.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit c2407ab3bd55064d459bc822efd1c134e852798c ]
+[ Upstream commit b34bb2cb5b62c7397c28fcc335e8047a687eada4 ]
 
-The EMMC clock can be derived from either the HPLL or the MPLL. Register
-a clock mux so that the rate is calculated correctly based upon the
-parent.
+Add support for applying module quirks to the list of supported
+ethtool link modes.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Link: https://lore.kernel.org/r/20200709195706.12741-2-eajames@linux.ibm.com
-Acked-by: Joel Stanley <joel@jms.id.au>
-Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-ast2600.c | 49 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 8 deletions(-)
+ drivers/net/phy/sfp-bus.c | 54 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
-index 675cab6fa7814..7015974f24b43 100644
---- a/drivers/clk/clk-ast2600.c
-+++ b/drivers/clk/clk-ast2600.c
-@@ -130,6 +130,18 @@ static const struct clk_div_table ast2600_eclk_div_table[] = {
- 	{ 0 }
+diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
+index fef701bfad62e..bd3ea01bff0b8 100644
+--- a/drivers/net/phy/sfp-bus.c
++++ b/drivers/net/phy/sfp-bus.c
+@@ -8,6 +8,12 @@
+ 
+ #include "sfp.h"
+ 
++struct sfp_quirk {
++	const char *vendor;
++	const char *part;
++	void (*modes)(const struct sfp_eeprom_id *id, unsigned long *modes);
++};
++
+ /**
+  * struct sfp_bus - internal representation of a sfp bus
+  */
+@@ -20,6 +26,7 @@ struct sfp_bus {
+ 	const struct sfp_socket_ops *socket_ops;
+ 	struct device *sfp_dev;
+ 	struct sfp *sfp;
++	const struct sfp_quirk *sfp_quirk;
+ 
+ 	const struct sfp_upstream_ops *upstream_ops;
+ 	void *upstream;
+@@ -30,6 +37,46 @@ struct sfp_bus {
+ 	bool started;
  };
  
-+static const struct clk_div_table ast2600_emmc_extclk_div_table[] = {
-+	{ 0x0, 2 },
-+	{ 0x1, 4 },
-+	{ 0x2, 6 },
-+	{ 0x3, 8 },
-+	{ 0x4, 10 },
-+	{ 0x5, 12 },
-+	{ 0x6, 14 },
-+	{ 0x7, 16 },
-+	{ 0 }
++static const struct sfp_quirk sfp_quirks[] = {
 +};
 +
- static const struct clk_div_table ast2600_mac_div_table[] = {
- 	{ 0x0, 4 },
- 	{ 0x1, 4 },
-@@ -389,6 +401,11 @@ static struct clk_hw *aspeed_g6_clk_hw_register_gate(struct device *dev,
- 	return hw;
++static size_t sfp_strlen(const char *str, size_t maxlen)
++{
++	size_t size, i;
++
++	/* Trailing characters should be filled with space chars */
++	for (i = 0, size = 0; i < maxlen; i++)
++		if (str[i] != ' ')
++			size = i + 1;
++
++	return size;
++}
++
++static bool sfp_match(const char *qs, const char *str, size_t len)
++{
++	if (!qs)
++		return true;
++	if (strlen(qs) != len)
++		return false;
++	return !strncmp(qs, str, len);
++}
++
++static const struct sfp_quirk *sfp_lookup_quirk(const struct sfp_eeprom_id *id)
++{
++	const struct sfp_quirk *q;
++	unsigned int i;
++	size_t vs, ps;
++
++	vs = sfp_strlen(id->base.vendor_name, ARRAY_SIZE(id->base.vendor_name));
++	ps = sfp_strlen(id->base.vendor_pn, ARRAY_SIZE(id->base.vendor_pn));
++
++	for (i = 0, q = sfp_quirks; i < ARRAY_SIZE(sfp_quirks); i++, q++)
++		if (sfp_match(q->vendor, id->base.vendor_name, vs) &&
++		    sfp_match(q->part, id->base.vendor_pn, ps))
++			return q;
++
++	return NULL;
++}
+ /**
+  * sfp_parse_port() - Parse the EEPROM base ID, setting the port type
+  * @bus: a pointer to the &struct sfp_bus structure for the sfp module
+@@ -233,6 +280,9 @@ void sfp_parse_support(struct sfp_bus *bus, const struct sfp_eeprom_id *id,
+ 			phylink_set(modes, 1000baseX_Full);
+ 	}
+ 
++	if (bus->sfp_quirk)
++		bus->sfp_quirk->modes(id, modes);
++
+ 	bitmap_or(support, support, modes, __ETHTOOL_LINK_MODE_MASK_NBITS);
+ 
+ 	phylink_set(support, Autoneg);
+@@ -556,6 +606,8 @@ int sfp_module_insert(struct sfp_bus *bus, const struct sfp_eeprom_id *id)
+ 	const struct sfp_upstream_ops *ops = sfp_get_upstream_ops(bus);
+ 	int ret = 0;
+ 
++	bus->sfp_quirk = sfp_lookup_quirk(id);
++
+ 	if (ops && ops->module_insert)
+ 		ret = ops->module_insert(bus->upstream, id);
+ 
+@@ -569,6 +621,8 @@ void sfp_module_remove(struct sfp_bus *bus)
+ 
+ 	if (ops && ops->module_remove)
+ 		ops->module_remove(bus->upstream);
++
++	bus->sfp_quirk = NULL;
  }
+ EXPORT_SYMBOL_GPL(sfp_module_remove);
  
-+static const char *const emmc_extclk_parent_names[] = {
-+	"emmc_extclk_hpll_in",
-+	"mpll",
-+};
-+
- static const char * const vclk_parent_names[] = {
- 	"dpll",
- 	"d1pll",
-@@ -458,16 +475,32 @@ static int aspeed_g6_clk_probe(struct platform_device *pdev)
- 		return PTR_ERR(hw);
- 	aspeed_g6_clk_data->hws[ASPEED_CLK_UARTX] = hw;
- 
--	/* EMMC ext clock divider */
--	hw = clk_hw_register_gate(dev, "emmc_extclk_gate", "hpll", 0,
--			scu_g6_base + ASPEED_G6_CLK_SELECTION1, 15, 0,
--			&aspeed_g6_clk_lock);
-+	/* EMMC ext clock */
-+	hw = clk_hw_register_fixed_factor(dev, "emmc_extclk_hpll_in", "hpll",
-+					  0, 1, 2);
- 	if (IS_ERR(hw))
- 		return PTR_ERR(hw);
--	hw = clk_hw_register_divider_table(dev, "emmc_extclk", "emmc_extclk_gate", 0,
--			scu_g6_base + ASPEED_G6_CLK_SELECTION1, 12, 3, 0,
--			ast2600_div_table,
--			&aspeed_g6_clk_lock);
-+
-+	hw = clk_hw_register_mux(dev, "emmc_extclk_mux",
-+				 emmc_extclk_parent_names,
-+				 ARRAY_SIZE(emmc_extclk_parent_names), 0,
-+				 scu_g6_base + ASPEED_G6_CLK_SELECTION1, 11, 1,
-+				 0, &aspeed_g6_clk_lock);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	hw = clk_hw_register_gate(dev, "emmc_extclk_gate", "emmc_extclk_mux",
-+				  0, scu_g6_base + ASPEED_G6_CLK_SELECTION1,
-+				  15, 0, &aspeed_g6_clk_lock);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	hw = clk_hw_register_divider_table(dev, "emmc_extclk",
-+					   "emmc_extclk_gate", 0,
-+					   scu_g6_base +
-+						ASPEED_G6_CLK_SELECTION1, 12,
-+					   3, 0, ast2600_emmc_extclk_div_table,
-+					   &aspeed_g6_clk_lock);
- 	if (IS_ERR(hw))
- 		return PTR_ERR(hw);
- 	aspeed_g6_clk_data->hws[ASPEED_CLK_EMMC] = hw;
 -- 
 2.25.1
 
