@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C68226626
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7415D226762
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732443AbgGTQAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33798 "EHLO mail.kernel.org"
+        id S2387775AbgGTQLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:11:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732431AbgGTQAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:00:42 -0400
+        id S2387759AbgGTQLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:11:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7C6B22CAF;
-        Mon, 20 Jul 2020 16:00:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5717E2065E;
+        Mon, 20 Jul 2020 16:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260841;
-        bh=Qg6TVuwJkgK/nqLQ+vyedbQ43HGyb3v9UlsWhO8FsWY=;
+        s=default; t=1595261469;
+        bh=YkZhxolwuafrRRgXW9py0/9Z7mDIDrnIT8YPURoty0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SgMKHaeQd/3dT3ZchNBUFz03gigJ1xx5UUx59+wgCwm1T9wq3ChNkm1eJovpQokIF
-         p8b89Ioc5pbAb12fDkIAk77ZG9bJADg5QjADrPR5Iqc0bJGieGmT8P9RXB0r6sFErU
-         7lblwQP1Q1/PdWKa7t/xo6/9WRUptA5OnlwI4UyQ=
+        b=ZYRVZHaRRa94oJ5aacdC0Pe/2SdCC2xM63nsdITc9k6AYBmgzQyfM/xuW1rzUogjO
+         MxvxCWZGx+gzEKv1qq/VXL12qvPSDnGP3Rss8tT9kMlCmK7vTEXGRjKWBVvntJfep2
+         UUuNKUx04Wy0r+E4rldBo3+hN79JMzB7bUBRUFvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 115/215] ARM: dts: socfpga: Align L2 cache-controller nodename with dtschema
-Date:   Mon, 20 Jul 2020 17:36:37 +0200
-Message-Id: <20200720152825.670637440@linuxfoundation.org>
+        stable@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 5.7 127/244] soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new data
+Date:   Mon, 20 Jul 2020 17:36:38 +0200
+Message-Id: <20200720152831.886702951@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +45,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Maulik Shah <mkshah@codeaurora.org>
 
-[ Upstream commit d7adfe5ffed9faa05f8926223086b101e14f700d ]
+commit f5ac95f9ca2f439179a5baf48e1c0f22f83d936e upstream.
 
-Fix dtschema validator warnings like:
-    l2-cache@fffff000: $nodename:0:
-        'l2-cache@fffff000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+TCSes have previously programmed data when rpmh_flush() is called.
+This can cause old data to trigger along with newly flushed.
 
-Fixes: 475dc86d08de ("arm: dts: socfpga: Add a base DTSI for Altera's Arria10 SOC")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by cleaning SLEEP and WAKE TCSes before new data is flushed.
+
+With this there is no need to invoke rpmh_rsc_invalidate() call from
+rpmh_invalidate().
+
+Simplify rpmh_invalidate() by moving invalidate_batch() inside.
+
+Fixes: 600513dfeef3 ("drivers: qcom: rpmh: cache sleep/wake state requests")
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/1586703004-13674-4-git-send-email-mkshah@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/socfpga.dtsi         | 2 +-
- arch/arm/boot/dts/socfpga_arria10.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/soc/qcom/rpmh.c |   41 ++++++++++++++++++-----------------------
+ 1 file changed, 18 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
-index 4f3993cc02279..4510308972209 100644
---- a/arch/arm/boot/dts/socfpga.dtsi
-+++ b/arch/arm/boot/dts/socfpga.dtsi
-@@ -710,7 +710,7 @@ ocram-ecc@ffd08144 {
- 			};
- 		};
+--- a/drivers/soc/qcom/rpmh.c
++++ b/drivers/soc/qcom/rpmh.c
+@@ -317,19 +317,6 @@ static int flush_batch(struct rpmh_ctrlr
+ 	return ret;
+ }
  
--		L2: l2-cache@fffef000 {
-+		L2: cache-controller@fffef000 {
- 			compatible = "arm,pl310-cache";
- 			reg = <0xfffef000 0x1000>;
- 			interrupts = <0 38 0x04>;
-diff --git a/arch/arm/boot/dts/socfpga_arria10.dtsi b/arch/arm/boot/dts/socfpga_arria10.dtsi
-index 2a86e72d97918..906bfb580e9e7 100644
---- a/arch/arm/boot/dts/socfpga_arria10.dtsi
-+++ b/arch/arm/boot/dts/socfpga_arria10.dtsi
-@@ -636,7 +636,7 @@ sdr: sdr@ffcfb100 {
- 			reg = <0xffcfb100 0x80>;
- 		};
+-static void invalidate_batch(struct rpmh_ctrlr *ctrlr)
+-{
+-	struct batch_cache_req *req, *tmp;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ctrlr->cache_lock, flags);
+-	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
+-		kfree(req);
+-	INIT_LIST_HEAD(&ctrlr->batch_cache);
+-	ctrlr->dirty = true;
+-	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
+-}
+-
+ /**
+  * rpmh_write_batch: Write multiple sets of RPMH commands and wait for the
+  * batch to finish.
+@@ -467,6 +454,13 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
+ 		return 0;
+ 	}
  
--		L2: l2-cache@fffff000 {
-+		L2: cache-controller@fffff000 {
- 			compatible = "arm,pl310-cache";
- 			reg = <0xfffff000 0x1000>;
- 			interrupts = <0 18 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.25.1
-
++	/* Invalidate the TCSes first to avoid stale data */
++	do {
++		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
++	} while (ret == -EAGAIN);
++	if (ret)
++		return ret;
++
+ 	/* First flush the cached batch requests */
+ 	ret = flush_batch(ctrlr);
+ 	if (ret)
+@@ -498,24 +492,25 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
+ }
+ 
+ /**
+- * rpmh_invalidate: Invalidate all sleep and active sets
+- * sets.
++ * rpmh_invalidate: Invalidate sleep and wake sets in batch_cache
+  *
+  * @dev: The device making the request
+  *
+- * Invalidate the sleep and active values in the TCS blocks.
++ * Invalidate the sleep and wake values in batch_cache.
+  */
+ int rpmh_invalidate(const struct device *dev)
+ {
+ 	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
+-	int ret;
+-
+-	invalidate_batch(ctrlr);
++	struct batch_cache_req *req, *tmp;
++	unsigned long flags;
+ 
+-	do {
+-		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
+-	} while (ret == -EAGAIN);
++	spin_lock_irqsave(&ctrlr->cache_lock, flags);
++	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
++		kfree(req);
++	INIT_LIST_HEAD(&ctrlr->batch_cache);
++	ctrlr->dirty = true;
++	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
+ 
+-	return ret;
++	return 0;
+ }
+ EXPORT_SYMBOL(rpmh_invalidate);
 
 
