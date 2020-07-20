@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155B1226127
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C6522612B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728542AbgGTNjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 09:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
+        id S1727786AbgGTNkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 09:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgGTNjH (ORCPT
+        with ESMTP id S1726675AbgGTNkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 09:39:07 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF3CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:39:07 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id j11so20263681ljo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:39:07 -0700 (PDT)
+        Mon, 20 Jul 2020 09:40:12 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09364C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:40:12 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z24so20253414ljn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:40:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SZUWsa00iYf7K4HBHvDEC7hUnyTTw9NrXYfUvdxiJpg=;
-        b=heDejIMJKRXAtiwM4h6NQUEF4C8R+h9OzJFFP+tx2PpKbFI2hUWSzTXkRZ5BekWopZ
-         kkmHaTiWp+56nihbet+WZkRgccJ+WY102U7/bX1toov424jnra2iCMxgAaLdXldEDN9m
-         /M8CrZMGUnAdq3bLWETEuv7OnckZaZ7GNi/Zuv2LR76FQP+GkPBC7iWl1Isv1tTs42FF
-         a+kNCmhUgNF5Ky1orT1rf+r2/pdGrZr1F8A4yIGvL3Hjqp/vvU3qdtlqbklKCbpDSO4/
-         /GttKdlO6SXUGc+AMPh+wpuKfytoLCdVR9ceEA9QCUEUVTGf+BvfnCLlMrY8DbFi+EID
-         sVlg==
+        bh=2TqGaXLm1LJjNwD7BWd5nhWoW5T2uB1q67xa8MHwR3Q=;
+        b=o1nG60uwcHnTfy0TS2+LttQH6srPzrE5epdZJTdvwS4hM04a/5yT7RcAlxdCpbMtB3
+         yQvv7WH6G+LocxRPe8k6PBJoK/pvzZ1uN6RgnwvM2XEx+IM2HbvgD4Rt8sVLFhAdVCNA
+         R5Mcpz7NqlHG1sQE1CMs1uyAVGTfD5IhapoyRd0c1oGt8idD1OmAc3lFKmpdpOtg5mgJ
+         lGIAb7o5oTW23BPAwDiqIHM6WzhVOnSdVv175/qWrtpIXD0xgo220e+NP2Qp3qF7Fqsz
+         t4K+eL6rmzhtgSfji4lyCnh8ALa+1Q5v9u+kRO6fjY0Z+xkPGNtyIU+kTueQresiqIt5
+         QV+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SZUWsa00iYf7K4HBHvDEC7hUnyTTw9NrXYfUvdxiJpg=;
-        b=s4ZXbir4E2DbldnM6i1RL/ogPzJ0laoMCWaeO5dOFIfWQEBakWnOrA2kIOcYVSh+bI
-         cotNBgcCHX5GHvJzLAjfV3x3jyI7+lRllYGN0nVegz6y0O9WCFPY0WdZz/+Q2LTnRUUW
-         gOIoNggPnQwiHv0iJMd5KKw7+w0wCwtBn+QmUFpEFAFifkukdz6Cc3/qOIWeZL+/hny2
-         a9HXUbcY4CjQiKMfBlKs6EdiwEmrzYkBb7UKlLfMAWEaqV+yNL+el+2+Ii7PN1FgmSL+
-         6qQUfWgQbG67EWiiQJ8YZzPd1LN22b39GB/r9KgO4R6r0zgYnM3HL0PVd1ljiRO40e2i
-         BP4A==
-X-Gm-Message-State: AOAM532ub8ShpjNMuA3B40QqtNSnvgfkjo17SK0Cf3KnOyu7JtX4j75F
-        TG9b/msekW5AMUB6SgCzLtdsKJVkrLiw5CaXIn+zsQ==
-X-Google-Smtp-Source: ABdhPJzHGab0xEgyMQVlieVYjfPMYKbHimCOGtZ21uJ+KasO8fWcs9EFajtwAK+p4doX0sdbOccThgfvXySb191nTxI=
-X-Received: by 2002:a05:651c:1291:: with SMTP id 17mr11205367ljc.286.1595252345768;
- Mon, 20 Jul 2020 06:39:05 -0700 (PDT)
+        bh=2TqGaXLm1LJjNwD7BWd5nhWoW5T2uB1q67xa8MHwR3Q=;
+        b=YQIVWmM31wFig0BSv5a16rzvTcOVi6xii/zPxiML6MQPNfqhBivTsuvZkChz8HHaGA
+         NhfyMSPMfL7yQkKGWm7hfpjSFw7sJXcjT3rCcbj+SrEnj6qVYjuS23OzgXwhlgsnjOew
+         ugT0tvNnx+VFiNeimKA6FSWMqP84TW1f47TVwAAafMJREV9lyCQxsU5VTFeUiYqnvBAh
+         /oEUTPfhtEIfiz+2/St0hg4Ac7rwZu/sefHsP+MGQKu1+Iw3A+q+4Nou7tvGanpzOMKK
+         sKykpRf/uePM/X+mAd0Uf9A6HZbtD4dSf5JCBor7BP2QewRgfSBUdkkXTY7vh3h3RhnC
+         Z1wg==
+X-Gm-Message-State: AOAM532ll0LTuLbfMGlbUboGMvWKfZ0a/ccNMk1q12pPkg4Z5bCDPNRv
+        k/0j92DqYyY9bKSHcmwZl1eF/4KnNRIFrCcMuNepZw==
+X-Google-Smtp-Source: ABdhPJxsGScXp2ry3GuYVsKjsKyaCSkJk8FuHP5mvQ3dEZmQQwYdfTaLyEcMQlgVIHgPJkhPC51SVKPWJsvLAcY3TWE=
+X-Received: by 2002:a2e:9c3:: with SMTP id 186mr10705432ljj.293.1595252410517;
+ Mon, 20 Jul 2020 06:40:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200716212213.GA17623@embeddedor>
-In-Reply-To: <20200716212213.GA17623@embeddedor>
+References: <20200716212317.GA17754@embeddedor>
+In-Reply-To: <20200716212317.GA17754@embeddedor>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 20 Jul 2020 15:38:54 +0200
-Message-ID: <CACRpkdaBuvbtswYczwsSx9-YOLODs5x8YvWSB4bpMbXpvoPLrA@mail.gmail.com>
-Subject: Re: [PATCH][next] pinctrl: qcom: spmi-gpio: Use fallthrough pseudo-keyword
+Date:   Mon, 20 Jul 2020 15:39:59 +0200
+Message-ID: <CACRpkdY25NXNzAZhV6v9aQC7hUnxbMoniyYK=QMmVi6GJnG5dw@mail.gmail.com>
+Subject: Re: [PATCH][next] pinctrl: single: Use fallthrough pseudo-keyword
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>
@@ -64,7 +65,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 11:16 PM Gustavo A. R. Silva
+On Thu, Jul 16, 2020 at 11:17 PM Gustavo A. R. Silva
 <gustavoars@kernel.org> wrote:
 
 > Replace the existing /* fall through */ comments and its variants with
@@ -74,7 +75,7 @@ On Thu, Jul 16, 2020 at 11:16 PM Gustavo A. R. Silva
 >
 > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Patch applied, I don't see any controversy here.
+Patch applied. Nothing controversial about this.
 
 Yours,
 Linus Walleij
