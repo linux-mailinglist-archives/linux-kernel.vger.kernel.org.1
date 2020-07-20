@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E24226546
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9A5226399
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730754AbgGTPwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
+        id S1729232AbgGTPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:38:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731323AbgGTPwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:52:13 -0400
+        id S1729208AbgGTPic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:38:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DC9722D3E;
-        Mon, 20 Jul 2020 15:52:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73D5522CBE;
+        Mon, 20 Jul 2020 15:38:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260333;
-        bh=eVx2whG+iEhdi/wNAA8mHJvtFWijfFiSbn2YqjBTA2Q=;
+        s=default; t=1595259512;
+        bh=ydlCo1G7HAl66I6ZCb/yGwFyxMyR34a5z0XGSipExaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ffhlf+wyWKlt1EOsFMRQxL6uqruTbLcx3XxYiM2ZZ1nIkGOLsfoHASzXtyNWHiKhu
-         790JoGvzUVGDpSz6QX1HzLyeGmTRS8YVcmy/YRSmqEpu3/9uOcbsF17aDKfDmHDbtN
-         0Pa0IESpTlXc8/4qTOP7rJxcf4Tlz75XzPpudK2Q=
+        b=XKGOuPr9wtkmlIvsngERxIo/SGBHbiJwQTtlthjhDhvgvWeIXnVyu3508MYC5T2d9
+         AX+9n64TBVYQS5Uha4xYRERuxDCdit9YuVDiblkSqX+OvJNG1BQb4113Q2gne00eCg
+         13pnb4+RmKbL4gB3ZnHTItG3RJwAS6uFl940y/J8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 035/133] iio:pressure:ms5611 Fix buffer element alignment
-Date:   Mon, 20 Jul 2020 17:36:22 +0200
-Message-Id: <20200720152805.415751582@linuxfoundation.org>
+        stable@vger.kernel.org, Andre Edich <andre.edich@microchip.com>,
+        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 07/58] smsc95xx: avoid memory leak in smsc95xx_bind
+Date:   Mon, 20 Jul 2020 17:36:23 +0200
+Message-Id: <20200720152747.512324108@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Andre Edich <andre.edich@microchip.com>
 
-commit 8db4afe163bbdd93dca6fcefbb831ef12ecc6b4d upstream.
+[ Upstream commit 3ed58f96a70b85ef646d5427258f677f1395b62f ]
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-Here there is no data leak possibility so use an explicit structure
-on the stack to ensure alignment and nice readable fashion.
+In a case where the ID_REV register read is failed, the memory for a
+private data structure has to be freed before returning error from the
+function smsc95xx_bind.
 
-The forced alignment of ts isn't strictly necessary in this driver
-as the padding will be correct anyway (there isn't any).  However
-it is probably less fragile to have it there and it acts as
-documentation of the requirement.
-
-Fixes: 713bbb4efb9dc ("iio: pressure: ms5611: Add triggered buffer support")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: bbd9f9ee69242 ("smsc95xx: add wol support for more frame types")
+Signed-off-by: Andre Edich <andre.edich@microchip.com>
+Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/pressure/ms5611_core.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/usb/smsc95xx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/pressure/ms5611_core.c
-+++ b/drivers/iio/pressure/ms5611_core.c
-@@ -215,16 +215,21 @@ static irqreturn_t ms5611_trigger_handle
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct ms5611_state *st = iio_priv(indio_dev);
--	s32 buf[4]; /* s32 (pressure) + s32 (temp) + 2 * s32 (timestamp) */
-+	/* Ensure buffer elements are naturally aligned */
-+	struct {
-+		s32 channels[2];
-+		s64 ts __aligned(8);
-+	} scan;
- 	int ret;
- 
- 	mutex_lock(&st->lock);
--	ret = ms5611_read_temp_and_pressure(indio_dev, &buf[1], &buf[0]);
-+	ret = ms5611_read_temp_and_pressure(indio_dev, &scan.channels[1],
-+					    &scan.channels[0]);
- 	mutex_unlock(&st->lock);
+diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
+index 8037a2e51a789..e4299852974e3 100644
+--- a/drivers/net/usb/smsc95xx.c
++++ b/drivers/net/usb/smsc95xx.c
+@@ -1142,7 +1142,8 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	/* detect device revision as different features may be available */
+ 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
  	if (ret < 0)
- 		goto err;
+-		return ret;
++		goto free_pdata;
++
+ 	val >>= 16;
  
--	iio_push_to_buffers_with_timestamp(indio_dev, buf,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &scan,
- 					   iio_get_time_ns(indio_dev));
- 
- err:
+ 	if ((val == ID_REV_CHIP_ID_9500A_) || (val == ID_REV_CHIP_ID_9530_) ||
+-- 
+2.25.1
+
 
 
