@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDEB226417
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34E522639C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgGTPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:42:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34430 "EHLO mail.kernel.org"
+        id S1729253AbgGTPil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgGTPl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:57 -0400
+        id S1729218AbgGTPif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:38:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1BAE20773;
-        Mon, 20 Jul 2020 15:41:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1441922CBB;
+        Mon, 20 Jul 2020 15:38:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259717;
-        bh=lDsvcQ+d7MTsXeR8vI56+IkHWs/Jk8ABoxj41miUyN4=;
+        s=default; t=1595259514;
+        bh=i6z5wAOGKay2yoCvdUnPgPzFvWJm4qfzKtRJ0+eiRlg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2kDOCjynGI6oZVLudMJcc3HW0VABoEnb5QZiVxTXD+fhalhSdkRBu2eebXN8b5chM
-         VZ3i3+umtfB4cvL6Y7r/iRFeykgpC8Hkw85Ey6CElfdV7dz/GC9hXdbRfhZdM1Oilx
-         Z97LuLf7H5bC9TmHLDSso426G1W4k0qQvfNFuEds=
+        b=sUF44jjgIpvNJwYfIfvT4XyPHe7h742KrQJeY9BM7ZB4N7pYWZn8ouYSemEEeBY6A
+         pkEO8k3fdxJKuNmLt6zONe6Y51gtu0V9gh+M0Ggt6ycsIXCSuI76eUvaiLattZ94e2
+         Fa/FrQvInv4G4CZ+YjoOVJGXnIwcdHuzRQLwTEoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 54/86] usb: gadget: udc: atmel: fix uninitialized read in debug printk
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Ian Abbott <abbotti@mev.co.uk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 34/58] staging: comedi: verify array index is correct before using it
 Date:   Mon, 20 Jul 2020 17:36:50 +0200
-Message-Id: <20200720152755.878179141@linuxfoundation.org>
+Message-Id: <20200720152748.894780419@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 30517ffeb3bff842e1355cbc32f1959d9dbb5414 ]
+[ Upstream commit ef75e14a6c935eec82abac07ab68e388514e39bc ]
 
-Fixed commit moved the assignment of 'req', but did not update a
-reference in the DBG() call. Use the argument as it was renamed.
+This code reads from the array before verifying that "trig" is a valid
+index.  If the index is wildly out of bounds then reading from an
+invalid address could lead to an Oops.
 
-Fixes: 5fb694f96e7c ("usb: gadget: udc: atmel: fix possible oops when unloading module")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20200709102936.GA20875@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/atmel_usba_udc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/comedi/drivers/addi_apci_1500.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
-index 57dd3bad95397..ccf1e9fe5ebde 100644
---- a/drivers/usb/gadget/udc/atmel_usba_udc.c
-+++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
-@@ -843,7 +843,7 @@ static int usba_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
- 	u32 status;
+diff --git a/drivers/staging/comedi/drivers/addi_apci_1500.c b/drivers/staging/comedi/drivers/addi_apci_1500.c
+index 63991c49ff230..79a8799b12628 100644
+--- a/drivers/staging/comedi/drivers/addi_apci_1500.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
+@@ -465,9 +465,9 @@ static int apci1500_di_cfg_trig(struct comedi_device *dev,
+ 	unsigned int lo_mask = data[5] << shift;
+ 	unsigned int chan_mask = hi_mask | lo_mask;
+ 	unsigned int old_mask = (1 << shift) - 1;
+-	unsigned int pm = devpriv->pm[trig] & old_mask;
+-	unsigned int pt = devpriv->pt[trig] & old_mask;
+-	unsigned int pp = devpriv->pp[trig] & old_mask;
++	unsigned int pm;
++	unsigned int pt;
++	unsigned int pp;
  
- 	DBG(DBG_GADGET | DBG_QUEUE, "ep_dequeue: %s, req %p\n",
--			ep->ep.name, req);
-+			ep->ep.name, _req);
+ 	if (trig > 1) {
+ 		dev_dbg(dev->class_dev,
+@@ -480,6 +480,10 @@ static int apci1500_di_cfg_trig(struct comedi_device *dev,
+ 		return -EINVAL;
+ 	}
  
- 	spin_lock_irqsave(&udc->lock, flags);
- 
++	pm = devpriv->pm[trig] & old_mask;
++	pt = devpriv->pt[trig] & old_mask;
++	pp = devpriv->pp[trig] & old_mask;
++
+ 	switch (data[2]) {
+ 	case COMEDI_DIGITAL_TRIG_DISABLE:
+ 		/* clear trigger configuration */
 -- 
 2.25.1
 
