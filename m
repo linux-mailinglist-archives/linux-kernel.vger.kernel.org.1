@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA515226B45
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9C2226C4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732286AbgGTQk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41298 "EHLO mail.kernel.org"
+        id S2389147AbgGTQsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:48:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730192AbgGTPqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:35 -0400
+        id S1729174AbgGTPiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:38:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEFFE22CBE;
-        Mon, 20 Jul 2020 15:46:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A687822CB2;
+        Mon, 20 Jul 2020 15:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259994;
-        bh=6TvSZAHBNwIOER1p9mZeazrQSDICKsX8iOf9RBznyvI=;
+        s=default; t=1595259504;
+        bh=/IwVN506rfOpkCinfHi7vgr2U8ERfEwEzTd3EPt9fyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ec+9gGWSF5fwRqh2SrpMmgniyz+uZOie8s5k+43CRD3bDRp51a/2cOHSowRfqgsN9
-         hcYbbRZLZ9k34zrKtes7O2dACl5H6fBe3W+Kdpus43bo+5u2/6aNHzR0bxjXUuCFp5
-         AQCexQTYC9wt0rF3ulHoW02GlyH4EJpCTGKu7Mi0=
+        b=w2K7z9La1RV9sUcgFu7kEAbwbfqeZCdy2g3ANAjqyk0HOFYFxDj5T/rPZrEfGOkO8
+         48CtyqNGUKSnKcmmNrzLBA3hEJZl5WKprK4lt2RgIRZWmy7shINb4UBPVTV1v7phyM
+         7KxL1qsQebs8D299J3osZoXkjVDiyHK5GndInz24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Andrew F. Davis" <afd@ti.com>, Stable@vger.kernel.org
-Subject: [PATCH 4.14 068/125] iio:health:afe4403 Fix timestamp alignment and prevent data leak.
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 31/58] Revert "usb/xhci-plat: Set PM runtime as active on resume"
 Date:   Mon, 20 Jul 2020 17:36:47 +0200
-Message-Id: <20200720152806.301444420@linuxfoundation.org>
+Message-Id: <20200720152748.706320589@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+This reverts commit 737c975db35b0117fc5c702072ca2df6f2f7eb63.
 
-commit 3f9c6d38797e9903937b007a341dad0c251765d6 upstream.
+Eugeniu Rosca writes:
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 32 byte array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data with alignment
-explicitly requested.  This data is allocated with kzalloc so no
-data can leak appart from previous readings.
+On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>Set PM runtime as active on resume") into downstream v4.14.x, we started
+>to consistently experience below panic [1] on every second s2ram of
+>R-Car H3 Salvator-X Renesas reference board.
+>
+>After some investigations, we concluded the following:
+> - the issue does not exist in vanilla v5.8-rc4+
+> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>   link support"). Getting evidence for that is easy. Reverting
+>   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>
+>Questions:
+> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>   link support") to v4.14.187 looks challenging enough, so probably not
+>   worth it. Anybody to contradict this?
+> - Assuming no plans to backport the missing mainline commit to v4.14.x,
+>   should the following three v4.14.186 commits be reverted on v4.14.x?
+>   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
+>   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
+>   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
 
-Fixes: eec96d1e2d31 ("iio: health: Add driver for the TI AFE4403 heart monitor")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Andrew F. Davis <afd@ti.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/health/afe4403.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/usb/host/xhci-plat.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
---- a/drivers/iio/health/afe4403.c
-+++ b/drivers/iio/health/afe4403.c
-@@ -71,6 +71,7 @@ static const struct reg_field afe4403_re
-  * @regulator: Pointer to the regulator for the IC
-  * @trig: IIO trigger for this device
-  * @irq: ADC_RDY line interrupt number
-+ * @buffer: Used to construct data layout to push into IIO buffer.
-  */
- struct afe4403_data {
- 	struct device *dev;
-@@ -80,6 +81,8 @@ struct afe4403_data {
- 	struct regulator *regulator;
- 	struct iio_trigger *trig;
- 	int irq;
-+	/* Ensure suitable alignment for timestamp */
-+	s32 buffer[8] __aligned(8);
- };
+diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+index 510fb7853f92a..c4c40e9d42471 100644
+--- a/drivers/usb/host/xhci-plat.c
++++ b/drivers/usb/host/xhci-plat.c
+@@ -249,17 +249,8 @@ static int xhci_plat_resume(struct device *dev)
+ {
+ 	struct usb_hcd	*hcd = dev_get_drvdata(dev);
+ 	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+-	int ret;
+-
+-	ret = xhci_resume(xhci, 0);
+-	if (ret)
+-		return ret;
  
- enum afe4403_chan_id {
-@@ -318,7 +321,6 @@ static irqreturn_t afe4403_trigger_handl
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct afe4403_data *afe = iio_priv(indio_dev);
- 	int ret, bit, i = 0;
--	s32 buffer[8];
- 	u8 tx[4] = {AFE440X_CONTROL0, 0x0, 0x0, AFE440X_CONTROL0_READ};
- 	u8 rx[3];
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-
+-	return 0;
++	return xhci_resume(xhci, 0);
+ }
  
-@@ -335,9 +337,9 @@ static irqreturn_t afe4403_trigger_handl
- 		if (ret)
- 			goto err;
- 
--		buffer[i++] = (rx[0] << 16) |
--				(rx[1] << 8) |
--				(rx[2]);
-+		afe->buffer[i++] = (rx[0] << 16) |
-+				   (rx[1] << 8) |
-+				   (rx[2]);
- 	}
- 
- 	/* Disable reading from the device */
-@@ -346,7 +348,8 @@ static irqreturn_t afe4403_trigger_handl
- 	if (ret)
- 		goto err;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buffer, pf->timestamp);
-+	iio_push_to_buffers_with_timestamp(indio_dev, afe->buffer,
-+					   pf->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
- 
+ static const struct dev_pm_ops xhci_plat_pm_ops = {
+-- 
+2.25.1
+
 
 
