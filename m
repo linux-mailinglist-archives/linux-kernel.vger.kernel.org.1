@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8BB22662D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E999F22676A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732470AbgGTQBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34192 "EHLO mail.kernel.org"
+        id S2387815AbgGTQLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:11:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731999AbgGTQA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:00:58 -0400
+        id S2387800AbgGTQL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:11:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73C6622CF7;
-        Mon, 20 Jul 2020 16:00:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3363920734;
+        Mon, 20 Jul 2020 16:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260858;
-        bh=JNClSQQYpxj38ahF4M0o2Rn4B8uhr5eTzyuyhfw4B98=;
+        s=default; t=1595261486;
+        bh=J6D3S30ahjRUeLrBap+5HbB0G8gUAQcnb7opceuRGvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fV0XoJYhKPldlL7gZUe/O4bM1dAZg8AWUS5K6h3PX9aJ/7nA9UgZOWiwUHs80L2Bq
-         Hjrz+OJ58GAN1aVARZtDKeCYwR5xUMKGAN3vRRZ8MU7qR4UefSohXtqTm/c3G0f13K
-         yUAr9DHR2gNvMc4w2k72Owpp1+8q4kcX1b0t4zwE=
+        b=Qg6r+lDV4WiLe+68kUbLQqabnDP2M0vYRhWaCId+j3hGQKMEiZgvyZ7RSTQD5UQun
+         zwv9zOH3d790zxE8cfxGh778RCLltlbeDCCvucrxs2EDqFg5DGuC87QpQFnSjIPTtm
+         njojwZDt6U6LLM3VymEsZtThqCH2+xsrmNUu1gyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.4 121/215] soc: qcom: socinfo: add missing soc_id sysfs entry
-Date:   Mon, 20 Jul 2020 17:36:43 +0200
-Message-Id: <20200720152825.957684716@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH 5.7 133/244] mtd: spi-nor: spansion: fix writes on S25FS512S
+Date:   Mon, 20 Jul 2020 17:36:44 +0200
+Message-Id: <20200720152832.172014628@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-commit 27a344139c186889d742764d3c2a62b395949cef upstream.
+commit 5587fa489747a8e6cbd0558890458c862b797485 upstream.
 
-Looks like SoC ID is not exported to sysfs for some reason.
-This patch adds it!
+Spansion S25FS-S family has an issue in the Basic Flash Parameter Table
+(BFPT): Dword-11 bits 7:4 specify a page size of 512 bytes.  Actually
+this is configurable in the vendor unique register (CR3V) and even the
+factory default setting is to "wrap at 256 bytes", so blindly relying
+on BFPT breaks the page writes on these chips. Add the post-BFPT fixup
+which restores the default page size of 256 bytes -- to properly read
+CR3V this early is quite intrusive and should better be done as a new
+feature; Alexander Sverdlin had the patch doing that:
 
-This is mostly used by userspace libraries like Snapdragon
-Neural Processing Engine (SNPE) SDK for checking supported SoC info.
+https://patchwork.ozlabs.org/project/linux-mtd/patch/20200227123657.26030-1-alexander.sverdlin@nokia.com/
 
-Fixes: efb448d0a3fc ("soc: qcom: Add socinfo driver")
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200319121418.5180-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: dfd2b74530e ("mtd: spi-nor: add Spansion S25FS512S ID")
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Tested-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/soc/qcom/socinfo.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/spi-nor/spansion.c |   25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
---- a/drivers/soc/qcom/socinfo.c
-+++ b/drivers/soc/qcom/socinfo.c
-@@ -428,6 +428,8 @@ static int qcom_socinfo_probe(struct pla
- 	qs->attr.family = "Snapdragon";
- 	qs->attr.machine = socinfo_machine(&pdev->dev,
- 					   le32_to_cpu(info->id));
-+	qs->attr.soc_id = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%u",
-+					 le32_to_cpu(info->id));
- 	qs->attr.revision = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%u.%u",
- 					   SOCINFO_MAJOR(le32_to_cpu(info->ver)),
- 					   SOCINFO_MINOR(le32_to_cpu(info->ver)));
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -8,6 +8,27 @@
+ 
+ #include "core.h"
+ 
++static int
++s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
++			 const struct sfdp_parameter_header *bfpt_header,
++			 const struct sfdp_bfpt *bfpt,
++			 struct spi_nor_flash_parameter *params)
++{
++	/*
++	 * The S25FS-S chip family reports 512-byte pages in BFPT but
++	 * in reality the write buffer still wraps at the safe default
++	 * of 256 bytes.  Overwrite the page size advertised by BFPT
++	 * to get the writes working.
++	 */
++	params->page_size = 256;
++
++	return 0;
++}
++
++static struct spi_nor_fixups s25fs_s_fixups = {
++	.post_bfpt = s25fs_s_post_bfpt_fixups,
++};
++
+ static const struct flash_info spansion_parts[] = {
+ 	/* Spansion/Cypress -- single (large) sector size only, at least
+ 	 * for the chips listed here (without boot sectors).
+@@ -30,8 +51,8 @@ static const struct flash_info spansion_
+ 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			      SPI_NOR_HAS_LOCK | USE_CLSR) },
+ 	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
+-			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			      USE_CLSR) },
++			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
++	  .fixups = &s25fs_s_fixups, },
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
 
 
