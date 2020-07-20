@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F211226141
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475AE226146
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 15:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgGTNqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 09:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        id S1728115AbgGTNrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 09:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgGTNqr (ORCPT
+        with ESMTP id S1725792AbgGTNrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 09:46:47 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02947C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:46:46 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h22so20295599lji.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 06:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8qtN5L8/xZpkQuUDdQgpDbwS59vLxj0mGpt2DoBoy94=;
-        b=eXsM1TqXMP0+Ycllxnt287iVoc4UP/VmkbTLyen6E3H8sTZIqd9z05gN/mMJfdmKmk
-         BoJo8MyzlEYp7ARXgkpltQj640PDZyIDVmJw8pr5I0qCjR5l4sA3Zs+PRacBBLXeWwSI
-         P/+0oQIeqpm3sV+uW1mN67zbkry7xF0VlZgjis++Euub9b1vv95MLRcvI5OCWJ4QlQCb
-         SuRNmhUdtMlzKM0Nmoz9Hv5kpvsp2YDTORZGw+lWD9umaFAaMgicUR+ONXSdsGOfBxzz
-         1rNvJhmUA1bS+pr1aejUW00ivh6s7iEjEE6htmYQ7BUmzXFlo5mlJrh17Ymq50aOh1Ap
-         0zsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8qtN5L8/xZpkQuUDdQgpDbwS59vLxj0mGpt2DoBoy94=;
-        b=HSHwcBgrkyKkZdW3MvfvMtspzdz9U5KAH1zAmhSoIHpDoSi1JVqbz51tRuQA7RXdtb
-         hpLjNknJ/Q6WFP6AcbrIdKkKc1jgS6VfFJcJVUhBBN7lhn9A0N6XzkP42xr/Erdl8wLf
-         pwHw+jwyUGi7MmZ4wUWj+f/vfyEypuPRZ1yoneOnic0pd5eBoTjskgWDAl/WSc8qFFIv
-         q0ygVYkcNNaYtSShHUCNRl9bX5XFt1cXIH05/TTd0RDsK7+h4WbLdjSOeR1SgexKT35Z
-         uXGuJ88i6ULlVbxDdRtC3sd9VR1HQx4bOBGfQENJ+10rgPJ0W/R9OWgK0ThGAAGKY08e
-         mrmg==
-X-Gm-Message-State: AOAM533tLlt8D2isbgxw6vNl38KDiIKRK7M8boSuHakuqOTzX/tVCR4j
-        rdeGJ4Qit41WEPkQdsl+0GEZkd95qlZd5havDjcd2GbQ1Ss=
-X-Google-Smtp-Source: ABdhPJzRSIGPw4xCiw8wIgSx2BFb3C3mWivZPGkHLMXSE3njtM+f1mImRq6NBxxseL7B9Y8eFbRc4USvjpMyv+bDbIo=
-X-Received: by 2002:a2e:7a1a:: with SMTP id v26mr9943001ljc.104.1595252805400;
- Mon, 20 Jul 2020 06:46:45 -0700 (PDT)
+        Mon, 20 Jul 2020 09:47:04 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F27C061794;
+        Mon, 20 Jul 2020 06:47:04 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 6EA9728BC1E
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
+        willy@infradead.org, luto@kernel.org, gofmanp@gmail.com,
+        keescook@chromium.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Subject: Re: [PATCH v4 1/2] kernel: Implement selective syscall userspace redirection
+Organization: Collabora
+References: <20200716193141.4068476-1-krisman@collabora.com>
+        <20200716193141.4068476-2-krisman@collabora.com>
+        <87v9iimrbk.fsf@nanos.tec.linutronix.de>
+Date:   Mon, 20 Jul 2020 09:46:59 -0400
+In-Reply-To: <87v9iimrbk.fsf@nanos.tec.linutronix.de> (Thomas Gleixner's
+        message of "Mon, 20 Jul 2020 12:08:47 +0200")
+Message-ID: <87lfjepacs.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20200717014908.13914-1-jay.xu@rock-chips.com> <20200717014908.13914-2-jay.xu@rock-chips.com>
-In-Reply-To: <20200717014908.13914-2-jay.xu@rock-chips.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 20 Jul 2020 15:46:34 +0200
-Message-ID: <CACRpkdYyZ3GHYo0vB-1UpW+EtiTXgeRuOhOuB0XxUNXN11N9-w@mail.gmail.com>
-Subject: Re: [PATCH 01/13] pinctrl: rockchip: add nr_pins to rockchip_pin_ctrl
-To:     Jianqun Xu <jay.xu@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        David Wu <david.wu@rock-chips.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 3:49 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
 
-> Add nr_pins to rockchip_pin_ctrl by hand, instead of calculating during
-> driver probe. This patch is prepare work for making rockchip_pin_ctrl to
-> be const type.
+Hi Thomas,
+
+Thanks for the valuable feedback!
+
+Thomas Gleixner <tglx@linutronix.de> writes:
+> Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+>> Introduce a mechanism to quickly disable/enable syscall handling for a
+>> specific process and redirect to userspace via SIGSYS.  This is useful
+>> for processes with parts that require syscall redirection and parts that
+>> don't, but who need to perform this boundary crossing really fast,
+>> without paying the cost of a system call to reconfigure syscall handling
+>> on each boundary transition.  This is particularly important for Windows
+>> games running over Wine.
+>>
+>> The proposed interface looks like this:
+>>
+>>   prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <start_addr>, <end_addr>, [selector])
+>>
+>> The range [<start_addr>,<end_addr>] is a part of the process memory map
+>> that is allowed to by-pass the redirection code and dispatch syscalls
+>> directly, such that in fast paths a process doesn't need to disable the
+>> trap nor the kernel has to check the selector.  This is essential to
+>> return from SIGSYS to a blocked area without triggering another SIGSYS
+>> from rt_sigreturn.
 >
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> Why isn't rt_sigreturn() exempt from that redirection in the first
+> place?
 
-I'm letting Heiko review this series, to me it looks all right.
+This was actually a design decision for me.
 
-Yours,
-Linus Walleij
+The main use case I'm considering is emulation of applications written
+for other OSs (games over wine), which means this dispatcher code is
+exposed to applications built against different ABIs, who trigger
+syscalls with bogus parameters (from a linux perspective)
+
+In this emulation scenario, I cannot really trust the syscall number
+means rt_sigreturn, so I try to only base the dispatcher decision on the
+memory region and selector variable.
+
+I think the best we can do is what Andy said: to exempt rt_sigreturn
+when it comes from the vdso, for architectures that do it that way.
+
+>
+>> ---
+>>  arch/Kconfig                          | 20 ++++++
+>>  arch/x86/Kconfig                      |  1 +
+>>  arch/x86/entry/common.c               |  5 ++
+>>  arch/x86/include/asm/thread_info.h    |  4 +-
+>>  arch/x86/kernel/signal_compat.c       |  2 +-
+>>  fs/exec.c                             |  2 +
+>>  include/linux/sched.h                 |  3 +
+>>  include/linux/syscall_user_dispatch.h | 50 +++++++++++++++
+>>  include/uapi/asm-generic/siginfo.h    |  3 +-
+>>  include/uapi/linux/prctl.h            |  5 ++
+>>  kernel/Makefile                       |  1 +
+>>  kernel/fork.c                         |  1 +
+>>  kernel/sys.c                          |  5 ++
+>>  kernel/syscall_user_dispatch.c        | 92 +++++++++++++++++++++++++++
+>
+> A big combo patch is not how we do that. Please split it up into the
+> core part and a patch enabling it for a particular architexture.
+>
+> As I said in my reply to Andy, this wants to go on top of the generic
+> entry/exit work stuff:
+>
+>   https://lore.kernel.org/r/20200716182208.180916541@linutronix.de
+>
+> and then syscall_user_dispatch.c ends up in kernel/entry/ and the
+> dispatching function is not exposed outside of that directory.
+>
+> I'm going to post a new version later today. Will cc you.
+
+Thanks. Will do!
+
+
+-- 
+Gabriel Krisman Bertazi
