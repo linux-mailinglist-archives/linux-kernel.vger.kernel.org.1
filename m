@@ -2,89 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EEF225801
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E938225805
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 08:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgGTGuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 02:50:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55554 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgGTGuG (ORCPT
+        id S1726815AbgGTGxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 02:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgGTGxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 02:50:06 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595227804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t/qYtaXCKWFcQ++IUuI+8VoH3i4cW6b42fWT4jOgYmA=;
-        b=I8NrnAiDCGeIzMpOK6d/529QMrR7yLW1IOA3Bpek9vOOlA2k5NqKlqZcIMaf1j/rYd9B7i
-        /DxmDZ2C+Nbdvj9u/8Qq3lQkvHe7gnEEHyii2lHAY76prCZMPmkADNulos5ebbC43Ao3am
-        rHmpG/LtLwFFz6wZNAje4k4SNHTbAse2Bj6ythgYRHMm7QQOFZBPAkCkMmHxEf8EY8WIAI
-        22SrH2ZbgY/tfUZBgBPJL3Z5uWN3pIJERqp9XBjuGrTnUURQpM/OrFaI5f9eYE449INOef
-        KsVHSDgfX0QAsNfyXOx5l6L5To5hWalfvr/+390Tjjf8wf1NakStsO0UXQNyPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595227804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t/qYtaXCKWFcQ++IUuI+8VoH3i4cW6b42fWT4jOgYmA=;
-        b=JmW05mx6NDlANlEtUmk8WumFr8XSkHzEyeysCjvJt7mjlaCLUU8+tb2WwbeVWfpUHTjnBy
-        IV0x3wGCbxgNtKBA==
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [patch V3 01/13] entry: Provide generic syscall entry functionality
-In-Reply-To: <A790AF9D-3BF7-4FEE-9E29-7C13FA3FE0C3@amacapital.net>
-References: <87v9ijollo.fsf@nanos.tec.linutronix.de> <A790AF9D-3BF7-4FEE-9E29-7C13FA3FE0C3@amacapital.net>
-Date:   Mon, 20 Jul 2020 08:50:02 +0200
-Message-ID: <87a6zuof39.fsf@nanos.tec.linutronix.de>
+        Mon, 20 Jul 2020 02:53:37 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F40FC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 23:53:37 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id k18so12164502qtm.10
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Jul 2020 23:53:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qs1cbe46cVElxY/Q1LwL0+3SEDSLDhjdnDiZLYzmQpA=;
+        b=nrN7FoGzPXdOvPS9oQHCkzTRZBHfDINd8EiU7EJWQAFx5dMLj9u7Jn+l4kYZAXu4L6
+         St7Eqt99nOCXDyBDLkimje1F8ZSm8HOAYuMVYErEbqmplEgZ9xnbXasKoalX9aT2gj9F
+         8HmdL3JokxG6oVre95PYVkqcX2IDJKBQGgkCZorlrTlGsw8nqbTUvJTeJrLPgsXWNWYU
+         1AJvJZc7YL0ogUpZkUZTV0/5XTG1L2aecZIVATHWLm/eq3diJehH3K2/YlfpVjJFd3gG
+         tZss3RqjweUp5sTzc/NQgqmigoghvmkcl3d5bTHsjci+fl+Hpzm2s/j6PXs2bDP3MQyw
+         aC+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qs1cbe46cVElxY/Q1LwL0+3SEDSLDhjdnDiZLYzmQpA=;
+        b=OQqFQEHt1K+BI2hu9d+wDjDwYjZbf+bZTZZmSTyxtnRuKd5aCxvh80S00ussp7G6kJ
+         zQyLzOTQb5rl5DmdnhIQIx+NYlhCb0kTV/Yaz6j+oJRbnm5B8o6XYfXQyaOH/ved4q0S
+         +5dpyNdYLuK68xJKOAPi5zNVa7DysNcAuMUIbrP8LkwHN2Y1VltfQdEE1qu8Nf57F7Ub
+         di95csbnUaqZB7cmfvWnrZJmSks4pgov/ovn3m/dOYfUAN8Ztlvm6xE0CYSEHbOX6GUc
+         4NruI1XnfSSSWGaKAb72cPbCn6ALGQFZfSIq0T5iP1XN0/CjF3AoV9v+0/TlqUjpjJDf
+         ying==
+X-Gm-Message-State: AOAM5336Yh2a1FudMvxDgUt3vZo+JSII6b41ZY8APt4eIgyU7HALx+B8
+        790FS6H3qO97MegD1RAywpysXuxWBr3gW/PeZzc=
+X-Google-Smtp-Source: ABdhPJxGi5zxL6JpDFNy9iMtWweFL0iBl8jt/EO1VPcigijc5OZQPs3jZrBbRSx8iMGl+Jkxr2awoUISlyE59SAEl5k=
+X-Received: by 2002:ac8:7b23:: with SMTP id l3mr22698974qtu.65.1595228016399;
+ Sun, 19 Jul 2020 23:53:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592371583-30672-3-git-send-email-iamjoonsoo.kim@lge.com> <20200717135849.GA265107@cmpxchg.org>
+In-Reply-To: <20200717135849.GA265107@cmpxchg.org>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Mon, 20 Jul 2020 15:53:25 +0900
+Message-ID: <CAAmzW4OeCdcAnj2yUJWw_XuC8eVBF-wWjA+7vJ3J1Oju68kfJA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/6] mm/vmscan: protect the workingset on anonymous LRU
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Lutomirski <luto@amacapital.net> writes:
->> On Jul 19, 2020, at 3:17 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
->>=20
->> =EF=BB=BFAndy Lutomirski <luto@kernel.org> writes:
->>>> On Sat, Jul 18, 2020 at 7:16 AM Thomas Gleixner <tglx@linutronix.de> w=
-rote:
->>>> Andy Lutomirski <luto@kernel.org> writes:
->>>>> FWIW, TIF_USER_RETURN_NOTIFY is a bit of an odd duck: it's an
->>>>> entry/exit word *and* a context switch word.  The latter is because
->>>>> it's logically a per-cpu flag, not a per-task flag, and the context
->>>>> switch code moves it around so it's always set on the running task.
->>>>=20
->>>> Gah, I missed the context switch thing of that. That stuff is hideous.
->>>=20
->>> It's also delightful because anything that screws up that dance (such
->>> as failure to do the exit-to-usermode path exactly right) likely
->>> results in an insta-root-hole.  If we fail to run user return
->>> notifiers, we can run user code with incorrect syscall MSRs, etc.
->>=20
->> Looking at it deeper, having that thing in the loop is a pointless
->> exercise. This really wants to be done _after_ the loop.
->>=20
-> As long as we=E2=80=99re confident that nothing after the loop can set th=
-e flag again.
+2020=EB=85=84 7=EC=9B=94 17=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 10:59, =
+Johannes Weiner <hannes@cmpxchg.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Wed, Jun 17, 2020 at 02:26:19PM +0900, js1304@gmail.com wrote:
+> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> >
+> > In current implementation, newly created or swap-in anonymous page
+> > is started on active list. Growing active list results in rebalancing
+> > active/inactive list so old pages on active list are demoted to inactiv=
+e
+> > list. Hence, the page on active list isn't protected at all.
+> >
+> > Following is an example of this situation.
+> >
+> > Assume that 50 hot pages on active list. Numbers denote the number of
+> > pages on active/inactive list (active | inactive).
+> >
+> > 1. 50 hot pages on active list
+> > 50(h) | 0
+> >
+> > 2. workload: 50 newly created (used-once) pages
+> > 50(uo) | 50(h)
+> >
+> > 3. workload: another 50 newly created (used-once) pages
+> > 50(uo) | 50(uo), swap-out 50(h)
+> >
+> > This patch tries to fix this issue.
+> > Like as file LRU, newly created or swap-in anonymous pages will be
+> > inserted to the inactive list. They are promoted to active list if
+> > enough reference happens. This simple modification changes the above
+> > example as following.
+> >
+> > 1. 50 hot pages on active list
+> > 50(h) | 0
+> >
+> > 2. workload: 50 newly created (used-once) pages
+> > 50(h) | 50(uo)
+> >
+> > 3. workload: another 50 newly created (used-once) pages
+> > 50(h) | 50(uo), swap-out 50(uo)
+> >
+> > As you can see, hot pages on active list would be protected.
+> >
+> > Note that, this implementation has a drawback that the page cannot
+> > be promoted and will be swapped-out if re-access interval is greater th=
+an
+> > the size of inactive list but less than the size of total(active+inacti=
+ve).
+> > To solve this potential issue, following patch will apply workingset
+> > detection that is applied to file LRU some day before.
+> >
+> > v6: Before this patch, all anon pages (inactive + active) are considere=
+d
+> > as workingset. However, with this patch, only active pages are consider=
+ed
+> > as workingset. So, file refault formula which uses the number of all
+> > anon pages is changed to use only the number of active anon pages.
+>
+> I can see that also from the code, but it doesn't explain why.
+>
+> And I'm not sure this is correct. I can see two problems with it.
+>
+> After your patch series, there is still one difference between anon
+> and file: cache trim mode. If the "use-once" anon dominate most of
+> memory and you have a small set of heavily thrashing files, it would
+> not get recognized. File refaults *have* to compare their distance to
+> the *entire* anon set, or we could get trapped in cache trimming mode
+> even as file pages with access frequencies <=3D RAM are thrashing.
+>
+> On the anon side, there is no cache trimming mode. But even if we're
+> not in cache trimming mode and active file is already being reclaimed,
+> we have to recognize thrashing on the anon side when reuse frequencies
+> are within available RAM. Otherwise we treat an inactive file that is
+> not being reused as having the same value as an anon page that is
+> being reused. And then we may reclaim file and anon at the same rate
+> even as anon is thrashing and file is not. That's not right.
+>
+> We need to activate everything with a reuse frequency <=3D RAM. Reuse
+> frequency is refault distance plus size of the inactive list the page
+> was on. This means anon distances should be compared to active anon +
+> inactive file + active file, and file distances should be compared to
+> active file + inactive_anon + active anon.
 
-Yes, because that's the direct way off to user space.
+You're right. Maybe, I'm confused about something at that time. I will chan=
+ge
+it as you suggested.
 
-Thanks,
-
-        tglx
+Thanks.
