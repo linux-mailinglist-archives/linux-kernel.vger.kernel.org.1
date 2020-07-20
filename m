@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA3F2264B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4667226440
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730359AbgGTPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:47:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42318 "EHLO mail.kernel.org"
+        id S1730270AbgGTPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730738AbgGTPrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:47:14 -0400
+        id S1729711AbgGTPn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:43:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2624C22BF3;
-        Mon, 20 Jul 2020 15:47:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50C882176B;
+        Mon, 20 Jul 2020 15:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260033;
-        bh=OoESAnnsNphandLeCs8CakH27dQGYZJjXEuVriqzIbM=;
+        s=default; t=1595259808;
+        bh=m681DT4o3aG8++UII+u8CSlUWPO3GIpQI3OqZ06SJLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otAkzqO5f8ZonqpyuJ0rxYRaOHDVW9nRn5pdgU0Shl1x308uEtY62wrKd76g6NzEi
-         ru5dOCAOBpY3M1RVWbxTLBx80OQuzpaVKyjJQn4Xnbx+CMvlCF7D45c9YTNB5AGkJA
-         Rob8jM2EEGmCb4+27hiHqp5eusRWjPijhfXJ7RfA=
+        b=b0D1jjLxW2KCkClIhdCLfFLhIoLigBUW4W5puaCPfJvtMTr/V5zz4IRZvdKSSoGkB
+         fdxS84grpX2Ef6GA5dWQDU11h/UC2grwCMUdzMuFk8hLHcbHmyyOja7fFCDHFSqh4t
+         iGNj5Y9pGvgegb+2sqnhPyLtAW1PavpbM2ERZFFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 082/125] arm64: dts: meson: add missing gxl rng clock
-Date:   Mon, 20 Jul 2020 17:37:01 +0200
-Message-Id: <20200720152806.979464857@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 4.9 66/86] usb: chipidea: core: add wakeup support for extcon
+Date:   Mon, 20 Jul 2020 17:37:02 +0200
+Message-Id: <20200720152756.491357480@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Peter Chen <peter.chen@nxp.com>
 
-[ Upstream commit 95ca6f06dd4827ff63be5154120c7a8511cd9a41 ]
+commit 876d4e1e8298ad1f94d9e9392fc90486755437b4 upstream.
 
-The peripheral clock of the RNG is missing for gxl while it is present
-for gxbb.
+If wakeup event occurred by extcon event, it needs to call
+ci_irq again since the first ci_irq calling at extcon notifier
+only wakes up controller, but do noop for event handling,
+it causes the extcon use case can't work well from low power mode.
 
-Fixes: 1b3f6d148692 ("ARM64: dts: meson-gx: add clock CLKID_RNG0 to hwrng node")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/20200617125346.1163527-1-jbrunet@baylibre.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
+Reported-by: Philippe Schenker <philippe.schenker@toradex.com>
+Tested-by: Philippe Schenker <philippe.schenker@toradex.com>
+Signed-off-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20200707060601.31907-2-peter.chen@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/boot/dts/amlogic/meson-gxl.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/chipidea/core.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-index 3c30579449608..3ee6c4bae08f6 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-@@ -245,6 +245,11 @@ clkc: clock-controller@0 {
- 	};
- };
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -1110,6 +1110,29 @@ static void ci_controller_suspend(struct
+ 	enable_irq(ci->irq);
+ }
  
-+&hwrng {
-+	clocks = <&clkc CLKID_RNG0>;
-+	clock-names = "core";
-+};
++/*
++ * Handle the wakeup interrupt triggered by extcon connector
++ * We need to call ci_irq again for extcon since the first
++ * interrupt (wakeup int) only let the controller be out of
++ * low power mode, but not handle any interrupts.
++ */
++static void ci_extcon_wakeup_int(struct ci_hdrc *ci)
++{
++	struct ci_hdrc_cable *cable_id, *cable_vbus;
++	u32 otgsc = hw_read_otgsc(ci, ~0);
 +
- &i2c_A {
- 	clocks = <&clkc CLKID_I2C>;
- };
--- 
-2.25.1
-
++	cable_id = &ci->platdata->id_extcon;
++	cable_vbus = &ci->platdata->vbus_extcon;
++
++	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
++		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
++		ci_irq(ci->irq, ci);
++
++	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
++		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
++		ci_irq(ci->irq, ci);
++}
++
+ static int ci_controller_resume(struct device *dev)
+ {
+ 	struct ci_hdrc *ci = dev_get_drvdata(dev);
+@@ -1136,6 +1159,7 @@ static int ci_controller_resume(struct d
+ 		enable_irq(ci->irq);
+ 		if (ci_otg_is_fsm_mode(ci))
+ 			ci_otg_fsm_wakeup_by_srp(ci);
++		ci_extcon_wakeup_int(ci);
+ 	}
+ 
+ 	return 0;
 
 
