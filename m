@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A16226281
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EF3226283
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgGTOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgGTOtR (ORCPT
+        id S1728751AbgGTOtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:49:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58304 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGTOtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:49:17 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F2BC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:49:17 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a6so180155wmm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dCQF7F+ay5jXE+ml8xQtj+pq5cdYa6gArESdvwR7ETA=;
-        b=HCpPDtGbcoFu+VD6Wp0+UWsSaib1LLMOPAAH4BUmA1Yz7X0dQNyvDQ9rWYEuePSte9
-         B91h1832zv4KK0ge7rlwQsZRq0Ijb1vdkCnMGYPABjJkRF+7azS45vDNaGY0EuEkf/O7
-         UvIRSgaPcW0FfCCDVvSjr3jrbRlnnc1aNJIbNzsXgz2ijnsAfQ+18iRUAu9MRaCn421/
-         YSTaVs9FcR5tu8yP50Ad9fRaVIb6iem9fc4RAcWhFsKhA4UM+suBwZ9JwdIXtgKiPsYt
-         xtBOa9SzisvkTY7p8kLd9MV38jsjAdDlnFL38A29RCUu2BAooDorG9o2FEXmEf4qAKPw
-         Xyww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dCQF7F+ay5jXE+ml8xQtj+pq5cdYa6gArESdvwR7ETA=;
-        b=JpOt+yN4Owa8szzJ0uFqgigDdCXYYgGcDxMaOWqe/+9hciAZ9SzMhBuEw7oC58Te1V
-         tKbhZFXTewMAANnKzlcYwhkgjLO80KpnwHp/mxvkqSJHD/uHQZFwSVVlMqEtIB/gbzIB
-         EN9oGfuBzwpOhWvdVnQceH/3rfbEg/TWTfO1ws8E/Tl/e+kQ+BXB10tW+5Fpvp5YY/lY
-         V4B2QbubTO4hViJyjk3JcFlmE/IbT5e0os11oXwuWkEkt15SiUxbi1QntInAhTxvKOS4
-         TFZZzXJEgdQJoONOhzLZVXAtI+Sx3vzvFcJ68r2fXOcR37JGqzhg7HXRBkkKJ+NsBeMB
-         loOg==
-X-Gm-Message-State: AOAM530g6vu16gKg3djSILbo5Y9CMquXpA2i6ZBMbaBx149PKPDpEtNG
-        4iCVU609M3Oy4t6d4nkd4H2yMSrxGpM=
-X-Google-Smtp-Source: ABdhPJzxdQKiviMvc7XJrEXZImwhFkzx66E/hxLhzoh7GRWAPmpapWv7ZiBJ3X3FKjDayEJTMuNq/g==
-X-Received: by 2002:a1c:2702:: with SMTP id n2mr21565244wmn.123.1595256555699;
-        Mon, 20 Jul 2020 07:49:15 -0700 (PDT)
-Received: from dell ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id b8sm2591228wrv.4.2020.07.20.07.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 07:49:15 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 15:49:13 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 07/25] pinctrl: samsung: pinctrl-s3c24xx: Fix formatting
- issues
-Message-ID: <20200720144913.GC3368211@dell>
-References: <20200713144930.1034632-1-lee.jones@linaro.org>
- <20200713144930.1034632-8-lee.jones@linaro.org>
- <20200720142727.GB6747@kozik-lap>
+        Mon, 20 Jul 2020 10:49:42 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595256580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JrNCCUAh2qiZuq2tVk2FZ+e78IxZ1qs8q7MJBM78TL4=;
+        b=EO7ZPAeWQLpnykYbzD1TFl0foAm4h4HbxaZGQms+E7wJpyNpk0vBs1H53/JT0Eg5z51oqY
+        iRbsrvmSYdnPZRsJB4rjxgNfUYL08goTZEmPBnUrb98oGiIJmWSMwuI/oHsDJDfMjZkZWz
+        1+IL9OH3+3uvQkfQi4dtO0lt5oQOBxAQe4nU5FzROfjYhnDFFdoq3F4+hHue2HWwUAtXpB
+        izSqV6KLFlY+jOljUqSFJY3qYEImVbgKTSLvC2T5pe2zyYxK+xMmMSTl3bTtfnJLGSQ5Dh
+        T0/CMUeOjia7KpXUVjb2p/HFAOAgCTd7+e2gECHhyqJ5BEKRWaHcmksTFjo3tg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595256580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JrNCCUAh2qiZuq2tVk2FZ+e78IxZ1qs8q7MJBM78TL4=;
+        b=sOc+oKTvagCDtpu/9bD5lYKVljsyXyW2ARDIQNp3+5dwgW6ihifCizyid8+OnMb8WtBgax
+        3aGWgJkITKDvz5Dw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] printk: ringbuffer: support dataless records
+In-Reply-To: <20200717234818.8622-2-john.ogness@linutronix.de>
+References: <20200717234818.8622-1-john.ogness@linutronix.de> <20200717234818.8622-2-john.ogness@linutronix.de>
+Date:   Mon, 20 Jul 2020 16:55:39 +0206
+Message-ID: <87blkas0l8.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200720142727.GB6747@kozik-lap>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020, Krzysztof Kozlowski wrote:
+On 2020-07-18, John Ogness <john.ogness@linutronix.de> wrote:
+> In order to support storage of continuous lines, dataless records must
+> be allowed. For example, these are generated with the legal calls:
+>
+>     pr_info("");
+>     pr_cont("\n");
+>
+> Currently dataless records are denoted by INVALID_LPOS in order to
+> recognize failed prb_reserve() calls. Change the code to use two
+> different identifiers (FAILED_LPOS and NO_LPOS) to distinguish
+> between failed prb_reserve() records and successful dataless records.
 
-> On Mon, Jul 13, 2020 at 03:49:12PM +0100, Lee Jones wrote:
-> > Kerneldoc struct titles must be followed by whitespace.  Also attributes
-> > need to be in the format '@.*: ' else the checker gets confused.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/pinctrl/samsung/pinctrl-s3c24xx.c:100: warning: cannot understand function prototype: 'struct s3c24xx_eint_domain_data '
-> > 
-> > Cc: Kukjin Kim <kgene@kernel.org>
-> > Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> > Cc: Tomasz Figa <tomasz.figa@gmail.com>
-> > Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> > Cc: Heiko Stuebner <heiko@sntech.de>
-> > Cc: linux-samsung-soc@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/pinctrl/samsung/pinctrl-s3c24xx.c | 6 +++---
-> 
-> Thanks, applied.
+This patch has been re-posted [0] as a regression fix for the first
+series that is already in linux-next. Only the commit message has been
+changed to reflect the regression fix rather than preparing for
+continuous line support.
 
-This has already been applied and resides in -next.
+Assuming that patch is accepted, this one should be dropped.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+John Ogness
+
+[0] https://lkml.kernel.org/r/20200720140111.19935-1-john.ogness@linutronix.de
