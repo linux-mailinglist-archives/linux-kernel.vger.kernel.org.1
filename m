@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53524226C55
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D00226C61
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389168AbgGTQsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728122AbgGTQsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:48:32 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1730840AbgGTQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728890AbgGTQtQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:49:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E71C061794;
+        Mon, 20 Jul 2020 09:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SMaxWhwAegvetyWQHJzr2iSeRVKWInsDa9ht3IdzAJE=; b=jKU73cfBY8hjKJ+jOGtnVQYdiv
+        tpvcuG2saC1Mh+jzmMArY69tlNIb76Mftum0Mz3M04j3/+Qr+wlSczz+gksG807GoB8HOjv+3wwK2
+        TL8uf++3Gm+lglg6jrlEDt0yTtIkrQzJWlOkqkvM0joh5Zh9yCq1/wd+tp7XaqVHz+ZprcVsqOKZe
+        d4MrIAIWZGHJ89JsjqjdYwn/tSmQrcLOKiOsoFZdmi8evTDiLOUM8wO59BXAPgsrHsl1tuEIf97ux
+        MIUaF4Kauhrk3/f4UJkMKxkuzFigWbGZRelDsf8GLxFdtfp+WLKTI6a4pE5WQ4kyIEIF/E59O471y
+        hhqqbiGQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxYyD-00048y-Kj; Mon, 20 Jul 2020 16:48:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE6D92070A;
-        Mon, 20 Jul 2020 16:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595263711;
-        bh=B32T7XX0RrcZDQHlnbjMiXi4HNK1V+2Ce4kqChrBAw4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0p95UMPsI+SLQ/px2SMeYee/6o+1tBfH4pxfbp4QSTo8wx2tls9KVU3kAT68AMC09
-         CmmEx+sV2rbPwiDZpbhinYv4OR/+Gfibkp5Ux7TonCoAawZS+Kx2J2lIAiHHQhGF1G
-         6vtnR8ik3H0zy8LWD2zqBPa8FjLZTwUoL7kA4ux8=
-Date:   Mon, 20 Jul 2020 19:48:27 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for v5.9] RDS: Replace HTTP links with HTTPS ones
-Message-ID: <20200720164827.GC1080481@unreal>
-References: <20200719155845.59947-1-grandmaster@al2klimov.de>
- <20200720045626.GF127306@unreal>
- <20200720075848.26bc3dfe@lwn.net>
- <20200720140716.GB1080481@unreal>
- <20200720083635.3e7880ce@lwn.net>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DFB43307A6B;
+        Mon, 20 Jul 2020 18:48:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CE8C723426BA2; Mon, 20 Jul 2020 18:48:50 +0200 (CEST)
+Date:   Mon, 20 Jul 2020 18:48:50 +0200
+From:   peterz@infradead.org
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
+Message-ID: <20200720164850.GF119549@hirez.programming.kicks-ass.net>
+References: <20200717044427.68747-1-ebiggers@kernel.org>
+ <20200718014204.GN5369@dread.disaster.area>
+ <20200718140811.GA1179836@rowland.harvard.edu>
+ <20200720013320.GP5369@dread.disaster.area>
+ <20200720145211.GC1228057@rowland.harvard.edu>
+ <20200720153911.GX12769@casper.infradead.org>
+ <20200720160433.GQ9247@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720083635.3e7880ce@lwn.net>
+In-Reply-To: <20200720160433.GQ9247@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 08:36:35AM -0600, Jonathan Corbet wrote:
-> On Mon, 20 Jul 2020 17:07:16 +0300
-> Leon Romanovsky <leon@kernel.org> wrote:
->
-> > > Do *you* want to review that megapatch?  The number of issues that have
-> > > come up make it clear that these patches do, indeed, need review...
-> >
-> > Can you point me to the issues?
-> > What can go wrong with such a simple replacement?
->
-> Some bits of the conversation:
->
->   https://lore.kernel.org/lkml/20200626110219.7ae21265@lwn.net/
->   https://lore.kernel.org/lkml/20200626110706.7b5d4a38@lwn.net/
->   https://lore.kernel.org/lkml/20200705142506.1f26a7e0@lwn.net/
->   https://lore.kernel.org/lkml/20200713114321.783f0ae6@lwn.net/
->   https://lore.kernel.org/lkml/202007081531.085533FC5@keescook/
->
-> etc.
+On Mon, Jul 20, 2020 at 09:04:34AM -0700, Paul E. McKenney wrote:
+> 2.	If we were to say "unlock" instead of "release", consistency
+> 	would demand that we also say "lock" instead of "acquire".
+> 	But "lock" is subtlely different than "acquire", and there is
+> 	a history of people requesting further divergence.
 
-After reading your links and especially this one.
-https://lore.kernel.org/lkml/20200713114321.783f0ae6@lwn.net/
-I don't understand why are we still seeing these patches?
+This, acquire/release are RCpc, while (with the exception of Power)
+LOCK/UNLOCK are RCsc.
 
-I gave to the author comments too, which were ignored.
-https://patchwork.kernel.org/patch/11644683/#23466547
+( Or did we settle on RCtso for our release/acquire order? I have vague
+memories of a long-ish thread, but seem to have forgotten the outcome,
+if any. )
 
-Thanks
-
->
-> jon
+Lots of subtlety and head-aches right about there. Anyway, it would be
+awesome if we can get Power into the RCsc locking camp :-)
