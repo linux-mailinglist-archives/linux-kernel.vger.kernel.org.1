@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E71225BB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34D7225BC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgGTJd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:33:58 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:58191 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727940AbgGTJd6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:33:58 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id xSBEjXfufNPeYxSBFjmpBm; Mon, 20 Jul 2020 11:33:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1595237635; bh=Oc0K8sxEqzjVn3DRenx9PPLPz8qOmAYt7tiqTMtQV/8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=ZOrgMAHK6VX7sSLWKh2lJ6Kpr6+aGjXNBtiBxze4tRsjcBhWimaw+Tl4tu3Pk8mCT
-         XXHNzLoeoFdZr0Ik3KWfSSMcNYkzHLTnw6dK5ISvvbXIdQijNTweujUTHhLv9Twy+u
-         5CKQAxiom4mt4Qv9ZDUQEVSySOGUeIfCAJauNn5ojzCrMUevQ0mXpeke+EVSCy1R8F
-         L424HpuRDsVe2c6K++fi+ZGZYMOuP5Yeoiwq1U2d2hXgT2BqT0cRz+i/K4kJrV+YRF
-         P4xFMEz2yhau0kiC8aY3ZfZHUaGFDQz2VU45Q1prGtn/JBucSII1xcBa4RWwMpZWs1
-         d3sot+j6T49PA==
-Subject: Re: [PATCH 4/4] media: docs: Depricate mfc frame skip control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Kyungmin Park <kyungmin.park@samsung.com>,
-        Kamil Debski <kamil@wypas.org>,
-        Jeongtae Park <jtp.park@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Maheshwar Ajja <majja@codeaurora.org>
-References: <20200705121128.5250-1-stanimir.varbanov@linaro.org>
- <20200705121128.5250-5-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <58ba8d2e-58a4-86bd-3eb1-668f9d743e6c@xs4all.nl>
-Date:   Mon, 20 Jul 2020 11:33:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200705121128.5250-5-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfLMczbqR7cwh/AUTIzSsEONhK6t0ca5X3CCS9RZt3DLrosrG+W2asUcuud2padTPmwP13Xbvdc06srwZ3WaqfK5sQHolUhq330f8vF4ulbkZzod3dcy0
- Ic3UQ8jcJHP6aRl2+P991m9vYKdZuz4lm5FYaI2oW4l+2j4YRorw2lTvkUs+QM7DvMb9BewXHAL9UUSvKpuZMNIcv+um36sdHWJiYxv0Yjc2TsLoXXVMy5lp
- H1zFW/IxTK//auY3zEJvUEYwNEPA1YE0tVcdqpLZHQbnpW017F+OMsrgutQtDAMg3bQlyKcc3acAYX2VBrrv/b3evDCSNRcgZN8JJohMdQKxc+jCjd0V+qhq
- bA2sGaJ7xfJ68npWwXD0E8Ei7nf4mA0003WLfD3XW+w4Up7dKh3ds+Z5JGxctTI9jXkJ9673VRMqnDAnJ//X+/6qgqDhf6n8Q52DTJqFHe8gWFeRoU0dxJe/
- 4sBeVp5Y2MwuXPRqlVBkAYO5yjo1vqypaRzONeSNl5NwQzDwdLo89jX1wl2P+ByNyOm8VAjsPTv8OuB0AKJqboklN1XVoLPAP5ZROpeebs3dDDOqgrE8Y537
- vgaNSKjb4SZp1z2z/hdzGNj5
+        id S1728267AbgGTJgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:36:25 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:20853 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728248AbgGTJgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 05:36:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595237783; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=cACEREbxrJ/DDWSn6xtrrfWGjDlLHFv8rEqkvGRBTw4=; b=ewFWwtCod0NQ+mbTf/JoMct1edPWlpUZwxQrP/eO7iqCkjp15o+VaKMux+Xr6adpEkhysevE
+ VkyW1Y0yYluqWWXXGyn0wl3cT3Gb5tTEBNoreqVZpvSiUwSc+ryABDcd6idkB2LxPAi3l+1f
+ emQJIjKeQwSJIs57DbemQpTYfIA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f1565970cb8533c3b7a52c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 09:36:23
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4E93C433A0; Mon, 20 Jul 2020 09:36:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from akashast-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C78CCC433C6;
+        Mon, 20 Jul 2020 09:36:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C78CCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
+From:   Akash Asthana <akashast@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        saipraka@codeaurora.org, msavaliy@codeaurora.org,
+        linux-arm-msm@vger.kernel.org,
+        Akash Asthana <akashast@codeaurora.org>
+Subject: [PATCH V2] soc: qcom: geni: Fix NULL pointer dereference
+Date:   Mon, 20 Jul 2020 15:06:02 +0530
+Message-Id: <1595237762-6776-1-git-send-email-akashast@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/07/2020 14:11, Stanimir Varbanov wrote:
-> Depricate mfc private frame skip mode control for new
+pdev struct doesn't exists for the devices whose status are disabled
+from DT node, in such cases NULL is returned from 'of_find_device_by_node'
+Later when we try to get drvdata from pdev struct NULL pointer dereference
+is triggered.
 
-Depricate -> Deprecate (same in the patch below).
+Add a NULL check for return values to fix the issue.
 
-> clients and use the standard one instead.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index a8b4c0b40747..c0760bfc54d4 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -2805,6 +2805,11 @@ MFC 5.1 Control IDs
->  ``V4L2_CID_MPEG_MFC51_VIDEO_FRAME_SKIP_MODE``
->      (enum)
->  
-> +    .. note::
-> +
-> +       This control is depricated. Use the standard one
+We were hitting this issue when one of QUP is disabled.
 
-s/one//
+Fixes: 048eb908a1f2 ("soc: qcom-geni-se: Add interconnect support to fix earlycon crash")
+Reported-by: Sai Prakash Ranjan <saipraka@codeaurora.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Akash Asthana <akashast@codeaurora.org>
+---
+Changes in V2:
+ - Change variable name 'wrapper_pdev' to 'pdev.
 
-> +       ``V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE`` instead.
+ drivers/soc/qcom/qcom-geni-se.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-s/instead/control instead/
-
-> +
->  enum v4l2_mpeg_mfc51_video_frame_skip_mode -
->      Indicates in what conditions the encoder should skip frames. If
->      encoding a frame would cause the encoded stream to be larger then a
-> 
+diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+index 355d503..996f20c 100644
+--- a/drivers/soc/qcom/qcom-geni-se.c
++++ b/drivers/soc/qcom/qcom-geni-se.c
+@@ -820,6 +820,7 @@ void geni_remove_earlycon_icc_vote(void)
+ 	struct geni_wrapper *wrapper;
+ 	struct device_node *parent;
+ 	struct device_node *child;
++	struct platform_device *pdev;
+ 
+ 	if (!earlycon_wrapper)
+ 		return;
+@@ -829,7 +830,12 @@ void geni_remove_earlycon_icc_vote(void)
+ 	for_each_child_of_node(parent, child) {
+ 		if (!of_device_is_compatible(child, "qcom,geni-se-qup"))
+ 			continue;
+-		wrapper = platform_get_drvdata(of_find_device_by_node(child));
++
++		pdev = of_find_device_by_node(child);
++		if (!pdev)
++			continue;
++
++		wrapper = platform_get_drvdata(pdev);
+ 		icc_put(wrapper->to_core.path);
+ 		wrapper->to_core.path = NULL;
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
