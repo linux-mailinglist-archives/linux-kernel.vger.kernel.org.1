@@ -2,1760 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5DA225AD9
+	by mail.lfdr.de (Postfix) with ESMTP id D36D2225ADA
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 11:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgGTJGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 05:06:50 -0400
-Received: from mail-eopbgr00049.outbound.protection.outlook.com ([40.107.0.49]:23200
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728197AbgGTJGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:06:48 -0400
+        id S1728219AbgGTJGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 05:06:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:48191 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727862AbgGTJGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 05:06:51 -0400
+IronPort-SDR: lp3OTVbpcctY0ViuNKVFGO7p2FCmKJwcn2YQZCGakpqJXTY8V0tauJEq5JAE5QwP89aSAZUXj8
+ zTjPI2oIqKXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9687"; a="168007382"
+X-IronPort-AV: E=Sophos;i="5.75,374,1589266800"; 
+   d="scan'208";a="168007382"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 02:06:48 -0700
+IronPort-SDR: e4E+b+2+mpO1Vuzu5qo0xyBI/wNpx3cDTkN5hB4n7AoNS8MIkLujmog84UrbS5N8+grr9JDuYV
+ EoFyhwKob4rg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,374,1589266800"; 
+   d="scan'208";a="301213268"
+Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
+  by orsmga002.jf.intel.com with ESMTP; 20 Jul 2020 02:06:47 -0700
+Received: from fmsmsx156.amr.corp.intel.com (10.18.116.74) by
+ FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 20 Jul 2020 02:06:47 -0700
+Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx156.amr.corp.intel.com (10.18.116.74) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 20 Jul 2020 02:06:46 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Mon, 20 Jul 2020 02:06:46 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QvyFvedB2cHeXHo9BrrP5fNeyuxCnqNxeT/xGiDWYN2t6ZYwtVzkMRs08maYQT++uxPFtDf6vEs2pBjIc/Wiga+IXaCMfQ+c32LdTy8HW4o7gTDwSUj1Bx5dgA2p1VFeqH2DBqLksU22ODAti47zVp4aADaGM/noh52sevQ37wjl58vP88Zmoy/yLVum1rY1gEzdq49GWnB+XT/PXRir0Orr2pbamU3il2d7lSU/KjE6VTNBcau5VjWJU85F4hYu6yOGbAePO8aPrgwqIqWWas2B/APKBhgk9IPmI0xB0S6GAbSbRnb9imFaFNbqB19yN5m1tOYpDyQDPBui3QfvSQ==
+ b=f3fWtnLKzx7aqkFP6l2qk7Elv5tJ9cx+nVQxye4y88HTUnNyLHk78hPBkrn+RUkF4NyOQy1mc1pu8EJNaaBp0BcRa3HbFC/tEIUUxyV0zuG4QF+u3xsHglGbnN1NsLoAc8jtJXBqdCjWwHIeuLdPVO2BrObGTT5sOjcij0V8NgWcNUJi22+mcAvY+N3CIFr6aP3uBObx4N7lhkq+p46vgRzXyxSFzhu+OIuvd4i3/HF4EZQHUFmnXCA9O7/uys/zaTFU+Y6q86D3D1dYjj7AR0uGGLghtW7uprZw5Sur52RTlcVFS+PcsKi8uPtSICcqheYLdbonQ0I0pjhLSRF62Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=70FkpXTFUFLEIo7NxHMMhGHIQ2LoJ0AcMpMaPf+ZMEQ=;
- b=ENpZXe9GTdgmKGAcZ9mPQIFV708FDJMoHOJ+Um+EOb5WcnF7Y1mYyxEW/2981cMKk0ynkNj1g7XjoVbkTkzEJX6nyxegeKAk5bcl9J3ozOTTND98+ygnU54vfj7ZZIq/y3+N/ZWS2dIjxa3JgrhoGVCmX1wEbMSJTJr4ptqBpLGSlH71Z7gxgVmszu526MjhspiWk1V/XOuhDHxA79jOeKK9t9hD1RrWGzurPnmuwMQbf9gIazzGHsZ77eBJAvkE4z88lUExc9TjHbMHr0rc8vgvvStFfevXHUSuKQ0G1hbfA7wRVeeb2WP8+h1c6eqnJY0eRw80acN0i0DFP9qbtA==
+ bh=VG5BSyW10Gpyzyqk/OpSNZMZ834H833RpY7ODfXUB1Y=;
+ b=InkRoPexDv2q2v5zuc5cDJ0lsBrRxJyV0+sppVR5X7zKP9nXo77K4SSEbfNXq+OgCDjJtx3gNsm88FmLBMcWotSEvptO0lGFek6kyRMrnBc2fQn+DrkmM9tSlD5gGSTvOsy8wMc1j2PeQDqRyYLQZBmoLeVGvxONh0l5aeCjs6aZxo/F2s+fXiUZhQSrbCQ6JBFfDXkOjUrk/ok3azABUjtICK8VyxFdJtdyx17jgp7tyuDoBZWvbIGC/YXRWuev//yubCftYMHyUi/erM/LQw2/oLLdys/DQERQ1TRTFNbWUNFQjZWVGAWl7BTqJnJ2R0VkDEdEX3VvHoQN8f2JLA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=70FkpXTFUFLEIo7NxHMMhGHIQ2LoJ0AcMpMaPf+ZMEQ=;
- b=V+Rcy607MKd28ThYeULUQaXB6iZUr92qxJ66P3nWUP6IpLLSmn60NSFH5isy1qZg4D88xzg/85m/gRpx2DUSLxNwMkphLAClP3oGau6Z8kln8KdoYmq10ElzFRU1vGnZXyUwBTSwVza7OyBiXX9YJ5S1tw45Xp2eYZwivdcRk7A=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM4PR0401MB2401.eurprd04.prod.outlook.com
- (2603:10a6:200:47::26) by AM0PR0402MB3762.eurprd04.prod.outlook.com
- (2603:10a6:208:3::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.23; Mon, 20 Jul
- 2020 09:06:27 +0000
-Received: from AM4PR0401MB2401.eurprd04.prod.outlook.com
- ([fe80::d0eb:f746:90e:44b3]) by AM4PR0401MB2401.eurprd04.prod.outlook.com
- ([fe80::d0eb:f746:90e:44b3%12]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 09:06:27 +0000
-From:   franck.lenormand@oss.nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
-Cc:     franck.lenormand@oss.nxp.com, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, aisheng.dong@nxp.com, abel.vesa@nxp.com,
-        Anson.Huang@nxp.com, linux@rempel-privat.de,
-        leonard.crestez@nxp.com, daniel.baluta@nxp.com,
-        qiangqing.zhang@nxp.com, peng.fan@nxp.com
-Subject: [PATCH 7/7] soc: imx8: Add the SC SECVIO driver
-Date:   Mon, 20 Jul 2020 11:06:17 +0200
-Message-Id: <1595235977-106241-8-git-send-email-franck.lenormand@oss.nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595235977-106241-1-git-send-email-franck.lenormand@oss.nxp.com>
-References: <1595235977-106241-1-git-send-email-franck.lenormand@oss.nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::28) To AM4PR0401MB2401.eurprd04.prod.outlook.com
- (2603:10a6:200:47::26)
+ bh=VG5BSyW10Gpyzyqk/OpSNZMZ834H833RpY7ODfXUB1Y=;
+ b=C2SYJyUNMLGCZ/bXx5gxQJSUNXgFHmNhP5jdyNdsMVXFgTTFYfgAtK3trIm/YEI1dAnzYL8+EHzkoN2d1v3/9C0Qkm4/rOf9QoG1gpDQhSFW/ysLyNp8zWbmtjY5XNXqFR9cEVMl+pCxcgSV2TNJ1SW5lecn8uX86El0KbkVkqI=
+Received: from DM5PR11MB1435.namprd11.prod.outlook.com (2603:10b6:4:7::18) by
+ DM5PR11MB1673.namprd11.prod.outlook.com (2603:10b6:4:c::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3195.25; Mon, 20 Jul 2020 09:06:43 +0000
+Received: from DM5PR11MB1435.namprd11.prod.outlook.com
+ ([fe80::9002:97a2:d8c0:8364]) by DM5PR11MB1435.namprd11.prod.outlook.com
+ ([fe80::9002:97a2:d8c0:8364%10]) with mapi id 15.20.3195.025; Mon, 20 Jul
+ 2020 09:06:43 +0000
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     Auger Eric <eric.auger@redhat.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "Wu, Hao" <hao.wu@intel.com>,
+        "stefanha@gmail.com" <stefanha@gmail.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 08/15] iommu: Pass domain to sva_unbind_gpasid()
+Thread-Topic: [PATCH v5 08/15] iommu: Pass domain to sva_unbind_gpasid()
+Thread-Index: AQHWWD2wpTv8jD9LM0Op13LFQ21toKkPFKAAgAEiVAA=
+Date:   Mon, 20 Jul 2020 09:06:43 +0000
+Message-ID: <DM5PR11MB14351DE64D6D3184AF9282ECC37B0@DM5PR11MB1435.namprd11.prod.outlook.com>
+References: <1594552870-55687-1-git-send-email-yi.l.liu@intel.com>
+ <1594552870-55687-9-git-send-email-yi.l.liu@intel.com>
+ <27ac7880-bdd3-2891-139e-b4a7cd18420b@redhat.com>
+In-Reply-To: <27ac7880-bdd3-2891-139e-b4a7cd18420b@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.200]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 811a8136-ae6c-4248-9737-08d82c8c3912
+x-ms-traffictypediagnostic: DM5PR11MB1673:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB16735363CEF09107B4FDF51AC37B0@DM5PR11MB1673.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nrvWsD+3ippcGZenjpGWQnpKM6xST5kFTw+JUPYuTVoJI0dUEkz8xoFdvubaNmZ7Vz4/I5siL7E7QvMGuqKIIODdm3X2wnbK4OVr4cCWo+l1MatOpIthb2RbuhtNH8DuXJVzS9KF8aLlqbfYKocBjWxzdHJYhz8RuFRYDgqg41aUGr2BfESNffhaxs/2l/gx1vPgsecco0Zxvn+26mqtWPFoL5C26FDcvrj5oIMqLjJjEG1f8JgxjlUtYOwiAi/jVXeVJLyvquHsn3tf7N5JOI2gkfewMY8X5gfdH768hQkq+fhy1hFBpB6ZHQOZKNPSqtlRlmyU2wS7F0Ji+e9QLqIDejmN6mM85reh0GZVLwKlzm2MvnIlOWwgZsTpP2qufTn+cXpzysWyXa9PEOeeKA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(86362001)(52536014)(8936002)(186003)(966005)(2906002)(6506007)(5660300002)(53546011)(7696005)(478600001)(8676002)(26005)(66946007)(7416002)(83380400001)(66476007)(316002)(110136005)(76116006)(71200400001)(9686003)(55016002)(54906003)(33656002)(66446008)(64756008)(4326008)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: KKeQPYpZIkHINnGdZ2XIVpIUhAjwQhoIJwmZ+mftD1Yoqvjx15pI5u1ZBhcPc8IK3TuOMIOywr9HhPmurD7Ed+9V9UjOrP/OCtnlSVxdtoiG7ZmlN4ZcB0hGJIwRBI6DE/taovNkx4BRgRifd9bSVFJPduxKUQ9UW4h0zQTozVWgiLkF1GUKhD1o9MIaUToFFWoilWIZwSiDPr3mkWDtW5D/b2E0t+N4K732IhLJBaUreGbFWBNnDiDULXXjJQpa4WrsZgJ4k4uI7RNF0mBvtH6yXh1SWOeZiZHOAo5tohKwavI9LFABZ4+doTznIfhtWFrxy69NKPw6jXEgTfzRqCmC7jzU+6asjB340j5gLe75Jv3vQs3nx8rJatwRqNLTpLcjziAEMMYpgD7Xkrn33lFNtBDkDPjNpq9LJuIZu8hDpzmgw2bqwm92KB1xVC7AffL9U7X7PR8yyv4Wipgbly/c3n/0JPlbtteBjLKVkeViYomRA7F/rtHU+r+zKE1V
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from SOPDPUATS05.ea.freescale.net (81.1.10.98) by AM0PR10CA0075.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3195.18 via Frontend Transport; Mon, 20 Jul 2020 09:06:25 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [81.1.10.98]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5a73bce4-9ca9-43a4-bc3a-08d82c8c2ee9
-X-MS-TrafficTypeDiagnostic: AM0PR0402MB3762:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR0402MB3762532F0CDE8BF6F4DA50F4D37B0@AM0PR0402MB3762.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:12;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G5vAgM5HATyV5Hj76bPv8UX2Iwc68fFEaD0Ucd8ZTqeo9y1BJKknyMsHDR6znToRxf9p9XEx2gW55mkWR7WHfXEC8iuJCBDuxLjct6HELcOQ0I5d4eYapeXNO1Ad4l5wSw4Lzz+szl3z1tvjyRgNs7rnFty0KVwHmLsa6Bl6Doy/naL2aLUVBz1bdvfdlh7s/4+Nk7rDN4/KODrBJuMRhuqJEu/+32y2Wl4kCBXUfHvtapUo1lHBCxdh2NnHXna65mNlP87rjdJBbtf6v38fs6l7DJl7p0aPpWH2s1GHfJDL5Zg29Ks6+nzKwoYo+vJh5p97GU4dtuGBNC7M7tynTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0401MB2401.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(346002)(39860400002)(376002)(6512007)(316002)(66476007)(66946007)(66556008)(2906002)(6666004)(9686003)(8676002)(30864003)(8936002)(86362001)(83380400001)(5660300002)(26005)(186003)(16526019)(2616005)(6506007)(956004)(6486002)(478600001)(52116002)(4326008)(579004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 7jyUNO+6838qpmz1Z/86rFcHO4rSQ4M23skobGfvkQpQdkFQw7ZqS25rLVT8Hm2Vue1/SZMm5J0wvuZ3yuFZvAeHMvnQZUQ365xmPJXG1kXar2oBPyzSpXxm2fOAB3M00RT+NgH41xoW+pyEG9VAag3woedX7iDvKp6mZS9DShpbdP6ZeBYEd/3G7gDuXWwRsX3agIjzGW3NKFprWyaxz8o0EsDPqqTQ+R9RVQzPOycO6OzKepE6Gc9QCkWw5tDKvt80KW49PNPXsPfXNAAU6oWqXQ0XoJnMAyXDwsBPnVzBfgQ7wwy6UBzHHyqjp5fU30BYBtiSrxAzNnXqrYCo9EpjjCf3dG59ZkYXv6HiAX9acd8wNJLBWzWYtlbunjLb9z0lm0uyyun8omU3QB5jryh1eyVxAbL73Dsq7p9inwu687Uu0kwR6oL06ufZTS9b39UDZIa+9YoWnWBOVw4ssf4WDBAWrV9QWb8TPKCaUCY=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a73bce4-9ca9-43a4-bc3a-08d82c8c2ee9
-X-MS-Exchange-CrossTenant-AuthSource: AM4PR0401MB2401.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 09:06:27.0367
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1435.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 811a8136-ae6c-4248-9737-08d82c8c3912
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2020 09:06:43.5569
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wcOPGT892aUsqLkhl7E32oCB7RHHjFfyORFGA40kaDiGbs93xRP+/0qZZc0oK5ysazbgZppR0r1XK+OpfSNlly8VPt86/i0UH/My4yNlq5E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3762
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fanzy1K7MFl7+sC6e5irp8kmuAGclqF6UnxfQyb4eAkgN+KRT+qZ/G33+TcWx8nVk4C7gby/cRL2InwN6tFXlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1673
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Franck LENORMAND <franck.lenormand@oss.nxp.com>
-
-The SNVS is a hardware component in the imx8 SoC. One of its
-function is to detect hardware attacks, in which case it creates
-a SECurity VIOlation.
-
-This patch adds the support for the reception of these secvio and
-report it to the audit framework.
-
-It also gives the possibility to perform custom processing when a
-secvio is detected.
-
-Signed-off-by: Franck LENORMAND <franck.lenormand@oss.nxp.com>
----
- drivers/soc/imx/Kconfig                     |  10 +
- drivers/soc/imx/Makefile                    |   1 +
- drivers/soc/imx/secvio/Kconfig              |  10 +
- drivers/soc/imx/secvio/Makefile             |   3 +
- drivers/soc/imx/secvio/imx-secvio-audit.c   |  39 ++
- drivers/soc/imx/secvio/imx-secvio-debugfs.c | 379 ++++++++++++
- drivers/soc/imx/secvio/imx-secvio-sc-int.h  |  83 +++
- drivers/soc/imx/secvio/imx-secvio-sc.c      | 873 ++++++++++++++++++++++++++++
- include/soc/imx/imx-secvio-sc.h             | 177 ++++++
- 9 files changed, 1575 insertions(+)
- create mode 100644 drivers/soc/imx/secvio/Kconfig
- create mode 100644 drivers/soc/imx/secvio/Makefile
- create mode 100644 drivers/soc/imx/secvio/imx-secvio-audit.c
- create mode 100644 drivers/soc/imx/secvio/imx-secvio-debugfs.c
- create mode 100644 drivers/soc/imx/secvio/imx-secvio-sc-int.h
- create mode 100644 drivers/soc/imx/secvio/imx-secvio-sc.c
- create mode 100644 include/soc/imx/imx-secvio-sc.h
-
-diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
-index d515d2c..4984be5 100644
---- a/drivers/soc/imx/Kconfig
-+++ b/drivers/soc/imx/Kconfig
-@@ -27,4 +27,14 @@ config SOC_IMX8M
- 	  support, it will provide the SoC info like SoC family,
- 	  ID and revision etc.
- 
-+config SECVIO_SC
-+        tristate "NXP SC secvio support"
-+        depends on IMX_SCU
-+        help
-+           If you say yes here you get support for the NXP SNVS security
-+           violation module. It includes the possibility to read information
-+           related to security violations and tampers. It also gives the
-+           possibility to register user callbacks when a security violation
-+           occurs.
-+
- endmenu
-diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
-index 4461432..d922bc6 100644
---- a/drivers/soc/imx/Makefile
-+++ b/drivers/soc/imx/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
- obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
- obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
- obj-$(CONFIG_IMX_SCU_SOC) += soc-imx-scu.o
-+obj-${CONFIG_SECVIO_SC} += secvio/
-diff --git a/drivers/soc/imx/secvio/Kconfig b/drivers/soc/imx/secvio/Kconfig
-new file mode 100644
-index 00000000..dcfaea5
---- /dev/null
-+++ b/drivers/soc/imx/secvio/Kconfig
-@@ -0,0 +1,10 @@
-+config SECVIO_SC
-+        tristate "NXP SC secvio support"
-+        depends on IMX_SCU
-+        help
-+           If you say yes here you get support for the NXP SNVS security
-+           violation module. It includes the possibility to read information
-+           related to security violations and tampers. It also gives the
-+           possibility to register user callbacks when a security violation
-+           occurs.
-+
-diff --git a/drivers/soc/imx/secvio/Makefile b/drivers/soc/imx/secvio/Makefile
-new file mode 100644
-index 00000000..d5a89ba
---- /dev/null
-+++ b/drivers/soc/imx/secvio/Makefile
-@@ -0,0 +1,3 @@
-+obj-y +=  imx-secvio-sc.o
-+obj-$(CONFIG_DEBUG_FS) += imx-secvio-debugfs.o
-+obj-$(CONFIG_AUDIT) += imx-secvio-audit.o
-diff --git a/drivers/soc/imx/secvio/imx-secvio-audit.c b/drivers/soc/imx/secvio/imx-secvio-audit.c
-new file mode 100644
-index 00000000..dc96e16
---- /dev/null
-+++ b/drivers/soc/imx/secvio/imx-secvio-audit.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2019-2020 NXP
-+ */
-+
-+#include <linux/audit.h>
-+
-+#include <soc/imx/imx-secvio-sc.h>
-+
-+/**
-+ * report_to_audit_notify() - Report secvio and tamper status to audit FW
-+ *
-+ * This function can be chained in a notifier list
-+ *
-+ * @nb: notifier block
-+ * @status: error code
-+ * @notif_info: Pointer on secvio_sc_notifier_info structure
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int report_to_audit_notify(struct notifier_block *nb, unsigned long status,
-+			   void *notif_info)
-+{
-+	struct audit_buffer *ab;
-+	struct secvio_sc_notifier_info *info = notif_info;
-+
-+	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_INTEGRITY_RULE);
-+	if (!ab)
-+		return -ENOMEM;
-+
-+	audit_log_format(ab, " hpsvs=0x%.08x lps=0x%.08x lptds=0x%.08x",
-+			 info->hpsvs, info->lps, info->lptds);
-+	audit_log_task_info(ab);
-+	audit_log_end(ab);
-+
-+	return 0;
-+}
-diff --git a/drivers/soc/imx/secvio/imx-secvio-debugfs.c b/drivers/soc/imx/secvio/imx-secvio-debugfs.c
-new file mode 100644
-index 00000000..6aa28a0
---- /dev/null
-+++ b/drivers/soc/imx/secvio/imx-secvio-debugfs.c
-@@ -0,0 +1,379 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2019-2020 NXP
-+ */
-+
-+/*
-+ * The module exposes 3 files in debugfs:
-+ *  - secvio/info:
-+ *      * Read: It returns the value of the fuses and SNVS registers which are
-+ *              readable and related to secvio and tampers
-+ *      * Write: A write of the format "<hex id> [<hex value 0> <hex value 1>
-+ *               <hex value 2> <hex value 3> <hex value 4>](<nb values>)"
-+ *               will write the SNVS register having the provided id with the
-+ *               values provided (cf SECO documentation)
-+ *  - secvio/enable: State of the IRQ
-+ *  - secvio/check: Check the state of the security violation and tampers
-+ *                  and calls notifier
-+ *  - secvio/clear: Clear the state of all secvio and tampers
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/debugfs.h>
-+#include <linux/uaccess.h>
-+#include <linux/nvmem-consumer.h>
-+
-+#include <linux/firmware/imx/svc/misc.h>
-+#include <linux/firmware/imx/svc/seco.h>
-+
-+#include <soc/imx/imx-secvio-sc.h>
-+#include "imx-secvio-sc-int.h"
-+
-+/**
-+ * fuse_reader() - Read a set of fuse
-+ *
-+ * @dev: secvio device
-+ * @id: offset of the fuse
-+ * @value: array of values read
-+ * @mul: number of fuse to read
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int fuse_reader(struct device *dev, u32 id, u32 *value, u8 mul)
-+{
-+	struct imx_secvio_sc_data *data = dev_get_drvdata(dev);
-+	u32 size_to_read = mul * sizeof(u32);
-+	int ret;
-+
-+	ret = nvmem_device_read(data->nvmem, id, size_to_read, value);
-+	if (ret < 0) {
-+		dev_err(data->dev, "Failed to read fuse %d: %d\n", id, ret);
-+		return ret;
-+	}
-+
-+	if (ret != size_to_read) {
-+		dev_err(data->dev, "Read only %d instead of %d\n", ret,
-+			size_to_read);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * snvs_reader() - Read a set of SNVS register
-+ *
-+ * @dev: secvio device
-+ * @id: offset of the register
-+ * @value: array of values read
-+ * @mul: number of registers to read
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int snvs_reader(struct device *dev, u32 id, u32 *value, u8 mul)
-+{
-+	int ret;
-+	u32 *v1, *v2, *v3, *v4, *v5;
-+
-+	v1 = NULL;
-+	v2 = NULL;
-+	v3 = NULL;
-+	v4 = NULL;
-+	v5 = NULL;
-+
-+	switch (mul) {
-+	case 5:
-+		v5 = &value[4];
-+		fallthrough;
-+	case 4:
-+		v4 = &value[3];
-+		fallthrough;
-+	case 3:
-+		v3 = &value[2];
-+		fallthrough;
-+	case 2:
-+		v2 = &value[1];
-+		fallthrough;
-+	case 1:
-+		v1 = &value[0];
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = call_secvio_config(dev, id, SECVIO_CONFIG_READ, v1, v2, v3, v4,
-+				 v5, mul);
-+	if (ret < 0)
-+		dev_err(dev, "Failed to read snvs reg %d: %d\n", id, ret);
-+
-+	return ret;
-+}
-+
-+/**
-+ * snvs_dgo_reader() - Read a set of DGO register
-+ *
-+ * @dev: secvio device
-+ * @id: offset of the register
-+ * @value: array of values read
-+ * @mul: number of registers to read
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int snvs_dgo_reader(struct device *dev, u32 id, u32 *value, u8 mul)
-+{
-+	struct imx_secvio_sc_data *data = dev_get_drvdata(dev);
-+	int ret;
-+
-+	/* We check that we only have 1 register to read */
-+	if (mul != 1)
-+		return -EINVAL;
-+
-+	ret = imx_sc_seco_secvio_dgo_config(data->ipc_handle, id,
-+					    SECVIO_CONFIG_READ, value);
-+	if (ret)
-+		dev_err(dev, "Failed to read snvs dgo reg %d: %d\n", id, ret);
-+
-+	return ret;
-+}
-+
-+static const struct imx_secvio_info_entry {
-+	int (*reader)(struct device *dev, u32 id, u32 *value, u8 mul);
-+	const char *type;
-+	const char *name;
-+	u32 id;
-+	u8 mul;
-+} gs_imx_secvio_info_list[] = {
-+	{fuse_reader, "fuse", "trim", 30, 1},
-+	{fuse_reader, "fuse", "trim2", 31, 1},
-+	{fuse_reader, "fuse", "ctrim1", 260, 1},
-+	{fuse_reader, "fuse", "ctrim2", 261, 1},
-+	{fuse_reader, "fuse", "ctrim3", 262, 1},
-+	{fuse_reader, "fuse", "ctrim4", 263, 1},
-+	{fuse_reader, "fuse", "OSC_CAP", 768, 1},
-+
-+	{snvs_reader, "snvs", "HPLR",    0x0, 1},
-+	{snvs_reader, "snvs", "LPLR",    0x34, 1},
-+	{snvs_reader, "snvs", "HPSICR",  0xc, 1},
-+	{snvs_reader, "snvs", "HPSVCR",  0x10, 1},
-+	{snvs_reader, "snvs", "HPSVS",   0x18, 1},
-+	{snvs_reader, "snvs", "LPSVC",   0x40, 1},
-+	{snvs_reader, "snvs", "LPTDC",   0x48, 2},
-+	{snvs_reader, "snvs", "LPSR",    0x4c, 1},
-+	{snvs_reader, "snvs", "LPTDS",   0xa4, 1},
-+	{snvs_reader, "snvs", "LPTGFC",  0x44, 3},
-+	{snvs_reader, "snvs", "LPATCTL", 0xe0, 1},
-+	{snvs_reader, "snvs", "LPATCLK", 0xe4, 1},
-+	{snvs_reader, "snvs", "LPATRC1", 0xe8, 2},
-+	{snvs_reader, "snvs", "LPMKC",   0x3c, 1},
-+	{snvs_reader, "snvs", "LPSMC",   0x5c, 2},
-+	{snvs_reader, "snvs", "LPPGD",   0x64, 1},
-+	{snvs_reader, "snvs", "HPVID",   0xf8, 2},
-+
-+	{snvs_dgo_reader, "dgo", "Offset",  0x0, 1},
-+	{snvs_dgo_reader, "dgo", "PUP/PD",  0x10, 1},
-+	{snvs_dgo_reader, "dgo", "Anatest", 0x20, 1},
-+	{snvs_dgo_reader, "dgo", "T trim",  0x30, 1},
-+	{snvs_dgo_reader, "dgo", "Misc",    0x40, 1},
-+	{snvs_dgo_reader, "dgo", "Vmon",    0x50, 1},
-+};
-+
-+struct imx_secvio_sc_info_seq_data {
-+	struct device *dev;
-+	const struct imx_secvio_info_entry *list;
-+	int size;
-+};
-+
-+/**
-+ * imx_secvio_sc_info_seq_start() - Start sequence
-+ *
-+ * @m: seq file
-+ * @pos: position in the sequence
-+ *
-+ * Return pointer on position
-+ */
-+static void *imx_secvio_sc_info_seq_start(struct seq_file *m, loff_t *pos)
-+{
-+	struct imx_secvio_sc_info_seq_data *data = m->private;
-+
-+	/* Check we are not out of bound */
-+	if (*pos >= data->size)
-+		return NULL;
-+
-+	return (void *)pos;
-+}
-+
-+/**
-+ * imx_secvio_sc_info_seq_next() - Iterate sequence
-+ *
-+ * @m: seq file
-+ * @v: pointer
-+ * @pos: position in the sequence
-+ *
-+ * Return pointer on position
-+ */
-+static void *imx_secvio_sc_info_seq_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	/* Increment the counter */
-+	++*pos;
-+
-+	/* call the start function which will check the index */
-+	return imx_secvio_sc_info_seq_start(m, pos);
-+}
-+
-+/**
-+ * imx_secvio_sc_info_seq_stop() - Stop sequence
-+ *
-+ * @m: seq file
-+ * @v: pointer
-+ */
-+static void imx_secvio_sc_info_seq_stop(struct seq_file *m, void *v)
-+{
-+}
-+
-+/**
-+ * imx_secvio_sc_info_seq_show() - Show the item in the sequence
-+ *
-+ * @m: seq file
-+ * @v: pointer
-+ * @pos: position in the sequence
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static int imx_secvio_sc_info_seq_show(struct seq_file *m, void *v)
-+{
-+	struct imx_secvio_sc_info_seq_data *data = m->private;
-+	const struct imx_secvio_info_entry *e;
-+	int ret;
-+	u32 vals[5];
-+	int idx;
-+
-+	idx = *(loff_t *)v;
-+	e = &data->list[idx];
-+
-+	/* Read the values */
-+	ret = e->reader(data->dev, e->id, (u32 *)&vals, e->mul);
-+	if (ret) {
-+		dev_err(data->dev, "Fail to read %s %s (idx %d)\n", e->type,
-+			e->name, e->id);
-+		return 0;
-+	}
-+
-+	seq_printf(m, "%5s/%-10s(%.3d):", e->type, e->name, e->id);
-+
-+	/* Loop over the values */
-+	for (idx = 0; idx < e->mul; idx++)
-+		seq_printf(m, " %.8x", vals[idx]);
-+
-+	seq_puts(m, "\n");
-+
-+	return 0;
-+}
-+
-+static const struct seq_operations imx_secvio_sc_info_seq_ops = {
-+	.start = imx_secvio_sc_info_seq_start,
-+	.next  = imx_secvio_sc_info_seq_next,
-+	.stop  = imx_secvio_sc_info_seq_stop,
-+	.show  = imx_secvio_sc_info_seq_show,
-+};
-+
-+/**
-+ * imx_secvio_sc_info_open() - Store node info for ioctl
-+ *
-+ * @inode: inode
-+ * @file: file used to perform the ioctl
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static int imx_secvio_sc_info_open(struct inode *inode, struct file *file)
-+{
-+	struct imx_secvio_sc_info_seq_data *data;
-+
-+	data = __seq_open_private(file, &imx_secvio_sc_info_seq_ops, sizeof(*data));
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->dev = inode->i_private;
-+	data->list = gs_imx_secvio_info_list;
-+	data->size = ARRAY_SIZE(gs_imx_secvio_info_list);
-+
-+	return 0;
-+}
-+
-+static const struct file_operations imx_secvio_sc_info_ops = {
-+	.owner = THIS_MODULE,
-+	.open = imx_secvio_sc_info_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = seq_release_private,
-+};
-+
-+/**
-+ * if_debugfs_remove_recursive() - Wrapper for debugfs_remove_recursive
-+ *
-+ * Can be used with devm
-+ *
-+ * @dentry: directory entry
-+ */
-+static void if_debugfs_remove_recursive(void *dentry)
-+{
-+	debugfs_remove_recursive(dentry);
-+}
-+
-+/**
-+ * imx_secvio_sc_debugfs() - Create the debugfs
-+ *
-+ * @dev: secvio device
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int imx_secvio_sc_debugfs(struct device *dev)
-+{
-+	struct imx_secvio_sc_data *data = dev_get_drvdata(dev);
-+	struct dentry *dir;
-+	int ret = 0;
-+
-+	/* Create a folder */
-+	dir = debugfs_create_dir(dev_name(dev), NULL);
-+	if (IS_ERR(dir)) {
-+		dev_err(dev, "Failed to create dfs dir\n");
-+		ret = PTR_ERR(dir);
-+		goto exit;
-+	}
-+	data->dfs = dir;
-+
-+	ret = devm_add_action(dev, if_debugfs_remove_recursive, data->dfs);
-+	if (ret) {
-+		dev_err(dev, "Failed to add managed action to disable IRQ\n");
-+		goto remove_fs;
-+	}
-+
-+	/* Create the file to read info and write to reg */
-+	dir = debugfs_create_file("info", 0x666, data->dfs, dev,
-+				  &imx_secvio_sc_info_ops);
-+	if (IS_ERR(dir)) {
-+		dev_err(dev, "Failed to add info to debugfs\n");
-+		ret = PTR_ERR(dir);
-+		goto exit;
-+	}
-+
-+	goto exit;
-+
-+remove_fs:
-+	debugfs_remove_recursive(data->dfs);
-+
-+exit:
-+	return ret;
-+}
-diff --git a/drivers/soc/imx/secvio/imx-secvio-sc-int.h b/drivers/soc/imx/secvio/imx-secvio-sc-int.h
-new file mode 100644
-index 00000000..5b0b209
---- /dev/null
-+++ b/drivers/soc/imx/secvio/imx-secvio-sc-int.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2019-2020 NXP
-+ */
-+
-+#ifndef SECVIO_SC_H
-+#define SECVIO_SC_H
-+
-+/* Includes */
-+#include <linux/kernel.h>
-+#include <linux/notifier.h>
-+#include <linux/semaphore.h>
-+#include <linux/nvmem-consumer.h>
-+#include <linux/miscdevice.h>
-+
-+/* Access for sc_seco_secvio_config API */
-+#define SECVIO_CONFIG_READ  0
-+#define SECVIO_CONFIG_WRITE 1
-+
-+/* Internal Structure */
-+struct imx_secvio_sc_data {
-+	struct device *dev;
-+
-+	struct imx_sc_ipc *ipc_handle;
-+
-+	struct notifier_block irq_nb;
-+	struct notifier_block report_nb;
-+	struct notifier_block audit_nb;
-+
-+	struct nvmem_device *nvmem;
-+
-+	struct miscdevice miscdev;
-+
-+#ifdef CONFIG_DEBUG_FS
-+	struct dentry *dfs;
-+#endif
-+
-+	u32 version;
-+};
-+
-+/* Function declarations */
-+extern
-+int call_secvio_config(struct device *dev, u8 id, u8 access, u32 *data0,
-+		       u32 *data1, u32 *data2, u32 *data3, u32 *data4, u8 size);
-+
-+extern
-+int int_imx_secvio_sc_get_state(struct device *dev,
-+				struct secvio_sc_notifier_info *info);
-+
-+extern
-+int int_imx_secvio_sc_clear_state(struct device *dev, u32 hpsvs, u32 lps,
-+				  u32 lptds);
-+
-+extern
-+int int_imx_secvio_sc_enable_irq(struct device *dev);
-+
-+extern
-+int int_imx_secvio_sc_disable_irq(struct device *dev);
-+
-+#ifdef CONFIG_DEBUG_FS
-+extern
-+int imx_secvio_sc_debugfs(struct device *dev);
-+#else
-+static inline
-+int imx_secvio_sc_debugfs(struct device *dev)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_DEBUG_FS */
-+
-+#ifdef CONFIG_AUDIT
-+int report_to_audit_notify(struct notifier_block *nb, unsigned long status,
-+			   void *notif_info);
-+#else /* CONFIG_AUDIT */
-+static inline
-+int report_to_audit_notify(struct notifier_block *nb, unsigned long status,
-+			   void *notif_info)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_AUDIT */
-+
-+#endif /* SECVIO_SC_H */
-diff --git a/drivers/soc/imx/secvio/imx-secvio-sc.c b/drivers/soc/imx/secvio/imx-secvio-sc.c
-new file mode 100644
-index 00000000..2e34df3
---- /dev/null
-+++ b/drivers/soc/imx/secvio/imx-secvio-sc.c
-@@ -0,0 +1,873 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2019-2020 NXP
-+ */
-+
-+/*
-+ * The SoC of the i.MX8 family contains a hardware block called SNVS
-+ * (Secure Non-Volatile Storage).
-+ *
-+ * The i.MX8 (QM/QXP/DXL) SoC contains the  (SNVS) block. This
-+ * block can detect specific hardware attacks. Due to the presence of the SECO,
-+ * this block can only be accessible using the SCFW API.
-+ *
-+ * This module interacts with the SCU which relays request to/from the SNVS block
-+ * to detect if security violation occurred.
-+ *
-+ * The module exports an API to add processing when a SV is detected:
-+ *  - register_imx_secvio_sc_notifier
-+ *  - unregister_imx_secvio_sc_notifier
-+ *  - imx_secvio_sc_check_state
-+ *  - int_imx_secvio_sc_clear_state
-+ *  - imx_secvio_sc_enable_irq
-+ *  - imx_secvio_sc_disable_irq
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/notifier.h>
-+#include <linux/module.h>
-+#include <linux/fs.h>
-+#include <linux/uaccess.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/nvmem-consumer.h>
-+#include <linux/miscdevice.h>
-+
-+#include <linux/firmware/imx/ipc.h>
-+#include <linux/firmware/imx/sci.h>
-+#include <linux/firmware/imx/svc/seco.h>
-+#include <linux/firmware/imx/svc/rm.h>
-+#include <dt-bindings/firmware/imx/rsrc.h>
-+
-+#include <soc/imx/imx-secvio-sc.h>
-+#include "imx-secvio-sc-int.h"
-+
-+/* Definitions */
-+
-+/* Reference on the driver_device */
-+static struct device *gs_imx_secvio_sc_dev;
-+
-+/* Register IDs for sc_seco_secvio_config API */
-+#define HPSVS_ID 0x18
-+#define LPS_ID 0x4c
-+#define LPTDS_ID 0xa4
-+#define HPVIDR_ID 0xf8
-+
-+#define SECO_MINOR_VERSION_SUPPORT_SECVIO_TAMPER 0x53
-+#define SECO_VERSION_MINOR_MASK GENMASK(15, 0)
-+
-+/* Notifier list for new CB */
-+static BLOCKING_NOTIFIER_HEAD(imx_secvio_sc_notifier_chain);
-+
-+/**
-+ * register_imx_secvio_sc_notifier() - Add function to secvio call chain
-+ *
-+ * @nb: notifier block of the function to add
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int register_imx_secvio_sc_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_register(&imx_secvio_sc_notifier_chain,
-+						nb);
-+}
-+EXPORT_SYMBOL(register_imx_secvio_sc_notifier);
-+
-+/**
-+ * unregister_imx_secvio_sc_notifier() - Remove function to secvio call chain
-+ *
-+ * @nb: notifier block of the function to add
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int unregister_imx_secvio_sc_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_unregister(&imx_secvio_sc_notifier_chain,
-+						  nb);
-+}
-+EXPORT_SYMBOL(unregister_imx_secvio_sc_notifier);
-+
-+/**
-+ * if_imx_scu_irq_register_notifier() - Wrapper for imx_scu_irq_register_notifier
-+ *
-+ * Can be used for devm actions
-+ *
-+ * @nb: notifier block of the function to add
-+ */
-+static void if_unregister_imx_secvio_sc_notifier(void *nb)
-+{
-+	unregister_imx_secvio_sc_notifier(nb);
-+}
-+
-+/**
-+ * imx_secvio_sc_notifier_call_chain() - Call secvio notifier chain
-+ *
-+ * @info: The structure containing the info to pass to notified functions
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static
-+int imx_secvio_sc_notifier_call_chain(struct secvio_sc_notifier_info *info)
-+{
-+	return blocking_notifier_call_chain(&imx_secvio_sc_notifier_chain, 0,
-+					    (void *)info);
-+}
-+
-+/**
-+ * int_imx_secvio_sc_get_state() - Get the state of secvio and tamper
-+ *
-+ * @dev: secvio device
-+ * @info: The structure to use to store the status
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int int_imx_secvio_sc_get_state(struct device *dev,
-+				struct secvio_sc_notifier_info *info)
-+{
-+	struct secvio_sc_notifier_info _info = {0};
-+	struct secvio_sc_notifier_info *p_info;
-+	int ret = 0, ret2 = 0;
-+
-+	p_info = info ? info : &_info;
-+
-+	/* Read secvio status */
-+	ret = call_secvio_config(dev, HPSVS_ID, SECVIO_CONFIG_READ,
-+				 &p_info->hpsvs, NULL, NULL, NULL, NULL, 1);
-+	if (ret) {
-+		ret2 = ret;
-+		dev_warn(dev, "Cannot read secvio status: %d\n", ret);
-+	}
-+	p_info->hpsvs &= HPSVS__ALL_SV__MASK;
-+
-+	/* Read tampers status */
-+	ret = call_secvio_config(dev, LPS_ID, SECVIO_CONFIG_READ,
-+				 &p_info->lps, NULL, NULL, NULL, NULL, 1);
-+	if (ret) {
-+		ret2 = ret;
-+		dev_warn(dev, "Cannot read tamper 1 status: %d\n", ret);
-+	}
-+	p_info->lps &= LPS__ALL_TP__MASK;
-+
-+	ret = call_secvio_config(dev, LPTDS_ID, SECVIO_CONFIG_READ,
-+				 &p_info->lptds, NULL, NULL, NULL, NULL, 1);
-+	if (ret) {
-+		ret2 = ret;
-+		dev_warn(dev, "Cannot read  tamper 2 status: %d\n", ret);
-+	}
-+	p_info->lptds &= LPTDS__ALL_TP__MASK;
-+
-+	dev_dbg(dev, "Status: %.8x, %.8x, %.8x\n", p_info->hpsvs,
-+		p_info->lps, p_info->lptds);
-+
-+	return ret2;
-+}
-+
-+/**
-+ * imx_secvio_sc_get_state() - Wrapper for int_imx_secvio_sc_get_state
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+inline int imx_secvio_sc_get_state(struct secvio_sc_notifier_info *info)
-+{
-+	if (!gs_imx_secvio_sc_dev)
-+		return -EOPNOTSUPP;
-+
-+	return int_imx_secvio_sc_get_state(gs_imx_secvio_sc_dev, info);
-+}
-+EXPORT_SYMBOL(imx_secvio_sc_get_state);
-+
-+/**
-+ * int_imx_secvio_sc_check_state() - Get the state and call chain of notifier
-+ * if there is a status
-+ *
-+ * @dev: secvio device
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int int_imx_secvio_sc_check_state(struct device *dev)
-+{
-+	struct secvio_sc_notifier_info info = {0};
-+	int ret = 0;
-+
-+	ret = int_imx_secvio_sc_get_state(dev, &info);
-+	if (ret) {
-+		dev_err(dev, "Failed to get secvio state\n");
-+		goto exit;
-+	}
-+
-+	/* Call chain of CB registered to this module if status detected */
-+	if (info.hpsvs || info.lps || info.lptds)
-+		if (imx_secvio_sc_notifier_call_chain(&info))
-+			dev_warn(dev,
-+				 "Issues when calling the notifier chain\n");
-+
-+exit:
-+	return ret;
-+}
-+
-+/**
-+ * imx_secvio_sc_check_state() - Wrapper for int_imx_secvio_sc_check_state
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+inline int imx_secvio_sc_check_state(void)
-+{
-+	if (!gs_imx_secvio_sc_dev)
-+		return -EOPNOTSUPP;
-+
-+	return int_imx_secvio_sc_check_state(gs_imx_secvio_sc_dev);
-+}
-+EXPORT_SYMBOL(imx_secvio_sc_check_state);
-+
-+/**
-+ * imx_secvio_sc_notify() - Process event from SCU
-+ *
-+ * If the event is secvio we check the state, then
-+ * re-enable the IRQ which has been disabled by SCU
-+ *
-+ * @nb: secvio device
-+ * @event: The id of the IRQ received in a group
-+ * @group: The group of the IRQ
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static int imx_secvio_sc_notify(struct notifier_block *nb,
-+				unsigned long event, void *group)
-+{
-+	struct imx_secvio_sc_data *data =
-+				container_of(nb, struct imx_secvio_sc_data,
-+					     irq_nb);
-+	struct device *dev = data->dev;
-+	int ret = 0;
-+
-+	/* Filter event for us */
-+	if (!((event & IMX_SC_IRQ_SECVIO) &&
-+	      (*(u8 *)group == IMX_SC_IRQ_GROUP_WAKE)))
-+		goto exit;
-+
-+	dev_warn(dev, "secvio security violation detected\n");
-+
-+	ret = int_imx_secvio_sc_check_state(dev);
-+
-+	/* Re-enable interrupt */
-+	ret = int_imx_secvio_sc_enable_irq(dev);
-+	if (ret)
-+		dev_err(dev, "Failed to enable IRQ\n");
-+
-+exit:
-+	return ret;
-+}
-+
-+/**
-+ * int_imx_secvio_sc_clear_state() - Clear secvio and tamper state
-+ *
-+ * @dev: secvio device
-+ * @hpsvs: high power security violation status to clear
-+ * @lps: low power status to clear
-+ * @lptds: low power tamper detector status to clear
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int int_imx_secvio_sc_clear_state(struct device *dev, u32 hpsvs, u32 lps,
-+				  u32 lptds)
-+{
-+	int ret = 0;
-+
-+	ret = call_secvio_config(dev, HPSVS_ID, SECVIO_CONFIG_WRITE, &hpsvs,
-+				 NULL, NULL, NULL, NULL, 1);
-+	if (ret) {
-+		dev_err(dev, "Cannot clear secvio status: %d\n", ret);
-+		goto exit;
-+	}
-+
-+	ret = call_secvio_config(dev, LPS_ID, SECVIO_CONFIG_WRITE, &lps, NULL,
-+				 NULL, NULL, NULL, 1);
-+	if (ret) {
-+		dev_err(dev, "Cannot clear tamper 1 status: %d\n", ret);
-+		goto exit;
-+	}
-+
-+	ret = call_secvio_config(dev, LPTDS_ID, SECVIO_CONFIG_WRITE, &lptds,
-+				 NULL, NULL, NULL, NULL, 1);
-+	if (ret) {
-+		dev_err(dev, "Cannot clear tamper 2 status: %d\n", ret);
-+		goto exit;
-+	}
-+
-+exit:
-+	return ret;
-+}
-+
-+/**
-+ * imx_secvio_sc_clear_state() - Wrapper for imx_secvio_sc_clear_state
-+ *
-+ * @hpsvs: high power security violation status to clear
-+ * @lps: low power status to clear
-+ * @lptds: low power tamper detector status to clear
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+inline int imx_secvio_sc_clear_state(u32 hpsvs, u32 lps, u32 lptds)
-+{
-+	if (!gs_imx_secvio_sc_dev)
-+		return -EOPNOTSUPP;
-+
-+	return int_imx_secvio_sc_clear_state(gs_imx_secvio_sc_dev, hpsvs, lps,
-+					     lptds);
-+}
-+EXPORT_SYMBOL(imx_secvio_sc_clear_state);
-+
-+/**
-+ * report_to_user_notify() - Print to console the status
-+ *
-+ * @nb: notifier block
-+ * @status: error code
-+ * @notif_info: Pointer on structure containing the status of the secvio and
-+ * tampers
-+ *
-+ * Return:
-+ * 0 - OK
-+ */
-+static int report_to_user_notify(struct notifier_block *nb,
-+				 unsigned long status, void *notif_info)
-+{
-+	struct secvio_sc_notifier_info *info = notif_info;
-+	struct imx_secvio_sc_data *data =
-+				container_of(nb, struct imx_secvio_sc_data,
-+					     report_nb);
-+	struct device *dev = data->dev;
-+
-+	/* Information about the security violation */
-+	if (info->hpsvs & HPSVS__LP_SEC_VIO__MASK)
-+		dev_info(dev, "SNVS secvio: LPSV\n");
-+	if (info->hpsvs & HPSVS__SW_LPSV__MASK)
-+		dev_info(dev, "SNVS secvio: SW LPSV\n");
-+	if (info->hpsvs & HPSVS__SW_FSV__MASK)
-+		dev_info(dev, "SNVS secvio: SW FSV\n");
-+	if (info->hpsvs & HPSVS__SW_SV__MASK)
-+		dev_info(dev, "SNVS secvio: SW SV\n");
-+	if (info->hpsvs & HPSVS__SV5__MASK)
-+		dev_info(dev, "SNVS secvio: SV 5\n");
-+	if (info->hpsvs & HPSVS__SV4__MASK)
-+		dev_info(dev, "SNVS secvio: SV 4\n");
-+	if (info->hpsvs & HPSVS__SV3__MASK)
-+		dev_info(dev, "SNVS secvio: SV 3\n");
-+	if (info->hpsvs & HPSVS__SV2__MASK)
-+		dev_info(dev, "SNVS secvio: SV 2\n");
-+	if (info->hpsvs & HPSVS__SV1__MASK)
-+		dev_info(dev, "SNVS secvio: SV 1\n");
-+	if (info->hpsvs & HPSVS__SV0__MASK)
-+		dev_info(dev, "SNVS secvio: SV 0\n");
-+
-+	/* Information about the tampers */
-+	if (info->lps & LPS__ESVD__MASK)
-+		dev_info(dev, "SNVS tamper: External SV\n");
-+	if (info->lps & LPS__ET2D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 2\n");
-+	if (info->lps & LPS__ET1D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 1\n");
-+	if (info->lps & LPS__WMT2D__MASK)
-+		dev_info(dev, "SNVS tamper: Wire Mesh 2\n");
-+	if (info->lps & LPS__WMT1D__MASK)
-+		dev_info(dev, "SNVS tamper: Wire Mesh 1\n");
-+	if (info->lps & LPS__VTD__MASK)
-+		dev_info(dev, "SNVS tamper: Voltage\n");
-+	if (info->lps & LPS__TTD__MASK)
-+		dev_info(dev, "SNVS tamper: Temperature\n");
-+	if (info->lps & LPS__CTD__MASK)
-+		dev_info(dev, "SNVS tamper: Clock\n");
-+	if (info->lps & LPS__PGD__MASK)
-+		dev_info(dev, "SNVS tamper: Power Glitch\n");
-+	if (info->lps & LPS__MCR__MASK)
-+		dev_info(dev, "SNVS tamper: Monotonic Counter rollover\n");
-+	if (info->lps & LPS__SRTCR__MASK)
-+		dev_info(dev, "SNVS tamper: Secure RTC rollover\n");
-+	if (info->lps & LPS__LPTA__MASK)
-+		dev_info(dev, "SNVS tamper: Time alarm\n");
-+
-+	if (info->lptds & LPTDS__ET10D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 10\n");
-+	if (info->lptds & LPTDS__ET9D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 9\n");
-+	if (info->lptds & LPTDS__ET8D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 8\n");
-+	if (info->lptds & LPTDS__ET7D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 7\n");
-+	if (info->lptds & LPTDS__ET6D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 6\n");
-+	if (info->lptds & LPTDS__ET5D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 5\n");
-+	if (info->lptds & LPTDS__ET4D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 4\n");
-+	if (info->lptds & LPTDS__ET3D__MASK)
-+		dev_info(dev, "SNVS tamper: Tamper 3\n");
-+
-+	return 0;
-+}
-+
-+/**
-+ * call_secvio_config() - Wrapper for imx_sc_seco_secvio_config()
-+ *
-+ * @dev: secvio device
-+ * @id: ID of the register, ie the offset of the first register of the set
-+ * @access: Write (1) or Read (0) the registers
-+ * @data0: Data for the first register
-+ * @data1: Data for the second register
-+ * @data2: Data for the third register
-+ * @data3: Data for the fourth register
-+ * @data4: Data for the fifth register
-+ * @size: Number of register to configure
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int call_secvio_config(struct device *dev, u8 id, u8 access, u32 *data0,
-+		       u32 *data1, u32 *data2, u32 *data3, u32 *data4, u8 size)
-+{
-+	int ret = 0;
-+	struct imx_secvio_sc_data *data;
-+
-+	data = dev_get_drvdata(dev);
-+
-+	ret = imx_sc_seco_secvio_config(data->ipc_handle, id, access, data0,
-+					data1, data2, data3, data4, size);
-+	if (ret)
-+		dev_err(dev, "Fail %s secvio config %d",
-+			((access) ? "write" : "read"), ret);
-+
-+	return ret;
-+}
-+
-+/**
-+ * int_imx_secvio_sc_enable_irq() - Enable the secvio IRQ in SCU
-+ *
-+ * @dev: secvio device
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int int_imx_secvio_sc_enable_irq(struct device *dev)
-+{
-+	int ret = 0, ret2;
-+	u32 irq_status;
-+	struct imx_secvio_sc_data *data;
-+
-+	data = dev_get_drvdata(dev);
-+
-+	/* Enable the IRQ */
-+	ret = imx_scu_irq_group_enable(IMX_SC_IRQ_GROUP_WAKE, IMX_SC_IRQ_SECVIO,
-+				       true);
-+	if (ret) {
-+		dev_err(dev, "Cannot enable SCU IRQ: %d\n", ret);
-+		goto exit;
-+	}
-+
-+	/* Enable interrupt */
-+	ret = imx_sc_seco_secvio_enable(data->ipc_handle);
-+	if (ret) {
-+		dev_err(dev, "Cannot enable SNVS irq: %d\n", ret);
-+		goto exit;
-+	};
-+
-+	/* Unmask interrupt */
-+	ret = imx_scu_irq_get_status(IMX_SC_IRQ_GROUP_WAKE, &irq_status);
-+	if (ret) {
-+		dev_err(dev, "Cannot unmask irq: %d\n", ret);
-+		goto exit;
-+	};
-+
-+exit:
-+	if (ret) {
-+		ret2 = int_imx_secvio_sc_disable_irq(dev);
-+		if (ret2)
-+			dev_warn(dev, "Failed to disable the IRQ\n");
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * int_imx_secvio_sc_disable_irq() - Disable secvio IRQ
-+ *
-+ * @dev: secvio device
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+int int_imx_secvio_sc_disable_irq(struct device *dev)
-+{
-+	int ret = 0;
-+	struct imx_secvio_sc_data *data;
-+
-+	data = dev_get_drvdata(dev);
-+
-+	/* Disable the IRQ */
-+	ret = imx_scu_irq_group_enable(IMX_SC_IRQ_GROUP_WAKE, IMX_SC_IRQ_SECVIO,
-+				       false);
-+	if (ret) {
-+		dev_err(dev, "Cannot disable SCU IRQ: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * if_imx_secvio_sc_disable_irq() - Wrapper for int_imx_secvio_sc_disable_irq
-+ *
-+ * Can be used with devm
-+ *
-+ * @dev: secvio device
-+ */
-+static void if_imx_secvio_sc_disable_irq(void *dev)
-+{
-+	int_imx_secvio_sc_disable_irq(dev);
-+}
-+
-+/**
-+ * imx_secvio_sc_open() - Store node info for ioctl
-+ *
-+ * @node: inode
-+ * @file: file used to perform the ioctl
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static int imx_secvio_sc_open(struct inode *node, struct file *filp)
-+{
-+	filp->private_data = node->i_private;
-+
-+	return 0;
-+}
-+
-+/**
-+ * imx_secvio_sc_ioctl() - IOCTL handler for the driver
-+ *
-+ * @file: file used to perform the ioctl
-+ * @cmd: command to perform
-+ * @arg: Pointer on structure with info for the command
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static long imx_secvio_sc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	struct device *dev = file->private_data;
-+	struct secvio_sc_notifier_info info;
-+	int ret;
-+
-+	switch (cmd) {
-+	case IMX_SECVIO_SC_GET_STATE:
-+		ret = int_imx_secvio_sc_get_state(dev, &info);
-+		if (ret) {
-+			dev_err(dev, "Fail to get state\n");
-+			goto exit;
-+		}
-+
-+		ret = copy_to_user((void *)arg, &info, sizeof(info));
-+		if (ret) {
-+			dev_err(dev, "Fail to copy info to user\n");
-+			ret = -EFAULT;
-+			goto exit;
-+		}
-+		break;
-+	case IMX_SECVIO_SC_CHECK_STATE:
-+		ret = int_imx_secvio_sc_check_state(dev);
-+		if (ret) {
-+			dev_err(dev, "Fail to check state\n");
-+			goto exit;
-+		}
-+		break;
-+	case IMX_SECVIO_SC_CLEAR_STATE:
-+		ret = copy_from_user(&info, (void *)arg, sizeof(info));
-+		if (ret) {
-+			dev_err(dev, "Fail to copy info from user\n");
-+			ret = -EFAULT;
-+			goto exit;
-+		}
-+
-+		ret = int_imx_secvio_sc_clear_state(dev, info.hpsvs, info.lps,
-+						    info.lptds);
-+		if (ret) {
-+			dev_err(dev, "Fail to clear state\n");
-+			goto exit;
-+		}
-+		break;
-+	default:
-+		ret = -ENOIOCTLCMD;
-+	}
-+
-+exit:
-+	return ret;
-+}
-+
-+const static struct file_operations imx_secvio_sc_fops = {
-+	.owner = THIS_MODULE,
-+	.open = imx_secvio_sc_open,
-+	.unlocked_ioctl = imx_secvio_sc_ioctl,
-+};
-+
-+static void if_misc_deregister(void *miscdevice)
-+{
-+	misc_deregister(miscdevice);
-+}
-+
-+static void reset_global_dev(void *dev)
-+{
-+	gs_imx_secvio_sc_dev = NULL;
-+}
-+
-+/**
-+ * imx_secvio_sc_setup() - Configure the driver
-+ *
-+ * @dev: secvio device
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static int imx_secvio_sc_setup(struct device *dev)
-+{
-+	struct imx_secvio_sc_data *data;
-+	u32 seco_version = 0;
-+	bool own_secvio;
-+	u32 irq_status;
-+	int ret = 0;
-+
-+	if (!devres_open_group(dev, NULL, GFP_KERNEL)) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	/* Allocate private data */
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		dev_err(dev, "Failed to allocate mem for data\n");
-+		goto clean;
-+	}
-+
-+	data->dev = dev;
-+
-+	dev_set_drvdata(dev, data);
-+
-+	data->nvmem = devm_nvmem_device_get(dev, NULL);
-+	if (IS_ERR(data->nvmem)) {
-+		ret = PTR_ERR(data->nvmem);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to retrieve nvmem\n");
-+
-+		goto clean;
-+	}
-+
-+	/* Get a handle */
-+	ret = imx_scu_get_handle(&data->ipc_handle);
-+	if (ret) {
-+		dev_err(dev, "cannot get handle to scu: %d\n", ret);
-+		goto clean;
-+	};
-+
-+	/* Check the version of the SECO */
-+	ret = imx_sc_seco_build_info(data->ipc_handle, &seco_version, NULL);
-+	if (ret) {
-+		dev_err(dev, "Failed to get seco version\n");
-+		goto clean;
-+	}
-+
-+	if ((seco_version & SECO_VERSION_MINOR_MASK) <
-+	     SECO_MINOR_VERSION_SUPPORT_SECVIO_TAMPER) {
-+		dev_err(dev, "SECO version %.8x doesn't support all secvio\n",
-+			seco_version);
-+		ret = -EOPNOTSUPP;
-+		goto clean;
-+	}
-+
-+	/* Init debug FS */
-+	ret = imx_secvio_sc_debugfs(dev);
-+	if (ret) {
-+		dev_err(dev, "Failed to set debugfs\n");
-+		goto clean;
-+	}
-+
-+	/* Check we own the SECVIO */
-+	ret = imx_sc_rm_is_resource_owned(data->ipc_handle, IMX_SC_R_SECVIO);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to retrieve secvio ownership\n");
-+		goto clean;
-+	}
-+
-+	own_secvio = ret > 0;
-+	if (!own_secvio) {
-+		dev_err(dev, "Secvio resource is not owned\n");
-+		ret = -EPERM;
-+		goto clean;
-+	}
-+
-+	/* Check IRQ exists and enable it */
-+	ret = imx_scu_irq_get_status(IMX_SC_IRQ_GROUP_WAKE, &irq_status);
-+	if (ret) {
-+		dev_err(dev, "Cannot get IRQ state: %d\n", ret);
-+		goto clean;
-+	}
-+
-+	ret = int_imx_secvio_sc_enable_irq(dev);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable IRQ\n");
-+		goto clean;
-+	}
-+
-+	ret = devm_add_action_or_reset(dev, if_imx_secvio_sc_disable_irq, dev);
-+	if (ret) {
-+		dev_err(dev, "Failed to add managed action to disable IRQ\n");
-+		goto clean;
-+	}
-+
-+	/* Register the notifier for IRQ from SNVS */
-+	data->irq_nb.notifier_call = imx_secvio_sc_notify;
-+	ret = imx_scu_irq_register_notifier(&data->irq_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to register IRQ notification handler\n");
-+		goto clean;
-+	}
-+
-+	ret = devm_add_action_or_reset(dev, if_unregister_imx_secvio_sc_notifier,
-+				       &data->irq_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to add action to remove irq notify\n");
-+		goto clean;
-+	}
-+
-+	/* Register the notification for reporting to user */
-+	data->report_nb.notifier_call = report_to_user_notify;
-+	ret = register_imx_secvio_sc_notifier(&data->report_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to register report notify handler\n");
-+		goto clean;
-+	}
-+
-+	ret = devm_add_action_or_reset(dev, if_unregister_imx_secvio_sc_notifier,
-+				       &data->report_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to add action to remove report notify\n");
-+		goto clean;
-+	}
-+
-+	/* Register the notification to report to audit FW */
-+	data->audit_nb.notifier_call = report_to_audit_notify;
-+	ret = register_imx_secvio_sc_notifier(&data->audit_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to register report audit handler\n");
-+		goto clean;
-+	}
-+
-+	ret = devm_add_action(dev, if_unregister_imx_secvio_sc_notifier,
-+			      &data->audit_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to add action to remove audit notif\n");
-+		goto clean;
-+	}
-+
-+	/* Register misc device for IOCTL */
-+	data->miscdev.name = devm_kstrdup(dev, "secvio-sc", GFP_KERNEL);
-+	data->miscdev.minor = MISC_DYNAMIC_MINOR;
-+	data->miscdev.fops = &imx_secvio_sc_fops;
-+	data->miscdev.parent = dev;
-+	ret = misc_register(&data->miscdev);
-+	if (ret) {
-+		dev_err(dev, "failed to register misc device\n");
-+		goto exit;
-+	}
-+
-+	ret = devm_add_action_or_reset(dev, if_misc_deregister, &data->miscdev);
-+	if (ret) {
-+		dev_err(dev, "Failed to add action to unregister miscdev\n");
-+		goto clean;
-+	}
-+
-+	gs_imx_secvio_sc_dev = dev;
-+	ret = devm_add_action_or_reset(dev, reset_global_dev, dev);
-+	if (ret) {
-+		dev_err(dev, "Failed to add action to disable global dev\n");
-+		goto clean;
-+	}
-+
-+	/* Process current state of the secvio and tampers */
-+	int_imx_secvio_sc_check_state(dev);
-+
-+	devres_remove_group(dev, NULL);
-+
-+	goto exit;
-+
-+clean:
-+	devres_release_group(dev, NULL);
-+
-+exit:
-+	return ret;
-+}
-+
-+/**
-+ * imx_secvio_sc_probe() - Probe the driver
-+ *
-+ * @pdev: platform device
-+ *
-+ * Return:
-+ * 0 - OK
-+ * < 0 - error.
-+ */
-+static int imx_secvio_sc_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct device *dev = &pdev->dev;
-+
-+	ret = imx_secvio_sc_setup(dev);
-+	if (ret && ret != -EPROBE_DEFER)
-+		dev_err(dev, "Failed to setup\n");
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id imx_secvio_sc_dt_ids[] = {
-+	{ .compatible = "fsl,imx-sc-secvio", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_secvio_sc_dt_ids);
-+
-+static struct platform_driver imx_secvio_sc_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name	= "imx-secvio-sc",
-+		.of_match_table = imx_secvio_sc_dt_ids,
-+	},
-+	.probe		= imx_secvio_sc_probe,
-+};
-+module_platform_driver(imx_secvio_sc_driver);
-+
-+MODULE_AUTHOR("Franck LENORMAND <franck.lenormand@nxp.com>");
-+MODULE_DESCRIPTION("NXP i.MX driver to handle SNVS secvio irq sent by SCFW");
-+MODULE_LICENSE("GPL");
-diff --git a/include/soc/imx/imx-secvio-sc.h b/include/soc/imx/imx-secvio-sc.h
-new file mode 100644
-index 00000000..a26e2ff
---- /dev/null
-+++ b/include/soc/imx/imx-secvio-sc.h
-@@ -0,0 +1,177 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2019-2020 NXP
-+ */
-+
-+#ifndef _MISC_IMX_SECVIO_SC_H_
-+#define _MISC_IMX_SECVIO_SC_H_
-+
-+#include <linux/kernel.h>
-+#include <linux/notifier.h>
-+
-+/* Bitmask of the security violation status bit in the HPSVS register */
-+#define HPSVS__LP_SEC_VIO__MASK BIT(31)
-+#define HPSVS__SW_LPSV__MASK    BIT(15)
-+#define HPSVS__SW_FSV__MASK     BIT(14)
-+#define HPSVS__SW_SV__MASK      BIT(13)
-+#define HPSVS__SV5__MASK        BIT(5)
-+#define HPSVS__SV4__MASK        BIT(4)
-+#define HPSVS__SV3__MASK        BIT(3)
-+#define HPSVS__SV2__MASK        BIT(2)
-+#define HPSVS__SV1__MASK        BIT(1)
-+#define HPSVS__SV0__MASK        BIT(0)
-+
-+/* Bitmask of all security violation status bit in the HPSVS register */
-+#define HPSVS__ALL_SV__MASK (HPSVS__LP_SEC_VIO__MASK | \
-+			     HPSVS__SW_LPSV__MASK | \
-+			     HPSVS__SW_FSV__MASK | \
-+			     HPSVS__SW_SV__MASK | \
-+			     HPSVS__SV5__MASK | \
-+			     HPSVS__SV4__MASK | \
-+			     HPSVS__SV3__MASK | \
-+			     HPSVS__SV2__MASK | \
-+			     HPSVS__SV1__MASK | \
-+			     HPSVS__SV0__MASK)
-+
-+/*
-+ * Bitmask of the security violation and tampers status bit in the LPS register
-+ */
-+#define LPS__ESVD__MASK  BIT(16)
-+#define LPS__ET2D__MASK  BIT(10)
-+#define LPS__ET1D__MASK  BIT(9)
-+#define LPS__WMT2D__MASK BIT(8)
-+#define LPS__WMT1D__MASK BIT(7)
-+#define LPS__VTD__MASK   BIT(6)
-+#define LPS__TTD__MASK   BIT(5)
-+#define LPS__CTD__MASK   BIT(4)
-+#define LPS__PGD__MASK   BIT(3)
-+#define LPS__MCR__MASK   BIT(2)
-+#define LPS__SRTCR__MASK BIT(1)
-+#define LPS__LPTA__MASK  BIT(0)
-+
-+/*
-+ * Bitmask of all security violation and tampers status bit in the LPS register
-+ */
-+#define LPS__ALL_TP__MASK (LPS__ESVD__MASK | \
-+			   LPS__ET2D__MASK | \
-+			   LPS__ET1D__MASK | \
-+			   LPS__WMT2D__MASK | \
-+			   LPS__WMT1D__MASK | \
-+			   LPS__VTD__MASK | \
-+			   LPS__TTD__MASK | \
-+			   LPS__CTD__MASK | \
-+			   LPS__PGD__MASK | \
-+			   LPS__MCR__MASK | \
-+			   LPS__SRTCR__MASK | \
-+			   LPS__LPTA__MASK)
-+
-+/*
-+ * Bitmask of the security violation and tampers status bit in the LPTDS
-+ * register
-+ */
-+#define LPTDS__ET10D__MASK  BIT(7)
-+#define LPTDS__ET9D__MASK   BIT(6)
-+#define LPTDS__ET8D__MASK   BIT(5)
-+#define LPTDS__ET7D__MASK   BIT(4)
-+#define LPTDS__ET6D__MASK   BIT(3)
-+#define LPTDS__ET5D__MASK   BIT(2)
-+#define LPTDS__ET4D__MASK   BIT(1)
-+#define LPTDS__ET3D__MASK   BIT(0)
-+
-+/*
-+ * Bitmask of all security violation and tampers status bit in the LPTDS
-+ * register
-+ */
-+#define LPTDS__ALL_TP__MASK (LPTDS__ET10D__MASK | \
-+			     LPTDS__ET9D__MASK | \
-+			     LPTDS__ET8D__MASK | \
-+			     LPTDS__ET7D__MASK | \
-+			     LPTDS__ET6D__MASK | \
-+			     LPTDS__ET5D__MASK | \
-+			     LPTDS__ET4D__MASK | \
-+			     LPTDS__ET3D__MASK)
-+
-+/**
-+ * struct secvio_sc_notifier_info - Information about the status of the SNVS
-+ * @hpsvs:   status from register HPSVS
-+ * @lps: status from register LPS
-+ * @lptds: status from register LPTDS
-+ */
-+struct secvio_sc_notifier_info {
-+	u32 hpsvs;
-+	u32 lps;
-+	u32 lptds;
-+};
-+
-+/**
-+ * register_imx_secvio_sc_notifier() - Register a notifier
-+ *
-+ * @nb: The notifier block structure
-+ *
-+ * Register a function to notify to the imx-secvio-sc module. The function
-+ * will be notified when a check of the state of the SNVS happens: called by
-+ * a user or triggered by an interruption form the SNVS.
-+ *
-+ * The struct secvio_sc_notifier_info is passed as data to the notifier.
-+ *
-+ * Return: 0 in case of success
-+ */
-+int register_imx_secvio_sc_notifier(struct notifier_block *nb);
-+
-+/**
-+ * unregister_imx_secvio_sc_notifier() - Unregister a notifier
-+ *
-+ * @nb: The notifier block structure
-+ *
-+ * Return: 0 in case of success
-+ */
-+int unregister_imx_secvio_sc_notifier(struct notifier_block *nb);
-+
-+/**
-+ * imx_secvio_sc_get_state() - Get the state of the SNVS
-+ *
-+ * @info: The structure containing the state of the SNVS
-+ *
-+ * Return: 0 in case of success
-+ */
-+int imx_secvio_sc_get_state(struct secvio_sc_notifier_info *info);
-+
-+/**
-+ * imx_secvio_sc_check_state() - Check the state of the SNVS
-+ *
-+ * If a security violation or a tamper is detected, the list of notifier
-+ * (registered using register_imx_secvio_sc_notifier() ) will be called
-+ *
-+ * Return: 0 in case of success
-+ */
-+int imx_secvio_sc_check_state(void);
-+
-+/**
-+ * imx_secvio_sc_clear_state() - Clear the state of the SNVS
-+ *
-+ * @hpsvs: Value to write to HPSVS register
-+ * @lps:   Value to write to LPS register
-+ * @lptds: Value to write to LPTDSregister
-+ *
-+ * The function will write the value provided to the corresponding register
-+ * which will clear the status of the bits set.
-+ *
-+ * Return: 0 in case of success
-+ */
-+int imx_secvio_sc_clear_state(u32 hpsvs, u32 lps, u32 lptds);
-+
-+/* Commands of the ioctl interface */
-+enum ioctl_cmd_t {
-+	GET_STATE,
-+	CHECK_STATE,
-+	CLEAR_STATE,
-+};
-+
-+/* Definition for the ioctl interface */
-+#define IMX_SECVIO_SC_GET_STATE   _IOR('S', GET_STATE, \
-+				       struct secvio_sc_notifier_info)
-+#define IMX_SECVIO_SC_CHECK_STATE _IO('S', CHECK_STATE)
-+#define IMX_SECVIO_SC_CLEAR_STATE _IOW('S', CLEAR_STATE, \
-+				       struct secvio_sc_notifier_info)
-+
-+#endif /* _MISC_IMX_SECVIO_SC_H_ */
--- 
-2.7.4
-
+SGkgRXJpYywNCg0KPiBGcm9tOiBBdWdlciBFcmljIDxlcmljLmF1Z2VyQHJlZGhhdC5jb20+DQo+
+IFNlbnQ6IFN1bmRheSwgSnVseSAxOSwgMjAyMCAxMTozOCBQTQ0KPiANCj4gWWksDQo+IA0KPiBP
+biA3LzEyLzIwIDE6MjEgUE0sIExpdSBZaSBMIHdyb3RlOg0KPiA+IEZyb206IFlpIFN1biA8eWku
+eS5zdW5AaW50ZWwuY29tPg0KPiA+DQo+ID4gQ3VycmVudCBpbnRlcmZhY2UgaXMgZ29vZCBlbm91
+Z2ggZm9yIFNWQSB2aXJ0dWFsaXphdGlvbiBvbiBhbiBhc3NpZ25lZA0KPiA+IHBoeXNpY2FsIFBD
+SSBkZXZpY2UsIGJ1dCB3aGVuIGl0IGNvbWVzIHRvIG1lZGlhdGVkIGRldmljZXMsIGEgcGh5c2lj
+YWwNCj4gPiBkZXZpY2UgbWF5IGF0dGFjaGVkIHdpdGggbXVsdGlwbGUgYXV4LWRvbWFpbnMuIEFs
+c28sIGZvciBndWVzdCB1bmJpbmQsDQo+ID4gdGhlIFBBU0lEIHRvIGJlIHVuYmluZCBzaG91bGQg
+YmUgYWxsb2NhdGVkIHRvIHRoZSBWTS4gVGhpcyBjaGVjaw0KPiA+IHJlcXVpcmVzIHRvIGtub3cg
+dGhlIGlvYXNpZF9zZXQgd2hpY2ggaXMgYXNzb2NpYXRlZCB3aXRoIHRoZSBkb21haW4uDQo+ID4N
+Cj4gPiBTbyB0aGlzIGludGVyZmFjZSBuZWVkcyB0byBwYXNzIGluIGRvbWFpbiBpbmZvLiBUaGVu
+IHRoZSBpb21tdSBkcml2ZXINCj4gPiBpcyBhYmxlIHRvIGtub3cgd2hpY2ggZG9tYWluIHdpbGwg
+YmUgdXNlZCBmb3IgdGhlIDJuZCBzdGFnZQ0KPiA+IHRyYW5zbGF0aW9uIG9mIHRoZSBuZXN0aW5n
+IG1vZGUgYW5kIGFsc28gYmUgYWJsZSB0byBkbyBQQVNJRCBvd25lcnNoaXANCj4gPiBjaGVjay4g
+VGhpcyBwYXRjaCBwYXNzZXMgQGRvbWFpbiBwZXIgdGhlIGFib3ZlIHJlYXNvbi4NCj4gPg0KPiA+
+IENjOiBLZXZpbiBUaWFuIDxrZXZpbi50aWFuQGludGVsLmNvbT4NCj4gPiBDQzogSmFjb2IgUGFu
+IDxqYWNvYi5qdW4ucGFuQGxpbnV4LmludGVsLmNvbT4NCj4gPiBDYzogQWxleCBXaWxsaWFtc29u
+IDxhbGV4LndpbGxpYW1zb25AcmVkaGF0LmNvbT4NCj4gPiBDYzogRXJpYyBBdWdlciA8ZXJpYy5h
+dWdlckByZWRoYXQuY29tPg0KPiA+IENjOiBKZWFuLVBoaWxpcHBlIEJydWNrZXIgPGplYW4tcGhp
+bGlwcGVAbGluYXJvLm9yZz4NCj4gPiBDYzogSm9lcmcgUm9lZGVsIDxqb3JvQDhieXRlcy5vcmc+
+DQo+ID4gQ2M6IEx1IEJhb2x1IDxiYW9sdS5sdUBsaW51eC5pbnRlbC5jb20+DQo+ID4gU2lnbmVk
+LW9mZi1ieTogWWkgU3VuIDx5aS55LnN1bkBpbnRlbC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTog
+TGl1IFlpIEwgPHlpLmwubGl1QGludGVsLmNvbT4NCj4gPiAtLS0NCj4gPiB2MiAtPiB2MzoNCj4g
+PiAqKSBwYXNzIGluIGRvbWFpbiBpbmZvIG9ubHkNCj4gPiAqKSB1c2UgaW9hc2lkX3QgZm9yIHBh
+c2lkIGluc3RlYWQgb2YgaW50IHR5cGUNCj4gPg0KPiA+IHYxIC0+IHYyOg0KPiA+ICopIGFkZGVk
+IGluIHYyLg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2lvbW11L2ludGVsL3N2bS5jICAgfCAzICsr
+LQ0KPiA+ICBkcml2ZXJzL2lvbW11L2lvbW11LmMgICAgICAgfCAyICstDQo+ID4gIGluY2x1ZGUv
+bGludXgvaW50ZWwtaW9tbXUuaCB8IDMgKystDQo+ID4gIGluY2x1ZGUvbGludXgvaW9tbXUuaCAg
+ICAgICB8IDMgKystDQo+ID4gIDQgZmlsZXMgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCA0IGRl
+bGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9tbXUvaW50ZWwvc3Zt
+LmMgYi9kcml2ZXJzL2lvbW11L2ludGVsL3N2bS5jDQo+ID4gaW5kZXggYjlhOWM1NS4uZDJjMGUx
+YSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lvbW11L2ludGVsL3N2bS5jDQo+ID4gKysrIGIv
+ZHJpdmVycy9pb21tdS9pbnRlbC9zdm0uYw0KPiA+IEBAIC00MzIsNyArNDMyLDggQEAgaW50IGlu
+dGVsX3N2bV9iaW5kX2dwYXNpZChzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21haW4sDQo+IHN0cnVj
+dCBkZXZpY2UgKmRldiwNCj4gPiAgCXJldHVybiByZXQ7DQo+ID4gIH0NCj4gPg0KPiA+IC1pbnQg
+aW50ZWxfc3ZtX3VuYmluZF9ncGFzaWQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQgcGFzaWQpDQo+
+ID4gK2ludCBpbnRlbF9zdm1fdW5iaW5kX2dwYXNpZChzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21h
+aW4sDQo+ID4gKwkJCSAgICBzdHJ1Y3QgZGV2aWNlICpkZXYsIGlvYXNpZF90IHBhc2lkKQ0KPiBp
+bnQgLT4gaW9hc2lkX3QgcHJvdG8gY2hhbmdlIGlzIG5vdCBkZXNjcmliZWQgaW4gdGhlIGNvbW1p
+dCBtZXNzYWdlLA0KDQpvb3BzLCB5ZXMuIGJ0dy4gSSBub3RpY2VkIHRoZXJlIGlzIGFub3RoZXIg
+dGhyZWFkIHdoaWNoIGlzIGdvaW5nIHRvIHVzZQ0KdTMyIGZvciBwYXNpZC4gcGVyaGFwcyBJIG5l
+ZWQgdG8gZHJvcCBzdWNoIGNoYW5nZS4NCg0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgt
+aW9tbXUvMTU5NDY4NDA4Ny02MTE4NC0yLWdpdC1zZW5kLWVtYWlsLWZlbmdodWEueXVAaW50ZWwu
+Y29tLyNaMzBkcml2ZXJzOmlvbW11OmlvbW11LmMNCg0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgaW50
+ZWxfaW9tbXUgKmlvbW11ID0gaW50ZWxfc3ZtX2RldmljZV90b19pb21tdShkZXYpOw0KPiA+ICAJ
+c3RydWN0IGludGVsX3N2bV9kZXYgKnNkZXY7DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9t
+bXUvaW9tbXUuYyBiL2RyaXZlcnMvaW9tbXUvaW9tbXUuYyBpbmRleA0KPiA+IDc5MTAyNDkuLmQz
+ZTU1NGMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9pb21tdS9pb21tdS5jDQo+ID4gKysrIGIv
+ZHJpdmVycy9pb21tdS9pb21tdS5jDQo+ID4gQEAgLTIxNTEsNyArMjE1MSw3IEBAIGludCBfX2lv
+bW11X3N2YV91bmJpbmRfZ3Bhc2lkKHN0cnVjdCBpb21tdV9kb21haW4NCj4gKmRvbWFpbiwgc3Ry
+dWN0IGRldmljZSAqZGV2LA0KPiA+ICAJaWYgKHVubGlrZWx5KCFkb21haW4tPm9wcy0+c3ZhX3Vu
+YmluZF9ncGFzaWQpKQ0KPiA+ICAJCXJldHVybiAtRU5PREVWOw0KPiA+DQo+ID4gLQlyZXR1cm4g
+ZG9tYWluLT5vcHMtPnN2YV91bmJpbmRfZ3Bhc2lkKGRldiwgZGF0YS0+aHBhc2lkKTsNCj4gPiAr
+CXJldHVybiBkb21haW4tPm9wcy0+c3ZhX3VuYmluZF9ncGFzaWQoZG9tYWluLCBkZXYsIGRhdGEt
+PmhwYXNpZCk7DQo+ID4gIH0NCj4gPiAgRVhQT1JUX1NZTUJPTF9HUEwoX19pb21tdV9zdmFfdW5i
+aW5kX2dwYXNpZCk7DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9pbnRlbC1p
+b21tdS5oIGIvaW5jbHVkZS9saW51eC9pbnRlbC1pb21tdS5oDQo+ID4gaW5kZXggMGQwYWIzMi4u
+MThmMjkyZSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2ludGVsLWlvbW11LmgNCj4g
+PiArKysgYi9pbmNsdWRlL2xpbnV4L2ludGVsLWlvbW11LmgNCj4gPiBAQCAtNzM4LDcgKzczOCw4
+IEBAIGV4dGVybiBpbnQgaW50ZWxfc3ZtX2VuYWJsZV9wcnEoc3RydWN0IGludGVsX2lvbW11DQo+
+ID4gKmlvbW11KTsgIGV4dGVybiBpbnQgaW50ZWxfc3ZtX2ZpbmlzaF9wcnEoc3RydWN0IGludGVs
+X2lvbW11ICppb21tdSk7DQo+ID4gaW50IGludGVsX3N2bV9iaW5kX2dwYXNpZChzdHJ1Y3QgaW9t
+bXVfZG9tYWluICpkb21haW4sIHN0cnVjdCBkZXZpY2UgKmRldiwNCj4gPiAgCQkJICBzdHJ1Y3Qg
+aW9tbXVfZ3Bhc2lkX2JpbmRfZGF0YSAqZGF0YSk7IC1pbnQNCj4gPiBpbnRlbF9zdm1fdW5iaW5k
+X2dwYXNpZChzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBwYXNpZCk7DQo+ID4gK2ludCBpbnRlbF9z
+dm1fdW5iaW5kX2dwYXNpZChzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21haW4sDQo+ID4gKwkJCSAg
+ICBzdHJ1Y3QgZGV2aWNlICpkZXYsIGlvYXNpZF90IHBhc2lkKTsNCj4gPiAgc3RydWN0IGlvbW11
+X3N2YSAqaW50ZWxfc3ZtX2JpbmQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgbW1fc3RydWN0
+ICptbSwNCj4gPiAgCQkJCSB2b2lkICpkcnZkYXRhKTsNCj4gPiAgdm9pZCBpbnRlbF9zdm1fdW5i
+aW5kKHN0cnVjdCBpb21tdV9zdmEgKmhhbmRsZSk7IGRpZmYgLS1naXQNCj4gPiBhL2luY2x1ZGUv
+bGludXgvaW9tbXUuaCBiL2luY2x1ZGUvbGludXgvaW9tbXUuaCBpbmRleCBlODRhMWQ1Li5jYTVl
+ZGQ4DQo+ID4gMTAwNjQ0DQo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9pb21tdS5oDQo+ID4gKysr
+IGIvaW5jbHVkZS9saW51eC9pb21tdS5oDQo+ID4gQEAgLTMwMyw3ICszMDMsOCBAQCBzdHJ1Y3Qg
+aW9tbXVfb3BzIHsNCj4gPiAgCWludCAoKnN2YV9iaW5kX2dwYXNpZCkoc3RydWN0IGlvbW11X2Rv
+bWFpbiAqZG9tYWluLA0KPiA+ICAJCQlzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBpb21tdV9n
+cGFzaWRfYmluZF9kYXRhICpkYXRhKTsNCj4gPg0KPiA+IC0JaW50ICgqc3ZhX3VuYmluZF9ncGFz
+aWQpKHN0cnVjdCBkZXZpY2UgKmRldiwgaW50IHBhc2lkKTsNCj4gPiArCWludCAoKnN2YV91bmJp
+bmRfZ3Bhc2lkKShzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21haW4sDQo+ID4gKwkJCQkgc3RydWN0
+IGRldmljZSAqZGV2LCBpb2FzaWRfdCBwYXNpZCk7DQo+ID4NCj4gPiAgCWludCAoKmRlZl9kb21h
+aW5fdHlwZSkoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gPg0KPiA+DQo+IEJlc2lkZXMNCj4gUmV2
+aWV3ZWQtYnk6IEVyaWMgQXVnZXIgPGVyaWMuYXVnZXJAcmVkaGF0LmNvbT4NCj4NCg0KdGhhbmtz
+Lg0KDQpSZWdhcmRzLA0KWWkgTGl1DQoNCj4gRXJpYw0KDQo=
