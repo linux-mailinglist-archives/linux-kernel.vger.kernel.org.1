@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B765226EDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C57226EE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730922AbgGTTSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:18:08 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:45842 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729093AbgGTTSH (ORCPT
+        id S1730981AbgGTTS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:18:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30117 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730944AbgGTTS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:18:07 -0400
-Received: by mail-io1-f65.google.com with SMTP id e64so18796720iof.12;
-        Mon, 20 Jul 2020 12:18:07 -0700 (PDT)
+        Mon, 20 Jul 2020 15:18:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595272735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=1Kbu8ZJB+PbpYpnvxeXN5DGnvBoImp+SwBun1XbwpDw=;
+        b=e0F2J7/dBWRF2ANA5jdbc3z5Pg+kkbBwr6HeWdkdtKCutJPjedNzSH3TyJ2WfqYRVrucgD
+        bThkCTzQ548BQZNFPmQd8hCbE1j3VK90oWcXBTtaFqJEYDdeLpXAL21ElII4O58GOQ1OV7
+        H9X3wIUCnjqfP17rffq89Exhw9CtoRc=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-MWnT-1tGO46ypihVECORuQ-1; Mon, 20 Jul 2020 15:18:53 -0400
+X-MC-Unique: MWnT-1tGO46ypihVECORuQ-1
+Received: by mail-qk1-f199.google.com with SMTP id 124so12090094qko.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 12:18:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uv9DwJeqFVU3ixKGtQQTS9+FOIa16rZ9Ojp6k1PsA9k=;
-        b=Uv9wkHXLT9izjlBoI1LYkZRU7zGNpt/BeIJLXTS41+I3pRckyhv5sBHFh/KkMjm9oR
-         Ppkkv3Kw8qMHsIShCUTDG9Ar8od7WovwZXwB0BMtNh78Pnt/c4e6aRrXF4HvBrgIvyFj
-         tb3VwMfrIZ6/XUNLBJJdRZyAFnL8uA0OaD0pD+BhayWNhOlye2Wkd299kVeaoBpYv/a3
-         yyeYjXU7JhJdFlBe1zvU8zEFgf+UNkyt9tWQ78CXqMGZ2LdFiYZQU6rJihQo546aUrUg
-         mLIv3/4ysYVPFwj/4P84szuhqvhhikX85glhyqDYG1FNkMYXxun8boGv8CbdCNZTfBJG
-         /Zzw==
-X-Gm-Message-State: AOAM533b38ao5Z0IrMEtAgps1MzpKKMpsOsqFtxkX9gGP04/6Ken433S
-        QKumx/6iFQ66u8FQPxF8JR80TRYiJw==
-X-Google-Smtp-Source: ABdhPJzZ1vqvkCvQlbnANMQkRpMdXUHvSUgwd4hRCkvF0VWDDV/3eh547Y6ph5RTvSFlzRUciVYNdA==
-X-Received: by 2002:a6b:5813:: with SMTP id m19mr24164940iob.29.1595272686659;
-        Mon, 20 Jul 2020 12:18:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id x5sm201740iol.36.2020.07.20.12.18.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1Kbu8ZJB+PbpYpnvxeXN5DGnvBoImp+SwBun1XbwpDw=;
+        b=Ls+UhNN52gX4RKFuxHVNi8Oum9ZGudchAdOAeW+R3AOhlV0Q/rETNTZ3wJSj0173fB
+         8FeK8fyAOysMdxRdwaBWtEdT/wpABDsLXBUtwfTvKbyPHnfwmodeYV+v8rqZoyPJvM0n
+         H2x15oklbFHitE6NivDDfTkUjSqPTGYj46ZpkWjk8bYrUX6faAGN1DffjsuxseDejCwM
+         95Fos2rQ2DZAyo4kYbfY33+AOH968wXhe+TevH35nnt8fGn8cZMzt+uo0vY/WppLu0D7
+         r9GAiF/hHSavhr5FEpVqik50fAp4+Evd4+efXAEwAO1JJ/4Aa9v1MgkWH0mVY68HL/EU
+         fMfQ==
+X-Gm-Message-State: AOAM530BJu5IAxZ13oYla25LM/CgsIOnH3CymzaqEvnj1NJ/Ry0NImt4
+        1zeV7s/bFLS8b40+6OQ4Kl5Sm6TRcDRn5om761sgDRLy9FTkjtU+tgE5BqEFaO1BRUiNrM0DE4C
+        D6zem4gicl9Scv4YO27Xrwd+l
+X-Received: by 2002:ac8:bc2:: with SMTP id p2mr26252059qti.374.1595272733342;
+        Mon, 20 Jul 2020 12:18:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnHhkZMNBQS0nyRzKMd1uLYdyrRKd2rgZ6H9zo8r0jm3gmVaJyLQcNPC2s6t9n52ICM5SvqQ==
+X-Received: by 2002:ac8:bc2:: with SMTP id p2mr26252034qti.374.1595272733050;
+        Mon, 20 Jul 2020 12:18:53 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c80sm335957qkg.72.2020.07.20.12.18.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 12:18:05 -0700 (PDT)
-Received: (nullmailer pid 2847072 invoked by uid 1000);
-        Mon, 20 Jul 2020 19:18:04 -0000
-Date:   Mon, 20 Jul 2020 13:18:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kathiravan T <kathirav@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
-        lgirdwood@gmail.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, broonie@kernel.org, sricharan@codeaurora.org,
-        sivaprak@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org
-Subject: Re: [PATCH V3 3/4] dt-bindings: soc: qcom: convert the SMD-RPM
- document to YAML schema
-Message-ID: <20200720191804.GA2846983@bogus>
-References: <1595225543-12127-1-git-send-email-kathirav@codeaurora.org>
- <1595225543-12127-4-git-send-email-kathirav@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595225543-12127-4-git-send-email-kathirav@codeaurora.org>
+        Mon, 20 Jul 2020 12:18:52 -0700 (PDT)
+From:   trix@redhat.com
+To:     b.zolnierkie@samsung.com, jhubbard@nvidia.com, sam@ravnborg.org,
+        daniel.vetter@ffwll.ch, gustavo@embeddedor.com, arnd@arndb.de,
+        jani.nikula@intel.com
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] video: fbdev: pvr2fb: initialize variables
+Date:   Mon, 20 Jul 2020 12:18:45 -0700
+Message-Id: <20200720191845.20115-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 11:42:22 +0530, Kathiravan T wrote:
-> Convert the qcom,smd-rpm.txt document to YAML schema
-> 
-> Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
-> ---
->  .../devicetree/bindings/soc/qcom/qcom,smd-rpm.txt  | 65 ----------------
->  .../devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml | 87 ++++++++++++++++++++++
->  2 files changed, 87 insertions(+), 65 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
-> 
+From: Tom Rix <trix@redhat.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+clang static analysis reports this repesentative error
+
+pvr2fb.c:1049:2: warning: 1st function call argument
+  is an uninitialized value [core.CallAndMessage]
+        if (*cable_arg)
+        ^~~~~~~~~~~~~~~
+
+Problem is that cable_arg depends on the input loop to
+set the cable_arg[0].  If it does not, then some random
+value from the stack is used.
+
+A similar problem exists for output_arg.
+
+So initialize cable_arg and output_arg.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/video/fbdev/pvr2fb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/video/fbdev/pvr2fb.c b/drivers/video/fbdev/pvr2fb.c
+index 2d9f69b93392..f4add36cb5f4 100644
+--- a/drivers/video/fbdev/pvr2fb.c
++++ b/drivers/video/fbdev/pvr2fb.c
+@@ -1028,6 +1028,8 @@ static int __init pvr2fb_setup(char *options)
+ 	if (!options || !*options)
+ 		return 0;
+ 
++	cable_arg[0] = output_arg[0] = 0;
++
+ 	while ((this_opt = strsep(&options, ","))) {
+ 		if (!*this_opt)
+ 			continue;
+-- 
+2.18.1
+
