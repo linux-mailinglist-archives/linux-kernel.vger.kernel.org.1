@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD8122694E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DA52268C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732400AbgGTQAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33054 "EHLO mail.kernel.org"
+        id S2388605AbgGTQUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:20:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731769AbgGTQAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:00:11 -0400
+        id S2387690AbgGTQKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:10:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B0FE20773;
-        Mon, 20 Jul 2020 16:00:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00E652064B;
+        Mon, 20 Jul 2020 16:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260810;
-        bh=RqVU8Df+lOK7unML23BC5+Sc36ZeTBM8k96AayuSAis=;
+        s=default; t=1595261439;
+        bh=81C3VjzhW5ZmEN+yM0OFhoBByB8E8wfop5z0GRFfSX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jL+KYAHfu3BZbYGK/6S7g8EZGNqSTQ3A4/cY/aS9janiiy1545qEH/KRj7Wt2SGUp
-         j9J4mlCORNSR/IA7CC0RSnsKdbBbSf8kqLPFyAGYxs9QxA9ArMVTGedzpKXKFrnxbm
-         AwVPJHT7SBVxtfh5qOM6SWMnPcJ0oka5vwX4juT8=
+        b=nS8mHhfMpZXhu2TUp7vSrsHhue3+lFwiMfh6jFtBgojWRxy9oy5zG2SkRXIwtEPGF
+         f8ge98wkS5pSmPWVMb2oMElgLJEuy4F4LB5jLPM2Dq0jQP0NKF87IwGQo6DopRxrfL
+         Tb5NJTiIJyn7Wglc7lzL/oan18TEASWzcBZCbIKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 105/215] spi: spi-sun6i: sun6i_spi_transfer_one(): fix setting of clock rate
-Date:   Mon, 20 Jul 2020 17:36:27 +0200
-Message-Id: <20200720152825.204287142@linuxfoundation.org>
+        stable@vger.kernel.org, Kevin Buettner <kevinb@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dave Airlie <airlied@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.7 117/244] copy_xstate_to_kernel: Fix typo which caused GDB regression
+Date:   Mon, 20 Jul 2020 17:36:28 +0200
+Message-Id: <20200720152831.404472124@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Kevin Buettner <kevinb@redhat.com>
 
-[ Upstream commit ed7815db70d17b1741883f2da8e1d80bc2efe517 ]
+commit 5714ee50bb4375bd586858ad800b1d9772847452 upstream.
 
-A SPI transfer defines the _maximum_ speed of the SPI transfer. However the
-driver doesn't take into account that the clock divider is always rounded down
-(due to integer arithmetics). This results in a too high clock rate for the SPI
-transfer.
+This fixes a regression encountered while running the
+gdb.base/corefile.exp test in GDB's test suite.
 
-E.g.: with a mclk_rate of 24 MHz and a SPI transfer speed of 10 MHz, the
-original code calculates a reg of "0", which results in a effective divider of
-"2" and a 12 MHz clock for the SPI transfer.
+In my testing, the typo prevented the sw_reserved field of struct
+fxregs_state from being output to the kernel XSAVES area.  Thus the
+correct mask corresponding to XCR0 was not present in the core file for
+GDB to interrogate, resulting in the following behavior:
 
-This patch fixes the issue by using DIV_ROUND_UP() instead of a plain
-integer division.
+   [kev@f32-1 gdb]$ ./gdb -q testsuite/outputs/gdb.base/corefile/corefile testsuite/outputs/gdb.base/corefile/corefile.core
+   Reading symbols from testsuite/outputs/gdb.base/corefile/corefile...
+   [New LWP 232880]
 
-While there simplify the divider calculation for the CDR1 case, use
-order_base_2() instead of two ilog2() calculations.
+   warning: Unexpected size of section `.reg-xstate/232880' in core file.
 
-Fixes: 3558fe900e8a ("spi: sunxi: Add Allwinner A31 SPI controller driver")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Link: https://lore.kernel.org/r/20200706143443.9855-2-mkl@pengutronix.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+With the typo fixed, the test works again as expected.
+
+Signed-off-by: Kevin Buettner <kevinb@redhat.com>
+Fixes: 9e4636545933 ("copy_xstate_to_kernel(): don't leave parts of destination uninitialized")
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Dave Airlie <airlied@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-sun6i.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index ec7967be9e2f5..956df79035d56 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -198,7 +198,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 				  struct spi_transfer *tfr)
- {
- 	struct sun6i_spi *sspi = spi_master_get_devdata(master);
--	unsigned int mclk_rate, div, timeout;
-+	unsigned int mclk_rate, div, div_cdr1, div_cdr2, timeout;
- 	unsigned int start, end, tx_time;
- 	unsigned int trig_level;
- 	unsigned int tx_len = 0;
-@@ -287,14 +287,12 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	 * First try CDR2, and if we can't reach the expected
- 	 * frequency, fall back to CDR1.
- 	 */
--	div = mclk_rate / (2 * tfr->speed_hz);
--	if (div <= (SUN6I_CLK_CTL_CDR2_MASK + 1)) {
--		if (div > 0)
--			div--;
--
--		reg = SUN6I_CLK_CTL_CDR2(div) | SUN6I_CLK_CTL_DRS;
-+	div_cdr1 = DIV_ROUND_UP(mclk_rate, tfr->speed_hz);
-+	div_cdr2 = DIV_ROUND_UP(div_cdr1, 2);
-+	if (div_cdr2 <= (SUN6I_CLK_CTL_CDR2_MASK + 1)) {
-+		reg = SUN6I_CLK_CTL_CDR2(div_cdr2 - 1) | SUN6I_CLK_CTL_DRS;
- 	} else {
--		div = ilog2(mclk_rate) - ilog2(tfr->speed_hz);
-+		div = min(SUN6I_CLK_CTL_CDR1_MASK, order_base_2(div_cdr1));
- 		reg = SUN6I_CLK_CTL_CDR1(div);
- 	}
- 
--- 
-2.25.1
-
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1022,7 +1022,7 @@ int copy_xstate_to_kernel(void *kbuf, st
+ 		copy_part(offsetof(struct fxregs_state, st_space), 128,
+ 			  &xsave->i387.st_space, &kbuf, &offset_start, &count);
+ 	if (header.xfeatures & XFEATURE_MASK_SSE)
+-		copy_part(xstate_offsets[XFEATURE_MASK_SSE], 256,
++		copy_part(xstate_offsets[XFEATURE_SSE], 256,
+ 			  &xsave->i387.xmm_space, &kbuf, &offset_start, &count);
+ 	/*
+ 	 * Fill xsave->i387.sw_reserved value for ptrace frame:
 
 
