@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06992226563
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F7E226438
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730490AbgGTPxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
+        id S1729680AbgGTPnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730573AbgGTPxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:53:20 -0400
+        id S1730203AbgGTPnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:43:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F01E22482;
-        Mon, 20 Jul 2020 15:53:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B183B2065E;
+        Mon, 20 Jul 2020 15:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260399;
-        bh=riXWFFP6pjp3gbdsUAjIE8ZYR+nTr6F6kWkrX6R/R08=;
+        s=default; t=1595259787;
+        bh=Goq3gE73MFyJrQ8A7qmzhAcc5rjHku2kdxLwaQUMtBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRSgivg3cnBipQQPszgwn4vnS2jODPDTy/l3vHjn5ZVH/8Co01pPf1qXbqUVTo7ab
-         jnWGNnGUKWRmudFH9j0c1lrPChIJ35lu9WxkS/bpmWMMJBCLXWmm/JiXYbNkeQjH+z
-         ptY5gYdMJ1JiyLXrtCalXIfk69B5Ic8B98SNVsq8=
+        b=svjjDIrcGW7+2bpVggRSilVlf9Nj+nNht+SarOCNNFZqds0/dG4OQ6cD2gusrMEi1
+         DiHTHQTTAgXgNLwcXO1SQNICmqBjQ3+rPD0r89PGHsOhWN5DuGFrEJx4hoadQLUlAE
+         66N6+7pYx+yaEhSDTudbSamC9eYEVvzTXke6Z+J0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 088/133] ALSA: hda/realtek - change to suitable link model for ASUS platform
-Date:   Mon, 20 Jul 2020 17:37:15 +0200
-Message-Id: <20200720152807.967352772@linuxfoundation.org>
+        stable@vger.kernel.org, Vishwas M <vishwas.reddy.vr@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 80/86] hwmon: (emc2103) fix unable to change fan pwm1_enable attribute
+Date:   Mon, 20 Jul 2020 17:37:16 +0200
+Message-Id: <20200720152757.286172509@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+References: <20200720152753.138974850@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Vishwas M <vishwas.reddy.vr@gmail.com>
 
-commit ef9ddb9dc4f8b1da3b975918cd1fd98ec055b918 upstream.
+commit 14b0e83dc4f1e52b94acaeb85a18fd7fdd46d2dc upstream.
 
-ASUS platform couldn't need to use Headset Mode model.
-It changes to the suitable model.
+This patch fixes a bug which does not let FAN mode to be changed from
+sysfs(pwm1_enable). i.e pwm1_enable can not be set to 3, it will always
+remain at 0.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/d05bcff170784ec7bb35023407148161@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This is caused because the device driver handles the result of
+"read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg)" incorrectly. The
+driver thinks an error has occurred if the (result != 0). This has been
+fixed by changing the condition to (result < 0).
+
+Signed-off-by: Vishwas M <vishwas.reddy.vr@gmail.com>
+Link: https://lore.kernel.org/r/20200707142747.118414-1-vishwas.reddy.vr@gmail.com
+Fixes: 9df7305b5a86 ("hwmon: Add driver for SMSC EMC2103 temperature monitor and fan controller")
+Cc: stable@vger.kernel.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/emc2103.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6701,7 +6701,7 @@ static const struct hda_fixup alc269_fix
- 			{ }
- 		},
- 		.chained = true,
--		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
-+		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
- 	[ALC294_FIXUP_ASUS_HEADSET_MIC] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -6710,7 +6710,7 @@ static const struct hda_fixup alc269_fix
- 			{ }
- 		},
- 		.chained = true,
--		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
-+		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
- 	[ALC294_FIXUP_ASUS_SPK] = {
- 		.type = HDA_FIXUP_VERBS,
+--- a/drivers/hwmon/emc2103.c
++++ b/drivers/hwmon/emc2103.c
+@@ -452,7 +452,7 @@ static ssize_t set_pwm_enable(struct dev
+ 	}
+ 
+ 	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
+-	if (result) {
++	if (result < 0) {
+ 		count = result;
+ 		goto err;
+ 	}
 
 
