@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3134C22696F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A3022685C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732963AbgGTQZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34628 "EHLO mail.kernel.org"
+        id S1731285AbgGTQS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732508AbgGTQBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:01:18 -0400
+        id S2388128AbgGTQNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:13:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3AC120672;
-        Mon, 20 Jul 2020 16:01:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91C6C207DD;
+        Mon, 20 Jul 2020 16:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260877;
-        bh=0p2WUGz/wnrWu5Svk2w61aN1SczNEbMzIKQOEvemBx0=;
+        s=default; t=1595261614;
+        bh=xd6skdapYNQz/u0tOosEzUcuwx7W+CMKUZ16Robupmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NfHHpaf7O557XewWgG28eoZGyGMxJ8RXeWb4PjzWUR+n+A2Df9UsybsRP0sUirBzz
-         8OW+La9ia/GBXpD3K0WZ6J+3OXhhjSdYt3cSri3hjyMVVPPdx98WzHtueuUpQQgMA4
-         WxIOmHKCmnGAMxCMDmnuu6/hhGlegr6uI6wSLIDk=
+        b=lLfE959FYGXf/Z9F8S5sZe/Fhyg8SyvNoGaVhdPO9LN6MDRWL0F1pi357S11705vB
+         ho2unuxrdgWW++Hs/WobJLH1zQJY+gP9VfEqXtr83o+rtuzAFhnzXCA5mkjLnYh6gl
+         U01ZxQoeKSUVHfxc5GTieVro12EQSDJDdto6Gues=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.4 127/215] soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new data
-Date:   Mon, 20 Jul 2020 17:36:49 +0200
-Message-Id: <20200720152826.243586151@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.7 139/244] mtd: rawnand: brcmnand: fix CS0 layout
+Date:   Mon, 20 Jul 2020 17:36:50 +0200
+Message-Id: <20200720152832.460881959@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
-References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152825.863040590@linuxfoundation.org>
+References: <20200720152825.863040590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,103 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maulik Shah <mkshah@codeaurora.org>
+From: Álvaro Fernández Rojas <noltari@gmail.com>
 
-commit f5ac95f9ca2f439179a5baf48e1c0f22f83d936e upstream.
+commit 3d3fb3c5be9ce07fa85d8f67fb3922e4613b955b upstream.
 
-TCSes have previously programmed data when rpmh_flush() is called.
-This can cause old data to trigger along with newly flushed.
+Only v3.3-v5.0 have a different CS0 layout.
+Controllers before v3.3 use the same layout for every CS.
 
-Fix this by cleaning SLEEP and WAKE TCSes before new data is flushed.
-
-With this there is no need to invoke rpmh_rsc_invalidate() call from
-rpmh_invalidate().
-
-Simplify rpmh_invalidate() by moving invalidate_batch() inside.
-
-Fixes: 600513dfeef3 ("drivers: qcom: rpmh: cache sleep/wake state requests")
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/1586703004-13674-4-git-send-email-mkshah@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200522121524.4161539-3-noltari@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/soc/qcom/rpmh.c |   41 ++++++++++++++++++-----------------------
- 1 file changed, 18 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -317,19 +317,6 @@ static int flush_batch(struct rpmh_ctrlr
- 	return ret;
- }
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -606,8 +606,9 @@ static int brcmnand_revision_init(struct
+ 	} else {
+ 		ctrl->cs_offsets = brcmnand_cs_offsets;
  
--static void invalidate_batch(struct rpmh_ctrlr *ctrlr)
--{
--	struct batch_cache_req *req, *tmp;
--	unsigned long flags;
--
--	spin_lock_irqsave(&ctrlr->cache_lock, flags);
--	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
--		kfree(req);
--	INIT_LIST_HEAD(&ctrlr->batch_cache);
--	ctrlr->dirty = true;
--	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
--}
--
- /**
-  * rpmh_write_batch: Write multiple sets of RPMH commands and wait for the
-  * batch to finish.
-@@ -469,6 +456,13 @@ int rpmh_flush(const struct device *dev)
- 		return 0;
+-		/* v5.0 and earlier has a different CS0 offset layout */
+-		if (ctrl->nand_version <= 0x0500)
++		/* v3.3-5.0 have a different CS0 offset layout */
++		if (ctrl->nand_version >= 0x0303 &&
++		    ctrl->nand_version <= 0x0500)
+ 			ctrl->cs0_offsets = brcmnand_cs_offsets_cs0;
  	}
  
-+	/* Invalidate the TCSes first to avoid stale data */
-+	do {
-+		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
-+	} while (ret == -EAGAIN);
-+	if (ret)
-+		return ret;
-+
- 	/* First flush the cached batch requests */
- 	ret = flush_batch(ctrlr);
- 	if (ret)
-@@ -500,24 +494,25 @@ int rpmh_flush(const struct device *dev)
- EXPORT_SYMBOL(rpmh_flush);
- 
- /**
-- * rpmh_invalidate: Invalidate all sleep and active sets
-- * sets.
-+ * rpmh_invalidate: Invalidate sleep and wake sets in batch_cache
-  *
-  * @dev: The device making the request
-  *
-- * Invalidate the sleep and active values in the TCS blocks.
-+ * Invalidate the sleep and wake values in batch_cache.
-  */
- int rpmh_invalidate(const struct device *dev)
- {
- 	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
--	int ret;
--
--	invalidate_batch(ctrlr);
-+	struct batch_cache_req *req, *tmp;
-+	unsigned long flags;
- 
--	do {
--		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
--	} while (ret == -EAGAIN);
-+	spin_lock_irqsave(&ctrlr->cache_lock, flags);
-+	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
-+		kfree(req);
-+	INIT_LIST_HEAD(&ctrlr->batch_cache);
-+	ctrlr->dirty = true;
-+	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
- 
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL(rpmh_invalidate);
 
 
