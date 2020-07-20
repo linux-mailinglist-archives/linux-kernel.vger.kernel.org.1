@@ -2,136 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D50226272
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEE5226274
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728806AbgGTOqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgGTOqr (ORCPT
+        id S1728837AbgGTOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:46:54 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52868 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGTOqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:46:47 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9435CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:46:47 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o2so25503920wmh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 07:46:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=bMY2bd7PftOqDtQBakPHJtZ+KfpWJcFf+u/c3vx0/DI=;
-        b=Ifu9G7i5rsqyLIlW6JlN5zQrTfuHUixB6ByUZF4vvPANK9lqkf1rlUeUuRb4axmBqK
-         T/xX8mpLoQMQ/Y84dHCnXXyomrVzvAEDHEwZOfOAa4HgOGLNlWriAZwo+sM5dftglChk
-         4FsXPV1gMjq9wU3OvYwJjj+A6Cx1UcE1FYKHN9Oa5i/Qdyum8BLuXBveD+U1TdB/roKk
-         QGsn7vcNxluF+FcslZjfjgentxP59frVS3EQvWsKqaNQO7k/WltlwYvS9GPQFiG/7G0I
-         A0V1GchomdB4vd/yTxcCk4cyNUkx7dY/aKhT/28j6MXzJz6T1pxqNfL62x5FzQ11DXux
-         EyUw==
+        Mon, 20 Jul 2020 10:46:54 -0400
+Received: by mail-wm1-f67.google.com with SMTP id q15so22548154wmj.2;
+        Mon, 20 Jul 2020 07:46:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=bMY2bd7PftOqDtQBakPHJtZ+KfpWJcFf+u/c3vx0/DI=;
-        b=ABZqhOCF5hKZS4j7gciNW9OEnu6oM+JbhXYAO5Fy5iqR+RcoyFDT2YCDAEB0B25z1n
-         q7Gc+vzFGItPX4q3dUcOyjvcOSa5MNhauagRepJ/yJZ4q9OcUIxEwmS2TrAUaq70jaPj
-         1be+L85hz+y8L/9TPLzX3poUNYEl2ndZmZ1Im4RZUGm05TXwDOuuM+dtKoZDrEfQYABX
-         iMOIKRBdfm86oei3I1u3pdaRBglo+Lj1i/x4CqJaP9CI7nq3u8NJRGW5TxOHsF17o//n
-         JZcFr4bHT6rZO22cbMVkTNiJLvNYkryUzt+Hi4/7xZyPTkOKrghSN5gSaU190GhYvklB
-         5nuA==
-X-Gm-Message-State: AOAM533nSTzBXDrBd9eZGlJ5ILiwSBCNhHcMY7ytMo2JwyL5NzDwEsJv
-        cky897XAKlzxvAuL2VWlzKyLCj203g==
-X-Google-Smtp-Source: ABdhPJx/fqm8FZYrXJUrVv9fHFF6lRYTD7UrXijvZynTORUjibzGxBTYQQCdHqoTCQX//xqQrm8QDg==
-X-Received: by 2002:a1c:98c1:: with SMTP id a184mr22266672wme.116.1595256406180;
-        Mon, 20 Jul 2020 07:46:46 -0700 (PDT)
-Received: from [192.168.200.34] (ip5b436a54.dynamic.kabel-deutschland.de. [91.67.106.84])
-        by smtp.gmail.com with ESMTPSA id b8sm2579413wrv.4.2020.07.20.07.46.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 07:46:45 -0700 (PDT)
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH_2/5=5d_drm=3a_rockchip=3a_add_missing_regi?=
- =?UTF-8?B?c3RlcnMgZm9yIFJLMzE4OOOAkOivt+azqOaEj++8jOmCruS7tueUsWxpbnV4LXJv?=
- =?UTF-8?Q?ckchip-bounces+andy=2eyan=3drock-chips=2ecom=40lists=2einfradead?=
- =?UTF-8?B?Lm9yZ+S7o+WPkeOAkQ==?=
-To:     Andy Yan <andy.yan@rock-chips.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200718200323.3559-1-knaerzche@gmail.com>
- <20200718200323.3559-3-knaerzche@gmail.com>
- <871ce1ac-2d5b-c0a2-60a6-6aba0f296c18@rock-chips.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <12296860-d6ed-5135-7c4e-545362829051@gmail.com>
-Date:   Mon, 20 Jul 2020 16:46:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ubVyQHHqX9tsUnzOm6TherEnABXQb1+jkvMZGf23FqQ=;
+        b=fbKLGkdJBN8xsSgQJ0rAPYLt1BfB3KcZLc/NmTePmAc2isBnZp8l8/YAZWJb+RzhnY
+         zsgLn3pey9+7pX5AzbOI/l03D72AEybJ1ERbQn7lHbPmfJUnP0nOvfLT719SAybMU6G+
+         jx7tGKyjOPQVH0zsznNRbmXSvzNk1fcAzC9S3h58tfTUqNQXZ33aOxaAVqLu5+k4gWCO
+         c0yq5Der4VJPPj8Z2GXl+ONcMsWFYB2dnmm+ef3NSKLcFrIvTMyfOqzvd+fl/ksT93AL
+         xK1ZkRF0C+xRMoK7oLonYdN8XxIJY4KOtuOlWVZs4WNbabmYjd2oaCOnm+CcHWlZswcg
+         kr8g==
+X-Gm-Message-State: AOAM5338LUhHNMjfokNkSCv6BHKxFCJd2lmJrR0oYdZYdsIVDiC0LgxS
+        L3OgtmXMXs0KvOMIbzKVJaQ=
+X-Google-Smtp-Source: ABdhPJxAXaavtFIv3qPHXSFItxh2VKDy2GsLwn30QnRX2MpjxZJmt4Nr+m2qFL5Y9Z28WTEfIvtYIQ==
+X-Received: by 2002:a1c:7d85:: with SMTP id y127mr22660355wmc.181.1595256412049;
+        Mon, 20 Jul 2020 07:46:52 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.200])
+        by smtp.googlemail.com with ESMTPSA id f17sm35900335wme.14.2020.07.20.07.46.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Jul 2020 07:46:51 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 16:46:48 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, willy.mh.wolff.ml@gmail.com,
+        k.konieczny@samsung.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        s.nawrocki@samsung.com, kgene@kernel.org
+Subject: Re: [PATCH v2 2/2] memory: samsung: exynos5422-dmc: Add module param
+ to control IRQ mode
+Message-ID: <20200720144648.GC22791@kozik-lap>
+References: <20200710191122.11029-1-lukasz.luba@arm.com>
+ <20200710191122.11029-3-lukasz.luba@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <871ce1ac-2d5b-c0a2-60a6-6aba0f296c18@rock-chips.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200710191122.11029-3-lukasz.luba@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Fri, Jul 10, 2020 at 08:11:22PM +0100, Lukasz Luba wrote:
+> The driver can operate in two modes relaying on devfreq monitoring
+> mechanism which periodically checks the device status or it can use
+> interrupts when they are provided by loaded Device Tree. The newly
+> introduced module parameter can be used to choose between devfreq
+> monitoring and internal interrupts without modifying the Device Tree.
+> It also sets devfreq monitoring as default when the parameter is not set
+> (also the case for default when the driver is not built as a module).
+> 
+> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/memory/samsung/exynos5422-dmc.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 
-Am 20.07.20 um 10:22 schrieb Andy Yan:
-> Hi Alex:
->
-> On 7/19/20 4:03 AM, Alex Bee wrote:
->> This patch adds dither_up, dsp_lut_en, data_blank and dsp_data_swap
->> registers to enable their respective functionality for RK3188's VOP.
->>
->> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->> ---
->>   drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c 
->> b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
->> index b046910129fb..971a6bda7458 100644
->> --- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
->> +++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
->> @@ -512,6 +512,10 @@ static const struct vop_common rk3188_common = {
->>       .dither_down_en = VOP_REG(RK3188_DSP_CTRL0, 0x1, 11),
->>       .dither_down_mode = VOP_REG(RK3188_DSP_CTRL0, 0x1, 10),
->>       .dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x3, 24),
->> +    .dither_up = VOP_REG(RK3188_DSP_CTRL0, 0x1, 9),
->> +    .dsp_lut_en = VOP_REG(RK3188_SYS_CTRL, 0x1, 28),
->> +    .data_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 25),
->> +    .dsp_data_swap = VOP_REG(RK3188_DSP_CTRL1, 0x1f, 26),
->
->
->
-> I can't find the definition of dsp_data_swap, or I missed something?
->
-Note that .dsp_data_swap is not defined with that name in TRM (as it is 
-not in RK3288/RK3328), since potentially more the one bit would have to 
-be set for this (currently only RB_SWAP (0x2) is implemented in the VOP 
-driver).
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-To be some kind of future proof (if BG_SWAP, RG_SWAP, DELTA_SWAP or 
-DUMMY_SWAP ever get implemented) it should be aligned with what is 
-defined for RK3288/RK3328 now to automatically benefit from that 
-additions. And it would, since RK3288_DSP_CTRL0 BIT12, BIT13, BIT14, 
-BIT15, BIT16 exactly matches with RK3188_DSP_CTRL1 BIT26, BIT27, BIT28, 
-BIT29, BIT30.
-
-Current implementation sets BIT13 for RK3288 and with this patch BIT27 
-for RK3188 to enable RB_SWAP.
-
->
->
->>   };
->>     static const struct vop_win_data rk3188_vop_win_data[] = {
->
->
-Regards,
-
-Alex
-
+Best regards,
+Krzysztof
