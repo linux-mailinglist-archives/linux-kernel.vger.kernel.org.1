@@ -2,158 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB97B22689C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6913226746
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732068AbgGTQI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733287AbgGTQIX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:08:23 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FAFC061794;
-        Mon, 20 Jul 2020 09:08:22 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g75so54914wme.5;
-        Mon, 20 Jul 2020 09:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3IpgMenHTL8Cl1UPyNDJ0zP8AHlKOb8wvprdOdLQu58=;
-        b=g9rn+ph/hicjFxOLjwquSxqsQSHdDBnsgCYSArLG3tpaMYFuwxgm+VDHmFx4U1fG39
-         GscQ7HSqxTyxuGOkIq3bbjGtjPIHx4RYXQMSu6eceoqfvYnw+TsgE4R5Zg2DOHT/cwaq
-         tiWuveh2bX4GchalokQl9AAAdaBI1Fy6mdTEAyUsDA91jv7LLUftnCJqLtlnIZrSqUZk
-         V+FQKGYPDeIq8i+O1ibvKdlo+AuQB+qelotwLgnycAU39884gji+5q7iV58ZoM70Dfxe
-         1eajuexZnT/rifuzEI+w/b4ba/O/lDMud3j126oH2L/rEeP5o/VeTrNVb6sevz8u/avb
-         +fKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:autocrypt:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3IpgMenHTL8Cl1UPyNDJ0zP8AHlKOb8wvprdOdLQu58=;
-        b=N81vIXYAMLnEY0rJBoDURXBs7Cy4CnG75Kzw4rwzib9tVAr8phOEtqH/wVv68AeX0U
-         kqIH3Nvkz1XQBVADqXvpTI2VZWPyWSAoRUzpWsipHJrWJfteN1W2GUvP+8tR9Q8qW5lR
-         eh+zytHw3AwB7hFa3lSFaJDOSQFWOSMjoeF8JEEs3TY8C+U1ZVteotf3lyiYhP7DJbIx
-         0bukUG0hs1gQ40QLubuL0DqadiwTKJjbQlBQrBc+2NQbRXrwfLRJFnHYCS5J1Aa8/QTM
-         xishKHmuk9KLEbyWuSowBQVzVmF1QXJifECZVAak9dErxuIdEcVoEwXaxHUDX+ErfwT/
-         92tQ==
-X-Gm-Message-State: AOAM533EbeCAyIhHbWStYK2If/YJwju7TzwL6qHUeotGvDzN72DpGtNb
-        m1r3I32nSc5iLtnCNWa//8mUduQx
-X-Google-Smtp-Source: ABdhPJwav/UKUFxTpObUSYrThh77uN1R2vaNIw6l6wZVEUFhjBnraCHFsEUDYI2fusEauVFgmtqXxQ==
-X-Received: by 2002:a1c:ed01:: with SMTP id l1mr80943wmh.33.1595261299543;
-        Mon, 20 Jul 2020 09:08:19 -0700 (PDT)
-Received: from [192.168.43.17] ([5.100.193.69])
-        by smtp.gmail.com with ESMTPSA id p29sm35098861wmi.43.2020.07.20.09.08.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 09:08:19 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1595021626.git.asml.silence@gmail.com>
- <cf209c59-547e-0a69-244d-7c1fec00a978@kernel.dk>
- <b01e7f2d-d9a6-5593-3afb-5008d96695c6@gmail.com>
- <a2aa8de0-a2d0-3381-3415-4b523c2b66a5@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 0/2] task_put batching
-Message-ID: <5b20b94d-13f7-66ee-610a-6f37ec8caa8d@gmail.com>
-Date:   Mon, 20 Jul 2020 19:06:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S2387648AbgGTQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:10:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387633AbgGTQKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:10:11 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3404E2064B;
+        Mon, 20 Jul 2020 16:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595261410;
+        bh=U7uXjX8IfjoIHHcZ94LBnWRXLP1OX+olQJgVuZvrYz8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mywFm7Q0v6qrIqaQ80nhFbUpcFOGRvUhHtCEA/fayqjg0rtYs/pYaWNKJfRqyw3i7
+         XLoxMzbKuZ6U1GcIcAVpCuXX8oodHcdxaDHqTU0uV8Uk8ODLH1CZk2FLTVg8JWrWk5
+         azVsSx9XhFktMuRsA0P0lAJSD1h4gOcHR2w6hAVE=
+Received: by mail-ej1-f42.google.com with SMTP id w9so4531276ejc.8;
+        Mon, 20 Jul 2020 09:10:10 -0700 (PDT)
+X-Gm-Message-State: AOAM532UX6QmOkkBaR02RKknpIS2MC84vWZupOPQ9JrLRy6icZs/0LNG
+        BQfwcdpj72qj4FEDNwQgY8s9dOLej04/Eu4NUQ==
+X-Google-Smtp-Source: ABdhPJzjWZka7dLZIstGqrBjwKgkCw0Jts0It8B2AGaHIdJ5T0KmMrd6sjOYVhE+rD/LgFxqtR3lEzkplYm7brWs4pA=
+X-Received: by 2002:a17:906:404e:: with SMTP id y14mr21106907ejj.260.1595261408723;
+ Mon, 20 Jul 2020 09:10:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a2aa8de0-a2d0-3381-3415-4b523c2b66a5@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200506084039.249977-1-eizan@chromium.org> <20200506184018.v2.1.I27dac0775ba64deff6a91837f39bfba83dccdf84@changeid>
+In-Reply-To: <20200506184018.v2.1.I27dac0775ba64deff6a91837f39bfba83dccdf84@changeid>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 21 Jul 2020 00:09:57 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9qSpH51kkopofoQTfSqYqGWcQVN8KrJJKQDWozoMK+NQ@mail.gmail.com>
+Message-ID: <CAAOTY_9qSpH51kkopofoQTfSqYqGWcQVN8KrJJKQDWozoMK+NQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] [media] mtk-mdp: add driver to probe mdp components
+To:     Eizan Miyamoto <eizan@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2020 18:49, Jens Axboe wrote:
-> On 7/20/20 9:22 AM, Pavel Begunkov wrote:
->> On 18/07/2020 17:37, Jens Axboe wrote:
->>> On 7/18/20 2:32 AM, Pavel Begunkov wrote:
->>>> For my a bit exaggerated test case perf continues to show high CPU
->>>> cosumption by io_dismantle(), and so calling it io_iopoll_complete().
->>>> Even though the patch doesn't yield throughput increase for my setup,
->>>> probably because the effect is hidden behind polling, but it definitely
->>>> improves relative percentage. And the difference should only grow with
->>>> increasing number of CPUs. Another reason to have this is that atomics
->>>> may affect other parallel tasks (e.g. which doesn't use io_uring)
->>>>
->>>> before:
->>>> io_iopoll_complete: 5.29%
->>>> io_dismantle_req:   2.16%
->>>>
->>>> after:
->>>> io_iopoll_complete: 3.39%
->>>> io_dismantle_req:   0.465%
->>>
->>> Still not seeing a win here, but it's clean and it _should_ work. For
->>> some reason I end up getting the offset in task ref put growing the
->>> fput_many(). Which doesn't (on the surface) make a lot of sense, but
->>> may just mean that we have some weird side effects.
->>
->> It grows because the patch is garbage, the second condition is always false.
->> See the diff. Could you please drop both patches?
-> 
-> Hah, indeed. With this on top, it looks like it should in terms of
-> performance and profiles.
+Hi, Eizan:
 
-It just shows, that it doesn't really matters for a single-threaded app,
-as expected. Worth to throw some contention though. I'll think about
-finding some time to get/borrow a multi-threaded one.
+Eizan Miyamoto <eizan@chromium.org> =E6=96=BC 2020=E5=B9=B45=E6=9C=886=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:41=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Broadly, this patch (1) adds a driver for various MTK MDP components to
+> go alongside the main MTK MDP driver, and (2) hooks them all together
+> using the component framework.
+>
+> (1) Up until now, the MTK MDP driver controls 8 devices in the device
+> tree on its own. When running tests for the hardware video decoder, we
+> found that the iommus and LARBs were not being properly configured. To
+> configure them, a driver for each be added to mtk_mdp_comp so that
+> mtk_iommu_add_device() can (eventually) be called from dma_configure()
+> inside really_probe().
+>
+> (2) The integration into the component framework allows us to defer the
+> registration with the v4l2 subsystem until all the MDP-related devices
+> have been probed, so that the relevant device node does not become
+> available until initialization of all the components is complete.
+>
+> Some notes about how the component framework has been integrated:
+>
+> - The driver for the rdma0 component serves double duty as the "master"
+>   (aggregate) driver as well as a component driver. This is a non-ideal
+>   compromise until a better solution is developed. This device is
+>   differentiated from the rest by checking for a "mediatek,vpu" property
+>   in the device node.
+>
+> - The list of mdp components remains hard-coded as mtk_mdp_comp_dt_ids[]
+>   in mtk_mdp_core.c, and as mtk_mdp_comp_driver_dt_match[] in
+>   mtk_mdp_comp.c. This unfortunate duplication of information is
+>   addressed in a following patch in this series.
+>
+> - The component driver calls component_add() for each device that is
+>   probed.
+>
+> - In mtk_mdp_probe (the "master" device), we scan the device tree for
+>   any matching nodes against mtk_mdp_comp_dt_ids, and add component
+>   matches for them. The match criteria is a matching device node
+>   pointer.
+>
+> - When the set of components devices that have been probed corresponds
+>   with the list that is generated by the "master", the callback to
+>   mtk_mdp_master_bind() is made, which then calls the component bind
+>   functions.
+>
+> - Inside mtk_mdp_master_bind(), once all the component bind functions
+>   have been called, we can then register our device to the v4l2
+>   subsystem.
+>
+> - The call to pm_runtime_enable() in the master device is called after
+>   all the components have been registered by their bind() functions
+>   called by mtk_mtp_master_bind(). As a result, the list of components
+>   will not change while power management callbacks mtk_mdp_suspend()/
+>   resume() are accessing the list of components.
 
-> 
-> I can just fold this into the existing one, if you'd like.
+For the component binding problem, MDP is similar to DRM driver [1],
+and DRM is probed by mmsys driver [2] (mmsys is a device which control
+display clock, display routing, mdp clock, mdp routing). Maybe you
+could refer to what DRM does.
 
-Would be nice. I'm going to double-check the counter and re-measure anyway.
-BTW, how did you find it? A tool or a proc file would be awesome.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/gpu/drm/mediatek/mtk_drm_drv.c?h=3Dv5.8-rc6
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?h=3Dv5.8-rc6&id=3D667c769246b01c53ad0925d603d2a2531abd3ef2
 
--- 
-Pavel Begunkov
+Regards,
+Chun-Kuang.
+
+>
+> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
