@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5FB22639F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2424822655C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729281AbgGTPir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:38:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57326 "EHLO mail.kernel.org"
+        id S1730446AbgGTPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:53:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729252AbgGTPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:38:40 -0400
+        id S1730407AbgGTPxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:53:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B854922CBB;
-        Mon, 20 Jul 2020 15:38:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 534392065E;
+        Mon, 20 Jul 2020 15:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259520;
-        bh=uT/bRBTIdkmSU5bvhXzruj9bPbkiXd8OXTikZIuokas=;
+        s=default; t=1595260382;
+        bh=a1wX56O3UUk6wUvl7vJKE53fpz3FbSKZ3H8oA4dNQJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jcNjwfKUbyAJ7w/xOlsObVAmhWlnrJk4bTBr6z68NjeZF4WON/8nxhzRufhupM3Bm
-         /FYaX0KWGNLD0tPe/UG4YUk5FZiwWYCLdGeVIScRjJCaiIGyEar+XN4rfkqePQDFQn
-         /U72bNVHxoWZmary1hLyZi0G2heJI+O6V1gpF1Y0=
+        b=ThFE8RRhKDAfbVxwt0HguHxU3srI1HxO/oq6kxSs33jb8HvM2xnUYhfffabWl/hmU
+         ZaDGWjZ8d7qW0Id74IvQq9PMXqT6zLFo1umCO9sRZbm3b6OIYhLzSQhxmQJMNYpG7P
+         ULoGLDkFBGfokyhnhFFFywuJR3+LGnBa0rInGppI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.4 36/58] mtd: rawnand: brcmnand: fix CS0 layout
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 065/133] ARM: dts: socfpga: Align L2 cache-controller nodename with dtschema
 Date:   Mon, 20 Jul 2020 17:36:52 +0200
-Message-Id: <20200720152749.011706626@linuxfoundation.org>
+Message-Id: <20200720152806.877714633@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Álvaro Fernández Rojas <noltari@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 3d3fb3c5be9ce07fa85d8f67fb3922e4613b955b upstream.
+[ Upstream commit d7adfe5ffed9faa05f8926223086b101e14f700d ]
 
-Only v3.3-v5.0 have a different CS0 layout.
-Controllers before v3.3 use the same layout for every CS.
+Fix dtschema validator warnings like:
+    l2-cache@fffff000: $nodename:0:
+        'l2-cache@fffff000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
 
-Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200522121524.4161539-3-noltari@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 475dc86d08de ("arm: dts: socfpga: Add a base DTSI for Altera's Arria10 SOC")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/brcmnand/brcmnand.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/socfpga.dtsi         | 2 +-
+ arch/arm/boot/dts/socfpga_arria10.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -455,8 +455,9 @@ static int brcmnand_revision_init(struct
- 	} else {
- 		ctrl->cs_offsets = brcmnand_cs_offsets;
+diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
+index b38f8c2405580..602511ccad6f6 100644
+--- a/arch/arm/boot/dts/socfpga.dtsi
++++ b/arch/arm/boot/dts/socfpga.dtsi
+@@ -710,7 +710,7 @@ ocram-ecc@ffd08144 {
+ 			};
+ 		};
  
--		/* v5.0 and earlier has a different CS0 offset layout */
--		if (ctrl->nand_version <= 0x0500)
-+		/* v3.3-5.0 have a different CS0 offset layout */
-+		if (ctrl->nand_version >= 0x0303 &&
-+		    ctrl->nand_version <= 0x0500)
- 			ctrl->cs0_offsets = brcmnand_cs_offsets_cs0;
- 	}
+-		L2: l2-cache@fffef000 {
++		L2: cache-controller@fffef000 {
+ 			compatible = "arm,pl310-cache";
+ 			reg = <0xfffef000 0x1000>;
+ 			interrupts = <0 38 0x04>;
+diff --git a/arch/arm/boot/dts/socfpga_arria10.dtsi b/arch/arm/boot/dts/socfpga_arria10.dtsi
+index b4dd3846e8cc9..ba5657574d9bb 100644
+--- a/arch/arm/boot/dts/socfpga_arria10.dtsi
++++ b/arch/arm/boot/dts/socfpga_arria10.dtsi
+@@ -618,7 +618,7 @@ sdr: sdr@ffcfb100 {
+ 			reg = <0xffcfb100 0x80>;
+ 		};
  
+-		L2: l2-cache@fffff000 {
++		L2: cache-controller@fffff000 {
+ 			compatible = "arm,pl310-cache";
+ 			reg = <0xfffff000 0x1000>;
+ 			interrupts = <0 18 IRQ_TYPE_LEVEL_HIGH>;
+-- 
+2.25.1
+
 
 
