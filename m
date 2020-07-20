@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5594A2261DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4C12261E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 16:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgGTOUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 10:20:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
+        id S1728656AbgGTOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 10:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726870AbgGTOUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 10:20:42 -0400
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726759AbgGTOVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 10:21:10 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B577222CAF;
-        Mon, 20 Jul 2020 14:20:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 268A520B1F;
+        Mon, 20 Jul 2020 14:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595254841;
-        bh=Vib6dxAx8u3DoTSWJXH5KMkq3799ypAVfeuWMkW6Hj8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Y+GBWxSjbTxcsL9FTO8DgCDwnf9G9i9jJLGRzjbIbJbnfc/p3SWainC3JOFWzl6Cg
-         tBHe3qPnv2X+MrorxWay6AqVOd7lyzKu4NOxYI1QLVEVp10EF8yFfC7aHWL2x20SU+
-         jiSfuE5OwnT2P+CSRXld82tpVBQxGuMdwC+oFpLE=
-Received: by mail-ot1-f47.google.com with SMTP id h1so12300859otq.12;
-        Mon, 20 Jul 2020 07:20:41 -0700 (PDT)
-X-Gm-Message-State: AOAM533N1r6ZPXPkVmfboR8Lbo6R2gpoE0O4+lPFhHu8hg0iZyGcDa0L
-        yu7T2KBaOSSdMYzWRXbqVP3m3cdWZLGeWm0/Xw==
-X-Google-Smtp-Source: ABdhPJwHTembEjVuQTsjX9Y4lVbdIElrObkCp3VjWe/eZu4PcW+QH4GExQ6U+8YWt1byxEkCF1wg9PXj+VhOMp2l8VE=
-X-Received: by 2002:a9d:46c:: with SMTP id 99mr775393otc.192.1595254841027;
- Mon, 20 Jul 2020 07:20:41 -0700 (PDT)
+        s=default; t=1595254869;
+        bh=HLsnWapSZr1TpttXIYrQQDMJGrH8nj1rqvBMPrAFCRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XQFs0H8abPDZJviZX+5bTqQNawGqmx/pBTGly2VfVP90WSpMzcMHYQaTLQ4IRVWLD
+         k/TvI13Gi+NhRKv0vTnOIb6rS5YvbMFxFB2Z5aBUzsuJsDlzLpFqI8rMGY5I1SWibn
+         SqtW927tzctc+7dbf6a1ky5SigWZ7PMcfQCFsoO4=
+Date:   Mon, 20 Jul 2020 17:20:53 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-nvdimm@lists.01.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [PATCH 3/6] mm: introduce secretmemfd system call to create
+ "secret" memory areas
+Message-ID: <20200720142053.GC8593@kernel.org>
+References: <20200720092435.17469-1-rppt@kernel.org>
+ <20200720092435.17469-4-rppt@kernel.org>
+ <CAK8P3a0NyvRMqH7X0YNO5E6DGtvZXD5ZcD6Y6n7AkocufkMnHA@mail.gmail.com>
 MIME-Version: 1.0
-References: <1595134890-16470-1-git-send-email-spujar@nvidia.com> <1595134890-16470-2-git-send-email-spujar@nvidia.com>
-In-Reply-To: <1595134890-16470-2-git-send-email-spujar@nvidia.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 20 Jul 2020 08:20:29 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+HBBLkUY=ODo+TmV_MhO40r9sfB=k1j64j7m67GUoSaQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+HBBLkUY=ODo+TmV_MhO40r9sfB=k1j64j7m67GUoSaQ@mail.gmail.com>
-Subject: Re: [PATCH v5 01/11] ASoC: dt-bindings: tegra: Add DT bindings for Tegra210
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
-        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
-        nwartikar@nvidia.com, Stephen Warren <swarren@nvidia.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0NyvRMqH7X0YNO5E6DGtvZXD5ZcD6Y6n7AkocufkMnHA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 11:01 PM Sameer Pujar <spujar@nvidia.com> wrote:
->
-> This patch adds YAML schema for DT binding of AHUB and few of its
-> following components. These devices will be registered as ASoC
-> components and binding will be used on Tegra210 and later chips.
->  * ADMAIF
->  * I2S
->  * DMIC
->  * DSPK
-> DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
->         t=1595134894; bh=DX96zRQRNplPikN828HbAfbjGumAn9IgtktrsenKjgk=;
->         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
->          In-Reply-To:References:X-NVConfidentiality:MIME-Version:
->          Content-Type;
->         b=IhfGFjMxsnRHso1Ku2GEGC+mtLCy3AbRKPfgTS56XGqEWquUr/1s8n9tFpriqF7a+
->          tJGrTN9mKhRQGrwdey/AHsMY4Tbm4fKEWxIASgAV/lFPCfgP3BnVjEdHclc7FdBaB0
->          Qvd3zs8HFsgoIzksLrtHNMrUepkeZajn0/XnC7nghGDRim4+6Hauupr5kj/KVlihsS
->          KS1YQ2Zz9TZzLaC5QXALiHj3ATLvBFrmIf6Vj19q7hePt0menTZVzQNy+y3h4xZfLH
->          +OvBCsLgHGGhq+iM9rm64D+S5Op2vCslwq3Q/42TnYZ0vDbD7aA9nTAQzfYeI6HK6b
->          vi7eYbryzCTSg==
->
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  .../bindings/sound/nvidia,tegra186-dspk.yaml       |  83 +++++++++++++
->  .../bindings/sound/nvidia,tegra210-admaif.yaml     | 111 +++++++++++++++++
->  .../bindings/sound/nvidia,tegra210-ahub.yaml       | 136 +++++++++++++++++++++
->  .../bindings/sound/nvidia,tegra210-dmic.yaml       |  83 +++++++++++++
->  .../bindings/sound/nvidia,tegra210-i2s.yaml        | 101 +++++++++++++++
->  5 files changed, 514 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
+On Mon, Jul 20, 2020 at 01:30:13PM +0200, Arnd Bergmann wrote:
+> On Mon, Jul 20, 2020 at 11:25 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > Introduce "secretmemfd" system call with the ability to create memory areas
+> > visible only in the context of the owning process and not mapped not only
+> > to other processes but in the kernel page tables as well.
+> >
+> > The user will create a file descriptor using the secretmemfd system call
+> > where flags supplied as a parameter to this system call will define the
+> > desired protection mode for the memory associated with that file
+> > descriptor. Currently there are two protection modes:
+> >
+> > * exclusive - the memory area is unmapped from the kernel direct map and it
+> >               is present only in the page tables of the owning mm.
+> > * uncached  - the memory area is present only in the page tables of the
+> >               owning mm and it is mapped there as uncached.
+> >
+> > For instance, the following example will create an uncached mapping (error
+> > handling is omitted):
+> >
+> >         fd = secretmemfd(SECRETMEM_UNCACHED);
+> >         ftruncate(fd, MAP_SIZE);
+> >         ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
+> >                    fd, 0);
+> >
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> I wonder if this should be more closely related to dmabuf file
+> descriptors, which
+> are already used for a similar purpose: sharing access to secret memory areas
+> that are not visible to the OS but can be shared with hardware through device
+> drivers that can import a dmabuf file descriptor.
 
-Use get_maintainers.pl and send to the correct lists if you want this reviewed.
+TBH, I didn't think about dmabuf, but my undestanding is that is this
+case memory areas are not visible to the OS because they are on device
+memory rather than normal RAM and when dmabuf is backed by the normal
+RAM, the memory is visible to the OS.
 
-Rob
+Did I miss anything?
+
+
+>       Arnd
+
+-- 
+Sincerely yours,
+Mike.
