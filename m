@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE672263A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE52226483
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgGTPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:38:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57526 "EHLO mail.kernel.org"
+        id S1730560AbgGTPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729291AbgGTPis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:38:48 -0400
+        id S1728771AbgGTPpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:45:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79BFA22CB2;
-        Mon, 20 Jul 2020 15:38:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81E0B2064B;
+        Mon, 20 Jul 2020 15:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259527;
-        bh=PM2qco3AhDYbAW67Wclmbb4zJkBAlFrUSZOS3nlXwbk=;
+        s=default; t=1595259939;
+        bh=VwfSUt9I5fyGVTbzS6mRbD2KUZr8E9UQZRiM9a8+THQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZujYuSinZy7GDH1HsgVNr+UAmt26A5RWLLc6cNoJyJV3kB0kZxtVTEjzH7Ubh7eft
-         w8M+Gl6kl3MG4kZl59vy/hdOwTViXuvs5JAfaMy2WjSxV1R4ndgMAXFPbNIW05BzZu
-         9fYlDnRo90Ic0K54v0LeSN7IJQaZjfoGhwBGo0Gs=
+        b=icdhx/ClO5CbBaziGLopSgzd8QthaNV3KwTDH2ramAql9Wg8IPFs94XA7fdue5SaL
+         A5S3y7kW8UjbJ0H9Amz8IrGzvzFkUdlKV9tY8TorenTd+P7CxxY9+BI0nWbjO4aGKZ
+         m3qESWlfClKYjFm/kKobaI1FYObsLign35vb/BFU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, xidongwang <wangxidong_97@163.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 10/58] ALSA: opl3: fix infoleak in opl3
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 047/125] tcp: md5: add missing memory barriers in tcp_md5_do_add()/tcp_md5_hash_key()
 Date:   Mon, 20 Jul 2020 17:36:26 +0200
-Message-Id: <20200720152747.652616720@linuxfoundation.org>
+Message-Id: <20200720152805.273172411@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
-References: <20200720152747.127988571@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xidongwang <wangxidong_97@163.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit ad155712bb1ea2151944cf06a0e08c315c70c1e3 upstream.
+[ Upstream commit 6a2febec338df7e7699a52d00b2e1207dcf65b28 ]
 
-The stack object “info” in snd_opl3_ioctl() has a leaking problem.
-It has 2 padding bytes which are not initialized and leaked via
-“copy_to_user”.
+MD5 keys are read with RCU protection, and tcp_md5_do_add()
+might update in-place a prior key.
 
-Signed-off-by: xidongwang <wangxidong_97@163.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1594006058-30362-1-git-send-email-wangxidong_97@163.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Normally, typical RCU updates would allocate a new piece
+of memory. In this case only key->key and key->keylen might
+be updated, and we do not care if an incoming packet could
+see the old key, the new one, or some intermediate value,
+since changing the key on a live flow is known to be problematic
+anyway.
+
+We only want to make sure that in the case key->keylen
+is changed, cpus in tcp_md5_hash_key() wont try to use
+uninitialized data, or crash because key->keylen was
+read twice to feed sg_init_one() and ahash_request_set_crypt()
+
+Fixes: 9ea88a153001 ("tcp: md5: check md5 signature without socket lock")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/drivers/opl3/opl3_synth.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv4/tcp.c      |    7 +++++--
+ net/ipv4/tcp_ipv4.c |    3 +++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
---- a/sound/drivers/opl3/opl3_synth.c
-+++ b/sound/drivers/opl3/opl3_synth.c
-@@ -104,6 +104,8 @@ int snd_opl3_ioctl(struct snd_hwdep * hw
- 		{
- 			struct snd_dm_fm_info info;
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3394,10 +3394,13 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
  
-+			memset(&info, 0, sizeof(info));
+ int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct tcp_md5sig_key *key)
+ {
++	u8 keylen = key->keylen;
+ 	struct scatterlist sg;
+ 
+-	sg_init_one(&sg, key->key, key->keylen);
+-	ahash_request_set_crypt(hp->md5_req, &sg, NULL, key->keylen);
++	smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
 +
- 			info.fm_mode = opl3->fm_mode;
- 			info.rhythm = opl3->rhythm;
- 			if (copy_to_user(argp, &info, sizeof(struct snd_dm_fm_info)))
++	sg_init_one(&sg, key->key, keylen);
++	ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
+ 	return crypto_ahash_update(hp->md5_req);
+ }
+ EXPORT_SYMBOL(tcp_md5_hash_key);
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -997,6 +997,9 @@ int tcp_md5_do_add(struct sock *sk, cons
+ 	if (key) {
+ 		/* Pre-existing entry - just update that one. */
+ 		memcpy(key->key, newkey, newkeylen);
++
++		smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
++
+ 		key->keylen = newkeylen;
+ 		return 0;
+ 	}
 
 
