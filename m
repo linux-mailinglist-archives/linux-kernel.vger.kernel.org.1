@@ -2,185 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DE8226AFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC11226AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388993AbgGTQiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:38:16 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:15323 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388950AbgGTQiL (ORCPT
+        id S2389025AbgGTQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:38:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44993 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729269AbgGTQiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:38:11 -0400
-X-Originating-IP: 42.109.212.217
-Received: from localhost (unknown [42.109.212.217])
-        (Authenticated sender: me@yadavpratyush.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7114824000E;
-        Mon, 20 Jul 2020 16:38:04 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 22:08:02 +0530
-From:   Pratyush Yadav <me@yadavpratyush.com>
-To:     Tudor.Ambarus@microchip.com
-Cc:     p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, broonie@kernel.org, Nicolas.Ferre@microchip.com,
-        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
-        matthias.bgg@gmail.com, michal.simek@xilinx.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, boris.brezillon@collabora.com,
-        nsekhar@ti.com
-Subject: Re: [PATCH v10 07/17] mtd: spi-nor: sfdp: parse xSPI Profile 1.0
- table
-Message-ID: <20200720163802.veql43cmal7sunit@yadavpratyush.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
- <20200623183030.26591-8-p.yadav@ti.com>
- <1450d8c8-cda4-51e3-9f57-0b2f00825f11@microchip.com>
+        Mon, 20 Jul 2020 12:38:08 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jxYnk-00007X-BL; Mon, 20 Jul 2020 16:38:04 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Michael Tretter <m.tretter@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] media: allegro: fix potential null dereference on header
+Date:   Mon, 20 Jul 2020 17:38:04 +0100
+Message-Id: <20200720163804.340047-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1450d8c8-cda4-51e3-9f57-0b2f00825f11@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+From: Colin Ian King <colin.king@canonical.com>
 
-On 08/07/20 04:01PM, Tudor.Ambarus@microchip.com wrote:
-> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > This table is indication that the flash is xSPI compliant and hence
-> > supports octal DTR mode. Extract information like the fast read opcode,
-> > dummy cycles, the number of dummy cycles needed for a Read Status
-> > Register command, and the number of address bytes needed for a Read
-> > Status Register command.
-> > 
-> > We don't know what speed the controller is running at. Find the fast
-> > read dummy cycles for the fastest frequency the flash can run at to be
-> > sure we are never short of dummy cycles. If nothing is available,
-> > default to 20. Flashes that use a different value should update it in
-> > their fixup hooks.
-> > 
-> > Since we want to set read settings, expose spi_nor_set_read_settings()
-> > in core.h.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.c |  2 +-
-> >  drivers/mtd/spi-nor/core.h | 10 ++++
-> >  drivers/mtd/spi-nor/sfdp.c | 98 ++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 109 insertions(+), 1 deletion(-)
-> > 
-[...]
-> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > index 3f709de5ea67..d5a24e61813c 100644
-> > --- a/drivers/mtd/spi-nor/sfdp.c
-> > +++ b/drivers/mtd/spi-nor/sfdp.c
-[...]
-> > @@ -66,6 +70,16 @@ struct sfdp_bfpt_erase {
-> >         u32                     shift;
-> >  };
-> > 
-> > +/* xSPI Profile 1.0 table (from JESD216D.01). */
-> > +#define PROFILE1_DWORD1_RD_FAST_CMD            GENMASK(15, 8)
-> > +#define PROFILE1_DWORD1_RDSR_DUMMY             BIT(28)
-> > +#define PROFILE1_DWORD1_RDSR_ADDR_BYTES                BIT(29)
-> > +#define PROFILE1_DWORD4_DUMMY_200MHZ           GENMASK(11, 7)
-> > +#define PROFILE1_DWORD5_DUMMY_166MHZ           GENMASK(31, 27)
-> > +#define PROFILE1_DWORD5_DUMMY_133MHZ           GENMASK(21, 17)
-> > +#define PROFILE1_DWORD5_DUMMY_100MHZ           GENMASK(11, 7)
-> 
-> we should order these macros in a consistent way. I see that previous macros
-> are declared in order starting from MSB to LSB.
-> 
-> > +#define PROFILE1_DUMMY_DEFAULT                 20
-> 
-> we need to explain why the default dummy value is 20.
+The pointer header is an alias to msg and msg is being null checked.
+However, if msg is null then header is also null and this can lead to
+a null pointer dereference on the assignment type = header->type. Fix
+this by only dereferencing header after the null check on msg.
 
-No reason other than the fact that it is the default for the first flash 
-that uses Profile 1.0 parsing (S28HS512T). AFAIK a similar reasoning is 
-followed for the default being 8 for 1-1-4 or 1-1-8 modes.
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 3de16839669f ("media: allegro: add explicit mail encoding and decoding")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/staging/media/allegro-dvt/allegro-mail.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I can't think of any reasonable way of deciding on a default value since 
-it varies from flash to flash.
+diff --git a/drivers/staging/media/allegro-dvt/allegro-mail.c b/drivers/staging/media/allegro-dvt/allegro-mail.c
+index 4ac65de12463..4496e2a4da5c 100644
+--- a/drivers/staging/media/allegro-dvt/allegro-mail.c
++++ b/drivers/staging/media/allegro-dvt/allegro-mail.c
+@@ -462,12 +462,14 @@ allegro_dec_encode_frame(struct mcu_msg_encode_frame_response *msg, u32 *src)
+ ssize_t allegro_encode_mail(u32 *dst, void *msg)
+ {
+ 	const struct mcu_msg_header *header = msg;
+-	enum mcu_msg_type type = header->type;
++	enum mcu_msg_type type;
+ 	ssize_t size;
  
-> How about declaring all these macros immediately above of spi_nor_parse_profile1()?
-> 
-> > +
-> >  #define SMPT_CMD_ADDRESS_LEN_MASK              GENMASK(23, 22)
-> >  #define SMPT_CMD_ADDRESS_LEN_0                 (0x0UL << 22)
-> >  #define SMPT_CMD_ADDRESS_LEN_3                 (0x1UL << 22)
-> > @@ -1106,6 +1120,86 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
-> >         return ret;
-> >  }
-> > 
-> > +/**
-> > + * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
-> > + * @nor:               pointer to a 'struct spi_nor'
-> > + * @param_header:      pointer to the 'struct sfdp_parameter_header' describing
-> > + *                     the 4-Byte Address Instruction Table length and version.
-> > + * @params:            pointer to the 'struct spi_nor_flash_parameter' to be.
-> > + *
-> > + * Return: 0 on success, -errno otherwise.
-> > + */
-> > +static int spi_nor_parse_profile1(struct spi_nor *nor,
-> > +                                 const struct sfdp_parameter_header *profile1_header,
-> > +                                 struct spi_nor_flash_parameter *params)
-> > +{
-> > +       u32 *table, opcode, addr;
-> 
-> s/table/dwords?
-> 
-> u8 opcode?
-> 
-> > +       size_t len;
-> > +       int ret, i;
-> > +       u8 dummy;
-> > +
-> > +       len = profile1_header->length * sizeof(*table);
-> > +       table = kmalloc(len, GFP_KERNEL);
-> > +       if (!table)
-> > +               return -ENOMEM;
-> > +
-> > +       addr = SFDP_PARAM_HEADER_PTP(profile1_header);
-> > +       ret = spi_nor_read_sfdp(nor, addr, len, table);
-> > +       if (ret)
-> > +               goto out;
-> > +
-> > +       /* Fix endianness of the table DWORDs. */
-> > +       for (i = 0; i < profile1_header->length; i++)
-> > +               table[i] = le32_to_cpu(table[i]);
-> 
-> le32_to_cpu_array(table, profile1_header->length);
-> 
-> > +
-> > +       /* Get 8D-8D-8D fast read opcode and dummy cycles. */
-> > +       opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, table[0]);
-> > +
-> > +       /*
-> > +        * We don't know what speed the controller is running at. Find the
-> > +        * dummy cycles for the fastest frequency the flash can run at to be
-> > +        * sure we are never short of dummy cycles. A value of 0 means the
-> > +        * frequency is not supported.
-> > +        *
-> > +        * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
-> > +        * flashes set the correct value if needed in their fixup hooks.
-> > +        */
-> > +       dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, table[3]);
-> > +       if (!dummy)
-> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, table[4]);
-> > +       if (!dummy)
-> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, table[4]);
-> > +       if (!dummy)
-> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, table[4]);
-> > +       if (!dummy)
-> > +               dummy = PROFILE1_DUMMY_DEFAULT;
-> > +
-> > +       /* Round up to an even value to avoid tripping controllers up. */
-> > +       dummy = ROUND_UP_TO(dummy, 2);
-> > +
-[...]
-
+ 	if (!msg || !dst)
+ 		return -EINVAL;
+ 
++	type = header->type;
++
+ 	switch (type) {
+ 	case MCU_MSG_TYPE_INIT:
+ 		size = allegro_enc_init(&dst[1], msg);
 -- 
-Regards,
-Pratyush Yadav
+2.27.0
+
