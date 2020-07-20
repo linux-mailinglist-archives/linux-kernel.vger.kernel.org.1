@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCC62265CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F432265E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731905AbgGTP5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
+        id S1732012AbgGTP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731400AbgGTP5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:13 -0400
+        id S1732000AbgGTP6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:58:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1C13206E9;
-        Mon, 20 Jul 2020 15:57:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FA252065E;
+        Mon, 20 Jul 2020 15:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260633;
-        bh=Ofp/UzEZEa9QtF3PAA7mseJ2tTiv/bOPYK8rkrawkEM=;
+        s=default; t=1595260692;
+        bh=0CkNs1w4+hp7Zb/ftz2DB5LZ5V5bhaCc01Eh0fyBlCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xht+hsHzlBvKqblpJ1zxPB153nrW1U0EqRKXX87b/WSQnEi4HDFxCRbG4vkkrGn0r
-         Jcy2bYW7uB3QftXZJoKE6QwoWVzutX8PLFSRa7HOM194DUHjnymWCVZ5Ig/q3dh3Ou
-         N3S+RhfBFQW/jrRcDtjD2faB5V90z1qB2AXdkRv4=
+        b=DIVtB+m/Lqu7XwACKhqB9pvqSBH5WwI7Kf935WnxsuBgi6s9yyK5Sf7SLMqWc4lD1
+         0Sl9Kz+TfhJtsTMOd+ibdvgek0+rLOxSqrHykpHc60lcDc/VuB/tM0RI3Nv/WfbaCJ
+         3IAyWLRDiUTUrc1AK2njA0hZe6Rs0/y1O4qL6Utc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Inki Dae <inki.dae@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 031/215] drm/msm/dpu: allow initialization of encoder locks during encoder init
-Date:   Mon, 20 Jul 2020 17:35:13 +0200
-Message-Id: <20200720152821.664658801@linuxfoundation.org>
+Subject: [PATCH 5.4 033/215] drm/exynos: fix ref count leak in mic_pre_enable
+Date:   Mon, 20 Jul 2020 17:35:15 +0200
+Message-Id: <20200720152821.762532842@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -45,52 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krishna Manikandan <mkrishn@codeaurora.org>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 2e7ec6b5297157efabb50e5f82adc628cf90296c ]
+[ Upstream commit d4f5a095daf0d25f0b385e1ef26338608433a4c5 ]
 
-In the current implementation, mutex initialization
-for encoder mutex locks are done during encoder
-setup. This can lead to scenarios where the lock
-is used before it is initialized. Move mutex_init
-to dpu_encoder_init to avoid this.
+in mic_pre_enable, pm_runtime_get_sync is called which
+increments the counter even in case of failure, leading to incorrect
+ref count. In case of failure, decrement the ref count before returning.
 
-Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Inki Dae <inki.dae@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/exynos/exynos_drm_mic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index edf7989d7a8ee..99d449ce4a07e 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -2185,7 +2185,6 @@ int dpu_encoder_setup(struct drm_device *dev, struct drm_encoder *enc,
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_mic.c b/drivers/gpu/drm/exynos/exynos_drm_mic.c
+index b78e8c5ba553b..2aff986add899 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_mic.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_mic.c
+@@ -268,8 +268,10 @@ static void mic_pre_enable(struct drm_bridge *bridge)
+ 		goto unlock;
  
- 	dpu_enc = to_dpu_encoder_virt(enc);
+ 	ret = pm_runtime_get_sync(mic->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(mic->dev);
+ 		goto unlock;
++	}
  
--	mutex_init(&dpu_enc->enc_lock);
- 	ret = dpu_encoder_setup_display(dpu_enc, dpu_kms, disp_info);
- 	if (ret)
- 		goto fail;
-@@ -2200,7 +2199,6 @@ int dpu_encoder_setup(struct drm_device *dev, struct drm_encoder *enc,
- 				0);
+ 	mic_set_path(mic, 1);
  
- 
--	mutex_init(&dpu_enc->rc_lock);
- 	INIT_DELAYED_WORK(&dpu_enc->delayed_off_work,
- 			dpu_encoder_off_work);
- 	dpu_enc->idle_timeout = IDLE_TIMEOUT;
-@@ -2245,6 +2243,8 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
- 
- 	spin_lock_init(&dpu_enc->enc_spinlock);
- 	dpu_enc->enabled = false;
-+	mutex_init(&dpu_enc->enc_lock);
-+	mutex_init(&dpu_enc->rc_lock);
- 
- 	return &dpu_enc->base;
- }
 -- 
 2.25.1
 
