@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4E122648F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB1C226603
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730623AbgGTPqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:46:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40630 "EHLO mail.kernel.org"
+        id S1731907AbgGTP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:59:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730609AbgGTPqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:04 -0400
+        id S1732160AbgGTP7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E21A206E9;
-        Mon, 20 Jul 2020 15:46:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 828792065E;
+        Mon, 20 Jul 2020 15:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259964;
-        bh=PM2qco3AhDYbAW67Wclmbb4zJkBAlFrUSZOS3nlXwbk=;
+        s=default; t=1595260753;
+        bh=DSh889hKcAP9cv1LQTUAL/pgvVfepA9vxiJb36z35QE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sKqfHEqAfhEQhywUSk+ZLtM5+H9SvuIhxYCx+7RjYfGKf+Y2Ypfo5mzMbbtYFk/oK
-         WGcdQFtc3xg6gg1n7qFu/oYMJGnCJaGhw6FCgWGVHuw7nDC/AIXVqZ6KUu7uaEr+Z9
-         PvU56W3MSMpB9NU3TP61XpxkYkxomjld5A4iU6ec=
+        b=omTWV28kVjTSXeh+llxUsCmBtRNE/8QQLvdhA5OCRcrSIOrojKXcmMzstVhpk4gye
+         6ZAWunWCDqP4nTGBD1x3zVakg4x4kj1yXZO94Q2JEN4BDXG1VCryvJNX12OTf88tfX
+         gml8bXxxoY4hGdsaH45MUHMwGk2kAuc9JHFbHpbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, xidongwang <wangxidong_97@163.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 026/125] ALSA: opl3: fix infoleak in opl3
+        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
+        Jianxin Pan <jianxin.pan@amlogic.com>,
+        Thinh Nguyen <thinhn@synopsys.com>,
+        Jun Li <lijun.kernel@gmail.com>, Tim <elatllat@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Herring <robh@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 083/215] doc: dt: bindings: usb: dwc3: Update entries for disabling SS instances in park mode
 Date:   Mon, 20 Jul 2020 17:36:05 +0200
-Message-Id: <20200720152804.253744600@linuxfoundation.org>
+Message-Id: <20200720152824.154529253@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xidongwang <wangxidong_97@163.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit ad155712bb1ea2151944cf06a0e08c315c70c1e3 upstream.
+[ Upstream commit 3d157c28d2289edf0439e8308e8de3a06acaaf0e ]
 
-The stack object “info” in snd_opl3_ioctl() has a leaking problem.
-It has 2 padding bytes which are not initialized and leaked via
-“copy_to_user”.
+This patch updates the documentation with the information related
+to the quirks that needs to be added for disabling all SuperSpeed XHCI
+instances in park mode.
 
-Signed-off-by: xidongwang <wangxidong_97@163.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1594006058-30362-1-git-send-email-wangxidong_97@163.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Dongjin Kim <tobetter@gmail.com>
+Cc: Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: Thinh Nguyen <thinhn@synopsys.com>
+Cc: Jun Li <lijun.kernel@gmail.com>
+Reported-by: Tim <elatllat@gmail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/drivers/opl3/opl3_synth.c |    2 ++
+ Documentation/devicetree/bindings/usb/dwc3.txt | 2 ++
  1 file changed, 2 insertions(+)
 
---- a/sound/drivers/opl3/opl3_synth.c
-+++ b/sound/drivers/opl3/opl3_synth.c
-@@ -104,6 +104,8 @@ int snd_opl3_ioctl(struct snd_hwdep * hw
- 		{
- 			struct snd_dm_fm_info info;
- 
-+			memset(&info, 0, sizeof(info));
-+
- 			info.fm_mode = opl3->fm_mode;
- 			info.rhythm = opl3->rhythm;
- 			if (copy_to_user(argp, &info, sizeof(struct snd_dm_fm_info)))
+diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
+index 66780a47ad859..c977a3ba2f35c 100644
+--- a/Documentation/devicetree/bindings/usb/dwc3.txt
++++ b/Documentation/devicetree/bindings/usb/dwc3.txt
+@@ -75,6 +75,8 @@ Optional properties:
+ 			from P0 to P1/P2/P3 without delay.
+  - snps,dis-tx-ipgap-linecheck-quirk: when set, disable u2mac linestate check
+ 			during HS transmit.
++ - snps,parkmode-disable-ss-quirk: when set, all SuperSpeed bus instances in
++			park mode are disabled.
+  - snps,dis_metastability_quirk: when set, disable metastability workaround.
+ 			CAUTION: use only if you are absolutely sure of it.
+  - snps,is-utmi-l1-suspend: true when DWC3 asserts output signal
+-- 
+2.25.1
+
 
 
