@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4AA2269F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9432269F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388652AbgGTQbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:31:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
+        id S1733256AbgGTQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:30:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731471AbgGTP5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:57:41 -0400
+        id S1730562AbgGTP5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:57:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1A8A22BEF;
-        Mon, 20 Jul 2020 15:57:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D60622CAF;
+        Mon, 20 Jul 2020 15:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260661;
-        bh=crdC/FcSNnFfmvavFML0b9RIg1+uRvGXlo87yIAceSc=;
+        s=default; t=1595260673;
+        bh=1H5+7kJO9eaqpbN5JgnI5mNMkNUZHr0WnC6h16aXQEM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kgxgMPUPVzcfSzr/yUJ8RR2DJKbFxSzhEG8QXjV5Q+cXCfIL9iIoWDx4yas9WasWA
-         Hs11lMzNkzYQTpKKM0MsmJIoICpWulaDnDEcSGIpkCs/HyW7wxbF8F06GnjmG1dMom
-         oEn2qOgheGg6XH0iHJpwQ5DT4vUyx1Dzy6FNbVTc=
+        b=jEQ/lHdiIhVJCF/1YQjwx9oG0JIBMjpzzjat7V9/pYukZjj4/bc3M3FBi9/CA8Crc
+         H9HlKvmWHes1dqob8Xna+mmey2EIknBXQDQ7vx/fYAFjhgaHEtREaLQCJDMbGSrSRd
+         ze5oyXQcA6YZjmL3fc1bpAL8+0MrOgVd83whKNK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Ranostay <matt.ranostay@konsulko.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 049/215] iio: core: add missing IIO_MOD_H2/ETHANOL string identifiers
-Date:   Mon, 20 Jul 2020 17:35:31 +0200
-Message-Id: <20200720152822.534195030@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.4 053/215] iio:pressure:ms5611 Fix buffer element alignment
+Date:   Mon, 20 Jul 2020 17:35:35 +0200
+Message-Id: <20200720152822.732782291@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -44,33 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Ranostay <matt.ranostay@konsulko.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 25f02d3242ab4d16d0cee2dec0d89cedb3747fa9 upstream.
+commit 8db4afe163bbdd93dca6fcefbb831ef12ecc6b4d upstream.
 
-Add missing strings to iio_modifier_names[] for proper modification
-of channels.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+Here there is no data leak possibility so use an explicit structure
+on the stack to ensure alignment and nice readable fashion.
 
-Fixes: b170f7d48443d (iio: Add modifiers for ethanol and H2 gases)
-Signed-off-by: Matt Ranostay <matt.ranostay@konsulko.com>
-Cc: <Stable@vger.kernel.org>
+The forced alignment of ts isn't strictly necessary in this driver
+as the padding will be correct anyway (there isn't any).  However
+it is probably less fragile to have it there and it acts as
+documentation of the requirement.
+
+Fixes: 713bbb4efb9dc ("iio: pressure: ms5611: Add triggered buffer support")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/industrialio-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iio/pressure/ms5611_core.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -130,6 +130,8 @@ static const char * const iio_modifier_n
- 	[IIO_MOD_PM2P5] = "pm2p5",
- 	[IIO_MOD_PM4] = "pm4",
- 	[IIO_MOD_PM10] = "pm10",
-+	[IIO_MOD_ETHANOL] = "ethanol",
-+	[IIO_MOD_H2] = "h2",
- };
+--- a/drivers/iio/pressure/ms5611_core.c
++++ b/drivers/iio/pressure/ms5611_core.c
+@@ -212,16 +212,21 @@ static irqreturn_t ms5611_trigger_handle
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct ms5611_state *st = iio_priv(indio_dev);
+-	s32 buf[4]; /* s32 (pressure) + s32 (temp) + 2 * s32 (timestamp) */
++	/* Ensure buffer elements are naturally aligned */
++	struct {
++		s32 channels[2];
++		s64 ts __aligned(8);
++	} scan;
+ 	int ret;
  
- /* relies on pairs of these shared then separate */
+ 	mutex_lock(&st->lock);
+-	ret = ms5611_read_temp_and_pressure(indio_dev, &buf[1], &buf[0]);
++	ret = ms5611_read_temp_and_pressure(indio_dev, &scan.channels[1],
++					    &scan.channels[0]);
+ 	mutex_unlock(&st->lock);
+ 	if (ret < 0)
+ 		goto err;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	iio_push_to_buffers_with_timestamp(indio_dev, &scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ err:
 
 
