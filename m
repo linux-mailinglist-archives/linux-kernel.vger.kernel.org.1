@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC11226A89
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A76226ABC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729759AbgGTQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52828 "EHLO mail.kernel.org"
+        id S1730949AbgGTPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730871AbgGTPyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:54:12 -0400
+        id S1730299AbgGTPsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9FCD2065E;
-        Mon, 20 Jul 2020 15:54:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E33B4206E9;
+        Mon, 20 Jul 2020 15:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260452;
-        bh=eZusVHMwOTpgcMsBIQj4PYXuVUheo8UYetV/P3+E9Is=;
+        s=default; t=1595260133;
+        bh=Vy4oOdNveIn7FviKSKrwI3qtIIKvV06YDBvMyP8HkRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CBcBU5Snuiqvysp+czAqpTnIWh9KAAAU6Lq/OYMWEUTkopvzbcl8Hj7PKRKDKQ9Kp
-         VuwgVJtxrpdPxJKzCcVStadPR8mEPxBtK0YMutDDo0ZOA8IbX1T0EbQlO/b3xQ3XNP
-         J5iQQsFL4G7aakFL3LIw8H53WDqiEjfdsOM6Z9O8=
+        b=TmkIvtw+5F3FchwMqs6gibATFX8QgjjgpWuxFjm24POcORo3qJusEQS3fZ0uH4DUy
+         y0LxGIxUxBGzoqbbwcYzKMb11yKJ+3aV/HaiondG033waBz/fSBWqaJR+dBrmJm15/
+         G+l0D3iTUyyYuczkiVGYPbynBhHnf9SnsWinAkPc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH 4.19 108/133] mei: bus: dont clean driver pointer
-Date:   Mon, 20 Jul 2020 17:37:35 +0200
-Message-Id: <20200720152808.954433337@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 4.14 117/125] intel_th: pci: Add Emmitsburg PCH support
+Date:   Mon, 20 Jul 2020 17:37:36 +0200
+Message-Id: <20200720152808.691405843@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 
-commit e852c2c251ed9c23ae6e3efebc5ec49adb504207 upstream.
+commit fd73d74a32bfaaf259441322cc5a1c83caaa94f2 upstream.
 
-It's not needed to set driver to NULL in mei_cl_device_remove()
-which is bus_type remove() handler as this is done anyway
-in __device_release_driver().
+This adds support for the Trace Hub in Emmitsburg PCH.
 
-Actually this is causing an endless loop in driver_detach()
-on ubuntu patched kernel, while removing (rmmod) the mei_hdcp module.
-The reason list_empty(&drv->p->klist_devices.k_list) is always not-empty.
-as the check is always true in  __device_release_driver()
-	if (dev->driver != drv)
-		return;
-
-The non upstream patch is causing this behavior, titled:
-'vfio -- release device lock before userspace requests'
-
-Nevertheless the fix is correct also for the upstream.
-
-Link: https://patchwork.ozlabs.org/project/ubuntu-kernel/patch/20180912085046.3401-2-apw@canonical.com/
-Cc: <stable@vger.kernel.org>
-Cc: Andy Whitcroft <apw@canonical.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20200628225359.2185929-1-tomas.winkler@intel.com
+Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: stable@vger.kernel.org # v4.14+
+Link: https://lore.kernel.org/r/20200706161339.55468-4-alexander.shishkin@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/mei/bus.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/hwtracing/intel_th/pci.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -755,9 +755,8 @@ static int mei_cl_device_remove(struct d
+--- a/drivers/hwtracing/intel_th/pci.c
++++ b/drivers/hwtracing/intel_th/pci.c
+@@ -238,6 +238,11 @@ static const struct pci_device_id intel_
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x4b26),
+ 		.driver_data = (kernel_ulong_t)&intel_th_2x,
+ 	},
++	{
++		/* Emmitsburg PCH */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x1bcc),
++		.driver_data = (kernel_ulong_t)&intel_th_2x,
++	},
+ 	{ 0 },
+ };
  
- 	mei_cl_bus_module_put(cldev);
- 	module_put(THIS_MODULE);
--	dev->driver = NULL;
--	return ret;
- 
-+	return ret;
- }
- 
- static ssize_t name_show(struct device *dev, struct device_attribute *a,
 
 
