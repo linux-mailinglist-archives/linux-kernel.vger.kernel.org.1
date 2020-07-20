@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F268E22648D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54455226501
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730617AbgGTPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:46:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40558 "EHLO mail.kernel.org"
+        id S1730254AbgGTPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730609AbgGTPqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:46:01 -0400
+        id S1731059AbgGTPuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:50:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7412206E9;
-        Mon, 20 Jul 2020 15:46:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 279EE2064B;
+        Mon, 20 Jul 2020 15:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259961;
-        bh=ynuj/dcNFpRus3Ks6xpCAjiLrkMB+LA/bPSLHT91n+Q=;
+        s=default; t=1595260200;
+        bh=Bm7+99BRfMvFgVSaw2xFBlAHy03AWaWgm5xDQDxC/f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MLNIh8C3fQidYnz2GQmbT4tAS6FMiQUUoNDxjDffSb+jA0WnPEPhBiOflQn3pNGcD
-         MLeDRfEJ7hU3AtqCKsWIlMlURgilArYTWDYdoJAgz3LgaVYhbohZqlH6UPkFR4VCF1
-         aw6AqOCZeJQvq5e5fP27zE7Or8n6f6mYflJbQf0o=
+        b=YfqsmatGIkTBQcJ+KestgN7Z2ccDc6+9RZYVXMuPb0413daNrTw4Nx7DIXxHg923r
+         mQMq3QQQ9UokxngbmKCBmtBnMLf1CMhm+PurRTEY32ez4dHWtg8m7Xli6V10DxaYFW
+         sHEjZ/fnji7TcS2+oOYTCWgMnZfkQucjUfIJ6gY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 025/125] mlxsw: spectrum_router: Remove inappropriate usage of WARN_ON()
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 017/133] cgroup: Fix sock_cgroup_data on big-endian.
 Date:   Mon, 20 Jul 2020 17:36:04 +0200
-Message-Id: <20200720152804.210773579@linuxfoundation.org>
+Message-Id: <20200720152804.555945669@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
-References: <20200720152802.929969555@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit d9d5420273997664a1c09151ca86ac993f2f89c1 ]
+[ Upstream commit 14b032b8f8fce03a546dcf365454bec8c4a58d7d ]
 
-We should not trigger a warning when a memory allocation fails. Remove
-the WARN_ON().
+In order for no_refcnt and is_data to be the lowest order two
+bits in the 'val' we have to pad out the bitfield of the u8.
 
-The warning is constantly triggered by syzkaller when it is injecting
-faults:
-
-[ 2230.758664] FAULT_INJECTION: forcing a failure.
-[ 2230.758664] name failslab, interval 1, probability 0, space 0, times 0
-[ 2230.762329] CPU: 3 PID: 1407 Comm: syz-executor.0 Not tainted 5.8.0-rc2+ #28
-...
-[ 2230.898175] WARNING: CPU: 3 PID: 1407 at drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:6265 mlxsw_sp_router_fib_event+0xfad/0x13e0
-[ 2230.898179] Kernel panic - not syncing: panic_on_warn set ...
-[ 2230.898183] CPU: 3 PID: 1407 Comm: syz-executor.0 Not tainted 5.8.0-rc2+ #28
-[ 2230.898190] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-
-Fixes: 3057224e014c ("mlxsw: spectrum_router: Implement FIB offload in deferred work")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Fixes: ad0f75e5f57c ("cgroup: fix cgroup_sk_alloc() for sk_clone_lock()")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/cgroup-defs.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-index 05a2006a20b9b..d9cd86c675569 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-@@ -4932,7 +4932,7 @@ static int mlxsw_sp_router_fib_event(struct notifier_block *nb,
- 		return NOTIFY_DONE;
- 
- 	fib_work = kzalloc(sizeof(*fib_work), GFP_ATOMIC);
--	if (WARN_ON(!fib_work))
-+	if (!fib_work)
- 		return NOTIFY_BAD;
- 
- 	router = container_of(nb, struct mlxsw_sp_router, fib_nb);
--- 
-2.25.1
-
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -757,6 +757,7 @@ struct sock_cgroup_data {
+ 		struct {
+ 			u8	is_data : 1;
+ 			u8	no_refcnt : 1;
++			u8	unused : 6;
+ 			u8	padding;
+ 			u16	prioidx;
+ 			u32	classid;
+@@ -766,6 +767,7 @@ struct sock_cgroup_data {
+ 			u32	classid;
+ 			u16	prioidx;
+ 			u8	padding;
++			u8	unused : 6;
+ 			u8	no_refcnt : 1;
+ 			u8	is_data : 1;
+ 		} __packed;
 
 
