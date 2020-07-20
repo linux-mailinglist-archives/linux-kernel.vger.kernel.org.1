@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91019226EED
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE153226EEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 21:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730674AbgGTTUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 15:20:38 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:45416 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729208AbgGTTUh (ORCPT
+        id S1729865AbgGTTVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 15:21:32 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:38991 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728324AbgGTTVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:20:37 -0400
-Received: by mail-il1-f196.google.com with SMTP id o3so14266329ilo.12;
-        Mon, 20 Jul 2020 12:20:37 -0700 (PDT)
+        Mon, 20 Jul 2020 15:21:31 -0400
+Received: by mail-io1-f68.google.com with SMTP id z6so1312939iow.6;
+        Mon, 20 Jul 2020 12:21:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WqYKQMOuIVj5pOBGgBVd/pxUW1b2laun76RvBjVHCKI=;
-        b=XRRaBu/Q6Mxv74zgLqtPqkS26t+fsIw3+DxB6e/fWLojoQwdAoQO4kjgACtsIJRBK0
-         Y5EyW0E3O7DD34mBlheDaBiApcG86eoxPrOV23LOdYz4iU9bgNVQtzlnuYQNE1NVQut0
-         Jh54fk0/AZS4v8hKYu0OiIS+gcu3FJ9aEKLgGG7p1OtKc6E7WwAPUHBxt54i98WVHd/C
-         Gam3cU4oG6N65Bdg/oUh3F6XNKn481xbKg6Id++QCZzrL7KXBy0X3NtDZZuquO9PQvkk
-         QzeWtneI+bmh/q7h0MrjQDRZMhvnNdkofq29xkcIWEJWU4ZWkXmBNSU0oDIkRFf9yfIZ
-         9yxA==
-X-Gm-Message-State: AOAM530/gZYb1lCkF04ySq0PAkpDc3v8jGYLZmFAGdp3+moQBmqg0SPF
-        gfASWTXN25//VSGL/+Z9RQ==
-X-Google-Smtp-Source: ABdhPJyOtWoGboV2RT+nQRU1hdrDUTfTCdxNq4fZL2j703qm+oxtWTv25fMik8fIblO96Il829N4cA==
-X-Received: by 2002:a92:9fcb:: with SMTP id z72mr24719165ilk.195.1595272836797;
-        Mon, 20 Jul 2020 12:20:36 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=d5LgybrNa/iLgJZG6ZBOwUOQyQWDmgRLoObd92GIzvA=;
+        b=YK3L2JbpML/WqIFYxw7PssD0UcYCKyLX0KEZ45vVRdgwbKho/cr6ait5JyIATkJ7Ek
+         8BOt1bQ41jSUDZtQxQ5cRZJeZAMjg8MAhiK5UvMd9Pm409tUrZInZ8Bp9BjTabW7dGkP
+         46UkhPGrHE7Yewx/1CfkN2PeYFm/l6BBZy3DD3tVBsuAkyIHebfW3xXK0LeHFTQm/Tmq
+         BtBjGhzUSVtdq8Nms7WbbZRnL34ImJEu47YoC/1DcJid1xMC3UvcI9SNj4Cdc0GhajU+
+         U0tuqEH8QbINfOhkXfeI/V0RsTSBD/DNUlZrsFnPoU3eQwXz+HIsutoYhqmCuE35XZ2H
+         7IRg==
+X-Gm-Message-State: AOAM532+vmaDTlTKcXzpQCf8S1s0/Dv+8CgG54BeYr98sOR0Qltb7BJG
+        dlpB2me11iu4mBgBgmc1Vg==
+X-Google-Smtp-Source: ABdhPJxMWUB8qi3fLkZnspl7ED1srlDCBz/8M9WgKY58AKDdWH0Iv7E6iDlegaD0OpqXALPh6nLhaQ==
+X-Received: by 2002:a5d:9c44:: with SMTP id 4mr24511126iof.15.1595272890498;
+        Mon, 20 Jul 2020 12:21:30 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id e1sm9292477ilr.23.2020.07.20.12.20.35
+        by smtp.gmail.com with ESMTPSA id y2sm9539756iox.22.2020.07.20.12.21.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 12:20:35 -0700 (PDT)
-Received: (nullmailer pid 2851198 invoked by uid 1000);
-        Mon, 20 Jul 2020 19:20:34 -0000
-Date:   Mon, 20 Jul 2020 13:20:34 -0600
+        Mon, 20 Jul 2020 12:21:29 -0700 (PDT)
+Received: (nullmailer pid 2852474 invoked by uid 1000);
+        Mon, 20 Jul 2020 19:21:28 -0000
+Date:   Mon, 20 Jul 2020 13:21:28 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Cc:     miquel.raynal@bootlin.com, heiko@sntech.de,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
- flash controller
-Message-ID: <20200720192034.GA2851152@bogus>
-References: <20200717092420.19798-1-yifeng.zhao@rock-chips.com>
- <20200717092420.19798-2-yifeng.zhao@rock-chips.com>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     vkoul@kernel.org, robh+dt@kernel.org, krzk@kernel.org,
+        p.zabel@pengutronix.de, f.fainelli@gmail.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        kishon@ti.com, jonas.gorski@gmail.com, alcooperx@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH v8 1/2] dt-bindings: phy: add bcm63xx-usbh bindings
+Message-ID: <20200720192128.GA2852419@bogus>
+References: <20200720131209.1236590-1-noltari@gmail.com>
+ <20200720131209.1236590-2-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200717092420.19798-2-yifeng.zhao@rock-chips.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200720131209.1236590-2-noltari@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 17:24:17 +0800, Yifeng Zhao wrote:
-> Documentation support for Rockchip RK3xxx NAND flash controllers
+On Mon, 20 Jul 2020 15:12:08 +0200, Álvaro Fernández Rojas wrote:
+> Document BCM63xx USBH PHY bindings.
 > 
-> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
+>  v8: no changes.
+>  v7: introduce changes suggested by Rob:
+>   - Move clock conditions to the main section.
+>   - Set missing additionalProperties to false.
+>  v6: introduce changes suggested by Rob:
+>   - Add another if case to device tree binding for SoCs with just 1 clock.
+>   - Ignored "additionalProperties: false" suggestion since it triggers a
+>     warning. This has been reported, but I haven't received any answer yet.
+>  v5: no changes.
+>  v4: conditionally require 1/2 clocks and fix clock/reset values.
+>  v3: no changes.
+>  v2: phy-cells changed to 1.
 > 
-> Changes in v8:
-> - Fix make dt_binding_check error
-> 
-> Changes in v7:
-> - Fix some wrong define
-> 
-> Changes in v6:
-> - Fix some wrong define
-> - Modified the definition of compatible
-> 
-> Changes in v5:
-> - Fix some wrong define.
-> - Add boot-medium define.
-> - Remove some compatible define.
-> 
-> Changes in v4:
-> - The compatible define with rkxx_nfc.
-> - Add assigned-clocks.
-> - Fix some wrong defineChanges in.
-> 
-> Changes in v3:
-> - Change the title for the dt-bindings.
-> 
-> Changes in v2: None
-> 
->  .../mtd/rockchip,nand-controller.yaml         | 162 ++++++++++++++++++
->  1 file changed, 162 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+>  .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
