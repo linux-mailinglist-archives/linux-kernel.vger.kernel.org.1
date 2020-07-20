@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B513B225CF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96184225CFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 12:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgGTK40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 06:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
+        id S1728428AbgGTK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 06:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728356AbgGTK4Z (ORCPT
+        with ESMTP id S1728232AbgGTK7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 06:56:25 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAABBC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:56:25 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id m16so8522562pls.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:56:25 -0700 (PDT)
+        Mon, 20 Jul 2020 06:59:34 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD3FC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:59:34 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id gc9so10048883pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 03:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nSOMoYdoeN3ixxkr9HyJ0ziUQqzOG9TSyjql14cVs8g=;
-        b=Ly3MetxYtUoLy7ynvT0emxlziJSTT/D0jOHRm5pDALE3DZJaM8QzJ2qCR3ODASwLZY
-         u67HLCCTU4JjwUIKlm7QI6xbux4D0bYILmWDp7keoxSrJ5TEwIQzu4n5reDvv8ehElJn
-         0VCESqXe1wWf+PEz5fnyZhjm3g3ze4X0aMeb0=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NV2nv0m/i4PWrK4r7Y/F/y8REceyZBWN4KHSSee/EVw=;
+        b=R3xW78P+619xgW437IQlUC8v2vkTtoeUwA6HMKwDMcXthJEOLbHGKWBHScwB9ymMRF
+         pHJ3Fkq0QWbkPqaGk6ZcI7yblpdUkQk3WFwiB4Yr6UOuN4EPanK3hXNR1I3Wa58FZeEB
+         3u+ALj8+OMP0m7hTLIhtKhhjQcS3SO/C0EdIA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nSOMoYdoeN3ixxkr9HyJ0ziUQqzOG9TSyjql14cVs8g=;
-        b=ioOVeEXy1xCHtlgKOJlnyLQSxvXfOL0Um7lDuVpDZwNVs592+wfl3uEyEuENEATwnl
-         hfv3dKlempP0sSsC8GOjG5j1XUWdK4twdRH3kOXMshBOV2f3uP0jrfriOF6HqrUPaPqI
-         FZYbpj119aZWWCo4AztEAXOzPr6ibfF7LmdN848kz6Vl5n8/TuLlSH6J6w/0yQB5+nOs
-         LBu8hi2rgJTqqZMPu/Lxjs5zrTmgdJkS1P5zrfAIzjDD58CcsKxT98/Ki0WiRUhaTps5
-         SUIYv6dQiZspA/kSzrEAFDIWNzrnf3XZkGtcdpZqfaPPXsTon+miQL1B3AXKJu95i40K
-         m9Og==
-X-Gm-Message-State: AOAM53281FXbrvhqKHVfWqkmiRqAIlYMijLb5wMZkWOhsRuAdnBo0EEm
-        cMvxIcMA9ZtXTL6swUyY8EzpHw==
-X-Google-Smtp-Source: ABdhPJxtpGiGl5nfJ/WlbO97twEDAKENawlViepi1t92UU+FBph92dN8QPL/JfxxH5UeJmFl+YUKrg==
-X-Received: by 2002:a17:90b:2350:: with SMTP id ms16mr14056450pjb.127.1595242585402;
-        Mon, 20 Jul 2020 03:56:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NV2nv0m/i4PWrK4r7Y/F/y8REceyZBWN4KHSSee/EVw=;
+        b=giiENvii5qeLyIr4sWfoX83G1htGqzYa5XBUtBE1mZ2I0VjTlrrA6q/+L00gZRKkC2
+         ahWEDQIAeyJB0q1XLiiWogR1oVxAPqsgvyABvuz+Htvz+vAlkC0gmnrQ7Sd6qQ1zlROh
+         mdjD0aQBBDDguKNy2cZALzhufgy8HedKTky1lL0DQbqticB09MNqqrPVnnkci2uNO8gt
+         zEK7nmRZPl7ZxXduTuo28lwkN700ctenxJ3sZO95KR6S2txmQGHeLMwLxCb5g27QYKP1
+         FPVY6CkN/IUsPvhWrSLRLRpFNfJBp/ykxNJVK2iIZ2QJqqC7imBhLllPxvrNAFSuSSsL
+         OreQ==
+X-Gm-Message-State: AOAM533ARUdBUuh2P1zDHdJ4CAS/sElk2vIaqqDgn9yLXbzWaZZ0Ysuo
+        fA6D968akXVxOLtDmFwanb2mvw==
+X-Google-Smtp-Source: ABdhPJzFvPMmvpy2zrXoDgPh7VwnXAfVEjNvw+4sm45X9CkVVdWN+xdzon3EKx0JIi+K87Pj4k16ZA==
+X-Received: by 2002:a17:90a:f6d8:: with SMTP id er24mr21704466pjb.203.1595242774120;
+        Mon, 20 Jul 2020 03:59:34 -0700 (PDT)
 Received: from localhost.localdomain ([2405:201:c809:c7d5:8c21:db7b:4558:fba3])
-        by smtp.gmail.com with ESMTPSA id j5sm13984721pgi.42.2020.07.20.03.56.14
+        by smtp.gmail.com with ESMTPSA id b8sm10817049pjd.5.2020.07.20.03.59.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 03:56:24 -0700 (PDT)
+        Mon, 20 Jul 2020 03:59:32 -0700 (PDT)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
 Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
@@ -53,13 +53,12 @@ Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
         linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH 3/3] arm64: dts: rockchip: Add Radxa ROCK Pi 4C support
-Date:   Mon, 20 Jul 2020 16:25:31 +0530
-Message-Id: <20200720105531.367671-3-jagan@amarulasolutions.com>
+        Jagan Teki <jagan@amarulasolutions.com>,
+        William Wu <william.wu@rock-chips.com>
+Subject: [PATCH v3] ARM: dts: rockchip: Add usb host0 ohci node for rk3288
+Date:   Mon, 20 Jul 2020 16:28:46 +0530
+Message-Id: <20200720105846.367776-1-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200720105531.367671-1-jagan@amarulasolutions.com>
-References: <20200720105531.367671-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,88 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rock PI 4C has AP6256 Wifi/BT, PoE, miniDP, USB Host enabled
-GPIO pin change compared to 4B, 4C.
+rk3288 and rk3288w have a usb host0 ohci controller.
 
-So, add or enable difference nodes/properties in 4C dts
-by including common dtsi.
+Although rk3288 ohci doesn't actually work on hardware, but
+rk3288w ohci can work well.
 
+So add usb host0 ohci node in rk3288 dtsi and the quirk in
+ohci platform driver will disable ohci on rk3288.
+
+Cc: William Wu <william.wu@rock-chips.com>
 Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../boot/dts/rockchip/rk3399-rock-pi-4c.dts   | 51 +++++++++++++++++++
- 2 files changed, 52 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
+Changes for v3:
+- none
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 8832d05c2571..02cdb3c4a6c1 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -35,6 +35,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc-mezzanine.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4a.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4b.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4c.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock960.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64-v2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-new file mode 100644
-index 000000000000..9d07ebd1ec82
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2019 Fuzhou Rockchip Electronics Co., Ltd
-+ * Copyright (c) 2019 Radxa Limited
-+ * Copyright (c) 2019 Amarula Solutions(India)
-+ */
-+
-+/dts-v1/;
-+#include "rk3399-rock-pi-4.dtsi"
-+
-+/ {
-+	model = "Radxa ROCK Pi 4C";
-+	compatible = "radxa,rockpi4", "rockchip,rk3399";
-+};
-+
-+&sdio0 {
-+	status = "okay";
-+
-+	brcmf: wifi@1 {
-+		compatible = "brcm,bcm4329-fmac";
-+		reg = <1>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupt-names = "host-wake";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&wifi_host_wake_l>;
+ arch/arm/boot/dts/rk3288.dtsi | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 0cd88774db95..f0774d9afb67 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -614,7 +614,16 @@ usb_host0_ehci: usb@ff500000 {
+ 		status = "disabled";
+ 	};
+ 
+-	/* NOTE: ohci@ff520000 doesn't actually work on hardware */
++	/* NOTE: doesn't work on RK3288, but fixed on RK3288W */
++	usb_host0_ohci: usb@ff520000 {
++		compatible = "generic-ohci";
++		reg = <0x0 0xff520000 0x0 0x100>;
++		interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_USBHOST0>;
++		phys = <&usbphy1>;
++		phy-names = "usb";
++		status = "disabled";
 +	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		clocks = <&rk808 1>;
-+		clock-names = "ext_clock";
-+		device-wakeup-gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_HIGH>;
-+		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
-+		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&bt_host_wake_l &bt_wake_l &bt_enable_h>;
-+	};
-+};
-+
-+&vcc5v0_host {
-+	gpio = <&gpio3 RK_PD6 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&vcc5v0_host_en {
-+	rockchip,pins = <3 RK_PD6 RK_FUNC_GPIO &pcfg_pull_none>;
-+};
+ 
+ 	usb_host1: usb@ff540000 {
+ 		compatible = "rockchip,rk3288-usb", "rockchip,rk3066-usb",
 -- 
 2.25.1
 
