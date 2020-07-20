@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53352265E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC7F2265D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732066AbgGTP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58784 "EHLO mail.kernel.org"
+        id S1731937AbgGTP5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732051AbgGTP6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:34 -0400
+        id S1731627AbgGTP5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:57:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 342F1206E9;
-        Mon, 20 Jul 2020 15:58:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14BB72065E;
+        Mon, 20 Jul 2020 15:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260713;
-        bh=qPbFVQa1Wx91Hp6x2uzH3y2LNvB6ddAdFBVb0dj/MTk=;
+        s=default; t=1595260649;
+        bh=egxt+OqgdvW57MofFR/h1DolS9Q1TbBM33DDluq4gHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KEiQLduSTcEONm/1LEiImXkt7O0RpfRquAmvzkgym8/OVj03rqgXi+St2ogT7zEyY
-         RH1Nv+vFJ0fIRI34OKsgF4mJswIarMMf2BtZ5Zd4OjA4i3Sk5P1DShyTf7py8h7vLF
-         oJ7D2SfU74JbxoMw6nVnqHpRxN5cnkAgaLAzDgAA=
+        b=yugVC8FI/y9+Jvc+wMxY01RADixhc+Z5RfBkLZluvwy9QG+QoR3hPV0EW1ERCy3+F
+         K+RSuV/eCO5nBKCtDyUr2n17dZLKN+aj4wXRHhBnl1pMwm3P+ry0W9i8bDgMxHbKC+
+         VsguS6vaqtelVw4lZx81kknopWR9sahkwkR2iNGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangmin Park <l4stpr0gr4m@gmail.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/215] dt-bindings: mailbox: zynqmp_ipi: fix unit address
-Date:   Mon, 20 Jul 2020 17:35:21 +0200
-Message-Id: <20200720152822.043412135@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 045/215] arm64/alternatives: dont patch up internal branches
+Date:   Mon, 20 Jul 2020 17:35:27 +0200
+Message-Id: <20200720152822.340606082@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -43,34 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kangmin Park <l4stpr0gr4m@gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 35b9c0fdb9f666628ecda02b1fc44306933a2d97 ]
+[ Upstream commit 5679b28142193a62f6af93249c0477be9f0c669b ]
 
-Fix unit address to match the first address specified in the reg
-property of the node in example.
+Commit f7b93d42945c ("arm64/alternatives: use subsections for replacement
+sequences") moved the alternatives replacement sequences into subsections,
+in order to keep the as close as possible to the code that they replace.
 
-Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
-Link: https://lore.kernel.org/r/20200625135158.5861-1-l4stpr0gr4m@gmail.com
-Signed-off-by: Rob Herring <robh@kernel.org>
+Unfortunately, this broke the logic in branch_insn_requires_update,
+which assumed that any branch into kernel executable code was a branch
+that required updating, which is no longer the case now that the code
+sequences that are patched in are in the same section as the patch site
+itself.
+
+So the only way to discriminate branches that require updating and ones
+that don't is to check whether the branch targets the replacement sequence
+itself, and so we can drop the call to kernel_text_address() entirely.
+
+Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
+Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Link: https://lore.kernel.org/r/20200709125953.30918-1-ardb@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt     | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/alternative.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt b/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt
-index 4438432bfe9b3..ad76edccf8816 100644
---- a/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt
-+++ b/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt
-@@ -87,7 +87,7 @@ Example:
- 		ranges;
+diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
+index d1757ef1b1e74..73039949b5ce2 100644
+--- a/arch/arm64/kernel/alternative.c
++++ b/arch/arm64/kernel/alternative.c
+@@ -43,20 +43,8 @@ bool alternative_is_applied(u16 cpufeature)
+  */
+ static bool branch_insn_requires_update(struct alt_instr *alt, unsigned long pc)
+ {
+-	unsigned long replptr;
+-
+-	if (kernel_text_address(pc))
+-		return true;
+-
+-	replptr = (unsigned long)ALT_REPL_PTR(alt);
+-	if (pc >= replptr && pc <= (replptr + alt->alt_len))
+-		return false;
+-
+-	/*
+-	 * Branching into *another* alternate sequence is doomed, and
+-	 * we're not even trying to fix it up.
+-	 */
+-	BUG();
++	unsigned long replptr = (unsigned long)ALT_REPL_PTR(alt);
++	return !(pc >= replptr && pc <= (replptr + alt->alt_len));
+ }
  
- 		/* APU<->RPU0 IPI mailbox controller */
--		ipi_mailbox_rpu0: mailbox@ff90400 {
-+		ipi_mailbox_rpu0: mailbox@ff990400 {
- 			reg = <0xff990400 0x20>,
- 			      <0xff990420 0x20>,
- 			      <0xff990080 0x20>,
+ #define align_down(x, a)	((unsigned long)(x) & ~(((unsigned long)(a)) - 1))
 -- 
 2.25.1
 
