@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD51522659B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DF52264D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731149AbgGTPzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54090 "EHLO mail.kernel.org"
+        id S1730895AbgGTPsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731642AbgGTPzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:08 -0400
+        id S1729843AbgGTPs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:48:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 157912065E;
-        Mon, 20 Jul 2020 15:55:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08F0C2065E;
+        Mon, 20 Jul 2020 15:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260507;
-        bh=/1F5DfyPEiFatuucRq9wLd+j+KSGjk050XpQErs1I2Y=;
+        s=default; t=1595260105;
+        bh=x37chkiE3RibfOnCA9OownYkXilLTGLp6mdRMCznAfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zyNuS287sm924p+ZH63Wiv2Qmj7P59Hmzs78if0BuvkblDzyax5xwWXwrC5Umq5f0
-         mLliW8el7WxuC3V1scF7YvPR2TAdPeJqJaK9V/WtKd3bkG4q+PT/eFcPGR5qPw6cDE
-         HML8oTr1u7ImeYqQ28qtlwhOc/Wpf6VxUoYo/P2Y=
+        b=UZOXIpxv7gHv4NIs8+6Wn0uGPXV1+UKHZbA1TfIoSLm8JIJV3QX9mHNorhYGKmBkB
+         n2JhANpXsoI6VzGZFFjg3l2XUUt5O2XTtwjSA+Fw8T/XLOoiEpYEwAQLlNbDjV5fSh
+         BeF87XtsHeVDazbw+dxID8+nNIdmcOTuVUKZ3ksg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 4.19 100/133] virt: vbox: Fix guest capabilities mask check
+        stable@vger.kernel.org, Wade Mealing <wmealing@redhat.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH 4.14 108/125] Revert "zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()"
 Date:   Mon, 20 Jul 2020 17:37:27 +0200
-Message-Id: <20200720152808.560790960@linuxfoundation.org>
+Message-Id: <20200720152808.244532027@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Wade Mealing <wmealing@redhat.com>
 
-commit 59d1d2e8e1e7c50d2657d5e4812b53f71f507968 upstream.
+commit 853eab68afc80f59f36bbdeb715e5c88c501e680 upstream.
 
-Check the passed in capabilities against VMMDEV_GUEST_CAPABILITIES_MASK
-instead of against VMMDEV_EVENT_VALID_EVENT_MASK.
-This tightens the allowed mask from 0x7ff to 0x7.
+Turns out that the permissions for 0400 really are what we want here,
+otherwise any user can read from this file.
 
-Fixes: 0ba002bc4393 ("virt: Add vboxguest driver for Virtual Box Guest integration")
-Cc: stable@vger.kernel.org
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200709120858.63928-3-hdegoede@redhat.com
+[fixed formatting, added changelog, and made attribute static - gregkh]
+
+Reported-by: Wade Mealing <wmealing@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Fixes: f40609d1591f ("zram: convert remaining CLASS_ATTR() to CLASS_ATTR_RO()")
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1847832
+Reviewed-by: Steffen Maier <maier@linux.ibm.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Link: https://lore.kernel.org/r/20200617114946.GA2131650@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/virt/vboxguest/vboxguest_core.c |    2 +-
- drivers/virt/vboxguest/vmmdev.h         |    2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/block/zram/zram_drv.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/virt/vboxguest/vboxguest_core.c
-+++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -1408,7 +1408,7 @@ static int vbg_ioctl_change_guest_capabi
- 	or_mask = caps->u.in.or_mask;
- 	not_mask = caps->u.in.not_mask;
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1648,7 +1648,8 @@ static ssize_t hot_add_show(struct class
+ 		return ret;
+ 	return scnprintf(buf, PAGE_SIZE, "%d\n", ret);
+ }
+-static CLASS_ATTR_RO(hot_add);
++static struct class_attribute class_attr_hot_add =
++	__ATTR(hot_add, 0400, hot_add_show, NULL);
  
--	if ((or_mask | not_mask) & ~VMMDEV_EVENT_VALID_EVENT_MASK)
-+	if ((or_mask | not_mask) & ~VMMDEV_GUEST_CAPABILITIES_MASK)
- 		return -EINVAL;
- 
- 	ret = vbg_set_session_capabilities(gdev, session, or_mask, not_mask,
---- a/drivers/virt/vboxguest/vmmdev.h
-+++ b/drivers/virt/vboxguest/vmmdev.h
-@@ -206,6 +206,8 @@ VMMDEV_ASSERT_SIZE(vmmdev_mask, 24 + 8);
-  * not.
-  */
- #define VMMDEV_GUEST_SUPPORTS_GRAPHICS                      BIT(2)
-+/* The mask of valid capabilities, for sanity checking. */
-+#define VMMDEV_GUEST_CAPABILITIES_MASK                      0x00000007U
- 
- /** struct vmmdev_hypervisorinfo - Hypervisor info structure. */
- struct vmmdev_hypervisorinfo {
+ static ssize_t hot_remove_store(struct class *class,
+ 			struct class_attribute *attr,
 
 
