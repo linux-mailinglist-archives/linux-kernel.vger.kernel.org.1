@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A388226A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F118226A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388840AbgGTQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388823AbgGTQb0 (ORCPT
+        id S2388940AbgGTQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:33:08 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:33744 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731802AbgGTQdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:31:26 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6DCC061794;
-        Mon, 20 Jul 2020 09:31:26 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d16so13216801edz.12;
-        Mon, 20 Jul 2020 09:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iuVszLORzUqiZj6M6YeAEQFI1sJEhteSIqt1C5FLYSo=;
-        b=tCiCsdFigGdR6jDfWT2r8Temvk3eYrQ1lb2q9SMowTyEb3Za8wIRp87riivkeMys0i
-         xBXnFNxBnP0Vo67C/S8tkPr6MIxJCcUlrBq/9EXLRMTjINGxy04/VLPz6gL1bXh3YYK+
-         QhR78xqShjNpIKPU612cQlbITCx6Ofn9okGMmrabEMDekda/gLLf4286uPeYb8D/QgFe
-         VqzPwLmPE4rgpzviJ2+wppw47WlXjovZV6wHPe6CteG2fkw+kLLNCEpi4+8FDel1Tmrc
-         Hk/2+53bQOBtIgp/rFy2NVk+bofuIBigHVjhrNeSznHcXjQOEAGuLnIxhdnThLm3E0Je
-         ZPtQ==
+        Mon, 20 Jul 2020 12:33:01 -0400
+Received: by mail-io1-f65.google.com with SMTP id d18so18264091ion.0;
+        Mon, 20 Jul 2020 09:33:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iuVszLORzUqiZj6M6YeAEQFI1sJEhteSIqt1C5FLYSo=;
-        b=DYdLPQHGE/T5C3rJrPnizrkLFTSS6WpnSrfb5uBLEm/CEpDZc1+0zoI+todowpepaG
-         o7na5QS5mZrr2pyYzTgJTL1gW0LQueK47Vveq0pTpP4mCsi3oJoR7a0UtjJ+juPDdu1B
-         bI3ILKaXB6ac3Rwxjz9Et6L58cs9gFJs0zyTbwpw5XbociyPiRN72+KTKhbo1Dh9EGpi
-         MIvWKWQMY8o3969Zf4dneS7lwA1GvcGjIN6fqzmVlv2F9xQ3A+OC3Z3yeEYJGetcEXUV
-         eGe1XGUVezsr7UBxvuBvU4nxU4AvyEmTvgbeYjoMj4XG3PnN3kMCRcE0CL9IDZc5vpoP
-         m0gQ==
-X-Gm-Message-State: AOAM532vfiXjoFu5EwGYDl3Ol6JDOzHpntdmBSYNaKMs6pG2T7S39LTt
-        5xDP4TQgrnrz+lj+J0NB0dE=
-X-Google-Smtp-Source: ABdhPJzGO0wAKSG+S1bZNUexBZlC3AoA78Q1akQIDEE3n4fqzgWrb+9EJzVvfeH+uNLscsOwxZMQ5Q==
-X-Received: by 2002:aa7:d297:: with SMTP id w23mr21514702edq.49.1595262684956;
-        Mon, 20 Jul 2020 09:31:24 -0700 (PDT)
-Received: from skbuf ([188.25.219.134])
-        by smtp.gmail.com with ESMTPSA id q21sm14941656ejc.112.2020.07.20.09.31.23
+        bh=Jnt8NGEcb9QuspToNkCE0B8uWDCkviqvtXBWs7ndp7U=;
+        b=dR3hTB7BiWw/IcwA5DjFjczFD2oDyELi2GOkahBJZT88PZ/PU8EGrz/VWOi6vPkCUb
+         0Z7/OyQEyU7mE5T7tLMWYaqGShtJkduHX++9Id4Ahj1viAODKwx9eaTEMdyvUpUBbJny
+         /FopgqQHKiUTu2vjwr5NwDg+thAako4p9sk55eNNPDQK/z436OvdKgeODv6eIAipd2yf
+         KZSMY3V1ygXtuJDuwgWKYoV3UdZs+6Bfw1Ds4TTTqpsTFx3YOip9gQfyZxpO1oS+UAJK
+         Q4IrbYLdbGdtrjLDA5A2mWOOF6j/P1aOt01GuRk2bEtPFb/6HqKXzKxr4Q7a8iZ8QCUB
+         FeFg==
+X-Gm-Message-State: AOAM532SsRu9U7wrB/r6ZcvzjopEdvZNNi9JBfc24wuoKksHV9HHJHbW
+        R64LpDdQ+ggwowZBET+/2w==
+X-Google-Smtp-Source: ABdhPJwcUlO64ABhqVtn8AX7Eodm+sHDVMi+gLO66Zc7WYwVg0XRJFukPDma212P5nj5hmFTmdHLSw==
+X-Received: by 2002:a6b:c343:: with SMTP id t64mr24390076iof.66.1595262779894;
+        Mon, 20 Jul 2020 09:32:59 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j17sm8948918ilq.7.2020.07.20.09.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 09:31:24 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 19:31:21 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: net: phy: continue searching for C45 MMDs even if first returned
- ffff:ffff
-Message-ID: <20200720163121.sihkkncthvwnfqd7@skbuf>
-References: <4131864f-9e3e-9814-5f4d-16c93648bce2@canonical.com>
+        Mon, 20 Jul 2020 09:32:58 -0700 (PDT)
+Received: (nullmailer pid 2625794 invoked by uid 1000);
+        Mon, 20 Jul 2020 16:32:56 -0000
+Date:   Mon, 20 Jul 2020 10:32:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Artur Rojek <contact@artur-rojek.eu>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH v8 1/2] dt-bindings: input: Add docs for ADC driven
+ joystick.
+Message-ID: <20200720163256.GA2625563@bogus>
+References: <20200719221103.91644-1-contact@artur-rojek.eu>
+ <20200719221103.91644-2-contact@artur-rojek.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4131864f-9e3e-9814-5f4d-16c93648bce2@canonical.com>
+In-Reply-To: <20200719221103.91644-2-contact@artur-rojek.eu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 05:21:13PM +0100, Colin Ian King wrote:
-> Hi,
+On Mon, 20 Jul 2020 00:11:02 +0200, Artur Rojek wrote:
+> Add documentation for the adc-joystick driver, used to provide support
+> for joysticks connected over ADC.
 > 
-> Static analysis by Coverity has found a potential issue with the
-> following commit in /drivers/net/phy/phy_device.c:
+> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+> Tested-by: Paul Cercueil <paul@crapouillou.net>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
 > 
-> commit bba238ed037c60242332dd1e4c5778af9eba4d9b
-> Author: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Date:   Sun Jul 12 19:48:15 2020 +0300
+>  Changes:
 > 
->     net: phy: continue searching for C45 MMDs even if first returned
-> ffff:ffff
+>  v2: - Add `reg` property to axis subnode in order to enumerate the axes,
+>      - rename `linux,abs-code` property to `linux,code`,
+>      - drop `linux,` prefix from the remaining properties of axis subnode
 > 
-> The analysis is as follows:
+>  v3: no change
 > 
-> 735         * for 802.3 c45 complied PHYs, so don't probe it at first.
-> 736         */
+>  v4: - remove "bindings" from the unique identifier string,
+>      - replace `|` with `>` for all description properties,
+>      - specify the number of items for `io-channels`,
+>      - correct the regex pattern of `axis` property,
+>      - specify the value range of `reg` property for each axis,
+>      - put `abs-range` properties under `allOf`
 > 
-> dead_error_condition: The condition (devs_in_pkg & 0x1fffffffU) ==
-> 0x1fffffffU cannot be true.
+>  v5: add `a-f` to the regex pattern of `axis` property
 > 
-> 737        for (i = 1; i < MDIO_MMD_NUM && devs_in_pkg == 0 &&
+>  v6-v8: no change
 > 
-> const: At condition (devs_in_pkg & 0x1fffffffU) == 0x1fffffffU, the
-> value of devs_in_pkg must be equal to 0.
+>  Notes:
 > 
-> 738             (devs_in_pkg & 0x1fffffff) == 0x1fffffff; i++) {
+>  Rob, the bindings example in this patch depends on changes introduced
+>  in another patchset, still to be merged:
+>  https://lore.kernel.org/linux-iio/20200719205307.87385-4-contact@artur-rojek.eu/
+>  Your scripts will most likely fail to validate this.
 > 
-> Logically dead code (DEADCODE)dead_error_line: Execution cannot reach
-> this statement: if (i == 30 || i == 31) {
+>  .../bindings/input/adc-joystick.yaml          | 121 ++++++++++++++++++
+>  1 file changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/adc-joystick.yaml
 > 
-> To summarize, if devs_in_pkg is zero, then (devs_in_pkg & 0x1fffffffU)
-> == 0x1fffffffU can never be true, so the loop is never iterated over.
-> 
-> Colin
 
-You are absolutely correct. The check should have been || and not &&.
-I have a patch in my tree where I am fixing that. I was giving it some
-more thorough testing to understand why it was working, though, and how
-I could've missed it. One hypothesis I can't rule out is that I tested
-it using || but submitted it using && somehow (although I don't remember
-doing that).
 
-Thanks,
--Vladimir
+My bot found errors running 'make dt_binding_check' on your patch:
+
+Error: Documentation/devicetree/bindings/input/adc-joystick.example.dts:24.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/input/adc-joystick.example.dt.yaml' failed
+make[1]: *** [Documentation/devicetree/bindings/input/adc-joystick.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Makefile:1347: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1331964
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
