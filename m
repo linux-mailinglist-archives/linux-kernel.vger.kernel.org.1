@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2349B226BCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C30226C4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732548AbgGTQoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33628 "EHLO mail.kernel.org"
+        id S2389152AbgGTQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:48:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729224AbgGTPlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:35 -0400
+        id S1729144AbgGTPiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:38:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEE422065E;
-        Mon, 20 Jul 2020 15:41:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00FB522CBB;
+        Mon, 20 Jul 2020 15:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259695;
-        bh=nMIUeSSD+Emtx7Rx3Oh+WjaxNTlUbVbGWyjwxcCGi5Q=;
+        s=default; t=1595259498;
+        bh=e7KyK4OB1UzHIXGzVDNoI0t/F1VqIxgJuv1jCIwbcOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=utH9ejX+LTNVJZ2GZND4KyT3vfeHCjNHP1YBmLrWYfG98uPR43TvbMznCRsYfgT2n
-         B/qRoLxfD36vn3iSDd9Iaq5ciPaN6wEQXr/u6WFVN3rVSyryGTfZisUYPb+aT1uG7O
-         VLkjKzldsW3xv6QDPJcyt0njb+LE0x7RUWcFHIaQ=
+        b=crtjUValTNewQy4VTRMXq5K9B76ch2jcUC+DzuM+V11XQeC0FunuQcEksqrqBCGnN
+         1hpJMYOmUg0SuJKil276RWQomm+81ZTajfxewRHqf0gyQ34V0f9fH4dhFVQimLclOP
+         R16HDz9yvg65zmFJgHhd2qV37WKE6v8+A2LqLdx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Angelo Dureghello <angelo@sysam.it>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 47/86] spi: fix initial SPI_SR value in spi-fsl-dspi
-Date:   Mon, 20 Jul 2020 17:36:43 +0200
-Message-Id: <20200720152755.527760275@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 29/58] i2c: eg20t: Load module automatically if ID matches
+Date:   Mon, 20 Jul 2020 17:36:45 +0200
+Message-Id: <20200720152748.599143777@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152747.127988571@linuxfoundation.org>
+References: <20200720152747.127988571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Dureghello <angelo@sysam.it>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit aa54c1c9d90e6db75190813907190fadcce1bf45 ]
+[ Upstream commit 5f90786b31fb7d1e199a8999d46c4e3aea672e11 ]
 
-On ColdFire mcf54418, using DSPI_DMA_MODE mode, spi transfers
-at first boot stage are not succeding:
+The driver can't be loaded automatically because it misses
+module alias to be provided. Add corresponding MODULE_DEVICE_TABLE()
+call to the driver.
 
-m25p80 spi0.1: unrecognized JEDEC id bytes: 00, 00, 00
-
-The reason is the SPI_SR initial value set by the driver, that
-is not clearing (not setting to 1) the RF_DF flag. After a tour
-on the dspi hw modules that use this driver(Vybrid, ColdFire and
-ls1021a) a better init value for SR register has been set.
-
-Signed-off-by: Angelo Dureghello <angelo@sysam.it>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsl-dspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-eg20t.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index db3b6e9151a81..672152b49d95c 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -70,7 +70,7 @@
- #define SPI_SR			0x2c
- #define SPI_SR_EOQF		0x10000000
- #define SPI_SR_TCFQF		0x80000000
--#define SPI_SR_CLEAR		0xdaad0000
-+#define SPI_SR_CLEAR		0x9aaf0000
+diff --git a/drivers/i2c/busses/i2c-eg20t.c b/drivers/i2c/busses/i2c-eg20t.c
+index eef3aa6007f10..ffd8f9772096c 100644
+--- a/drivers/i2c/busses/i2c-eg20t.c
++++ b/drivers/i2c/busses/i2c-eg20t.c
+@@ -189,6 +189,7 @@ static const struct pci_device_id pch_pcidev_id[] = {
+ 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7831_I2C), 1, },
+ 	{0,}
+ };
++MODULE_DEVICE_TABLE(pci, pch_pcidev_id);
  
- #define SPI_RSER		0x30
- #define SPI_RSER_EOQFE		0x10000000
+ static irqreturn_t pch_i2c_handler(int irq, void *pData);
+ 
 -- 
 2.25.1
 
