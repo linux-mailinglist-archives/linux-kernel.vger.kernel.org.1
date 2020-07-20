@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9492259E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1FE2259F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 10:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgGTIVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 04:21:00 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7789 "EHLO huawei.com"
+        id S1727956AbgGTIWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 04:22:25 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7790 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726254AbgGTIVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 04:21:00 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6CE554F8A41BB1BB5468;
-        Mon, 20 Jul 2020 16:20:58 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 20 Jul 2020 16:20:47 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <mark@fasheh.com>, <jlbec@evilplan.org>,
-        <joseph.qi@linux.alibaba.com>
-CC:     <ocfs2-devel@oss.oracle.com>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] dlmfs: add a newline when printing 'capabilities' by sysfs
-Date:   Mon, 20 Jul 2020 16:24:33 +0800
-Message-ID: <20200720082433.164311-1-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726832AbgGTIWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 04:22:22 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E89D387299D0DBEA22D3;
+        Mon, 20 Jul 2020 16:22:17 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
+ 16:22:11 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] scsi: fnic: use eth_broadcast_addr() to assign broadcast address
+Date:   Mon, 20 Jul 2020 16:24:58 +0800
+Message-ID: <1595233498-13628-1-git-send-email-linmiaohe@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I cat module parameter 'capabilities' by sysfs, it displays as
-follows. It's better to add a newline for easy reading.
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-root@syzkaller:~# cat /sys/module/ocfs2_dlmfs/parameters/capabilities
-bast stackglueroot@syzkaller:~#
+Use eth_broadcast_addr() to assign broadcast address insetad of memset().
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- fs/ocfs2/dlmfs/dlmfs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/scsi/fnic/fnic_scsi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
-index ea868c6f9800..1f9c864ec09b 100644
---- a/fs/ocfs2/dlmfs/dlmfs.c
-+++ b/fs/ocfs2/dlmfs/dlmfs.c
-@@ -82,8 +82,13 @@ static int param_set_dlmfs_capabilities(const char *val,
- static int param_get_dlmfs_capabilities(char *buffer,
- 					const struct kernel_param *kp)
- {
--	return strlcpy(buffer, DLMFS_CAPABILITIES,
-+	int cnt;
-+
-+	cnt = strlcpy(buffer, DLMFS_CAPABILITIES,
- 		       strlen(DLMFS_CAPABILITIES) + 1);
-+	cnt += sprintf(buffer + cnt, "\n");
-+
-+	return cnt;
- }
- module_param_call(capabilities, param_set_dlmfs_capabilities,
- 		  param_get_dlmfs_capabilities, NULL, 0444);
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index 27535c90b248..03b1805b106c 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -23,6 +23,7 @@
+ #include <linux/scatterlist.h>
+ #include <linux/skbuff.h>
+ #include <linux/spinlock.h>
++#include <linux/etherdevice.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_vlan.h>
+ #include <linux/delay.h>
+@@ -275,7 +276,7 @@ int fnic_flogi_reg_handler(struct fnic *fnic, u32 fc_id)
+ 	}
+ 
+ 	if (fnic->ctlr.map_dest) {
+-		memset(gw_mac, 0xff, ETH_ALEN);
++		eth_broadcast_addr(gw_mac);
+ 		format = FCPIO_FLOGI_REG_DEF_DEST;
+ 	} else {
+ 		memcpy(gw_mac, fnic->ctlr.dest_addr, ETH_ALEN);
 -- 
-2.20.1
+2.19.1
 
