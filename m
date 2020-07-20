@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A98226AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27FD2269CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731077AbgGTPuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46230 "EHLO mail.kernel.org"
+        id S2388793AbgGTQ3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:29:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731066AbgGTPt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:49:58 -0400
+        id S1731645AbgGTP7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F77922D2A;
-        Mon, 20 Jul 2020 15:49:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3B3D2065E;
+        Mon, 20 Jul 2020 15:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260197;
-        bh=WAqAQgXiwIQl7s40SRVew0zc2hTIGlyvzy1c7WGIrkk=;
+        s=default; t=1595260750;
+        bh=cS5sXh8R8EECFabwRlhfigWsqZ9n88SnscShNI+HJNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izGgWzHG2ifoNCREfahRFtUOTbxSIsbA7ROmHwte70lN6M5e1VblJaZ6fV/Q9d/A9
-         K5qx7B/vRGK4Y/uHbOi2WVveNdYudDYu8we8qbE0uO1/QCt2HPLIlk2jaHCSjoYmbO
-         3uD80XbRIcBaYE6sNDDw/9N9Aa08o69+3wBiZruI=
+        b=CfX1H6Ajt43TalJdDMGbt7k1x/j/j/bIpLVcBL7SkED6SX77/VJ+juDCISvUfzwwY
+         +XLyR90SZv6LQfP9+SjldfjTVoJRMwnaV4m3tSJ+qxV6OS5TQvw6BcYFCVpHfLjcQA
+         h1+ZaRs3hrFP0URg0e3tCebAe/67ytkaR+bL8gBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cameron Berkenpas <cam@neo-zeon.de>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Lu Fengqi <lufq.fnst@cn.fujitsu.com>,
-        =?UTF-8?q?Dani=C3=ABl=20Sonck?= <dsonck92@gmail.com>,
-        Zhang Qiang <qiang.zhang@windriver.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Zefan Li <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 016/133] cgroup: fix cgroup_sk_alloc() for sk_clone_lock()
-Date:   Mon, 20 Jul 2020 17:36:03 +0200
-Message-Id: <20200720152804.513188610@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wulff <crwulff@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 082/215] ALSA: usb-audio: Create a registration quirk for Kingston HyperX Amp (0951:16d8)
+Date:   Mon, 20 Jul 2020 17:36:04 +0200
+Message-Id: <20200720152824.113641618@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,164 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Chris Wulff <crwulff@gmail.com>
 
-[ Upstream commit ad0f75e5f57ccbceec13274e1e242f2b5a6397ed ]
+[ Upstream commit 55f7326170d9e83e2d828591938e1101982a679c ]
 
-When we clone a socket in sk_clone_lock(), its sk_cgrp_data is
-copied, so the cgroup refcnt must be taken too. And, unlike the
-sk_alloc() path, sock_update_netprioidx() is not called here.
-Therefore, it is safe and necessary to grab the cgroup refcnt
-even when cgroup_sk_alloc is disabled.
+Create a quirk that allows special processing and/or
+skipping the call to snd_card_register.
 
-sk_clone_lock() is in BH context anyway, the in_interrupt()
-would terminate this function if called there. And for sk_alloc()
-skcd->val is always zero. So it's safe to factor out the code
-to make it more readable.
+For HyperX AMP, which uses two interfaces, but only has
+a capture stream in the second, this allows the capture
+stream to merge with the first PCM.
 
-The global variable 'cgroup_sk_alloc_disabled' is used to determine
-whether to take these reference counts. It is impossible to make
-the reference counting correct unless we save this bit of information
-in skcd->val. So, add a new bit there to record whether the socket
-has already taken the reference counts. This obviously relies on
-kmalloc() to align cgroup pointers to at least 4 bytes,
-ARCH_KMALLOC_MINALIGN is certainly larger than that.
-
-This bug seems to be introduced since the beginning, commit
-d979a39d7242 ("cgroup: duplicate cgroup reference when cloning sockets")
-tried to fix it but not compeletely. It seems not easy to trigger until
-the recent commit 090e28b229af
-("netprio_cgroup: Fix unlimited memory leak of v2 cgroups") was merged.
-
-Fixes: bd1060a1d671 ("sock, cgroup: add sock->sk_cgroup")
-Reported-by: Cameron Berkenpas <cam@neo-zeon.de>
-Reported-by: Peter Geis <pgwipeout@gmail.com>
-Reported-by: Lu Fengqi <lufq.fnst@cn.fujitsu.com>
-Reported-by: Daniël Sonck <dsonck92@gmail.com>
-Reported-by: Zhang Qiang <qiang.zhang@windriver.com>
-Tested-by: Cameron Berkenpas <cam@neo-zeon.de>
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Zefan Li <lizefan@huawei.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Roman Gushchin <guro@fb.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chris Wulff <crwulff@gmail.com>
+Link: https://lore.kernel.org/r/20200314165449.4086-3-crwulff@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/cgroup-defs.h |    6 ++++--
- include/linux/cgroup.h      |    4 +++-
- kernel/cgroup/cgroup.c      |   29 ++++++++++++++++++-----------
- net/core/sock.c             |    2 +-
- 4 files changed, 26 insertions(+), 15 deletions(-)
+ sound/usb/card.c   | 12 ++++++++----
+ sound/usb/quirks.c | 14 ++++++++++++++
+ sound/usb/quirks.h |  3 +++
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -755,7 +755,8 @@ struct sock_cgroup_data {
- 	union {
- #ifdef __LITTLE_ENDIAN
- 		struct {
--			u8	is_data;
-+			u8	is_data : 1;
-+			u8	no_refcnt : 1;
- 			u8	padding;
- 			u16	prioidx;
- 			u32	classid;
-@@ -765,7 +766,8 @@ struct sock_cgroup_data {
- 			u32	classid;
- 			u16	prioidx;
- 			u8	padding;
--			u8	is_data;
-+			u8	no_refcnt : 1;
-+			u8	is_data : 1;
- 		} __packed;
- #endif
- 		u64		val;
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -810,6 +810,7 @@ extern spinlock_t cgroup_sk_update_lock;
- 
- void cgroup_sk_alloc_disable(void);
- void cgroup_sk_alloc(struct sock_cgroup_data *skcd);
-+void cgroup_sk_clone(struct sock_cgroup_data *skcd);
- void cgroup_sk_free(struct sock_cgroup_data *skcd);
- 
- static inline struct cgroup *sock_cgroup_ptr(struct sock_cgroup_data *skcd)
-@@ -823,7 +824,7 @@ static inline struct cgroup *sock_cgroup
- 	 */
- 	v = READ_ONCE(skcd->val);
- 
--	if (v & 1)
-+	if (v & 3)
- 		return &cgrp_dfl_root.cgrp;
- 
- 	return (struct cgroup *)(unsigned long)v ?: &cgrp_dfl_root.cgrp;
-@@ -835,6 +836,7 @@ static inline struct cgroup *sock_cgroup
- #else	/* CONFIG_CGROUP_DATA */
- 
- static inline void cgroup_sk_alloc(struct sock_cgroup_data *skcd) {}
-+static inline void cgroup_sk_clone(struct sock_cgroup_data *skcd) {}
- static inline void cgroup_sk_free(struct sock_cgroup_data *skcd) {}
- 
- #endif	/* CONFIG_CGROUP_DATA */
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5928,17 +5928,8 @@ void cgroup_sk_alloc_disable(void)
- 
- void cgroup_sk_alloc(struct sock_cgroup_data *skcd)
- {
--	if (cgroup_sk_alloc_disabled)
--		return;
--
--	/* Socket clone path */
--	if (skcd->val) {
--		/*
--		 * We might be cloning a socket which is left in an empty
--		 * cgroup and the cgroup might have already been rmdir'd.
--		 * Don't use cgroup_get_live().
--		 */
--		cgroup_get(sock_cgroup_ptr(skcd));
-+	if (cgroup_sk_alloc_disabled) {
-+		skcd->no_refcnt = 1;
- 		return;
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index f9a64e9526f54..2284377cbb98d 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -659,10 +659,14 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 			goto __error;
  	}
  
-@@ -5962,8 +5953,24 @@ void cgroup_sk_alloc(struct sock_cgroup_
- 	rcu_read_unlock();
- }
- 
-+void cgroup_sk_clone(struct sock_cgroup_data *skcd)
-+{
-+	/* Socket clone path */
-+	if (skcd->val) {
-+		/*
-+		 * We might be cloning a socket which is left in an empty
-+		 * cgroup and the cgroup might have already been rmdir'd.
-+		 * Don't use cgroup_get_live().
-+		 */
-+		cgroup_get(sock_cgroup_ptr(skcd));
+-	/* we are allowed to call snd_card_register() many times */
+-	err = snd_card_register(chip->card);
+-	if (err < 0)
+-		goto __error;
++	/* we are allowed to call snd_card_register() many times, but first
++	 * check to see if a device needs to skip it or do anything special
++	 */
++	if (snd_usb_registration_quirk(chip, ifnum) == 0) {
++		err = snd_card_register(chip->card);
++		if (err < 0)
++			goto __error;
 +	}
-+}
-+
- void cgroup_sk_free(struct sock_cgroup_data *skcd)
- {
-+	if (skcd->no_refcnt)
-+		return;
-+
- 	cgroup_put(sock_cgroup_ptr(skcd));
+ 
+ 	if (quirk && quirk->shares_media_device) {
+ 		/* don't want to fail when snd_media_device_create() fails */
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 9d11ff742e5f5..f3e26e65c3257 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1782,3 +1782,17 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		break;
+ 	}
  }
++
++int snd_usb_registration_quirk(struct snd_usb_audio *chip,
++			       int iface)
++{
++	switch (chip->usb_id) {
++	case USB_ID(0x0951, 0x16d8): /* Kingston HyperX AMP */
++		/* Register only when we reach interface 2 so that streams can
++		 * merge correctly into PCMs from interface 0
++		 */
++		return (iface != 2);
++	}
++	/* Register as normal */
++	return 0;
++}
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index df0355843a4c1..3afc01eabc7e2 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -51,4 +51,7 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 					  struct audioformat *fp,
+ 					  int stream);
  
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1694,7 +1694,7 @@ struct sock *sk_clone_lock(const struct
- 		/* sk->sk_memcg will be populated at accept() time */
- 		newsk->sk_memcg = NULL;
- 
--		cgroup_sk_alloc(&newsk->sk_cgrp_data);
-+		cgroup_sk_clone(&newsk->sk_cgrp_data);
- 
- 		rcu_read_lock();
- 		filter = rcu_dereference(sk->sk_filter);
++int snd_usb_registration_quirk(struct snd_usb_audio *chip,
++			       int iface);
++
+ #endif /* __USBAUDIO_QUIRKS_H */
+-- 
+2.25.1
+
 
 
