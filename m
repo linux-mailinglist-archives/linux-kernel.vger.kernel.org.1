@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56FD226446
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED0A226556
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730309AbgGTPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:43:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37162 "EHLO mail.kernel.org"
+        id S1731430AbgGTPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:52:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730296AbgGTPnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:43:43 -0400
+        id S1731404AbgGTPwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:52:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2984E2064B;
-        Mon, 20 Jul 2020 15:43:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 246FE2065E;
+        Mon, 20 Jul 2020 15:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259822;
-        bh=X8PR27mtiDVSOjoj6WXm/0kCnqOW2iEJDp/FO2s/w4s=;
+        s=default; t=1595260374;
+        bh=crJYIvivXNC90Eok6L3CAdfejlbjG3R3FNRn61Sp718=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=weYhcvgueis1Xg1q2ZP1xPGxkPdycE1t6WEG3hFKLx35eMzmKAGyxHbrtLrhmdK9l
-         VK2gumyquecd6bE8n8MIocMxLqgASRiFgRUfjAkwJ38Yv5RNXs2E2gU2tvXx+PT9OX
-         pEov0zq9ecJXnIfjHcY8fVEC/deqUqinj3zfD59w=
+        b=uvvgyrYm8hy92+kONm9fpkkY2JGgYxu0JLe96jgl/J4pAMafxGni0R2vtp026gZd1
+         NgeFyh+5tkfHmxt726bTPIVIEA7XXb9A8p4aWEctqDVIbLgLKqeBHNZcAL2KFLuJPf
+         K8gj0Hf7Bu6unKiTOFQuETy9wm0d0OJGEI7JTVzc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=B6rgen=20Storvist?= <jorgen.storvist@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 71/86] USB: serial: option: add GosunCn GM500 series
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.19 080/133] mtd: rawnand: oxnas: Release all devices in the _remove() path
 Date:   Mon, 20 Jul 2020 17:37:07 +0200
-Message-Id: <20200720152756.750469331@linuxfoundation.org>
+Message-Id: <20200720152807.570110342@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jörgen Storvist <jorgen.storvist@gmail.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 08d4ef5cc9203a113702f24725f6cf4db476c958 upstream.
+commit 0a5f45e57e35d0840bedb816974ce2e63406cd8b upstream.
 
-Add USB IDs for GosunCn GM500 series cellular modules.
+oxnans_nand_remove() should release all MTD devices and clean all NAND
+devices, not only the first one registered.
 
-RNDIS config:
-usb-devices
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 12 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1404 Rev=03.18
-S:  Manufacturer=Android
-S:  Product=Android
-S:  SerialNumber=
-C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#=0x0 Alt= 0 #EPs= 1 Cls=e0(wlcon) Sub=01 Prot=03 Driver=rndis_host
-I:  If#=0x1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
-I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-
-MBIM config:
-usb-devices
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 11 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1405 Rev=03.18
-S:  Manufacturer=Android
-S:  Product=Android
-S:  SerialNumber=
-C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-I:  If#=0x4 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-
-ECM config:
-usb-devices
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 13 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1406 Rev=03.18
-S:  Manufacturer=Android
-S:  Product=Android
-S:  SerialNumber=
-C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
-I:  If#=0x4 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-
-Signed-off-by: Jörgen Storvist <jorgen.storvist@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-39-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/nand/raw/oxnas_nand.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -2019,6 +2019,9 @@ static const struct usb_device_id option
- 	  .driver_info = RSVD(4) | RSVD(5) },
- 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
- 	  .driver_info = RSVD(6) },
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
- 	{ } /* Terminating entry */
- };
- MODULE_DEVICE_TABLE(usb, option_ids);
+--- a/drivers/mtd/nand/raw/oxnas_nand.c
++++ b/drivers/mtd/nand/raw/oxnas_nand.c
+@@ -184,9 +184,13 @@ err_clk_unprepare:
+ static int oxnas_nand_remove(struct platform_device *pdev)
+ {
+ 	struct oxnas_nand_ctrl *oxnas = platform_get_drvdata(pdev);
++	struct nand_chip *chip;
++	int i;
+ 
+-	if (oxnas->chips[0])
+-		nand_release(oxnas->chips[0]);
++	for (i = 0; i < oxnas->nchips; i++) {
++		chip = oxnas->chips[i];
++		nand_release(chip);
++	}
+ 
+ 	clk_disable_unprepare(oxnas->clk);
+ 
 
 
