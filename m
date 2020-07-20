@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157F9226A14
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C54226A7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731278AbgGTPz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54444 "EHLO mail.kernel.org"
+        id S1732526AbgGTQer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730755AbgGTPzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:55:19 -0400
+        id S1731452AbgGTPzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:55:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEE9F2065E;
-        Mon, 20 Jul 2020 15:55:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14FFA20734;
+        Mon, 20 Jul 2020 15:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260518;
-        bh=Ahq+MFeqFQI5z4754L3jCb54hJ5FbH2RN46j9eSAkno=;
+        s=default; t=1595260521;
+        bh=6WnrSP/9H0aEpK01S5lqzV1JZMdQzzmjrml1TORPtL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ej+aOeak68kB76XtRI39utbA0Mnr3HgWY1/62KNk0SCCBsa8fkI2ElfJseKlm8X1T
-         44ALHUhJhqnHV8LeS01v4yz+tVv6hyyyybeyRxziOfpteuJ0B0VlLz4ptKl2neTbl9
-         yeMN40Lv7OoocrO9ZB78a+MVrDTS/NCN8dYYKpFs=
+        b=cVFKNIkvTsatsl7qjal3KaO+fJt8Khp0sqa0oltDFgjPdyAVZiTTVaT3GzZlBtj81
+         6kcsVPc1hl96Ld/Qq6QnDk3R9sOyRklhcaYbifP5Np2eDlxG7ejxXWGmAG1d5Lu42p
+         GTuCuSENqfa3EREkMzeINiO3jZ4SUqDiOKDERq8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
-        Amit Shah <amit@kernel.org>
-Subject: [PATCH 4.19 101/133] virtio: virtio_console: add missing MODULE_DEVICE_TABLE() for rproc serial
-Date:   Mon, 20 Jul 2020 17:37:28 +0200
-Message-Id: <20200720152808.610888099@linuxfoundation.org>
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH 4.19 102/133] serial: mxs-auart: add missed iounmap() in probe failure and remove
+Date:   Mon, 20 Jul 2020 17:37:29 +0200
+Message-Id: <20200720152808.664519354@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
 References: <20200720152803.732195882@linuxfoundation.org>
@@ -43,51 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-commit 897c44f0bae574c5fb318c759b060bebf9dd6013 upstream.
+commit d8edf8eb5f6e921fe6389f96d2cd05862730a6ff upstream.
 
-rproc_serial_id_table lacks an exposure to module devicetable, so
-when remoteproc firmware requests VIRTIO_ID_RPROC_SERIAL, no uevent
-is generated and no module autoloading occurs.
-Add missing MODULE_DEVICE_TABLE() annotation and move the existing
-one for VIRTIO_ID_CONSOLE right to the table itself.
+This driver calls ioremap() in probe, but it misses calling iounmap() in
+probe's error handler and remove.
+Add the missed calls to fix it.
 
-Fixes: 1b6370463e88 ("virtio_console: Add support for remoteproc serial")
-Cc: <stable@vger.kernel.org> # v3.8+
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Reviewed-by: Amit Shah <amit@kernel.org>
-Link: https://lore.kernel.org/r/x7C_CbeJtoGMy258nwAXASYz3xgFMFpyzmUvOyZzRnQrgWCREBjaqBOpAUS7ol4NnZYvSVwmTsCG0Ohyfvta-ygw6HMHcoeKK0C3QFiAO_Q=@pm.me
+Fixes: 47d37d6f94cc ("serial: Add auart driver for i.MX23/28")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200709135608.68290-1-hslester96@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/char/virtio_console.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/tty/serial/mxs-auart.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -2142,6 +2142,7 @@ static struct virtio_device_id id_table[
- 	{ VIRTIO_ID_CONSOLE, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
- };
-+MODULE_DEVICE_TABLE(virtio, id_table);
+--- a/drivers/tty/serial/mxs-auart.c
++++ b/drivers/tty/serial/mxs-auart.c
+@@ -1703,21 +1703,21 @@ static int mxs_auart_probe(struct platfo
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+ 		ret = irq;
+-		goto out_disable_clks;
++		goto out_iounmap;
+ 	}
  
- static unsigned int features[] = {
- 	VIRTIO_CONSOLE_F_SIZE,
-@@ -2154,6 +2155,7 @@ static struct virtio_device_id rproc_ser
- #endif
- 	{ 0 },
- };
-+MODULE_DEVICE_TABLE(virtio, rproc_serial_id_table);
+ 	s->port.irq = irq;
+ 	ret = devm_request_irq(&pdev->dev, irq, mxs_auart_irq_handle, 0,
+ 			       dev_name(&pdev->dev), s);
+ 	if (ret)
+-		goto out_disable_clks;
++		goto out_iounmap;
  
- static unsigned int rproc_serial_features[] = {
- };
-@@ -2306,6 +2308,5 @@ static void __exit fini(void)
- module_init(init);
- module_exit(fini);
+ 	platform_set_drvdata(pdev, s);
  
--MODULE_DEVICE_TABLE(virtio, id_table);
- MODULE_DESCRIPTION("Virtio console driver");
- MODULE_LICENSE("GPL");
+ 	ret = mxs_auart_init_gpios(s, &pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to initialize GPIOs.\n");
+-		goto out_disable_clks;
++		goto out_iounmap;
+ 	}
+ 
+ 	/*
+@@ -1725,7 +1725,7 @@ static int mxs_auart_probe(struct platfo
+ 	 */
+ 	ret = mxs_auart_request_gpio_irq(s);
+ 	if (ret)
+-		goto out_disable_clks;
++		goto out_iounmap;
+ 
+ 	auart_port[s->port.line] = s;
+ 
+@@ -1751,6 +1751,9 @@ out_free_qpio_irq:
+ 	mxs_auart_free_gpio_irq(s);
+ 	auart_port[pdev->id] = NULL;
+ 
++out_iounmap:
++	iounmap(s->port.membase);
++
+ out_disable_clks:
+ 	if (is_asm9260_auart(s)) {
+ 		clk_disable_unprepare(s->clk);
+@@ -1766,6 +1769,7 @@ static int mxs_auart_remove(struct platf
+ 	uart_remove_one_port(&auart_driver, &s->port);
+ 	auart_port[pdev->id] = NULL;
+ 	mxs_auart_free_gpio_irq(s);
++	iounmap(s->port.membase);
+ 	if (is_asm9260_auart(s)) {
+ 		clk_disable_unprepare(s->clk);
+ 		clk_disable_unprepare(s->clk_ahb);
 
 
