@@ -2,60 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506DB225585
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DBF225597
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 03:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgGTBiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Jul 2020 21:38:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46218 "EHLO huawei.com"
+        id S1726916AbgGTBsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Jul 2020 21:48:25 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44898 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726225AbgGTBiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Jul 2020 21:38:12 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 850796397271D474BF22
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 09:38:08 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
- 09:38:05 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] net: ag71xx: add missed clk_disable_unprepare in error path of probe
-Date:   Sun, 19 Jul 2020 21:46:37 -0400
-Message-ID: <20200720014637.12090-1-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726225AbgGTBsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Jul 2020 21:48:25 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 93000E02998C18DC669A;
+        Mon, 20 Jul 2020 09:48:22 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.81) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Jul 2020
+ 09:48:18 +0800
+Subject: Re: [PATCH -next] net: ena: use NULL instead of zero
+To:     Joe Perches <joe@perches.com>, <netanel@amazon.com>,
+        <akiyano@amazon.com>, <gtzalik@amazon.com>, <saeedb@amazon.com>,
+        <zorik@amazon.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <sameehj@amazon.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200718115633.37464-1-wanghai38@huawei.com>
+ <3093bc36c2ad86170e2e90a3451e5962d0815122.camel@perches.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <fd191d1c-a9ae-eac8-9446-1d90695178f0@huawei.com>
+Date:   Mon, 20 Jul 2020 09:48:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.104.82]
+In-Reply-To: <3093bc36c2ad86170e2e90a3451e5962d0815122.camel@perches.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.81]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ag71xx_mdio_probe() forgets to call clk_disable_unprepare() when
-of_reset_control_get_exclusive() failed. Add the missed call to fix it.
 
-Fixes: d51b6ce441d3 ("net: ethernet: add ag71xx driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
----
- drivers/net/ethernet/atheros/ag71xx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
-index 112edbd30823..38cce66ef212 100644
---- a/drivers/net/ethernet/atheros/ag71xx.c
-+++ b/drivers/net/ethernet/atheros/ag71xx.c
-@@ -556,7 +556,8 @@ static int ag71xx_mdio_probe(struct ag71xx *ag)
- 	ag->mdio_reset = of_reset_control_get_exclusive(np, "mdio");
- 	if (IS_ERR(ag->mdio_reset)) {
- 		netif_err(ag, probe, ndev, "Failed to get reset mdio.\n");
--		return PTR_ERR(ag->mdio_reset);
-+		err = PTR_ERR(ag->mdio_reset);
-+		goto mdio_err_put_clk;
- 	}
- 
- 	mii_bus->name = "ag71xx_mdio";
--- 
-2.17.1
+ÔÚ 2020/7/18 23:06, Joe Perches Ð´µÀ:
+> On Sat, 2020-07-18 at 19:56 +0800, Wang Hai wrote:
+>> Fix sparse build warning:
+>>
+>> drivers/net/ethernet/amazon/ena/ena_netdev.c:2193:34: warning:
+>>   Using plain integer as NULL pointer
+> Better to remove the initialization altogether and
+> move the declaration into the loop.
+Thanks for your advice. I'll send a v2 patch.
 
