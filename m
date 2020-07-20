@@ -2,157 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390E8226F8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 22:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F60D226F90
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 22:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731176AbgGTUOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 16:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        id S1731097AbgGTURu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 16:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731153AbgGTUOq (ORCPT
+        with ESMTP id S1727123AbgGTURt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 16:14:46 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08D2C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:14:45 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id w8so11083519plq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 13:14:45 -0700 (PDT)
+        Mon, 20 Jul 2020 16:17:49 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF75C061794;
+        Mon, 20 Jul 2020 13:17:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id 88so8791109wrh.3;
+        Mon, 20 Jul 2020 13:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=WXyRYBH3lUh7Umxi2hQ4QtCTReXFYZYL0z8hscZP+wo=;
-        b=AbCwKuR9T/1CW5k9yah+qNwtVfR+CZ+owvkLdgnoW02XcdReVJXFhxPJQdMZ6NBU9s
-         6n/Xmm4xRpSFeYJr4hhWiGWItWb3wd0jIwPqWY7/npRaaL3gYa4mK2XwI2UBinbq0Q5j
-         R6MCK0ksI09BwxZvNKp6JYUuQH5TiOC9nAXni7luaCYHXqYqIUhgatF6LgBbQjEx0S+l
-         KIYRE6zTsmnxP1aODkjtTaoWBfsyoSoWVpzjoyXzEZfNVVhtW8vS6ex+d33sQhZuNNfG
-         Bol7OHnyDRq4Ku5WBMfw+kVptxV/rgSFDOLx4ND/GNdcYuseULZwF0h59sswPV8fWcHD
-         icDQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jzw/8onKma0qauB0WGLcDc9iDqAqJvDHoJWk74V2lfo=;
+        b=CHHIdvTfP8EqK9uyRez8Lcjdq5Oe+D6Y7pnyDlXGm1LUZuhlkz0Krw3rk/qbSEC6Am
+         ruzsz3YaCd2sHkMTRIF1I5OnVcwnh9XSgvSvFoboW8IKdyCwAgSsp42T/oBex6yLYEZj
+         eTO5kvRRfcadyvvtUxlO/Hl6A4zzwWxn8uiQHZbTWtrigambUNXvgKseo+As8PQbpe/o
+         Rrpm4tddDCNl5F6gUrvPhXxnyDYgsVr80aEwaPdjZLC0SMnGHf9DsvNaZpKVcGgHH62n
+         6LoY6IW7yZa9nh+rePv4N5G2GSWS06nEbicm9GhwgPHFMnu5fSM/9P6mXqFprykqGyH0
+         hmsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=WXyRYBH3lUh7Umxi2hQ4QtCTReXFYZYL0z8hscZP+wo=;
-        b=EjesJkXy7RyxE0e4xJoiMIcRcGzq/+57GVia5/QqjZPTOUhRc5ZfqQ067g5v8d9mxY
-         V9PKEJyhQhgADtSLpcKI6fAn8UQkyK6xXDU/YOv4mbDBe0upusOeJd+TETU8Z4S2tZTP
-         CiMiIBlPAAbUedEYVjT5sGUJm4GSOKx7dHnYWwIKUby58CiCq9U3gXZhc/sYt0pMDpRs
-         vntCcHv4G5OfIcRy2DHvMNcYv++GmlG2FskGkfXfveSxptpYcUmR2C0AFeUAISgsqvob
-         hUWTJDiYKDipf0Fh6Iw/XVrneVnbqCF8B//4aZSQVYQNsNZ16f/UK/cDn/siVmDPKm31
-         M58Q==
-X-Gm-Message-State: AOAM533ChmPwcr5ssM/5iKxGh9M8IM9IojHPXEmkpEvkpkxohkJUCXee
-        3Hf4imD7ooqSNCpRv/l1sFl+DyXgDd7v4X1f
-X-Google-Smtp-Source: ABdhPJzJdB5vVYeTESa4TojPzKbv2IbuTs5hlhZh2o3UdEOdno8ALDzergtCvkt5KWEBkH+J0skw3c4y5QOgwm7Z
-X-Received: by 2002:a17:90a:368c:: with SMTP id t12mr1111761pjb.90.1595276085336;
- Mon, 20 Jul 2020 13:14:45 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 20:14:41 +0000
-Message-Id: <20200720201441.1871285-1-linchuyuan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v2] hwmon: adm1272: Enable temperature sampling for adm1272 adm1278
-From:   Chu Lin <linchuyuan@google.com>
-To:     linux@roeck-us.net, jdelvare@suse.com
-Cc:     =belgaied@google.com, jasonling@google.com, linchuyuan@google.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhongqil@google.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jzw/8onKma0qauB0WGLcDc9iDqAqJvDHoJWk74V2lfo=;
+        b=AtdBxNgVzp8ootlckDr1a5GtV8nhd40u7CVergJAGPnU/wWctHPn1eGqgGOGyN65d4
+         AapS/TLNrzYG12OyxCGeUzAPmPNl/bfrrfNbZU+Tvj/tE6013XomMyyCSlFwZmK9XaU7
+         Vjm72hBH+hK8CkBXdW502hdDH4IS7Jdp0dv7flfo+g9k2iLYEf7Ry9oN9s9WpdYYcFf0
+         ebCDcm89+c+MKwPP/NFcDwrepHtY1+7rqulG7w1yxqvOfzvDD2TZ7qZXbjiII7XhIjMz
+         PVllbyit9pFSQTQCcEAc7ZUSFQS8iUcsl93IA7AIauXpAW6cYoQLfO3FCRgteiGbTrRQ
+         GSRw==
+X-Gm-Message-State: AOAM530xSfsrBlvry0+G4ESJIxz15rjwYWvKk+I1uSNwqNH9Rda8IU6e
+        xWBoipf5LQ0A2MaXTVJWxNOLVYRHCfmZA7DgMj4=
+X-Google-Smtp-Source: ABdhPJwPxH7QBtP6wc4HBaQCIWU0o/YJOzNcPKhclaoxZuQg8Gf7VoRYP5hEuqNnOXAm3b1u0V1tXFsd75nMfdMeAAY=
+X-Received: by 2002:adf:f0ce:: with SMTP id x14mr22656173wro.137.1595276267720;
+ Mon, 20 Jul 2020 13:17:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
+ <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
+ <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk> <CA+1E3rLna6VVuwMSHVVEFmrgsTyJN=U4CcZtxSGWYr_UYV7AmQ@mail.gmail.com>
+ <20200710131054.GB7491@infradead.org> <20200710134824.GK12769@casper.infradead.org>
+ <20200710134932.GA16257@infradead.org> <20200710135119.GL12769@casper.infradead.org>
+ <CA+1E3rKOZUz7oZ_DGW6xZPQaDu+T5iEKXctd+gsJw05VwpGQSQ@mail.gmail.com>
+ <CA+1E3r+j=amkEg-_KUKSiu6gt2TRU6AU-_jwnB1C6wHHKnptfQ@mail.gmail.com> <20200720171416.GY12769@casper.infradead.org>
+In-Reply-To: <20200720171416.GY12769@casper.infradead.org>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Tue, 21 Jul 2020 01:47:20 +0530
+Message-ID: <CA+1E3rLNo5sFH3RPFAM4_SYXSmyWTCdbC3k3-6jeaj3FRPYLkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
+        linux-fsdevel@vger.kernel.org, "Matias Bj??rling" <mb@lightnvm.io>,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem:
-	adm1272 and adm1278 supports temperature sampling. The
-current way of enabling it requires the user manually unbind the device
-from the driver, flip the temperature sampling control bit and then bind
-the device back to the driver. It would be nice if we can control this in a
-better way by reading the dt.
+On Mon, Jul 20, 2020 at 10:44 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Jul 20, 2020 at 10:19:57PM +0530, Kanchan Joshi wrote:
+> > On Fri, Jul 10, 2020 at 7:41 PM Kanchan Joshi <joshiiitr@gmail.com> wrote:
+> > > If we are doing this for zone-append (and not general cases), "__s64
+> > > res64" should work -.
+> > > 64 bits = 1 (sign) + 23 (bytes-copied: cqe->res) + 40
+> > > (written-location: chunk_sector bytes limit)
+>
+> No, don't do this.
+>
+>  struct io_uring_cqe {
+>         __u64   user_data;      /* sqe->data submission passed back */
+> -       __s32   res;            /* result code for this event */
+> -       __u32   flags;
+> +       union {
+> +               struct {
+> +                       __s32   res;    /* result code for this event */
+> +                       __u32   flags;
+> +               };
+> +               __s64           res64;
+> +       };
+>  };
+>
+> Return the value in bytes in res64, or a negative errno.  Done.
 
-Solution:
-	Introducing device tree binding analog-temperature1-enable. If the
-flag is set, flip the temp1_en control bit on probing.
-
-Testing:
-1). iotools smbus_write16 35 0x10 0xd4 0x0037 // disable the temp1_en
-2). recompile the dt to have  analog-temperature1-enable set
-3). Probe the driver and make sure tempX shows up in hwmon
-
-Signed-off-by: Chu Lin <linchuyuan@google.com>
----
- drivers/hwmon/pmbus/adm1275.c | 36 +++++++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-index 19317575d1c6..ae28820b3e31 100644
---- a/drivers/hwmon/pmbus/adm1275.c
-+++ b/drivers/hwmon/pmbus/adm1275.c
-@@ -475,6 +475,7 @@ static int adm1275_probe(struct i2c_client *client,
- 	const struct coefficients *coefficients;
- 	int vindex = -1, voindex = -1, cindex = -1, pindex = -1;
- 	int tindex = -1;
-+	bool temp1_en;
- 	u32 shunt;
- 
- 	if (!i2c_check_functionality(client->adapter,
-@@ -536,6 +537,9 @@ static int adm1275_probe(struct i2c_client *client,
- 	if (shunt == 0)
- 		return -EINVAL;
- 
-+	temp1_en = of_property_read_bool(client->dev.of_node, "analog-temperature1-enable") &&
-+		(mid->driver_data == adm1272 || mid->driver_data == adm1278);
-+
- 	data->id = mid->driver_data;
- 
- 	info = &data->info;
-@@ -614,16 +618,18 @@ static int adm1275_probe(struct i2c_client *client,
- 		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
- 			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
- 
-+		ret = config;
-+		/* Enable temp if it is instructed by dt (it is disabled by default) */
-+		if (temp1_en && !(config & ADM1278_TEMP1_EN))
-+			config |= ADM1278_TEMP1_EN;
- 		/* Enable VOUT if not enabled (it is disabled by default) */
--		if (!(config & ADM1278_VOUT_EN)) {
-+		if (!(config & ADM1278_VOUT_EN))
- 			config |= ADM1278_VOUT_EN;
--			ret = i2c_smbus_write_byte_data(client,
--							ADM1275_PMON_CONFIG,
--							config);
-+		if (ret != config) {
-+			ret = i2c_smbus_write_word_data(client, ADM1275_PMON_CONFIG, config);
- 			if (ret < 0) {
--				dev_err(&client->dev,
--					"Failed to enable VOUT monitoring\n");
--				return -ENODEV;
-+				dev_err(&client->dev, "Failed to enable config control bits");
-+				return ret;
- 			}
- 		}
- 
-@@ -685,16 +691,18 @@ static int adm1275_probe(struct i2c_client *client,
- 		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
- 			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
- 
-+		ret = config;
-+		/* Enable temp if it is instructed by dt (it is disabled by default) */
-+		if (temp1_en && !(config & ADM1278_TEMP1_EN))
-+			config |= ADM1278_TEMP1_EN;
- 		/* Enable VOUT if not enabled (it is disabled by default) */
--		if (!(config & ADM1278_VOUT_EN)) {
-+		if (!(config & ADM1278_VOUT_EN))
- 			config |= ADM1278_VOUT_EN;
--			ret = i2c_smbus_write_byte_data(client,
--							ADM1275_PMON_CONFIG,
--							config);
-+		if (ret != config) {
-+			ret = i2c_smbus_write_word_data(client, ADM1275_PMON_CONFIG, config);
- 			if (ret < 0) {
--				dev_err(&client->dev,
--					"Failed to enable VOUT monitoring\n");
--				return -ENODEV;
-+				dev_err(&client->dev, "Failed to enable config control bits");
-+				return ret;
- 			}
- 		}
- 
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
-
+I concur. Can do away with bytes-copied. It's either in its entirety
+or not at all.
