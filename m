@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6377F226BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92425226C06
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730260AbgGTQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:46:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60912 "EHLO mail.kernel.org"
+        id S1729650AbgGTPkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:40:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729827AbgGTPlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:08 -0400
+        id S1729639AbgGTPkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:40:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B37E2065E;
-        Mon, 20 Jul 2020 15:41:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE3B522B4E;
+        Mon, 20 Jul 2020 15:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259667;
-        bh=914ODhceqPd2WJSKfwRdH2Hv1RPoxEEg9ABY9cnkrcw=;
+        s=default; t=1595259601;
+        bh=Jyp0iV04bss9dplzNPxSuypxEU7OLp/Hfzwaz2Y45iE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2HdJeLvqZN5trc/vF6mCSnOVGCDQVi2uMqN7dqBupFj+CZpYo1SMdsRXaPBb5fQ+
-         1bAqwM7yGMP9rC2N3oXghNNvHs/GGx3wPRHF2A6SDBjiaL4WxcTPz+dHgOrQ+IEmzc
-         98hFFM9clBTrVwmCW5EutHLxkLpFatQi74e9coao=
+        b=hJEObodFE4e9bg/2VkRoTBT/ZAVKDPwNCJTDaL0VoHCTA66coypYgbk9/w/5/XqRp
+         9C5Pi5Eii3Z1a6RDCw89jlXfCe5egUVH9gb783QV08A2XHTUBXmjWax7i9MmF4HJk8
+         Icdm0+aoM674QuEIB+hqRXfnaFnczKFVN1ZWw8/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Li Heng <liheng40@huawei.com>,
+        stable@vger.kernel.org, Andre Edich <andre.edich@microchip.com>,
+        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 09/86] net: cxgb4: fix return error value in t4_prep_fw
-Date:   Mon, 20 Jul 2020 17:36:05 +0200
-Message-Id: <20200720152753.584656908@linuxfoundation.org>
+Subject: [PATCH 4.9 11/86] smsc95xx: avoid memory leak in smsc95xx_bind
+Date:   Mon, 20 Jul 2020 17:36:07 +0200
+Message-Id: <20200720152753.689396506@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
 References: <20200720152753.138974850@linuxfoundation.org>
@@ -45,56 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Heng <liheng40@huawei.com>
+From: Andre Edich <andre.edich@microchip.com>
 
-[ Upstream commit 8a259e6b73ad8181b0b2ef338b35043433db1075 ]
+[ Upstream commit 3ed58f96a70b85ef646d5427258f677f1395b62f ]
 
-t4_prep_fw goto bye tag with positive return value when something
-bad happened and which can not free resource in adap_init0.
-so fix it to return negative value.
+In a case where the ID_REV register read is failed, the memory for a
+private data structure has to be freed before returning error from the
+function smsc95xx_bind.
 
-Fixes: 16e47624e76b ("cxgb4: Add new scheme to update T4/T5 firmware")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Li Heng <liheng40@huawei.com>
+Fixes: bbd9f9ee69242 ("smsc95xx: add wol support for more frame types")
+Signed-off-by: Andre Edich <andre.edich@microchip.com>
+Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/t4_hw.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/usb/smsc95xx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-index 62bc2af9cde70..9a2edc4d4fe83 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-@@ -3152,7 +3152,7 @@ int t4_prep_fw(struct adapter *adap, struct fw_info *fw_info,
- 	drv_fw = &fw_info->fw_hdr;
- 
- 	/* Read the header of the firmware on the card */
--	ret = -t4_read_flash(adap, FLASH_FW_START,
-+	ret = t4_read_flash(adap, FLASH_FW_START,
- 			    sizeof(*card_fw) / sizeof(uint32_t),
- 			    (uint32_t *)card_fw, 1);
- 	if (ret == 0) {
-@@ -3181,8 +3181,8 @@ int t4_prep_fw(struct adapter *adap, struct fw_info *fw_info,
- 		   should_install_fs_fw(adap, card_fw_usable,
- 					be32_to_cpu(fs_fw->fw_ver),
- 					be32_to_cpu(card_fw->fw_ver))) {
--		ret = -t4_fw_upgrade(adap, adap->mbox, fw_data,
--				     fw_size, 0);
-+		ret = t4_fw_upgrade(adap, adap->mbox, fw_data,
-+				    fw_size, 0);
- 		if (ret != 0) {
- 			dev_err(adap->pdev_dev,
- 				"failed to install firmware: %d\n", ret);
-@@ -3213,7 +3213,7 @@ int t4_prep_fw(struct adapter *adap, struct fw_info *fw_info,
- 			FW_HDR_FW_VER_MICRO_G(c), FW_HDR_FW_VER_BUILD_G(c),
- 			FW_HDR_FW_VER_MAJOR_G(k), FW_HDR_FW_VER_MINOR_G(k),
- 			FW_HDR_FW_VER_MICRO_G(k), FW_HDR_FW_VER_BUILD_G(k));
--		ret = EINVAL;
-+		ret = -EINVAL;
- 		goto bye;
- 	}
- 
+diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
+index 6ecae631a6307..3e6bf6bd0a684 100644
+--- a/drivers/net/usb/smsc95xx.c
++++ b/drivers/net/usb/smsc95xx.c
+@@ -1298,7 +1298,8 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	/* detect device revision as different features may be available */
+ 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
+ 	if (ret < 0)
+-		return ret;
++		goto free_pdata;
++
+ 	val >>= 16;
+ 	pdata->chip_id = val;
+ 	pdata->mdix_ctrl = get_mdix_status(dev->net);
 -- 
 2.25.1
 
