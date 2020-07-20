@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8B52256AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 06:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149E62256B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 06:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgGTE3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 00:29:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:50193 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725845AbgGTE3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 00:29:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595219376; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Dpw1HGE3ZCaDA+GhNOQnpyNXQW1TL4kVVJ9x2AeOGN4=; b=kJli9AY8WF5NMcW887PjIAxrBkLK35o9FE4F7NmpLLmgVwxfN/r342pmaRjEGzPN+QVByeEV
- P9xMBy5iOzw8qL/7NhpO9ht9UM7JQw+uSmziD0mCllAyegdzVRcUAQpM8o9oisEK23SKFaUB
- BnQ9a7453YNNXbnTO7EYqXl2IFs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5f151d958423214e131269cd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Jul 2020 04:29:09
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D6B40C433CB; Mon, 20 Jul 2020 04:29:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.12] (unknown [61.3.19.245])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDC83C433C6;
-        Mon, 20 Jul 2020 04:29:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BDC83C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: media: venus: Add an optional power
- domain for perf voting
-To:     Rob Herring <robh@kernel.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-References: <1594878139-3402-1-git-send-email-rnayak@codeaurora.org>
- <1594878139-3402-2-git-send-email-rnayak@codeaurora.org>
- <20200716195913.GA2744252@bogus>
- <cd368ea7-6ddc-004c-164d-dbbad8516853@codeaurora.org>
- <CAL_Jsq+RXcgTVwd_JC8YLYb1Ni29zFD9AxcNsmcpyrdefWq3Kw@mail.gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <59502915-743e-6756-34e2-f409e61fc03b@codeaurora.org>
-Date:   Mon, 20 Jul 2020 09:59:05 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1726092AbgGTEbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 00:31:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23738 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725267AbgGTEbn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 00:31:43 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06K43ORn185348;
+        Mon, 20 Jul 2020 00:31:05 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32bt0sh8q1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 00:31:05 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06K45dnM191005;
+        Mon, 20 Jul 2020 00:31:04 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32bt0sh8pj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 00:31:04 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06K4U1Ir011876;
+        Mon, 20 Jul 2020 04:31:02 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 32brq810cy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 04:31:02 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06K4Ux6a33620128
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 04:31:00 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E17CFAE055;
+        Mon, 20 Jul 2020 04:30:59 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72E48AE045;
+        Mon, 20 Jul 2020 04:30:57 +0000 (GMT)
+Received: from [9.199.36.102] (unknown [9.199.36.102])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 04:30:57 +0000 (GMT)
+Subject: Re: [PATCH v2 2/3] powerpc/powernv/idle: save-restore DAWR0, DAWRX0
+ for P10
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Pratik Rajesh Sampat <psampat@linux.ibm.com>
+References: <20200710052207.12003-1-psampat@linux.ibm.com>
+ <20200710052207.12003-3-psampat@linux.ibm.com>
+ <1594619458.45vrahx59w.astroid@bobo.none>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     benh@kernel.crashing.org, ego@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mikey@neuling.org, mpe@ellerman.id.au, paulus@samba.org,
+        pratik.r.sampat@gmail.com, svaidy@linux.ibm.com
+Message-ID: <ddf13184-86a3-5b84-6b4f-d901fc884ba5@linux.ibm.com>
+Date:   Mon, 20 Jul 2020 10:00:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+RXcgTVwd_JC8YLYb1Ni29zFD9AxcNsmcpyrdefWq3Kw@mail.gmail.com>
+In-Reply-To: <1594619458.45vrahx59w.astroid@bobo.none>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-19_04:2020-07-17,2020-07-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=834 spamscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200025
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nick,
 
-On 7/18/2020 12:26 AM, Rob Herring wrote:
-> On Thu, Jul 16, 2020 at 11:52 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>
->>
->> On 7/17/2020 1:29 AM, Rob Herring wrote:
->>> On Thu, Jul 16, 2020 at 11:12:16AM +0530, Rajendra Nayak wrote:
->>>> Add an optional power domain which when specified can be used for
->>>> setting the performance state of Venus.
->>>
->>> The h/w suddenly grew a new power island/domain? Seems like an abuse of
->>> power-domains...
->>
->> The power-domain always existed, we have just managed to survive without
->> having venus support DVFS and have the domain always be at a high performance
->> level (set statically by boot code)
->> Now, if we care to do DVFS and support better PM on the SoC, its important
->> for the devices to manage this additional power domain (and dynamically
->> scale it)
->>
->> That said, if the name 'opp-pd' makes it look like a software construct,
->> like Bjorn mentioned, I am fine to give it a real name like 'cx-pd'
->> Does that sound good?
+On 7/13/20 11:22 AM, Nicholas Piggin wrote:
+> Excerpts from Pratik Rajesh Sampat's message of July 10, 2020 3:22 pm:
+>> Additional registers DAWR0, DAWRX0 may be lost on Power 10 for
+>> stop levels < 4.
+>> Therefore save the values of these SPRs before entering a  "stop"
+>> state and restore their values on wakeup.
 > 
-> He suggested 'cx' as '-pd' would be redundant. I have no idea what
-> 'cx' means, but fine.
+> Hmm, where do you get this from? Documentation I see says DAWR is lost
+> on POWER9 but not P10.
 > 
->> PS: Like I mentioned earlier [1], cx is a shared power island,
->> not a power island specific to this block, and definitely not a software
->> pm-domain construct.
-> 
-> Put this context/detail into your patches. Assume I don't remember
-> what happened last week.
+> Does idle thread even need to save DAWR, or does it get switched when
+> going to a thread that has a watchpoint set?
 
-Thanks Rob, will do when I re-post shortly.
+I don't know how idle states works internally but IIUC, we need to save/restore
+DAWRs. This is needed when user creates per-cpu watchpoint event.
 
-> 
-> Unfortunately, gmail seems to have no way to filter on unread mails in
-> reply to my replies and doesn't move the thread up in 'Sent' filter,
-> so older threads get lost.
-> 
-> Rob
-> 
->> [1] https://lore.kernel.org/patchwork/patch/1241077/
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Ravi
