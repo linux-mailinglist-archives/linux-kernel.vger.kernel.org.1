@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A9A226427
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B86226529
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgGTPmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35442 "EHLO mail.kernel.org"
+        id S1731231AbgGTPvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:51:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730094AbgGTPmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:42:31 -0400
+        id S1730605AbgGTPvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:51:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C75120773;
-        Mon, 20 Jul 2020 15:42:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FEEA2065E;
+        Mon, 20 Jul 2020 15:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259750;
-        bh=hC4pvOV0218MlFHhrKJk2sI41gTgfZF5zc1K89z40po=;
+        s=default; t=1595260277;
+        bh=ICAXmvJ2UtAA73+028ULe6eIpG2Xrikt3jvu8MQl9s8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GPiSaUPO3tqtF9BmUsvfTGvJa4jvpNOqI+iXaqvJ8cCC3zash0PrCFtwU2RV8mc6S
-         3+YdU28e0c0ubykBEqBVmL3kmOW5vHzJ/TW61DYeCw3Kcz/XKHnYxkx4o4JEAOuM1S
-         LMf2K06n1Gezx4yksdONtM7/t+sq2ZO/Mopd1PAw=
+        b=rQqVO5SR0Z1ug9MBuCjtD/yBtWok41MJxJbi+zVDLRoN0F+p4m6bh4j0rpfIfY90x
+         RQbp5G/oWFIo8IVl1+fIxtil1Fu3O2m8vVwMEAymtiXo4Um+1MImIJc797tsXExnzi
+         YKitNKKXcNkX2W8igAkInYhWlmh+Y7+V2trbnNhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 36/86] tcp: md5: do not send silly options in SYNCOOKIES
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 045/133] net: sfp: add some quirks for GPON modules
 Date:   Mon, 20 Jul 2020 17:36:32 +0200
-Message-Id: <20200720152754.980513276@linuxfoundation.org>
+Message-Id: <20200720152805.888246253@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
+References: <20200720152803.732195882@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit e114e1e8ac9d31f25b9dd873bab5d80c1fc482ca ]
+[ Upstream commit b0eae33b2583dceb36224619f9fd85e6140ae594 ]
 
-Whenever cookie_init_timestamp() has been used to encode
-ECN,SACK,WSCALE options, we can not remove the TS option in the SYNACK.
+Marc Micalizzi reports that Huawei MA5671A and Alcatel/Lucent G-010S-P
+modules are capable of 2500base-X, but incorrectly report their
+capabilities in the EEPROM.  It seems rather common that GPON modules
+mis-report.
 
-Otherwise, tcp_synack_options() will still advertize options like WSCALE
-that we can not deduce later when receiving the packet from the client
-to complete 3WHS.
+Let's fix these modules by adding some quirks.
 
-Note that modern linux TCP stacks wont use MD5+TS+SACK in a SYN packet,
-but we can not know for sure that all TCP stacks have the same logic.
-
-Before the fix a tcpdump would exhibit this wrong exchange :
-
-10:12:15.464591 IP C > S: Flags [S], seq 4202415601, win 65535, options [nop,nop,md5 valid,mss 1400,sackOK,TS val 456965269 ecr 0,nop,wscale 8], length 0
-10:12:15.464602 IP S > C: Flags [S.], seq 253516766, ack 4202415602, win 65535, options [nop,nop,md5 valid,mss 1400,nop,nop,sackOK,nop,wscale 8], length 0
-10:12:15.464611 IP C > S: Flags [.], ack 1, win 256, options [nop,nop,md5 valid], length 0
-10:12:15.464678 IP C > S: Flags [P.], seq 1:13, ack 1, win 256, options [nop,nop,md5 valid], length 12
-10:12:15.464685 IP S > C: Flags [.], ack 13, win 65535, options [nop,nop,md5 valid], length 0
-
-After this patch the exchange looks saner :
-
-11:59:59.882990 IP C > S: Flags [S], seq 517075944, win 65535, options [nop,nop,md5 valid,mss 1400,sackOK,TS val 1751508483 ecr 0,nop,wscale 8], length 0
-11:59:59.883002 IP S > C: Flags [S.], seq 1902939253, ack 517075945, win 65535, options [nop,nop,md5 valid,mss 1400,sackOK,TS val 1751508479 ecr 1751508483,nop,wscale 8], length 0
-11:59:59.883012 IP C > S: Flags [.], ack 1, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508483 ecr 1751508479], length 0
-11:59:59.883114 IP C > S: Flags [P.], seq 1:13, ack 1, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508483 ecr 1751508479], length 12
-11:59:59.883122 IP S > C: Flags [.], ack 13, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508483 ecr 1751508483], length 0
-11:59:59.883152 IP S > C: Flags [P.], seq 1:13, ack 13, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508484 ecr 1751508483], length 12
-11:59:59.883170 IP C > S: Flags [.], ack 13, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508484 ecr 1751508484], length 0
-
-Of course, no SACK block will ever be added later, but nothing should break.
-Technically, we could remove the 4 nops included in MD5+TS options,
-but again some stacks could break seeing not conventional alignment.
-
-Fixes: 4957faade11b ("TCPCT part 1g: Responder Cookie => Initiator")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_output.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/phy/sfp-bus.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -615,7 +615,8 @@ static unsigned int tcp_synack_options(s
- 				       unsigned int mss, struct sk_buff *skb,
- 				       struct tcp_out_options *opts,
- 				       const struct tcp_md5sig_key *md5,
--				       struct tcp_fastopen_cookie *foc)
-+				       struct tcp_fastopen_cookie *foc,
-+				       enum tcp_synack_type synack_type)
- {
- 	struct inet_request_sock *ireq = inet_rsk(req);
- 	unsigned int remaining = MAX_TCP_OPTION_SPACE;
-@@ -630,7 +631,8 @@ static unsigned int tcp_synack_options(s
- 		 * rather than TS in order to fit in better with old,
- 		 * buggy kernels, but that was deemed to be unnecessary.
- 		 */
--		ireq->tstamp_ok &= !ireq->sack_ok;
-+		if (synack_type != TCP_SYNACK_COOKIE)
-+			ireq->tstamp_ok &= !ireq->sack_ok;
- 	}
- #endif
+diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
+index bd3ea01bff0b8..1fe7783c28712 100644
+--- a/drivers/net/phy/sfp-bus.c
++++ b/drivers/net/phy/sfp-bus.c
+@@ -37,7 +37,32 @@ struct sfp_bus {
+ 	bool started;
+ };
  
-@@ -3165,8 +3167,8 @@ struct sk_buff *tcp_make_synack(const st
- 	md5 = tcp_rsk(req)->af_specific->req_md5_lookup(sk, req_to_sk(req));
- #endif
- 	skb_set_hash(skb, tcp_rsk(req)->txhash, PKT_HASH_TYPE_L4);
--	tcp_header_size = tcp_synack_options(req, mss, skb, &opts, md5, foc) +
--			  sizeof(*th);
-+	tcp_header_size = tcp_synack_options(req, mss, skb, &opts, md5,
-+					     foc, synack_type) + sizeof(*th);
++static void sfp_quirk_2500basex(const struct sfp_eeprom_id *id,
++				unsigned long *modes)
++{
++	phylink_set(modes, 2500baseX_Full);
++}
++
+ static const struct sfp_quirk sfp_quirks[] = {
++	{
++		// Alcatel Lucent G-010S-P can operate at 2500base-X, but
++		// incorrectly report 2500MBd NRZ in their EEPROM
++		.vendor = "ALCATELLUCENT",
++		.part = "G010SP",
++		.modes = sfp_quirk_2500basex,
++	}, {
++		// Alcatel Lucent G-010S-A can operate at 2500base-X, but
++		// report 3.2GBd NRZ in their EEPROM
++		.vendor = "ALCATELLUCENT",
++		.part = "3FE46541AA",
++		.modes = sfp_quirk_2500basex,
++	}, {
++		// Huawei MA5671A can operate at 2500base-X, but report 1.2GBd
++		// NRZ in their EEPROM
++		.vendor = "HUAWEI",
++		.part = "MA5671A",
++		.modes = sfp_quirk_2500basex,
++	},
+ };
  
- 	skb_push(skb, tcp_header_size);
- 	skb_reset_transport_header(skb);
+ static size_t sfp_strlen(const char *str, size_t maxlen)
+-- 
+2.25.1
+
 
 
