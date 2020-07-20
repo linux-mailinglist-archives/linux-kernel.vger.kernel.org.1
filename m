@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9902269E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671222269E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732037AbgGTP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
+        id S1732058AbgGTP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732031AbgGTP60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:58:26 -0400
+        id S1732047AbgGTP6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:58:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4D162065E;
-        Mon, 20 Jul 2020 15:58:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8139920734;
+        Mon, 20 Jul 2020 15:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260705;
-        bh=NAbFpu8g4lg42BP7xntLAmpxriEiKBROrvqWTxwFY6U=;
+        s=default; t=1595260711;
+        bh=XTUF+o5CIluzJxCVc/liIpiAQyJPlLkC0DzwQTYaWYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bSrdBhZvdi5Ppio7sIni20hqAexEsrAGVcWsVGzoioplOjRsLnWQlB8MI+q02rwKR
-         IBfdrYJlxIc38gO0mfgXMLMeP1l4FJczN2OeMlTFqTeDwaBQwl5XR4ye4a3p+U8A5t
-         mtot6yfLBaEQV8sht8zEIVgeXLocxwUw3Kv2BMi4=
+        b=qBc5o9365dXMvoQzbllGedCQcJjzFEtyCje2nXbp3QNtHpdLLrJFksRvcxNy1HCMy
+         p64+5cLDOxYwY9wEa7yb0ierRi/vU5JRSE6vmrc5mdTOfNmy2iJsgGkcZRdTRVBOzi
+         ggolMenSs3tga98gxNs1UkH1miC9FpDrmz1EE8DY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 036/215] blk-mq-debugfs: update blk_queue_flag_name[] accordingly for new flags
-Date:   Mon, 20 Jul 2020 17:35:18 +0200
-Message-Id: <20200720152821.903934374@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 038/215] m68k: mm: fix node memblock init
+Date:   Mon, 20 Jul 2020 17:35:20 +0200
+Message-Id: <20200720152821.994807772@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
 References: <20200720152820.122442056@linuxfoundation.org>
@@ -44,47 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Angelo Dureghello <angelo.dureghello@timesys.com>
 
-[ Upstream commit bfe373f608cf81b7626dfeb904001b0e867c5110 ]
+[ Upstream commit c43e55796dd4d13f4855971a4d7970ce2cd94db4 ]
 
-Else there may be magic numbers in /sys/kernel/debug/block/*/state.
+After pulling 5.7.0 (linux-next merge), mcf5441x mmu boot was
+hanging silently.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+memblock_add() seems not appropriate, since using MAX_NUMNODES
+as node id, while memblock_add_node() sets up memory for node id 0.
+
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq-debugfs.c | 3 +++
- include/linux/blkdev.h | 1 +
- 2 files changed, 4 insertions(+)
+ arch/m68k/mm/mcfmmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index b3f2ba483992d..121f4c1e0697b 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -125,6 +125,9 @@ static const char *const blk_queue_flag_name[] = {
- 	QUEUE_FLAG_NAME(REGISTERED),
- 	QUEUE_FLAG_NAME(SCSI_PASSTHROUGH),
- 	QUEUE_FLAG_NAME(QUIESCED),
-+	QUEUE_FLAG_NAME(PCI_P2PDMA),
-+	QUEUE_FLAG_NAME(ZONE_RESETALL),
-+	QUEUE_FLAG_NAME(RQ_ALLOC_TIME),
- };
- #undef QUEUE_FLAG_NAME
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 6cb1e41d58d00..70a5f55ea6647 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -164,7 +164,7 @@ void __init cf_bootmem_alloc(void)
+ 	m68k_memory[0].addr = _rambase;
+ 	m68k_memory[0].size = _ramend - _rambase;
  
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index bff1def62eed9..d5338b9ee5502 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -592,6 +592,7 @@ struct request_queue {
- 	u64			write_hints[BLK_MAX_WRITE_HINTS];
- };
+-	memblock_add(m68k_memory[0].addr, m68k_memory[0].size);
++	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0);
  
-+/* Keep blk_queue_flag_name[] in sync with the definitions below */
- #define QUEUE_FLAG_STOPPED	0	/* queue is stopped */
- #define QUEUE_FLAG_DYING	1	/* queue being torn down */
- #define QUEUE_FLAG_NOMERGES     3	/* disable merge attempts */
+ 	/* compute total pages in system */
+ 	num_pages = PFN_DOWN(_ramend - _rambase);
 -- 
 2.25.1
 
