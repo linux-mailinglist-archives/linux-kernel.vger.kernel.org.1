@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69572226B7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517B8226B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389071AbgGTQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 12:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731196AbgGTQlR (ORCPT
+        id S1730861AbgGTQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 12:42:08 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:58374 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729276AbgGTQmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:41:17 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFE2C061794;
-        Mon, 20 Jul 2020 09:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=vIy+LTW5jYYBV4hfqVnhhtl8us5VhtAtJu0nO6I1cmE=; b=zaXxxhUwzfepAs+QKhex2X36fE
-        DuGzdqN4ZfvkT7AKp2dhrmQcXq3vupumdc9035lGjEKd5Go59nUEwulRTxU8Trpb/Ex3nsuM2YqRV
-        D4I5n7Dn2fB5WtStJHI3ygoGBDaJ4OkixvGAC49N6P/2HqrpJnIQiqfzUBDxTauDaNA7JR7QsRkFs
-        ntz+Lasmq+m+5tdKvnM5Ill/Tzzu4mroMqdF0sqp9EWd27QCQqkaGa4bsWrwJXLk+g0vAFME87GWW
-        KkVHf6BzkLee7//0dkWecbqpW92OMBV1MC39ZmdYB0dCq/nq/hk3r5VxQMe3y/9ag4u5zbyyZcLwH
-        ke/1Zf/g==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxYqn-0005vn-4l; Mon, 20 Jul 2020 16:41:13 +0000
-Subject: Re: linux-next: Tree for Jul 20 (scsi/ufs/exynos)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Santosh Yaraganavi <santosh.sy@samsung.com>,
-        Vinayak Holikatti <h.vinayak@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Seungwon Jeon <essuuj@gmail.com>
-References: <20200720194225.17de9962@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e6112633-61c9-fa80-8479-fe90bb360868@infradead.org>
-Date:   Mon, 20 Jul 2020 09:41:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Mon, 20 Jul 2020 12:42:06 -0400
+Received: from [10.137.106.139] (unknown [131.107.174.11])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D40D020B4909;
+        Mon, 20 Jul 2020 09:42:05 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D40D020B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1595263326;
+        bh=3WXhX2ALsHf2q0CNQWhMDb6+Us/DWEgno/p0XetGReU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UX8lUvTr2G8xrIi4guewPBf2sMpGgCSWG+ypVjSkYree00iVyz+K6+TNPYj5kqBpt
+         OJ1PUugFka19lCF1U2bCAf3ni5ddtj5CGjxeZgGafnEwJSMh8WQa7ExyR5hCc+fazj
+         HdAQOXuV9j5EmSiKfIRiaJdWdiInyuMxRVW+6Yqg=
+Subject: Re: [RFC PATCH v4 05/12] fs: add security blob and hooks for
+ block_device
+To:     Casey Schaufler <casey@schaufler-ca.com>, agk@redhat.com,
+        axboe@kernel.dk, snitzer@redhat.com, jmorris@namei.org,
+        serge@hallyn.com, zohar@linux.ibm.com, viro@zeniv.linux.org.uk,
+        paul@paul-moore.com, eparis@redhat.com, jannh@google.com,
+        dm-devel@redhat.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-audit@redhat.com
+Cc:     tyhicks@linux.microsoft.com, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, sashal@kernel.org,
+        jaskarankhurana@linux.microsoft.com, mdsakib@microsoft.com,
+        nramas@linux.microsoft.com
+References: <20200717230941.1190744-1-deven.desai@linux.microsoft.com>
+ <20200717230941.1190744-6-deven.desai@linux.microsoft.com>
+ <1843d707-c62e-fa13-c663-c123ea1205a0@schaufler-ca.com>
+From:   Deven Bowers <deven.desai@linux.microsoft.com>
+Message-ID: <e82dbf6b-e90d-205b-62d1-b7cd8b5df844@linux.microsoft.com>
+Date:   Mon, 20 Jul 2020 09:42:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200720194225.17de9962@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1843d707-c62e-fa13-c663-c123ea1205a0@schaufler-ca.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -53,26 +55,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/20 2:42 AM, Stephen Rothwell wrote:
-> Hi all,
+
+
+On 7/17/2020 5:14 PM, Casey Schaufler wrote:
+
+[...snip]
+
+>> +EXPORT_SYMBOL(security_bdev_free);
+>> +
+>> +int security_bdev_setsecurity(struct block_device *bdev,
+>> +			      const char *name, const void *value,
+>> +			      size_t size)
+>> +{
+>> +	return call_int_hook(bdev_setsecurity, 0, bdev, name, value, size);
+>> +}
 > 
-> Changes since 20200717:
+> What is your expectation regarding multiple security modules using the
+> same @name? What do you expect a security module to do if it does not
+> support a particular @name? You may have a case where SELinux supports
+> a @name that AppArmor (or KSRI) doesn't. -ENOSYS may be you friend here.
 > 
 
-on x86_64:
+I expect that some security modules may want to use the same @name / use
+the data contained with @name. I cannot speak to the future cases of
+other LSMs, but I expect if they want the raw @value, they'll copy it
+into their security blob, or interpret @value to a field defined by
+their security blob.
 
-WARNING: unmet direct dependencies detected for PHY_SAMSUNG_UFS
-  Depends on [n]: OF [=n] && (ARCH_EXYNOS || COMPILE_TEST [=y])
-  Selected by [y]:
-  - SCSI_UFS_EXYNOS [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && SCSI_UFSHCD_PLATFORM [=y] && (ARCH_EXYNOS || COMPILE_TEST [=y])
+Originally, I expected a security module that does not implement a
+particular @name no-op with return 0, not -ENOSYS, but I recognize that
+error codes are valuable, and it's a trivial change - I'll switch the 
+security hook to call the hooks while allowing -ENOSYS or 0 in the next 
+iteration.
 
-
-There are no build errors since <linux/of.h> provides stubs for
-functions when CONFIG_OF is not enabled.
-
-But new warnings are not OK.
-
-thanks.
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>> +EXPORT_SYMBOL(security_bdev_setsecurity);
+>> +
+>>   #ifdef CONFIG_PERF_EVENTS
+>>   int security_perf_event_open(struct perf_event_attr *attr, int type)
+>>   {
