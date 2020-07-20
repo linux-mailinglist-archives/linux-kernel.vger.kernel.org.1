@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190BA226AC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67182269D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 18:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730461AbgGTPty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
+        id S1731602AbgGTP7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731041AbgGTPtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:49:51 -0400
+        id S1732102AbgGTP7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:59:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E8C42064B;
-        Mon, 20 Jul 2020 15:49:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 865ED22BEF;
+        Mon, 20 Jul 2020 15:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595260190;
-        bh=VTxUXBUqA+CuzuIJVfOq2WKtwSeZulV5sBSrOwNNDb0=;
+        s=default; t=1595260740;
+        bh=efmr60Q+tTsBSdsqbbZSjKIsNeDJ0Uo8QYxLKTI0cSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TLiG95syNucgoH5+ImKOljG68GcDFvoSHdQSHS4r/wFCLDL4PKys8lgcdnq5bLfoy
-         lrChIZcEnptx3Tbi4e7r8oewvsxUKP1K1wVMGkNNf5fwf85SgwYwkNWoLq4ExVWpED
-         h7M1D5joqaa46hb4ZezL9SWciqIVLUH2eWeLV6Dw=
+        b=fDf7ejz3dYa6+WDwDa3Keg2fWW3xXNCi4fKDdqnEgJKH8jFVcTxflw2TvYoy7Gart
+         doUkhx1SkaGLb1BDYISD9MecjTrp/cvyEDM1ysivPzK5o4p3TiJWshICC7set0V9+C
+         kV8/HpoJHBEGSDJRTNlavIIcDqcrSbi8TByzN2dU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 013/133] tcp: md5: do not send silly options in SYNCOOKIES
-Date:   Mon, 20 Jul 2020 17:36:00 +0200
-Message-Id: <20200720152804.370144976@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 079/215] bus: ti-sysc: Detect EDMA and set quirk flags for tptc
+Date:   Mon, 20 Jul 2020 17:36:01 +0200
+Message-Id: <20200720152823.969262451@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-References: <20200720152803.732195882@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+References: <20200720152820.122442056@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit e114e1e8ac9d31f25b9dd873bab5d80c1fc482ca ]
+[ Upstream commit 25bfaaa73c7d26a6e897559c510d7daff5e9d22d ]
 
-Whenever cookie_init_timestamp() has been used to encode
-ECN,SACK,WSCALE options, we can not remove the TS option in the SYNACK.
+In order to probe EDMA with ti-sysc interconnect target module and with
+device tree data, we need to properly detect EDMA and set the flags for
+SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY for tptc.
 
-Otherwise, tcp_synack_options() will still advertize options like WSCALE
-that we can not deduce later when receiving the packet from the client
-to complete 3WHS.
+We have these flags currently set for am4 and dra7, but not for am335x.
+Let's set them for all the SoCs as the tptc module should behave the
+same for all of them. It's likely that am335x was never tested to idle
+EDMA tptc.
 
-Note that modern linux TCP stacks wont use MD5+TS+SACK in a SYN packet,
-but we can not know for sure that all TCP stacks have the same logic.
-
-Before the fix a tcpdump would exhibit this wrong exchange :
-
-10:12:15.464591 IP C > S: Flags [S], seq 4202415601, win 65535, options [nop,nop,md5 valid,mss 1400,sackOK,TS val 456965269 ecr 0,nop,wscale 8], length 0
-10:12:15.464602 IP S > C: Flags [S.], seq 253516766, ack 4202415602, win 65535, options [nop,nop,md5 valid,mss 1400,nop,nop,sackOK,nop,wscale 8], length 0
-10:12:15.464611 IP C > S: Flags [.], ack 1, win 256, options [nop,nop,md5 valid], length 0
-10:12:15.464678 IP C > S: Flags [P.], seq 1:13, ack 1, win 256, options [nop,nop,md5 valid], length 12
-10:12:15.464685 IP S > C: Flags [.], ack 13, win 65535, options [nop,nop,md5 valid], length 0
-
-After this patch the exchange looks saner :
-
-11:59:59.882990 IP C > S: Flags [S], seq 517075944, win 65535, options [nop,nop,md5 valid,mss 1400,sackOK,TS val 1751508483 ecr 0,nop,wscale 8], length 0
-11:59:59.883002 IP S > C: Flags [S.], seq 1902939253, ack 517075945, win 65535, options [nop,nop,md5 valid,mss 1400,sackOK,TS val 1751508479 ecr 1751508483,nop,wscale 8], length 0
-11:59:59.883012 IP C > S: Flags [.], ack 1, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508483 ecr 1751508479], length 0
-11:59:59.883114 IP C > S: Flags [P.], seq 1:13, ack 1, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508483 ecr 1751508479], length 12
-11:59:59.883122 IP S > C: Flags [.], ack 13, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508483 ecr 1751508483], length 0
-11:59:59.883152 IP S > C: Flags [P.], seq 1:13, ack 13, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508484 ecr 1751508483], length 12
-11:59:59.883170 IP C > S: Flags [.], ack 13, win 256, options [nop,nop,md5 valid,nop,nop,TS val 1751508484 ecr 1751508484], length 0
-
-Of course, no SACK block will ever be added later, but nothing should break.
-Technically, we could remove the 4 nops included in MD5+TS options,
-but again some stacks could break seeing not conventional alignment.
-
-Fixes: 4957faade11b ("TCPCT part 1g: Responder Cookie => Initiator")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_output.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/bus/ti-sysc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -648,7 +648,8 @@ static unsigned int tcp_synack_options(c
- 				       unsigned int mss, struct sk_buff *skb,
- 				       struct tcp_out_options *opts,
- 				       const struct tcp_md5sig_key *md5,
--				       struct tcp_fastopen_cookie *foc)
-+				       struct tcp_fastopen_cookie *foc,
-+				       enum tcp_synack_type synack_type)
- {
- 	struct inet_request_sock *ireq = inet_rsk(req);
- 	unsigned int remaining = MAX_TCP_OPTION_SPACE;
-@@ -663,7 +664,8 @@ static unsigned int tcp_synack_options(c
- 		 * rather than TS in order to fit in better with old,
- 		 * buggy kernels, but that was deemed to be unnecessary.
- 		 */
--		ireq->tstamp_ok &= !ireq->sack_ok;
-+		if (synack_type != TCP_SYNACK_COOKIE)
-+			ireq->tstamp_ok &= !ireq->sack_ok;
- 	}
- #endif
- 
-@@ -3246,7 +3248,7 @@ struct sk_buff *tcp_make_synack(const st
- #endif
- 	skb_set_hash(skb, tcp_rsk(req)->txhash, PKT_HASH_TYPE_L4);
- 	tcp_header_size = tcp_synack_options(sk, req, mss, skb, &opts, md5,
--					     foc) + sizeof(*th);
-+					     foc, synack_type) + sizeof(*th);
- 
- 	skb_push(skb, tcp_header_size);
- 	skb_reset_transport_header(skb);
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 1d31304fdd7c5..d0b75e7d5e50f 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1311,6 +1311,10 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_MODULE_QUIRK_SGX),
+ 	SYSC_QUIRK("rtc", 0, 0x74, 0x78, -ENODEV, 0x4eb01908, 0xffff00f0,
+ 		   SYSC_MODULE_QUIRK_RTC_UNLOCK),
++	SYSC_QUIRK("tptc", 0, 0, 0x10, -ENODEV, 0x40006c00, 0xffffefff,
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
++	SYSC_QUIRK("tptc", 0, 0, -ENODEV, -ENODEV, 0x40007c00, 0xffffffff,
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
+ 	SYSC_QUIRK("usb_otg_hs", 0, 0x400, 0x404, 0x408, 0x00000050,
+ 		   0xffffffff, SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
+ 	SYSC_QUIRK("usb_otg_hs", 0, 0, 0x10, -ENODEV, 0x4ea2080d, 0xffffffff,
+@@ -1377,6 +1381,7 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 	SYSC_QUIRK("spinlock", 0, 0, 0x10, -ENODEV, 0x50020000, 0xffffffff, 0),
+ 	SYSC_QUIRK("rng", 0, 0x1fe0, 0x1fe4, -ENODEV, 0x00000020, 0xffffffff, 0),
+ 	SYSC_QUIRK("timer32k", 0, 0, 0x4, -ENODEV, 0x00000060, 0xffffffff, 0),
++	SYSC_QUIRK("tpcc", 0, 0, -ENODEV, -ENODEV, 0x40014c00, 0xffffffff, 0),
+ 	SYSC_QUIRK("usbhstll", 0, 0, 0x10, 0x14, 0x00000004, 0xffffffff, 0),
+ 	SYSC_QUIRK("usbhstll", 0, 0, 0x10, 0x14, 0x00000008, 0xffffffff, 0),
+ 	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, 0x14, 0x50700100, 0xffffffff, 0),
+-- 
+2.25.1
+
 
 
