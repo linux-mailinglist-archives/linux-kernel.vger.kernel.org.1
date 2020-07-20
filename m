@@ -2,147 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD72022735F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B3722734F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 01:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgGUAAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 20:00:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgGUAAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:00:18 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE7DA208E4;
-        Mon, 20 Jul 2020 23:51:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595289105;
-        bh=7ruEEyKDUeYqw7QTMZfSVf0o3+tXFE6jymo2C5c1vDA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vigIZWauYeJjqcJLOmY21S4+ieHufF0KzoPQtCFsoYZikeJcCItEoqiDzxWfjzJ4L
-         CCTGDKwWEXkIVnZ3ZjfFbI0ZMZk4NUYjPhYjJGyoEOqJA/+dDuZ4LHPZ/wycAjslmQ
-         UUfxBqUqlaSpzZJ132C/8qiw5mg9Guv+GcWQFJZw=
-Date:   Mon, 20 Jul 2020 16:51:44 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: kernel BUG at include/linux/swapops.h:LINE!
-Message-Id: <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
-In-Reply-To: <0000000000004c38cd05aad1d13f@google.com>
-References: <000000000000bc4fd705a6e090e2@google.com>
-        <0000000000004c38cd05aad1d13f@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727812AbgGTXxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 19:53:46 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2712 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726907AbgGTXxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 19:53:45 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f162e110000>; Mon, 20 Jul 2020 16:51:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 20 Jul 2020 16:53:45 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 20 Jul 2020 16:53:45 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Jul
+ 2020 23:53:44 +0000
+Subject: Re: [PATCH v2 2/5] mm/migrate: add a direction parameter to
+ migrate_vma
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
+References: <20200713172149.2310-1-rcampbell@nvidia.com>
+ <20200713172149.2310-3-rcampbell@nvidia.com>
+ <20200720183643.GA3028737@nvidia.com>
+ <2e775a5d-9d62-de52-6799-3bbb09c88c5a@nvidia.com>
+ <20200720195943.GH2021234@nvidia.com>
+ <fdfde6a0-f2bf-c0b2-0283-c882aa755292@nvidia.com>
+ <20200720231633.GI2021234@nvidia.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <d458ffef-d205-e71d-1b8b-60721c42ca7f@nvidia.com>
+Date:   Mon, 20 Jul 2020 16:53:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200720231633.GI2021234@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595289105; bh=ZQjRhhF+y7yVrWHN10F4rwb8PZd9lDc5hIDmGv41Pnw=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Nwzysd2f4rPxKQVih681HcCnyXf4qE7QVnsfF9tUtJg8Dc9oBycsJXLGLV3kaUfXV
+         nmm4LncwyqzoOLgco1FCThZHDdqbmM3+CjrFswyr5WV7DTb3AMo9EKjCt5biRhuWMB
+         lSRgCG173E4ml5n8MeKW+VBZQVkO0yyD5hf+OodIOjSKRiTXJ/tKAEye51AIva2T1U
+         FODQh+Z15ZUAjjTsNpkmriBFpTDfXwqEn0A6fxS4VnMjggS0A7MGoqiWrIfS4pU0+f
+         NlFesJezdyDMTEH/Zg4AeOZpuwCO6L+bQkrLw/S41vxNr5I2vrNdySmYHnqVEy3tJf
+         nQod1z/sAA/4w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Jul 2020 14:10:19 -0700 syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com> wrote:
 
-> syzbot has found a reproducer for the following issue on:
+On 7/20/20 4:16 PM, Jason Gunthorpe wrote:
+> On Mon, Jul 20, 2020 at 01:49:09PM -0700, Ralph Campbell wrote:
+>>
+>> On 7/20/20 12:59 PM, Jason Gunthorpe wrote:
+>>> On Mon, Jul 20, 2020 at 12:54:53PM -0700, Ralph Campbell wrote:
+>>>>>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+>>>>>> index 3e546cbf03dd..620f2235d7d4 100644
+>>>>>> +++ b/include/linux/migrate.h
+>>>>>> @@ -180,6 +180,11 @@ static inline unsigned long migrate_pfn(unsigned long pfn)
+>>>>>>     	return (pfn << MIGRATE_PFN_SHIFT) | MIGRATE_PFN_VALID;
+>>>>>>     }
+>>>>>> +enum migrate_vma_direction {
+>>>>>> +	MIGRATE_VMA_FROM_SYSTEM,
+>>>>>> +	MIGRATE_VMA_FROM_DEVICE_PRIVATE,
+>>>>>> +};
+>>>>>
+>>>>> I would have guessed this is more natural as _FROM_DEVICE_ and
+>>>>> TO_DEVICE_ ?
+>>>>
+>>>> The caller controls where the destination memory is allocated so it isn't
+>>>> necessarily device private memory, it could be from system to system.
+>>>> The use case for system to system memory migration is for hardware
+>>>> like ARM SMMU or PCIe ATS where a single set of page tables is shared by
+>>>> the device and a CPU process over a coherent system memory bus.
+>>>> Also many integrated GPUs in SOCs fall into this category too.
+>>>
+>>> Maybe just TO/FROM_DEIVCE then? Even though the memory is not
+>>> DEVICE_PRIVATE it is still device owned pages right?
+>>>
+>>>> So to me, it makes more sense to specify the direction based on the
+>>>> source location.
+>>>
+>>> It feels strange because the driver doesn't always know or control the
+>>> source?
+>>
+>> The driver can't really know where the source is currently located because the
+>> API is designed to not initially hold the page locks, migrate_vma_setup() only knows
+>> the source once it holds the page table locks and isolates/locks the pages being
+>> migrated. The direction and pgmap_owner are supposed to filter which pages
+>> the caller is interested in migrating.
+>> Perhaps the direction should instead be a flags field with separate bits for
+>> system memory and device private memory selecting source candidates for
+>> migration. I can imagine use cases for all 4 combinations of
+>> d->d, d->s, s->d, and s->s being valid.
+>>
+>> I didn't really think a direction was needed, this was something that
+>> Christoph Hellwig seemed to think made the API safer.
 > 
-> HEAD commit:    4c43049f Add linux-next specific files for 20200716
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12c56087100000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2c76d72659687242
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c48f34012b06c4ac67dd
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1344abeb100000
+> If it is a filter then just using those names would make sense
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com
-
-Thanks.
-
-__handle_mm_fault
-  ->pmd_migration_entry_wait
-    ->migration_entry_to_page
-
-stumbled onto an unlocked page.
-
-I don't immediately see a cause.  Perhaps Matthew's "THP prep patches",
-perhaps something else.
-
-Is it possible to perform a bisection?
-
-> ------------[ cut here ]------------
-> kernel BUG at include/linux/swapops.h:197!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 19938 Comm: syz-executor.2 Not tainted 5.8.0-rc5-next-20200716-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
-> RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
-> RIP: 0010:pmd_migration_entry_wait+0x493/0x520 mm/migrate.c:368
-> Code: 4d 8d 66 ff e9 1f fe ff ff e8 b9 c4 be ff 49 8d 5f ff e9 58 fe ff ff e8 ab c4 be ff 4d 8d 66 ff e9 a9 fe ff ff e8 9d c4 be ff <0f> 0b e8 96 c4 be ff 0f 0b e8 8f c4 be ff 4c 8d 65 ff eb a7 48 89
-> RSP: 0018:ffffc9001095fb70 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81b56a24
-> RDX: ffff888092022240 RSI: ffffffff81b56b43 RDI: 0000000000000001
-> RBP: ffffea0008468080 R08: 0000000000000000 R09: ffffea0008468087
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffffea0008468080
-> R13: ffff888015d2e0c0 R14: 0000000000000000 R15: 0000000000000000
-> FS:  00007f55eb477700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000080 CR3: 000000021ad87000 CR4: 00000000001526e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __handle_mm_fault mm/memory.c:4349 [inline]
->  handle_mm_fault+0x23cf/0x45e0 mm/memory.c:4465
->  do_user_addr_fault+0x598/0xbf0 arch/x86/mm/fault.c:1294
->  handle_page_fault arch/x86/mm/fault.c:1351 [inline]
->  exc_page_fault+0xab/0x170 arch/x86/mm/fault.c:1404
->  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:544
-> RIP: 0010:copy_user_generic_unrolled+0x89/0xc0 arch/x86/lib/copy_user_64.S:91
-> Code: 38 4c 89 47 20 4c 89 4f 28 4c 89 57 30 4c 89 5f 38 48 8d 76 40 48 8d 7f 40 ff c9 75 b6 89 d1 83 e2 07 c1 e9 03 74 12 4c 8b 06 <4c> 89 07 48 8d 76 08 48 8d 7f 08 ff c9 75 ee 21 d2 74 10 89 d1 8a
-> RSP: 0018:ffffc9001095fe48 EFLAGS: 00010202
-> RAX: 0000000000000001 RBX: 0000000020000080 RCX: 0000000000000001
-> RDX: 0000000000000000 RSI: ffffc9001095fea8 RDI: 0000000020000080
-> RBP: ffffc9001095fea8 R08: 0000000400000003 R09: ffffc9001095feaf
-> R10: fffff5200212bfd5 R11: 0000000000000000 R12: 0000000000000008
-> R13: 0000000020000088 R14: 00007ffffffff000 R15: 0000000000000000
->  copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
->  raw_copy_to_user arch/x86/include/asm/uaccess_64.h:74 [inline]
->  _copy_to_user+0x11e/0x160 lib/usercopy.c:30
->  copy_to_user include/linux/uaccess.h:168 [inline]
->  do_pipe2+0x128/0x1b0 fs/pipe.c:1014
->  __do_sys_pipe fs/pipe.c:1035 [inline]
->  __se_sys_pipe fs/pipe.c:1033 [inline]
->  __x64_sys_pipe+0x2f/0x40 fs/pipe.c:1033
->  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45c1d9
-> Code: Bad RIP value.
-> RSP: 002b:00007f55eb476c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000016
-> RAX: ffffffffffffffda RBX: 0000000000022ac0 RCX: 000000000045c1d9
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000080
-> RBP: 000000000078c070 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c04c
-> R13: 00007ffcfc120ecf R14: 00007f55eb4779c0 R15: 000000000078c04c
-> Modules linked in:
-> ---[ end trace ea73d933d66ff0d4 ]---
-> RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
-> RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
-> RIP: 0010:pmd_migration_entry_wait+0x493/0x520 mm/migrate.c:368
-> Code: 4d 8d 66 ff e9 1f fe ff ff e8 b9 c4 be ff 49 8d 5f ff e9 58 fe ff ff e8 ab c4 be ff 4d 8d 66 ff e9 a9 fe ff ff e8 9d c4 be ff <0f> 0b e8 96 c4 be ff 0f 0b e8 8f c4 be ff 4c 8d 65 ff eb a7 48 89
-> RSP: 0018:ffffc9001095fb70 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81b56a24
-> RDX: ffff888092022240 RSI: ffffffff81b56b43 RDI: 0000000000000001
-> RBP: ffffea0008468080 R08: 0000000000000000 R09: ffffea0008468087
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffffea0008468080
-> R13: ffff888015d2e0c0 R14: 0000000000000000 R15: 0000000000000000
-> FS:  00007f55eb477700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000080 CR3: 000000021ad87000 CR4: 00000000001526e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> MIGRATE_VMA_SELECT_SYSTEM
+> MIGRATE_VMA_SELECT_DEVICE_PRIVATE
 > 
+> SYSTEM feels like the wrong name too, doesn't linux have a formal name
+> for RAM struct pages?
+
+Highmem? Movable? Zone normal?
+There are quite a few :-)
+At the moment, only anonymous pages are being migrated but I expect
+file backed pages to be supported at some point (but not DAX).
+VM_PFNMAP and VM_MIXEDMAP might make sense some day with peer-to-peer
+copies.
+
+So MIGRATE_VMA_SELECT_SYSTEM seems OK to me.
+
+> In your future coherent design how would the migrate select 'device'
+> pages that are fully coherent? Are they still zone something pages
+> that are OK for CPU usage?
+> 
+> Jason
+> 
+
+For pages that are device private, the pgmap_owner selects them (plus the
+MIGRATE_VMA_SELECT_DEVICE_PRIVATE flag).
+For pages that are migrating from system memory to system memory, I expect
+the pages to be in different NUMA zones. Otherwise, there wouldn't be much
+point in migrating them. And yes, the CPU can access them.
+It might be useful to have a filter saying "migrate system memory not already
+in NUMA zone X" if the MIGRATE_VMA_SELECT_SYSTEM flag is set.
+
+Also, in support of the flags field, I'm looking at THP migration and I can
+picture defining some request flags like hmm_range_fault() to say "migrate
+THPs if they exist, otherwise split THPs".
+A default_flags MIGRATE_PFN_REQ_FAULT would be useful if the source page is
+swapped out. Currently, migrate_vma_setup() just skips these pages without
+any indication to the caller why the page isn't being migrated or if retrying
+is worth attempting.
