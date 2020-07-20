@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3782422640A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFA922649D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Jul 2020 17:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729958AbgGTPls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 11:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33888 "EHLO mail.kernel.org"
+        id S1730212AbgGTPqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 11:46:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729933AbgGTPll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:41:41 -0400
+        id S1729625AbgGTPq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 11:46:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 573842065E;
-        Mon, 20 Jul 2020 15:41:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 530CC22482;
+        Mon, 20 Jul 2020 15:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595259700;
-        bh=g+1WMYJkqHeaMhrWLaaPUK+YogDfh1QqQImhBbOAncg=;
+        s=default; t=1595259988;
+        bh=dtljTeKVSfatOxCZOCNo1VmNsXnDxfFan/3oV9vWIzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lHId54wYI6M3u5QDElw1J6sR7PtJE7GV39J2Do6kbplSvG4EiRUHRTv6hrhbAG4XJ
-         WEBwaAMNoWH/xJUCTb0iE5bqhGVbrNb0WSpJZ7gjZBEv8WNQ2uk743GEfi4SoIJQz1
-         ymh3ANQe6oCQ2Ucy+m6wNXOts7WP8SULOnN+pMYA=
+        b=LyXooLe5FF09W2zrsqijYLTA6JZF4v/+tM9FpMqr5IPkvr1i3Scejlbp5eU6xqiF0
+         njU8vV56OjVZiPPg08HlexVpZvz4dL7+IpvFQM6qOZNi6HCZo+UoZ2ZbhA72ZoZPJn
+         E2Tc1AAUv3mj6ZmOmhkq1r00XNCrbqj1OqEAOtuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 49/86] Revert "usb/ehci-platform: Set PM runtime as active on resume"
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 066/125] iio: pressure: zpa2326: handle pm_runtime_get_sync failure
 Date:   Mon, 20 Jul 2020 17:36:45 +0200
-Message-Id: <20200720152755.631250267@linuxfoundation.org>
+Message-Id: <20200720152806.211122812@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
-References: <20200720152753.138974850@linuxfoundation.org>
+In-Reply-To: <20200720152802.929969555@linuxfoundation.org>
+References: <20200720152802.929969555@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 5365fc3132a36a027fd7c2bb461e651b37f1e4d1.
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-Eugeniu Rosca writes:
+commit d88de040e1df38414fc1e4380be9d0e997ab4d58 upstream.
 
-On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
->After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
->Set PM runtime as active on resume") into downstream v4.14.x, we started
->to consistently experience below panic [1] on every second s2ram of
->R-Car H3 Salvator-X Renesas reference board.
->
->After some investigations, we concluded the following:
-> - the issue does not exist in vanilla v5.8-rc4+
-> - [bisecting shows that] the panic on v4.14.186 is caused by the lack
->   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
->   link support"). Getting evidence for that is easy. Reverting
->   987351e1ea7772 in vanilla leads to a similar backtrace [2].
->
->Questions:
-> - Backporting 987351e1ea7772 ("phy: core: Add consumer device
->   link support") to v4.14.187 looks challenging enough, so probably not
->   worth it. Anybody to contradict this?
-> - Assuming no plans to backport the missing mainline commit to v4.14.x,
->   should the following three v4.14.186 commits be reverted on v4.14.x?
->   * baef809ea497a4 ("usb/ohci-platform: Fix a warning when hibernating")
->   * 9f33eff4958885 ("usb/xhci-plat: Set PM runtime as active on resume")
->   * 5410d158ca2a50 ("usb/ehci-platform: Set PM runtime as active on resume")
+Calling pm_runtime_get_sync increments the counter even in case of
+failure, causing incorrect ref count. Call pm_runtime_put if
+pm_runtime_get_sync fails.
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Fixes: 03b262f2bbf4 ("iio:pressure: initial zpa2326 barometer support")
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/usb/host/ehci-platform.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/iio/pressure/zpa2326.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-index 1b141e9299f99..a268d9e8d6cfb 100644
---- a/drivers/usb/host/ehci-platform.c
-+++ b/drivers/usb/host/ehci-platform.c
-@@ -378,11 +378,6 @@ static int ehci_platform_resume(struct device *dev)
- 	}
+--- a/drivers/iio/pressure/zpa2326.c
++++ b/drivers/iio/pressure/zpa2326.c
+@@ -672,8 +672,10 @@ static int zpa2326_resume(const struct i
+ 	int err;
  
- 	ehci_resume(hcd, priv->reset_on_resume);
--
--	pm_runtime_disable(dev);
--	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
--
- 	return 0;
- }
- #endif /* CONFIG_PM_SLEEP */
--- 
-2.25.1
-
+ 	err = pm_runtime_get_sync(indio_dev->dev.parent);
+-	if (err < 0)
++	if (err < 0) {
++		pm_runtime_put(indio_dev->dev.parent);
+ 		return err;
++	}
+ 
+ 	if (err > 0) {
+ 		/*
 
 
