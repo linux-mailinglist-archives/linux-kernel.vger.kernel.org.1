@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81F722885C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F3A228862
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgGUShA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
+        id S1730340AbgGUSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726658AbgGUSg7 (ORCPT
+        with ESMTP id S1728278AbgGUSiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:36:59 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A22C061794;
-        Tue, 21 Jul 2020 11:36:58 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id z6so5009267iow.6;
-        Tue, 21 Jul 2020 11:36:58 -0700 (PDT)
+        Tue, 21 Jul 2020 14:38:04 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C423DC061794;
+        Tue, 21 Jul 2020 11:38:04 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a23so9545652pfk.13;
+        Tue, 21 Jul 2020 11:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=DKoqtLlCZ3xb5WBePvpj1u1JNUm5TcuvXGpT5UK2G08=;
-        b=OGNxulUtSF4ynIewzetTCPyyWNFlPsCe/npBc9CT8DR+dc8tQKgB+dM+rrnpvXoDnE
-         tAKKO+yh/JDOdiRKRHmCjV3Q39ZDOOhUCo7ugO+S10btdbBXNVF0i6tLFrk3MEdc2xuv
-         L4S5PHK7EZFjh710wkrvs4I/7qx7H+/0EvGfSNLXx7IsOtlcvEplkKFtx9K8wieQA31F
-         aRQ0QITJHNeV72WeeVcCRdy4jYTWS4aovMQYVlv5Hwh24KwYjBug493ROJpaXi2IN5Hb
-         qc+3pSeZUR5+9uFQQsOTcYn8FWvhe6vFahthIufPxCPhaPbONEMAhhc7zmrWEF4LGs06
-         k+Rg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nK0qyZhDC5FOaiCS+0m8+f94Mck9PjMzVoSYX7yYY/I=;
+        b=QfwTkuihkP0iu36Lp5fIlAA/9PVqLMj1DUNgbSq1j6vhz1igzaFRbNcT10oxAF50OZ
+         fwTEiJyW8omXyVmDrv/vFtGF7lu5T3A7UvAqvs8tm2ggRS7kTIb5jPJ7O1e31hcmlA9J
+         zK3Eti1u55UWQJGSV4b8EvtPb7n93zrln2mF02n+XqGfYO6Wx6Ew/M8lNtORRu2Gcr/y
+         LfU2EbwRRwGKoTmbL4uj2eufhcRPlKgYL9TrQGKxi8up3+vFi/jufBgyl57Vkwau1MRz
+         JYD/aZxhc+Lb2zVoTkT9C0rhpkmcc+NbeMO3foWFF2qcI1PqjoACGbJrYKuXGXU3haYT
+         ntKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=DKoqtLlCZ3xb5WBePvpj1u1JNUm5TcuvXGpT5UK2G08=;
-        b=G5CiknatQwT/SIc4Xfh1hege6XirFpLgX7rh6LCcdkGP72yBD+q8hcw9TBKoykYEG7
-         TsiMDT3mldEutmixcnb5I8cEzeNF7NOCh3TeLB0SIQ9wdsFfCU2NVhG8MAMzDCNaD5UN
-         aFeCtj/6+3fXjQNoLefLqFgcVwN/s5pMeVlbcceHxzTStMy2Q8B6EvzCFbEfK6TTSQUF
-         ZXSVFnysSQetYDToMe/hyd/cUC6L+Og0MA+V+eZRUS7AIovCoTMIB3/NqR6+F55/Uu1g
-         5TQVfjuLn26V3ymOa+CIiy1df1UR+HKVkE5gejNNGfICn6xnTjs04j6LAa8Sq5AFXJoS
-         Q4ig==
-X-Gm-Message-State: AOAM533SJgWj4cCxV2ok8i/UF1Z8etk0Yr/P4Lnu9qhtuPQffbQn+r9T
-        jXqoDeWL0i81ajjwvdz/zuI=
-X-Google-Smtp-Source: ABdhPJyjm3x7B2weH8RJQpPYu2oZG841KdnHRI51EDjG4coHaalocFrLEryqkmen2USsZ0klb87UgA==
-X-Received: by 2002:a6b:b555:: with SMTP id e82mr28464431iof.56.1595356617867;
-        Tue, 21 Jul 2020 11:36:57 -0700 (PDT)
-Received: from hive64.slackware.lan (SEB-ai06-18-141.wcta.net. [64.110.18.141])
-        by smtp.gmail.com with ESMTPSA id u3sm10795893iol.41.2020.07.21.11.36.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 11:36:57 -0700 (PDT)
-Subject: Re: nouveau regression with 5.7 caused by "PCI/PM: Assume ports
- without DLL Link Active train links in 100 ms"
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lyude Paul <lyude@redhat.com>
-Cc:     Karol Herbst <kherbst@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-References: <CACO55tuA+XMgv=GREf178NzTLTHri4kyD5mJjKuDpKxExauvVg@mail.gmail.com>
- <20200716235440.GA675421@bjorn-Precision-5520>
- <CACO55tuVJHjEbsW657ToczN++_iehXA8pimPAkzc=NOnx4Ztnw@mail.gmail.com>
- <CACO55tso5SVipAR=AZfqhp6GGkKO9angv6f+nd61wvgAJtrOKg@mail.gmail.com>
- <20200721122247.GI5180@lahna.fi.intel.com>
- <f951fba07ca7fa2fdfd590cd5023d1b31f515fa2.camel@redhat.com>
- <20200721152737.GS5180@lahna.fi.intel.com>
-From:   Patrick Volkerding <volkerdi@gmail.com>
-Autocrypt: addr=volkerdi@gmail.com; prefer-encrypt=mutual; keydata=
- mQGiBD5dIFQRBADB31WinbXdaGk/8RNkpnZclu1w3Xmd5ItACDLB2FhOhArw35EAMOYzxI0g
- RtDNWN4pn9n74q4HbFzyRWElThWRtBTYLEpImzrk7HYVCjMxjw5A0fTr88aiHOth5aS0vPAo
- q+3TYn6JDSipf2bR03G2JVwgj3Iu066pX4naivNm8wCgldHGF3y9vT3UPYh3QFgEUlCalt0D
- /3n6NopRYy0hMN6BPu+NarXwv6NQ9g0GV5FNjEErigkrD/htqCyWAUl8zyCKKUFZZx4UGBRZ
- 5guCdNzwgYH3yn3aVMhJYQ6tcSlLsj3fJIz4LAZ3+rI77rbn7gHHdp7CSAuV+QHv3aNanUD/
- KGz5SPSvF4w+5qRM4PfPNT1hLMV8BACzxiyX7vzeE4ZxNYvcuCtv0mvEHl9yD66NFA35RvXa
- O0QiRVYeoUa5JOQZgwq+fIB0zgsEYDhXFkC1hM/QL4NccMRk8C09nFn4eiz4dAEnwKt4rLCJ
- KhkLl1DWTSoXHe/dOXaLnFyLzB1J8hEYmUvw3SwPt//wMqDiVBLeZfFcdLQwU2xhY2t3YXJl
- IExpbnV4IFByb2plY3QgPHNlY3VyaXR5QHNsYWNrd2FyZS5jb20+iF8EExECAB8ECwcDAgMV
- AgMDFgIBAh4BAheABQJQPlypBQlBo7MrAAoJEGpEY8BAECIzjOwAn3vptb6K1v2wLI9eVlnC
- dx4m1btpAJ9sFt4KwJrEdiO5wFC4xe9G4eZl4rkBDQQ+XSBVEAQA3VYlpPyRKdOKoM6t1SwN
- G0YgVFSvxy/eiratBf7misDBsJeH86Pf8H9OfVHOcqscLiC+iqvDgqeTUX9vASjlnvcoS/3H
- 5TDPlxiifIDggqd2euNtJ8+lyXRBV6yPsBIA6zki9cR4zphe48hKpSsDfj7uL5sfyc2UmKKb
- oSu3x7cAAwUD/1jmoLQs9bItbTosoy+5+Uzrl0ShRlv+iZV8RPzAMFuRJNxUJkUmmThowtXR
- aPKFI9AVd+pP44aAJ+zxCPtS2isiW20AxubJoBPpXcVatJWi4sG+TM5Z5VRoLg7tIDNVWsyH
- GXPAhIG2Y8Z1kyWwb4P8A/W2b1ZCqS7Fx4yEhTikiEwEGBECAAwFAlA+XL8FCUGjs2IACgkQ
- akRjwEAQIjMsbQCgk59KFTbTlZfJ6FoZjjEmK3/xGR4AniYT+EdSdvEyRtZYkqWzp1ayvO1b
-Message-ID: <d3253a47-09ff-8bc7-3ca1-a80bdc09d1c2@gmail.com>
-Date:   Tue, 21 Jul 2020 13:37:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nK0qyZhDC5FOaiCS+0m8+f94Mck9PjMzVoSYX7yYY/I=;
+        b=cCScoR/Oi+mAxaZ1j+NiqOT+Iv14FMmz+xkv1quih/BssTN2E2Nid2hsKRQpySqHUm
+         ncqT9CxLe37pjBJnPRGZxzpqIueP0okgOXoWCTmFcRHTx+uf0yZURThaIKtll3nee/um
+         gfIr8AMSJqt/Y+jg3mbd/dGixOgZAqDLPihHNHTEh2PCkwFSlf4hZZsQt6e+kb8lX0nf
+         48JdyKcQcbxl8bfJhh1KDicIRWQ+WsYWYF6jxhnrl1TPeb2IzLmo08AR9hyIubv6xCio
+         vF5GzNzNnIMabwZ8lRUW1gXnHjvrY9G65VhZV/py+i25C6+koBOW51z3kgO6w/i0HAtO
+         SynA==
+X-Gm-Message-State: AOAM5315eMHg5B3S/fS6BGNmVWnwzA3eqseqqcaYsSzwqPPOdUM7hMZY
+        UFJgoJ9qXyGqjdcxUOVuoLCSd8QHdMlY68itF3rSyj1V
+X-Google-Smtp-Source: ABdhPJwl4Mn+VjJt/0js6aaU/ssjh5ofSGB7Ux0ae97IETnIaAdpXZsfRKrrmHuLDLuD4qqhlTKGIwZ78e6+TcOP/WE=
+X-Received: by 2002:aa7:8bcb:: with SMTP id s11mr24584523pfd.170.1595356684306;
+ Tue, 21 Jul 2020 11:38:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200721152737.GS5180@lahna.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200720134931.71537-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20200720134931.71537-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Jul 2020 21:37:47 +0300
+Message-ID: <CAHp75VfmvGgCK3Cg1nxPtYeF1Y9oQAKST1bAnKXxB2hpd8=feg@mail.gmail.com>
+Subject: Re: [PATCH] iio: accel: adxl372: Add OF device ID table
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Stefan Popa <stefan.popa@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/20 10:27 AM, Mika Westerberg wrote:
-> On Tue, Jul 21, 2020 at 11:01:55AM -0400, Lyude Paul wrote:
->> Sure thing. Also, feel free to let me know if you'd like access to one of the
->> systems we saw breaking with this patch - I'm fairly sure I've got one of them
->> locally at my apartment and don't mind setting up AMT/KVM/SSH
-> Probably no need for remote access (thanks for the offer, though). I
-> attached a test patch to the bug report:
+On Mon, Jul 20, 2020 at 4:48 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
 >
->   https://bugzilla.kernel.org/show_bug.cgi?id=208597
+> From: Stefan Popa <stefan.popa@analog.com>
 >
-> that tries to work it around (based on the ->pm_cap == 0). I wonder if
-> anyone would have time to try it out.
+> The driver does not have a struct of_device_id table, but supported
+> devices are registered via Device Trees. This patch adds OF device ID
+> table.
+>
+> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/iio/accel/adxl372_i2c.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/iio/accel/adxl372_i2c.c b/drivers/iio/accel/adxl372_i2c.c
+> index e1affe480c77..5197d1eb6803 100644
+> --- a/drivers/iio/accel/adxl372_i2c.c
+> +++ b/drivers/iio/accel/adxl372_i2c.c
+> @@ -8,6 +8,8 @@
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+>  #include <linux/regmap.h>
 
 
-Hi Mika,
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
 
-I can confirm that this patch applied to 5.4.52 fixes the issue with
-hybrid graphics on the Thinkpad X1 Extreme gen2.
+With the huge patch series from Jonathan I think you may learn that
+proper header here is
 
-Thanks,
+mod_devicetable.h.
 
-Pat
 
+>
+>  #include "adxl372.h"
+>
+> @@ -46,9 +48,16 @@ static const struct i2c_device_id adxl372_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, adxl372_i2c_id);
+>
+> +static const struct of_device_id adxl372_of_match[] = {
+> +       { .compatible = "adi,adxl372" },
+
+> +       { },
+
+No comma, please!
+
+> +};
+> +MODULE_DEVICE_TABLE(of, adxl372_of_match);
+> +
+>  static struct i2c_driver adxl372_i2c_driver = {
+>         .driver = {
+>                 .name = "adxl372_i2c",
+> +               .of_match_table = adxl372_of_match,
+>         },
+>         .probe = adxl372_i2c_probe,
+>         .id_table = adxl372_i2c_id,
+> --
+> 2.17.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
