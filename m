@@ -2,130 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A043F227BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A9C227BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728934AbgGUJa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGUJa4 (ORCPT
+        id S1726616AbgGUJbN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Jul 2020 05:31:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58438 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725984AbgGUJbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:30:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23B9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 02:30:55 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id y3so3135258wrl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 02:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R+EF85aNDdODINrCfjjd0Lfuv95jSgpJvxBVPXo7UEI=;
-        b=yY/akW2D9+GrY1oKN3c5+dEliD4OkQM7F6PBHq+jxAt2+MgNVNgHxD8r/+H4hPWZp7
-         C6QNv/0wFMcXxVoU3TCemQtIbqkOS+zrtNK1Y3W9/SUy1XdL4jbRdKft5mJ77z/BPakH
-         TRk7m1nXqDlBfEq2paJClFRCVqFNLQp9Q5w6FvRmxQfD/BsJ8NskgIwBqJSC5msTA4Xp
-         /dPdMrboPhqh06qZbYrGbe/LnpvGSNTJlrfRctFCk5uVc/hp7RpbjH7DcmtUpXQaiP6I
-         Zghs3hCBJZfGnwUBK0nuRl6+I9AoSqXtCQRveCQ8KX9MH8VTc+oRbDCFJBxzrXW1ETJW
-         qg9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R+EF85aNDdODINrCfjjd0Lfuv95jSgpJvxBVPXo7UEI=;
-        b=NCHRErp0IZh840Dk/pMBZ+KLU2+xBWJfjFafyK+HBAHRUMjetT8KVrbw/pQJpWLlea
-         DDYnkqZU1wMcEppaVXm+iloLaQNpS2jPDL3NXk/GepBk9uOARz5/3616olZg9PkvI84W
-         89/Zi6aIyAr7yqe0BUND1EGaPmghuaN7YipdhtWv4yRsUDRZwCltBqXlwBHYJMOP2WGr
-         16b8Ad0wQ16pMWapBMM/H4Hk+yYJrU0ON9+2P04+DKIm2irJUikch4bfCdD6d5EE4xuy
-         PR5TfcUXXIawAV2ejo1dw8M5G1wxX4KLjDQaYs/Y9jCETHkgExA9XDAklxCldM6vV7Zv
-         bWxQ==
-X-Gm-Message-State: AOAM531L9slzqJszHqzZhVOO1bDmXyCWZ6ZK8W5LFJo0rXB4SXwLQOLn
-        9wsMx7Dj26WsndTROpYx6nJiPgfkBmtnGW6lz7s73A==
-X-Google-Smtp-Source: ABdhPJyEHJcpxpIsrSRwyhLOvolFk/1JMt5qF29yZtthuuwIDXna9yG5CaRZAoAVzWcNKbHQE3jBtSCRybazpe/ZsxU=
-X-Received: by 2002:adf:de12:: with SMTP id b18mr27796440wrm.390.1595323854198;
- Tue, 21 Jul 2020 02:30:54 -0700 (PDT)
+        Tue, 21 Jul 2020 05:31:12 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06L93UKQ074439;
+        Tue, 21 Jul 2020 05:31:06 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32dhps360b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 05:31:06 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06L9G4ck030665;
+        Tue, 21 Jul 2020 09:31:03 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 32brq81vhk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 09:31:03 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06L9V1oX56819926
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 09:31:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 33035A4064;
+        Tue, 21 Jul 2020 09:31:01 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF216A4062;
+        Tue, 21 Jul 2020 09:31:00 +0000 (GMT)
+Received: from localhost (unknown [9.102.1.141])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Jul 2020 09:31:00 +0000 (GMT)
+Date:   Tue, 21 Jul 2020 15:00:58 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: kprobes
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ananth =?iso-8859-1?q?N=0A?= Mavinakayanahalli 
+        <ananth@linux.ibm.com>, anil.s.keshavamurthy@intel.com,
+        corbet@lwn.net, davem@davemloft.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200707194959.52487-1-grandmaster@al2klimov.de>
+        <20200708184201.611d929ae6017c87ea98b114@kernel.org>
+        <1594388442.4mjtjyic5z.naveen@linux.ibm.com>
+        <20200713232011.da584d6f7147b54ba083556f@kernel.org>
+        <2b0d6f67-7844-644c-1806-5d795cb5093d@al2klimov.de>
+        <20200720210109.d46926c7d1dbe703d6c74a65@kernel.org>
+In-Reply-To: <20200720210109.d46926c7d1dbe703d6c74a65@kernel.org>
 MIME-Version: 1.0
-References: <20200716234104.29049-1-atish.patra@wdc.com> <20200716234104.29049-2-atish.patra@wdc.com>
- <CAK8P3a2EesjQAs-YGrCO=cYfUVWFQ3CbJfVXJx3qZjCS_XW+wA@mail.gmail.com>
- <CAOnJCUKF-tfN-fHyRcjyAMnYVzQqp=_CLa2F4TQNO7jA4infoQ@mail.gmail.com>
- <CAK8P3a3iUdoOZrORz+aeXYiO35Lp8snrCkxSUPAY6Fh2EinaOw@mail.gmail.com>
- <CAOnJCUL2X9mK41iHLCg1_rtj7JS4p41hqXfmd=hyxK=2t5QQog@mail.gmail.com>
- <CAK8P3a3e3SBtTocpkCybKRjkBJG26G-8YdiroJbZLZYq9f0yfw@mail.gmail.com> <CAMj1kXH53V3Vu8Lq4yzSCn5ZSxn65KiVbt91PUPhkBRO6vuRSQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXH53V3Vu8Lq4yzSCn5ZSxn65KiVbt91PUPhkBRO6vuRSQ@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 21 Jul 2020 15:00:41 +0530
-Message-ID: <CAAhSdy3XYYaDTC293C9pQRHMz99XGoXr1HDcGv8Zi=9Mto0BHg@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 1/9] RISC-V: Move DT mapping outof fixmap
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Atish Patra <atishp@atishpatra.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1595323549.47x1zmz1vy.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_02:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ clxscore=1015 impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007210063
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 2:32 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 21 Jul 2020 at 11:57, Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > On Tue, Jul 21, 2020 at 6:18 AM Atish Patra <atishp@atishpatra.org> wrote:
-> > > On Sat, Jul 18, 2020 at 2:24 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > On Sat, Jul 18, 2020 at 3:05 AM Atish Patra <atishp@atishpatra.org> wrote:
-> > > > > That's what the original code was doing. A fixmap entry was added to
-> > > > > map the original fdt
-> > > > > location to a virtual so that parse_dtb can be operated on a virtual
-> > > > > address. But we can't map
-> > > > > both FDT & early ioremap within a single PMD region( 2MB ). That's why
-> > > > > we removed the DT
-> > > > > mapping from the fixmap to .bss section. The other alternate option is
-> > > > > to increase the fixmap space to 4MB which seems more fragile.
-> > > >
-> > > > Could the original location just be part of the regular linear mapping of all
-> > > > RAM?
-> > >
-> > > No. Because we don't map the entire RAM until setup_vm_final().
-> > > We need to parse DT before setup_vm_final() to get the memblocks and
-> > > reserved memory regions.
-> >
-> > Ok, I see how you create a direct mapping for the kernel image, plus
-> > the fixmap for the dtb in setup_vm(), and how moving the dtb into the
-> > kernel image simplifies that.
-> >
-> > I'm still wondering why you can't do the same kind of PGD mapping
-> > for the dtb that you do for the vmlinux, creating linear page table
-> > entries exactly for the location that holds the dtb, from dtb_pa to
-> > dtb_pa+((struct fdt_header*)dtb_pa)->totalsize.
-> >
->
-> On arm64, we limit the size of the DT to 2MB, and reserve a pair of
-> PMD entries adjacent to the fixmap so we can map it r/o statically
-> using huge pages without using fixmap/early_ioremap slots. (Using a
-> pair of PMD entries allows the DT to appear at any alignment in
-> memory, given that PMD entries cover 2 MB each on 4k pages kernels)
+Masami Hiramatsu wrote:
+> On Tue, 14 Jul 2020 00:02:49 +0200
+> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+> 
+>> 
+>> 
+>> Am 13.07.20 um 16:20 schrieb Masami Hiramatsu:
+>> > Hi Naveen and Alexander,
+>> > 
+>> > On Fri, 10 Jul 2020 19:14:47 +0530
+>> > "Naveen N. Rao" <naveen.n.rao@linux.ibm.com> wrote:
+>> > 
+>> >> Masami Hiramatsu wrote:
+>> >>> On Tue,  7 Jul 2020 21:49:59 +0200
+>> >>> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+>> >>>
+>> >>>> Rationale:
+>> >>>> Reduces attack surface on kernel devs opening the links for MITM
+>> >>>> as HTTPS traffic is much harder to manipulate.
+>> >>>>
+>> >>>> Deterministic algorithm:
+>> >>>> For each file:
+>> >>>>    If not .svg:
+>> >>>>      For each line:
+>> >>>>        If doesn't contain `\bxmlns\b`:
+>> >>>>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>> >>>>            If both the HTTP and HTTPS versions
+>> >>>>            return 200 OK and serve the same content:
+>> >>>>              Replace HTTP with HTTPS.
+>> >>>
+>> >>> OK, but it seems that some of them are disappeared :(
+>> >>>
+>> >>>   http://www-106.ibm.com/developerworks/library/l-kprobes.html?ca=dgr-lnxw42Kprobe
+>> >>>
+>> >>>   -> https://www.ibm.com/developerworks/library/l-kprobes/index.html
+>> >>
+>> >> That looks right.
+>> >>
+>> >>>
+>> >>>   http://www.redhat.com/magazine/005mar05/features/kprobes/
+>> >>>
+>> >>>   -> I can not find that.
+>> >>
+>> >> Ditto, we should drop that.
+>> >>
+>> >>>
+>> >>>>   - http://www-users.cs.umn.edu/~boutcher/kprobes/
+>> >>>>   - http://www.linuxsymposium.org/2006/linuxsymposium_procv2.pdf (pages 101-115)
+>> >>>
+>> >>> Both are not found.
+>> >>
+>> >> It looks like the first link is gone, but there seems to be a copy in
+>> >> the web archive:
+>> >> https://web.archive.org/web/20061106154519/http://www-users.cs.umn.edu/~boutcher/kprobes/
+>> >>
+>> >> I suppose we can drop that link.
+>> >>
+>> >>>
+>> >>> (OT, it seems http://www.linuxsymposium.org/ has been left from historical
+>> >>>   Linux Symposium, we must remove it asap)
+>> >>
+>> >> Indeed, I think that link pointed to the Kprobes paper:
+>> >> https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
+>> > 
+>> > Ah, there is.
+>> > Thank you for the confirmation.
+>> > Alexander, can you update other urls instead of just replacing the http with https?
+>> Sry, but I don't steal others' work (on principle).
+>> 
+>> If I didn't the work (e.g. searched the replacement URL), I don't 
+>> deserve to author the respective commit.
 
-The arch/riscv is common for both RV32 and RV64. On RV32, we don't
-have PMD due to only two-levels in the page table.
+Alexander,
+Next time, please ask if you aren't sure about including others' 
+suggestions -- no need to term it as "stealing". Masami asked if you can 
+include this, and I shared what I thought are the correct URLs so that 
+they can be included. We don't mind someone else doing this change.
 
-Although, I like the idea of two consecutive PMD mappings which are not
-part of FIXMAP. The RISC-V early page table is totally different from the
-final init_mm page table. I think we can do two consecutive PGD mappings
-in the early page table at lower addresses (quite below PAGE_OFFSET). I
-will play-around with this idea.
+Besides, there are ways to acknowledge others, through a Suggested-by 
+tag, as an example.
 
-Regards,
-Anup
+>> 
+>> Also my HTTPSifying task is not done yet.
+> 
+> Hmm, Naveen, then, can you make the update?
+
+Sure, I will send a patch.
+
+
+- Naveen
+
