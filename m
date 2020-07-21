@@ -2,106 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243BF228273
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67B0228277
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgGUOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728683AbgGUOmY (ORCPT
+        id S1729595AbgGUOnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:43:14 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58382 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728631AbgGUOnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:42:24 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352BDC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:42:24 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id t15so1772953pjq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AqB2Pes9HY0mfXIHZs55IOMGH+yvSYMllsLCvMYuJRQ=;
-        b=LEwbGGpOtTy5VKyQ0OqJ4oiaDaGivfOY6l4hZoQB0GKawziemHBCIKMNmYLINzSH5k
-         eUV7/weitMFK26xpGRwuKZ/wVpaSAkt0CndViCBBH/gX+IWna4mKclauXj0xardu/SsC
-         TUGmAo+CYWXRh938OHurnq696W8M5GXb/DrwcyOYZqmalrF8fJbPbE5EnLm/KZouvvXx
-         SpJUE8q5HIq7rL82JxObimEp58jY2CuxkDTxYZy/5DOrpFq+Wsnjnz4oFBk+qo5qEROV
-         ziy5GHDkbvr7Y75VXeqUOO35f6On6C5v+dpeEldL1IXuHKuDVgihgJMWAO6X01d7MECG
-         6CUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AqB2Pes9HY0mfXIHZs55IOMGH+yvSYMllsLCvMYuJRQ=;
-        b=Tc0u3uOhrDCZwDHWgD+fspxCjF7SQB9a38WcXxT3107kIjVNaBqh79T+OxLVjh0OWy
-         KjrusxqhvJvdT2yINDmcmqMr0phVG+fAdnjhOl2z2A/lJPSrh4AqT5TD2JAQQ+3nq9yq
-         GGdg75z7f1crH5VfPGHR2mGcdTTeioEbRt8q4Al0UZpQQYCbL88IBzmZJJRO1PBdzAWz
-         Kgpd+aVyC81wBuSfq4KLY5xtVrxn5cPxVHMevF4mF/5nZUsuyHBxOczqme4yl+fK/6h1
-         ipeJCtXHORcBvUXEVt33qt8J3aoONk7nbjs9cKz/gncACpx1YHylU93OXMfnXRF9qcn6
-         AMbg==
-X-Gm-Message-State: AOAM532teAW8n0bFxIgVucPwNfW5BNtkcCgrAotafaV20YIa/QkHNsrS
-        r6f5weG4y7beW3bx5tpkezE=
-X-Google-Smtp-Source: ABdhPJx/CLcsZovzNbUNs7PWDKE7qDleMl6cyddLrZdb/pAWw102IzYOfTyFA+8hlhKEPCMG8EbmiA==
-X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr5326502pjv.58.1595342543712;
-        Tue, 21 Jul 2020 07:42:23 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id p11sm3504148pjb.3.2020.07.21.07.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:42:22 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 23:42:20 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] printk: store instead of processing cont parts
-Message-ID: <20200721144220.GE44523@jagdpanzerIV.localdomain>
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
- <20200717234818.8622-3-john.ogness@linutronix.de>
- <20200719143527.GA566@jagdpanzerIV.localdomain>
- <CAHk-=wg70es2rSYsHbBcWrBPsoHmbZ8vmeqTS_Kypv6zHAwQjA@mail.gmail.com>
- <20200720015057.GA463@jagdpanzerIV.localdomain>
- <CAHk-=whqiemoYRE41+qMuwQ_Qw3pn7gy2-Mso=ZDrwxQCVkncg@mail.gmail.com>
+        Tue, 21 Jul 2020 10:43:14 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LEh87R109282;
+        Tue, 21 Jul 2020 09:43:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595342588;
+        bh=HNYHkecczzNXwFIOZjMIwvKU3JfW0AcUMrA1nFBYX+A=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eAe5vqIkXb6e4u1Ca5a/7quPEW4G3mkU1FcVbyPVAPgHqQx2wS8QeY572+s9BeHaX
+         98hcylnHxqRoLoFIj9kt2Y/DhAikFQXmR4t2Xd6aAByVe4XYJSmDWj1FaWGuosum3f
+         soTwMR2LgqgSU3NDtJrWzGszDSDvNdlY8EHw2z98=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06LEh8Z8068511
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 09:43:08 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 21
+ Jul 2020 09:43:08 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 21 Jul 2020 09:43:08 -0500
+Received: from [10.250.34.248] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LEh72A102848;
+        Tue, 21 Jul 2020 09:43:07 -0500
+Subject: Re: [PATCH v4 0/6] TI K3 DSP remoteproc driver for C66x DSPs
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200717234800.9423-1-s-anna@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <71b1c6c0-08eb-32fc-4183-6f350030e22d@ti.com>
+Date:   Tue, 21 Jul 2020 09:43:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whqiemoYRE41+qMuwQ_Qw3pn7gy2-Mso=ZDrwxQCVkncg@mail.gmail.com>
+In-Reply-To: <20200717234800.9423-1-s-anna@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/20 11:30), Linus Torvalds wrote:
-> > Do I get it right, what you are saying is - when we process a PR_CONT
-> > message the cont buffer should already contain previous non-LOG_NEWLINE
-> > and non-PR_CONT message, otherwise it's a bug?
+Hi Bjorn,
+
+On 7/17/20 6:47 PM, Suman Anna wrote:
+> Hi All,
 > 
-> No.
+> The following is v4 of the K3 DSP remoteproc driver supporting the C66x DSPs
+> on the TI K3 J721E SoCs. The patches apply cleanly both on v5.8-rc1 as well
+> as laster commit on the master branch.
 > 
-> I'm saying that the code that does PR_CONT should have done *some*
-> printing before, otherwise it's at the very least questionable.
+> This series is largely unchanged, addressing various minor comments from
+> Mathieu and Rob. The ti,k3-sci-proc bindings patch (patch #3) is the only
+> patch without an Ack from v3.
 > 
-> IOW, you can't just randomly start printing with PR_CONT, without
-> having established _some_ context for it.
+> Following are the changes in v4:
+>   - Fixed Rob's review comments on ti,k3-sci-proc.yaml
+>   - Moved the ti_sci_protocol.h header file from ti_k3_dsp_remoteproc.c
+>     to ti_sci_proc.h
+>   - Replaced the TI http link with https following similar changes
+>     submitted recently
+>   - Removed an unnecesary addr check before iounmap
+> 
+> Please see the individual patches for further delta differences.
+> 
+> v3: https://patchwork.kernel.org/cover/11602331/
+> v2: https://patchwork.kernel.org/cover/11561787/
+> v1: https://patchwork.kernel.org/cover/11458573/
+> 
+> C71x v3: https://patchwork.kernel.org/cover/11602345/
+> 
+> Hi Bjorn,
+> This series is ready to be picked up for 5.9 merge window. Please also
+> pick the C71x v3 series on top of this, there are no pending comments
+> on that one and is waiting for this series.
 
-OK, I see. I sort of suspect that we may actually have code that does
-just pr_cont() (e.g. what Joe pointed out). It doesn't seem like that
-"establish a context" was ever enforced, doing a bunch of pr_cont()
-simply works.
+Can you pick up both the K3 DSP series for 5.9, the last pending 
+dt-bindings patch from this series has also been acked now.
 
-[..]
-> That said, we have traditionally used not just "current process", but
-> also "last irq-level" as the context information, so I do think it
-> would be good to continue to do that.
+Thanks,
+Suman
 
-OK, so basically, extending printk_caller_id() so that for IRQ/NMI
-we will have more info than just "0x80000000 + raw_smp_processor_id()".
+> 
+> regards
+> Suman
+> 
+> Suman Anna (6):
+>    remoteproc: Introduce rproc_of_parse_firmware() helper
+>    remoteproc: k3: Add TI-SCI processor control helper functions
+>    dt-bindings: remoteproc: Add common TI SCI rproc bindings
+>    dt-bindings: remoteproc: Add bindings for C66x DSPs on TI K3 SoCs
+>    remoteproc: k3-dsp: Add a remoteproc driver of K3 C66x DSPs
+>    remoteproc: k3-dsp: Add support for L2RAM loading on C66x DSPs
+> 
+>   .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 139 ++++
+>   .../bindings/remoteproc/ti,k3-sci-proc.yaml   |  48 ++
+>   drivers/remoteproc/Kconfig                    |  13 +
+>   drivers/remoteproc/Makefile                   |   1 +
+>   drivers/remoteproc/remoteproc_core.c          |  23 +
+>   drivers/remoteproc/remoteproc_internal.h      |   2 +
+>   drivers/remoteproc/ti_k3_dsp_remoteproc.c     | 771 ++++++++++++++++++
+>   drivers/remoteproc/ti_sci_proc.h              | 104 +++
+>   8 files changed, 1101 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+>   create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-sci-proc.yaml
+>   create mode 100644 drivers/remoteproc/ti_k3_dsp_remoteproc.c
+>   create mode 100644 drivers/remoteproc/ti_sci_proc.h
+> 
 
-	-ss
