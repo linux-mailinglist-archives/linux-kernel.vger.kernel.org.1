@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A54322823C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDCA22823A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729409AbgGUObj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727038AbgGUObi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:31:38 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0641C061794;
-        Tue, 21 Jul 2020 07:31:38 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id o22so1768240pjw.2;
-        Tue, 21 Jul 2020 07:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eoQ/LwxD/ih1GkSzZAuNDCG4MFgTBugN1T3/2DGPiZs=;
-        b=rv7teYKT4HHE+hRheeUMz7kFEVy/2FYAFPFyJ6DTsr8qA90Sqj/xBO5qcgaUtnUDvi
-         Rv86a654zaXEffQPbUFs1rZrshA+3BvCOkRCRN6YaF79kELJMnzI9mUXYbM5lgmnIM08
-         ZyWJt7Ifd1VkkXyHhuAuwnJLoLekleV3w0m/Utq2eDVXteX3AV3usu5pIldXV44peA4v
-         VaOuEuwXpmVMYve1kLJP4NHz7dzIShIqiqtgke+77R9j3jxIZREMsqM6IP4PHhtMTBe5
-         JQajMLneYsAzcaPCAB1ZE9Yp7dgj/n2hn88z3PP4KOIzR1ISSADxFb090PuzQjyk6wdb
-         kSmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eoQ/LwxD/ih1GkSzZAuNDCG4MFgTBugN1T3/2DGPiZs=;
-        b=I9SVn1esEhvjDQ5DOsG2TIx1amxbdUi454RvSUjZXVl2Unliu8CvmoZqbfcL8UdQvg
-         g11tkKMoTtTXXx5ofjnlKG5fhwJ9ks/Zyutg+obm82gN1EwptDtXMXLZfnWr1VSUWPl3
-         mWzTphitIMvAp23GFNrPwXHUkNlKJ6NWLd3ujbNI3nO5B2oSjp3AhPAtFkjLlvivOsmL
-         1hiN1PGHGW3M7KLIA6FE4i6/pDxJnImLXbDgjkYVERC+5GQzXtBvTReGpaQxVFsfQ+Iu
-         Bu+Bk9wS2FrM0Uvg/gs0TIa1IxUivsDL1IKaJuTUyUAft3Jyeay8MJ1QxcK9tVZRXUDV
-         9K6A==
-X-Gm-Message-State: AOAM530GjO/014dRkn22tp7CzUPv+J9oI+BTzwdNRtZpf1KnngLN5ko4
-        DC34Ul6OCKa5/Fv6Hi/+TKem9pIquVZ1cw==
-X-Google-Smtp-Source: ABdhPJyyVBc9dQXHdc+5lLNWNkeC/7Y3foGXFsBMmQ+uwmlFrHQSa2Q6C+IdC0ODHYc721agO4tx5g==
-X-Received: by 2002:a17:90b:1a8d:: with SMTP id ng13mr4045580pjb.24.1595341898367;
-        Tue, 21 Jul 2020 07:31:38 -0700 (PDT)
-Received: from gmail.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id u26sm18940457pgo.71.2020.07.21.07.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:31:37 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 20:00:16 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v1] mptfusion: use generic power management
-Message-ID: <20200721143016.GA304517@gmail.com>
-References: <20200721142423.304231-1-vaibhavgupta40@gmail.com>
+        id S1729158AbgGUObS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:31:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728792AbgGUObQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 10:31:16 -0400
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93B4820771
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:31:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595341875;
+        bh=ZE6hi4D69jtIEwF4BK+ARV2G4sOs0NzxotlkHEFjWG4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FIXVpqVFnHQzBx1VxkA+w+YDqLVl/RYm7UoTNMrv6VIfV3Gx70W/8SZNe7ugJDPwE
+         Q7kMMy3pIo+MOFCVP3IQEsZUPEdSFAapyQ0sVcFBEmuxuc/FyVc+GeXQgT7dAQZF88
+         rieidcedEQn8J3xa6mzwXSYOCfwJdTFgwOpCzaEU=
+Received: by mail-wr1-f44.google.com with SMTP id z15so21401844wrl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:31:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531KTF7hlUOXSYp99htxAc2vXjJOl/fXSkDGm1OCnU7RUsjMmD5i
+        S6PsltUMP6+yyQDVKYIv1c4McuCO7XgqvsrlMIwr4g==
+X-Google-Smtp-Source: ABdhPJw/7CumpJZn1noOG3gEVkvKehtOzAIzBE6N+K2KUxpRc884jpKivBoW8ylKLLoLPKUKu+sZEUhK0Bp+TCxwfCw=
+X-Received: by 2002:a5d:5273:: with SMTP id l19mr17580739wrc.257.1595341874203;
+ Tue, 21 Jul 2020 07:31:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200721142423.304231-1-vaibhavgupta40@gmail.com>
+References: <b754dad5-ee85-8a2f-f41a-8bdc56de42e8@kernel.dk>
+ <8987E376-6B13-4798-BDBA-616A457447CF@amacapital.net> <20200721070709.GB11432@lst.de>
+In-Reply-To: <20200721070709.GB11432@lst.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 21 Jul 2020 07:31:02 -0700
+X-Gmail-Original-Message-ID: <CALCETrXWZBXZuCeRYvYY8AWG51e_P3bOeNeqc8zXPLOTDTHY0g@mail.gmail.com>
+Message-ID: <CALCETrXWZBXZuCeRYvYY8AWG51e_P3bOeNeqc8zXPLOTDTHY0g@mail.gmail.com>
+Subject: Re: io_uring vs in_compat_syscall()
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is compile-tested only.
+On Tue, Jul 21, 2020 at 12:07 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Mon, Jul 20, 2020 at 10:28:55AM -0700, Andy Lutomirski wrote:
+> > > Sure, I'd consider that implementation detail for the actual patch(es=
+)
+> > > for this issue.
+> >
+> > There=E2=80=99s a corner case, though: doesn=E2=80=99t io_uring submiss=
+ion frequently do the work synchronously in the context of the calling thre=
+ad?
+>
+> Yes.
+>
+> > If so, can a thread do a 64-bit submit with 32-bit work or vice versa?
+>
+> In theory you could share an fd created in a 32-bit thread to a 64-bit
+> thread or vice versa, but I think at that point you absolutely are in
+> "you get to keep the pieces" land.
 
---Vaibhav Gupta
+That seems potentially okay as long as these are pieces of userspace
+and not pieces of the kernel.  If the kernel freaks out, we have a
+problem.
+
+>
+> > Sometimes I think that in_compat_syscall() should have a mode in which =
+calling it warns (e.g. not actually in a syscall when doing things in io_ur=
+ing).  And the relevant operations should be properly wired up to avoid glo=
+bal state like this.
+>
+> What do you mean with "properly wired up".  Do you really want to spread
+> ->compat_foo methods everywhere, including read and write?  I found
+> in_compat_syscall() a lot small and easier to maintain than all the
+> separate compat cruft.
+
+I was imagining using a flag.  Some of the net code uses
+MSG_CMSG_COMPAT for this purpose.
+
+--Andy
