@@ -2,156 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C906227FBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05994227FBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbgGUMPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
+        id S1728935AbgGUMQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgGUMPk (ORCPT
+        with ESMTP id S1728492AbgGUMP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:15:40 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9081DC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:15:40 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f7so20993122wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:15:40 -0700 (PDT)
+        Tue, 21 Jul 2020 08:15:59 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9201CC0619D9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:15:59 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z15so20951428wrl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cA94sOb8FIWUebxDf9ORKnnfau0NCB40GlOe2QaQBCg=;
-        b=CgIwfOLZksxv01U3Ox2GEGHdpWnCJf2DcA0Z30hMqfNdGZGPQqnOTXWRFSEa2cDN59
-         Ed7YOlHnYg2vT9nCzGgVDPoHfnIeTnQchaAyDU2lpXTJ2g2knxzsZQCWeU3sF7kCcG0z
-         ESICCvgchuKCulzBv9d+6QazxM0cFhDfSTzLetZmj+RcUnNOVUjewbAQOhMQD3DZUSXn
-         mtpPRD2pZEHua4CnfLCIOmZkh9a++EJnqBI0deaYFBVGM7vTJj7X+h7kc0CBMoCqHld3
-         0S7ZTwemnITiJIPRzuWgA/frR3/wFYPJHP2D2LH9i72VZxj4wQbfAy4F5ANTOLknIZrl
-         w8Nw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UaIMmvkFPThAFCANB9tizwAb469qBmnRcxN8sd+XOMM=;
+        b=Aasa/CzHTalCki8u/adk85kJFo3xim1tyv35dMUU0oq2MiirYVeJmH/6Y44iJUwswD
+         3oltoMZSSlneuTEKdufd/cFf2vEQ/jOM7J/ib10LlGBfa3OAaV1qgzr1OhrCV7/RZ22r
+         j4ISx/JB4yhAXQ8C2k4cHBPxGWd4vp413VZkW+zALMRp9QJZHLvqF1as42wESRpG+hpy
+         UfVu9+cI3kn835q2hrhz+upTkn7sJAaPgE2xqHlIZt+xKvcsadCDtLOPrqtp+ls4ZSZJ
+         VugQXNGOboiNvFqJz3knrbvNLNiOPSKSk6/j38DqvBw3wfoEyh97IGcVz7d0nyIyimj0
+         ZZfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cA94sOb8FIWUebxDf9ORKnnfau0NCB40GlOe2QaQBCg=;
-        b=JnNOkH4ksGB7jAmYOZ/ojtuPv+99m9LxyZyE1iqahpE4w4HLMpn0ZVF4Vpn4mrwSWU
-         xsaK8zYTTZK3djrPBrba8uJoyH/0DRHrwj9qNfOSrnMEy0LAZf4/BdR0e4EzuIrzMEo6
-         WT5xHdf89OJAaP4d/BSmYlI4NH7Bfo12fG7+yWHuCIy79z7Z+T3Jzo4BcWYR9mQ48IPs
-         mFuSO14HxwlDMsW0lrsJKtURJh3scyGBV1moCxTMRcB6Rph+1/0xq+QtFu3ZFpWxzmDh
-         oWmZQo+As2t7NvH+9+1W+6z8/d42VD3WjA/0bjNrOOQ88eJBNWkk8rzUx97TZBk3oM3/
-         1DaA==
-X-Gm-Message-State: AOAM530/vxjQEknfP3/lQHCLVvn3oUexA5FetAh7xyHy8iMHa74JRa8S
-        crdT9JtGVdoDg5AYNCGHD9kAa0R2H9IaseOBp9YGAg==
-X-Google-Smtp-Source: ABdhPJwW0WH69zD26zuxdyq5u22D6RndDM2fZyyK4TA+BkoXC0YCwHYj75KOg4xS6IYhZgmv0Dl7nJVqj7f2gXXm0Sg=
-X-Received: by 2002:adf:fc06:: with SMTP id i6mr8168305wrr.79.1595333739178;
- Tue, 21 Jul 2020 05:15:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UaIMmvkFPThAFCANB9tizwAb469qBmnRcxN8sd+XOMM=;
+        b=Fo4AioXq2icz/nBSxrs12oNasjDe2dh/Lkw0G0TDXicT3BV/BmMTjhqOlCIRctf9s/
+         QnqQVWo9DqKF3O5Kfbfi5GJwCSorNHxOAjubTS7vfqk/KDFoS6mdauL2smvMOe5atJsp
+         R90SqtIL/nVIr/9Moy/O1FQozQYFdWs5MBprZEp/emFwOiXzNat7VEkhsXwaDM+RRMeJ
+         BG1N+AEKH9W3EqcZLAxEg6/k4J9+z4UGKIEm5Wgj6gBdpqaPRnHM0BQvUIZuQGDNtb3S
+         0aQn+mce9fAuV3zKmvP6SXdg7nsxlDcUEu1ROh0qXfRfCGcK3R0lC3hxt+FoIXx8hPfa
+         EdYQ==
+X-Gm-Message-State: AOAM532RUXip67GGSxrY8HCvXOMKTDUsDuD5OnL6FUMThbHhskiRAZaW
+        L3WQeqLBPZKBdNuwfqneYF3Kdg==
+X-Google-Smtp-Source: ABdhPJyhysNqfGgE9bSFwrQlNMQuwVOM9eQNPZY+iYSNYEnQokAHmy83ZbiEshAnmadHgHg9whUrLA==
+X-Received: by 2002:a5d:4a0b:: with SMTP id m11mr6371761wrq.407.1595333758078;
+        Tue, 21 Jul 2020 05:15:58 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c144:5385:c824:85ce? ([2a01:e34:ed2f:f020:c144:5385:c824:85ce])
+        by smtp.googlemail.com with ESMTPSA id p8sm25497574wrq.9.2020.07.21.05.15.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 05:15:57 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] clocksource/drivers: Add CLINT timer driver
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Emil Renner Berhing <kernel@esmil.dk>
+References: <20200717075101.263332-1-anup.patel@wdc.com>
+ <20200717075101.263332-3-anup.patel@wdc.com>
+ <63f65ddd-b7c4-b8fd-151c-a77e8c87efed@linaro.org>
+ <CAAhSdy2oGAk6A6=SwgCgZ+trmzCMRPOCiB6ibDTL2A_1sUu1og@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <107e3ef3-9f61-05d1-7a91-95d0dc7ea7b8@linaro.org>
+Date:   Tue, 21 Jul 2020 14:15:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200708164936.9340-1-nsaenzjulienne@suse.de> <CAMi1Hd35tRM=cnmzwX=SDgu-OoXi1Xj+twFkoULaVZBbTpe6sw@mail.gmail.com>
- <550b30a86c0785049d24c945e2c6628d491cee3a.camel@suse.de> <CAMi1Hd2V2pJjP=USS4r-Z3vK-aq7_aBy-jcVNk1GvbdEQAuzWg@mail.gmail.com>
- <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
-In-Reply-To: <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Tue, 21 Jul 2020 17:45:02 +0530
-Message-ID: <CAMi1Hd0=ZsGhTkSy221EP9Vb3GMOcS0UMczX2u5X9qK37_ea1A@mail.gmail.com>
-Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAhSdy2oGAk6A6=SwgCgZ+trmzCMRPOCiB6ibDTL2A_1sUu1og@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 at 16:45, Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> On Tue, 2020-07-21 at 14:24 +0530, Amit Pundir wrote:
-> > On Tue, 21 Jul 2020 at 14:09, Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > > Hi Amit,
-> > > > Hi Nicolas,
-> > > >
-> > > > I see a boot regression with this commit d9765e41d8e9 "dma-pool:
-> > > > Do not allocate pool memory from CMA" on my Xiaomi Poco F1
-> > > > (Qcom sdm845) phone running v5.8-rc6. I can't boot past the
-> > > > bootloader splash screen with this patch.
-> > > >
-> > > > Phone boots fine if I revert this patch. I carry only one out of
-> > > > tree
-> > > > dts patch https://lkml.org/lkml/2020/6/25/52. And since this is a
-> > > > stock
-> > > > phone, I don't have access to serial/dmesg logs until I boot to
-> > > > AOSP
-> > > > (adb) shell.
-> > > >
-> > > > Any thoughts as to what might be going wrong here? I'd be happy
-> > > > to
-> > > > help debug things. For what it's worth, I don't see this
-> > > > regression
-> > > > on
-> > > > other two sdm845 devices (db845c and Pixel 3) I tested on.
-> > >
-> > > Can you provide a boot log (even if without my patch) and the
-> > > device-
-> > > tree files? It'd help a lot figuring things out.
-> >
-> > Thank you for the prompt reply Nicolas.
-> >
-> > Here is the boot log with the reverted patch
-> > https://pastebin.ubuntu.com/p/BrhPf83nKF/
-> >
-> > Here is my phone's dts
-> > https://github.com/pundiramit/linux/commit/2a394c199deeaf4c91e0e008e8fba2a72f494d8c
->
-> I'm at loss at what could be failing here. Your device should be able
-> to address the whole 8GB memory space, which AFAIK is the max available
-> on that smartphone family. But maybe the device-tree is lying, who
-> knows...
+On 21/07/2020 13:49, Anup Patel wrote:
+> On Tue, Jul 21, 2020 at 4:32 PM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+>>
+>> On 17/07/2020 09:50, Anup Patel wrote:
+>>> We add a separate CLINT timer driver for Linux RISC-V M-mode (i.e.
+>>> RISC-V NoMMU kernel).
+>>>
+>>> The CLINT MMIO device provides three things:
+>>> 1. 64bit free running counter register
+>>> 2. 64bit per-CPU time compare registers
+>>> 3. 32bit per-CPU inter-processor interrupt registers
+>>>
+>>> Unlike other timer devices, CLINT provides IPI registers along with
+>>> timer registers. To use CLINT IPI registers, the CLINT timer driver
+>>> provides IPI related callbacks to arch/riscv.
+>>>
+>>> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+>>> Tested-by: Emil Renner Berhing <kernel@esmil.dk>
+>>> ---
+>>>  drivers/clocksource/Kconfig       |   9 ++
+>>>  drivers/clocksource/Makefile      |   1 +
+>>>  drivers/clocksource/timer-clint.c | 231 ++++++++++++++++++++++++++++++
+>>>  include/linux/cpuhotplug.h        |   1 +
+>>>  4 files changed, 242 insertions(+)
+>>>  create mode 100644 drivers/clocksource/timer-clint.c
+>>>
+>>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+>>> index 91418381fcd4..e1ce0d510a03 100644
+>>> --- a/drivers/clocksource/Kconfig
+>>> +++ b/drivers/clocksource/Kconfig
+>>> @@ -658,6 +658,15 @@ config RISCV_TIMER
+>>>         is accessed via both the SBI and the rdcycle instruction.  This is
+>>>         required for all RISC-V systems.
+>>>
+>>> +config CLINT_TIMER
+>>> +     bool "Timer for the RISC-V platform"
+>>> +     depends on GENERIC_SCHED_CLOCK && RISCV_M_MODE
+>>> +     select TIMER_PROBE
+>>> +     select TIMER_OF
+>>> +     help
+>>> +       This option enables the CLINT timer for RISC-V systems. The CLINT
+>>> +       driver is usually used for NoMMU RISC-V systems.
+>>
+>> V3 has a comment about fixing the Kconfig option.
+> 
+> I have removed "default y" from the Kconfig option as-per your suggestions.
+> 
+> I looked at other Timer Kconfig options. Most of them have menuconfig name.
+> Also, we can certainly have different timer MMIO timer drivers in future. Do
+> you still insist on making this kconfig option totally silent ??
 
-If it helps, my phone has 6GB memory space.
+Yes, and there is an effort to change the entries to be silent as much
+as possible.
 
->
-> Can you try booting *without* my patch and this in the kernel command
-> line: "cma=16M@0x100000000-0x200000000".
+Just add:
 
-It doesn't boot with this added kernel command line.
+	bool "Timer for the RISC-V platform" if COMPILE_TEST
 
-Regards,
-Amit Pundir
+and remove the RISCV_M_MODE dependency.
 
->
+Or alternatively:
+
+replace the RISCV_M_MODE dependency with COMPILE_TEST
+
+The goal is to be able to compile the driver on different platforms for
+compilation test covering.
+
+Then when more mmio drivers will added we will figure out.
+
+>> [ ... ]
+>>
+>>> +{
+>>> +     bool *registered = per_cpu_ptr(&clint_clock_event_registered, cpu);
+>>> +     struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
+>>> +
+>>> +     if (!(*registered)) {
+>>> +             ce->cpumask = cpumask_of(cpu);
+>>> +             clockevents_config_and_register(ce, clint_timer_freq, 200,
+>>> +                                              ULONG_MAX);
+>>> +             *registered = true;
+>>> +     }
+>>
+>>
+>> I was unsure about the clockevents_config_and_register() multiple calls
+>> when doing the comment. It seems like it is fine to call it several
+>> times and that is done in several places like riscv or arch_arm_timer.
+>>
+>> It is probably safe to drop the 'registered' code here, sorry for the
+>> confusion.
+> 
+> Okay, will revert these changes.
+> 
+>>
+>>> +     enable_percpu_irq(clint_timer_irq,
+>>> +                       irq_get_trigger_type(clint_timer_irq));
+>>> +     return 0;
+>>> +}
+>>> +
+>>
+>> [ ... ]
+>>
+>>
+>> --
+>> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+>>
+>> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+>> <http://twitter.com/#!/linaroorg> Twitter |
+>> <http://www.linaro.org/linaro-blog/> Blog
+> 
 > Regards,
-> Nicolas
->
-> And here is my kernel tree just in case
-> > https://github.com/pundiramit/linux/commits/beryllium-mainline
-> >
-> > Regards,
-> > Amit Pundir
-> >
-> >
-> > > Regards,
-> > > Nicolas
-> > >
-> > > > Regards,
-> > > > Amit Pundir
-> > > >
-> > > > > Reported-by: Jeremy Linton <jeremy.linton@arm.com>
-> > > > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > > > ---
-> > > > >
-> > > > > An more costly alternative would be adding an option to
-> > > > > dma_alloc_from_contiguous() so it fails when the allocation
-> > > > > doesn't
-> > > > > fall
-> > > > > in a specific zone.
-> > > > >
-> > > > >  kernel/dma/pool.c | 11 ++---------
->
+> Anup
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
