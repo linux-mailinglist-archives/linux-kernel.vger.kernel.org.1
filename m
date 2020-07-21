@@ -2,216 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71AD2288E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4429B2288CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730839AbgGUTIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
+        id S1730674AbgGUTH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730146AbgGUTGq (ORCPT
+        with ESMTP id S1730564AbgGUTHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:06:46 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE57BC0619DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:06:45 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id w2so12357453pgg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xl+gcvbDXd+PfVKLLD+1C1XM5QV+nhoL7JR5M/5kIIw=;
-        b=gG1XFwUzVGKnd9WToMSC6L9L3IGTQ2wskP5zZ6bBwaanIpcpjC1GTOeAoRfRCUKHLd
-         M1QJFNd1TTAChK9jBiH3oetqIg4srx0NUdbyizMl7shh1YAxIs2rnPaWm8z8uErvaBog
-         sYaP7rQOCsMzb6+VXzC2BZ7sqHcQEyxQxPC3Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xl+gcvbDXd+PfVKLLD+1C1XM5QV+nhoL7JR5M/5kIIw=;
-        b=RJ4NHtDp5aWhaB3j2SlnMXyK8PgCaxcmuwWT6m9H2aZbT/BlGXq6Jbwp5sJsiv1vhw
-         xD2ywYdRUmDaMDje0kOaQxCgisrYyr4xXP72wMVqm+IcLz59PV4aF2caaKsZ1yvakZQR
-         rLzz21lCALWxWxrmuCzxottKnj6MzWiFDT99zdnM+F96KE4+xNIYiSJCUlwudd5SXTeY
-         DZc8pEuxDvLxo7Vr3DbBCKIx8fn7DRHiKiaLDtWzfghVTFimXNcOtuToLDj9d4qqtdgU
-         wZ7O44dcRUNLqISK0TM3XsF6V1KpyEsU3/zaPiOnLVcCOvHvgVgmtP14sIkBO03Y2SBJ
-         3fFQ==
-X-Gm-Message-State: AOAM533RhgwC5GHV4NHHxEhrqAEqVnuv2cJjirF5MBZ/q+nAFbscVRBp
-        s7NhUlcjcd1eIzGtsu3ntSEdFA==
-X-Google-Smtp-Source: ABdhPJzdfjK4EdVt5krNNTVtPzDsIEu++0oOObpGAk6TLAH/OkgIn/qunDavfBeMmNmdR9OMWfKCUA==
-X-Received: by 2002:a63:7c42:: with SMTP id l2mr24525349pgn.35.1595358405368;
-        Tue, 21 Jul 2020 12:06:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y198sm21516181pfg.116.2020.07.21.12.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 12:06:44 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 12:06:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        davidgow@google.com, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v3] lib: kunit: Provides a userspace memory context when
- tests are compiled as module
-Message-ID: <202007211203.6CFE2F19BE@keescook>
-References: <20200721174036.71072-1-vitor@massaru.org>
+        Tue, 21 Jul 2020 15:07:03 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F879C0619DF
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:07:03 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id A26DFBC1B9;
+        Tue, 21 Jul 2020 19:06:59 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        gregkh@linuxfoundation.org, mh12gx2825@gmail.com,
+        zhengbin13@huawei.com, dan.carpenter@oracle.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] staging: comedi: dt: Replace HTTP links with HTTPS ones
+Date:   Tue, 21 Jul 2020 21:06:53 +0200
+Message-Id: <20200721190653.67751-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721174036.71072-1-vitor@massaru.org>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 02:40:36PM -0300, Vitor Massaru Iha wrote:
-> KUnit test cases run on kthreads, and kthreads don't have an
-> adddress space (current->mm is NULL), but processes have mm.
-> 
-> The purpose of this patch is to allow to borrow mm to KUnit kthread
-> after userspace is brought up, because we know that there are processes
-> running, at least the process that loaded the module to borrow mm.
-> 
-> This allows, for example, tests such as user_copy_kunit, which uses
-> vm_mmap, which needs current->mm.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Ah! In the case of kunit starting before there IS a userspace...
-interesting.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> ---
-> v2:
->     * splitted patch in 3:
->         - Allows to install and load modules in root filesystem;
->         - Provides an userspace memory context when tests are compiled
->           as module;
->         - Convert test_user_copy to KUnit test;
->     * added documentation;
->     * added more explanation;
->     * added a missed test pointer;
->     * released mm with mmput();
-> v3:
->     * rebased with last kunit branch
->     * Please apply this commit from kunit-fixes:
->         3f37d14b8a3152441f36b6bc74000996679f0998
-> 
->  Documentation/dev-tools/kunit/usage.rst | 14 ++++++++++++++
->  include/kunit/test.h                    | 12 ++++++++++++
->  lib/kunit/try-catch.c                   | 15 ++++++++++++++-
->  3 files changed, 40 insertions(+), 1 deletion(-)
-> ---
-> diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-> index 3c3fe8b5fecc..9f909157be34 100644
-> --- a/Documentation/dev-tools/kunit/usage.rst
-> +++ b/Documentation/dev-tools/kunit/usage.rst
-> @@ -448,6 +448,20 @@ We can now use it to test ``struct eeprom_buffer``:
-> 
->  .. _kunit-on-non-uml:
-> 
-> +User-space context
-> +------------------
-> +
-> +I case you need a user-space context, for now this is only possible through
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-typo: In case ...
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
-> +tests compiled as a module. And it will be necessary to use a root filesystem
-> +and uml_utilities.
-> +
-> +Example:
-> +
-> +.. code-block:: bash
-> +
-> +   ./tools/testing/kunit/kunit.py run --timeout=60 --uml_rootfs_dir=.uml_rootfs
-> +
-> +
->  KUnit on non-UML architectures
->  ==============================
-> 
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index 59f3144f009a..ae3337139c65 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -222,6 +222,18 @@ struct kunit {
->  	 * protect it with some type of lock.
->  	 */
->  	struct list_head resources; /* Protected by lock. */
-> +	/*
-> +	 * KUnit test cases run on kthreads, and kthreads don't have an
-> +	 * adddress space (current->mm is NULL), but processes have mm.
-> +	 *
-> +	 * The purpose of this mm_struct is to allow to borrow mm to KUnit kthread
-> +	 * after userspace is brought up, because we know that there are processes
-> +	 * running, at least the process that loaded the module to borrow mm.
-> +	 *
-> +	 * This allows, for example, tests such as user_copy_kunit, which uses
-> +	 * vm_mmap, which needs current->mm.
-> +	 */
-> +	struct mm_struct *mm;
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
 
-I have a general concern that this will need more careful solving in the
-future as there are likely to be many tests that need a userspace
-context to operate sanely. But that's just a note; this solves the
-specific case now.
+ If you apply the patch, please let me know.
 
->  };
-> 
->  void kunit_init_test(struct kunit *test, const char *name, char *log);
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index 0dd434e40487..d03e2093985b 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -11,7 +11,8 @@
->  #include <linux/completion.h>
->  #include <linux/kernel.h>
->  #include <linux/kthread.h>
-> -
-> +#include <linux/sched/mm.h>
-> +#include <linux/sched/task.h>
->  #include "try-catch-impl.h"
-> 
->  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
-> @@ -24,8 +25,17 @@ EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
->  static int kunit_generic_run_threadfn_adapter(void *data)
->  {
->  	struct kunit_try_catch *try_catch = data;
-> +	struct kunit *test = try_catch->test;
-> +
-> +	if (test != NULL && test->mm != NULL)
-> +		kthread_use_mm(test->mm);
-> 
->  	try_catch->try(try_catch->context);
-> +	if (test != NULL && test->mm != NULL) {
-> +		kthread_unuse_mm(test->mm);
-> +		mmput(test->mm);
-> +		test->mm = NULL;
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
-This mmput() seems unbalanced... see below.
 
-> +	}
-> 
->  	complete_and_exit(try_catch->try_completion, 0);
->  }
-> @@ -65,6 +75,9 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
->  	try_catch->context = context;
->  	try_catch->try_completion = &try_completion;
->  	try_catch->try_result = 0;
-> +
-> +	test->mm = get_task_mm(current);
-> +
->  	task_struct = kthread_run(kunit_generic_run_threadfn_adapter,
->  				  try_catch,
->  				  "kunit_try_catch_thread");
+ drivers/staging/comedi/drivers/dt2801.c | 2 +-
+ drivers/staging/comedi/drivers/dt2811.c | 2 +-
+ drivers/staging/comedi/drivers/dt2814.c | 2 +-
+ drivers/staging/comedi/drivers/dt2815.c | 2 +-
+ drivers/staging/comedi/drivers/dt2817.c | 2 +-
+ drivers/staging/comedi/drivers/dt282x.c | 2 +-
+ drivers/staging/comedi/drivers/dt3000.c | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-Isn't there something that destroys a "struct kunit"? I would expect
-that to perform the mmput(). Why is it up in the threadfn?
-
-> 
-> base-commit: d43c7fb05765152d4d4a39a8ef957c4ea14d8847
-> --
-> 2.26.2
-> 
-
+diff --git a/drivers/staging/comedi/drivers/dt2801.c b/drivers/staging/comedi/drivers/dt2801.c
+index a29880981d81..0d571d817b4e 100644
+--- a/drivers/staging/comedi/drivers/dt2801.c
++++ b/drivers/staging/comedi/drivers/dt2801.c
+@@ -640,6 +640,6 @@ static struct comedi_driver dt2801_driver = {
+ };
+ module_comedi_driver(dt2801_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/dt2811.c b/drivers/staging/comedi/drivers/dt2811.c
+index 8a1f9efe7d4e..0eb5e6ba6916 100644
+--- a/drivers/staging/comedi/drivers/dt2811.c
++++ b/drivers/staging/comedi/drivers/dt2811.c
+@@ -640,6 +640,6 @@ static struct comedi_driver dt2811_driver = {
+ };
+ module_comedi_driver(dt2811_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for Data Translation DT2811 series boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/dt2814.c b/drivers/staging/comedi/drivers/dt2814.c
+index d2c715737361..bcf4d5444faf 100644
+--- a/drivers/staging/comedi/drivers/dt2814.c
++++ b/drivers/staging/comedi/drivers/dt2814.c
+@@ -285,6 +285,6 @@ static struct comedi_driver dt2814_driver = {
+ };
+ module_comedi_driver(dt2814_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/dt2815.c b/drivers/staging/comedi/drivers/dt2815.c
+index 78a7c1b3448a..5906f32aa01f 100644
+--- a/drivers/staging/comedi/drivers/dt2815.c
++++ b/drivers/staging/comedi/drivers/dt2815.c
+@@ -212,6 +212,6 @@ static struct comedi_driver dt2815_driver = {
+ };
+ module_comedi_driver(dt2815_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/dt2817.c b/drivers/staging/comedi/drivers/dt2817.c
+index 9babb2a5196a..7c1463e835d3 100644
+--- a/drivers/staging/comedi/drivers/dt2817.c
++++ b/drivers/staging/comedi/drivers/dt2817.c
+@@ -135,6 +135,6 @@ static struct comedi_driver dt2817_driver = {
+ };
+ module_comedi_driver(dt2817_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/dt282x.c b/drivers/staging/comedi/drivers/dt282x.c
+index 89dc84d3c803..2656b4b0e3d0 100644
+--- a/drivers/staging/comedi/drivers/dt282x.c
++++ b/drivers/staging/comedi/drivers/dt282x.c
+@@ -1167,6 +1167,6 @@ static struct comedi_driver dt282x_driver = {
+ };
+ module_comedi_driver(dt282x_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for Data Translation DT2821 series");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/dt3000.c b/drivers/staging/comedi/drivers/dt3000.c
+index 011e19161b78..ec27aa4730d4 100644
+--- a/drivers/staging/comedi/drivers/dt3000.c
++++ b/drivers/staging/comedi/drivers/dt3000.c
+@@ -735,6 +735,6 @@ static struct pci_driver dt3000_pci_driver = {
+ };
+ module_comedi_pci_driver(dt3000_driver, dt3000_pci_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for Data Translation DT3000 series boards");
+ MODULE_LICENSE("GPL");
 -- 
-Kees Cook
+2.27.0
+
