@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF04C228878
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2B922887A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgGUSoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S1729040AbgGUSo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726658AbgGUSoJ (ORCPT
+        with ESMTP id S1726602AbgGUSoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:44:09 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8260BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:44:09 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id f16so2112283pjt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:44:09 -0700 (PDT)
+        Tue, 21 Jul 2020 14:44:55 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E23C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:44:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g67so12346867pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=3LfPahCwDgYlI4ZTOgCGD9fC1JmncfD/lLqsHCCVbWU=;
-        b=gIpYGseTcRAt3cbtJglK96ny0HOxl1F4IoVHOXhGC6OA9GiYAUprn5cq0v3Qk60oku
-         QB3Qr0eNGhxW2wgiq1UOxgfCXcPyWOKOIZcptCpnEMbDlZnS/sX990Y/hxH3a8t6Y0WF
-         KglLs08Gw2HR/h42Calo8PdHfhFbeiLXaUTcE=
+        bh=ktrA6qles9txxK/VYI2vM11yWK+fPxocyvkCQAJyaOY=;
+        b=N97BcoyD7bGx2yP6cuoMvwcpm0oMr+8bz013kXkloSXrP8e5sitfBTilO9XbJomnz9
+         UEq8Oq9T6zUILR7FhI5SM7h4JndK/D85Nn7olc7uH1pAxgdJaIDu/6mNdbLeAX2tal2r
+         E3dfGWP2DQn1Uz6B9urWB4nMoJcawyxJnAe1A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3LfPahCwDgYlI4ZTOgCGD9fC1JmncfD/lLqsHCCVbWU=;
-        b=Hk9pA576L0/ALeJrZhkwFK5+z60eqFxqvVKQTDcvyFIWRVyKvdsyx3jG3MYVcXxGw4
-         1NCsYARN/0B0fANSxZwtbvLBIN9nMnwh4OpldIEZRV8fZFZ6Dw/Xk9RGNiBjkbFRV87r
-         V5qYbqCerVatCQFdAKafY8kpwvnV8bPxrR3zUXJ8KhSlNZkiRDoLBrVT3NxzD/XUG/n0
-         ZEFgPnqFkL/2A/PHnlPo2HVqYOT3b+sx9bpW0Gl/D1lrTQHihe9pWPvVWZf3R9DDB523
-         tSHEpYJ6X1tFIno+Tf0s7TM6EsOerf1FxPQijfK0YVAxSi0u0B54/i/GHzAEa6XeRuuz
-         qEsg==
-X-Gm-Message-State: AOAM53164vWYgVQiTrnfH5x1ca02M2zGXPAzR3W3BfXMYFN3raZ99FV/
-        wbloe3nd9bgQdnXiUDIBnttndA==
-X-Google-Smtp-Source: ABdhPJyB/3YWANGTyrbmV6E+f+nN2vwpyNyu5QDKBTxjc0vSe5agtQfARQFqwLL8aP2pPlmZzs5sYg==
-X-Received: by 2002:a17:902:aa93:: with SMTP id d19mr11336859plr.272.1595357048961;
-        Tue, 21 Jul 2020 11:44:08 -0700 (PDT)
+        bh=ktrA6qles9txxK/VYI2vM11yWK+fPxocyvkCQAJyaOY=;
+        b=NLuldRLGk1GCTHwatUwuMlTU5hvaWDZZ7HB+8JFCcDU4+QObpWQkPdraboxMbLvF99
+         5vksVrnyKB7yuVnfzIo0zUOcVJ3fod2jP+bxvp5eXTiaxdx0nEjWETsGXK4Niu8o1oRf
+         u86dr9rUiakhhzcJqPIB5d8GlVYJM09ZFN4SzPZwL7iZsz9R0KauzwoznlhJnkS+faL/
+         WeC2bS2uf1MzwaBPz/qnfupCAr1gpyqvuBteCq91q/IqVR24SCN0a8F4kID7xe5fHq8E
+         pO+jCrlHQAiCcUmsHbSYS1rgO4jVnV3xMVKXvdCTJ9J1EW5nf6ZbjXuCFz2Was8JQim+
+         lMPA==
+X-Gm-Message-State: AOAM531DQ3yI46OvJIKm73JKrpzof+EMBHFcl3funSFI1+WJK1paQe9l
+        33M3n7jzChHMoBB5iOlhzFApwg==
+X-Google-Smtp-Source: ABdhPJzJl2KXppIFt49AStz4R4Fcg+Y83tWuJ+st0V8aBSZdfzPijZrTyy6djWa8nWzYJRiXTVV2ng==
+X-Received: by 2002:a62:1407:: with SMTP id 7mr23742991pfu.88.1595357095105;
+        Tue, 21 Jul 2020 11:44:55 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x13sm20479444pfj.122.2020.07.21.11.44.07
+        by smtp.gmail.com with ESMTPSA id i7sm18429700pgh.58.2020.07.21.11.44.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 11:44:08 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 11:44:07 -0700
+        Tue, 21 Jul 2020 11:44:54 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 11:44:53 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com, Arnd Bergmann <arnd@arndb.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Bob Haarman <inglorion@google.com>, hjl.tools@gmail.com,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH] x86, vmlinux.lds: Page-Align end of ..page_aligned
- sections
-Message-ID: <202007211143.AC36D096@keescook>
-References: <20200721093448.10417-1-joro@8bytes.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Paul Moore <paul@paul-moore.com>, edumazet@google.com,
+        paulmck@kernel.org, shakeelb@google.com,
+        James Morris <jamorris@linux.microsoft.com>,
+        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
+        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Convert nsproxy, groups, and creds to refcount_t
+Message-ID: <202007211144.A68C31D@keescook>
+References: <202006142054.C00B3E9C9@keescook>
+ <20200612183450.4189588-1-keescook@chromium.org>
+ <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com>
+ <544539.1595328664@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721093448.10417-1-joro@8bytes.org>
+In-Reply-To: <544539.1595328664@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 11:34:48AM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On Tue, Jul 21, 2020 at 11:51:04AM +0100, David Howells wrote:
+> Kees Cook <keescook@chromium.org> wrote:
 > 
-> Align the end of the .bss..page_aligned and .data..page_aligned section
-> on page-size too. Otherwise the linker might place other objects on the
-> page of the last ..page_aligned object. This is inconsistent with other
-> objects in those sections, which all have their own page.
+> > > Should mm->mm_users also be replaced by refcount_t?
+> > 
+> > I'll say "yes". :)
+> > https://lore.kernel.org/lkml/1487671124-11188-1-git-send-email-elena.reshetova@intel.com/
+> > 
+> > > In addition, is it better to change all variables that use
+> > > atomic_dec_and_test to control the release process to refconut_t?
+> > 
+> > For the most part, yes. The following may find a lot of them:
+> > scripts/coccinelle/api/atomic_as_refcounter.cocci
+> 
+> I've been gradually undoing some of the conversions as there's no equivalent
+> of atomic_add_return() and atomic_dec_return() that allow me to log the
+> altered refcount through a tracepoint.
 
-What problem was actually encountered? (i.e. why is it a problem for the
-other data to be in the page of the page-aligned data? shouldn't those
-data have their own, separate, alignment hint?)
+Please do not _undo_ the changes; just add the API you need.
 
 -- 
 Kees Cook
