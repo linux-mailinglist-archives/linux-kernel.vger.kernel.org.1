@@ -2,105 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60C02285B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9762285BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgGUQbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:31:53 -0400
-Received: from mga04.intel.com ([192.55.52.120]:46226 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727860AbgGUQbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:31:52 -0400
-IronPort-SDR: o0NiPHrTuxyP+q0NerB5nLFWmpMBzzujbGJ4Xpay4EJr9vBcrn0nyDvKIft1+P0zWUc9RAxnLz
- YlsnXg+/tuqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="147673884"
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="147673884"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 09:31:52 -0700
-IronPort-SDR: QIqyg569mkeyzGevueJJ0WqfJG1wbbgWKT8l7gfSm5T3TqYGXngLSHY7sbeaPpwcZZol3ESKK7
- P6/eMlyR/hZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="270482086"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2020 09:31:52 -0700
-Date:   Tue, 21 Jul 2020 09:31:52 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 13/17] kmap: Add stray write protection for device
- pages
-Message-ID: <20200721163151.GA643353@iweiny-DESK2.sc.intel.com>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-14-ira.weiny@intel.com>
- <20200717092139.GC10769@hirez.programming.kicks-ass.net>
- <20200719041319.GA478573@iweiny-DESK2.sc.intel.com>
- <20200720091740.GP10769@hirez.programming.kicks-ass.net>
+        id S1730290AbgGUQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:32:15 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44704 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbgGUQcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:32:14 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LGWCZo009455;
+        Tue, 21 Jul 2020 11:32:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595349132;
+        bh=VXQVYB3wzJZWQT9GPM/H2pXNrk9WfmlT/oWF5ORcuqY=;
+        h=From:To:CC:Subject:Date;
+        b=ZLISQ8gBnfpEgWRKBMAQZ99+D9fIOsDzyqQ2M7TEjzc46/TCtB7ph6PkNAiGN8s9K
+         iMYkemgOMItg6Di+LqUQ32j6suxcisVJIa6zJH2Ryhy6OXgbGy2Rz4/1VZ1L3QFz+d
+         umMoPS4Tz9WxPcQIm5H6FMluGRlDdS9mGyK5xv/Y=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06LGWCKs039721
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 11:32:12 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 21
+ Jul 2020 11:32:12 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 21 Jul 2020 11:32:12 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LGWCAt027900;
+        Tue, 21 Jul 2020 11:32:12 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>, <afd@ti.com>, <pali@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh@kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v3 1/4] dt-bindings: power: Add BQ27561 compatible
+Date:   Tue, 21 Jul 2020 11:32:03 -0500
+Message-ID: <20200721163206.25438-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720091740.GP10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 11:17:40AM +0200, Peter Zijlstra wrote:
-> On Sat, Jul 18, 2020 at 09:13:19PM -0700, Ira Weiny wrote:
-> > On Fri, Jul 17, 2020 at 11:21:39AM +0200, Peter Zijlstra wrote:
-> > > On Fri, Jul 17, 2020 at 12:20:52AM -0700, ira.weiny@intel.com wrote:
-> > > > @@ -31,6 +32,20 @@ static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
-> > > >  
-> > > >  #include <asm/kmap_types.h>
-> > > >  
-> > > > +static inline void enable_access(struct page *page)
-> > > > +{
-> > > > +	if (!page_is_access_protected(page))
-> > > > +		return;
-> > > > +	dev_access_enable();
-> > > > +}
-> > > > +
-> > > > +static inline void disable_access(struct page *page)
-> > > > +{
-> > > > +	if (!page_is_access_protected(page))
-> > > > +		return;
-> > > > +	dev_access_disable();
-> > > > +}
-> > > 
-> > > These are some very generic names, do we want them to be a little more
-> > > specific?
-> > 
-> > I had them named kmap_* but Dave (I think it was Dave) thought they did not
-> > really apply strictly to kmap_*.
-> > 
-> > They are static to this file which I thought may be sufficient to 'uniqify'
-> > them?
-> 
-> They're static to a .h, which means they're all over the place ;-)
+Add the Texas Instruments bq27561 battery monitor to the bq27xxx
+binding.
 
-I've thought about it a bit.  I think I agree with both you and Dave.
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ Documentation/devicetree/bindings/power/supply/bq27xxx.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-How about:
+diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+index 03d1020a2e47..51cb1f685dcf 100644
+--- a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
++++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+@@ -49,6 +49,7 @@ properties:
+       - ti,bq27426
+       - ti,bq27441
+       - ti,bq27621
++      - ti,bq27561
+ 
+   reg:
+     maxItems: 1
+-- 
+2.27.0
 
-dev_page_{en,dis}able_access()
-
-??
-
-I've made that change for now.
-
-Thanks,
-Ira
