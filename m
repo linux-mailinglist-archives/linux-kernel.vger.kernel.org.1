@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEB7227576
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 04:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50A022757B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 04:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgGUCOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 22:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGUCOx (ORCPT
+        id S1728266AbgGUCQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 22:16:27 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:11310 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725774AbgGUCQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 22:14:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B8DC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 19:14:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W3Whq0VMGEfbWzT64X+GmmnV7xR1Aj5wCM1jsNMxHBM=; b=PH/J2AfmYn5tmaL14rs1lgEflz
-        dPea72AhZomOFw+IqosbYe/rca8ShnXoeJwy45RX+14txjAZXaCKtfmskakMSfsTqY4MoO91hLk5C
-        cfFM32PYUty6SWyxhRxeT2F4/EqKNwZDuKCaoWt8Pt+tOWMtVdGumDvJq+nSDUg74R79qnSCX1jlB
-        0HPLpbNUz7RWOy+E5UKEhcMBcDGQEOFcV3o24edtBA5G3U2iolvftpEHcWRcst9zy1WNiGsfFwRnl
-        QOdIhCiarzGxO8aBNTxH7lhgRfZCjkP5zYtSdFCJ+zuV3s4UOeqG8KpR63uQsDwIJ/qpTgD7bgTKZ
-        kR6z94OA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxhnu-0002CG-09; Tue, 21 Jul 2020 02:14:50 +0000
-Date:   Tue, 21 Jul 2020 03:14:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
+        Mon, 20 Jul 2020 22:16:26 -0400
+X-UUID: a19c054b7fde42b58d6bb2b3cd59a97b-20200721
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=1bSgcMBsyM3c9aSUx6HgVWkvGxtBrg5PzcKspdBYPfE=;
+        b=uU0K7gWFecpXxjP8fs8a5jIXNn9ppUVyp+B6uKN62qUvJ0dRRftxxRmZqXu7i1sHHMUKv/k0GTiOXhvrx6LDDIf63aLx7DUfDNz+3AXiQqR3RVRpswopdwczSzcpnmOKVG+wCJogGwnu8umHFijHrLpU9qBDRcgvAxSvQI12HuU=;
+X-UUID: a19c054b7fde42b58d6bb2b3cd59a97b-20200721
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 300682285; Tue, 21 Jul 2020 10:16:22 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 21 Jul 2020 10:16:20 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 21 Jul 2020 10:16:21 +0800
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
         David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: kernel BUG at include/linux/swapops.h:LINE!
-Message-ID: <20200721021449.GC15516@casper.infradead.org>
-References: <000000000000bc4fd705a6e090e2@google.com>
- <0000000000004c38cd05aad1d13f@google.com>
- <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
- <20200721002147.GA15516@casper.infradead.org>
+        Yong Wu <yong.wu@mediatek.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chao Hao <chao.hao@mediatek.com>
+Subject: [PATCH v2] iommu/mediatek: check 4GB mode by reading infracfg
+Date:   Tue, 21 Jul 2020 10:16:19 +0800
+Message-ID: <20200721021619.25575-1-miles.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721002147.GA15516@casper.infradead.org>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 01:21:47AM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 20, 2020 at 04:51:44PM -0700, Andrew Morton wrote:
-> > On Sun, 19 Jul 2020 14:10:19 -0700 syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com> wrote:
-> > 
-> > > syzbot has found a reproducer for the following issue on:
-> > > 
-> > > HEAD commit:    4c43049f Add linux-next specific files for 20200716
-> > > git tree:       linux-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=12c56087100000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=2c76d72659687242
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=c48f34012b06c4ac67dd
-> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1344abeb100000
-> > > 
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com
-> > 
-> > Thanks.
-> > 
-> > __handle_mm_fault
-> >   ->pmd_migration_entry_wait
-> >     ->migration_entry_to_page
-> > 
-> > stumbled onto an unlocked page.
-> > 
-> > I don't immediately see a cause.  Perhaps Matthew's "THP prep patches",
-> > perhaps something else.
-> 
-> That's interesting.  I'm currently chasing that signature too.  Of course,
-> almost anything can cause this.
-> 
-> What I do have in my tree is a patch to turn that WARN_ON into a
-> VM_BUG_ON_PAGE and what I see is not just an unlocked page, but one
-> that's been freed.
+SW4gcHJldmlvdXMgZGlzY3Vzc2lvbiBbMV0gYW5kIFsyXSwgd2UgZm91bmQgdGhhdCBpdCBpcyBy
+aXNreSB0bw0KdXNlIG1heF9wZm4gb3IgdG90YWxyYW1fcGFnZXMgdG8gdGVsbCBpZiA0R0IgbW9k
+ZSBpcyBlbmFibGVkLg0KDQpDaGVjayA0R0IgbW9kZSBieSByZWFkaW5nIGluZnJhY2ZnIHJlZ2lz
+dGVyLCByZW1vdmUgdGhlIHVzYWdlDQpvZiB0aGUgdW4tZXhwb3J0ZWQgc3ltYm9sIG1heF9wZm4u
+DQoNClRoaXMgaXMgYSBzdGVwIHRvd2FyZHMgYnVpbGRpbmcgbXRrX2lvbW11IGFzIGEga2VybmVs
+IG1vZHVsZS4NCg0KQ2hhbmdlIHNpbmNlIHYxOg0KMS4gcmVtb3ZlIHRoZSBwaGFuZGxlIHVzYWdl
+LCBzZWFyY2ggZm9yIGluZnJhY2ZnIGluc3RlYWQgWzNdDQoyLiB1c2UgaW5mcmFjZmcgaW5zdGVh
+ZCBvZiBpbmZyYWNmZ19yZWdtYXANCjMuIG1vdmUgaW5mcmFjZmcgZGVmaW5pdGFpb25zIHRvIGxp
+bnV4L3NvYy9tZWRpYXRlay9pbmZyYWNmZy5oDQo0LiB1cGRhdGUgZW5hYmxlXzRHQiBvbmx5IHdo
+ZW4gaGFzXzRnYl9tb2RlDQoNClsxXSBodHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC82LzMvNzMz
+DQpbMl0gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvNi80LzEzNg0KWzNdIGh0dHBzOi8vbGtt
+bC5vcmcvbGttbC8yMDIwLzcvMTUvMTE0Nw0KDQpDYzogTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51
+eC5pYm0uY29tPg0KQ2M6IERhdmlkIEhpbGRlbmJyYW5kIDxkYXZpZEByZWRoYXQuY29tPg0KQ2M6
+IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KQ2M6IFlpbmdqb2UgQ2hlbiA8eWluZ2pv
+ZS5jaGVuQG1lZGlhdGVrLmNvbT4NCkNjOiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4N
+CkNjOiBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCkNjOiBDaGFvIEhhbyA8Y2hhby5o
+YW9AbWVkaWF0ZWsuY29tPg0KQ2M6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQpDYzog
+TWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NClNpZ25lZC1vZmYtYnk6
+IE1pbGVzIENoZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9pb21t
+dS9tdGtfaW9tbXUuYyAgICAgICAgICAgICB8IDI2ICsrKysrKysrKysrKysrKysrKysrKy0tLS0t
+DQogaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvaW5mcmFjZmcuaCB8ICAzICsrKw0KIDIgZmls
+ZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L210a19pb21tdS5j
+DQppbmRleCAyYmU5NmYxY2RiZDIuLjE2NzY1ZjUzMjg1MyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMv
+aW9tbXUvbXRrX2lvbW11LmMNCisrKyBiL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMNCkBAIC0z
+LDcgKzMsNiBAQA0KICAqIENvcHlyaWdodCAoYykgMjAxNS0yMDE2IE1lZGlhVGVrIEluYy4NCiAg
+KiBBdXRob3I6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KICAqLw0KLSNpbmNsdWRl
+IDxsaW51eC9tZW1ibG9jay5oPg0KICNpbmNsdWRlIDxsaW51eC9idWcuaD4NCiAjaW5jbHVkZSA8
+bGludXgvY2xrLmg+DQogI2luY2x1ZGUgPGxpbnV4L2NvbXBvbmVudC5oPg0KQEAgLTE1LDEzICsx
+NCwxNiBAQA0KICNpbmNsdWRlIDxsaW51eC9pb21tdS5oPg0KICNpbmNsdWRlIDxsaW51eC9pb3Bv
+bGwuaD4NCiAjaW5jbHVkZSA8bGludXgvbGlzdC5oPg0KKyNpbmNsdWRlIDxsaW51eC9tZmQvc3lz
+Y29uLmg+DQogI2luY2x1ZGUgPGxpbnV4L29mX2FkZHJlc3MuaD4NCiAjaW5jbHVkZSA8bGludXgv
+b2ZfaW9tbXUuaD4NCiAjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQogI2luY2x1ZGUgPGxpbnV4
+L29mX3BsYXRmb3JtLmg+DQogI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPg0KKyNp
+bmNsdWRlIDxsaW51eC9yZWdtYXAuaD4NCiAjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KICNpbmNs
+dWRlIDxsaW51eC9zcGlubG9jay5oPg0KKyNpbmNsdWRlIDxsaW51eC9zb2MvbWVkaWF0ZWsvaW5m
+cmFjZmcuaD4NCiAjaW5jbHVkZSA8YXNtL2JhcnJpZXIuaD4NCiAjaW5jbHVkZSA8c29jL21lZGlh
+dGVrL3NtaS5oPg0KIA0KQEAgLTU5OSw4ICs2MDEsMTAgQEAgc3RhdGljIGludCBtdGtfaW9tbXVf
+cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCiAJc3RydWN0IHJlc291cmNlICAg
+ICAgICAgKnJlczsNCiAJcmVzb3VyY2Vfc2l6ZV90CQlpb2FkZHI7DQogCXN0cnVjdCBjb21wb25l
+bnRfbWF0Y2ggICptYXRjaCA9IE5VTEw7DQorCXN0cnVjdCByZWdtYXAJCSppbmZyYWNmZzsNCiAJ
+dm9pZCAgICAgICAgICAgICAgICAgICAgKnByb3RlY3Q7DQogCWludCAgICAgICAgICAgICAgICAg
+ICAgIGksIGxhcmJfbnIsIHJldDsNCisJdTMyCQkJdmFsOw0KIA0KIAlkYXRhID0gZGV2bV9remFs
+bG9jKGRldiwgc2l6ZW9mKCpkYXRhKSwgR0ZQX0tFUk5FTCk7DQogCWlmICghZGF0YSkNCkBAIC02
+MTQsMTAgKzYxOCwyMiBAQCBzdGF0aWMgaW50IG10a19pb21tdV9wcm9iZShzdHJ1Y3QgcGxhdGZv
+cm1fZGV2aWNlICpwZGV2KQ0KIAkJcmV0dXJuIC1FTk9NRU07DQogCWRhdGEtPnByb3RlY3RfYmFz
+ZSA9IEFMSUdOKHZpcnRfdG9fcGh5cyhwcm90ZWN0KSwgTVRLX1BST1RFQ1RfUEFfQUxJR04pOw0K
+IA0KLQkvKiBXaGV0aGVyIHRoZSBjdXJyZW50IGRyYW0gaXMgb3ZlciA0R0IgKi8NCi0JZGF0YS0+
+ZW5hYmxlXzRHQiA9ICEhKG1heF9wZm4gPiAoQklUX1VMTCgzMikgPj4gUEFHRV9TSElGVCkpOw0K
+LQlpZiAoIWRhdGEtPnBsYXRfZGF0YS0+aGFzXzRnYl9tb2RlKQ0KLQkJZGF0YS0+ZW5hYmxlXzRH
+QiA9IGZhbHNlOw0KKwlkYXRhLT5lbmFibGVfNEdCID0gZmFsc2U7DQorCWlmIChkYXRhLT5wbGF0
+X2RhdGEtPmhhc180Z2JfbW9kZSkgew0KKwkJaW5mcmFjZmcgPSBzeXNjb25fcmVnbWFwX2xvb2t1
+cF9ieV9jb21wYXRpYmxlKA0KKwkJCQkibWVkaWF0ZWssbXQ4MTczLWluZnJhY2ZnIik7DQorCQlp
+ZiAoSVNfRVJSKGluZnJhY2ZnKSkgew0KKwkJCWluZnJhY2ZnID0gc3lzY29uX3JlZ21hcF9sb29r
+dXBfYnlfY29tcGF0aWJsZSgNCisJCQkJCSJtZWRpYXRlayxtdDI3MTItaW5mcmFjZmciKTsNCisJ
+CQlpZiAoSVNfRVJSKGluZnJhY2ZnKSkNCisJCQkJcmV0dXJuIFBUUl9FUlIoaW5mcmFjZmcpOw0K
+Kw0KKwkJfQ0KKwkJcmV0ID0gcmVnbWFwX3JlYWQoaW5mcmFjZmcsIFJFR19JTkZSQV9NSVNDLCAm
+dmFsKTsNCisJCWlmIChyZXQpDQorCQkJcmV0dXJuIHJldDsNCisJCWRhdGEtPmVuYWJsZV80R0Ig
+PSAhISh2YWwgJiBGX0REUl80R0JfU1VQUE9SVF9FTik7DQorCX0NCiANCiAJcmVzID0gcGxhdGZv
+cm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsNCiAJZGF0YS0+YmFzZSA9
+IGRldm1faW9yZW1hcF9yZXNvdXJjZShkZXYsIHJlcyk7DQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
+aW51eC9zb2MvbWVkaWF0ZWsvaW5mcmFjZmcuaCBiL2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVr
+L2luZnJhY2ZnLmgNCmluZGV4IGZkMjVmMDE0ODU2Ni4uMjMzNDYzZDc4OWM2IDEwMDY0NA0KLS0t
+IGEvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvaW5mcmFjZmcuaA0KKysrIGIvaW5jbHVkZS9s
+aW51eC9zb2MvbWVkaWF0ZWsvaW5mcmFjZmcuaA0KQEAgLTMyLDYgKzMyLDkgQEANCiAjZGVmaW5l
+IE1UNzYyMl9UT1BfQVhJX1BST1RfRU5fV0IJCShCSVQoMikgfCBCSVQoNikgfCBcDQogCQkJCQkJ
+IEJJVCg3KSB8IEJJVCg4KSkNCiANCisjZGVmaW5lIFJFR19JTkZSQV9NSVNDCQkJCTB4ZjAwDQor
+I2RlZmluZSBGX0REUl80R0JfU1VQUE9SVF9FTgkJCUJJVCgxMykNCisNCiBpbnQgbXRrX2luZnJh
+Y2ZnX3NldF9idXNfcHJvdGVjdGlvbihzdHJ1Y3QgcmVnbWFwICppbmZyYWNmZywgdTMyIG1hc2ss
+DQogCQlib29sIHJlZ191cGRhdGUpOw0KIGludCBtdGtfaW5mcmFjZmdfY2xlYXJfYnVzX3Byb3Rl
+Y3Rpb24oc3RydWN0IHJlZ21hcCAqaW5mcmFjZmcsIHUzMiBtYXNrLA0KLS0gDQoyLjE4LjANCg==
 
-Here's an example crash:
-
-1404 086 (25392): drop_caches: 3
-1404 page:00000000c8b7c292 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x1 pfn:0xac20
-1404 flags: 0x4000000000000000()
-1404 raw: 4000000000000000 fffff7b501775808 fffff7b501ab7008 0000000000000000
-1404 raw: 0000000000000001 0000000000000005 00000000ffffff7f 0000000000000000
-1404 page dumped because: VM_BUG_ON_PAGE(!PageLocked(p))
-
-(that's generic/086 for what it's worth, but you have to run
-through a number of other tests in order to hit it; even starting at
-generic/08[0123456] isn't enough to hit it, and it doesn't always hit)
-
-A mapcount of -128 indicates PageBuddy, but I've also seen a mapcount of 0
-indicating it's still on the per-cpu freelist.
