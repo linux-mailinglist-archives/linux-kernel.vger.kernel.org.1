@@ -2,273 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB8C227B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BDF227B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgGUIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:55:03 -0400
-Received: from ms-10.1blu.de ([178.254.4.101]:45312 "EHLO ms-10.1blu.de"
+        id S1728850AbgGUI5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:57:05 -0400
+Received: from mga17.intel.com ([192.55.52.151]:33758 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726803AbgGUIzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:55:01 -0400
-Received: from [78.43.71.214] (helo=marius.fritz.box)
-        by ms-10.1blu.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <mail@mariuszachmann.de>)
-        id 1jxo36-0008GT-64; Tue, 21 Jul 2020 10:54:56 +0200
-From:   Marius Zachmann <mail@mariuszachmann.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Marius Zachmann <mail@mariuszachmann.de>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: corsair-cpro: add reading pwm values
-Date:   Tue, 21 Jul 2020 10:54:47 +0200
-Message-Id: <20200721085447.23933-1-mail@mariuszachmann.de>
-X-Mailer: git-send-email 2.27.0
+        id S1726821AbgGUI5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 04:57:04 -0400
+IronPort-SDR: MzOPMfXpMjteEDei/KMZ3RwEa/xppVqMxW6uNL+0XYy7p5nOwqfiAEaI47P963khd5nufK3hsG
+ Dwp1Fv0S+07w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="130164938"
+X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; 
+   d="scan'208";a="130164938"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 01:57:01 -0700
+IronPort-SDR: MYdaCq6UC18O23+gBkCrKKcu+mOULO740nYSoSpxLJ7pfBXRtFMbCoyhaDlE98x54Xuu4soNqN
+ JhiS2L5nbTzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; 
+   d="scan'208";a="318281041"
+Received: from lkp-server02.sh.intel.com (HELO 7dd7ac9fbea4) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 21 Jul 2020 01:57:00 -0700
+Received: from kbuild by 7dd7ac9fbea4 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jxo55-00001Z-To; Tue, 21 Jul 2020 08:56:59 +0000
+Date:   Tue, 21 Jul 2020 16:56:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS
+ 9a71df495c3d29dab596bb590e73fd8b20106e2d
+Message-ID: <5f16adaf.ix5SAHwh/ohusnsH%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Con-Id: 241080
-X-Con-U: 0-mail
-X-Originating-IP: 78.43.71.214
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the possibility for reading pwm values.
-These can not be read if the device is controlled via
-fan_target or a fan curve and will return an error in
-this case. Since an error is expected, this adds some
-rudimentary error handling.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/core
+branch HEAD: 9a71df495c3d29dab596bb590e73fd8b20106e2d  futex: Remove unused or redundant includes
 
-Changes:
-- add CTL_GET_FAN_PWM and use it via get_data
-- pwm returns -ENODATA if the device returns error 0x12
-- fan_target now returns -ENODATA when the driver is
-  started or a pwm value is set.
-- add ccp_get_errno to determine errno from device error.
-- get_data now has a parameter to determine whether
-  to read one or two bytes of data.
-- update documentation
-- fix missing surname in MAINTAINERS
+elapsed time: 4658m
 
-Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
+configs tested: 107
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+powerpc                      ppc64e_defconfig
+arm                           viper_defconfig
+ia64                             alldefconfig
+sh                           se7721_defconfig
+nds32                             allnoconfig
+h8300                            allyesconfig
+powerpc                 linkstation_defconfig
+sparc                       sparc32_defconfig
+arm                          badge4_defconfig
+powerpc                      pmac32_defconfig
+riscv                          rv32_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+arc                              allyesconfig
+sh                               allmodconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200717
+i386                 randconfig-a005-20200717
+i386                 randconfig-a002-20200717
+i386                 randconfig-a006-20200717
+i386                 randconfig-a003-20200717
+i386                 randconfig-a004-20200717
+x86_64               randconfig-a012-20200716
+x86_64               randconfig-a011-20200716
+x86_64               randconfig-a016-20200716
+x86_64               randconfig-a014-20200716
+x86_64               randconfig-a013-20200716
+x86_64               randconfig-a015-20200716
+i386                 randconfig-a016-20200717
+i386                 randconfig-a011-20200717
+i386                 randconfig-a015-20200717
+i386                 randconfig-a012-20200717
+i386                 randconfig-a013-20200717
+i386                 randconfig-a014-20200717
+x86_64               randconfig-a005-20200719
+x86_64               randconfig-a002-20200719
+x86_64               randconfig-a006-20200719
+x86_64               randconfig-a001-20200719
+x86_64               randconfig-a003-20200719
+x86_64               randconfig-a004-20200719
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- Documentation/hwmon/corsair-cpro.rst |  7 ++-
- MAINTAINERS                          |  2 +-
- drivers/hwmon/corsair-cpro.c         | 64 +++++++++++++++++++---------
- 3 files changed, 48 insertions(+), 25 deletions(-)
-
-diff --git a/Documentation/hwmon/corsair-cpro.rst b/Documentation/hwmon/corsair-cpro.rst
-index 78820156f07d..751f95476b57 100644
---- a/Documentation/hwmon/corsair-cpro.rst
-+++ b/Documentation/hwmon/corsair-cpro.rst
-@@ -35,8 +35,7 @@ fan[1-6]_input		Connected fan rpm.
- fan[1-6]_label		Shows fan type as detected by the device.
- fan[1-6]_target		Sets fan speed target rpm.
- 			When reading, it reports the last value if it was set by the driver.
--			Otherwise returns 0.
--pwm[1-6]		Sets the fan speed. Values from 0-255.
--			When reading, it reports the last value if it was set by the driver.
--			Otherwise returns 0.
-+			Otherwise returns an error.
-+pwm[1-6]		Sets the fan speed. Values from 0-255. Can only be read if pwm
-+			was set directly.
- ======================= =====================================================================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 06607125b793..a93aefab91f1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4402,7 +4402,7 @@ F:	Documentation/hwmon/coretemp.rst
- F:	drivers/hwmon/coretemp.c
-
- CORSAIR-CPRO HARDWARE MONITOR DRIVER
--M:	Marius  <mail@mariuszachmann.de>
-+M:	Marius Zachmann <mail@mariuszachmann.de>
- L:	linux-hwmon@vger.kernel.org
- S:	Maintained
- F:	drivers/hwmon/corsair-cpro.c
-diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-index e8504267d0e8..591929ec217a 100644
---- a/drivers/hwmon/corsair-cpro.c
-+++ b/drivers/hwmon/corsair-cpro.c
-@@ -36,11 +36,12 @@
- 					 * send: byte 1 is channel, rest zero
- 					 * rcv:  returns temp for channel in centi-degree celsius
- 					 * in bytes 1 and 2
--					 * returns 17 in byte 0 if no sensor is connected
-+					 * returns 0x11 in byte 0 if no sensor is connected
- 					 */
- #define CTL_GET_VOLT		0x12	/*
- 					 * send: byte 1 is rail number: 0 = 12v, 1 = 5v, 2 = 3.3v
- 					 * rcv:  returns millivolt in bytes 1,2
-+					 * returns error 0x10 if request is invalid
- 					 */
- #define CTL_GET_FAN_CNCT	0x20	/*
- 					 * returns in bytes 1-6 for each fan:
-@@ -52,6 +53,12 @@
- 					 * send: byte 1 is channel, rest zero
- 					 * rcv:  returns rpm in bytes 1,2
- 					 */
-+#define CTL_GET_FAN_PWM		0x22	/*
-+					 * send: byte 1 is channel, rest zero
-+					 * rcv:  returns pwm in byte 1 if it was set
-+					 *	 returns error 0x12 if fan is controlled via
-+					 *	 fan_target or fan curve
-+					 */
- #define CTL_SET_FAN_FPWM	0x23	/*
- 					 * set fixed pwm
- 					 * send: byte 1 is fan number
-@@ -73,13 +80,31 @@ struct ccp_device {
- 	struct completion wait_input_report;
- 	struct mutex mutex; /* whenever buffer is used, lock before send_usb_cmd */
- 	u8 *buffer;
--	int pwm[6];
- 	int target[6];
- 	DECLARE_BITMAP(temp_cnct, NUM_TEMP_SENSORS);
- 	DECLARE_BITMAP(fan_cnct, NUM_FANS);
- 	char fan_label[6][LABEL_LENGTH];
- };
-
-+/* converts response error in buffer to errno */
-+static int ccp_get_errno(struct ccp_device *ccp)
-+{
-+	switch (ccp->buffer[0]) {
-+	case 0x00: /* success */
-+		return 0;
-+	case 0x01: /* called invalid command */
-+		return -EOPNOTSUPP;
-+	case 0x10: /* called GET_VOLT / GET_TMP with invalid arguments */
-+		return -EINVAL;
-+	case 0x11: /* requested temps of disconnected sensors */
-+	case 0x12: /* requested pwm of not pwm controlled channels */
-+		return -ENODATA;
-+	default:
-+		hid_dbg(ccp->hdev, "unknown device response error: %d", ccp->buffer[0]);
-+		return -EIO;
-+	}
-+}
-+
- /* send command, check for error in response, response in ccp->buffer */
- static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2, u8 byte3)
- {
-@@ -102,13 +127,7 @@ static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2,
- 	if (!t)
- 		return -ETIMEDOUT;
-
--	/* first byte of response is error code */
--	if (ccp->buffer[0] != 0x00) {
--		hid_dbg(ccp->hdev, "device response error: %d", ccp->buffer[0]);
--		return -EIO;
--	}
--
--	return 0;
-+	return ccp_get_errno(ccp);
- }
-
- static int ccp_raw_event(struct hid_device *hdev, struct hid_report *report, u8 *data, int size)
-@@ -126,7 +145,7 @@ static int ccp_raw_event(struct hid_device *hdev, struct hid_report *report, u8
- }
-
- /* requests and returns single data values depending on channel */
--static int get_data(struct ccp_device *ccp, int command, int channel)
-+static int get_data(struct ccp_device *ccp, int command, int channel, bool two_byte_data)
- {
- 	int ret;
-
-@@ -136,7 +155,9 @@ static int get_data(struct ccp_device *ccp, int command, int channel)
- 	if (ret)
- 		goto out_unlock;
-
--	ret = (ccp->buffer[1] << 8) + ccp->buffer[2];
-+	ret = ccp->buffer[1];
-+	if (two_byte_data)
-+		ret = (ret << 8) + ccp->buffer[2];
-
- out_unlock:
- 	mutex_unlock(&ccp->mutex);
-@@ -150,14 +171,14 @@ static int set_pwm(struct ccp_device *ccp, int channel, long val)
- 	if (val < 0 || val > 255)
- 		return -EINVAL;
-
--	ccp->pwm[channel] = val;
--
- 	/* The Corsair Commander Pro uses values from 0-100 */
- 	val = DIV_ROUND_CLOSEST(val * 100, 255);
-
- 	mutex_lock(&ccp->mutex);
-
- 	ret = send_usb_cmd(ccp, CTL_SET_FAN_FPWM, channel, val, 0);
-+	if (!ret)
-+		ccp->target[channel] = -ENODATA;
-
- 	mutex_unlock(&ccp->mutex);
- 	return ret;
-@@ -171,7 +192,6 @@ static int set_target(struct ccp_device *ccp, int channel, long val)
- 	ccp->target[channel] = val;
-
- 	mutex_lock(&ccp->mutex);
--
- 	ret = send_usb_cmd(ccp, CTL_SET_FAN_TARGET, channel, val >> 8, val);
-
- 	mutex_unlock(&ccp->mutex);
-@@ -210,7 +230,7 @@ static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_temp:
- 		switch (attr) {
- 		case hwmon_temp_input:
--			ret = get_data(ccp, CTL_GET_TMP, channel);
-+			ret = get_data(ccp, CTL_GET_TMP, channel, true);
- 			if (ret < 0)
- 				return ret;
- 			*val = ret * 10;
-@@ -222,7 +242,7 @@ static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_fan:
- 		switch (attr) {
- 		case hwmon_fan_input:
--			ret = get_data(ccp, CTL_GET_FAN_RPM, channel);
-+			ret = get_data(ccp, CTL_GET_FAN_RPM, channel, true);
- 			if (ret < 0)
- 				return ret;
- 			*val = ret;
-@@ -230,6 +250,8 @@ static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
- 		case hwmon_fan_target:
- 			/* how to read target values from the device is unknown */
- 			/* driver returns last set value or 0			*/
-+			if (ccp->target[channel] < 0)
-+				return -ENODATA;
- 			*val = ccp->target[channel];
- 			return 0;
- 		default:
-@@ -239,9 +261,10 @@ static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_pwm:
- 		switch (attr) {
- 		case hwmon_pwm_input:
--			/* how to read pwm values from the device is currently unknown */
--			/* driver returns last set value or 0		               */
--			*val = ccp->pwm[channel];
-+			ret = get_data(ccp, CTL_GET_FAN_PWM, channel, false);
-+			if (ret < 0)
-+				return ret;
-+			*val = DIV_ROUND_CLOSEST(ret * 255, 100);
- 			return 0;
- 		default:
- 			break;
-@@ -250,7 +273,7 @@ static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_in:
- 		switch (attr) {
- 		case hwmon_in_input:
--			ret = get_data(ccp, CTL_GET_VOLT, channel);
-+			ret = get_data(ccp, CTL_GET_VOLT, channel, true);
- 			if (ret < 0)
- 				return ret;
- 			*val = ret;
-@@ -416,6 +439,7 @@ static int get_fan_cnct(struct ccp_device *ccp)
- 			continue;
-
- 		set_bit(channel, ccp->fan_cnct);
-+		ccp->target[channel] = -ENODATA;
-
- 		switch (mode) {
- 		case 1:
---
-2.27.0
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
