@@ -2,170 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0219422801E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00133228021
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgGUMkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:40:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726904AbgGUMke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:40:34 -0400
-Received: from quaco.ghostprotocols.net (unknown [177.158.183.102])
+        id S1729144AbgGUMkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726904AbgGUMku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 08:40:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4C7C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z7pSLHnz/c5w340W1CTSwj9OTuCwsKs4s6JpI47cLxs=; b=PXis+WYyJayf9BzfZyZ8cUWy5S
+        kpukd7dw4aCXpnA+/2hKjEzjr9CXvso8jP+Pg4iFL20bmknSyloXsTxTlxwA0LMZAw1EFSjsYsLHw
+        1mXJHfCzugcWKUJy+RKmq1NeP/yOJPwOvpUdKuhSMa/bImvTyo7Ak67VxqmP7R2GSdoEGFCZSf50b
+        uXsaa17BEWXm7YSnlbFehwsJ8NtEDo6/UA1pRwFr/1T5dbJ6BG0NyB/I3GKY+YpUga/Q1SIf4T0NG
+        TT51EFM0lhw81K6CVlfRCjg4R1E++cjQOUKQnpFnEXrb7USqZU3SPlD9uHZjzFIrwl3hYQJuxf+0o
+        j0MoqkMA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxrZb-00030M-Ll; Tue, 21 Jul 2020 12:40:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C111206E3;
-        Tue, 21 Jul 2020 12:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595335233;
-        bh=zhtZfIB5BknCY+2bjoZCAiIbHEgljW5xXcIqk2SSHKY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0wW7qRFmK73FBm5LYU2Fjxhk7CtdTXjM0+Hlwol6FL+EOBGffa6UDmfG4ryhGEQb
-         DnFzh8nKSIg20b31y9LaK0ZpSM9W2gntOa4e2CUKtP424bN7CvehJoOeR7mrnmRxA8
-         VXlR2dOnsx4urAheU661pVYGdfoM685hh8qCFzWc=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 85769404B1; Tue, 21 Jul 2020 09:40:31 -0300 (-03)
-Date:   Tue, 21 Jul 2020 09:40:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 01/15] tools/libperf: avoid internal moving of
- fdarray fds
-Message-ID: <20200721124031.GF77866@kernel.org>
-References: <8d91c3a0-3db4-0a7a-ae13-299adb444bd6@linux.intel.com>
- <676844f8-55d3-c628-23db-aa163a81519e@linux.intel.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92CF6305E21;
+        Tue, 21 Jul 2020 14:40:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7B4C7200DD94F; Tue, 21 Jul 2020 14:40:42 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 14:40:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com
+Subject: Re: [PATCH V6 09/14] perf/x86/intel: Support TopDown metrics on Ice
+ Lake
+Message-ID: <20200721124042.GX10769@hirez.programming.kicks-ass.net>
+References: <20200717140554.22863-1-kan.liang@linux.intel.com>
+ <20200717140554.22863-10-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <676844f8-55d3-c628-23db-aa163a81519e@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200717140554.22863-10-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 17, 2020 at 09:59:12AM +0300, Alexey Budankov escreveu:
-> 
-> Avoid moving of fds by fdarray__filter() so fds indices returned
-> by fdarray__add() can be used for access and processing of
-> objects at struct pollfd *entries.
+On Fri, Jul 17, 2020 at 07:05:49AM -0700, kan.liang@linux.intel.com wrote:
 
-Thanks, applied.
-
-- Arnaldo
- 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/lib/api/fd/array.c   | 11 +++++------
->  tools/perf/tests/fdarray.c | 20 ++------------------
->  2 files changed, 7 insertions(+), 24 deletions(-)
-> 
-> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
-> index 58d44d5eee31..89f9a2193c2d 100644
-> --- a/tools/lib/api/fd/array.c
-> +++ b/tools/lib/api/fd/array.c
-> @@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
->  		return 0;
->  
->  	for (fd = 0; fd < fda->nr; ++fd) {
-> +		if (!fda->entries[fd].events)
-> +			continue;
+> +static inline u64 icl_get_metrics_event_value(u64 metric, u64 slots, int idx)
+> +{
+> +	u32 val;
 > +
->  		if (fda->entries[fd].revents & revents) {
->  			if (entry_destructor)
->  				entry_destructor(fda, fd, arg);
->  
-> +			fda->entries[fd].revents = fda->entries[fd].events = 0;
->  			continue;
->  		}
->  
-> -		if (fd != nr) {
-> -			fda->entries[nr] = fda->entries[fd];
-> -			fda->priv[nr]	 = fda->priv[fd];
-> -		}
-> -
->  		++nr;
->  	}
->  
-> -	return fda->nr = nr;
-> +	return nr;
->  }
->  
->  int fdarray__poll(struct fdarray *fda, int timeout)
-> diff --git a/tools/perf/tests/fdarray.c b/tools/perf/tests/fdarray.c
-> index c7c81c4a5b2b..d0c8a05aab2f 100644
-> --- a/tools/perf/tests/fdarray.c
-> +++ b/tools/perf/tests/fdarray.c
-> @@ -12,6 +12,7 @@ static void fdarray__init_revents(struct fdarray *fda, short revents)
->  
->  	for (fd = 0; fd < fda->nr; ++fd) {
->  		fda->entries[fd].fd	 = fda->nr - fd;
-> +		fda->entries[fd].events  = revents;
->  		fda->entries[fd].revents = revents;
->  	}
->  }
-> @@ -29,7 +30,7 @@ static int fdarray__fprintf_prefix(struct fdarray *fda, const char *prefix, FILE
->  
->  int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_unused)
->  {
-> -	int nr_fds, expected_fd[2], fd, err = TEST_FAIL;
-> +	int nr_fds, err = TEST_FAIL;
->  	struct fdarray *fda = fdarray__new(5, 5);
->  
->  	if (fda == NULL) {
-> @@ -55,7 +56,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
->  
->  	fdarray__init_revents(fda, POLLHUP);
->  	fda->entries[2].revents = POLLIN;
-> -	expected_fd[0] = fda->entries[2].fd;
->  
->  	pr_debug("\nfiltering all but fda->entries[2]:");
->  	fdarray__fprintf_prefix(fda, "before", stderr);
-> @@ -66,17 +66,9 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
->  		goto out_delete;
->  	}
->  
-> -	if (fda->entries[0].fd != expected_fd[0]) {
-> -		pr_debug("\nfda->entries[0].fd=%d != %d\n",
-> -			 fda->entries[0].fd, expected_fd[0]);
-> -		goto out_delete;
-> -	}
-> -
->  	fdarray__init_revents(fda, POLLHUP);
->  	fda->entries[0].revents = POLLIN;
-> -	expected_fd[0] = fda->entries[0].fd;
->  	fda->entries[3].revents = POLLIN;
-> -	expected_fd[1] = fda->entries[3].fd;
->  
->  	pr_debug("\nfiltering all but (fda->entries[0], fda->entries[3]):");
->  	fdarray__fprintf_prefix(fda, "before", stderr);
-> @@ -88,14 +80,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
->  		goto out_delete;
->  	}
->  
-> -	for (fd = 0; fd < 2; ++fd) {
-> -		if (fda->entries[fd].fd != expected_fd[fd]) {
-> -			pr_debug("\nfda->entries[%d].fd=%d != %d\n", fd,
-> -				 fda->entries[fd].fd, expected_fd[fd]);
-> -			goto out_delete;
-> -		}
-> -	}
-> -
->  	pr_debug("\n");
->  
->  	err = 0;
-> -- 
-> 2.24.1
-> 
-> 
+> +	/*
+> +	 * The metric is reported as an 8bit integer fraction
+> +	 * suming up to 0xff.
+> +	 * slots-in-metric = (Metric / 0xff) * slots
+> +	 */
+> +	val = (metric >> ((idx - INTEL_PMC_IDX_METRIC_BASE) * 8)) & 0xff;
+> +	return  mul_u64_u32_div(slots, val, 0xff);
+> +}
+> +
+> +static void __icl_update_topdown_event(struct perf_event *event,
+> +				       u64 slots, u64 metrics)
+> +{
+> +	int idx = event->hw.idx;
+> +	u64 delta;
+> +
+> +	if (is_metric_idx(idx))
+> +		delta = icl_get_metrics_event_value(metrics, slots, idx);
+> +	else
+> +		delta = slots;
+> +
+> +	local64_add(delta, &event->count);
+> +}
+> +
+> +/*
+> + * Update all active Topdown events.
+> + *
+> + * The PERF_METRICS and Fixed counter 3 are read separately. The values may be
+> + * modify by a NMI. PMU has to be disabled before calling this function.
+> + */
+> +static u64 icl_update_topdown_event(struct perf_event *event)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	struct perf_event *other;
+> +	u64 slots, metrics;
+> +	int idx;
+> +
+> +	/* read Fixed counter 3 */
+> +	rdpmcl((3 | INTEL_PMC_FIXED_RDPMC_BASE), slots);
+> +	if (!slots)
+> +		return 0;
+> +
+> +	/* read PERF_METRICS */
+> +	rdpmcl(INTEL_PMC_FIXED_RDPMC_METRICS, metrics);
+> +
+> +	for_each_set_bit(idx, cpuc->active_mask, INTEL_PMC_IDX_TD_BE_BOUND + 1) {
+> +		if (!is_topdown_idx(idx))
+> +			continue;
+> +		other = cpuc->events[idx];
+> +		__icl_update_topdown_event(other, slots, metrics);
+> +	}
+> +
+> +	/*
+> +	 * Check and update this event, which may have been cleared
+> +	 * in active_mask e.g. x86_pmu_stop()
+> +	 */
+> +	if (event && !test_bit(event->hw.idx, cpuc->active_mask))
+> +		__icl_update_topdown_event(event, slots, metrics);
+> +
+> +	/*
+> +	 * Software is recommended to periodically clear both registers
+> +	 * in order to maintain accurate measurements, which is required for
+> +	 * certain scenarios that involve sampling metrics at high rates.
 
--- 
+I'll maintain that that statement is clear as mud and therefore useless.
 
-- Arnaldo
+> +	 * Software should always write fixed counter 3 before write to
+> +	 * PERF_METRICS.
+> +	 */
+> +	wrmsrl(MSR_CORE_PERF_FIXED_CTR3, 0);
+> +	wrmsrl(MSR_PERF_METRICS, 0);
+> +
+> +	return slots;
+> +}
+
+So in the normal case, this ends up calling into this function _5_
+times, once for each event. Now the first time, it will actually do
+something useful, but the other 4 times it's just wasting cycles.
+
+Also, that for_each_set_bit() loop, trying to find the events to
+update...
+
+Can't we, instead, make the SLOTS update advance 5 running counters in
+cpuc and feed the events off of that?
+
+
