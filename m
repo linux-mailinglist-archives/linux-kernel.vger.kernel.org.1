@@ -2,87 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8004227B00
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14011227B08
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgGUIrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgGUIrV (ORCPT
+        id S1728089AbgGUItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:49:47 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:60628 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726089AbgGUItq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:47:21 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BEDC0619D8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:47:20 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id a15so5404757wrh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:subject:in-reply-to:date:message-id
-         :mime-version;
-        bh=K1UC6jdZ3c17SoyP6xlxlFovUPpmZnz7mywCnflsBk0=;
-        b=yLeByTOo/OuRZOhYSglmXMos6TiL26zvvxwrhk+bL5lWrsou8qeC4S3+TZtxGQDLuw
-         L7Ys23fspQbkmwkAVtzfVqsVHVxQm1MjRdHmOO3bNSC+l/cNljHbODizKlMXG/Ocde/Y
-         h2Lhh11tIUosxCFVQv/QryUzJE3cnCS4aFo9sdixtsKYFaPW/4wE8bvMfKnIbT8TxdCM
-         uH8bgVD/OCPfVOnC/cxBgiqi0abxIhCSyZsfGrCBnankem40jBRFEil+pi2XJfyX9Co1
-         SsZjxOWJc2qRHH7LGcs2/OO94lkNMy2KdoAJ8i1qhwyaii3DZGFQOEpFRI6EozGLzqJ+
-         sErw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=K1UC6jdZ3c17SoyP6xlxlFovUPpmZnz7mywCnflsBk0=;
-        b=WCUEZBljORY2306PE97AWChBwx8bZK57VgSiRFSbYawl9JxHYdihyK4s43xdMgW264
-         9Xn7aiwlMatY2C61jK3XpqFewoyqUkc5UPvDcbFBbZj6ezw947fB2/2kFqMUNEM4VZaf
-         LRxgw4N0PvK4R1HQiKMKj2qL9dzNb+BSxD+V1uWcR9cglwj4rRyKm6HfvFS6JSb6aSyE
-         fP3Y+Po9rAyhvC7OUCAshvO0VG6HVG0s0qoTfRfhfxvwxQNy8mCZCVk5ZLyG3Px0ZAw8
-         K7xrZfjb2YkR33Vcjt8b6MIhtDL7gazsTkqpwAP99W0Au9fKd9F39OOdTq3ocH+yR63r
-         xi9Q==
-X-Gm-Message-State: AOAM53174R4+PB3spP3D6i6Eu/7PwWPqfYtVF/FKMaxfqQJikNrTw6It
-        TGx8QonGlaKPj/Vlp6wuikDAgw==
-X-Google-Smtp-Source: ABdhPJwYjwvOJGv70O4j08oC5Qj/6svFm8pb1ZFxyQlbQgrUYLJvNUdUrDKKHwsDnuZm3Aohn4pOtg==
-X-Received: by 2002:adf:f784:: with SMTP id q4mr25561076wrp.397.1595321239433;
-        Tue, 21 Jul 2020 01:47:19 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id f15sm35050842wrx.91.2020.07.21.01.47.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 01:47:18 -0700 (PDT)
-References: <20200718072532.8427-1-christianshewitt@gmail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: dts: meson: add more SM1 soundcards
-In-reply-to: <20200718072532.8427-1-christianshewitt@gmail.com>
-Date:   Tue, 21 Jul 2020 10:47:18 +0200
-Message-ID: <1jsgdl8dbd.fsf@starbuckisacylon.baylibre.com>
+        Tue, 21 Jul 2020 04:49:46 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06L8lWgT029098;
+        Tue, 21 Jul 2020 10:49:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : references
+ : from : message-id : date : mime-version : in-reply-to : content-type :
+ content-transfer-encoding; s=STMicroelectronics;
+ bh=/AMDsnmMg6e/KnTUQmRcMKb3eBNXg2kCGXVP0hShHgw=;
+ b=g4DJs4ieF2zv3OGN1dEjUEqs22wd8iCWYk7iYbc1UvKXGxAfALWM6GEDbFmwnJr6IhTT
+ l6aO6UzrvXDvF+oCQGrb3qGnU07f+GQH/kZ/xNrV/D3FHhss/eeJ4rbCyPOSfSAPeRFu
+ F/9kihhF2d9ROkkYRxuvRyKwkEXWz0ugqacIrrCQcoMg67rUGC3BWO9KuPy0C3yk0Bqj
+ VYYSqdr7KuMNFErcDB6PslyyNCFweARRXF7ByYUfHVjRnYfSItDp0MwXDVihjoxu7+WJ
+ HvKIyzgownPsVXvMhCDIVydtfI+gOkfJOCShlU9l9NJ7WkCdGRkZBSeaadvTn51o2jIx qg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32bsfpcs82-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 10:49:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 110D110002A;
+        Tue, 21 Jul 2020 10:49:19 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E28822A7526;
+        Tue, 21 Jul 2020 10:49:18 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 21 Jul
+ 2020 10:49:18 +0200
+Subject: Re: [PATCH for v5.9] ARM: STM32: Replace HTTP links with HTTPS ones
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        <linux@armlinux.org.uk>, <mcoquelin.stm32@gmail.com>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
+References: <20200719094948.57487-1-grandmaster@al2klimov.de>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <43c11c7a-269e-cc41-6934-0d2e0dec3226@st.com>
+Date:   Tue, 21 Jul 2020 10:49:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200719094948.57487-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_02:2020-07-21,2020-07-21 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alexander
 
-On Sat 18 Jul 2020 at 09:25, Christian Hewitt <christianshewitt@gmail.com> wrote:
+On 7/19/20 11:49 AM, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>    If not .svg:
+>      For each line:
+>        If doesn't contain `\bxmlns\b`:
+>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>              If both the HTTP and HTTPS versions
+>              return 200 OK and serve the same content:
+>                Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 
-> This series adds basic support for LPCM audio over HDMI interfaces
-> to the Khadas VIM3L (reusing the same config as the VIM3) and the
-> HardKernel ODROID-C4 devices. I'm sure support can be extended to
-> include other hardware but this gets the HDMI port working as a
-> minimum capability. I have personally tested with both devices.
->
-> Christian Hewitt (2):
->   arm64: dts: meson: add audio playback to odroid-c4
->   arm64: dts: meson: add audio playback to khadas-vim3l
->
->  .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 88 +++++++++++++++++++
->  .../boot/dts/amlogic/meson-sm1-odroid-c4.dts  | 88 +++++++++++++++++++
->  2 files changed, 176 insertions(+)
+This patch touch 2 different subsystems. Can you please split it ?
 
-Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+Regards
+Alex
+
+
+> ---
+>   Continuing my work started at 93431e0607e5.
+>   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>   (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>   If there are any URLs to be removed completely
+>   or at least not (just) HTTPSified:
+>   Just clearly say so and I'll *undo my change*.
+>   See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>   If there are any valid, but yet not changed URLs:
+>   See: https://lkml.org/lkml/2020/6/26/837
+> 
+>   If you apply the patch, please let me know.
+> 
+>   Sorry again to all maintainers who complained about subject lines.
+>   Now I realized that you want an actually perfect prefixes,
+>   not just subsystem ones.
+>   I tried my best...
+>   And yes, *I could* (at least half-)automate it.
+>   Impossible is nothing! :)
+> 
+> 
+>   arch/arm/mach-stm32/Makefile.boot | 2 +-
+>   crypto/testmgr.h                  | 6 +++---
+>   2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/mach-stm32/Makefile.boot b/arch/arm/mach-stm32/Makefile.boot
+> index cec195d4fcba..5dde7328a7a9 100644
+> --- a/arch/arm/mach-stm32/Makefile.boot
+> +++ b/arch/arm/mach-stm32/Makefile.boot
+> @@ -1,4 +1,4 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   # Empty file waiting for deletion once Makefile.boot isn't needed any more.
+>   # Patch waits for application at
+> -# http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=7889/1 .
+> +# https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=7889/1 .
+> diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+> index d29983908c38..cdcf0d2fe40d 100644
+> --- a/crypto/testmgr.h
+> +++ b/crypto/testmgr.h
+> @@ -16231,7 +16231,7 @@ static const struct cipher_testvec aes_lrw_tv_template[] = {
+>   			  "\xe9\x5d\x48\x92\x54\x63\x4e\xb8",
+>   		.len	= 48,
+>   	}, {
+> -/* http://www.mail-archive.com/stds-p1619@listserv.ieee.org/msg00173.html */
+> +/* https://www.mail-archive.com/stds-p1619@listserv.ieee.org/msg00173.html */
+>   		.key    = "\xf8\xd4\x76\xff\xd6\x46\xee\x6c"
+>   			  "\x23\x84\xcb\x1c\x77\xd6\x19\x5d"
+>   			  "\xfe\xf1\xa9\xf3\x7b\xbc\x8d\x21"
+> @@ -21096,7 +21096,7 @@ static const struct aead_testvec aegis128_tv_template[] = {
+>   
+>   /*
+>    * All key wrapping test vectors taken from
+> - * http://csrc.nist.gov/groups/STM/cavp/documents/mac/kwtestvectors.zip
+> + * https://csrc.nist.gov/groups/STM/cavp/documents/mac/kwtestvectors.zip
+>    *
+>    * Note: as documented in keywrap.c, the ivout for encryption is the first
+>    * semiblock of the ciphertext from the test vector. For decryption, iv is
+> @@ -22825,7 +22825,7 @@ static const struct cipher_testvec xeta_tv_template[] = {
+>    * FCrypt test vectors
+>    */
+>   static const struct cipher_testvec fcrypt_pcbc_tv_template[] = {
+> -	{ /* http://www.openafs.org/pipermail/openafs-devel/2000-December/005320.html */
+> +	{ /* https://www.openafs.org/pipermail/openafs-devel/2000-December/005320.html */
+>   		.key	= "\x00\x00\x00\x00\x00\x00\x00\x00",
+>   		.klen	= 8,
+>   		.iv	= "\x00\x00\x00\x00\x00\x00\x00\x00",
+> 
