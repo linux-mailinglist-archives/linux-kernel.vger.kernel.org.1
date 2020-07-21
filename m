@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947FB227482
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92741227488
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgGUB3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgGUB3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:29:20 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB475C0619D7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:29:19 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d1so9532557plr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sjioqcVovtB/2GCCf7EiFORrXptq/bceaX/G5i7rT0U=;
-        b=vAQqP/EZ0OO90K0v/2nWrxljG688ypm6ngU3+V2nfTwkI9kAqyJQBq2IqJz15IsGgN
-         FQBvcTfqYEHNloL/UC+GlYtIZonKyfl1GMPHmomJ3Sx2F1ymKVTIEoDRfFvUZ8QPPg8x
-         3iVQsTVkMjf3GgVyqO6Z78vpvb2uaTJXzniXkA7BNHW+ggOdBYJkv9bsfUJQYmR0a+jK
-         5xz2kpoKb2+yQYZkWIyua9E7hgM9JwJnZ1QmqGchBVcwhJsqMX3qe4tib2vjbi4AZ6yg
-         Ma0eRl2hzB60otJ/FNczONw4hC465Acjq3GdkguO3n2khtQkHVQtij6VNjkmntxxWOG8
-         ZhUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sjioqcVovtB/2GCCf7EiFORrXptq/bceaX/G5i7rT0U=;
-        b=RPsWxPqXAcKAAu/gGhstOqDdxLnm7nd4jypmgmo9GUICeswl5Cwz8OkEHB4KEuFXv0
-         SyjG9QY2+Z8p0Isc9f5Kq/YUwaVBAZS9XvBjruUUAILA2NjXh6FT2i2OV5WjdyR9N81L
-         64rZWufFXJQkou78Q4LKy8DUlT7sCLC009BtJkr5ruChfApQNvfb/+yCS2wT1YE6Esby
-         6K2dYfYCbuMI8TisJFZwAHFpP0ueDkG0+VNKCl6tX3mIxwFMR5jOdyzwIkHQRYiocAKD
-         v/RNaHFmLldmJUV8aFT+Xu0ZBVLSaGTnTRcHh9HH7SbuaiClymWi2ytld8fpFiK3R6+a
-         aWig==
-X-Gm-Message-State: AOAM532Ul0xs4VxJghFCD3prIPwQ5SffVeNceUjMbccaMBFAoC+eiNTG
-        3fM7nCSVfMhwAHNRuDg0N/EgBQ==
-X-Google-Smtp-Source: ABdhPJz6Q6JFb2MQ4nKJvlDB5yiikt5Aee2yKzIluLMpzv17W4Llpioax46MPzDMiRGLeYhyYSRuNQ==
-X-Received: by 2002:a17:902:c38a:: with SMTP id g10mr19287307plg.50.1595294959039;
-        Mon, 20 Jul 2020 18:29:19 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id b18sm870640pju.10.2020.07.20.18.29.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 18:29:18 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
-To:     Matthew Wilcox <willy@infradead.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Kanchan Joshi <joshiiitr@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Matias Bj??rling <mb@lightnvm.io>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-References: <CA+1E3rLna6VVuwMSHVVEFmrgsTyJN=U4CcZtxSGWYr_UYV7AmQ@mail.gmail.com>
- <20200710131054.GB7491@infradead.org>
- <20200710134824.GK12769@casper.infradead.org>
- <20200710134932.GA16257@infradead.org>
- <20200710135119.GL12769@casper.infradead.org>
- <CA+1E3rKOZUz7oZ_DGW6xZPQaDu+T5iEKXctd+gsJw05VwpGQSQ@mail.gmail.com>
- <CA+1E3r+j=amkEg-_KUKSiu6gt2TRU6AU-_jwnB1C6wHHKnptfQ@mail.gmail.com>
- <20200720171416.GY12769@casper.infradead.org>
- <CA+1E3rLNo5sFH3RPFAM4_SYXSmyWTCdbC3k3-6jeaj3FRPYLkQ@mail.gmail.com>
- <CY4PR04MB37513C3424E81955EE7BFDA4E7780@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200721011509.GB15516@casper.infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3ac5bfe7-f086-7531-fbd8-8dde77f13638@kernel.dk>
-Date:   Mon, 20 Jul 2020 19:29:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726506AbgGUB3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:29:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbgGUB3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:29:46 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3461B20714;
+        Tue, 21 Jul 2020 01:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595294985;
+        bh=RleFPPOuqx0c/rRkU7q5uVFxbzFj5p7ERSlLBGAKH30=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZVV+ScaBB7lxUheq3NtRpNDUU85fyh4R59g4LheiH9UhpgEy8DUwjsYNg9j/F/tlL
+         6d2x8YgnTOAC/+vTIPOY0/dVjqqh14/F3n4It2lh53YqElNvgwU3r6TfWz13eu77e8
+         c2YffkQo9ryrIaX+npyTtZ8nRGVNWjfs5rr4vygg=
+Date:   Mon, 20 Jul 2020 21:29:43 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 041/133] Revert "usb/ohci-platform: Fix a warning
+ when hibernating"
+Message-ID: <20200721012943.GA406581@sasha-vm>
+References: <20200720152803.732195882@linuxfoundation.org>
+ <20200720152805.704517976@linuxfoundation.org>
+ <20200720210722.GA11552@amd>
 MIME-Version: 1.0
-In-Reply-To: <20200721011509.GB15516@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200720210722.GA11552@amd>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/20 7:15 PM, Matthew Wilcox wrote:
->> Also, the completed size should be in res in the first cqe to follow
->> io_uring current interface, no ?. The second cqe would use the res64
->> field to return the written offset. Wasn't that the plan ?
-> 
-> two cqes for one sqe seems like a bad idea to me.
+On Mon, Jul 20, 2020 at 11:07:22PM +0200, Pavel Machek wrote:
+>Hi!
+>On Mon 2020-07-20 17:36:28, Greg Kroah-Hartman wrote:
+>> This reverts commit c83258a757687ffccce37ed73dba56cc6d4b8a1b.
+>>
+>> Eugeniu Rosca writes:
+>>
+>> On Thu, Jul 09, 2020 at 09:00:23AM +0200, Eugeniu Rosca wrote:
+>> >After integrating v4.14.186 commit 5410d158ca2a50 ("usb/ehci-platform:
+>> >Set PM runtime as active on resume") into downstream v4.14.x, we started
+>> >to consistently experience below panic [1] on every second s2ram of
+>> >R-Car H3 Salvator-X Renesas reference board.
+>> >
+>> >After some investigations, we concluded the following:
+>> > - the issue does not exist in vanilla v5.8-rc4+
+>> > - [bisecting shows that] the panic on v4.14.186 is caused by the lack
+>> >   of v5.6-rc1 commit 987351e1ea7772 ("phy: core: Add consumer device
+>> >   link support"). Getting evidence for that is easy. Reverting
+>> >   987351e1ea7772 in vanilla leads to a similar backtrace [2].
+>> >
+>> >Questions:
+>> > - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+>> >   link support") to v4.14.187 looks challenging enough, so probably not
+>> >   worth it. Anybody to contradict this?
+>
+>I'm not sure about v4.14.187, but backport to v4.19 is quite simple
+>(just ignore single non-existing file) and passes basic testing.
+>
+>Would that be better solution for 4.19 and newer?
 
-I have to agree with that, it's counter to everything else. The app will
-then have to wait for two CQEs when it issues that one "special" SQE,
-which is really iffy. And we'd have to promise that they are adjacent in
-the ring. This isn't necessarily a problem right now, but I've been
-playing with un-serialized completions and this would then become an
-issue. The io_uring interface is clearly defined as "any sqe will either
-return an error on submit (if the error is not specific to the sqe
-contents), or post a completion event". Not two events, one.
-
-And imho, zoned device append isn't an interesting enough use case to
-warrant doing something special. If there was a super strong (and
-generic) use case for passing back more information in the cqe then
-maybe it would be considered. But it'd have to be a killer application.
-If that's not the case, then the use case should work within the
-constraints of the existing API.
+If Eugeniu could confirm that doing so on 4.19+ works for him, sure.
 
 -- 
-Jens Axboe
-
+Thanks,
+Sasha
