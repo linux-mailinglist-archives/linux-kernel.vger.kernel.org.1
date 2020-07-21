@@ -2,124 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE411228835
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A44228832
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgGUS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726658AbgGUS3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:29:03 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B208CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:29:02 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id w9so8491397ejc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4jBpCAfHmvrXMsleahVys7l2Kbtf/JTxu6AXTIkM0eQ=;
-        b=ph86JCwgAqK1FafyGhguYtYD9m1MR+zqcBbTXsg8IP83H4jR+1Msy9ofw8JwBHPkBH
-         ryf1PDwI/2ck3LAn4CYZ0jSaBhoePx1DxNUmO5leaJ6oichh5CjPdWJbFpZn8nSQ1mP6
-         6FQ3HutBUXBCSfAseimn6jrVVkEt4TsA2fysQRViTliWKVuA0tVxqN6yxHra5zMM6Z/2
-         u0DKVHBff+qBD72/RB5fnv06htnRbIlmW4Ebk5kQNqyZ+peu2f4/dUJrwDFX0OSPu02P
-         EnhYv13WCFw4l82yHLWeV1x5LOWZII9u0MXBFgkyo1uIjj01lDL4T6fcx3O1kZwYXd3Q
-         CHTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4jBpCAfHmvrXMsleahVys7l2Kbtf/JTxu6AXTIkM0eQ=;
-        b=VmUH6G2sD6C0iyqn+d5jfKOFMW7lfrHMSioFDdbEXOYCtH5t3iraR+OjJuTbP7NKe5
-         1bhk7VCajBcRaG8tDfq9lObxyPs1y3scmhcdKsdXj4jfhWznLoP7JKy7brJ6eRc/hrcR
-         Z1NwcxKXhX+DBwCEe2jBK9zFcUR+0HMlzAf53MQVSoTXUHMfM5QOTjjQrFBUYYqi3M1T
-         jXeACQVabfr6mz98Nz4nai5N3gng6GUbZrwfvJeCMzIvAEUmuZU2ObFAMrR79U/lO74D
-         DD8Rn3V4VR9NDKrF5fDHVkdunAFykega/Kmc5Sc3f4rVYb1srbmPeAiNgNCpboXtFPyW
-         f4vw==
-X-Gm-Message-State: AOAM532R8BSrxGkhPdweah/yUErJKFmBVAface8deRZ3/A7J452lF6Id
-        Io4J7GhmOwZS0yujz+E5AxA=
-X-Google-Smtp-Source: ABdhPJyEgjQbISmhm3byo3MXCSUHt+hp1xt7nWYRb4nRip5I+01vDGLbcwHA7g6DLRR1xMIebM/Eig==
-X-Received: by 2002:a17:906:a84d:: with SMTP id dx13mr25279915ejb.246.1595356141506;
-        Tue, 21 Jul 2020 11:29:01 -0700 (PDT)
-Received: from localhost.localdomain ([178.233.178.9])
-        by smtp.gmail.com with ESMTPSA id q6sm16959454ejn.30.2020.07.21.11.28.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 11:29:00 -0700 (PDT)
-From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH] ASoC: rk3399_gru_sound: Add DAPM pins, kcontrols for jack detection
-Date:   Tue, 21 Jul 2020 21:27:10 +0300
-Message-Id: <20200721182709.6895-1-alpernebiyasak@gmail.com>
-X-Mailer: git-send-email 2.28.0.rc1
+        id S1730103AbgGUS11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:27:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:64355 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbgGUS11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 14:27:27 -0400
+IronPort-SDR: F9zu2VgX4W0AEK8Eyff5xGrKAxS3lPnOUB+qr/0TPAgydKG98JwimbZogLRJFtmAxCpS0gKi67
+ XETtFzmGzqYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="168353300"
+X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
+   d="scan'208";a="168353300"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 11:27:20 -0700
+IronPort-SDR: 5GjH+19Wc9U8yWdLSKHoAraq6GgFcIZyaqak8j7NSKmroac9UQnHclIoR27KedQL5wKu8I46Ms
+ zJrXUx03JAxQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
+   d="scan'208";a="462172821"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 21 Jul 2020 11:27:19 -0700
+Received: from [10.254.76.99] (kliang2-mobl.ccr.corp.intel.com [10.254.76.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 55FE8580299;
+        Tue, 21 Jul 2020 11:27:18 -0700 (PDT)
+Subject: Re: [PATCH] x86/fpu/xstate: Fix an xstate size check warning
+To:     Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, hpa@zytor.com,
+        eranian@google.com, ak@linux.intel.com, chang.seok.bae@intel.com
+References: <1595253051-75374-1-git-send-email-kan.liang@linux.intel.com>
+ <20200720173313.GA4221@grain>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <7fbe722b-7a75-098d-23b5-fd1fd7d310d6@linux.intel.com>
+Date:   Tue, 21 Jul 2020 14:27:17 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200720173313.GA4221@grain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PulseAudio (and perhaps other userspace utilities) can not detect any
-jack for rk3399_gru_sound as the driver doesn't expose related Jack
-kcontrols.
 
-This patch adds two DAPM pins to the headset jack, where the
-snd_soc_card_jack_new() call automatically creates "Headphones Jack" and
-"Headset Mic Jack" kcontrols from them.
 
-With an appropriate ALSA UCM config specifying JackControl fields for
-the "Headphones" and "Headset" (mic) devices, PulseAudio can detect
-plug/unplug events for both of them after this patch.
+On 7/20/2020 1:33 PM, Cyrill Gorcunov wrote:
+> On Mon, Jul 20, 2020 at 06:50:51AM -0700, kan.liang@linux.intel.com wrote:
+> ...
+>>   static unsigned int __init get_xsave_size(void)
+>>   {
+>>   	unsigned int eax, ebx, ecx, edx;
+>> @@ -710,7 +741,7 @@ static int __init init_xstate_size(void)
+>>   	xsave_size = get_xsave_size();
+>>   
+>>   	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>> -		possible_xstate_size = get_xsaves_size();
+>> +		possible_xstate_size = get_xsaves_size_no_dynamic();
+>>   	else
+>>   		possible_xstate_size = xsave_size;
+> 
+> Hi! Maybe we could enhance get_xsaves_size instead ? The get_xsaves_size is
+> static and __init function (thus not a hot path) used once as far as I see.
+> Say
+> 
+> static unsigned int __init get_xsaves_size(void)
+> {
+> 	u64 mask = xfeatures_mask_dynamic();
+> 	unsigned int eax, ebx, ecx, edx;
+> 
+> 	/*
+> 	 * In case if dynamic features are present make
+> 	 * sure they are not accounted in the result since
+> 	 * the buffer should be allocated separately from
+> 	 * task->fpu.
+> 	 */
+> 	if (mask)
+> 		wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor());
+> 
+> 	/*
+> 	 * - CPUID function 0DH, sub-function 1:
+> 	 *    EBX enumerates the size (in bytes) required by
+> 	 *    the XSAVES instruction for an XSAVE area
+> 	 *    containing all the state components
+> 	 *    corresponding to bits currently set in
+> 	 *    XCR0 | IA32_XSS.
+> 	 */
+> 	cpuid_count(XSTATE_CPUID, 1, &eax, &ebx, &ecx, &edx);
+> 
+> 	if (mask)
+> 		wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor() | mask);
+> 
+> 	return ebx;
+> }
+> 
+> but if you expect more use of get_xsaves_size_no_dynamic() and
+> get_xsaves_size() in future then sure, we need a separate function.
+> 
 
-Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
----
+For now, I don't have more use of 
+get_xsaves_size_no_dynamic()/get_xsaves_size(). I don't know if anyone 
+else will use them later.
 
- sound/soc/rockchip/rk3399_gru_sound.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+> The benefit from such extension is that when you read get_xsaves_size
+> you'll notice the dependency on dynamic features immediaely.
+> 
+> Though I'm fine with current patch as well, up to you. Thanks for the patch!
+> 
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index f45e5aaa4b30..c17d146717a8 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -32,6 +32,19 @@ static unsigned int dmic_wakeup_delay;
- 
- static struct snd_soc_jack rockchip_sound_jack;
- 
-+/* Headset jack detection DAPM pins */
-+static struct snd_soc_jack_pin rockchip_sound_jack_pins[] = {
-+	{
-+		.pin = "Headphones",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+
-+};
-+
- static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphones", NULL),
- 	SND_SOC_DAPM_SPK("Speakers", NULL),
-@@ -176,7 +189,9 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 				    SND_JACK_HEADSET | SND_JACK_LINEOUT |
- 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
--				    &rockchip_sound_jack, NULL, 0);
-+				    &rockchip_sound_jack,
-+				    rockchip_sound_jack_pins,
-+				    ARRAY_SIZE(rockchip_sound_jack_pins));
- 
- 	if (ret) {
- 		dev_err(rtd->card->dev, "New Headset Jack failed! (%d)\n", ret);
--- 
-2.28.0.rc1
+Personally, I prefer to keep the current patch because I like the name 
+get_xsaves_size_no_dynamic(), which explicitly tells the dynamic 
+features are excluded.
+
+> Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
+> 
+
+Thanks for the review.
+
+Kan
 
