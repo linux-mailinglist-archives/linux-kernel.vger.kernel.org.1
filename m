@@ -2,107 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F1E2288CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71AD2288E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730711AbgGUTHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
+        id S1730839AbgGUTIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730525AbgGUTG6 (ORCPT
+        with ESMTP id S1730146AbgGUTGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:06:58 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5A4C0619DB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:06:58 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 9so465831wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:06:58 -0700 (PDT)
+        Tue, 21 Jul 2020 15:06:46 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE57BC0619DD
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:06:45 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id w2so12357453pgg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=laHnxcRjPmQy9VaO/clWypRhfggwpc5qovCSuzLReNY=;
-        b=QAnVtcZkVkETeqRJ7UhjGVUFOq5LUWUoreoJPx0uYX+WcB0QhDa8EQgZpB/x43AnEp
-         se8w81A+aiy28s59yFk5xO9n7rCwJkgCpF4WomL30kcBQyCFpax3jUUrLRtRHjLrGYRI
-         cu6FrITYrJKCbOTavfcv3IeKswJcaEyOIykOl5NFgDpfI6oUp4QZBzzPFhCQmFLgqPZR
-         WuSK/uKV7GAnnCrpJjN+UtfsxnZucm4BqKuhg45DV+Oa9AhUwaskpNfqsFRSSv00UZjN
-         uUVY+0JgX7Ql+ovPkLNOHyObmVc4vac7V9OCi8fVVVneYJfUGa/8JFbLdKC62+Gcd59J
-         PIqQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xl+gcvbDXd+PfVKLLD+1C1XM5QV+nhoL7JR5M/5kIIw=;
+        b=gG1XFwUzVGKnd9WToMSC6L9L3IGTQ2wskP5zZ6bBwaanIpcpjC1GTOeAoRfRCUKHLd
+         M1QJFNd1TTAChK9jBiH3oetqIg4srx0NUdbyizMl7shh1YAxIs2rnPaWm8z8uErvaBog
+         sYaP7rQOCsMzb6+VXzC2BZ7sqHcQEyxQxPC3Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=laHnxcRjPmQy9VaO/clWypRhfggwpc5qovCSuzLReNY=;
-        b=QAVp1zckiG7+q3PAQS0l4O80z+d8a1zshTdoHbiV5x7sidbDwl01h9/He2qBlp5lMI
-         agPXLCMCzKPiZCIRUFYcH5l00yjYEef3DxGbVJja5m+RjExBt/c7jKBjsggjt+2VOqRj
-         VGkS7usqydhzb22BPBWlvHpiMUuxh9g9YlGB+h1sZ38xeuJOsnmSWVn6z0daTVTFBlNc
-         Vj7Wxxo/S5YEpfSBzpaRb0g7TBrM9gjQuRwT2eIpv7fyLPVY51Q4koIoL16rJTJPQCt6
-         RdpkT+AN662Q3Q8SG6yfawJP087VXWpO2uc1YTscrme/Iq/n1QNBD4NYKesLx76kc6jT
-         07sg==
-X-Gm-Message-State: AOAM532dUDCc8P4WcAv/1pl5qF+puQgkD5lajgM3yDdXp5qOnMp26jI7
-        vwq7DGct4g+vSqlAqYOgRyC7Dg==
-X-Google-Smtp-Source: ABdhPJxQHbPR+lsd7erqeGgjthIiB3YfPMd4IJcJvoLnUjJ/UZENfZjgWdMlQKNMew+ohFr/pAs3BQ==
-X-Received: by 2002:a1c:2e57:: with SMTP id u84mr5680617wmu.52.1595358417148;
-        Tue, 21 Jul 2020 12:06:57 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id s14sm25794848wrv.24.2020.07.21.12.06.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jul 2020 12:06:56 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v4 17/17] crypto: sun8i-ss: fix comparison of integer expressions of different signedness
-Date:   Tue, 21 Jul 2020 19:06:31 +0000
-Message-Id: <1595358391-34525-18-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
-References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xl+gcvbDXd+PfVKLLD+1C1XM5QV+nhoL7JR5M/5kIIw=;
+        b=RJ4NHtDp5aWhaB3j2SlnMXyK8PgCaxcmuwWT6m9H2aZbT/BlGXq6Jbwp5sJsiv1vhw
+         xD2ywYdRUmDaMDje0kOaQxCgisrYyr4xXP72wMVqm+IcLz59PV4aF2caaKsZ1yvakZQR
+         rLzz21lCALWxWxrmuCzxottKnj6MzWiFDT99zdnM+F96KE4+xNIYiSJCUlwudd5SXTeY
+         DZc8pEuxDvLxo7Vr3DbBCKIx8fn7DRHiKiaLDtWzfghVTFimXNcOtuToLDj9d4qqtdgU
+         wZ7O44dcRUNLqISK0TM3XsF6V1KpyEsU3/zaPiOnLVcCOvHvgVgmtP14sIkBO03Y2SBJ
+         3fFQ==
+X-Gm-Message-State: AOAM533RhgwC5GHV4NHHxEhrqAEqVnuv2cJjirF5MBZ/q+nAFbscVRBp
+        s7NhUlcjcd1eIzGtsu3ntSEdFA==
+X-Google-Smtp-Source: ABdhPJzdfjK4EdVt5krNNTVtPzDsIEu++0oOObpGAk6TLAH/OkgIn/qunDavfBeMmNmdR9OMWfKCUA==
+X-Received: by 2002:a63:7c42:: with SMTP id l2mr24525349pgn.35.1595358405368;
+        Tue, 21 Jul 2020 12:06:45 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y198sm21516181pfg.116.2020.07.21.12.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 12:06:44 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 12:06:43 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        davidgow@google.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3] lib: kunit: Provides a userspace memory context when
+ tests are compiled as module
+Message-ID: <202007211203.6CFE2F19BE@keescook>
+References: <20200721174036.71072-1-vitor@massaru.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721174036.71072-1-vitor@massaru.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the warning:
-warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+On Tue, Jul 21, 2020 at 02:40:36PM -0300, Vitor Massaru Iha wrote:
+> KUnit test cases run on kthreads, and kthreads don't have an
+> adddress space (current->mm is NULL), but processes have mm.
+> 
+> The purpose of this patch is to allow to borrow mm to KUnit kthread
+> after userspace is brought up, because we know that there are processes
+> running, at least the process that loaded the module to borrow mm.
+> 
+> This allows, for example, tests such as user_copy_kunit, which uses
+> vm_mmap, which needs current->mm.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Ah! In the case of kunit starting before there IS a userspace...
+interesting.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index de32107817b3..a17241483b8e 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -414,7 +414,7 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- static int sun8i_ss_dbgfs_read(struct seq_file *seq, void *v)
- {
- 	struct sun8i_ss_dev *ss = seq->private;
--	int i;
-+	unsigned int i;
- 
- 	for (i = 0; i < MAXFLOW; i++)
- 		seq_printf(seq, "Channel %d: nreq %lu\n", i, ss->flows[i].stat_req);
-@@ -571,7 +571,8 @@ static void sun8i_ss_pm_exit(struct sun8i_ss_dev *ss)
- 
- static int sun8i_ss_register_algs(struct sun8i_ss_dev *ss)
- {
--	int ss_method, err, id, i;
-+	int ss_method, err, id;
-+	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(ss_algs); i++) {
- 		ss_algs[i].ss = ss;
-@@ -642,7 +643,7 @@ static int sun8i_ss_register_algs(struct sun8i_ss_dev *ss)
- 
- static void sun8i_ss_unregister_algs(struct sun8i_ss_dev *ss)
- {
--	int i;
-+	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(ss_algs); i++) {
- 		if (!ss_algs[i].ss)
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> ---
+> v2:
+>     * splitted patch in 3:
+>         - Allows to install and load modules in root filesystem;
+>         - Provides an userspace memory context when tests are compiled
+>           as module;
+>         - Convert test_user_copy to KUnit test;
+>     * added documentation;
+>     * added more explanation;
+>     * added a missed test pointer;
+>     * released mm with mmput();
+> v3:
+>     * rebased with last kunit branch
+>     * Please apply this commit from kunit-fixes:
+>         3f37d14b8a3152441f36b6bc74000996679f0998
+> 
+>  Documentation/dev-tools/kunit/usage.rst | 14 ++++++++++++++
+>  include/kunit/test.h                    | 12 ++++++++++++
+>  lib/kunit/try-catch.c                   | 15 ++++++++++++++-
+>  3 files changed, 40 insertions(+), 1 deletion(-)
+> ---
+> diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+> index 3c3fe8b5fecc..9f909157be34 100644
+> --- a/Documentation/dev-tools/kunit/usage.rst
+> +++ b/Documentation/dev-tools/kunit/usage.rst
+> @@ -448,6 +448,20 @@ We can now use it to test ``struct eeprom_buffer``:
+> 
+>  .. _kunit-on-non-uml:
+> 
+> +User-space context
+> +------------------
+> +
+> +I case you need a user-space context, for now this is only possible through
+
+typo: In case ...
+
+> +tests compiled as a module. And it will be necessary to use a root filesystem
+> +and uml_utilities.
+> +
+> +Example:
+> +
+> +.. code-block:: bash
+> +
+> +   ./tools/testing/kunit/kunit.py run --timeout=60 --uml_rootfs_dir=.uml_rootfs
+> +
+> +
+>  KUnit on non-UML architectures
+>  ==============================
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 59f3144f009a..ae3337139c65 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -222,6 +222,18 @@ struct kunit {
+>  	 * protect it with some type of lock.
+>  	 */
+>  	struct list_head resources; /* Protected by lock. */
+> +	/*
+> +	 * KUnit test cases run on kthreads, and kthreads don't have an
+> +	 * adddress space (current->mm is NULL), but processes have mm.
+> +	 *
+> +	 * The purpose of this mm_struct is to allow to borrow mm to KUnit kthread
+> +	 * after userspace is brought up, because we know that there are processes
+> +	 * running, at least the process that loaded the module to borrow mm.
+> +	 *
+> +	 * This allows, for example, tests such as user_copy_kunit, which uses
+> +	 * vm_mmap, which needs current->mm.
+> +	 */
+> +	struct mm_struct *mm;
+
+I have a general concern that this will need more careful solving in the
+future as there are likely to be many tests that need a userspace
+context to operate sanely. But that's just a note; this solves the
+specific case now.
+
+>  };
+> 
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
+> index 0dd434e40487..d03e2093985b 100644
+> --- a/lib/kunit/try-catch.c
+> +++ b/lib/kunit/try-catch.c
+> @@ -11,7 +11,8 @@
+>  #include <linux/completion.h>
+>  #include <linux/kernel.h>
+>  #include <linux/kthread.h>
+> -
+> +#include <linux/sched/mm.h>
+> +#include <linux/sched/task.h>
+>  #include "try-catch-impl.h"
+> 
+>  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
+> @@ -24,8 +25,17 @@ EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
+>  static int kunit_generic_run_threadfn_adapter(void *data)
+>  {
+>  	struct kunit_try_catch *try_catch = data;
+> +	struct kunit *test = try_catch->test;
+> +
+> +	if (test != NULL && test->mm != NULL)
+> +		kthread_use_mm(test->mm);
+> 
+>  	try_catch->try(try_catch->context);
+> +	if (test != NULL && test->mm != NULL) {
+> +		kthread_unuse_mm(test->mm);
+> +		mmput(test->mm);
+> +		test->mm = NULL;
+
+This mmput() seems unbalanced... see below.
+
+> +	}
+> 
+>  	complete_and_exit(try_catch->try_completion, 0);
+>  }
+> @@ -65,6 +75,9 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
+>  	try_catch->context = context;
+>  	try_catch->try_completion = &try_completion;
+>  	try_catch->try_result = 0;
+> +
+> +	test->mm = get_task_mm(current);
+> +
+>  	task_struct = kthread_run(kunit_generic_run_threadfn_adapter,
+>  				  try_catch,
+>  				  "kunit_try_catch_thread");
+
+Isn't there something that destroys a "struct kunit"? I would expect
+that to perform the mmput(). Why is it up in the threadfn?
+
+> 
+> base-commit: d43c7fb05765152d4d4a39a8ef957c4ea14d8847
+> --
+> 2.26.2
+> 
+
 -- 
-2.26.2
-
+Kees Cook
