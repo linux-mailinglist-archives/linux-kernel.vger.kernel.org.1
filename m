@@ -2,194 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CF8227990
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273D9227999
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgGUHfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 03:35:17 -0400
-Received: from mail6.tencent.com ([220.249.245.26]:41477 "EHLO
-        mail6.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGUHfR (ORCPT
+        id S1727097AbgGUHj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 03:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgGUHj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 03:35:17 -0400
-Received: from EX-SZ022.tencent.com (unknown [10.28.6.88])
-        by mail6.tencent.com (Postfix) with ESMTP id 963EECC262;
-        Tue, 21 Jul 2020 15:36:17 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
-        s=s202002; t=1595316977;
-        bh=1uHkuN8rogmqW1AxtHBpcwGNDe82UnC3T7h1O78stdU=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=liPZc/PxJMmvFERddpv7cNV7O7l/pH+KNZyfaCj2xrlbr3FfP2lQzNoic0kxbSCB1
-         6A7hKo/FEjNKzCMJ0DATbA90Ag9H+TK3koz6mpCyZ0XWuRd6YeCjPVdGwXmrncKDNa
-         wxFtj8dKiOGSq/pAch4rFA6N9SxeeMtVtiwdq1VI=
-Received: from EX-SZ001.tencent.com (10.28.6.13) by EX-SZ022.tencent.com
- (10.28.6.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 21 Jul
- 2020 15:35:09 +0800
-Received: from EX-SZ012.tencent.com (10.28.6.36) by EX-SZ001.tencent.com
- (10.28.6.13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 21 Jul
- 2020 15:35:09 +0800
-Received: from EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b]) by
- EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b%3]) with mapi id
- 15.01.1847.007; Tue, 21 Jul 2020 15:35:09 +0800
-From:   =?iso-2022-jp?B?YmVuYmppYW5nKBskQj5VSTcbKEIp?= 
-        <benbjiang@tencent.com>
-To:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Tim Chen" <tim.c.chen@linux.intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pjt@google.com" <pjt@google.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kerrnel@google.com" <kerrnel@google.com>,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "vineethrp@gmail.com" <vineethrp@gmail.com>,
-        "Chen Yu" <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation
- corner case(Internet mail)
-Thread-Topic: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation
- corner case(Internet mail)
-Thread-Index: AQHWTyYlpLP1bK1w0UWTtI+YyeyPMKkRPoIA
-Date:   Tue, 21 Jul 2020 07:35:09 +0000
-Message-ID: <5D3A1D31-B64C-4B4E-AE62-41A85C8E42D0@tencent.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
-In-Reply-To: <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.14.87.247]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <EC854F6CF921CA4FA3C14443B3176FB6@tencent.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 21 Jul 2020 03:39:27 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8377FC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 00:39:27 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q15so1788599wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 00:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cJUflLSxHtf/sa8csoJgmFcN71WVeF/7yJM+R1zANs4=;
+        b=aNZscceQn1Dl45cuBWyWTUy4PJD9d6KTGqmPfZ+4chPoR4Dl6+IMEpbgutX90tTDCc
+         mYqm3dJZd9xCJyxoJoxg5iduHcWbg1nRZeRTkz9BQ1UE9HaSElwDMcKE0VImX+gSk+VS
+         vSBnvljYJV7ZTwM6AZK4VCDxCZsECTxSXV19qEfiW4lrKi5/l0z2egPui2rS7FKf11Vp
+         qx1SZBu4DpSYMnU+8tjOFzSp3GUzE7hjMnY1iZ3FUzp35hGe+UJqmvnx9pR2kauU2KoT
+         U9zlJHrAt4LtfWmnsPtkuFq7jea/Q4E6zhR1ZS0owhTslgy0AZM2+CUsjA7beEUURO4i
+         l1JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cJUflLSxHtf/sa8csoJgmFcN71WVeF/7yJM+R1zANs4=;
+        b=AulcHpemXKInr72lqqfT0KjFHhzBb2ABuf/vN+5B5YThVamRrd5jBW7JyIItUjZBsT
+         6Qdqx56ub9wgBThiCPpUH4wRsrRvECX/npP9Dc7KinBkrpWzp3KkpOFeE87Ffgh78Q6n
+         K1EKwZ9s4tJtVGHkC7Z21UePriSaAY1+RAEwse7ajE6pmAVtRWHxXQBkG+dhs/4Q+twn
+         8+XM/xByYKXXSOS4zkQtju5inHoSntEzRTcCQ3e3+No4qDwhD1a31Dep3EZYDEfLeta9
+         sBgjRaquCz6ba7qwwuJD4nexZznhMIa1CxihFNHMXUHGJAY4nIdaHQmNvzRmMF++SsRZ
+         RHlw==
+X-Gm-Message-State: AOAM530EZ1KrZQIOS9Qfi43xmKc9PzWjlbg52EGsrLiifa/5fhOHwbw2
+        2zGNbQu87mbW9+utCjpcixsPiA==
+X-Google-Smtp-Source: ABdhPJzbYVjXuGfCryUzJsjd1CTsxTUcEGzi8mFH5cZrwPDVBk6/y6QpO5ShaXYOJYxZo542tq2TKg==
+X-Received: by 2002:a1c:dd86:: with SMTP id u128mr2752246wmg.123.1595317166220;
+        Tue, 21 Jul 2020 00:39:26 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.167.94])
+        by smtp.gmail.com with ESMTPSA id a123sm2484009wmd.28.2020.07.21.00.39.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 00:39:25 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: [PATCH 1/1] video: backlight: cr_bllcd: Remove unused variable 'intensity'
+Date:   Tue, 21 Jul 2020 08:39:19 +0100
+Message-Id: <20200721073919.925935-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fixes the following kernel build warning:
 
-> On Jul 1, 2020, at 5:32 AM, Vineeth Remanan Pillai <vpillai@digitalocean.=
-com> wrote:
->=20
-> From: vpillai <vpillai@digitalocean.com>
->=20
-> If there is only one long running local task and the sibling is
-> forced idle, it  might not get a chance to run until a schedule
-> event happens on any cpu in the core.
->=20
-> So we check for this condition during a tick to see if a sibling
-> is starved and then give it a chance to schedule.
->=20
-> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
-> Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> ---
-> kernel/sched/fair.c | 39 +++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 39 insertions(+)
->=20
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ae17507533a0..49fb93296e35 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10613,6 +10613,40 @@ static void rq_offline_fair(struct rq *rq)
->=20
-> #endif /* CONFIG_SMP */
->=20
-> +#ifdef CONFIG_SCHED_CORE
-> +static inline bool
-> +__entity_slice_used(struct sched_entity *se)
-> +{
-> +	return (se->sum_exec_runtime - se->prev_sum_exec_runtime) >
-> +		sched_slice(cfs_rq_of(se), se);
-> +}
-> +
-> +/*
-> + * If runqueue has only one task which used up its slice and if the sibl=
-ing
-> + * is forced idle, then trigger schedule to give forced idle task a chan=
-ce.
-> + */
-> +static void resched_forceidle_sibling(struct rq *rq, struct sched_entity=
- *se)
-> +{
-> +	int cpu =3D cpu_of(rq), sibling_cpu;
-> +
-> +	if (rq->cfs.nr_running > 1 || !__entity_slice_used(se))
-> +		return;
-> +
-> +	for_each_cpu(sibling_cpu, cpu_smt_mask(cpu)) {
-> +		struct rq *sibling_rq;
-> +		if (sibling_cpu =3D=3D cpu)
-> +			continue;
-> +		if (cpu_is_offline(sibling_cpu))
-> +			continue;
-> +
-> +		sibling_rq =3D cpu_rq(sibling_cpu);
-> +		if (sibling_rq->core_forceidle) {
-> +			resched_curr(sibling_rq);
-> +		}
-> +	}
-> +}
-> +#endif
-> +
-> /*
->  * scheduler tick hitting a task of our scheduling class.
->  *
-> @@ -10636,6 +10670,11 @@ static void task_tick_fair(struct rq *rq, struct=
- task_struct *curr, int queued)
->=20
-> 	update_misfit_status(curr, rq);
-> 	update_overutilized_status(task_rq(curr));
-> +
-> +#ifdef CONFIG_SCHED_CORE
-> +	if (sched_core_enabled(rq))
-> +		resched_forceidle_sibling(rq, &curr->se);
-> +#endif
-Hi,
+ drivers/video/backlight/cr_bllcd.c: In function ‘cr_backlight_set_intensity’:
+ drivers/video/backlight/cr_bllcd.c:62:6: warning: unused variable ‘intensity’ [-Wunused-variable]
+ 62 | int intensity = bd->props.brightness;
+ | ^~~~~~~~~
 
-resched_forceidle_sibling depends on tick, but there could be no tick in 1s=
-(scheduler_tick_max_derferment) after
-entering nohz_full mode.=20
-And when enable nohz_full, cpu will enter nohz_full mode frequently when *t=
-here is only one long running local task*.
-That means the siblings rescheduling would be delayed much more than sched_=
-slice(), could be unfair and result in
-big latency.
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Fixes: 24d34617c24f ("backlight: cr_bllcd: Introduce gpio-backlight semantics")
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/video/backlight/cr_bllcd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Should we restrict cpu with forced-idle sibling entering nohz_full mode by =
-adding specific flag and checking it before
-stop tick?
-
-Or we can do rescheduling on siblings in task_tick_idle by checking starvat=
-ion time? :)
-
-Thx
-Regard,
-Jiang=20
-
-> }
->=20
-> /*
-> --=20
-> 2.17.1
->=20
->=20
+diff --git a/drivers/video/backlight/cr_bllcd.c b/drivers/video/backlight/cr_bllcd.c
+index a24d42e1ea3cd..4ad0a72531fe2 100644
+--- a/drivers/video/backlight/cr_bllcd.c
++++ b/drivers/video/backlight/cr_bllcd.c
+@@ -59,7 +59,6 @@ struct cr_panel {
+ 
+ static int cr_backlight_set_intensity(struct backlight_device *bd)
+ {
+-	int intensity = bd->props.brightness;
+ 	u32 addr = gpio_bar + CRVML_PANEL_PORT;
+ 	u32 cur = inl(addr);
+ 
+-- 
+2.25.1
 
