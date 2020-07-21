@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B84D22813E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2271C228141
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbgGUNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 09:44:58 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38391 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgGUNo5 (ORCPT
+        id S1728654AbgGUNpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 09:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgGUNpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:44:57 -0400
-Received: by mail-wr1-f66.google.com with SMTP id a14so6413447wra.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:44:56 -0700 (PDT)
+        Tue, 21 Jul 2020 09:45:51 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06923C061794;
+        Tue, 21 Jul 2020 06:45:51 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l1so21407066ioh.5;
+        Tue, 21 Jul 2020 06:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z7/kb+noIptWBZlCNM0tUJLWKrJyK4Uc4q4vqikSmVA=;
+        b=EbfasWIh4+wlDSDclRW4JCtu3k/GkwYZwV4FMR6NllX9SWWtKFfGVdiXqylXEhXJ4l
+         qs4HJ4MP0gNf0rnixDh1zehc4SYMLc1CcT6QRVUU00eH8CwaryFpY/hz0a7sVYkYv9fH
+         87IL11VjluA1leN7c2M294bHJzLa5twS3hNCyYfEuV/s8+iQGCGSN5sQpox7Xx5VfB0z
+         Pn8wk5cx4TsgxVsmGc8YWx4h0+Q5BKl4yJ4SJStOdTnOA1aGTU1C4FAATJVyFRa/0IvY
+         IiNuSfSVXP4uhcs/IhDW5rCEo0wWnCimYa1YrwxuzmDsb6XojBukIVwKHY6L8OKAIIbs
+         qyjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Pn4rxXnLcED95PLyId2IwjI1AP4bvRug3vOgdxoJ9U0=;
-        b=ZpuI0VPhPxoW0pAkJ3nkHHSCDP4y1Ho9895Lf50XrZegXI2XGrrCZXDskEet0aLJMc
-         Zp0OR2YXFQASC86FTMpIJbpVw9JmJeXPyI4cLSbKzLOOPRoQTkEXe2bxHZX5tngwLkbX
-         heh/gqbop85i1CGRcHE1hw3V4mkUJ6RNlXlcU/nrPQYbiEWxWtvB/kOooQyWTtNdU4C3
-         56YjSjhPhIhEe0eBrZT1alGxfZmGoi2uwO0jeA7HP0JGHkyvktroaNLjkqld5shY0jwm
-         /xCRkphXTvPbfcnDOP31gGPQauCzsoez30AAsn1KM7iqr9IYnWu300VmXIDuIpchlO7A
-         CGMg==
-X-Gm-Message-State: AOAM530ozCwLsJGqSVIVRyQliCmxtLyogF8qTyY2/0yZIlgOn28u04Ny
-        +KLViYRLNLQN1UA5YiFeQvYymjN3XGt7tipDDKs=
-X-Google-Smtp-Source: ABdhPJxN1zGgk55IJDcUQf4RJ3/BJwyYFP1h69KqFOU+E9y5HEgSAvHgDQlWdHSOzy5GoUd4nNVRHAN7vx6xyRYVqrY=
-X-Received: by 2002:adf:dfd0:: with SMTP id q16mr973909wrn.60.1595339095514;
- Tue, 21 Jul 2020 06:44:55 -0700 (PDT)
+        bh=Z7/kb+noIptWBZlCNM0tUJLWKrJyK4Uc4q4vqikSmVA=;
+        b=G2AdmKoHAh4DBA2M18sGdaeu24ceLeYDwLotMBfkwadsVJR8T1X16j7n3GdNbzG3/J
+         7wIeC46Tw4J/l0jeCoy5W5D1FgQD2lR8zYtzSiuQXrQ+axZeKqPy5zPSllM+svssVyy0
+         g3V7rQOEAB/4s6pdUmhBWYuEo2tI9pyQ9/nO+pWTwUZmy20PphxGfP6qW1uOIfP7bkSP
+         81rlLjDDjtzwpd9UbQ42xZXMg1zadJLdwRc+HAweFl2rK//4IfVEaCOqWKB0MayBVbMv
+         q1Csi82CEJxq3AycwdgpG2UHGLyreTbBnv/EfRUhzgxQr3y+EjtK2IteqwjBSfgyr9J3
+         VztA==
+X-Gm-Message-State: AOAM533M/ICmbeE5uejyK0SA0wZHkmBmjR/V4Fmm7Le9iNF4x6aLsRU6
+        Ge994ePDKRx9LALnyWQo0xhg2DcvZ9DYcrXyptb57A==
+X-Google-Smtp-Source: ABdhPJw/AZflFKi8OhGhIi6gmJFA8xwTDeb81j9HKz/LcvMaEDr7KG2453i+UNvoNjCdsRwNGe2tREyMIuIhlwYjc3s=
+X-Received: by 2002:a02:b897:: with SMTP id p23mr32678862jam.32.1595339150299;
+ Tue, 21 Jul 2020 06:45:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200711124035.6513-1-changbin.du@gmail.com> <20200711124035.6513-4-changbin.du@gmail.com>
- <20200716153630.GD374956@kernel.org> <20200717132650.i32oovllal22b35i@mail.google.com>
- <20200717130124.54e85349@oasis.local.home> <20200717174053.GE712240@kernel.org>
- <20200717135351.5fb1ce95@oasis.local.home> <20200717193455.GD77866@kernel.org>
- <20200717154421.4e3aee99@oasis.local.home>
-In-Reply-To: <20200717154421.4e3aee99@oasis.local.home>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 21 Jul 2020 22:44:44 +0900
-Message-ID: <CAM9d7cirbvj9MTKfU9ga4Mv06facTorYuGaXbLJuZWgNDDrUxw@mail.gmail.com>
-Subject: Re: [PATCH v5 03/17] perf ftrace: add option -t/--tid to filter by
- thread id
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Changbin Du <changbin.du@gmail.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200717152307.36705-1-alcooperx@gmail.com> <87h7u1p5zd.fsf@kernel.org>
+In-Reply-To: <87h7u1p5zd.fsf@kernel.org>
+From:   Alan Cooper <alcooperx@gmail.com>
+Date:   Tue, 21 Jul 2020 09:45:38 -0400
+Message-ID: <CAOGqxeW9hd+_FJnS2ZBq0gEye9P15HM4fSmmPbJGC5Fb5nv_Fg@mail.gmail.com>
+Subject: Re: [PATCH 0/7] usb: bdc: Updates and fixes to the USB BDC driver
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sasi Kumar <sasi.kumar@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+On Tue, Jul 21, 2020 at 5:33 AM Felipe Balbi <balbi@kernel.org> wrote:
+>
+>
+> Hi,
+>
+> Al Cooper <alcooperx@gmail.com> writes:
+> > Updates and fixes to the Broadcom USB BDC driver.
+> >
+> > Al Cooper (4):
+> >   dt-bindings: usb: bdc: Update compatible strings
+> >   usb: bdc: Add compatible string for new style USB DT nodes
+> >   usb: bdc: Adb shows offline after resuming from S2
+> >   usb: bdc: driver runs out of buffer descriptors on large ADB transfers
+> >
+> > Danesh Petigara (1):
+> >   usb: bdc: Halt controller on suspend
+> >
+> > Florian Fainelli (1):
+> >   usb: bdc: Use devm_clk_get_optional()
+> >
+> > Sasi Kumar (1):
+> >   bdc: Fix bug causing crash after multiple disconnects
+>
+> What should we do here? There are few comments which seem
+> unresolved. Are we getting a new version?
 
-On Sat, Jul 18, 2020 at 4:44 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 17 Jul 2020 16:34:55 -0300
-> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Thinking a bit more, I have to ask. Does perf use the kernel when
-> getting all the children of an existing task, or is that done only in
-> userspace?
->
-> That is, is there a perf syscall that says "start tracing this task and
-> all its existing children"?
->
-> Or is it done by perf user space looking at the /proc filesystem (like
-> ps does).
-
-Yep, perf does look up the /proc to get a list of threads in a process.
+I'm resolving the comments and submitting v2 today.
 
 Thanks
-Namhyung
+Al
 
-
 >
-> I'm asking because if perf has a syscall to do that, then I probably
-> should add a way to do that with ftrace as well. But that's really
-> trivial, because all it would take is grabbing the task_list lock and
-> iterating over all the children. Getting new children was the
-> non-trivial part, which was what I focused on (with the fork options).
->
-> If perf does it with proc files, then we don't need to change anything
-> as that could still be used with ftrace.
->
-> > Changbin, you can take from here :-)
-> >
-> > And to reiterate, for me the value of 'perf ftrace' is to allow people
-> > used to perf to be able to switch to ftrace quickly, just changing:
-> >
-> >    perf record/top/stat/trace/report/script/etc --pid 1234
-> >
-> > by:
-> >
-> >    perf ftrace --pid 1234
-> >
-> > And have the tracefs ftrace knobs set up to have what is expected in
-> > terms of targets to trace as the other perf tools.
-> >
-> > And not just --pid and --tid, but --cgroup, --cpu, etc.
-> >
-> > i.e., 'perf ftrace' being _a_ front-end aplication to ftrace.
-> >
-> > :-)
->
->
-> I have no problem with this, and I'm quite excited about it. I would
-> like it to use libtracefs, as it looks to be exactly what we are
-> working on. And this is now a high priority to get out, and I don't
-> expect another year (or two) in doing so ;-)
->
-> -- Steve
+> --
+> balbi
