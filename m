@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D11E228712
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223AD228722
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730944AbgGURQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728342AbgGURQb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:16:31 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06411C061794;
-        Tue, 21 Jul 2020 10:16:31 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxvsR-00HKQ5-3Y; Tue, 21 Jul 2020 17:16:27 +0000
-Date:   Tue, 21 Jul 2020 18:16:27 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-raid@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH 05/24] devtmpfs: open code ksys_chdir and ksys_chroot
-Message-ID: <20200721171627.GZ2786714@ZenIV.linux.org.uk>
-References: <20200721162818.197315-1-hch@lst.de>
- <20200721162818.197315-6-hch@lst.de>
- <CAHk-=wi0GQqAq6VSY=O2iWnPuuS54TkyRBH5B9Ca0Kg5A9d2aA@mail.gmail.com>
+        id S1730399AbgGURRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:17:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:10555 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729286AbgGURRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 13:17:39 -0400
+IronPort-SDR: TTKTiD8Ty3QSBBnkPynzNIf8DupNlcN7W5j+3dnNvSWhyXDmxGEnITs4cCfsOeX85wqxHDFp4M
+ LSsXoZj4rC9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="214839140"
+X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
+   d="scan'208";a="214839140"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 10:17:36 -0700
+IronPort-SDR: PRmyN7gp5wF41uVRnfVHJOfgingQ7F3tDTAjGVtjK7KHwH+C+64WU0/RcXp7UrW8eXBvcXHznz
+ OpytWloy/2sA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
+   d="scan'208";a="326434915"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.213.181.166]) ([10.213.181.166])
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Jul 2020 10:17:35 -0700
+Subject: Re: [PATCH RFC v2 00/18] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
+        bhelgaas@google.com, rafael@kernel.org, tglx@linutronix.de,
+        hpa@zytor.com, alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        dave.hansen@intel.com, netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
+ <20200721162858.GA2139881@kroah.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <754118ac-0c3f-c870-eb6e-f7bc24014cfc@intel.com>
+Date:   Tue, 21 Jul 2020 10:17:34 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi0GQqAq6VSY=O2iWnPuuS54TkyRBH5B9Ca0Kg5A9d2aA@mail.gmail.com>
+In-Reply-To: <20200721162858.GA2139881@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 09:49:17AM -0700, Linus Torvalds wrote:
-> On Tue, Jul 21, 2020 at 9:28 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > +
-> > +       /* traverse into overmounted root and then chroot to it */
-> > +       if (!kern_path("/..", LOOKUP_FOLLOW | LOOKUP_DIRECTORY, &path) &&
-> > +           !inode_permission(path.dentry->d_inode, MAY_EXEC | MAY_CHDIR) &&
-> > +           ns_capable(current_user_ns(), CAP_SYS_CHROOT) &&
-> > +           !security_path_chroot(&path)) {
-> > +               set_fs_pwd(current->fs, &path);
-> > +               set_fs_root(current->fs, &path);
-> > +       }
-> > +       path_put(&path);
-> 
-> This looks wrong.
 
-It is wrong.  kern_path() leaves *path unmodified in case of error, and
-that struct path is uninitialized here.
+
+On 7/21/2020 9:28 AM, Greg KH wrote:
+> On Tue, Jul 21, 2020 at 09:02:15AM -0700, Dave Jiang wrote:
+>> v2:
+> 
+> "RFC" to me means "I don't really think this is mergable, so I'm
+> throwing it out there."  Which implies you know it needs more work
+> before others should review it as you are not comfortable with it :(
+> 
+> So, back-of-the-queue you go...
+> 
+> greg k-h
+> 
+
+Hi Greg! Yes this absolutely needs more work! I think it's in pretty good shape, 
+but it has reached the point where it needs the talented eyes of reviewers from 
+outside of Intel. I was really hoping to get feedback from folks like Jason 
+(Thanks Jason!!) and KVM and VFIO experts like Alex, Paolo, Eric, and Kirti.
+
+I can understand that you are quite busy and can not necessarily provide a 
+detailed review at this phase. Would you prefer to be cc'd on code at this phase 
+in the future? Or, should we reserve putting you on the cc for times when we 
+know it's ready for merge?
