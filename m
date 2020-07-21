@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254DF228218
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAAD228227
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728885AbgGUO1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        id S1729230AbgGUO2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728547AbgGUO1D (ORCPT
+        with ESMTP id S1728383AbgGUO17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:27:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C5DC0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:27:03 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z2so21455309wrp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:27:03 -0700 (PDT)
+        Tue, 21 Jul 2020 10:27:59 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F93C0619DA;
+        Tue, 21 Jul 2020 07:27:59 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k4so10327564pld.12;
+        Tue, 21 Jul 2020 07:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kvJLCEgw2Y91sCTQ6JSG1TMyYmzQtuSE0ssBK5vqs5A=;
-        b=Tn+r0hMiMyEfGIJmZgmo6wJEFjb2HH6GCrM+njCb9LqnllYAU1jL/tRFHVOeISf8V0
-         cUgzOv7/XLu0fcSl8pd3MBTDTZY4dB7Vj4ztR+pUk27T4bLEaDmQjd870ztfZE0Kh12K
-         4qq1hYirQGcUBcFBjWPZSZhsCbhkLRbJfpQswZDiNdzKd7iwJfENFFapWeWcielyE7x8
-         zoi0q6a4YYf2XTduTfPeWTq3gUNdYH24cM0O/EmtkUk2u7/Fq5B8/oEPdSSJJ8E2fXK8
-         1PxAqg5uOIoTDm453qNw/rmJn2Qqgv6kUu99tXCA1QdwzumYYSbR+0M+eaovBe/b9MlF
-         cNlA==
+         :content-disposition:in-reply-to;
+        bh=rztZLDwVmXshy2I0VYii6VvZ6b/CEa6jKXB3iTVWQ4o=;
+        b=lpqtCpBNGrEpb9rB920qsdHHd+u3Ln+pKgNfy/rj9J7Dr2HWhw6k5XNE5uSHnfU2Dw
+         0PXA4XuoKG4rRHrRCWF5QquD6H7rIXu96KOZTw0ko0E5G/18zbtU8V1K0ZGAkoJeWWe3
+         ZKAqHP1z5e2vkEHEBunH5Kxk+zc0jRw0CCcgQRrjQ3LzfgLD0T6kbbeTMhvKHDO1+PLV
+         LMHh8aTrXB8Q8LEN9fqVX9ypuc6JmgzMHLLMieoucnASGCGZLe81nTBVx35OcFuU/iOT
+         EDiUYnGh1FPZ1T2vHhphqi8WGZAilUK1Cmf3XMx3qMaiBnWVoadmGQqjXXqQMKRPP9jR
+         BipQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kvJLCEgw2Y91sCTQ6JSG1TMyYmzQtuSE0ssBK5vqs5A=;
-        b=cpbjrT+r9eeGZ6wf3tflFq7p1VQcwGPvJsLKtVg0yLSJFy+cNApFsfI8FWGH/3lbKN
-         fkpQtC7cF8UKPC+lh58FvgiXOhU8pv6D2ICcSTfg5kwjtSTfXxpUi9fjU5Qw979fOALZ
-         qPDm70g8d5L9PUlOX0+wB1hF3koIdmG6MHFAa2g6oVtxixE/Yi3Qei25+ShIr/BWqhd8
-         C5voTntHFvdsUX9Lt5r9QzO5eiE+HOl6/fZIik51Fmf9hfY1QgKLt2dZGUtlebec6UTT
-         xM0d3L7RKe3VdVshyO9+OTEiX2idDSm0OplGFOB0nox1ET13voUbeziNtqKO8xSkdmdK
-         nFzQ==
-X-Gm-Message-State: AOAM533DGj0KFbvJwz2/eJTKMCA2YhL6Si0doE7bC384CVjw2JfuJ4+W
-        kPC2PryiZaQjsD1uyOQnKfVkdg==
-X-Google-Smtp-Source: ABdhPJxGzk4oR9ONcZurm+l1j9rPZGsvwGlNZG3a4Foe4DEAKpp2AmXipHtkPf+S4ADPqd9YhnTwMA==
-X-Received: by 2002:adf:dfd1:: with SMTP id q17mr25505561wrn.94.1595341620825;
-        Tue, 21 Jul 2020 07:27:00 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id b18sm36258317wrs.46.2020.07.21.07.26.59
+         :mime-version:content-disposition:in-reply-to;
+        bh=rztZLDwVmXshy2I0VYii6VvZ6b/CEa6jKXB3iTVWQ4o=;
+        b=sz/3xVfrRLZ+WS3au57u/JyDyNhynT/9H5yYCkR+sKhKfv7KAc84b1ubkoq7Ab1uGf
+         5LwmwCPc1X/lo2MZ6IJ7jUOjcjHMqufaRd4aDjM+8g67PGc/z/W2ZhvlV1wYpV+DShDA
+         uNAqZHPyML7pOaW7d9zCFkr0C/tIqyFY40IMK69tMOJA+QgVtGc/KLj0cf7lOQmm2YPf
+         rGOlJSe9QbO8SHh06l/YRcB9CkVkT12FKH/ok1SS5JHtsVXWw1PotA0GSEy4GLRaKCKn
+         Ll6fBgihrFOkqzmeuWWOp9F1rs/TRPuh3bATNWWGVtPLYCQy4ESNMbkahHrBvHXwYfWD
+         88Xg==
+X-Gm-Message-State: AOAM530jEeLbVTbDBS45dDLBkqllgLZuATEPnRtyPvR3WAs69h+8ePLO
+        taABjehP+9zg0Q9F4gyWzuU=
+X-Google-Smtp-Source: ABdhPJwOZkGf2+hjpzR0ukUubhMTS+fw15qB9NT03kp3OB6E49eATRpV/OJ5KldIqcX9/AUJ4fVx5Q==
+X-Received: by 2002:a17:90a:b009:: with SMTP id x9mr5047312pjq.136.1595341679439;
+        Tue, 21 Jul 2020 07:27:59 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id r9sm3592981pje.12.2020.07.21.07.27.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:27:00 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 16:26:54 +0200
-From:   Marco Elver <elver@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     paulmck@kernel.org, will@kernel.org, arnd@arndb.de,
-        mark.rutland@arm.com, dvyukov@google.com, glider@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH 3/8] kcsan: Skew delay to be longer for certain access
- types
-Message-ID: <20200721142654.GA3396394@elver.google.com>
-References: <20200721103016.3287832-1-elver@google.com>
- <20200721103016.3287832-4-elver@google.com>
- <20200721140523.GA10769@hirez.programming.kicks-ass.net>
+        Tue, 21 Jul 2020 07:27:58 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 23:27:56 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        pmladek@suse.com, rostedt@goodmis.org,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Subject: Re: [PATCH] docs: core-api/printk-formats.rst: use literal block
+ syntax
+Message-ID: <20200721142756.GD44523@jagdpanzerIV.localdomain>
+References: <20200718165107.625847-1-dwlsalmeida@gmail.com>
+ <20200718165107.625847-8-dwlsalmeida@gmail.com>
+ <20200721140246.GB44523@jagdpanzerIV.localdomain>
+ <20200721082434.504d5788@lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721140523.GA10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+In-Reply-To: <20200721082434.504d5788@lwn.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 04:05PM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 21, 2020 at 12:30:11PM +0200, Marco Elver wrote:
-> > For compound instrumentation and assert accesses, skew the watchpoint
-> > delay to be longer. We still shouldn't exceed the maximum delays, but it
-> > is safe to skew the delay for these accesses.
+On (20/07/21 08:24), Jonathan Corbet wrote:
+> On Tue, 21 Jul 2020 23:02:46 +0900
 > 
-> Complete lack of actual justification.. *why* are you doing this, and
-> *why* is it safe etc..
+> I'm happy either way.  I'll grab it
 
-CONFIG_KCSAN_UDELAY_{TASK,INTERRUPT} define the upper bound. When
-randomized, the delays aggregate around a mean of KCSAN_UDELAY/2. We're
-not breaking the promise of not exceeding the max by skewing the delay
-if randomized. That's all this was meant to say.
+Please go ahead.
 
-I'll rewrite the commit message:
-
-	For compound instrumentation and assert accesses, skew the
-	watchpoint delay to be longer if randomized. This is useful to
-	improve race detection for such accesses.
-
-	For compound accesses we should increase the delay as we've
-	aggregated both read and write instrumentation. By giving up 1
-	call into the runtime, we're less likely to set up a watchpoint
-	and thus less likely to detect a race. We can balance this by
-	increasing the watchpoint delay.
-
-	For assert accesses, we know these are of increased interest,
-	and we wish to increase our chances of detecting races for such
-	checks.
-
-	Note that, CONFIG_KCSAN_UDELAY_{TASK,INTERRUPT} define the upper
-	bound delays. Skewing the delay does not break this promise as
-	long as the defined upper bounds are still adhered to.
-
-Thanks,
--- Marco
+	-ss
