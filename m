@@ -2,133 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9212284E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A672284E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgGUQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:07:33 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61091 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726919AbgGUQHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:07:32 -0400
-IronPort-SDR: dytW+NQ8S8AKrgEvnJVVHi3/or3NpVYwTYQqp/0LkBmza7as9RLAfM0zMIo8pE0PSqkCxHkW1H
- Ohxa0CqG2N5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="129730195"
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="129730195"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 09:07:32 -0700
-IronPort-SDR: BZgi8pRxecwjluMjlbtpRSkG/SvlD7Rln6mjzYftGmnMAT2fiJaxkMz23W7EQA7jp23u+5oHe4
- +/QdyUYrSC3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="487668467"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Jul 2020 09:07:32 -0700
-Received: from [10.254.76.99] (kliang2-mobl.ccr.corp.intel.com [10.254.76.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 3A950580299;
-        Tue, 21 Jul 2020 09:07:31 -0700 (PDT)
-Subject: Re: [PATCH V6 11/14] perf/x86/intel: Disable sample-read the slots
- and metrics events
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-12-kan.liang@linux.intel.com>
- <20200721131011.GY10769@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <b24b9bd3-bbfb-98d4-4df3-c263e002dcf5@linux.intel.com>
-Date:   Tue, 21 Jul 2020 12:07:29 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730145AbgGUQIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgGUQID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:08:03 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA0C061794;
+        Tue, 21 Jul 2020 09:08:03 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gc15so1594765pjb.0;
+        Tue, 21 Jul 2020 09:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JGXo1HLmj0B/GHBmTJocAxawqfuB0THi+fafWm8sJoM=;
+        b=SgGhE5dGd1GGv7R6MekmRlLAzrwTBb7Yt/cmaO/QHOjnZtnqP+30V+zBneRksbOrpR
+         ICMM5jJrYJXKZvGMrWeoz4QTskzVcERx3qLv1Dy2Zob2qcZz8/1OARoznA+S+m+C2u0R
+         0gU01M+jBrxABByQvuxJ4Nkot6y8BLA/5zefqyPkwZS/FaeAVIC0EFxpIC7K9BvcSDRp
+         GRyQa4xJQlT0VBQxDIKKDp1zietiJdPxXeZOZEdStcRCOEqk4JGqeW3D6b2Bt9+eO848
+         Wu4B+nwfXEkOT7dD31NpKLQu9EkxbOP/quN1dC0ZHP7gtpI/ki5cBaNrAEBzYLBqGb24
+         SzWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JGXo1HLmj0B/GHBmTJocAxawqfuB0THi+fafWm8sJoM=;
+        b=TVNI16TXVbynWpz8FKpv2szINOPsHevR3z5tlcZ/Iq4CEfKfxoQmQd3M61IfG9j9N0
+         Mz/VPFONib4IAncIjzYCUz4Ld7Cu3H0YIR8UsFdvOyeUoKOVwJkk+HbBUVhO7V0mU4el
+         ge32JtAUzRSkw7LYvfwD56mhGzfACAgPI0On+SSbF5CZRSfszwwlv1DrbigUzqb0wDfB
+         6WxiuZSQQ8qlqmML/M3fkdDURN/LPKaI7WvoYblmn/zRgUDHtFHyPQ/LCHDTXBITTFun
+         1wNgxiS9zISNjTuULPYmYgQzbwY5uyr3xL2A8YwmgoLyG0fGzfqt3EOjtcD2UJOkKhO9
+         pznA==
+X-Gm-Message-State: AOAM5326Nhy4F/G+D2Ja3NBas76nkwY7HH2uNqp7zBdurIcqYu9B3Zs0
+        HvHjdJDk26dOuRuHnzMzLFZ2kudJOSLwxkquHMI=
+X-Google-Smtp-Source: ABdhPJyiXTE2HFEP5bOjdrn/0LJH83a/0k69meejxpHmT0qCaFXIGgJ7jjvV7BwTawzOPSRNLSq4Dk7q69eLIMFapjs=
+X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr5481243pjb.181.1595347682901;
+ Tue, 21 Jul 2020 09:08:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200721131011.GY10769@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200721145046.773419-1-abanoubsameh@protonmail.com> <20200721145046.773419-2-abanoubsameh@protonmail.com>
+In-Reply-To: <20200721145046.773419-2-abanoubsameh@protonmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Jul 2020 19:07:48 +0300
+Message-ID: <CAHp75VdOHtTNLfSweKJwGNb70=gJ=CXxBrj=rhCd6Z-qRYOPfg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: gpio-pch.c: fixed coding style issue
+To:     Abanoub Sameh <abanoubsameh8@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abanoub Sameh <abanoubsameh@protonmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 5:51 PM Abanoub Sameh <abanoubsameh8@gmail.com> wrote:
+>
+> Added a lined between a declaration and other statements according to the
+> kenel coding style.
 
+Besides the typo in the word 'kernel' the subject is not okay.
+I fixed this locally this time.
 
-On 7/21/2020 9:10 AM, Peter Zijlstra wrote:
-> On Fri, Jul 17, 2020 at 07:05:51AM -0700, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> Users fail to sample-read the slots and metrics events, e.g.,
->> perf record -e '{slots, topdown-retiring}:S'.
->>
->> When reading the metrics event, the fixed counter 3 (slots) has to be
->> reset, which impacts the sampling of the slots event.
->>
->> Add a specific validate_group() support to reject the case and error out
->> for Ice Lake.
->>
->> An alternative fix may unconditionally disable slots sampling, but it's
->> not a decent fix. Users may want to only sample the slot events
->> without the topdown metrics events.
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> 
-> I'm confused by this; it doesn't make sense.
-> 
-> Should not patch 7 have something like the below instead?
-> > Also, I think there is a bug when we create a group like this and then
-> kill the leader, in that case the core code will 'promote' the sibling
-> metric events to their own individual events, see perf_group_detach().
+I also highly recommend to read https://chris.beams.io/posts/git-commit/.
 
-I'm trying to produce the bug mentioned above, but I'm not sure under 
-what situation, the core code will 'promote' the sibling metric events?
-
-I tried the suggested code below. It works well for the sample-read 
-case. Perf tool errors out as expected.
-
-   perf record -e '{slots,topdown-fe-bound}:S' sleep 1
-   Error:
-   The sys_perf_event_open() syscall returned with 22 (Invalid argument) 
-for event (topdown-fe-bound).
-   /bin/dmesg | grep -i perf may provide additional information.
-
-Thanks,
-Kan
-
-> 
-> We need additional code to move those events into unrecoverable ERROR
-> state. A new group_caps flag could indicate this promotion isn't
-> allowed.
-> 
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3441,8 +3441,22 @@ static int intel_pmu_hw_config(struct pe
->   	 * A flag PERF_X86_EVENT_TOPDOWN is applied for the case.
->   	 */
->   	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
-> -		if (is_metric_event(event) && is_sampling_event(event))
-> -			return -EINVAL;
-> +
-> +		if (is_metric_event(event)) {
-> +			struct perf_event *leader = event->group_leader;
-> +
-> +			if (is_sampling_event(event))
-> +				return -EINVAL;
-> +
-> +			if (leader == event)
-> +				return -EINVAL;
-> +
-> +			if (!is_slots_event(leader))
-> +				return -EINVAL;
-> +
-> +			if (is_sampling_event(leader))
-> +				return -EINVAL;
-> +		}
->   
->   		if (!is_sampling_event(event)) {
->   			if (event->attr.config1 != 0)
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
