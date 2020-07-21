@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CC7228C8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06101228C8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731431AbgGUXNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:13:46 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:41692 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgGUXNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:13:45 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06LNCxrb017185
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 21 Jul 2020 18:13:05 -0500
-Message-ID: <6fbea8347bdb8434d91cf3ec2b95b134bd66cfe3.camel@kernel.crashing.org>
-Subject: Re: [PATCH v5 1/4] riscv: Move kernel mapping to vmalloc zone
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, alex@ghiti.fr
-Cc:     mpe@ellerman.id.au, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>, zong.li@sifive.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-mm@kvack.org
-Date:   Wed, 22 Jul 2020 09:12:58 +1000
-In-Reply-To: <mhng-08bff01a-ca15-4bbc-8454-2ca3e823fef8@palmerdabbelt-glaptop1>
-References: <mhng-08bff01a-ca15-4bbc-8454-2ca3e823fef8@palmerdabbelt-glaptop1>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1731438AbgGUXOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:14:48 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:45742 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgGUXOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 19:14:48 -0400
+Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4BBDvW5l4BzDsyq;
+        Tue, 21 Jul 2020 16:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1595373287; bh=xTMTPC9hzFXTn074+lx+RG5xa8F+eokxN3Wm7v/sl5w=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=tWan2osbkTAhw60D6EEvW6y1Sia0ZrAnYPzzghqfAXoRNpVy9Cios+mIuALUru9lT
+         YSibRGi5JuuTzKlyGI0e/JZGpjoCYPBmxY3Mhs1cIWqMLAKlcSuldVRoJkHXv+3qKD
+         4kZ5LY1Dt0oaUt/6s58z/9bhgGVOfZM/iSV5G3AY=
+X-Riseup-User-ID: 5D3B783D35A34F52B7A96CE5A467C9284C412353663B0286B37FB04230C3A720
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by bell.riseup.net (Postfix) with ESMTPSA id 4BBDvV6VbhzJqp6;
+        Tue, 21 Jul 2020 16:14:46 -0700 (PDT)
+From:   Francisco Jerez <currojerez@riseup.net>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
+In-Reply-To: <babeff29a60d3fadb5515eaf57f7bb42a1c9c792.camel@linux.intel.com>
+References: <3955470.QvD6XneCf3@kreacher> <87r1tdiqpu.fsf@riseup.net> <CAJZ5v0jaRm-wv+ZKhOyGJrrKZAsTKc3sq2GYyv0uerTTe3gXbQ@mail.gmail.com> <87imeoihqs.fsf@riseup.net> <CAJZ5v0hhLWvbNA6w0yHtzKa5ANR9yF++u63dh8wWAgkhbtLXXA@mail.gmail.com> <875zanhty6.fsf@riseup.net> <CAJZ5v0g2U+1wD5rUQwJ4_x9sQyvGyGiBiLFs7MA-xdhRBX9zBQ@mail.gmail.com> <87mu3thiz5.fsf@riseup.net> <babeff29a60d3fadb5515eaf57f7bb42a1c9c792.camel@linux.intel.com>
+Date:   Tue, 21 Jul 2020 16:14:42 -0700
+Message-ID: <87h7u0h34t.fsf@riseup.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="==-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-21 at 12:05 -0700, Palmer Dabbelt wrote:
-> 
-> * We waste vmalloc space on 32-bit systems, where there isn't a lot of it.
-> * On 64-bit systems the VA space around the kernel is precious because it's the
->   only place we can place text (modules, BPF, whatever). 
+--==-=-=
+Content-Type: multipart/mixed; boundary="=-=-="
 
-Why ? Branch distance limits ? You can't use trampolines ?
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  If we start putting
->   the kernel in the vmalloc space then we either have to pre-allocate a bunch
->   of space around it (essentially making it a fixed mapping anyway) or it
->   becomes likely that we won't be able to find space for modules as they're
->   loaded into running systems.
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> writes:
 
-I dislike the kernel being in the vmalloc space (see my other email)
-but I don't understand the specific issue with modules.
+> On Mon, 2020-07-20 at 16:20 -0700, Francisco Jerez wrote:
+>> "Rafael J. Wysocki" <rafael@kernel.org> writes:
+>>=20
+>> > On Fri, Jul 17, 2020 at 2:21 AM Francisco Jerez <
+>> > currojerez@riseup.net> wrote:
+>> > > "Rafael J. Wysocki" <rafael@kernel.org> writes:
+>> > >=20
+> {...]
+>
+>> > Overall, so far, I'm seeing a claim that the CPU subsystem can be
+>> > made
+>> > use less energy and do as much work as before (which is what
+>> > improving
+>> > the energy-efficiency means in general) if the maximum frequency of
+>> > CPUs is limited in a clever way.
+>> >=20
+>> > I'm failing to see what that clever way is, though.
+>> Hopefully the clarifications above help some.
+>
+> To simplify:
+>
+> Suppose I called a function numpy.multiply() to multiply two big arrays
+> and thread is a pegged to a CPU. Let's say it is causing CPU to
+> finish the job in 10ms and it is using a P-State of 0x20. But the same
+> job could have been done in 10ms even if it was using P-state of 0x16.
+> So we are not energy efficient. To really know where is the bottle neck
+> there are numbers of perf counters, may be cache was the issue, we
+> could rather raise the uncore frequency a little. A simple APRF,MPERF
+> counters are not enough.=20
 
-> * Relying on a relocatable kernel for sv48 support introduces a fairly large
->   performance hit.
+Yes, that's right, APERF and MPERF aren't sufficient to identify every
+kind of possible bottleneck, some visibility of the utilization of other
+subsystems is necessary in addition -- Like e.g the instrumentation
+introduced in my series to detect a GPU bottleneck.  A bottleneck
+condition in an IO device can be communicated to CPUFREQ by adjusting a
+PM QoS latency request (link [2] in my previous reply) that effectively
+gives the governor permission to rearrange CPU work arbitrarily within
+the specified time frame (which should be of the order of the natural
+latency of the IO device -- e.g. at least the rendering time of a frame
+for a GPU) in order to minimize energy usage.
 
-Out of curiosity why would relocatable kernels introduce a significant
-hit ? Where about do you see the overhead coming from ?
+> or we characterize the workload at different P-states and set limits.
+> I think this is not you want to say for energy efficiency with your
+> changes.=20
+>
+> The way you are trying to improve "performance" is by caller (device
+> driver) to say how important my job at hand. Here device driver suppose
+> offload this calculations to some GPU and can wait up to 10 ms, you
+> want to tell CPU to be slow. But the p-state driver at a movement
+> observes that there is a chance of overshoot of latency, it will
+> immediately ask for higher P-state. So you want P-state limits based on
+> the latency requirements of the caller. Since caller has more knowledge
+> of latency requirement, this allows other devices sharing the power
+> budget to get more or less power, and improve overall energy efficiency
+> as the combined performance of system is improved.
+> Is this correct?
 
-> Roughly, my proposal would be to:
-> 
-> * Leave the 32-bit memory map alone.  On 32-bit systems we can load modules
->   anywhere and we only have one VA width, so we're not really solving any
->   problems with these changes.
-> * Staticly allocate a 2GiB portion of the VA space for all our text, as its own
->   region.  We'd link/relocate the kernel here instead of around PAGE_OFFSET,
->   which would decouple the kernel from the physical memory layout of the system.
->   This would have the side effect of sorting out a bunch of bootloader headaches
->   that we currently have.
-> * Sort out how to maintain a linear map as the canonical hole moves around
->   between the VA widths without adding a bunch of overhead to the virt2phys and
->   friends.  This is probably going to be the trickiest part, but I think if we
->   just change the page table code to essentially lie about VAs when an sv39
->   system runs an sv48+sv39 kernel we could make it work -- there'd be some
->   logical complexity involved, but it would remain fast.
-> 
-> This doesn't solve the problem of virtually relocatable kernels, but it does
-> let us decouple that from the sv48 stuff.  It also lets us stop relying on a
-> fixed physical address the kernel is loaded into, which is another thing I
-> don't like.
-> 
-> I know this may be a more complicated approach, but there aren't any sv48
-> systems around right now so I just don't see the rush to support them,
-> particularly when there's a cost to what already exists (for those who haven't
-> been watching, so far all the sv48 patch sets have imposed a significant
-> performance penalty on all systems).
+Yes, pretty much.
 
+--=-=-=--
+
+--==-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQST8OekYz69PM20/4aDmTidfVK/WwUCXxd24gAKCRCDmTidfVK/
+W4GXAPwIcPQpg2P5WEtcbZXe6xj58DHrm74yDbNuqQ97/+QnOQD9EinC1l0jSaqa
+oDWAREm4nOKPJuHFuljv0ghORZ+GI6I=
+=aUj6
+-----END PGP SIGNATURE-----
+--==-=-=--
