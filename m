@@ -2,48 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E2F228CB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64181228CB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731434AbgGUX3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:29:24 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42346 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgGUX3Y (ORCPT
+        id S1731453AbgGUX32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:29:28 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:47328 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgGUX3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:29:24 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTNZ5121968
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:29:23 -0500
+        Tue, 21 Jul 2020 19:29:25 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTPnF008444
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:29:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595374163;
-        bh=GPBIRBxSaqSX1gRvjRUGO8/oXfm/CjOWaKbp5f1GVp8=;
+        s=ti-com-17Q1; t=1595374165;
+        bh=M57k5GNdOhuFYfIUg8vfITWLthlh55K2f8tW0oPt63g=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZrKX6ePgdmdSRfmpR4z3a4qa4zw76xmgKgSvxUtjOxvlHWBFhZ/y3HGiUVQzXb8bz
-         IHiMoFqN3LhBA0ZwJZMC9YI9kLScr6H8/+du6BY0lf26KG9+hWwwfHvikQgPCACed6
-         5zvE0zc1aXVONJ6Ceqti+b4xrZwRHeKQHc10lzMg=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06LNTNkn127143
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:29:23 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+        b=XbsdunOdgIHRtKISife1AzQZ3TmsmOpjqDMvk4X+NSDForthxPpjrZG1Iy1pI3oBu
+         45ndBXQLrtm85awYCukuyrMGieqj3lMzd6e7MmzRw+nSpwNHy+7bVXa0e8zdP7AfGZ
+         3YEzcIevoKkg/2qmrTVmhtD9LCBmwLxgvraJOWpA=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTOVq096967
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:29:24 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 21
- Jul 2020 18:29:22 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2020 18:29:24 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 21 Jul 2020 18:29:22 -0500
+ Frontend Transport; Tue, 21 Jul 2020 18:29:24 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTL24007717;
-        Tue, 21 Jul 2020 18:29:21 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTNmm116815;
+        Tue, 21 Jul 2020 18:29:23 -0500
 From:   Grygorii Strashko <grygorii.strashko@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>
 CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
         Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH 1/3] phy: ti: gmii-sel: move phy init in separate function
-Date:   Wed, 22 Jul 2020 02:29:11 +0300
-Message-ID: <20200721232913.4979-2-grygorii.strashko@ti.com>
+Subject: [PATCH 2/3] phy: ti: gmii-sel: use features mask during init
+Date:   Wed, 22 Jul 2020 02:29:12 +0300
+Message-ID: <20200721232913.4979-3-grygorii.strashko@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200721232913.4979-1-grygorii.strashko@ti.com>
 References: <20200721232913.4979-1-grygorii.strashko@ti.com>
@@ -55,158 +54,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move phy initialization in separate function to improve code readability
-and simplify future changes.
+Use features mask during PHYs initialization to simplify code.
 
 Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 ---
- drivers/phy/ti/phy-gmii-sel.c | 111 ++++++++++++++++++++--------------
- 1 file changed, 64 insertions(+), 47 deletions(-)
+ drivers/phy/ti/phy-gmii-sel.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/phy/ti/phy-gmii-sel.c b/drivers/phy/ti/phy-gmii-sel.c
-index 7edd5c3bc536..d4b02ad023b2 100644
+index d4b02ad023b2..a6b7f22e85c4 100644
 --- a/drivers/phy/ti/phy-gmii-sel.c
 +++ b/drivers/phy/ti/phy-gmii-sel.c
-@@ -22,7 +22,7 @@
- #define AM33XX_GMII_SEL_MODE_RGMII	2
+@@ -147,13 +147,9 @@ static const
+ struct reg_field phy_gmii_sel_fields_dra7[][PHY_GMII_SEL_LAST] = {
+ 	{
+ 		[PHY_GMII_SEL_PORT_MODE] = REG_FIELD(0x554, 0, 1),
+-		[PHY_GMII_SEL_RGMII_ID_MODE] = REG_FIELD((~0), 0, 0),
+-		[PHY_GMII_SEL_RMII_IO_CLK_EN] = REG_FIELD((~0), 0, 0),
+ 	},
+ 	{
+ 		[PHY_GMII_SEL_PORT_MODE] = REG_FIELD(0x554, 4, 5),
+-		[PHY_GMII_SEL_RGMII_ID_MODE] = REG_FIELD((~0), 0, 0),
+-		[PHY_GMII_SEL_RMII_IO_CLK_EN] = REG_FIELD((~0), 0, 0),
+ 	},
+ };
  
- enum {
--	PHY_GMII_SEL_PORT_MODE,
-+	PHY_GMII_SEL_PORT_MODE = 0,
- 	PHY_GMII_SEL_RGMII_ID_MODE,
- 	PHY_GMII_SEL_RMII_IO_CLK_EN,
- 	PHY_GMII_SEL_LAST,
-@@ -242,6 +242,66 @@ static struct phy *phy_gmii_sel_of_xlate(struct device *dev,
- 	return priv->if_phys[phy_id].if_phy;
- }
+@@ -174,8 +170,6 @@ static const
+ struct reg_field phy_gmii_sel_fields_am654[][PHY_GMII_SEL_LAST] = {
+ 	{
+ 		[PHY_GMII_SEL_PORT_MODE] = REG_FIELD(0x4040, 0, 1),
+-		[PHY_GMII_SEL_RGMII_ID_MODE] = REG_FIELD((~0), 0, 0),
+-		[PHY_GMII_SEL_RMII_IO_CLK_EN] = REG_FIELD((~0), 0, 0),
+ 	},
+ };
  
-+static int phy_gmii_init_phy(struct phy_gmii_sel_priv *priv, int port,
-+			     struct phy_gmii_sel_phy_priv *if_phy)
-+{
-+	const struct phy_gmii_sel_soc_data *soc_data = priv->soc_data;
-+	struct device *dev = priv->dev;
-+	const struct reg_field *fields;
-+	struct regmap_field *regfield;
-+	struct reg_field field;
-+	int ret;
-+
-+	if_phy->id = port;
-+	if_phy->priv = priv;
-+
-+	fields = soc_data->regfields[port - 1];
-+	field = *fields++;
-+	dev_dbg(dev, "%s field %x %d %d\n", __func__,
-+		field.reg, field.msb, field.lsb);
-+
-+	regfield = devm_regmap_field_alloc(dev, priv->regmap, field);
-+	if (IS_ERR(regfield))
-+		return PTR_ERR(regfield);
-+	if_phy->fields[PHY_GMII_SEL_PORT_MODE] = regfield;
-+
-+	field = *fields++;
-+	if (field.reg != (~0)) {
-+		regfield = devm_regmap_field_alloc(dev,
-+						   priv->regmap,
-+						   field);
-+		if (IS_ERR(regfield))
-+			return PTR_ERR(regfield);
-+		if_phy->fields[PHY_GMII_SEL_RGMII_ID_MODE] = regfield;
-+		dev_dbg(dev, "%s field %x %d %d\n", __func__,
-+			field.reg, field.msb, field.lsb);
-+	}
-+
-+	field = *fields;
-+	if (field.reg != (~0)) {
-+		regfield = devm_regmap_field_alloc(dev,
-+						   priv->regmap,
-+						   field);
-+		if (IS_ERR(regfield))
-+			return PTR_ERR(regfield);
-+		if_phy->fields[PHY_GMII_SEL_RMII_IO_CLK_EN] = regfield;
-+		dev_dbg(dev, "%s field %x %d %d\n", __func__,
-+			field.reg, field.msb, field.lsb);
-+	}
-+
-+	if_phy->if_phy = devm_phy_create(dev,
-+					 priv->dev->of_node,
-+					 &phy_gmii_sel_ops);
-+	if (IS_ERR(if_phy->if_phy)) {
-+		ret = PTR_ERR(if_phy->if_phy);
-+		dev_err(dev, "Failed to create phy%d %d\n", port, ret);
-+		return ret;
-+	}
-+	phy_set_drvdata(if_phy->if_phy, if_phy);
-+
-+	return 0;
-+}
-+
- static int phy_gmii_sel_init_ports(struct phy_gmii_sel_priv *priv)
- {
- 	const struct phy_gmii_sel_soc_data *soc_data = priv->soc_data;
-@@ -249,7 +309,7 @@ static int phy_gmii_sel_init_ports(struct phy_gmii_sel_priv *priv)
- 	struct phy_gmii_sel_phy_priv *if_phys;
- 	int i, num_ports, ret;
+@@ -266,7 +260,7 @@ static int phy_gmii_init_phy(struct phy_gmii_sel_priv *priv, int port,
+ 	if_phy->fields[PHY_GMII_SEL_PORT_MODE] = regfield;
  
--	num_ports = priv->soc_data->num_ports;
-+	num_ports = soc_data->num_ports;
- 
- 	if_phys = devm_kcalloc(priv->dev, num_ports,
- 			       sizeof(*if_phys), GFP_KERNEL);
-@@ -258,52 +318,9 @@ static int phy_gmii_sel_init_ports(struct phy_gmii_sel_priv *priv)
- 	dev_dbg(dev, "%s %d\n", __func__, num_ports);
- 
- 	for (i = 0; i < num_ports; i++) {
--		const struct reg_field *field;
--		struct regmap_field *regfield;
--
--		if_phys[i].id = i + 1;
--		if_phys[i].priv = priv;
--
--		field = &soc_data->regfields[i][PHY_GMII_SEL_PORT_MODE];
--		dev_dbg(dev, "%s field %x %d %d\n", __func__,
--			field->reg, field->msb, field->lsb);
--
--		regfield = devm_regmap_field_alloc(dev, priv->regmap, *field);
--		if (IS_ERR(regfield))
--			return PTR_ERR(regfield);
--		if_phys[i].fields[PHY_GMII_SEL_PORT_MODE] = regfield;
--
--		field = &soc_data->regfields[i][PHY_GMII_SEL_RGMII_ID_MODE];
--		if (field->reg != (~0)) {
--			regfield = devm_regmap_field_alloc(dev,
--							   priv->regmap,
--							   *field);
--			if (IS_ERR(regfield))
--				return PTR_ERR(regfield);
--			if_phys[i].fields[PHY_GMII_SEL_RGMII_ID_MODE] =
--				regfield;
--		}
--
--		field = &soc_data->regfields[i][PHY_GMII_SEL_RMII_IO_CLK_EN];
--		if (field->reg != (~0)) {
--			regfield = devm_regmap_field_alloc(dev,
--							   priv->regmap,
--							   *field);
--			if (IS_ERR(regfield))
--				return PTR_ERR(regfield);
--			if_phys[i].fields[PHY_GMII_SEL_RMII_IO_CLK_EN] =
--				regfield;
--		}
--
--		if_phys[i].if_phy = devm_phy_create(dev,
--						    priv->dev->of_node,
--						    &phy_gmii_sel_ops);
--		if (IS_ERR(if_phys[i].if_phy)) {
--			ret = PTR_ERR(if_phys[i].if_phy);
--			dev_err(dev, "Failed to create phy%d %d\n", i, ret);
-+		ret = phy_gmii_init_phy(priv, i + 1, &if_phys[i]);
-+		if (ret)
- 			return ret;
--		}
--		phy_set_drvdata(if_phys[i].if_phy, &if_phys[i]);
+ 	field = *fields++;
+-	if (field.reg != (~0)) {
++	if (soc_data->features & BIT(PHY_GMII_SEL_RGMII_ID_MODE)) {
+ 		regfield = devm_regmap_field_alloc(dev,
+ 						   priv->regmap,
+ 						   field);
+@@ -278,7 +272,7 @@ static int phy_gmii_init_phy(struct phy_gmii_sel_priv *priv, int port,
  	}
  
- 	priv->if_phys = if_phys;
+ 	field = *fields;
+-	if (field.reg != (~0)) {
++	if (soc_data->features & BIT(PHY_GMII_SEL_RMII_IO_CLK_EN)) {
+ 		regfield = devm_regmap_field_alloc(dev,
+ 						   priv->regmap,
+ 						   field);
 -- 
 2.17.1
 
