@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037D92288F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8721B228901
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730407AbgGUTNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        id S1730491AbgGUTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgGUTNM (ORCPT
+        with ESMTP id S1726602AbgGUTSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:13:12 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3C4C0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:13:11 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y18so12266537lfh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:13:11 -0700 (PDT)
+        Tue, 21 Jul 2020 15:18:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47431C061794;
+        Tue, 21 Jul 2020 12:18:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f18so3957711wml.3;
+        Tue, 21 Jul 2020 12:18:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G1+MBynaOaFc+TQGQ/+zLUDlbfNpuxAiueoXbqW+mHQ=;
-        b=CnYKPb1Xv2Oa9t8RxiLG8qh5LFd1tQ4x4f0WjwYFg0GeyKeD8WtsbrK0ptSPAvEwl2
-         p5N38bdjZsT11squqkQ1pPFLR9OGUwiDyFO1XbXZvTeA+Phru4E2ctuap9k6B7ovdktM
-         c1hj9ICibOXamyVTIL9p8vYpWBYTXMAm08B9cKvi34M8bs+ahrGlrDUCP/R2c1BueQFN
-         vDKbKpW7kZ9rqKt+fNxsj407lyPTEGwfMi3MMK8QZsqwyq6YDDGlB6I7vYjAl7jTwHsB
-         /AdU0ePREeL3IVkKswnAQ8Vc0ueP/mNPN2/leFB8tSv5ukqw0EhQ0veO+jKqLwnXzr6L
-         9ROg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=d3TKYP4o+8GyD6R3uLACwUhGmVtEHiKUIs+qv7jiKrs=;
+        b=Y85VM6pVuzOYBKCzRvBXLnPLXo1Y3B4xiuUr90n0mcLtHpkthkzKATe+IBCDI09cav
+         DK4O+PxIV9EBf83Kob7n8UmV78Ee21Mi6Qjef7GCeWXD2T6E7LTz4QZkSoXN4jEx314f
+         vAxdv6P2aD12VrXIVj9m9E8xYo48naDU/TxhNzLVSInhSjHcJ5XxuUgeMSEysYAwtXHz
+         hrFO0eCodu+wGDlB0GqaCZVT8RuOnkfL6RTWf6D2taparr6bAfSeMypqcuBO0GzwBm07
+         jgsbVSO7L7xwbkJvIbRzigWM1JReeRjurWO1yMEfiJ3dnVHLC9/oKGqe/aDIHIobrXtN
+         BlGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G1+MBynaOaFc+TQGQ/+zLUDlbfNpuxAiueoXbqW+mHQ=;
-        b=nwvHuSy92sEo5gSD7T9moevnozn92bfO5e8x3oU9zEcEHbh2ztfAvh8p7f/4eo4wEO
-         exmI+zsp9NwJ++VTBBcNWiOF9S+H1Q3j2S6fJObzGEskUYGj2IFcsp+MlTGTavyx5rO7
-         BtgX1t5kdAJ/LadoyCKyqlYd6idHC+ojSl7mzwqLexPdKpYJLzUdCaMMf60uG5FIX1G2
-         9OnendqUEx20t3FZ1a/Zq9ml9levQHxdkuh3yljTe0REOnQL1tpOjbYd7sS5UwZ34HAi
-         VsOr79nq7CTnSzleGvNnYmcGqozU5mZ65f10NhBhAf8SeqMBKJbEcW39aOk8OIuVJUfi
-         ytkg==
-X-Gm-Message-State: AOAM530fOq7wgCSj0fyBWZ8nCvGXfE1ZNrftdCOjeoCFMdWfk7eZZfnx
-        7riJvsFtHz3WpV5elWLagtskdqll+DQtysAQKG2n8A==
-X-Google-Smtp-Source: ABdhPJx4x3WE7/pXjDBRdRagnXwO29Oe/I8pts7edpG8D4QIOLnM3lnE0dfWuR25FRqWYY2Z3HPd7DX+8UxG3rCtJpQ=
-X-Received: by 2002:a19:e61a:: with SMTP id d26mr14162136lfh.96.1595358789794;
- Tue, 21 Jul 2020 12:13:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
- <20200721174126.GA271870@cmpxchg.org> <20200721184959.GA8266@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20200721184959.GA8266@carbon.DHCP.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 21 Jul 2020 12:12:58 -0700
-Message-ID: <CALvZod6-sTBMzvo0ER+RkQ_OM7B4=PKUC-T9gXmQiB8mznunBg@mail.gmail.com>
-Subject: Re: PROBLEM: cgroup cost too much memory when transfer small files to tmpfs
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, jingrui <jingrui@huawei.com>,
-        "tj@kernel.org" <tj@kernel.org>, Lizefan <lizefan@huawei.com>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        caihaomin <caihaomin@huawei.com>,
-        "Weiwei (N)" <wick.wei@huawei.com>, guro@cmpxchg.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=d3TKYP4o+8GyD6R3uLACwUhGmVtEHiKUIs+qv7jiKrs=;
+        b=SoMVXhUFv3alicsRcuu4m8pHUZeb3DkoDiuodfjbYb/BnXm2zrznoIyiqgbD5ZMW1l
+         eVLWEynNSXwFlnI/xDboVbjFzUwBhLzQ9VXghUBO7CapksBqAq7yg09KLDib8Efmj/Z8
+         M9BSxki2Ix2Q8MCcF4pmDS3dQ+xPFEUtZX7D9eeufIR9bDUI5hPhaCPTuJs348yambG9
+         K5ZU5NQgGP9LVoCioLt/0EQltPIlusTXNDbVRm4ZYor/zLCMiV8UaUJvuRvJraxaA42c
+         VdbwoAUN7vfT11GAjS2EPRJtdTVnW0Akvw7wHdQZHaT5t+q40X65Fs/9sbNrVNSCODe2
+         bgtQ==
+X-Gm-Message-State: AOAM531MQmEQ0J5lc+TUQSXxt3EVwKPJd6Vvk95Q+l5Y/n7ta0AB1NJq
+        j9kWf1uUVgue9+Mpgkry8Ja8QDoA
+X-Google-Smtp-Source: ABdhPJzjgAfGACh83dk5biQo13nQNx9k/mgrRnN85rbCJJOO1Ljpf5TnnsKWA7ml0fS8ixPafkJHww==
+X-Received: by 2002:a05:600c:2050:: with SMTP id p16mr5099565wmg.44.1595359092626;
+        Tue, 21 Jul 2020 12:18:12 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id j16sm39876315wrt.7.2020.07.21.12.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 12:18:12 -0700 (PDT)
+From:   Al Cooper <alcooperx@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Bradley Bolen <bradleybolen@gmail.com>,
+        linux-mmc@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH] mmc: Some Micron eMMC devices cause reboot to hang
+Date:   Tue, 21 Jul 2020 15:17:18 -0400
+Message-Id: <20200721191718.29414-1-alcooperx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 11:51 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Jul 21, 2020 at 01:41:26PM -0400, Johannes Weiner wrote:
-> > On Tue, Jul 21, 2020 at 11:19:52AM +0000, jingrui wrote:
-> > > Cc: Johannes Weiner <hannes@cmpxchg.org> ; Michal Hocko <mhocko@kernel.org>; Vladimir Davydov <vdavydov.dev@gmail.com>
-> > >
-> > > Thanks.
-> > >
-> > > ---
-> > > PROBLEM: cgroup cost too much memory when transfer small files to tmpfs.
-> > >
-> > > keywords: cgroup PERCPU/memory cost too much.
-> > >
-> > > description:
-> > >
-> > > We send small files from node-A to node-B tmpfs /tmp directory using sftp. On
-> > > node-B the systemd configured with pam on like below.
-> > >
-> > > cat /etc/pam.d/password-auth | grep systemd
-> > > -session     optional      pam_systemd.so
-> > >
-> > > So when transfer a file, a systemd session is created, that means a cgroup is
-> > > created, then file saved at /tmp will associated with a cgroup object. After
-> > > file transferred, session and cgroup-dir will be removed, but the file in /tmp
-> > > still associated with the cgroup object. The PERCPU memory in cgroup/css object
-> > > cost a lot(about 0.5MB/per-cgroup-object) on 200/cpus machine.
-> >
-> > CC Roman who had a patch series to free all this extended (percpu)
-> > memory upon cgroup deletion:
-> >
-> > https://lore.kernel.org/patchwork/cover/1050508/
-> >
-> > It looks like it never got merged for some reason.
->
-> The mentioned patchset can make the problem less noticeable, but can't solve it completely.
-> It has never been merged, because the dying cgroup problem was mostly solved by other methods:
-> slab memory reparenting and various reclaim fixes. So there was no more reason to complicate
-> the code to release the memcg memory early.
->
-> The overhead of creating and destroying a new memory cgroup for a transfer of a small
-> file will be noticeable anyway. So IMO the solution is to use a single cgroup for all
-> transfers. I don't know if systemd supports such mode out of the box, but it shouldn't
-> be hard to add it.
->
-> But also I wonder if we need a special tmpfs mount option, something like "noaccount".
-> Not only for this specific case, but also for the case when tmpfs is extensively
-> shared between multiple cgroups or if it's used to pass some data from one cgroup
-> to another, or if we care about the performance more than about the accounting;
-> in other words for cases where the accounting makes more harm than good.
->
+When using eMMC as the boot device, some Micron eMMC devices will
+cause reboot to hang. This is a result of the eMMC device not going
+into boot mode after the hardware sends CMD0 to reset the eMMC
+device. This only happens if the kernel driver sends CMD5 (SLEEP_WAKE),
+to put the device into sleep state, before restarting the system.
+The fix is to add a quirk that avoids sending the SLEEP command
+and to use MMC_FIXUP to set the quirk for these Micron devices.
 
-Internally we actually have an tmpfs mount option "memcg=" which
-charges all the memory of the tmpfs files on that mount to the given
-memcg and the motivation is the shared tmpfs files between multiple
-cgroups. One concrete use-case is the shared memory used for
-communication between the application and the user space network
-driver [1]. The "memcg=root" can be used as a "noaccount" option.
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+---
+ drivers/mmc/core/mmc.c    | 3 ++-
+ drivers/mmc/core/quirks.h | 8 ++++++++
+ include/linux/mmc/card.h  | 1 +
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-[1] https://sosp19.rcs.uwaterloo.ca/slides/marty.pdf
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 4203303f946a..4d69e8f8fe59 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -1895,7 +1895,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 
+ static int mmc_can_sleep(struct mmc_card *card)
+ {
+-	return (card && card->ext_csd.rev >= 3);
++	return card && card->ext_csd.rev >= 3 &&
++		((card->quirks & MMC_QUIRK_BROKEN_SLEEP) == 0);
+ }
+ 
+ static int mmc_sleep(struct mmc_host *host)
+diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+index 472fa2fdcf13..7263187b6323 100644
+--- a/drivers/mmc/core/quirks.h
++++ b/drivers/mmc/core/quirks.h
+@@ -99,6 +99,14 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
+ 	MMC_FIXUP("V10016", CID_MANFID_KINGSTON, CID_OEMID_ANY, add_quirk_mmc,
+ 		  MMC_QUIRK_TRIM_BROKEN),
+ 
++	/*
++	 * Some Micron eMMC devices will not go into boot mode on
++	 * CMD0 arg: 0XF0F0F0F0 after going into SLEEP state.
++	 * This will hang a reboot.
++	 */
++	MMC_FIXUP(CID_NAME_ANY, CID_MANFID_NUMONYX, 0x014e, add_quirk_mmc,
++		  MMC_QUIRK_BROKEN_SLEEP),
++
+ 	END_FIXUP
+ };
+ 
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index 7d46411ffaa2..0cdddcb5e17d 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -270,6 +270,7 @@ struct mmc_card {
+ #define MMC_QUIRK_BROKEN_IRQ_POLLING	(1<<11)	/* Polling SDIO_CCCR_INTx could create a fake interrupt */
+ #define MMC_QUIRK_TRIM_BROKEN	(1<<12)		/* Skip trim */
+ #define MMC_QUIRK_BROKEN_HPI	(1<<13)		/* Disable broken HPI support */
++#define MMC_QUIRK_BROKEN_SLEEP	(1<<14)		/* Broken sleep mode */
+ 
+ 	bool			reenable_cmdq;	/* Re-enable Command Queue */
+ 
+-- 
+2.17.1
+
