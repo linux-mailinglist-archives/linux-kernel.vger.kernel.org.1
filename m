@@ -2,179 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3872288A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B89A2288A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730428AbgGUS4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730383AbgGUSzy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:55:54 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AA6C0619DB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:55:54 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k5so2118996pjg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=lpeIcRunQtO1GGzh3TnMCT3eJ1HuVXVaMnC4hvPTV4c=;
-        b=ZraJZ4OwJkwVmBY42CcXjaMSGWMq/bEwpXlTSwQGzBF9ZA0nVcvlHRAaAUTae7CEcJ
-         HRvrYykoG7LZQk21X2pu+3X9ko3Q2QQcYkEqwDeMFUMHzm0x8087W8Tob7xr2aF0EG7F
-         SnjxzWSKMqw16bMmbqJXylH4/GIyEVkaBWcUo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=lpeIcRunQtO1GGzh3TnMCT3eJ1HuVXVaMnC4hvPTV4c=;
-        b=gfcGzgTlW+IJC/D1ZVgUejr/EKtDA5IINDLwS7W2z8wklZSSwwya9rIGR37FsLt9/d
-         SZOOPdkUG1dSoVrfyibpZTBoB+rH8S3cwq7dB5t698PEdT61j9h9/q28E3wwYeRX3uzg
-         eIG//2CrWC8qofrPWHILWHXbrNsYmFXzr4ch+3Yl0COZkkaRzCIy+6gzANPbMQu1b4DB
-         chEo1yH2os+7GL6PPoeRBn/4xdQabQXfq+EpYR9NsQo2ym13meHZQoyS0GK4yFl5S6tG
-         1Kroh1PuY7kTxTtrvoqq9omBlYc6yJSXp4gaomuIYYDRy0VMF3DRSrwMtnIpWd9HRKkA
-         BD6w==
-X-Gm-Message-State: AOAM533HN3sUJjdp89/jp+7TQF4y+RRhw2mGMdECzxxLDuGcHh6wBWFm
-        WW3WxLJrxtDYgQOQLEw/Gg3Ffg==
-X-Google-Smtp-Source: ABdhPJx2s7en67gEWbb+sWP2Jr0NJevBxR5Urhrc0eYJJ/jKRPIBgjMxDqiQ1yQJRt75lnNByN9MpA==
-X-Received: by 2002:a17:90a:a887:: with SMTP id h7mr6323580pjq.0.1595357754027;
-        Tue, 21 Jul 2020 11:55:54 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id e191sm20976433pfh.42.2020.07.21.11.55.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 11:55:53 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1730524AbgGUS4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:56:44 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:43514 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726499AbgGUS4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 14:56:43 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 25D4DBC1AB;
+        Tue, 21 Jul 2020 18:56:39 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] staging: comedi: das: Replace HTTP links with HTTPS ones
+Date:   Tue, 21 Jul 2020 20:56:33 +0200
+Message-Id: <20200721185633.67671-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=X=NDym3V31dQ8c341UwQm9pDybUCR8jFF1JR99XeVKVw@mail.gmail.com>
-References: <20200720172448.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid> <159531115483.3847286.18280088484118119899@swboyd.mtv.corp.google.com> <159531527579.3847286.1254956818647049462@swboyd.mtv.corp.google.com> <CAD=FV=X=NDym3V31dQ8c341UwQm9pDybUCR8jFF1JR99XeVKVw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: i2c-qcom-geni: Fix DMA transfer race
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-i2c@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Tue, 21 Jul 2020 11:55:52 -0700
-Message-ID: <159535775253.3847286.5195740102798837524@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-07-21 09:18:35)
-> On Tue, Jul 21, 2020 at 12:08 AM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > Quoting Stephen Boyd (2020-07-20 22:59:14)
-> > >
-> > > I worry that we also need a dmb() here to make sure the dma buffer is
-> > > properly mapped before this write to the device is attempted. But it =
-may
-> > > only matter to be before the I2C_READ.
-> > >
-> >
-> > I'm suggesting this patch instead where we make geni_se_setup_m_cmd()
-> > use a writel() so that it has the proper barrier semantics to wait for
-> > the other memory writes that happened in program order before this point
-> > to complete before the device is kicked to do a read or a write.
->=20
-> Are you saying that dma_map_single() isn't guaranteed to have a
-> barrier or something?  I tried to do some searching and found a thread
-> [1] where someone tried to add a barrierless variant of them.  To me
-> that means that the current APIs have barriers.
->=20
-> ...or is there something else you're worried about?
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I'm not really thinking about dma_map_single() having a barrier or not.
-The patch you mention is from 2010. Many things have changed in the last
-decade. Does it have barrier semantics? The presence of a patch on the
-mailing list doesn't mean much.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Specifically I'm looking at "KERNEL I/O BARRIER EFFECTS" of
-Documentation/memory-barriers.txt and noticing that this driver is using
-relaxed IO accessors meaning that the reads and writes aren't ordered
-with respect to other memory accesses. They're only ordered to
-themselves within the same device. I'm concerned that the CPU will issue
-the IO access to start the write DMA operation before the buffer is
-copied over due to out of order execution.
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-I'm not an expert in this area, but this is why we ask driver authors to
-use the non-relaxed accessors because they have the appropriate
-semantics built in to make them easy to reason about. They do what they
-say when they say to do it.
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
->=20
->=20
-> > ----8<----
-> > diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2=
-c-qcom-geni.c
-> > index 18d1e4fd4cf3..7f130829bf01 100644
-> > --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> > +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> > @@ -367,7 +367,6 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev =
-*gi2c, struct i2c_msg *msg,
-> >                 geni_se_select_mode(se, GENI_SE_FIFO);
-> >
-> >         writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
-> > -       geni_se_setup_m_cmd(se, I2C_READ, m_param);
-> >
-> >         if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
-> >                 geni_se_select_mode(se, GENI_SE_FIFO);
-> > @@ -375,6 +374,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev =
-*gi2c, struct i2c_msg *msg,
-> >                 dma_buf =3D NULL;
-> >         }
-> >
-> > +       geni_se_setup_m_cmd(se, I2C_READ, m_param);
->=20
-> I guess it's true that we only need the setup_m_cmd moved.
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
 
-Alright cool. That makes more sense.
+ If you apply the patch, please let me know.
 
->=20
->=20
-> > +
-> >         time_left =3D wait_for_completion_timeout(&gi2c->done, XFER_TIM=
-EOUT);
-> >         if (!time_left)
-> >                 geni_i2c_abort_xfer(gi2c);
-> > @@ -408,7 +409,6 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev =
-*gi2c, struct i2c_msg *msg,
-> >                 geni_se_select_mode(se, GENI_SE_FIFO);
-> >
-> >         writel_relaxed(len, se->base + SE_I2C_TX_TRANS_LEN);
-> > -       geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
-> >
-> >         if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &tx_dma)) {
-> >                 geni_se_select_mode(se, GENI_SE_FIFO);
-> > @@ -416,6 +416,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev =
-*gi2c, struct i2c_msg *msg,
-> >                 dma_buf =3D NULL;
-> >         }
-> >
-> > +       geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
-> > +
->=20
-> True, it's probably safer to do the TX too even if I'm not seeing
-> problems there.  Of course, I don't think I'm doing any large writes
-> so probably never triggering this path anyway.
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
-Right, this is just by inspection of the code to see that it's the same
-scenario, kicking off the DMA operation at the device before mapping the
-buffer.
 
->=20
->=20
-> >         if (!dma_buf) /* Get FIFO IRQ */
-> >                 writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
-> >
+ drivers/staging/comedi/drivers/das08.c     | 2 +-
+ drivers/staging/comedi/drivers/das08_isa.c | 2 +-
+ drivers/staging/comedi/drivers/das08_pci.c | 2 +-
+ drivers/staging/comedi/drivers/das16.c     | 2 +-
+ drivers/staging/comedi/drivers/das16m1.c   | 2 +-
+ drivers/staging/comedi/drivers/das1800.c   | 2 +-
+ drivers/staging/comedi/drivers/das800.c    | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/staging/comedi/drivers/das08.c b/drivers/staging/comedi/drivers/das08.c
+index 65e5f2e6c122..b50743c5b822 100644
+--- a/drivers/staging/comedi/drivers/das08.c
++++ b/drivers/staging/comedi/drivers/das08.c
+@@ -465,6 +465,6 @@ static void __exit das08_exit(void)
+ }
+ module_exit(das08_exit);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi common DAS08 support module");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/das08_isa.c b/drivers/staging/comedi/drivers/das08_isa.c
+index b22a45bd21d1..8c4cfa821423 100644
+--- a/drivers/staging/comedi/drivers/das08_isa.c
++++ b/drivers/staging/comedi/drivers/das08_isa.c
+@@ -185,6 +185,6 @@ static struct comedi_driver das08_isa_driver = {
+ };
+ module_comedi_driver(das08_isa_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/das08_pci.c b/drivers/staging/comedi/drivers/das08_pci.c
+index 7856fc13466a..1cd903336a4c 100644
+--- a/drivers/staging/comedi/drivers/das08_pci.c
++++ b/drivers/staging/comedi/drivers/das08_pci.c
+@@ -91,6 +91,6 @@ static struct pci_driver das08_pci_driver = {
+ };
+ module_comedi_pci_driver(das08_pci_comedi_driver, das08_pci_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/das16.c b/drivers/staging/comedi/drivers/das16.c
+index 81eb51b1be25..4ac2622b0fac 100644
+--- a/drivers/staging/comedi/drivers/das16.c
++++ b/drivers/staging/comedi/drivers/das16.c
+@@ -1195,6 +1195,6 @@ static struct comedi_driver das16_driver = {
+ };
+ module_comedi_driver(das16_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for DAS16 compatible boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/das16m1.c b/drivers/staging/comedi/drivers/das16m1.c
+index 4e36377b592a..75f3dbbe97ac 100644
+--- a/drivers/staging/comedi/drivers/das16m1.c
++++ b/drivers/staging/comedi/drivers/das16m1.c
+@@ -617,6 +617,6 @@ static struct comedi_driver das16m1_driver = {
+ };
+ module_comedi_driver(das16m1_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for CIO-DAS16/M1 ISA cards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/das1800.c b/drivers/staging/comedi/drivers/das1800.c
+index f16aa7e9f4f3..f50891a6ee7d 100644
+--- a/drivers/staging/comedi/drivers/das1800.c
++++ b/drivers/staging/comedi/drivers/das1800.c
+@@ -1359,6 +1359,6 @@ static struct comedi_driver das1800_driver = {
+ };
+ module_comedi_driver(das1800_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for DAS1800 compatible ISA boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/das800.c b/drivers/staging/comedi/drivers/das800.c
+index 8cf09ef3012f..4ea100ff6930 100644
+--- a/drivers/staging/comedi/drivers/das800.c
++++ b/drivers/staging/comedi/drivers/das800.c
+@@ -739,6 +739,6 @@ static struct comedi_driver driver_das800 = {
+ };
+ module_comedi_driver(driver_das800);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+-- 
+2.27.0
+
