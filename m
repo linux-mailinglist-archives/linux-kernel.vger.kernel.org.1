@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775A422812F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E41228138
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgGUNmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 09:42:20 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:14768 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgGUNmR (ORCPT
+        id S1728466AbgGUNoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 09:44:24 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28880 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726109AbgGUNoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:42:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595338937; x=1626874937;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=XCIemFwHVUPk9JG5bOXVOGvcvPDUygaTIGU9mXoRy0Y=;
-  b=dQUJRm1JR2W8sQxw/qYTJ3/rwQLhCFm3C5bxMBVCcFkyHtFgO3/jAmtJ
-   m1S2Tiaz43x3XlJTm45cnWIlmX1UWhosAoiAnlAxbCFfIZ2eTVQc8Nc+U
-   jSp9ZaqjzKwFMbiQojrNS/RnnG+G0QR61C1cOdh1Mpz+XOppkOK7e4UbO
-   cudf+qAe5WhUhqd3386RYBaWOITbP1v3d26DIPKw/QlReS6Au39bMg4Hr
-   9oIU/m2d5cFjLR7zkh4kAiEWcu/jTBC34GqGpxSRwTap7idyn2LpteMnm
-   mhth02xzTZCPIkdCUN0iNgn5AvPZCr6CuDb7H0Acdtc8XA/1al8n4R8py
-   Q==;
-IronPort-SDR: klCkh6v+AUqHCc5vkH4h5JmmydmFdbM0VTg60K8x9ezAOJexzzgrwZ0cJgbX63qMeyaBJarkRr
- gofphkE4fAqwixIZpAdj0cSrYHK4512TOw2IOjhpqQihLJEe+Hby5o/9PvA/BsqJZXQEoFKruX
- 7BAbDGGKSe4aKj7KJVHHQdMZm62dRakLg3RuuxDzebB5ef38pJzmoJOjv/Y3iVFGVMUYtn8dN0
- WRVG7TJfyZLSx4iGaevgSBui5pU0XjxKmdHon4d4Nkiiqfb4x5vi1w1/hHRHsj98pCpCn2HvmD
- apQ=
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="82667024"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jul 2020 06:42:16 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 21 Jul 2020 06:42:15 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Tue, 21 Jul 2020 06:42:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dXQ/0Fl++PInyyUf+s4RhpirnfnaaXQOwPfFK2cZJwaYWP0QgC6JBff3iidCPh+DPrEEfIozCrG6xnPH4DNbv9jgwUBjh/K9lv53qp+suvyFCN+jjNgGyKdxCFsoRvxVQc94T0hzB2kLPq0CGBjJSdf84KHFcV4gRchUPdDs3fWRh8SD4Xlgay3qAbmqbbICwWZR/BCksfAwgX8Lk2cV/X5GykLdFOLwkTD18i3Z51RmTRwsp/CmmLGD4ofseS1wmuDzb7avHHBpH0W+XIkepC9/0rwqT1McVU0T0RiUXCcUuj9sXHHw8x5rpH9mTmS3TY0p1Xad2Mk0JM+llM7FRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCIemFwHVUPk9JG5bOXVOGvcvPDUygaTIGU9mXoRy0Y=;
- b=CWF3hSxBKaxPuWV3GOhsp0+Xuzibl1LHxs54WqVIiArSLQlJIufDhg4TSkU4Na7knOYd55T9HTe1gEA0+uHouoTYNoVrzMxdH+E5cf0I+nrjeWjN9ma2qbCLuD9gjUb4KegtzecNeeshZN3rgrW66OuoI9br/+vA5LE6B5vfjaV64DE/Px6b2yGjGo2JG8HmlAns6gsJ5m8Hu4Qx7nzM0/8Ne5HjwPvPjOb7IJLcjxu+1fi1nMxPrEYs2+KSFC34hxgKjV6v4xQYFEQB67Bs3bsm9J1q4PRlcp1WbJX/LRVYzUAKHSRrkjUls0LJES0YUg974Yzu3HRuU8CVHL4+oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCIemFwHVUPk9JG5bOXVOGvcvPDUygaTIGU9mXoRy0Y=;
- b=VxOxNHrAhvxoz3W8sVH5qucEJPPv0iIBsx1gOGFjZ2yEE5iD61HC9kdWnH3pbL05QFiLJe0PzMfH8Aa/YnBErYVk+CBtuLgIgqB7cgKd1mTSsa/mI0m6U8hrrLUweazU4gFTKqDMzpfe41V2WlJdFODneEOarXNFz+44MjxUqvg=
-Received: from SN6PR11MB3504.namprd11.prod.outlook.com (2603:10b6:805:d0::17)
- by SN6PR11MB2656.namprd11.prod.outlook.com (2603:10b6:805:58::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Tue, 21 Jul
- 2020 13:42:11 +0000
-Received: from SN6PR11MB3504.namprd11.prod.outlook.com
- ([fe80::851c:67fc:a034:9ea0]) by SN6PR11MB3504.namprd11.prod.outlook.com
- ([fe80::851c:67fc:a034:9ea0%4]) with mapi id 15.20.3195.025; Tue, 21 Jul 2020
- 13:42:11 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <andrew@lunn.ch>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>,
-        <Claudiu.Beznea@microchip.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <f.fainelli@gmail.com>, <robh+dt@kernel.org>,
-        <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>
-Subject: Re: [PATCH net-next 3/7] net: macb: parse PHY nodes found under an
- MDIO node
-Thread-Topic: [PATCH net-next 3/7] net: macb: parse PHY nodes found under an
- MDIO node
-Thread-Index: AQHWX0Zyppx1UbfeIEWndPdIyI+OoqkSCXKAgAABdoA=
-Date:   Tue, 21 Jul 2020 13:42:10 +0000
-Message-ID: <1915e800-85b4-070b-26f3-9e5d0bac8f44@microchip.com>
-References: <20200721100234.1302910-1-codrin.ciubotariu@microchip.com>
- <20200721100234.1302910-4-codrin.ciubotariu@microchip.com>
- <20200721133655.GA1472201@lunn.ch>
-In-Reply-To: <20200721133655.GA1472201@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Tue, 21 Jul 2020 09:44:24 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LDXB6g058954;
+        Tue, 21 Jul 2020 09:43:48 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32dvps9tkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 09:43:48 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06LDe5Pg084748;
+        Tue, 21 Jul 2020 09:43:47 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32dvps9tjp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 09:43:47 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LDa5Y5012208;
+        Tue, 21 Jul 2020 13:43:45 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 32brq7v1jw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 13:43:45 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LDgSv918415902
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 13:42:28 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0AE4AE05A;
+        Tue, 21 Jul 2020 13:42:27 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71306AE051;
+        Tue, 21 Jul 2020 13:42:24 +0000 (GMT)
+Received: from [9.199.35.129] (unknown [9.199.35.129])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Jul 2020 13:42:24 +0000 (GMT)
+Subject: Re: [PATCH v4 05/10] powerpc/dt_cpu_ftrs: Add feature for 2nd DAWR
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>
+Cc:     mikey@neuling.org, apopple@linux.ibm.com,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
+        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
+        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com>
+ <20200717040958.70561-6-ravi.bangoria@linux.ibm.com>
+ <CACzsE9oE+OMnWEXvbZZbq35YzpSzCbBHWEJcjtCgkcq-YrABng@mail.gmail.com>
+ <c34b1a66-2db6-c97a-1782-0d473c758502@linux.ibm.com>
+ <87mu3trtri.fsf@mpe.ellerman.id.au>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <62daa2d1-4e11-dcc1-cb1d-805ee4a156e0@linux.ibm.com>
+Date:   Tue, 21 Jul 2020 19:12:23 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [84.232.220.208]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 16a8cd59-c967-447c-5e84-08d82d7bde9a
-x-ms-traffictypediagnostic: SN6PR11MB2656:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB26560C3793379D509C5C4F05E7780@SN6PR11MB2656.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sJ5NECnZnEOjmmS2M6mLxhxa1IqNjBkOe8B0iAyXSv5/vKATu/Lxkf+t6q2jJyl9O7oraBOT63guBkh6b/fLqK2fClnHcIShxQDAGGRWbsZSd2Sku+Jq43l4K8UhVR7mHTY+zvNdd6Q/7W2KxjgkNlpLd611XLEUUiIVokiVz175SmKApS4FerxaBevc8Rddv8zRo+ivdTkN8PohH6PDNgO/0UFAm46koVK5U/5E+zyZAaLOwPt2LUsHRayc13A83Vjrx2F+gCUS4pc9oSxQBj4tRN1Hoj2Ck7VI/OFlBfQdRucgczY3qI0f32TNqk2Cq2eeaVGyma3uB4ThC6UNiR2ufAz+7BMMCUqDW/VDCTLGs2bHfTk4x+Kytn+Jqae7
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3504.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(36756003)(71200400001)(6486002)(31696002)(6916009)(4744005)(2906002)(186003)(6506007)(31686004)(53546011)(8936002)(86362001)(26005)(54906003)(107886003)(498600001)(8676002)(76116006)(66556008)(64756008)(66946007)(66446008)(66476007)(5660300002)(4326008)(6512007)(7416002)(2616005)(91956017)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Hl05VEcOLM0JR0O0AWzamzAwJGXzq2qBt4GAtHtRpipUNrrs6XZjcDnBlW1kUniMSBCc9K+jZ5Xvjo12QfzwuwZ9jiBL3BgqNEM59gk9x3rATN9u2EE2AKTj5nv+tN3I2A9rQ23T1KSu7vK7CLAH9jjPIIxmaH0+kkjpEp8Dcs0xlxK/9ABNcaKSNOYzRYqEQp9KsQLqOXVQ63YWYXOw2AfPN6c/jV4rkmjHU1xtGaNFkGa8iui1GX/+A8kLZg0QkTS2An8B78kiC4MfyDdN9dnuK/+8KtdtKTz+7/7oQ5A3uj/OoLiuz/IT2cqU2P8NB7fQxpFPW471lfyHMJf6OQGzayjZH484iQ3uAWeVfsrRM0bQvsgbtJeONxb4z09AyeAm4S0zfdJSE24n5+4Y9mZolz4sJf7XbcjAI87BbBBOdx8SqNk8ZZrtQNM3I1t6o7Wu9yXUFrIFpdNxNjt1EhPew50KvGNE8c26LTEkedDSOYKk2rL/xgXK307SsDoZ
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B00F39E82142D640A6D5299F35678E43@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3504.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16a8cd59-c967-447c-5e84-08d82d7bde9a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2020 13:42:11.0082
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lvD2WHT6xP+Mc+CLxPTBDoUJuWatIRpGsxqsaMmh+alKKaPnahQ01t1uB8K/35g+vQH8boXmLB46D+8QzSDDyxR38fuiV9+bcGvNh2e8KE0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2656
+In-Reply-To: <87mu3trtri.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_08:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 adultscore=0 malwarescore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007210094
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjEuMDcuMjAyMCAxNjozNiwgQW5kcmV3IEx1bm4gd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlM
-OiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cg
-dGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4+IEBAIC03NTUsNyArNzY1LDYgQEAgc3RhdGljIGlu
-dCBtYWNiX21kaW9idXNfcmVnaXN0ZXIoc3RydWN0IG1hY2IgKmJwKQ0KPj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgKiBkZWNyZW1lbnQgaXQgYmVmb3JlIHJldHVybmluZy4NCj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICovDQo+PiAgICAgICAgICAgICAgICAgICAgICAgIG9mX25vZGVfcHV0
-KGNoaWxkKTsNCj4+IC0NCj4+ICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIG9mX21kaW9i
-dXNfcmVnaXN0ZXIoYnAtPm1paV9idXMsIG5wKTsNCj4+ICAgICAgICAgICAgICAgIH0NCj4gDQo+
-IFBsZWFzZSBhdm9pZCB3aGl0ZSBzcGFjZSBjaGFuZ2VzIGxpa2UgdGhpcy4NCg0KU29ycnkgYWJv
-dXQgdGhpcywgaXQgd2FzIG5vdCBpbnRlbmRlZC4gV2lsbCBmaXggaW4gdjIuIFRoYW5rcyENCg0K
-PiANCj4gT3RoZXJ3aXNlIHRoaXMgbG9va3MgTy5LLg0KPiANCj4gICAgICAgICBBbmRyZXcNCj4g
-DQoNCg==
+
+
+On 7/21/20 4:59 PM, Michael Ellerman wrote:
+> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+>> On 7/17/20 11:14 AM, Jordan Niethe wrote:
+>>> On Fri, Jul 17, 2020 at 2:10 PM Ravi Bangoria
+>>> <ravi.bangoria@linux.ibm.com> wrote:
+>>>>
+>>>> Add new device-tree feature for 2nd DAWR. If this feature is present,
+>>>> 2nd DAWR is supported, otherwise not.
+>>>>
+>>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>>> ---
+>>>>    arch/powerpc/include/asm/cputable.h | 7 +++++--
+>>>>    arch/powerpc/kernel/dt_cpu_ftrs.c   | 7 +++++++
+>>>>    2 files changed, 12 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+>>>> index e506d429b1af..3445c86e1f6f 100644
+>>>> --- a/arch/powerpc/include/asm/cputable.h
+>>>> +++ b/arch/powerpc/include/asm/cputable.h
+>>>> @@ -214,6 +214,7 @@ static inline void cpu_feature_keys_init(void) { }
+>>>>    #define CPU_FTR_P9_TLBIE_ERAT_BUG      LONG_ASM_CONST(0x0001000000000000)
+>>>>    #define CPU_FTR_P9_RADIX_PREFETCH_BUG  LONG_ASM_CONST(0x0002000000000000)
+>>>>    #define CPU_FTR_ARCH_31                        LONG_ASM_CONST(0x0004000000000000)
+>>>> +#define CPU_FTR_DAWR1                  LONG_ASM_CONST(0x0008000000000000)
+>>>>
+>>>>    #ifndef __ASSEMBLY__
+>>>>
+>>>> @@ -497,14 +498,16 @@ static inline void cpu_feature_keys_init(void) { }
+>>>>    #define CPU_FTRS_POSSIBLE      \
+>>>>               (CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | CPU_FTRS_POWER8 | \
+>>>>                CPU_FTR_ALTIVEC_COMP | CPU_FTR_VSX_COMP | CPU_FTRS_POWER9 | \
+>>>> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
+>>>> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
+>>>> +            CPU_FTR_DAWR1)
+>>>>    #else
+>>>>    #define CPU_FTRS_POSSIBLE      \
+>>>>               (CPU_FTRS_PPC970 | CPU_FTRS_POWER5 | \
+>>>>                CPU_FTRS_POWER6 | CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | \
+>>>>                CPU_FTRS_POWER8 | CPU_FTRS_CELL | CPU_FTRS_PA6T | \
+>>>>                CPU_FTR_VSX_COMP | CPU_FTR_ALTIVEC_COMP | CPU_FTRS_POWER9 | \
+>>>> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
+>>>> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
+>>>> +            CPU_FTR_DAWR1)
+> 
+>>> Instead of putting CPU_FTR_DAWR1 into CPU_FTRS_POSSIBLE should it go
+>>> into CPU_FTRS_POWER10?
+>>> Then it will be picked up by CPU_FTRS_POSSIBLE.
+>>
+>> I remember a discussion about this with Mikey and we decided to do it
+>> this way. Obviously, the purpose is to make CPU_FTR_DAWR1 independent of
+>> CPU_FTRS_POWER10 because DAWR1 is an optional feature in p10. I fear
+>> including CPU_FTR_DAWR1 in CPU_FTRS_POWER10 can make it forcefully enabled
+>> even when device-tree property is not present or pa-feature bit it not set,
+>> because we do:
+>>
+>>         {       /* 3.1-compliant processor, i.e. Power10 "architected" mode */
+>>                 .pvr_mask               = 0xffffffff,
+>>                 .pvr_value              = 0x0f000006,
+>>                 .cpu_name               = "POWER10 (architected)",
+>>                 .cpu_features           = CPU_FTRS_POWER10,
+> 
+> The pa-features logic will turn it off if the feature bit is not set.
+> 
+> So you should be able to put it in CPU_FTRS_POWER10.
+> 
+> See for example CPU_FTR_NOEXECUTE.
+
+Ah ok. scan_features() clears the feature if the bit is not set in
+pa-features. So it should work find for powervm. I'll verify the same
+thing happens in case of baremetal where we use cpu-features not
+pa-features. If it works in baremetal as well, will put it in
+CPU_FTRS_POWER10.
+
+Thanks for the clarification,
+Ravi
