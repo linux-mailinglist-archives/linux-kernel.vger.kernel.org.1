@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AC1228067
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1168228057
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgGUM6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgGUM6J (ORCPT
+        id S1727073AbgGUM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:56:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60894 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726737AbgGUM4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:58:09 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE348C061794;
-        Tue, 21 Jul 2020 05:58:08 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b92so1628581pjc.4;
-        Tue, 21 Jul 2020 05:58:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t2vMm5MN6COcLP/AC1bsbI/E+zsl4wCZerr7TM2M9Bk=;
-        b=fr3YLS211Gmt5YGjeWiE/LFiFj6YG+zPEieeHXqHXdyDwVPBswzW476JH2GbekCA0R
-         33FjkoOaQp4eovrKc6t8q+SNSOXcarYBhQ2s4pjcBtcik7wavPC4bKVpTa1d7hfAG63z
-         tFn1Di3tXn1b4rJAGi6IhgCWb7RdDqAx6fGIeprwlcmTYkNlf0g1MsbZJ94oM1tXPGxW
-         Mx0WjzPy7O3iDsciWz+y6G2c+hKVMpa/8+9EjujtbBqjbZdMcXjNNlHcyZTxQAO0pmOd
-         0fghdSwtQzENvCQbBGW24iwpi4E5dQXaDbWla4QR6q8S5dAgw6WfMdetdCfIEF7vfICF
-         Q3sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t2vMm5MN6COcLP/AC1bsbI/E+zsl4wCZerr7TM2M9Bk=;
-        b=Uk3suFTfoLe4PpfuNuMzyOivoSsNgWdQx82eU8pzgLEXSXJLoqhU+JWuLECPl6ZLMK
-         njbT1ujsr72rEt1y9BZiysSzy/evIIXCDzJHyMzO8l4qDptcRzGQBuYj4iJqQ2EJyrQQ
-         J/1+yJW0ADKqbfRlybR4lHs/7SNQom4qVw2HXCs+L1KDhxDps4XvMmZaEGmwb81pbSh2
-         Cq05nXjYEMznNGK0+pHXjtfmZokeJt87thFGhIytEEeAKdGZFjdMPRYsLm9uwOASLblD
-         exsnTryEmfSDbmFazkNTfdrYIO1jmSUdK1TMlK3cJ1DOPIJlbtES0iSswUKM4jWH6mfZ
-         aBGA==
-X-Gm-Message-State: AOAM532/GmABetcIMKPP5T9vQ4DjGlpYO8rhbIZNjTkZhvGS7PqjcQzL
-        knj/D47NLcdVcHvs/EIp4hI=
-X-Google-Smtp-Source: ABdhPJzQEfoRb3UE4er+pdhXjNmen1E198JhpdeN0Yigv10qpv0/N5+ym6vRm0GCGdtjLMzAKyYNRA==
-X-Received: by 2002:a17:90b:3901:: with SMTP id ob1mr4531304pjb.168.1595336288282;
-        Tue, 21 Jul 2020 05:58:08 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id a2sm20573833pfg.120.2020.07.21.05.57.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 05:58:07 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH v1] prism54: islpci_hotplug: use generic power management
-Date:   Tue, 21 Jul 2020 18:25:15 +0530
-Message-Id: <20200721125514.145607-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 21 Jul 2020 08:56:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595336158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gcyS8fcxtufsTHCFEHHMYCv8/G/j17I02uFKGiQeviM=;
+        b=GOrnW/TxaUuXMPXm4Bu/w3aW7jN/NJL7Z1RN7WRybzqiMibkGlQgLVY76BnidgESaGK4jW
+        8fPzWj7ppc2EUPBEQ1gjq+4G6G9LsWtvmcMVuTabhIFhLovWE7eipYzGPhM3NJyzrm9Vkt
+        NFNKLYXc31z5O3Ud/13nSQ7EPaJF6uU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-469-MY6qAbUXO7O16qVB19jUxQ-1; Tue, 21 Jul 2020 08:55:56 -0400
+X-MC-Unique: MY6qAbUXO7O16qVB19jUxQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACA018014D7;
+        Tue, 21 Jul 2020 12:55:53 +0000 (UTC)
+Received: from fedora-32-enviroment (unknown [10.35.206.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 78F657B400;
+        Tue, 21 Jul 2020 12:55:38 +0000 (UTC)
+Message-ID: <155668af6420a6516ded0e9101e0a47401a928d9.camel@redhat.com>
+Subject: Re: [PATCH 09/10] block: scsi: sd: use
+ blk_is_valid_logical_block_size
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ajay Joshi <Ajay.Joshi@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
+        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Alex Dubov <oakad@yahoo.com>
+Date:   Tue, 21 Jul 2020 15:55:37 +0300
+In-Reply-To: <CY4PR04MB375113B7D781BF2949FE5B33E7780@CY4PR04MB3751.namprd04.prod.outlook.com>
+References: <20200721105239.8270-1-mlevitsk@redhat.com>
+         <20200721105239.8270-10-mlevitsk@redhat.com>
+         <CY4PR04MB375113B7D781BF2949FE5B33E7780@CY4PR04MB3751.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy power management .suspen()/.resume() callbacks
-have to manage PCI states and device's PM states themselves. They also
-need to take care of standard configuration registers.
+On Tue, 2020-07-21 at 11:25 +0000, Damien Le Moal wrote:
+> On 2020/07/21 19:55, Maxim Levitsky wrote:
+> > Use blk_is_valid_logical_block_size instead of hardcoded list
+> 
+> s/hardcoded list/hardcoded checks./
+Done, thanks!
 
-Switch to generic power management framework using a single
-"struct dev_pm_ops" variable to take the unnecessary load from the driver.
-This also avoids the need for the driver to directly call most of the PCI
-helper functions and device power state control functions as through
-the generic framework, PCI Core takes care of the necessary operations,
-and drivers are required to do only device-specific jobs.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- .../intersil/prism54/islpci_hotplug.c         | 34 ++++++-------------
- 1 file changed, 11 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/net/wireless/intersil/prism54/islpci_hotplug.c b/drivers/net/wireless/intersil/prism54/islpci_hotplug.c
-index 20291c0d962d..e8369befe100 100644
---- a/drivers/net/wireless/intersil/prism54/islpci_hotplug.c
-+++ b/drivers/net/wireless/intersil/prism54/islpci_hotplug.c
-@@ -63,16 +63,17 @@ MODULE_DEVICE_TABLE(pci, prism54_id_tbl);
- 
- static int prism54_probe(struct pci_dev *, const struct pci_device_id *);
- static void prism54_remove(struct pci_dev *);
--static int prism54_suspend(struct pci_dev *, pm_message_t state);
--static int prism54_resume(struct pci_dev *);
-+static int __maybe_unused prism54_suspend(struct device *);
-+static int __maybe_unused prism54_resume(struct device *);
-+
-+static SIMPLE_DEV_PM_OPS(prism54_pm_ops, prism54_suspend, prism54_resume);
- 
- static struct pci_driver prism54_driver = {
- 	.name = DRV_NAME,
- 	.id_table = prism54_id_tbl,
- 	.probe = prism54_probe,
- 	.remove = prism54_remove,
--	.suspend = prism54_suspend,
--	.resume = prism54_resume,
-+	.driver.pm = &prism54_pm_ops,
- };
- 
- /******************************************************************************
-@@ -243,16 +244,13 @@ prism54_remove(struct pci_dev *pdev)
- 	pci_disable_device(pdev);
- }
- 
--static int
--prism54_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused
-+prism54_suspend(struct device *dev)
- {
--	struct net_device *ndev = pci_get_drvdata(pdev);
-+	struct net_device *ndev = dev_get_drvdata(dev);
- 	islpci_private *priv = ndev ? netdev_priv(ndev) : NULL;
- 	BUG_ON(!priv);
- 
--
--	pci_save_state(pdev);
--
- 	/* tell the device not to trigger interrupts for now... */
- 	isl38xx_disable_interrupts(priv->device_base);
- 
-@@ -266,26 +264,16 @@ prism54_suspend(struct pci_dev *pdev, pm_message_t state)
- 	return 0;
- }
- 
--static int
--prism54_resume(struct pci_dev *pdev)
-+static int __maybe_unused
-+prism54_resume(struct device *dev)
- {
--	struct net_device *ndev = pci_get_drvdata(pdev);
-+	struct net_device *ndev = dev_get_drvdata(dev);
- 	islpci_private *priv = ndev ? netdev_priv(ndev) : NULL;
--	int err;
- 
- 	BUG_ON(!priv);
- 
- 	printk(KERN_NOTICE "%s: got resume request\n", ndev->name);
- 
--	err = pci_enable_device(pdev);
--	if (err) {
--		printk(KERN_ERR "%s: pci_enable_device failed on resume\n",
--		       ndev->name);
--		return err;
--	}
--
--	pci_restore_state(pdev);
--
- 	/* alright let's go into the PREBOOT state */
- 	islpci_reset(priv, 1);
- 
--- 
-2.27.0
+Best regards,
+	Maxim Levitsky
+> 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  drivers/scsi/sd.c | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+> > index d90fefffe31b7..f012e7397b058 100644
+> > --- a/drivers/scsi/sd.c
+> > +++ b/drivers/scsi/sd.c
+> > @@ -2520,10 +2520,7 @@ sd_read_capacity(struct scsi_disk *sdkp,
+> > unsigned char *buffer)
+> >  			  "assuming 512.\n");
+> >  	}
+> >  
+> > -	if (sector_size != 512 &&
+> > -	    sector_size != 1024 &&
+> > -	    sector_size != 2048 &&
+> > -	    sector_size != 4096) {
+> > +	if (!blk_is_valid_logical_block_size(sector_size)) {
+> >  		sd_printk(KERN_NOTICE, sdkp, "Unsupported sector size
+> > %d.\n",
+> >  			  sector_size);
+> >  		/*
+> > 
+> 
+> With the commit message fixed, looks OK.
+> 
+> Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+> 
 
