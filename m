@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70386228622
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8DE228636
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730772AbgGUQmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        id S1730865AbgGUQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730732AbgGUQmn (ORCPT
+        with ESMTP id S1730767AbgGUQmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:43 -0400
+        Tue, 21 Jul 2020 12:42:45 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8CAC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:43 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z2so21896648wrp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06381C0619DB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:45 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so21871353wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qn9xXUDZHQaT9nTTtPEVxD+FwQe9TWDeZ0uqEDuohOE=;
-        b=jHqbXmHlBY0jg9OxAkf7coZvBnjoJ5+HWr9UYOwlzfzO0uTspX5+fawbUnHCncpdu7
-         jBFMI1g95ZmjbUWGtOxLrhp366xIam9TCuPFypC7HRKHeZhEFT4PQXbG9Q0vyUiNOBqH
-         kAv0hTgxGhIWgaB+zGYul2Z9iQ4onTT1MBoOmL86DMWCjJKLPJ5C6xFcyLgB2o66jKpQ
-         7jaPjWa9h+nS3cNcKEJZTx1+JtT8bofhNj6/BY194n3tRHCt5B+rjN7rPmoH/+nx2vGb
-         JpOd6d8m2rVdZtKEkmvlNhhVXx7QtJPewW0xSUCXl6aLd1mDAVR+tSDrIQrc/Q7UkLbW
-         iGnA==
+        bh=jALF4UglhPiR50fx9RAXVg2wft4bVyZm/g/kx8/tohE=;
+        b=gRIBgAZpckF5GdIJZ8nCRH7B943d8Kxu0QenVz+DMkfioH2Vcy3xZvMvTZgB7SnNL4
+         p1HjT2n/YXsGDjWvdBmBMMr4Q4d9U0F7CkY0w4CQOk07oeCiNUMKrjBmssgU2QY9fqz8
+         CIqOoOpiNSQDV5d1B3AM3RCRTKR33KNLXWaoNsll4814kXJWhbjwGYhLz/vpq3PHKBa0
+         CszBN3DJ5NeUBsaVi2rmKDXBy6E4nU+SzjByHBNk8kF2leZUCd+hDNc9VPEOCxawxTYq
+         hb6zoMKaW6z6BkW5qR+OGIW7qd0+DYB+Tj4D01Sz2YsgAAi7rc6frsSwqB5mwLmyHcCK
+         Vtog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qn9xXUDZHQaT9nTTtPEVxD+FwQe9TWDeZ0uqEDuohOE=;
-        b=JhGx/dA71G0oZFMeth0zvN4BBV0dHclHUiWtqKYf+gNKWKVOipTV6YS/dkJXqmbT1r
-         gDFvpmfD/+qhpXklbgvSILqZrbpdozxCxusNup2/whFgIVY5cUK5nIzvS4mEiXk3Q8vn
-         y3SuhGo80Vbm2ff8yIpnP8yHbslazRUq8rBlRHnIqeDEW7erqUdgTNn7y87+uu3flTNA
-         PO4RP0TN2d5kQARXZRqO9DcVgaIAPONzrumh+bLDJQD1rvnBDfur9/640nAZ0W+SPRqT
-         xSu77K3LmNERXoP6bvy0eVrP0QfP1ZsyjpHYgCJk0iaA1rVOhMsl6DlCKTkzouYecQXR
-         B6/A==
-X-Gm-Message-State: AOAM53018n52a4Q1G9ZWVv+rrESRc+5XGciRNkFcuqEokUeIJ3guoeR8
-        Ma9ijF2JLZuNTWrwPDT+U5rdxg==
-X-Google-Smtp-Source: ABdhPJyVp/cegKtF3XzYY2EmcgU0BhxEKpDgMPPwWXIWeJmhctgaqJ+it0wmwgALENMsHqgVHORClQ==
-X-Received: by 2002:adf:fa8b:: with SMTP id h11mr27362168wrr.391.1595349762321;
-        Tue, 21 Jul 2020 09:42:42 -0700 (PDT)
+        bh=jALF4UglhPiR50fx9RAXVg2wft4bVyZm/g/kx8/tohE=;
+        b=f16h13YjBqJcNx5x9CLiuWCDSaWPpV9c8AeLT1lPnA7SQQ72NH2qUbYqZBndZSOy/0
+         RfEhofVJ0gdGpW65LJuGr1v4Twr2vxOyrVjlQscbb8LTi/NMJyY2JZf5iPTwOkK3TA0r
+         g530sAhkfb9lNeTnS8c4lJtUTokUW/nAGd2s+OslEyadFjmjuhpnErMNIb9f/u36/yRh
+         Xg9FJ05s8WUitqIahm00Ak9GJ61GubKpogwmfKlZVz8BfSeE2DYOWB41+q/enlqMxOew
+         eOK98hA8wl93fEDT1SDP4fvzMs2yVkkumZkEGm82HHIrF9K0hwNgCX8qfEgIbGyIQxNw
+         P/Fg==
+X-Gm-Message-State: AOAM532f3jM7yNeYANCDgb1fUly5MWxlvO+auiF75VD0KxmibtgfQpFx
+        fryOc9agLG986RJunKVE038LUTeUrgs=
+X-Google-Smtp-Source: ABdhPJzGnBb8avkbmKQI7yITYi5wbbZFWR8Uj+zO3XEMt4FR9iFPvrNLrymm6EE2us09Dca4TF+6oQ==
+X-Received: by 2002:adf:83c5:: with SMTP id 63mr1008654wre.321.1595349763722;
+        Tue, 21 Jul 2020 09:42:43 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.41
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:41 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:43 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         QLogic-Storage-Upstream@qlogic.com
-Subject: [PATCH 32/40] scsi: qla4xxx: ql4_nx: Remove three set but unused variables
-Date:   Tue, 21 Jul 2020 17:41:40 +0100
-Message-Id: <20200721164148.2617584-33-lee.jones@linaro.org>
+Subject: [PATCH 33/40] scsi: qla4xxx: ql4_nx: Supply description for 'code'
+Date:   Tue, 21 Jul 2020 17:41:41 +0100
+Message-Id: <20200721164148.2617584-34-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Demote other headers which are clearly not kerneldoc.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qla4xxx/ql4_nx.c: In function ‘qla4_84xx_minidump_process_rddfe’:
- drivers/scsi/qla4xxx/ql4_nx.c:2648:23: warning: variable ‘data_size’ set but not used [-Wunused-but-set-variable]
- 2648 | uint32_t poll, mask, data_size, modify_mask;
- | ^~~~~~~~~
- drivers/scsi/qla4xxx/ql4_nx.c: In function ‘qla4_84xx_minidump_process_rdmdio’:
- drivers/scsi/qla4xxx/ql4_nx.c:2745:11: warning: variable ‘poll’ set but not used [-Wunused-but-set-variable]
- 2745 | uint32_t poll, mask;
- | ^~~~
- drivers/scsi/qla4xxx/ql4_nx.c: In function ‘qla4_84xx_minidump_process_pollwr’:
- drivers/scsi/qla4xxx/ql4_nx.c:2816:47: warning: variable ‘mask’ set but not used [-Wunused-but-set-variable]
- 2816 | uint32_t addr1, addr2, value1, value2, poll, mask, r_value;
- | ^~~~
+ drivers/scsi/qla4xxx/ql4_nx.c:983: warning: Function parameter or member 'ha' not described in 'qla4_82xx_pinit_from_rom'
+ drivers/scsi/qla4xxx/ql4_nx.c:983: warning: Function parameter or member 'verbose' not described in 'qla4_82xx_pinit_from_rom'
+ drivers/scsi/qla4xxx/ql4_nx.c:3225: warning: Function parameter or member 'code' not described in 'qla4_8xxx_uevent_emit'
+ drivers/scsi/qla4xxx/ql4_nx.c:3697: warning: Function parameter or member 'ha' not described in 'qla4_82xx_read_optrom_data'
+ drivers/scsi/qla4xxx/ql4_nx.c:3697: warning: Function parameter or member 'buf' not described in 'qla4_82xx_read_optrom_data'
+ drivers/scsi/qla4xxx/ql4_nx.c:3697: warning: Function parameter or member 'offset' not described in 'qla4_82xx_read_optrom_data'
+ drivers/scsi/qla4xxx/ql4_nx.c:3697: warning: Function parameter or member 'length' not described in 'qla4_82xx_read_optrom_data'
 
 Cc: QLogic-Storage-Upstream@qlogic.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qla4xxx/ql4_nx.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/scsi/qla4xxx/ql4_nx.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/scsi/qla4xxx/ql4_nx.c b/drivers/scsi/qla4xxx/ql4_nx.c
-index 5a31877c9d04f..85666fb5471b1 100644
+index 85666fb5471b1..038e19b1e3c2d 100644
 --- a/drivers/scsi/qla4xxx/ql4_nx.c
 +++ b/drivers/scsi/qla4xxx/ql4_nx.c
-@@ -2645,7 +2645,7 @@ static uint32_t qla4_84xx_minidump_process_rddfe(struct scsi_qla_host *ha,
- 	uint32_t addr1, addr2, value, data, temp, wrval;
- 	uint8_t stride, stride2;
- 	uint16_t count;
--	uint32_t poll, mask, data_size, modify_mask;
-+	uint32_t poll, mask, modify_mask;
- 	uint32_t wait_count = 0;
- 	uint32_t *data_ptr = *d_ptr;
- 	struct qla8044_minidump_entry_rddfe *rddfe;
-@@ -2661,7 +2661,6 @@ static uint32_t qla4_84xx_minidump_process_rddfe(struct scsi_qla_host *ha,
- 	poll = le32_to_cpu(rddfe->poll);
- 	mask = le32_to_cpu(rddfe->mask);
- 	modify_mask = le32_to_cpu(rddfe->modify_mask);
--	data_size = le32_to_cpu(rddfe->data_size);
+@@ -974,10 +974,10 @@ qla4_82xx_rom_fast_read(struct scsi_qla_host *ha, int addr, int *valp)
+ 	return ret;
+ }
  
- 	addr2 = addr1 + stride;
- 
-@@ -2742,7 +2741,7 @@ static uint32_t qla4_84xx_minidump_process_rdmdio(struct scsi_qla_host *ha,
- 	uint8_t stride1, stride2;
- 	uint32_t addr3, addr4, addr5, addr6, addr7;
- 	uint16_t count, loop_cnt;
--	uint32_t poll, mask;
-+	uint32_t mask;
- 	uint32_t *data_ptr = *d_ptr;
- 	struct qla8044_minidump_entry_rdmdio *rdmdio;
- 
-@@ -2754,7 +2753,6 @@ static uint32_t qla4_84xx_minidump_process_rdmdio(struct scsi_qla_host *ha,
- 	stride2 = le32_to_cpu(rdmdio->stride_2);
- 	count = le32_to_cpu(rdmdio->count);
- 
--	poll = le32_to_cpu(rdmdio->poll);
- 	mask = le32_to_cpu(rdmdio->mask);
- 	value2 = le32_to_cpu(rdmdio->value_2);
- 
-@@ -2813,7 +2811,7 @@ static uint32_t qla4_84xx_minidump_process_pollwr(struct scsi_qla_host *ha,
- 				struct qla8xxx_minidump_entry_hdr *entry_hdr,
- 				uint32_t **d_ptr)
+-/**
++/*
+  * This routine does CRB initialize sequence
+  * to put the ISP into operational state
+- **/
++ */
+ static int
+ qla4_82xx_pinit_from_rom(struct scsi_qla_host *ha, int verbose)
  {
--	uint32_t addr1, addr2, value1, value2, poll, mask, r_value;
-+	uint32_t addr1, addr2, value1, value2, poll, r_value;
- 	struct qla8044_minidump_entry_pollwr *pollwr_hdr;
- 	uint32_t wait_count = 0;
- 	uint32_t rval = QLA_SUCCESS;
-@@ -2825,7 +2823,6 @@ static uint32_t qla4_84xx_minidump_process_pollwr(struct scsi_qla_host *ha,
- 	value2 = le32_to_cpu(pollwr_hdr->value_2);
+@@ -3217,6 +3217,7 @@ static int qla4_8xxx_collect_md_data(struct scsi_qla_host *ha)
+ /**
+  * qla4_8xxx_uevent_emit - Send uevent when the firmware dump is ready.
+  * @ha: pointer to adapter structure
++ * @code: uevent code to act upon
+  **/
+ static void qla4_8xxx_uevent_emit(struct scsi_qla_host *ha, u32 code)
+ {
+@@ -3685,9 +3686,9 @@ qla4_82xx_read_flash_data(struct scsi_qla_host *ha, uint32_t *dwptr,
+ 	return dwptr;
+ }
  
- 	poll = le32_to_cpu(pollwr_hdr->poll);
--	mask = le32_to_cpu(pollwr_hdr->mask);
- 
- 	while (wait_count < poll) {
- 		ha->isp_ops->rd_reg_indirect(ha, addr1, &r_value);
+-/**
++/*
+  * Address and length are byte address
+- **/
++ */
+ static uint8_t *
+ qla4_82xx_read_optrom_data(struct scsi_qla_host *ha, uint8_t *buf,
+ 		uint32_t offset, uint32_t length)
 -- 
 2.25.1
 
