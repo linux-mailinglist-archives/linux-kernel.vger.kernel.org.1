@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D522286B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F1D2286AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730743AbgGURDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        id S1730707AbgGURDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730267AbgGURAk (ORCPT
+        with ESMTP id S1730375AbgGURAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 13:00:40 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0BCC0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:00:14 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id j18so3534942wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:00:14 -0700 (PDT)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E20C0619DB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:00:16 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 184so3620876wmb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3xJrlFMWKxatZWph59ICW46ox2+7HmmvvIn3EeO3FeI=;
-        b=PVIhzoPM3gEKKNEvTDPU2WIGtUhV/u/A5vb8GkfStZQGTn5fcZQkHF6bSvbbjOFuHE
-         PNG8+7cf3SGbqoCPqe/L8csJj60z6FNPKmFUdUwcrqda34gCifbx293ULH1RaGg9ckO4
-         Eu60QSn4tK2vo6FgCVTTnenXJbXQfJ65WcIAC0yGHxPc0FNte+6/QtoFx9rQj33rZhMO
-         hiz1AFhtgOSevd/zk7EZopgPPPMW16xbfBtwwUXW4ehgOHzRqLHcnfauSatP+DALT6Vj
-         RHSSmYa+I43Xew+DutleOWZYfiNZqnpDUecTJ9nAz+VAlBB/770ICyBDps78iz5cstTF
-         /swA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=29yfJ1iVy+Hi6g3ZFLKBYwMLLHqUdPID3gr+X5nhlQE=;
+        b=xUCw3RVo9rgBVXxyK05KyzX+F+UEoCmKIdZ/zHQJDYM2hP4Z+669hm5koy0s34lI2B
+         IV9kS+QFWRnLLNHlCEmI6QiCgV0euvZmz6ldotibeSGKE/ScbaHBTGNckYjtF9vKq0Wv
+         8njmiz3BcPLCGI/e3NZ4Zi7TuzbsFwqOky/dKWuXgZVtHsIagRXvYQl/bXzhlYP991a0
+         yOdi5hpvIoZJDqDCEDX+C0Aue50qp1MaeYxGtQP0dMZItXbB2/2ev5CUcEEyShXOry6L
+         hsdOdLFc5HArkLtNWcd8JrPQ2cKrzrWNZesGbEqLp2wsu6IaIH95o4JJUDfsNnXjzFjy
+         EoHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3xJrlFMWKxatZWph59ICW46ox2+7HmmvvIn3EeO3FeI=;
-        b=NQsPNHO8VCmTI/YEn6TJqD7c1Y1DW6sj1QavHEzrjoPh86j/9y1RbvRYLf9mdC1LwC
-         01+tEwyM/2pt7cpSd0TiwcNdVlKMcbAXddzU4CPFuqgdnDG9zWoq23fUkMTsI8WEispB
-         QhrA5FRp2M1+DZgdvgBUw02zFsB6EzMpnrP3//iN4bCFRHRfW0MfS+LZXgVIRHxnS6a6
-         ZHXkLnf44By5S6HKlCv5y1equRjV9cmb+22xsGJgDvgz9sMVjoveEdCGbyfuH70Wz8kt
-         b0lFYM4SQAbcOR+VFhdPzWIiYVuqIOXk9Q7/4SEK2/emRDXGsVtmYBKyY+aQBCNhlOE0
-         47dQ==
-X-Gm-Message-State: AOAM531uZCG4sk8dmNrRMQj3FxUaIcob3v0kMxSN1VCUCL6BsgDQa5ay
-        DEqcXUCn0/lHvDdU099n/ncDCw==
-X-Google-Smtp-Source: ABdhPJyYZBuQBKApyeCyxRx1114Gjkuf5aLBbKXX19WAtdt2tYwrr6tlGYAxkvYG3bw+HoqMbUAAAQ==
-X-Received: by 2002:a1c:7311:: with SMTP id d17mr4798367wmb.60.1595350812765;
-        Tue, 21 Jul 2020 10:00:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=29yfJ1iVy+Hi6g3ZFLKBYwMLLHqUdPID3gr+X5nhlQE=;
+        b=HphzTVxx6FirN/AGs1iuotT4oFV4dl7g5vWfIglreUIlSMkhhVi1VkfEJlHM46+Uo9
+         2DqRBRP2uGq/ni+Uyyo8RVUmOmWAz0C9zMYb+92+YupdZZE52gwe8B9XJO4j6n7AuqUo
+         6I8B06X27CXYEeViOtgeSQJqvezxMHKtiboxVSexn3f+qL4FwNZBSiydWnnrQalX6Iz0
+         G/hOYe88DCuTdUfy0wPSgbD7NfdQmmuffSpUAzucCwcRuK1+LJiMywVvAPjY55fB8kFm
+         IQKliUIwy1hF+jTbQ0dhVVYvv0dCO5wGNAPqN0AWrBZ6J57ZT2pPydK/aWtcfAM9NXfN
+         etcQ==
+X-Gm-Message-State: AOAM531ztymfq8/Y+bwEvMs+uO/on4X3L0gQDXpRuHuRfJZHAztJQj1g
+        D/PZ7aEXHGpBVxrFqhSG2KyZhQ==
+X-Google-Smtp-Source: ABdhPJxd9qOgR1HG0URRCj3/zigqsoR04LiAQhM1WvcGVT/Zw5yPyzOn4ePe9YMuRmMcbgOc/oKw+w==
+X-Received: by 2002:a05:600c:414f:: with SMTP id h15mr5200889wmm.82.1595350813907;
+        Tue, 21 Jul 2020 10:00:13 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.11
+        by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 10:00:11 -0700 (PDT)
+        Tue, 21 Jul 2020 10:00:13 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org
 Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
         lgirdwood@gmail.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH v2 0/6] ALSA: compress: add support to change codec profile in gapless playback
-Date:   Tue, 21 Jul 2020 18:00:01 +0100
-Message-Id: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH v2 1/6] ALSA: compress: move codec parameter check to a function
+Date:   Tue, 21 Jul 2020 18:00:02 +0100
+Message-Id: <20200721170007.4554-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
+References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,51 +67,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For gapless playback it is possible that each track can have different
-codec profile with same decoder, for example we have WMA album,
-we may have different tracks as WMA v9, WMA v10 and so on
-Or if DSP's like QDSP have abililty to switch decoders on single stream
-for each track, then this call could be used to set new codec parameters.
+Move codec parameter checking to dedicated function so that other
+callers do not duplicate it. This is in preparedness for adding
+snd_compr_set_codec_params() support.
 
-Existing code does not allow to change this profile while doing gapless
-playback.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/core/compress_offload.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-This patchset adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL along with
-flags in capablity structure to allow userspace to set this new
-parameters required which switching codec profile, either for gapless
-or cross fade usecase.
-
-thanks,
-srini
-
-
-Changes since v1:
-- split patch into smaller chuncks,
-- bump up the version
-- added flags in compress capablity structure 
-- added user for this new functionality.
-- add this new call in Documentation.
-
-
-Srinivas Kandagatla (6):
-  ALSA: compress: move codec parameter check to a function
-  ALSA: compress: add new ioctl for setting codec parameters
-  ALSA: compress: add flags to snd_compr_caps to expose dsp caps
-  ASoC: compress: add snd_soc_dai_compr_set_codec_params()
-  ALSA: compress: bump the version
-  ASoC: q6asm-dai: add support to set_codec_params
-
- .../sound/designs/compress-offload.rst        |  6 ++
- include/sound/compress_driver.h               |  5 ++
- include/sound/soc-component.h                 |  3 +
- include/sound/soc-dai.h                       |  5 ++
- include/uapi/sound/compress_offload.h         | 10 ++-
- sound/core/compress_offload.c                 | 72 +++++++++++++++++--
- sound/soc/qcom/qdsp6/q6asm-dai.c              | 33 +++++++++
- sound/soc/soc-compress.c                      | 30 ++++++++
- sound/soc/soc-dai.c                           | 14 ++++
- 9 files changed, 170 insertions(+), 8 deletions(-)
-
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 0e53f6f31916..af5824113246 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -566,6 +566,18 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
+ 	return 0;
+ }
+ 
++static int snd_compress_check_codec_params(struct snd_codec *codec)
++{
++	/* now codec parameters */
++	if (codec->id == 0 || codec->id > SND_AUDIOCODEC_MAX)
++		return -EINVAL;
++
++	if (codec->ch_in == 0 || codec->ch_out == 0)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static int snd_compress_check_input(struct snd_compr_params *params)
+ {
+ 	/* first let's check the buffer parameter's */
+@@ -574,14 +586,8 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+ 	    params->buffer.fragments == 0)
+ 		return -EINVAL;
+ 
+-	/* now codec parameters */
+-	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
+-		return -EINVAL;
++	return snd_compress_check_codec_params(&params->codec);
+ 
+-	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
+-		return -EINVAL;
+-
+-	return 0;
+ }
+ 
+ static int
 -- 
 2.21.0
 
