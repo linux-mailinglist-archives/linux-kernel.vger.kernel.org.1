@@ -2,146 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7A32287B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111632287C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgGURoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726658AbgGURoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:44:20 -0400
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A8C422CA0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 17:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595353459;
-        bh=gYTjerPTWBvpkmXJUEmFBruEPYyHY4CF/NS96p+Wb7M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PleDaNYGo1smV+pCthyI/QWptt1yZVIBTtSkgWIiDfM8HeUn7OYOxsssqU4y3ZDEV
-         HZfVcvjzM0pJOhr4pa9zZ9OOJJwwT76i/Y3qIwx7lWHXX1q/ius9er4RI1Pv1jq7Fg
-         VBEK+pjhZCxweqT4ixFqP/SQa5eVUK1f43MA40js=
-Received: by mail-wm1-f49.google.com with SMTP id q15so3656347wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:44:19 -0700 (PDT)
-X-Gm-Message-State: AOAM533JhIieq6XaXgAfdVZ3zAnw+YNOADnjA0aITzNeUtISZtpb+w13
-        /Pg7VIUIlodwKlY2F8ZyiXFKHd1tKAK1ffR0vHd9Bw==
-X-Google-Smtp-Source: ABdhPJzSQXCla1i91gwY9Qh3+Y68Zb9GDpPH8iLV1F2Pg9CpACcpFlI0Frb/clH/rRMHVn/nECoXMbwElZOZ/5GE7B8=
-X-Received: by 2002:a7b:c09a:: with SMTP id r26mr4941339wmh.176.1595353458123;
- Tue, 21 Jul 2020 10:44:18 -0700 (PDT)
+        id S1730455AbgGURrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgGURrA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 13:47:00 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1AFC0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:47:00 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id h17so9709398qvr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RSgwIt6Xmnq65csieZBPIE7le00gy1RleefALsLtM4I=;
+        b=zEwJmhVqE2bAhuFmQJlX3mCSLHWVovSFHx0Q4fLD0PEk5EDpGO0VUCO2JXg95YDfp9
+         xL8t/2JnEFJsbT98iDtYg49ZZYEMQNsNfbVKw9rNRRiN8ySRDXEfcdv+tAuBAoGu2rVh
+         yDVa3XfV2l5MByer36m6uZZsnz8UMqkDLgKnwCcM7dQ7QyVIuAc2kXjuo9bOtewV+Nk+
+         krhNkHqjmR+JZe6uEkZ1s3umNGGhLOFAUSvPMYC7UxwiisQqtJbDP6Czq+wrKKSEp0wH
+         2OgGbvK3vrUiwJZFJWzZJWqpFJM56HxxSCZCuRMCL/ox8PK0g+GmpUghSEM0iqcO0ttD
+         wIBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RSgwIt6Xmnq65csieZBPIE7le00gy1RleefALsLtM4I=;
+        b=eeo9VwEY7Tp/6rQ+eIZNXsG0auOOWtXqWI+YWs6DBwD2GuJx0a4+BJKNkCjq5yFJKo
+         cB/Zyv/hQ5XWeEv4rLLfrP/I5WPCzb7cwCPSTePXMHOlFGR3yIXjlPlRcG36HNRoAXVr
+         kOFkRW6qQedMhM396jrVWlp1ZFLq8iIo529mW/hJLxr7f57G/eGO7pmjtg2AuUs5V4hm
+         xGHiahdiRjmem/4TcspxzJBQQlZEsYfsIP4F2HLhySV3tZKhM01RCeBvQqTZHsUjxnV7
+         HfPy58Mbb88RP9gdvKRg8YEHRcOaGRMNBrSjPndA531jyBlglZiR8TaDsqeX+qBlunOf
+         iYUA==
+X-Gm-Message-State: AOAM532nfc833L4QDNAJ5tMbLanL2Yz25wjg1PNr4Ef3EBVcJE5i2QuQ
+        r+8CnA1tgZL7Vn7BGCMw8eUYzAeWUb1oXCUU
+X-Google-Smtp-Source: ABdhPJwypcJw5kfuZyhj7RMU5LynsnJ4EioBDJ25IoR9AN6RQ1S4FWzLQSOCrt9/2nH4CdHVjConrg==
+X-Received: by 2002:a05:6214:942:: with SMTP id dn2mr27879858qvb.161.1595353619482;
+        Tue, 21 Jul 2020 10:46:59 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id n81sm2898255qke.11.2020.07.21.10.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 10:46:58 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com, keescook@chromium.org,
+        davidgow@google.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v3] lib: Convert test_user_copy to KUnit test
+Date:   Tue, 21 Jul 2020 14:46:54 -0300
+Message-Id: <20200721174654.72132-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
- <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net> <20200715171130.GG12769@casper.infradead.org>
- <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com> <CAJfpegt9=p4uo5U2GXqc-rwqOESzZCWAkGMRTY1r8H6fuXx96g@mail.gmail.com>
- <48cc7eea-5b28-a584-a66c-4eed3fac5e76@gmail.com> <202007151511.2AA7718@keescook>
- <20200716131404.bnzsaarooumrp3kx@steredhat> <202007160751.ED56C55@keescook>
- <20200717080157.ezxapv7pscbqykhl@steredhat.lan> <CALCETrXSPdiVCgh3h=q7w9RyiKnp-=8jOHoFHX=an0cWqK7bzQ@mail.gmail.com>
- <39a3378a-f8f3-6706-98c8-be7017e64ddb@kernel.dk> <CALCETrXAxFzuRB5EJZR7bbgfrEcNc=9_E7wwhPaZ3YGJ1=DZ0w@mail.gmail.com>
- <ba989463-c627-8af7-9234-4dc8ac4eea0e@kernel.dk>
-In-Reply-To: <ba989463-c627-8af7-9234-4dc8ac4eea0e@kernel.dk>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 21 Jul 2020 10:44:06 -0700
-X-Gmail-Original-Message-ID: <CALCETrUvOuKZWiQeZhf9DXyjS4OQdyW+s1YMh+vwe605jBS3LQ@mail.gmail.com>
-Message-ID: <CALCETrUvOuKZWiQeZhf9DXyjS4OQdyW+s1YMh+vwe605jBS3LQ@mail.gmail.com>
-Subject: Re: strace of io_uring events?
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Kees Cook <keescook@chromium.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        strace-devel@lists.strace.io, io-uring@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 10:30 AM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 7/21/20 11:23 AM, Andy Lutomirski wrote:
-> > On Tue, Jul 21, 2020 at 8:31 AM Jens Axboe <axboe@kernel.dk> wrote:
-> >>
-> >> On 7/21/20 9:27 AM, Andy Lutomirski wrote:
-> >>> On Fri, Jul 17, 2020 at 1:02 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
-> >>>>
-> >>>> On Thu, Jul 16, 2020 at 08:12:35AM -0700, Kees Cook wrote:
-> >>>>> On Thu, Jul 16, 2020 at 03:14:04PM +0200, Stefano Garzarella wrote:
-> >>>
-> >>>>> access (IIUC) is possible without actually calling any of the io_uring
-> >>>>> syscalls. Is that correct? A process would receive an fd (via SCM_RIGHTS,
-> >>>>> pidfd_getfd, or soon seccomp addfd), and then call mmap() on it to gain
-> >>>>> access to the SQ and CQ, and off it goes? (The only glitch I see is
-> >>>>> waking up the worker thread?)
-> >>>>
-> >>>> It is true only if the io_uring istance is created with SQPOLL flag (not the
-> >>>> default behaviour and it requires CAP_SYS_ADMIN). In this case the
-> >>>> kthread is created and you can also set an higher idle time for it, so
-> >>>> also the waking up syscall can be avoided.
-> >>>
-> >>> I stared at the io_uring code for a while, and I'm wondering if we're
-> >>> approaching this the wrong way. It seems to me that most of the
-> >>> complications here come from the fact that io_uring SQEs don't clearly
-> >>> belong to any particular security principle.  (We have struct creds,
-> >>> but we don't really have a task or mm.)  But I'm also not convinced
-> >>> that io_uring actually supports cross-mm submission except by accident
-> >>> -- as it stands, unless a user is very careful to only submit SQEs
-> >>> that don't use user pointers, the results will be unpredictable.
-> >>
-> >> How so?
-> >
-> > Unless I've missed something, either current->mm or sqo_mm will be
-> > used depending on which thread ends up doing the IO.  (And there might
-> > be similar issues with threads.)  Having the user memory references
-> > end up somewhere that is an implementation detail seems suboptimal.
->
-> current->mm is always used from the entering task - obviously if done
-> synchronously, but also if it needs to go async. The only exception is a
-> setup with SQPOLL, in which case ctx->sqo_mm is the task that set up the
-> ring. SQPOLL requires root privileges to setup, and there's no task
-> entering the io_uring at all necessarily. It'll just submit sqes with
-> the credentials that are registered with the ring.
+This adds the conversion of the runtime tests of test_user_copy fuctions,
+from `lib/test_user_copy.c`to KUnit tests.
 
-Really?  I admit I haven't fully followed how the code works, but it
-looks like anything that goes through the io_queue_async_work() path
-will use sqo_mm, and can't most requests that end up blocking end up
-there?  It looks like, even if SQPOLL is not set, the mm used will
-depend on whether the request ends up blocking and thus getting queued
-for later completion.
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+v2:
+    * splitted patch in 3:
+        - Allows to install and load modules in root filesystem;
+        - Provides an userspace memory context when tests are compiled
+          as module;
+        - Convert test_user_copy to KUnit test;
+    * removed entry for CONFIG_TEST_USER_COPY;
+    * replaced pr_warn to KUNIT_EXPECT_FALSE_MSG in test macro to
+      decrease the diff;
+v3:
+    * rebased with last kunit branch
+    * Please apply this commit from kunit-fixes:
+        3f37d14b8a3152441f36b6bc74000996679f0998
+      And these from patchwork:
+        https://patchwork.kernel.org/patch/11676331/
+        https://patchwork.kernel.org/patch/11676335/
+---
+ lib/Kconfig.debug                           | 28 ++++++++------
+ lib/Makefile                                |  2 +-
+ lib/{test_user_copy.c => user_copy_kunit.c} | 42 +++++++++------------
+ 3 files changed, 35 insertions(+), 37 deletions(-)
+ rename lib/{test_user_copy.c => user_copy_kunit.c} (91%)
 
-Or does some magic I missed make this a nonissue.
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 9ad9210d70a1..f699a3624ae7 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2078,18 +2078,6 @@ config TEST_VMALLOC
 
+ 	  If unsure, say N.
 
->
-> This is just one known use case, there may very well be others. Outside
-> of SQPOLL, which is special, I don't see a reason to restrict this.
-> Given that you may have a fuller understanding of it after the above
-> explanation, please clearly state what problem you're seeing that
-> warrants a change.
+-config TEST_USER_COPY
+-	tristate "Test user/kernel boundary protections"
+-	depends on m
+-	help
+-	  This builds the "test_user_copy" module that runs sanity checks
+-	  on the copy_to/from_user infrastructure, making sure basic
+-	  user/kernel boundary testing is working. If it fails to load,
+-	  a regression has been detected in the user/kernel memory boundary
+-	  protections.
+-
+-	  If unsure, say N.
+-
+ config TEST_BPF
+ 	tristate "Test BPF filter functionality"
+ 	depends on m && NET
+@@ -2154,6 +2142,22 @@ config SYSCTL_KUNIT_TEST
 
-I see two fundamental issues:
+ 	  If unsure, say N.
 
-1. The above.  This may be less of an issue than it seems to me, but,
-if you submit io from outside sqo_mm, the mm that ends up being used
-depends on whether the IO is completed from io_uring_enter() or from
-the workqueue.  For something like Postgres, I guess this is okay
-because the memory is MAP_ANONYMOUS | MAP_SHARED and the pointers all
-point the same place regardless.
++config USER_COPY_KUNIT
++	tristate "KUnit Test for user/kernel boundary protections"
++	depends on KUNIT
++	depends on m
++	help
++	  This builds the "user_copy_kunit" module that runs sanity checks
++	  on the copy_to/from_user infrastructure, making sure basic
++	  user/kernel boundary testing is working. If it fails to load,
++	  a regression has been detected in the user/kernel memory boundary
++	  protections.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config LIST_KUNIT_TEST
+ 	tristate "KUnit Test for Kernel Linked-list structures" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+diff --git a/lib/Makefile b/lib/Makefile
+index b1c42c10073b..8c145f85accc 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -78,7 +78,6 @@ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+ obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+ obj-$(CONFIG_TEST_RHASHTABLE) += test_rhashtable.o
+ obj-$(CONFIG_TEST_SORT) += test_sort.o
+-obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
+ obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
+ obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
+ obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+@@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+ # KUnit tests
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
++obj-$(CONFIG_USER_COPY_KUNIT) += user_copy_kunit.o
+diff --git a/lib/test_user_copy.c b/lib/user_copy_kunit.c
+similarity index 91%
+rename from lib/test_user_copy.c
+rename to lib/user_copy_kunit.c
+index 5ff04d8fe971..a10ddd15b4cd 100644
+--- a/lib/test_user_copy.c
++++ b/lib/user_copy_kunit.c
+@@ -16,6 +16,7 @@
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
+ #include <linux/vmalloc.h>
++#include <kunit/test.h>
 
-2. If you create an io_uring and io_uring_enter() it from a different
-mm, it's unclear what seccomp is supposed to do.  (Or audit, for that
-matter.)  Which task did the IO?  Which mm did the IO?  Whose sandbox
-is supposed to be applied?
+ /*
+  * Several 32-bit architectures support 64-bit {get,put}_user() calls.
+@@ -35,7 +36,7 @@
+ ({									\
+ 	int cond = (condition);						\
+ 	if (cond)							\
+-		pr_warn("[%d] " msg "\n", __LINE__, ##__VA_ARGS__);	\
++		KUNIT_EXPECT_FALSE_MSG(test, cond, msg, ##__VA_ARGS__);	\
+ 	cond;								\
+ })
 
---Andy
+@@ -44,7 +45,7 @@ static bool is_zeroed(void *from, size_t size)
+ 	return memchr_inv(from, 0x0, size) == NULL;
+ }
+
+-static int test_check_nonzero_user(char *kmem, char __user *umem, size_t size)
++static int test_check_nonzero_user(struct kunit *test, char *kmem, char __user *umem, size_t size)
+ {
+ 	int ret = 0;
+ 	size_t start, end, i, zero_start, zero_end;
+@@ -102,7 +103,7 @@ static int test_check_nonzero_user(char *kmem, char __user *umem, size_t size)
+ 	return ret;
+ }
+
+-static int test_copy_struct_from_user(char *kmem, char __user *umem,
++static int test_copy_struct_from_user(struct kunit *test, char *kmem, char __user *umem,
+ 				      size_t size)
+ {
+ 	int ret = 0;
+@@ -177,7 +178,7 @@ static int test_copy_struct_from_user(char *kmem, char __user *umem,
+ 	return ret;
+ }
+
+-static int __init test_user_copy_init(void)
++static void user_copy_test(struct kunit *test)
+ {
+ 	int ret = 0;
+ 	char *kmem;
+@@ -192,16 +193,14 @@ static int __init test_user_copy_init(void)
+ #endif
+
+ 	kmem = kmalloc(PAGE_SIZE * 2, GFP_KERNEL);
+-	if (!kmem)
+-		return -ENOMEM;
++	KUNIT_EXPECT_FALSE_MSG(test, kmem == NULL, "kmalloc failed");
+
+ 	user_addr = vm_mmap(NULL, 0, PAGE_SIZE * 2,
+ 			    PROT_READ | PROT_WRITE | PROT_EXEC,
+ 			    MAP_ANONYMOUS | MAP_PRIVATE, 0);
+ 	if (user_addr >= (unsigned long)(TASK_SIZE)) {
+-		pr_warn("Failed to allocate user memory\n");
+ 		kfree(kmem);
+-		return -ENOMEM;
++		KUNIT_FAIL(test, "Failed to allocate user memory");
+ 	}
+
+ 	usermem = (char __user *)user_addr;
+@@ -245,9 +244,9 @@ static int __init test_user_copy_init(void)
+ #undef test_legit
+
+ 	/* Test usage of check_nonzero_user(). */
+-	ret |= test_check_nonzero_user(kmem, usermem, 2 * PAGE_SIZE);
++	ret |= test_check_nonzero_user(test, kmem, usermem, 2 * PAGE_SIZE);
+ 	/* Test usage of copy_struct_from_user(). */
+-	ret |= test_copy_struct_from_user(kmem, usermem, 2 * PAGE_SIZE);
++	ret |= test_copy_struct_from_user(test, kmem, usermem, 2 * PAGE_SIZE);
+
+ 	/*
+ 	 * Invalid usage: none of these copies should succeed.
+@@ -309,23 +308,18 @@ static int __init test_user_copy_init(void)
+
+ 	vm_munmap(user_addr, PAGE_SIZE * 2);
+ 	kfree(kmem);
+-
+-	if (ret == 0) {
+-		pr_info("tests passed.\n");
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+ }
+
+-module_init(test_user_copy_init);
+-
+-static void __exit test_user_copy_exit(void)
+-{
+-	pr_info("unloaded.\n");
+-}
++static struct kunit_case user_copy_test_cases[] = {
++	KUNIT_CASE(user_copy_test),
++	{}
++};
+
+-module_exit(test_user_copy_exit);
++static struct kunit_suite user_copy_test_suite = {
++	.name = "user_copy",
++	.test_cases = user_copy_test_cases,
++};
+
++kunit_test_suites(&user_copy_test_suite);
+ MODULE_AUTHOR("Kees Cook <keescook@chromium.org>");
+ MODULE_LICENSE("GPL");
+
+base-commit: d43c7fb05765152d4d4a39a8ef957c4ea14d8847
+--
+2.26.2
+
