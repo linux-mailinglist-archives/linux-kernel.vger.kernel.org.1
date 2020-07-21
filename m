@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEC2227F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AA0227F09
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729620AbgGULgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:36:49 -0400
-Received: from sonic312-23.consmr.mail.ne1.yahoo.com ([66.163.191.204]:36273
-        "EHLO sonic312-23.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726942AbgGULgt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:36:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595331408; bh=noZqzc0DO7ubYu76k6w0ZDMYGSjIHNz057Kts8cuH1w=; h=Date:From:Reply-To:Subject:References:From:Subject; b=QYYk0lvbFsyuQCqh1obBMMFEt0Im1jQIH2hGvowMPBFItRzHRY7nwzxMQlubCYsDwqhh+BH6FmamWtxgSDq8JVe1DU8kh6oXC4ve7QX0GG1zwIkG9PBwNwtGWBU4ls//9o8w7/uee9RhRNNfclckXjDa2S4o5JcGOB5qW62ccmTSmxYv16kBPRmhxmQ5sK8TKUIU+iJNeAvKuG9MJeQ8Fovvcis99CyFyEjq961yoX7Sxkcs4+cRbXnsnw9mrMGRU6HS+cdzPJ0dcq/jQyXXKNDYit0Hwy80QshGugxhqTB7m17JaFHqYHjaPkCLCZXQzs+kK+UoJDE//NHVFmXSkg==
-X-YMail-OSG: 5fxo4_cVM1nnmUMxa.I9EU6MFNlE55439P3ZvWi22G3hph1.U53AUqFaZEGD0kj
- dMpgL2ptu56StoQnyhITeH.wFvAKG1sHqvE1Rp2K5XFSRQIjeQt18ZAxHxpBMtn7IFWvXYf.4Byb
- CE2l_w9FdqpVmDTT1zI.Ft4qMpglKuPajaS8hNiVWYkga2UXuAYR8cZ7GmAjCYTnn0va_P0EBdVE
- UPV0zvA1yww2ZrUlvu2_uBLBZE0GkfMiU4oXBsE1Hwc6wkkAHX.RK3YK2zeHM8cbIdIOK9h7b1ww
- p7IYAs5UPI4ardLjZTeLhXrS.yTYSmDjJ6pCDGEAgE4zNGQeNIsH5BYO6YvPJUxVqoM80F_bh9Dw
- 3qVFokGM62AbGt4c3.zLsQ.iK2HLS8RTqvx9fYMKx0xIo6qVeqswnybmU_9Fks0V3dB86t.MB4cm
- wjVbbXoIEvaTNB6SqvaXLsuSb1aHn7ZlNYwSg09nm2wD15OyC5gP2hYvOvAE8Hjz.2.yGzIGTeFL
- zgyRj5kwGHFI8jxNOqQXlwaqcWydLN4dwfuXNG5jtRm7.3EApB1JwR3sq3njPCkhpb51bTq2ZgI1
- c6KXJOlsIZTVHnDSBPEOMLbLs1R19..zlYxviczClpO2yaHCqHtmE6wb3fI0XGyV2INdHHqsZ23M
- CX7ny9SdQc2YsJclNfhpVZK8YXbKHTy1X0HgzWFhrz_XWEBl_9ObH1Fdo3Kdy07rC6WrWNMDhhX3
- 76ljfBJYRFRVRSSUcFrKaSyZTCKJ_kEAShr2zbka1U_uR3_MWxJ5s0Ej9BRx.pZMtZBvlrBGhL0O
- UwYRjD0jdgzDP4PgHU6P0w0C9abQLc_1S82GYzk09WcO2fwV9OMnBk9CeINSpJ7Uzv4Rl3B75v6p
- IBkt1BjD5W4cHfAHKr3u_VXR9ES6Ck8nG5jb3uZucmXAtYy8fu9BCMF9HQ0exXwSnq2Xhdlr1.q.
- 69uCSiReLEO8iaPb4KwsPM9Lat9Z9MawSdzJCvP6Px1nz1WGisbK5J9CeG9nhOOwG7jxpLb9uqsu
- yT_ySjkTjZGciIS8JhaEvfoMLjyeMJd8dxf.ItWyPNn9fuzPIzpHRGgAM..pEIN3SGkn36AUKvv4
- AOxo0_8mcmjadNzPjG4.JgKF6phC4d0cZt.I3EpdONIRP8phB4PS0JITBLzCj1oY2haC35ws01iP
- ZPtqM.Rci2IeGiwr0fQzwSab7tZgKf7i6zZeAklzqFUl9BKOuBGs06xV2tNudrePnlJJub4D4TYf
- Fny4AHJVDlk3CuuIZkDJPjYrl8Qfl26bC4Q1NlH.iCfCl.8A_ghbi2ONnjd5fRwvhsEwXQiUGVJb
- E
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Jul 2020 11:36:48 +0000
-Date:   Tue, 21 Jul 2020 11:36:44 +0000 (UTC)
-From:   Philippe Don <phisiaka01@gmail.com>
-Reply-To: phisiaka1@gmail.com
-Message-ID: <63492591.4811734.1595331404972@mail.yahoo.com>
-Subject: I am Dr. Philippe Don,
+        id S1729663AbgGULg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:36:57 -0400
+Received: from ozlabs.org ([203.11.71.1]:38021 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727106AbgGULg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 07:36:56 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9xQH045Xz9sSJ;
+        Tue, 21 Jul 2020 21:36:54 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1595331415;
+        bh=8cWqEZ7b8BkO4Lc0Yw9kRlVs08QZ7978e9X0CuvOH3I=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=JyhmLykPfuVbCmNgLwFSzcomuXhpdEJTpqJ7z3tXJaJxIOnZheJmHY0gNc6ljONpf
+         cWMncIFEKRaAuy9NXF8JOniiQPI/xhDLFO+9Ax0KCPFBLjqRf8NwaexBpxte9A0cuO
+         OXhqY7VsIdhf1+ipTE9Vg2FayfKkcH/5ln1pjPAdm8TudEONBAezMcRR7wxrmuryG4
+         dYAfSi4ZD+YZXmzfcgEPhyhpOGJWHWSv5Kfr+CCW9VTypwW9rTiGimSVyokaM+/onJ
+         3mYDfMsC8liIOPX0svCn03YVxiDz4aP/76avkJ8BrxbNWSNbcSdXkbp+RS2HdljEsj
+         F1BmP47NUh3kA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Cc:     mikey@neuling.org, apopple@linux.ibm.com,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
+        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
+        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Subject: Re: [PATCH v4 09/10] powerpc/watchpoint: Return available watchpoints dynamically
+In-Reply-To: <ccfcf488-0ec9-1737-8368-a848de1d72d1@linux.ibm.com>
+References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com> <20200717040958.70561-10-ravi.bangoria@linux.ibm.com> <CACzsE9r0acLUkV35mVxy1AEK_xObs0yz+fD6UdbNdc6uz=Buqw@mail.gmail.com> <ccfcf488-0ec9-1737-8368-a848de1d72d1@linux.ibm.com>
+Date:   Tue, 21 Jul 2020 21:36:54 +1000
+Message-ID: <87k0yxrtex.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <63492591.4811734.1595331404972.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 10.0; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention: Friend,
+Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+> On 7/20/20 9:12 AM, Jordan Niethe wrote:
+>> On Fri, Jul 17, 2020 at 2:11 PM Ravi Bangoria
+>> <ravi.bangoria@linux.ibm.com> wrote:
+>>>
+>>> So far Book3S Powerpc supported only one watchpoint. Power10 is
+>>> introducing 2nd DAWR. Enable 2nd DAWR support for Power10.
+>>> Availability of 2nd DAWR will depend on CPU_FTR_DAWR1.
+>>>
+>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>> ---
+>>>   arch/powerpc/include/asm/cputable.h      | 4 +++-
+>>>   arch/powerpc/include/asm/hw_breakpoint.h | 5 +++--
+>>>   2 files changed, 6 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+>>> index 3445c86e1f6f..36a0851a7a9b 100644
+>>> --- a/arch/powerpc/include/asm/cputable.h
+>>> +++ b/arch/powerpc/include/asm/cputable.h
+>>> @@ -633,7 +633,9 @@ enum {
+>>>    * Maximum number of hw breakpoint supported on powerpc. Number of
+>>>    * breakpoints supported by actual hw might be less than this.
+>>>    */
+>>> -#define HBP_NUM_MAX    1
+>>> +#define HBP_NUM_MAX    2
+>>> +#define HBP_NUM_ONE    1
+>>> +#define HBP_NUM_TWO    2
 
-How are you, I am Dr. Philippe Don Siaka, a medical doctor working with Gab=
-riel Toure Hospital Bamako Mali, please don't be upset by the way i am send=
-ing this message to you without knowing you before, i  only trying to rende=
-r help that is needed from me by someone who is no more with us in this wor=
-ld,
+>> I wonder if these defines are necessary - has it any advantage over
+>> just using the literal?
+>
+> No, not really. Initially I had something like:
+>
+> #define HBP_NUM_MAX    2
+> #define HBP_NUM_P8_P9  1
+> #define HBP_NUM_P10    2
+>
+> But then I thought it's also not right. So I made it _ONE and _TWO.
+> Now the function that decides nr watchpoints dynamically (nr_wp_slots)
+> is in different file, I thought to keep it like this so it would be
+> easier to figure out why _MAX is 2.
 
-A woman who had an accident with her car was brought to our Hospital some w=
-eeks ago and i was her doctor for some hours before she died, well may her =
-soul rest in peace Amen, her names are Ms. Young-shin Kim, From South Korea=
- Nationality,
+I don't think it makes anything clearer.
 
-Now why i need you is because of her last words to me before she dies, she =
-told me about a deposit she made with Islamic Development Bank ISDB in Turk=
-ey, The sum of(=E2=82=AC5,500,000)Five Million Five Hundred Thousand Euros,=
- according to her she deposited the money without any next of kin because s=
-he don't have any child or relatives,
+I had to stare at it thinking there was some sort of mapping or
+indirection going on, before I realised it's just literally the number
+of breakpoints.
 
-according to her she was an orphan, All this was a top secret from her and =
-she asked me to look for someone from Asia Nationality if possible or anywh=
-ere out of Africa continent who will contact the Bank in Turkey so that the=
- fund can be transfer to the person for charity purposes, she gave me some =
-vital information about the bank and the money which i will give to you whe=
-n i get your update. her words about the fund according to her she wants th=
-e money to be used for charity purposes to help some less privileged in our=
- society 70% of the money will be for the charity work and 30% will be for =
-the person who will do the work. I am waiting for your update on this matte=
-r.
+So please just do:
 
-Thanks & Best Regards,
-Dr. Philippe Don Siaka,    =09
+static inline int nr_wp_slots(void)
+{
+       return cpu_has_feature(CPU_FTR_DAWR1) ? 2 : 1;
+}
+
+If you think HBP_NUM_MAX needs explanation then do that with a comment,
+it can refer to nr_wp_slots() if that's helpful.
+
+cheers
