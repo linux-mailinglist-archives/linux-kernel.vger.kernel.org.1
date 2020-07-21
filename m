@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331D4227BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12CA227BE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgGUJgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
+        id S1726966AbgGUJh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728885AbgGUJf6 (ORCPT
+        with ESMTP id S1726188AbgGUJh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:35:58 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C328DC061794;
-        Tue, 21 Jul 2020 02:35:57 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so2112641wme.5;
-        Tue, 21 Jul 2020 02:35:57 -0700 (PDT)
+        Tue, 21 Jul 2020 05:37:56 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7808FC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 02:37:56 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 8so733588pjj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 02:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=maCZ643Vqsjv4Z94t/8MVEAEPkdFO2eHN3bkR1ZcrlE=;
-        b=RpibQnFnnZttU2J78SYoYL7JrGoG8z9DaVtIGd0sS8PArtV0akiY+zW21bPA2H+nK6
-         WAKPHq+zjQAQLfKmEmMsirBJoBhOs9tnLxC0wMqux4sstluT2WyETAlIbM5KASQIZCkI
-         oyFaHLwsCLAyCnpnjxsnWc/F5DRBguwB5u5U4vFy7/EKFBDfLanbcqG/wX6DFvzl/hAe
-         EYJiEXaOqWKhnqGbh52Het2Kv4mahGHK6VjfTz3RQ3yBanS1MrXi1DPrmIG7MXH5CEwI
-         o50LgMvl1dsXGLtDNrMbV6xaLxPVoJerSA+ZiCkMi0zjWNdZ8GwoyxK+xgpzSJC7Yj1Q
-         l7bQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WYIe/jy5Dqr0y+oNjQbbwYu6KlJ30fL8Fok/qL9XnPk=;
+        b=n+8EdCnYpI9w4QjiWRKAVS54jZ1Ps1uRqRUyeMZnXiDcZEXJSAelRlHz0Ml+F1dB9w
+         fFBlVhu/3eQb2wXD3+96Bq2XlO0LoLyLpTLnOlg0yzKgsjkrjvtCmnVlbgvV+0ieLAZG
+         CCTT0VONfgMu7+hMbwOVSaEHRYGxzqLHap34kqpqy2TsGBDWt/1WQb9AlK7/MTXPg41D
+         8r44xA1GEWt/a0JFPXlZi4JR7h7DwAHMkFxofBpBZDDl15x0BlC/vPRcLCUmVnND6Tyc
+         sDWmNFj604AKKYHszuohS7nTxYkpwr9WcQkGONHCI4XCtw7bYnECs7HfoJIpf2kvKtlX
+         h0vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=maCZ643Vqsjv4Z94t/8MVEAEPkdFO2eHN3bkR1ZcrlE=;
-        b=q+zMQN8bW4tIJDn5v3Urqcp6gnhA850V071itf8lI46H6AosClZCat5yXgt2eAjMNu
-         y+tkc00LFXfrLLRbZG+OMND9QmZ/NozSmEtil1yDbOTGBusyyE/gUZYNHAutJ8Oa0HDJ
-         eFfBGR9KfyqAyM+ulur76G7BIOd9mfUDcOB3nXk2+oJLNX+GNb4q2NZdWqQgwqOtlicm
-         o9YNzk4DcjWVcCdTXni/bL6H9d/Px8wvGCKk6Jwl1yuS4FWMjmnrMS/DfY97lJrDUbSr
-         UpHGf+/eyeXr/dID8R4QrRKnOeX5zOE/SDUEiLx9ep0SGNONCKY20YEY0ntRSkbjp7S5
-         d7YQ==
-X-Gm-Message-State: AOAM533i/iIc0r9P9s3OxoXZWqyyEul+/2Cbb+CWLeqmPjwuX9JHGj0a
-        SChRYu2TAqY1y6C/lRiNRdY=
-X-Google-Smtp-Source: ABdhPJxqCa/dEMdQS+el2Khmgxukw8FWh0kCzLYBzuE9dYi/6ArArvJLmVvyhjfPHTmrGHyFxwMg2Q==
-X-Received: by 2002:a05:600c:4114:: with SMTP id j20mr3176796wmi.74.1595324156555;
-        Tue, 21 Jul 2020 02:35:56 -0700 (PDT)
-Received: from localhost ([41.37.22.226])
-        by smtp.gmail.com with ESMTPSA id s15sm2868929wmj.41.2020.07.21.02.35.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WYIe/jy5Dqr0y+oNjQbbwYu6KlJ30fL8Fok/qL9XnPk=;
+        b=H9LZFg8KYuEnrQ2LpmA29DmIvWJ8UI9jPqJNdRwlVZIDAz1C7tZzSYKKcsF651y8ZR
+         JeA5qC0b/ne4L3V1XKcU4WaaLAO0oxXGqflNxCC/uC4MideDwh4nLwiZJD/GtGPFvRKA
+         GnzMaOF+iTDwV5VESxWGzA2ewG0wmyOQYiiiBB86IqBx3lpiHUAyBSTheDAhKNQnwJ15
+         a3CfqUtf0fH1ryULuc8HH2FN5uHsPJ/maJF3kdIW0rQw54Hf+QP1vyoUu7OeaaVUY7Dc
+         tl+TILX/Vdfo6ToD4lJJdGxWhL9TQg0zFmosx/9mXmRHp59r2XUhYpPBVG23TUTPL98D
+         I+JQ==
+X-Gm-Message-State: AOAM533WfPc+C9W91v9/crSZ0VC4m6oC3fDj0ioBtHv80WSePacnYl/w
+        Iuy+sOQa6rvCDnGcnO1pfBc=
+X-Google-Smtp-Source: ABdhPJx3q2vePBy0C8LqpkO73icb5tIVTFbRJ/bGDIEVo3L/J0CavOVeYQJOv7m9OLf97F7tw0lBEw==
+X-Received: by 2002:a17:90b:30d7:: with SMTP id hi23mr2989543pjb.69.1595324275934;
+        Tue, 21 Jul 2020 02:37:55 -0700 (PDT)
+Received: from octofox.cadence.com ([2601:641:400:e00:19b7:f650:7bbe:a7fb])
+        by smtp.gmail.com with ESMTPSA id g8sm17653264pgr.70.2020.07.21.02.37.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 02:35:56 -0700 (PDT)
-From:   Abanoub Sameh <abanoubsameh8@gmail.com>
-X-Google-Original-From: Abanoub Sameh <abanoubsameh@protonmail.com>
-To:     andy.shevchenko@gmail.com
-Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Abanoub Sameh <abanoubsameh@protonmail.com>
-Subject: [PATCH 7/7] gpio: fixed coding style issues in gpio-sch.c
-Date:   Tue, 21 Jul 2020 11:35:22 +0200
-Message-Id: <20200721093522.2309530-7-abanoubsameh@protonmail.com>
-X-Mailer: git-send-email 2.28.0.rc0
-In-Reply-To: <20200721093522.2309530-1-abanoubsameh@protonmail.com>
-References: <20200721093522.2309530-1-abanoubsameh@protonmail.com>
+        Tue, 21 Jul 2020 02:37:55 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v2] xtensa: add boot subdirectories targets to extra-y
+Date:   Tue, 21 Jul 2020 02:37:48 -0700
+Message-Id: <20200721093748.26627-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,99 +64,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Abanoub Sameh <abanoubsameh@protonmail.com>
----
- drivers/gpio/gpio-sch.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+The commit 8fe87a92f262 ("kbuild: always create directories of targets")
+exposed an issue in the xtensa makefiles that results in the following
+build error in a clean directory:
+  scripts/Makefile.build:374: arch/xtensa/boot/boot-elf/boot.lds] Error 1
+    arch/xtensa/boot/boot-elf/bootstrap.S:21: fatal error:
+    opening dependency file arch/xtensa/boot/boot-elf/.bootstrap.o.d:
+    No such file or directory
 
-diff --git a/drivers/gpio/gpio-sch.c b/drivers/gpio/gpio-sch.c
-index c65f35b68202..3a1b1adb08c6 100644
---- a/drivers/gpio/gpio-sch.c
-+++ b/drivers/gpio/gpio-sch.c
-@@ -26,10 +26,10 @@ struct sch_gpio {
- 	unsigned short resume_base;
- };
+Intermediate targets in arch/xtensa/boot/boot-elf don't get into
+'targets' and build directory is not created for them.
+Add boot.lds and bootstrap.o to extra-y in subdirectories of
+arch/xtensa/boot.
+
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+---
+Changes v1->v2:
+- update boot-redboot/Makefile in the same manner as boot-elf/Makefile.
+
+ arch/xtensa/boot/boot-elf/Makefile     | 1 +
+ arch/xtensa/boot/boot-redboot/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
+index 12ae1e91cb75..ad341c0fff15 100644
+--- a/arch/xtensa/boot/boot-elf/Makefile
++++ b/arch/xtensa/boot/boot-elf/Makefile
+@@ -15,6 +15,7 @@ export CPPFLAGS_boot.lds += -P -C
+ export KBUILD_AFLAGS += -mtext-section-literals
  
--static unsigned sch_gpio_offset(struct sch_gpio *sch, unsigned gpio,
--				unsigned reg)
-+static unsigned int sch_gpio_offset(struct sch_gpio *sch, unsigned int gpio,
-+				unsigned int reg)
- {
--	unsigned base = 0;
-+	unsigned int base = 0;
+ boot-y		:= bootstrap.o
++extra-y		:= boot.lds $(boot-y)
  
- 	if (gpio >= sch->resume_base) {
- 		gpio -= sch->resume_base;
-@@ -39,14 +39,14 @@ static unsigned sch_gpio_offset(struct sch_gpio *sch, unsigned gpio,
- 	return base + reg + gpio / 8;
- }
+ OBJS		:= $(addprefix $(obj)/,$(boot-y))
  
--static unsigned sch_gpio_bit(struct sch_gpio *sch, unsigned gpio)
-+static unsigned int sch_gpio_bit(struct sch_gpio *sch, unsigned int gpio)
- {
- 	if (gpio >= sch->resume_base)
- 		gpio -= sch->resume_base;
- 	return gpio % 8;
- }
+diff --git a/arch/xtensa/boot/boot-redboot/Makefile b/arch/xtensa/boot/boot-redboot/Makefile
+index 8632473ad319..022a76a2282a 100644
+--- a/arch/xtensa/boot/boot-redboot/Makefile
++++ b/arch/xtensa/boot/boot-redboot/Makefile
+@@ -13,6 +13,7 @@ endif
+ LD_ARGS	= -T $(srctree)/$(obj)/boot.ld
  
--static int sch_gpio_reg_get(struct sch_gpio *sch, unsigned gpio, unsigned reg)
-+static int sch_gpio_reg_get(struct sch_gpio *sch, unsigned int gpio, unsigned int reg)
- {
- 	unsigned short offset, bit;
- 	u8 reg_val;
-@@ -59,7 +59,7 @@ static int sch_gpio_reg_get(struct sch_gpio *sch, unsigned gpio, unsigned reg)
- 	return reg_val;
- }
+ boot-y	:= bootstrap.o
++extra-y	:= $(boot-y)
  
--static void sch_gpio_reg_set(struct sch_gpio *sch, unsigned gpio, unsigned reg,
-+static void sch_gpio_reg_set(struct sch_gpio *sch, unsigned int gpio, unsigned int reg,
- 			     int val)
- {
- 	unsigned short offset, bit;
-@@ -76,7 +76,7 @@ static void sch_gpio_reg_set(struct sch_gpio *sch, unsigned gpio, unsigned reg,
- 		outb((reg_val & ~BIT(bit)), sch->iobase + offset);
- }
- 
--static int sch_gpio_direction_in(struct gpio_chip *gc, unsigned gpio_num)
-+static int sch_gpio_direction_in(struct gpio_chip *gc, unsigned int gpio_num)
- {
- 	struct sch_gpio *sch = gpiochip_get_data(gc);
- 
-@@ -86,13 +86,14 @@ static int sch_gpio_direction_in(struct gpio_chip *gc, unsigned gpio_num)
- 	return 0;
- }
- 
--static int sch_gpio_get(struct gpio_chip *gc, unsigned gpio_num)
-+static int sch_gpio_get(struct gpio_chip *gc, unsigned int gpio_num)
- {
- 	struct sch_gpio *sch = gpiochip_get_data(gc);
-+
- 	return sch_gpio_reg_get(sch, gpio_num, GLV);
- }
- 
--static void sch_gpio_set(struct gpio_chip *gc, unsigned gpio_num, int val)
-+static void sch_gpio_set(struct gpio_chip *gc, unsigned int gpio_num, int val)
- {
- 	struct sch_gpio *sch = gpiochip_get_data(gc);
- 
-@@ -101,7 +102,7 @@ static void sch_gpio_set(struct gpio_chip *gc, unsigned gpio_num, int val)
- 	spin_unlock(&sch->lock);
- }
- 
--static int sch_gpio_direction_out(struct gpio_chip *gc, unsigned gpio_num,
-+static int sch_gpio_direction_out(struct gpio_chip *gc, unsigned int gpio_num,
- 				  int val)
- {
- 	struct sch_gpio *sch = gpiochip_get_data(gc);
-@@ -123,7 +124,7 @@ static int sch_gpio_direction_out(struct gpio_chip *gc, unsigned gpio_num,
- 	return 0;
- }
- 
--static int sch_gpio_get_direction(struct gpio_chip *gc, unsigned gpio_num)
-+static int sch_gpio_get_direction(struct gpio_chip *gc, unsigned int gpio_num)
- {
- 	struct sch_gpio *sch = gpiochip_get_data(gc);
- 
+ OBJS	:= $(addprefix $(obj)/,$(boot-y))
+ LIBS	:= arch/xtensa/boot/lib/lib.a arch/xtensa/lib/lib.a
 -- 
-2.28.0.rc0
+2.20.1
 
