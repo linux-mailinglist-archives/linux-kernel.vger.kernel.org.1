@@ -2,440 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C33227EE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA03227EF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgGULaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:30:06 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:35689 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgGULaD (ORCPT
+        id S1729858AbgGULa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729826AbgGULaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:30:03 -0400
-Received: from localhost (unknown [106.76.68.110])
-        (Authenticated sender: me@yadavpratyush.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id B83E924000E;
-        Tue, 21 Jul 2020 11:29:54 +0000 (UTC)
-Date:   Tue, 21 Jul 2020 16:59:51 +0530
-From:   Pratyush Yadav <me@yadavpratyush.com>
-To:     Tudor.Ambarus@microchip.com
-Cc:     p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, broonie@kernel.org, Nicolas.Ferre@microchip.com,
-        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
-        matthias.bgg@gmail.com, michal.simek@xilinx.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, boris.brezillon@collabora.com,
-        nsekhar@ti.com
-Subject: Re: [PATCH v10 05/17] mtd: spi-nor: add support for DTR protocol
-Message-ID: <20200721112951.rngfk7njubcsahzp@yadavpratyush.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
- <20200623183030.26591-6-p.yadav@ti.com>
- <fbb3d7e7-75ed-dbf6-a975-2ae871bc9fbf@microchip.com>
+        Tue, 21 Jul 2020 07:30:23 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0229C0619D9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:30:23 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id q5so20837244wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lDCzyRG0rg1IT+D0XJL6mCguANQqA8rXobavVZvW96Y=;
+        b=ZnnrxRa4si/xuCUdSQINme4yglZDejh1OO0DnrcmRn5h18itVyWY4KRvRkI/WNZ/Ll
+         E/VPLadw2MbujNKNCVgXWitzmPWRAKdk5XTCel3V5qpcX6FGrqmGTmm4p15DMboso/NS
+         FV4C1to8Pfy/qNsRbWTocSYQZzf6KtgCql62o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lDCzyRG0rg1IT+D0XJL6mCguANQqA8rXobavVZvW96Y=;
+        b=jQ7VI3sypQb57SeBq2Nqk8wwAc03uaW8zW9gkEFcfeW9IowxJBZexyrQvs/L+3PQcR
+         eSuQrn1v4CtMjVDpiWFvPYfQKF3G0fVD62jSlrrnoRMsQbAWqfpXMKRqCEOvVQVxlnWP
+         Uv7GmAFe6zF6VvBVthGrVY7HtIUQYjqUcaXC2Bd4SK7VlKyT3hr7N/veRUBwH7ldwo5q
+         gZoPlbkKRfVDIvcDg9cnhRyeTJRXTHAxYLvI6Y9RP/fQ7+fVCgsQtAu7LYoN2Cqe5g6S
+         NVoWJpb68VLqgAstj//P6GsNNc2IvfcEZq00jzV/Q6XQBi1XVCXKFg/qjXPA6PCLAVgN
+         8OtA==
+X-Gm-Message-State: AOAM531UqKAUgO8LEQ3raKLKTkWSdVs/slDD0Njd3D+sp1cZyj2y8K20
+        XiTpfn0qYCOQlK0dSrsNUmKWS43+5uF/16jz8feWLQ==
+X-Google-Smtp-Source: ABdhPJwbrVnmzJ0PnXN6sJ8jR7GyGTkbutQcRFVK+AheZaDBzYwZNbSJrjKJ1Gle1sfdgNlgwcpeGqJ0VnvJV9KH3Mw=
+X-Received: by 2002:a05:6000:1209:: with SMTP id e9mr12809989wrx.404.1595331021943;
+ Tue, 21 Jul 2020 04:30:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbb3d7e7-75ed-dbf6-a975-2ae871bc9fbf@microchip.com>
+References: <20200717120207.3471030-1-cychiang@chromium.org> <CAD=FV=XFayyvT-b9C3f4pXNkboH7kb7ikyi9qJxmNvowOfkjqQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=XFayyvT-b9C3f4pXNkboH7kb7ikyi9qJxmNvowOfkjqQ@mail.gmail.com>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Tue, 21 Jul 2020 19:29:55 +0800
+Message-ID: <CAFv8NwLpVCy4CY8_h0qd7aAEPmaKa3gQYmA3sT1b9fs6fxwtLA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Taniya Das <tdas@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+On Fri, Jul 17, 2020 at 11:03 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
 
-On 07/07/20 05:37PM, Tudor.Ambarus@microchip.com wrote:
-> Hi, Pratyush,
-> 
-> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Double Transfer Rate (DTR) is SPI protocol in which data is transferred
-> > on each clock edge as opposed to on each clock cycle. Make
-> > framework-level changes to allow supporting flashes in DTR mode.
-> > 
-> > Right now, mixed DTR modes are not supported. So, for example a mode
-> > like 4S-4D-4D will not work. All phases need to be either DTR or STR.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Thanks for the review!
+
+> On Fri, Jul 17, 2020 at 5:02 AM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+> >
+> > Add devicetree bindings documentation file for sc7180 sound card.
+> >
+> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 > > ---
-> >  drivers/mtd/spi-nor/core.c  | 305 ++++++++++++++++++++++++++++-------- 
-> >  drivers/mtd/spi-nor/core.h  |   6 +
-> >  drivers/mtd/spi-nor/sfdp.c  |   9 +-
-> >  include/linux/mtd/spi-nor.h |  51 ++++--
-> >  4 files changed, 295 insertions(+), 76 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 0369d98b2d12..22a3832b83a6 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -40,6 +40,76 @@
-> > 
-> >  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> > 
-> > +/**
-> > + * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
-> > + *                        extension type.
-> > + * @nor:               pointer to a 'struct spi_nor'
-> > + * @op:                        pointer to the 'struct spi_mem_op' whose properties
-> > + *                     need to be initialized.
-> > + *
-> > + * Right now, only "repeat" and "invert" are supported.
-> > + *
-> > + * Return: The opcode extension.
-> > + */
-> > +static u8 spi_nor_get_cmd_ext(const struct spi_nor *nor,
-> > +                             const struct spi_mem_op *op)
-> > +{
-> > +       switch (nor->cmd_ext_type) {
-> > +       case SPI_NOR_EXT_INVERT:
-> > +               return ~op->cmd.opcode;
+> >  .../bindings/sound/qcom,sc7180.yaml           | 123 ++++++++++++++++++
+> >  1 file changed, 123 insertions(+)
+>
+> A bit of a mechanical review since my audio knowledge is not strong.
+>
+>
+> >  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> > new file mode 100644
+> > index 000000000000..d60d2880d991
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> > @@ -0,0 +1,123 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
-> > +       case SPI_NOR_EXT_REPEAT:
-> > +               return op->cmd.opcode;
+> > +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
 > > +
-> > +       default:
-> > +               dev_err(nor->dev, "Unknown command extension type\n");
-> > +               return 0;
-> > +       }
-> > +}
+> > +maintainers:
+> > +  - Rohit kumar <rohitkr@codeaurora.org>
+> > +  - Cheng-Yi Chiang <cychiang@chromium.org>
 > > +
-> > +/**
-> > + * spi_nor_spimem_setup_op() - Set up common properties of a spi-mem op.
-> > + * @nor:               pointer to a 'struct spi_nor'
-> > + * @op:                        pointer to the 'struct spi_mem_op' whose properties
-> > + *                     need to be initialized.
-> > + * @proto:             the protocol from which the properties need to be set.
-> > + */
-> > +void spi_nor_spimem_setup_op(const struct spi_nor *nor,
-> > +                            struct spi_mem_op *op,
-> > +                            const enum spi_nor_protocol proto)
-> 
-> There's not much to set for the REG operations.
-> 
-> > +{
-> > +       u8 ext;
+> > +description: |
+> > +  This binding describes the SC7180 sound card, which uses LPASS for audio.
+>
+> nit: you don't need the pipe at the end of the "description" line.
+> That means that newlines are important and you don't need it.
+>
+>
+Thanks for the explanation. Fixed in v2.
+> > +definitions:
+>
+> I haven't yet seen much yaml using definitions like this.  It feels
+> like overkill for some of these properties, especially ones that are
+> only ever used once in the "properties:" section and are/or are really
+> simple.
+>
+>
+ACK. In v2 I only kept dai definition and removed others.
+
+> > +  link-name:
+> > +    description: Indicates dai-link name and PCM stream name.
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    maxItems: 1
 > > +
-> > +       op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(proto);
+> > +  dai:
+> > +    type: object
+> > +    properties:
+> > +      sound-dai:
+> > +        maxItems: 1
+> > +        $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +        description: phandle array of the codec or CPU DAI
 > > +
-> > +       if (op->addr.nbytes)
-> > +               op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+> > +    required:
+> > +      - sound-dai
 > > +
-> > +       if (op->dummy.nbytes)
-> > +               op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+> > +  unidirectional:
+> > +    description: Specify direction of unidirectional dai link.
+> > +                 0 for playback only. 1 for capture only.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+>
+> So if the property isn't there then it's _not_ unidirectional and if
+> it is there then this specifies the direction, right?  I almost wonder
+> if this should just be two boolean properties, like:
+>
+> playback-only;
+> capture-only;
+>
+> ...but I guess I'd leave it to Rob and/or Mark to say what they liked
+> better.  In any case if you keep it how you have it then you should
+> use yaml to force it to be either 0 or 1 if present.
+>
+>
+ACK
+Use playback-only and capture-only in v2 instead.
+
 > > +
-> > +       if (op->data.nbytes)
-> > +               op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
-> 
-> How about getting rid of the above and
-> 
+> > +properties:
+> > +  compatible:
+> > +    contains:
+> > +      enum:
+> > +        - qcom,sc7180-sndcard
+>
+> Just:
+>
+> properties:
+>   compatible:
+>     const: qcom,sc7180-sndcard
+>
+>
+
+Fixed in v2.
+
+>
+> > +  audio-routing:
+> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > +    description: |-
+> > +      A list of the connections between audio components. Each entry is a
+> > +      pair of strings, the first being the connection's sink, the second
+> > +      being the connection's source.
+>
+> You don't need the "|-" after the "description:".  That says newlines
+> are important but strip the newline from the end.
+>
+Fixed in v2.
+>
+> > +  model:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    description: User specified audio sound card name
 > > +
-> > +       if (spi_nor_protocol_is_dtr(proto)) {
-> 
-> introduce a spi_nor_spimem_setup_dtr_op() just for the body of this if?
+> > +patternProperties:
+> > +  "^dai-link-[0-9]+$":
+> > +    description: |
+> > +      Each subnode represents a dai link. Subnodes of each dai links would be
+> > +      cpu/codec dais.
+>
+> From looking at "simple-card.yaml", I'm gonna guess that instead of
+> encoding the link number in the name of the node that you should
+> actually use a unit address and a reg in the subnodes.
 
-What benefit do we get with that other than skipping a couple of if() 
-checks? The downside is that we would have to then replicate all this 
-code to assign buswidth everywhere, including in spi_nor_read_sr() and 
-spi_nor_read_fsr() adding to more boilerplate.
+Thanks for the explanation. Fixed in v2.
+I think this naming is better, although there is no usage in the
+machine driver for the reg.
 
-If we change anything about spi-mem ops in the future we would then 
-again have to hunt and peck all places where we create spi-mem ops and 
-update them.
+>
+> ...also, again your description doesn't need the "|" at the end.
+> Maybe <https://yaml-multiline.info/> will be useful to you?
+>
+>
 
-For example, I was recently experimenting with a mechanism to tell 
-controllers the maximum supported frequency for an op (xSPI says read 
-SFDP should support at least 50MHz operation so we want to make sure 
-controllers don't exceed that speed). A max speed of 0 would mean 
-controllers can go as fast as they wish (how it is done currently). 
-Having a central function to set up ops made it a 1 line change to set 
-the speed to 0 for all ops, and then we can set it to 50MHz for read 
-SFDP. The same thing without it would have me copying that line in 10-15 
-places.
+Thanks for the explanation and the pointer!
 
-So unless there are any significant reasons to avoid having this, I 
-think it is a good idea to keep it.
-
-> > +               /*
-> > +                * spi-mem supports mixed DTR modes, but right now we can only
-> > +                * have all phases either DTR or STR. IOW, spi-mem can have
-> nit: SPIMEM
-> > +                * something like 4S-4D-4D, but spi-nor can't. So, set all 4
-> nit: SPI NOR
-> > +                * phases to either DTR or STR.
-> > +                */
-> > +               op->cmd.dtr = op->addr.dtr = op->dummy.dtr
-> > +                              = op->data.dtr = true;
+> > +    type: object
 > > +
-> > +               /* 2 bytes per clock cycle in DTR mode. */
-> > +               op->dummy.nbytes *= 2;
+> > +    properties:
+> > +      link-name:
+> > +        $ref: "#/definitions/link-name"
 > > +
-> > +               ext = spi_nor_get_cmd_ext(nor, op);
-> > +               op->cmd.opcode = (op->cmd.opcode << 8) | ext;
-> > +               op->cmd.nbytes = 2;
-> > +       }
-> > +}
+> > +      unidirectional:
+> > +        $ref: "#/definitions/unidirectional"
 > > +
-> >  /**
-> >   * spi_nor_spimem_bounce() - check if a bounce buffer is needed for the data
-> >   *                           transfer
-> > @@ -104,14 +174,12 @@ static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
-> >         ssize_t nbytes;
-> >         int error;
-> > 
-> > -       /* get transfer protocols. */
-> > -       op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
-> > -       op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-> > -       op.dummy.buswidth = op.addr.buswidth;
-> > -       op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
-> > +       spi_nor_spimem_setup_op(nor, &op, nor->read_proto);
-> 
-> Here we would keep the code as it were.
-> > 
-> >         /* convert the dummy cycles to the number of bytes */
-> >         op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
-> > +       if (spi_nor_protocol_is_dtr(nor->read_proto))
-> > +               op.dummy.nbytes *= 2;
-> 
-> And replace these 2 lines with:
-> 	if (spi_nor_protocol_is_dtr(nor->read_proto))
-> 		spi_nor_spimem_setup_dtr_op(nor, &op, nor->read_proto)
-> > 
-> >         usebouncebuf = spi_nor_spimem_bounce(nor, &op);
-> > 
-> > @@ -169,13 +237,11 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
-> >         ssize_t nbytes;
-> >         int error;
-> > 
-> > -       op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
-> > -       op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-> > -       op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
-> > -
-> >         if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
-> >                 op.addr.nbytes = 0;
-> > 
-> > +       spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
+> > +      cpu:
+> > +        $ref: "#/definitions/dai"
 > > +
-> >         if (spi_nor_spimem_bounce(nor, &op))
-> >                 memcpy(nor->bouncebuf, buf, op.data.nbytes);
-> > 
-> > @@ -227,10 +293,16 @@ int spi_nor_write_enable(struct spi_nor *nor)
-> >                                    SPI_MEM_OP_NO_DUMMY,
-> >                                    SPI_MEM_OP_NO_DATA);
-> > 
-> > +               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> 
-> For the reg operation we can get rid of the extra checks that were in
-> spi_nor_spimem_setup_op and simply do:
-> 
-> 		if (spi_nor_protocol_is_dtr(proto))
-> 			spi_nor_spimem_setup_dtr_op()
-> 
+> > +      codec:
+> > +        $ref: "#/definitions/dai"
 > > +
-> >                 ret = spi_mem_exec_op(nor->spimem, &op);
-> >         } else {
-> > -               ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN,
-> > -                                                    NULL, 0);
-> > +               if (spi_nor_protocol_is_dtr(nor->reg_proto))
-> > +                       ret = -ENOTSUPP;
-> > +               else
-> > +                       ret = nor->controller_ops->write_reg(nor,
-> > +                                                            SPINOR_OP_WREN,
-> > +                                                            NULL, 0);
-> 
-> Would you introduce helpers for the controller ops, like Boris
-> did in the following patch?
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/20181012084825.23697-10-boris.brezillon@bootlin.com/
-> 
-> How about spi_nor_controller_ops_read_reg()
-> and spi_nor_controller_ops_write_reg() instead?
-
-It would get rid of the boilerplate so I think it is a good idea.
-
-> cut
-> 
-> > @@ -1144,7 +1291,11 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-> >                                    SPI_MEM_OP_NO_DUMMY,
-> >                                    SPI_MEM_OP_NO_DATA);
-> > 
-> > +               spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
+> > +    required:
+> > +      - link-name
+> > +      - cpu
+> > +      - codec
 > > +
-> >                 return spi_mem_exec_op(nor->spimem, &op);
-> > +       } else if (spi_nor_protocol_is_dtr(nor->write_proto)) {
-> > +               return -ENOTSUPP;
-> >         } else if (nor->controller_ops->erase) {
-> >                 return nor->controller_ops->erase(nor, addr);
-> >         }
-> 
-> here you would need a helper: spi_nor_controller_ops_erase()
-
-Ok.
- 
-> cut
-> 
-> > @@ -2368,12 +2517,16 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
-> >         struct spi_nor_flash_parameter *params = nor->params;
-> >         unsigned int cap;
-> > 
-> > -       /* DTR modes are not supported yet, mask them all. */
-> > -       *hwcaps &= ~SNOR_HWCAPS_DTR;
-> > -
-> >         /* X-X-X modes are not supported yet, mask them all. */
-> >         *hwcaps &= ~SNOR_HWCAPS_X_X_X;
-> > 
-> > +       /*
-> > +        * If the reset line is broken, we do not want to enter a stateful
-> > +        * mode.
-> > +        */
-> > +       if (nor->flags & SNOR_F_BROKEN_RESET)
-> > +               *hwcaps &= ~(SNOR_HWCAPS_X_X_X | SNOR_HWCAPS_X_X_X_DTR);
-> 
-> A dedicated reset line is not enough for flashes that keep their state
-> in non-volatile bits. Since we can't protect from unexpected crashes in
-> the non volatile state case, we should enter these modes only with an
-> explicit request, i.e. an optional DT property: "update-nonvolatile-state",
-> or something similar.
-
-I wrote this patch with the assumption that we won't be supporting 
-non-volatile configuration as of now. In the previous discussions we 
-came to the conclusion that it is not easy to detect the flash if it 
-boots in any mode other than 1S-1S-1S [0]. So if we update non-volatile 
-state, the flash would be useless after a reboot because we won't be 
-able to detect it in 8D mode. It doesn't matter if the reset line is 
-connected or not because it will reset the flash to the non-volatile 
-state, and we can't detect it from the non-volatile state.
-
-> For the volatile state case, we can parse the SFDP SCCR map, save if we
-> can enter stateful modes in a volatile way, and if yes allow the entering.
-
-If we are not support volatile configurations, the reset line is enough 
-to take care of unexpected resets, no? I don't see any need to parse 
-SCCR map just for this.
-
-> Do the flashes that you played with define the SFDP SCCR map?
-
-FWIW, the Cypress S28HS512T flash does but the Micron MT35XU512ABA does 
-not.
- 
+> > +    additionalProperties: false
 > > +
-> >         for (cap = 0; cap < sizeof(*hwcaps) * BITS_PER_BYTE; cap++) {
-> >                 int rdidx, ppidx;
-> > 
-> > @@ -2628,7 +2781,7 @@ static int spi_nor_default_setup(struct spi_nor *nor,
-> >                  * controller directly implements the spi_nor interface.
-> >                  * Yet another reason to switch to spi-mem.
-> >                  */
-> > -               ignored_mask = SNOR_HWCAPS_X_X_X;
-> > +               ignored_mask = SNOR_HWCAPS_X_X_X | SNOR_HWCAPS_X_X_X_DTR;
-> >                 if (shared_mask & ignored_mask) {
-> >                         dev_dbg(nor->dev,
-> >                                 "SPI n-n-n protocols are not supported.\n");
-> > @@ -2774,11 +2927,25 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
-> >                                           SNOR_PROTO_1_1_8);
-> >         }
-> > 
-> > +       if (info->flags & SPI_NOR_OCTAL_DTR_READ) {
-> 
-> Why do we need this flag? Can't we determine if the flash supports
-> octal DTR by parsing SFDP?
-
-For Cypress S28HS512T, we can since it is xSPI compliant. We can't do 
-that for Micron MT35XU512ABA since it is not xSPI compliant.
-
-> > +               params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-> > +               spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-> > +                                         0, 20, SPINOR_OP_READ_FAST,
-> > +                                         SNOR_PROTO_8_8_8_DTR);
-> > +       }
+> > +examples:
 > > +
-> >         /* Page Program settings. */
-> >         params->hwcaps.mask |= SNOR_HWCAPS_PP;
-> >         spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
-> >                                 SPINOR_OP_PP, SNOR_PROTO_1_1_1);
-> > 
-> > +       /*
-> > +        * Since xSPI Page Program opcode is backward compatible with
-> > +        * Legacy SPI, use Legacy SPI opcode there as well.
-> > +        */
-> > +       spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
-> > +                               SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
+> > +  - |
+> > +    snd {
+>
+> Can you use the full node name "sound" here?
+>
+>
+Fixed in v2.
+> > +        compatible = "qcom,sc7180-sndcard";
+> > +        model = "sc7180-snd-card";
 > > +
-> 
-> This looks fishy. You haven't updated the hwcaps.mask, these pp settings never
-> get selected?
+> > +        pinctrl-names = "default";
+> > +        pinctrl-0 = <&sec_mi2s_active &sec_mi2s_dout_active
+> > +                     &sec_mi2s_ws_active &pri_mi2s_active
+> > +                     &pri_mi2s_dout_active &pri_mi2s_ws_active
+> > +                     &pri_mi2s_din_active &pri_mi2s_mclk_active>;
+>
+> I think pinctrl is usually not in the dt examples.
+>
+Fixed in v2.
 
-The problem here is that I don't see any field/table in SFDP that can 
-tell us {if,which} 8D-8D-8D program commands are supported. The xSPI 
-spec says that "The program commands provide SPI backward compatible 
-commands for programming data...".
+> ...also, shouldn't the mi2s pinctrl be in the i2s nodes, not in the
+> overall sound node?
 
-So we populate the 8D page program opcodes here (and in 4bait parsing) 
-using the 1S opcodes. The flashes have to enable the hwcap in fixup 
-hooks.
+Yes. Thanks for pointing this out. Fixed in dts file in chromium.
 
-As an alternative, maybe we can introduce the SPI_NOR_OCTAL_DTR_PP flag 
-that can enable the hwcap here? Thoughts?
-
-> >         /*
-> >          * Sector Erase settings. Sort Erase Types in ascending order, with the
-> >          * smallest erase size starting at BIT(0).
-> > @@ -2886,7 +3053,8 @@ static int spi_nor_init_params(struct spi_nor *nor)
-> > 
-> >         spi_nor_manufacturer_init_params(nor);
-> > 
-> > -       if ((nor->info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
-> > +       if ((nor->info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> > +                                SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ)) &&
-> >             !(nor->info->flags & SPI_NOR_SKIP_SFDP))
-> >                 spi_nor_sfdp_init_params(nor);
-> > 
-> > @@ -2948,7 +3116,9 @@ static int spi_nor_init(struct spi_nor *nor)
-> >                 return err;
-> >         }
-> > 
-> > -       if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
-> > +       if (nor->addr_width == 4 &&
-> > +           !(nor->info->flags & SPI_NOR_OCTAL_DTR_READ) &&
-> 
-> Why is the Octal DTR read exempted?
-
-It is based on the assumption explained below that 8D mode will always 
-use 4-byte addresses so we don't need to explicitly enable 8D mode. 
-Although I think maybe we should exempt all flashes that support DTR 
-mode?
-
-> > +           !(nor->flags & SNOR_F_4B_OPCODES)) {
-> >                 /*
-> >                  * If the RESET# pin isn't hooked up properly, or the system
-> >                  * otherwise doesn't perform a reset command in the boot
-> > @@ -3007,6 +3177,9 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
-> >  {
-> >         if (nor->addr_width) {
-> >                 /* already configured from SFDP */
-> > +       } else if (spi_nor_protocol_is_dtr(nor->read_proto)) {
-> > +                /* Always use 4-byte addresses in DTR mode. */
-> > +               nor->addr_width = 4;
-> 
-> Why? DTR with 3 byte addr width should be possible too.
-
-Should it be? What would happen to the half cycle left over? Do we then 
-start the dummy phase in the middle of the cycle? We would also have to 
-start the data phase in the middle of a cycle as well and end the 
-transaction with half a cycle left over.
-
-AFAIK, the controller I tested with (Cadence QSPI) does not support 
-this. Similarly, the two flashes this series adds support for, Cypress 
-S28HS512T and Micron MT35XU512ABA, don't support 3-byte address in 8D 
-mode. I'm not sure if there are any flashes or controllers that do.
- 
-> >         } else if (nor->info->addr_width) {
-> >                 nor->addr_width = nor->info->addr_width;
-> >         } else if (nor->mtd.size > 0x1000000) {
-> 
-> Cheers,
-> ta
-
-[0] https://lore.kernel.org/linux-mtd/20200228093658.zc3uifqg4zruokq3@ti.com/
-
--- 
-Regards,
-Pratyush Yadav
+>
+>
+> > +        audio-routing =
+> > +                    "Headphone Jack", "HPOL",
+> > +                    "Headphone Jack", "HPOR";
+> > +
+> > +        dai-link-0 {
+> > +            link-name = "MultiMedia0";
+> > +            cpu {
+> > +                sound-dai = <&lpass_cpu 0>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&alc5682 0>;
+> > +            };
+> > +        };
+> > +
+> > +        dai-link-1 {
+> > +            link-name = "MultiMedia1";
+> > +            unidirectional = <0>;
+> > +            cpu {
+> > +                sound-dai = <&lpass_cpu 1>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&max98357a>;
+> > +            };
+> > +        };
+> > +    };
+> > --
+> > 2.28.0.rc0.105.gf9edc3c819-goog
+> >
