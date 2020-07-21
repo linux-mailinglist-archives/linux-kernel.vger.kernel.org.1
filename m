@@ -2,137 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E78227DE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EB0227DAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729490AbgGUKzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:55:48 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24247 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729482AbgGUKzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:55:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595328945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+3seadylwcW1rKfz25C5YjNc+LNMmMOgRxWnx3VfrYM=;
-        b=Bx+EqnfPFCBbu0xN3hG3h//8K66M/FNnZzK44GNUzQyBEmZxh+IO63Zinv+cK2Tl/D14nx
-        fLG3mTXGkQ79SPVvDqU3RaquRxGPD/Gg1TY2zaaHgY/Ftq/VA5AapUtE1befrc97eMrwDA
-        qrAgfnSWKbDjjaTWeubld6Q6+yRRyPs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-YSjNVmjPOw2mHuqqn-p2Cw-1; Tue, 21 Jul 2020 06:55:42 -0400
-X-MC-Unique: YSjNVmjPOw2mHuqqn-p2Cw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728665AbgGUKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726127AbgGUKws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:52:48 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07C091005504;
-        Tue, 21 Jul 2020 10:55:39 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7482876216;
-        Tue, 21 Jul 2020 10:55:26 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Keith Busch <kbusch@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
-        linux-scsi@vger.kernel.org (open list:SCSI CDROM DRIVER),
-        Tejun Heo <tj@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ajay Joshi <ajay.joshi@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        linux-mmc@vger.kernel.org (open list:SONY MEMORYSTICK SUBSYSTEM),
-        Christoph Hellwig <hch@lst.de>,
-        Satya Tangirala <satyat@google.com>,
-        nbd@other.debian.org (open list:NETWORK BLOCK DEVICE (NBD)),
-        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
-        virtualization@lists.linux-foundation.org (open list:VIRTIO CORE AND
-        NET DRIVERS), "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 10/10] block: scsi: sr: use blk_is_valid_logical_block_size
-Date:   Tue, 21 Jul 2020 13:52:39 +0300
-Message-Id: <20200721105239.8270-11-mlevitsk@redhat.com>
-In-Reply-To: <20200721105239.8270-1-mlevitsk@redhat.com>
-References: <20200721105239.8270-1-mlevitsk@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9187E2073A;
+        Tue, 21 Jul 2020 10:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595328768;
+        bh=tP/j9SYV2Wc096FLcNTJNBdxAa7a73U6cx63i0V4ty8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S4qfj7soch1wyIflz540mPLAPLtJYuO8SK3jkGX5d8cfohn9NypIIsxLTvlIV9/Lg
+         mKJt6wmfQzoHA0dd4UmP36gtZWE4h6n6gU8AlBp4M1v+Eo3Z6qD0RcHbNXdIDRssUw
+         wZWsV11dbBed35NXhsGXy9Lleq3eRK2u8dAwJ0yQ=
+Date:   Tue, 21 Jul 2020 12:52:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+Subject: Re: [PATCH] [PATCH] Firmware security information in SYSFS
+Message-ID: <20200721105256.GC1678476@kroah.com>
+References: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
+ <20200717062841.GA3238569@kroah.com>
+ <CAK8P3a1yy7YyeJH5k40yAXb23y9siBnfuqixb76t3BK9Xh=uXQ@mail.gmail.com>
+ <CAFmMkTFLm9mw5-8Dj_7rhP2KBcLUoJ1WcQCJv5_k+QRsmJPxjg@mail.gmail.com>
+ <20200717145746.GB3008378@kroah.com>
+ <CAFmMkTEsm7CRBzEJSCjkhCT7NHvRUXzcgchExbnfFbwPjT0YFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFmMkTEsm7CRBzEJSCjkhCT7NHvRUXzcgchExbnfFbwPjT0YFg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Plus some tiny refactoring.
+On Mon, Jul 20, 2020 at 05:58:47PM -0300, Daniel Gutson wrote:
+> On Fri, Jul 17, 2020 at 11:57 AM Greg Kroah-Hartman <
+> gregkh@linuxfoundation.org> wrote:
+> 
+> > On Fri, Jul 17, 2020 at 11:46:39AM -0300, Daniel Gutson wrote:
+> > > On Fri, Jul 17, 2020 at 11:41 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > >
+> > > > On Fri, Jul 17, 2020 at 8:28 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Thu, Jul 16, 2020 at 07:36:27PM -0300, Daniel Gutson wrote:
+> > > > > > +What:                /sys/kernel/firmware-security/bioswe
+> > > > >
+> > > > > Ick, I stopped reading right here.
+> > > > >
+> > > > > No, this is not where this belongs.
+> > > > >
+> > > > > We already have /sys/firmware/, right?  And firmware-specific
+> > > > > subdirectories below that.
+> > > > >
+> > > > > We also have /sys/devices/system/ and I think that would be a much
+> > > > > better place for this, as it is easier to work with a real 'struct
+> > > > > device' than a "raw" kobject any day.  Bonus is you get full support
+> > of
+> > > > > userspace libraries when you do that, unlike when dealing with
+> > kobjects.
+> > > > >
+> > > > > Also, this really is a _SPECIFIC_ type of firmware that supports
+> > these
+> > > > > features, right?  Why not call that out too?  This is not generic by
+> > any
+> > > > > means.
+> > > >
+> > > > As I suggested in my previous review, I wouldn't worry too much about
+> > > > the user interface at the start, but instead first work out how the
+> > > > hardware
+> > > > support fits in with the existing drivers and once that looks fine
+> > decide
+> > > > on how to export it to user space.
+> > > >
+> > > > I agree the  /sys/kernel/firmware-security/bioswe sounds like the wrong
+> > > > place, but I'm not sure if adding any other new directory in sysfs is
+> > > > much better. I think the most promising would be to have it on the
+> > > > sysfs directory for the device it refers to,
+> > >
+> > >
+> > > My idea is to have all the firmware security information together in the
+> > > same place; this information comes from many devices.
+> > > This initial patch involves the SPI Controller, and I don't want to add
+> > > more stuff until there
+> > > is a consensus.
+> > > So, do you have a suggestion where to put this information?
+> > > /sys/devices/system/firmware-security?
+> > > /sys/firmware/security?
+> > > other?
+> > >
+> > > Please advise.
+> >
+> > It's fun to focus on things like this, as it's the most visible part,
+> > but are you sure the "talk to the hardware" part is working properly?
+> >
+> 
+> Yes.
+> 
+> 
+> 
+> >
+> > If so, great, it should be a "class", as that way it is independent of
+> > any hardware type, right?  Classes show how devices talk to userspace in
+> > a common way (input, tty, led, block, etc.)  So why is this any
+> > different from that?
+> >
+> 
+> Are you suggesting to create a new class, or use an existing one?
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- drivers/scsi/sr.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+Probably a new one, unless you can find an existing one that would fit?
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 0c4aa4665a2f9..0e96338029310 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -866,31 +866,26 @@ static void get_sectorsize(struct scsi_cd *cd)
- 			cd->capacity = max_t(long, cd->capacity, last_written);
- 
- 		sector_size = get_unaligned_be32(&buffer[4]);
--		switch (sector_size) {
--			/*
--			 * HP 4020i CD-Recorder reports 2340 byte sectors
--			 * Philips CD-Writers report 2352 byte sectors
--			 *
--			 * Use 2k sectors for them..
--			 */
--		case 0:
--		case 2340:
--		case 2352:
-+
-+		/*
-+		 * HP 4020i CD-Recorder reports 2340 byte sectors
-+		 * Philips CD-Writers report 2352 byte sectors
-+		 *
-+		 * Use 2k sectors for them..
-+		 */
-+
-+		if (!sector_size || sector_size == 2340 || sector_size == 2352)
- 			sector_size = 2048;
--			/* fall through */
--		case 2048:
--			cd->capacity *= 4;
--			/* fall through */
--		case 512:
--			break;
--		default:
-+
-+		cd->capacity *= (sector_size >> SECTOR_SHIFT);
-+
-+		if (!blk_is_valid_logical_block_size(sector_size)) {
- 			sr_printk(KERN_INFO, cd,
- 				  "unsupported sector size %d.", sector_size);
- 			cd->capacity = 0;
- 		}
- 
- 		cd->device->sector_size = sector_size;
--
- 		/*
- 		 * Add this so that we have the ability to correctly gauge
- 		 * what the device is capable of.
--- 
-2.26.2
+thanks,
 
+greg k-h
