@@ -2,173 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37347228378
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210D6228388
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729950AbgGUPUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
+        id S1730057AbgGUPVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729647AbgGUPUM (ORCPT
+        with ESMTP id S1729938AbgGUPVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:20:12 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE467C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:20:11 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a21so22010539ejj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:20:11 -0700 (PDT)
+        Tue, 21 Jul 2020 11:21:04 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F69C061794;
+        Tue, 21 Jul 2020 08:21:04 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lx13so22054073ejb.4;
+        Tue, 21 Jul 2020 08:21:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CVY6ngE/wUOCAJ5ZXM4RxqaDGgVG+i4hISevEon3J24=;
-        b=PShVHcuB5n4LdkFuYUlDfgcU4l08VeViecqRx966bZmdDekCay/647wqbwHHKhJtOA
-         PIA/K7ogQS3s25r6G+G+VT8OM8fo1SCTSkTata49MSs/DVqOwyBLqZYY91Va/sy7huBS
-         SSp9ickzRl9a5mQOl1C0lxefP8AJ0CY33iNKW1PGZOmgNYsfdwkDCPXcMUzeAWnEpOLG
-         XkjAzSXGbgKXIWyZoUtUwOUtftpg8ywhv7PteOJ7SgJ5Qwxh+5UD+wOfs/FGZeqKlnCz
-         i+1e6Vu+HDvEMMw/8VMIwRZHMAxTnmrDjjdI3xrrIBk/sOCnnsicY19qC+eKF0bWxy1Y
-         5oZA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnSVvBPLgxOr7Okxa4+yFdbMwIKkVndKbRuepRfY/Zs=;
+        b=Wda03GT1kLUZKx6XiHGQWkJ8oovNFoSvac/RNxLY0dRCc9Ex7MFTykiVGOr6g1cYIz
+         8W6P/7J5zILoKpIDFBn7/tMyrlVP4KVZIkpRiCotzXU39lP8i6VstOJIq5YrNxdcFBff
+         nE5eQg8k2a42+icZuLTufOsfcJjDfOA974arJ75VBVDFblqAE0DvEVwQVz++9btRFtCn
+         BSRSNIEVDK6tY1iGQCqMPQi7YmvoCboaHs4ODrt10KPx3lTizXg6JKAkfvJ7Edtd5pPK
+         nEjRrvomS1rrLAFD0St4GFU9yseLSBQgEt8VGYjqMsm//6ml0RhorAov+cTFcoNT44sA
+         OZ6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CVY6ngE/wUOCAJ5ZXM4RxqaDGgVG+i4hISevEon3J24=;
-        b=uLSqfXHgKguvjSkON7SIF7V78Lqi5k2w4JSxc4/1JshJWjya/3BfWrMsmOgOZAnlMh
-         1qp1RIDxZUMHVooR95o8EenRfhtGl9reumrS+dlFMfooYg817YJInKJjmDX3KZwpltlm
-         Yexgcxl+WmXjx7cMH2OEWpWJnvJT9/DvhU8Q175cqy9zZH9gydWu9UVmf7xsuulY4kjp
-         84GzfniizRulTRMKjw1pqfnThAvkfNCcBEgbVuLGHA4lgtgcEJEsptGqKKBXW8nMp26P
-         cmWWgu7tERms6t8FivrDmRbYoWe8lXWAefszU7PmNE+fgV07XhkC13ASuhTYJzajk1E5
-         qNaw==
-X-Gm-Message-State: AOAM53182aXW26V/vkb0j0Zrja0SG3bL4vK2yBGvJ2OtQhHUnXolVrSz
-        jQC+2SBBeqhpKGEM10ef5sKNDCpPB5MnT3DyieXZ
-X-Google-Smtp-Source: ABdhPJyNzk5GLZaq6SyY71ytrhwHNZi9iL0vlh9sSlF2PECzAISmANF5Ujh2IweRLkFCRobwdafunNhRjthEJcQwAWk=
-X-Received: by 2002:a17:906:1a59:: with SMTP id j25mr24366780ejf.398.1595344810149;
- Tue, 21 Jul 2020 08:20:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnSVvBPLgxOr7Okxa4+yFdbMwIKkVndKbRuepRfY/Zs=;
+        b=YuNQ/YwHHu1WvYgxoy5lGod9dmv2NeetxC7d4Fa5hKq9moNcFY0TlNYWtbAu7Lyzsu
+         e+sHkySjL+WAuT85W1J+PkYkeOEvjlBSTcYgV1Eb00gUV2DoJHut7bxipEesBTZsTWq/
+         oq8s8d6TNqj8KZKPnRRbY6Pl3gcbWOuMu7XWuKKjs3JwIFsbNgzzB0e6a+jb3IoLnGgK
+         4lJBoX+Iz8aWPjh80TU4wm4QqyuKnwsZOXIcW0PZLvjhj3iATlP1HVXh2p36oSm+cSKS
+         ycVw+Es3HpZ2vT6Yg8xFRp9i7u2Xr0H1t02Yb9Iql/bZe1flqSRzVRFhINQ0PVkamWdG
+         yFyg==
+X-Gm-Message-State: AOAM532kCz3s5MDD2hdi5W+hrFK4eH+v0cgEeq3IzQgx3lcFIKAB+tOq
+        LLdKGFHMncAOujRCfsmPZXI=
+X-Google-Smtp-Source: ABdhPJyrp6isiaaIr9nG0cnRhonPmQ5H1ZVfdtX2W04YIAlxyAxj8uwojDguD+DjbG+cG1Ouhgfc4A==
+X-Received: by 2002:a17:906:abc9:: with SMTP id kq9mr26310856ejb.493.1595344862703;
+        Tue, 21 Jul 2020 08:21:02 -0700 (PDT)
+Received: from blackhead.home ([2a01:112f:a1c:7900:7316:ce1e:7b0b:6bd7])
+        by smtp.gmail.com with ESMTPSA id se16sm16802826ejb.93.2020.07.21.08.21.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 08:21:01 -0700 (PDT)
+From:   Marcin Sloniewski <marcin.sloniewski@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, mani@kernel.org, a.fatoum@pengutronix.de,
+        marcin.sloniewski@gmail.com, sam@ravnborg.org,
+        linus.walleij@linaro.org, heiko.stuebner@theobroma-systems.com,
+        stephan@gerhold.net, lkundrak@v3.sk, broonie@kernel.org,
+        allen.chen@ite.com.tw, robh@kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] dt-bindings: vendor-prefixes: add Seeed Studio
+Date:   Tue, 21 Jul 2020 17:20:13 +0200
+Message-Id: <20200721152015.11608-1-marcin.sloniewski@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <6effbbd4574407d6af21162e57d9102d5f8b02ed.1594664015.git.rgb@redhat.com>
- <CAHC9VhSyq7yKQqwvHL5syU9+TFki6-__WfCrvqewbnU3xpND4Q@mail.gmail.com>
- <20200714174353.ds7lj3iisy67t2zu@madcap2.tricolour.ca> <CAHC9VhQusQsdQc7EfdjdH5mp6qqqYVPHnG9nNhUhf3DS_cdWwA@mail.gmail.com>
- <20200714210027.me2ieywjfcsf4v5r@madcap2.tricolour.ca>
-In-Reply-To: <20200714210027.me2ieywjfcsf4v5r@madcap2.tricolour.ca>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 21 Jul 2020 11:19:59 -0400
-Message-ID: <CAHC9VhQgDGPutYxQawMPmezm1a+i1nXO5KSn9_7KPDZsRBJ4pw@mail.gmail.com>
-Subject: Re: [PATCH ghak84 v4] audit: purge audit_log_string from the
- intra-kernel audit API
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     john.johansen@canonical.com,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 5:00 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> On 2020-07-14 16:29, Paul Moore wrote:
-> > On Tue, Jul 14, 2020 at 1:44 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > On 2020-07-14 12:21, Paul Moore wrote:
-> > > > On Mon, Jul 13, 2020 at 3:52 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > > >
-> > > > > audit_log_string() was inteded to be an internal audit function and
-> > > > > since there are only two internal uses, remove them.  Purge all external
-> > > > > uses of it by restructuring code to use an existing audit_log_format()
-> > > > > or using audit_log_format().
-> > > > >
-> > > > > Please see the upstream issue
-> > > > > https://github.com/linux-audit/audit-kernel/issues/84
-> > > > >
-> > > > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > > > > ---
-> > > > > Passes audit-testsuite.
-> > > > >
-> > > > > Changelog:
-> > > > > v4
-> > > > > - use double quotes in all replaced audit_log_string() calls
-> > > > >
-> > > > > v3
-> > > > > - fix two warning: non-void function does not return a value in all control paths
-> > > > >         Reported-by: kernel test robot <lkp@intel.com>
-> > > > >
-> > > > > v2
-> > > > > - restructure to piggyback on existing audit_log_format() calls, checking quoting needs for each.
-> > > > >
-> > > > > v1 Vlad Dronov
-> > > > > - https://github.com/nefigtut/audit-kernel/commit/dbbcba46335a002f44b05874153a85b9cc18aebf
-> > > > >
-> > > > >  include/linux/audit.h     |  5 -----
-> > > > >  kernel/audit.c            |  4 ++--
-> > > > >  security/apparmor/audit.c | 10 ++++------
-> > > > >  security/apparmor/file.c  | 25 +++++++------------------
-> > > > >  security/apparmor/ipc.c   | 46 +++++++++++++++++++++++-----------------------
-> > > > >  security/apparmor/net.c   | 14 ++++++++------
-> > > > >  security/lsm_audit.c      |  4 ++--
-> > > > >  7 files changed, 46 insertions(+), 62 deletions(-)
-> > > >
-> > > > Thanks for restoring the quotes, just one question below ...
-> > > >
-> > > > > diff --git a/security/apparmor/ipc.c b/security/apparmor/ipc.c
-> > > > > index 4ecedffbdd33..fe36d112aad9 100644
-> > > > > --- a/security/apparmor/ipc.c
-> > > > > +++ b/security/apparmor/ipc.c
-> > > > > @@ -20,25 +20,23 @@
-> > > > >
-> > > > >  /**
-> > > > >   * audit_ptrace_mask - convert mask to permission string
-> > > > > - * @buffer: buffer to write string to (NOT NULL)
-> > > > >   * @mask: permission mask to convert
-> > > > > + *
-> > > > > + * Returns: pointer to static string
-> > > > >   */
-> > > > > -static void audit_ptrace_mask(struct audit_buffer *ab, u32 mask)
-> > > > > +static const char *audit_ptrace_mask(u32 mask)
-> > > > >  {
-> > > > >         switch (mask) {
-> > > > >         case MAY_READ:
-> > > > > -               audit_log_string(ab, "read");
-> > > > > -               break;
-> > > > > +               return "read";
-> > > > >         case MAY_WRITE:
-> > > > > -               audit_log_string(ab, "trace");
-> > > > > -               break;
-> > > > > +               return "trace";
-> > > > >         case AA_MAY_BE_READ:
-> > > > > -               audit_log_string(ab, "readby");
-> > > > > -               break;
-> > > > > +               return "readby";
-> > > > >         case AA_MAY_BE_TRACED:
-> > > > > -               audit_log_string(ab, "tracedby");
-> > > > > -               break;
-> > > > > +               return "tracedby";
-> > > > >         }
-> > > > > +       return "";
-> > > >
-> > > > Are we okay with this returning an empty string ("") in this case?
-> > > > Should it be a question mark ("?")?
-> > > >
-> > > > My guess is that userspace parsing should be okay since it still has
-> > > > quotes, I'm just not sure if we wanted to use a question mark as we do
-> > > > in other cases where the field value is empty/unknown.
-> > >
-> > > Previously, it would have been an empty value, not even double quotes.
-> > > "?" might be an improvement.
-> >
-> > Did you want to fix that now in this patch, or leave it to later?  As
-> > I said above, I'm not too bothered by it with the quotes so either way
-> > is fine by me.
->
-> I'd defer to Steve, otherwise I'd say leave it, since there wasn't
-> anything there before and this makes that more evident.
->
-> > John, I'm assuming you are okay with this patch?
+Add the "seeed" vendor prefix for Seeed Technology Co., Ltd
+Website: https://www.seeedstudio.com/
 
-With no comments from John or Steve in the past week, I've gone ahead
-and merged the patch into audit/next.
+Signed-off-by: Marcin Sloniewski <marcin.sloniewski@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 9aeab66be85f..7dd03b3e9d3c 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -902,6 +902,8 @@ patternProperties:
+     description: Schindler
+   "^seagate,.*":
+     description: Seagate Technology PLC
++  "^seeed,.*":
++    description: Seeed Technology Co., Ltd
+   "^seirobotics,.*":
+     description: Shenzhen SEI Robotics Co., Ltd
+   "^semtech,.*":
 -- 
-paul moore
-www.paul-moore.com
+2.27.0
+
