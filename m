@@ -2,97 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119AA2273C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE102273C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgGUA1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 20:27:18 -0400
-Received: from mga14.intel.com ([192.55.52.115]:57470 "EHLO mga14.intel.com"
+        id S1728139AbgGUA1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 20:27:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726546AbgGUA1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:27:18 -0400
-IronPort-SDR: f/k+W2uA+/eVtrqOtHBHkLzyBIumr4KfXOl4MxW48qKcrrOYJXzXuz7bjldrkilvPKPdm61kTZ
- cF/7rGrpWw1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="149192453"
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="149192453"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 17:27:17 -0700
-IronPort-SDR: KU67nvGdIM567sW9az7dY8E4HkdiF19stJkvANlzratzIpWpnnjpYzW7S4UBW/HnqoosC1N+H7
- HwsPgq+H0Ovg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,375,1589266800"; 
-   d="scan'208";a="487425517"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Jul 2020 17:27:17 -0700
-Date:   Mon, 20 Jul 2020 17:27:17 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 6/7] KVM: x86: Use common definition for
- kvm_nested_vmexit tracepoint
-Message-ID: <20200721002717.GC20375@linux.intel.com>
-References: <20200718063854.16017-1-sean.j.christopherson@intel.com>
- <20200718063854.16017-7-sean.j.christopherson@intel.com>
- <87365mqgcg.fsf@vitty.brq.redhat.com>
+        id S1727119AbgGUA1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 20:27:35 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0ACB82080D;
+        Tue, 21 Jul 2020 00:27:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595291255;
+        bh=c6SZiY+whgjX+KRRviicz0UCk9I8GfA5MfRpG2BBP94=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h25Ur3YjDXsIffNXZbUEBviwLUlanTRFbhwbcg8s+C+yYrfFTYIWsit+7qQSc+V8s
+         8O1o15xWRghSS3gfayQfZmw7lGcP6klqpEGdE6Jl4feXp8b0tUvfLKezUjoZEAcstW
+         D8t7q8kYE+tLgxEgh745NuSPqBpOJ99ojzMEhBuA=
+Received: by mail-ot1-f50.google.com with SMTP id 72so13757859otc.3;
+        Mon, 20 Jul 2020 17:27:35 -0700 (PDT)
+X-Gm-Message-State: AOAM533IcDoMSj7MN3QdD7Br4oeEdjzymF5zSDoRS/20KGj4eReK0Dfk
+        BHhecWyOt1xOHekWBeBQVoelk0nCDNSRK0Bfzg==
+X-Google-Smtp-Source: ABdhPJy1WG7lsLgsUdYuKa9S5Q9mvAiX/mi4NprNl1cvMY0HgadPJ9FKGMIqdUm5qCrPvLhnJyKu659d9wOYC469eCU=
+X-Received: by 2002:a9d:2646:: with SMTP id a64mr20951382otb.107.1595291254348;
+ Mon, 20 Jul 2020 17:27:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87365mqgcg.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200720074249.596364-1-jiaxun.yang@flygoat.com> <20200720074249.596364-3-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200720074249.596364-3-jiaxun.yang@flygoat.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 20 Jul 2020 18:27:22 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLOVwgFGm82EA+rs2Skjv_=xuuW1V_Asnu2yHHqdy6CvA@mail.gmail.com>
+Message-ID: <CAL_JsqLOVwgFGm82EA+rs2Skjv_=xuuW1V_Asnu2yHHqdy6CvA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] MIPS: Loongson64: Process ISA Node in DeviceTree
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 06:52:15PM +0200, Vitaly Kuznetsov wrote:
-> Sean Christopherson <sean.j.christopherson@intel.com> writes:
-> > +TRACE_EVENT_KVM_EXIT(kvm_nested_vmexit);
-> >  
-> >  /*
-> >   * Tracepoint for #VMEXIT reinjected to the guest
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index fc70644b916ca..f437d99f4db09 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -5912,10 +5912,7 @@ bool nested_vmx_reflect_vmexit(struct kvm_vcpu *vcpu)
-> >  	exit_intr_info = vmx_get_intr_info(vcpu);
-> >  	exit_qual = vmx_get_exit_qual(vcpu);
-> >  
-> > -	trace_kvm_nested_vmexit(vcpu, exit_reason, exit_qual,
-> > -				vmx->idt_vectoring_info, exit_intr_info,
-> > -				vmcs_read32(VM_EXIT_INTR_ERROR_CODE),
-> > -				KVM_ISA_VMX);
-> > +	trace_kvm_nested_vmexit(exit_reason, vcpu, KVM_ISA_VMX);
-> >  
-> >  	/* If L0 (KVM) wants the exit, it trumps L1's desires. */
-> >  	if (nested_vmx_l0_wants_exit(vcpu, exit_reason))
-> 
-> With so many lines removed I'm almost in love with the patch! However,
-> when testing on SVM (unrelated?) my trace log looks a bit ugly:
-> 
->            <...>-315119 [010]  3733.092646: kvm_nested_vmexit:    CAN'T FIND FIELD "rip"<CANT FIND FIELD exit_code>vcpu 0 reason npf rip 0x400433 info1 0x0000000200000006 info2 0x0000000000641000 intr_info 0x00000000 error_code 0x00000000
->            <...>-315119 [010]  3733.092655: kvm_nested_vmexit:    CAN'T FIND FIELD "rip"<CANT FIND FIELD exit_code>vcpu 0 reason npf rip 0x400433 info1 0x0000000100000014 info2 0x0000000000400000 intr_info 0x00000000 error_code 0x00000000
-> 
-> ...
-> 
-> but after staring at this for some time I still don't see where this
-> comes from :-( ... but reverting this commit helps:
+On Mon, Jul 20, 2020 at 1:54 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+> Previously, we're hardcoding resserved ISA I/O Space in code, now
+> we're processing reverved I/O via DeviceTree directly. Using the ranges
+> property to determine the size and address of reserved I/O space.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/loongson64/init.c | 85 ++++++++++++++++++++++++++-----------
+>  1 file changed, 60 insertions(+), 25 deletions(-)
+>
+> diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+> index 59ddadace83f..028d7b324ec2 100644
+> --- a/arch/mips/loongson64/init.c
+> +++ b/arch/mips/loongson64/init.c
+> @@ -7,6 +7,8 @@
+>  #include <linux/irqchip.h>
+>  #include <linux/logic_pio.h>
+>  #include <linux/memblock.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+>  #include <asm/bootinfo.h>
+>  #include <asm/traps.h>
+>  #include <asm/smp-ops.h>
+> @@ -63,41 +65,74 @@ void __init prom_free_prom_memory(void)
+>  {
+>  }
+>
+> -static __init void reserve_pio_range(void)
+> +static int __init add_legacy_isa_io(struct fwnode_handle *fwnode, phys_addr_t addr,
+> +                            resource_size_t    size)
+>  {
+> +       int ret = 0;
+>         struct logic_pio_hwaddr *range;
+> +       unsigned long vaddr;
+>
+>         range = kzalloc(sizeof(*range), GFP_ATOMIC);
+>         if (!range)
+> -               return;
+> +               return -ENOMEM;
+>
+> -       range->fwnode = &of_root->fwnode;
+> -       range->size = MMIO_LOWER_RESERVED;
+> -       range->hw_start = LOONGSON_PCIIO_BASE;
+> +       range->fwnode = fwnode;
+> +       range->size = size;
+> +       range->hw_start = addr;
+>         range->flags = LOGIC_PIO_CPU_MMIO;
+>
+> -       if (logic_pio_register_range(range)) {
+> -               pr_err("Failed to reserve PIO range for legacy ISA\n");
+> -               goto free_range;
+> +       ret = logic_pio_register_range(range);
+> +       if (ret) {
+> +               kfree(range);
+> +               return ret;
+> +       }
+> +
+> +       /* Legacy ISA must placed at the start of PCI_IOBASE */
+> +       if (range->io_start != 0) {
+> +               logic_pio_unregister_range(range);
+> +               kfree(range);
+> +               return -EINVAL;
+>         }
+>
+> -       if (WARN(range->io_start != 0,
+> -                       "Reserved PIO range does not start from 0\n"))
+> -               goto unregister;
+> -
+> -       /*
+> -        * i8259 would access I/O space, so mapping must be done here.
+> -        * Please remove it when all drivers can be managed by logic_pio.
+> -        */
+> -       ioremap_page_range(PCI_IOBASE, PCI_IOBASE + MMIO_LOWER_RESERVED,
+> -                               LOONGSON_PCIIO_BASE,
+> -                               pgprot_device(PAGE_KERNEL));
+> -
+> -       return;
+> -unregister:
+> -       logic_pio_unregister_range(range);
+> -free_range:
+> -       kfree(range);
+> +       vaddr = PCI_IOBASE + range->io_start;
+> +
+> +       ioremap_page_range(vaddr, vaddr + size, addr, pgprot_device(PAGE_KERNEL));
+> +
+> +       return 0;
+> +}
+> +
+> +static __init void reserve_pio_range(void)
+> +{
+> +       struct device_node *np;
+> +
+> +       for_each_node_by_name(np, "isa") {
+> +               struct of_pci_range range;
+> +               struct of_pci_range_parser parser;
 
-The CAN'T FIND FIELD blurb comes from tools/lib/traceevent/event-parse.c.
+Use of_range, of_range_parser instead of PCI variant.
 
-I assume you are using tooling of some form to generate the trace, i.e. the
-issue doesn't show up in /sys/kernel/debug/tracing/trace.  If that's the
-case, this is more or less ABI breakage :-(
- 
->  qemu-system-x86-9928  [022]   379.260656: kvm_nested_vmexit:    rip 400433 reason EXIT_NPF info1 200000006 info2 641000 int_info 0 int_info_err 0
->  qemu-system-x86-9928  [022]   379.260666: kvm_nested_vmexit:    rip 400433 reason EXIT_NPF info1 100000014 info2 400000 int_info 0 int_info_err 0
-> 
-> -- 
-> Vitaly
-> 
+> +
+> +               pr_info("ISA Bridge: %pOF\n", np);
+> +
+> +               if (of_pci_range_parser_init(&parser, np)) {
+> +                       pr_info("Failed to parse resources.\n");
+> +                       break;
+> +               }
+> +
+> +               for_each_of_pci_range(&parser, &range) {
+
+for_each_of_range()
+
+We need to add a define for of_range_parser_init too.
+
+> +                       switch (range.flags & IORESOURCE_TYPE_BITS) {
+> +                       case IORESOURCE_IO:
+> +                               pr_info(" IO 0x%016llx..0x%016llx\n",
+> +                                       range.cpu_addr,
+> +                                       range.cpu_addr + range.size - 1);
+> +                               if (add_legacy_isa_io(&np->fwnode, range.cpu_addr, range.size))
+> +                                       pr_warn("Failed to reserve legacy IO in Logic PIO\n");
+> +                               break;
+> +                       case IORESOURCE_MEM:
+> +                               pr_info(" MEM 0x%016llx..0x%016llx\n",
+> +                                       range.cpu_addr,
+> +                                       range.cpu_addr + range.size - 1);
+> +                               break;
+> +                       }
+> +               }
+> +       }
+>  }
+>
+>  void __init arch_init_irq(void)
+> --
+> 2.28.0.rc1
+>
