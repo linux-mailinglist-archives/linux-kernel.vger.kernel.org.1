@@ -2,52 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8767F227457
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D9F22745F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgGUBC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
+        id S1727881AbgGUBJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgGUBC6 (ORCPT
+        with ESMTP id S1726127AbgGUBJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:02:58 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C2AC061794;
-        Mon, 20 Jul 2020 18:02:58 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2755111E8EC08;
-        Mon, 20 Jul 2020 17:46:13 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 18:02:57 -0700 (PDT)
-Message-Id: <20200720.180257.1845619055500130322.davem@davemloft.net>
-To:     m-karicheri2@ti.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: hsr: check for return value of skb_put_padto()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200720164327.16977-1-m-karicheri2@ti.com>
-References: <20200720164327.16977-1-m-karicheri2@ti.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 20 Jul 2020 17:46:13 -0700 (PDT)
+        Mon, 20 Jul 2020 21:09:31 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E195C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:09:31 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 12so15911365oir.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dt+Q1yBp4pDTEEa5JxC/tBw6WPMfkbJUYHcrzD2fQPw=;
+        b=UvsgbLTUQVe3b9JkR+S3lcYaaULY2+DOIgYkocU2xTKRCoNAhp507MLqfV8Tr7TxY5
+         SV2680GHMFFcbul/qFtIEHUMySCfPwia7v4SzLorXXNiUDtiD7SZ9pOE2+AnZPIxqCrp
+         nAJ9T6tfwuFOr8XBFfc9SwXZAdsJkxeP/C6j/NqQJyf+3vXmHBVk56fpwRATQ6TWtoOt
+         gkob0DsXY93bLDeEgFEEyShn8N6C7hky2zBopNoCIWijwswFg7cyrrQssMsACCIxfoXy
+         8LJoO6CFPVZ32L5qPqKXFAVxKcNVCYvNxpdATzgIgnvq3t5A8Ld4C60w5CNENQWJM2M6
+         d2lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dt+Q1yBp4pDTEEa5JxC/tBw6WPMfkbJUYHcrzD2fQPw=;
+        b=l4uQV3cZYxgSABs7dyMqYDzZd6+cndMCijZQ6DnIklOpW5ugU1J5nPXG0BkqNGOQ4R
+         tNKTlEPGUmvMG2Ec6J11kXKs6sExkXWuIJr43rh3qHeqlj1N0Em0mAKF+AdAJtjRup3j
+         k4K19evMMY+8ofw9GWlkmC57F92AG7E/zV18n4ZteF7yr5nhxVFqavYm5j7RrAoiMH8O
+         5WFM+1P3mZAGk2f8WY2CG7K/2RPqrYSc0lrf26ROBewCOq6eu2uXxPC6toT9d6fMqfeR
+         hpE0rFUNAuxTc96+7yzonMnFhKT8NfnQ9dyrQwBY0iCRnIDArkeu0gofLt9wE1AXZ+9s
+         t54A==
+X-Gm-Message-State: AOAM531YXSLqkJhQ7UwHA4M3RqnKvgXSYbg3AR+KKyHrSxDSE4Z3dl1C
+        OsncvNBaEgbPT1tJY3Z+UcCEjjqrn3HnumHzSCQ5UQ==
+X-Google-Smtp-Source: ABdhPJzbi5+F2TpRM+GQt+/eaPnbEZR9u3OoIuc3AKHNzYvH8Zc12Ws1ii+wl9fUXQMMJAX4w6v2msuWZo+eFSwG/us=
+X-Received: by 2002:aca:d643:: with SMTP id n64mr1432769oig.33.1595293770513;
+ Mon, 20 Jul 2020 18:09:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714120917.11253-1-joro@8bytes.org> <20200715092456.GE10769@hirez.programming.kicks-ass.net>
+ <20200715093426.GK16200@suse.de> <20200715095556.GI10769@hirez.programming.kicks-ass.net>
+ <20200715101034.GM16200@suse.de>
+In-Reply-To: <20200715101034.GM16200@suse.de>
+From:   Erdem Aktas <erdemaktas@google.com>
+Date:   Mon, 20 Jul 2020 18:09:19 -0700
+Message-ID: <CAAYXXYxJf8sr6fvbZK=t6o_to4Ov_yvZ91Hf6ZqQ-_i-HKO2VA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/75] x86: SEV-ES Guest Support
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Murali Karicheri <m-karicheri2@ti.com>
-Date: Mon, 20 Jul 2020 12:43:27 -0400
+Hi,
 
-> skb_put_padto() can fail. So check for return type and return NULL
-> for skb. Caller checks for skb and acts correctly if it is NULL.
-> 
-> Fixes: 6d6148bc78d2 ("net: hsr: fix incorrect lsdu size in the tag of HSR frames for small frames")
-> 
-> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+It looks like there is an expectation that the bootloader will start
+from the 64bit entry point in header_64.S. With the current patch
+series, it will not boot up if the bootloader jumps to the startup_32
+entry, which might break some default distro images.
+What are supported bootloaders and configurations?
+I am using grub ( 2.02-2ubuntu8.15) and it fails to boot because of
+this reason. I am not a grub expert, so I would appreciate any
+pointers on this.
+Also, it would be nice to put some error code in the GHCB MSR if the
+guest dies for some reason in real mode. Currently, it just dies with
+no information provided.
 
-Applied, thank you.
+PS: sorry for sending twice due to the wrong email body type.
+
+Regards
+-Erdem
+
+
+On Wed, Jul 15, 2020 at 3:10 AM Joerg Roedel <jroedel@suse.de> wrote:
+>
+> On Wed, Jul 15, 2020 at 11:55:56AM +0200, Peter Zijlstra wrote:
+> > And recursive #VC was instant death, right? Because there's no way to
+> > avoid IST stack corruption in that case.
+>
+> Right, a #VC exception while still on the IST stack must instantly kill
+> the VM. That needs an additional check which is not implemented yet, as
+> it only becomes necessary with SNP.
+>
+> Regards,
+>
+>         Joerg
+>
+>
