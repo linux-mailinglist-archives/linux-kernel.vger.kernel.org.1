@@ -2,209 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A49A228CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE63C228C98
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731373AbgGUXVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41224 "EHLO mail.kernel.org"
+        id S1731407AbgGUXQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:16:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726555AbgGUXVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:21:50 -0400
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726148AbgGUXQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 19:16:56 -0400
+Received: from embeddedor (unknown [201.162.241.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54BC22080D;
-        Tue, 21 Jul 2020 23:21:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 233EF20709;
+        Tue, 21 Jul 2020 23:16:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595373709;
-        bh=wTtpSu1n6XAQfccXsXj/yy7BEmnVf2cxowLIgXfPQa4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=djoyGjsek9zMyt+FdnK+r8Y+Y8cE0QjaJAoFygr9S3udNk1aNJSn3lr74jFf5KJyu
-         tg8mPdg5E5OYS3dphKNMC5RAnzA2UeSmPG64dn12GcDwmnxFONm6KNtlXosq/uf84A
-         BBAVo1jrC1P8LjZHeGqFxI5/no69+m2Sstbl8PbM=
-Received: by mail-ed1-f47.google.com with SMTP id d18so269800edv.6;
-        Tue, 21 Jul 2020 16:21:49 -0700 (PDT)
-X-Gm-Message-State: AOAM533bYGPV78gVJ/7FiGDwU3ik+K88+GZ45DtHoL+Fr0hz9vTo6OOm
-        Y3n/LwlcePqe1h3chQSGsP4MxwQ3aeuExx4B/w==
-X-Google-Smtp-Source: ABdhPJyyEjrBpd1nx1mUcLsn4M9oTcaAX99uq6R42dxNbGcxMzW6I48C2eM3ctFpN3ScOSRXnd6gohvyg/yKTe1Y26k=
-X-Received: by 2002:a05:6402:16c7:: with SMTP id r7mr28579038edx.288.1595373707856;
- Tue, 21 Jul 2020 16:21:47 -0700 (PDT)
+        s=default; t=1595373416;
+        bh=hVoIbwbVywgC7jhgVpXyOg5Fgl2JP3Aj80jHW2Xpo1E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Fp5SizZkI1S27qPov0v2tJKWGpC3fv96PEL+YzE1RTMcEPyS1KVX0IxgIauuOWg6u
+         aBY9uro+SVXllKXsL9kwXMTQg2YKPia5OMCB7mPYqQPODVOqq7Iljo9o4VB/CHSjcf
+         dAknsI1IwzhwPhlpRO5PcNHrZ5I/fNAianXFsRwo=
+Date:   Tue, 21 Jul 2020 18:22:32 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v2][next] i2c: aspeed: Use fallthrough pseudo-keyword
+Message-ID: <20200721232231.GA1888@embeddedor>
 MIME-Version: 1.0
-References: <1595303971-8793-1-git-send-email-neal.liu@mediatek.com> <1595303971-8793-3-git-send-email-neal.liu@mediatek.com>
-In-Reply-To: <1595303971-8793-3-git-send-email-neal.liu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 22 Jul 2020 07:21:35 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8T=DCntU8x5YEo+Pcs2J0Y4YvDaHUBdGiqEFRxghOd_Q@mail.gmail.com>
-Message-ID: <CAAOTY_8T=DCntU8x5YEo+Pcs2J0Y4YvDaHUBdGiqEFRxghOd_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] soc: mediatek: add mtk-devapc driver
-To:     Neal Liu <neal.liu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neal:
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=8821=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8812:00=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> MediaTek bus fabric provides TrustZone security support and data
-> protection to prevent slaves from being accessed by unexpected
-> masters.
-> The security violation is logged and sent to the processor for
-> further analysis or countermeasures.
->
-> Any occurrence of security violation would raise an interrupt, and
-> it will be handled by mtk-devapc driver. The violation
-> information is printed in order to find the murderer.
->
-> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
-> ---
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-[snip]
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Update URL. Use proper URL to Linux v5.7 documentation.
+ - Add Brendan's Reviewed-by tag.
 
-> +
-> +static u32 get_shift_group(struct mtk_devapc_context *ctx, u32 vio_idx)
+ drivers/i2c/busses/i2c-aspeed.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-vio_idx is useless, so remove it.
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index f51702d86a90..31268074c422 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -504,7 +504,7 @@ static u32 aspeed_i2c_master_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
+ 			goto error_and_stop;
+ 		}
+ 		irq_handled |= ASPEED_I2CD_INTR_TX_ACK;
+-		/* fall through */
++		fallthrough;
+ 	case ASPEED_I2C_MASTER_TX_FIRST:
+ 		if (bus->buf_index < msg->len) {
+ 			bus->master_state = ASPEED_I2C_MASTER_TX;
+@@ -520,7 +520,7 @@ static u32 aspeed_i2c_master_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
+ 		/* RX may not have completed yet (only address cycle) */
+ 		if (!(irq_status & ASPEED_I2CD_INTR_RX_DONE))
+ 			goto out_no_complete;
+-		/* fall through */
++		fallthrough;
+ 	case ASPEED_I2C_MASTER_RX:
+ 		if (unlikely(!(irq_status & ASPEED_I2CD_INTR_RX_DONE))) {
+ 			dev_err(bus->dev, "master failed to RX\n");
+-- 
+2.27.0
 
-> +{
-> +       u32 vio_shift_sta;
-> +       void __iomem *reg;
-> +
-> +       reg =3D ctx->devapc_pd_base + ctx->offset->vio_shift_sta;
-> +       vio_shift_sta =3D readl(reg);
-> +
-> +       if (vio_shift_sta)
-> +               return __ffs(vio_shift_sta);
-> +
-> +       return 31;
-> +}
-> +
-
-[snip]
-
-> +
-> +/*
-> + * mtk_devapc_dump_vio_dbg - get the violation index and dump the full v=
-iolation
-> + *                           debug information.
-> + */
-> +static bool mtk_devapc_dump_vio_dbg(struct mtk_devapc_context *ctx, u32 =
-vio_idx)
-> +{
-> +       u32 shift_bit;
-> +
-> +       if (check_vio_mask(ctx, vio_idx))
-> +               return false;
-> +
-> +       if (!check_vio_status(ctx, vio_idx))
-> +               return false;
-> +
-> +       shift_bit =3D get_shift_group(ctx, vio_idx);
-> +
-> +       if (sync_vio_dbg(ctx, shift_bit))
-> +               return false;
-> +
-> +       devapc_extract_vio_dbg(ctx);
-
-I think get_shift_group(), sync_vio_dbg(), and
-devapc_extract_vio_dbg() should be moved out of vio_idx for-loop (the
-loop in devapc_violation_irq()) because these three function is not
-related to vio_idx.
-Another question: when multiple vio_idx violation occur, vio_addr is
-related to which one vio_idx? The latest happened one?
-
-> +
-> +       return true;
-> +}
-> +
-> +/*
-> + * devapc_violation_irq - the devapc Interrupt Service Routine (ISR) wil=
-l dump
-> + *                        violation information including which master v=
-iolates
-> + *                        access slave.
-> + */
-> +static irqreturn_t devapc_violation_irq(int irq_number,
-> +                                       struct mtk_devapc_context *ctx)
-> +{
-> +       u32 vio_idx;
-> +
-> +       for (vio_idx =3D 0; vio_idx < ctx->vio_idx_num; vio_idx++) {
-> +               if (!mtk_devapc_dump_vio_dbg(ctx, vio_idx))
-> +                       continue;
-> +
-> +               /* Ensure that violation info are written before
-> +                * further operations
-> +                */
-> +               smp_mb();
-> +
-> +               /*
-> +                * Mask slave's irq before clearing vio status.
-> +                * Must do it to avoid nested interrupt and prevent
-> +                * unexpected behavior.
-> +                */
-> +               mask_module_irq(ctx, vio_idx, true);
-> +
-> +               clear_vio_status(ctx, vio_idx);
-> +
-> +               mask_module_irq(ctx, vio_idx, false);
-> +       }
-> +
-> +       return IRQ_HANDLED;
-> +}
-> +
-> +/*
-> + * start_devapc - initialize devapc status and start receiving interrupt
-> + *                while devapc violation is triggered.
-> + */
-> +static int start_devapc(struct mtk_devapc_context *ctx)
-> +{
-> +       void __iomem *pd_vio_shift_sta_reg;
-> +       void __iomem *pd_apc_con_reg;
-> +       u32 vio_shift_sta;
-> +       u32 vio_idx;
-> +
-> +       pd_apc_con_reg =3D ctx->devapc_pd_base + ctx->offset->apc_con;
-> +       pd_vio_shift_sta_reg =3D ctx->devapc_pd_base + ctx->offset->vio_s=
-hift_sta;
-> +       if (!pd_apc_con_reg || !pd_vio_shift_sta_reg)
-> +               return -EINVAL;
-> +
-> +       /* Clear devapc violation status */
-> +       writel(BIT(31), pd_apc_con_reg);
-> +
-> +       /* Clear violation shift status */
-> +       vio_shift_sta =3D readl(pd_vio_shift_sta_reg);
-> +       if (vio_shift_sta)
-> +               writel(vio_shift_sta, pd_vio_shift_sta_reg);
-> +
-> +       /* Clear slave violation status */
-> +       for (vio_idx =3D 0; vio_idx < ctx->vio_idx_num; vio_idx++) {
-> +               clear_vio_status(ctx, vio_idx);
-> +               mask_module_irq(ctx, vio_idx, false);
-> +       }
-> +
-
-Why do you clear these? After power on hardware, I think these
-register status are correct. If the default value of these register
-are not correct, add a comment for this.
-
-Regards,
-Chun-Kuang.
-
-> +       return 0;
-> +}
-> +
