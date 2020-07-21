@@ -2,80 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A3122802E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F59F228032
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgGUMnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S1729833AbgGUMnl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Jul 2020 08:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726904AbgGUMnR (ORCPT
+        with ESMTP id S1726904AbgGUMnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:43:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4082C061794;
-        Tue, 21 Jul 2020 05:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=95YZXz3xxlBOTS58dhuQjh4OGBpdFgqsFCQfxS9mS3k=; b=Ig/x4pHHVBpLErcMn0lsrCPY9M
-        0BNQWBie4Cz8aoJX0pZEKqzc8nkJlu4m+dUhTgMalQJ9z+8TarVYFNW62Bb0SHNvGL2a0/5kqyGTV
-        sTCtKlD4n1L7yzYRjDWGwGujF7C5js5WlfPgiamtUQIw8K75AEKJWyV0aBi+kotG7nC1xvMsXlk/+
-        mJv5oF+8g2R+kpNzDk4/zd+Qjscef+YImXtGWEhQLIr9/5hnOjQB2ejJ+wE655ykvI9RsS2L1m5yw
-        E/Rt7duHDyIa3xKMou6IEtHda1xjbeUeT+Va7CicrbG/ghxqafAsFqi7yXoxFxxNNZ8JK3GWUSfAV
-        36ECX8pQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxrc0-00039d-CK; Tue, 21 Jul 2020 12:43:12 +0000
-Date:   Tue, 21 Jul 2020 13:43:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: fix memalloc_nocma_{save/restore} APIs
-Message-ID: <20200721124312.GE15516@casper.infradead.org>
-References: <1595302129-23895-1-git-send-email-iamjoonsoo.kim@lge.com>
- <20200721120533.GD15516@casper.infradead.org>
- <4c484ce0-cfed-0c50-7a20-d1474ce9afee@suse.cz>
+        Tue, 21 Jul 2020 08:43:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6563FC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:43:40 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jxrcL-0006Dx-Re; Tue, 21 Jul 2020 14:43:33 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jxrcG-0005Rp-VR; Tue, 21 Jul 2020 14:43:28 +0200
+Message-ID: <58a3ebe2620008daeab826a8216b6b5ad672fc7c.camel@pengutronix.de>
+Subject: Re: [PATCH v7 2/5] drm/imx: Add initial support for DCSS on iMX8MQ
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Cc:     lukas@mntmn.com, agx@sigxcpu.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 21 Jul 2020 14:43:28 +0200
+In-Reply-To: <20200721102007.18368-3-laurentiu.palcu@oss.nxp.com>
+References: <20200721102007.18368-1-laurentiu.palcu@oss.nxp.com>
+         <20200721102007.18368-3-laurentiu.palcu@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c484ce0-cfed-0c50-7a20-d1474ce9afee@suse.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 02:38:56PM +0200, Vlastimil Babka wrote:
-> On 7/21/20 2:05 PM, Matthew Wilcox wrote:
-> > On Tue, Jul 21, 2020 at 12:28:49PM +0900, js1304@gmail.com wrote:
-> >> @@ -4619,8 +4631,10 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
-> >>  		wake_all_kswapds(order, gfp_mask, ac);
-> >>  
-> >>  	reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
-> >> -	if (reserve_flags)
-> >> +	if (reserve_flags) {
-> >>  		alloc_flags = reserve_flags;
-> >> +		alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
-> >> +	}
-> > 
-> > Is this right?  Shouldn't you be passing reserve_flags to
-> > current_alloc_flags() here?  Also, there's no need to add { } here.
+Hi Laurentiu,
+
+On Tue, 2020-07-21 at 13:20 +0300, Laurentiu Palcu wrote:
+> From: Laurentiu Palcu <laurentiu.palcu@nxp.com>
 > 
-> Note the "alloc_flags = reserve_flags;" line is not being deleted here. But if
-> it was, your points would be true, and yeah it would be a bit more tidy.
+> This adds initial support for iMX8MQ's Display Controller Subsystem (DCSS).
+> Some of its capabilities include:
+>  * 4K@60fps;
+>  * HDR10;
+>  * one graphics and 2 video pipelines;
+>  * on-the-fly decompression of compressed video and graphics;
+> 
+> The reference manual can be found here:
+> https://www.nxp.com/webapp/Download?colCode=IMX8MDQLQRM
+> 
+> The current patch adds only basic functionality: one primary plane for
+> graphics, linear, tiled and super-tiled buffers support (no graphics
+> decompression yet), no HDR10 and no video planes.
+> 
+> Video planes support and HDR10 will be added in subsequent patches once
+> per-plane de-gamma/CSC/gamma support is in.
+> 
+> Signed-off-by: Laurentiu Palcu <laurentiu.palcu@nxp.com>
+> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+> ---
+>  drivers/gpu/drm/imx/Kconfig            |   2 +
+>  drivers/gpu/drm/imx/Makefile           |   1 +
+>  drivers/gpu/drm/imx/dcss/Kconfig       |   9 +
+>  drivers/gpu/drm/imx/dcss/Makefile      |   6 +
+>  drivers/gpu/drm/imx/dcss/dcss-blkctl.c |  70 +++
+>  drivers/gpu/drm/imx/dcss/dcss-crtc.c   | 219 +++++++
+>  drivers/gpu/drm/imx/dcss/dcss-ctxld.c  | 424 +++++++++++++
+>  drivers/gpu/drm/imx/dcss/dcss-dev.c    | 314 ++++++++++
+>  drivers/gpu/drm/imx/dcss/dcss-dev.h    | 177 ++++++
+>  drivers/gpu/drm/imx/dcss/dcss-dpr.c    | 562 +++++++++++++++++
+>  drivers/gpu/drm/imx/dcss/dcss-drv.c    | 138 +++++
+>  drivers/gpu/drm/imx/dcss/dcss-dtg.c    | 409 ++++++++++++
+>  drivers/gpu/drm/imx/dcss/dcss-kms.c    | 177 ++++++
+>  drivers/gpu/drm/imx/dcss/dcss-kms.h    |  43 ++
+>  drivers/gpu/drm/imx/dcss/dcss-plane.c  | 405 ++++++++++++
+>  drivers/gpu/drm/imx/dcss/dcss-scaler.c | 826 +++++++++++++++++++++++++
+>  drivers/gpu/drm/imx/dcss/dcss-ss.c     | 180 ++++++
+>  17 files changed, 3962 insertions(+)
+>  create mode 100644 drivers/gpu/drm/imx/dcss/Kconfig
+>  create mode 100644 drivers/gpu/drm/imx/dcss/Makefile
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-blkctl.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-crtc.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-ctxld.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dev.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dev.h
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dpr.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-drv.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dtg.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-kms.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-kms.h
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-plane.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-scaler.c
+>  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-ss.c
+> 
+> diff --git a/drivers/gpu/drm/imx/Kconfig b/drivers/gpu/drm/imx/Kconfig
+> index 207bf7409dfb..6231048aa5aa 100644
+> --- a/drivers/gpu/drm/imx/Kconfig
+> +++ b/drivers/gpu/drm/imx/Kconfig
+> @@ -39,3 +39,5 @@ config DRM_IMX_HDMI
+>  	depends on DRM_IMX
+>  	help
+>  	  Choose this if you want to use HDMI on i.MX6.
+> +
+> +source "drivers/gpu/drm/imx/dcss/Kconfig"
+> diff --git a/drivers/gpu/drm/imx/Makefile b/drivers/gpu/drm/imx/Makefile
+> index 21cdcc2faabc..b644deffe948 100644
+> --- a/drivers/gpu/drm/imx/Makefile
+> +++ b/drivers/gpu/drm/imx/Makefile
+> @@ -9,3 +9,4 @@ obj-$(CONFIG_DRM_IMX_TVE) += imx-tve.o
+>  obj-$(CONFIG_DRM_IMX_LDB) += imx-ldb.o
+>  
+>  obj-$(CONFIG_DRM_IMX_HDMI) += dw_hdmi-imx.o
+> +obj-$(CONFIG_DRM_IMX_DCSS) += dcss/
+> diff --git a/drivers/gpu/drm/imx/dcss/Kconfig b/drivers/gpu/drm/imx/dcss/Kconfig
+> new file mode 100644
+> index 000000000000..988979bc22cc
+> --- /dev/null
+> +++ b/drivers/gpu/drm/imx/dcss/Kconfig
+> @@ -0,0 +1,9 @@
+> +config DRM_IMX_DCSS
+> +	tristate "i.MX8MQ DCSS"
+> +	select RESET_CONTROLLER
 
-Oh ... I should wake up a little more.
+Why does DCSS select RESET_CONTROLLER?
 
-Yeah, I'd recommend just doing this:
-
--		alloc_flags = reserve_flags;
-+		alloc_flags = current_alloc_flags(gfp_mask, reserve_flags);
-
+regards
+Philipp
