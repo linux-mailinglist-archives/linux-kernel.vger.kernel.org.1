@@ -2,86 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DEB22801C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0219422801E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgGUMjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:39:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49242 "EHLO mx2.suse.de"
+        id S1729038AbgGUMkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727991AbgGUMjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:39:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 55666B182;
-        Tue, 21 Jul 2020 12:39:07 +0000 (UTC)
-Subject: Re: [PATCH] mm/page_alloc: fix memalloc_nocma_{save/restore} APIs
-To:     Matthew Wilcox <willy@infradead.org>, js1304@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, stable@vger.kernel.org
-References: <1595302129-23895-1-git-send-email-iamjoonsoo.kim@lge.com>
- <20200721120533.GD15516@casper.infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <4c484ce0-cfed-0c50-7a20-d1474ce9afee@suse.cz>
-Date:   Tue, 21 Jul 2020 14:38:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726904AbgGUMke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 08:40:34 -0400
+Received: from quaco.ghostprotocols.net (unknown [177.158.183.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C111206E3;
+        Tue, 21 Jul 2020 12:40:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595335233;
+        bh=zhtZfIB5BknCY+2bjoZCAiIbHEgljW5xXcIqk2SSHKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D0wW7qRFmK73FBm5LYU2Fjxhk7CtdTXjM0+Hlwol6FL+EOBGffa6UDmfG4ryhGEQb
+         DnFzh8nKSIg20b31y9LaK0ZpSM9W2gntOa4e2CUKtP424bN7CvehJoOeR7mrnmRxA8
+         VXlR2dOnsx4urAheU661pVYGdfoM685hh8qCFzWc=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 85769404B1; Tue, 21 Jul 2020 09:40:31 -0300 (-03)
+Date:   Tue, 21 Jul 2020 09:40:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 01/15] tools/libperf: avoid internal moving of
+ fdarray fds
+Message-ID: <20200721124031.GF77866@kernel.org>
+References: <8d91c3a0-3db4-0a7a-ae13-299adb444bd6@linux.intel.com>
+ <676844f8-55d3-c628-23db-aa163a81519e@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200721120533.GD15516@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <676844f8-55d3-c628-23db-aa163a81519e@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/20 2:05 PM, Matthew Wilcox wrote:
-> On Tue, Jul 21, 2020 at 12:28:49PM +0900, js1304@gmail.com wrote:
->> +static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
->> +					unsigned int alloc_flags)
->> +{
->> +#ifdef CONFIG_CMA
->> +	unsigned int pflags = current->flags;
->> +
->> +	if (!(pflags & PF_MEMALLOC_NOCMA) &&
->> +		gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
->> +		alloc_flags |= ALLOC_CMA;
+Em Fri, Jul 17, 2020 at 09:59:12AM +0300, Alexey Budankov escreveu:
 > 
-> Please don't indent by one tab when splitting a line because it looks like
-> the second line and third line are part of the same block.  Either do
-> this:
-> 
-> 	if (!(pflags & PF_MEMALLOC_NOCMA) &&
-> 	    gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> 		alloc_flags |= ALLOC_CMA;
-> 
-> or this:
-> 	if (!(pflags & PF_MEMALLOC_NOCMA) &&
-> 			gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> 		alloc_flags |= ALLOC_CMA;
+> Avoid moving of fds by fdarray__filter() so fds indices returned
+> by fdarray__add() can be used for access and processing of
+> objects at struct pollfd *entries.
 
-Ah, good point.
+Thanks, applied.
 
->> @@ -4619,8 +4631,10 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->>  		wake_all_kswapds(order, gfp_mask, ac);
->>  
->>  	reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
->> -	if (reserve_flags)
->> +	if (reserve_flags) {
->>  		alloc_flags = reserve_flags;
->> +		alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
->> +	}
+- Arnaldo
+ 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/lib/api/fd/array.c   | 11 +++++------
+>  tools/perf/tests/fdarray.c | 20 ++------------------
+>  2 files changed, 7 insertions(+), 24 deletions(-)
 > 
-> Is this right?  Shouldn't you be passing reserve_flags to
-> current_alloc_flags() here?  Also, there's no need to add { } here.
+> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+> index 58d44d5eee31..89f9a2193c2d 100644
+> --- a/tools/lib/api/fd/array.c
+> +++ b/tools/lib/api/fd/array.c
+> @@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
+>  		return 0;
+>  
+>  	for (fd = 0; fd < fda->nr; ++fd) {
+> +		if (!fda->entries[fd].events)
+> +			continue;
+> +
+>  		if (fda->entries[fd].revents & revents) {
+>  			if (entry_destructor)
+>  				entry_destructor(fda, fd, arg);
+>  
+> +			fda->entries[fd].revents = fda->entries[fd].events = 0;
+>  			continue;
+>  		}
+>  
+> -		if (fd != nr) {
+> -			fda->entries[nr] = fda->entries[fd];
+> -			fda->priv[nr]	 = fda->priv[fd];
+> -		}
+> -
+>  		++nr;
+>  	}
+>  
+> -	return fda->nr = nr;
+> +	return nr;
+>  }
+>  
+>  int fdarray__poll(struct fdarray *fda, int timeout)
+> diff --git a/tools/perf/tests/fdarray.c b/tools/perf/tests/fdarray.c
+> index c7c81c4a5b2b..d0c8a05aab2f 100644
+> --- a/tools/perf/tests/fdarray.c
+> +++ b/tools/perf/tests/fdarray.c
+> @@ -12,6 +12,7 @@ static void fdarray__init_revents(struct fdarray *fda, short revents)
+>  
+>  	for (fd = 0; fd < fda->nr; ++fd) {
+>  		fda->entries[fd].fd	 = fda->nr - fd;
+> +		fda->entries[fd].events  = revents;
+>  		fda->entries[fd].revents = revents;
+>  	}
+>  }
+> @@ -29,7 +30,7 @@ static int fdarray__fprintf_prefix(struct fdarray *fda, const char *prefix, FILE
+>  
+>  int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_unused)
+>  {
+> -	int nr_fds, expected_fd[2], fd, err = TEST_FAIL;
+> +	int nr_fds, err = TEST_FAIL;
+>  	struct fdarray *fda = fdarray__new(5, 5);
+>  
+>  	if (fda == NULL) {
+> @@ -55,7 +56,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+>  
+>  	fdarray__init_revents(fda, POLLHUP);
+>  	fda->entries[2].revents = POLLIN;
+> -	expected_fd[0] = fda->entries[2].fd;
+>  
+>  	pr_debug("\nfiltering all but fda->entries[2]:");
+>  	fdarray__fprintf_prefix(fda, "before", stderr);
+> @@ -66,17 +66,9 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+>  		goto out_delete;
+>  	}
+>  
+> -	if (fda->entries[0].fd != expected_fd[0]) {
+> -		pr_debug("\nfda->entries[0].fd=%d != %d\n",
+> -			 fda->entries[0].fd, expected_fd[0]);
+> -		goto out_delete;
+> -	}
+> -
+>  	fdarray__init_revents(fda, POLLHUP);
+>  	fda->entries[0].revents = POLLIN;
+> -	expected_fd[0] = fda->entries[0].fd;
+>  	fda->entries[3].revents = POLLIN;
+> -	expected_fd[1] = fda->entries[3].fd;
+>  
+>  	pr_debug("\nfiltering all but (fda->entries[0], fda->entries[3]):");
+>  	fdarray__fprintf_prefix(fda, "before", stderr);
+> @@ -88,14 +80,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+>  		goto out_delete;
+>  	}
+>  
+> -	for (fd = 0; fd < 2; ++fd) {
+> -		if (fda->entries[fd].fd != expected_fd[fd]) {
+> -			pr_debug("\nfda->entries[%d].fd=%d != %d\n", fd,
+> -				 fda->entries[fd].fd, expected_fd[fd]);
+> -			goto out_delete;
+> -		}
+> -	}
+> -
+>  	pr_debug("\n");
+>  
+>  	err = 0;
+> -- 
+> 2.24.1
+> 
+> 
 
-Note the "alloc_flags = reserve_flags;" line is not being deleted here. But if
-it was, your points would be true, and yeah it would be a bit more tidy.
+-- 
+
+- Arnaldo
