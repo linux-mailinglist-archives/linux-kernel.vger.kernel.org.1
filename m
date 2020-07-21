@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DED228CCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8AB228CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731508AbgGUXpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:45:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
+        id S1731426AbgGUXpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:45:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726555AbgGUXpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:45:17 -0400
-Received: from embeddedor (unknown [201.162.241.127])
+        id S1726587AbgGUXpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 19:45:11 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA62F20771;
-        Tue, 21 Jul 2020 23:32:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB9182077D;
+        Tue, 21 Jul 2020 23:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595374357;
-        bh=43Ks1BE66c2skOUrYRVoH9u+hQ/eis0KeY/m2/I51Ew=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Aqi0MTlKY71zsxajxX3+yKLjpZqGRjf8m6ELK6UvWd8PgdfH3tzB/5qRGu6Se2LVg
-         YHWIR23vBvdcQeElhKDUxSZjzjG59B57oDmzUJER/fE2SJWioiSOrgtCnJhBL8z1Ux
-         NtdW8FpDF0bxXLmhago7MSFymh1e7Ix7JWgiiYN0=
-Date:   Tue, 21 Jul 2020 18:38:14 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] i2c: designware: Use fallthrough pseudo-keyword
-Message-ID: <20200721233814.GA3058@embeddedor>
+        s=default; t=1595375111;
+        bh=vNftebKTkLY/PaLWDa1NczN0BADcuqUpTe6BpSEV4N8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0HxLDp8lVuLRUyBfdjW7oA5QrB2FpdQwhKf4zR6aWIqr71bUfr8ZPp/IJ2kvFTwYf
+         buGOYSLTFpMsks1JoE3U2wdEvIkZ+ew4QCmPylDsB5OA3erwlV1KPF4Qg0rEFzAgaA
+         I+yJ8GAt/q3LGPKUMgccQD1ImgMTb06uY1HrmUpk=
+Date:   Wed, 22 Jul 2020 00:44:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] spi: lpspi: add NULL check when probe device
+Message-ID: <20200721234458.GA16769@sirena.org.uk>
+References: <20200714075251.12777-1-xiaoning.wang@nxp.com>
+ <20200714075251.12777-3-xiaoning.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200714075251.12777-3-xiaoning.wang@nxp.com>
+X-Cookie: Knowledge is power.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/i2c/busses/i2c-designware-pcidrv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Jul 14, 2020 at 03:52:48PM +0800, Clark Wang wrote:
+> Add a NULL check for device node and lpspi_platform_info when lpspi
+> device probe.
 
-diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index 8522134f9ea9..55c83a7a24f3 100644
---- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -90,7 +90,7 @@ static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
- 	switch (pdev->device) {
- 	case 0x0817:
- 		dev->timings.bus_freq_hz = I2C_MAX_STANDARD_MODE_FREQ;
--		/* fall through */
-+		fallthrough;
- 	case 0x0818:
- 	case 0x0819:
- 		c->bus_num = pdev->device - 0x817 + 3;
--- 
-2.27.0
+This has build problems, I guess there's been a context change that's
+caused issues along with causing the later patches to not apply:
 
+/mnt/kernel/drivers/spi/spi-fsl-lpspi.c: In function 'fsl_lpspi_probe':
+/mnt/kernel/drivers/spi/spi-fsl-lpspi.c:824:7: error: 'np' undeclared (first use in this function); did you mean 'up'?
+  if (!np && !lpspi_platform_info) {
+       ^~
+       up
+/mnt/kernel/drivers/spi/spi-fsl-lpspi.c:824:7: note: each undeclared identifier is reported only once for each function it appears in
+/mnt/kernel/drivers/spi/spi-fsl-lpspi.c:824:14: error: 'lpspi_platform_info' undeclared (first use in this function); did you mean 'spi_board_info'?
+  if (!np && !lpspi_platform_info) {
+              ^~~~~~~~~~~~~~~~~~~
+              spi_board_info
+
+--dDRMvlgZJXvWKvBx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8XffkACgkQJNaLcl1U
+h9A0Mwf/dMlzfr1HWRvFHS+X/pn/UO1qlC/rqX0b3blAFFAKcPfOzkJbCG73V5kv
+rbbvGx+Hrq3EO7bX3EgPLmY4expMyV6QZ4XhuhvpBqOoQ9ouxULVbpSdO9TQWkGN
+9UTjIVq7nMX64In+0v3qYmn/FYGMlZhXQi9wuS6rwzKH0OHBGOcawtKPo2D9JeD6
+Y2DnmiS7v+/VrVd1FB6VZ8O+f4HIzIk+5HdiPAMw2ugzx1Vf7xqc2a8XF/YZQLtC
+OtNodZ+5fx24aBYvxjdI9UaDQENfjxgu0T0iq+kcla3Qjs+jGPLhns1x8ng2W+Fo
+8ai/HRqPTd3/fStOm4HxNRzOLARJYQ==
+=WCQf
+-----END PGP SIGNATURE-----
+
+--dDRMvlgZJXvWKvBx--
