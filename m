@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161A52275B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 04:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0181C2275B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 04:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgGUCiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 22:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgGUCh6 (ORCPT
+        id S1728463AbgGUCib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 22:38:31 -0400
+Received: from out28-76.mail.aliyun.com ([115.124.28.76]:47041 "EHLO
+        out28-76.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726264AbgGUCia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 22:37:58 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D92C061794;
-        Mon, 20 Jul 2020 19:37:58 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l6so17894188qkc.6;
-        Mon, 20 Jul 2020 19:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NWS6zbF9VWo5oMAvQTBUWggBuwxufh05HWBlDSCFVtY=;
-        b=lvbZO6T4S0JGTmIHngm7LcUDDSa7cYxUCD/N7eSe0bUJv9CdFNjPXhhBoqTZPHDm2G
-         Yod4c9r3tNdUZKWAR0wIjfUxWrKIS4FlBhq1adqROQ9WbF9gMJ3ZqBgFnuyZ6fSkCjG1
-         Uw99uZr155ulZEFn/20xJq4H2IVG5Ib4JPsgnakUPJiPqLvJNda9NHHAb2tNQBAlSe6l
-         p/pbm1/C5XMUmsaI8hqn69uppLen6jZrMKWQZbGqsLL6jfLH2RmnozMAC5fmiVO8uBjG
-         ukBg+OfAgtBvaQZ5IBveUACxNIVSMeDwFkl2z2ZgyQ2dpOpYHqdZb5qoVnRmaQ5acHmE
-         8E8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NWS6zbF9VWo5oMAvQTBUWggBuwxufh05HWBlDSCFVtY=;
-        b=YFLOM1o2K78pLptfRK/ahpRffofGP0UhlWp/BY1gtlhZsOpykc97743XVgu3Arpwih
-         3IL24LPddu3EDeHeW+UbkDsosaOi8LS937XQmbb1Vv6sqQvcM5BmL3jw/8yM7oTx05Ka
-         yfQkQmWXldfTKWyfnienTutv14fK0IOP3EPGeEAhIHBKeoGUWFdbOjD0+tU598mytN9f
-         z+pK+3XJFiiMaHAalxsAE4+oC5pQl00UDX+nMew0N7yamKMgogzzTF9zrz6hsL3c6Wq7
-         I9efb0tfxnphAsGO+MHmc3lQg7OEREYLHM8hPs7F8VF9dZoMZ9CuNxCQl3dMxBhQCc7K
-         CTSw==
-X-Gm-Message-State: AOAM531QiS0eSnLFMG/wnfF8k08dcaQy+yAh2LZZOiD+INkiqeOomtxF
-        8UtZTCfalHSoRwklj3+lgHTUx1i6aG2+BU7OWj0=
-X-Google-Smtp-Source: ABdhPJxKgcEN3NO4mCS8ShSobjtP7cd5qUzLj6nTuBVhG2NvdlUW5ewWYlMxI9s9TVnBnlaVeKdGCU5zYmXf3rChzPk=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr25752391qkg.437.1595299077929;
- Mon, 20 Jul 2020 19:37:57 -0700 (PDT)
+        Mon, 20 Jul 2020 22:38:30 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07916176|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0445112-0.0024327-0.953056;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03298;MF=maochenxi@eswin.com;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.I56PH.u_1595299106;
+Received: from 10.1.56.17(mailfrom:maochenxi@eswin.com fp:SMTPD_---.I56PH.u_1595299106)
+          by smtp.aliyun-inc.com(10.194.98.253);
+          Tue, 21 Jul 2020 10:38:26 +0800
+Subject: Re: [PATCH 1/1] riscv: Enable ARCH_HAS_FAST_MULTIPLIER for RV64I
+From:   Chenxi Mao <maochenxi@eswin.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        chenxi.mao2013@gmail.com
+References: <mhng-e8fe18f0-e6d7-4ee2-8a9b-a00dbf0b338b@palmerdabbelt-glaptop1>
+ <7ad95929-039f-9760-fc30-e89e02424361@eswin.com>
+Message-ID: <c5d82526-233a-15d5-90df-ca0c25a53639@eswin.com>
+Date:   Tue, 21 Jul 2020 10:38:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200715214312.2266839-1-haoluo@google.com> <20200715214312.2266839-3-haoluo@google.com>
- <CAEf4BzYxWk9OmN0QhDrvE943YsYd2Opdkbt7NQTO9-YM6c4aGw@mail.gmail.com> <CA+khW7i9wq0+2P_M46pEv-onGXL_=sW7xE=10CYeP_yjPh-Rpw@mail.gmail.com>
-In-Reply-To: <CA+khW7i9wq0+2P_M46pEv-onGXL_=sW7xE=10CYeP_yjPh-Rpw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 20 Jul 2020 19:37:47 -0700
-Message-ID: <CAEf4BzY=6PH4YS8sX1SRFOj+6oQnfAk-f0P8+0XWMGMS+RJ0pw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/2] selftests/bpf: Test __ksym externs with BTF
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7ad95929-039f-9760-fc30-e89e02424361@eswin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 1:28 PM Hao Luo <haoluo@google.com> wrote:
->
-> >
-> > This should ideally look like a real global variable extern:
-> >
-> > extern const struct rq runqueues __ksym;
-> >
-> >
-> > But that's the case for non-per-cpu variables. You didn't seem to
-> > address per-CPU variables in this patch set. How did you intend to
-> > handle that? We should look at a possible BPF helper to access such
-> > variables as well and how the verifier will prevent direct memory
-> > accesses for such variables.
-> >
-> > We should have some BPF helper that accepts per-CPU PTR_TO_BTF_ID, and
-> > returns PTR_TO_BTF_ID, but adjusted to desired CPU. And verifier
-> > ideally would allow direct memory access on that resulting
-> > PTR_TO_BTF_ID, but not on per-CPU one. Not sure yet how this should
-> > look like, but the verifier probably needs to know that variable
-> > itself is per-cpu, no?
-> >
->
-> Yes, that's what I was unclear about, so I don't have that part in
-> this patchset. But your explanation helped me organize my thoughts. :)
->
-> Actually, the verifier can tell whether a var is percpu from the
-> DATASEC, since we have encoded "percpu" DATASEC in btf. I think the
-> following should work:
->
-> We may introduce a new PTR_TO_BTF_VAR_ID. In ld_imm, libbpf replaces
-> ksyms with btf_id. The btf id points to a KIND_VAR. If the pointed VAR
-> is found in the "percpu" DATASEC, dst_reg is set to PTR_TO_BTF_VAR_ID;
-> otherwise, it will be a PTR_TO_BTF_ID. For PTR_TO_BTF_VAR_ID,
-> reg->btf_id is the id of the VAR. For PTR_TO_BTF_ID, reg->btf_id is
-> the id of the actual kernel type. The verifier would reject direct
-> memory access on PTR_TO_BTF_VAR_ID, but the new BPF helper can convert
-> a PTR_TO_BTF_VAR_ID to PTR_TO_BTF_ID.
+Hi Palmer:
 
-Sounds good to me as a plan, except that PTR_TO_BTF_VAR_ID is a
-misleading name. It's always a variable. The per-CPU part is crucial,
-though, so maybe something like PTR_TO_PERCPU_BTF_ID?
+Move to RISCV platform is ok for me, but I cannot evaluate RV32 condition.
 
+Chenxi
+
+
+On 2020/7/21 上午9:47, Chenxi Mao wrote:
+> Hi Palmer:
 >
-> Hao
+> Thanks for your reply.
+>
+> Frankly, I didn't test ARCH_HAS_FAST_MULTIPLIER on RV32,
+>
+> so I cannot put it in RISCV platform.
+>
+> I am trying to comparing ARM64 with Riscv to find out more optimization
+>
+> configurations.
+>
+> I suggest to enable ARCH_HAS_FAST_MULTIPLIER on RV64 first.
+>
+> If someone else evaluate this on RV32, we could move it to RISCV platform.
+>
+>
+> Chenxi
+>
+>
+> On 2020/7/21 上午9:17, Palmer Dabbelt wrote:
+>> On Wed, 08 Jul 2020 22:19:22 PDT (-0700), maochenxi@eswin.com wrote:
+>>> Enable ARCH_HAS_FAST_MULTIPLIER on RV64I
+>>> which works fine on GCC-9.3 and GCC-10.1
+>>>
+>>> PS2: remove ARCH_SUPPORTS_INT128 because of RV64I already enabled.
+>>>
+>>> Signed-off-by: Chenxi Mao <maochenxi@eswin.com>
+>>> ---
+>>>  arch/riscv/Kconfig | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>> index 128192e14ff2..84e6777fecad 100644
+>>> --- a/arch/riscv/Kconfig
+>>> +++ b/arch/riscv/Kconfig
+>>> @@ -202,6 +202,7 @@ config ARCH_RV64I
+>>>      bool "RV64I"
+>>>      select 64BIT
+>>>      select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
+>>> +    select ARCH_HAS_FAST_MULTIPLIER
+>>>      select HAVE_DYNAMIC_FTRACE if MMU
+>>>      select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
+>>>      select HAVE_FTRACE_MCOUNT_RECORD
+>> Ah, thanks -- this one didn't show up when I was looking at the last one.  I
+>> think we can put the fast multiplier on rv32 and rv64, there shouldn't be any
+>> difference there.  I guess in theory we should be sticking this all in some
+>> sort of "platform type" optimization flags, but that's probably bit much for
+>> now.
