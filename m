@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDAC22894C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633D2228953
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730965AbgGUTiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:38:16 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:50286 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729928AbgGUTiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:38:16 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id BE6A4BC17B;
-        Tue, 21 Jul 2020 19:38:12 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] staging: comedi: pcm: Replace HTTP links with HTTPS ones
-Date:   Tue, 21 Jul 2020 21:38:06 +0200
-Message-Id: <20200721193806.68010-1-grandmaster@al2klimov.de>
+        id S1730982AbgGUTil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:38:41 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24748 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730973AbgGUTij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:38:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595360318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W/5FQTzNceZ8+x82aqOM3eIUsHFNM5pTOLDBmqIIiW0=;
+        b=AC9K9GhwSEdL9yG8uPlKHRZOxTPAdHoBB1nHOiUwJKxcOv4GTfMAuVDQ/53fXGz+BP4f1c
+        rHk6/zV/X4WPqQmgwLhWCbAmjO4Q0o07/ZBzPmhPRHufNnYv85SCwPyHtPz0qbWfvKW17r
+        lIQsN02626xMxvJ/N20HT5Rr6hCXpxo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-KyfIS5FeMT-drxH4SXRg7A-1; Tue, 21 Jul 2020 15:38:33 -0400
+X-MC-Unique: KyfIS5FeMT-drxH4SXRg7A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D224680BCAE;
+        Tue, 21 Jul 2020 19:38:31 +0000 (UTC)
+Received: from localhost (ovpn-116-10.gru2.redhat.com [10.97.116.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B898756BE;
+        Tue, 21 Jul 2020 19:38:31 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 16:38:30 -0300
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Nayna <nayna@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-integrity@vger.kernel.org,
+        erichte@linux.ibm.com, nayna@linux.ibm.com, stable@vger.kernel.org
+Subject: Re: [PATCH v6] ima: move APPRAISE_BOOTPARAM dependency on
+ ARCH_POLICY to runtime
+Message-ID: <20200721193830.GE2716@glitch>
+References: <20200713164830.101165-1-bmeneg@redhat.com>
+ <d337cbba-e996-e898-1e75-9f142d480e5e@linux.vnet.ibm.com>
+ <1595257015.5055.8.camel@linux.ibm.com>
+ <20200720153841.GG10323@glitch>
+ <1595352376.5311.8.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+In-Reply-To: <1595352376.5311.8.camel@linux.ibm.com>
+X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="k3qmt+ucFURmlhDS"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+--k3qmt+ucFURmlhDS
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+On Tue, Jul 21, 2020 at 01:26:16PM -0400, Mimi Zohar wrote:
+> On Mon, 2020-07-20 at 12:38 -0300, Bruno Meneguele wrote:
+> > On Mon, Jul 20, 2020 at 10:56:55AM -0400, Mimi Zohar wrote:
+> > > On Mon, 2020-07-20 at 10:40 -0400, Nayna wrote:
+> > > > On 7/13/20 12:48 PM, Bruno Meneguele wrote:
+> > > > > The IMA_APPRAISE_BOOTPARAM config allows enabling different "ima_=
+appraise=3D"
+> > > > > modes - log, fix, enforce - at run time, but not when IMA archite=
+cture
+> > > > > specific policies are enabled. =A0This prevents properly labeling=
+ the
+> > > > > filesystem on systems where secure boot is supported, but not ena=
+bled on the
+> > > > > platform. =A0Only when secure boot is actually enabled should the=
+se IMA
+> > > > > appraise modes be disabled.
+> > > > >
+> > > > > This patch removes the compile time dependency and makes it a run=
+time
+> > > > > decision, based on the secure boot state of that platform.
+> > > > >
+> > > > > Test results as follows:
+> > > > >
+> > > > > -> x86-64 with secure boot enabled
+> > > > >
+> > > > > [    0.015637] Kernel command line: <...> ima_policy=3Dappraise_t=
+cb ima_appraise=3Dfix
+> > > > > [    0.015668] ima: Secure boot enabled: ignoring ima_appraise=3D=
+fix boot parameter option
+> > > > >
+> > >=20
+> > > Is it common to have two colons in the same line? =A0Is the colon bei=
+ng
+> > > used as a delimiter when parsing the kernel logs? =A0Should the secon=
+d
+> > > colon be replaced with a hyphen? =A0(No need to repost. =A0I'll fix i=
+t
+> > > up.)
+> > > =A0
+> >=20
+> > AFAICS it has been used without any limitations, e.g:
+> >=20
+> > PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
+> > clocksource: hpet: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns=
+: 133484873504 ns
+> > microcode: CPU0: patch_level=3D0x08701013
+> > Lockdown: modprobe: unsigned module loading is restricted; see man kern=
+el_lockdown.7
+> > ...
+> >=20
+> > I'd say we're fine using it.
+>=20
+> Ok. =A0FYI, it's now in next-integrity.
+>=20
+> Mimi
+>=20
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+Thanks Mimi.
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+--=20
+bmeneg=20
+PGP Key: http://bmeneg.com/pubkey.txt
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+--k3qmt+ucFURmlhDS
+Content-Type: application/pgp-signature; name="signature.asc"
 
- If you apply the patch, please let me know.
+-----BEGIN PGP SIGNATURE-----
 
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8XRDUACgkQYdRkFR+R
+okOv3QgAidrD9B9w904OYqq3pVlZyT8GUdDpbIr0jliOvPKjHKVooNHQemfJhGU+
+HzoVi2pG8ARlFC4elJBAwVXR8S9KWCT/xNL9C6N0VMg8FDik0TjmMJ0DRwh4s3oZ
+oriQmx4vxaS4eNEfh5gBJrG4EwJdH2rCrbWtc4ojOzEhXE06xCsK9SN9PHy4x2Gp
+zMleiQuD/YVOQK5+A3DII5/BQquL5r5zcwmZ82jho8dZGo5Ot/wc0xq6W5dSLdJw
+7EScY58JI/z7H0JbxQuUG3qVmQNa4pVVx9v75cyoTwn5UeZ7XtOvshiO0pRY7M3z
+8xueI7dSvd0gv2/Z6BsTFphHrfjQVw==
+=mPff
+-----END PGP SIGNATURE-----
 
-
- drivers/staging/comedi/drivers/pcm3724.c | 2 +-
- drivers/staging/comedi/drivers/pcmad.c   | 2 +-
- drivers/staging/comedi/drivers/pcmda12.c | 2 +-
- drivers/staging/comedi/drivers/pcmmio.c  | 2 +-
- drivers/staging/comedi/drivers/pcmuio.c  | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/comedi/drivers/pcm3724.c b/drivers/staging/comedi/drivers/pcm3724.c
-index 5779e005c0cb..0cb1ad060402 100644
---- a/drivers/staging/comedi/drivers/pcm3724.c
-+++ b/drivers/staging/comedi/drivers/pcm3724.c
-@@ -222,6 +222,6 @@ static struct comedi_driver pcm3724_driver = {
- };
- module_comedi_driver(pcm3724_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Advantech PCM-3724 Digital I/O board");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcmad.c b/drivers/staging/comedi/drivers/pcmad.c
-index fe5449bb1716..eec89a0afb2f 100644
---- a/drivers/staging/comedi/drivers/pcmad.c
-+++ b/drivers/staging/comedi/drivers/pcmad.c
-@@ -144,6 +144,6 @@ static struct comedi_driver pcmad_driver = {
- };
- module_comedi_driver(pcmad_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcmda12.c b/drivers/staging/comedi/drivers/pcmda12.c
-index 33e463b193a1..14ab1f0d1e9f 100644
---- a/drivers/staging/comedi/drivers/pcmda12.c
-+++ b/drivers/staging/comedi/drivers/pcmda12.c
-@@ -160,6 +160,6 @@ static struct comedi_driver pcmda12_driver = {
- };
- module_comedi_driver(pcmda12_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcmmio.c b/drivers/staging/comedi/drivers/pcmmio.c
-index 72af1776f785..24a9568d3378 100644
---- a/drivers/staging/comedi/drivers/pcmmio.c
-+++ b/drivers/staging/comedi/drivers/pcmmio.c
-@@ -772,6 +772,6 @@ static struct comedi_driver pcmmio_driver = {
- };
- module_comedi_driver(pcmmio_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Winsystems PCM-MIO PC/104 board");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcmuio.c b/drivers/staging/comedi/drivers/pcmuio.c
-index 743fb226e2e4..7e1fc6ffb48c 100644
---- a/drivers/staging/comedi/drivers/pcmuio.c
-+++ b/drivers/staging/comedi/drivers/pcmuio.c
-@@ -619,6 +619,6 @@ static struct comedi_driver pcmuio_driver = {
- };
- module_comedi_driver(pcmuio_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
--- 
-2.27.0
+--k3qmt+ucFURmlhDS--
 
