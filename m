@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A407E227D08
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCEA227D09
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729254AbgGUKao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        id S1729265AbgGUKap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729168AbgGUKag (ORCPT
+        with ESMTP id S1726521AbgGUKai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:30:36 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA39C0619D8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:30:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id d202so25089950ybh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:30:36 -0700 (PDT)
+        Tue, 21 Jul 2020 06:30:38 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81662C0619D9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:30:38 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id w15so2094570qti.21
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:30:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=cPjmWgpWaY+rWzHjnAp20s8iFiM+s5JoLN5MYOTYnFA=;
-        b=aftcNk8G6lu8fp6r5Y9h/eIuz+ESZ+QLzM95HKYPu/yD3X2lSvc9rOwiS7ZKhAing4
-         yWp6omCuSFKxvk9F/F2V+0kpOCtCZqpDNonEFobTdTCwxCvTd/iKYAfClTBxOO3ukwvI
-         puoGl4ZhkEpWNKr0YYQYrfO9Ej6kldPpIZx1BURFXJhJH0yT7oDSyrcyDQ5WES7/sq5m
-         +jgb/bDUVdoByDvVqKTQH7jqFyjJYhOAoEU0onxFfDouwvAp+ZzJxoFKYcxFhWPNITpQ
-         pGh/hZOFElKkGtGavdtJ+hcnhIqEW2vqFqzKklLa2WS1+R6pprVkk1eueJlX3o4ct3Zo
-         Pw6g==
+        bh=vVlSyEcdwOQNKSx6Cnzx1nFD8CBubHuBwhuu4avdOuU=;
+        b=vXrgbBZMeSjvDTESYkIbwmgjhHej1P9NPmtoI0jh82pgDLABLiJRVX4pp9/coI4VJR
+         3OMaP53Sv9UFXLEOuyFlQ6LVm/IjXFe4BMvCzcgjNy/cDGZAfG4IYUrch2FwpM/va84U
+         ZpbW3fDwwIPzU7/jN4c+KatCCX0HNHvXo48p7z9qckD7p8LscgFUMNf5iej+xYoar1h7
+         mtB3W8wrurFcIwNEq703YUbX3QPhQzjMVB15yuF+fxwz3JFjvQ+48BeZDSMwTa1+2pos
+         W2/Z1ShXiVoiRd78daIZJfsCNNYhNc+Whbprbm83B8mkONow9+d2FxLOF5l602RByaqu
+         8R0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=cPjmWgpWaY+rWzHjnAp20s8iFiM+s5JoLN5MYOTYnFA=;
-        b=GPIRUIQrOqnRnfud6EgA7cnoqbXuTih4yjpvU09b17egXaLWSt0E+Przx3qkTuBcIF
-         taiuZEFzNGOHs0+Us+/xSChYlE/565QPLm1v14wzIybT5aMPYgiP+xkXmAMZTedN92QR
-         Ue/4MeLzuiAW9p2FuMFV+5zfysYjp3TUrCLxS9VrGxC0fKT/aY8Zan4OqElhtTNykPDH
-         OjR0x3XfGy9FPN8zsh+wANBKYuYt8juhwuEK2GSO02EkekCQCoQE+bsTCsp3R8MyOyrJ
-         QzmCHzLwqrNiWnFyOellQ4viYdild5TbcMXpWFn9h+PTLL15/Mkh8hVQTA6+Lzr8Ul4Z
-         zNxw==
-X-Gm-Message-State: AOAM530lr86wF4mNGtxyw0VcceUAHmTVrmPisS2p9po9gks+HdL/gaDv
-        FBqvA94atXa0AOC6khY4duemzyqGoQ==
-X-Google-Smtp-Source: ABdhPJycd+24DGl11kCvcTJxpCv+cod2nuTGCYXZlnMMqzBV6OdnBQaaHt2pvLcJWUMkw/5HJwrTrZv2dA==
-X-Received: by 2002:a25:a088:: with SMTP id y8mr29898149ybh.253.1595327435352;
- Tue, 21 Jul 2020 03:30:35 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 12:30:10 +0200
+        bh=vVlSyEcdwOQNKSx6Cnzx1nFD8CBubHuBwhuu4avdOuU=;
+        b=TEJYVGNer7PMurYtEBXVqG+MZm7lX79hRIJpr+MUhfm9ATy9lHomxpxdzE+N6h8xio
+         CjArAPO3w5b/XCFXTpEYP53yfcm6rmsQy8AYk9CvtPv2gtxRz+5E4Zq+sOCLwLvYO08I
+         G1g/sovdpKxCGWk/7I/ELTunZ8j7OtCIuo2leeBcDNC0mDgkdiLZI5IaZ9mdOmuHggDV
+         hpn6664/C6mt3b7wYbouNIu4/bAnh3QaJmvlxyMq3w4U+RYFl//1lxzVXYL2QiCs8QP5
+         oA7aL7K3gAQWXsr9pURhifFV5B3OQjpqRozLApEZYv2NXKYdtsHjmsNvaO2oSWFLO4PY
+         HFrA==
+X-Gm-Message-State: AOAM533o7rNGiSKTrIX4PVZYNoegiQeq46JFGjSGwZYch3Mo5EuTWBft
+        BjRyTDsvVKO8BDwVW4Ai9B0HumRtew==
+X-Google-Smtp-Source: ABdhPJw9AZJ6/Sq8gRuvn69c50PCI7j/zYVvTftn2YQFr3SnFEinKaitleRuJAZKsRV6Dc9/Ltu56y9PYg==
+X-Received: by 2002:a0c:b48e:: with SMTP id c14mr26052857qve.47.1595327437707;
+ Tue, 21 Jul 2020 03:30:37 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 12:30:11 +0200
 In-Reply-To: <20200721103016.3287832-1-elver@google.com>
-Message-Id: <20200721103016.3287832-3-elver@google.com>
+Message-Id: <20200721103016.3287832-4-elver@google.com>
 Mime-Version: 1.0
 References: <20200721103016.3287832-1-elver@google.com>
 X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH 2/8] objtool, kcsan: Add __tsan_read_write to uaccess whitelist
+Subject: [PATCH 3/8] kcsan: Skew delay to be longer for certain access types
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     will@kernel.org, peterz@infradead.org, arnd@arndb.de,
@@ -63,30 +63,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the new __tsan_read_write compound instrumentation to objtool's
-uaccess whitelist.
+For compound instrumentation and assert accesses, skew the watchpoint
+delay to be longer. We still shouldn't exceed the maximum delays, but it
+is safe to skew the delay for these accesses.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- tools/objtool/check.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/kcsan/core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 63d8b630c67a..38d82e705c93 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -528,6 +528,11 @@ static const char *uaccess_safe_builtin[] = {
- 	"__tsan_write4",
- 	"__tsan_write8",
- 	"__tsan_write16",
-+	"__tsan_read_write1",
-+	"__tsan_read_write2",
-+	"__tsan_read_write4",
-+	"__tsan_read_write8",
-+	"__tsan_read_write16",
- 	"__tsan_atomic8_load",
- 	"__tsan_atomic16_load",
- 	"__tsan_atomic32_load",
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index fb52de2facf3..4633baebf84e 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -283,11 +283,15 @@ static __always_inline bool kcsan_is_enabled(void)
+ 	return READ_ONCE(kcsan_enabled) && get_ctx()->disable_count == 0;
+ }
+ 
+-static inline unsigned int get_delay(void)
++static inline unsigned int get_delay(int type)
+ {
+ 	unsigned int delay = in_task() ? kcsan_udelay_task : kcsan_udelay_interrupt;
++	/* For certain access types, skew the random delay to be longer. */
++	unsigned int skew_delay_order =
++		(type & (KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_ASSERT)) ? 1 : 0;
++
+ 	return delay - (IS_ENABLED(CONFIG_KCSAN_DELAY_RANDOMIZE) ?
+-				prandom_u32_max(delay) :
++				prandom_u32_max(delay >> skew_delay_order) :
+ 				0);
+ }
+ 
+@@ -449,7 +453,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	 * Delay this thread, to increase probability of observing a racy
+ 	 * conflicting access.
+ 	 */
+-	udelay(get_delay());
++	udelay(get_delay(type));
+ 
+ 	/*
+ 	 * Re-read value, and check if it is as expected; if not, we infer a
 -- 
 2.28.0.rc0.105.gf9edc3c819-goog
 
