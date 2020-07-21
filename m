@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D47228328
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D5622832C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgGUPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        id S1729944AbgGUPHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728342AbgGUPHI (ORCPT
+        with ESMTP id S1728342AbgGUPHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:07:08 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B734C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:07:08 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id 66so4609950vka.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=TttBCUltyx/MCWMitfeQkl3FeqjlrfXX2hlzOjft3gI=;
-        b=D3eKj4HPsOHwmNcKBkkKHMp/Nw4v+PtZNvUvy9OCmKmt50IQB66eZhlGVpfuSSN2Bg
-         T2UT3+3DIUMb7A2Asnw0uwt24qGEzz1SG+BRpOMYwy2SYdUif4guHSIbLxDl+/+sH3Y4
-         CvYzHfRtb7SoVx7L1bgkQugm28VObydby3vyYyPm9M9W/K3UY/2PECza1kxPVLyRQAQM
-         KbPZCX9Y8PJG9fIdzoFuIuTk4INnppNRBGQGHv+dECgCenOGGC5Hef3GOA0Bfbi5GWB1
-         Rv1Tkiciurwlm/64PG6nCmYQ2gJFKeTOuhgeaWPfTJhaDuMdvmxyL/VZesijSYiWXI8F
-         dVbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=TttBCUltyx/MCWMitfeQkl3FeqjlrfXX2hlzOjft3gI=;
-        b=lA2MuhmGB/uT2naKPmpnGLVoLVCT4TUwHeTjkbQknk5Yy49qHlnYyhP1GjhkBmgCDU
-         K3e8V5BwYpHpe+eEzEhj6gKaiUTPa8htNtKB+sJok3lDXgG94hLyWwsYFvf0ny5+/8u6
-         cWOaPNOLo5M3LdM0sWsWUaD31KJCTtV2G4mnOsVz9rAjPXHC6qLipCuuD+KT7bxjOAzd
-         cYs9n/MbOxvaWa1psb96XmI1G03okqWjmL6lVHFJNDX/qb/2FKllrYeET94k0+rHjpuA
-         QYhSga+gUtSvogVZedIT5YOBk6iEfaGlTJFz4zYxHqc69szCIc+gcCYiC2GnY7Zx4acC
-         i7Fg==
-X-Gm-Message-State: AOAM531Z3cgC8ztENN745N3tN2UoNznk0tVs+PWR9RQdZfVt0Ps/x8s3
-        TJANSPcD4ugwTJO74s9Px4+Y7hH97PF3dZWuKLimEw==
-X-Google-Smtp-Source: ABdhPJyXrQnOSY70aA2W5YyJyUTuOwuINYI8oRmcOBhWqk7PPLA/W1YNwyaAqdJBPEct0LUz8fOq1mDkQge2T8RitkM=
-X-Received: by 2002:a1f:5e14:: with SMTP id s20mr14805414vkb.63.1595344027281;
- Tue, 21 Jul 2020 08:07:07 -0700 (PDT)
+        Tue, 21 Jul 2020 11:07:13 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17334C061794;
+        Tue, 21 Jul 2020 08:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=71NowoGixtjq18mdGDFwmexc9Svbvbn0P+0c9pBBqgg=; b=rRt75ZQ6MHmsL8Qdoi91H5eebV
+        dCcz3R9DppcQ2ntNO9cFf8oqJi04KtbpTMehLI39j3dKmmhdAVRH5bVYndvxaJNpA/DqfyVinxYGN
+        4wCiFh0XHZeoShMLF7IOtAT5tN7oYtFwe1J8e27ORUWy9y4nReRCdHhl7PAu9mkgYWnbz6BnP15t3
+        Kv6TTWUFLONBnnoLGn0gZV0nbzrFMyD5l9wQBGJa/jZXyub+Fh2HmfHHTteNM515Rrc/d7TKsFzus
+        ipKUcf4/8bBgn/bOJuQ33i8snhLjZlyWxrqpo2ZqOzuGIhrUqm3Y/WrBFzGxvivjlB5zxnARHjmHo
+        d1JJ38/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxtrA-0007WY-0P; Tue, 21 Jul 2020 15:07:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 40027300446;
+        Tue, 21 Jul 2020 17:06:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2C5FB203B8783; Tue, 21 Jul 2020 17:06:56 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 17:06:56 +0200
+From:   peterz@infradead.org
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
+Message-ID: <20200721150656.GN119549@hirez.programming.kicks-ass.net>
+References: <1594868476.6k5kvx8684.astroid@bobo.none>
+ <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
+ <20200716085032.GO10769@hirez.programming.kicks-ass.net>
+ <1594892300.mxnq3b9a77.astroid@bobo.none>
+ <20200716110038.GA119549@hirez.programming.kicks-ass.net>
+ <1594906688.ikv6r4gznx.astroid@bobo.none>
+ <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com>
+ <1595213677.kxru89dqy2.astroid@bobo.none>
+ <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
+ <1595324577.x3bf55tpgu.astroid@bobo.none>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 21 Jul 2020 20:36:55 +0530
-Message-ID: <CA+G9fYtYPA7jHPNB5D+JFHpmtB5+Wj+YG8W33GhffHjmFaMiUg@mail.gmail.com>
-Subject: arm: tinyconfig: entry-common.S:156: Error: r13 not allowed here --
- `bic tsk,sp,#(((1<<12)<<1)-1)&~63'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>, vladimir.murzin@arm.com,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595324577.x3bf55tpgu.astroid@bobo.none>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This might add little value.
+On Tue, Jul 21, 2020 at 08:04:27PM +1000, Nicholas Piggin wrote:
 
-arm build sets failed on linux next 20200721.
-The defconfig ( +config fragments ) builds PASS.
-The tinyconfig and allnoconfig FAILED with gcc-8, gcc-9 and gcc-10.
+> That being said, the x86 sync core gap that I imagined could be fixed 
+> by changing to rq->curr == rq->idle test does not actually exist because
+> the global membarrier does not have a sync core option. So fixing the
+> exit_lazy_tlb points that this series does *should* fix that. So
+> PF_KTHREAD may be less problematic than I thought from implementation
+> point of view, only semantics.
 
-make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j32 ARCH=arm
-CROSS_COMPILE=arm-linux-gnueabihf- HOSTCC=gcc CC="sccache
-arm-linux-gnueabihf-gcc" O=build zImage
-#
-../arch/arm/kernel/entry-common.S: Assembler messages:
-../arch/arm/kernel/entry-common.S:156: Error: r13 not allowed here --
-`bic tsk,sp,#(((1<<12)<<1)-1)&~63'
-../arch/arm/kernel/entry-common.S:243: Error: r13 not allowed here --
-`bic tsk,sp,#(((1<<12)<<1)-1)&~63'
-make[3]: *** [../scripts/Makefile.build:361:
-arch/arm/kernel/entry-common.o] Error 1
-../arch/arm/kernel/entry-v7m.S: Assembler messages:
-../arch/arm/kernel/entry-v7m.S:60: Error: r13 not allowed here -- `bic
-tsk,sp,#(((1<<12)<<1)-1)&~63'
-../arch/arm/kernel/entry-v7m.S:86: Error: r13 not allowed here -- `bic
-tsk,sp,#(((1<<12)<<1)-1)&~63'
-make[3]: *** [../scripts/Makefile.build:361:
-arch/arm/kernel/entry-v7m.o] Error 1
+So I've been trying to figure out where that PF_KTHREAD comes from,
+commit 227a4aadc75b ("sched/membarrier: Fix p->mm->membarrier_state racy
+load") changed 'p->mm' to '!(p->flags & PF_KTHREAD)'.
 
-full build link,
-https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/648560264
+So the first version:
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+  https://lkml.kernel.org/r/20190906031300.1647-5-mathieu.desnoyers@efficios.com
+
+appears to unconditionally send the IPI and checks p->mm in the IPI
+context, but then v2:
+
+  https://lkml.kernel.org/r/20190908134909.12389-1-mathieu.desnoyers@efficios.com
+
+has the current code. But I've been unable to find the reason the
+'p->mm' test changed into '!(p->flags & PF_KTHREAD)'.
+
+The comment doesn't really help either; sure we have the whole lazy mm
+thing, but that's ->active_mm, not ->mm.
+
+Possibly it is because {,un}use_mm() do not have sufficient barriers to
+make the remote p->mm test work? Or were we over-eager with the !p->mm
+doesn't imply kthread 'cleanups' at the time?
+
+Also, I just realized, I still have a fix for use_mm() now
+kthread_use_mm() that seems to have been lost.
+
+
