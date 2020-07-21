@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF76227A51
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51A0227A55
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbgGUIQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S1728442AbgGUIRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGUIQH (ORCPT
+        with ESMTP id S1726749AbgGUIRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:16:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9342EC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:16:07 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1jxnRS-0000UG-Aj; Tue, 21 Jul 2020 10:16:02 +0200
-Message-ID: <d8760e851fdf8a934dca20a9440bced16bb39123.camel@pengutronix.de>
-Subject: Re: [PATCH 1/2] ARM: dts: imx6qp-sabresd: enable pcie
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
-        shawnguo@kernel.org, festevam@gmail.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Date:   Tue, 21 Jul 2020 10:16:01 +0200
-In-Reply-To: <1595317470-9394-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1595317470-9394-1-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 21 Jul 2020 04:17:03 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5C3C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:17:03 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id k6so15667931ili.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=lbf3gjt9wqDFjZNQXE9vw5HIudL+elBicOycwkN2GWQ=;
+        b=XFF51JIKpCJq1ReUp9zCAKu5eFh/od9kuhZzToBLGCVAJP03KJDtp+XYG94ZblT9Qx
+         CK1ziEE1dRaLBZJpdIVZmzYtFMJsX8Er+cjl7hRDZc4T6nIlyprBCDOwjcXAcTbqrRRY
+         TkpQkYZ0IAlo6QOugguELOTIvjzuCdHFZvlUH98PBGDu0BuQOayPKjdMbQsQpAMkXWwH
+         ftEPHnuULTfDQp1m/gSu1mDKZ4HcI5zMUgfXJBbvRb4PoVSU479F5QDvhLbwfVHUfxkC
+         /BDHudbvF/sTWZbWI/LMibd+TEx9qgcWtP9DkMHRwheFYaOq6QuLw9gzpF/dFxiozk6E
+         DSOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=lbf3gjt9wqDFjZNQXE9vw5HIudL+elBicOycwkN2GWQ=;
+        b=SFH5HU6v2FO/V/LrLt2E5nsGLI2rO+pc2Mrt44r5W1PkajMGqvp3PuACSLGXwDJtKK
+         xG61Z5uUCFVF6+DNem7MYz52xJoBsubQqT6YgfwW6Iug1x1x8b7GCoG8iHVdnfOsJvQR
+         98sBw8GhHmAMT7agtvYf/TIJPD0Q2zODFHX/rkgSliK9voAlO/Dxxe1Gq3lMi/992J/t
+         L0/V1r1ogYsXP74IkUSvrGrVWwHxCEGNUPRHpLAIx4ZIj6RhHKqwi7RviyE+sFFHngc/
+         +lL94YSBwDGhLYt/sENnBZtrYczAm1JZt0DYhk7DvA0B+poKx7fhzZB4L4DN13oUFlU+
+         I2xg==
+X-Gm-Message-State: AOAM532T0eS48WNSF1SknYlKbPEPd0/aqFPJyqvpER4Xp5a3oES0Xy3G
+        F+H/naLDmGFkTL/CLujJgmS/tJx8AqQEVAfXDKs=
+X-Google-Smtp-Source: ABdhPJy41fKMsFaiIQf8bZrLrQpggA3qdNPyEUgnXi1lL9mCrffW343LgeB5Jc7iP2WqJ8RXh7Wl1a7PRlfDyuAG2y8=
+X-Received: by 2002:a92:290a:: with SMTP id l10mr28613347ilg.204.1595319423019;
+ Tue, 21 Jul 2020 01:17:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <CA+icZUUGO0__SEZ7YvuQzfSdaWfTnCHW=73-3W4X=Vz51wHd+w@mail.gmail.com>
+ <CAHk-=wiR+uHUyp3=Nf1aiNjmg0ZekaQJupLRguFNZ=MreuGhfg@mail.gmail.com>
+In-Reply-To: <CAHk-=wiR+uHUyp3=Nf1aiNjmg0ZekaQJupLRguFNZ=MreuGhfg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 21 Jul 2020 10:16:51 +0200
+Message-ID: <CA+icZUXRjrX+1NAZy4As_ficD4aHRAZWHRj5hrE+D6E5zEKXHw@mail.gmail.com>
+Subject: Re: Linux 5.8-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 21.07.2020, 15:44 +0800 schrieb Richard Zhu:
-> Add one regulator, used to power up the external oscillator,
-> and enable PCIe on iMX6QP SABRESD board.
+On Mon, Jul 20, 2020 at 10:48 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, Jul 19, 2020 at 8:47 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > I wonder why there is a time gap between tagging v5.8-rc6 in [1]
+> > (first) and [2] (15-16mins later).
+> > Can you explain that?
+>
+> Usually I push to github and kernel.org at the same time.
+>
+> But every once in a while, my OTP token for kernel.org expires, and
+> then I have to get my OPT token generator and update it and push
+> again.
+>
+> So sometimes github ends up getting my pushes earlier, simply because
+> it doesn't have quite the same kind of strict security checks.
+>
 
-That's not the right thing to do. If there is an external oscillator,
-which requires a power supply then the oscillator should have its own
-clock DT node (it's a separate device after all) and this node needs to
-control the regulator.
+Hi Linus,
 
-This has nothing to do with the PCIe controller, which only cares about
-the clock being provided.
+OK, I understand.
+
+You happen to know if I can configure in my ~/.gitconfig to pull
+linux-git stuff from two repositories - check first git.kernel.org
+then GitHub.
+
+Some days ago GitHub had some maintenance issues and I was not able to pull.
+Means I trust more the security and integrity concept of git.kernel.org.
+
+To pull from GitHub - saved 15-16mins of my life-time - meant
+15-16mins go earlier to sleep - as said I started my build 01:02a.m.
+(German local-time).
+
+Thanks.
 
 Regards,
-Lucas
-
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  arch/arm/boot/dts/imx6qp-sabresd.dts | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/imx6qp-sabresd.dts
-> b/arch/arm/boot/dts/imx6qp-sabresd.dts
-> index 480e73183f6b..cd8a1f610427 100644
-> --- a/arch/arm/boot/dts/imx6qp-sabresd.dts
-> +++ b/arch/arm/boot/dts/imx6qp-sabresd.dts
-> @@ -51,7 +51,8 @@
->  };
->  
->  &pcie {
-> -	status = "disabled";
-> +	vepdev-supply = <&vgen3_reg>;
-> +	status = "okay";
->  };
->  
->  &sata {
-
+- Sedat -
