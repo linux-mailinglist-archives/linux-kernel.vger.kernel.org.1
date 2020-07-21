@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F4122850E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF64F22850C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgGUQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        id S1729444AbgGUQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbgGUQNB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:13:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642D6C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:13:01 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id 72so10467167ple.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:13:01 -0700 (PDT)
+        with ESMTP id S1726890AbgGUQMl (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:12:41 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7ADC061794;
+        Tue, 21 Jul 2020 09:12:41 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k27so12167267pgm.2;
+        Tue, 21 Jul 2020 09:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vmm.dev; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wDitsdDHDoETDTxDKluPrWhU2D8DE6u8BnPSmRmrGh4=;
-        b=fy7L/4Re2TIFmm12k2i3bXju6ZZlkbEA1354CbMIGv3i6xktgqXThaI1n9+yLvVeEO
-         C6XotX0xy43lCHKadVKvJu6as164ENvY1aZYC+Yyk6hrIbMWtMK5qbbY/oAzlC1QJc/Q
-         8TrLwbEZwu3d5Il0QNTGzHqDr1Wi7ruxTjCJbyOBHnxKClmMl1qVy2GQASFp3s9u8YP4
-         VSo4vbTiSmKkp48DBE9pCIvmYDvC2JPmk5mrF9XSkbyYnR9veMcyfz8PlL4ZXKXSqov7
-         yfHhV8BL0GsYeU64KxJy8smQviZ1pKkO7sM+BGXTVcqsJVnmyRO6wSLGb235TJ1J3hxc
-         UCEw==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q+LcCZY/rB9hRqalJEFgYKqj0Xrc9NYu49mml43Naro=;
+        b=Q8/i33JCodDzaLyqTs1/DOnQWML6Z23owcAcp5lXVV6xU4nhZ9PVgTXr0q2kF8DssV
+         ukZb5rZVuxcLvDtDRJz+ALon3R7S2SIbqeYk1UYcmNolCnxa8nDD1ytqAvnW/5eD0x4m
+         D5WU38G/HP+GiWkem3IBh1NXkw9FoPwxndJHu+8pCYXVl2f6Cu6e98+MngTLOgIwmnRK
+         1cB1tg6TbOnbJXBwPDh5qa7BM3v7x3vOeXloBeMOKXLJJs+L4ttaZ+v2e+p50UAw/kY9
+         wKFzJIc/2NB20DVe+rmLKgjzAU+yEcZaaekM9t8b4Bx6rmly+ugd1tfmK8SmiFvVMdXR
+         Ta7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wDitsdDHDoETDTxDKluPrWhU2D8DE6u8BnPSmRmrGh4=;
-        b=GGxd7rqwEeFz2iflQ8RZytXLVyDVUHNwI06D67aThunPeyADkm0dp2VYJGJgjZYLRN
-         CTl3THIlfbdHb+kC4CVuZlOqR5PLzhsUbkN5ACSLUdTlLxuyJda7CJQre6jx0i4bhccW
-         abloiEZctz5n0qeesNXblMfMKCp6rLu5AtaH+qmRC3HxO4U9vD89latyV7pNEaBCbn89
-         h+nBjW6c55qV6N9f6bWC0CRt3EUjO3SqBUToQlmbBDDyAXJm88MmJ0IthSNfPnKyyENi
-         M2NH8umySw9VF193JObdPZpOkubFqlu/FO0apImvsabHmGdzWTraQTLW7TIJ2j5Dusnr
-         wVXA==
-X-Gm-Message-State: AOAM532SreAgr+WdzjFFJq0SG3n0bE437xJCmBBXjfvZfK15sBXkcic0
-        zr3pumcRGDCXqQKv1ziZZtj8MA==
-X-Google-Smtp-Source: ABdhPJz/4Rls+u9+PMZSs3OFi3HIkImvb038W2RxX4ZvHHXgVr6fOs32UJtvHWbBcLF6bDLtkM4tvg==
-X-Received: by 2002:a17:902:8ecb:: with SMTP id x11mr17341190plo.123.1595347980879;
-        Tue, 21 Jul 2020 09:13:00 -0700 (PDT)
-Received: from ip-172-31-28-103.ap-northeast-1.compute.internal (ec2-18-183-109-148.ap-northeast-1.compute.amazonaws.com. [18.183.109.148])
-        by smtp.gmail.com with ESMTPSA id y80sm20467763pfb.165.2020.07.21.09.12.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jul 2020 09:13:00 -0700 (PDT)
-From:   Hayato Ohhashi <o8@vmm.dev>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Hayato Ohhashi <o8@vmm.dev>
-Subject: [PATCH] x86/xen/time: set the X86_FEATURE_TSC_KNOWN_FREQ flag in xen_tsc_khz()
-Date:   Tue, 21 Jul 2020 16:12:31 +0000
-Message-Id: <20200721161231.6019-1-o8@vmm.dev>
-X-Mailer: git-send-email 2.23.3
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q+LcCZY/rB9hRqalJEFgYKqj0Xrc9NYu49mml43Naro=;
+        b=jH3Pa3c4B4zQw2QAAYdcA/moq+sGj1vyK5S1unGhjM+JV1KAqGSdPktTzhUKqxcrZR
+         +AlIks8RMbsqULuGGFDqaH/WEnGdRfk3yqAte4ZUOt3i3n7Bw+icPrYp3tMKCoiWHt86
+         cAOeRd4IVwRx4ni/HcZtF5WPM6HrL3SwyvUiXO8+E8hqwOGOYlxXqV3HOP+9g0WkCZ97
+         WpflmUBjgTfYOGmure1bOE/ubFMNv8/cYQ9QpnJG7K7MFiEWTzDXacLZl/gB3fhZ97SG
+         /jTOe1OfNEBY1bfh/DvH901NYPK6LXo5zoVkbK4ox3Srjrtf7qR4YFD/BsKo/nh+Uv+B
+         KfaA==
+X-Gm-Message-State: AOAM531SjnAivFMt89wLCeK7SvpqU/UjMr0qnbrOVivrha76rJ00mTPg
+        4EScN5fhWOqBH4HY/3DMd3w=
+X-Google-Smtp-Source: ABdhPJzr6w+HX5vuT6iz2EOTCcdH35p36Dk0mb9LntSP/+Sfd4CSakbgq1wzQlMeJQ3PqQRBnT0KXw==
+X-Received: by 2002:a62:3895:: with SMTP id f143mr14230692pfa.27.1595347960719;
+        Tue, 21 Jul 2020 09:12:40 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id b205sm20194519pfb.204.2020.07.21.09.12.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 09:12:39 -0700 (PDT)
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+X-Google-Original-From: Dmitry Torokhov <Dmitry.torokhov@gmail.com>
+Date:   Tue, 21 Jul 2020 09:12:36 -0700
+To:     Dave Wang <dave.wang@emc.com.tw>
+Cc:     Linux-input@vger.kernel.org, Linux-kernel@vger.kernel.org,
+        phoenix@emc.com.tw, josh.chen@emc.com.tw, jingle.wu@emc.com.tw,
+        kai.heng.feng@canonical.com
+Subject: Re: [PATCH 1/3] Input: elan_i2c - Do no operation for
+ elan_smbus_set_mode function
+Message-ID: <20200721161236.GI1665100@dtor-ws>
+References: <20191209111107.32239-1-dave.wang@emc.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191209111107.32239-1-dave.wang@emc.com.tw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the TSC frequency is known from the pvclock page,
-the TSC frequency does not need to be recalibrated.
-We can avoid recalibration by setting X86_FEATURE_TSC_KNOWN_FREQ.
+Hi Dave,
 
-Signed-off-by: Hayato Ohhashi <o8@vmm.dev>
----
- arch/x86/xen/time.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, Dec 09, 2019 at 06:11:07AM -0500, Dave Wang wrote:
+> Some touchpads might get error while triggerring the set_mode command
+> in SMBus interface. Do no operation for elan_smbus_set_mode function.
 
-diff --git a/arch/x86/xen/time.c b/arch/x86/xen/time.c
-index c8897aad13cd..91f5b330dcc6 100644
---- a/arch/x86/xen/time.c
-+++ b/arch/x86/xen/time.c
-@@ -39,6 +39,7 @@ static unsigned long xen_tsc_khz(void)
- 	struct pvclock_vcpu_time_info *info =
- 		&HYPERVISOR_shared_info->vcpu_info[0].time;
- 
-+	setup_force_cpu_cap(X86_FEATURE_TSC_KNOWN_FREQ);
- 	return pvclock_tsc_khz(info);
- }
- 
+Are there devices that do not trigger errors? How do we put SMbus
+devices into low power mode?
+
+> 
+> Signed-off-by: Dave Wang <dave.wang@emc.com.tw>
+> ---
+>  drivers/input/mouse/elan_i2c_smbus.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
+> index 8c3185d54c73..bcb9ec4a7a6b 100644
+> --- a/drivers/input/mouse/elan_i2c_smbus.c
+> +++ b/drivers/input/mouse/elan_i2c_smbus.c
+> @@ -84,10 +84,7 @@ static int elan_smbus_initialize(struct i2c_client *client)
+>  
+>  static int elan_smbus_set_mode(struct i2c_client *client, u8 mode)
+>  {
+> -	u8 cmd[4] = { 0x00, 0x07, 0x00, mode };
+> -
+> -	return i2c_smbus_write_block_data(client, ETP_SMBUS_IAP_CMD,
+> -					  sizeof(cmd), cmd);
+> +	return 0; /* A no-op */
+>  }
+>  
+>  static int elan_smbus_sleep_control(struct i2c_client *client, bool sleep)
+> -- 
+> 2.17.1
+> 
+
+Thanks.
+
 -- 
-2.23.3
-
+Dmitry
