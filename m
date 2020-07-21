@@ -2,181 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7924227BAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DFE227BB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgGUJ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:26:42 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:48716 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726892AbgGUJ0l (ORCPT
+        id S1728989AbgGUJ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:27:11 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:30017 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgGUJ1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:26:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U3Oezh-_1595323596;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3Oezh-_1595323596)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 21 Jul 2020 17:26:36 +0800
-Subject: Re: [PATCH v16 16/22] mm/mlock: reorder isolation sequence during
- munlock
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-17-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0Udcry01samXT54RkurNqFKnVmv-686ZFHF+iw4b+12T_A@mail.gmail.com>
- <6e37ee32-c6c5-fcc5-3cad-74f7ae41fb67@linux.alibaba.com>
- <CAKgT0Ue2i96gL=Tqx_wFmsBj_b1cnM1KQHh8b+oYr5iRg0Tcpw@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <7a931661-e096-29ee-d97d-8bf96ba6c972@linux.alibaba.com>
-Date:   Tue, 21 Jul 2020 17:26:34 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 21 Jul 2020 05:27:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595323628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xQico8pV1a2TFux4HtegeRv1HfcrTUY0AXTXyEI7ouw=;
+        b=Pf6Lc9TiXa2rWvEZaCbIMFbVeqVDXCsBThXfPeVIcywVj8fSadjv1RfleZjXfVGZlf1vbm
+        GXeFY3Jp+wHoFn47ArnGo4x/0cP1NvMv7H0HXZ5VE347IwmU7C9M0Ef+aZFA36td+1YiAb
+        bjGTRAxouH/mCajw3IKWIbTf5Uym3L8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-CwJzldupNImtCRnfzLbJGg-1; Tue, 21 Jul 2020 05:27:07 -0400
+X-MC-Unique: CwJzldupNImtCRnfzLbJGg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1C461009613;
+        Tue, 21 Jul 2020 09:26:59 +0000 (UTC)
+Received: from f32-m1.lan (ovpn-112-21.phx2.redhat.com [10.3.112.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6E6492B5B5;
+        Tue, 21 Jul 2020 09:26:59 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 02:26:58 -0700
+From:   Kevin Buettner <kevinb@redhat.com>
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] copy_xstate_to_kernel: Fix typo which caused GDB
+ regression
+Message-ID: <20200721022658.299445d8@f32-m1.lan>
+In-Reply-To: <87tuy1s0pw.fsf@mid.deneb.enyo.de>
+References: <20200718002003.6e0a2aef@f32-m1.lan>
+        <87tuy1s0pw.fsf@mid.deneb.enyo.de>
+Organization: Red Hat
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Ue2i96gL=Tqx_wFmsBj_b1cnM1KQHh8b+oYr5iRg0Tcpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 21 Jul 2020 10:59:07 +0200
+Florian Weimer <fw@deneb.enyo.de> wrote:
 
-
-在 2020/7/21 上午2:51, Alexander Duyck 写道:
->> Look into the __split_huge_page_tail, there is a tiny gap between tail page
->> get PG_mlocked, and it is added into lru list.
->> The TestClearPageLRU could blocked memcg changes of the page from stopping
->> isolate_lru_page.
-> I get that there is a gap between the two in __split_huge_page_tail.
-> My concern is more the fact that you are pulling the bit testing
-> outside of the locked region when I don't think it needs to be. The
-> lock is being taken unconditionally, so why pull the testing out when
-> you could just do it inside the lock anyway? My worry is that you
-> might be addressing __split_huge_page_tail but in the process you
-> might be introducing a new race with something like
-> __pagevec_lru_add_fn.
-
-Yes, the page maybe interfered by clear_page_mlock and add pages to wrong lru
-list.
-
+> * Kevin Buettner:
 > 
-> If I am not mistaken the Mlocked flag can still be cleared regardless
-> of if the LRU bit is set or not. So you can still clear the LRU bit
-> before you pull the page out of the list, but it can be done after
-> clearing the Mlocked flag instead of before you have even taken the
-> LRU lock. In that way it would function more similar to how you
-> handled pagevec_lru_move_fn() as all this function is really doing is
-> moving the pages out of the unevictable list into one of the other LRU
-> lists anyway since the Mlocked flag was cleared.
+> > This commit fixes a regression encountered while running the
+> > gdb.base/corefile.exp test in GDB's test suite.
+> >
+> > In my testing, the typo prevented the sw_reserved field of struct
+> > fxregs_state from being output to the kernel XSAVES area.  Thus the
+> > correct mask corresponding to XCR0 was not present in the core file
+> > for GDB to interrogate, resulting in the following behavior:
+> >
+> > [kev@f32-1 gdb]$ ./gdb -q testsuite/outputs/gdb.base/corefile/corefile testsuite/outputs/gdb.base/corefile/corefile.core
+> > Reading symbols from testsuite/outputs/gdb.base/corefile/corefile...
+> > [New LWP 232880]
+> >
+> > warning: Unexpected size of section `.reg-xstate/232880' in core file.
+> >
+> > With the typo fixed, the test works again as expected.
+> >
+> > Signed-off-by: Kevin Buettner <kevinb@redhat.com>
+> > ---
+> >  arch/x86/kernel/fpu/xstate.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> > index 6a54e83d5589..9cf40a7ff7ae 100644
+> > --- a/arch/x86/kernel/fpu/xstate.c
+> > +++ b/arch/x86/kernel/fpu/xstate.c
+> > @@ -1022,7 +1022,7 @@ int copy_xstate_to_kernel(void *kbuf, struct xregs_state *xsave, unsigned int of
+> >  		copy_part(offsetof(struct fxregs_state, st_space), 128,
+> >  			  &xsave->i387.st_space, &kbuf, &offset_start, &count);
+> >  	if (header.xfeatures & XFEATURE_MASK_SSE)
+> > -		copy_part(xstate_offsets[XFEATURE_MASK_SSE], 256,
+> > +		copy_part(xstate_offsets[XFEATURE_SSE], 256,
+> >  			  &xsave->i387.xmm_space, &kbuf, &offset_start, &count);
+> >  	/*
+> >  	 * Fill xsave->i387.sw_reserved value for ptrace frame:  
 > 
+> Does this read out-of-bounds, potentially disclosing kernel memory?
+> Not if the system supports AVX, I assume.
 
-Without the lru bit guard, the page may be moved between memcgs, luckly,
-lock_page would stop the mem_cgroup_move_account with BUSY state cost.
-whole new change would like the following, I will testing/resend again.
+An overlarge offset (first parameter) passed to copy_part() will cause
+fill_gap() to be called which will copy data out of &init_fpstate.xsave.
+Care is taken in both fill_gap and copy_part to not copy more data
+than the remaining count.
 
-Thanks!
-Alex
+So, I think the answer is "no".
 
-@@ -182,7 +179,7 @@ static void __munlock_isolation_failed(struct page *page)
- unsigned int munlock_vma_page(struct page *page)
- {
-        int nr_pages;
--       pg_data_t *pgdat = page_pgdat(page);
-+       struct lruvec *lruvec;
+Kevin
 
-        /* For try_to_munlock() and to serialize with page migration */
-        BUG_ON(!PageLocked(page));
-@@ -190,11 +187,11 @@ unsigned int munlock_vma_page(struct page *page)
-        VM_BUG_ON_PAGE(PageTail(page), page);
-
-        /*
--        * Serialize with any parallel __split_huge_page_refcount() which
-+        * Serialize split tail pages in __split_huge_page_tail() which
-         * might otherwise copy PageMlocked to part of the tail pages before
-         * we clear it in the head page. It also stabilizes hpage_nr_pages().
-         */
--       spin_lock_irq(&pgdat->lru_lock);
-+       lruvec = lock_page_lruvec_irq(page);
-
-        if (!TestClearPageMlocked(page)) {
-                /* Potentially, PTE-mapped THP: do not skip the rest PTEs */
-@@ -205,15 +202,15 @@ unsigned int munlock_vma_page(struct page *page)
-        nr_pages = hpage_nr_pages(page);
-        __mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
-
--       if (__munlock_isolate_lru_page(page, true)) {
--               spin_unlock_irq(&pgdat->lru_lock);
-+       if (__munlock_isolate_lru_page(page, lruvec, true)) {
-+               unlock_page_lruvec_irq(lruvec);
-                __munlock_isolated_page(page);
-                goto out;
-        }
-        __munlock_isolation_failed(page);
-
- unlock_out:
--       spin_unlock_irq(&pgdat->lru_lock);
-+       unlock_page_lruvec_irq(lruvec);
-
- out:
-        return nr_pages - 1;
-@@ -293,23 +290,27 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
-        int nr = pagevec_count(pvec);
-        int delta_munlocked = -nr;
-        struct pagevec pvec_putback;
-+       struct lruvec *lruvec = NULL;
-        int pgrescued = 0;
-
-        pagevec_init(&pvec_putback);
-
-        /* Phase 1: page isolation */
--       spin_lock_irq(&zone->zone_pgdat->lru_lock);
-        for (i = 0; i < nr; i++) {
-                struct page *page = pvec->pages[i];
-
-+               /* block memcg change in mem_cgroup_move_account */
-+               lock_page(page);
-+               lruvec = relock_page_lruvec_irq(page, lruvec);
-                if (TestClearPageMlocked(page)) {
-                        /*
-                         * We already have pin from follow_page_mask()
-                         * so we can spare the get_page() here.
-                         */
--                       if (__munlock_isolate_lru_page(page, false))
-+                       if (__munlock_isolate_lru_page(page, lruvec, false)) {
-+                               unlock_page(page);
-                                continue;
--                       else
-+                       } else
-                                __munlock_isolation_failed(page);
-                } else {
-                        delta_munlocked++;
-@@ -321,11 +322,14 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
-                 * pin. We cannot do it under lru_lock however. If it's
-                 * the last pin, __page_cache_release() would deadlock.
-                 */
-+               unlock_page(page);
-                pagevec_add(&pvec_putback, pvec->pages[i]);
-                pvec->pages[i] = NULL;
-        }
--       __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
--       spin_unlock_irq(&zone->zone_pgdat->lru_lock);
-+       if (lruvec) {
-+               __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
-+               unlock_page_lruvec_irq(lruvec);
-+       }
-
-        /* Now we can release pins of pages that we are not munlocking */
-        pagevec_release(&pvec_putback);
