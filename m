@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEFB22863B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAE1228659
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730880AbgGUQnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:43:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730391AbgGUQno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:43:44 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA78C207BB;
-        Tue, 21 Jul 2020 16:43:43 +0000 (UTC)
-Date:   Tue, 21 Jul 2020 12:43:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tingwei Zhang <tingwei@codeaurora.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] tracing: add trace_export support for event trace
-Message-ID: <20200721124342.422ee784@oasis.local.home>
-In-Reply-To: <20200721123733.1a87568a@oasis.local.home>
-References: <20200720022117.9375-1-tingwei@codeaurora.org>
-        <20200720022117.9375-3-tingwei@codeaurora.org>
-        <20200721123733.1a87568a@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729666AbgGUQpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728750AbgGUQpj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:45:39 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEE3C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:45:38 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so15759035edq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gDLw9Dcw3YPv5eg4D1cNA4KJREZ+5phRSHLKAVCSqo4=;
+        b=sWaGYNFNvLHfLnFqhWw6qD05fZJ3xzg9qHpo5WavC+HOa4H9WOO8R58q/QpUclGLry
+         9IL4j0cs6T2tzt1njgxmRIdcHQe5/HHEbENPKtlUivjjo0774Sk4dPYbx6pNd9sj+Hba
+         BGIPr7vGf3Wz1I0ZlD9HrORuybaANBJwq3p9No8LKz53+Z00y2Qe5yTAZzt4xK0KTD14
+         opOIvzeXklxODdltPMXE0N5/iPdGcCtOPo35S5qmc4oYuzfqMy8yKOjCCu2miu7Qw5xg
+         SL+vKrFM9D2pcb4rxS2e3UFTvCX3US6gxaITccHPkYUeoMaMFGays+1SH64jb+4HGZ6x
+         uO9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gDLw9Dcw3YPv5eg4D1cNA4KJREZ+5phRSHLKAVCSqo4=;
+        b=N/IxZiWktsoTf86K5Oa4xykcOHNUNWECfFlwvpSFpyvIjWs+7AeeqOhPP1IfxKS5KV
+         qCOUIGKRtjmYFuIlHhitMCkcjdH/of0FikJG8UcU0MCE4hnhcUORpdSnEnYvBHrIPC/A
+         bp/fYnSvidFzQtVl22xgyG62WyjQHK254uioStuCaHsqt3eKY+FR0/kDQ138hz5fLMlU
+         O1Y/S8jSlrA5R//HOpol2zh0krZJ7Juw4FN1jMWfsOly1p4jE78WLQvvnsrg7cL7kBhi
+         1/xqvUxjiaXBbPLotBwM/ArrmPP9dB1wX/2oiD7lgYlSOqzURdU+yjWAiv0fp9uvHlQk
+         Khnw==
+X-Gm-Message-State: AOAM530tSeryfJ1VVuLqxR2SF4DbW2zhfD7nBMwfkCGZgn3g4NpXGE3j
+        ikrsOoxwDqa7L4NXnqHyfFOlGdp9bdhiWqTni9A9vHtYL4w=
+X-Google-Smtp-Source: ABdhPJwFbdgTKwMQXCY5MUgVfRS3h4/ECO4sk0mNo2dLY8J6zu/iV27GdbWz0YHGFmXds1uVOpAILDeHMdcYDWpz4wY=
+X-Received: by 2002:aa7:d5cd:: with SMTP id d13mr27413638eds.370.1595349937400;
+ Tue, 21 Jul 2020 09:45:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200715214312.2266839-1-haoluo@google.com> <20200715214312.2266839-3-haoluo@google.com>
+ <CAEf4BzYxWk9OmN0QhDrvE943YsYd2Opdkbt7NQTO9-YM6c4aGw@mail.gmail.com>
+ <CA+khW7i9wq0+2P_M46pEv-onGXL_=sW7xE=10CYeP_yjPh-Rpw@mail.gmail.com> <CAEf4BzY=6PH4YS8sX1SRFOj+6oQnfAk-f0P8+0XWMGMS+RJ0pw@mail.gmail.com>
+In-Reply-To: <CAEf4BzY=6PH4YS8sX1SRFOj+6oQnfAk-f0P8+0XWMGMS+RJ0pw@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 21 Jul 2020 09:45:26 -0700
+Message-ID: <CA+khW7j93gtB-e8x1-Fd9sTrOaHHD7suzVaBh9gPjnOJux+-AA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/2] selftests/bpf: Test __ksym externs with BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 12:37:33 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Ack. Will have that in v2.
 
-> On Mon, 20 Jul 2020 10:21:15 +0800
-> Tingwei Zhang <tingwei@codeaurora.org> wrote:
-> 
-> > Only function traces can be exported to other destinations currently.
-> > This patch exports event trace as well.
-> > 
-> > Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> > ---
-> >  kernel/trace/trace.c | 24 +++++++++++++-----------
-> >  1 file changed, 13 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> > index bb62269724d5..aef6330836e2 100644
-> > --- a/kernel/trace/trace.c
-> > +++ b/kernel/trace/trace.c
-> > @@ -2697,17 +2697,6 @@ int tracepoint_printk_sysctl(struct ctl_table *table, int write,
-> >  	return ret;
-> >  }
-> >  
-> > -void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
-> > -{
-> > -	if (static_key_false(&tracepoint_printk_key.key))
-> > -		output_printk(fbuffer);
-> > -
-> > -	event_trigger_unlock_commit_regs(fbuffer->trace_file, fbuffer->buffer,
-> > -				    fbuffer->event, fbuffer->entry,
-> > -				    fbuffer->flags, fbuffer->pc, fbuffer->regs);
-> > -}
-> > -EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
-> > -  
-> 
-> Please move the ftrace_exports routines up, instead of moving the
-> trace_event_buffer_commit() down. As it fits better where it is (next
-> to the other buffer_commit code).
-> 
-> -- Steve
-> 
-> 
-> >  /*
-> >   * Skip 3:
-> >   *
-> > @@ -2868,6 +2857,19 @@ int unregister_ftrace_export(struct
-> > trace_export *export) }
-> >  EXPORT_SYMBOL_GPL(unregister_ftrace_export);
-> >  
-> > +void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
-> > +{
-> > +	if (static_key_false(&tracepoint_printk_key.key))
-> > +		output_printk(fbuffer);
-> > +
-> > +	if (static_branch_unlikely(&ftrace_exports_enabled))
-> > +		ftrace_exports(fbuffer->event);
+Hao
 
-I would also recommend making each static branch a separate variable.
-That way you could pick and choose what you want to enable. If you only
-want events, and functions are being traced, it will add a bit of
-overhead to handle the functions to just ignore them.
-
-That is:
-
- ftrace_exports_enabled, trace_event_exports_enabled,
- trace_marker_exports_enabled.
-
--- Steve
-
-
-> > +	event_trigger_unlock_commit_regs(fbuffer->trace_file,
-> > fbuffer->buffer,
-> > +				    fbuffer->event, fbuffer->entry,
-> > +				    fbuffer->flags, fbuffer->pc,
-> > fbuffer->regs); +}
-> > +EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
-> > +
-> >  void
-> >  trace_function(struct trace_array *tr,
-> >  	       unsigned long ip, unsigned long parent_ip, unsigned
-> > long flags,  
-> 
-
+On Mon, Jul 20, 2020 at 7:37 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Jul 20, 2020 at 1:28 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > >
+> > > This should ideally look like a real global variable extern:
+> > >
+> > > extern const struct rq runqueues __ksym;
+> > >
+> > >
+> > > But that's the case for non-per-cpu variables. You didn't seem to
+> > > address per-CPU variables in this patch set. How did you intend to
+> > > handle that? We should look at a possible BPF helper to access such
+> > > variables as well and how the verifier will prevent direct memory
+> > > accesses for such variables.
+> > >
+> > > We should have some BPF helper that accepts per-CPU PTR_TO_BTF_ID, and
+> > > returns PTR_TO_BTF_ID, but adjusted to desired CPU. And verifier
+> > > ideally would allow direct memory access on that resulting
+> > > PTR_TO_BTF_ID, but not on per-CPU one. Not sure yet how this should
+> > > look like, but the verifier probably needs to know that variable
+> > > itself is per-cpu, no?
+> > >
+> >
+> > Yes, that's what I was unclear about, so I don't have that part in
+> > this patchset. But your explanation helped me organize my thoughts. :)
+> >
+> > Actually, the verifier can tell whether a var is percpu from the
+> > DATASEC, since we have encoded "percpu" DATASEC in btf. I think the
+> > following should work:
+> >
+> > We may introduce a new PTR_TO_BTF_VAR_ID. In ld_imm, libbpf replaces
+> > ksyms with btf_id. The btf id points to a KIND_VAR. If the pointed VAR
+> > is found in the "percpu" DATASEC, dst_reg is set to PTR_TO_BTF_VAR_ID;
+> > otherwise, it will be a PTR_TO_BTF_ID. For PTR_TO_BTF_VAR_ID,
+> > reg->btf_id is the id of the VAR. For PTR_TO_BTF_ID, reg->btf_id is
+> > the id of the actual kernel type. The verifier would reject direct
+> > memory access on PTR_TO_BTF_VAR_ID, but the new BPF helper can convert
+> > a PTR_TO_BTF_VAR_ID to PTR_TO_BTF_ID.
+>
+> Sounds good to me as a plan, except that PTR_TO_BTF_VAR_ID is a
+> misleading name. It's always a variable. The per-CPU part is crucial,
+> though, so maybe something like PTR_TO_PERCPU_BTF_ID?
+>
+> >
+> > Hao
