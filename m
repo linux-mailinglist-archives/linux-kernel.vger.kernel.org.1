@@ -2,196 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA2F227371
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03614227379
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgGUAEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 20:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgGUAEm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:04:42 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF16C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 17:04:42 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id t198so15806136oie.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 17:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xOY9CX+MZHC2V2Y5UgG6sQVWIz0SPS7mgtXJ/kyBZLQ=;
-        b=OI1GkTyWGwpZMaOMU8iZTFA5YLZeTO4J0Gi6nqF6lqBL8xCBBte3BfsQtK+anpB/UZ
-         WagIowBQjTb81OiMOAVj9dHWBzpmq1XzrYVi5LKy0cODqOLYm0NgkKgyxVD0ZNC5Wlf5
-         JfRr4uQ3/RTR4r/PU1cg2DbuaPGaos3ufKUlJYYkW+bDqbjuTedVYKYGILWMdD84AefQ
-         Ob1vx8oKp2oFepYfJS2UAmvnOVVQuq6wqAwDnXIjfQFza5V8BrrRC1xeV8aJNCYNG/zp
-         7BqyIfKubSLmw/3cB1q40v0c6kAairj9PAnDAJoMrAV2K5yLUdZIH0wBYVZYhJSki4aW
-         y9kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xOY9CX+MZHC2V2Y5UgG6sQVWIz0SPS7mgtXJ/kyBZLQ=;
-        b=qKGzYbGlSNs4ngz7/hz1z3iWaoPufIwebAKOI650mf4ZgWGJvCuTK6NJsDlIiSI0bX
-         GTWceAG6p2ZcJuLcauMGQ4VfLH9hlW9KKRopsYuXCbD5JVVbWUM9EldRgqUWJ5sB9XVI
-         Gry9CU2RXPaxcWOdZ0vOHJ+fhiFDv9auD9l2dzXKZlp62RNhiqgfXltQ2np9kbS42JK4
-         /2e1Z426JcE4Hrd2H9uI+bYI39NPD/5aR3ULzJ+Q+rKcvFOfxHYhygswTbmL4Q+7ePYF
-         OeZ7afewhvNHJ4o4N2UfC91QboiqR6ZoUgHzqUbXlD2nucrjfXt2Rd1vJ9i6VKApH7fA
-         kSdw==
-X-Gm-Message-State: AOAM532A+hzqfQPIr1cBhzrKPL4aYhH4WjAyCe1a0TSfjCY1HPeMC+6A
-        bglxyEdQTExKkMmlwu4QWTd6o0aQQx+V0nvC/myGyA==
-X-Google-Smtp-Source: ABdhPJyIw00yYkCMTNNebpkMhEf28WTWCiIulbWVh7SUKb/B3kYYrZ5+9kuSB5UUB54aX4xHfjaezDWAR76+kzAr4kc=
-X-Received: by 2002:aca:c4d5:: with SMTP id u204mr1225134oif.169.1595289881299;
- Mon, 20 Jul 2020 17:04:41 -0700 (PDT)
+        id S1728199AbgGUAGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 20:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726535AbgGUAGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 20:06:08 -0400
+Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 118972080D;
+        Tue, 21 Jul 2020 00:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595289967;
+        bh=fimPynKk7Btfz7kRQwK44jU9if7XdYmhUFN8gYIhqhk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rwNQJb8dMB2zIwqbrwNMEOl7pmhdZLvcnWIAfmCe9TzEI7iTplv1ScygC8hCK1GlO
+         rpxkByaltRvENZZ2V59G7RDf6SBx821Nc7o9fjDeYLj9J3AFsZ8ws+9T3gFzaDQ5Jg
+         kYD1mQXm44EDEX71tFN3NrrZDAFIVkchHH9hXj/s=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: [PATCH] timers: Recalculate next timer interrupt only when necessary
+Date:   Tue, 21 Jul 2020 02:05:56 +0200
+Message-Id: <20200721000556.4709-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
- <CACRpkdYP4J+MZjxWUnkM-XGaMmFFZfMCfY13r7G6r2=v3F6zQw@mail.gmail.com>
- <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com>
- <DB3PR0402MB39167A4BB808A0679257DEF9F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CACRpkdbCVZaHqijqMck+jLAJuCAT31HA=9wwcV_EnQc=hsXLwg@mail.gmail.com>
-In-Reply-To: <CACRpkdbCVZaHqijqMck+jLAJuCAT31HA=9wwcV_EnQc=hsXLwg@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 20 Jul 2020 17:04:29 -0700
-Message-ID: <CALAqxLWy7PuNeq7383x5naGSC05+otJjGC=dHuT2RUEehoe+=A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Anson Huang <anson.huang@nxp.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>, Jon Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 5:01 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> Greg, John,
->
-> we need some guidance here. See below.
->
-> On Thu, Jul 16, 2020 at 4:38 PM Anson Huang <anson.huang@nxp.com> wrote:
-> > [Me]
-> > > On Wed, Jul 15, 2020 at 4:44 AM Anson Huang <anson.huang@nxp.com>
->
-> > > > I tried to replace the subsys_initcall() with
-> > > > module_platform_driver(), but met issue about "
-> > > > register_syscore_ops(&mxc_gpio_syscore_ops);" which is called in
-> > > > gpio_mxc_init() function, this function should be called ONLY once,
-> > > > moving it to .probe function is NOT working, so we may need to keep the
-> > > > gpio_mxc_init(), that is another reason that we may need to keep
-> > > > subsys_initcall()?
-> > >
-> > > This looks a bit dangerous to keep like this while allowing this code to be used
-> > > from a module.
-> > >
-> > > What happens if you insmod and rmmod this a few times, really?
-> > > How is this tested?
-> > >
-> > > This is not really modularized if that isn't working, just that modprobing once
-> > > works isn't real modularization IMO, it seems more like a quick and dirty way
-> > > to get Androids GKI somewhat working with the module while not properly
-> > > making the module a module.
-> > >
-> > > You need input from the driver maintainers on how to handle this.
-> >
-> > As far as I know, some general/critical modules are NOT supporting rmmod, like
-> > clk, pinctrl, gpio etc., and I am NOT sure whether Android GKI need to support
-> > rmmod for these system-wide-used module, I will ask them for more detail about
-> > this.
-> >
-> > The requirement I received is to support loadable module, but so far no hard requirement
-> > to support module remove for gpio driver, so, is it OK to add it step by step, and this patch
-> > series ONLY to support module build and one time modprobe?
->
-> While I am a big fan of the Android GKI initiative this needs to be aligned
-> with the Linux core maintainers, so let's ask Greg. I am also paging
-> John Stultz on this: he is close to this action.
->
-> They both know the Android people very well.
->
-> So there is a rationale like this going on: in order to achieve GKI goals
-> and have as much as possible of the Linux kernel stashed into loadable
-> kernel modules, it has been elevated to modus operandi amongst
-> the developers pushing this change that it is OK to pile up a load of
-> modules that cannot ever be unloaded.
->
-> This is IIUC regardless of whether all consumers of the module are
-> actually gone: it would be OK to say make it impossible to rmmod
-> a clk driver even of zero clocks from that driver is in use. So it is not
-> dependency-graph problem, it is a "load once, never remove" approach.
->
-> This rationale puts me as subsystem maintainer in an unpleasant spot:
-> it is really hard to tell case-to-case whether that change really is a
-> technical advantage for the kernel per se or whether it is done for the
-> greater ecosystem of Android.
->
-> Often I would say it makes it possible to build a smaller kernel vmlinux
-> so OK that is an advantage. On the other hand I have an inkling that I
-> should be pushing developers to make sure that rmmod works.
->
-> As a minimum requirement I would expect this to be marked by
->
-> struct device_driver {
->    (...)
->     /* This module absolutely cannot be unbound */
->    .suppress_bind_attrs = true;
-> };
->
-> So that noone would be able to try to unbind this (could even be an
-> attack vector!)
->
-> What is our broader reasoning when it comes to this? (I might have
-> missed some mail thread here.)
+The nohz tick code recalculates the timer wheel's next expiry on each
+idle loop iteration.
 
-Sorry for being a little late here, was out for a few days.
+On the other hand, the base next expiry is now always cached and updated
+upon timer enqueue and execution. Only timer dequeue may leave
+base->next_expiry out of date (but then its stale value won't ever go
+past the actual next expiry to be recalculated).
 
-So yea, wrt to some of the Android GKI related efforts I've been
-involved with, loading once and not unloading is fine for the usage
-model.
+Since recalculating the next_expiry isn't a free operation, especially
+when we must climb up the last wheel level to find out that no timer has
+been enqueued at all, lets reuse the next expiry cache when it is known
+to be reliable, which it is most of the time.
 
-I can understand it being a bit ugly compared to drivers with proper
-unloading support, and I think for most new driver submissions,
-maintainers can reasonably push to see proper unloading being
-implemented.
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+---
+ kernel/time/timer.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-But there are some pragmatic cases with low-level drivers (as you
-mentioned: clk, pinctrl, gpio, etc) where sorting out the unloading is
-particularly complicated, or there is some missing infrastructure, and
-in those cases being able to load a "permanent" module seems to me
-like a clear benefit.  After all, it seems a bit strange to enforce
-that drivers be unloadable when the same code was considered ok to be
-merged as a built-in.
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 77e21e98ec32..e8002f86c5bc 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -203,6 +203,7 @@ struct timer_base {
+ #endif
+ 	unsigned long		clk;
+ 	unsigned long		next_expiry;
++	bool			next_expiry_recalc;
+ 	unsigned int		cpu;
+ 	bool			is_idle;
+ 	DECLARE_BITMAP(pending_map, WHEEL_SIZE);
+@@ -593,6 +594,7 @@ static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+ 		 * can reevaluate the wheel:
+ 		 */
+ 		base->next_expiry = bucket_expiry;
++		base->next_expiry_recalc = false;
+ 		trigger_dyntick_cpu(base, timer);
+ 	}
+ }
+@@ -836,8 +838,10 @@ static int detach_if_pending(struct timer_list *timer, struct timer_base *base,
+ 	if (!timer_pending(timer))
+ 		return 0;
+ 
+-	if (hlist_is_singular_node(&timer->entry, base->vectors + idx))
++	if (hlist_is_singular_node(&timer->entry, base->vectors + idx)) {
+ 		__clear_bit(idx, base->pending_map);
++		base->next_expiry_recalc = true;
++	}
+ 
+ 	detach_timer(timer, clear_pending);
+ 	return 1;
+@@ -1571,6 +1575,9 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 		clk >>= LVL_CLK_SHIFT;
+ 		clk += adj;
+ 	}
++
++	base->next_expiry_recalc = false;
++
+ 	return next;
+ }
+ 
+@@ -1631,9 +1638,11 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 		return expires;
+ 
+ 	raw_spin_lock(&base->lock);
+-	nextevt = __next_timer_interrupt(base);
++	if (base->next_expiry_recalc)
++		base->next_expiry = __next_timer_interrupt(base);
++	nextevt = base->next_expiry;
+ 	is_max_delta = (nextevt == base->clk + NEXT_TIMER_MAX_DELTA);
+-	base->next_expiry = nextevt;
++
+ 	/*
+ 	 * We have a fresh next event. Check whether we can forward the
+ 	 * base. We can only do that when @basej is past base->clk
+@@ -1725,6 +1734,12 @@ static inline void __run_timers(struct timer_base *base)
+ 	while (time_after_eq(jiffies, base->clk) &&
+ 	       time_after_eq(jiffies, base->next_expiry)) {
+ 		levels = collect_expired_timers(base, heads);
++		/*
++		 * The only possible reason for not finding any expired
++		 * timer at this clk is that all matching timers have been
++		 * dequeued.
++		 */
++		WARN_ON_ONCE(!levels && !base->next_expiry_recalc);
+ 		base->clk++;
+ 		base->next_expiry = __next_timer_interrupt(base);
+ 
+-- 
+2.26.2
 
-So I think there's a reasonable case for the preference order to be:
-"built-in" < "permanent module" < "unloadable module".
-
-And of course, it can be more complicated, as enabling a driver to be
-a module can have rippling effects on other code that may call into
-it. But I think maintainers have the best sense of how to draw the
-line there.
-
-thanks
--john
