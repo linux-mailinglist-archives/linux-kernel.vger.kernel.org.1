@@ -2,82 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175DB228346
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115A222834D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbgGUPNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:13:19 -0400
-Received: from verein.lst.de ([213.95.11.211]:52598 "EHLO verein.lst.de"
+        id S1729926AbgGUPNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgGUPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:13:19 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1B92268AFE; Tue, 21 Jul 2020 17:13:14 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 17:13:13 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ajay Joshi <ajay.joshi@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
-        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
-        "open list:VIRTIO CORE AND NET DRIVERS" 
-        <virtualization@lists.linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Alex Dubov <oakad@yahoo.com>
-Subject: Re: [PATCH 01/10] block: introduce blk_is_valid_logical_block_size
-Message-ID: <20200721151313.GA10620@lst.de>
-References: <20200721105239.8270-1-mlevitsk@redhat.com> <20200721105239.8270-2-mlevitsk@redhat.com>
+        id S1729831AbgGUPNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 11:13:40 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 813372073A;
+        Tue, 21 Jul 2020 15:13:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595344419;
+        bh=cJveZYxoa7dAdPqQanvrZZl4c8wbkUcvWDgkCaEe+Os=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=M34Xz+Pc5nQE/Ho21lGgohVu/PtpmhfIr6dhTZlnCUrQoHmKtmo1NkhpCjDpGTh0x
+         2065SHB4LCKQdIDH8xIeOacFUdrI/qxpE8EdHWbydd9PFpDvMl+oACZkyT0cpWVOXK
+         /lJOtx6+K9HNOzF9XLvLJ6cTh5/LUH7/vlhh/6SE=
+Received: by mail-oi1-f171.google.com with SMTP id e4so17514498oib.1;
+        Tue, 21 Jul 2020 08:13:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531dzzPPnkvAKg3IIPvMfNJrQj/zp9gbek7NBqcfVSViGixK4EZG
+        VNILZp7cd3KJGd59ue65mkc9d+Tumew7tYAhAA==
+X-Google-Smtp-Source: ABdhPJx5usOUbuBPfOhR/huG6DuDsg8mCHNfxMXgiZDEHvwhavGmrHIBAxM6qwppEevA9KhIyFvg6dUqdvZHyzegRBI=
+X-Received: by 2002:aca:bb82:: with SMTP id l124mr3483290oif.106.1595344418842;
+ Tue, 21 Jul 2020 08:13:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721105239.8270-2-mlevitsk@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20200622075956.171058-1-bjorn.andersson@linaro.org> <20200622075956.171058-2-bjorn.andersson@linaro.org>
+In-Reply-To: <20200622075956.171058-2-bjorn.andersson@linaro.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 21 Jul 2020 09:13:22 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKW+R=rygii7N69o28h5780qx645RhPXGQZ4jw3kHadhw@mail.gmail.com>
+Message-ID: <CAL_JsqKW+R=rygii7N69o28h5780qx645RhPXGQZ4jw3kHadhw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: hwlock: qcom: Migrate binding to YAML
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/**
-> + * blk_check_logical_block_size - check if logical block size is supported
-> + * by the kernel
-> + * @size:  the logical block size, in bytes
-> + *
-> + * Description:
-> + *   This function checks if the block layers supports given block size
-> + **/
-> +bool blk_is_valid_logical_block_size(unsigned int size)
-> +{
-> +	return size >= SECTOR_SIZE && size <= PAGE_SIZE && !is_power_of_2(size);
+On Mon, Jun 22, 2020 at 1:59 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> Migrate the Qualcomm TCSR mutex binding to YAML to allow validation.
+>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> Changes since v1:
+> - Actually remove the old binding doc
+>
+>  .../bindings/hwlock/qcom-hwspinlock.txt       | 39 --------------
+>  .../bindings/hwlock/qcom-hwspinlock.yaml      | 51 +++++++++++++++++++
+>  2 files changed, 51 insertions(+), 39 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.txt
+>  create mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
 
-Shouldn't this be a ... && is_power_of_2(size)?
+[...]
 
->  	if (q->limits.io_min < q->limits.physical_block_size)
->  		q->limits.io_min = q->limits.physical_block_size;
+> diff --git a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+> new file mode 100644
+> index 000000000000..71e63b52edd5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwlock/qcom-hwspinlock.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  }
+> +title: Qualcomm Hardware Mutex Block
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description:
+> +  The hardware block provides mutexes utilized between different processors on
+> +  the SoC as part of the communication protocol used by these processors.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sfpb-mutex
+> +      - qcom,tcsr-mutex
+> +
+> +  '#hwlock-cells':
+> +    const: 1
+> +
+> +  syscon:
+> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
+> +    description:
+> +      Should be a triple of phandle referencing the TCSR mutex syscon, offset
+> +      of first mutex within the syscon and stride between each mutex.
+> +
+> +required:
+> +  - compatible
+> +  - '#hwlock-cells'
+> +  - syscon
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        tcsr_mutex_block: syscon@fd484000 {
+> +                compatible = "syscon";
 
-This adds a pointless empty line.
+'syscon' alone now generates warnings. Can you drop this node or add a
+specific compatible.
 
-> +extern bool blk_is_valid_logical_block_size(unsigned int size);
-
-No need for externs on function declarations.
+> +                reg = <0xfd484000 0x2000>;
+> +        };
+> +
+> +        hwlock {
+> +                compatible = "qcom,tcsr-mutex";
+> +                syscon = <&tcsr_mutex_block 0 0x80>;
+> +
+> +                #hwlock-cells = <1>;
+> +        };
+> +...
+> --
+> 2.26.2
+>
