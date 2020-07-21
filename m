@@ -2,57 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B7C227B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540DF227B67
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbgGUJJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:09:05 -0400
-Received: from 8bytes.org ([81.169.241.247]:58282 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgGUJJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:09:05 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 1B17B2C8; Tue, 21 Jul 2020 11:09:03 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 11:09:01 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, hpa@zytor.com,
-        Andy Lutomirski <luto@amacapital.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/idt: Make sure idt_table takes a whole page
-Message-ID: <20200721090901.GC620@8bytes.org>
-References: <0CEC6A66-FD50-4B6B-9521-A40E5B9DA10F@zytor.com>
- <7FB389D0-77D4-482E-8A21-8662DDB00268@amacapital.net>
- <0B7CF270-EC04-4907-821A-A01F24BEF156@zytor.com>
- <20200719023405.GA564835@rani.riverdale.lan>
- <87pn8rokjz.fsf@nanos.tec.linutronix.de>
- <20200720161112.GB620@8bytes.org>
- <87sgdmm8u4.fsf@nanos.tec.linutronix.de>
+        id S1728887AbgGUJJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:09:33 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43820 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725984AbgGUJJd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 05:09:33 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06L96o3N027673;
+        Tue, 21 Jul 2020 11:09:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=3P6/CzI3nOMFBgAbJEh+SX9yJmO1KrFcTfM3aEnWuYw=;
+ b=ozzmk79VdzsCLnZCUcx9GYPD52vFRITbbof6astgSHfxSf8gTuAmXiUuqy9W7sr+VLbB
+ VuwC1+YIFSzLQ6lD8BGN6xiclI748KLvATyE5WFKWLwCOvA9vu2Y8YEpr/sSQVQ8wxyn
+ wsrKJ6AsSsASzwmT8Fg8J3mXEbJ4x6l9Yg8/kX9Qn+/qTOz1R4fBNVGIdPqg+kmpJPo/
+ PNOsBk9A773g60rmYIQ2oxdvwM6m/Wfp95oPOcaSXfBp6A7/Il908wNpSgDRZOC9T655
+ uT6R3EVbXNENdb6PSFtHoMjAspspMVTjgx8QhWT5F8GLuWR/1LL3eqIXXFDXPVa9VttU CA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32bsagw303-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 11:09:24 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D6E2A100038;
+        Tue, 21 Jul 2020 11:09:23 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C10AB2A8D8F;
+        Tue, 21 Jul 2020 11:09:23 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 21 Jul
+ 2020 11:09:23 +0200
+Subject: Re: [PATCH v2 2/2] ARM: dts: stm32: Enable MIPI DSI display support.
+To:     Adrian Pop <pop.adrian61@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200702172714.158786-1-pop.adrian61@gmail.com>
+ <20200702172714.158786-2-pop.adrian61@gmail.com>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <c9d8bfaa-9958-ad65-e59c-4f8a7ffdf208@st.com>
+Date:   Tue, 21 Jul 2020 11:09:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sgdmm8u4.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200702172714.158786-2-pop.adrian61@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_02:2020-07-21,2020-07-21 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 06:48:03PM +0200, Thomas Gleixner wrote:
-> But with explicit sections which store only page aligned objects there
-> is an implicit guarantee that the object is alone in the page in which
-> it is placed. That works for all objects except the last one. That's
-> inconsistent.
+Hi Adrian
+
+On 7/2/20 7:27 PM, Adrian Pop wrote:
+> STM32f769-disco features a 4" MIPI DSI display: add support for it.
+> On Cortex-M7 DMA can't use cached memory. For this reason I use a dedicated
+> memory pool for DMA with no-cache attribute which is located at the end of
+>   RAM.
 > 
-> By enforcing page sized objects for this section you might also wreckage
-> memory sanitizers, because your object is artificially larger than it
-> should be and out of bound access becomes legit.
+> Signed-off-by: Adrian Pop <pop.adrian61@gmail.com>
+> ---
+>   arch/arm/boot/dts/stm32f746.dtsi      | 34 +++++++++++++++++++
+>   arch/arm/boot/dts/stm32f769-disco.dts | 49 +++++++++++++++++++++++++++
+>   2 files changed, 83 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f746.dtsi
+> index 93c063796780..577a812ca01c 100644
+> --- a/arch/arm/boot/dts/stm32f746.dtsi
+> +++ b/arch/arm/boot/dts/stm32f746.dtsi
+> @@ -48,6 +48,19 @@ / {
+>   	#address-cells = <1>;
+>   	#size-cells = <1>;
+>   
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		linux,dma {
+> +			compatible = "shared-dma-pool";
+> +			linux,dma-default;
+> +			no-map;
+> +			reg = <0xc0f00000 0x100000>;
+> +		};
+> +	};
+> +
 
-Okay, valid points about the consistency and the memory sanitizers. I'll
-submit a patch for the linker scripts soon.
+Please check Rob's remark (make W=1). Furthermore this node should be 
+declared in board dts file is should depend on SDRAM size embedded on board.
 
-Regards,
+>   	clocks {
+>   		clk_hse: clk-hse {
+>   			#clock-cells = <0>;
+> @@ -75,6 +88,27 @@ clk_i2s_ckin: clk-i2s-ckin {
+>   	};
+>   
+>   	soc {
+> +		ltdc: display-controller@40016800 {
+> +			compatible = "st,stm32-ltdc";
+> +			reg = <0x40016800 0x200>;
+> +			interrupts = <88>, <89>;
+> +			resets = <&rcc STM32F7_APB2_RESET(LTDC)>;
+> +			clocks = <&rcc 1 CLK_LCD>;
+> +			clock-names = "lcd";
+> +			status = "disabled";
+> +		};
+> +
+> +		dsi: dsi@40016c00 {
+> +			compatible = "st,stm32-dsi";
+> +			reg = <0x40016c00 0x800>;
+> +			interrupts = <98>;
+> +			clocks = <&rcc 1 CLK_F769_DSI>, <&clk_hse>;
+> +			clock-names = "pclk", "ref";
+> +			resets = <&rcc STM32F7_APB2_RESET(DSI)>;
+> +			reset-names = "apb";
+> +			status = "disabled";
+> +		};
+> +
 
-	Joerg
+Nodes are ordered by address in soc dtsi file. Please follow it.
+
+>   		timer2: timer@40000000 {
+>   			compatible = "st,stm32-timer";
+>   			reg = <0x40000000 0x400>;
+> diff --git a/arch/arm/boot/dts/stm32f769-disco.dts b/arch/arm/boot/dts/stm32f769-disco.dts
+> index 1626e00bb2cb..a9e81b49809c 100644
+> --- a/arch/arm/boot/dts/stm32f769-disco.dts
+> +++ b/arch/arm/boot/dts/stm32f769-disco.dts
+> @@ -153,3 +153,52 @@ &usbotg_hs {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   };
+> +
+> +&dsi {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "okay";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			reg = <0>;
+> +			dsi_in: endpoint {
+> +				remote-endpoint = <&ltdc_out_dsi>;
+> +			};
+> +		};
+> +
+> +		port@1 {
+> +			reg = <1>;
+> +			dsi_out: endpoint {
+> +				remote-endpoint = <&dsi_in_panel>;
+> +			};
+> +		};
+> +
+> +	};
+> +
+> +	panel: panel {
+> +		compatible = "orisetech,otm8009a";
+> +		reg = <0>;
+> +		reset-gpios = <&gpioj 15 GPIO_ACTIVE_LOW>;
+> +		status = "okay";
+> +
+> +		port {
+> +			dsi_in_panel: endpoint {
+> +				remote-endpoint = <&dsi_out>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&ltdc {
+> +	status = "okay";
+> +
+> +	port {
+> +		ltdc_out_dsi: endpoint {
+> +			remote-endpoint = <&dsi_in>;
+> +		};
+> +	};
+> +};
+
