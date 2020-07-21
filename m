@@ -2,105 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646B322757A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 04:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D4D22756C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 04:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgGUCQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 22:16:23 -0400
-Received: from mx23.pku.edu.cn ([162.105.129.186]:28331 "EHLO pku.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725774AbgGUCQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 22:16:23 -0400
-X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Jul 2020 22:16:22 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pku.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=kjHGhkAaPVaO9/R6h0HpLCVZ3QUbVo7f1+7O
-        Y+J6I4w=; b=S4O/T6C0MCPSOY3QxJDfNcN2uJGr0uENrEL6j6qli9+mZtHgyytx
-        UHljqoP/aNzQDgbpIjaF6EeiucTwZp6wAcNj6nRkRz1sD2F9g4SxbPex5pGFERAK
-        XvxIhv99ViF7H1l7Dk0ZJKiyexywnQwSDwuNembnyIDit8sVUka7dA0=
-Received: by ajax-webmail-mailfront01 (Coremail) ; Tue, 21 Jul 2020 10:09:20
- +0800 (GMT+08:00)
-X-Originating-IP: [10.1.22.182]
-Date:   Tue, 21 Jul 2020 10:09:20 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Guan Xuetao" <gxt@pku.edu.cn>
-To:     "christoph hellwig" <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] unicore32: use get_kernel_nofault in dump mem and
- dump_instr
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn  pku.edu.cn
-In-Reply-To: <20200720114358.201161-1-hch@lst.de>
-References: <20200720114358.201161-1-hch@lst.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1727914AbgGUCMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 22:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgGUCMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 22:12:05 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C580C061794;
+        Mon, 20 Jul 2020 19:12:05 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9htT5dGWz9sRN;
+        Tue, 21 Jul 2020 12:12:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595297522;
+        bh=UTMv+LohAVeywtSQA4FJ44hILUvS4URELTHwDgunZt8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=c22E8E5HIC4DH3WJUNji8RqUUvIiGX9ksWu8ovjnSMB4VhCsU2/r45p0JL8kim0RJ
+         slR+IIZuiuAlnT4DNRsx4thuOcy7L3V93ixcO2/BK1k251gE7S4fzRQPq75pMd35MV
+         SUZIbcy+5A3RHdOCostUc5p6VWXMGkBKMAxL4sk0h1Q1ftgTtOoTPymTW3enzg3Afn
+         dGXK0dIwa/Q5b2UMcyumF9oB4x0sYUNnrbHZYIrb39oXdcaHcf+uyDZGTaHEH1ttn0
+         x+GU/MtH+ozULaa7gSvtru+GNRia2OKzIbfmK0SI7TNIdJdbWO2z/vYFyLEWgvatJd
+         n7LQ2jW/TQsig==
+Date:   Tue, 21 Jul 2020 12:12:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: linux-next: manual merge of the bpf-next tree with the net-next
+ tree
+Message-ID: <20200721121200.60ce87fb@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <1fdc8e7c.4dfcd.1736f21e98b.Coremail.gxt@pku.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: x4FpogBXpGZQThZfQaiwAQ--.15780W
-X-CM-SenderInfo: qqqqliixuslio6sn3hxhgxhubq/1tbiAQIEBysxYB327gABs+
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: multipart/signed; boundary="Sig_/NmcyHySB4QEYmS7SkHXyhmQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VmVyeSBnb29kIHRvIHJlbW92ZSBkcy9mcyBpbiB1bmljb3JlIGFyY2guCkNvdWxkIHUgc2VuZCBt
-ZSBmdWxsIHBhdGNoIGZvciB0ZXN0PwoKR3VhbiBYdWV0YW8KCgo+IC0tLS0t5Y6f5aeL6YKu5Lu2
-LS0tLS0KPiDlj5Hku7bkuro6ICJDaHJpc3RvcGggSGVsbHdpZyIgPGhjaEBsc3QuZGU+Cj4g5Y+R
-6YCB5pe26Ze0OiAyMDIwLTA3LTIwIDE5OjQzOjU4ICjmmJ/mnJ/kuIApCj4g5pS25Lu25Lq6OiBn
-eHRAcGt1LmVkdS5jbgo+IOaKhOmAgTogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwo+IOS4
-u+mimDogW1BBVENIXSB1bmljb3JlMzI6IHVzZSBnZXRfa2VybmVsX25vZmF1bHQgaW4gZHVtcCBt
-ZW0gYW5kIGR1bXBfaW5zdHIKPiAKPiBVc2UgdGhlIHByb3BlciBnZXRfa2VybmVsX25vZmF1bHQg
-aGVscGVyIHRvIGFjY2VzcyBhbiB1bnNhZmUga2VybmVsCj4gcG9pbnRlciB3aXRob3V0IGZhdWx0
-aW5nIGluc3RlYWQgb2YgcGxheWluZyB3aXRoIHNldF9mcyBhbmQgZ2V0X3VzZXIuCj4gCj4gU2ln
-bmVkLW9mZi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+Cj4gLS0tCj4gIGFyY2gv
-dW5pY29yZTMyL2tlcm5lbC90cmFwcy5jIHwgMjggKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQo+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyNSBkZWxldGlvbnMoLSkKPiAK
-PiBkaWZmIC0tZ2l0IGEvYXJjaC91bmljb3JlMzIva2VybmVsL3RyYXBzLmMgYi9hcmNoL3VuaWNv
-cmUzMi9rZXJuZWwvdHJhcHMuYwo+IGluZGV4IGEzYWMwMWRmMWEyZTQzLi5jMTk2NGE0YTFlZGJi
-MCAxMDA2NDQKPiAtLS0gYS9hcmNoL3VuaWNvcmUzMi9rZXJuZWwvdHJhcHMuYwo+ICsrKyBiL2Fy
-Y2gvdW5pY29yZTMyL2tlcm5lbC90cmFwcy5jCj4gQEAgLTY1LDE3ICs2NSw4IEBAIHN0YXRpYyB2
-b2lkIGR1bXBfbWVtKGNvbnN0IGNoYXIgKmx2bCwgY29uc3QgY2hhciAqc3RyLCB1bnNpZ25lZCBs
-b25nIGJvdHRvbSwKPiAgCQkgICAgIHVuc2lnbmVkIGxvbmcgdG9wKQo+ICB7Cj4gIAl1bnNpZ25l
-ZCBsb25nIGZpcnN0Owo+IC0JbW1fc2VnbWVudF90IGZzOwo+ICAJaW50IGk7Cj4gIAo+IC0JLyoK
-PiAtCSAqIFdlIG5lZWQgdG8gc3dpdGNoIHRvIGtlcm5lbCBtb2RlIHNvIHRoYXQgd2UgY2FuIHVz
-ZSBfX2dldF91c2VyCj4gLQkgKiB0byBzYWZlbHkgcmVhZCBmcm9tIGtlcm5lbCBzcGFjZS4gIE5v
-dGUgdGhhdCB3ZSBub3cgZHVtcCB0aGUKPiAtCSAqIGNvZGUgZmlyc3QsIGp1c3QgaW4gY2FzZSB0
-aGUgYmFja3RyYWNlIGtpbGxzIHVzLgo+IC0JICovCj4gLQlmcyA9IGdldF9mcygpOwo+IC0Jc2V0
-X2ZzKEtFUk5FTF9EUyk7Cj4gLQo+ICAJcHJpbnRrKEtFUk5fREVGQVVMVCAiJXMlcygweCUwOGx4
-IHRvIDB4JTA4bHgpXG4iLAo+ICAJCQlsdmwsIHN0ciwgYm90dG9tLCB0b3ApOwo+ICAKPiBAQCAt
-ODksNyArODAsOCBAQCBzdGF0aWMgdm9pZCBkdW1wX21lbShjb25zdCBjaGFyICpsdmwsIGNvbnN0
-IGNoYXIgKnN0ciwgdW5zaWduZWQgbG9uZyBib3R0b20sCj4gIAkJZm9yIChwID0gZmlyc3QsIGkg
-PSAwOyBpIDwgOCAmJiBwIDwgdG9wOyBpKyssIHAgKz0gNCkgewo+ICAJCQlpZiAocCA+PSBib3R0
-b20gJiYgcCA8IHRvcCkgewo+ICAJCQkJdW5zaWduZWQgbG9uZyB2YWw7Cj4gLQkJCQlpZiAoX19n
-ZXRfdXNlcih2YWwsICh1bnNpZ25lZCBsb25nICopcCkgPT0gMCkKPiArCQkJCWlmIChnZXRfa2Vy
-bmVsX25vZmF1bHQodmFsLCAodW5zaWduZWQgbG9uZyAqKXApCj4gKwkJCQkJCT09IDApCj4gIAkJ
-CQkJc3ByaW50ZihzdHIgKyBpICogOSwgIiAlMDhseCIsIHZhbCk7Cj4gIAkJCQllbHNlCj4gIAkJ
-CQkJc3ByaW50ZihzdHIgKyBpICogOSwgIiA/Pz8/Pz8/PyIpOwo+IEBAIC05NywzMSArODksMTkg
-QEAgc3RhdGljIHZvaWQgZHVtcF9tZW0oY29uc3QgY2hhciAqbHZsLCBjb25zdCBjaGFyICpzdHIs
-IHVuc2lnbmVkIGxvbmcgYm90dG9tLAo+ICAJCX0KPiAgCQlwcmludGsoS0VSTl9ERUZBVUxUICIl
-cyUwNGx4OiVzXG4iLCBsdmwsIGZpcnN0ICYgMHhmZmZmLCBzdHIpOwo+ICAJfQo+IC0KPiAtCXNl
-dF9mcyhmcyk7Cj4gIH0KPiAgCj4gIHN0YXRpYyB2b2lkIGR1bXBfaW5zdHIoY29uc3QgY2hhciAq
-bHZsLCBzdHJ1Y3QgcHRfcmVncyAqcmVncykKPiAgewo+ICAJdW5zaWduZWQgbG9uZyBhZGRyID0g
-aW5zdHJ1Y3Rpb25fcG9pbnRlcihyZWdzKTsKPiAgCWNvbnN0IGludCB3aWR0aCA9IDg7Cj4gLQlt
-bV9zZWdtZW50X3QgZnM7Cj4gIAljaGFyIHN0cltzaXplb2YoIjAwMDAwMDAwICIpICogNSArIDIg
-KyAxXSwgKnAgPSBzdHI7Cj4gIAlpbnQgaTsKPiAgCj4gLQkvKgo+IC0JICogV2UgbmVlZCB0byBz
-d2l0Y2ggdG8ga2VybmVsIG1vZGUgc28gdGhhdCB3ZSBjYW4gdXNlIF9fZ2V0X3VzZXIKPiAtCSAq
-IHRvIHNhZmVseSByZWFkIGZyb20ga2VybmVsIHNwYWNlLiAgTm90ZSB0aGF0IHdlIG5vdyBkdW1w
-IHRoZQo+IC0JICogY29kZSBmaXJzdCwganVzdCBpbiBjYXNlIHRoZSBiYWNrdHJhY2Uga2lsbHMg
-dXMuCj4gLQkgKi8KPiAtCWZzID0gZ2V0X2ZzKCk7Cj4gLQlzZXRfZnMoS0VSTkVMX0RTKTsKPiAt
-Cj4gIAlmb3IgKGkgPSAtNDsgaSA8IDE7IGkrKykgewo+ICAJCXVuc2lnbmVkIGludCB2YWwsIGJh
-ZDsKPiAgCj4gLQkJYmFkID0gX19nZXRfdXNlcih2YWwsICYoKHUzMiAqKWFkZHIpW2ldKTsKPiAt
-Cj4gKwkJYmFkID0gZ2V0X2tlcm5lbF9ub2ZhdWx0KHZhbCwgJigodTMyICopYWRkcilbaV0pOwo+
-ICAJCWlmICghYmFkKQo+ICAJCQlwICs9IHNwcmludGYocCwgaSA9PSAwID8gIiglMCp4KSAiIDog
-IiUwKnggIiwKPiAgCQkJCQl3aWR0aCwgdmFsKTsKPiBAQCAtMTMxLDggKzExMSw2IEBAIHN0YXRp
-YyB2b2lkIGR1bXBfaW5zdHIoY29uc3QgY2hhciAqbHZsLCBzdHJ1Y3QgcHRfcmVncyAqcmVncykK
-PiAgCQl9Cj4gIAl9Cj4gIAlwcmludGsoS0VSTl9ERUZBVUxUICIlc0NvZGU6ICVzXG4iLCBsdmws
-IHN0cik7Cj4gLQo+IC0Jc2V0X2ZzKGZzKTsKPiAgfQo+ICAKPiAgc3RhdGljIHZvaWQgZHVtcF9i
-YWNrdHJhY2Uoc3RydWN0IHB0X3JlZ3MgKnJlZ3MsIHN0cnVjdCB0YXNrX3N0cnVjdCAqdHNrLAo+
-IC0tIAo+IDIuMjcuMAo=
+--Sig_/NmcyHySB4QEYmS7SkHXyhmQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the bpf-next tree got a conflict in:
+
+  include/linux/filter.h
+
+between commit:
+
+  4d295e546115 ("net: simplify cBPF setsockopt compat handling")
+
+from the net-next tree and commits:
+
+  e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated att=
+ach point")
+  1559b4aa1db4 ("inet: Run SK_LOOKUP BPF program on socket lookup")
+  1122702f0267 ("inet6: Run SK_LOOKUP BPF program on socket lookup")
+
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/filter.h
+index 4d049c8e1fbe,8252572db918..000000000000
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@@ -1276,6 -1278,151 +1276,153 @@@ struct bpf_sockopt_kern=20
+  	s32		retval;
+  };
+ =20
++ struct bpf_sk_lookup_kern {
++ 	u16		family;
++ 	u16		protocol;
++ 	struct {
++ 		__be32 saddr;
++ 		__be32 daddr;
++ 	} v4;
++ 	struct {
++ 		const struct in6_addr *saddr;
++ 		const struct in6_addr *daddr;
++ 	} v6;
++ 	__be16		sport;
++ 	u16		dport;
++ 	struct sock	*selected_sk;
++ 	bool		no_reuseport;
++ };
++=20
++ extern struct static_key_false bpf_sk_lookup_enabled;
++=20
++ /* Runners for BPF_SK_LOOKUP programs to invoke on socket lookup.
++  *
++  * Allowed return values for a BPF SK_LOOKUP program are SK_PASS and
++  * SK_DROP. Their meaning is as follows:
++  *
++  *  SK_PASS && ctx.selected_sk !=3D NULL: use selected_sk as lookup result
++  *  SK_PASS && ctx.selected_sk =3D=3D NULL: continue to htable-based sock=
+et lookup
++  *  SK_DROP                           : terminate lookup with -ECONNREFUS=
+ED
++  *
++  * This macro aggregates return values and selected sockets from
++  * multiple BPF programs according to following rules in order:
++  *
++  *  1. If any program returned SK_PASS and a non-NULL ctx.selected_sk,
++  *     macro result is SK_PASS and last ctx.selected_sk is used.
++  *  2. If any program returned SK_DROP return value,
++  *     macro result is SK_DROP.
++  *  3. Otherwise result is SK_PASS and ctx.selected_sk is NULL.
++  *
++  * Caller must ensure that the prog array is non-NULL, and that the
++  * array as well as the programs it contains remain valid.
++  */
++ #define BPF_PROG_SK_LOOKUP_RUN_ARRAY(array, ctx, func)			\
++ 	({								\
++ 		struct bpf_sk_lookup_kern *_ctx =3D &(ctx);		\
++ 		struct bpf_prog_array_item *_item;			\
++ 		struct sock *_selected_sk =3D NULL;			\
++ 		bool _no_reuseport =3D false;				\
++ 		struct bpf_prog *_prog;					\
++ 		bool _all_pass =3D true;					\
++ 		u32 _ret;						\
++ 									\
++ 		migrate_disable();					\
++ 		_item =3D &(array)->items[0];				\
++ 		while ((_prog =3D READ_ONCE(_item->prog))) {		\
++ 			/* restore most recent selection */		\
++ 			_ctx->selected_sk =3D _selected_sk;		\
++ 			_ctx->no_reuseport =3D _no_reuseport;		\
++ 									\
++ 			_ret =3D func(_prog, _ctx);			\
++ 			if (_ret =3D=3D SK_PASS && _ctx->selected_sk) {	\
++ 				/* remember last non-NULL socket */	\
++ 				_selected_sk =3D _ctx->selected_sk;	\
++ 				_no_reuseport =3D _ctx->no_reuseport;	\
++ 			} else if (_ret =3D=3D SK_DROP && _all_pass) {	\
++ 				_all_pass =3D false;			\
++ 			}						\
++ 			_item++;					\
++ 		}							\
++ 		_ctx->selected_sk =3D _selected_sk;			\
++ 		_ctx->no_reuseport =3D _no_reuseport;			\
++ 		migrate_enable();					\
++ 		_all_pass || _selected_sk ? SK_PASS : SK_DROP;		\
++ 	 })
++=20
++ static inline bool bpf_sk_lookup_run_v4(struct net *net, int protocol,
++ 					const __be32 saddr, const __be16 sport,
++ 					const __be32 daddr, const u16 dport,
++ 					struct sock **psk)
++ {
++ 	struct bpf_prog_array *run_array;
++ 	struct sock *selected_sk =3D NULL;
++ 	bool no_reuseport =3D false;
++=20
++ 	rcu_read_lock();
++ 	run_array =3D rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
++ 	if (run_array) {
++ 		struct bpf_sk_lookup_kern ctx =3D {
++ 			.family		=3D AF_INET,
++ 			.protocol	=3D protocol,
++ 			.v4.saddr	=3D saddr,
++ 			.v4.daddr	=3D daddr,
++ 			.sport		=3D sport,
++ 			.dport		=3D dport,
++ 		};
++ 		u32 act;
++=20
++ 		act =3D BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, BPF_PROG_RUN);
++ 		if (act =3D=3D SK_PASS) {
++ 			selected_sk =3D ctx.selected_sk;
++ 			no_reuseport =3D ctx.no_reuseport;
++ 		} else {
++ 			selected_sk =3D ERR_PTR(-ECONNREFUSED);
++ 		}
++ 	}
++ 	rcu_read_unlock();
++ 	*psk =3D selected_sk;
++ 	return no_reuseport;
++ }
++=20
++ #if IS_ENABLED(CONFIG_IPV6)
++ static inline bool bpf_sk_lookup_run_v6(struct net *net, int protocol,
++ 					const struct in6_addr *saddr,
++ 					const __be16 sport,
++ 					const struct in6_addr *daddr,
++ 					const u16 dport,
++ 					struct sock **psk)
++ {
++ 	struct bpf_prog_array *run_array;
++ 	struct sock *selected_sk =3D NULL;
++ 	bool no_reuseport =3D false;
++=20
++ 	rcu_read_lock();
++ 	run_array =3D rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
++ 	if (run_array) {
++ 		struct bpf_sk_lookup_kern ctx =3D {
++ 			.family		=3D AF_INET6,
++ 			.protocol	=3D protocol,
++ 			.v6.saddr	=3D saddr,
++ 			.v6.daddr	=3D daddr,
++ 			.sport		=3D sport,
++ 			.dport		=3D dport,
++ 		};
++ 		u32 act;
++=20
++ 		act =3D BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, BPF_PROG_RUN);
++ 		if (act =3D=3D SK_PASS) {
++ 			selected_sk =3D ctx.selected_sk;
++ 			no_reuseport =3D ctx.no_reuseport;
++ 		} else {
++ 			selected_sk =3D ERR_PTR(-ECONNREFUSED);
++ 		}
++ 	}
++ 	rcu_read_unlock();
++ 	*psk =3D selected_sk;
++ 	return no_reuseport;
++ }
++ #endif /* IS_ENABLED(CONFIG_IPV6) */
++=20
+ +int copy_bpf_fprog_from_user(struct sock_fprog *dst, void __user *src, in=
+t len);
+ +
+  #endif /* __LINUX_FILTER_H__ */
+
+--Sig_/NmcyHySB4QEYmS7SkHXyhmQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8WTvAACgkQAVBC80lX
+0GxLMQf+OyuUUt2hCYprT08GHMUBVcfrGxq5KOJW20Y7QB2Ap9E/OT0Se0sfh+RJ
+L8vdkBbrnLNWkBnhT+n1ONOSYY7tsxdE2VYGGg1Eh1LQ+gayvdqOJ8n6OczeDLgY
+opdUtxhq0UZM8hltxtOGFP3ymXaAmEfdv2VEvLBLK8gbrsB7i7ZDifgPJISCNk/1
+hzu/9N0KWkadJxTdUuQBmsN2evi8I75j/YzLyymqXVQqHCVfA7XePoLih+WNeV0O
+0AxltZGJKv5H6gafEVPXJ3fMQ9i6ZUl3VfyvqrLMWddyhnxePzqv3UF3GH+Nx7u3
+9rI0ARYd6/6twZcVAfl/NO5FPVA1Xw==
+=QTH6
+-----END PGP SIGNATURE-----
+
+--Sig_/NmcyHySB4QEYmS7SkHXyhmQ--
