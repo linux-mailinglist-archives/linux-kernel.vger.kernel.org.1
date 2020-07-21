@@ -2,55 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68975228541
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0988228547
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgGUQZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:25:41 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38912 "EHLO mga06.intel.com"
+        id S1730101AbgGUQ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:27:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39704 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728180AbgGUQZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:25:40 -0400
-IronPort-SDR: zStfbMFIlpraalvVd4sJhSPU0HChG4ij78Ry+S5VUf2J6SjrMUj/9A3XOhRALQ8DONZK2pANlD
- TCmFjU03gBLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="211715778"
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="211715778"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 09:25:37 -0700
-IronPort-SDR: hryq/gywAQdtW3AZ3P9cFmuFkG1C1Uq9yicrFjyp1cWlHwY4DU4cxqNCrJ3fm8tqMsQ7pRxK4U
- kpZFmQREgUKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="327920958"
-Received: from jacoraci-mobl.amr.corp.intel.com ([10.212.210.224])
-  by orsmga007.jf.intel.com with ESMTP; 21 Jul 2020 09:25:36 -0700
-Message-ID: <babeff29a60d3fadb5515eaf57f7bb42a1c9c792.camel@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP
- enabled
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Francisco Jerez <currojerez@riseup.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Doug Smythies <dsmythies@telus.net>
-Date:   Tue, 21 Jul 2020 09:25:36 -0700
-In-Reply-To: <87mu3thiz5.fsf@riseup.net>
-References: <3955470.QvD6XneCf3@kreacher> <87r1tdiqpu.fsf@riseup.net>
-         <CAJZ5v0jaRm-wv+ZKhOyGJrrKZAsTKc3sq2GYyv0uerTTe3gXbQ@mail.gmail.com>
-         <87imeoihqs.fsf@riseup.net>
-         <CAJZ5v0hhLWvbNA6w0yHtzKa5ANR9yF++u63dh8wWAgkhbtLXXA@mail.gmail.com>
-         <875zanhty6.fsf@riseup.net>
-         <CAJZ5v0g2U+1wD5rUQwJ4_x9sQyvGyGiBiLFs7MA-xdhRBX9zBQ@mail.gmail.com>
-         <87mu3thiz5.fsf@riseup.net>
+        id S1727115AbgGUQ12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:27:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CD59EAD79;
+        Tue, 21 Jul 2020 16:27:33 +0000 (UTC)
+Message-ID: <6db722947546221ed99d3f473f78e1a6de65d7d6.camel@suse.de>
+Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Tue, 21 Jul 2020 18:27:24 +0200
+In-Reply-To: <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com>
+References: <20200708164936.9340-1-nsaenzjulienne@suse.de>
+         <CAMi1Hd35tRM=cnmzwX=SDgu-OoXi1Xj+twFkoULaVZBbTpe6sw@mail.gmail.com>
+         <550b30a86c0785049d24c945e2c6628d491cee3a.camel@suse.de>
+         <CAMi1Hd2V2pJjP=USS4r-Z3vK-aq7_aBy-jcVNk1GvbdEQAuzWg@mail.gmail.com>
+         <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
+         <CAMi1Hd0=ZsGhTkSy221EP9Vb3GMOcS0UMczX2u5X9qK37_ea1A@mail.gmail.com>
+         <01831596e4a2a6c9c066138b23bd30435f8e5569.camel@suse.de>
+         <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -58,64 +47,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-20 at 16:20 -0700, Francisco Jerez wrote:
-> "Rafael J. Wysocki" <rafael@kernel.org> writes:
-> 
-> > On Fri, Jul 17, 2020 at 2:21 AM Francisco Jerez <
-> > currojerez@riseup.net> wrote:
-> > > "Rafael J. Wysocki" <rafael@kernel.org> writes:
+On Tue, 2020-07-21 at 20:52 +0530, Amit Pundir wrote:
+
+[...]
+
+> > > > Can you try booting *without* my patch and this in the kernel
+> > > > command
+> > > > line: "cma=16M@0x100000000-0x200000000".
 > > > 
-{...]
-
-> > Overall, so far, I'm seeing a claim that the CPU subsystem can be
-> > made
-> > use less energy and do as much work as before (which is what
-> > improving
-> > the energy-efficiency means in general) if the maximum frequency of
-> > CPUs is limited in a clever way.
+> > > It doesn't boot with this added kernel command line.
 > > 
-> > I'm failing to see what that clever way is, though.
-> Hopefully the clarifications above help some.
+> > For the record, this placed the CMA in the [4GB, 8GB] address space
+> > instead of you setup's default: [3GB, 4GB]. All atomic pools fall
+> > in
+> > that memory area without my patch, which makes me think some of the
+> > devices on your board might not like higher addresses.
+> > 
+> 
+> Thank you Nicolas for the details. Though we don't set the CMA
+> alloc-ranges explicitly in upstream sdm845 dts, but I dug around and
+> found that CMA alloc-ranges in the downstream kernel are indeed in
+> lower address space.
+> https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/dipper-q-oss/arch/arm64/boot/dts/qcom/sdm845.dtsi#L662
+> 
+> /* global autoconfigured region for contiguous allocations */
+> linux,cma {
+>         compatible = "shared-dma-pool";
+>         alloc-ranges = <0 0x00000000 0 0xffffffff>;
+>         reusable;
+>         alignment = <0 0x400000>;
+>         size = <0 0x2000000>;
+>         linux,cma-default;
+> };
 
-To simplify:
+Pretty standard, and similar to what it's being used upstream by
+default.
 
-Suppose I called a function numpy.multiply() to multiply two big arrays
-and thread is a pegged to a CPU. Let's say it is causing CPU to
-finish the job in 10ms and it is using a P-State of 0x20. But the same
-job could have been done in 10ms even if it was using P-state of 0x16.
-So we are not energy efficient. To really know where is the bottle neck
-there are numbers of perf counters, may be cache was the issue, we
-could rather raise the uncore frequency a little. A simple APRF,MPERF
-counters are not enough. or we characterize the workload at different
-P-states and set limits.
-I think this is not you want to say for energy efficiency with your
-changes. 
+> 
+> > What happens if you boot with my troublesome patch with this in
+> > your
+> > device tree? (insert it at the bottom of sdm845-beryllium.dts)
+> > 
+> > &soc {
+> >         dma-ranges = <0 0 0 0 0x1 0>;
+> > };
+> > 
+> 
+> Device still doesn't boot up to adb shell.
 
-The way you are trying to improve "performance" is by caller (device
-driver) to say how important my job at hand. Here device driver suppose
-offload this calculations to some GPU and can wait up to 10 ms, you
-want to tell CPU to be slow. But the p-state driver at a movement
-observes that there is a chance of overshoot of latency, it will
-immediately ask for higher P-state. So you want P-state limits based on
-the latency requirements of the caller. Since caller has more knowledge
-of latency requirement, this allows other devices sharing the power
-budget to get more or less power, and improve overall energy efficiency
-as the combined performance of system is improved.
-Is this correct?
+Let's get a bigger hammer, I'm just looking for clues here. Can you
+apply this and provide the dmesg output.
 
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 6bc74a2d5127..2160676bf488 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -268,6 +268,8 @@ void *dma_alloc_from_pool(struct device *dev, size_t size,
+                        schedule_work(&atomic_pool_work);
+        }
+ 
++       dev_info(dev, "%s: size %lx, phys addr %llx, flags 0x%x\n", __func__, size, phys, flags);
++
+        return ptr;
+ }
+  
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Regards,
+Nicolas
 
