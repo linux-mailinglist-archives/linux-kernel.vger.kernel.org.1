@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CCC228652
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098822285FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730953AbgGUQor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        id S1730512AbgGUQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730454AbgGUQmD (ORCPT
+        with ESMTP id S1730484AbgGUQmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:03 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D06FC0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:03 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 9so77176wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:02 -0700 (PDT)
+        Tue, 21 Jul 2020 12:42:06 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8C3C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:05 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z15so21824062wrl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ALTYTDXKrPwk4EzSNXIMszQ+1kWk/MkRkisy15QSvZc=;
-        b=sGfz5+HAe5VqXXtiSLqK9gghUntA+0huTOuHyQEVt6VJ6vRnz7DUsc7t7WDEpDg94Y
-         Roxq3KI41Odj8qlq8h/tNgmMpXrRqnUbL0nC48bXCeXjL5E5U7uy41wYw9vM09rOzZL4
-         idlc/zgKG0mHuZK/oCP3jHa8qS35Gvpjo+ngTlREE7ckPLP/kPtLVWKzwlE8w/fPILtK
-         I92cqZMK29Jd/Apxq7T3EkmpZxTC7o2/MfZSD7S8AnD+dMK9lpd9fRTxko8iTf4iIbQr
-         c+CmzPR+CcEhBsG81AeJY+65DarsM7Pns94XOTglcjx9KiLIBRYF388Z24EOaisF6o1p
-         +Zrw==
+        bh=dFXXcNYactXc03hl2acSO1gvLgU0ADiqS4Auy98l0Ek=;
+        b=b6ljrpG1EBF8IfhnjjV9k/S7OREAseaGQxNSLkLYKHkKZJBOk9TyJQ6aN7cMbJCWmo
+         TWg+czz5+3cY/e00jtry4YPNKz/1Un/eKvxxPoEBSy1ABFa9+ZRMCOiX4LRuqJJAgTFK
+         XEdFtrY0iMyK6biVDcN8fLUekyA+5GhfJP8IHVLeO3pthjgI7J1QdhbJD88EqUFrzHud
+         i05ROZExH4J4wpxKfaPLEUqw9NwN9E3iDbD8Ge/QVeW2dghGLGWjj+SkHWhbK0q8WvxL
+         Z+crzAn5cVkg2anjn8tNPmxxZYgi+ImE874vwd2jyxyFn/QQm5W8UL0eKkCO0C91kUaC
+         qJAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ALTYTDXKrPwk4EzSNXIMszQ+1kWk/MkRkisy15QSvZc=;
-        b=UFh6sCl9y1hSxR7td++OmXg56l+iGL1IUEMG3/JXw+gusqj/5ylJ+53SDDXpBwYDEi
-         LE5QfwBYkxgA28wHLUQbGLb9ZZnO+cZ0vuurzr9C9CWwdYDvrt7P471HINnvAL0KhE7T
-         sIYTf25VhNAP4nHQF1DtYVF4hBxTy+rE8zEAy2IKhQ3FEdwYQGDerhk2YdbIN+oru3pJ
-         eu4UoA1iOx4CehhgTSTG0Uf82ApbwoVz+Wsr9M7tkrBu2CtOOtn1b9l4o5v4WI1sBxHi
-         yy8+QagLEw+QUC87h06eD6AAEHBanx9cWpvAn5YyWgLJU4WbrGYxP//0Y9IBOS2NfNar
-         ea6g==
-X-Gm-Message-State: AOAM531rEk0eOZoJichxw43+jW20FCENkPrg3LHHmBXjXD7hRyMLyJI4
-        ZC0f7Bpb8zQI1r+aOb1AjN3tYw==
-X-Google-Smtp-Source: ABdhPJzwaE8mu8izokB3w7tSQkCr+/o7WmV0tRpSkzJtMeXoQnThNWs0fP4Amj4kaKXN/X2hL/VUsg==
-X-Received: by 2002:a1c:e209:: with SMTP id z9mr4856370wmg.153.1595349721855;
-        Tue, 21 Jul 2020 09:42:01 -0700 (PDT)
+        bh=dFXXcNYactXc03hl2acSO1gvLgU0ADiqS4Auy98l0Ek=;
+        b=rKefqlNl8Jbr5JbJv5XkZKwmh/Z3Xr4KWTwQS9KIDHRDn9e+7ouGj6mj6SyapYGes6
+         IS8p2LQMhW4ol6sUa7m2SQtgUdlnpjxiiBPYr3i5xX/QHjO8w6Vi57ujdFUTDXpPmrUT
+         L3nyWLtE9AYRYWoWG+vKVMfx0WtLEs/wexHcK/mP4ytlJw3M+QDRsH5o1XmzAuWexjSJ
+         4t9QjRgqNBFZzECH3RH1TUAsXAbbUshojTEe8/zPdYJsXteoBmjS8PB9nZYsy9VhOvZd
+         SN8GYWGoKK4q67+5qIVoAfubibXU1kA9pp9EfyANwL07k3Hxn18plBnYAi8lSfvo+qii
+         7wKA==
+X-Gm-Message-State: AOAM532YqVD0FRH8iSD9A47zT91KK+cWO2HGHPcIFwhdJE0RO3JTx+qh
+        zYI6YlFv12LblFsnAbhzgCx+vw==
+X-Google-Smtp-Source: ABdhPJx5Vgcvu8Pi2zkAFdv/mslhqs0TbRTs+9Cdw+rKjfr1GY81oGtszzL+LPdv7pDWlsxbh7Sb6Q==
+X-Received: by 2002:adf:e38b:: with SMTP id e11mr27051879wrm.65.1595349724716;
+        Tue, 21 Jul 2020 09:42:04 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.00
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:01 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:04 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Luben Tuikov <luben_tuikov@adaptec.com>
-Subject: [PATCH 06/40] scsi: aic94xx: aic94xx_dev: Fix a couple of kerneldoc formatting issues
-Date:   Tue, 21 Jul 2020 17:41:14 +0100
-Message-Id: <20200721164148.2617584-7-lee.jones@linaro.org>
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
+Subject: [PATCH 07/40] scsi: aacraid: src: Add descriptions for missing parameters
+Date:   Tue, 21 Jul 2020 17:41:15 +0100
+Message-Id: <20200721164148.2617584-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -66,41 +67,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc expects attributes/parameters to be in '@*.: ' format.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aic94xx/aic94xx_dev.c:246: warning: Function parameter or member 'dev' not described in 'asd_init_sata_pm_port_ddb'
- drivers/scsi/aic94xx/aic94xx_dev.c:290: warning: Function parameter or member 'dev' not described in 'asd_init_sata_pm_ddb'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'p2' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'p3' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'p4' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'p5' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'p6' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'status' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'r1' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'r2' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'r3' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Function parameter or member 'r4' not described in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:203: warning: Excess function parameter 'ret' description in 'src_sync_cmd'
+ drivers/scsi/aacraid/src.c:609: warning: Function parameter or member 'dev' not described in 'aac_src_ioremap'
+ drivers/scsi/aacraid/src.c:639: warning: Function parameter or member 'dev' not described in 'aac_srcv_ioremap'
 
-Cc: Luben Tuikov <luben_tuikov@adaptec.com>
+Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
+Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aic94xx/aic94xx_dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/aacraid/src.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/aic94xx/aic94xx_dev.c b/drivers/scsi/aic94xx/aic94xx_dev.c
-index 604a5331f639b..73506a459bf86 100644
---- a/drivers/scsi/aic94xx/aic94xx_dev.c
-+++ b/drivers/scsi/aic94xx/aic94xx_dev.c
-@@ -236,7 +236,7 @@ static int asd_init_sata_pm_table_ddb(struct domain_device *dev)
+diff --git a/drivers/scsi/aacraid/src.c b/drivers/scsi/aacraid/src.c
+index 787ec9baebb0b..11ef58204e96f 100644
+--- a/drivers/scsi/aacraid/src.c
++++ b/drivers/scsi/aacraid/src.c
+@@ -191,7 +191,16 @@ static void aac_src_enable_interrupt_message(struct aac_dev *dev)
+  *	@dev: Adapter
+  *	@command: Command to execute
+  *	@p1: first parameter
+- *	@ret: adapter status
++ *	@p2: second parameter
++ *	@p3: third parameter
++ *	@p4: forth parameter
++ *	@p5: fifth parameter
++ *	@p6: sixth parameter
++ *	@status: adapter status
++ *	@r1: first return value
++ *	@r2: second return valu
++ *	@r3: third return value
++ *	@r4: forth return value
+  *
+  *	This routine will send a synchronous command to the adapter and wait
+  *	for its	completion.
+@@ -602,6 +611,7 @@ static int aac_src_deliver_message(struct fib *fib)
  
  /**
-  * asd_init_sata_pm_port_ddb -- SATA Port Multiplier Port
-- * dev: pointer to domain device
-+ * @dev: pointer to domain device
+  *	aac_src_ioremap
++ *	@dev: device ioremap
+  *	@size: mapping resize request
   *
-  * For SATA Port Multiplier Ports we need to allocate one SATA Port
-  * Multiplier Port DDB and depending on whether the target on it
-@@ -281,7 +281,7 @@ static int asd_init_initiator_ddb(struct domain_device *dev)
+  */
+@@ -632,6 +642,7 @@ static int aac_src_ioremap(struct aac_dev *dev, u32 size)
  
  /**
-  * asd_init_sata_pm_ddb -- SATA Port Multiplier
-- * dev: pointer to domain device
-+ * @dev: pointer to domain device
+  *  aac_srcv_ioremap
++ *	@dev: device ioremap
+  *	@size: mapping resize request
   *
-  * For STP and direct-attached SATA Port Multipliers we need
-  * one target port DDB entry and one SATA PM table DDB entry.
+  */
 -- 
 2.25.1
 
