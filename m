@@ -2,84 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223AD228722
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D9522873B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgGURRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:17:40 -0400
-Received: from mga07.intel.com ([134.134.136.100]:10555 "EHLO mga07.intel.com"
+        id S1729600AbgGURXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:23:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729286AbgGURRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:17:39 -0400
-IronPort-SDR: TTKTiD8Ty3QSBBnkPynzNIf8DupNlcN7W5j+3dnNvSWhyXDmxGEnITs4cCfsOeX85wqxHDFp4M
- LSsXoZj4rC9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="214839140"
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="214839140"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 10:17:36 -0700
-IronPort-SDR: PRmyN7gp5wF41uVRnfVHJOfgingQ7F3tDTAjGVtjK7KHwH+C+64WU0/RcXp7UrW8eXBvcXHznz
- OpytWloy/2sA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="326434915"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.213.181.166]) ([10.213.181.166])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Jul 2020 10:17:35 -0700
-Subject: Re: [PATCH RFC v2 00/18] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
-        bhelgaas@google.com, rafael@kernel.org, tglx@linutronix.de,
-        hpa@zytor.com, alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        dave.hansen@intel.com, netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
- <20200721162858.GA2139881@kroah.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <754118ac-0c3f-c870-eb6e-f7bc24014cfc@intel.com>
-Date:   Tue, 21 Jul 2020 10:17:34 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728306AbgGURXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 13:23:37 -0400
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67AA522BF5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 17:23:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595352216;
+        bh=o1VTqZy3PaEzLTyui6w9+v5TbCVASw3DdtRw6gu2BQI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jx74mrKpjkk5k6VOd5/kCwNOwwwf8wMs2cO4TwFtGtU593JDHKwoZZ/1yFW5DAFN3
+         uEJ0ee60GMUeaOGQbp5HsrLOothM3N5kpM8hhMr4fCTVv0ji9CEdSwTHGrvG5u9zNM
+         wAgsF02n2BBAlOUQUx+bQzZ5BSxQioXpjNbvHXsQ=
+Received: by mail-wm1-f48.google.com with SMTP id c80so3612514wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:23:36 -0700 (PDT)
+X-Gm-Message-State: AOAM5319CkIuGHd4f1esBwBQyck+mALB6nIH6u6CgfICR/4LKSEquRt7
+        LSADFIMBlxQDPu/lBLi8ix7b9Ocd0UrXabKV8dBJgA==
+X-Google-Smtp-Source: ABdhPJzs1pDydQd6AZNlTZP3zjRd99wsz0+yuH5F2e/lKdxi00sm+gxIPnvmITsfDDUdOGt0aPUsimQLPfiyTKcw794=
+X-Received: by 2002:a1c:56c3:: with SMTP id k186mr3860162wmb.21.1595352214965;
+ Tue, 21 Jul 2020 10:23:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200721162858.GA2139881@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
+ <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net> <20200715171130.GG12769@casper.infradead.org>
+ <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com> <CAJfpegt9=p4uo5U2GXqc-rwqOESzZCWAkGMRTY1r8H6fuXx96g@mail.gmail.com>
+ <48cc7eea-5b28-a584-a66c-4eed3fac5e76@gmail.com> <202007151511.2AA7718@keescook>
+ <20200716131404.bnzsaarooumrp3kx@steredhat> <202007160751.ED56C55@keescook>
+ <20200717080157.ezxapv7pscbqykhl@steredhat.lan> <CALCETrXSPdiVCgh3h=q7w9RyiKnp-=8jOHoFHX=an0cWqK7bzQ@mail.gmail.com>
+ <39a3378a-f8f3-6706-98c8-be7017e64ddb@kernel.dk>
+In-Reply-To: <39a3378a-f8f3-6706-98c8-be7017e64ddb@kernel.dk>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 21 Jul 2020 10:23:22 -0700
+X-Gmail-Original-Message-ID: <CALCETrXAxFzuRB5EJZR7bbgfrEcNc=9_E7wwhPaZ3YGJ1=DZ0w@mail.gmail.com>
+Message-ID: <CALCETrXAxFzuRB5EJZR7bbgfrEcNc=9_E7wwhPaZ3YGJ1=DZ0w@mail.gmail.com>
+Subject: Re: strace of io_uring events?
+To:     Jens Axboe <axboe@kernel.dk>, Andres Freund <andres@anarazel.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        strace-devel@lists.strace.io, io-uring@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 8:31 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 7/21/20 9:27 AM, Andy Lutomirski wrote:
+> > On Fri, Jul 17, 2020 at 1:02 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
+> >>
+> >> On Thu, Jul 16, 2020 at 08:12:35AM -0700, Kees Cook wrote:
+> >>> On Thu, Jul 16, 2020 at 03:14:04PM +0200, Stefano Garzarella wrote:
+> >
+> >>> access (IIUC) is possible without actually calling any of the io_uring
+> >>> syscalls. Is that correct? A process would receive an fd (via SCM_RIGHTS,
+> >>> pidfd_getfd, or soon seccomp addfd), and then call mmap() on it to gain
+> >>> access to the SQ and CQ, and off it goes? (The only glitch I see is
+> >>> waking up the worker thread?)
+> >>
+> >> It is true only if the io_uring istance is created with SQPOLL flag (not the
+> >> default behaviour and it requires CAP_SYS_ADMIN). In this case the
+> >> kthread is created and you can also set an higher idle time for it, so
+> >> also the waking up syscall can be avoided.
+> >
+> > I stared at the io_uring code for a while, and I'm wondering if we're
+> > approaching this the wrong way. It seems to me that most of the
+> > complications here come from the fact that io_uring SQEs don't clearly
+> > belong to any particular security principle.  (We have struct creds,
+> > but we don't really have a task or mm.)  But I'm also not convinced
+> > that io_uring actually supports cross-mm submission except by accident
+> > -- as it stands, unless a user is very careful to only submit SQEs
+> > that don't use user pointers, the results will be unpredictable.
+>
+> How so?
 
+Unless I've missed something, either current->mm or sqo_mm will be
+used depending on which thread ends up doing the IO.  (And there might
+be similar issues with threads.)  Having the user memory references
+end up somewhere that is an implementation detail seems suboptimal.
 
-On 7/21/2020 9:28 AM, Greg KH wrote:
-> On Tue, Jul 21, 2020 at 09:02:15AM -0700, Dave Jiang wrote:
->> v2:
-> 
-> "RFC" to me means "I don't really think this is mergable, so I'm
-> throwing it out there."  Which implies you know it needs more work
-> before others should review it as you are not comfortable with it :(
-> 
-> So, back-of-the-queue you go...
-> 
-> greg k-h
-> 
+>
+> > Perhaps we can get away with this:
+> >
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index 74bc4a04befa..92266f869174 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -7660,6 +7660,20 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int,
+> > fd, u32, to_submit,
+> >      if (!percpu_ref_tryget(&ctx->refs))
+> >          goto out_fput;
+> >
+> > +    if (unlikely(current->mm != ctx->sqo_mm)) {
+> > +        /*
+> > +         * The mm used to process SQEs will be current->mm or
+> > +         * ctx->sqo_mm depending on which submission path is used.
+> > +         * It's also unclear who is responsible for an SQE submitted
+> > +         * out-of-process from a security and auditing perspective.
+> > +         *
+> > +         * Until a real usecase emerges and there are clear semantics
+> > +         * for out-of-process submission, disallow it.
+> > +         */
+> > +        ret = -EACCES;
+> > +        goto out;
+> > +    }
+> > +
+> >      /*
+> >       * For SQ polling, the thread will do all submissions and completions.
+> >       * Just return the requested submit count, and wake the thread if
+>
+> That'll break postgres that already uses this, also see:
+>
+> commit 73e08e711d9c1d79fae01daed4b0e1fee5f8a275
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Sun Jan 26 09:53:12 2020 -0700
+>
+>     Revert "io_uring: only allow submit from owning task"
+>
+> So no, we can't do that.
+>
 
-Hi Greg! Yes this absolutely needs more work! I think it's in pretty good shape, 
-but it has reached the point where it needs the talented eyes of reviewers from 
-outside of Intel. I was really hoping to get feedback from folks like Jason 
-(Thanks Jason!!) and KVM and VFIO experts like Alex, Paolo, Eric, and Kirti.
+Yikes, I missed that.
 
-I can understand that you are quite busy and can not necessarily provide a 
-detailed review at this phase. Would you prefer to be cc'd on code at this phase 
-in the future? Or, should we reserve putting you on the cc for times when we 
-know it's ready for merge?
+Andres, how final is your Postgres branch?  I'm wondering if we could
+get away with requiring a special flag when creating an io_uring to
+indicate that you intend to submit IO from outside the creating mm.
+
+Even if we can't make this change, we could plausibly get away with
+tying seccomp-style filtering to sqo_mm.  IOW we'd look up a
+hypothetical sqo_mm->io_uring_filters to filter SQEs even when
+submitted from a different mm.
+
+--Andy
