@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3206D22772F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772E222771C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgGUDqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 23:46:03 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:59740 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726856AbgGUDqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 23:46:02 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9FDB420038B;
-        Tue, 21 Jul 2020 05:45:59 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6393D200390;
-        Tue, 21 Jul 2020 05:45:54 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 121134031C;
-        Tue, 21 Jul 2020 11:27:12 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: bindings: fsl-asoc-card: Support properties for configuring dai fmt
-Date:   Tue, 21 Jul 2020 11:41:50 +0800
-Message-Id: <1595302910-19688-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595302910-19688-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1595302910-19688-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728467AbgGUDmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 23:42:23 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42704 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgGUDmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 23:42:22 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06L3bgFC111303;
+        Tue, 21 Jul 2020 03:42:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=YN++hbwgWE9+Q7LCmF3JX3M2Kh++JVXvGGZuY3tpdak=;
+ b=LxrJMDg/BL4TTCFlDpgmlFnBni+2VShiY6vocGIGScIUkeVcg6IQmfhcdF9Mn3qlu92z
+ FgQh6A4jAq/9Cb+PVwTSnG9WzmbmgMZartxuJdzeqBrvpXjI4/iQ3Z9o1wP1gMl/NqmB
+ Yz8xXyxvycsSE7khKqync+/j2jIKXiM+DcBoBq6LEosra1D/N/o8CFsetkUxp3KxOZDY
+ ehfYxrYYvYCQjGAOSiORFK0xd0gZ+D2xqVELVopbc9gZ75d0q3eCF+ogk6D0+GzIqjfO
+ DO1MRtb2UAK1ML8o6SB84VmsC/RtTZ7zWgeO0FOCGnDPz7uPDcZ6VOXO2iTLixfTG5T9 fw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 32bs1mae06-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 03:42:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06L3fkxV016424;
+        Tue, 21 Jul 2020 03:42:15 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 32dnafpsrk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 03:42:15 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06L3gDnn015548;
+        Tue, 21 Jul 2020 03:42:13 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Jul 2020 20:42:13 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] SCSI: scsi_transport_iscsi.h: drop a duplicated word
+Date:   Mon, 20 Jul 2020 23:42:08 -0400
+Message-Id: <159530290480.22526.11377111336222512447.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200719003232.21301-1-rdunlap@infradead.org>
+References: <20200719003232.21301-1-rdunlap@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9688 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007210023
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9688 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007210023
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support configuring dai fmt through DT, add some properties.
-These properiese are same as the properties in simple card.
+On Sat, 18 Jul 2020 17:32:32 -0700, Randy Dunlap wrote:
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- Documentation/devicetree/bindings/sound/fsl-asoc-card.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+> Drop the repeated word "the" in a comment.
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-index 8a6a3d0fda5e..63ebf52b43e8 100644
---- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-@@ -71,6 +71,11 @@ Optional properties:
- 
-   - hp-det-gpio		: The GPIO that detect headphones are plugged in
-   - mic-det-gpio	: The GPIO that detect microphones are plugged in
-+  - bitclock-master	: Indicates dai-link bit clock master; for details see simple-card.yaml.
-+  - frame-master	: Indicates dai-link frame master; for details see simple-card.yaml.
-+  - dai-format		: audio format, for details see simple-card.yaml.
-+  - frame-inversion	: dai-link uses frame clock inversion, for details see simple-card.yaml.
-+  - bitclock-inversion	: dai-link uses bit clock inversion, for details see simple-card.yaml.
- 
- Optional unless SSI is selected as a CPU DAI:
- 
+Applied to 5.9/scsi-queue, thanks!
+
+[1/1] scsi: scsi_transport_iscsi: Drop a duplicated word
+      https://git.kernel.org/mkp/scsi/c/05b18b1eb3eb
+
 -- 
-2.27.0
-
+Martin K. Petersen	Oracle Linux Engineering
