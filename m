@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693E9228CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EFC228CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731441AbgGUXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728799AbgGUXUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:20:46 -0400
-Received: from embeddedor (unknown [201.162.241.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4DA12073A;
-        Tue, 21 Jul 2020 23:20:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595373646;
-        bh=k12uJFo9GijfkE6amONA1RHG4y8f9peyXOXnnmnq4f8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aobTux0AHyL3+gneL86gXNyDcTGcd1RN6m6n0I6QAA9jIN3Ou0DyKjJVTa62RxrK3
-         B0cj+wW4PZTECLMRu8u2fbFTqFwE7+GGsIBNhuoNrh6xSoOuE0WD4aiD33clnUAcxv
-         VfUkbWFYbylwDbtsgyMnMo2mnQYKxydsylIbTdjQ=
-Date:   Tue, 21 Jul 2020 18:26:23 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH v2][next] i2c: slave-eeprom: Use fallthrough pseudo-keyword
-Message-ID: <20200721232623.GA2140@embeddedor>
+        id S1731380AbgGUX3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:29:16 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45044 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgGUX3Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 19:29:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTFU2113697
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:29:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595374155;
+        bh=XTgVhSn9cvqVM8cziFcXaCIXMVCkPt/CZLpLP6PMMGY=;
+        h=From:To:CC:Subject:Date;
+        b=atTdsPIXkfmA1YxUSq63gTdVlgOYfkOhFL5mxjkVzU2ZG5htpvs5qt++UYyurx/ro
+         KxsexYJXUyTPPsintL1oSPz7azBM/C+I0DgRaN/TjLiTrjinqOfwgPOU8A7EJk7iX5
+         OqG+RWEMmiZlvOl/pWTQ7N10pAS4KbrxEBnb/Y6Q=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTFVC096878
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:29:15 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 21
+ Jul 2020 18:29:14 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 21 Jul 2020 18:29:15 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LNTDJa007619;
+        Tue, 21 Jul 2020 18:29:14 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH 0/3] phy: ti: gmii-sel: update to support multiport k3 devices
+Date:   Wed, 22 Jul 2020 02:29:10 +0300
+Message-ID: <20200721232913.4979-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+Hi Kishon,
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+This series introduces support for multiport K3 CPSW devices like one, which
+can be found on J721E SoC (MAIN CPSW).
+The first two patches are preparation changes. The Patch 3 add support for
+retrieving number of ports and base registers offset from DT.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Update URL. Use proper URL to Linux v5.7 documentation.
+Grygorii Strashko (3):
+  phy: ti: gmii-sel: move phy init in separate function
+  phy: ti: gmii-sel: use features mask during init
+  phy: ti: gmii-sel: retrieve ports number and base offset from dt
 
- drivers/i2c/i2c-slave-eeprom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/phy/ti/phy-gmii-sel.c | 159 ++++++++++++++++++++--------------
+ 1 file changed, 96 insertions(+), 63 deletions(-)
 
-diff --git a/drivers/i2c/i2c-slave-eeprom.c b/drivers/i2c/i2c-slave-eeprom.c
-index 593f2fd39d17..5c7ae421cacf 100644
---- a/drivers/i2c/i2c-slave-eeprom.c
-+++ b/drivers/i2c/i2c-slave-eeprom.c
-@@ -66,7 +66,7 @@ static int i2c_slave_eeprom_slave_cb(struct i2c_client *client,
- 	case I2C_SLAVE_READ_PROCESSED:
- 		/* The previous byte made it to the bus, get next one */
- 		eeprom->buffer_idx++;
--		/* fallthrough */
-+		fallthrough;
- 	case I2C_SLAVE_READ_REQUESTED:
- 		spin_lock(&eeprom->buffer_lock);
- 		*val = eeprom->buffer[eeprom->buffer_idx & eeprom->address_mask];
 -- 
-2.27.0
+2.17.1
 
