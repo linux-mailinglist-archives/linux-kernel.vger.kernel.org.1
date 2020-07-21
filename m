@@ -2,91 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96093228315
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A27228331
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgGUPEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        id S1729968AbgGUPIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgGUPEt (ORCPT
+        with ESMTP id S1728320AbgGUPIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:04:49 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADC6C061794;
-        Tue, 21 Jul 2020 08:04:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o18so21956732eje.7;
-        Tue, 21 Jul 2020 08:04:48 -0700 (PDT)
+        Tue, 21 Jul 2020 11:08:38 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C28C061794;
+        Tue, 21 Jul 2020 08:08:38 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id 8so1144639pjj.1;
+        Tue, 21 Jul 2020 08:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x/WjG1I1jw+gA2WhVK85qv6i+E0OUDyTrccx3Mlc7NQ=;
-        b=YK4OMZ0XyyX1/+bnU5uyRqXAPi/NwezYZaL+3SQ/21qjHrQvQLB5QpTBCGqvSpfp2G
-         0dvwYRP2ggj8iJi1OFLEc31LD/505o64O72+/gTxoOZo76Ndlm3mGjn2EZv/v3G6+v4a
-         aKSmHBy1odMqQ7JRmYtoXEwS7f1gQ80r15lfBdhYEhTjVZMovK7UqEUBiH2Q2fqM/ocX
-         +MXyHN/tmxYATerUHB9o6fDhGL+9FS/qmTCpWlTNbDwE0ediAtl2ZW9ncZW7nHeQSIGm
-         A9fkEK5kJth3K/5fZzZK8QDZ7eH9+cZYIb2athqhWpi5JDknWKM5MevSvPLujUL5Ns9o
-         VsCQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XxArNrsDxK0jgBrFXe5Xugx6neCsoFxEQFgdlLGJALY=;
+        b=cvKDwOQ5Q1EfaXBnNKGYSan/gUvJ2Wpuz0IEZBdbEzg7l/oeqXx2Aw2AR/oHEtXxxQ
+         JTqdz8qQl1jw0bOSHve9RQyayuss5fTkI4N7E520IR0YTgY8iQN9dt724jK/FNEqAsWb
+         uLL1AbWOs7IRs7gxr3gXxH1nGDlJvl7hOdEH64PuXiEq+Qzzpi7awMJWt4SHrBdaUgI/
+         wsBWSW2qCPjzH1FbatYCcH/wvFDCXRa+H84MRkGHs8mQuQwe0/X2CTqgFvOMAqaoFzli
+         +xeC+8KU1Hh1AAFUeR9Sa2BDb5NUSgKi4GZQcZoHSeWvc3BH75IeRN1Riasw9SH5O+uV
+         IGOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x/WjG1I1jw+gA2WhVK85qv6i+E0OUDyTrccx3Mlc7NQ=;
-        b=rQDJaDcW6td24SDb7pRMbc1NIQTx/OD5issXVX2IO0SC2fJHKRAptLg9GElRC+6+0F
-         MgGZ8aEflJHK8JU7YoXwOuOEQ8/o+pn6OlhWCzYNGfY7jacKsA0/amq/6p39Y1u3sQG1
-         +P4hlryh/beHyJT3Fw2Lvii1aEFTmF3S6g6sF4zAKGRV6giy1g21IvCLIFFs2z1cF9wE
-         wGzwVJ4lDP8h/m1ojkymcpRnfkplyCxMxk0v6+UEKKFGPsBYA5V2f/289K5Ny7hKVkPb
-         NSswCtqaH3uGSDl8mk2A0IBKzgPeI4Pz0Xc0pWmLLhwpVhVIUy2LKlJu4Z5ANnM58zDJ
-         /DMw==
-X-Gm-Message-State: AOAM530W9Gel86/iZKD3X/T63t+BbLC4Kv1RY4eB3Mkvuf5NiF6GkX2I
-        E1BGVCvPzIkVwMMag3TOHoBcjmrLJ0QKOfcKIDo=
-X-Google-Smtp-Source: ABdhPJyUPjX5E5t4LX3TbhkOYN5/ZjIzw5tH08WLxfBJzEMURod+CD9+rMNIPF5jUFqS644hvbpGtTtu+Lo5lbvFQ98=
-X-Received: by 2002:a17:906:40cb:: with SMTP id a11mr24668088ejk.340.1595343887718;
- Tue, 21 Jul 2020 08:04:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XxArNrsDxK0jgBrFXe5Xugx6neCsoFxEQFgdlLGJALY=;
+        b=bhNEO+q+Ndr3BDbf9hOgRsTy1UrLBwaiLk0GngjeG2qnWXBzVaKMV4ik3tWpKmKD9x
+         SWqZkuTj+7XdmliO7L7HTwGtFKYIxaTDLSR45NfK4druUCTgAiWDe0kFe+kdvk6QqDtJ
+         etgZQxNT/p1cJuNE947mq6n6OuN61LcjIBfm/MsiqMEiLm9kWx+fcO0GN7RRUJZ/5QRP
+         3brHZyFQAhkN0+3T6E9mhBIhvn1hmXrz6gwKOaabVPdrl187V0hGH/HqCvRTl9rxMf0x
+         qN4TjIvAADtQjK1cQTcOKs+ZJc6+hW2YCxlxRWywEy3V+J+FyH8jj0p3M0WBJeTSGJho
+         dfQg==
+X-Gm-Message-State: AOAM532SmG1bWwnl9OAc1kHCfgkLPzwFR2ozXgF6DOsNrBxvZgt88TAQ
+        g/hAHQfqX6YAm93XZ5ppWCc=
+X-Google-Smtp-Source: ABdhPJxx6sheP773N2Alf7m5fZ1kBw3d8TYsmk6FDAhB5okg1aq0WfjsN1Rzp3JE1fPsUGQT+7tCaQ==
+X-Received: by 2002:a17:90a:6983:: with SMTP id s3mr5240415pjj.55.1595344117406;
+        Tue, 21 Jul 2020 08:08:37 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id j3sm20122735pfe.102.2020.07.21.08.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 08:08:36 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, Jouni Malinen <j@w1.fi>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1] hostap: use generic power management
+Date:   Tue, 21 Jul 2020 20:35:48 +0530
+Message-Id: <20200721150547.371763-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200704122809.73794-1-konradybcio@gmail.com> <20200704130922.GB21333@willie-the-truck>
- <20200705033511.GR388985@builder.lan>
-In-Reply-To: <20200705033511.GR388985@builder.lan>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Tue, 21 Jul 2020 17:04:11 +0200
-Message-ID: <CAMS8qEWO-1mNd12Zs-2WogCrgNF5=6RkF=Z1pTeOZxSuKjx+qg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] iommu/arm-smmu: Implement qcom,skip-init
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, skrzynka@konradybcio.pl,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jcrouse@codeaurora.org, John Stultz <john.stultz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So.. is this a no-no?
+Drivers using legacy power management .suspen()/.resume() callbacks
+have to manage PCI states and device's PM states themselves. They also
+need to take care of standard configuration registers.
 
-I of course would like to omit this entirely, but SMMUs on sdm630 and
-friends are REALLY picky.. What seems to happen is that when the
-driver tries to do things the "standard" way, hypervisor decides to
-hang the platform or force a reboot. Not very usable.
+Switch to generic power management framework using a single
+"struct dev_pm_ops" variable to take the unnecessary load from the driver.
+This also avoids the need for the driver to directly call most of the PCI
+helper functions and device power state control functions as through
+the generic framework, PCI Core takes care of the necessary operations,
+and drivers are required to do only device-specific jobs.
 
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ .../net/wireless/intersil/hostap/hostap_hw.c  |  6 ++--
+ .../net/wireless/intersil/hostap/hostap_pci.c | 34 ++++++-------------
+ 2 files changed, 13 insertions(+), 27 deletions(-)
 
-This thing is needed for the platform to even boot properly and one
-more [1] is required to make mdss work with video mode panels (the
-fact that CMD-mode panels work is kinda hilarious to me).
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_hw.c b/drivers/net/wireless/intersil/hostap/hostap_hw.c
+index 2ab34cf74ecc..b6c497ce12e1 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_hw.c
++++ b/drivers/net/wireless/intersil/hostap/hostap_hw.c
+@@ -3366,8 +3366,8 @@ static void prism2_free_local_data(struct net_device *dev)
+ }
+ 
+ 
+-#if (defined(PRISM2_PCI) && defined(CONFIG_PM)) || defined(PRISM2_PCCARD)
+-static void prism2_suspend(struct net_device *dev)
++#if defined(PRISM2_PCI) || defined(PRISM2_PCCARD)
++static void __maybe_unused prism2_suspend(struct net_device *dev)
+ {
+ 	struct hostap_interface *iface;
+ 	struct local_info *local;
+@@ -3385,7 +3385,7 @@ static void prism2_suspend(struct net_device *dev)
+ 	/* Disable hardware and firmware */
+ 	prism2_hw_shutdown(dev, 0);
+ }
+-#endif /* (PRISM2_PCI && CONFIG_PM) || PRISM2_PCCARD */
++#endif /* PRISM2_PCI || PRISM2_PCCARD */
+ 
+ 
+ /* These might at some point be compiled separately and used as separate
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_pci.c b/drivers/net/wireless/intersil/hostap/hostap_pci.c
+index 0c2aa880e32a..101887e6bd0f 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_pci.c
++++ b/drivers/net/wireless/intersil/hostap/hostap_pci.c
+@@ -403,36 +403,23 @@ static void prism2_pci_remove(struct pci_dev *pdev)
+ 	pci_disable_device(pdev);
+ }
+ 
+-
+-#ifdef CONFIG_PM
+-static int prism2_pci_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused prism2_pci_suspend(struct device *dev_d)
+ {
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 
+ 	if (netif_running(dev)) {
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+ 	}
+ 	prism2_suspend(dev);
+-	pci_save_state(pdev);
+-	pci_disable_device(pdev);
+-	pci_set_power_state(pdev, PCI_D3hot);
+ 
+ 	return 0;
+ }
+ 
+-static int prism2_pci_resume(struct pci_dev *pdev)
++static int __maybe_unused prism2_pci_resume(struct device *dev_d)
+ {
+-	struct net_device *dev = pci_get_drvdata(pdev);
+-	int err;
+-
+-	err = pci_enable_device(pdev);
+-	if (err) {
+-		printk(KERN_ERR "%s: pci_enable_device failed on resume\n",
+-		       dev->name);
+-		return err;
+-	}
+-	pci_restore_state(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
++
+ 	prism2_hw_config(dev, 0);
+ 	if (netif_running(dev)) {
+ 		netif_device_attach(dev);
+@@ -441,20 +428,19 @@ static int prism2_pci_resume(struct pci_dev *pdev)
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_PM */
+-
+ 
+ MODULE_DEVICE_TABLE(pci, prism2_pci_id_table);
+ 
++static SIMPLE_DEV_PM_OPS(prism2_pci_pm_ops,
++			 prism2_pci_suspend,
++			 prism2_pci_resume);
++
+ static struct pci_driver prism2_pci_driver = {
+ 	.name		= "hostap_pci",
+ 	.id_table	= prism2_pci_id_table,
+ 	.probe		= prism2_pci_probe,
+ 	.remove		= prism2_pci_remove,
+-#ifdef CONFIG_PM
+-	.suspend	= prism2_pci_suspend,
+-	.resume		= prism2_pci_resume,
+-#endif /* CONFIG_PM */
++	.driver.pm	= &prism2_pci_pm_ops,
+ };
+ 
+ module_pci_driver(prism2_pci_driver);
+-- 
+2.27.0
 
-To be honest, there are even more qcom quirks (of which at least
-qcom,dynamic and qcom-use-3-lvl-tables are used on 630).. [2]
-
-Looking forward to your answers and possibly better solutions.
-
-[1] https://github.com/konradybcio/linux/commit/83ac38af259968f92b6a8b7eab90096c78469f87
-[2] https://github.com/sonyxperiadev/kernel/blob/aosp/LA.UM.7.1.r1/drivers/iommu/arm-smmu.c#L404-L415
-
-Regards
-Konrad
