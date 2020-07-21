@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62FB227721
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9A922773D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgGUDmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 23:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGUDms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 23:42:48 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53675C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 20:42:48 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id gc9so894730pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 20:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QFxFeoQn/SQYRyQDfbG1IBUQ/zoH7xIjzBCHtw1UDhU=;
-        b=Uqt6XzxucAzfhz+eY8v2XOh+631yFjGkuxbG+ZlwBaQsOgPHLtnENdj7UTezv56eA9
-         8KtzBp9i7Teyeep/z3TW/cyIKSK0bAdD2v3lG67dmeJHIXSjdZKngDkmsnbTFWYKGMxD
-         ATihstNkkR9cgP82PR91gx8y+CahXmslPoQ7o1C1o1Mt0KO1LL+RFDUWvWm1zY/pWbg1
-         UMZ9EOisk1k2wc7MQ/HcksslKT4aR+Km9muLeBgWnxDTd67jt9KB93PfuZsL5qua/JEC
-         ZsGGqfASs1vMdzLwDJac62sR/N+hl06cmaqrMpThXKUnRr+KydmonxuggnR7QUC70uq5
-         FlhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QFxFeoQn/SQYRyQDfbG1IBUQ/zoH7xIjzBCHtw1UDhU=;
-        b=okuu8+HnDTO+QgqRhUsnLlok/lEqXiOEu90mO/TqhoAaUZVceEZwVH2+U3dPHLkxzD
-         OSwLnO28dqdqAm0ictWadagIE/ugV3FQ74T25htdsgeSsvD6E/On3E2TY2+6yXQDd4FM
-         t3Eh2e2C1YCSCrCuRWVD1gd83mqS4ZwB7UkBlewf5weFfyRlUil08lmeuJxGNPWawXZx
-         oiOvgkeIG4IKsOyhcU16nHS+XqicBgXauwkdCnluwjr/P3LCC/XqNYrSIq+fEFSWb+uG
-         OxWo4blQUxSk1b5fsu4K9h7P3RZNXxWpswhiNDLszAYf0ZPaUI0gk2wtK1dwQK0eCwlM
-         7vTw==
-X-Gm-Message-State: AOAM531oxz4cpE0CtDjTwTIQoMlpVbzHO2x0SCeyKiJnABJ2ZAIHoAC9
-        vmeokyVcSkbm11OUoKdC6icX9hnoBibqdQ==
-X-Google-Smtp-Source: ABdhPJwJmTEoCOdbRJN3jKDXIxQyb0PCdXv1iNb0euoJIEFzwHswtkBL0TSHNmAFEqBEpkY1lxlUxA==
-X-Received: by 2002:a17:90a:8c01:: with SMTP id a1mr2465527pjo.97.1595302967933;
-        Mon, 20 Jul 2020 20:42:47 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.69])
-        by smtp.gmail.com with ESMTPSA id p127sm18300468pfb.17.2020.07.20.20.42.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Jul 2020 20:42:47 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
-        bigeasy@linutronix.de, namit@vmware.com
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3] smp: Fix a potential usage of stale nr_cpus
-Date:   Tue, 21 Jul 2020 11:42:39 +0800
-Message-Id: <20200721034239.72013-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1728731AbgGUDuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 23:50:24 -0400
+Received: from mga18.intel.com ([134.134.136.126]:19298 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726016AbgGUDuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 23:50:24 -0400
+IronPort-SDR: LeaxCREqBpNwJ1VzedhPfGNGNXpsZWDRKicQ8SilmBBUxRB0CQQrdsTOIksa/Ta4lHOGSVU7bH
+ FWyOucN2sa2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="137545709"
+X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
+   d="scan'208";a="137545709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 20:50:23 -0700
+IronPort-SDR: /5XVtmUxVOAjLvfPM7pFQIbvZL+4s8LLGFglLW4KaEq8z7NF1SHp30/MisacreC+3NaIYSZZeA
+ G260C8MNucVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
+   d="scan'208";a="310084736"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Jul 2020 20:50:20 -0700
+Date:   Tue, 21 Jul 2020 11:47:13 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        yilun.xu@intel.com
+Subject: Re: [PATCH v2 3/3] mfd: intel-m10-bmc: add Max10 BMC chip support
+  for Intel FPGA PAC
+Message-ID: <20200721034713.GB17091@yilunxu-OptiPlex-7050>
+References: <1594896174-18826-1-git-send-email-yilun.xu@intel.com>
+ <1594896174-18826-4-git-send-email-yilun.xu@intel.com>
+ <20200717181609.GB905@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717181609.GB905@sirena.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the cmdline of "nr_cpus" is not valid, the @nr_cpu_ids is assigned
-a stale value. The nr_cpus is only valid when get_option() return 1. So
-check the return value to prevent this.
+On Fri, Jul 17, 2020 at 07:16:09PM +0100, Mark Brown wrote:
+> On Thu, Jul 16, 2020 at 06:42:54PM +0800, Xu Yilun wrote:
+> 
+> > +static const struct spi_device_id m10bmc_spi_id[] = {
+> > +	{ "m10-n3000", M10_N3000 },
+> > +	{ }
+> > +};
+> > +MODULE_DEVICE_TABLE(spi, m10bmc_spi_id);
+> 
+> > +static struct spi_driver intel_m10bmc_spi_driver = {
+> > +	.driver = {
+> > +		.name = "intel-m10-bmc",
+> > +		.dev_groups = m10bmc_dev_groups,
+> > +	},
+> > +	.probe = intel_m10_bmc_spi_probe,
+> > +	.id_table = m10bmc_spi_id,
+> > +};
+> 
+> > +module_spi_driver(intel_m10bmc_spi_driver);
+> 
+> This device has no ACPI information - how will it be instantiated?
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
-changelog in v3:
- 1) Return -EINVAL when the parameter is bogus. 
+In our case, The m10-bmc is connected to the intel FPGA (PAC N3000),
+which uses the Device Feature List (DFL) mechanism to enumerate features
+(devices) on FPGA. Each feature in DFL has a feature_id. And for this
+m10-n3000 feature (feature_id = 0xd), it contains a spi-altera & a
+m10-n3000 chip. So the DFL subsystem would help enumerate the info.
 
-changelog in v2:
- 1) Rework the commit log.
- 2) Rework the return value check.
+Recently I added the platform data for slave information in spi-altera,
+to support this use case.
 
- kernel/smp.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/smp.c b/kernel/smp.c
-index a5a66fc28f4e..0dacfcfcf00b 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -772,9 +772,13 @@ static int __init nrcpus(char *str)
- {
- 	int nr_cpus;
- 
--	get_option(&str, &nr_cpus);
-+	if (get_option(&str, &nr_cpus) != 1)
-+		return -EINVAL;
-+
- 	if (nr_cpus > 0 && nr_cpus < nr_cpu_ids)
- 		nr_cpu_ids = nr_cpus;
-+	else
-+		return -EINVAL;
- 
- 	return 0;
- }
--- 
-2.11.0
-
+Thanks,
+Yilun
