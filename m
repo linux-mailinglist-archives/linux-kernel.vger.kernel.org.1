@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B547228CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E00228CE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731565AbgGUXqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:46:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44150 "EHLO mga12.intel.com"
+        id S1731420AbgGUXuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:50:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731459AbgGUXqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:46:11 -0400
-IronPort-SDR: QofjuauXwdeRD+lvoHRO6ObQNubHBJ++pcLx5uSlSjaxNGA8JnOdmoxYk7g8Qjye6fGtqdVUmz
- dUAWyJIpHmGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="129815373"
-X-IronPort-AV: E=Sophos;i="5.75,380,1589266800"; 
-   d="scan'208";a="129815373"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 16:46:11 -0700
-IronPort-SDR: O+Zbmqj3QdWHOWpt1LnUKLcLzu7x9zcOB2XDaVewCuA3B352SntT5b+n2dzMbRz84RDYXShJYy
- g9EQedM6yeEw==
-X-IronPort-AV: E=Sophos;i="5.75,380,1589266800"; 
-   d="scan'208";a="362539392"
-Received: from krlloyd-mobl.amr.corp.intel.com (HELO [10.255.231.6]) ([10.255.231.6])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 16:46:10 -0700
-Subject: Re: [RFC PATCH v2 6/6] ASoC: q6asm-dai: add support to
- set_codec_params
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
-        tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org
-References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
- <20200721170007.4554-7-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <970e7065-4731-e553-f07f-896aaa57c5dc@linux.intel.com>
-Date:   Tue, 21 Jul 2020 15:09:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726148AbgGUXuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 19:50:17 -0400
+Received: from embeddedor (unknown [201.162.241.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1612020657;
+        Tue, 21 Jul 2020 23:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595374231;
+        bh=+aPBvm7PmwXf+ngJL5CufUYjRJ3afrbzvRdmLvuJAP8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DhtsisWRwm2dlRvbaqMHNVA5sEWVBHDWKH3gNt33GCOvF8b+8kSJfvxD4OF8B5lQC
+         58qVUze20NBouZFXVeBVQQq/n2MjKjw+S8PzPuR+YsRukNbjwgICvim36U6Pjg4Ep3
+         eP+M/CBQUqnG5KwDdBLrQqHB8tPzOS2Jwt0OxQaI=
+Date:   Tue, 21 Jul 2020 18:36:09 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] i2c: synquacer: Use fallthrough pseudo-keyword
+Message-ID: <20200721233609.GA2882@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200721170007.4554-7-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1].
 
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-On 7/21/20 12:00 PM, Srinivas Kandagatla wrote:
-> Make use of new set_codec_params callback to allow decoder switching
-> during gapless playback.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   sound/soc/qcom/qdsp6/q6asm-dai.c | 33 ++++++++++++++++++++++++++++++++
->   1 file changed, 33 insertions(+)
-> 
-> diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-> index b5c719682919..a8cfb1996614 100644
-> --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-> +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-> @@ -876,6 +876,37 @@ static int __q6asm_dai_compr_set_codec_params(struct snd_soc_component *componen
->   	return 0;
->   }
->   
-> +static int q6asm_dai_compr_set_codec_params(struct snd_soc_component *component,
-> +					    struct snd_compr_stream *stream,
-> +					    struct snd_codec *codec)
-> +{
-> +	struct snd_compr_runtime *runtime = stream->runtime;
-> +	struct q6asm_dai_rtd *prtd = runtime->private_data;
-> +	int ret;
-> +
-> +	ret = q6asm_open_write(prtd->audio_client, prtd->next_track_stream_id,
-> +			       codec->id, codec->profile, prtd->bits_per_sample,
-> +			       true);
-> +	if (ret < 0) {
-> +		pr_err("q6asm_open_write failed\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = __q6asm_dai_compr_set_codec_params(component, stream, codec,
-> +						 prtd->next_track_stream_id);
-> +	if (ret < 0) {
-> +		pr_err("q6asm_open_write failed\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = q6asm_stream_remove_initial_silence(prtd->audio_client,
-> +						   prtd->next_track_stream_id,
-> +						   prtd->initial_samples_drop);
-> +	prtd->next_track_stream_id = 0;
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/i2c/busses/i2c-synquacer.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-same comment as in the other patchset, the stream_id toggles between 1 
-and 2, it's not clear to me what 0 means.
+diff --git a/drivers/i2c/busses/i2c-synquacer.c b/drivers/i2c/busses/i2c-synquacer.c
+index c9a3dba6a75d..31be1811d5e6 100644
+--- a/drivers/i2c/busses/i2c-synquacer.c
++++ b/drivers/i2c/busses/i2c-synquacer.c
+@@ -398,8 +398,7 @@ static irqreturn_t synquacer_i2c_isr(int irq, void *dev_id)
+ 
+ 		if (i2c->state == STATE_READ)
+ 			goto prepare_read;
+-
+-		/* fall through */
++		fallthrough;
+ 
+ 	case STATE_WRITE:
+ 		if (bsr & SYNQUACER_I2C_BSR_LRB) {
+-- 
+2.27.0
 
-off-by-one bug or feature?
