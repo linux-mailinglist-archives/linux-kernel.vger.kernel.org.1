@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83065227EFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D262B227EFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729668AbgGULcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgGULcO (ORCPT
+        id S1729652AbgGULdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:33:03 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:52246 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgGULdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:32:14 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D874C061794;
-        Tue, 21 Jul 2020 04:32:14 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h22so23659958lji.9;
-        Tue, 21 Jul 2020 04:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=hvBHByfuN4VYEKY+y/yvJNCDmWONLf8OUqOSVrmh4Q4=;
-        b=MGipDunY1c1w9J7bbp++6aGSvcXbN4qzm1hj5wdbM4Tvy9BDJrzitpV/pEaNkPI5HO
-         p10+qclaXvCngz4o/38MfLlt76Ax7RgT63bL1H2BZAZp8pkZMQwoIFNidpQQ3p73hxlm
-         N5nPQorpjmUbnUHTAalkXukqbQ6qCUjW/Tr7ZUi5iuLN2k4EzHNClREOekUYyTJO2VQc
-         EA8E3RiwFi/h/5JRXm44re0gx8mt3OeAYscQ3PJIy7/GC4CEYmGufD5bHLEjPw5ta4/S
-         pTu3DMsEdgevR/1RdrEXq302P+yrV+krAee4eVb2D0SEzcnUPnycLfi8Jv59zIV4TXPC
-         IJDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=hvBHByfuN4VYEKY+y/yvJNCDmWONLf8OUqOSVrmh4Q4=;
-        b=IVlacHq1YDrOBPHy1tcOh7kXxgEzbiOmt+KcZk6/n8OmVMmDqN2goH4OPxrt477CLp
-         sayWAfJdMBQhXUbKOwtvjjGUljoyKnW11/xcpjyjXGC+ppc+zlr0lYdM5QapFBRjW2MK
-         9nIv+PQu20f3mTbZVvMraHpNaAZt7pp/YC0gmyc+2QKWBIZkRR9pyn6vSW71IzJ3Hrux
-         NL6JI1QGU6N/IIGgJa55ZHG3N7BLZ1bTcgCOiVNyIRMF9lcvVDeW4rHsNJSAA04nRkmN
-         DsnKCFYswJT+dcG7DB2+SXxRKAVemHY0jVthnqpZ5aeLky6af/RYwWEQuc2Lewcd4Ftk
-         j1Fw==
-X-Gm-Message-State: AOAM53305flbFvltkaQ25YGmzx55ssg7HKgXj2VFE8DZU9PCoO+uvxDe
-        aYiAV98dzeCy10y8j8d4odM=
-X-Google-Smtp-Source: ABdhPJyYSOylUhpvpY66H7g9H8of+i4dnEuzb6if/mlO0vzJWxnMDWB1Z1US6G3nS8tjTbkUTDZ5Cg==
-X-Received: by 2002:a2e:9003:: with SMTP id h3mr12861735ljg.191.1595331132934;
-        Tue, 21 Jul 2020 04:32:12 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id h21sm4321302ljk.31.2020.07.21.04.32.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Jul 2020 04:32:11 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "gregkh\@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb\@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Ben Dooks <ben@simtec.co.uk>
-Subject: Re: [PATCH v2 1/8] usb: dwc2: gadget: Make use of GINTMSK2
-In-Reply-To: <5862f649-8058-7e39-cb43-2a4b09303333@synopsys.com>
-References: <20200715093209.3165641-1-lee.jones@linaro.org> <20200715093209.3165641-2-lee.jones@linaro.org> <566f2d65-1b5a-ed2a-f33f-516b66be2624@synopsys.com> <87blk9p5ia.fsf@kernel.org> <5862f649-8058-7e39-cb43-2a4b09303333@synopsys.com>
-Date:   Tue, 21 Jul 2020 14:32:07 +0300
-Message-ID: <875zahp0i0.fsf@kernel.org>
+        Tue, 21 Jul 2020 07:33:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4ABA11C0BE5; Tue, 21 Jul 2020 13:33:00 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 13:33:00 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH 4.19 094/133] USB: serial: iuu_phoenix: fix memory
+ corruption
+Message-ID: <20200721113259.GB17778@duo.ucw.cz>
+References: <20200720152803.732195882@linuxfoundation.org>
+ <20200720152808.264804020@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
+Content-Disposition: inline
+In-Reply-To: <20200720152808.264804020@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
+
+--MW5yreqqjyrRcusr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Minas Harutyunyan <Minas.Harutyunyan@synopsys.com> writes:
+Hi!
 
-> Hi Felipe,
->
-> On 7/21/2020 1:43 PM, Felipe Balbi wrote:
->> Minas Harutyunyan <Minas.Harutyunyan@synopsys.com> writes:
->>=20
->>> On 7/15/2020 1:32 PM, Lee Jones wrote:
->>>> The value obtained from GINTSTS2 should be masked with the GINTMSK2
->>>> value.  Looks like this has been broken since
->>>> dwc2_gadget_wkup_alert_handler() was added back in 2018.
->>>>
->>>> Also fixes the following W=3D1 warning:
->>>>
->>>>    drivers/usb/dwc2/gadget.c: In function =E2=80=98dwc2_gadget_wkup_al=
-ert_handler=E2=80=99:
->>>>    drivers/usb/dwc2/gadget.c:259:6: warning: variable =E2=80=98gintmsk=
-2=E2=80=99 set but not used [-Wunused-but-set-variable]
->>>>    259 | u32 gintmsk2;
->>>>    | ^~~~~~~~
->>>>
->>>> Cc: Minas Harutyunyan <hminas@synopsys.com>
->>>> Cc: Ben Dooks <ben@simtec.co.uk>
->>>> Fixes: 187c5298a1229 ("usb: dwc2: gadget: Add handler for WkupAlert in=
-terrupt")
->>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
->>>
->>> Acked-by: Minas Harutyunyan <hminas@synopsys.com>
->>=20
->> Should I apply the entire series or only 1/8?
->>=20
-> In this series only 2 patches are related to dwc2, which I'm already Acke=
-d:
->
-> [PATCH v2 1/8] usb: dwc2: gadget: Make use of GINTMSK2
-> [PATCH v2 2/8] usb: dwc2: gadget: Avoid pointless read of EP control=20
-> register
->
-> I can't acked other patches from this series, because they are not=20
-> related to dwc2.
+> commit e7b931bee739e8a77ae216e613d3b99342b6dec0 upstream.
+>=20
+> The driver would happily overwrite its write buffer with user data in
+> 256 byte increments due to a removed buffer-space sanity check.
 
-heh, I saw that after sending the email, sorry :-)
+> +++ b/drivers/usb/serial/iuu_phoenix.c
+> @@ -697,14 +697,16 @@ static int iuu_uart_write(struct tty_str
+>  	struct iuu_private *priv =3D usb_get_serial_port_data(port);
+>  	unsigned long flags;
+> =20
+> -	if (count > 256)
+> -		return -ENOMEM;
+> -
+>  	spin_lock_irqsave(&priv->lock, flags);
+> =20
+> +	count =3D min(count, 256 - priv->writelen);
+> +	if (count =3D=3D 0)
+> +		goto out;
+> +
+>  	/* fill the buffer */
+>  	memcpy(priv->writebuf + priv->writelen, buf, count);
+>  	priv->writelen +=3D count;
+> +out:
+>  	spin_unlock_irqrestore(&priv->lock, flags);
+> =20
+>  	return count;
 
-=2D-=20
-balbi
+Ok, so... goto and label is unneccessary, memcpy will do the right
+thing with count =3D=3D 0.
 
---=-=-=
+But what is worse, this changes return value in the error case;
+returning 0 instead of -ENOMEM. I don't believe 0 is appropriate
+return code here.
+
+(It should block on the write buffer if blocking or return -EAGAIN if
+nonblocking, right?)
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--MW5yreqqjyrRcusr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl8W0jcACgkQzL64meEa
-mQYkNA//SvFqXwJajGIbMxt0zxlYlwOUMXjMJAoVSgOROAwJX1x/7BU9NfjuPv1C
-Ndy4KfZIOKX/QZVpFbVSAtK23AE5nS3dtPLuP1xhpX6ZDu6vKkwfRuXHPlotTx16
-Na9Xq1u2sh9FGa1HeeCEwWVTad672OOsRuqA3ueS+K1bU3GjgbL/dyKcp435CQeP
-oLw45QRIWWnOhmc+I1cs0dON4Xl6mCQwX+j7T3ztGUSLXjs8L+DOjBdo/ACBAdTp
-yJuvTETyDU11uuckNRywwAxAIdw0AxypK2gLInoYGdyLhxrvE4STtMIF5MT4Ts8J
-jnzD2ddDKLRS4mw2vpn1iKqKLt65loqJg7flcSAfV+wmcDIDpLOjWq5iYWl2Wto+
-iTbAZO9PQnWVrPtIB7ghVfIG0d/QYxOphGHBnVhrNPq6g0F0ZmHG7KipWUMXBcbQ
-v8pHE5cSh+R6SiWt8Exif0CeApworGdYb7bm8Cwe1pNSGWnjzzwphK1Dz4CSqjVI
-PE30gykBihvQD+pR3I92HidcLDzDlMKKp8BHwYqzthdNg+TPQO3sWanucJJGCQno
-FeGpLOiOX/8/TmMWZxILr+MEBsq8DI7ByxkQwqlqjXaRuVCFvQKQ5KBhSCpKlgOQ
-ve/gQG2kHf2q35Kj3VhW0YYznwZv+zufDws7NJ2jvgLWSo9H7XM=
-=Tbrc
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxbSawAKCRAw5/Bqldv6
+8u19AJ4jbQbSNaZ1GWiLP9mixxbtRG0ecQCgoh0GU+S4wV+Mg2PhT4LfUmgt0FE=
+=7SXu
 -----END PGP SIGNATURE-----
---=-=-=--
+
+--MW5yreqqjyrRcusr--
