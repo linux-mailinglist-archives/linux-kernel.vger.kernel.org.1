@@ -2,121 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2F9228823
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08186228829
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgGUSY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:24:27 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58366 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726029AbgGUSYZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:24:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595355864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ealMEOrHFYO0kZ1pKFx9efUp2/FF6Eq+swSNcBoDaSA=;
-        b=Y5gUTrSb7ROYKIDqYBCitJ3ygTc4RhrNj/HU9qtGrfpR4n4/PNehZq560WlD/7xPaGuM1K
-        DLyo60JjxtFlqbJHlEW610cDeCUgWMc0OhS7BpzAkPDRSAeTzN1kbhUl0Ls+Yup1WfFbdb
-        8DFAdLP9Rj4ukA0z1Pq/uLySqxdCEkY=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-aDYkg16tNCSsFs4GRW3Bbw-1; Tue, 21 Jul 2020 14:24:22 -0400
-X-MC-Unique: aDYkg16tNCSsFs4GRW3Bbw-1
-Received: by mail-qt1-f198.google.com with SMTP id u93so14888418qtd.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:24:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=ealMEOrHFYO0kZ1pKFx9efUp2/FF6Eq+swSNcBoDaSA=;
-        b=SbmEDEfw0Gw9y4dBb7UJANt1slGDKYbP2urtrh+RLZhqBjh/lkyw7MadRxi7tUPFzm
-         fnvPKfgReRxMcE5XdKCtjx/iYr7PG5sRCU0tws2aM+c/s+HiH3Yqb/ESpyYDKZ+mXSnq
-         rAOWWnbgd37NKqNFd6ebKV7qDna7sYpBwQEiHd3fgDLQV+NpV3cN/D8XZa9enjZ6NtWk
-         5BSmd9w1vAqHUhbkooOqSXsAvUWLdQkdMLyh5F9Dl0jkbaZ6Ee82RPwpfC7pJZ2Mp0l5
-         w5gIIB8911lx0ImNQ1tSzEPYH85mi3R6NmUA6Uk1uwNuLTNZ0DeJw3WbuNMY1fPlKUOn
-         o13w==
-X-Gm-Message-State: AOAM5314MO+S7budJomNoT5pAqtDWRy+67Madf2Cr+lzWi4c0wC+pYF6
-        lPNhfr4tk2tcp2NcGWmgdxY/4I4MOWCOiF8xEUs/WpMu7cuiSLKDQTWJ3s8PoYwyEDOW0ETZFV4
-        n2sVgT18sD9Z9EPPJ3zQkWLGc
-X-Received: by 2002:ac8:c7:: with SMTP id d7mr30400205qtg.235.1595355861662;
-        Tue, 21 Jul 2020 11:24:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5OPDtOL+vQse+EIZ+qb5SVhRfGv2p/Vv3U6BZWjtbTj7sJmsbB+3Na09bYDi+UjZ28Uz31A==
-X-Received: by 2002:ac8:c7:: with SMTP id d7mr30400169qtg.235.1595355861423;
-        Tue, 21 Jul 2020 11:24:21 -0700 (PDT)
-Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id x12sm510481qta.67.2020.07.21.11.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 11:24:20 -0700 (PDT)
-Message-ID: <a80a591ce61b632503c9ed52adc7c40faad8b068.camel@redhat.com>
-Subject: Re: nouveau regression with 5.7 caused by "PCI/PM: Assume ports
- without DLL Link Active train links in 100 ms"
-From:   Lyude Paul <lyude@redhat.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Karol Herbst <kherbst@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Patrick Volkerding <volkerdi@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Date:   Tue, 21 Jul 2020 14:24:19 -0400
-In-Reply-To: <dc7a592219f58f9a5df7fa7135fa3fc87d9450f0.camel@redhat.com>
-References: <CACO55tuA+XMgv=GREf178NzTLTHri4kyD5mJjKuDpKxExauvVg@mail.gmail.com>
-         <20200716235440.GA675421@bjorn-Precision-5520>
-         <CACO55tuVJHjEbsW657ToczN++_iehXA8pimPAkzc=NOnx4Ztnw@mail.gmail.com>
-         <CACO55tso5SVipAR=AZfqhp6GGkKO9angv6f+nd61wvgAJtrOKg@mail.gmail.com>
-         <20200721122247.GI5180@lahna.fi.intel.com>
-         <f951fba07ca7fa2fdfd590cd5023d1b31f515fa2.camel@redhat.com>
-         <20200721152737.GS5180@lahna.fi.intel.com>
-         <dc7a592219f58f9a5df7fa7135fa3fc87d9450f0.camel@redhat.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1729530AbgGUS0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:26:12 -0400
+Received: from verein.lst.de ([213.95.11.211]:53384 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbgGUS0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 14:26:12 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 209F968B05; Tue, 21 Jul 2020 20:26:08 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 20:26:07 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-raid@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH 05/24] devtmpfs: open code ksys_chdir and ksys_chroot
+Message-ID: <20200721182607.GA14450@lst.de>
+References: <20200721162818.197315-1-hch@lst.de> <20200721162818.197315-6-hch@lst.de> <CAHk-=wi0GQqAq6VSY=O2iWnPuuS54TkyRBH5B9Ca0Kg5A9d2aA@mail.gmail.com> <20200721171627.GZ2786714@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721171627.GZ2786714@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-21 at 12:00 -0400, Lyude Paul wrote:
-> On Tue, 2020-07-21 at 18:27 +0300, Mika Westerberg wrote:
-> > On Tue, Jul 21, 2020 at 11:01:55AM -0400, Lyude Paul wrote:
-> > > Sure thing. Also, feel free to let me know if you'd like access to one
-> > > of
-> > > the
-> > > systems we saw breaking with this patch - I'm fairly sure I've got one
-> > > of
-> > > them
-> > > locally at my apartment and don't mind setting up AMT/KVM/SSH
+On Tue, Jul 21, 2020 at 06:16:27PM +0100, Al Viro wrote:
+> On Tue, Jul 21, 2020 at 09:49:17AM -0700, Linus Torvalds wrote:
+> > On Tue, Jul 21, 2020 at 9:28 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > +
+> > > +       /* traverse into overmounted root and then chroot to it */
+> > > +       if (!kern_path("/..", LOOKUP_FOLLOW | LOOKUP_DIRECTORY, &path) &&
+> > > +           !inode_permission(path.dentry->d_inode, MAY_EXEC | MAY_CHDIR) &&
+> > > +           ns_capable(current_user_ns(), CAP_SYS_CHROOT) &&
+> > > +           !security_path_chroot(&path)) {
+> > > +               set_fs_pwd(current->fs, &path);
+> > > +               set_fs_root(current->fs, &path);
+> > > +       }
+> > > +       path_put(&path);
 > > 
-> > Probably no need for remote access (thanks for the offer, though). I
-> > attached a test patch to the bug report:
-> > 
-> >   https://bugzilla.kernel.org/show_bug.cgi?id=208597
-> > 
-> > that tries to work it around (based on the ->pm_cap == 0). I wonder if
-> > anyone would have time to try it out.
+> > This looks wrong.
 > 
-> Will give it a shot today and let you know the result
+> It is wrong.  kern_path() leaves *path unmodified in case of error, and
+> that struct path is uninitialized here.
 
-Ahh-actually, I thought the laptop I had locally could reproduce this bug but
-that doesn't appear to be the case whoops. Karol Herbst still has access to a
-machine that can test this though, so they'll likely get to trying the patch
-today or tommorrow
-
-> 
--- 
-Cheers,
-	Lyude Paul (she/her)
-	Software Engineer at Red Hat
-
+Yep.  Only saving grace is that the error just doesn't happen during
+early init.
