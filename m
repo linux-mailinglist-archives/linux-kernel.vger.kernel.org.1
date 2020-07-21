@@ -2,169 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B89A2288A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4182288AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730524AbgGUS4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:56:44 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:43514 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726499AbgGUS4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:56:43 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 25D4DBC1AB;
-        Tue, 21 Jul 2020 18:56:39 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] staging: comedi: das: Replace HTTP links with HTTPS ones
-Date:   Tue, 21 Jul 2020 20:56:33 +0200
-Message-Id: <20200721185633.67671-1-grandmaster@al2klimov.de>
+        id S1730128AbgGUTAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726602AbgGUTAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:00:38 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA8BC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:00:38 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id j20so11169280pfe.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:00:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=z7r+tykWJeqyUt+0w32i8HpBG73ZF426jmYt8FWFXXg=;
+        b=K2nZxYuSsZMrLPLzyUJFpDo78L0fWs1qa1pyFS0dED7D85EPDvugXZNiC6I4kYNyaj
+         QVuNzYcQ9C1wAQ9KfL95/gpg1xghQUSwychQJx9ETTXmZ5CtgqSOEgLlvXQgzzQft6d5
+         NXH7njx4hhVgj3kjD8v4NwD7xU/MdKbe/sm7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=z7r+tykWJeqyUt+0w32i8HpBG73ZF426jmYt8FWFXXg=;
+        b=OtY682vPdII64EC5uGoMIK7fXrPdR/JZfJcwucxeiMRXSuFC8vwUkCAWXx8Lf66eFW
+         TfyGGhfKFwC4KrpC37C5KGbJAiamLrhvJ5V46TGwMfyVltbSWM94WEVPM0eAag/GQEtK
+         Inwy8RrS9uPw8Gjaqgv1l2kwIcvrWxLd/33UlNI3GFxe10eIIoGQD/2eYLE2VbrwrquF
+         QnX54pFrxAnm6Qi+CR+AYKW8MYLWMlcuAjFw0xMo14w/OsmpavkTECdjaJyFxNXgTU9L
+         0g5YWEhkr0eJPpoHjZK/6zzqulpeBXsFralo40rD5Q9NttPjmor5lWZzB7hZjyGK9FvU
+         e15A==
+X-Gm-Message-State: AOAM531K45PYDkGaRAjKd2Dv6uK54NbQFSweEXi+jjzWbhhv6fP2tL5w
+        iaf7OLI+oW2c8s9jPQLYh7nMTp1rTHo=
+X-Google-Smtp-Source: ABdhPJzFRVwhgZiNvdtFdhMOJEbWQvREg/oK2BKjqDkHDbM1u9rD/uol5R217ObAI8/HuNJS1XXZqA==
+X-Received: by 2002:a63:df03:: with SMTP id u3mr22870077pgg.84.1595358037787;
+        Tue, 21 Jul 2020 12:00:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z9sm18970158pgh.94.2020.07.21.12.00.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 12:00:36 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 12:00:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, Duncan <1i5t5.duncan@cox.net>,
+        Anthony Ruhier <anthony.ruhier@gmail.com>,
+        Vinicius <mphantomx@yahoo.com.br>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [Regression] hangs caused by commit 3202fa62fb (slub: relocate
+ freelist pointer to middle of object)
+Message-ID: <202007211156.D8BEDEA247@keescook>
+References: <15cbac6d-1f96-2ba9-cb54-08af6682f56d@molgen.mpg.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+In-Reply-To: <15cbac6d-1f96-2ba9-cb54-08af6682f56d@molgen.mpg.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tue, Jul 21, 2020 at 04:55:12PM +0200, Paul Menzel wrote:
+> No idea, if you are aware of it yet, but three people verified that commit
+> 3202fa62fb (slub: relocate freelist pointer to middle of object) causes a
+> regression on AMD hardware [1].
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Hi, thanks for emailing; I don't get bugzilla notifications, so I hadn't
+seen this yet.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+> It’d be great, if you took a look, and advised if this commit (and
+> follow-ups) should be reverted, until the issue is analyzed.
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+There have been a number of fixes to that commit (which I see are
+mentioned in a quick skim of the bug), but they've mostly been around
+additional slab debugging features. If it's causing a problem outside
+of that, my instinct would be there might be a use-after-free happening,
+but I'll go read the bug more closely now, and comment there (or here,
+if needed).
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+Thanks!
 
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/staging/comedi/drivers/das08.c     | 2 +-
- drivers/staging/comedi/drivers/das08_isa.c | 2 +-
- drivers/staging/comedi/drivers/das08_pci.c | 2 +-
- drivers/staging/comedi/drivers/das16.c     | 2 +-
- drivers/staging/comedi/drivers/das16m1.c   | 2 +-
- drivers/staging/comedi/drivers/das1800.c   | 2 +-
- drivers/staging/comedi/drivers/das800.c    | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/staging/comedi/drivers/das08.c b/drivers/staging/comedi/drivers/das08.c
-index 65e5f2e6c122..b50743c5b822 100644
---- a/drivers/staging/comedi/drivers/das08.c
-+++ b/drivers/staging/comedi/drivers/das08.c
-@@ -465,6 +465,6 @@ static void __exit das08_exit(void)
- }
- module_exit(das08_exit);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi common DAS08 support module");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/das08_isa.c b/drivers/staging/comedi/drivers/das08_isa.c
-index b22a45bd21d1..8c4cfa821423 100644
---- a/drivers/staging/comedi/drivers/das08_isa.c
-+++ b/drivers/staging/comedi/drivers/das08_isa.c
-@@ -185,6 +185,6 @@ static struct comedi_driver das08_isa_driver = {
- };
- module_comedi_driver(das08_isa_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/das08_pci.c b/drivers/staging/comedi/drivers/das08_pci.c
-index 7856fc13466a..1cd903336a4c 100644
---- a/drivers/staging/comedi/drivers/das08_pci.c
-+++ b/drivers/staging/comedi/drivers/das08_pci.c
-@@ -91,6 +91,6 @@ static struct pci_driver das08_pci_driver = {
- };
- module_comedi_pci_driver(das08_pci_comedi_driver, das08_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/das16.c b/drivers/staging/comedi/drivers/das16.c
-index 81eb51b1be25..4ac2622b0fac 100644
---- a/drivers/staging/comedi/drivers/das16.c
-+++ b/drivers/staging/comedi/drivers/das16.c
-@@ -1195,6 +1195,6 @@ static struct comedi_driver das16_driver = {
- };
- module_comedi_driver(das16_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for DAS16 compatible boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/das16m1.c b/drivers/staging/comedi/drivers/das16m1.c
-index 4e36377b592a..75f3dbbe97ac 100644
---- a/drivers/staging/comedi/drivers/das16m1.c
-+++ b/drivers/staging/comedi/drivers/das16m1.c
-@@ -617,6 +617,6 @@ static struct comedi_driver das16m1_driver = {
- };
- module_comedi_driver(das16m1_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for CIO-DAS16/M1 ISA cards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/das1800.c b/drivers/staging/comedi/drivers/das1800.c
-index f16aa7e9f4f3..f50891a6ee7d 100644
---- a/drivers/staging/comedi/drivers/das1800.c
-+++ b/drivers/staging/comedi/drivers/das1800.c
-@@ -1359,6 +1359,6 @@ static struct comedi_driver das1800_driver = {
- };
- module_comedi_driver(das1800_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for DAS1800 compatible ISA boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/das800.c b/drivers/staging/comedi/drivers/das800.c
-index 8cf09ef3012f..4ea100ff6930 100644
---- a/drivers/staging/comedi/drivers/das800.c
-+++ b/drivers/staging/comedi/drivers/das800.c
-@@ -739,6 +739,6 @@ static struct comedi_driver driver_das800 = {
- };
- module_comedi_driver(driver_das800);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
 -- 
-2.27.0
-
+Kees Cook
