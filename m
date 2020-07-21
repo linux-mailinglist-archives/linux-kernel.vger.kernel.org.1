@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312F5228603
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB06822864D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730632AbgGUQmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
+        id S1730553AbgGUQo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730590AbgGUQmS (ORCPT
+        with ESMTP id S1730609AbgGUQmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:18 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501A2C0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:18 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r12so21754700wrj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:18 -0700 (PDT)
+        Tue, 21 Jul 2020 12:42:20 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FE4C0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:19 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b6so21833615wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IxxdeV7kDOOLuCiwH8B9pnIrWXz+yoC7MHLRIwWlfSE=;
-        b=fi55ZS0gMcsGNbPQ7bZEjO0p6noM4W+aMdmDBNrQfs3aO2J9efXsntciRp3e3FVdFV
-         /4fJnHUQtkAZllAFG5F44YdU77QwwhEh5oCJ4Go/8eKXiFmuGMPQwrL8vgrszyDmMUn0
-         qpIKAXN78PoWGmoIY9Dt8YpLIlVYJXuyC7cewqs/MvhI2QWXv5UXzyokbxUw0EuB4RyO
-         T3r2TJwj3km8iigohAT4/mG+nBG7k5MNYA9mIymSTj1Q2h7qFBc3KpwyubuYmDfnPpaP
-         geo/oAjmpy76PneUK61DKS5bu7l1/jugTAYUS1jYiWe0b/2S/ALPqRdTbVVIt1rayt4a
-         o4rg==
+        bh=i1t6w9ay3sOmlutV6cB6eyGNoYyihN1jZLsdY9V5Zes=;
+        b=DGiYiaODLokYEAI+AI5UbT0lLOrg3Ifcm/RzMDGdm8oJV9a0IAf3bD1HK8iC6Ueidc
+         tbgUWGpsRufUlovyBs1bl+NbSve1qKezI0JdYGkv3sU9s41aKr5gyLPrnDisERd7JAZ0
+         Yfgep1jEa0Inn+eGE8Ldrg49Tuy9kyGNOHZC2ZQd+0VCL22rh6znEizPgDMLvJ78L0Wq
+         lhojR5YHNeerQ26ZNdWzc+bBVdq7wxrEarJXx80f1Q3UfXmVifmvri2jjMTRtO0XgCXJ
+         YOpHu4wdTl4cONOHjlvw89nl/ZOgTtg1kwiITzBH2J3e7G0UoretUdHT8lpA9Ai9Uia/
+         RtiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IxxdeV7kDOOLuCiwH8B9pnIrWXz+yoC7MHLRIwWlfSE=;
-        b=Mz5ky8iSc48Vvq4wuPkomC7R9haTwFVnU6s/htdObgl0F7X6ZZZe2eYTeylVt6caAe
-         YYgODuHIgDIlZQlLJUAry/i4W0C4SpupmwlCUjM76ncz6deLN44DW+/Ps+a4KkfsL+cR
-         +s6vIhjhc8wsaO2NlXxXN94k/sGNcYl32V8B9pXc+CvJLYc9EZgBG2R7hAkYr4ozCmmX
-         BxrKQjjj0jj4aIe8pwrRay/KDlAoZRwnjwHhJg1FxeTKwP08HnpD1bMllcVsidjON/yC
-         Q4mh4wToU9GpbD3qYG2LAdux6omX8859Ps7ADQp6+RAkFRg7YsF8UyX3YzpPk1azRXrA
-         xlLA==
-X-Gm-Message-State: AOAM530/q5Oal0sk56beNgsQ94XbbIlqXLmmHEyvIw/kNDR+dIyyWXQ0
-        omCq7vlr6vZ6l533s6ACGq2DdQ==
-X-Google-Smtp-Source: ABdhPJxXhQWmwV5kz3iOwr7rifM1+PJcyTnRtaV9zGgyBJlt1R5JKJDv0hBc7XFZnHKSmNPT1/soHw==
-X-Received: by 2002:a5d:4710:: with SMTP id y16mr28344888wrq.189.1595349737054;
-        Tue, 21 Jul 2020 09:42:17 -0700 (PDT)
+        bh=i1t6w9ay3sOmlutV6cB6eyGNoYyihN1jZLsdY9V5Zes=;
+        b=EqEWiTd3nPingLfeIj4hepdq/icT43vUJ2UdXNl99DIFtleyopZBj2snL3nlNqNJtu
+         vn3/+m7L5u0V1BpI2ecyvrmAK9Ru79cnxsxytywTyTGJXSV/iRZE8lroe2QIV8Cw8FPc
+         nXnHesiKQ0DQHr2HDpRikonZF/G9Q+nebSIx+W/49VyloVidecQs5zBZ+ppp3QZ/Tt9r
+         dUAFHJoZ1czYg1RZGu6IuDlALQgEqIJuEBI+uzz9uIU5ZLmgogNYVBTY1vTChSi+cIta
+         icExt4/Bkk3bzS/TIbjpM634vcHAW4eBFtMgBCXDYVrWf+lNoF8VTIDkCAkQV0qTAgSV
+         w+DA==
+X-Gm-Message-State: AOAM532FC/uVsGZInAUGj4uVrE+dUd2t53jPHUnGFGhvhe83X0fhCzzO
+        LVRNSJT6CGwUWQb3PBwOgPECMA==
+X-Google-Smtp-Source: ABdhPJw+DORx0hKIwI5r4QAYg10zVLEOIpWLSpc8KbFESAziRXZJ7WUr3kehUxk5/iy21yXkQnALCw==
+X-Received: by 2002:adf:e38b:: with SMTP id e11mr27052566wrm.65.1595349738630;
+        Tue, 21 Jul 2020 09:42:18 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.16
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:16 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:18 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         QLogic-Storage-Upstream@qlogic.com
-Subject: [PATCH 13/40] scsi: qla4xxx: ql4_init: Check return value of pci_set_mwi()
-Date:   Tue, 21 Jul 2020 17:41:21 +0100
-Message-Id: <20200721164148.2617584-14-lee.jones@linaro.org>
+Subject: [PATCH 14/40] scsi: qla4xxx: ql4_83xx: Move 'qla4_83xx_reg_tbl' from shared header
+Date:   Tue, 21 Jul 2020 17:41:22 +0100
+Message-Id: <20200721164148.2617584-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -67,40 +67,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pci_set_mwi() has 'warn_unused_result' so the result should be checked.
+'qla4_83xx_reg_tbl' is only used in 'drivers/scsi/qla4xxx/ql4_os.c',
+move it there.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qla4xxx/ql4_init.c: In function ‘qla4xxx_pci_config’:
- drivers/scsi/qla4xxx/ql4_init.c:664:6: warning: variable ‘status’ set but not used [-Wunused-but-set-variable]
-
-And if 'status' is removed:
-
- drivers/scsi/qla4xxx/ql4_init.c: In function ‘qla4xxx_pci_config’:
- drivers/scsi/qla4xxx/ql4_init.c:666:2: warning: ignoring return value of ‘pci_set_mwi’, declared with attribute warn_unused_result [-Wunused-result]
- 666 | pci_set_mwi(ha->pdev);
- | ^~~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/scsi/qla4xxx/ql4_def.h:46,
+ from drivers/scsi/qla4xxx/ql4_init.c:9:
+ At top level:
+ drivers/scsi/qla4xxx/ql4_83xx.h:90:23: warning: ‘qla4_83xx_reg_tbl’ defined but not used [-Wunused-const-variable=]
+ 90 | static const uint32_t qla4_83xx_reg_tbl[] = {
+ | ^~~~~~~~~~~~~~~~~
+ In file included from drivers/scsi/qla4xxx/ql4_def.h:46,
+ from drivers/scsi/qla4xxx/ql4_mbx.c:9:
+ drivers/scsi/qla4xxx/ql4_83xx.h:90:23: warning: ‘qla4_83xx_reg_tbl’ defined but not used [-Wunused-const-variable=]
+ 90 | static const uint32_t qla4_83xx_reg_tbl[] = {
+ | ^~~~~~~~~~~~~~~~~
+ [...]
+ NB: Lots of these - snipped for brevity.
 
 Cc: QLogic-Storage-Upstream@qlogic.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qla4xxx/ql4_init.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/scsi/qla4xxx/ql4_83xx.h | 17 -----------------
+ drivers/scsi/qla4xxx/ql4_os.c   | 17 +++++++++++++++++
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/scsi/qla4xxx/ql4_init.c b/drivers/scsi/qla4xxx/ql4_init.c
-index 82f6e7f3969ec..4afd43610f68f 100644
---- a/drivers/scsi/qla4xxx/ql4_init.c
-+++ b/drivers/scsi/qla4xxx/ql4_init.c
-@@ -665,6 +665,9 @@ void qla4xxx_pci_config(struct scsi_qla_host *ha)
+diff --git a/drivers/scsi/qla4xxx/ql4_83xx.h b/drivers/scsi/qla4xxx/ql4_83xx.h
+index 775fdf9fcc876..f34583e5f8dee 100644
+--- a/drivers/scsi/qla4xxx/ql4_83xx.h
++++ b/drivers/scsi/qla4xxx/ql4_83xx.h
+@@ -87,23 +87,6 @@
+ #define QLA83XX_FW_API			0x356C
+ #define QLA83XX_DRV_OP_MODE		0x3570
  
- 	pci_set_master(ha->pdev);
- 	status = pci_set_mwi(ha->pdev);
-+	if (status)
-+		ql4_printk(KERN_WARNING, ha, "Failed to set MWI\n");
+-static const uint32_t qla4_83xx_reg_tbl[] = {
+-	QLA83XX_PEG_HALT_STATUS1,
+-	QLA83XX_PEG_HALT_STATUS2,
+-	QLA83XX_PEG_ALIVE_COUNTER,
+-	QLA83XX_CRB_DRV_ACTIVE,
+-	QLA83XX_CRB_DEV_STATE,
+-	QLA83XX_CRB_DRV_STATE,
+-	QLA83XX_CRB_DRV_SCRATCH,
+-	QLA83XX_CRB_DEV_PART_INFO1,
+-	QLA83XX_CRB_IDC_VER_MAJOR,
+-	QLA83XX_FW_VER_MAJOR,
+-	QLA83XX_FW_VER_MINOR,
+-	QLA83XX_FW_VER_SUB,
+-	QLA83XX_CMDPEG_STATE,
+-	QLA83XX_ASIC_TEMP,
+-};
+-
+ #define QLA83XX_CRB_WIN_BASE		0x3800
+ #define QLA83XX_CRB_WIN_FUNC(f)		(QLA83XX_CRB_WIN_BASE+((f)*4))
+ #define QLA83XX_SEM_LOCK_BASE		0x3840
+diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
+index 5dc697ce8b5dd..97fa290cf295f 100644
+--- a/drivers/scsi/qla4xxx/ql4_os.c
++++ b/drivers/scsi/qla4xxx/ql4_os.c
+@@ -188,6 +188,23 @@ static int qla4xxx_sysfs_ddb_logout_sid(struct iscsi_cls_session *cls_sess);
+ static struct qla4_8xxx_legacy_intr_set legacy_intr[] =
+     QLA82XX_LEGACY_INTR_CONFIG;
+ 
++static const uint32_t qla4_83xx_reg_tbl[] = {
++	QLA83XX_PEG_HALT_STATUS1,
++	QLA83XX_PEG_HALT_STATUS2,
++	QLA83XX_PEG_ALIVE_COUNTER,
++	QLA83XX_CRB_DRV_ACTIVE,
++	QLA83XX_CRB_DEV_STATE,
++	QLA83XX_CRB_DRV_STATE,
++	QLA83XX_CRB_DRV_SCRATCH,
++	QLA83XX_CRB_DEV_PART_INFO1,
++	QLA83XX_CRB_IDC_VER_MAJOR,
++	QLA83XX_FW_VER_MAJOR,
++	QLA83XX_FW_VER_MINOR,
++	QLA83XX_FW_VER_SUB,
++	QLA83XX_CMDPEG_STATE,
++	QLA83XX_ASIC_TEMP,
++};
 +
- 	/*
- 	 * We want to respect framework's setting of PCI configuration space
- 	 * command register and also want to make sure that all bits of
+ static struct scsi_host_template qla4xxx_driver_template = {
+ 	.module			= THIS_MODULE,
+ 	.name			= DRIVER_NAME,
 -- 
 2.25.1
 
