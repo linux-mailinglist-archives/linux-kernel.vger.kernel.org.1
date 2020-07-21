@@ -2,260 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B15E227E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86991227E4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgGULJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:09:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729717AbgGULI4 (ORCPT
+        id S1729803AbgGULJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:09:32 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:32106 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729565AbgGULJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:08:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41692C061794;
-        Tue, 21 Jul 2020 04:08:56 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id y3so3431997wrl.4;
-        Tue, 21 Jul 2020 04:08:56 -0700 (PDT)
+        Tue, 21 Jul 2020 07:09:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595329759; x=1626865759;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=N5dhqBRhDEy/yn79YudoO4zA2LKbqYtf20pFz0eOHKs=;
+  b=RtpwkvgpndqOS98LVhZKHyiwRGkSKCqylj1o498ajTzzMwyPrS+Ddlzj
+   p2/V2PzAY+iqcovECyRu3U7MhuFU4oM9CylObrS/bzStLWh0p3k1ESOYD
+   Z8VdBJz65m04v3HQJcVZp9Lbul/a1rZKltK3493UHb6h5Zu+7Jo+HRwHW
+   fS98UFXoAfysp/Li4NFIJ+GM7WVugfppbyYW6k3SmCa/U9ZNu5NtfKVCu
+   iGWN7yXjBaJd34t6T5sn6JZM3GjkA3ekqnxJgYX1tcHS9IFublBMiqAQG
+   bdwLhiVgi5b+ntOz2MEQ3aCj9p50Kx/xSoNMjUuTWlJYAg03ZznXtNaYI
+   A==;
+IronPort-SDR: fzaxD7TyosAp/YwzYsF6MEhpyasbJXr7phnMMqI/jZO2Fh9gHz8TrbwAh7C6MkDGjYUfM3EqqY
+ NwbbMrUA9xzN0mob9e4EsSbgZb9wgsQVbdS6bJUCfCyQwaZrUGhKW43LrgEyWqBkGnHni7RYXm
+ cKeYm2vJzYWJcgK8Sx0aYF3qW8sRu+cixk0G211on/wAJ4swa53+QI3M1dyhB5spbyoCADwsTe
+ Dr1Ft9R/9zr3drGHVxZRs3YrWJtDoeq3tzy/Ilv89+kn71qSqvkV/+menyF6AitT/ACBOsbg/t
+ A8g=
+X-IronPort-AV: E=Sophos;i="5.75,378,1589212800"; 
+   d="scan'208";a="144275930"
+Received: from mail-mw2nam12lp2042.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.42])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Jul 2020 19:09:17 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WMLnuGHEvL6q1WYRR4ddT9HM6lxmzmhhscy2g3efafz5Yix4oYNg+BFg0aPflKUtVhfxUyV3S9rO2oPoMmHdPFlbS5lcpmEVpEELSbpb8Q5sWImH/K7WKwk/mSHZdxbbHzPLRZgKGtqXZhvBVk8V93HCeoYCZXBIV3WfZegmcZRvtR4ekngtFymta3MtnI6IJavES0anVjda5KuuTktTd8o8AzVhAawuBHlEP/HrKcABxkWpfVjpWxRtyNwMEIykwfmjj//GChBAWO67+SqmQJjwOt18td3ei+GgZWOzE2p+9JeAkZQCoGPYYRanH3Aj6tPutI8YCpVf6eYhhPkt2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iEN6FavZSDqoi1vTM7Yi/g47UteRnUXWdSqu5rCGr9c=;
+ b=Q3hYHzNnPU6W0z6PeYY9/pCkpu/2n1OJSxI3fT6cLoEOt56cgY27uDpR9koBNT9Si+mUdOQiCPNWFb+nSgQQSaMsYNQFQV9t6+MjwEEWKPkmG/gfNWtB3Ro5l8ypHMaeahhQ7MjIA4Pr14QxQlc6vdSdLook/0SsNg7TPQ6CIcmiaNkiUpsrPVzI7ftd4pNcyIIJ1YY6K4nHP+7T/8Qn9wT+AiqMS76MVlxymHatZEDsKiXkIlE/ftkaigG5i4WYtKnvJ3HLZsDJGJ1PbmNNwMeV1OcMDO/hL3dO635f3LLYP2vOYWL7PVzYPGWr7Ohs2atms4/zugvp9mbwlHiNMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=XunMdMvkWzPxzceSO8589OZZNxbcZ0jXERe3FDXc4Go=;
-        b=FqYmz9UBE4PDn0hc2i03AxdNbgdQuWC26CHX+LTmpFPMyc3D5Tdwionxj0V9wAv1rX
-         5R1AZXE6ZKQqXTLvZE9IUPRBZDoLgY1Is9uxLpNFrqG6R8tVYU0s+m9hm6WfNPpZF0BI
-         dp3WqItm2fG6M+4OcZjfj2YSlRy0vbZlt418Pt2xXWP5O8D85Gc4xtIQPlRvlCu0o7nB
-         v7b5+223qylm20s3dIAnXRQ7ZuLzJgZU0zGf8k3rVd13tB0HUxwPPSd6CpLqkBOjwI/L
-         6IkkN4GJGEdPfpBjb4gnmkC4tHt3tPOlup3nvOf2M/0yA1pX0lRqrPCd6mt8s4ZARSdu
-         KZzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=XunMdMvkWzPxzceSO8589OZZNxbcZ0jXERe3FDXc4Go=;
-        b=eE0YyQssjUrAkRvLAebbI6SfzpDUbfu5Z9CB3PGusRw/c3Ok8F4Fq8ECgzJMnqzcWI
-         5QXyqRGX4GnrC2xxeWdcr1X3++F/hia7YtR0JCytGtQ8HvZDYS8KPCSshlhGDXeJ2B66
-         UoQR6JWgJaPvyQx3x9unUygs/axeg5PCTG5neOS4UXDBCJqhUpdjCvCUCURwNEt4zfre
-         +8aIUkZNmn61JqlwlTtlOkxrh7QUtqAqdVwunZPLFFW0GiNKHdLwFCNCbWFi/PBzmgcV
-         ClmFVr535LDGARP3lFTX1MUHlD+YaGlgopso7TYVZu6nV4Xyp2KvqgCZ0tQ8W6MuoKYR
-         enRw==
-X-Gm-Message-State: AOAM533w4ZoBZla/K0eFt5t0LHv/T3R6Js/9KZPIlJ0XU4d6LYPiROeu
-        FXQzavJqPeMilZtRGHVdvXDeXAGV
-X-Google-Smtp-Source: ABdhPJxb6Obroh8Tbl1JjXl1VQrrbHCwwmkBeiHvK1odJZa3Wx4Vfqy2xFxD9h9aE7o5NRR8+xd/Fw==
-X-Received: by 2002:a5d:458a:: with SMTP id p10mr25848278wrq.184.1595329734966;
-        Tue, 21 Jul 2020 04:08:54 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id k131sm3138401wmb.36.2020.07.21.04.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 04:08:54 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 21:08:47 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v3 0/6] powerpc: queued spinlocks and rwlocks
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>
-References: <20200706043540.1563616-1-npiggin@gmail.com>
-        <24f75d2c-60cd-2766-4aab-1a3b1c80646e@redhat.com>
-        <1594101082.hfq9x5yact.astroid@bobo.none>
-        <20200708084106.GE597537@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200708084106.GE597537@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Message-Id: <1595327263.lk78cqolxm.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iEN6FavZSDqoi1vTM7Yi/g47UteRnUXWdSqu5rCGr9c=;
+ b=Zt4OJA+lRVOfnnyOtYOVcrnzHrc0XNUEGngKPu3RzZRWqpr79Yp5Mty9tVmnhZabCQ44D3tZQ/At+seI8c1Y3Jf7nZm/NTA2r92sWyY+rM00Z5s9/jQitQfq4cFf1dbfLkpa5vFdOAco1+rwLWmmomSGje3XGPiJ7SaN3WoluaM=
+Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
+ by CY4PR04MB0422.namprd04.prod.outlook.com (2603:10b6:903:bd::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Tue, 21 Jul
+ 2020 11:09:16 +0000
+Received: from CY4PR04MB3751.namprd04.prod.outlook.com
+ ([fe80::d9e5:135e:cfd9:4de0]) by CY4PR04MB3751.namprd04.prod.outlook.com
+ ([fe80::d9e5:135e:cfd9:4de0%7]) with mapi id 15.20.3195.025; Tue, 21 Jul 2020
+ 11:09:16 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Keith Busch <kbusch@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ajay Joshi <Ajay.Joshi@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
+        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Alex Dubov <oakad@yahoo.com>
+Subject: Re: [PATCH 04/10] block: nbd: use blk_is_valid_logical_block_size
+Thread-Topic: [PATCH 04/10] block: nbd: use blk_is_valid_logical_block_size
+Thread-Index: AQHWX01TPRBfw0JfSk+HzrCJWVECoA==
+Date:   Tue, 21 Jul 2020 11:09:15 +0000
+Message-ID: <CY4PR04MB3751EED308BB3AE6E028E3DFE7780@CY4PR04MB3751.namprd04.prod.outlook.com>
+References: <20200721105239.8270-1-mlevitsk@redhat.com>
+ <20200721105239.8270-5-mlevitsk@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.182.57]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: dce41ae4-c311-42c5-8e51-08d82d6681e1
+x-ms-traffictypediagnostic: CY4PR04MB0422:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR04MB0422D5637E8014B9B18622F9E7780@CY4PR04MB0422.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1284;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: h4H4zjAD09DAR+pt8CFir6YH3ZmySVvLU2rC+5eOHFwePlMnME2yk1Pzo84pP3YXegpTg0Zd57+GbaZav2ITUQ+Gn9V+jVF6djFffw9QiQSmF8eMl9d9eZ0PYsQMdItTyzqBd3QHLCjrgUDYFmEYfYjjTpgOXoLsg/Yjpts2Yd4In7YyL48vHhPoxNdoDcnfAw0nIeuT2Sql5G0o3QUlkHzJ7iECE4wsqe2zEVTwWnvhzWL41s7rxb2WrKN1CH0Wikwr7w/SuzMDMtTbygHu4x7QEe1KaKhVqJoAryrfOLzEJb9tHPRWgUuYJZYopMYY6jJwB7gFpqE/UbxJRbMRng==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(110136005)(2906002)(478600001)(316002)(8936002)(7416002)(86362001)(7696005)(54906003)(55016002)(6506007)(26005)(53546011)(186003)(9686003)(4326008)(91956017)(52536014)(5660300002)(71200400001)(66446008)(66556008)(76116006)(83380400001)(64756008)(66476007)(33656002)(8676002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: mt5CajmB72pum/P0yPi5sQjetWBc6tRbU8/4r3+tY0x703IhgHWzFPPz/kb10RVauywr5dh3FQt5AZ1moytke3F0/nP+rIi5m7zKfBf3ZpmHwwD72ovVHw7awkYSGfej06XpG+4wYgD18OYwqv2J5qretqRhN7MEzqypHTG6YHFbl22dx3JlGUz6dfYFAlrS+Xl3nikDcwHUaL0We3YNw2JC+kH4AVZFVcftyQDtWtATs1ruqol+kt1MKbtOTGi5hG0DGgvm5EalBhXOvoFvFfhA25sMpBouc8VUbdlHQ7/QTYAywVwd+ySVj3YuqsEmTcnPKeJxSB6ruaCMFYBKrpmrQIUehhHRa4Cf8lTzLuUOwbhY/1xyojgNfwrST2VkUVTKxwQ3dgnKZEnSZ3w8QtnTQT06ux/F6lVr8y28UeO3hqNhqidHSqAKCRglEiYI+AaTxTjuKhkNYaLWBMbGFXj92BnMCGBM+Y5WBSS+RuYv6+B6X9mgYiTz+bPs3Rz6
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dce41ae4-c311-42c5-8e51-08d82d6681e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2020 11:09:15.8723
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gwSpojT8CvgOo1b5AE150AYx7HiLfSz9eJQpzzFQ4hy7hW9Ht+sLc22+M/tJH2GVIxTetzYwtWHh15y69XFFCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0422
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Peter Zijlstra's message of July 8, 2020 6:41 pm:
-> On Tue, Jul 07, 2020 at 03:57:06PM +1000, Nicholas Piggin wrote:
->> Yes, powerpc could certainly get more performance out of the slow
->> paths, and then there are a few parameters to tune.
->=20
-
-Sorry for the delay, got bogged down and distracted by other things :(
-
-> Can you clarify? The slow path is already in use on ARM64 which is weak,
-> so I doubt there's superfluous serialization present. And Will spend a
-> fair amount of time on making that thing guarantee forward progressm, so
-> there just isn't too much room to play.
-
-Sure, the way the pending not-queued slowpath (which I guess is the
-medium-path) is implemented is just poorly structured for LL/SC. It
-has one more atomic than necessary (queued_fetch_set_pending_acquire),
-and a lot of branches in suboptimal order.
-
-Attached patch (completely untested just compiled and looked at asm
-so far) is a way we can fix this on powerpc I think. It's actually
-very little generic code change which is good, duplicated medium-path
-logic unfortunately but that's no worse than something like x86
-really.
-
->> We don't have a good alternate patching for function calls yet, but
->> that would be something to do for native vs pv.
->=20
-> Going by your jump_label implementation, support for static_call should
-> be fairly straight forward too, no?
->=20
->   https://lkml.kernel.org/r/20200624153024.794671356@infradead.org
-
-Nice, yeah it should be. I've wanted this for ages!
-
-powerpc is kind of annoying to implement that with limited call range,
-Hmm, not sure if we'd need a new linker feature to support it. We'd
-provide call site patch space for indirect branches for those out of
-range of direct call, so that should work fine. The trick would be=20
-patching in the TOC lookup for the function... should be doable somehow.
-
-Thanks,
-Nick
-
----
-
-diff --git a/arch/powerpc/include/asm/qspinlock.h b/arch/powerpc/include/as=
-m/qspinlock.h
-index b752d34517b3..26d8766a1106 100644
---- a/arch/powerpc/include/asm/qspinlock.h
-+++ b/arch/powerpc/include/asm/qspinlock.h
-@@ -31,16 +31,57 @@ static inline void queued_spin_unlock(struct qspinlock =
-*lock)
-=20
- #else
- extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
-+extern void queued_spin_lock_slowpath_queue(struct qspinlock *lock);
- #endif
-=20
- static __always_inline void queued_spin_lock(struct qspinlock *lock)
- {
--	u32 val =3D 0;
--
--	if (likely(atomic_try_cmpxchg_lock(&lock->val, &val, _Q_LOCKED_VAL)))
-+	atomic_t *a =3D &lock->val;
-+	u32 val;
-+
-+again:
-+	asm volatile(
-+"1:\t"	PPC_LWARX(%0,0,%1,1) "	# queued_spin_lock			\n"
-+	: "=3D&r" (val)
-+	: "r" (&a->counter)
-+	: "memory");
-+
-+	if (likely(val =3D=3D 0)) {
-+		asm_volatile_goto(
-+	"	stwcx.	%0,0,%1							\n"
-+	"	bne-	%l[again]						\n"
-+	"\t"	PPC_ACQUIRE_BARRIER "						\n"
-+		:
-+		: "r"(_Q_LOCKED_VAL), "r" (&a->counter)
-+		: "cr0", "memory"
-+		: again );
- 		return;
--
--	queued_spin_lock_slowpath(lock, val);
-+	}
-+
-+	if (likely(val =3D=3D _Q_LOCKED_VAL)) {
-+		asm_volatile_goto(
-+	"	stwcx.	%0,0,%1							\n"
-+	"	bne-	%l[again]						\n"
-+		:
-+		: "r"(_Q_LOCKED_VAL | _Q_PENDING_VAL), "r" (&a->counter)
-+		: "cr0", "memory"
-+		: again );
-+
-+		atomic_cond_read_acquire(a, !(VAL & _Q_LOCKED_MASK));
-+//		clear_pending_set_locked(lock);
-+		WRITE_ONCE(lock->locked_pending, _Q_LOCKED_VAL);
-+//		lockevent_inc(lock_pending);
-+		return;
-+	}
-+
-+	if (val =3D=3D _Q_PENDING_VAL) {
-+		int cnt =3D _Q_PENDING_LOOPS;
-+		val =3D atomic_cond_read_relaxed(a,
-+					       (VAL !=3D _Q_PENDING_VAL) || !cnt--);
-+		if (!(val & ~_Q_LOCKED_MASK))
-+			goto again;
-+        }
-+	queued_spin_lock_slowpath_queue(lock);
- }
- #define queued_spin_lock queued_spin_lock
-=20
-diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
-index b9515fcc9b29..ebcc6f5d99d5 100644
---- a/kernel/locking/qspinlock.c
-+++ b/kernel/locking/qspinlock.c
-@@ -287,10 +287,14 @@ static __always_inline u32  __pv_wait_head_or_lock(st=
-ruct qspinlock *lock,
-=20
- #ifdef CONFIG_PARAVIRT_SPINLOCKS
- #define queued_spin_lock_slowpath	native_queued_spin_lock_slowpath
-+#define queued_spin_lock_slowpath_queue	native_queued_spin_lock_slowpath_q=
-ueue
- #endif
-=20
- #endif /* _GEN_PV_LOCK_SLOWPATH */
-=20
-+void queued_spin_lock_slowpath_queue(struct qspinlock *lock);
-+static void __queued_spin_lock_slowpath_queue(struct qspinlock *lock);
-+
- /**
-  * queued_spin_lock_slowpath - acquire the queued spinlock
-  * @lock: Pointer to queued spinlock structure
-@@ -314,12 +318,6 @@ static __always_inline u32  __pv_wait_head_or_lock(str=
-uct qspinlock *lock,
-  */
- void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
- {
--	struct mcs_spinlock *prev, *next, *node;
--	u32 old, tail;
--	int idx;
--
--	BUILD_BUG_ON(CONFIG_NR_CPUS >=3D (1U << _Q_TAIL_CPU_BITS));
--
- 	if (pv_enabled())
- 		goto pv_queue;
-=20
-@@ -397,6 +395,26 @@ void queued_spin_lock_slowpath(struct qspinlock *lock,=
- u32 val)
- queue:
- 	lockevent_inc(lock_slowpath);
- pv_queue:
-+	__queued_spin_lock_slowpath_queue(lock);
-+}
-+EXPORT_SYMBOL(queued_spin_lock_slowpath);
-+
-+void queued_spin_lock_slowpath_queue(struct qspinlock *lock)
-+{
-+	lockevent_inc(lock_slowpath);
-+	__queued_spin_lock_slowpath_queue(lock);
-+}
-+EXPORT_SYMBOL(queued_spin_lock_slowpath_queue);
-+
-+static void __queued_spin_lock_slowpath_queue(struct qspinlock *lock)
-+{
-+	struct mcs_spinlock *prev, *next, *node;
-+	u32 old, tail;
-+	u32 val;
-+	int idx;
-+
-+	BUILD_BUG_ON(CONFIG_NR_CPUS >=3D (1U << _Q_TAIL_CPU_BITS));
-+
- 	node =3D this_cpu_ptr(&qnodes[0].mcs);
- 	idx =3D node->count++;
- 	tail =3D encode_tail(smp_processor_id(), idx);
-@@ -559,7 +577,6 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, =
-u32 val)
- 	 */
- 	__this_cpu_dec(qnodes[0].mcs.count);
- }
--EXPORT_SYMBOL(queued_spin_lock_slowpath);
-=20
- /*
-  * Generate the paravirt code for queued_spin_unlock_slowpath().
+On 2020/07/21 19:54, Maxim Levitsky wrote:=0A=
+> This allows to remove nbd's own check for valid block size=0A=
+> =0A=
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>=0A=
+> ---=0A=
+>  drivers/block/nbd.c | 12 ++----------=0A=
+>  1 file changed, 2 insertions(+), 10 deletions(-)=0A=
+> =0A=
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c=0A=
+> index ce7e9f223b20b..2cd9c4e824f8b 100644=0A=
+> --- a/drivers/block/nbd.c=0A=
+> +++ b/drivers/block/nbd.c=0A=
+> @@ -1347,14 +1347,6 @@ static void nbd_clear_sock_ioctl(struct nbd_device=
+ *nbd,=0A=
+>  		nbd_config_put(nbd);=0A=
+>  }=0A=
+>  =0A=
+> -static bool nbd_is_valid_blksize(unsigned long blksize)=0A=
+> -{=0A=
+> -	if (!blksize || !is_power_of_2(blksize) || blksize < 512 ||=0A=
+> -	    blksize > PAGE_SIZE)=0A=
+> -		return false;=0A=
+> -	return true;=0A=
+> -}=0A=
+> -=0A=
+>  static void nbd_set_cmd_timeout(struct nbd_device *nbd, u64 timeout)=0A=
+>  {=0A=
+>  	nbd->tag_set.timeout =3D timeout * HZ;=0A=
+> @@ -1379,7 +1371,7 @@ static int __nbd_ioctl(struct block_device *bdev, s=
+truct nbd_device *nbd,=0A=
+>  	case NBD_SET_BLKSIZE:=0A=
+>  		if (!arg)=0A=
+>  			arg =3D NBD_DEF_BLKSIZE;=0A=
+> -		if (!nbd_is_valid_blksize(arg))=0A=
+> +		if (!blk_is_valid_logical_block_size(arg))=0A=
+>  			return -EINVAL;=0A=
+>  		nbd_size_set(nbd, arg,=0A=
+>  			     div_s64(config->bytesize, arg));=0A=
+> @@ -1811,7 +1803,7 @@ static int nbd_genl_size_set(struct genl_info *info=
+, struct nbd_device *nbd)=0A=
+>  		bsize =3D nla_get_u64(info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES]);=0A=
+>  		if (!bsize)=0A=
+>  			bsize =3D NBD_DEF_BLKSIZE;=0A=
+> -		if (!nbd_is_valid_blksize(bsize)) {=0A=
+> +		if (!blk_is_valid_logical_block_size(bsize)) {=0A=
+>  			printk(KERN_ERR "Invalid block size %llu\n", bsize);=0A=
+>  			return -EINVAL;=0A=
+>  		}=0A=
+> =0A=
+=0A=
+Looks good to me.=0A=
+=0A=
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
