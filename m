@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ECA2285DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48962285E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgGUQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:37:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728042AbgGUQhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:37:36 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C878B207DD;
-        Tue, 21 Jul 2020 16:37:34 +0000 (UTC)
-Date:   Tue, 21 Jul 2020 12:37:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tingwei Zhang <tingwei@codeaurora.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] tracing: add trace_export support for event trace
-Message-ID: <20200721123733.1a87568a@oasis.local.home>
-In-Reply-To: <20200720022117.9375-3-tingwei@codeaurora.org>
-References: <20200720022117.9375-1-tingwei@codeaurora.org>
-        <20200720022117.9375-3-tingwei@codeaurora.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730343AbgGUQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728042AbgGUQiJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:38:09 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BB2C061794;
+        Tue, 21 Jul 2020 09:38:09 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x72so10998115pfc.6;
+        Tue, 21 Jul 2020 09:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eu10JA5OLvwplrNmV/SXDOuEoK36a/cnU1OAIE1ulVg=;
+        b=s01eLfpEg46mAJ0+8Jx435jbuv+VsLHMmsW6VtMVMV1al6nwy729Y9CG1LERJ3Wzk8
+         cpWiOd4UB9VmN7ihqup7/BS19/Tx/ccHf/MbUb/vWJUDNSesx5fe4xmU/yEOZJq1vWZ1
+         GaeB4CAAfuhvPEJU9Gdw150a48EsSwhXma+Urrnbblcg+jvj98nyMcWCfTlj9CWDjDJX
+         KTBanhJRpzqSxvuWUozqJPYDzhHtu6R0PnUio2jr+iNxYGrcyWbNCDQNxGFcviQgxIWs
+         5niWWZ87QeXWsI+3Ac+CyjodCz0fwo9pTnzzkEM467M9Pa6WGvGSEO7Y5d8lylvru0tr
+         atXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eu10JA5OLvwplrNmV/SXDOuEoK36a/cnU1OAIE1ulVg=;
+        b=O0WLV+7+tQDEZdjEp5d0eUrWPYIs06CROMRh5WRHxGdtDYMetnNGz9G/eeh2K+OcHb
+         aWD37tAbOwghw3gERXozv/IH2QFo11dwOYrB6tnAoQLFBR4ZMoE/gczClG+Unync0Igv
+         PWNTSm/czUUwGjcz/lh5oLQTejUdoqh+piIhV77ofd0fMApo1KOmAThXJ+sw8pp1PYrb
+         KxH5EKIzx6JJ7gb++E/nvgVTuNBp68uX9rDiOA+yKcrn/ZRQe/g2SgN8erEIcyNCNQ6d
+         3gQyps7yFfzJlscc1kjAMFsdrGO5JDMwG+KX4mqO+bVEFqoCr+TCRYQlIm+U612jZnVL
+         b7Dw==
+X-Gm-Message-State: AOAM5308ki6WDbFb2V4/VSH0IDAZsEeQAOL1xxS2dSCpvtAQplmLPZop
+        7hKTJ5zF9OvoCpZuoSHa8E45nzsc
+X-Google-Smtp-Source: ABdhPJyrzWPB0V13F5vI6Kyxost9DS1GEIdpPrFAb9ZfXBvb82EBYpGJzfZCUGsInKWrM46PaJg7zQ==
+X-Received: by 2002:a63:f90f:: with SMTP id h15mr22855754pgi.53.1595349488783;
+        Tue, 21 Jul 2020 09:38:08 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q6sm20838407pfg.76.2020.07.21.09.38.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 Jul 2020 09:38:08 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 09:38:07 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/215] 5.4.53-rc1 review
+Message-ID: <20200721163807.GE239562@roeck-us.net>
+References: <20200720152820.122442056@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 10:21:15 +0800
-Tingwei Zhang <tingwei@codeaurora.org> wrote:
-
-> Only function traces can be exported to other destinations currently.
-> This patch exports event trace as well.
+On Mon, Jul 20, 2020 at 05:34:42PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.53 release.
+> There are 215 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> ---
->  kernel/trace/trace.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
+> Responses should be made by Wed, 22 Jul 2020 15:27:31 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index bb62269724d5..aef6330836e2 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2697,17 +2697,6 @@ int tracepoint_printk_sysctl(struct ctl_table *table, int write,
->  	return ret;
->  }
->  
-> -void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
-> -{
-> -	if (static_key_false(&tracepoint_printk_key.key))
-> -		output_printk(fbuffer);
-> -
-> -	event_trigger_unlock_commit_regs(fbuffer->trace_file, fbuffer->buffer,
-> -				    fbuffer->event, fbuffer->entry,
-> -				    fbuffer->flags, fbuffer->pc, fbuffer->regs);
-> -}
-> -EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
-> -
 
-Please move the ftrace_exports routines up, instead of moving the
-trace_event_buffer_commit() down. As it fits better where it is (next
-to the other buffer_commit code).
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
--- Steve
-
-
->  /*
->   * Skip 3:
->   *
-> @@ -2868,6 +2857,19 @@ int unregister_ftrace_export(struct
-> trace_export *export) }
->  EXPORT_SYMBOL_GPL(unregister_ftrace_export);
->  
-> +void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
-> +{
-> +	if (static_key_false(&tracepoint_printk_key.key))
-> +		output_printk(fbuffer);
-> +
-> +	if (static_branch_unlikely(&ftrace_exports_enabled))
-> +		ftrace_exports(fbuffer->event);
-> +	event_trigger_unlock_commit_regs(fbuffer->trace_file,
-> fbuffer->buffer,
-> +				    fbuffer->event, fbuffer->entry,
-> +				    fbuffer->flags, fbuffer->pc,
-> fbuffer->regs); +}
-> +EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
-> +
->  void
->  trace_function(struct trace_array *tr,
->  	       unsigned long ip, unsigned long parent_ip, unsigned
-> long flags,
-
+Guenter
