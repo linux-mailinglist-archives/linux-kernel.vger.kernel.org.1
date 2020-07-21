@@ -2,185 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E94F2274C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827652274F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgGUBmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgGUBmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:42:12 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3AEC0619D5;
-        Mon, 20 Jul 2020 18:42:12 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 11so8379932qkn.2;
-        Mon, 20 Jul 2020 18:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u2Atj0Wbt7mub3xfeOzi2/XzJb4taKVgA2PwyukxOzM=;
-        b=NIBrO2jI5v/1ozjUsawGijUoqYKW+gNjM1JQ6U0MUA0gi62nvdd6Eb178R1VhYoR6z
-         JCh7jTT9Xqj4xD4xdcujV6FEsN8hXx/8gWdDk4fe7kMiTkhjDeJhXPE0WZn05wBWuHUi
-         ZC3MSUTkLn4PharQOKyl3CTAVeIr1CfJBBRD08ow9Qngq2g2uiBG6qQffr9+CIR4CRO6
-         YeTOWi05katH85rWjtQY6Db90392SQ5/ly/I7rGerxGQX8iPOsUWN+kLRsIMoTNFTzYC
-         KtKcc7hCFKnh09xMoXta79S2S1ngqK+TgHwOdv7AmIE/TxO861OTGpXyDIXOeDSSTnZa
-         eFrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u2Atj0Wbt7mub3xfeOzi2/XzJb4taKVgA2PwyukxOzM=;
-        b=fjYMOwuxUKOZa3rauLAo5OCscOGBHolAcqDlHrprtfpOyGeIG4L7GQZiK4g9d59jgs
-         jlvnde8TM8uynqYyZ6bODZZszvakVYk2YHIHdeanAE15j+yKfWDMTZm2uNc43IPZ+2HJ
-         WFXeSpr0Xod0ppREln5GyaoN3n4GH9p+3UbMd1omzZUcQRAncdC2Adf6m13MkT5X722p
-         FfG6GQDNRWQyybr9Q9FyoIZFQPHZBbKHpx/Fg0T/jaOje8CvTM7eKp925fSCNalxCu/+
-         VqequQID+dst1+wvMFkYdYBOwv3x//55zzJV8MN5sdt5h1am4fEGq/sRwdV7nMxDlvEn
-         G/Xw==
-X-Gm-Message-State: AOAM533QvmTSzai9Q9X/MBrv3SXezb7X1En4kzhhPAGqho9ckl4Njvvi
-        0cmRGrDsiqAZQLcnFWm23A4=
-X-Google-Smtp-Source: ABdhPJxzLDJKSuKgbM1LhvHt9POP1m4UaCFUZ6bACPSPIEsWeHJYBeGQ2r8eP8mrZctmtDSHqnlxPA==
-X-Received: by 2002:a37:c93:: with SMTP id 141mr4480301qkm.416.1595295731591;
-        Mon, 20 Jul 2020 18:42:11 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id 19sm1232748qke.44.2020.07.20.18.42.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Jul 2020 18:42:11 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 85CAE27C0054;
-        Mon, 20 Jul 2020 21:42:10 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 20 Jul 2020 21:42:10 -0400
-X-ME-Sender: <xms:8kcWX5WPtzlWhrFotGwWN9uqEvp2Vfi7nUO13ICjJwKiXfX9HvJ64Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrgeehgdegjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
-    fuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvufffkffojghfggfgsedt
-    keertdertddtnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghngh
-    esghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhephedvveetfefgiedutedtfeev
-    vddvleekjeeuffffleeguefhhfejteekieeuueelnecukfhppeehvddrudehhedrudduud
-    drjedunecuvehluhhsthgvrhfuihiivgepjeenucfrrghrrghmpehmrghilhhfrhhomhep
-    sghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtie
-    egqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhi
-    gihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:8kcWX5kcelmU8uzjUCtpPM7vowktSUHJirBNCT9eC8cXQBbZg5yLbw>
-    <xmx:8kcWX1b7G9ES8h4YuPhbmQHOYY4ps8bO5ZGBuqIUahSza3QGAS7zbA>
-    <xmx:8kcWX8Wz5Li4_01L-JSwxAGFT7a_zUDDeATZJFFSRbyDdAlcD7nNVA>
-    <xmx:8kcWX48Y1yyaNy4CBkm_1xD5l9R_PzNqyhSFDCF6tY7HSDg9NIcAzOpgmWk>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 02D33306005F;
-        Mon, 20 Jul 2020 21:42:09 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [RFC 11/11] scsi: storvsc: Support PAGE_SIZE larger than 4K
-Date:   Tue, 21 Jul 2020 09:41:35 +0800
-Message-Id: <20200721014135.84140-12-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200721014135.84140-1-boqun.feng@gmail.com>
-References: <20200721014135.84140-1-boqun.feng@gmail.com>
+        id S1728241AbgGUBoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725954AbgGUBoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:44:03 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE3042075B;
+        Tue, 21 Jul 2020 01:44:01 +0000 (UTC)
+Date:   Mon, 20 Jul 2020 21:44:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 01/24] Documentation: locking: Describe seqlock
+ design and usage
+Message-ID: <20200720214400.5ec6a028@oasis.local.home>
+In-Reply-To: <20200720155530.1173732-2-a.darwish@linutronix.de>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+        <20200720155530.1173732-1-a.darwish@linutronix.de>
+        <20200720155530.1173732-2-a.darwish@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyper-V always use 4k page size (HV_HYP_PAGE_SIZE), so when
-communicating with Hyper-V, a guest should always use HV_HYP_PAGE_SIZE
-as the unit for page related data. For storvsc, the data is
-vmbus_packet_mpb_array. And since in scsi_cmnd, sglist of pages (in unit
-of PAGE_SIZE) is used, we need convert pages in the sglist of scsi_cmnd
-into Hyper-V pages in vmbus_packet_mpb_array.
+On Mon, 20 Jul 2020 17:55:07 +0200
+"Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
 
-This patch does the conversion by dividing pages in sglist into Hyper-V
-pages, offset and indexes in vmbus_packet_mpb_array are recalculated
-accordingly.
+> +++ b/include/linux/seqlock.h
+> @@ -1,36 +1,15 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  #ifndef __LINUX_SEQLOCK_H
+>  #define __LINUX_SEQLOCK_H
+> +
+>  /*
+> - * Reader/writer consistent mechanism without starving writers. This type of
+> - * lock for data where the reader wants a consistent set of information
+> - * and is willing to retry if the information changes. There are two types
+> - * of readers:
+> - * 1. Sequence readers which never block a writer but they may have to retry
+> - *    if a writer is in progress by detecting change in sequence number.
+> - *    Writers do not wait for a sequence reader.
+> - * 2. Locking readers which will wait if a writer or another locking reader
+> - *    is in progress. A locking reader in progress will also block a writer
+> - *    from going forward. Unlike the regular rwlock, the read lock here is
+> - *    exclusive so that only one locking reader can get it.
+> + * seqcount_t / seqlock_t - a reader-writer consistency mechanism with
+> + * lockless readers (read-only retry loops), and no writer starvation.
+>   *
+> - * This is not as cache friendly as brlock. Also, this may not work well
+> - * for data that contains pointers, because any writer could
+> - * invalidate a pointer that a reader was following.
+> + * See Documentation/locking/seqlock.rst
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- drivers/scsi/storvsc_drv.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+I absolutely hate it when I see this.
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index fb41636519ee..c54d25f279bc 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1561,7 +1561,7 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	struct hv_host_device *host_dev = shost_priv(host);
- 	struct hv_device *dev = host_dev->dev;
- 	struct storvsc_cmd_request *cmd_request = scsi_cmd_priv(scmnd);
--	int i;
-+	int i, j, k;
- 	struct scatterlist *sgl;
- 	unsigned int sg_count = 0;
- 	struct vmscsi_request *vm_srb;
-@@ -1569,6 +1569,8 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	struct vmbus_packet_mpb_array  *payload;
- 	u32 payload_sz;
- 	u32 length;
-+	int subpage_idx = 0;
-+	unsigned int hvpg_count = 0;
- 
- 	if (vmstor_proto_version <= VMSTOR_PROTO_VERSION_WIN8) {
- 		/*
-@@ -1643,23 +1645,36 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	payload_sz = sizeof(cmd_request->mpb);
- 
- 	if (sg_count) {
--		if (sg_count > MAX_PAGE_BUFFER_COUNT) {
-+		hvpg_count = sg_count * (PAGE_SIZE / HV_HYP_PAGE_SIZE);
-+		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
- 
--			payload_sz = (sg_count * sizeof(u64) +
-+			payload_sz = (hvpg_count * sizeof(u64) +
- 				      sizeof(struct vmbus_packet_mpb_array));
- 			payload = kzalloc(payload_sz, GFP_ATOMIC);
- 			if (!payload)
- 				return SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 
-+		/*
-+		 * sgl is a list of PAGEs, and payload->range.pfn_array
-+		 * expects the page number in the unit of HV_HYP_PAGE_SIZE (the
-+		 * page size that Hyper-V uses, so here we need to divide PAGEs
-+		 * into HV_HYP_PAGE in case that PAGE_SIZE > HV_HYP_PAGE_SIZE.
-+		 */
- 		payload->range.len = length;
--		payload->range.offset = sgl[0].offset;
-+		payload->range.offset = sgl[0].offset & ~HV_HYP_PAGE_MASK;
-+		subpage_idx = sgl[0].offset >> HV_HYP_PAGE_SHIFT;
- 
- 		cur_sgl = sgl;
-+		k = 0;
- 		for (i = 0; i < sg_count; i++) {
--			payload->range.pfn_array[i] =
--				page_to_pfn(sg_page((cur_sgl)));
-+			for (j = subpage_idx; j < (PAGE_SIZE / HV_HYP_PAGE_SIZE); j++) {
-+				payload->range.pfn_array[k] =
-+					page_to_hvpfn(sg_page((cur_sgl))) + j;
-+				k++;
-+			}
- 			cur_sgl = sg_next(cur_sgl);
-+			subpage_idx = 0;
- 		}
- 	}
- 
--- 
-2.27.0
+I much rather have the documentation next to the code. Because
+honestly, I trust that comments next to the code will get updated if
+the code changes much more likely than comments buried in the
+Documentation directory.
+
+It's also more likely that I wont even bother looking at the doc
+(because I wont trust it to be up to date) and just read the code and
+try to figure it out. Or look at how others have used it.
+
+-- Steve
+
+
+
+>   *
+> - * Expected non-blocking reader usage:
+> - * 	do {
+> - *	    seq = read_seqbegin(&foo);
+> - * 	...
+> - *      } while (read_seqretry(&foo, seq));
+> - *
+> - *
+> - * On non-SMP the spin locks disappear but the writer still needs
+> - * to increment the sequence variables because an interrupt routine could
+> - * change the state of the data.
+> - *
+> - * Based on x86_64 vsyscall gettimeofday 
+> - * by Keith Owens and Andrea Arcangeli
+> + * Copyrights:
+> + * - Based on x86_64 vsyscall gettimeofday: Keith Owens, Andrea Arcangeli
+>   */
+>  
+>  #include <linux/spinlock.h>
+> @@ -41,8 +20,8 @@
+>  #include <asm/processor.h>
+>  
+>  /*
+> - * The seqlock interface does not prescribe a precise sequence of read
+> - * begin/retry/end. For readers, typically there is a call to
+> + * The seqlock seqcount_t interface does not prescribe a precise sequence of
+> + * read begin/retry/end. For readers, typically there is a call to
+>   * read_seqcount_begin() and read_seqcount_retry(), however, there are more
+>   * esoteric cases which do not follow this pattern.
+>   *
+> @@ -50,16 +29,30 @@
+>   * via seqcount_t under KCSAN: upon beginning a seq-reader critical section,
+>   * pessimistically mark the next KCSAN_SEQLOCK_REGION_MAX memory accesses as
+>   * atomics; if there is a matching read_seqcount_retry() call, no following
+> - * memory operations are considered atomic. Usage of seqlocks via seqlock_t
+> - * interface is not affected.
+> + * memory operations are considered atomic. Usage of the seqlock_t interface
+> + * is not affected.
+>   */
+>  #define KCSAN_SEQLOCK_REGION_MAX 1000
+>  
+>  /*
+> - * Version using sequence counter only.
+> - * This can be used when code has its own mutex protecting the
+> - * updating starting before the write_seqcountbeqin() and ending
+> - * after the write_seqcount_end().
+> + * Sequence counters (seqcount_t)
+> + *
+> + * This is the raw counting mechanism, without any writer protection.
+> + *
+> + * Write side critical sections must be serialized and non-preemptible.
+> + *
+> + * If readers can be invoked from hardirq or softirq contexts,
+> + * interrupts or bottom halves must also be respectively disabled before
+> + * entering the write section.
+> + *
+> + * This mechanism can't be used if the protected data contains pointers,
+> + * as the writer can invalidate a pointer that a reader is following.
+> + *
+> + * If it's desired to automatically handle the sequence counter writer
+> + * serialization and non-preemptibility requirements, use a sequential
+> + * lock (seqlock_t) instead.
+> + *
+> + * See Documentation/locking/seqlock.rst
+>   */
+>  typedef struct seqcount {
+>  	unsigned sequence;
+> @@ -398,10 +391,6 @@ static inline void raw_write_seqcount_latch(seqcount_t *s)
+>         smp_wmb();      /* increment "sequence" before following stores */
+>  }
+>  
+> -/*
+> - * Sequence counter only version assumes that callers are using their
+> - * own mutexing.
+> - */
+>  static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
+>  {
+>  	raw_write_seqcount_begin(s);
+> @@ -434,15 +423,21 @@ static inline void write_seqcount_invalidate(seqcount_t *s)
+>  	kcsan_nestable_atomic_end();
+>  }
+>  
+> +/*
+> + * Sequential locks (seqlock_t)
+> + *
+> + * Sequence counters with an embedded spinlock for writer serialization
+> + * and non-preemptibility.
+> + *
+> + * For more info, see:
+> + *    - Comments on top of seqcount_t
+> + *    - Documentation/locking/seqlock.rst
+> + */
+>  typedef struct {
+>  	struct seqcount seqcount;
+>  	spinlock_t lock;
+>  } seqlock_t;
+>  
+> -/*
+> - * These macros triggered gcc-3.x compile-time problems.  We think these are
+> - * OK now.  Be cautious.
+> - */
+>  #define __SEQLOCK_UNLOCKED(lockname)			\
+>  	{						\
+>  		.seqcount = SEQCNT_ZERO(lockname),	\
 
