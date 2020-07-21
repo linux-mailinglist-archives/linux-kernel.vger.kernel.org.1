@@ -2,162 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C875228B15
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036DB228B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731282AbgGUVYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 17:24:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731217AbgGUVYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:24:06 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A8DE2072E;
-        Tue, 21 Jul 2020 21:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595366646;
-        bh=mjbCzfQUyreChEBi1wQcXinwxAO9wpEShodrHsLYVfw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DKzgEVzYhCOd1k4J65eVRWxOQcNG1ASmYxJ5Z/mXS7fZ8KU0CLQE3rxbK+141d2GZ
-         NzU6oB8UGRcoVccm7+ZKhx9J2Ir/djD03nzv0Qt2EUR5A/lLTHpt3dGvmsOkaIiUP8
-         9sl+5pCSCMhsCCfRejjAW2Xbelo1ADGpGtFe6EjA=
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ricky Wu <ricky_wu@realtek.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rui Feng <rui_feng@realsil.com.cn>, Klaus Doth <kdlnx@doth.eu>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5/5] misc: rtsx: Use standard PCI definitions
-Date:   Tue, 21 Jul 2020 16:23:36 -0500
-Message-Id: <20200721212336.1159079-6-helgaas@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200721212336.1159079-1-helgaas@kernel.org>
-References: <20200721212336.1159079-1-helgaas@kernel.org>
+        id S1731109AbgGUV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 17:28:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31816 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726658AbgGUV2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 17:28:50 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LL2wsa152507;
+        Tue, 21 Jul 2020 17:28:24 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vv3xnm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 17:28:24 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LLA6KI024505;
+        Tue, 21 Jul 2020 21:28:22 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 32brq826kx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 21:28:22 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LLSJ7230146928
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 21:28:19 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5257E11C050;
+        Tue, 21 Jul 2020 21:28:19 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA3AB11C052;
+        Tue, 21 Jul 2020 21:28:16 +0000 (GMT)
+Received: from oc0525413822.ibm.com (unknown [9.163.39.1])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 21 Jul 2020 21:28:16 +0000 (GMT)
+Date:   Tue, 21 Jul 2020 14:28:13 -0700
+From:   Ram Pai <linuxram@us.ibm.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, mpe@ellerman.id.au, paulus@samba.org,
+        sukadev@linux.ibm.com, bauerman@linux.ibm.com,
+        bharata@linux.ibm.com, Paul Mackerras <paulus@ozlabs.org>
+Subject: Re: [PATCH v2 1/2] KVM: PPC: Book3S HV: move kvmppc_svm_page_out up
+Message-ID: <20200721212813.GF7339@oc0525413822.ibm.com>
+Reply-To: Ram Pai <linuxram@us.ibm.com>
+References: <20200721104202.15727-1-ldufour@linux.ibm.com>
+ <20200721104202.15727-2-ldufour@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721104202.15727-2-ldufour@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_15:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=871 malwarescore=0 clxscore=1011
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007210135
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+On Tue, Jul 21, 2020 at 12:42:01PM +0200, Laurent Dufour wrote:
+> kvmppc_svm_page_out() will need to be called by kvmppc_uvmem_drop_pages()
+> so move it upper in this file.
+> 
+> Furthermore it will be interesting to call this function when already
+> holding the kvm->arch.uvmem_lock, so prefix the original function with __
+> and remove the locking in it, and introduce a wrapper which call that
+> function with the lock held.
+> 
+> There is no functional change.
 
-When reading registers defined by the PCIe spec, use the names already
-defined by the PCI core.  This makes maintenance of the PCI core and
-drivers easier.  No functional change intended.
+Reviewed-by: Ram Pai <linuxram@us.ibm.com>
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/misc/cardreader/rts5249.c | 8 ++++----
- drivers/misc/cardreader/rts5260.c | 8 ++++----
- drivers/misc/cardreader/rts5261.c | 8 ++++----
- include/linux/rtsx_pci.h          | 5 -----
- 4 files changed, 12 insertions(+), 17 deletions(-)
+> 
+> Cc: Ram Pai <linuxram@us.ibm.com>
+> Cc: Bharata B Rao <bharata@linux.ibm.com>
+> Cc: Paul Mackerras <paulus@ozlabs.org>
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> ---
 
-diff --git a/drivers/misc/cardreader/rts5249.c b/drivers/misc/cardreader/rts5249.c
-index 1b8149e806c1..941b3d77f1e9 100644
---- a/drivers/misc/cardreader/rts5249.c
-+++ b/drivers/misc/cardreader/rts5249.c
-@@ -105,16 +105,16 @@ static void rts5249_init_from_cfg(struct rtsx_pcr *pcr)
- 
- 	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
- 
--	if (lval & ASPM_L1_1_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_ASPM_L1_1)
- 		rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
- 
--	if (lval & ASPM_L1_2_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_ASPM_L1_2)
- 		rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
- 
--	if (lval & PM_L1_1_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_PCIPM_L1_1)
- 		rtsx_set_dev_flag(pcr, PM_L1_1_EN);
- 
--	if (lval & PM_L1_2_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_PCIPM_L1_2)
- 		rtsx_set_dev_flag(pcr, PM_L1_2_EN);
- 
- 	if (option->ltr_en) {
-diff --git a/drivers/misc/cardreader/rts5260.c b/drivers/misc/cardreader/rts5260.c
-index ebf77643cc90..b9f66b1384a6 100644
---- a/drivers/misc/cardreader/rts5260.c
-+++ b/drivers/misc/cardreader/rts5260.c
-@@ -508,16 +508,16 @@ static void rts5260_init_from_cfg(struct rtsx_pcr *pcr)
- 
- 	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
- 
--	if (lval & ASPM_L1_1_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_ASPM_L1_1)
- 		rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
- 
--	if (lval & ASPM_L1_2_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_ASPM_L1_2)
- 		rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
- 
--	if (lval & PM_L1_1_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_PCIPM_L1_1)
- 		rtsx_set_dev_flag(pcr, PM_L1_1_EN);
- 
--	if (lval & PM_L1_2_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_PCIPM_L1_2)
- 		rtsx_set_dev_flag(pcr, PM_L1_2_EN);
- 
- 	rts5260_pwr_saving_setting(pcr);
-diff --git a/drivers/misc/cardreader/rts5261.c b/drivers/misc/cardreader/rts5261.c
-index 4b6e3fe4a007..471961487ff8 100644
---- a/drivers/misc/cardreader/rts5261.c
-+++ b/drivers/misc/cardreader/rts5261.c
-@@ -423,22 +423,22 @@ static void rts5261_init_from_cfg(struct rtsx_pcr *pcr)
- 
- 	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
- 
--	if (lval & ASPM_L1_1_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_ASPM_L1_1)
- 		rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
- 	else
- 		rtsx_clear_dev_flag(pcr, ASPM_L1_1_EN);
- 
--	if (lval & ASPM_L1_2_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_ASPM_L1_2)
- 		rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
- 	else
- 		rtsx_clear_dev_flag(pcr, ASPM_L1_2_EN);
- 
--	if (lval & PM_L1_1_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_PCIPM_L1_1)
- 		rtsx_set_dev_flag(pcr, PM_L1_1_EN);
- 	else
- 		rtsx_clear_dev_flag(pcr, PM_L1_1_EN);
- 
--	if (lval & PM_L1_2_EN_MASK)
-+	if (lval & PCI_L1SS_CTL1_PCIPM_L1_2)
- 		rtsx_set_dev_flag(pcr, PM_L1_2_EN);
- 	else
- 		rtsx_clear_dev_flag(pcr, PM_L1_2_EN);
-diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
-index f1e27b858972..9f70cdedb124 100644
---- a/include/linux/rtsx_pci.h
-+++ b/include/linux/rtsx_pci.h
-@@ -1075,11 +1075,6 @@ struct pcr_ops {
- 
- enum PDEV_STAT  {PDEV_STAT_IDLE, PDEV_STAT_RUN};
- 
--#define ASPM_L1_1_EN_MASK		BIT(3)
--#define ASPM_L1_2_EN_MASK		BIT(2)
--#define PM_L1_1_EN_MASK		BIT(1)
--#define PM_L1_2_EN_MASK		BIT(0)
--
- #define ASPM_L1_1_EN			BIT(0)
- #define ASPM_L1_2_EN			BIT(1)
- #define PM_L1_1_EN				BIT(2)
--- 
-2.25.1
-
+RP
