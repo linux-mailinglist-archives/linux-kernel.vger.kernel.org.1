@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47516228601
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312F5228603
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbgGUQmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
+        id S1730632AbgGUQmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730363AbgGUQmR (ORCPT
+        with ESMTP id S1730590AbgGUQmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F576C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id 88so11571914wrh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:16 -0700 (PDT)
+        Tue, 21 Jul 2020 12:42:18 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501A2C0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:18 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r12so21754700wrj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Tk/9PpJj3IjnUUvno6UFEVw3K4ZZzww2rfSi8MPmyJM=;
-        b=lMb4wjDU3b7k+Ix4Tajy3V/XNCIzn9AeMx+Gy2I3LOimG2LvLXLlHQoxoiiOPhtNyS
-         TOHmywAu/W6iADoMfAn8br/lyzSviID8feUGnhY4XFALqSDOhtHtB8YFjPT4G8c1Ku3n
-         PHBy5Q29nVUWwedHJ6MiLvYQLdg7X9wJb88aDcK+nmUFG24pCuwyn4NVv7RWmjyyw6N+
-         oN29a0dIqRoHa4/5Z4c4z0YBxcrBnZ7BzQJ09Go/gLCH0ZOHjR6Ei59p3ni/bKufLLQD
-         UukQHHpBBmFwNSiOsJvBHtF8P1gy2znSVAmnxROqxE9RhWFJ7KujQHv1Gu4jmQlzwgoU
-         LpmQ==
+        bh=IxxdeV7kDOOLuCiwH8B9pnIrWXz+yoC7MHLRIwWlfSE=;
+        b=fi55ZS0gMcsGNbPQ7bZEjO0p6noM4W+aMdmDBNrQfs3aO2J9efXsntciRp3e3FVdFV
+         /4fJnHUQtkAZllAFG5F44YdU77QwwhEh5oCJ4Go/8eKXiFmuGMPQwrL8vgrszyDmMUn0
+         qpIKAXN78PoWGmoIY9Dt8YpLIlVYJXuyC7cewqs/MvhI2QWXv5UXzyokbxUw0EuB4RyO
+         T3r2TJwj3km8iigohAT4/mG+nBG7k5MNYA9mIymSTj1Q2h7qFBc3KpwyubuYmDfnPpaP
+         geo/oAjmpy76PneUK61DKS5bu7l1/jugTAYUS1jYiWe0b/2S/ALPqRdTbVVIt1rayt4a
+         o4rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Tk/9PpJj3IjnUUvno6UFEVw3K4ZZzww2rfSi8MPmyJM=;
-        b=iqCItIIh0/ehEd7GEHHPT4bU5K1rZz5itVyvVvLq9NjbUCZv0mG/XSGb3CTD9yYNdC
-         0IINU3exXZd+n/aAFprcDY9HMJtqTPVPBnCSfCxCPrRmNC+O3mAQN7i9xvzT8xXEgEKo
-         23K7RLJNIBz4kR6m5SUNmuIzS0+zF+d6rtQ5KcneP365L3JbgNCPLU8OIm+w4i240+Hm
-         sNmvWbSWttkpodWqJjGKTKnScJYxkHgQg/2tW9rpnzwB/U5qn7izckSiIvUTm9g8YjWF
-         u7PbCoI3XDjylTNqFx0IxP+hJRiSd10aJ3NP1FdZaGGnOVESoGQSZ/08yjpoGvgrHDfi
-         QCXg==
-X-Gm-Message-State: AOAM533Iv4rTbfMeZT5iuIAto1eBifRovXIA4cIuyLdJX+50kB/IMrkt
-        MDuRI8VlKWUw217OwGl9Lvlr3g==
-X-Google-Smtp-Source: ABdhPJzi44RFlMJHl69DBzg3wibdw5A1lXzpGtuc3p5Ug1b6hgKcSiU4s5ZQ8KQZaqxkhcJMwbPpAA==
-X-Received: by 2002:adf:97c1:: with SMTP id t1mr1258158wrb.294.1595349735760;
-        Tue, 21 Jul 2020 09:42:15 -0700 (PDT)
+        bh=IxxdeV7kDOOLuCiwH8B9pnIrWXz+yoC7MHLRIwWlfSE=;
+        b=Mz5ky8iSc48Vvq4wuPkomC7R9haTwFVnU6s/htdObgl0F7X6ZZZe2eYTeylVt6caAe
+         YYgODuHIgDIlZQlLJUAry/i4W0C4SpupmwlCUjM76ncz6deLN44DW+/Ps+a4KkfsL+cR
+         +s6vIhjhc8wsaO2NlXxXN94k/sGNcYl32V8B9pXc+CvJLYc9EZgBG2R7hAkYr4ozCmmX
+         BxrKQjjj0jj4aIe8pwrRay/KDlAoZRwnjwHhJg1FxeTKwP08HnpD1bMllcVsidjON/yC
+         Q4mh4wToU9GpbD3qYG2LAdux6omX8859Ps7ADQp6+RAkFRg7YsF8UyX3YzpPk1azRXrA
+         xlLA==
+X-Gm-Message-State: AOAM530/q5Oal0sk56beNgsQ94XbbIlqXLmmHEyvIw/kNDR+dIyyWXQ0
+        omCq7vlr6vZ6l533s6ACGq2DdQ==
+X-Google-Smtp-Source: ABdhPJxXhQWmwV5kz3iOwr7rifM1+PJcyTnRtaV9zGgyBJlt1R5JKJDv0hBc7XFZnHKSmNPT1/soHw==
+X-Received: by 2002:a5d:4710:: with SMTP id y16mr28344888wrq.189.1595349737054;
+        Tue, 21 Jul 2020 09:42:17 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.13
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:15 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:16 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         QLogic-Storage-Upstream@qlogic.com
-Subject: [PATCH 12/40] scsi: qla4xxx: ql4_init: Remove set but unused variable 'func_number'
-Date:   Tue, 21 Jul 2020 17:41:20 +0100
-Message-Id: <20200721164148.2617584-13-lee.jones@linaro.org>
+Subject: [PATCH 13/40] scsi: qla4xxx: ql4_init: Check return value of pci_set_mwi()
+Date:   Tue, 21 Jul 2020 17:41:21 +0100
+Message-Id: <20200721164148.2617584-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -67,37 +67,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+pci_set_mwi() has 'warn_unused_result' so the result should be checked.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qla4xxx/ql4_init.c: In function ‘ql4xxx_set_mac_number’:
- drivers/scsi/qla4xxx/ql4_init.c:17:10: warning: variable ‘func_number’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/qla4xxx/ql4_init.c: In function ‘qla4xxx_pci_config’:
+ drivers/scsi/qla4xxx/ql4_init.c:664:6: warning: variable ‘status’ set but not used [-Wunused-but-set-variable]
+
+And if 'status' is removed:
+
+ drivers/scsi/qla4xxx/ql4_init.c: In function ‘qla4xxx_pci_config’:
+ drivers/scsi/qla4xxx/ql4_init.c:666:2: warning: ignoring return value of ‘pci_set_mwi’, declared with attribute warn_unused_result [-Wunused-result]
+ 666 | pci_set_mwi(ha->pdev);
+ | ^~~~~~~~~~~~~~~~~~~~~
 
 Cc: QLogic-Storage-Upstream@qlogic.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qla4xxx/ql4_init.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/scsi/qla4xxx/ql4_init.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/scsi/qla4xxx/ql4_init.c b/drivers/scsi/qla4xxx/ql4_init.c
-index 5963127f7d2ef..82f6e7f3969ec 100644
+index 82f6e7f3969ec..4afd43610f68f 100644
 --- a/drivers/scsi/qla4xxx/ql4_init.c
 +++ b/drivers/scsi/qla4xxx/ql4_init.c
-@@ -14,7 +14,6 @@
- static void ql4xxx_set_mac_number(struct scsi_qla_host *ha)
- {
- 	uint32_t value;
--	uint8_t func_number;
- 	unsigned long flags;
+@@ -665,6 +665,9 @@ void qla4xxx_pci_config(struct scsi_qla_host *ha)
  
- 	/* Get the function number */
-@@ -22,7 +21,6 @@ static void ql4xxx_set_mac_number(struct scsi_qla_host *ha)
- 	value = readw(&ha->reg->ctrl_status);
- 	spin_unlock_irqrestore(&ha->hardware_lock, flags);
- 
--	func_number = (uint8_t) ((value >> 4) & 0x30);
- 	switch (value & ISP_CONTROL_FN_MASK) {
- 	case ISP_CONTROL_FN0_SCSI:
- 		ha->mac_index = 1;
+ 	pci_set_master(ha->pdev);
+ 	status = pci_set_mwi(ha->pdev);
++	if (status)
++		ql4_printk(KERN_WARNING, ha, "Failed to set MWI\n");
++
+ 	/*
+ 	 * We want to respect framework's setting of PCI configuration space
+ 	 * command register and also want to make sure that all bits of
 -- 
 2.25.1
 
