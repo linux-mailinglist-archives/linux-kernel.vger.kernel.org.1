@@ -2,135 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EB0227DAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9814227DE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgGUKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgGUKws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:52:48 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9187E2073A;
-        Tue, 21 Jul 2020 10:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595328768;
-        bh=tP/j9SYV2Wc096FLcNTJNBdxAa7a73U6cx63i0V4ty8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S4qfj7soch1wyIflz540mPLAPLtJYuO8SK3jkGX5d8cfohn9NypIIsxLTvlIV9/Lg
-         mKJt6wmfQzoHA0dd4UmP36gtZWE4h6n6gU8AlBp4M1v+Eo3Z6qD0RcHbNXdIDRssUw
-         wZWsV11dbBed35NXhsGXy9Lleq3eRK2u8dAwJ0yQ=
-Date:   Tue, 21 Jul 2020 12:52:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: Re: [PATCH] [PATCH] Firmware security information in SYSFS
-Message-ID: <20200721105256.GC1678476@kroah.com>
-References: <20200716223627.253936-1-daniel.gutson@eclypsium.com>
- <20200717062841.GA3238569@kroah.com>
- <CAK8P3a1yy7YyeJH5k40yAXb23y9siBnfuqixb76t3BK9Xh=uXQ@mail.gmail.com>
- <CAFmMkTFLm9mw5-8Dj_7rhP2KBcLUoJ1WcQCJv5_k+QRsmJPxjg@mail.gmail.com>
- <20200717145746.GB3008378@kroah.com>
- <CAFmMkTEsm7CRBzEJSCjkhCT7NHvRUXzcgchExbnfFbwPjT0YFg@mail.gmail.com>
+        id S1729502AbgGUKzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729482AbgGUKzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:55:54 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D18C061794;
+        Tue, 21 Jul 2020 03:55:53 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x9so10107706plr.2;
+        Tue, 21 Jul 2020 03:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eYzySZTOlr+JZt7Rtk5EM6Eczpv1B0xy2HoZhPH/9z4=;
+        b=lEqYbpGzJLgH71gwQKqfSqiMcyHve7Bz+0c+FZdDEDB5XsAa4t7SpOz4VL2zIPv9ew
+         IR3xRmozg4FBJrzh9+tknzN4KG3x/IsBmtqxAE+/ZvaVbpN4n/f9Kg+HXlLbu2pzm2jT
+         mMMyL6GWj/FmjKiLFkByNewNirrSc1xuVqfsjQ4b1Ix5ovZmY/Vy3z4DUaPTCKAihpWo
+         YX3EKmsZzEAbCcR719cKqX6tgt47eS8jR/IhkYpNhGDUOzKgik3YcNObfa/hWots4xG8
+         Tzj88ddU2rlbWRy7Tzhn9A0/TTzb+1DTffsyGmSoXPWDujvKjmQNDoXibvQRPQ5eCXcT
+         1yzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eYzySZTOlr+JZt7Rtk5EM6Eczpv1B0xy2HoZhPH/9z4=;
+        b=KzHaZgF0AY8rpL32nNiH3hcClhUi43mR0lUJM2wDrKgsyCSSPUpGp4uConTfCSbok+
+         Scto+kzNCvQGxq4bM3ss7iURXI1wQqB5D0LQjvmUaNemvubG/Cc71Ss/iFwFwJpaktFy
+         ToejyRa8L1/L5eM38lBFDErx94Rfh6exc93IajWH1n5QjyLe0cnGgh2DjeHO6HP5UseC
+         vSx1UIuhsuM4VHVn3cTuM1dj+d6sno8HW1xxXxLFE++q3HczIR2oe/SumpvTNMA+ovyy
+         P4tdfnKEBir3STENPNRzj7qzq7L21sEUhfNOOKNAcXw1awLnFVP249bY/mfsDorlgL1Z
+         SWGA==
+X-Gm-Message-State: AOAM533VlgTurSVyVHRcUT5ej6+UqSCMPzQy3LY42L5WxmKhHiS5nFRW
+        N4HDevg1Q2Qag2B7q0ENZuSTH4g0xhDXn7BKpnY=
+X-Google-Smtp-Source: ABdhPJxvUeCIGy4Tmj8MwKxt+uuKI04Wb4ZEWJYwgOY+En3pergbwustfKJIaY607vnoP9kCkyJv4yHdkxaYxgoB4Y8=
+X-Received: by 2002:a17:902:9a4b:: with SMTP id x11mr21857873plv.255.1595328953380;
+ Tue, 21 Jul 2020 03:55:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFmMkTEsm7CRBzEJSCjkhCT7NHvRUXzcgchExbnfFbwPjT0YFg@mail.gmail.com>
+References: <20200721103634.2939493-1-abanoubsameh@protonmail.com> <20200721103634.2939493-2-abanoubsameh@protonmail.com>
+In-Reply-To: <20200721103634.2939493-2-abanoubsameh@protonmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Jul 2020 13:55:39 +0300
+Message-ID: <CAHp75VehVVJ+1Lvo2EAGpp-e7wAG6qnCUmkKQ6Bd-CXx0VfBtw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: fixed some coding style issues in gpiolib files
+To:     Abanoub Sameh <abanoubsameh8@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abanoub Sameh <abanoubsameh@protonmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 05:58:47PM -0300, Daniel Gutson wrote:
-> On Fri, Jul 17, 2020 at 11:57 AM Greg Kroah-Hartman <
-> gregkh@linuxfoundation.org> wrote:
-> 
-> > On Fri, Jul 17, 2020 at 11:46:39AM -0300, Daniel Gutson wrote:
-> > > On Fri, Jul 17, 2020 at 11:41 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > > On Fri, Jul 17, 2020 at 8:28 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Thu, Jul 16, 2020 at 07:36:27PM -0300, Daniel Gutson wrote:
-> > > > > > +What:                /sys/kernel/firmware-security/bioswe
-> > > > >
-> > > > > Ick, I stopped reading right here.
-> > > > >
-> > > > > No, this is not where this belongs.
-> > > > >
-> > > > > We already have /sys/firmware/, right?  And firmware-specific
-> > > > > subdirectories below that.
-> > > > >
-> > > > > We also have /sys/devices/system/ and I think that would be a much
-> > > > > better place for this, as it is easier to work with a real 'struct
-> > > > > device' than a "raw" kobject any day.  Bonus is you get full support
-> > of
-> > > > > userspace libraries when you do that, unlike when dealing with
-> > kobjects.
-> > > > >
-> > > > > Also, this really is a _SPECIFIC_ type of firmware that supports
-> > these
-> > > > > features, right?  Why not call that out too?  This is not generic by
-> > any
-> > > > > means.
-> > > >
-> > > > As I suggested in my previous review, I wouldn't worry too much about
-> > > > the user interface at the start, but instead first work out how the
-> > > > hardware
-> > > > support fits in with the existing drivers and once that looks fine
-> > decide
-> > > > on how to export it to user space.
-> > > >
-> > > > I agree the  /sys/kernel/firmware-security/bioswe sounds like the wrong
-> > > > place, but I'm not sure if adding any other new directory in sysfs is
-> > > > much better. I think the most promising would be to have it on the
-> > > > sysfs directory for the device it refers to,
-> > >
-> > >
-> > > My idea is to have all the firmware security information together in the
-> > > same place; this information comes from many devices.
-> > > This initial patch involves the SPI Controller, and I don't want to add
-> > > more stuff until there
-> > > is a consensus.
-> > > So, do you have a suggestion where to put this information?
-> > > /sys/devices/system/firmware-security?
-> > > /sys/firmware/security?
-> > > other?
-> > >
-> > > Please advise.
-> >
-> > It's fun to focus on things like this, as it's the most visible part,
-> > but are you sure the "talk to the hardware" part is working properly?
-> >
-> 
-> Yes.
-> 
-> 
-> 
-> >
-> > If so, great, it should be a "class", as that way it is independent of
-> > any hardware type, right?  Classes show how devices talk to userspace in
-> > a common way (input, tty, led, block, etc.)  So why is this any
-> > different from that?
-> >
-> 
-> Are you suggesting to create a new class, or use an existing one?
+Thanks, my comments below.
 
-Probably a new one, unless you can find an existing one that would fit?
 
-thanks,
+On Tue, Jul 21, 2020 at 1:41 PM Abanoub Sameh <abanoubsameh8@gmail.com> wrote:
 
-greg k-h
+Commit message is missed on why you did all these changes.
+
+...
+
+>         if (pin <= 255) {
+>                 char ev_name[5];
+> +
+>                 sprintf(ev_name, "_%c%02hhX",
+>                         agpio->triggering == ACPI_EDGE_SENSITIVE ? 'E' : 'L',
+>                         pin);
+
+Should be a separate patch.
+
+...
+
+>                 dev_err(chip->parent,
+> -                       "Failed to install GPIO OpRegion handler\n");
+> +                       "Failed to install GPIO OpRegion handler\n");
+Make it simple in one line.
+
+Also a separate patch.
+
+...
+
+> @@ -316,9 +316,8 @@ struct gpio_desc *gpiod_get_from_of_node(struct device_node *node,
+>         desc = of_get_named_gpiod_flags(node, propname,
+>                                         index, &flags);
+>
+> -       if (!desc || IS_ERR(desc)) {
+> +       if (!desc || IS_ERR(desc))
+>                 return desc;
+> -       }
+
+Also a separate patch.
+
+...
+
+> @@ -974,6 +974,7 @@ static irqreturn_t lineevent_irq_thread(int irq, void *p)
+>         if (le->eflags & GPIOEVENT_REQUEST_RISING_EDGE
+>             && le->eflags & GPIOEVENT_REQUEST_FALLING_EDGE) {
+>                 int level = gpiod_get_value_cansleep(le->desc);
+> +
+>                 if (level)
+>                         /* Emit low-to-high event */
+>                         ge.id = GPIOEVENT_EVENT_RISING_EDGE;
+
+This can be unified with a patch against gpiolib-acpi.
+
+...
+
+> -       if (is_of_node(fwspec->fwnode) && fwspec->param_count == 2) {
+> +       if (is_of_node(fwspec->fwnode) && fwspec->param_count == 2)
+>                 return irq_domain_translate_twocell(d, fwspec, hwirq, type);
+> -       }
+
+Unify with the patch above removing {}.
+
+>         /* If a parent irqdomain is provided, let's build a hierarchy */
+>         if (gpiochip_hierarchy_is_hierarchical(gc)) {
+>                 int ret = gpiochip_hierarchy_add_domain(gc);
+> +
+>                 if (ret)
+>                         return ret;
+
+Similar as above.
+
+And so on...
+
+-- 
+With Best Regards,
+Andy Shevchenko
