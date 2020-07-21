@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036DB228B44
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F69E228B45
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731109AbgGUV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 17:28:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31816 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726658AbgGUV2u (ORCPT
+        id S1731171AbgGUV2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 17:28:53 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:57091 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730214AbgGUV2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 17:28:50 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LL2wsa152507;
-        Tue, 21 Jul 2020 17:28:24 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vv3xnm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 17:28:24 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LLA6KI024505;
-        Tue, 21 Jul 2020 21:28:22 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 32brq826kx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 21:28:22 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LLSJ7230146928
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Jul 2020 21:28:19 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5257E11C050;
-        Tue, 21 Jul 2020 21:28:19 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA3AB11C052;
-        Tue, 21 Jul 2020 21:28:16 +0000 (GMT)
-Received: from oc0525413822.ibm.com (unknown [9.163.39.1])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 21 Jul 2020 21:28:16 +0000 (GMT)
-Date:   Tue, 21 Jul 2020 14:28:13 -0700
-From:   Ram Pai <linuxram@us.ibm.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, mpe@ellerman.id.au, paulus@samba.org,
-        sukadev@linux.ibm.com, bauerman@linux.ibm.com,
-        bharata@linux.ibm.com, Paul Mackerras <paulus@ozlabs.org>
-Subject: Re: [PATCH v2 1/2] KVM: PPC: Book3S HV: move kvmppc_svm_page_out up
-Message-ID: <20200721212813.GF7339@oc0525413822.ibm.com>
-Reply-To: Ram Pai <linuxram@us.ibm.com>
-References: <20200721104202.15727-1-ldufour@linux.ibm.com>
- <20200721104202.15727-2-ldufour@linux.ibm.com>
+Received: from mail-qt1-f174.google.com ([209.85.160.174]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mc0Er-1kXaox3bKx-00dUij; Tue, 21 Jul 2020 23:28:49 +0200
+Received: by mail-qt1-f174.google.com with SMTP id e12so286991qtr.9;
+        Tue, 21 Jul 2020 14:28:48 -0700 (PDT)
+X-Gm-Message-State: AOAM532p9c3ushlnXnWNzO3TZkd19rn8dGWVMilr+mXoAk7QatC3u3/i
+        iPBp6vsQOzhi9+cLu0TOQTDoqiva4cStJT5bINM=
+X-Google-Smtp-Source: ABdhPJyHziGF4HFhHNTWIdmNTeJezHXP51PejxqSdbTC7t3xHTxw8+J9ZAPV/mtYZnOeTdBLEx83edOMw3nAuOM7JGo=
+X-Received: by 2002:ac8:6743:: with SMTP id n3mr7804927qtp.7.1595366927645;
+ Tue, 21 Jul 2020 14:28:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721104202.15727-2-ldufour@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-21_15:2020-07-21,2020-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=871 malwarescore=0 clxscore=1011
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007210135
+References: <20200721212336.1159079-1-helgaas@kernel.org>
+In-Reply-To: <20200721212336.1159079-1-helgaas@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 21 Jul 2020 23:28:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0aqus-7Z-qSc9J+gOsSCX5Ad570F-3a_HB1MHfJor7Bg@mail.gmail.com>
+Message-ID: <CAK8P3a0aqus-7Z-qSc9J+gOsSCX5Ad570F-3a_HB1MHfJor7Bg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] minor rtsx cleanups
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Ricky Wu <ricky_wu@realtek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rui Feng <rui_feng@realsil.com.cn>, Klaus Doth <kdlnx@doth.eu>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:4apkgCuGVwjG1fSFYMnNcVMn9c3IUfp7i++rQEf43fS+6FmRjAS
+ dtGTaktKo1OIWhPbCGs5C7mJwWR5HNQ7duGQ17fp8QKv5LRtMfCL5I5L0TIv3MGqGbn884s
+ 1Mtgltm+HQ3Phw4vOLlW9otq/PWFtfgPmhnkvoq2ML9/c/fIaXg5JBWJnSCcNWUTBke01Od
+ lYLc+7+Iqt6XmBdJEi20w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lQeZ/MSEWbY=:VS08gaRT2ZIlKcK0IstbK3
+ Ig5t417b4+pidSjhEJJFq4NucELDUcbiBEGFHHUyu8yp/tDK6SPMPKe1XGeqzU0Qb+rhqpy9f
+ pvh4T7764pVTSZZkwTknXdrfQ/BQMAS4Y39OaSTWKRwj1PN36ZSwYwTJ+sHgYjpPemKlE0RJy
+ L1R0bJb/Ykpt2nn7s1hjNetUUP3ivQzR9H/WWRL9qVkzJmsQBY5joLEbY633wDFymlJnUluqt
+ 02+/HDb/fBuURn8BdSfu7yxOmgY2u+WAwlqV0W3J7Bn+145HqWG6MA1r0pF2f+V5PuCEj69qQ
+ 60vNWJIRa/gXJMZiTFT5At6y39eZ6SbfxzhQK+7UxQM2P5aBBrGGhv/sYNaMor/pmW4wzlSPA
+ 1m7F3fKrSboyPqSHFwTFl3JBZHufIcFQyFJ9mYM8mFiX09wnoPZ4IPpguPj8MagyedOsTs2Yl
+ ZwORXmqCvrU3ku/M3hp5UsrCoY6zcllRjyJjOBTnZhruidJYsQD00i0mVmdCQJHJNm2A+1vhV
+ IFBvkpVIaFrWkZ61/Z6eoJHfjyzSLAkgh6iDGmdEl5LUiiYnphaGvZhaSpccwr3wnu7qgCAtr
+ eJwvoSPMp5N9BCQ7Gzfhaux+4svoTQYTENJ9GYHzI/9AkVO4Aed/GJAenWpyR6BfmV1FcT9Vh
+ +mA8kcgDstx4lmx3adkvR7ZhTusMDkQjefH9MsSnYe+GyD+euVRdNRcHIwdhYEJTaxHqfN4hL
+ IcIB3sItee0avUyDAI5PdIPgRZlUITjeCShndduMyCaTqwHyopi1K4haDsU5vTa9U20sbZn+z
+ utTHi9steOuEb0RjLI15xcXZyjxyLnTczuhWt2KTo2eH34izpciCVXUrgu8F8UOKpklO9FWG0
+ ekLQFmUrEDEf7kJ3O1agRLUTxw+KywgF0z8odcwwEljskcXsgzkUXvsKtiNRsVepQcoZEBc/7
+ /SQimvQ+8XAAXLpICAYd58X4kED1yXpFebv8mUHa7SCmZUfIXyH/T
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 12:42:01PM +0200, Laurent Dufour wrote:
-> kvmppc_svm_page_out() will need to be called by kvmppc_uvmem_drop_pages()
-> so move it upper in this file.
-> 
-> Furthermore it will be interesting to call this function when already
-> holding the kvm->arch.uvmem_lock, so prefix the original function with __
-> and remove the locking in it, and introduce a wrapper which call that
-> function with the lock held.
-> 
-> There is no functional change.
+On Tue, Jul 21, 2020 at 11:23 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> From: Bjorn Helgaas <bhelgaas@google.com>
+>
+> Clean up some needlessly device-specific stuff in the Realtek card reader
+> drivers.
+>
+> This implements some of my suggestions from
+> https://lore.kernel.org/r/20200720220651.GA1035857@bjorn-Precision-5520
+>
+> This will conflict with Ricky's post here:
+> https://lore.kernel.org/r/20200706070259.32565-1-ricky_wu@realtek.com
+>
+> I'll be happy to update this on top of Ricky's patch after it's applied, or
+> Ricky could pick up these patches and base his on top.
 
-Reviewed-by: Ram Pai <linuxram@us.ibm.com>
 
-> 
-> Cc: Ram Pai <linuxram@us.ibm.com>
-> Cc: Bharata B Rao <bharata@linux.ibm.com>
-> Cc: Paul Mackerras <paulus@ozlabs.org>
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> ---
+Looks all good to me,
 
-RP
+Acked-by: Arnd Bergmann <arnd@arndb.de>
