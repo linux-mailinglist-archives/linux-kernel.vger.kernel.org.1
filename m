@@ -2,124 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEF622814D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AF9228155
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgGUNtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 09:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgGUNtF (ORCPT
+        id S1727982AbgGUNve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 09:51:34 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50911 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726120AbgGUNve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:49:05 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E763BC0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:49:04 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f139so2933875wmf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eqcpjEIrcsVSFBgsxPpIE2wbXMnlhFiLHo79g30IYmY=;
-        b=FcI07BgDIsQZnkKoQ7ZcelTbxx0IA3ghFJ3Jg7OvrTSEL0HsT3x+ya+4TvM3rxzq9S
-         hKDrIRS7FLmiJJlrm2pw4emkaM4YwW+5lNnfH2p4H9zbIkt3/rmGr37tE3X+I2Bhw9DP
-         EhlJg7hwSeMEL1lgIp7CE9zMkvVgqPhp8ybhtTo7ImQb3ugD/RmY9q00cvjAxoL2UJbR
-         7WV3925u7CnPpMJ+eWmdN8bTzR/8FrZhnjEONC8SaaJTwdJHixMAQG5zTZ7ChqVpmm7R
-         UJxo6ac0ASf+//JmKtM3O3gdyceW3Dc+eyGAzJTP12A/Q5o4lPKHjDsHBJffLtK+KnUG
-         mRdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eqcpjEIrcsVSFBgsxPpIE2wbXMnlhFiLHo79g30IYmY=;
-        b=tykJyFPtKhf8D+HWE1UJ5Scv3O/evmoIM85iVZD1COINLQxWULpSbnN50Er0rv0w58
-         QM8k5uQKOON0MEm0EtQfH6xumJS6gkGv2winYC/pMoLWTWF9MVvH3XvWBt4rOQzot3WU
-         ote8MMnSE/SCpQsmUwoGRqkH3SsvEytzFNY8cmY0BHRrcD/14qkNdcKwFpxkk9LyqQcM
-         bfoDkkOOj2+O8kOrFPwa3dk5KIoJGR/e2FTPOYJVMmPMoA5rL6fcjLUqdEVQhQ3DWRyt
-         4DyiUIBpLTbMkKq3vfxWp/rmJu/1XXEpoHw7QJLLou8VL9BFe3z5Zveojs34emKjtjkC
-         ROmg==
-X-Gm-Message-State: AOAM5308ZuAsNcAosd+SkrVugaD5mxi+3v/U5SuDynYxAnCPY2Sjkh+C
-        M3+O8yhOCK3CPEmydIIDiu28iA==
-X-Google-Smtp-Source: ABdhPJy3d+hLbGrGf/sSsPOwfCC1/TSYzvAB67Rw+TgT/X9vHSPS3HJvfRFbLW/K+8t5eo0f5yKlsw==
-X-Received: by 2002:a1c:31c6:: with SMTP id x189mr3917750wmx.182.1595339343428;
-        Tue, 21 Jul 2020 06:49:03 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c144:5385:c824:85ce? ([2a01:e34:ed2f:f020:c144:5385:c824:85ce])
-        by smtp.googlemail.com with ESMTPSA id d18sm40156733wrj.8.2020.07.21.06.49.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 06:49:02 -0700 (PDT)
-Subject: Re: [PATCH] clocksource/drivers/timer-ti-dm: Fix suspend and resume
- for am3 and am4
-To:     Carlos Hernandez <ceh@ti.com>, Tony Lindgren <tony@atomide.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200713162601.6829-1-tony@atomide.com>
- <1ac1ac81-1335-8ba2-590c-8f57c2df1910@linaro.org>
- <6b5fc12c-4da3-fc67-b9dd-bfca2ae870f2@ti.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2081a11d-8678-03ec-cde4-b4eaae10e82d@linaro.org>
-Date:   Tue, 21 Jul 2020 15:49:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 21 Jul 2020 09:51:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U3PtznR_1595339485;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3PtznR_1595339485)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Jul 2020 21:51:25 +0800
+Subject: Re: [PATCH v16 16/22] mm/mlock: reorder isolation sequence during
+ munlock
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-17-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0Udcry01samXT54RkurNqFKnVmv-686ZFHF+iw4b+12T_A@mail.gmail.com>
+ <6e37ee32-c6c5-fcc5-3cad-74f7ae41fb67@linux.alibaba.com>
+ <CAKgT0Ue2i96gL=Tqx_wFmsBj_b1cnM1KQHh8b+oYr5iRg0Tcpw@mail.gmail.com>
+ <7a931661-e096-29ee-d97d-8bf96ba6c972@linux.alibaba.com>
+Message-ID: <e7c9dda7-f222-5f05-9e02-4ea42c743999@linux.alibaba.com>
+Date:   Tue, 21 Jul 2020 21:51:24 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <6b5fc12c-4da3-fc67-b9dd-bfca2ae870f2@ti.com>
+In-Reply-To: <7a931661-e096-29ee-d97d-8bf96ba6c972@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2020 15:11, Carlos Hernandez wrote:
-> 
-> On 7/17/20 6:29 AM, Daniel Lezcano wrote:
->> On 13/07/2020 18:26, Tony Lindgren wrote:
->>> Carlos Hernandez <ceh@ti.com> reported that we now have a suspend and
->>> resume regresssion on am3 and am4 compared to the earlier kernels. While
->>> suspend and resume works with v5.8-rc3, we now get errors with rtcwake:
->>>
->>> pm33xx pm33xx: PM: Could not transition all powerdomains to target state
->>> ...
->>> rtcwake: write error
->>>
->>> This is because we now fail to idle the system timer clocks that the
->>> idle code checks and the error gets propagated to the rtcwake.
->>>
->>> Turns out there are several issues that need to be fixed:
->>>
->>> 1. Ignore no-idle and no-reset configured timers for the ti-sysc
->>>     interconnect target driver as otherwise it will keep the system
->>> timer
->>>     clocks enabled
->>>
->>> 2. Toggle the system timer functional clock for suspend for am3 and am4
->>>     (but not for clocksource on am3)
->>>
->>> 3. Only reconfigure type1 timers in dmtimer_systimer_disable()
->>>
->>> 4. Use of_machine_is_compatible() instead of of_device_is_compatible()
->>>     for checking the SoC type
->>>
->>> Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent
->>> and clocksource support")
->>> Reported-by: Carlos Hernandez <ceh@ti.com>
->>> Signed-off-by: Tony Lindgren <tony@atomide.com>
->>> ---
-> 
-> Tested-by: Carlos Hernandez <ceh@ti.com>
 
-Thanks
 
->> Carlos, were you able to test this patch ?
+在 2020/7/21 下午5:26, Alex Shi 写道:
+> 
+> 
+> 在 2020/7/21 上午2:51, Alexander Duyck 写道:
+>>> Look into the __split_huge_page_tail, there is a tiny gap between tail page
+>>> get PG_mlocked, and it is added into lru list.
+>>> The TestClearPageLRU could blocked memcg changes of the page from stopping
+>>> isolate_lru_page.
+>> I get that there is a gap between the two in __split_huge_page_tail.
+>> My concern is more the fact that you are pulling the bit testing
+>> outside of the locked region when I don't think it needs to be. The
+>> lock is being taken unconditionally, so why pull the testing out when
+>> you could just do it inside the lock anyway? My worry is that you
+>> might be addressing __split_huge_page_tail but in the process you
+>> might be introducing a new race with something like
+>> __pagevec_lru_add_fn.
+> 
+> Yes, the page maybe interfered by clear_page_mlock and add pages to wrong lru
+> list.
+> 
 >>
+>> If I am not mistaken the Mlocked flag can still be cleared regardless
+>> of if the LRU bit is set or not. So you can still clear the LRU bit
+>> before you pull the page out of the list, but it can be done after
+>> clearing the Mlocked flag instead of before you have even taken the
+>> LRU lock. In that way it would function more similar to how you
+>> handled pagevec_lru_move_fn() as all this function is really doing is
+>> moving the pages out of the unevictable list into one of the other LRU
+>> lists anyway since the Mlocked flag was cleared.
+>>
+> 
+> Without the lru bit guard, the page may be moved between memcgs, luckly,
+> lock_page would stop the mem_cgroup_move_account with BUSY state cost.
+> whole new change would like the following, I will testing/resend again.
+> 
 
+Hi Johannes,
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+It looks like lock_page_memcg() could be used to replace lock_page(), which
+could change retry into spinlock wait. Would you like to give some comments?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thank
+Alex
+> Thanks!
+> Alex
+> 
+> @@ -182,7 +179,7 @@ static void __munlock_isolation_failed(struct page *page)
+>  unsigned int munlock_vma_page(struct page *page)
+>  {
+>         int nr_pages;
+> -       pg_data_t *pgdat = page_pgdat(page);
+> +       struct lruvec *lruvec;
+> 
+>         /* For try_to_munlock() and to serialize with page migration */
+>         BUG_ON(!PageLocked(page));
+> @@ -190,11 +187,11 @@ unsigned int munlock_vma_page(struct page *page)
+>         VM_BUG_ON_PAGE(PageTail(page), page);
+> 
+>         /*
+> -        * Serialize with any parallel __split_huge_page_refcount() which
+> +        * Serialize split tail pages in __split_huge_page_tail() which
+>          * might otherwise copy PageMlocked to part of the tail pages before
+>          * we clear it in the head page. It also stabilizes hpage_nr_pages().
+>          */
+> -       spin_lock_irq(&pgdat->lru_lock);
+> +       lruvec = lock_page_lruvec_irq(page);
+> 
+>         if (!TestClearPageMlocked(page)) {
+>                 /* Potentially, PTE-mapped THP: do not skip the rest PTEs */
+> @@ -205,15 +202,15 @@ unsigned int munlock_vma_page(struct page *page)
+>         nr_pages = hpage_nr_pages(page);
+>         __mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
+> 
+> -       if (__munlock_isolate_lru_page(page, true)) {
+> -               spin_unlock_irq(&pgdat->lru_lock);
+> +       if (__munlock_isolate_lru_page(page, lruvec, true)) {
+> +               unlock_page_lruvec_irq(lruvec);
+>                 __munlock_isolated_page(page);
+>                 goto out;
+>         }
+>         __munlock_isolation_failed(page);
+> 
+>  unlock_out:
+> -       spin_unlock_irq(&pgdat->lru_lock);
+> +       unlock_page_lruvec_irq(lruvec);
+> 
+>  out:
+>         return nr_pages - 1;
+> @@ -293,23 +290,27 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+>         int nr = pagevec_count(pvec);
+>         int delta_munlocked = -nr;
+>         struct pagevec pvec_putback;
+> +       struct lruvec *lruvec = NULL;
+>         int pgrescued = 0;
+> 
+>         pagevec_init(&pvec_putback);
+> 
+>         /* Phase 1: page isolation */
+> -       spin_lock_irq(&zone->zone_pgdat->lru_lock);
+>         for (i = 0; i < nr; i++) {
+>                 struct page *page = pvec->pages[i];
+> 
+> +               /* block memcg change in mem_cgroup_move_account */
+> +               lock_page(page);
+> +               lruvec = relock_page_lruvec_irq(page, lruvec);
+>                 if (TestClearPageMlocked(page)) {
+>                         /*
+>                          * We already have pin from follow_page_mask()
+>                          * so we can spare the get_page() here.
+>                          */
+> -                       if (__munlock_isolate_lru_page(page, false))
+> +                       if (__munlock_isolate_lru_page(page, lruvec, false)) {
+> +                               unlock_page(page);
+>                                 continue;
+> -                       else
+> +                       } else
+>                                 __munlock_isolation_failed(page);
+>                 } else {
+>                         delta_munlocked++;
+> @@ -321,11 +322,14 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+>                  * pin. We cannot do it under lru_lock however. If it's
+>                  * the last pin, __page_cache_release() would deadlock.
+>                  */
+> +               unlock_page(page);
+>                 pagevec_add(&pvec_putback, pvec->pages[i]);
+>                 pvec->pages[i] = NULL;
+>         }
+> -       __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+> -       spin_unlock_irq(&zone->zone_pgdat->lru_lock);
+> +       if (lruvec) {
+> +               __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+> +               unlock_page_lruvec_irq(lruvec);
+> +       }
+> 
+>         /* Now we can release pins of pages that we are not munlocking */
+>         pagevec_release(&pvec_putback);
+> 
