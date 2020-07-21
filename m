@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6552B228223
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57E622821E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgGUO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbgGUO1z (ORCPT
+        id S1728907AbgGUO1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:27:52 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1749 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgGUO1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:27:55 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F2DC061794;
-        Tue, 21 Jul 2020 07:27:55 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id n26so21889746ejx.0;
-        Tue, 21 Jul 2020 07:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FoM2lLvk+HU1JsguyDzCkDhJcQpe74th81bnFKHZ61k=;
-        b=Tb36TVsvZyPVCNfk8o0RlrlP+mnR/eMaGMgp6Ca1CqlBYlXZG8opeFsuRSmWNEGnGT
-         3a0tm2PbY756z7t31/5nk17pGk2BzWpoQBFQIyUej3lj4szEfe+nJh91oxub3Fy77Ztt
-         tf4BTSjY2cEUt7m4bl9/ZYp4SZnw4Fi3KOq/M6F92/ntlTkSAaLFhE1WGSUUQImHNrKr
-         tcRL5XsJwxlx/iEv9vt86Kc3XkyDdsQYaX8qd020OiJ4QhECITtA7w3G5t4t+V4XhVDz
-         ZBaw6bBvig4y+KfHz01SUMWZbGu+5lTOxxFaAfSXLQu4XEfbEWDywzSrEfb7texqDZ4G
-         aW2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FoM2lLvk+HU1JsguyDzCkDhJcQpe74th81bnFKHZ61k=;
-        b=MVy5/l/hzL0yRaRqtSPIc3Sd+GBWA8BkC0pHx9HOyErlf2SfLyFspiOnTuwwBdDHr4
-         RKuhuZOiez0jt6KxsziQbjZSJIJo/JpHBblKFLG/V3Eg1KR00iT0hPA8FYMvQqTo2D2g
-         a9ZpM2qqNTKsNL7M0sgxR9MIZvx7aICNDiNVUj6QffLza6L2H+1ZdcMzhgE8xmZHLB4W
-         HjApVHwXPgBw36nnuuLEoUHVlkDgR23FWOIhviRPPrFM2hTQLZ0Vs6o0CAQShZH4p2kC
-         32tev6v0zH07J4mSQCB4wKCIEcp1jr6YskT20IdcBiV8D3AWiXWNLOkBfqbistGiKiAg
-         KoDw==
-X-Gm-Message-State: AOAM5318k2N24ij6fFY+OqCe2veG5vsIKpt9tHC+/45a9ZzP/zxF6nTc
-        05rXr12x6PuDt/pAsUH4u68MXR7T/ex+pEf4c28=
-X-Google-Smtp-Source: ABdhPJzSo6Fh1hKllPx1Sf8jn5wjHy9PnUTmzYxaeqSTRJRgYWldpUIItzBxdpOIlcnV/OUxWXwrM0RFinDCHwJeuFY=
-X-Received: by 2002:a17:906:ca4c:: with SMTP id jx12mr24039568ejb.231.1595341674113;
- Tue, 21 Jul 2020 07:27:54 -0700 (PDT)
+        Tue, 21 Jul 2020 10:27:52 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f16fb5b0000>; Tue, 21 Jul 2020 07:27:39 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 21 Jul 2020 07:27:51 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 21 Jul 2020 07:27:51 -0700
+Received: from [10.2.168.236] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Jul
+ 2020 14:27:51 +0000
+Subject: Re: [PATCH v3 3/3] media: i2c: imx274: Add IMX274 power on and off
+ sequence
+To:     Luca Ceresoli <luca@lucaceresoli.net>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <leonl@leopardimaging.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1595264494-2400-1-git-send-email-skomatineni@nvidia.com>
+ <1595264494-2400-3-git-send-email-skomatineni@nvidia.com>
+ <a66723a1-d88d-28e2-8c8c-2779ab7ead78@lucaceresoli.net>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <56105f23-5aab-9b88-fa40-20f523e64f52@nvidia.com>
+Date:   Tue, 21 Jul 2020 07:28:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu> <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu>
-In-Reply-To: <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 21 Jul 2020 07:28:30 -0700
-Message-ID: <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a66723a1-d88d-28e2-8c8c-2779ab7ead78@lucaceresoli.net>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595341659; bh=mhvZ+ZOWLkMT31a9ATRd84r9IJhYpQVXyj+LhDJq50Y=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=IzkdVePCXVj6+zcxfrVWRoeT6wUzigR4gOK7AYt9uhamsodeXdDeSu6tnbxDxHs2h
+         GgIn3wp31CtDUZmvwpNvbhAc+mIJB0OvTU3/2DdxTsyCiRtcDEyM9x7PsurtOnTQku
+         4uiGHc05mumEKaZ2l2cds9fSdMTr+ac8/HAXepolw5rjOZYz+e1NM2J6Fa+R3dPBxm
+         P39S92ooKA+j+mcDi8Il3QWjRRQXj/GhbH7P6NSFHon5kKkSMrRAYv17hoU+Uq72U0
+         nb5Uw2J/4GMwGNRAX+OJwyE+xEJZa3ZJTMuqG2rXiyzbtdwzvk4Jjppuk8th6Bg1RS
+         FmDl+ZCfsrx5w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 8:24 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 20-07-20, 08:03, Rob Clark wrote:
-> > On Mon, Jul 20, 2020 at 3:01 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > On 15-07-20, 08:36, Rob Clark wrote:
-> > > > I can take the first two into msm-next, the 3rd will need to wait
-> > > > until dev_pm_opp_set_bw() lands
-> > >
-> > > You can base that on a8351c12c6c7 in linux-next, I will make sure not to rebase
-> > > it anymore.
->
-> This was 5.8-rc1 + 2 patches for OPP. That's all.
->
-> > >
-> >
-> > I can't really base on something newer than drm-next
->
-> But you need the OPP dependency, isn't it ?
 
-With your ack, I can add the patch the dev_pm_opp_set_bw patch to my
-tree and merge it via msm-next -> drm-next -> linus
-
-Otherwise I can send a second later pull req that adds the final patch
-after has rebased to 5.9-rc1 (by which point the opp next tree will
-have presumably been merged
-
-BR,
--R
-
+On 7/21/20 7:03 AM, Luca Ceresoli wrote:
+> Hi Sowjanya,
 >
-> --
-> viresh
+> On 20/07/20 19:01, Sowjanya Komatineni wrote:
+>> IMX274 has VANA analog 2.8V supply, VDIG digital core 1.8V supply,
+>> and VDDL digital io 1.2V supply which are optional based on camera
+>> module design.
+>>
+>> IMX274 also need external 24Mhz clock and is optional based on
+>> camera module design.
+>>
+>> This patch adds support for IMX274 power on and off to enable and
+>> disable these supplies and external clock.
+>>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> ---
+> In the future please add a log of changes since previous versions here.
+>
+> As far as the patch is concerned:
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+>
+> Thanks.
+
+Sure.
+
+Thanks
+
+Sowjanya
+
