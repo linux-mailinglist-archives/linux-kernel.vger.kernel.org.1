@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD19228A3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF1F228A43
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgGUU7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 16:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        id S1731014AbgGUVAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 17:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgGUU7H (ORCPT
+        with ESMTP id S1726029AbgGUVAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 16:59:07 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A88C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:59:06 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id k17so97109lfg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:59:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oK0U7CK9re3KwY6+YWsTmFuqjWG2zA/cc2/NJqjaC58=;
-        b=MJZCaND5bM+eLX/atXXRAs6foyLZdDHGe4xkDKocFoD0uopxVHUhAJF2FHiEr07g0i
-         laWzz+ZjhXspCUxo4v10aCUKL49bwik1j0t1yx8BhtkyTkMGbYDaV4cQvfR9eOd8QLBe
-         Q7fIBTaBylq5TNJhwwHDi6jMkh55DZb7AgFtM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oK0U7CK9re3KwY6+YWsTmFuqjWG2zA/cc2/NJqjaC58=;
-        b=Iu8Q4Q3gVIBSBXQGd1P/iRCKDB4VU3ZtzHUSgyCqiKCSB+ZtIP2kGbp2qnX/Z4VpaZ
-         zBwk7w7VEdy+U03/IaGbVF1N6qz1dPAQ2wfmUwmZkfWqZzLLBU2vRyyZ2Zovxktax0Ov
-         Lk1Q421Pa9i7md69WD0ccnlk241t6nXW9YgrOLWaqpN+3VnMGS1e1jBpWjwKavwDbXhC
-         76NYi4MTzIP+NoNWSSQA18ciVngvaZ3La5Fw4+cbA8m242SkFvSK3jg7zF4Y6+A6M6MQ
-         r2pkJLxx2kZAcZ3B0adK1AIQoXtAC3cCbZ0xkNNQ3wAp6WaYqii8Ba0spUDnVlssgbQQ
-         9sVg==
-X-Gm-Message-State: AOAM531SHWgSzutc3sI7JRU7s3Ds6s9tzHx5b5bF0+tieS1AU1N8f3/L
-        bznLErOD+hUAmtHnxh6/x6FRugxWALc=
-X-Google-Smtp-Source: ABdhPJzXI2rC8V7wL9J9FsC9KF4yTwaG8iEXaFSQAM0LzNwsnvOFSWH0HKMIqWzFQpnxWYcwnlr+9g==
-X-Received: by 2002:a19:ac03:: with SMTP id g3mr14139693lfc.164.1595365145051;
-        Tue, 21 Jul 2020 13:59:05 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id w19sm5038073ljm.120.2020.07.21.13.59.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 13:59:04 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id j11so167491ljo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:59:04 -0700 (PDT)
-X-Received: by 2002:a2e:991:: with SMTP id 139mr13034796ljj.314.1595365143886;
- Tue, 21 Jul 2020 13:59:03 -0700 (PDT)
+        Tue, 21 Jul 2020 17:00:07 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1967CC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=DTQIuZB8c1fyynJQcCCnAFbsCacNAxGER4BIRMaS+h0=; b=fWWJmHwWmhSH2hLIxtmaDjNQbg
+        asRhE2+kU+rJXOdR9dWrt6LuCIHcKT/Mq6Nv2JoZzWeRxx5N1zgowcXzcm8BJKmZTe4bhU7KTJHYm
+        hTVGFd/FntBw3QslC2mfBrB6VNT3vXgTrsow12zzQ0Kk8WxF1xO4QBez7Xb4SEz8XNXwvsZ7dcVOn
+        b7YT5lExhKhnc8USSxICn8u+kBNrvbB6bJvSRCVSaNFu8fCW6Qd4LSKomm9Yum8wl9HMRIzb6Hc2c
+        YO/HIx/Uo/SgSw1UJ6lj2Ofi70ur1Faq2veJhhhMi8cRc/mExfu6xLOEGU4PQDVGLTqjTuTaF0EGB
+        fVpW85jg==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxzMq-0000Y2-7G; Tue, 21 Jul 2020 21:00:04 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org
+Subject: [PATCH] ARC: pgalloc.h: delete a duplicated word + other fixes
+Date:   Tue, 21 Jul 2020 13:59:58 -0700
+Message-Id: <20200721205958.15229-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200721202425.GA2786714@ZenIV.linux.org.uk> <20200721202549.4150745-1-viro@ZenIV.linux.org.uk>
- <20200721202549.4150745-4-viro@ZenIV.linux.org.uk> <CAHk-=wiYS3sHp9bvRn3KmkFKnK-Pb0ksL+-gRRHLK_ZjJqQf=w@mail.gmail.com>
-In-Reply-To: <CAHk-=wiYS3sHp9bvRn3KmkFKnK-Pb0ksL+-gRRHLK_ZjJqQf=w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 21 Jul 2020 13:58:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg4DXWjV0sHAk+5QGvkNqckJTBLLcse_U=AknqEf8r3pw@mail.gmail.com>
-Message-ID: <CAHk-=wg4DXWjV0sHAk+5QGvkNqckJTBLLcse_U=AknqEf8r3pw@mail.gmail.com>
-Subject: Re: [PATCH 04/18] csum_and_copy_..._user(): pass 0xffffffff instead
- of 0 as initial sum
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 1:55 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> This seems dangerous to me.
->
-> Maybe some implementation depends on the fact that they actually do
-> the csum 16 bits at a time, and never see an overflow in "int",
-> because they keep folding things.
->
-> You now break that assumption, and give it an initial value that the
-> csum code itself would never generate, and wouldn't handle right.
->
-> But I didn't check. Maybe we don't have anything that stupid in the kernel.
+Drop the repeated word "to".
+Change "Thay" to "That".
+Add a closing right parenthesis.
 
-I take it back. The very first place I looked seemed to do exactly that.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+---
+ arch/arc/include/asm/pgalloc.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-See "do_csum()" in the kernel. It doesn't handle carry for any of the
-usual cases, exactly because it knows it doesn't need to.
-
-Ok, so do_csum() doesn't take that initial value, but it's very much
-an example of the kind of algorithm I was thinking of: it does do
-things 32 bits at a time and handles the carry bit in that inner loop,
-but internally it knows that the val;ues are limited in other places,
-and doesn't need to handle carry everywhere.
-
-                Linus
+--- linux-next-20200720.orig/arch/arc/include/asm/pgalloc.h
++++ linux-next-20200720/arch/arc/include/asm/pgalloc.h
+@@ -18,10 +18,10 @@
+  * vineetg: April 2010
+  *  -Switched pgtable_t from being struct page * to unsigned long
+  *      =Needed so that Page Table allocator (pte_alloc_one) is not forced to
+- *       to deal with struct page. Thay way in future we can make it allocate
++ *       deal with struct page. That way in future we can make it allocate
+  *       multiple PG Tbls in one Page Frame
+  *      =sweet side effect is avoiding calls to ugly page_address( ) from the
+- *       pg-tlb allocator sub-sys (pte_alloc_one, ptr_free, pmd_populate
++ *       pg-tlb allocator sub-sys (pte_alloc_one, ptr_free, pmd_populate)
+  *
+  *  Amit Bhor, Sameer Dhavale: Codito Technologies 2004
+  */
