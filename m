@@ -2,126 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8721B228901
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392E62288FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgGUTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbgGUTSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:18:14 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47431C061794;
-        Tue, 21 Jul 2020 12:18:14 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f18so3957711wml.3;
-        Tue, 21 Jul 2020 12:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=d3TKYP4o+8GyD6R3uLACwUhGmVtEHiKUIs+qv7jiKrs=;
-        b=Y85VM6pVuzOYBKCzRvBXLnPLXo1Y3B4xiuUr90n0mcLtHpkthkzKATe+IBCDI09cav
-         DK4O+PxIV9EBf83Kob7n8UmV78Ee21Mi6Qjef7GCeWXD2T6E7LTz4QZkSoXN4jEx314f
-         vAxdv6P2aD12VrXIVj9m9E8xYo48naDU/TxhNzLVSInhSjHcJ5XxuUgeMSEysYAwtXHz
-         hrFO0eCodu+wGDlB0GqaCZVT8RuOnkfL6RTWf6D2taparr6bAfSeMypqcuBO0GzwBm07
-         jgsbVSO7L7xwbkJvIbRzigWM1JReeRjurWO1yMEfiJ3dnVHLC9/oKGqe/aDIHIobrXtN
-         BlGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=d3TKYP4o+8GyD6R3uLACwUhGmVtEHiKUIs+qv7jiKrs=;
-        b=SoMVXhUFv3alicsRcuu4m8pHUZeb3DkoDiuodfjbYb/BnXm2zrznoIyiqgbD5ZMW1l
-         eVLWEynNSXwFlnI/xDboVbjFzUwBhLzQ9VXghUBO7CapksBqAq7yg09KLDib8Efmj/Z8
-         M9BSxki2Ix2Q8MCcF4pmDS3dQ+xPFEUtZX7D9eeufIR9bDUI5hPhaCPTuJs348yambG9
-         K5ZU5NQgGP9LVoCioLt/0EQltPIlusTXNDbVRm4ZYor/zLCMiV8UaUJvuRvJraxaA42c
-         VdbwoAUN7vfT11GAjS2EPRJtdTVnW0Akvw7wHdQZHaT5t+q40X65Fs/9sbNrVNSCODe2
-         bgtQ==
-X-Gm-Message-State: AOAM531MQmEQ0J5lc+TUQSXxt3EVwKPJd6Vvk95Q+l5Y/n7ta0AB1NJq
-        j9kWf1uUVgue9+Mpgkry8Ja8QDoA
-X-Google-Smtp-Source: ABdhPJzjgAfGACh83dk5biQo13nQNx9k/mgrRnN85rbCJJOO1Ljpf5TnnsKWA7ml0fS8ixPafkJHww==
-X-Received: by 2002:a05:600c:2050:: with SMTP id p16mr5099565wmg.44.1595359092626;
-        Tue, 21 Jul 2020 12:18:12 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id j16sm39876315wrt.7.2020.07.21.12.18.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 12:18:12 -0700 (PDT)
-From:   Al Cooper <alcooperx@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Bradley Bolen <bradleybolen@gmail.com>,
-        linux-mmc@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH] mmc: Some Micron eMMC devices cause reboot to hang
-Date:   Tue, 21 Jul 2020 15:17:18 -0400
-Message-Id: <20200721191718.29414-1-alcooperx@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729967AbgGUTRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:17:42 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:47048 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726602AbgGUTRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:17:41 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 35E0FBC1AB;
+        Tue, 21 Jul 2020 19:17:36 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        gregkh@linuxfoundation.org, mh12gx2825@gmail.com, ejyu99@gmail.com,
+        yuehaibing@huawei.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] staging: comedi: ni: Replace HTTP links with HTTPS ones
+Date:   Tue, 21 Jul 2020 21:17:29 +0200
+Message-Id: <20200721191729.67847-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using eMMC as the boot device, some Micron eMMC devices will
-cause reboot to hang. This is a result of the eMMC device not going
-into boot mode after the hardware sends CMD0 to reset the eMMC
-device. This only happens if the kernel driver sends CMD5 (SLEEP_WAKE),
-to put the device into sleep state, before restarting the system.
-The fix is to add a quirk that avoids sending the SLEEP command
-and to use MMC_FIXUP to set the quirk for these Micron devices.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- drivers/mmc/core/mmc.c    | 3 ++-
- drivers/mmc/core/quirks.h | 8 ++++++++
- include/linux/mmc/card.h  | 1 +
- 3 files changed, 11 insertions(+), 1 deletion(-)
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 4203303f946a..4d69e8f8fe59 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -1895,7 +1895,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 
- static int mmc_can_sleep(struct mmc_card *card)
- {
--	return (card && card->ext_csd.rev >= 3);
-+	return card && card->ext_csd.rev >= 3 &&
-+		((card->quirks & MMC_QUIRK_BROKEN_SLEEP) == 0);
- }
- 
- static int mmc_sleep(struct mmc_host *host)
-diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-index 472fa2fdcf13..7263187b6323 100644
---- a/drivers/mmc/core/quirks.h
-+++ b/drivers/mmc/core/quirks.h
-@@ -99,6 +99,14 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
- 	MMC_FIXUP("V10016", CID_MANFID_KINGSTON, CID_OEMID_ANY, add_quirk_mmc,
- 		  MMC_QUIRK_TRIM_BROKEN),
- 
-+	/*
-+	 * Some Micron eMMC devices will not go into boot mode on
-+	 * CMD0 arg: 0XF0F0F0F0 after going into SLEEP state.
-+	 * This will hang a reboot.
-+	 */
-+	MMC_FIXUP(CID_NAME_ANY, CID_MANFID_NUMONYX, 0x014e, add_quirk_mmc,
-+		  MMC_QUIRK_BROKEN_SLEEP),
-+
- 	END_FIXUP
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/staging/comedi/drivers/ni_6527.c         | 2 +-
+ drivers/staging/comedi/drivers/ni_65xx.c         | 2 +-
+ drivers/staging/comedi/drivers/ni_660x.c         | 2 +-
+ drivers/staging/comedi/drivers/ni_670x.c         | 2 +-
+ drivers/staging/comedi/drivers/ni_at_a2150.c     | 2 +-
+ drivers/staging/comedi/drivers/ni_at_ao.c        | 2 +-
+ drivers/staging/comedi/drivers/ni_atmio.c        | 2 +-
+ drivers/staging/comedi/drivers/ni_atmio16d.c     | 2 +-
+ drivers/staging/comedi/drivers/ni_daq_700.c      | 4 ++--
+ drivers/staging/comedi/drivers/ni_labpc.c        | 4 ++--
+ drivers/staging/comedi/drivers/ni_labpc_common.c | 2 +-
+ drivers/staging/comedi/drivers/ni_labpc_isadma.c | 2 +-
+ drivers/staging/comedi/drivers/ni_labpc_pci.c    | 2 +-
+ drivers/staging/comedi/drivers/ni_pcidio.c       | 4 ++--
+ drivers/staging/comedi/drivers/ni_pcimio.c       | 2 +-
+ drivers/staging/comedi/drivers/ni_routes.c       | 2 +-
+ drivers/staging/comedi/drivers/ni_usb6501.c      | 2 +-
+ 17 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/staging/comedi/drivers/ni_6527.c b/drivers/staging/comedi/drivers/ni_6527.c
+index 4d1eccb5041d..ba7f40b46c3a 100644
+--- a/drivers/staging/comedi/drivers/ni_6527.c
++++ b/drivers/staging/comedi/drivers/ni_6527.c
+@@ -486,6 +486,6 @@ static struct pci_driver ni6527_pci_driver = {
  };
+ module_comedi_pci_driver(ni6527_driver, ni6527_pci_driver);
  
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index 7d46411ffaa2..0cdddcb5e17d 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -270,6 +270,7 @@ struct mmc_card {
- #define MMC_QUIRK_BROKEN_IRQ_POLLING	(1<<11)	/* Polling SDIO_CCCR_INTx could create a fake interrupt */
- #define MMC_QUIRK_TRIM_BROKEN	(1<<12)		/* Skip trim */
- #define MMC_QUIRK_BROKEN_HPI	(1<<13)		/* Disable broken HPI support */
-+#define MMC_QUIRK_BROKEN_SLEEP	(1<<14)		/* Broken sleep mode */
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for National Instruments PCI-6527");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_65xx.c b/drivers/staging/comedi/drivers/ni_65xx.c
+index 996074e471d3..eb3f9f7109da 100644
+--- a/drivers/staging/comedi/drivers/ni_65xx.c
++++ b/drivers/staging/comedi/drivers/ni_65xx.c
+@@ -817,6 +817,6 @@ static struct pci_driver ni_65xx_pci_driver = {
+ };
+ module_comedi_pci_driver(ni_65xx_driver, ni_65xx_pci_driver);
  
- 	bool			reenable_cmdq;	/* Re-enable Command Queue */
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for NI PCI-65xx static dio boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_660x.c b/drivers/staging/comedi/drivers/ni_660x.c
+index 75d5c9c24596..e60d0125bcb2 100644
+--- a/drivers/staging/comedi/drivers/ni_660x.c
++++ b/drivers/staging/comedi/drivers/ni_660x.c
+@@ -1250,6 +1250,6 @@ static struct pci_driver ni_660x_pci_driver = {
+ };
+ module_comedi_pci_driver(ni_660x_driver, ni_660x_pci_driver);
  
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for NI 660x counter/timer boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_670x.c b/drivers/staging/comedi/drivers/ni_670x.c
+index 4e4ae31c8d0b..c197e47486be 100644
+--- a/drivers/staging/comedi/drivers/ni_670x.c
++++ b/drivers/staging/comedi/drivers/ni_670x.c
+@@ -277,6 +277,6 @@ static struct pci_driver ni_670x_pci_driver = {
+ };
+ module_comedi_pci_driver(ni_670x_driver, ni_670x_pci_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_at_a2150.c b/drivers/staging/comedi/drivers/ni_at_a2150.c
+index 76e8d047f71e..10ad7b88713e 100644
+--- a/drivers/staging/comedi/drivers/ni_at_a2150.c
++++ b/drivers/staging/comedi/drivers/ni_at_a2150.c
+@@ -777,6 +777,6 @@ static struct comedi_driver ni_at_a2150_driver = {
+ };
+ module_comedi_driver(ni_at_a2150_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_at_ao.c b/drivers/staging/comedi/drivers/ni_at_ao.c
+index 814895d01ffa..2a0fb4d460db 100644
+--- a/drivers/staging/comedi/drivers/ni_at_ao.c
++++ b/drivers/staging/comedi/drivers/ni_at_ao.c
+@@ -369,6 +369,6 @@ static struct comedi_driver ni_at_ao_driver = {
+ };
+ module_comedi_driver(ni_at_ao_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for NI AT-AO-6/10 boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_atmio.c b/drivers/staging/comedi/drivers/ni_atmio.c
+index 2b7bfe0dd7f3..56c78da475e7 100644
+--- a/drivers/staging/comedi/drivers/ni_atmio.c
++++ b/drivers/staging/comedi/drivers/ni_atmio.c
+@@ -354,7 +354,7 @@ static struct comedi_driver ni_atmio_driver = {
+ };
+ module_comedi_driver(ni_atmio_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+ 
+diff --git a/drivers/staging/comedi/drivers/ni_atmio16d.c b/drivers/staging/comedi/drivers/ni_atmio16d.c
+index 0bca7d752015..dffce1aa3e69 100644
+--- a/drivers/staging/comedi/drivers/ni_atmio16d.c
++++ b/drivers/staging/comedi/drivers/ni_atmio16d.c
+@@ -724,6 +724,6 @@ static struct comedi_driver atmio16d_driver = {
+ };
+ module_comedi_driver(atmio16d_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_daq_700.c b/drivers/staging/comedi/drivers/ni_daq_700.c
+index 81fd4c26a16f..d40fc89f9cef 100644
+--- a/drivers/staging/comedi/drivers/ni_daq_700.c
++++ b/drivers/staging/comedi/drivers/ni_daq_700.c
+@@ -34,8 +34,8 @@
+  *
+  * IRQ is assigned but not used.
+  *
+- * Manuals:	Register level:	http://www.ni.com/pdf/manuals/340698.pdf
+- *		User Manual:	http://www.ni.com/pdf/manuals/320676d.pdf
++ * Manuals:	Register level:	https://www.ni.com/pdf/manuals/340698.pdf
++ *		User Manual:	https://www.ni.com/pdf/manuals/320676d.pdf
+  */
+ 
+ #include <linux/module.h>
+diff --git a/drivers/staging/comedi/drivers/ni_labpc.c b/drivers/staging/comedi/drivers/ni_labpc.c
+index c6cf37ccbc92..1f4a07bd1d26 100644
+--- a/drivers/staging/comedi/drivers/ni_labpc.c
++++ b/drivers/staging/comedi/drivers/ni_labpc.c
+@@ -27,7 +27,7 @@
+  * Kernel-level ISA plug-and-play support for the lab-pc-1200 boards
+  * has not yet been added to the driver, mainly due to the fact that
+  * I don't know the device id numbers. If you have one of these boards,
+- * please file a bug report at http://comedi.org/ so I can get the
++ * please file a bug report at https://comedi.org/ so I can get the
+  * necessary information from you.
+  *
+  * The 1200 series boards have onboard calibration dacs for correcting
+@@ -111,6 +111,6 @@ static struct comedi_driver labpc_driver = {
+ };
+ module_comedi_driver(labpc_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi driver for NI Lab-PC ISA boards");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_labpc_common.c b/drivers/staging/comedi/drivers/ni_labpc_common.c
+index ce0f85026277..dd97946eacaf 100644
+--- a/drivers/staging/comedi/drivers/ni_labpc_common.c
++++ b/drivers/staging/comedi/drivers/ni_labpc_common.c
+@@ -1358,6 +1358,6 @@ static void __exit labpc_common_exit(void)
+ }
+ module_exit(labpc_common_exit);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi helper for ni_labpc, ni_labpc_pci, ni_labpc_cs");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_labpc_isadma.c b/drivers/staging/comedi/drivers/ni_labpc_isadma.c
+index 5657736a9408..a551aca6e615 100644
+--- a/drivers/staging/comedi/drivers/ni_labpc_isadma.c
++++ b/drivers/staging/comedi/drivers/ni_labpc_isadma.c
+@@ -176,6 +176,6 @@ static void __exit ni_labpc_isadma_cleanup_module(void)
+ }
+ module_exit(ni_labpc_isadma_cleanup_module);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi NI Lab-PC ISA DMA support");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_labpc_pci.c b/drivers/staging/comedi/drivers/ni_labpc_pci.c
+index d7d5a7973558..ec180b0fedf7 100644
+--- a/drivers/staging/comedi/drivers/ni_labpc_pci.c
++++ b/drivers/staging/comedi/drivers/ni_labpc_pci.c
+@@ -128,5 +128,5 @@ static struct pci_driver labpc_pci_driver = {
+ module_comedi_pci_driver(labpc_pci_comedi_driver, labpc_pci_driver);
+ 
+ MODULE_DESCRIPTION("Comedi: National Instruments Lab-PC PCI-1200 driver");
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_pcidio.c b/drivers/staging/comedi/drivers/ni_pcidio.c
+index 8f3864799c19..623f8d08d13a 100644
+--- a/drivers/staging/comedi/drivers/ni_pcidio.c
++++ b/drivers/staging/comedi/drivers/ni_pcidio.c
+@@ -33,7 +33,7 @@
+  * The PCI-6534 requires a firmware upload after power-up to work, the
+  * firmware data and instructions for loading it with comedi_config
+  * it are contained in the comedi_nonfree_firmware tarball available from
+- * http://www.comedi.org
++ * https://www.comedi.org
+  */
+ 
+ #define USE_DMA
+@@ -1005,6 +1005,6 @@ static struct pci_driver ni_pcidio_pci_driver = {
+ };
+ module_comedi_pci_driver(ni_pcidio_driver, ni_pcidio_pci_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_pcimio.c b/drivers/staging/comedi/drivers/ni_pcimio.c
+index c1d70eec24ab..6c813a490ba5 100644
+--- a/drivers/staging/comedi/drivers/ni_pcimio.c
++++ b/drivers/staging/comedi/drivers/ni_pcimio.c
+@@ -1472,6 +1472,6 @@ static struct pci_driver ni_pcimio_pci_driver = {
+ };
+ module_comedi_pci_driver(ni_pcimio_driver, ni_pcimio_pci_driver);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi low-level driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/comedi/drivers/ni_routes.c b/drivers/staging/comedi/drivers/ni_routes.c
+index 07cb970340db..c426a9286f15 100644
+--- a/drivers/staging/comedi/drivers/ni_routes.c
++++ b/drivers/staging/comedi/drivers/ni_routes.c
+@@ -556,7 +556,7 @@ static void __exit ni_routes_module_exit(void)
+ module_init(ni_routes_module_init);
+ module_exit(ni_routes_module_exit);
+ 
+-MODULE_AUTHOR("Comedi http://www.comedi.org");
++MODULE_AUTHOR("Comedi https://www.comedi.org");
+ MODULE_DESCRIPTION("Comedi helper for routing signals-->terminals for NI");
+ MODULE_LICENSE("GPL");
+ /* **** END simple module entry/exit functions **** */
+diff --git a/drivers/staging/comedi/drivers/ni_usb6501.c b/drivers/staging/comedi/drivers/ni_usb6501.c
+index 360e86a19fe3..5b6d9d783b2f 100644
+--- a/drivers/staging/comedi/drivers/ni_usb6501.c
++++ b/drivers/staging/comedi/drivers/ni_usb6501.c
+@@ -79,7 +79,7 @@
+  *	RES: 00 01 00 0C 00 08 01 00 00 00 00 02
+  *
+  *
+- *	Please  visit http://www.brickedbrain.com if you need
++ *	Please  visit https://www.brickedbrain.com if you need
+  *	additional information or have any questions.
+  *
+  */
 -- 
-2.17.1
+2.27.0
 
