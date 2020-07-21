@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DABE228175
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7B622817D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgGUN7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 09:59:13 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45827 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726359AbgGUN7M (ORCPT
+        id S1728622AbgGUN72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 09:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgGUN71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:59:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595339951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1XSRxOKWh2EaVf4Y8gn83C3uqoFTDUh2rGXBPh4SjUw=;
-        b=ftMqAWN9K0hEp8KUDhZXRE3OtwnKucOdUjc6Pl5x3e6fCJNUPksBUph0c8Nnemz67BJH/N
-        M0oM7CnbE6ETlFqhKrhLvlG6vY0kk/O5R3uXYBOG+YNDxB4sW+jnTTw97YPUobRxdnTH0l
-        mUVIv2Jl2T0E1eiziWyByV9ou1BBW8I=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-QoFtDvEwO_2MPI81Uf_aFw-1; Tue, 21 Jul 2020 09:59:09 -0400
-X-MC-Unique: QoFtDvEwO_2MPI81Uf_aFw-1
-Received: by mail-wr1-f71.google.com with SMTP id s16so13065855wrv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:59:09 -0700 (PDT)
+        Tue, 21 Jul 2020 09:59:27 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1339EC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:59:27 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so21331536wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=8ZF6oWRKLZ+vCYZQr3Fo4CAwKBCkfUUcgICTHzPcMNk=;
+        b=rj+bXe+N/QLRZEv0roVF69Gu6+bbMDze3X/DS5fOD5FHJ7E1VqTKFo2C1dIMDYgifb
+         FePGcP3hb3tfoxc3z+hbXQ2rf3G+LaZCATGbnjraUTgSi6fP39Z9sVrxAbjeddhq+a9G
+         yYlxX+isyjEm581k3nR8gsyItEgIrKhQmBW5CSTfufEMtbPT8XE61+I/lKJD3QQO3WI6
+         LsFbdW82Z6l34VZQQVNN/xqUgWjCNn3XqLKC+WJhiXFCXupNp9CLeUXTqkHoPSui+MdR
+         OG7+UzHYw86pd7JA5npgycDw09INGwprv5UOxKLOI078GJqXbVkaZorHMJvjGg5QFX0x
+         TvPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=1XSRxOKWh2EaVf4Y8gn83C3uqoFTDUh2rGXBPh4SjUw=;
-        b=AIQQk2QrhdB9O1ztGEl98G/luEFW51sT2L5kSFUWiPK7SNUkuhzqRoUDmabU9xlJ1U
-         kuSTENCqRhmPDC8DcPBtjhetU8aQyNZZzPGqdap+ki138gXikQrcFtlCESCk9geSv3bM
-         FcjbH7MwnAQ78fmJlShU8bsIqt9RiFkLwE5ms9RcQYTL6LDwMdKopOAtDgfoy4I2YLcf
-         R6kkFEv3RWSyGbKVFGbFzq52qQt7nLONmnHMTlKc6Nn45AnK7Z4ejwxlKOBAonddD4n8
-         InjNDpBmsyH+xFEiXBHZqaGy4rPV9nFmdAZSKZD9Rzw0Ulvm/x6OJ+GBWJjOE+0+mK/t
-         kVCA==
-X-Gm-Message-State: AOAM530R/HsyKbOnyNqEdfXDgVO57Xn4xrTNE6y5/XdeI/jfXlhKKZ+u
-        fHn7RSB9lHVmuylDLpLmdqvFLKA03p2VEX/gHE1riKOtMkRnWCjsIYUjwslckMQKw1yxhqY2TGp
-        cyKK3Qir8CCVUCde13hGPicKs
-X-Received: by 2002:a7b:c14a:: with SMTP id z10mr4031827wmi.19.1595339948082;
-        Tue, 21 Jul 2020 06:59:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyG2A4z6SCsD9epS9EdBWaiWCEjcl6nQH/beMuz+mPDsHK4PgHUf5QKKCHzrdN8fMpih4ZIbA==
-X-Received: by 2002:a7b:c14a:: with SMTP id z10mr4031815wmi.19.1595339947844;
-        Tue, 21 Jul 2020 06:59:07 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id u84sm3634813wmg.7.2020.07.21.06.59.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 06:59:07 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 6/7] KVM: x86: Use common definition for kvm_nested_vmexit tracepoint
-In-Reply-To: <20200721002717.GC20375@linux.intel.com>
-References: <20200718063854.16017-1-sean.j.christopherson@intel.com> <20200718063854.16017-7-sean.j.christopherson@intel.com> <87365mqgcg.fsf@vitty.brq.redhat.com> <20200721002717.GC20375@linux.intel.com>
-Date:   Tue, 21 Jul 2020 15:59:06 +0200
-Message-ID: <87imehotp1.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=8ZF6oWRKLZ+vCYZQr3Fo4CAwKBCkfUUcgICTHzPcMNk=;
+        b=Ve+SuGtV2Jqj12DdNnWrGi3ahY0po6Py+c6GrSknf89RCyU3KXRg2/7J2JEoI21/Xn
+         cTrAchpUBddrCqOkT0RX2MtvKigcLffJb+817g5Eo0R4ntYlQOqPpPvk4XZ9rsksK/2Y
+         hmBr71LIs9QCnCqWdXqsrEqg4pyUigJ1Iwc8mKEZV6ArJ+FA/uOuPZICINBds0tUIVXI
+         dYnoHdEurUW7ssFPpC0E1x9IrFvs0xYKFlDnEFGjC5noFuQg/zs2v/UvtdAjrgNi399k
+         4+80B/zmfsNB98famBE57dQYCKxSqnjgstsjxWEmiJ1oeMyxs4wz5AjTF/cLfkSThlTZ
+         Tm/w==
+X-Gm-Message-State: AOAM5334Xsn/QcN3L1TUlZ0TVAtaW6EUX2D8dg0ONjti8OsdrU22qD3d
+        lp+FxFIntSG96rvJLQd907i2k0rKJMk=
+X-Google-Smtp-Source: ABdhPJxyUj/vE8NIyKOw9v8Ytxk/ij9mLh+7bkwIw2fuSTuY/4zM0YgbdJz/UQPzAcP6Yk8kaSlg9w==
+X-Received: by 2002:a5d:6447:: with SMTP id d7mr1988687wrw.187.1595339965380;
+        Tue, 21 Jul 2020 06:59:25 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c144:5385:c824:85ce? ([2a01:e34:ed2f:f020:c144:5385:c824:85ce])
+        by smtp.googlemail.com with ESMTPSA id 31sm17580914wrp.87.2020.07.21.06.59.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 06:59:24 -0700 (PDT)
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Tony Lindgren <tony@atomide.com>, Carlos Hernandez <ceh@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] timer drivers fix for 5.8-rc7
+Message-ID: <7a1191da-d112-99c8-91aa-8574c9637ea5@linaro.org>
+Date:   Tue, 21 Jul 2020 15:59:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-> On Mon, Jul 20, 2020 at 06:52:15PM +0200, Vitaly Kuznetsov wrote:
->> Sean Christopherson <sean.j.christopherson@intel.com> writes:
->> > +TRACE_EVENT_KVM_EXIT(kvm_nested_vmexit);
->> >  
->> >  /*
->> >   * Tracepoint for #VMEXIT reinjected to the guest
->> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> > index fc70644b916ca..f437d99f4db09 100644
->> > --- a/arch/x86/kvm/vmx/nested.c
->> > +++ b/arch/x86/kvm/vmx/nested.c
->> > @@ -5912,10 +5912,7 @@ bool nested_vmx_reflect_vmexit(struct kvm_vcpu *vcpu)
->> >  	exit_intr_info = vmx_get_intr_info(vcpu);
->> >  	exit_qual = vmx_get_exit_qual(vcpu);
->> >  
->> > -	trace_kvm_nested_vmexit(vcpu, exit_reason, exit_qual,
->> > -				vmx->idt_vectoring_info, exit_intr_info,
->> > -				vmcs_read32(VM_EXIT_INTR_ERROR_CODE),
->> > -				KVM_ISA_VMX);
->> > +	trace_kvm_nested_vmexit(exit_reason, vcpu, KVM_ISA_VMX);
->> >  
->> >  	/* If L0 (KVM) wants the exit, it trumps L1's desires. */
->> >  	if (nested_vmx_l0_wants_exit(vcpu, exit_reason))
->> 
->> With so many lines removed I'm almost in love with the patch! However,
->> when testing on SVM (unrelated?) my trace log looks a bit ugly:
->> 
->>            <...>-315119 [010]  3733.092646: kvm_nested_vmexit:    CAN'T FIND FIELD "rip"<CANT FIND FIELD exit_code>vcpu 0 reason npf rip 0x400433 info1 0x0000000200000006 info2 0x0000000000641000 intr_info 0x00000000 error_code 0x00000000
->>            <...>-315119 [010]  3733.092655: kvm_nested_vmexit:    CAN'T FIND FIELD "rip"<CANT FIND FIELD exit_code>vcpu 0 reason npf rip 0x400433 info1 0x0000000100000014 info2 0x0000000000400000 intr_info 0x00000000 error_code 0x00000000
->> 
->> ...
->> 
->> but after staring at this for some time I still don't see where this
->> comes from :-( ... but reverting this commit helps:
->
-> The CAN'T FIND FIELD blurb comes from tools/lib/traceevent/event-parse.c.
->
-> I assume you are using tooling of some form to generate the trace, i.e. the
-> issue doesn't show up in /sys/kernel/debug/tracing/trace.  If that's the
-> case, this is more or less ABI breakage :-(
->  
+Hi Thomas,
 
-Right you are,
+The following changes since commit 30c66fc30ee7a98c4f3adf5fb7e213b61884474f:
 
-the tool is called 'trace-cmd record -e kvm ...' / 'trace-cmd report'
-but I always thought it's not any different from looking at
-/sys/kernel/debug/tracing/trace directly. Apparently I was wrong. 'cat
-/sys/kernel/debug/tracing/trace' seems to be OK, e.g.:
+  timer: Prevent base->clk from moving backward (2020-07-09 11:56:57 +0200)
 
- qemu-system-x86-20263 [006] .... 75982.292657: kvm_nested_vmexit: vcpu 0 reason hypercall rip 0x40122f info1 0x0000000000000000 info2 0x0000000000000000 intr_info 0x00000000 error_code 0x00000000
+are available in the Git repository at:
+
+  https://git.linaro.org/people/daniel.lezcano/linux.git
+tags/timers-v5.8-rc7
+
+for you to fetch changes up to 6cfcd5563b4fadbf49ba8fa481978e5e86d30322:
+
+  clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and
+am4 (2020-07-21 15:48:33 +0200)
+
+----------------------------------------------------------------
+- Fix kernel panic at suspend / resume time on TI am3/am4 (Tony Lindgren)
+
+----------------------------------------------------------------
+Tony Lindgren (1):
+      clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3
+and am4
+
+ drivers/bus/ti-sysc.c                      | 22 ++++++++++++++++++++++
+ drivers/clocksource/timer-ti-dm-systimer.c | 46
+++++++++++++++++++++++++++++++++++++----------
+ 2 files changed, 58 insertions(+), 10 deletions(-)
 
 -- 
-Vitaly
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
