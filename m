@@ -2,79 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D31227E9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978A9227EA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729503AbgGULUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:20:03 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2985 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727043AbgGULUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:20:03 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 9162C21CE0AE9FFC4EDC;
-        Tue, 21 Jul 2020 19:20:01 +0800 (CST)
-Received: from DGGEML424-HUB.china.huawei.com (10.1.199.41) by
- DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 21 Jul 2020 19:20:01 +0800
-Received: from DGGEML528-MBX.china.huawei.com ([169.254.7.143]) by
- dggeml424-hub.china.huawei.com ([10.1.199.41]) with mapi id 14.03.0487.000;
- Tue, 21 Jul 2020 19:19:52 +0800
-From:   jingrui <jingrui@huawei.com>
-To:     "tj@kernel.org" <tj@kernel.org>, Lizefan <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        caihaomin <caihaomin@huawei.com>,
-        "Weiwei (N)" <wick.wei@huawei.com>
-Subject: PROBLEM: cgroup cost too much memory when transfer small files to
- tmpfs
-Thread-Topic: PROBLEM: cgroup cost too much memory when transfer small files
- to tmpfs
-Thread-Index: AdZfPbaDbBlN0uuzRT+WBs1zGYD4fAAETDVg
-Date:   Tue, 21 Jul 2020 11:19:52 +0000
-Message-ID: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.179.43]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729589AbgGULUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:20:07 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33022 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729514AbgGULUG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 07:20:06 -0400
+Received: by mail-io1-f70.google.com with SMTP id a12so13239160ioo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:20:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=PakZhdVRy00H5Jh4vTqRjEQYSnP47NKLSdT3K911Emg=;
+        b=JunPTgArJg5y7xfRc9c+tuGC0uephK3VS3TM3s7yC0VrJPpBofWv7GlkWwbfaQDPjF
+         cf+m0rRLH6jWqSSUFaxWlP0h/UIvmJGkbAa85dHk1mlrHJEEHvVr95I1D6trdZQciHH3
+         9tA6f2okHLBv9cJ5Qa1QcUIxQuE/1fvaH2c73YFTY91WI8KMenUskYibfvhZx8umwwcF
+         lCMMP3r0rtXtU5dESIMYr86VllLC//ds0CGb8V2pqOa2LPtaemZU0IVAVDjCGq20nUYL
+         T9z0TfFX7yv3lIh1UYuxk9h6o0TbK0kXebYi0kudjRS95K+Qok9MHgPmzvHhX7kKqixZ
+         zF5Q==
+X-Gm-Message-State: AOAM532r8ApF8Mk0L3wAoNHpYZX1UUJBc/EisR4s+O9PIHyDVyLeIpXV
+        2fzzrwQH77pna0uQF1hI4D3Q1wS2vkaZ2qQ2BMwwcZzyAACy
+X-Google-Smtp-Source: ABdhPJx3ptVWWJ4i6pIxXv/78PQF6oVLHXTz3Oh2F4h7h1aMKeQbb1QOTpZj/9jJfd/8b15zRVAz47qSc4jOmZlwHMb2VT1uRibs
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:2802:: with SMTP id l2mr27644334ilf.169.1595330405476;
+ Tue, 21 Jul 2020 04:20:05 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 04:20:05 -0700
+In-Reply-To: <20200721111007.hwwdveqxeqcry4wn@pesu.pes.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001e30e105aaf1ce89@google.com>
+Subject: Re: WARNING in pvr2_i2c_core_done
+From:   syzbot <syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com>
+To:     bkkarthik@pesu.pes.edu, dan.carpenter@oracle.com,
+        gregkh@linuxfoundation.org, isely@pobox.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        skhan@linuxfoundation.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2M6IEpvaGFubmVzIFdlaW5lciA8aGFubmVzQGNtcHhjaGcub3JnPiA7IE1pY2hhbCBIb2NrbyA8
-bWhvY2tvQGtlcm5lbC5vcmc+OyBWbGFkaW1pciBEYXZ5ZG92IDx2ZGF2eWRvdi5kZXZAZ21haWwu
-Y29tPg0KDQpUaGFua3MuDQoNCi0tLQ0KUFJPQkxFTTogY2dyb3VwIGNvc3QgdG9vIG11Y2ggbWVt
-b3J5IHdoZW4gdHJhbnNmZXIgc21hbGwgZmlsZXMgdG8gdG1wZnMuDQoNCmtleXdvcmRzOiBjZ3Jv
-dXAgUEVSQ1BVL21lbW9yeSBjb3N0IHRvbyBtdWNoLg0KDQpkZXNjcmlwdGlvbjoNCg0KV2Ugc2Vu
-ZCBzbWFsbCBmaWxlcyBmcm9tIG5vZGUtQSB0byBub2RlLUIgdG1wZnMgL3RtcCBkaXJlY3Rvcnkg
-dXNpbmcgc2Z0cC4gT24NCm5vZGUtQiB0aGUgc3lzdGVtZCBjb25maWd1cmVkIHdpdGggcGFtIG9u
-IGxpa2UgYmVsb3cuDQoNCmNhdCAvZXRjL3BhbS5kL3Bhc3N3b3JkLWF1dGggfCBncmVwIHN5c3Rl
-bWQNCi1zZXNzaW9uwqDCoMKgwqAgb3B0aW9uYWzCoMKgwqDCoMKgIHBhbV9zeXN0ZW1kLnNvDQoN
-ClNvIHdoZW4gdHJhbnNmZXIgYSBmaWxlLCBhIHN5c3RlbWQgc2Vzc2lvbiBpcyBjcmVhdGVkLCB0
-aGF0IG1lYW5zIGEgY2dyb3VwIGlzDQpjcmVhdGVkLCB0aGVuIGZpbGUgc2F2ZWQgYXQgL3RtcCB3
-aWxsIGFzc29jaWF0ZWQgd2l0aCBhIGNncm91cCBvYmplY3QuIEFmdGVyDQpmaWxlIHRyYW5zZmVy
-cmVkLCBzZXNzaW9uIGFuZCBjZ3JvdXAtZGlyIHdpbGwgYmUgcmVtb3ZlZCwgYnV0IHRoZSBmaWxl
-IGluIC90bXANCnN0aWxsIGFzc29jaWF0ZWQgd2l0aCB0aGUgY2dyb3VwIG9iamVjdC4gVGhlIFBF
-UkNQVSBtZW1vcnkgaW4gY2dyb3VwL2NzcyBvYmplY3QNCmNvc3QgYSBsb3QoYWJvdXQgMC41TUIv
-cGVyLWNncm91cC1vYmplY3QpIG9uIDIwMC9jcHVzIG1hY2hpbmUuDQoNCldoZW4gbG90IG9mIHNt
-YWxsIGZpbGVzIHRyYW5zZmVycmVkIHRvIHRtcGZzLCB0aGUgY2dyb3VwL2NzcyBvYmplY3QgbWVt
-b3J5DQpjb3N0IGJlY29tZSBodWdlIGluIHRoaXMgc2NlbmVzIHRvIGJlIHVzZWQuDQoNCnN5c3Rl
-bWQgcmVsYXRlZCBpc3N1ZTogaHR0cHM6Ly9naXRodWIuY29tL3N5c3RlbWQvc3lzdGVtZC9pc3N1
-ZXMvMTY0OTkNCg0Ka2VybmVsIHZlcnNpb246IDQuMTkrDQoNClByb2JsZW06DQoNCjEuIERvIHdl
-IGhhdmUgYW55IGlkZWEgdG8gZGVzY3JlYXNlIGNncm91cCBtZW1vcnkgY29zdCBpbiB0aGlzIGNh
-c2U/DQoyLiBXaGVuIHVzZXIgcmVtb3ZlIGNncm91cCBkaXJlY3RvcnksIGRvZXMgaXQgcG9zc2li
-bGUgYXNzb2NpYXRlZCBmaWxlIG1lbW9yeSB0byByb290IGNncm91cD8NCjMuIENhbiB3ZSBwcm92
-aWRlIGFuIG9wdGlvbiB0aGF0IGRvIG5vdCBhc3NvY2lhdGUgbWVtb3J5IHdpdGggY2dyb3VwIGlu
-IHRtcGZzPw0K
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in kernfs_find_ns
+
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
+CPU: 0 PID: 78 Comm: pvrusb2-context Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kernfs_find_ns+0x31/0x370 fs/kernfs/dir.c:829
+Code: 49 89 d6 41 55 41 54 55 48 89 fd 53 48 83 ec 08 e8 f4 61 af ff 48 8d 7d 70 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 1e 03 00 00 48 8d bd 98 00 00 00 48 8b 5d 70 48
+RSP: 0018:ffff8881d4187938 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffffffff863789c0 RCX: ffffffff85a79ba7
+RDX: 000000000000000e RSI: ffffffff81901d1c RDI: 0000000000000070
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff873ed1e7
+R10: fffffbfff0e7da3c R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff863790e0
+FS:  0000000000000000(0000) GS:ffff8881db200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557f2b45ae48 CR3: 00000001d2762000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kernfs_find_and_get_ns+0x2f/0x60 fs/kernfs/dir.c:906
+ kernfs_find_and_get include/linux/kernfs.h:548 [inline]
+ sysfs_unmerge_group+0x5d/0x160 fs/sysfs/group.c:366
+ dpm_sysfs_remove+0x62/0xb0 drivers/base/power/sysfs.c:790
+ device_del+0x18b/0xd20 drivers/base/core.c:2834
+ device_unregister+0x22/0xc0 drivers/base/core.c:2889
+ i2c_unregister_device include/linux/err.h:41 [inline]
+ i2c_client_dev_release+0x39/0x50 drivers/i2c/i2c-core-base.c:465
+ device_release+0x71/0x200 drivers/base/core.c:1559
+ kobject_cleanup lib/kobject.c:693 [inline]
+ kobject_release lib/kobject.c:722 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x245/0x540 lib/kobject.c:739
+ put_device drivers/base/core.c:2779 [inline]
+ device_unregister+0x34/0xc0 drivers/base/core.c:2890
+ i2c_unregister_device+0x38/0x40 include/linux/err.h:41
+ v4l2_i2c_new_subdev_board+0x159/0x2c0 drivers/media/v4l2-core/v4l2-i2c.c:114
+ v4l2_i2c_new_subdev+0xb8/0xf0 drivers/media/v4l2-core/v4l2-i2c.c:135
+ pvr2_hdw_load_subdev drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2023 [inline]
+ pvr2_hdw_load_modules drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2075 [inline]
+ pvr2_hdw_setup_low drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2156 [inline]
+ pvr2_hdw_setup drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2262 [inline]
+ pvr2_hdw_initialize+0xc8d/0x3600 drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2339
+ pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:109 [inline]
+ pvr2_context_thread_func+0x250/0x850 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+ kthread+0x392/0x470 kernel/kthread.c:291
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
+Modules linked in:
+---[ end trace 9af941b6bcb04b01 ]---
+RIP: 0010:kernfs_find_ns+0x31/0x370 fs/kernfs/dir.c:829
+Code: 49 89 d6 41 55 41 54 55 48 89 fd 53 48 83 ec 08 e8 f4 61 af ff 48 8d 7d 70 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 1e 03 00 00 48 8d bd 98 00 00 00 48 8b 5d 70 48
+RSP: 0018:ffff8881d4187938 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffffffff863789c0 RCX: ffffffff85a79ba7
+RDX: 000000000000000e RSI: ffffffff81901d1c RDI: 0000000000000070
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff873ed1e7
+R10: fffffbfff0e7da3c R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff863790e0
+FS:  0000000000000000(0000) GS:ffff8881db200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557f2b45ae48 CR3: 00000001d2762000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+Tested on:
+
+commit:         b791d1bd Merge tag 'locking-kcsan-2020-06-11' of git://git..
+git tree:       https://github.com/google/kasan.git usb-fuzzer
+console output: https://syzkaller.appspot.com/x/log.txt?x=16dfe440900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ccf1899337a6e343
+dashboard link: https://syzkaller.appspot.com/bug?extid=e74a998ca8f1df9cc332
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=117e281b100000
+
