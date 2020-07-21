@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BBA22862E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BB422862D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbgGUQnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
+        id S1730828AbgGUQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730793AbgGUQmv (ORCPT
+        with ESMTP id S1730802AbgGUQmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:51 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B54CC0619DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:51 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c80so3494912wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:51 -0700 (PDT)
+        Tue, 21 Jul 2020 12:42:53 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C21CC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q15so3480221wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2DBsVEJKGCC5YJL3pZe82NopzwIlKx0+CMXRDFakN9w=;
-        b=qZglsEg/JapQgen4C4xsLqh+id8LKXXzAE3ecRqt2TSBdmUoHZ+oYUmhRIGREGIe7X
-         U3wt2Vod63USCUMPVNuPOgSuvkWRUuUF+s/YcbLS9ZDKG/g5u7R74lz/nCrY9/U5Zb+O
-         HVHjRV8/lQl297ZeNz9MdYfybIxVOuGoOps7BOzYpXU23bYMQsRv4KXf9M1i/cWy9ODS
-         bkVsy2yGk/BhcI6tHU9On/bHeZzpIOKZZX8tYHc5VwDz8e5ccWIZOM/tDWPgnqjLGKms
-         ry5CyVweOeCbMHQfb6QZN89m5hnvT7EursFf850DJG7V57FG+G7O+nYkOvswqDPGZ1PP
-         fwbQ==
+        bh=Y0yJDqT6Xp8JtjeqnfKAiYDb/27vGgP/5g9qR0UQVcc=;
+        b=vpj7nJwMcmyqh1hH5dO2AgjOuj9y6uO8GlHINh7dZQyfXyUKHXtajYv84lf5KlXu8E
+         YUqLkcXi7DQt4zYaUzH5uDysC28gKvYB4oKOnAR1T6phHAD+OGZ5ivxN/jxeiKtduU7O
+         EDTKN6B67YiCWMAj/CEKHHa9B0Budc621JejRk65Vu9VBT3ZF4X+3sHHl9BR63WmUAEX
+         0arouQ5cpcJRcUIDThTpMmYq8RsvAFBAO9WRZIUTesy2HEVcI/Xl66We4IwA8g+8tms6
+         cLG0uWP4bFPo7MuSkX+YgsNChi/DFOC03SHrTrJP0MnoRA4GHuJPpAWfdAL+8IDjCQXn
+         pCnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2DBsVEJKGCC5YJL3pZe82NopzwIlKx0+CMXRDFakN9w=;
-        b=L7xI5CY/MSmzeUmEM146BALlnds4VjpAuSbHJJ84LBBLt7uFnARt4Gy84LoVvZ5m8n
-         ga4yGnczASCOn2rj+NWFGasU35TNAqRALQcG7YLHoOwn44S3zYZzQO+XOG1WuaF0l9zb
-         KsAaracnR6R5BVxo/UWS6jlaP/udVBcmYQfQlUyXcpYdrWQGjwFxh1Y+MIJUuUL9y26y
-         XUoeIZ10/v7qxWF7dOGk8coYuNcOSBLQy6n/o7dAcORRbYy+vu6JNRtaOfjrSSULa/7Y
-         nUT28NiHS8Y1sjFqRoE4uJeWfnel6JlkuV+iv5lnXq9epeXQ1pZqKiKSiVDrjP+CB79J
-         QFzg==
-X-Gm-Message-State: AOAM53129Yg05e+E1eagTGbwlvVmDoP+oMwtKqzxFQfuSZPSbSeLzLyH
-        8cX7IXoL8R8APKMlFcC3ksQ/Nw==
-X-Google-Smtp-Source: ABdhPJziOyX89+1Qj1UlNBE6Z9MJnd/L0PsYTUc7YzyidbNmxtRyjWyl/rvW7CeV7Q7/wFEEo/kT0Q==
-X-Received: by 2002:a1c:f219:: with SMTP id s25mr4638297wmc.2.1595349770312;
-        Tue, 21 Jul 2020 09:42:50 -0700 (PDT)
+        bh=Y0yJDqT6Xp8JtjeqnfKAiYDb/27vGgP/5g9qR0UQVcc=;
+        b=l1PGDNUqw3ZQkCA2jSIQ8cbx6+ejW/3/0IRpMuGTCqUVqaNOicqyQy1ZYjEt5LYas4
+         PndpwGWTvuQQClAPeQSDtWCTkqDQXTT7dKw89tb3mfYFIIuCx5JOCOde623h3+QTChql
+         egwAEBUhePfWqbj7PruQClfI+Co2Ohtas+j2PexzA6lR5UE1L9VmwUGuOlb3NUgIlmW/
+         ilGBe3ZU/0eYDqBUwKbqtOKkY52ftAAQYYu2hbP25+OmC52kg0O8+35rLm21EAZzBYsh
+         ggDX7XaGP5Y+smXMWlIgAbwqEQ1KVgE14W1hv8yxcd0VncFUBsZKcRsf9QBzEPoCYz5T
+         ccYA==
+X-Gm-Message-State: AOAM530RqF/ojXqbPkChklBqFLyZWLLje9begmzToqQS9IrqNN1C2wYq
+        ME+JGdp/GGSSg7iHApOfT2/Gzg==
+X-Google-Smtp-Source: ABdhPJzJihRx0V2jdHmHDMBHu0RUsVP37nPvGr85wQ/2VNV6HiCXV/odM5/Fzz7Q6hSQth+xz0NGRA==
+X-Received: by 2002:a7b:c8c8:: with SMTP id f8mr5020503wml.142.1595349771749;
+        Tue, 21 Jul 2020 09:42:51 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.49
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:49 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gerard Roudier <groudier@free.fr>,
-        Wolfgang Stanglmeier <wolf@cologne.de>,
-        Stefan Esser <se@mi.Uni-Koeln.de>,
-        Richard Waltham <dormouse@farsrobt.demon.co.uk>
-Subject: [PATCH 38/40] scsi: sym53c8xx_2: sym_hipd: Ensure variable has the same stipulations as code using it
-Date:   Tue, 21 Jul 2020 17:41:46 +0100
-Message-Id: <20200721164148.2617584-39-lee.jones@linaro.org>
+        Jason Yan <yanaijie@huawei.com>, Marvell <kewei@marvell.com>,
+        Jeff Garzik <jgarzik@pobox.com>
+Subject: [PATCH 39/40] scsi: mvsas: mv_init: Move 'core_nr' inside #ifdef and remove unused variable 'res_flag'
+Date:   Tue, 21 Jul 2020 17:41:47 +0100
+Message-Id: <20200721164148.2617584-40-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -71,79 +68,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only declare 'tp' and 'lp' if they are going to be used.
+Only declare 'core_nr' if its conditions for use are met.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/sym53c8xx_2/sym_hipd.c: In function ‘sym_complete_error’:
- drivers/scsi/sym53c8xx_2/sym_hipd.c:5356:18: warning: variable ‘lp’ set but not used [-Wunused-but-set-variable]
- drivers/scsi/sym53c8xx_2/sym_hipd.c: In function ‘sym_complete_ok’:
- drivers/scsi/sym53c8xx_2/sym_hipd.c:5485:18: warning: variable ‘lp’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/mvsas/mv_init.c: In function ‘mvs_interrupt’:
+ drivers/scsi/mvsas/mv_init.c:180:6: warning: variable ‘core_nr’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/mvsas/mv_init.c: In function ‘mvs_ioremap’:
+ drivers/scsi/mvsas/mv_init.c:302:36: warning: variable ‘res_flag’ set but not used [-Wunused-but-set-variable]
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Gerard Roudier <groudier@free.fr>
-Cc: Wolfgang Stanglmeier <wolf@cologne.de>
-Cc: Stefan Esser <se@mi.Uni-Koeln.de>
-Cc: Richard Waltham <dormouse@farsrobt.demon.co.uk>
+Cc: Jason Yan <yanaijie@huawei.com>
+Cc: Marvell <kewei@marvell.com>
+Cc: Jeff Garzik <jgarzik@pobox.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/sym53c8xx_2/sym_hipd.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/scsi/mvsas/mv_init.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/sym53c8xx_2/sym_hipd.c b/drivers/scsi/sym53c8xx_2/sym_hipd.c
-index a428cae4535b7..8410117d5aa44 100644
---- a/drivers/scsi/sym53c8xx_2/sym_hipd.c
-+++ b/drivers/scsi/sym53c8xx_2/sym_hipd.c
-@@ -5352,8 +5352,10 @@ void sym_complete_error(struct sym_hcb *np, struct sym_ccb *cp)
- {
- 	struct scsi_device *sdev;
- 	struct scsi_cmnd *cmd;
-+#ifdef SYM_OPT_HANDLE_DEVICE_QUEUEING
- 	struct sym_tcb *tp;
- 	struct sym_lcb *lp;
-+#endif
- 	int resid;
- 	int i;
+diff --git a/drivers/scsi/mvsas/mv_init.c b/drivers/scsi/mvsas/mv_init.c
+index b0de3bdb01db0..3b450319cc11e 100644
+--- a/drivers/scsi/mvsas/mv_init.c
++++ b/drivers/scsi/mvsas/mv_init.c
+@@ -177,15 +177,17 @@ static void mvs_tasklet(unsigned long opaque)
  
-@@ -5370,11 +5372,13 @@ void sym_complete_error(struct sym_hcb *np, struct sym_ccb *cp)
- 			cp->host_status, cp->ssss_status, cp->host_flags);
+ static irqreturn_t mvs_interrupt(int irq, void *opaque)
+ {
+-	u32 core_nr;
+ 	u32 stat;
+ 	struct mvs_info *mvi;
+ 	struct sas_ha_struct *sha = opaque;
+ #ifndef CONFIG_SCSI_MVSAS_TASKLET
+ 	u32 i;
+-#endif
++#else
++	u32 core_nr;
+ 
+ 	core_nr = ((struct mvs_prv_info *)sha->lldd_ha)->n_host;
++#endif
++
+ 	mvi = ((struct mvs_prv_info *)sha->lldd_ha)->mvi[0];
+ 
+ 	if (unlikely(!mvi))
+@@ -299,7 +301,7 @@ static int mvs_alloc(struct mvs_info *mvi, struct Scsi_Host *shost)
+ 
+ int mvs_ioremap(struct mvs_info *mvi, int bar, int bar_ex)
+ {
+-	unsigned long res_start, res_len, res_flag, res_flag_ex = 0;
++	unsigned long res_start, res_len, res_flag_ex = 0;
+ 	struct pci_dev *pdev = mvi->pdev;
+ 	if (bar_ex != -1) {
+ 		/*
+@@ -327,7 +329,6 @@ int mvs_ioremap(struct mvs_info *mvi, int bar, int bar_ex)
+ 		goto err_out;
  	}
  
-+#ifdef SYM_OPT_HANDLE_DEVICE_QUEUEING
- 	/*
- 	 *  Get target and lun pointers.
- 	 */
- 	tp = &np->target[cp->target];
- 	lp = sym_lp(tp, sdev->lun);
-+#endif
+-	res_flag = pci_resource_flags(pdev, bar);
+ 	mvi->regs = ioremap(res_start, res_len);
  
- 	/*
- 	 *  Check for extended errors.
-@@ -5481,8 +5485,10 @@ if (resid)
-  */
- void sym_complete_ok (struct sym_hcb *np, struct sym_ccb *cp)
- {
-+#ifdef SYM_OPT_HANDLE_DEVICE_QUEUEING
- 	struct sym_tcb *tp;
- 	struct sym_lcb *lp;
-+#endif
- 	struct scsi_cmnd *cmd;
- 	int resid;
- 
-@@ -5498,11 +5504,13 @@ void sym_complete_ok (struct sym_hcb *np, struct sym_ccb *cp)
- 	 */
- 	cmd = cp->cmd;
- 
-+#ifdef SYM_OPT_HANDLE_DEVICE_QUEUEING
- 	/*
- 	 *  Get target and lun pointers.
- 	 */
- 	tp = &np->target[cp->target];
- 	lp = sym_lp(tp, cp->lun);
-+#endif
- 
- 	/*
- 	 *  If all data have been transferred, given than no
+ 	if (!mvi->regs) {
 -- 
 2.25.1
 
