@@ -2,342 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9EC2289CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951A52289E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731024AbgGUU0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 16:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
+        id S1731159AbgGUU1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 16:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730877AbgGUUZx (ORCPT
+        with ESMTP id S1729928AbgGUU1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 16:25:53 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12143C0619E0;
-        Tue, 21 Jul 2020 13:25:53 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxypj-00HPq0-RJ; Tue, 21 Jul 2020 20:25:51 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: [PATCH 18/18] ppc: propagate the calling conventions change down to csum_partial_copy_generic()
-Date:   Tue, 21 Jul 2020 21:25:49 +0100
-Message-Id: <20200721202549.4150745-18-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200721202549.4150745-1-viro@ZenIV.linux.org.uk>
-References: <20200721202425.GA2786714@ZenIV.linux.org.uk>
- <20200721202549.4150745-1-viro@ZenIV.linux.org.uk>
+        Tue, 21 Jul 2020 16:27:00 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659B9C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:27:00 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id t187so45848vke.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLCByWF4yLz2SmZ5rErGQplCKH4CPMVPAEbJkDh8hXg=;
+        b=Q1goVVRy0qIKIyOTfwTHQM8HUc5zxIwUwDM+oHWmOwuqPRrbRupgAs25ujIwSPdoz5
+         1M6Zj7yl2+wNwXwZqkRzsITMucTg+XuAkgiInPP/IjjvqA8bHsxKyojhuHc+3CbEYWsS
+         nkc34p1lczVQ3GD1B7C3Ty7SgYCP5T9b0dvGU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLCByWF4yLz2SmZ5rErGQplCKH4CPMVPAEbJkDh8hXg=;
+        b=IJPr4VOP7//hGv+zwGv4prHsDHbX7t1H9dCoc8T7+6dQUSUe7aLNdMSU/63btyO/9K
+         pq4ftb8e4izHXUmYTnu4lpl8yO5OK37BIq4eT6902DeGk0fRxfu3KniOfTRctgnDlrP3
+         fOqsQQ7fp/HJqP23yoPRaC/l3B496BhOkNZJi2ctHbAMf9n2BXd8m/iq+w5PL49vfYf3
+         x42e2NidsxTWN1oWYT1zvkLYHNo3pSbSbNLIpucA/eUmBla39cjhmWI/KkHC/dVvGPfQ
+         guaD2g0kjb/TZu9ELNdpd9cie2til2TxtjkJ+P50YhGNwFtperHD/jHhsUXeWhpBV4n6
+         ga4w==
+X-Gm-Message-State: AOAM530crc509H8QFCkg3F2tj2Jar0DOXkn18gATfoVap59heFYTLj9s
+        9DOjrL0fu6zV1aPpHYmwFdUdycBz8tI=
+X-Google-Smtp-Source: ABdhPJxlwWPe8gLz0F+op4ytKRQC6LC64ZcOBbuI1fE5zGwNAXfYfgbDptXjrLB3cccxrPV0LAGdqQ==
+X-Received: by 2002:a1f:f4cb:: with SMTP id s194mr21313774vkh.48.1595363218825;
+        Tue, 21 Jul 2020 13:26:58 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id a203sm3344432vka.44.2020.07.21.13.26.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 13:26:58 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id n4so6657989uae.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:26:57 -0700 (PDT)
+X-Received: by 2002:a9f:3dc6:: with SMTP id e6mr22533941uaj.104.1595363217358;
+ Tue, 21 Jul 2020 13:26:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200720172448.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
+ <159531115483.3847286.18280088484118119899@swboyd.mtv.corp.google.com>
+ <159531527579.3847286.1254956818647049462@swboyd.mtv.corp.google.com>
+ <CAD=FV=X=NDym3V31dQ8c341UwQm9pDybUCR8jFF1JR99XeVKVw@mail.gmail.com> <159535775253.3847286.5195740102798837524@swboyd.mtv.corp.google.com>
+In-Reply-To: <159535775253.3847286.5195740102798837524@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 21 Jul 2020 13:26:44 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WhsPkaB_cLNzGuuBrAEHiyrM9TGGvhUY4+0C=SzWwsHA@mail.gmail.com>
+Message-ID: <CAD=FV=WhsPkaB_cLNzGuuBrAEHiyrM9TGGvhUY4+0C=SzWwsHA@mail.gmail.com>
+Subject: Re: [PATCH] i2c: i2c-qcom-geni: Fix DMA transfer race
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-i2c@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+Hi,
 
-... and get rid of the pointless fallback in the wrappers.  On error it used
-to zero the unwritten area and calculate the csum of the entire thing.  Not
-wanting to do it in assembler part had been very reasonable; doing that in
-the first place, OTOH...  In case of an error the caller discards the data
-we'd copied, along with whatever checksum it might've had.
+On Tue, Jul 21, 2020 at 11:55 AM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Doug Anderson (2020-07-21 09:18:35)
+> > On Tue, Jul 21, 2020 at 12:08 AM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > Quoting Stephen Boyd (2020-07-20 22:59:14)
+> > > >
+> > > > I worry that we also need a dmb() here to make sure the dma buffer is
+> > > > properly mapped before this write to the device is attempted. But it may
+> > > > only matter to be before the I2C_READ.
+> > > >
+> > >
+> > > I'm suggesting this patch instead where we make geni_se_setup_m_cmd()
+> > > use a writel() so that it has the proper barrier semantics to wait for
+> > > the other memory writes that happened in program order before this point
+> > > to complete before the device is kicked to do a read or a write.
+> >
+> > Are you saying that dma_map_single() isn't guaranteed to have a
+> > barrier or something?  I tried to do some searching and found a thread
+> > [1] where someone tried to add a barrierless variant of them.  To me
+> > that means that the current APIs have barriers.
+> >
+> > ...or is there something else you're worried about?
+>
+> I'm not really thinking about dma_map_single() having a barrier or not.
+> The patch you mention is from 2010. Many things have changed in the last
+> decade. Does it have barrier semantics? The presence of a patch on the
+> mailing list doesn't mean much.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/powerpc/include/asm/checksum.h  |  6 +--
- arch/powerpc/lib/checksum_32.S       | 74 +++++++++++++-----------------------
- arch/powerpc/lib/checksum_64.S       | 37 ++++++------------
- arch/powerpc/lib/checksum_wrappers.c | 32 +++-------------
- 4 files changed, 46 insertions(+), 103 deletions(-)
+Yes, it's pretty old, but if you follow the thread and look at the
+patch I'm fairly certain it's still relevant.  Specifically, following
+one thread of dma_map_single() on arm64:
 
-diff --git a/arch/powerpc/include/asm/checksum.h b/arch/powerpc/include/asm/checksum.h
-index 97343e1a7d1c..fd0e4d1356a2 100644
---- a/arch/powerpc/include/asm/checksum.h
-+++ b/arch/powerpc/include/asm/checksum.h
-@@ -18,9 +18,7 @@
-  * Like csum_partial, this must be called with even lengths,
-  * except for the last fragment.
-  */
--extern __wsum csum_partial_copy_generic(const void *src, void *dst,
--					      int len, __wsum sum,
--					      int *src_err, int *dst_err);
-+extern __wsum csum_partial_copy_generic(const void *src, void *dst, int len);
- 
- #define _HAVE_ARCH_COPY_AND_CSUM_FROM_USER
- extern __wsum csum_and_copy_from_user(const void __user *src, void *dst,
-@@ -30,7 +28,7 @@ extern __wsum csum_and_copy_to_user(const void *src, void __user *dst,
- 				    int len);
- 
- #define csum_partial_copy_nocheck(src, dst, len)   \
--        csum_partial_copy_generic((src), (dst), (len), 0, NULL, NULL)
-+        csum_partial_copy_generic((src), (dst), (len))
- 
- 
- /*
-diff --git a/arch/powerpc/lib/checksum_32.S b/arch/powerpc/lib/checksum_32.S
-index ecd150dc3ed9..ec5cd2dede35 100644
---- a/arch/powerpc/lib/checksum_32.S
-+++ b/arch/powerpc/lib/checksum_32.S
-@@ -78,12 +78,10 @@ EXPORT_SYMBOL(__csum_partial)
- 
- /*
-  * Computes the checksum of a memory block at src, length len,
-- * and adds in "sum" (32-bit), while copying the block to dst.
-- * If an access exception occurs on src or dst, it stores -EFAULT
-- * to *src_err or *dst_err respectively, and (for an error on
-- * src) zeroes the rest of dst.
-+ * and adds in 0xffffffff, while copying the block to dst.
-+ * If an access exception occurs it returns zero.
-  *
-- * csum_partial_copy_generic(src, dst, len, sum, src_err, dst_err)
-+ * csum_partial_copy_generic(src, dst, len)
-  */
- #define CSUM_COPY_16_BYTES_WITHEX(n)	\
- 8 ## n ## 0:			\
-@@ -108,14 +106,14 @@ EXPORT_SYMBOL(__csum_partial)
- 	adde	r12,r12,r10
- 
- #define CSUM_COPY_16_BYTES_EXCODE(n)		\
--	EX_TABLE(8 ## n ## 0b, src_error);	\
--	EX_TABLE(8 ## n ## 1b, src_error);	\
--	EX_TABLE(8 ## n ## 2b, src_error);	\
--	EX_TABLE(8 ## n ## 3b, src_error);	\
--	EX_TABLE(8 ## n ## 4b, dst_error);	\
--	EX_TABLE(8 ## n ## 5b, dst_error);	\
--	EX_TABLE(8 ## n ## 6b, dst_error);	\
--	EX_TABLE(8 ## n ## 7b, dst_error);
-+	EX_TABLE(8 ## n ## 0b, fault);	\
-+	EX_TABLE(8 ## n ## 1b, fault);	\
-+	EX_TABLE(8 ## n ## 2b, fault);	\
-+	EX_TABLE(8 ## n ## 3b, fault);	\
-+	EX_TABLE(8 ## n ## 4b, fault);	\
-+	EX_TABLE(8 ## n ## 5b, fault);	\
-+	EX_TABLE(8 ## n ## 6b, fault);	\
-+	EX_TABLE(8 ## n ## 7b, fault);
- 
- 	.text
- 	.stabs	"arch/powerpc/lib/",N_SO,0,0,0f
-@@ -127,11 +125,8 @@ LG_CACHELINE_BYTES = L1_CACHE_SHIFT
- CACHELINE_MASK = (L1_CACHE_BYTES-1)
- 
- _GLOBAL(csum_partial_copy_generic)
--	stwu	r1,-16(r1)
--	stw	r7,12(r1)
--	stw	r8,8(r1)
--
--	addic	r12,r6,0
-+	li	r12,-1
-+	addic	r0,r0,0			/* clear carry */
- 	addi	r6,r4,-4
- 	neg	r0,r4
- 	addi	r4,r3,-4
-@@ -246,34 +241,19 @@ _GLOBAL(csum_partial_copy_generic)
- 	rlwinm	r3,r3,8,0,31	/* odd destination address: rotate one byte */
- 	blr
- 
--/* read fault */
--src_error:
--	lwz	r7,12(r1)
--	addi	r1,r1,16
--	cmpwi	cr0,r7,0
--	beqlr
--	li	r0,-EFAULT
--	stw	r0,0(r7)
--	blr
--/* write fault */
--dst_error:
--	lwz	r8,8(r1)
--	addi	r1,r1,16
--	cmpwi	cr0,r8,0
--	beqlr
--	li	r0,-EFAULT
--	stw	r0,0(r8)
-+fault:
-+	li	r3,0
- 	blr
- 
--	EX_TABLE(70b, src_error);
--	EX_TABLE(71b, dst_error);
--	EX_TABLE(72b, src_error);
--	EX_TABLE(73b, dst_error);
--	EX_TABLE(54b, dst_error);
-+	EX_TABLE(70b, fault);
-+	EX_TABLE(71b, fault);
-+	EX_TABLE(72b, fault);
-+	EX_TABLE(73b, fault);
-+	EX_TABLE(54b, fault);
- 
- /*
-  * this stuff handles faults in the cacheline loop and branches to either
-- * src_error (if in read part) or dst_error (if in write part)
-+ * fault (if in read part) or fault (if in write part)
-  */
- 	CSUM_COPY_16_BYTES_EXCODE(0)
- #if L1_CACHE_BYTES >= 32
-@@ -290,12 +270,12 @@ dst_error:
- #endif
- #endif
- 
--	EX_TABLE(30b, src_error);
--	EX_TABLE(31b, dst_error);
--	EX_TABLE(40b, src_error);
--	EX_TABLE(41b, dst_error);
--	EX_TABLE(50b, src_error);
--	EX_TABLE(51b, dst_error);
-+	EX_TABLE(30b, fault);
-+	EX_TABLE(31b, fault);
-+	EX_TABLE(40b, fault);
-+	EX_TABLE(41b, fault);
-+	EX_TABLE(50b, fault);
-+	EX_TABLE(51b, fault);
- 
- EXPORT_SYMBOL(csum_partial_copy_generic)
- 
-diff --git a/arch/powerpc/lib/checksum_64.S b/arch/powerpc/lib/checksum_64.S
-index 514978f908d4..98ff51bd2f7d 100644
---- a/arch/powerpc/lib/checksum_64.S
-+++ b/arch/powerpc/lib/checksum_64.S
-@@ -182,34 +182,33 @@ EXPORT_SYMBOL(__csum_partial)
- 
- 	.macro srcnr
- 100:
--	EX_TABLE(100b,.Lsrc_error_nr)
-+	EX_TABLE(100b,.Lerror_nr)
- 	.endm
- 
- 	.macro source
- 150:
--	EX_TABLE(150b,.Lsrc_error)
-+	EX_TABLE(150b,.Lerror)
- 	.endm
- 
- 	.macro dstnr
- 200:
--	EX_TABLE(200b,.Ldest_error_nr)
-+	EX_TABLE(200b,.Lerror_nr)
- 	.endm
- 
- 	.macro dest
- 250:
--	EX_TABLE(250b,.Ldest_error)
-+	EX_TABLE(250b,.Lerror)
- 	.endm
- 
- /*
-  * Computes the checksum of a memory block at src, length len,
-- * and adds in "sum" (32-bit), while copying the block to dst.
-- * If an access exception occurs on src or dst, it stores -EFAULT
-- * to *src_err or *dst_err respectively. The caller must take any action
-- * required in this case (zeroing memory, recalculating partial checksum etc).
-+ * and adds in 0xffffffff (32-bit), while copying the block to dst.
-+ * If an access exception occurs, it returns 0.
-  *
-- * csum_partial_copy_generic(r3=src, r4=dst, r5=len, r6=sum, r7=src_err, r8=dst_err)
-+ * csum_partial_copy_generic(r3=src, r4=dst, r5=len)
-  */
- _GLOBAL(csum_partial_copy_generic)
-+	li	r6,-1
- 	addic	r0,r6,0			/* clear carry */
- 
- 	srdi.	r6,r5,3			/* less than 8 bytes? */
-@@ -401,29 +400,15 @@ dstnr;	stb	r6,0(r4)
- 	srdi	r3,r3,32
- 	blr
- 
--.Lsrc_error:
-+.Lerror:
- 	ld	r14,STK_REG(R14)(r1)
- 	ld	r15,STK_REG(R15)(r1)
- 	ld	r16,STK_REG(R16)(r1)
- 	addi	r1,r1,STACKFRAMESIZE
--.Lsrc_error_nr:
--	cmpdi	0,r7,0
--	beqlr
--	li	r6,-EFAULT
--	stw	r6,0(r7)
-+.Lerror_nr:
-+	li	r3,0
- 	blr
- 
--.Ldest_error:
--	ld	r14,STK_REG(R14)(r1)
--	ld	r15,STK_REG(R15)(r1)
--	ld	r16,STK_REG(R16)(r1)
--	addi	r1,r1,STACKFRAMESIZE
--.Ldest_error_nr:
--	cmpdi	0,r8,0
--	beqlr
--	li	r6,-EFAULT
--	stw	r6,0(r8)
--	blr
- EXPORT_SYMBOL(csum_partial_copy_generic)
- 
- /*
-diff --git a/arch/powerpc/lib/checksum_wrappers.c b/arch/powerpc/lib/checksum_wrappers.c
-index b1faa82dd8af..b895166afc82 100644
---- a/arch/powerpc/lib/checksum_wrappers.c
-+++ b/arch/powerpc/lib/checksum_wrappers.c
-@@ -14,8 +14,7 @@
- __wsum csum_and_copy_from_user(const void __user *src, void *dst,
- 			       int len)
- {
--	unsigned int csum;
--	int err = 0;
-+	__wsum csum;
- 
- 	might_sleep();
- 
-@@ -24,27 +23,16 @@ __wsum csum_and_copy_from_user(const void __user *src, void *dst,
- 
- 	allow_read_from_user(src, len);
- 
--	csum = csum_partial_copy_generic((void __force *)src, dst,
--					 len, ~0U, &err, NULL);
--
--	if (unlikely(err)) {
--		int missing = __copy_from_user(dst, src, len);
--
--		if (missing)
--			csum = 0;
--		else
--			csum = csum_partial(dst, len, ~0U);
--	}
-+	csum = csum_partial_copy_generic((void __force *)src, dst, len);
- 
- 	prevent_read_from_user(src, len);
--	return (__force __wsum)csum;
-+	return csum;
- }
- EXPORT_SYMBOL(csum_and_copy_from_user);
- 
- __wsum csum_and_copy_to_user(const void *src, void __user *dst, int len)
- {
--	unsigned int csum;
--	int err = 0;
-+	__wsum csum;
- 
- 	might_sleep();
- 	if (unlikely(!access_ok(dst, len)))
-@@ -52,17 +40,9 @@ __wsum csum_and_copy_to_user(const void *src, void __user *dst, int len)
- 
- 	allow_write_to_user(dst, len);
- 
--	csum = csum_partial_copy_generic(src, (void __force *)dst,
--					 len, ~0U, NULL, &err);
--
--	if (unlikely(err)) {
--		csum = csum_partial(src, len, ~0U);
--
--		if (copy_to_user(dst, src, len))
--			csum = 0;
--	}
-+	csum = csum_partial_copy_generic(src, (void __force *)dst, len);
- 
- 	prevent_write_to_user(dst, len);
--	return (__force __wsum)csum;
-+	return csum;
- }
- EXPORT_SYMBOL(csum_and_copy_to_user);
--- 
-2.11.0
+dma_map_single()
+-> dma_map_single_attrs()
+--> dma_map_page_attrs()
+---> dma_direct_map_page()
+----> arch_sync_dma_for_device()
+-----> __dma_map_area()
+------> __dma_inv_area() which has a "dsb"
 
+I'm sure there are lots of other possible paths, but one thing pointed
+out by following that path is 'DMA_ATTR_SKIP_CPU_SYNC'.  The
+documentation of that option talks about the normal flow.  It says
+that in the normal flow that dma_map_{single,page,sg} will
+synchronize.  We are in the normal flow here.
+
+As far as I understand, the whole point of dma_map_single() is to take
+a given buffer and get it all ready so that if a device does DMA on it
+right after the function exits that it's all set.
+
+
+> Specifically I'm looking at "KERNEL I/O BARRIER EFFECTS" of
+> Documentation/memory-barriers.txt and noticing that this driver is using
+> relaxed IO accessors meaning that the reads and writes aren't ordered
+> with respect to other memory accesses. They're only ordered to
+> themselves within the same device. I'm concerned that the CPU will issue
+> the IO access to start the write DMA operation before the buffer is
+> copied over due to out of order execution.
+
+I'm not an expert either, but it really looks like dma_map_single()
+does all that we need it to.
+
+
+> I'm not an expert in this area, but this is why we ask driver authors to
+> use the non-relaxed accessors because they have the appropriate
+> semantics built in to make them easy to reason about. They do what they
+> say when they say to do it.
+
+I'm all for avoiding using the relaxed variants too except if it's
+been shown to be a performance problem.  The one hesitation I have,
+though, is that I've spent time poking a bunch at the geni SPI driver.
+We do _a lot_ of very small SPI transfers on our system.  For each of
+these it's gotta setup a lot of commands.  When I was poking I
+definitely noticed the difference between writel() and
+writel_relaxed().  If we can save a few microseconds on each one of
+these transfers it's probably worth it since it's effectively in the
+inner loop of some transfers.
+
+One option I thought of was to track the mode (DMA vs. FIFO) and only
+do writel() for DMA mode.  If you're not convinced by my arguments
+about dma_map_single(), would you be good with just doing the
+non-relaxed version if we're in DMA mode?
+
+-Doug
