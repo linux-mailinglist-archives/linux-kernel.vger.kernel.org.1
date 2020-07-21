@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297C72285DB
+	by mail.lfdr.de (Postfix) with ESMTP id 96ECA2285DC
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730253AbgGUQhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729573AbgGUQhd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:37:33 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AEAC061794;
-        Tue, 21 Jul 2020 09:37:33 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id l6so10484200plt.7;
-        Tue, 21 Jul 2020 09:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bdp7aDzfXwdtGJufNVMLlSB4VlwiDJjtWdfHdZ7XNq8=;
-        b=Q9+C1kgFZfpW3Tj2HCTUiC1JhFlZ/1lJmUDhLHR4sbgvF730r3a0smRpNg4L0gceI/
-         abXOfOELAjDlR+8xYA7qvWzXqkinJLWLdeFGZuVRHpxHrYyenCsiiW4sab5hyN+auH2/
-         fueAMfnuBKqzyPa3cRoMUwbZoOrmZ8YXoVKEUYgrST3qTAcDbQvfV77+oSqsTacFxQqx
-         lxzMvWAp+a39ZLzE0OBTKzwgU8dJon9U2bq4E7F2jTzu5D2tQWoW4imDctECXA2jBaAO
-         yKrtE3SDfH3JU26M/TLyFMphRMQKXQ6arusgtRiuEWZjxN5q96g85wfO1+C2X4dJCFew
-         gB1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bdp7aDzfXwdtGJufNVMLlSB4VlwiDJjtWdfHdZ7XNq8=;
-        b=iWArUxgLjdFWxkHCP25Pc40GsAMWIWjhHSR3X7SVJdcV2FOH3uoemL8q1eUxcXdm/X
-         /ApVPxKv//+0IB/qTEDdE/zHEcuS9tZeWORa/0KJPPQp3rASCwB2Dz4wq3RLdWpqSRDU
-         ltSF/YdBSolBF9hcMpOtubf5yTMLg3KcJn3HbeBNoDGXAI960KC6+S+UoPloqXF+yUC2
-         AsiwUUZqehIVuUuWpHeNNQu+v8DU1svdXteundh6/d+mawyCbAzQY2Fz2lqaSEQ9Ea3F
-         udUjAYwEFegYbEHbIdcsq455KBt43J81u9WB5m7wTt32Vi2XTyds6wx2svmiFGBUQQG5
-         BA1g==
-X-Gm-Message-State: AOAM533CuFPre8HIxF+bKFKk0OdZis9/nxoAv2l5BcHBsWzRrbsdFqPh
-        ejc3mX8fYpbGCvbYjY8kES8=
-X-Google-Smtp-Source: ABdhPJwoPZ4JWHAPBnZe40nasmVcWXwddMu8cxs+31gc4SUeiJ4UGb4UIp/s7Cylq99O8e+CWkoEfQ==
-X-Received: by 2002:a17:90a:338a:: with SMTP id n10mr6102489pjb.50.1595349452826;
-        Tue, 21 Jul 2020 09:37:32 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x10sm17861953pgp.47.2020.07.21.09.37.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Jul 2020 09:37:32 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 09:37:31 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/133] 4.19.134-rc1 review
-Message-ID: <20200721163731.GD239562@roeck-us.net>
-References: <20200720152803.732195882@linuxfoundation.org>
+        id S1730295AbgGUQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:37:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728042AbgGUQhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:37:36 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C878B207DD;
+        Tue, 21 Jul 2020 16:37:34 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 12:37:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] tracing: add trace_export support for event trace
+Message-ID: <20200721123733.1a87568a@oasis.local.home>
+In-Reply-To: <20200720022117.9375-3-tingwei@codeaurora.org>
+References: <20200720022117.9375-1-tingwei@codeaurora.org>
+        <20200720022117.9375-3-tingwei@codeaurora.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720152803.732195882@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 05:35:47PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.134 release.
-> There are 133 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 22 Jul 2020 15:27:31 +0000.
-> Anything received after that time might be too late.
-> 
+On Mon, 20 Jul 2020 10:21:15 +0800
+Tingwei Zhang <tingwei@codeaurora.org> wrote:
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 421 pass: 421 fail: 0
+> Only function traces can be exported to other destinations currently.
+> This patch exports event trace as well.
+> 
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> ---
+>  kernel/trace/trace.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index bb62269724d5..aef6330836e2 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2697,17 +2697,6 @@ int tracepoint_printk_sysctl(struct ctl_table *table, int write,
+>  	return ret;
+>  }
+>  
+> -void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
+> -{
+> -	if (static_key_false(&tracepoint_printk_key.key))
+> -		output_printk(fbuffer);
+> -
+> -	event_trigger_unlock_commit_regs(fbuffer->trace_file, fbuffer->buffer,
+> -				    fbuffer->event, fbuffer->entry,
+> -				    fbuffer->flags, fbuffer->pc, fbuffer->regs);
+> -}
+> -EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
+> -
 
-Guenter
+Please move the ftrace_exports routines up, instead of moving the
+trace_event_buffer_commit() down. As it fits better where it is (next
+to the other buffer_commit code).
+
+-- Steve
+
+
+>  /*
+>   * Skip 3:
+>   *
+> @@ -2868,6 +2857,19 @@ int unregister_ftrace_export(struct
+> trace_export *export) }
+>  EXPORT_SYMBOL_GPL(unregister_ftrace_export);
+>  
+> +void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
+> +{
+> +	if (static_key_false(&tracepoint_printk_key.key))
+> +		output_printk(fbuffer);
+> +
+> +	if (static_branch_unlikely(&ftrace_exports_enabled))
+> +		ftrace_exports(fbuffer->event);
+> +	event_trigger_unlock_commit_regs(fbuffer->trace_file,
+> fbuffer->buffer,
+> +				    fbuffer->event, fbuffer->entry,
+> +				    fbuffer->flags, fbuffer->pc,
+> fbuffer->regs); +}
+> +EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
+> +
+>  void
+>  trace_function(struct trace_array *tr,
+>  	       unsigned long ip, unsigned long parent_ip, unsigned
+> long flags,
+
