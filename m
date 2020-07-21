@@ -2,159 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C332283F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAAD2283F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730003AbgGUPhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728468AbgGUPhe (ORCPT
+        id S1730066AbgGUPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:38:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46045 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726654AbgGUPif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:37:34 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E39C0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:37:34 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id x13so10594537vsx.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tWncqL+S0JRCizmsP5rH0IHxLZuIk79rLB6DbhdOm9I=;
-        b=T3dGBYsTOIpcHNQoowJYtKuYY0MZO/UhYOaNQu3Qc2UgihSHCcGkaq0xMl5uqUy7yh
-         zTeMTnL/JkLkX4/67imzIFGXXVXP1WPuX15rGKq7zlPhzmmka7ZJIpqYlb3SRMTLQceT
-         djxthG6Nuz+/gp17xBeTM3AVDGu0MVNlq8M9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tWncqL+S0JRCizmsP5rH0IHxLZuIk79rLB6DbhdOm9I=;
-        b=ofkpthvIxTLsrAcsQOdUiVAfa2oHCRKaMEeAwYNnYESGGKB3P6wJJGEszZamsibNVx
-         CppNH871j342gJDi1jfMlmmuBPgpRzIxDd+c7V1RZVaOS6DdBfdu8XTfLJcwj8XkjK6Q
-         HBbSnOExQUAUzATvMH3xLAhmbdpHZem0EObiA2kz0sZrgvrPivfqpMTF16OjG3TbD6mM
-         qfR0OVDOKdonwY8MW6G/MaEojnp33tKhdVjKkWeEEA8v0OqcTIqdqds66jQ56eJS4it+
-         Dl4CCPhIEwayJTyL6TqhUlHbI6RWFR7fzh4PnbhydSnPgd3FQf1+J6pK8yoUf8m4HM6O
-         A31g==
-X-Gm-Message-State: AOAM533C9q829Qg4sxx+ciiJqi9cFm1e3+0ZzhQ6jWNWfy8gn2uuftr3
-        MgIFDBSJcgVtTrsBaXvznbq6fm71rUQ=
-X-Google-Smtp-Source: ABdhPJx1/QcsZqEB/AxwVgBPAkfV7VFUQM9BQ9UfMbiIfBE9Ylcnpg3lWOZhVnsK4GRfWggQj6cyOw==
-X-Received: by 2002:a67:1305:: with SMTP id 5mr20106778vst.52.1595345852871;
-        Tue, 21 Jul 2020 08:37:32 -0700 (PDT)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id e14sm2779975vsa.33.2020.07.21.08.37.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 08:37:31 -0700 (PDT)
-Received: by mail-ua1-f42.google.com with SMTP id g4so6353828uaq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:37:31 -0700 (PDT)
-X-Received: by 2002:a9f:3dc6:: with SMTP id e6mr21464631uaj.104.1595345851301;
- Tue, 21 Jul 2020 08:37:31 -0700 (PDT)
+        Tue, 21 Jul 2020 11:38:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595345914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=25NJ3yo8pL9dVKE37MGLGkTary9Phb3OtmX8VRE0Cvc=;
+        b=INEZPk0wMJHTKUlZ3JE/onN1qAAMhff7d/NtiSGzg9Ose0gwECLTy1LLIgdZsqLjObFblp
+        A1/1NL7WTDyU5PWQQY5eilCerJy//Eb3Rl2/jej1lT2pONX2ZoF2RwFlEkaJ+sgOIDoFPK
+        S97PQ9fPLwxTMnlecY/5CP28MIwQJIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-yqrVKZXmMyWcalF69rgd7Q-1; Tue, 21 Jul 2020 11:38:30 -0400
+X-MC-Unique: yqrVKZXmMyWcalF69rgd7Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 535981083E81;
+        Tue, 21 Jul 2020 15:38:28 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.225])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 54DD02B4DB;
+        Tue, 21 Jul 2020 15:38:25 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 21 Jul 2020 17:38:28 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 17:38:24 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     peterz@infradead.org
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dave Jones <davej@codemonkey.org.uk>
+Subject: Re: [PATCH] sched: Fix race against ptrace_freeze_trace()
+Message-ID: <20200721153823.GA28364@redhat.com>
+References: <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
+ <20200720064326.GA6612@redhat.com>
+ <20200720082657.GC6612@redhat.com>
+ <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
+ <20200720105924.GE43129@hirez.programming.kicks-ass.net>
+ <20200720140224.GD6612@redhat.com>
+ <20200720142105.GR10769@hirez.programming.kicks-ass.net>
+ <20200721045251.GA28481@windriver.com>
+ <20200721083753.GH119549@hirez.programming.kicks-ass.net>
+ <20200721121308.GH43129@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
- <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
- <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
- <871rlcx8uv.fsf@codeaurora.org> <CALhWmc1PbTKhrkaPn9yfpx3gZHAMuR-bPY=4_o4wQHv_H5D9dA@mail.gmail.com>
- <CALhWmc3i9Z+KiG1cJNvpSWNsiFhOa5jBw=XfcFz_gKwi_5QibA@mail.gmail.com>
- <CALhWmc1B0+SONV6_AF+nUzgxZdekPD3sZuhrsmwVQx1Q-cgT_g@mail.gmail.com>
- <CALhWmc0qF5stKRcikjwbeFmE-32hNCDazgQdqTMidUyt7u-T1Q@mail.gmail.com>
- <CALhWmc0JtQZE5CfLPb1WnwhE9wCYsjE-53kYWbwtFCs1k7FrCQ@mail.gmail.com> <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
-In-Reply-To: <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 21 Jul 2020 08:37:19 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UdeQTxbgitY3cQc+s8Pc7Lna7TWpAfzJdfXz-whjX1Qg@mail.gmail.com>
-Message-ID: <CAD=FV=UdeQTxbgitY3cQc+s8Pc7Lna7TWpAfzJdfXz-whjX1Qg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
-To:     Peter Oh <peter.oh@eero.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Brian Norris <briannorris@chromium.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721121308.GH43129@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Jul 20, 2020 at 6:32 PM Peter Oh <peter.oh@eero.com> wrote:
+On 07/21, Peter Zijlstra wrote:
 >
-> I'll take my word back.
-> It's not this patch problem, but by others.
-> I have 2 extra patches before the 3 patches so my system looks like
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(b
+>  	local_irq_disable();
+>  	rcu_note_context_switch(preempt);
 >
-> backports from ath.git 5.6-rc1 + linux kernel 4.4 (similar to OpenWrt)
-> On top of the working system, I cherry-picked these 5.
+> -	/* See deactivate_task() below. */
+> -	prev_state = prev->state;
+> -
+>  	/*
+>  	 * Make sure that signal_pending_state()->signal_pending() below
+>  	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+> @@ -4219,11 +4216,16 @@ static void __sched notrace __schedule(b
+>  	update_rq_clock(rq);
 >
-> #1.
-> ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
-> ath.git commit 521fc37be3d879561ca5ab42d64719cf94116af0
-> #2.
-> ath10k: Fix NULL pointer dereference in AHB device probe
-> wireless-drivers.git commit 1cfd3426ef989b83fa6176490a38777057e57f6c
-> #3.
-> ath10k: Add interrupt summary based CE processing
-> https://patchwork.kernel.org/patch/11628299/
-> #4.
-> ath10k: Keep track of which interrupts fired, don't poll them
-> https://patchwork.kernel.org/patch/11654631/
-> #5.
-> ath10k: Get rid of "per_ce_irq" hw param
-> https://patchwork.kernel.org/patch/11654633/
->
-> The error "[  14.226184] ath10k_ahb a000000.wifi: failed to receive
-> initialized event from target: 80000000" is because of #1 and #2,
-> since this happens even after I reverted #3~#5.
-> Once I reverted all except #1 I got another crash.
->
-> [   11.179595] !#%&PageFault P<__ath10k_ce_rx_post_buf+0x14/0x98
-> [ath10k_core]> L<0x4bc00> F<005> [0000000c]
-> [   11.179643] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000c
-> [   11.439207] [<7f15a69c>] (__ath10k_ce_rx_post_buf [ath10k_core])
-> from [<7f15a874>] (ath10k_ce_rx_post_buf+0x3c/0x50 [ath10k_core])
-> [   11.447204] [<7f15a874>] (ath10k_ce_rx_post_buf [ath10k_core]) from
-> [<7f2889a4>] (ath10k_pci_diag_read_mem+0x104/0x2a8 [ath10k_pci])
-> [   11.458706] [<7f2889a4>] (ath10k_pci_diag_read_mem [ath10k_pci])
-> from [<7f288b68>] (ath10k_pci_diag_read32+0x1c/0x2c [ath10k_pci])
-> [   11.470767] [<7f288b68>] (ath10k_pci_diag_read32 [ath10k_pci]) from
-> [<7f28abe8>] (ath10k_pci_init_config+0x2c/0x290 [ath10k_pci])
-> [   11.482314] [<7f28abe8>] (ath10k_pci_init_config [ath10k_pci]) from
-> [<7f28d160>] (ath10k_ahb_hif_power_up+0x7c/0xe8 [ath10k_pci])
-> [   11.494153] [<7f28d160>] (ath10k_ahb_hif_power_up [ath10k_pci])
-> from [<7f135348>] (ath10k_core_register_work+0x84/0x8f8 [ath10k_core])
-> [   11.505766] [<7f135348>] (ath10k_core_register_work [ath10k_core])
-> from [<8023b614>] (process_one_work+0x1c0/0x2f8)
-> [   11.517594] [<8023b614>] (process_one_work) from [<8023c650>]
-> (worker_thread+0x280/0x3c0)
-> [   11.527919] [<8023c650>] (worker_thread) from [<802408f8>]
-> (kthread+0xd8/0xe8)
-> [   11.536247] [<802408f8>] (kthread) from [<80209ce8>]
-> (ret_from_fork+0x14/0x2c)
->
-> When I revert #1 eventually, my system is back to working.
-> So I'm blaming the #1 and #2 could have potential bugs or require
-> ath.git branch up-to-date.
+>  	switch_count = &prev->nivcsw;
+> +
+>  	/*
+> -	 * We must re-load prev->state in case ttwu_remote() changed it
+> -	 * before we acquired rq->lock.
+> +	 * We must load prev->state once (task_struct::state is volatile), such
+> +	 * that:
+> +	 *
+> +	 *  - we form a control dependency vs deactivate_task() below.
+> +	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
+>  	 */
+> -	if (!preempt && prev_state && prev_state == prev->state) {
+> +	prev_state = prev->state;
+> +	if (!preempt && prev_state) {
 
-You caught me just as I was signing off yesterday evening, but just to
-confirm that you are now fairly certain that none of the 3 patches I
-was involved with[*] are related to your problems.  If that's wrong
-and there's an action I need to take on the patches then let me know!
-:-)
+Thanks! FWIW,
 
-[*] The three patches I was involved with:
+Acked-by: Oleg Nesterov <oleg@redhat.com>
 
-ath10k: Add interrupt summary based CE processing
-https://patchwork.kernel.org/patch/11628299/
-
-ath10k: Keep track of which interrupts fired, don't poll them
-https://patchwork.kernel.org/patch/11654631/
-
-ath10k: Get rid of "per_ce_irq" hw param
-https://patchwork.kernel.org/patch/11654633/
-
--Doug
