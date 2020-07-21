@@ -2,129 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F3A228862
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9949228865
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgGUSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
+        id S1727860AbgGUSj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728278AbgGUSiE (ORCPT
+        with ESMTP id S1727115AbgGUSjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:38:04 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C423DC061794;
-        Tue, 21 Jul 2020 11:38:04 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a23so9545652pfk.13;
-        Tue, 21 Jul 2020 11:38:04 -0700 (PDT)
+        Tue, 21 Jul 2020 14:39:24 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F66C0619DB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:39:24 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id o13so12346494pgf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nK0qyZhDC5FOaiCS+0m8+f94Mck9PjMzVoSYX7yYY/I=;
-        b=QfwTkuihkP0iu36Lp5fIlAA/9PVqLMj1DUNgbSq1j6vhz1igzaFRbNcT10oxAF50OZ
-         fwTEiJyW8omXyVmDrv/vFtGF7lu5T3A7UvAqvs8tm2ggRS7kTIb5jPJ7O1e31hcmlA9J
-         zK3Eti1u55UWQJGSV4b8EvtPb7n93zrln2mF02n+XqGfYO6Wx6Ew/M8lNtORRu2Gcr/y
-         LfU2EbwRRwGKoTmbL4uj2eufhcRPlKgYL9TrQGKxi8up3+vFi/jufBgyl57Vkwau1MRz
-         JYD/aZxhc+Lb2zVoTkT9C0rhpkmcc+NbeMO3foWFF2qcI1PqjoACGbJrYKuXGXU3haYT
-         ntKQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j123tjao84sCawAECklrlDQrmh9RZ45cJHgg6B+xpl0=;
+        b=ATkzng+r1uo35unLIfNtsPpb5eVV4wK+rzAbIw4RBkY1/0DgAAEui5Jqs4BStBgH7+
+         lLdXZheX+n0+7S3Wx5a4UurMmGWkaipPXonBn7uKIBM72y/0A+xK2fnwQMmaX+YMiL2k
+         B70pTM6kPUyYOx20xLI6eDr26aFfZ828JhTxLQeoLymNRlT2nedn3FFvgSFD9CzgFFJu
+         iAWiBImbxYoSu7O0tiBBYEZq8nPJHl1+oWySWoVzhwALjloG6vmu3DIrpPdXmChbmt8o
+         lxPzlKKdl0QN48RDg9WoqxhQZI/LSMVZKTNzZVwWrDyGBDDzghuKYDBJTbyTUdjtlZ++
+         Nw8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nK0qyZhDC5FOaiCS+0m8+f94Mck9PjMzVoSYX7yYY/I=;
-        b=cCScoR/Oi+mAxaZ1j+NiqOT+Iv14FMmz+xkv1quih/BssTN2E2Nid2hsKRQpySqHUm
-         ncqT9CxLe37pjBJnPRGZxzpqIueP0okgOXoWCTmFcRHTx+uf0yZURThaIKtll3nee/um
-         gfIr8AMSJqt/Y+jg3mbd/dGixOgZAqDLPihHNHTEh2PCkwFSlf4hZZsQt6e+kb8lX0nf
-         48JdyKcQcbxl8bfJhh1KDicIRWQ+WsYWYF6jxhnrl1TPeb2IzLmo08AR9hyIubv6xCio
-         vF5GzNzNnIMabwZ8lRUW1gXnHjvrY9G65VhZV/py+i25C6+koBOW51z3kgO6w/i0HAtO
-         SynA==
-X-Gm-Message-State: AOAM5315eMHg5B3S/fS6BGNmVWnwzA3eqseqqcaYsSzwqPPOdUM7hMZY
-        UFJgoJ9qXyGqjdcxUOVuoLCSd8QHdMlY68itF3rSyj1V
-X-Google-Smtp-Source: ABdhPJwl4Mn+VjJt/0js6aaU/ssjh5ofSGB7Ux0ae97IETnIaAdpXZsfRKrrmHuLDLuD4qqhlTKGIwZ78e6+TcOP/WE=
-X-Received: by 2002:aa7:8bcb:: with SMTP id s11mr24584523pfd.170.1595356684306;
- Tue, 21 Jul 2020 11:38:04 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j123tjao84sCawAECklrlDQrmh9RZ45cJHgg6B+xpl0=;
+        b=PkvhFZucJxj4kfE0DWAgUQI0kySrkiLVqAwc+c7CZQ2z3IigZEPUnvDcUzP9yLhhjE
+         cDmwzydFSIsLJfHZLpWAM1oAnojTxeolrtKFBhqnCrjl5XvWxi8CLzsJRr3agtTpzMFU
+         96z4g79+5Lu9mY9liWsu5AF1FWS3wL2OOZWQYIqQCTOTYdnUpcRK7zGsQBwLuiRElt1r
+         kc+5d7I/c0uXOlRFuSIJedxt7erlLRR1JohlMUFm6b6nkQO3qi7qTppkn0lOfQU8gJdG
+         j6iBe6rf0qI7RM7XdqHg/kFI+wR1/dXvqVks7KxdMT+RJwvpZDX57NXXzScNjBKopZ4q
+         Gigg==
+X-Gm-Message-State: AOAM5325R7U2nnVgOORGRu/M4YVz0Ywi+b4tGgih/lIzo4WSVu2lVNQc
+        JujQKDa3SmS1tHOWr0YMYriZSUplaYfCRg==
+X-Google-Smtp-Source: ABdhPJyBnwfPCvzBusrVoqeAxNvrnuMvSEMtSfjfg2ovoTL09gpc8FDkjGYAUUauWvRkQD37SlD9ZQ==
+X-Received: by 2002:a63:f04d:: with SMTP id s13mr23251957pgj.100.1595356763477;
+        Tue, 21 Jul 2020 11:39:23 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id m19sm18875012pgd.13.2020.07.21.11.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 11:39:22 -0700 (PDT)
+Subject: Re: strace of io_uring events?
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Andres Freund <andres@anarazel.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        strace-devel@lists.strace.io, io-uring@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
+ <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net>
+ <20200715171130.GG12769@casper.infradead.org>
+ <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com>
+ <CAJfpegt9=p4uo5U2GXqc-rwqOESzZCWAkGMRTY1r8H6fuXx96g@mail.gmail.com>
+ <48cc7eea-5b28-a584-a66c-4eed3fac5e76@gmail.com>
+ <202007151511.2AA7718@keescook> <20200716131404.bnzsaarooumrp3kx@steredhat>
+ <202007160751.ED56C55@keescook>
+ <20200717080157.ezxapv7pscbqykhl@steredhat.lan>
+ <CALCETrXSPdiVCgh3h=q7w9RyiKnp-=8jOHoFHX=an0cWqK7bzQ@mail.gmail.com>
+ <39a3378a-f8f3-6706-98c8-be7017e64ddb@kernel.dk>
+ <CALCETrXAxFzuRB5EJZR7bbgfrEcNc=9_E7wwhPaZ3YGJ1=DZ0w@mail.gmail.com>
+ <ba989463-c627-8af7-9234-4dc8ac4eea0e@kernel.dk>
+ <CALCETrUvOuKZWiQeZhf9DXyjS4OQdyW+s1YMh+vwe605jBS3LQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <65ad6c17-37d0-da30-4121-43554ad8f51f@kernel.dk>
+Date:   Tue, 21 Jul 2020 12:39:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200720134931.71537-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20200720134931.71537-1-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 21 Jul 2020 21:37:47 +0300
-Message-ID: <CAHp75VfmvGgCK3Cg1nxPtYeF1Y9oQAKST1bAnKXxB2hpd8=feg@mail.gmail.com>
-Subject: Re: [PATCH] iio: accel: adxl372: Add OF device ID table
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Stefan Popa <stefan.popa@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CALCETrUvOuKZWiQeZhf9DXyjS4OQdyW+s1YMh+vwe605jBS3LQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 4:48 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> From: Stefan Popa <stefan.popa@analog.com>
->
-> The driver does not have a struct of_device_id table, but supported
-> devices are registered via Device Trees. This patch adds OF device ID
-> table.
->
-> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/accel/adxl372_i2c.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/iio/accel/adxl372_i2c.c b/drivers/iio/accel/adxl372_i2c.c
-> index e1affe480c77..5197d1eb6803 100644
-> --- a/drivers/iio/accel/adxl372_i2c.c
-> +++ b/drivers/iio/accel/adxl372_i2c.c
-> @@ -8,6 +8,8 @@
->  #include <linux/i2c.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
+On 7/21/20 11:44 AM, Andy Lutomirski wrote:
+> On Tue, Jul 21, 2020 at 10:30 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 7/21/20 11:23 AM, Andy Lutomirski wrote:
+>>> On Tue, Jul 21, 2020 at 8:31 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>>>
+>>>> On 7/21/20 9:27 AM, Andy Lutomirski wrote:
+>>>>> On Fri, Jul 17, 2020 at 1:02 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
+>>>>>>
+>>>>>> On Thu, Jul 16, 2020 at 08:12:35AM -0700, Kees Cook wrote:
+>>>>>>> On Thu, Jul 16, 2020 at 03:14:04PM +0200, Stefano Garzarella wrote:
+>>>>>
+>>>>>>> access (IIUC) is possible without actually calling any of the io_uring
+>>>>>>> syscalls. Is that correct? A process would receive an fd (via SCM_RIGHTS,
+>>>>>>> pidfd_getfd, or soon seccomp addfd), and then call mmap() on it to gain
+>>>>>>> access to the SQ and CQ, and off it goes? (The only glitch I see is
+>>>>>>> waking up the worker thread?)
+>>>>>>
+>>>>>> It is true only if the io_uring istance is created with SQPOLL flag (not the
+>>>>>> default behaviour and it requires CAP_SYS_ADMIN). In this case the
+>>>>>> kthread is created and you can also set an higher idle time for it, so
+>>>>>> also the waking up syscall can be avoided.
+>>>>>
+>>>>> I stared at the io_uring code for a while, and I'm wondering if we're
+>>>>> approaching this the wrong way. It seems to me that most of the
+>>>>> complications here come from the fact that io_uring SQEs don't clearly
+>>>>> belong to any particular security principle.  (We have struct creds,
+>>>>> but we don't really have a task or mm.)  But I'm also not convinced
+>>>>> that io_uring actually supports cross-mm submission except by accident
+>>>>> -- as it stands, unless a user is very careful to only submit SQEs
+>>>>> that don't use user pointers, the results will be unpredictable.
+>>>>
+>>>> How so?
+>>>
+>>> Unless I've missed something, either current->mm or sqo_mm will be
+>>> used depending on which thread ends up doing the IO.  (And there might
+>>> be similar issues with threads.)  Having the user memory references
+>>> end up somewhere that is an implementation detail seems suboptimal.
+>>
+>> current->mm is always used from the entering task - obviously if done
+>> synchronously, but also if it needs to go async. The only exception is a
+>> setup with SQPOLL, in which case ctx->sqo_mm is the task that set up the
+>> ring. SQPOLL requires root privileges to setup, and there's no task
+>> entering the io_uring at all necessarily. It'll just submit sqes with
+>> the credentials that are registered with the ring.
+> 
+> Really?  I admit I haven't fully followed how the code works, but it
+> looks like anything that goes through the io_queue_async_work() path
+> will use sqo_mm, and can't most requests that end up blocking end up
+> there?  It looks like, even if SQPOLL is not set, the mm used will
+> depend on whether the request ends up blocking and thus getting queued
+> for later completion.
+> 
+> Or does some magic I missed make this a nonissue.
 
+No, you are wrong. The logic works as I described it.
 
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
+>> This is just one known use case, there may very well be others. Outside
+>> of SQPOLL, which is special, I don't see a reason to restrict this.
+>> Given that you may have a fuller understanding of it after the above
+>> explanation, please clearly state what problem you're seeing that
+>> warrants a change.
+> 
+> I see two fundamental issues:
+> 
+> 1. The above.  This may be less of an issue than it seems to me, but,
+> if you submit io from outside sqo_mm, the mm that ends up being used
+> depends on whether the IO is completed from io_uring_enter() or from
+> the workqueue.  For something like Postgres, I guess this is okay
+> because the memory is MAP_ANONYMOUS | MAP_SHARED and the pointers all
+> point the same place regardless.
 
-With the huge patch series from Jonathan I think you may learn that
-proper header here is
+No that is incorrect. If you disregard SQPOLL, then the 'mm' is always
+who submitted it.
 
-mod_devicetable.h.
+> 2. If you create an io_uring and io_uring_enter() it from a different
+> mm, it's unclear what seccomp is supposed to do.  (Or audit, for that
+> matter.)  Which task did the IO?  Which mm did the IO?  Whose sandbox
+> is supposed to be applied?
 
-
->
->  #include "adxl372.h"
->
-> @@ -46,9 +48,16 @@ static const struct i2c_device_id adxl372_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, adxl372_i2c_id);
->
-> +static const struct of_device_id adxl372_of_match[] = {
-> +       { .compatible = "adi,adxl372" },
-
-> +       { },
-
-No comma, please!
-
-> +};
-> +MODULE_DEVICE_TABLE(of, adxl372_of_match);
-> +
->  static struct i2c_driver adxl372_i2c_driver = {
->         .driver = {
->                 .name = "adxl372_i2c",
-> +               .of_match_table = adxl372_of_match,
->         },
->         .probe = adxl372_i2c_probe,
->         .id_table = adxl372_i2c_id,
-> --
-> 2.17.1
->
-
+Also doesn't seem like a problem, if you understand the 'mm' logic
+above. Unless SQPOLL is used, the entering tasks mm will be used.
+There's no mixing of tasks and mm outside of that.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Jens Axboe
+
