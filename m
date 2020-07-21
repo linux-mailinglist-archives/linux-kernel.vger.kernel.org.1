@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B80F22862C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEFB22863B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730820AbgGUQnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730806AbgGUQmy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469BDC0619DC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:54 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id q15so3480279wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eqUDrvqp47gD9IcVnzMp1ejaV+Kp3xiawYLE5j2QDM4=;
-        b=BmkVY0fv9v0/nDQ2O9/Z4PhE/KjvOh31PPQoFLXaiJK9CJzVEos9o1gVkAvQsqUSPA
-         QwVzEpu+r0bTUmxG515TI9eXFGA95IiPDbxD4g7+zLSsllv0eLWaPv1Wnfol0yyI5pRM
-         E9Bvd0a9sMISnVs2KSG4V0PJGZenB0N8C23+jHJo4WP2ztN+63/j9E4eVhRt7ntdUYzS
-         PuK+5V5F92vBYRk9GvroDMvQBTI+0OgwP8DRoNEeiEjDCDir0q/06G2XmI9oo8nebPf4
-         n6TZj/yLggcoyLyucMOhGACv+IAYw316esHeRq+4xVtiPqUy3SJXU8UuwjMmMNuo+vOr
-         Ny7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eqUDrvqp47gD9IcVnzMp1ejaV+Kp3xiawYLE5j2QDM4=;
-        b=tPLBZ1ubGAi41CrDMnifWkGT8Frr0wCc4n0BZv8zlVLqFKwDAYnSpKOrUu4l3eHr6h
-         fs8X8htZ1sjyFRGLcKVBeCT4NTp4tucmYMatWw8/2i8GOtHkRLeedIDeh6uuxyAVt/f4
-         iAo75QlOhbxBBblk4Rr9HbyfUSaHm5DQDzSQHnqVwWe615hOakcwsdNQFD1q+MoX20AX
-         5p7JV0eBDnacsOJYWbzRshp8Bwjy9e3vW0eTMR+3eyzQTS8a8BX0sPXDlDw+rHfFy2m1
-         D2eFs52cJPONWSZNdLolHfTq78m88qCzeBSMObfhZ1lOJqSd7qI7QjdiT9yBGglmDyEM
-         POsA==
-X-Gm-Message-State: AOAM532sSN3zyievp3Xf7htPRenvG5oShYQycAGyqP69yOm2x+RIkToN
-        f9b0yGqz7XgWxPhmuVEx+zFQpp/DuS0=
-X-Google-Smtp-Source: ABdhPJx0B8Wdrsoo7SAmS8qt/qKe11hLMQ1sM9yMXdqkvY9Eyz/wo+eMOYd+Tcxm7w7qCPq6Tf5NBw==
-X-Received: by 2002:a7b:c116:: with SMTP id w22mr4584794wmi.97.1595349773040;
-        Tue, 21 Jul 2020 09:42:53 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:52 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, Karen Xie <kxie@chelsio.com>,
-        Dimitris Michailidis <dm@chelsio.com>
-Subject: [PATCH 40/40] scsi: cxgbi: cxgb3i: cxgb3i: Remove bad documentation and demote kerneldoc header
-Date:   Tue, 21 Jul 2020 17:41:48 +0100
-Message-Id: <20200721164148.2617584-41-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
-References: <20200721164148.2617584-1-lee.jones@linaro.org>
+        id S1730880AbgGUQnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730391AbgGUQno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:43:44 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA78C207BB;
+        Tue, 21 Jul 2020 16:43:43 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 12:43:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] tracing: add trace_export support for event trace
+Message-ID: <20200721124342.422ee784@oasis.local.home>
+In-Reply-To: <20200721123733.1a87568a@oasis.local.home>
+References: <20200720022117.9375-1-tingwei@codeaurora.org>
+        <20200720022117.9375-3-tingwei@codeaurora.org>
+        <20200721123733.1a87568a@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also move the header block above the correct function.
+On Tue, 21 Jul 2020 12:37:33 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Fixes the following W=1 kernel build warning(s):
+> On Mon, 20 Jul 2020 10:21:15 +0800
+> Tingwei Zhang <tingwei@codeaurora.org> wrote:
+> 
+> > Only function traces can be exported to other destinations currently.
+> > This patch exports event trace as well.
+> > 
+> > Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> > ---
+> >  kernel/trace/trace.c | 24 +++++++++++++-----------
+> >  1 file changed, 13 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> > index bb62269724d5..aef6330836e2 100644
+> > --- a/kernel/trace/trace.c
+> > +++ b/kernel/trace/trace.c
+> > @@ -2697,17 +2697,6 @@ int tracepoint_printk_sysctl(struct ctl_table *table, int write,
+> >  	return ret;
+> >  }
+> >  
+> > -void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
+> > -{
+> > -	if (static_key_false(&tracepoint_printk_key.key))
+> > -		output_printk(fbuffer);
+> > -
+> > -	event_trigger_unlock_commit_regs(fbuffer->trace_file, fbuffer->buffer,
+> > -				    fbuffer->event, fbuffer->entry,
+> > -				    fbuffer->flags, fbuffer->pc, fbuffer->regs);
+> > -}
+> > -EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
+> > -  
+> 
+> Please move the ftrace_exports routines up, instead of moving the
+> trace_event_buffer_commit() down. As it fits better where it is (next
+> to the other buffer_commit code).
+> 
+> -- Steve
+> 
+> 
+> >  /*
+> >   * Skip 3:
+> >   *
+> > @@ -2868,6 +2857,19 @@ int unregister_ftrace_export(struct
+> > trace_export *export) }
+> >  EXPORT_SYMBOL_GPL(unregister_ftrace_export);
+> >  
+> > +void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
+> > +{
+> > +	if (static_key_false(&tracepoint_printk_key.key))
+> > +		output_printk(fbuffer);
+> > +
+> > +	if (static_branch_unlikely(&ftrace_exports_enabled))
+> > +		ftrace_exports(fbuffer->event);
 
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c:390: warning: Function parameter or member 'dev' not described in 'arp_failure_skb_discard'
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c:390: warning: Function parameter or member 'skb' not described in 'arp_failure_skb_discard'
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c:390: warning: Excess function parameter 'c3cn' description in 'arp_failure_skb_discard'
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c:390: warning: Excess function parameter 'req_completion' description in 'arp_failure_skb_discard'
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c:895: warning: Function parameter or member 'csk' not described in 'l2t_put'
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c:895: warning: Excess function parameter 'c3cn' description in 'l2t_put'
+I would also recommend making each static branch a separate variable.
+That way you could pick and choose what you want to enable. If you only
+want events, and functions are being traced, it will add a bit of
+overhead to handle the functions to just ignore them.
 
-Cc: Karen Xie <kxie@chelsio.com>
-Cc: Dimitris Michailidis <dm@chelsio.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+That is:
 
-diff --git a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-index f2714c54a5196..2b48954b6b1ef 100644
---- a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-+++ b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-@@ -375,10 +375,8 @@ static inline void make_tx_data_wr(struct cxgbi_sock *csk, struct sk_buff *skb,
- 	}
- }
- 
--/**
-+/*
-  * push_tx_frames -- start transmit
-- * @c3cn: the offloaded connection
-- * @req_completion: request wr_ack or not
-  *
-  * Prepends TX_DATA_WR or CPL_CLOSE_CON_REQ headers to buffers waiting in a
-  * connection's send queue and sends them on to T3.  Must be called with the
-@@ -886,11 +884,6 @@ static int alloc_cpls(struct cxgbi_sock *csk)
- 	return -ENOMEM;
- }
- 
--/**
-- * release_offload_resources - release offload resource
-- * @c3cn: the offloaded iscsi tcp connection.
-- * Release resources held by an offload connection (TID, L2T entry, etc.)
-- */
- static void l2t_put(struct cxgbi_sock *csk)
- {
- 	struct t3cdev *t3dev = (struct t3cdev *)csk->cdev->lldev;
-@@ -902,6 +895,10 @@ static void l2t_put(struct cxgbi_sock *csk)
- 	}
- }
- 
-+/*
-+ * release_offload_resources - release offload resource
-+ * Release resources held by an offload connection (TID, L2T entry, etc.)
-+ */
- static void release_offload_resources(struct cxgbi_sock *csk)
- {
- 	struct t3cdev *t3dev = (struct t3cdev *)csk->cdev->lldev;
--- 
-2.25.1
+ ftrace_exports_enabled, trace_event_exports_enabled,
+ trace_marker_exports_enabled.
+
+-- Steve
+
+
+> > +	event_trigger_unlock_commit_regs(fbuffer->trace_file,
+> > fbuffer->buffer,
+> > +				    fbuffer->event, fbuffer->entry,
+> > +				    fbuffer->flags, fbuffer->pc,
+> > fbuffer->regs); +}
+> > +EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
+> > +
+> >  void
+> >  trace_function(struct trace_array *tr,
+> >  	       unsigned long ip, unsigned long parent_ip, unsigned
+> > long flags,  
+> 
 
