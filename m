@@ -2,64 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78142283EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64062283E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgGUPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:37:06 -0400
-Received: from comms.puri.sm ([159.203.221.185]:54724 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729612AbgGUPhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:37:04 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 04C88E031F;
-        Tue, 21 Jul 2020 08:37:04 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 62QamMgfWfaW; Tue, 21 Jul 2020 08:37:03 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     robh@kernel.org, kernel@puri.sm, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, mchehab@kernel.org, Anson.Huang@nxp.com,
-        agx@sigxcpu.org, angus@akkea.ca, broonie@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v4 3/3] dt-bindings: arm: fsl: Add the librem 5 phone
-Date:   Tue, 21 Jul 2020 17:32:25 +0200
-Message-Id: <20200721153225.7593-3-martin.kepplinger@puri.sm>
-In-Reply-To: <20200721153225.7593-1-martin.kepplinger@puri.sm>
-References: <20200721153225.7593-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S1728623AbgGUPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726919AbgGUPdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 11:33:53 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07433C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:33:53 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id k13so2939264lfo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=njynPEuSAx3YutPUm1Ks7mASPVE5qpU/6FLY7l0S5aI=;
+        b=eQ7WI6xkilW9FmgBXW/xysDF/3IDtBx6ypESMtBihC1eSPJLn5eC8eHS5o6dVcno9s
+         vwH7lLb02YEl6fLuBANrEc7wsinozUQG/BuWIv3nBwdXFniYX41S1JKBigNvoypkkWDt
+         v7e3VdKkBjijF9BamxUZuXGlgb38adI4J9jRE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=njynPEuSAx3YutPUm1Ks7mASPVE5qpU/6FLY7l0S5aI=;
+        b=k9CfoI7Nak32nFGNz8gYBmPPB7TohseDbNyRLFIOPAV6cRq2ffh2YgOUOH2mLeON0o
+         3Oi9wsKdZnrHoF8ujypl3vA30YAYtwR4aH5P1NXKjtB/2ZOFs2c9efXUiVDaZy50fsKp
+         fJjSudsyWjcNaMmxS6C4/+YJPW5kOH+7sDALTV3XhTVy6nLPeuGTGEsikYinUwh02WMJ
+         spAz6tEOZvpwUBF5Q0pOQM9ANWE0SDRGstd4Yz3FH0KJE78HtqYhzo2qQT8Qqp41mGCV
+         XviE7LVkPbWTcNmqNZ2GDzVl71EDFUMLDUmhh37OSie4aY9776vbmyPxQqmR0bSHkuXQ
+         DCbg==
+X-Gm-Message-State: AOAM532YwyHpe5E0bIjT7h5O0U5a1Mx7yEib2rYjfkC5npV7R/ajerO1
+        UCy2KFUYJmE1jxuu9o4xUfVlSmulyZs=
+X-Google-Smtp-Source: ABdhPJzFllXxNGPXCKkzWRuXJUCMruSycsoI5XWRQ4LtxOFFeKeOox3Roha37ATij/VfbE92P09ZPQ==
+X-Received: by 2002:ac2:4241:: with SMTP id m1mr13966554lfl.20.1595345630949;
+        Tue, 21 Jul 2020 08:33:50 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id b16sm4600173ljp.124.2020.07.21.08.33.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 08:33:50 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 140so1520652lfi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:33:49 -0700 (PDT)
+X-Received: by 2002:ac2:58d5:: with SMTP id u21mr3650183lfo.31.1595345629595;
+ Tue, 21 Jul 2020 08:33:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200721063258.17140-1-mhocko@kernel.org>
+In-Reply-To: <20200721063258.17140-1-mhocko@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 21 Jul 2020 08:33:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+Message-ID: <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for the imx8mq based Librem 5 phone. The "Birch" and
-"Chestnut" hardware revisions are supported by r2. The "Dogwood"
-revision by r3.
-See https://puri.sm/products/librem-5/ and https://developer.puri.sm/Librem5/
-for the schematics and more information.
+On Mon, Jul 20, 2020 at 11:33 PM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> The lockup is in page_unlock in do_read_fault and I suspect that this is
+> yet another effect of a very long waitqueue chain which has been
+> addresses by 11a19c7b099f ("sched/wait: Introduce wakeup boomark in
+> wake_up_page_bit") previously.
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+Hmm.
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index f63895c8ce2d..1cce4ff58ff8 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -365,6 +365,8 @@ properties:
-               - fsl,imx8mq-evk            # i.MX8MQ EVK Board
-               - google,imx8mq-phanbell    # Google Coral Edge TPU
-               - purism,librem5-devkit     # Purism Librem5 devkit
-+              - purism,librem5r2          # Purism Librem5 phone "Chestnut"
-+              - purism,librem5r3          # Purism Librem5 phone "Dogwood"
-               - solidrun,hummingboard-pulse # SolidRun Hummingboard Pulse
-               - technexion,pico-pi-imx8m  # TechNexion PICO-PI-8M evk
-           - const: fsl,imx8mq
--- 
-2.20.1
+I do not believe that you can actually get to the point where you have
+a million waiters and it takes 20+ seconds to wake everybody up.
 
+More likely, it's actually *caused* by that commit 11a19c7b099f, and
+what might be happening is that other CPU's are just adding new
+waiters to the list *while* we're waking things up, because somebody
+else already got the page lock again.
+
+Humor me.. Does something like this work instead? It's
+whitespace-damaged because of just a cut-and-paste, but it's entirely
+untested, and I haven't really thought about any memory ordering
+issues, but I think it's ok.
+
+The logic is that anybody who called wake_up_page_bit() _must_ have
+cleared that bit before that. So if we ever see it set again (and
+memory ordering doesn't matter), then clearly somebody else got access
+to the page bit (whichever it was), and we should not
+
+ (a) waste time waking up people who can't get the bit anyway
+
+ (b) be in a  livelock where other CPU's continually add themselves to
+the wait queue because somebody else got the bit.
+
+and it's that (b) case that I think happens for you.
+
+NOTE! Totally UNTESTED patch follows. I think it's good, but maybe
+somebody sees some problem with this approach?
+
+I realize that people can wait for other bits than the unlocked, and
+if you're waiting for writeback to complete maybe you don't care if
+somebody else then started writeback *AGAIN* on the page and you'd
+actually want to be woken up regardless, but honestly, I don't think
+it really matters.
+
+                Linus
+
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1054,6 +1054,15 @@ static void wake_up_page_bit(struct page *page,
+int bit_nr)
+                 * from wait queue
+                 */
+                spin_unlock_irqrestore(&q->lock, flags);
++
++               /*
++                * If somebody else set the bit again, stop waking
++                * people up. It's now the responsibility of that
++                * other page bit owner to do so.
++                */
++               if (test_bit(bit_nr, &page->flags))
++                       return;
++
+                cpu_relax();
+                spin_lock_irqsave(&q->lock, flags);
+                __wake_up_locked_key_bookmark(q, TASK_NORMAL, &key, &bookmark);
