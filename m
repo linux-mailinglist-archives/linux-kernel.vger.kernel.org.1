@@ -2,160 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C50F227FB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C906227FBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbgGUMNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        id S1728290AbgGUMPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgGUMNU (ORCPT
+        with ESMTP id S1726715AbgGUMPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:13:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F9EC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KDfz+fImwH1fddn6fZkMotr7dFr06pVdhVjh3Sgs7KM=; b=YNa1RUNr7BQ62+t00ANCFEdvzP
-        WjIVk5xuNVl+HpJLngRrsmYke7fLZpHNYBmkLRrr5CzIKcERUT8jW/HhAC+dHpNjwL8Fq6UfYcEku
-        Dgvd56l46AjVFEe/XngA5R+LIpxTMT+0kJfdFubImMQdNaCdQrHW901/Tpcpqn2ondqnXvDSbDT5j
-        8Zo2GrC09f9r5+KHklj60sqC0Q2jIhyn7QJlyh//zLJMhyFHJo+u5cPucAa3xNCdO26nfqM2HxKZe
-        O4RVv9qqZ1zls6ac0OZUg5u3++AmOunkdTHob8fn6yYTpoxd8UcutOvIH/QkUWYXmiwTZUdCneG8d
-        nsA0PLcg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxr8v-0001Ze-Kl; Tue, 21 Jul 2020 12:13:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7F7E3301AC6;
-        Tue, 21 Jul 2020 14:13:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5012220D27A9D; Tue, 21 Jul 2020 14:13:08 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 14:13:08 +0200
-From:   peterz@infradead.org
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        <christian@brauner.io>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>
-Subject: [PATCH] sched: Fix race against ptrace_freeze_trace()
-Message-ID: <20200721121308.GH43129@hirez.programming.kicks-ass.net>
-References: <20200718174448.4btbjcvp6wbbdgts@wittgenstein>
- <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org>
- <20200720064326.GA6612@redhat.com>
- <20200720082657.GC6612@redhat.com>
- <20200720084106.GJ10769@hirez.programming.kicks-ass.net>
- <20200720105924.GE43129@hirez.programming.kicks-ass.net>
- <20200720140224.GD6612@redhat.com>
- <20200720142105.GR10769@hirez.programming.kicks-ass.net>
- <20200721045251.GA28481@windriver.com>
- <20200721083753.GH119549@hirez.programming.kicks-ass.net>
+        Tue, 21 Jul 2020 08:15:40 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9081DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:15:40 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so20993122wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 05:15:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cA94sOb8FIWUebxDf9ORKnnfau0NCB40GlOe2QaQBCg=;
+        b=CgIwfOLZksxv01U3Ox2GEGHdpWnCJf2DcA0Z30hMqfNdGZGPQqnOTXWRFSEa2cDN59
+         Ed7YOlHnYg2vT9nCzGgVDPoHfnIeTnQchaAyDU2lpXTJ2g2knxzsZQCWeU3sF7kCcG0z
+         ESICCvgchuKCulzBv9d+6QazxM0cFhDfSTzLetZmj+RcUnNOVUjewbAQOhMQD3DZUSXn
+         mtpPRD2pZEHua4CnfLCIOmZkh9a++EJnqBI0deaYFBVGM7vTJj7X+h7kc0CBMoCqHld3
+         0S7ZTwemnITiJIPRzuWgA/frR3/wFYPJHP2D2LH9i72VZxj4wQbfAy4F5ANTOLknIZrl
+         w8Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cA94sOb8FIWUebxDf9ORKnnfau0NCB40GlOe2QaQBCg=;
+        b=JnNOkH4ksGB7jAmYOZ/ojtuPv+99m9LxyZyE1iqahpE4w4HLMpn0ZVF4Vpn4mrwSWU
+         xsaK8zYTTZK3djrPBrba8uJoyH/0DRHrwj9qNfOSrnMEy0LAZf4/BdR0e4EzuIrzMEo6
+         WT5xHdf89OJAaP4d/BSmYlI4NH7Bfo12fG7+yWHuCIy79z7Z+T3Jzo4BcWYR9mQ48IPs
+         mFuSO14HxwlDMsW0lrsJKtURJh3scyGBV1moCxTMRcB6Rph+1/0xq+QtFu3ZFpWxzmDh
+         oWmZQo+As2t7NvH+9+1W+6z8/d42VD3WjA/0bjNrOOQ88eJBNWkk8rzUx97TZBk3oM3/
+         1DaA==
+X-Gm-Message-State: AOAM530/vxjQEknfP3/lQHCLVvn3oUexA5FetAh7xyHy8iMHa74JRa8S
+        crdT9JtGVdoDg5AYNCGHD9kAa0R2H9IaseOBp9YGAg==
+X-Google-Smtp-Source: ABdhPJwW0WH69zD26zuxdyq5u22D6RndDM2fZyyK4TA+BkoXC0YCwHYj75KOg4xS6IYhZgmv0Dl7nJVqj7f2gXXm0Sg=
+X-Received: by 2002:adf:fc06:: with SMTP id i6mr8168305wrr.79.1595333739178;
+ Tue, 21 Jul 2020 05:15:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721083753.GH119549@hirez.programming.kicks-ass.net>
+References: <20200708164936.9340-1-nsaenzjulienne@suse.de> <CAMi1Hd35tRM=cnmzwX=SDgu-OoXi1Xj+twFkoULaVZBbTpe6sw@mail.gmail.com>
+ <550b30a86c0785049d24c945e2c6628d491cee3a.camel@suse.de> <CAMi1Hd2V2pJjP=USS4r-Z3vK-aq7_aBy-jcVNk1GvbdEQAuzWg@mail.gmail.com>
+ <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
+In-Reply-To: <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 21 Jul 2020 17:45:02 +0530
+Message-ID: <CAMi1Hd0=ZsGhTkSy221EP9Vb3GMOcS0UMczX2u5X9qK37_ea1A@mail.gmail.com>
+Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 21 Jul 2020 at 16:45, Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> On Tue, 2020-07-21 at 14:24 +0530, Amit Pundir wrote:
+> > On Tue, 21 Jul 2020 at 14:09, Nicolas Saenz Julienne
+> > <nsaenzjulienne@suse.de> wrote:
+> > > Hi Amit,
+> > > > Hi Nicolas,
+> > > >
+> > > > I see a boot regression with this commit d9765e41d8e9 "dma-pool:
+> > > > Do not allocate pool memory from CMA" on my Xiaomi Poco F1
+> > > > (Qcom sdm845) phone running v5.8-rc6. I can't boot past the
+> > > > bootloader splash screen with this patch.
+> > > >
+> > > > Phone boots fine if I revert this patch. I carry only one out of
+> > > > tree
+> > > > dts patch https://lkml.org/lkml/2020/6/25/52. And since this is a
+> > > > stock
+> > > > phone, I don't have access to serial/dmesg logs until I boot to
+> > > > AOSP
+> > > > (adb) shell.
+> > > >
+> > > > Any thoughts as to what might be going wrong here? I'd be happy
+> > > > to
+> > > > help debug things. For what it's worth, I don't see this
+> > > > regression
+> > > > on
+> > > > other two sdm845 devices (db845c and Pixel 3) I tested on.
+> > >
+> > > Can you provide a boot log (even if without my patch) and the
+> > > device-
+> > > tree files? It'd help a lot figuring things out.
+> >
+> > Thank you for the prompt reply Nicolas.
+> >
+> > Here is the boot log with the reverted patch
+> > https://pastebin.ubuntu.com/p/BrhPf83nKF/
+> >
+> > Here is my phone's dts
+> > https://github.com/pundiramit/linux/commit/2a394c199deeaf4c91e0e008e8fba2a72f494d8c
+>
+> I'm at loss at what could be failing here. Your device should be able
+> to address the whole 8GB memory space, which AFAIK is the max available
+> on that smartphone family. But maybe the device-tree is lying, who
+> knows...
 
-There is apparently one site that violates the rule that only current
-and ttwu() will modify task->state, namely ptrace_{,un}freeze_traced()
-will change task->state for a remote task.
+If it helps, my phone has 6GB memory space.
 
-Oleg explains:
+>
+> Can you try booting *without* my patch and this in the kernel command
+> line: "cma=16M@0x100000000-0x200000000".
 
-  "TASK_TRACED/TASK_STOPPED was always protected by siglock. In
-particular, ttwu(__TASK_TRACED) must be always called with siglock
-held. That is why ptrace_freeze_traced() assumes it can safely do
-s/TASK_TRACED/__TASK_TRACED/ under spin_lock(siglock)."
+It doesn't boot with this added kernel command line.
 
-This breaks the ordering scheme introduced by commit:
+Regards,
+Amit Pundir
 
-  dbfb089d360b ("sched: Fix loadavg accounting race")
-
-Specifically, the reload not matching no longer implies we don't have
-to block.
-
-Simply things by noting that what we need is a LOAD->STORE ordering
-and this can be provided by a control dependency.
-
-So replace:
-
-	prev_state = prev->state;
-	raw_spin_lock(&rq->lock);
-	smp_mb__after_spinlock(); /* SMP-MB */
-	if (... && prev_state && prev_state == prev->state)
-		deactivate_task();
-
-with:
-
-	prev_state = prev->state;
-	if (... && prev_state) /* CTRL-DEP */
-		deactivate_task();
-
-Since that already implies the 'prev->state' load must be complete
-before allowing the 'prev->on_rq = 0' store to become visible.
-
-Fixes: dbfb089d360b ("sched: Fix loadavg accounting race")
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(b
- 	local_irq_disable();
- 	rcu_note_context_switch(preempt);
- 
--	/* See deactivate_task() below. */
--	prev_state = prev->state;
--
- 	/*
- 	 * Make sure that signal_pending_state()->signal_pending() below
- 	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
-@@ -4219,11 +4216,16 @@ static void __sched notrace __schedule(b
- 	update_rq_clock(rq);
- 
- 	switch_count = &prev->nivcsw;
-+
- 	/*
--	 * We must re-load prev->state in case ttwu_remote() changed it
--	 * before we acquired rq->lock.
-+	 * We must load prev->state once (task_struct::state is volatile), such
-+	 * that:
-+	 *
-+	 *  - we form a control dependency vs deactivate_task() below.
-+	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
- 	 */
--	if (!preempt && prev_state && prev_state == prev->state) {
-+	prev_state = prev->state;
-+	if (!preempt && prev_state) {
- 		if (signal_pending_state(prev_state, prev)) {
- 			prev->state = TASK_RUNNING;
- 		} else {
-@@ -4237,10 +4239,12 @@ static void __sched notrace __schedule(b
- 
- 			/*
- 			 * __schedule()			ttwu()
--			 *   prev_state = prev->state;	  if (READ_ONCE(p->on_rq) && ...)
--			 *   LOCK rq->lock		    goto out;
--			 *   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
--			 *   p->on_rq = 0;		  p->state = TASK_WAKING;
-+			 *   if (prev_state)		  if (p->on_rq && ...)
-+			 *     p->on_rq = 0;		    goto out;
-+			 *				  smp_acquire__after_ctrl_dep();
-+			 *				  p->state = TASK_WAKING
-+			 *
-+			 * Where __schedule() and ttwu() have matching control dependencies.
- 			 *
- 			 * After this, schedule() must not care about p->state any more.
- 			 */
+>
+> Regards,
+> Nicolas
+>
+> And here is my kernel tree just in case
+> > https://github.com/pundiramit/linux/commits/beryllium-mainline
+> >
+> > Regards,
+> > Amit Pundir
+> >
+> >
+> > > Regards,
+> > > Nicolas
+> > >
+> > > > Regards,
+> > > > Amit Pundir
+> > > >
+> > > > > Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+> > > > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > > > ---
+> > > > >
+> > > > > An more costly alternative would be adding an option to
+> > > > > dma_alloc_from_contiguous() so it fails when the allocation
+> > > > > doesn't
+> > > > > fall
+> > > > > in a specific zone.
+> > > > >
+> > > > >  kernel/dma/pool.c | 11 ++---------
+>
