@@ -2,192 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FF4228A18
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A942289FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730021AbgGUUkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 16:40:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:13746 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726658AbgGUUkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 16:40:51 -0400
-IronPort-SDR: FrMs/AIO7eygbozn5RpJM4e4rBSiXPlF4F/VadYruA5EkPkAh2IAqsJLk1uVLXpps4dRpaVM6a
- +H8/8HbMiLww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="168372933"
-X-IronPort-AV: E=Sophos;i="5.75,380,1589266800"; 
-   d="scan'208";a="168372933"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 13:40:50 -0700
-IronPort-SDR: di0B4dk+yo1aHOTRCBEp/aLGMvER7djLdRvLHXklogFG57nPazm/vCe8D12i59J9OPhryp0IPm
- Hqi8wyEf91Dw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,380,1589266800"; 
-   d="scan'208";a="310372739"
-Received: from unknown (HELO nsgsw-wilsonpoint.lm.intel.com) ([10.232.116.124])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Jul 2020 13:40:50 -0700
-From:   Jon Derrick <jonathan.derrick@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] irqdomain/treewide: Free firmware node after domain removal
-Date:   Tue, 21 Jul 2020 14:26:09 -0600
-Message-Id: <1595363169-7157-1-git-send-email-jonathan.derrick@intel.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728995AbgGUUfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 16:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728606AbgGUUfR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 16:35:17 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D63C061794;
+        Tue, 21 Jul 2020 13:35:17 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l63so12456206pge.12;
+        Tue, 21 Jul 2020 13:35:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H2rlhi44PP/yGILmVfXDfaXGTcLk3tY2rxvlC2hr1ng=;
+        b=c7ci4Ua/7LOBYP/R/an9KQ0sHvxaJAXFrSsrT3yazooggq8gZDlgmLkGzoRwpYAxNj
+         C6F8TRui+arKmOUHwDPBrEFSrPapzUJObU/fwrDIv41D9Pm2Qc1FhugBx5k2Iz2L9bMM
+         QFBLvFUmJpfZttdCPAajbf+ZsU0k3e82CuNyAW52I9Zg8tcQcEArWRq2t0vI8JL1M9zp
+         eJG2HdwWAj1xd7WtOZwRcNnJlLQdCC+Hq8rFwBH14hiluT//5Gdl9KKH9/jFiOchshET
+         7ZImaWDYp+ktu3oM0dtrvCCG2fhoNkeFlVNYAYc3hO0467i0F86qMf/eHCg3XFCjAlwC
+         zuhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H2rlhi44PP/yGILmVfXDfaXGTcLk3tY2rxvlC2hr1ng=;
+        b=p3x4vPHeb72h1YR1w4ULL7TpM1ZtfU+5e+9nyvK6+t/lvtw302ttXylkQOFQJvwWjo
+         dbw7ccQhwd7As3ElUY1/MzJFDpPAtegOVk0Dt/OAkcBLqOLlGDUAFejzRa1QrkyKmPha
+         dFJldkNzA0Z05GXWe9MOCQuMnfe0pR2LJlZK1MFiKintYiaViVu8aoVXipinO6C8gJjW
+         0nod2qff8IxKaGItX/xQ81JJTtcUjFuQnmKqRAfMh7VKGYxQCezrhkgO7x4f4Nyf4FtU
+         7qXQ/ccoLcANr3jck53bJj3JSZdq2tuPgX8lVRVoHKA5CtFay6/qmyngP9p7eHFiQOWh
+         w8gA==
+X-Gm-Message-State: AOAM531RsFYf1yHckgLxg0UBn5PyVZaFkx95kb3O4ETF6kCQPc1qHTtW
+        WYn5WIbumbzZx/0s24Wf/EzqXrNK
+X-Google-Smtp-Source: ABdhPJyhqOcYNtd5vksn2vWZzTK+6YDHifO80UBVUzQovhdMF5nT3BelgrNB8ZAXNiqdNDc3PIVqww==
+X-Received: by 2002:a63:ab4f:: with SMTP id k15mr24489873pgp.247.1595363716278;
+        Tue, 21 Jul 2020 13:35:16 -0700 (PDT)
+Received: from ?IPv6:2409:4072:593:314e:d028:8959:a8a3:a7bc? ([2409:4072:593:314e:d028:8959:a8a3:a7bc])
+        by smtp.gmail.com with ESMTPSA id w64sm19528075pgd.67.2020.07.21.13.35.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 13:35:15 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] iio: gyro: Add driver support for ADXRS290
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        darius.berghe@analog.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+References: <20200721181926.27046-1-nish.malpani25@gmail.com>
+ <CAHp75Vdr+Uo2uw3mzYP+LMRgp-eyi+YjG=O+wGVqyYx-+MRCaw@mail.gmail.com>
+From:   Nishant Malpani <nish.malpani25@gmail.com>
+Message-ID: <7ba8469a-dd8c-1686-6d26-e2a4cbfedce9@gmail.com>
+Date:   Wed, 22 Jul 2020 02:05:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75Vdr+Uo2uw3mzYP+LMRgp-eyi+YjG=O+wGVqyYx-+MRCaw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change 711419e504eb ("irqdomain: Add the missing assignment of
-domain->fwnode for named fwnode") unintentionally caused a dangling
-pointer page fault issue on firmware nodes that were freed after IRQ
-domain allocation. Change e3beca48a45b fixed that dangling pointer issue
-by only freeing the firmware node after an IRQ domain allocation
-failure. That fix no longer frees the firmware node immediately, but
-leaves the firmware node allocated after the domain is removed.
+Hello Andy,
 
-We need to keep the firmware node through irq_domain_remove, but should
-free it afterwards. This patch saves the handle and adds the freeing of
-firmware node after domain removal where appropriate.
+Thanks for the review. Comments inline...
 
-Fixes: e3beca48a45b ("irqdomain/treewide: Keep firmware node unconditionally allocated")
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
-Cc: stable@vger.kernel.org
----
- arch/mips/pci/pci-xtalk-bridge.c    | 3 +++
- arch/x86/kernel/apic/io_apic.c      | 5 +++++
- drivers/iommu/intel/irq_remapping.c | 8 ++++++++
- drivers/mfd/ioc3.c                  | 6 ++++++
- drivers/pci/controller/vmd.c        | 3 +++
- 5 files changed, 25 insertions(+)
+On 22/07/20 1:16 am, Andy Shevchenko wrote:
+> On Tue, Jul 21, 2020 at 9:20 PM Nishant Malpani
+> <nish.malpani25@gmail.com> wrote:
+>>
+>> ADXRS290 is a high performance MEMS pitch and roll (dual-axis in-plane)
+>> angular rate sensor (gyroscope) designed for use in stabilization
+>> applications. It also features an internal temperature sensor and
+>> programmable high-pass and low-pass filters.
+>>
+>> Add support for ADXRS290 in direct-access mode for now.
+> 
+>> Datasheet:
+>> Link: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXRS290.pdf
+> 
+> Drop that 'Link:' part and followed blank line, so get something like
+> 
+> Datasheet: https://...
+> Signed-off-by: ...
+> 
+Okay. Will fix in v3.
 
-diff --git a/arch/mips/pci/pci-xtalk-bridge.c b/arch/mips/pci/pci-xtalk-bridge.c
-index 5958217..9b3cc77 100644
---- a/arch/mips/pci/pci-xtalk-bridge.c
-+++ b/arch/mips/pci/pci-xtalk-bridge.c
-@@ -728,6 +728,7 @@ static int bridge_probe(struct platform_device *pdev)
- 	pci_free_resource_list(&host->windows);
- err_remove_domain:
- 	irq_domain_remove(domain);
-+	irq_domain_free_fwnode(fn);
- 	return err;
- }
- 
-@@ -735,8 +736,10 @@ static int bridge_remove(struct platform_device *pdev)
- {
- 	struct pci_bus *bus = platform_get_drvdata(pdev);
- 	struct bridge_controller *bc = BRIDGE_CONTROLLER(bus);
-+	struct fwnode_handle *fn = bc->domain->fwnode;
- 
- 	irq_domain_remove(bc->domain);
-+	irq_domain_free_fwnode(fn);
- 	pci_lock_rescan_remove();
- 	pci_stop_root_bus(bus);
- 	pci_remove_root_bus(bus);
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 81ffcfb..21325a4a 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -2335,8 +2335,13 @@ static int mp_irqdomain_create(int ioapic)
- 
- static void ioapic_destroy_irqdomain(int idx)
- {
-+	struct ioapic_domain_cfg *cfg = &ioapics[idx].irqdomain_cfg;
-+	struct fwnode_handle *fn = ioapics[idx].irqdomain->fwnode;
-+
- 	if (ioapics[idx].irqdomain) {
- 		irq_domain_remove(ioapics[idx].irqdomain);
-+		if (!cfg->dev)
-+			irq_domain_free_fwnode(fn);
- 		ioapics[idx].irqdomain = NULL;
- 	}
- }
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index 9564d23..aa096b3 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -628,13 +628,21 @@ static int intel_setup_irq_remapping(struct intel_iommu *iommu)
- 
- static void intel_teardown_irq_remapping(struct intel_iommu *iommu)
- {
-+	struct fwnode_handle *fn;
-+
- 	if (iommu && iommu->ir_table) {
- 		if (iommu->ir_msi_domain) {
-+			fn = iommu->ir_msi_domain->fwnode;
-+
- 			irq_domain_remove(iommu->ir_msi_domain);
-+			irq_domain_free_fwnode(fn);
- 			iommu->ir_msi_domain = NULL;
- 		}
- 		if (iommu->ir_domain) {
-+			fn = iommu->ir_domain->fwnode;
-+
- 			irq_domain_remove(iommu->ir_domain);
-+			irq_domain_free_fwnode(fn);
- 			iommu->ir_domain = NULL;
- 		}
- 		free_pages((unsigned long)iommu->ir_table->base,
-diff --git a/drivers/mfd/ioc3.c b/drivers/mfd/ioc3.c
-index 74cee7c..d939ccc 100644
---- a/drivers/mfd/ioc3.c
-+++ b/drivers/mfd/ioc3.c
-@@ -616,7 +616,10 @@ static int ioc3_mfd_probe(struct pci_dev *pdev,
- 		/* Remove all already added MFD devices */
- 		mfd_remove_devices(&ipd->pdev->dev);
- 		if (ipd->domain) {
-+			struct fwnode_handle *fn = ipd->domain->fwnode;
-+
- 			irq_domain_remove(ipd->domain);
-+			irq_domain_free_fwnode(fn);
- 			free_irq(ipd->domain_irq, (void *)ipd);
- 		}
- 		pci_iounmap(pdev, regs);
-@@ -643,7 +646,10 @@ static void ioc3_mfd_remove(struct pci_dev *pdev)
- 	/* Release resources */
- 	mfd_remove_devices(&ipd->pdev->dev);
- 	if (ipd->domain) {
-+		struct fwnode_handle *fn = ipd->domain->fwnode;
-+
- 		irq_domain_remove(ipd->domain);
-+		irq_domain_free_fwnode(fn);
- 		free_irq(ipd->domain_irq, (void *)ipd);
- 	}
- 	pci_iounmap(pdev, ipd->regs);
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index f078114..91eb769 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -560,6 +560,7 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
- 	if (!vmd->bus) {
- 		pci_free_resource_list(&resources);
- 		irq_domain_remove(vmd->irq_domain);
-+		irq_domain_free_fwnode(fn);
- 		return -ENODEV;
- 	}
- 
-@@ -673,6 +674,7 @@ static void vmd_cleanup_srcu(struct vmd_dev *vmd)
- static void vmd_remove(struct pci_dev *dev)
- {
- 	struct vmd_dev *vmd = pci_get_drvdata(dev);
-+	struct fwnode_handle *fn = vmd->irq_domain->fwnode;
- 
- 	sysfs_remove_link(&vmd->dev->dev.kobj, "domain");
- 	pci_stop_root_bus(vmd->bus);
-@@ -680,6 +682,7 @@ static void vmd_remove(struct pci_dev *dev)
- 	vmd_cleanup_srcu(vmd);
- 	vmd_detach_resources(vmd);
- 	irq_domain_remove(vmd->irq_domain);
-+	irq_domain_free_fwnode(fn);
- }
- 
- #ifdef CONFIG_PM_SLEEP
--- 
-1.8.3.1
+>> Signed-off-by: Nishant Malpani <nish.malpani25@gmail.com>
+> 
+> ...
+> 
+>> +config ADXRS290
+>> +       tristate "Analog Devices ADXRS290 Dual-Axis MEMS Gyroscope SPI driver"
+>> +       depends on SPI
+>> +       help
+>> +         Say yes here to build support for Analog Devices ADXRS290 programmable
+>> +         digital output gyroscope.
+>> +
+>> +         This driver can also be built as a module. If so, the module will be
+>> +         called adxrs290.
+> 
+> 
+>> +enum adxrs290_mode {
+>> +       STANDBY,
+>> +       MEASUREMENT,
+>> +};
+> 
+>> +struct adxrs290_state {
+>> +       struct spi_device       *spi;
+>> +       /* Serialize reads and their subsequent processing */
+>> +       struct mutex            lock;
+>> +       enum adxrs290_mode      mode;
+>> +       unsigned int            lpf_3db_freq_idx;
+>> +       unsigned int            hpf_3db_freq_idx;
+>> +};
+> 
+> ...
+> 
+>> +/*
+>> + * Available cut-off frequencies of the low pass filter in Hz.
+>> + * The integer part and fractional part are represented separately.
+>> + */
+> 
+>> +static const int adxrs290_lpf_3db_freq_tbl[][2] = {
+> 
+> What about adxrs290_lpf_3db_freq_hz_table ?
+> 
+Sure, makes it very precise. Will address in v3.
 
+>> +};
+>> +
+>> +/*
+>> + * Available cut-off frequencies of the high pass filter in Hz.
+>> + * The integer part and fractional part are represented separately.
+>> + */
+>> +static const int adxrs290_hpf_3db_freq_tbl[][2] = {
+> 
+> Ditto.
+> 
+Yes.
+
+>> +};
+> 
+> ...
+> 
+>> +static int adxrs290_get_rate_data(struct iio_dev *indio_dev, const u8 cmd,
+>> +                                 unsigned int *val)
+>> +{
+>> +       struct adxrs290_state *st = iio_priv(indio_dev);
+> 
+>> +       int ret = 0;
+> 
+> Purpose of this?
+>
+'ret' will not be initialized if a successful spi_w8r16() takes place 
+i.e if it doesn't go into the 'if' block. (Doesn't make sense to have it 
+now since the below block of code is erroneous, but will need this in v3).
+
+>> +       u16 temp;
+>> +
+>> +       mutex_lock(&st->lock);
+>> +       temp = spi_w8r16(st->spi, cmd);
+> 
+>> +       if (temp < 0) {
+> 
+> How can this ever happen?
+> 
+Oops, you're right. Even though spi_w8r16() returns a negative error 
+code on failure, 'temp' is declared unsigned. Thanks for pointing out. 
+Will fix in v3.
+
+>> +               ret = temp;
+>> +               goto err_unlock;
+>> +       }
+>> +
+>> +       *val = temp;
+>> +
+>> +err_unlock:
+>> +       mutex_unlock(&st->lock);
+>> +       return ret;
+>> +}
+> 
+> Ditto for the rest of the similar cases.
+>
+Sure.
+
+> ...
+> 
+>> +       case IIO_CHAN_INFO_SCALE:
+>> +               switch (chan->type) {
+>> +               case IIO_ANGL_VEL:
+>> +                       *val = 0;
+> 
+> 
+>> +                       *val2 = 87266;
+> 
+> Magic!
+> 
+Haha, will add comments in v3!
+
+>> +                       return IIO_VAL_INT_PLUS_NANO;
+>> +               case IIO_TEMP:
+> 
+>> +                       *val = 100;
+> 
+> Magic!
+> 
+Will add comments in v3.
+
+>> +                       return IIO_VAL_INT;
+>> +               default:
+>> +                       return -EINVAL;
+>> +               }
+> 
+> ...
+> 
+>> +               *vals = (const int *)adxrs290_lpf_3db_freq_tbl;
+> 
+> Why casting?
+> 
+adxrs290_lpf_3db_freq_tbl is of type (int *)[2], right? Without the 
+casting, an incompatible-pointer-type error is thrown.
+
+> ...
+> 
+>> +               *vals = (const int *)adxrs290_hpf_3db_freq_tbl;
+> 
+> Ditto.
+> 
+See above comment.
+
+> ...
+> 
+> 
+>> +       struct iio_dev *indio_dev;
+>> +       struct adxrs290_state *st;
+> 
+>> +       int ret;
+>> +       u8 val, val2;
+> 
+> Swap them to have in reversed spruce tree order.
+> 
+Okay, will do so in v3.
+
+> ...
+> 
+>> +       indio_dev->dev.parent = &spi->dev;
+> 
+> Do you need this?
+Oh, right (I'm aware of Alexandru's recent patch on this). Will address 
+in v3.
+
+> 
+>> +       /* max transition time to measurement mode */
+>> +       msleep_interruptible(ADXRS290_MAX_TRANSITION_TIME_MS);
+> 
+> I'm not sure what the point of interruptible variant here?
+> 
+I referred Documentation/timers/timers-howto.rst for this.
+My reasoning was shaped to use the interruptible variant because the 
+transition settles in a time *less than* 100ms and since 100ms is quite 
+a huge time to sleep, it should be interrupted in case a signal arrives.
+
+> ...
+> 
+>> +static const struct of_device_id adxrs290_of_match[] = {
+>> +       { .compatible = "adi,adxrs290" },
+> 
+>> +       { },
+> 
+> No comma here!
+> 
+Okay. Will remove in v3.
+
+With regards,
+Nishant Malpani
+
+>> +};
+> 
