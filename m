@@ -2,198 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7012281B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D996A2281B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgGUOLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgGUOLb (ORCPT
+        id S1726971AbgGUOP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:15:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45609 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726120AbgGUOP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:11:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A5AC0619DA;
-        Tue, 21 Jul 2020 07:11:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a9so1636800pjd.3;
-        Tue, 21 Jul 2020 07:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HegLuYZPFFSazhaMow4ETM/dSjExzGWrhJw29Et5Fac=;
-        b=X0WITuCz3faYxv4JwbjHKtqa6l7jbD2qmRJ6fnNjKSupg9b/oScWl4yxyp62ZGd44q
-         RK5uoB3zIxFdVX1FJfnwrUyikoPSHKw6DP0hfCO1DPuOuQdy4Scm7NoJjnb+HrrKBOAQ
-         o8x2s8WzJSWG8OMq5sjeIdH1jB6MEJ50Ykl3w3EVJxXaQ2F9lTFtHNawyB7X5k13WGzZ
-         3RwhizhBaKw5fbPruu1wso+4slrJ5W5Fligt5zNVWTVdNg6Eb7kYZqZaUPkkED00lmX6
-         gydbG+ASbqDRQ+E91Lrq50CGq4NDFjSUmCSy0dCNazwWDLGmkRtFXoHVBa1it5wcZGNy
-         EURw==
+        Tue, 21 Jul 2020 10:15:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595340925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=p3hi3xrdZQgrcmCmh6VAQFFWaZ++JX8czQmDuqdNFJw=;
+        b=E8rxVIvXUjz1pX3hfPcOx2rLyWVHtpwqyeMfxY+kXQ++g9tkaARrx8TxqqKI/EUa5hD8dF
+        uyE0C7pDekTnak6o2ZQGcm1liQvWGchYcsHcrcW0hsiRjELsBwm+ZSbDbxJaJAcXu732QD
+        qeWo9Id95EGK+QSh8bO2n0KHU1Y6o8c=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-6HxB9N8dPRu0gSyo9rAKdw-1; Tue, 21 Jul 2020 10:15:23 -0400
+X-MC-Unique: 6HxB9N8dPRu0gSyo9rAKdw-1
+Received: by mail-qk1-f197.google.com with SMTP id i3so13886404qkf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:15:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HegLuYZPFFSazhaMow4ETM/dSjExzGWrhJw29Et5Fac=;
-        b=tz+cqJW9FRkvdkPcW+R2ZYE9rz6aXx/unGtwtQM8Ox4keCT/pdyI0kQTbJypK0Q/do
-         L9Dlfyv2xDEtl+Jxjm5fN8Zf9EjEpHIeKHt+4UxAC23Q1EN0cP46FBIwrlFebZsgXMLE
-         f2KfrPpWmEwvUFi/udLDpweN7NjgIkAqGfK5x+yHM/h3+ddYZNMe5MqwX15MQgbDQ70B
-         /LufQC/ophFjQ8tJBzqGv36ZgsevgQEjW+08ueICMcY6aD5GqguhCLHLcii/Vx33WPRZ
-         w9JagbFcHd/zBjIi07JFQ9J2l+lj6FpRPeQEi1YOdfsOpxfRjsbkRechAQWIvay6fbkV
-         RB1A==
-X-Gm-Message-State: AOAM533GKUS8GfIQ2m90pNLU145pxEQv0dkudnwMa2lpOheTd5VXlzi0
-        rY28b1o/lIMjN0VOUWhSzmwfIuuv
-X-Google-Smtp-Source: ABdhPJwL/KFf3AtboRoDEc1lXf4RRc7fnqSVpItq3LVQX7y7KS7tVvRE2eHjkwxDBiZikN9NkOjXhg==
-X-Received: by 2002:a17:90a:6983:: with SMTP id s3mr4980465pjj.55.1595340690522;
-        Tue, 21 Jul 2020 07:11:30 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n22sm3285232pjq.25.2020.07.21.07.11.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Jul 2020 07:11:29 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 07:11:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>
-Subject: Re: [PATCH v2 4/4] platform/chrome: cros_ec_proto: Convert EC error
- codes to Linux error codes
-Message-ID: <20200721141128.GA130724@roeck-us.net>
-References: <20200720202243.180230-1-linux@roeck-us.net>
- <20200720202243.180230-5-linux@roeck-us.net>
- <401aec54-ff21-7e0f-85dc-e32435df2672@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <401aec54-ff21-7e0f-85dc-e32435df2672@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=p3hi3xrdZQgrcmCmh6VAQFFWaZ++JX8czQmDuqdNFJw=;
+        b=ZMRk1hOw3jks6gKufyEJtU2witCkjQ1GBytPInSjez0nK4nGsLtpgxIEyv/1eYmMpS
+         O5bJsSZg1PBBGHl77vy++AngBj4uRczZcCgclJwaaRy83QIqmXtfSyRYFpZIIS2wQchM
+         qPNhtEeU0wtkIL5zzBLaRz6dld3vVnYvS74twaELOI0UmNvONlaqkwPf03ooin0PNUJ7
+         DsMt7ns3Bzb1U+1h9JwQk0xpYH9G2S95O+37K5VvXmoMAtofC8lUssOL4lVCM0ScxHgo
+         gMMOd77eRmXDxoqfNcNuMEFRyErMyk7BpxSqLZwekkKgRdh5mUUKgCduKOz6ZfQV8PIF
+         0Shg==
+X-Gm-Message-State: AOAM532skntvqHFrAN+tqANdMDR2RxUFyVxNoBceJ7wGW5B0n3FepxmB
+        1cz7TIuafkdPTtlyiAavzGGqeafhyDCRS4KPBLuHpQeTVNQ0vafUsH3UFpQIlGKRBPMxqF1l40L
+        fvcCRIi3Q70Kj6FG4xQ9wRdBT
+X-Received: by 2002:aed:2987:: with SMTP id o7mr29229974qtd.385.1595340923116;
+        Tue, 21 Jul 2020 07:15:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpgbcSLCsIUUg/981LoMyBoE6jzlDFr+8f6gGViXBeoV3rMbiH7sCH6UBnDuUx0P9jhTDOgg==
+X-Received: by 2002:aed:2987:: with SMTP id o7mr29229939qtd.385.1595340922836;
+        Tue, 21 Jul 2020 07:15:22 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d14sm22474159qti.41.2020.07.21.07.15.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 07:15:22 -0700 (PDT)
+From:   trix@redhat.com
+To:     dhowells@redhat.com, jarkko.sakkinen@linux.intel.com,
+        jmorris@namei.org, serge@hallyn.com, denkenz@gmail.com,
+        marcel@holtmann.org
+Cc:     keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] KEYS: remove redundant memsets
+Date:   Tue, 21 Jul 2020 07:15:16 -0700
+Message-Id: <20200721141516.20335-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric,
+From: Tom Rix <trix@redhat.com>
 
-On Tue, Jul 21, 2020 at 01:29:01PM +0200, Enric Balletbo i Serra wrote:
-> Hi Guenter,
-> 
-> Thank you for work on this. Cc'ing Gwendal as he has a deep knowledge of the EC
-> and their errors.
+Reviewing use of memset in keyctrl_pkey.c
 
-The series is now also available in Gerrit at
-	https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2306731/3
-for integration/testing into ChromeOS.
+keyctl_pkey_params_get prologue code to set params up
 
-Thanks,
-Guenter
+	memset(params, 0, sizeof(*params));
+	params->encoding = "raw";
 
-> 
-> On 20/7/20 22:22, Guenter Roeck wrote:
-> > The EC reports a variety of error codes. Most of those, with the exception
-> > of EC_RES_INVALID_VERSION, are converted to -EPROTO. As result, the actual
-> > error code gets lost. In cros_ec_cmd_xfer_status(), convert all EC errors
-> > to Linux error codes to report a more meaningful error to the caller to aid
-> > debugging.
-> > 
-> > Cc: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-> > Cc: Prashant Malani <pmalani@chromium.org>
-> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> > v2: No change
-> > 
-> > Notes:
-> >     I would welcome feedback on the error code translations.
-> >     Can we do better ?
-> > 
-> >     -ENOTSUPP is not a recommended error code, and checkpatch complains
-> >     about it. It is used in existing code, so I did not change it, but it
-> >     might be worthwhile exploring if we can find a better error code to
-> >     report "version not supported". Possible candidates might be EPROTOTYPE,
-> >     ENOPROTOOPT, EPROTONOSUPPORT, EPFNOSUPPORT, or EAFNOSUPPORT. I don't
-> >     see a direct match, but NFS reports -EPROTONOSUPPORT for unsupported
-> >     protocol versions.
-> > 
-> >  drivers/platform/chrome/cros_ec_proto.c | 37 +++++++++++++++++++------
-> >  1 file changed, 29 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-> > index 3e745e0fe092..10aa9e483d35 100644
-> > --- a/drivers/platform/chrome/cros_ec_proto.c
-> > +++ b/drivers/platform/chrome/cros_ec_proto.c
-> > @@ -543,6 +543,29 @@ int cros_ec_cmd_xfer(struct cros_ec_device *ec_dev,
-> >  }
-> >  EXPORT_SYMBOL(cros_ec_cmd_xfer);
-> >  
-> > +static const int cros_ec_error_map[] = {
-> > +	[EC_RES_INVALID_COMMAND] = -EOPNOTSUPP,
-> > +	[EC_RES_ERROR] = -EIO,
-> 
-> nit -EREMOTEIO? To make explicit that the error is "remote" from the host.
-> Although -EIO seems to be more generic.
-> 
-> > +	[EC_RES_INVALID_PARAM] = -EINVAL,
-> > +	[EC_RES_ACCESS_DENIED] = -EACCES,
-> > +	[EC_RES_INVALID_RESPONSE] = -EPROTO,
-> > +	[EC_RES_INVALID_VERSION] = -ENOTSUPP,
-> 
-> +1 for EPROTONOSUPPORT to match with EC_RES_INVALID_VERSION
-> 
-> > +	[EC_RES_INVALID_CHECKSUM] = -EBADMSG,
-> > +	[EC_RES_IN_PROGRESS] = -EINPROGRESS,
-> > +	[EC_RES_UNAVAILABLE] = -ENODATA,
-> > +	[EC_RES_TIMEOUT] = -ETIMEDOUT,
-> > +	[EC_RES_OVERFLOW] = -EOVERFLOW,
-> > +	[EC_RES_INVALID_HEADER] = -EBADR,
-> > +	[EC_RES_REQUEST_TRUNCATED] = -EBADR,
-> > +	[EC_RES_RESPONSE_TOO_BIG] = -EFBIG,
-> > +	[EC_RES_BUS_ERROR] = -EFAULT,
-> > +	[EC_RES_BUSY] = -EBUSY,
-> 
-> Although the name matches, I'm wondering if we should use -EAGAIN instead as per
-> EC documentation:
-> 
->   EC_RES_BUSY - Up but too busy. Should retry.
-> 
-> hmm, however, for the audio codec, for example, this seems to have a slightly
-> different meaning and retry is not what we want, so let's do direct translation
-> and stay with -EBUSY.
-> 
-> > +	[EC_RES_INVALID_HEADER_VERSION] = -EBADMSG,
-> > +	[EC_RES_INVALID_HEADER_CRC] = -EBADMSG,
-> > +	[EC_RES_INVALID_DATA_CRC] = -EBADMSG,
-> > +	[EC_RES_DUP_UNAVAILABLE] = -ENODATA,
-> > +};
-> > +
-> >  /**
-> >   * cros_ec_cmd_xfer_status() - Send a command to the ChromeOS EC.
-> >   * @ec_dev: EC device.
-> > @@ -555,8 +578,7 @@ EXPORT_SYMBOL(cros_ec_cmd_xfer);
-> >   *
-> >   * Return:
-> >   * >=0 - The number of bytes transferred
-> > - * -ENOTSUPP - Operation not supported
-> > - * -EPROTO - Protocol error
-> > + * <0 - Linux error code
-> >   */
-> >  int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
-> >  			    struct cros_ec_command *msg)
-> > @@ -566,13 +588,12 @@ int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
-> >  	ret = cros_ec_cmd_xfer(ec_dev, msg);
-> >  	if (ret < 0) {
-> >  		dev_err(ec_dev->dev, "Command xfer error (err:%d)\n", ret);
-> > -	} else if (msg->result == EC_RES_INVALID_VERSION) {
-> > -		dev_dbg(ec_dev->dev, "Command invalid version (err:%d)\n",
-> > -			msg->result);
-> > -		return -ENOTSUPP;
-> >  	} else if (msg->result != EC_RES_SUCCESS) {
-> > -		dev_dbg(ec_dev->dev, "Command result (err: %d)\n", msg->result);
-> > -		return -EPROTO;
-> > +		if (msg->result < ARRAY_SIZE(cros_ec_error_map) && cros_ec_error_map[msg->result])
-> > +			ret = cros_ec_error_map[msg->result];
-> > +		else
-> > +			ret = -EPROTO;
-> > +		dev_dbg(ec_dev->dev, "Command result (err: %d [%d])\n", msg->result, ret);
-> >  	}
-> >  
-> >  	return ret;
-> > 
+keyctl_pkey_params_get_2 and keyctl_pkey_query have the same
+prologue and they call keyctl_pkey_params_get.
+
+So remove the prologue from the callers.
+
+In keyctl_pkey_params_get_2, reorder the copy_from_user
+of uparams to closer to it's use to ensure that
+the keyctrl_pkey_params_get is called first.
+
+Fixes: 00d60fd3b932 ("KEYS: Provide keyctls to drive the new key type ops for asymmetric keys [ver #2]")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ security/keys/keyctl_pkey.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/security/keys/keyctl_pkey.c b/security/keys/keyctl_pkey.c
+index 931d8dfb4a7f..60b504681388 100644
+--- a/security/keys/keyctl_pkey.c
++++ b/security/keys/keyctl_pkey.c
+@@ -119,12 +119,6 @@ static int keyctl_pkey_params_get_2(const struct keyctl_pkey_params __user *_par
+ 	struct kernel_pkey_query info;
+ 	int ret;
+ 
+-	memset(params, 0, sizeof(*params));
+-	params->encoding = "raw";
+-
+-	if (copy_from_user(&uparams, _params, sizeof(uparams)) != 0)
+-		return -EFAULT;
+-
+ 	ret = keyctl_pkey_params_get(uparams.key_id, _info, params);
+ 	if (ret < 0)
+ 		return ret;
+@@ -133,6 +127,9 @@ static int keyctl_pkey_params_get_2(const struct keyctl_pkey_params __user *_par
+ 	if (ret < 0)
+ 		return ret;
+ 
++	if (copy_from_user(&uparams, _params, sizeof(uparams)) != 0)
++		return -EFAULT;
++
+ 	switch (op) {
+ 	case KEYCTL_PKEY_ENCRYPT:
+ 	case KEYCTL_PKEY_DECRYPT:
+@@ -166,8 +163,6 @@ long keyctl_pkey_query(key_serial_t id,
+ 	struct kernel_pkey_query res;
+ 	long ret;
+ 
+-	memset(&params, 0, sizeof(params));
+-
+ 	ret = keyctl_pkey_params_get(id, _info, &params);
+ 	if (ret < 0)
+ 		goto error;
+-- 
+2.18.1
+
