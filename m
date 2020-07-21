@@ -2,150 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9579228024
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF48228037
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgGUMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:42:24 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41200 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726904AbgGUMmX (ORCPT
+        id S1729431AbgGUMoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:44:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27488 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727983AbgGUMoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:42:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595335342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sxEWR5e+zFYMBJOOuaa+SYdRZddlN9HI1DKBH6wob58=;
-        b=ZRTvmXSz7Rh+hPT0fQAvmYiDjwXPM+ti/tOaKzGp6FVMRz3Q8Lekog1wEFY1v5wTpHRbCU
-        2OMkIf4g9pOflXTvHshxcY2cM+IbyRmobhCZagQiDqJWzOWJNgtME82sR1DHPhavU4NLrb
-        10M9jw4Q3LVcUFTB0Ugkeu9TBwUgooI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263--3BfRSnxPBiIkZC8r_aHkQ-1; Tue, 21 Jul 2020 08:42:20 -0400
-X-MC-Unique: -3BfRSnxPBiIkZC8r_aHkQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35D7780047E;
-        Tue, 21 Jul 2020 12:42:16 +0000 (UTC)
-Received: from starship (unknown [10.35.206.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A1F9870105;
-        Tue, 21 Jul 2020 12:42:08 +0000 (UTC)
-Message-ID: <435f1c04b58bd2298be3166b7bab458640927118.camel@redhat.com>
-Subject: Re: [PATCH 05/10] block: null: use blk_is_valid_logical_block_size
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ajay Joshi <Ajay.Joshi@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
-        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
-        "open list:VIRTIO CORE AND NET DRIVERS" 
-        <virtualization@lists.linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Alex Dubov <oakad@yahoo.com>
-Date:   Tue, 21 Jul 2020 15:42:07 +0300
-In-Reply-To: <CY4PR04MB3751882A6BDF7C073D6ECF88E7780@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200721105239.8270-1-mlevitsk@redhat.com>
-         <20200721105239.8270-6-mlevitsk@redhat.com>
-         <CY4PR04MB3751882A6BDF7C073D6ECF88E7780@CY4PR04MB3751.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 21 Jul 2020 08:44:44 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LCXIU1141883;
+        Tue, 21 Jul 2020 08:44:25 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5h8r6eh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 08:44:25 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06LCZPoX149175;
+        Tue, 21 Jul 2020 08:44:23 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32d5h8r6dn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 08:44:23 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LCeSXc023133;
+        Tue, 21 Jul 2020 12:44:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 32brq7uywn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 12:44:21 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LCh3MT60752264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 12:43:03 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8FE894204B;
+        Tue, 21 Jul 2020 12:43:03 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 105E642047;
+        Tue, 21 Jul 2020 12:43:01 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.79.210.59])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Jul 2020 12:43:00 +0000 (GMT)
+From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
+To:     rjw@rjwysocki.net, daniel.lezcano@linaro.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, srivatsa@csail.mit.edu,
+        shuah@kernel.org, npiggin@gmail.com, ego@linux.vnet.ibm.com,
+        svaidy@linux.ibm.com, pratik.r.sampat@gmail.com,
+        psampat@linux.ibm.com, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/2] Selftest for cpuidle latency measurement
+Date:   Tue, 21 Jul 2020 18:12:58 +0530
+Message-Id: <20200721124300.65615-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_08:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxlogscore=724 spamscore=0 adultscore=0 clxscore=1015 mlxscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007210089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-21 at 11:15 +0000, Damien Le Moal wrote:
-> On 2020/07/21 19:54, Maxim Levitsky wrote:
-> > This slightly changes the behavier of the driver,
-> 
-> s/behavier/behavior
-Thanks. This is one of the typos I make very consistently.
+v2: https://lkml.org/lkml/2020/7/17/369
+Changelog v2-->v3
+Based on comments from Gautham R. Shenoy adding the following in the
+selftest,
+1. Grepping modules to determine if already loaded
+2. Wrapper to enable/disable states
+3. Preventing any operation/test on offlined CPUs 
+---
 
-> 
-> > when given invalid block size (non power of two, or below 512 bytes),
-> > but shoudn't matter.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  drivers/block/null_blk_main.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
-> > index 87b31f9ca362e..e4df4b903b90b 100644
-> > --- a/drivers/block/null_blk_main.c
-> > +++ b/drivers/block/null_blk_main.c
-> > @@ -1684,8 +1684,8 @@ static int null_init_tag_set(struct nullb *nullb, struct blk_mq_tag_set *set)
-> >  
-> >  static int null_validate_conf(struct nullb_device *dev)
-> >  {
-> > -	dev->blocksize = round_down(dev->blocksize, 512);
-> > -	dev->blocksize = clamp_t(unsigned int, dev->blocksize, 512, 4096);
-> > +	if (!blk_is_valid_logical_block_size(dev->blocksize))
-> > +		return -ENODEV;
-> >  
-> >  	if (dev->queue_mode == NULL_Q_MQ && dev->use_per_node_hctx) {
-> >  		if (dev->submit_queues != nr_online_nodes)
-> > @@ -1865,7 +1865,7 @@ static int __init null_init(void)
-> >  	struct nullb *nullb;
-> >  	struct nullb_device *dev;
-> >  
-> > -	if (g_bs > PAGE_SIZE) {
-> > +	if (!blk_is_valid_logical_block_size(g_bs)) {
-> >  		pr_warn("invalid block size\n");
-> >  		pr_warn("defaults block size to %lu\n", PAGE_SIZE);
-> >  		g_bs = PAGE_SIZE;
-> 
-> Not sure if this change is OK. Shouldn't the if here be kept as is and
-> blk_is_valid_logical_block_size() called after it to check values lower than 4K ?
+The patch series introduces a mechanism to measure wakeup latency for
+IPI and timer based interrupts
+The motivation behind this series is to find significant deviations
+behind advertised latency and resisdency values
 
-The thing is that this driver supports two ways of creating the block devices.
-On module load it creates by default a single block device and it uses g_bs
-as its block size, but then it also has configfs based interface that allows
-to create more block devices.
+To achieve this, we introduce a kernel module and expose its control
+knobs through the debugfs interface that the selftests can engage with.
 
-The default is taken also from g_bs but then user can change it (
-via those NULLB_DEVICE_ATTR wrappers)
-I changed the behavior slightly, that now if user supplies bad value,
-it will be rejected instead of finding closest valid value.
+The kernel module provides the following interfaces within
+/sys/kernel/debug/latency_test/ for,
+1. IPI test:
+  ipi_cpu_dest   # Destination CPU for the IPI
+  ipi_cpu_src    # Origin of the IPI
+  ipi_latency_ns # Measured latency time in ns
+2. Timeout test:
+  timeout_cpu_src     # CPU on which the timer to be queued
+  timeout_expected_ns # Timer duration
+  timeout_diff_ns     # Difference of actual duration vs expected timer
+To include the module, check option and include as module
+kernel hacking -> Cpuidle latency selftests
 
-In addition to that there is very small bug that didn't bother to fix in
-this series (but I will in next one). The bug is that when null_validate_conf
-fails, it return value is overriden with -ENOMEM, which gives the user a wrong
-error message.
+The selftest inserts the module, disables all the idle states and
+enables them one by one testing the following:
+1. Keeping source CPU constant, iterates through all the CPUS measuring
+   IPI latency for baseline (CPU is busy with
+   "cat /dev/random > /dev/null" workload) and the when the CPU is
+   allowed to be at rest
+2. Iterating through all the CPUs, sending expected timer durations to
+   be equivalent to the residency of the the deepest idle state
+   enabled and extracting the difference in time between the time of
+   wakeup and the expected timer duration
 
-Thanks for the review!
+Usage
+-----
+Can be used in conjuction to the rest of the selftests.
+Default Output location in: tools/testing/cpuidle/cpuidle.log
 
-Best regards,
-	Maxim Levitsky
+To run this test specifically:
+$ make -C tools/testing/selftests TARGETS="cpuidle" run_tests
 
-> 
-> 
+There are a few optinal arguments too that the script can take
+	[-h <help>]
+	[-m <location of the module>]
+	[-o <location of the output>]
 
+Sample output snippet
+---------------------
+--IPI Latency Test---
+--Baseline IPI Latency measurement: CPU Busy--
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+...
+0            8         1996
+0            9         2125
+0           10         1264
+0           11         1788
+0           12         2045
+Baseline Average IPI latency(ns): 1843
+---Enabling state: 5---
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+0            8       621719
+0            9       624752
+0           10       622218
+0           11       623968
+0           12       621303
+Expected IPI latency(ns): 100000
+Observed Average IPI latency(ns): 622792
+
+--Timeout Latency Test--
+--Baseline Timeout Latency measurement: CPU Busy--
+Wakeup_src Baseline_delay(ns) 
+...
+8            2249
+9            2226
+10           2211
+11           2183
+12           2263
+Baseline Average timeout diff(ns): 2226
+---Enabling state: 5---
+8           10749                   
+9           10911                   
+10          10912                   
+11          12100                   
+12          73276                   
+Expected timeout(ns): 10000200
+Observed Average timeout diff(ns): 23589
+
+Pratik Rajesh Sampat (2):
+  cpuidle: Trace IPI based and timer based wakeup latency from idle
+    states
+  selftest/cpuidle: Add support for cpuidle latency measurement
+
+ drivers/cpuidle/Makefile                   |   1 +
+ drivers/cpuidle/test-cpuidle_latency.c     | 150 ++++++++++
+ lib/Kconfig.debug                          |  10 +
+ tools/testing/selftests/Makefile           |   1 +
+ tools/testing/selftests/cpuidle/Makefile   |   6 +
+ tools/testing/selftests/cpuidle/cpuidle.sh | 310 +++++++++++++++++++++
+ tools/testing/selftests/cpuidle/settings   |   1 +
+ 7 files changed, 479 insertions(+)
+ create mode 100644 drivers/cpuidle/test-cpuidle_latency.c
+ create mode 100644 tools/testing/selftests/cpuidle/Makefile
+ create mode 100755 tools/testing/selftests/cpuidle/cpuidle.sh
+ create mode 100644 tools/testing/selftests/cpuidle/settings
+
+-- 
+2.25.4
 
