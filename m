@@ -2,36 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47429227EAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F36227EAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbgGULXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:23:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59338 "EHLO mx2.suse.de"
+        id S1729547AbgGULXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:23:23 -0400
+Received: from 8bytes.org ([81.169.241.247]:58390 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727768AbgGULXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:23:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80547B008;
-        Tue, 21 Jul 2020 11:23:21 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvalo@codeaurora.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org
-Subject: [PATCH v2] brcmfmac: Set timeout value when configuring power save
-Date:   Tue, 21 Jul 2020 13:23:02 +0200
-Message-Id: <20200721112302.22718-1-nsaenzjulienne@suse.de>
+        id S1727768AbgGULXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 07:23:22 -0400
+Received: from cap.home.8bytes.org (p5b006776.dip0.t-ipconnect.de [91.0.103.118])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 5B0B51AD;
+        Tue, 21 Jul 2020 13:23:20 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH] csky: Fix build with upstream gcc
+Date:   Tue, 21 Jul 2020 13:23:14 +0200
+Message-Id: <20200721112314.1162-1-joro@8bytes.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,45 +31,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the timeout value as per cfg80211's set_power_mgmt() request. If the
-requested value value is left undefined we set it to 2 seconds, the
-maximum supported value.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Building a kernel for the CSKY architecture with CONFIG_FRAME_POINTER
+set requires a gcc supporting the non-upstream '-mbacktrace' option.
+Check for the '-mbacktrace' option before enabling CONFIG_FRAMEPOINTER
+and fix building CSKY with an upstream gcc compiler.
+
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
+ arch/csky/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes since v1:
- - Use min_t()
-
- .../net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c   | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 5d99771c3f64..ab0da2ff982e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -84,6 +84,8 @@
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index bd31ab12f77d..1622e1c56026 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -8,7 +8,7 @@ config CSKY
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_QUEUED_RWLOCKS if NR_CPUS>2
+-	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610
++	select ARCH_WANT_FRAME_POINTERS if (!CPU_CK610 && STACKTRACE_SUPPORT)
+ 	select COMMON_CLK
+ 	select CLKSRC_MMIO
+ 	select CSKY_MPINTC if CPU_CK860
+@@ -125,7 +125,7 @@ config MMU
+ 	def_bool y
  
- #define BRCMF_ND_INFO_TIMEOUT		msecs_to_jiffies(2000)
+ config STACKTRACE_SUPPORT
+-	def_bool y
++	def_bool $(success,echo 'int foo(void) { return 0; }' | $(CC) -mbacktrace -x c - -c -o /dev/null)
  
-+#define BRCMF_PS_MAX_TIMEOUT_MS		2000
-+
- #define BRCMF_ASSOC_PARAMS_FIXED_SIZE \
- 	(sizeof(struct brcmf_assoc_params_le) - sizeof(u16))
- 
-@@ -2942,6 +2944,12 @@ brcmf_cfg80211_set_power_mgmt(struct wiphy *wiphy, struct net_device *ndev,
- 		else
- 			bphy_err(drvr, "error (%d)\n", err);
- 	}
-+
-+	err = brcmf_fil_iovar_int_set(ifp, "pm2_sleep_ret",
-+				min_t(u32, timeout, BRCMF_PS_MAX_TIMEOUT_MS));
-+	if (err)
-+		bphy_err(drvr, "Unable to set pm timeout, (%d)\n", err);
-+
- done:
- 	brcmf_dbg(TRACE, "Exit\n");
- 	return err;
+ config TIME_LOW_RES
+ 	def_bool y
 -- 
 2.27.0
 
