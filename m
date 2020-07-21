@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483F52274AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA842274B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726994AbgGUBj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        id S1727858AbgGUBj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGUBjX (ORCPT
+        with ESMTP id S1725857AbgGUBj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:39:23 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F582C061794;
-        Mon, 20 Jul 2020 18:39:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j18so1206285wmi.3;
-        Mon, 20 Jul 2020 18:39:23 -0700 (PDT)
+        Mon, 20 Jul 2020 21:39:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60485C061794;
+        Mon, 20 Jul 2020 18:39:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o11so19566732wrv.9;
+        Mon, 20 Jul 2020 18:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Nrug+AWSzjZGrBINnJb7jz7fHx/HXVjSPsVyZ+aIDeo=;
-        b=RMBHYcII3aAfMtjYSyy48tK+c1/Q/zQkwkMYYl6or0ZK12+W75rcPJDNBupa/yyNyU
-         2A6PieyzOXLHlZF54nE+H+5XjALkG3sFaOXW3kagnM8kxto3jv3AFJ7mkmk67pfVqHj6
-         mRyLT/wGHzIH26vwiZNlzp2gMgiJEnnjtd+MONCTj8Pi/+dw2yIsIjwd6om1i2v8E74I
-         dTFPO/QsXpURRPqKvF87bxcZzUclFKimx0SqaO27BKW8Cm8D9gwUjn5FSt62gsUSYp4Z
-         UscD5srtkjOsI7BU2TmSI2d4HP5s6/H5QAxL56S9eaQ8tMjTUje8TqBf0e0DW5SD5gYR
-         VnCg==
+        h=from:to:cc:subject:date:message-id;
+        bh=wPyZFYbVGDNxKTbgFo2yBi3mdzvRIZTG/NUZ4iCEIoM=;
+        b=ex7BaeD/uu8dok4zVyE184lob8aIx0yhHpHCc9FSqnYnTTJZAqQ5isKAu2UJ3JQdsE
+         +NT6bC7GwAzUVglCzcg152ZBC4z2u8qFNKO7Goj2SmpvkyWatmQnk9HvbAKfEQvYuuDO
+         cyZ3bWExks8tFBZe2Blxn2LJfl1jF+JoOC36OS+6dIfrQBqoCzkwDt65b8tG4g8zf9vR
+         ZW15NMzBAavHm6e7ALqE9qOt/81x1swcZWHN1OOLadnRbs4DdQHyiOMSEcGts/Ofbt2h
+         5bhRsJZqYclW6Qg/D5DJKrYEiBDE0jMu3GtVt+JAKOicTvm3tvGNMz2KCyl+NE3uiojv
+         J0ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Nrug+AWSzjZGrBINnJb7jz7fHx/HXVjSPsVyZ+aIDeo=;
-        b=oYt9iDy8xr3Jvavyk1bhrYYL/ILPWCUlyAka4Nkac1cSqTH82qfwiPCO3jL6L2inye
-         UahYZnGq7UnhLfW+Au3tbbEflhGZZkhX6AjRFFvT4CSwxebOoAKSgxpm3wFgCyLf/5fa
-         JEMHPqEMtnLBx6IGnUXFtq1p4lyi4hFGGYIBvGEm5mTX+x6QoN2bcUyZa43z9IwqwyDB
-         C0ftc1QTQI39yWhC4h7rDUJ0PeuDUIOjtge2o7yhJZF/wfNXEElmgqyDm1y+AjhnVbqO
-         rMMulMtQqQvILl5nx4NaqF1wVtP1n1ZIUgydRCrUAQEMTrutpMIkHLeiWCO7capciMnQ
-         +rmw==
-X-Gm-Message-State: AOAM53323mZQr0wXk8Bv2mGG5XRw9nhxBXdy9eGYvhvTDC/XRC3+qby6
-        CdNv+fVt0IXVB8zHp2HKpgo=
-X-Google-Smtp-Source: ABdhPJxEWy8mHaI1ZwdniVdsbDPS6hEK7Mlb0/0gXb3tSP5J/MILa3B1gJ74K7YR5WVFNdJeUDADJA==
-X-Received: by 2002:a1c:ba0b:: with SMTP id k11mr1677645wmf.140.1595295562280;
-        Mon, 20 Jul 2020 18:39:22 -0700 (PDT)
-Received: from [172.16.20.20] ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id z10sm35619627wrm.21.2020.07.20.18.39.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Jul 2020 18:39:21 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
-Subject: Re: [PATCH] arm64: dts: meson: misc fixups for w400 dtsi
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=wPyZFYbVGDNxKTbgFo2yBi3mdzvRIZTG/NUZ4iCEIoM=;
+        b=k3dI9Yyh5ZHvRYCGuXT6anIi1BeCjXQCINiDck74HntseCcazeevwXZmLXn3Z5iqjp
+         /tKy7UOGKdTQ2JcjHqKhODh4q14Ca4MotJQqP0jznQuzjUF2R7ymbX6TPiYWFqYYZkXG
+         B0ybRellSI0KXIaWmVXt+BFpj4ohXKI8RjbrUhNO+HXTCZ3gKhEw/6mrjxot1AZdg+3l
+         /DnoSbtn4iSP26LCejssT9WprdGqcGGc7D4FuDuVm8zCkI4vzcKOmw9l88CQUHhJao9C
+         s5fsYGQIvP2npVN9Xt971OiJVnLJFaZClL063nkha02Q4RrlJVL7kw68bqy0Hia7ASIp
+         IWsw==
+X-Gm-Message-State: AOAM5338PxZPr9wH6D8dfz3eu8xxhxbqvgvU8rS8xvE8S0r5XpaAZNHs
+        s3GCXxSooYOfZl5xFiYcq5M=
+X-Google-Smtp-Source: ABdhPJzGP1hvdnHZXIa1OJMmJl9E7yAdXFAB7oEqJrS4WAgSymgIGQtKMlbuahr4B77r524ys+lTaA==
+X-Received: by 2002:adf:9e8b:: with SMTP id a11mr2057699wrf.309.1595295597121;
+        Mon, 20 Jul 2020 18:39:57 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id m4sm1355023wmi.48.2020.07.20.18.39.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 18:39:56 -0700 (PDT)
 From:   Christian Hewitt <christianshewitt@gmail.com>
-In-Reply-To: <7hd04pakqm.fsf@baylibre.com>
-Date:   Tue, 21 Jul 2020 05:39:18 +0400
-Cc:     Rob Herring <robh+dt@kernel.org>,
+To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <2A03FA86-D190-4DD1-95EE-AA0E5618DACE@gmail.com>
-References: <20200718052950.3707-1-christianshewitt@gmail.com>
- <7hd04pakqm.fsf@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-X-Mailer: Apple Mail (2.3445.104.14)
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH v2] arm64: dts: meson: misc fixups for w400 dtsi
+Date:   Tue, 21 Jul 2020 01:39:52 +0000
+Message-Id: <20200721013952.11635-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Current devices using the W400 dtsi show mmc tuning errors:
 
-> On 21 Jul 2020, at 2:24 am, Kevin Hilman <khilman@baylibre.com> wrote:
-> 
-> Christian Hewitt <christianshewitt@gmail.com> writes:
-> 
->> Current devices using the W400 dtsi show mmc tuning errors:
->> 
->> [12483.917391] mmc0: tuning execution failed: -5
->> [30535.551221] mmc0: tuning execution failed: -5
->> [35359.953671] mmc0: tuning execution failed: -5
->> [35561.875332] mmc0: tuning execution failed: -5
->> [61733.348709] mmc0: tuning execution failed: -5
->> 
->> Removing "sd-uhs-sdr50" from the SDIO node prevents this. We also add
->> keep-power-in-suspend to the SDIO node and fix an indentation.
->> 
->> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> 
-> This could use a Fixes tag so it can be backported to stable
-> 
-> Kevin
+[12483.917391] mmc0: tuning execution failed: -5
+[30535.551221] mmc0: tuning execution failed: -5
+[35359.953671] mmc0: tuning execution failed: -5
+[35561.875332] mmc0: tuning execution failed: -5
+[61733.348709] mmc0: tuning execution failed: -5
 
-Okay, I will send v2 with a fixes tag.
+Removing "sd-uhs-sdr50" from the SDIO node prevents this. We also add
+keep-power-in-suspend to the SDIO node and fix an indentation.
+
+Fixes: 3cb74db9b256 ("arm64: dts: meson: convert ugoos-am6 to common w400 dtsi")
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+index 98b70d216a6f..2802ddbb83ac 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+@@ -336,9 +336,11 @@
+ 
+ 	bus-width = <4>;
+ 	cap-sd-highspeed;
+-	sd-uhs-sdr50;
+ 	max-frequency = <100000000>;
+ 
++	/* WiFi firmware requires power to be kept while in suspend */
++	keep-power-in-suspend;
++
+ 	non-removable;
+ 	disable-wp;
+ 
+@@ -398,7 +400,7 @@
+ 		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
+ 		max-speed = <2000000>;
+ 		clocks = <&wifi32k>;
+-	clock-names = "lpo";
++		clock-names = "lpo";
+ 	};
+ };
+ 
+-- 
+2.17.1
+
