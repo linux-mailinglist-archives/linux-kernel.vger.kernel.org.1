@@ -2,23 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EF9227C56
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8807227C57
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgGUKAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729138AbgGUKAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:00:11 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD869C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:00:10 -0700 (PDT)
+        id S1729158AbgGUKAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:00:18 -0400
+Received: from 8bytes.org ([81.169.241.247]:58364 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729030AbgGUKAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:00:09 -0400
 Received: from cap.home.8bytes.org (p5b006776.dip0.t-ipconnect.de [91.0.103.118])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 2282A33E;
+        by theia.8bytes.org (Postfix) with ESMTPSA id 678D044A;
         Tue, 21 Jul 2020 12:00:07 +0200 (CEST)
 From:   Joerg Roedel <joro@8bytes.org>
 To:     x86@kernel.org
@@ -29,9 +25,9 @@ Cc:     hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
         Mike Rapoport <rppt@linux.ibm.com>,
         Joerg Roedel <jroedel@suse.de>, joro@8bytes.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/3] x86/mm/64: Do not sync vmalloc/ioremap mappings
-Date:   Tue, 21 Jul 2020 11:59:52 +0200
-Message-Id: <20200721095953.6218-3-joro@8bytes.org>
+Subject: [PATCH v3 3/3] x86/mm/64: Make sync_global_pgds() static
+Date:   Tue, 21 Jul 2020 11:59:53 +0200
+Message-Id: <20200721095953.6218-4-joro@8bytes.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200721095953.6218-1-joro@8bytes.org>
 References: <20200721095953.6218-1-joro@8bytes.org>
@@ -44,43 +40,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Joerg Roedel <jroedel@suse.de>
 
-Remove the code to sync the vmalloc and ioremap ranges for x86-64. The
-page-table pages are all pre-allocated now so that synchronization is
-no longer necessary.
+The function is only called from within init_64.c and can be static.
+Also remove it from pgtable_64.h.
 
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- arch/x86/include/asm/pgtable_64_types.h | 2 --
- arch/x86/mm/init_64.c                   | 5 -----
- 2 files changed, 7 deletions(-)
+ arch/x86/include/asm/pgtable_64.h | 2 --
+ arch/x86/mm/init_64.c             | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-index 8f63efb2a2cc..52e5f5f2240d 100644
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -159,6 +159,4 @@ extern unsigned int ptrs_per_p4d;
- 
- #define PGD_KERNEL_START	((PAGE_SIZE / 2) / sizeof(pgd_t))
- 
--#define ARCH_PAGE_TABLE_SYNC_MASK	(pgtable_l5_enabled() ?	PGTBL_PGD_MODIFIED : PGTBL_P4D_MODIFIED)
--
- #endif /* _ASM_X86_PGTABLE_64_DEFS_H */
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index e76bdb001460..e0cd2dfd333d 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -217,11 +217,6 @@ void sync_global_pgds(unsigned long start, unsigned long end)
- 		sync_global_pgds_l4(start, end);
+diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
+index 1b68d24dc6a0..95ac911b1a30 100644
+--- a/arch/x86/include/asm/pgtable_64.h
++++ b/arch/x86/include/asm/pgtable_64.h
+@@ -168,8 +168,6 @@ static inline void native_pgd_clear(pgd_t *pgd)
+ 	native_set_pgd(pgd, native_make_pgd(0));
  }
  
--void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
--{
--	sync_global_pgds(start, end);
--}
+-extern void sync_global_pgds(unsigned long start, unsigned long end);
 -
  /*
-  * NOTE: This function is marked __ref because it calls __init function
-  * (alloc_bootmem_pages). It's safe to do it ONLY when after_bootmem == 0.
+  * Conversion functions: convert a page and protection to a page entry,
+  * and a page entry and page directory to the page they refer to.
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index e0cd2dfd333d..e65b96f381a7 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -209,7 +209,7 @@ static void sync_global_pgds_l4(unsigned long start, unsigned long end)
+  * When memory was added make sure all the processes MM have
+  * suitable PGD entries in the local PGD level page.
+  */
+-void sync_global_pgds(unsigned long start, unsigned long end)
++static void sync_global_pgds(unsigned long start, unsigned long end)
+ {
+ 	if (pgtable_l5_enabled())
+ 		sync_global_pgds_l5(start, end);
 -- 
 2.27.0
 
