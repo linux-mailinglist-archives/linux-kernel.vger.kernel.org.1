@@ -2,108 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0021C2284BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22662284C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729938AbgGUQEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:04:24 -0400
-Received: from mga09.intel.com ([134.134.136.24]:17661 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730190AbgGUQEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:04:23 -0400
-IronPort-SDR: XQLv4MZvQY6h/6QqQrwL1HUwPAU2LD/OXVdNX+DaDn+lgzYav59W0Tba6Rup2r/wdjA+QUXJb5
- 1bpmPBTBCqUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="151499224"
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="151499224"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 09:04:17 -0700
-IronPort-SDR: e1G/riTdKBZmtlGuH16tlJmv6ftO/0opkm3RNbIwWYTxk34fKp+bvBUMSL7lgxcbyvJk8AMqXw
- dh0oRj/QGmuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
-   d="scan'208";a="319952585"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Jul 2020 09:04:14 -0700
-Subject: [PATCH RFC v2 18/18] dmaengine: idxd: add ABI documentation for
- mediated device support
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
-        bhelgaas@google.com, rafael@kernel.org, gregkh@linuxfoundation.org,
-        tglx@linutronix.de, hpa@zytor.com, alex.williamson@redhat.com,
-        jacob.jun.pan@intel.com, ashok.raj@intel.com, jgg@mellanox.com,
-        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
-        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        dan.j.williams@intel.com, kwankhede@nvidia.com,
-        eric.auger@redhat.com, parav@mellanox.com, jgg@mellanox.com,
-        rafael@kernel.org, dave.hansen@intel.com, netanelg@mellanox.com,
-        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
-        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Date:   Tue, 21 Jul 2020 09:04:14 -0700
-Message-ID: <159534745419.28840.5543479944375440474.stgit@djiang5-desk3.ch.intel.com>
-In-Reply-To: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/unknown-version
+        id S1729998AbgGUQFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728458AbgGUQFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:05:39 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F071DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:05:38 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id m16so10457441pls.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=X76qDdvqpY4nYWZrENAHgAtFIsqrQGQH3lKvBOm1pNA=;
+        b=YHbY+bB7w+LIQELxXvSqTfqeyBXTHWIdwQ+MiYbvaC79ApWPrJxf7gOf5o/3VDqfTF
+         PoZuQXdqT6jImKy4+YUXCp/JICHZDi+Z1ediPsb6gxWqA8wI86VzeSoIOTTzDkEzOpKx
+         nyjN7ifWqKUrBOuZW1nvgvWOb57IePorLdIR+b6/Zf1ibMfOBZjGYuPHNNAXiyhbrAg6
+         rHHtWhPIPKy2c3IQxedlshUwT2MCnOR2Gt/FjLTtLYIA8RHifqQ+qNjz0PxcZ9QHu2V4
+         0IXhhYm3MhY5m683IxZJkkrbhwhjl89/MEzEc209B46bsgzKm7AYwWYd/qzlqMXQFQDb
+         uEqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=X76qDdvqpY4nYWZrENAHgAtFIsqrQGQH3lKvBOm1pNA=;
+        b=pAzKxAXJUW4f+Ys+Y/0SmqNrHbpiL76OPYSwCHWKphNx3mEXsVO6H8MBdrlzhqzmX4
+         KMmy3ftytRsbiesf8rhCydSUCTo0qrtsEV6U9oHeWUxv9118UrzkLuyhAfB9XqgEGOyy
+         +zZOfWCd7h9ygvGx6eedWAn61cXVq7kT6+W7Vb2nqv0IeDIdapWMyRDpRuheIfavl0bZ
+         GSB7Fim6HMnqTyn2AV1f9bYVrYV3co+Uhnp2jfVdcpjKpqe9HVlHEUhvuI1wLQcf3Ezp
+         d/RFsovMhK+zRrtWVEwGSvha9LhTX+ANWqGxjFL91dQpVuTlNheL+O0UX6/B8qeYKi//
+         muWw==
+X-Gm-Message-State: AOAM530A36cFX4PXp7ZlP2svBFR+Outivs97DN0Lofvc8Mjod1mIQ7qx
+        79Z+9oXGrsKo+H2cqHyFvz+IdQ==
+X-Google-Smtp-Source: ABdhPJyG7RWJXLtDMWc9ARapBWFFyLqlOMjao2PUJ3NWA2A72SPkZFVRbDqubQQSDJMwHZi7l/bLrQ==
+X-Received: by 2002:a17:90a:748c:: with SMTP id p12mr5327243pjk.115.1595347538417;
+        Tue, 21 Jul 2020 09:05:38 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id i13sm3620963pjd.33.2020.07.21.09.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 09:05:38 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 09:05:28 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Sriram Krishnan <srirakr2@cisco.com>
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, mbumgard@cisco.com,
+        ugm@cisco.com, nimm@cisco.com, xe-linux-external@cisco.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] hv_netvsc: add support for vlans in AF_PACKET mode
+Message-ID: <20200721090528.2c9f104d@hermes.lan>
+In-Reply-To: <20200721071404.70230-1-srirakr2@cisco.com>
+References: <20200721071404.70230-1-srirakr2@cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Lin <jing.lin@intel.com>
+On Tue, 21 Jul 2020 12:44:03 +0530
+Sriram Krishnan <srirakr2@cisco.com> wrote:
 
-Add the sysfs attribute bits in ABI/stable for mediated device and guest
-support.
+> +	/* When using AF_PACKET we need to drop VLAN header from
+> +	 * the frame and update the SKB to allow the HOST OS
+> +	 * to transmit the 802.1Q packet
+> +	 */
+> +	if (skb->protocol == htons(ETH_P_8021Q)) {
+> +		u16 vlan_tci = 0;
+Unnecessary initialization.
 
-Signed-off-by: Jing Lin <jing.lin@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
----
- Documentation/ABI/stable/sysfs-driver-dma-idxd |   15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+> +		skb_reset_mac_header(skb);
+> +		if (eth_type_vlan(eth_hdr(skb)->h_proto)) {
+> +			int pop_err;
+> +			pop_err = __skb_vlan_pop(skb, &vlan_tci);
+> +			if (likely(pop_err == 0)) {
+> +				__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
+> +				/* Update the NDIS header pkt lengths */
+> +				packet->total_data_buflen -= VLAN_HLEN;
+> +				rndis_msg->msg_len = packet->total_data_buflen;
+> +				rndis_msg->msg.pkt.data_len = packet->total_data_buflen;
+> +			} else {
+> +				netdev_err(net, "Pop vlan err %x\n", pop_err);
+> +				goto drop;
+> +			}
+> +		}
+> +	}
 
-diff --git a/Documentation/ABI/stable/sysfs-driver-dma-idxd b/Documentation/ABI/stable/sysfs-driver-dma-idxd
-index a336d2b2009a..edbcf8a8796c 100644
---- a/Documentation/ABI/stable/sysfs-driver-dma-idxd
-+++ b/Documentation/ABI/stable/sysfs-driver-dma-idxd
-@@ -1,6 +1,6 @@
- What:		/sys/bus/dsa/devices/dsa<m>/version
--Date:		Apr 15, 2020
--KernelVersion:	5.8.0
-+Date:		Jul 5, 2020
-+KernelVersion:	5.9.0
- Contact:	dmaengine@vger.kernel.org
- Description:	The hardware version number.
+Printing error messages is good for debugging but bad IRL.
+Users ignore it, or it overflows the log buffer.
+
+A better alternative would be to add a counter to netvsc_ethtool_stats.
+Something like:
+
+diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
+index abda736e7c7d..2181d4538ab7 100644
+--- a/drivers/net/hyperv/hyperv_net.h
++++ b/drivers/net/hyperv/hyperv_net.h
+@@ -897,6 +897,7 @@ struct netvsc_ethtool_stats {
+ 	unsigned long rx_no_memory;
+ 	unsigned long stop_queue;
+ 	unsigned long wake_queue;
++	unsigned long vlan_error;
+ };
  
-@@ -84,6 +84,12 @@ Contact:	dmaengine@vger.kernel.org
- Description:	To indicate if PASID (process address space identifier) is
- 		enabled or not for this device.
+ struct netvsc_ethtool_pcpu_stats {
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 6267f706e8ee..89568276e653 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -605,6 +605,28 @@ static int netvsc_xmit(struct sk_buff *skb, struct net_device *net, bool xdp_tx)
+ 		*hash_info = hash;
+ 	}
  
-+What:           /sys/bus/dsa/devices/dsa<m>/ims_size
-+Date:           Jul 5, 2020
-+KernelVersion:  5.9.0
-+Contact:        dmaengine@vger.kernel.org
-+Description:	Number of entries in the interrupt message storage table.
++	/* When using AF_PACKET we need to drop VLAN header from
++	 * the frame and update the SKB to allow the HOST OS
++	 * to transmit the 802.1Q packet
++	 */
++	if (skb->protocol == htons(ETH_P_8021Q)) {
++		skb_reset_mac_header(skb);
++		if (eth_type_vlan(eth_hdr(skb)->h_proto)) {
++			u16 vlan_tci;
 +
- What:           /sys/bus/dsa/devices/dsa<m>/state
- Date:           Oct 25, 2019
- KernelVersion:  5.6.0
-@@ -147,8 +153,9 @@ Date:           Oct 25, 2019
- KernelVersion:  5.6.0
- Contact:        dmaengine@vger.kernel.org
- Description:    The type of this work queue, it can be "kernel" type for work
--		queue usages in the kernel space or "user" type for work queue
--		usages by applications in user space.
-+		queue usages in the kernel space, "user" type for work queue
-+		usages by applications in user space, or "mdev" type for
-+		VFIO mediated devices.
++			if (unlikely(__skb_vlan_pop(skb, &vlan_tci) != 0)) {
++				++net_device_ctx->eth_stats.vlan_error;
++				goto drop;
++			}
++
++			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
++			/* Update the NDIS header pkt lengths */
++			packet->total_data_buflen -= VLAN_HLEN;
++			rndis_msg->msg_len = packet->total_data_buflen;
++			rndis_msg->msg.pkt.data_len = packet->total_data_buflen;
++		}
++	}
++
+ 	if (skb_vlan_tag_present(skb)) {
+ 		struct ndis_pkt_8021q_info *vlan;
  
- What:           /sys/bus/dsa/devices/wq<m>.<n>/cdev_minor
- Date:           Oct 25, 2019
+@@ -1427,6 +1449,7 @@ static const struct {
+ 	{ "rx_no_memory", offsetof(struct netvsc_ethtool_stats, rx_no_memory) },
+ 	{ "stop_queue", offsetof(struct netvsc_ethtool_stats, stop_queue) },
+ 	{ "wake_queue", offsetof(struct netvsc_ethtool_stats, wake_queue) },
++	{ "vlan_error", offsetof(struct netvsc_ethtool_stats, vlan_error) },
+ }, pcpu_stats[] = {
+ 	{ "cpu%u_rx_packets",
+ 		offsetof(struct netvsc_ethtool_pcpu_stats, rx_packets) },
 
+	
