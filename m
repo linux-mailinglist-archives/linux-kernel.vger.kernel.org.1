@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F3922861C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBE022863D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730730AbgGUQmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S1730891AbgGUQnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730703AbgGUQmg (ORCPT
+        with ESMTP id S1730708AbgGUQmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 12:42:36 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4DEC0619E0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:35 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z15so21825336wrl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:35 -0700 (PDT)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA05C0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:36 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id j18so3483382wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uWGcoDbdOCeXSfDJ7sgMSwsNsITB0wPLhyaeMZZYPL8=;
-        b=AO7GkYO/QQsdC0xfeZ3GEeVEaaNo4oCAOSqLpw/zWEIM1iU4vY1XjvExkH6B5Dxb7Q
-         i1I5VsxZM49xY4c8B1pTBUjceeX8JHT2iWZDWZ3bbQmnLplZx6cY1AMmJUXag7SNMTT6
-         XkNVU97d9RuUawfFky0h3mF6O+Vdnu/8nMAu7GYmVTPDx5b/XPQm2YKPvLNOqcZs7oCB
-         09GCfnWt/M032NtEpUih8zRz2SqH54FckHH/973upwKV98o1cZuz+kc+gQX+8N8qNWHC
-         Qj8KFYug1JGafwlD6ViLcmHup8wPnMp9I147H90/JC6IU1eI5qWuWWbmn5AjpoFKohdw
-         5Ngg==
+        bh=5moYOsQHNMfa9tXzAVeWKCnn+cRnTzIzblynCSGXK4c=;
+        b=O2x7VwIfuIZ3VNbLlighaWVfeB0yeXS/Lx+xdzBYMU07UNVsKrw8y+RFjjuWcgu5Ui
+         1lZPuwa3wVCDIHy2hQHjdPEbXLdb+UPNXUtwZ31338DZpcrBT3hFSEQOuDflnVPc7HDn
+         qVnJlsY56XgMeGLaCaUl0f+r1e5I16ZfQCXycLMgKrqlbxYdqWHSzjQtwnqQn+DqcDpK
+         FQia3OI6pCN34dlP3LYwReIqZ4ZVcK9yhGqjYmu2hsgvFDC7c4wElxn6qLZ3cTgaGLS8
+         XaOeLg63z5mr2Fn4jXY+47jgAb8lQSvfTdcvNxbg+FErsHmgw81DUqfE++GTKH3upTuN
+         Gvqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uWGcoDbdOCeXSfDJ7sgMSwsNsITB0wPLhyaeMZZYPL8=;
-        b=EhRlYuD02UugqIObVxYD+E7BCrpnuxVNQ6679MRryQE0upRkuv1bvgOBiwD8i9P/XZ
-         BnAyts6UCdYsAE4+P0WOMsjcvny+vKQS+rH8kUOC8Dm56QKRpOO6HNeXMtnbwhbt9J0t
-         453hE0FF5eBGrxNrRbCGiOgZDuwVCAAQBTJ7aCDF5H0f79hORNlAvAflRg8/CLZRXo3n
-         dVgQbvCTLZv6ZBYrUVOVGvHJT2K+PR30kB1U38ePQk2J0xuMLeyuQdkWrDr5HCXg8O6d
-         8IlIOF0xsMvoc28/zjJJc5swdNMQMy3GPt6kftiFAx0UJB972/0h1V78wHtnFj2/xPMj
-         SBeQ==
-X-Gm-Message-State: AOAM531mv6gXUcRlC9p5FNQXqJwyiut/EUzVz2P3nQCH3gbRCb5wDsO4
-        yFFPMEMPEdGNqhFVV/4RynDioQ==
-X-Google-Smtp-Source: ABdhPJyK56jbkP7sZ+D1Eqs3NuLuowXuh4B7ZUXY980g6x4X71fDp1nF2xoPdBZea9tNyPRzAwhfgA==
-X-Received: by 2002:adf:97c1:: with SMTP id t1mr1259084wrb.294.1595349754215;
-        Tue, 21 Jul 2020 09:42:34 -0700 (PDT)
+        bh=5moYOsQHNMfa9tXzAVeWKCnn+cRnTzIzblynCSGXK4c=;
+        b=H+0wW0yD9ez1yK9EsjaLifce54RvZ5Nx1bxmuct+iLBqKzXwbrpQeZy45G1sMumg1b
+         eJ+GWQlWee5EJjuUOZ8iAeLielX3pUHh9+djnO6feGiGHAuGbYCoKkLLFsDRWLkS3tRF
+         9qROUl3fEt+6kz7O6FIus50v0WV4263ANHUlbNC9vCR8UiRvj9aWPJwklS0HFy95GdSj
+         Ibgvbub42wCor/Y5Kp/VUblQIWpSRbEQcP38gwFajmSd457FG2WUHp/xzIkL2gPbjblQ
+         yldIzTExPk5rtVObZhsDPusL13EZPZhqK/9nWAZTL/uDxEKaDrN1YETApMyhT1BfwS2n
+         U8tw==
+X-Gm-Message-State: AOAM532AcFpKQZaNYEXutLEe5JK4sSmXxyPNM+6v5hAuZFFg+mp2JoXx
+        K8vfVDJk2yr5ieOQW21fkVLS6A==
+X-Google-Smtp-Source: ABdhPJy5kA2bDswapKLTPk58+azM7iLRGYx3AlsNSjo24hpISBt38pcm4YK3DCruzOF4KH/z+vz8Wg==
+X-Received: by 2002:a1c:9c0b:: with SMTP id f11mr4720062wme.0.1595349755167;
+        Tue, 21 Jul 2020 09:42:35 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.33
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:33 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:34 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         QLogic-Storage-Upstream@qlogic.com
-Subject: [PATCH 26/40] scsi: qla4xxx: ql4_os: Fix some kerneldoc parameter documentation issues
-Date:   Tue, 21 Jul 2020 17:41:34 +0100
-Message-Id: <20200721164148.2617584-27-lee.jones@linaro.org>
+Subject: [PATCH 27/40] scsi: qla4xxx: ql4_isr: Repair function documentation headers
+Date:   Tue, 21 Jul 2020 17:41:35 +0100
+Message-Id: <20200721164148.2617584-28-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -66,87 +66,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix one formatting issue, one misspelling and three missing
+descriptions.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qla4xxx/ql4_os.c:4551: warning: Function parameter or member 't' not described in 'qla4xxx_timer'
- drivers/scsi/qla4xxx/ql4_os.c:4551: warning: Excess function parameter 'ha' description in 'qla4xxx_timer'
- drivers/scsi/qla4xxx/ql4_os.c:5312: warning: Function parameter or member 'work' not described in 'qla4xxx_do_dpc'
- drivers/scsi/qla4xxx/ql4_os.c:5312: warning: Excess function parameter 'data' description in 'qla4xxx_do_dpc'
- drivers/scsi/qla4xxx/ql4_os.c:8627: warning: Function parameter or member 'ent' not described in 'qla4xxx_probe_adapter'
- drivers/scsi/qla4xxx/ql4_os.c:8627: warning: Excess function parameter 'pci_device_id' description in 'qla4xxx_probe_adapter'
- drivers/scsi/qla4xxx/ql4_os.c:9008: warning: Function parameter or member 'pdev' not described in 'qla4xxx_remove_adapter'
- drivers/scsi/qla4xxx/ql4_os.c:9008: warning: Excess function parameter 'pci_dev' description in 'qla4xxx_remove_adapter'
- drivers/scsi/qla4xxx/ql4_os.c:9181: warning: Function parameter or member 'stgt' not described in 'qla4xxx_eh_wait_for_commands'
- drivers/scsi/qla4xxx/ql4_os.c:9181: warning: Function parameter or member 'sdev' not described in 'qla4xxx_eh_wait_for_commands'
- drivers/scsi/qla4xxx/ql4_os.c:9181: warning: Excess function parameter 't' description in 'qla4xxx_eh_wait_for_commands'
- drivers/scsi/qla4xxx/ql4_os.c:9181: warning: Excess function parameter 'l' description in 'qla4xxx_eh_wait_for_commands'
- drivers/scsi/qla4xxx/ql4_os.c:9646: warning: Function parameter or member 'pdev' not described in 'qla4xxx_pci_mmio_enabled'
+ drivers/scsi/qla4xxx/ql4_isr.c:588: warning: Excess function parameter 'ret' description in 'qla4_83xx_loopback_in_progress'
+ drivers/scsi/qla4xxx/ql4_isr.c:661: warning: Function parameter or member 'mbox_status' not described in 'qla4xxx_isr_decode_mailbox'
+ drivers/scsi/qla4xxx/ql4_isr.c:661: warning: Excess function parameter 'mailbox_status' description in 'qla4xxx_isr_decode_mailbox'
+ drivers/scsi/qla4xxx/ql4_isr.c:1053: warning: Function parameter or member 'intr_status' not described in 'qla4_82xx_interrupt_service_routine'
+ drivers/scsi/qla4xxx/ql4_isr.c:1078: warning: Function parameter or member 'intr_status' not described in 'qla4xxx_interrupt_service_routine'
 
 Cc: QLogic-Storage-Upstream@qlogic.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qla4xxx/ql4_os.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/scsi/qla4xxx/ql4_isr.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index 2572f7aef8f88..bab87e47b238d 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -4545,7 +4545,7 @@ static void qla4xxx_check_relogin_flash_ddb(struct iscsi_cls_session *cls_sess)
- 
+diff --git a/drivers/scsi/qla4xxx/ql4_isr.c b/drivers/scsi/qla4xxx/ql4_isr.c
+index d2cd33d8d67fc..ade5eafdf81e8 100644
+--- a/drivers/scsi/qla4xxx/ql4_isr.c
++++ b/drivers/scsi/qla4xxx/ql4_isr.c
+@@ -582,7 +582,7 @@ void qla4xxx_process_response_queue(struct scsi_qla_host *ha)
  /**
-  * qla4xxx_timer - checks every second for work to do.
-- * @ha: Pointer to host adapter structure.
-+ * @t: Context to obtain pointer to host adapter structure.
+  * qla4_83xx_loopback_in_progress: Is loopback in progress?
+  * @ha: Pointer to host adapter structure.
+- * @ret: 1 = loopback in progress, 0 = loopback not in progress
++ * returns: 1 = loopback in progress, 0 = loopback not in progress
   **/
- static void qla4xxx_timer(struct timer_list *t)
+ static int qla4_83xx_loopback_in_progress(struct scsi_qla_host *ha)
  {
-@@ -5299,7 +5299,7 @@ static void qla4xxx_do_work(struct scsi_qla_host *ha)
- 
+@@ -651,7 +651,7 @@ static void qla4xxx_default_router_changed(struct scsi_qla_host *ha,
  /**
-  * qla4xxx_do_dpc - dpc routine
-- * @data: in our case pointer to adapter structure
-+ * @work: Context to obtain pointer to host adapter structure.
+  * qla4xxx_isr_decode_mailbox - decodes mailbox status
+  * @ha: Pointer to host adapter structure.
+- * @mailbox_status: Mailbox status.
++ * @mbox_status: Mailbox status.
   *
-  * This routine is a task that is schedule by the interrupt handler
-  * to perform the background processing for interrupts.  We put it
-@@ -8616,7 +8616,7 @@ static void qla4xxx_wait_login_resp_boot_tgt(struct scsi_qla_host *ha)
+  * This routine decodes the mailbox status during the ISR.
+  * Hardware_lock locked upon entry. runs in interrupt context.
+@@ -1044,6 +1044,7 @@ void qla4_83xx_interrupt_service_routine(struct scsi_qla_host *ha,
  /**
-  * qla4xxx_probe_adapter - callback function to probe HBA
-  * @pdev: pointer to pci_dev structure
-- * @pci_device_id: pointer to pci_device entry
-+ * @ent: pointer to pci_device entry
+  * qla4_82xx_interrupt_service_routine - isr
+  * @ha: pointer to host adapter structure.
++ * @intr_status: Local interrupt status/type.
   *
-  * This routine will probe for Qlogic 4xxx iSCSI host adapters.
-  * It returns zero if successful. It also initializes all data necessary for
-@@ -9002,7 +9002,7 @@ static void qla4xxx_destroy_fw_ddb_session(struct scsi_qla_host *ha)
- }
+  * This is the main interrupt service routine.
+  * hardware_lock locked upon entry. runs in interrupt context.
+@@ -1069,6 +1070,7 @@ void qla4_82xx_interrupt_service_routine(struct scsi_qla_host *ha,
  /**
-  * qla4xxx_remove_adapter - callback function to remove adapter.
-- * @pci_dev: PCI device pointer
-+ * @pdev: PCI device pointer
-  **/
- static void qla4xxx_remove_adapter(struct pci_dev *pdev)
- {
-@@ -9169,8 +9169,8 @@ static int qla4xxx_wait_for_hba_online(struct scsi_qla_host *ha)
- /**
-  * qla4xxx_eh_wait_for_commands - wait for active cmds to finish.
-  * @ha: pointer to HBA
-- * @t: target id
-- * @l: lun id
-+ * @stgt: pointer to SCSI target
-+ * @sdev: pointer to SCSI device
+  * qla4xxx_interrupt_service_routine - isr
+  * @ha: pointer to host adapter structure.
++ * @intr_status: Local interrupt status/type.
   *
-  * This function waits for all outstanding commands to a lun to complete. It
-  * returns 0 if all pending commands are returned and 1 otherwise.
-@@ -9640,6 +9640,7 @@ qla4xxx_pci_error_detected(struct pci_dev *pdev, pci_channel_state_t state)
-  * qla4xxx_pci_mmio_enabled() gets called if
-  * qla4xxx_pci_error_detected() returns PCI_ERS_RESULT_CAN_RECOVER
-  * and read/write to the device still works.
-+ * @pdev: PCI device pointer
-  **/
- static pci_ers_result_t
- qla4xxx_pci_mmio_enabled(struct pci_dev *pdev)
+  * This is the main interrupt service routine.
+  * hardware_lock locked upon entry. runs in interrupt context.
 -- 
 2.25.1
 
