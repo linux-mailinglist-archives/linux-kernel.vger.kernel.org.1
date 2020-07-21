@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFD8227F3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9D3227F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729476AbgGULs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:48:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34748 "EHLO
+        id S1729397AbgGULvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:51:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59042 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726755AbgGULsz (ORCPT
+        by vger.kernel.org with ESMTP id S1726755AbgGULvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:48:55 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LBYVDD153443;
-        Tue, 21 Jul 2020 07:48:54 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32dhps74dg-1
+        Tue, 21 Jul 2020 07:51:54 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LBaaC3170623;
+        Tue, 21 Jul 2020 07:51:53 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32bvqvhngv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 07:48:54 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LBkfOm025383;
-        Tue, 21 Jul 2020 11:48:51 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 32brq81xkq-1
+        Tue, 21 Jul 2020 07:51:51 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LBnt8a011282;
+        Tue, 21 Jul 2020 11:50:08 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma02fra.de.ibm.com with ESMTP id 32brq7ux0h-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 11:48:51 +0000
+        Tue, 21 Jul 2020 11:50:08 +0000
 Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LBlPsD63504762
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LBmpnP23855584
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Jul 2020 11:47:25 GMT
+        Tue, 21 Jul 2020 11:48:51 GMT
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A943442047;
-        Tue, 21 Jul 2020 11:48:49 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 5B93D4203F;
+        Tue, 21 Jul 2020 11:48:51 +0000 (GMT)
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 258CC42042;
-        Tue, 21 Jul 2020 11:48:48 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 1842A42045;
+        Tue, 21 Jul 2020 11:48:50 +0000 (GMT)
 Received: from naverao1-tp.ibmuc.com (unknown [9.102.1.141])
         by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 21 Jul 2020 11:48:47 +0000 (GMT)
+        Tue, 21 Jul 2020 11:48:49 +0000 (GMT)
 From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
 To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     <linux-doc@vger.kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/3] docs: staging/kprobes.rst: Update some of the references
-Date:   Tue, 21 Jul 2020 17:18:20 +0530
-Message-Id: <ae96223716e61185870244d8f9dff6678de12fa1.1595331824.git.naveen.n.rao@linux.vnet.ibm.com>
+Subject: [PATCH 2/3] docs: staging/kprobes.rst: Move references to a separate appendix
+Date:   Tue, 21 Jul 2020 17:18:21 +0530
+Message-Id: <2bba61cd60eec87fbcca3e4343b7f95afa1178cd.1595331824.git.naveen.n.rao@linux.vnet.ibm.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1595331824.git.naveen.n.rao@linux.vnet.ibm.com>
 References: <cover.1595331824.git.naveen.n.rao@linux.vnet.ibm.com>
@@ -55,43 +55,61 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-21_05:2020-07-21,2020-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- clxscore=1015 impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 clxscore=1015 phishscore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007210082
+ definitions=main-2007210077
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the kprobes references are not valid anymore. Update the URLs to
-point to their changed locations, where appropriate. Drop two URLs which
-do not exist anymore.
+Kprobes references are currently listed right after kretprobes example,
+and appears to be part of the same section. Move this out to a separate
+appendix for clarity.
 
-Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 ---
- Documentation/staging/kprobes.rst | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ Documentation/staging/kprobes.rst | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/staging/kprobes.rst b/Documentation/staging/kprobes.rst
-index 8baab8832c5b..620699f5df22 100644
+index 620699f5df22..b757b6dfd3d4 100644
 --- a/Documentation/staging/kprobes.rst
 +++ b/Documentation/staging/kprobes.rst
-@@ -712,10 +712,8 @@ See samples/kprobes/kretprobe_example.c
+@@ -20,6 +20,7 @@ Kernel Probes (Kprobes)
+   10. Deprecated Features
+   Appendix A: The kprobes debugfs interface
+   Appendix B: The kprobes sysctl interface
++  Appendix C: References
  
- For additional information on Kprobes, refer to the following URLs:
+ Concepts: Kprobes and Return Probes
+ =========================================
+@@ -710,11 +711,6 @@ Kretprobes Example
  
--- http://www-106.ibm.com/developerworks/library/l-kprobes.html?ca=dgr-lnxw42Kprobe
--- http://www.redhat.com/magazine/005mar05/features/kprobes/
--- http://www-users.cs.umn.edu/~boutcher/kprobes/
--- http://www.linuxsymposium.org/2006/linuxsymposium_procv2.pdf (pages 101-115)
-+- https://www.ibm.com/developerworks/library/l-kprobes/index.html
-+- https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
+ See samples/kprobes/kretprobe_example.c
  
+-For additional information on Kprobes, refer to the following URLs:
+-
+-- https://www.ibm.com/developerworks/library/l-kprobes/index.html
+-- https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
+-
  Deprecated Features
  ===================
+ 
+@@ -797,3 +793,11 @@ Note that this knob *changes* the optimized state. This means that optimized
+ probes (marked [OPTIMIZED]) will be unoptimized ([OPTIMIZED] tag will be
+ removed). If the knob is turned on, they will be optimized again.
+ 
++References
++==========
++
++For additional information on Kprobes, refer to the following URLs:
++
++- https://www.ibm.com/developerworks/library/l-kprobes/index.html
++- https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
++
 -- 
 2.25.4
 
