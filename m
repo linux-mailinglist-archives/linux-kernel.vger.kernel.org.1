@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CA32274A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446702274A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgGUBhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:37:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgGUBhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:37:54 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A97F2075B;
-        Tue, 21 Jul 2020 01:37:53 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 21:37:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 01/24] Documentation: locking: Describe seqlock
- design and usage
-Message-ID: <20200720213752.70319a1c@oasis.local.home>
-In-Reply-To: <20200720213551.5ba9bc6d@oasis.local.home>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
-        <20200720155530.1173732-1-a.darwish@linutronix.de>
-        <20200720155530.1173732-2-a.darwish@linutronix.de>
-        <20200720213551.5ba9bc6d@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726830AbgGUBiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgGUBiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:38:51 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28ACC061794;
+        Mon, 20 Jul 2020 18:38:50 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9016811FFCC52;
+        Mon, 20 Jul 2020 18:22:05 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 18:38:49 -0700 (PDT)
+Message-Id: <20200720.183849.626605331445628040.davem@davemloft.net>
+To:     cuibixuan@huawei.com
+Cc:     stephen@networkplumber.org, kuba@kernel.org,
+        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, jdmason@kudzu.us,
+        christophe.jaillet@wanadoo.fr, john.wanghui@huawei.com
+Subject: Re: [PATCH v2] net: neterion: vxge: reduce stack usage in
+ VXGE_COMPLETE_VPATH_TX
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <866b4a34-cd4e-0120-904f-13669257a765@huawei.com>
+References: <20200716173247.78912-1-cuibixuan@huawei.com>
+        <20200719100522.220a6f5a@hermes.lan>
+        <866b4a34-cd4e-0120-904f-13669257a765@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 20 Jul 2020 18:22:05 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 21:35:51 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: Bixuan Cui <cuibixuan@huawei.com>
+Date: Mon, 20 Jul 2020 09:58:39 +0800
 
-> On Mon, 20 Jul 2020 17:55:07 +0200
-> "Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
-> > +Read path, three categories:
-> > +
-> > +1. Normal Sequence readers which never block a writer but they must
-> > +   retry if a writer is in progress by detecting change in the sequence
-> > +   number.  Writers do not wait for a sequence reader::
-> > +
-> > +	do {
-> > +		seq = read_seqbegin(&foo_seqlock);
-> > +
-> > +		/* ... [[read-side critical section]] ... */
-> > +
-> > +	} while (read_seqretry(&foo_seqlock, seq));
-> > +
-> > +2. Locking readers which will wait if a writer or another locking reader
-> > +   is in progress. A locking reader in progress will also block a writer
-> > +   from entering its critical section. This read lock is
-> > +   exclusive. Unlike rwlock_t, only one locking reader can acquire it::  
+> Fix the warning: [-Werror=-Wframe-larger-than=]
 > 
-> Nit, but I would mention that this acts similar to a normal spin_lock, and even disables preeption (in the non-RT case).
+> drivers/net/ethernet/neterion/vxge/vxge-main.c:
+> In function'VXGE_COMPLETE_VPATH_TX.isra.37':
+> drivers/net/ethernet/neterion/vxge/vxge-main.c:119:1:
+> warning: the frame size of 1056 bytes is larger than 1024 bytes
+> 
+> Dropping the NR_SKB_COMPLETED to 16 is appropriate that won't
+> have much impact on performance and functionality.
+> 
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+> ---
+> v2: Dropping the NR_SKB_COMPLETED to 16.
 
-What I learned today: Ctrl-return on claws mail sends the email :-p
-
-I need to disable that before I send another email before I'm done with it!
-
-
-I haven't finished reading the rest.
-
--- Steve
+Applied.
