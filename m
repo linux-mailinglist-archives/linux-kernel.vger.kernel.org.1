@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEC22285F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CCC228652
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730481AbgGUQmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
+        id S1730953AbgGUQor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730415AbgGUQmB (ORCPT
+        with ESMTP id S1730454AbgGUQmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:01 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0953CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:01 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o2so3549295wmh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:00 -0700 (PDT)
+        Tue, 21 Jul 2020 12:42:03 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D06FC0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:03 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 9so77176wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YJbT5rEsiVLxEFDN8OpDH7HBLl7n1iObA52KTrCeYDY=;
-        b=kCCBYJPuIw2RTNpkxwYUbE8P2MEny9ibyPD6vBVTTIscxOh3f0chTfi8Kwz7l8XqY9
-         DHzPtcmsTtMjwMVmOvU5qzwk8INAXKz0HpYoGWY6aoorODiuSpvJN/O/cI03i9ej0gqh
-         SYX7WJAudU97m1NOh5ghldIiE4+XM1kApRC687v16Vc2Wjl8AsMKOLU4pR5c1iN4uZhK
-         iuDzIeruL7/XWiEnjoU5yk6BVH/H74bK2OQ15iQZwUxmgVxALeXQMw96H4brLqFPRdn+
-         7ccF1K1oB7ZCEhwyswRjMUQPjylbwbLiP06WrK1Ws1+MDscN7uHdm15krEWOTzBDZIKj
-         I+Iw==
+        bh=ALTYTDXKrPwk4EzSNXIMszQ+1kWk/MkRkisy15QSvZc=;
+        b=sGfz5+HAe5VqXXtiSLqK9gghUntA+0huTOuHyQEVt6VJ6vRnz7DUsc7t7WDEpDg94Y
+         Roxq3KI41Odj8qlq8h/tNgmMpXrRqnUbL0nC48bXCeXjL5E5U7uy41wYw9vM09rOzZL4
+         idlc/zgKG0mHuZK/oCP3jHa8qS35Gvpjo+ngTlREE7ckPLP/kPtLVWKzwlE8w/fPILtK
+         I92cqZMK29Jd/Apxq7T3EkmpZxTC7o2/MfZSD7S8AnD+dMK9lpd9fRTxko8iTf4iIbQr
+         c+CmzPR+CcEhBsG81AeJY+65DarsM7Pns94XOTglcjx9KiLIBRYF388Z24EOaisF6o1p
+         +Zrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YJbT5rEsiVLxEFDN8OpDH7HBLl7n1iObA52KTrCeYDY=;
-        b=Q7sXWZGgJX85DnjBH2QOidlEdMZ3bLHofnWvR3bWqoA1vqJK8hNJF1UtKkTl7rk/Vc
-         sGnevNKoebo62iCGQ7b9ux81rIEnIvUb/GdnyGT42cbUwdxprLjLU/o0UaPCQcqXPgDm
-         6Bnw/lKUXVTNuWcrkJav6Fh3AmBW/CucMWn1FZO2bY/14XhNiUF3lQw8Y1FIFIAYmSbz
-         RygBMvGQ58szmscayCaYEmQoIpNRy4QL1sD578QtoA12qp5PdB5oHpevAWttbfD80O2E
-         jn4JP4z7PjS/P50yXJXOFBuinfKDUEVRFQBtvhMgx70zemeNjQKI0T6NNKOQ5hXh3hP1
-         FvpA==
-X-Gm-Message-State: AOAM5305dCOor+N238zIA2nEt7kOoz4waeOXD6cw0DdXEY8FL1rAeobw
-        TrJB9/4yeaz77lVOkd17AMLj0q9Tgxw=
-X-Google-Smtp-Source: ABdhPJxUWjM8jLwPu2ydGiVIw/1pkm6bL1TdQY46EvjGab7xHZigolf34Caq7Ro+oPKz+z50b9eaiA==
-X-Received: by 2002:a1c:2392:: with SMTP id j140mr4748659wmj.6.1595349719707;
-        Tue, 21 Jul 2020 09:41:59 -0700 (PDT)
+        bh=ALTYTDXKrPwk4EzSNXIMszQ+1kWk/MkRkisy15QSvZc=;
+        b=UFh6sCl9y1hSxR7td++OmXg56l+iGL1IUEMG3/JXw+gusqj/5ylJ+53SDDXpBwYDEi
+         LE5QfwBYkxgA28wHLUQbGLb9ZZnO+cZ0vuurzr9C9CWwdYDvrt7P471HINnvAL0KhE7T
+         sIYTf25VhNAP4nHQF1DtYVF4hBxTy+rE8zEAy2IKhQ3FEdwYQGDerhk2YdbIN+oru3pJ
+         eu4UoA1iOx4CehhgTSTG0Uf82ApbwoVz+Wsr9M7tkrBu2CtOOtn1b9l4o5v4WI1sBxHi
+         yy8+QagLEw+QUC87h06eD6AAEHBanx9cWpvAn5YyWgLJU4WbrGYxP//0Y9IBOS2NfNar
+         ea6g==
+X-Gm-Message-State: AOAM531rEk0eOZoJichxw43+jW20FCENkPrg3LHHmBXjXD7hRyMLyJI4
+        ZC0f7Bpb8zQI1r+aOb1AjN3tYw==
+X-Google-Smtp-Source: ABdhPJzwaE8mu8izokB3w7tSQkCr+/o7WmV0tRpSkzJtMeXoQnThNWs0fP4Amj4kaKXN/X2hL/VUsg==
+X-Received: by 2002:a1c:e209:: with SMTP id z9mr4856370wmg.153.1595349721855;
+        Tue, 21 Jul 2020 09:42:01 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.41.58
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:41:59 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
-Subject: [PATCH 05/40] scsi: aacraid: nark: Add missing description for 'dev'
-Date:   Tue, 21 Jul 2020 17:41:13 +0100
-Message-Id: <20200721164148.2617584-6-lee.jones@linaro.org>
+        Luben Tuikov <luben_tuikov@adaptec.com>
+Subject: [PATCH 06/40] scsi: aic94xx: aic94xx_dev: Fix a couple of kerneldoc formatting issues
+Date:   Tue, 21 Jul 2020 17:41:14 +0100
+Message-Id: <20200721164148.2617584-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -67,29 +66,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kerneldoc expects attributes/parameters to be in '@*.: ' format.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aacraid/nark.c:31: warning: Function parameter or member 'dev' not described in 'aac_nark_ioremap'
+ drivers/scsi/aic94xx/aic94xx_dev.c:246: warning: Function parameter or member 'dev' not described in 'asd_init_sata_pm_port_ddb'
+ drivers/scsi/aic94xx/aic94xx_dev.c:290: warning: Function parameter or member 'dev' not described in 'asd_init_sata_pm_ddb'
 
-Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
+Cc: Luben Tuikov <luben_tuikov@adaptec.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aacraid/nark.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/aic94xx/aic94xx_dev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/aacraid/nark.c b/drivers/scsi/aacraid/nark.c
-index b5d6b24d6dbda..4745a99fba8ce 100644
---- a/drivers/scsi/aacraid/nark.c
-+++ b/drivers/scsi/aacraid/nark.c
-@@ -24,6 +24,7 @@
+diff --git a/drivers/scsi/aic94xx/aic94xx_dev.c b/drivers/scsi/aic94xx/aic94xx_dev.c
+index 604a5331f639b..73506a459bf86 100644
+--- a/drivers/scsi/aic94xx/aic94xx_dev.c
++++ b/drivers/scsi/aic94xx/aic94xx_dev.c
+@@ -236,7 +236,7 @@ static int asd_init_sata_pm_table_ddb(struct domain_device *dev)
  
  /**
-  *	aac_nark_ioremap
-+ *	@dev: device to ioremap
-  *	@size: mapping resize request
+  * asd_init_sata_pm_port_ddb -- SATA Port Multiplier Port
+- * dev: pointer to domain device
++ * @dev: pointer to domain device
   *
-  */
+  * For SATA Port Multiplier Ports we need to allocate one SATA Port
+  * Multiplier Port DDB and depending on whether the target on it
+@@ -281,7 +281,7 @@ static int asd_init_initiator_ddb(struct domain_device *dev)
+ 
+ /**
+  * asd_init_sata_pm_ddb -- SATA Port Multiplier
+- * dev: pointer to domain device
++ * @dev: pointer to domain device
+  *
+  * For STP and direct-attached SATA Port Multipliers we need
+  * one target port DDB entry and one SATA PM table DDB entry.
 -- 
 2.25.1
 
