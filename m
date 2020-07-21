@@ -2,127 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BDB2282D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457842282E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgGUOyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727941AbgGUOyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:54:04 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728967AbgGUOzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:55:15 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:43891 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726710AbgGUOzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 10:55:15 -0400
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4B2A20717;
-        Tue, 21 Jul 2020 14:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595343243;
-        bh=LGjn1NQByMAtiMquXEdKNSg+VZngPld+GQLBIyWGQFA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=gAurnN/EAgwhJYBOP3FVWZ8Q1zkaIbD9GyL/qucE1v0WOfPMfD1E/SruAJUQUtCD2
-         eKB082UD1rxcMa4I2M21vXYK/6rPiwMWBp72swxptXHA8FF2J5+wUiH2aOXG2E+mLf
-         +jHmuqyjPBGrCSjJIVSKSoqd/zQwOeif5EIzkaqQ=
-Date:   Tue, 21 Jul 2020 09:54:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ashok Raj <ashok.raj@intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Lu Baolu <baolu.lu@intel.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH] PCI/ATS: PASID and PRI are only enumerated in PF devices.
-Message-ID: <20200721145401.GA1117318@bjorn-Precision-5520>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 932DF20646091;
+        Tue, 21 Jul 2020 16:55:12 +0200 (CEST)
+To:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, amd-gfx@lists.freedesktop.org,
+        Duncan <1i5t5.duncan@cox.net>,
+        Anthony Ruhier <anthony.ruhier@gmail.com>,
+        Vinicius <mphantomx@yahoo.com.br>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: [Regression] hangs caused by commit 3202fa62fb (slub: relocate
+ freelist pointer to middle of object)
+Message-ID: <15cbac6d-1f96-2ba9-cb54-08af6682f56d@molgen.mpg.de>
+Date:   Tue, 21 Jul 2020 16:55:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595263380-209956-1-git-send-email-ashok.raj@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 09:43:00AM -0700, Ashok Raj wrote:
-> PASID and PRI capabilities are only enumerated in PF devices. VF devices
-> do not enumerate these capabilites. IOMMU drivers also need to enumerate
-> them before enabling features in the IOMMU. Extending the same support as
-> PASID feature discovery (pci_pasid_features) for PRI.
-> 
-> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Dear Kees, dear Andrew,
 
-Hi Ashok,
 
-When you update this for the 0-day implicit declaration thing, can you
-update the subject to say what the patch *does*, as opposed to what it
-is solving?  Also, no need for a period at the end.
+No idea, if you are aware of it yet, but three people verified that 
+commit 3202fa62fb (slub: relocate freelist pointer to middle of object) 
+causes a regression on AMD hardware [1].
 
-Does this fix a regression?  Is it associated with a commit that we
-could add as a "Fixes:" tag so we know how far back to try to apply
-to stable kernels?
+It’d be great, if you took a look, and advised if this commit (and 
+follow-ups) should be reverted, until the issue is analyzed.
 
-> To: Bjorn Helgaas <bhelgaas@google.com>
-> To: Joerg Roedel <joro@8bytes.com>
-> To: Lu Baolu <baolu.lu@intel.com>
-> Cc: stable@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Ashok Raj <ashok.raj@intel.com>
-> Cc: iommu@lists.linux-foundation.org
-> ---
->  drivers/iommu/intel/iommu.c |  2 +-
->  drivers/pci/ats.c           | 14 ++++++++++++++
->  include/linux/pci-ats.h     |  1 +
->  3 files changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index d759e7234e98..276452f5e6a7 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -2560,7 +2560,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
->  			}
->  
->  			if (info->ats_supported && ecap_prs(iommu->ecap) &&
-> -			    pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_PRI))
-> +			    pci_pri_supported(pdev))
->  				info->pri_supported = 1;
->  		}
->  	}
-> diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-> index b761c1f72f67..ffb4de8c5a77 100644
-> --- a/drivers/pci/ats.c
-> +++ b/drivers/pci/ats.c
-> @@ -461,6 +461,20 @@ int pci_pasid_features(struct pci_dev *pdev)
->  }
->  EXPORT_SYMBOL_GPL(pci_pasid_features);
->  
-> +/**
-> + * pci_pri_supported - Check if PRI is supported.
-> + * @pdev: PCI device structure
-> + *
-> + * Returns false when no PRI capability is present.
-> + * Returns true if PRI feature is supported and enabled
-> + */
-> +bool pci_pri_supported(struct pci_dev *pdev)
-> +{
-> +	/* VFs share the PF PRI configuration */
-> +	return !!(pci_physfn(pdev)->pri_cap);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_pri_supported);
-> +
->  #define PASID_NUMBER_SHIFT	8
->  #define PASID_NUMBER_MASK	(0x1f << PASID_NUMBER_SHIFT)
->  /**
-> diff --git a/include/linux/pci-ats.h b/include/linux/pci-ats.h
-> index f75c307f346d..073d57292445 100644
-> --- a/include/linux/pci-ats.h
-> +++ b/include/linux/pci-ats.h
-> @@ -28,6 +28,7 @@ int pci_enable_pri(struct pci_dev *pdev, u32 reqs);
->  void pci_disable_pri(struct pci_dev *pdev);
->  int pci_reset_pri(struct pci_dev *pdev);
->  int pci_prg_resp_pasid_required(struct pci_dev *pdev);
-> +bool pci_pri_supported(struct pci_dev *pdev);
->  #endif /* CONFIG_PCI_PRI */
->  
->  #ifdef CONFIG_PCI_PASID
-> -- 
-> 2.7.4
-> 
+
+Kind regards,
+
+Paul
+
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=207383
+      "[Regression] 5.7 amdgpu/polaris11 gpf: amdgpu_atomic_commit_tail"
