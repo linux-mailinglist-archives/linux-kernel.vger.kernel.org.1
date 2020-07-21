@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BD7227D54
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC8E227D68
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgGUKms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:42:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgGUKms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:42:48 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EA7F20714;
-        Tue, 21 Jul 2020 10:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595328167;
-        bh=7MFx4mhho7ivMAssZqUvEbE0ZiOgK1QwP2jKmRMEoMo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hi5RUoaZUaMESjiAVTddK8OkCtoFqxh6ztcLbv8pFEO8d/di+vHrBOUwejgQqO1X2
-         gxR0J+G8FBMjFHa92fSHrzCRoMGEIhXT3nKK4d1G5pKl69CNmCj1kxeqAtAfM1uzxo
-         nkWms0kiF+uBCtMCzDQeStWGRWL6Q4BcH/b7D56w=
-Date:   Tue, 21 Jul 2020 12:42:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH 5.7 000/243] 5.7.10-rc2 review
-Message-ID: <20200721104256.GE1676612@kroah.com>
-References: <20200720191523.845282610@linuxfoundation.org>
- <8f328303-f1fa-e4b6-d6bb-a2817c7474f7@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f328303-f1fa-e4b6-d6bb-a2817c7474f7@linuxfoundation.org>
+        id S1729339AbgGUKog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:44:36 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:2552 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726884AbgGUKoe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:44:34 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 21 Jul 2020 03:44:33 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Jul 2020 03:44:31 -0700
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 21 Jul 2020 16:14:09 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+        id 20BC73FFA; Tue, 21 Jul 2020 16:14:08 +0530 (IST)
+From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, mka@chromium.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Subject: [PATCH V2] arm64: dts: qcom: sc7180: SD-card GPIO pin set bias-pull up
+Date:   Tue, 21 Jul 2020 16:14:05 +0530
+Message-Id: <1595328245-29328-1-git-send-email-sbhanu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 05:37:47PM -0600, Shuah Khan wrote:
-> On 7/20/20 1:16 PM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.7.10 release.
-> > There are 243 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 22 Jul 2020 19:14:36 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.10-rc2.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> Compiled and booted on my test system. No dmesg regressions.
+From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-Thanks for testing all of these and letting me know.
+On some sc7180 based platforms where external pull is not present on cd-gpio,
+this gpio state is getting read as HIGH when sleep config is applied on it.
+This is resulting in SDcard rescan after suspend-resume even though SDcard
+is not present.
 
-greg k-h
+Update cd-gpio sleep config with bais-pull to fix this issue.
+
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+---
+
+Changes since V1:
+	- Incorporated review comments by Bjorn Andersson.
+---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index d78a066..a3527c3 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -1819,7 +1819,7 @@
+ 
+ 				pinconf-sd-cd {
+ 					pins = "gpio69";
+-					bias-disable;
++					bias-pull-up;
+ 					drive-strength = <2>;
+ 				};
+ 			};
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
