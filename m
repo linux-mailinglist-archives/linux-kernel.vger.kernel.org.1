@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404A9228287
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25222228289
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729757AbgGUOoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
+        id S1729813AbgGUOoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726710AbgGUOn6 (ORCPT
+        with ESMTP id S1726412AbgGUOoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:43:58 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C4BC061794;
-        Tue, 21 Jul 2020 07:43:58 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 184so3169062wmb.0;
-        Tue, 21 Jul 2020 07:43:58 -0700 (PDT)
+        Tue, 21 Jul 2020 10:44:01 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B62C061794;
+        Tue, 21 Jul 2020 07:44:01 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id q5so21461496wru.6;
+        Tue, 21 Jul 2020 07:44:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2WK/JeeE/+nRyXwG8HQaNc35vq7rZhxdQ0xZiZF9ajQ=;
-        b=rQJbyvrxOrncommrgjtatOvhPg1Pabu6o5TRfMOy6W8MXP8C8/41aMQ+D8mjxFW+hs
-         fXUk4ITuVYErOeItwMicvNy+8Br+NB6mLndemGip1uHkfxomODt/phx3lJwmGUfNuTxL
-         4Gt2jJwvmUxMknUooZaBvo3PqbbSOC9pfeFpM56CcI2NX9S+GbCOr62MxPITmiEeRsr3
-         CJYLQYSp0G9x6Gu0Q9WHUUldZcT+t+FI1ooZlo3VI84oJ7EwZbOE5S8l+GAcCmd1L6A4
-         Ag3oYlLAXJsaT817tzzXuQgUYi0f2Toyuu1vTvG1B3Fzj18W4cwSbAEbygANrY/Ln1Qy
-         d/1w==
+        bh=SDSJ6E6TyEjHyBsZi4uqpY8XOPxYP4sG84LLuvagPCE=;
+        b=LXNkh5E373uukeAG5HTm4hVe/3CIMyTSPNosbt4uZyKOWpSkcIi47dMSNW4x2QyhNj
+         oKPvQ/Yt+xETCl98ceCROauXnRAiXk61fkusYxT1H7caPFb10HLO2f1L1ft3GXZJapeD
+         FpuNkhaC4m7Fa6Q+wEqy+XDWuVzqW7t7hxo/XY1n1BySqM0D/OuqojY1R/cL8zmeHSzQ
+         pjYkV8rGbF8ijkSUIoK5IaCMzZJGilpmmlVQs9vWU2CyGzc4xpkhbAJzdxC4bT2OMvEJ
+         wej6HXbzZEtWJI7d2Kb7FxanzlEuVMvVd2QA5RdcNVmPkO1TUCIwfENJge5ZTeFzk/U+
+         FaFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=2WK/JeeE/+nRyXwG8HQaNc35vq7rZhxdQ0xZiZF9ajQ=;
-        b=WDG/6g3NPoXeMzhQAMq6yZMnHz+wP+SvMkJAQDyiqCnZ9841uO9JErOduM5GViyLAb
-         J8NrARA6GT0k2OzEKuqCd63sewQlAiMFR5ntnA3wlmfP+P/IK49ppnez+QM9VTihMq4E
-         o1BkLMKFeh+ALSElu6VbfY/QVcRyjPR27viBeQr7l4R3ZXhjrvpht2aq/qmQsTwhp0jN
-         B6S2XPj+0dkeqPpif6/P5jC4JpvpCEzGmHKMfsJlnF5FxYFcZX1GRVW/eS1EOKVbgTmJ
-         R5l7ZxQc/cEKhq31egj78AKN3iGdSDZzNJfpZZtjm7AUttBt3q2A/OUZZWUPJ1XYLYbu
-         tv2g==
-X-Gm-Message-State: AOAM531i4OA/tj/pU7vt4vF9yPLU+dMA9caO4YSqmTMWmQfhZKtDl9xS
-        NzSDpQGx79vv/tdaYqAl0A6uLVxp
-X-Google-Smtp-Source: ABdhPJx08iO+KKiyBNH+T/5yivtegAn8wOfRjAOQvbXnO77p0A8Npt0iH3cHXkhnHyEM/l/GGzjnmw==
-X-Received: by 2002:a1c:1d46:: with SMTP id d67mr4719153wmd.152.1595342636720;
-        Tue, 21 Jul 2020 07:43:56 -0700 (PDT)
+        bh=SDSJ6E6TyEjHyBsZi4uqpY8XOPxYP4sG84LLuvagPCE=;
+        b=e4cf7yTTrHnLRD1cRPPd29u3RxYoTz+4cz3LmIIdCrIlf7Y8yrfjp20QnmCbefTepZ
+         ajEc1+v9PEbYrSh78tC7H8PNQmo7EhiTHiP7vKqxHsA/3unZQVNhQoHhqfUSvYmgRjbX
+         gaHGjQFBQ676wYOXtHCfoDlKpIEXsHbA7psGaDTqjO0wt6d+/eNOHkI73afXYuDfU8S0
+         SItIKbmgzjDnCZ/y3oDz5x42H+2oxe8qlOrPJFkDcwWdSAs7fuk8dCPm4WDSOree6Exg
+         cTT+8aHfMyEDZWllZL6qts4xquvrmjuwVvLhRDo3jErABs8zyx0539aIVujrxtdtsoDc
+         9hFA==
+X-Gm-Message-State: AOAM531OClGH82pmVVgpc4hCf/59KM7ywkDqsx0QFl8u7ohWEp6quJu0
+        tHfkdHQqZxaCbemlaCC1V5ebGGh3
+X-Google-Smtp-Source: ABdhPJxLflxKVX4ZbEq70tqbZQAsMbzjsGhVX2zwjUEKaxUf0RoKUkc3pbcANasoTbPWI3btN/OVog==
+X-Received: by 2002:a05:6000:1cf:: with SMTP id t15mr28987303wrx.180.1595342639503;
+        Tue, 21 Jul 2020 07:43:59 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id y6sm38043116wrr.74.2020.07.21.07.43.54
+        by smtp.gmail.com with ESMTPSA id y6sm38043116wrr.74.2020.07.21.07.43.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:43:56 -0700 (PDT)
+        Tue, 21 Jul 2020 07:43:58 -0700 (PDT)
 From:   Al Cooper <alcooperx@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Sasi Kumar <sasi.kumar@broadcom.com>
-Subject: [PATCH v2 4/7] usb: bdc: Adb shows offline after resuming from S2
-Date:   Tue, 21 Jul 2020 10:43:23 -0400
-Message-Id: <20200721144326.7976-5-alcooperx@gmail.com>
+Subject: [PATCH v2 5/7] usb: bdc: driver runs out of buffer descriptors on large ADB transfers
+Date:   Tue, 21 Jul 2020 10:43:24 -0400
+Message-Id: <20200721144326.7976-6-alcooperx@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200721144326.7976-1-alcooperx@gmail.com>
 References: <20200721144326.7976-1-alcooperx@gmail.com>
@@ -66,44 +66,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Android systems, After temporarily putting device to S2 by
-short pressing the power button on the remote, the display turns
-off. Then press the power button to turn the display back up. Adb
-devices would show the devices is offline. It needs a physical
-disconnect of the usb cable or power cycle to bring the device
-back online. The device is operational otherwise.
-
-The problem is that during S2 resume, the ADB gadget driver could
-not link back with the BDC driver because the endpoint flags were
-cleared. The fix is to clear the endpoint flags for the disconnect
-case only and not for S2 exit.
+Version v1.0.40 of the Android host ADB software increased maximum
+transfer sizes from 256K to 1M. Since the STB ADB gadget driver
+requests only 16K at a time, the BDC driver ran out of buffer
+descriptors (BDs) if the queuing happens faster than the incoming
+16K transfers. This issue is fixed by doubling the number of BDs
+that can be queued so that the entire 1M request can be queued
+without running out of buffers.
 
 Signed-off-by: Al Cooper <alcooperx@gmail.com>
 ---
- drivers/usb/gadget/udc/bdc/bdc_core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/udc/bdc/bdc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
-index b70b438efff4..2c2f7aef7ba7 100644
---- a/drivers/usb/gadget/udc/bdc/bdc_core.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
-@@ -292,9 +292,13 @@ static void bdc_mem_init(struct bdc *bdc, bool reinit)
- 		/* Initialize SRR to 0 */
- 		memset(bdc->srr.sr_bds, 0,
- 					NUM_SR_ENTRIES * sizeof(struct bdc_bd));
--		/* clear ep flags to avoid post disconnect stops/deconfigs */
--		for (i = 1; i < bdc->num_eps; ++i)
--			bdc->bdc_ep_array[i]->flags = 0;
-+		/*
-+		 * clear ep flags to avoid post disconnect stops/deconfigs but
-+		 * not during S2 exit
-+		 */
-+		if (!bdc->gadget.speed)
-+			for (i = 1; i < bdc->num_eps; ++i)
-+				bdc->bdc_ep_array[i]->flags = 0;
- 	} else {
- 		/* One time initiaization only */
- 		/* Enable status report function pointers */
+diff --git a/drivers/usb/gadget/udc/bdc/bdc.h b/drivers/usb/gadget/udc/bdc/bdc.h
+index 6e1e881dc51e..ac75e25c3b6a 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc.h
++++ b/drivers/usb/gadget/udc/bdc/bdc.h
+@@ -44,7 +44,7 @@
+ #define NUM_SR_ENTRIES	64
+ 
+ /* Num of bds per table */
+-#define NUM_BDS_PER_TABLE	32
++#define NUM_BDS_PER_TABLE	64
+ 
+ /* Num of tables in bd list for control,bulk and Int ep */
+ #define NUM_TABLES	2
 -- 
 2.17.1
 
