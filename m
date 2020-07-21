@@ -2,153 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA4B227F1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C408E227F14
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgGULjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:39:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4798 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729778AbgGULjb (ORCPT
+        id S1728764AbgGULi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728557AbgGULiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:39:31 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LBVxeH047274;
-        Tue, 21 Jul 2020 07:39:23 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d91v3unm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 07:39:23 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06LBW1W7047352;
-        Tue, 21 Jul 2020 07:39:22 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32d91v3un9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 07:39:22 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LBZQuS024073;
-        Tue, 21 Jul 2020 11:39:20 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 32brq7ktsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 11:39:20 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LBdGss16056722
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Jul 2020 11:39:16 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A45E4203F;
-        Tue, 21 Jul 2020 11:39:16 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FE9D42045;
-        Tue, 21 Jul 2020 11:39:11 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.85.93.17])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 21 Jul 2020 11:39:11 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <michaele@au1.ibm.com>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Tue, 21 Jul 2020 07:38:55 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65A2C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:38:55 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id l63so16871857oih.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XOhre4ZHelqkJXjHEO2dPt7iyuhKP/1N5Dw7QY91fhU=;
+        b=JHsLseT2lcOz/wruVfkrp8wMLl+43nlJXYK7JdegsYA+RVPY6H0Jio3fPGB98+EagD
+         m/0Ni/9S2R2Ji6aP1KQoUFflkAW1BmIIF5lqKw4XKW8TJhKtk48jkv++Bp1iNgQSCc8J
+         joC2vl/h9vcChIhQh20daK93PZzlYdG2Uoy3lKecQfltGAihu4GsDXV0CcQjRqmwC3Ib
+         EQCS//pZBun3NARTZyMPHxAvhqXJheNkA01TrAnu6dc4MyIWuBRlimpyn+5qq8N2QgEY
+         KTXVt3Wpq0uBhuDh4RHQvVETUZvFxu00ef8QIrJXEY1qQB2sO8OD/R5I1Q06UDA7PaHt
+         yI8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XOhre4ZHelqkJXjHEO2dPt7iyuhKP/1N5Dw7QY91fhU=;
+        b=Lb50hhkocEfSnCuHyeTZvmzIWrgypc0K/3SqsmUPSDUvO2p9jfUcgumhhN5ayhlMtA
+         0Nu33M7tAGVpm0UN67D6N63wA/B0XcTiK8e5mVyRwdPZrAc2axzhGOnHNTAq90yiF0pV
+         l6AcO7hoyQX1rfk7d6d/RoD6FDIFVPVAdsHmo9BiYPF/j+OGmnh6yV5SulUl3oVM8LZP
+         KYSwJpYKC45r//tkcJT/UwGdRnaTJLa6QVgLrzZaYOG/HqX4UC0tMj5iGXqszg/cJwJM
+         g4sTWUTGXbXKtjVE0wefdIXEoxjhGQeUIlIT47Me3Vu+RdF6gZ7+ZFdnDZlVIhqtPDy2
+         CZIg==
+X-Gm-Message-State: AOAM531ZICDZYgIAr/BqLH5DLNbzGVzLdJwW9q4rZbiQxk1v5GdWKBKe
+        ZXh6wh9xs5ssO86l5Lp0Swc7YcjLvRtkeG9Me0F8FKyKbl8=
+X-Google-Smtp-Source: ABdhPJxFwYu6SrIg4V12JQtp21MW3IZ5RBPtuiqb6W7CwGZo2dqkCKnw0N6uPxlLenEN/goCufv9QU+rne1xWRgmz+Y=
+X-Received: by 2002:aca:5007:: with SMTP id e7mr2706577oib.70.1595331534816;
+ Tue, 21 Jul 2020 04:38:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <14089ca5568d214295b2028b59fcd630c7adb0e2.1595331056.git.andreyknvl@google.com>
+In-Reply-To: <14089ca5568d214295b2028b59fcd630c7adb0e2.1595331056.git.andreyknvl@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 21 Jul 2020 13:38:43 +0200
+Message-ID: <CANpmjNOTPLzRoODvg7zab-tkOH0B67OiDj61x4J-33zBbBtWgw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add KCOV section
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Piggin <npiggin@au1.ibm.com>,
-        Oliver OHalloran <oliveroh@au1.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@linux.ibm.com>,
-        Anton Blanchard <anton@au1.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: [PATCH v2 10/10] powerpc/smp: Implement cpu_to_coregroup_id
-Date:   Tue, 21 Jul 2020 17:08:14 +0530
-Message-Id: <20200721113814.32284-11-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200721113814.32284-1-srikar@linux.vnet.ibm.com>
-References: <20200721113814.32284-1-srikar@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-21_05:2020-07-21,2020-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- spamscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=0 clxscore=1015
- mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007210077
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lookup the coregroup id from the associativity array.
+On Tue, 21 Jul 2020 at 13:34, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> To link KCOV to the kasan-dev@ mailing list.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+>  MAINTAINERS | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d53db30d1365..eec0b687eb08 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9305,6 +9305,15 @@ F:       Documentation/kbuild/kconfig*
+>  F:     scripts/Kconfig.include
+>  F:     scripts/kconfig/
+>
+> +KCOV
+> +R:     Dmitry Vyukov <dvyukov@google.com>
+> +R:     Andrey Konovalov <andreyknvl@google.com>
+> +L:     kasan-dev@googlegroups.com
+> +S:     Maintained
+> +F:     Documentation/dev-tools/kcov.rst
+> +F:     include/linux/kcov.h
+> +F:     kernel/kcov.c
 
-If unable to detect the coregroup id, fallback on the core id.
-This way, ensure sched_domain degenerates and an extra sched domain is
-not created.
+I think this is missing:
 
-Ideally this function should have been implemented in
-arch/powerpc/kernel/smp.c. However if its implemented in mm/numa.c, we
-don't need to find the primary domain again.
+F: include/uapi/linux/kcov.h
+F: scripts/Makefile.kcov
 
-If the device-tree mentions more than one coregroup, then kernel
-implements only the last or the smallest coregroup, which currently
-corresponds to the penultimate domain in the device-tree.
-
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <michaele@au1.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Nick Piggin <npiggin@au1.ibm.com>
-Cc: Oliver OHalloran <oliveroh@au1.ibm.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@linux.ibm.com>
-Cc: Anton Blanchard <anton@au1.ibm.com>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Cc: Jordan Niethe <jniethe5@gmail.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v1 -> v2:
-powerpc/smp: Implement cpu_to_coregroup_id
-	Move coregroup_enabled before getting associativity (Gautham)
-
- arch/powerpc/mm/numa.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index ef8aa580da21..ae57b68beaee 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -1218,6 +1218,26 @@ int find_and_online_cpu_nid(int cpu)
- 
- int cpu_to_coregroup_id(int cpu)
- {
-+	__be32 associativity[VPHN_ASSOC_BUFSIZE] = {0};
-+	int index;
-+
-+	if (cpu < 0 || cpu > nr_cpu_ids)
-+		return -1;
-+
-+	if (!coregroup_enabled)
-+		goto out;
-+
-+	if (!firmware_has_feature(FW_FEATURE_VPHN))
-+		goto out;
-+
-+	if (vphn_get_associativity(cpu, associativity))
-+		goto out;
-+
-+	index = of_read_number(associativity, 1);
-+	if (index > min_common_depth + 1)
-+		return of_read_number(&associativity[index - 1], 1);
-+
-+out:
- 	return cpu_to_core_id(cpu);
- }
- 
--- 
-2.17.1
-
+Thanks,
+-- Marco
