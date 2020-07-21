@@ -2,141 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF837228CDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7876F228CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 01:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgGUXsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 19:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
+        id S1731408AbgGUXxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 19:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgGUXsN (ORCPT
+        with ESMTP id S1726587AbgGUXxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:48:13 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286F9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 16:48:13 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k1so197500pjt.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 16:48:13 -0700 (PDT)
+        Tue, 21 Jul 2020 19:53:03 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CEAC0619DB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 16:53:03 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a9so206778pjd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 16:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mDc030Vht0H+5kxn8kLZcM0RglBvmobnh33JIp70Q9A=;
-        b=hsWZwjsrrb6MHnGlDjXciuMZQ0nzpaGX0XqqotTf6FxppNdslwj80bOHq4XiVr8B4N
-         SCpSNd4Uu+fKdrj6GAgEnicqXWWEP9PCWq23ucc9/tt2akFpRFgjuE9SeU+cCHODPhj8
-         maVEeY1DOS1y5XfHe5sHYmNqjl4RoWUBn7w7lB8TeTWwtt4QeijAeuGNPjcLeBnjV19B
-         SmugmuJ8ByDeMpqvSyeew7HlPpyj9My215QEtBoF9dt3tORKxn+X2oVXdd2uNIyHmd9b
-         VDJVMDJNscIIFoT2kCXV0OaSjuh8jGAbeGFch/4XoFGO9VWRYU5PdpQ3sp+SqpvXySKf
-         YI/A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9GAANOVEkg7Oss4DpDH0gr9ifNPUbhRTyDcGnsT2WTE=;
+        b=p1xsv+JsYJXhYalj5ZZCc9wnW1uf56mVn0Gc1i+QWyJBhVm2oAo15ONIoGH5a++qc3
+         nS8vtFYiWBbBZN/ZbGkIgOWNPX3q2HAp+ZRYAz0yz6yBgjgbaVNRv9jJYBy2nfqY++4s
+         49RCXlqcN1Khtcr2FHPAlM6wIONJZ/uQkd34FX01Bue6DVy0I1d2B1vmNGTCO94yzDW+
+         Fsd6zuBB7YB7X0nSbZNQjQSwkxI+h8rk5XJzp/8bgnBgal//1dKnFv7A0QGSbptnJ7tf
+         1JcrpYnLejhIZ2RRFRpcz+Ki1fmJRs7nlyLeVDnnreujKpiOcnohfnZRviTLvcVEKJgB
+         pezg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=mDc030Vht0H+5kxn8kLZcM0RglBvmobnh33JIp70Q9A=;
-        b=aBS0MpQVgIYww82zJId50cm4b8R+hiBCEGoh/Byl23tQG26j9UpS+eMkPtBCNHeH6q
-         NUVV3dSo7xdZrdpfSJT+F1LGZHHhnwITJYaxvL19NqRkcwSj5zu/nS7M+ELLeqh7/Kto
-         R6aSQ2AfNs7BM7q4mk7PRz4rYvHfNLHSetbzqN0E8k8mhI5SLgWSlrprDiRgzKuEWxmV
-         lZ3fJ2C2WMfB/3354zwAZSw6S5aszFeQ+IZy+NsPv0dChy739iwR3leHmz/RJzDKoxOD
-         XPmSTbwHmnG52OSOGl8dSAANMKg0cD/Jskubg4f7nNXsmOQ+HPlugzhP8/85D1KLoxN9
-         FTmg==
-X-Gm-Message-State: AOAM531r5vAwCrgUuRJdksq6X2lbdZGYKvuA9cGGeSFtk663EcQDqUSA
-        fbywZLoQZsADh0XYFXa07lFH7w==
-X-Google-Smtp-Source: ABdhPJz7GQOPhPQo7WdQAVqmRGBn/kBHYhew0a/7KykfyZ8e5DBJEpqbOEQfucs+jTILpvC6kcl9RQ==
-X-Received: by 2002:a17:90a:cc03:: with SMTP id b3mr6637665pju.80.1595375292546;
-        Tue, 21 Jul 2020 16:48:12 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id i66sm20870634pfc.12.2020.07.21.16.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 16:48:11 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 16:48:11 -0700 (PDT)
-X-Google-Original-Date: Tue, 21 Jul 2020 16:48:10 PDT (-0700)
-Subject:     Re: [PATCH v5 1/4] riscv: Move kernel mapping to vmalloc zone
-In-Reply-To: <6fbea8347bdb8434d91cf3ec2b95b134bd66cfe3.camel@kernel.crashing.org>
-CC:     alex@ghiti.fr, mpe@ellerman.id.au, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>, zong.li@sifive.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-mm@kvack.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     benh@kernel.crashing.org
-Message-ID: <mhng-cd9a74ea-2edf-47e4-aade-b090f1a069f1@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9GAANOVEkg7Oss4DpDH0gr9ifNPUbhRTyDcGnsT2WTE=;
+        b=iLd9a1dCG64aKqdT/hTje8sBlO6hnpVvU69y624ssvgqCRbp0HP/xZhdDu/GvCHzPj
+         CixPRUGx5/9d09dgUzBcAeNttnNXXNFy4L/NwCVzOKajF+oPElNwFaRYH9EiyrncgMPz
+         qiRW5ZJ1FCX4rZK7ZFIuRA/ZBSMv7h5mhgrGL/Khoxd5ZEVFqP/4Qzgyy6Q86oikVvsV
+         KRqFpP7dr4jnw3SP0Z15ukDZOVI0utgmW0d0itPatbWL9cAySFB8vcCjwxGBZNTmbEGc
+         ym3gr7LzR9n0opbGSznzRdKR7Dl2FmAca8RxZQk+pcEANRO9fXM5I18FQloylIMXutQj
+         T0ww==
+X-Gm-Message-State: AOAM532dyAQjjkPJsMHfSs1r8ynt+aeEmPojCR02av4ZRaVWtRLiJff1
+        gz7hIy8bZcCPKOhQZEARliqSX65XNBTQzPBtQS6YMQ==
+X-Google-Smtp-Source: ABdhPJwlgYLxoZWZx8+svKNEBY0q6bxsav7DHLE6pxfIoOZcXdRkc72QEfSINPDlzRr5arUe6DKa0UAUjzPNjGbgJMA=
+X-Received: by 2002:a17:902:10e:: with SMTP id 14mr23017886plb.297.1595375582338;
+ Tue, 21 Jul 2020 16:53:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200721174036.71072-1-vitor@massaru.org>
+In-Reply-To: <20200721174036.71072-1-vitor@massaru.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 21 Jul 2020 16:52:51 -0700
+Message-ID: <CAFd5g45DrBCA2Oq0RCb5FDWybt9NnXj=tN7pZFqjMLhuWWQoew@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: kunit: Provides a userspace memory context when
+ tests are compiled as module
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 16:12:58 PDT (-0700), benh@kernel.crashing.org wrote:
-> On Tue, 2020-07-21 at 12:05 -0700, Palmer Dabbelt wrote:
->>
->> * We waste vmalloc space on 32-bit systems, where there isn't a lot of it.
->> * On 64-bit systems the VA space around the kernel is precious because it's the
->>   only place we can place text (modules, BPF, whatever).
+On Tue, Jul 21, 2020 at 10:40 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
 >
-> Why ? Branch distance limits ? You can't use trampolines ?
-
-Nothing fundamental, it's just that we don't have a large code model in the C
-compiler.  As a result all the global symbols are resolved as 32-bit
-PC-relative accesses.  We could fix this with a fast large code model, but then
-the kernel would need to relax global symbol references in modules and we don't
-even do that for the simple code models we have now.  FWIW, some of the
-proposed large code models are essentially just split-PLT/GOT and therefor
-don't require relaxation, but at that point we're essentially PIC until we
-have more that 2GiB of kernel text -- and even then, we keep all the
-performance issues.
-
->>  If we start putting
->>   the kernel in the vmalloc space then we either have to pre-allocate a bunch
->>   of space around it (essentially making it a fixed mapping anyway) or it
->>   becomes likely that we won't be able to find space for modules as they're
->>   loaded into running systems.
+> KUnit test cases run on kthreads, and kthreads don't have an
+> adddress space (current->mm is NULL), but processes have mm.
 >
-> I dislike the kernel being in the vmalloc space (see my other email)
-> but I don't understand the specific issue with modules.
-
-Essentially what's above, the modules smell the same as the rest of the
-kernel's code and therefor have a similar set of restrictions.  If we build PIC
-modules and have the PLT entries do GOT loads (as do our shared libraries) then
-we could break this restriction, but that comes with some performance
-implications.  Like I said in the other email, I'm less worried about the
-instruction side of things so maybe that's the right way to go.
-
->> * Relying on a relocatable kernel for sv48 support introduces a fairly large
->>   performance hit.
+> The purpose of this patch is to allow to borrow mm to KUnit kthread
+> after userspace is brought up, because we know that there are processes
+> running, at least the process that loaded the module to borrow mm.
 >
-> Out of curiosity why would relocatable kernels introduce a significant
-> hit ? Where about do you see the overhead coming from ?
-
-Our PIC codegen, probably better addressed by my other email and above.
-
+> This allows, for example, tests such as user_copy_kunit, which uses
+> vm_mmap, which needs current->mm.
 >
->> Roughly, my proposal would be to:
->>
->> * Leave the 32-bit memory map alone.  On 32-bit systems we can load modules
->>   anywhere and we only have one VA width, so we're not really solving any
->>   problems with these changes.
->> * Staticly allocate a 2GiB portion of the VA space for all our text, as its own
->>   region.  We'd link/relocate the kernel here instead of around PAGE_OFFSET,
->>   which would decouple the kernel from the physical memory layout of the system.
->>   This would have the side effect of sorting out a bunch of bootloader headaches
->>   that we currently have.
->> * Sort out how to maintain a linear map as the canonical hole moves around
->>   between the VA widths without adding a bunch of overhead to the virt2phys and
->>   friends.  This is probably going to be the trickiest part, but I think if we
->>   just change the page table code to essentially lie about VAs when an sv39
->>   system runs an sv48+sv39 kernel we could make it work -- there'd be some
->>   logical complexity involved, but it would remain fast.
->>
->> This doesn't solve the problem of virtually relocatable kernels, but it does
->> let us decouple that from the sv48 stuff.  It also lets us stop relying on a
->> fixed physical address the kernel is loaded into, which is another thing I
->> don't like.
->>
->> I know this may be a more complicated approach, but there aren't any sv48
->> systems around right now so I just don't see the rush to support them,
->> particularly when there's a cost to what already exists (for those who haven't
->> been watching, so far all the sv48 patch sets have imposed a significant
->> performance penalty on all systems).
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+
+Isn't this a dependency for the test_user_copy? Also, don't we also
+need the change that makes kunit_tool build modules? It seems like you
+should put these together in a patchset like you did before. If not,
+you should at least reference the dependencies in each patch.
