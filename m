@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E75E228639
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531C2228624
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgGUQnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S1729658AbgGUQmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730734AbgGUQml (ORCPT
+        with ESMTP id S1730753AbgGUQmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:42:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053DFC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a15so6913713wrh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:40 -0700 (PDT)
+        Tue, 21 Jul 2020 12:42:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D3AC0619DC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:42 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id 88so11573092wrh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vXJJF1W9k1z7Na3pvzHdBZG9DscScXGROr0HjsmWObQ=;
-        b=pyZFNzQ/Dc37saZNTqKBcYtVTa5rv+/RJruM7hWu+W2SyhAPzEswAFuxeBTIEnJ2Un
-         QZeKxXn43difmwUNS7tGyNRyg96K37+sAIugIRGi04o0g2F5UpugvSvGKFZgTcC6BmPo
-         symCKm9w5GtHl8WmFboCRwXyLznDVgh5M7DAnt1jUZSQIjq6mZF5CF3+PtTyDtsxBnaC
-         n2PybB1JUxe807lhhh4R9uGuLggdrSzx/TtOGlpC4DOrju9L6UgOsCnBoN0OycRwwX5e
-         RLkYJ6KLz3pBkoYDZHbHrb8m00dfl/2VWIf1xnIBxcWEjDLkb2W8ppoMSt2Qxs22X2XG
-         LGdQ==
+        bh=7qx4BAfYgDhhPFQDU/HlyqhYfKsFS4W9mjWfkuFuELo=;
+        b=UQ2hj2xg+Ir7KK2smznJVWTNOEUecpXzU+TAPLzCs6aF3Wyo8+OYyOfbAvGh5Gxmac
+         s2GKxxFFysDjGsh2Z7jd2ZE416w9W8E2GolsKMgXWJx1IfSOlFbdPGHM8jljcMIyjDRl
+         mDxD2wZ0uC1LO0xOeui+6tWArVFjAIJDSTnP7F0kiLOqlLtdaA4BNpiTD+5wE1yAvAdz
+         tIQ4LT1G/dlRmBxhY6HEzD+xNDZZ5RS439RU+8GAzFHUD1aij52J0VjE+Pl8fgmzGj4D
+         apYHyYOKUhJlUG3H9CPtP5W5UYPfyMPQfsKYMU64oqjbiEi5r29DpgXY8ZP7oX2aLJqn
+         cyvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vXJJF1W9k1z7Na3pvzHdBZG9DscScXGROr0HjsmWObQ=;
-        b=q07G+9oyyjxqmTrHEx6vySYbe3PCyHf+0naGvAzw6iRbE8m9G7OfDeG7mfqm17fYvQ
-         ouCZ7Vb4J7FVXIwcd/Pbw2Y8Y5p83zKAGmCaFsOSV9vWy6w2mloHWWldByPGCGgH4Ltc
-         hUo11oT5l2hn2Und7V0JfZDRvGQQuBeHF5EMqc3Y1nEqgYBn5sp8MfkK3aZNq3wlFY98
-         OR3G7wi7NApjPzQeOM2WmSoQeriyzWCQSJI7bAibkQ3AOBigYbqr2Ol3zd/OFbQfsIDc
-         pqE2H5oiUn3tL5KXZzjKkeG+VXimBB0hAxzlEMpCpnrZ5pbkDG4+AsJHHYN8thFIDsbD
-         NlfA==
-X-Gm-Message-State: AOAM5332i+PFmxG9S1t1CwRqftv6SgeCXhkiAnRXO83EPO19HJqXeFqx
-        ho06XNvhHETDGxkjILNh5u+jdw==
-X-Google-Smtp-Source: ABdhPJwIGFbiXIil3Vep+qPfyS242Z5ektcm5mpCelA5ULa/8ioavvgYS9xcq5sq4eD5XrvXvCqH1A==
-X-Received: by 2002:adf:e38b:: with SMTP id e11mr27053586wrm.65.1595349759735;
-        Tue, 21 Jul 2020 09:42:39 -0700 (PDT)
+        bh=7qx4BAfYgDhhPFQDU/HlyqhYfKsFS4W9mjWfkuFuELo=;
+        b=EX9pfT0y5cklm2P65gqfzf/FDGFw/VX8LgDmzxH2mHV2d3W3jlYnlcnKGAnrzrTbpt
+         h72a07lPPcvYuvx+rpTZqU1E5kvCtTelnyTgz/Gsg0HcNYvVB1P67fYF+/W6O46F6XW3
+         bHgDchFQGO0IWYBlZjKDoRqRQg+piWg8yyZxw1Q+DmwV1qJ3R+xLdn9cYhAowX5edAJe
+         tPgbQQeTugLPuDOLZvQ9z4OLF2BjpG614XKOajkYQeIs0lqM4Asbms+mFIZg9r040CR8
+         2+Ii74zBxGIVTvESlfh1FKmsw3fsVURPoCvWBsJK0lcV1wM0Sg41TFRmVApkBnsxu/gb
+         wi6A==
+X-Gm-Message-State: AOAM531V41wYbOO1Qo1Tqhdvlg2jwmN+Dvm7Ae3fun7b/wfhIxa6i00k
+        lxWZ8/DHH9WlK/D3eLxDiyjv0A==
+X-Google-Smtp-Source: ABdhPJza5eVdSeLB7HzXvhvbIEwD9pYzG9hkDzvYndt+77Ma1UqLtJqNJ76R7lpCbMqX/7lkigosJw==
+X-Received: by 2002:a5d:6651:: with SMTP id f17mr29597442wrw.29.1595349761060;
+        Tue, 21 Jul 2020 09:42:41 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.38
+        by smtp.gmail.com with ESMTPSA id m4sm3933524wmi.48.2020.07.21.09.42.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:42:39 -0700 (PDT)
+        Tue, 21 Jul 2020 09:42:40 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>
-Subject: [PATCH 30/40] scsi: lpfc: lpfc_ct: Fix-up formatting/docrot where appropriate
-Date:   Tue, 21 Jul 2020 17:41:38 +0100
-Message-Id: <20200721164148.2617584-31-lee.jones@linaro.org>
+        Saurav Girepunje <saurav.girepunje@gmail.com>
+Subject: [PATCH 31/40] scsi: csiostor: csio_init: Fix misnamed function parameter
+Date:   Tue, 21 Jul 2020 17:41:39 +0100
+Message-Id: <20200721164148.2617584-32-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200721164148.2617584-1-lee.jones@linaro.org>
 References: <20200721164148.2617584-1-lee.jones@linaro.org>
@@ -67,70 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Other headers have been demoted as they are too far out of sync and
-ideally require effort from the authors.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/lpfc/lpfc_ct.c:321: warning: Function parameter or member 'usr_flg' not described in 'lpfc_gen_req'
- drivers/scsi/lpfc/lpfc_ct.c:321: warning: Function parameter or member 'num_entry' not described in 'lpfc_gen_req'
- drivers/scsi/lpfc/lpfc_ct.c:321: warning: Function parameter or member 'tmo' not described in 'lpfc_gen_req'
- drivers/scsi/lpfc/lpfc_ct.c:321: warning: Function parameter or member 'retry' not described in 'lpfc_gen_req'
- drivers/scsi/lpfc/lpfc_ct.c:413: warning: Function parameter or member 'rsp_size' not described in 'lpfc_ct_cmd'
- drivers/scsi/lpfc/lpfc_ct.c:413: warning: Function parameter or member 'retry' not described in 'lpfc_ct_cmd'
- drivers/scsi/lpfc/lpfc_ct.c:3030: warning: Function parameter or member 'cmdcode' not described in 'lpfc_fdmi_cmd'
- drivers/scsi/lpfc/lpfc_ct.c:3030: warning: Function parameter or member 'new_mask' not described in 'lpfc_fdmi_cmd'
- drivers/scsi/lpfc/lpfc_ct.c:3272: warning: Function parameter or member 't' not described in 'lpfc_delayed_disc_tmo'
+ drivers/scsi/csiostor/csio_init.c:595: warning: Function parameter or member 'pln' not described in 'csio_shost_init'
+ drivers/scsi/csiostor/csio_init.c:595: warning: Excess function parameter 'os_pln' description in 'csio_shost_init'
 
-Cc: James Smart <james.smart@broadcom.com>
-Cc: Dick Kennedy <dick.kennedy@broadcom.com>
+Cc: Saurav Girepunje <saurav.girepunje@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/lpfc/lpfc_ct.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/scsi/csiostor/csio_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_ct.c b/drivers/scsi/lpfc/lpfc_ct.c
-index 701f2405cf022..dd9f2bf54edd4 100644
---- a/drivers/scsi/lpfc/lpfc_ct.c
-+++ b/drivers/scsi/lpfc/lpfc_ct.c
-@@ -300,7 +300,7 @@ lpfc_ct_free_iocb(struct lpfc_hba *phba, struct lpfc_iocbq *ctiocb)
- 	return 0;
- }
- 
--/**
-+/*
-  * lpfc_gen_req - Build and issue a GEN_REQUEST command  to the SLI Layer
-  * @vport: pointer to a host virtual N_Port data structure.
-  * @bmp: Pointer to BPL for SLI command
-@@ -394,7 +394,7 @@ lpfc_gen_req(struct lpfc_vport *vport, struct lpfc_dmabuf *bmp,
- 	return 0;
- }
- 
--/**
-+/*
-  * lpfc_ct_cmd - Build and issue a CT command
-  * @vport: pointer to a host virtual N_Port data structure.
-  * @inmp: Pointer to data buffer for response data.
-@@ -3019,8 +3019,8 @@ int (*lpfc_fdmi_port_action[])
-  * lpfc_fdmi_cmd - Build and send a FDMI cmd to the specified NPort
-  * @vport: pointer to a host virtual N_Port data structure.
-  * @ndlp: ndlp to send FDMI cmd to (if NULL use FDMI_DID)
-- * cmdcode: FDMI command to send
-- * mask: Mask of HBA or PORT Attributes to send
-+ * @cmdcode: FDMI command to send
-+ * @new_mask: Mask of HBA or PORT Attributes to send
+diff --git a/drivers/scsi/csiostor/csio_init.c b/drivers/scsi/csiostor/csio_init.c
+index 8dea7d53788a9..390b07bf92b97 100644
+--- a/drivers/scsi/csiostor/csio_init.c
++++ b/drivers/scsi/csiostor/csio_init.c
+@@ -582,7 +582,7 @@ csio_hw_free(struct csio_hw *hw)
+  * @hw:		The HW module.
+  * @dev:	The device associated with this invocation.
+  * @probe:	Called from probe context or not?
+- * @os_pln:	Parent lnode if any.
++ * @pln:	Parent lnode if any.
   *
-  * Builds and sends a FDMI command using the CT subsystem.
-  */
-@@ -3262,7 +3262,7 @@ lpfc_fdmi_cmd(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
- 
- /**
-  * lpfc_delayed_disc_tmo - Timeout handler for delayed discovery timer.
-- * @ptr - Context object of the timer.
-+ * @t: Context object of the timer.
-  *
-  * This function set the WORKER_DELAYED_DISC_TMO flag and wake up
-  * the worker thread.
+  * Allocates lnode structure via scsi_host_alloc, initializes
+  * shost, initializes lnode module and registers with SCSI ML
 -- 
 2.25.1
 
