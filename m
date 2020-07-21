@@ -2,205 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA142228B5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BC5228B6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731333AbgGUVbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 17:31:43 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12490 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731293AbgGUVbg (ORCPT
+        id S1731354AbgGUVcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 17:32:20 -0400
+Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:47834 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726658AbgGUVcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:31:36 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f175eaa0005>; Tue, 21 Jul 2020 14:31:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 21 Jul 2020 14:31:35 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 21 Jul 2020 14:31:35 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Jul
- 2020 21:31:25 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 21 Jul 2020 21:31:26 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f175ead0006>; Tue, 21 Jul 2020 14:31:26 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        "Ralph Campbell" <rcampbell@nvidia.com>
-Subject: [PATCH v3 5/5] mm/hmm/test: use the new migration invalidation
-Date:   Tue, 21 Jul 2020 14:31:19 -0700
-Message-ID: <20200721213119.32344-6-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200721213119.32344-1-rcampbell@nvidia.com>
-References: <20200721213119.32344-1-rcampbell@nvidia.com>
+        Tue, 21 Jul 2020 17:32:19 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 469E718224D68;
+        Tue, 21 Jul 2020 21:32:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3868:4321:5007:10004:10400:10466:10471:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:13972:14181:14659:14721:21080:21433:21451:21627:30054:30056:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: loaf72_4608e2426f30
+X-Filterd-Recvd-Size: 2717
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 21 Jul 2020 21:32:16 +0000 (UTC)
+Message-ID: <11ac49bc33546ef9ebc4120878206bd882667d8a.camel@perches.com>
+Subject: Re: [PATCH v4 16/17] crypto: sun8i-ce: fix comparison of integer
+ expressions of different signedness
+From:   Joe Perches <joe@perches.com>
+To:     Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net,
+        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 21 Jul 2020 14:32:15 -0700
+In-Reply-To: <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
+References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
+         <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595367082; bh=dV0F2IGIbSa3UBr9FPynu9ekSSnn2qKSM3AxyUbNMFQ=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=pfje3ZGPKvbmEuIpiYR54C1oU2sba42jUTPeyo9lQu3WTQThk65+loh+eB+wSoEIh
-         N07/umNUYu7CbxQyOsKkfIkuQhuTXVARUPAXP+AmWW92zLGD8Yj3rc+yr2w6p3swkV
-         CWx4hst7sJBQwRB81WTcTZmo23MopnU8P+1kXcLN/yuD9FSrdZXgY806Mk3Z330tqb
-         YAUeJBuMz9nBMYsSk4hzsmTcWI+tJVwHt5mz/8+8z/c+oDor9rN4dcDuBZhdLA/F8+
-         wvOTagUh7sDm0G12wWTYCR1I9bHTmBGmrp+S/GtDZua+EN3PWrsUg3kQZVGsanCUNd
-         +iuPWhcB5EhCw==
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new MMU_NOTIFY_MIGRATE event to skip MMU invalidations of device
-private memory and handle the invalidation in the driver as part of
-migrating device private memory.
+On Tue, 2020-07-21 at 19:06 +0000, Corentin Labbe wrote:
+> This patch fixes the warning:
+> warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
- lib/test_hmm.c                         | 30 +++++++++++++++-----------
- tools/testing/selftests/vm/hmm-tests.c | 18 ++++++++++++----
- 2 files changed, 31 insertions(+), 17 deletions(-)
+I think these do not really need conversion.
+Are these useful compiler warnings ?
 
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index 74c6ee66ef15..9abc9ad3140f 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -214,6 +214,14 @@ static bool dmirror_interval_invalidate(struct mmu_int=
-erval_notifier *mni,
- {
- 	struct dmirror *dmirror =3D container_of(mni, struct dmirror, notifier);
-=20
-+	/*
-+	 * Ignore invalidation callbacks for device private pages since
-+	 * the invalidation is handled as part of the migration process.
-+	 */
-+	if (range->event =3D=3D MMU_NOTIFY_MIGRATE &&
-+	    range->migrate_pgmap_owner =3D=3D dmirror->mdevice)
-+		return true;
-+
- 	if (mmu_notifier_range_blockable(range))
- 		mutex_lock(&dmirror->mutex);
- 	else if (!mutex_trylock(&dmirror->mutex))
-@@ -702,7 +710,7 @@ static int dmirror_migrate(struct dmirror *dmirror,
- 		args.dst =3D dst_pfns;
- 		args.start =3D addr;
- 		args.end =3D next;
--		args.pgmap_owner =3D NULL;
-+		args.pgmap_owner =3D dmirror->mdevice;
- 		args.flags =3D MIGRATE_VMA_SELECT_SYSTEM;
- 		ret =3D migrate_vma_setup(&args);
- 		if (ret)
-@@ -992,7 +1000,7 @@ static void dmirror_devmem_free(struct page *page)
- }
-=20
- static vm_fault_t dmirror_devmem_fault_alloc_and_copy(struct migrate_vma *=
-args,
--						struct dmirror_device *mdevice)
-+						      struct dmirror *dmirror)
- {
- 	const unsigned long *src =3D args->src;
- 	unsigned long *dst =3D args->dst;
-@@ -1014,6 +1022,7 @@ static vm_fault_t dmirror_devmem_fault_alloc_and_copy=
-(struct migrate_vma *args,
- 			continue;
-=20
- 		lock_page(dpage);
-+		xa_erase(&dmirror->pt, addr >> PAGE_SHIFT);
- 		copy_highpage(dpage, spage);
- 		*dst =3D migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
- 		if (*src & MIGRATE_PFN_WRITE)
-@@ -1022,15 +1031,6 @@ static vm_fault_t dmirror_devmem_fault_alloc_and_cop=
-y(struct migrate_vma *args,
- 	return 0;
- }
-=20
--static void dmirror_devmem_fault_finalize_and_map(struct migrate_vma *args=
-,
--						  struct dmirror *dmirror)
--{
--	/* Invalidate the device's page table mapping. */
--	mutex_lock(&dmirror->mutex);
--	dmirror_do_update(dmirror, args->start, args->end);
--	mutex_unlock(&dmirror->mutex);
--}
--
- static vm_fault_t dmirror_devmem_fault(struct vm_fault *vmf)
- {
- 	struct migrate_vma args;
-@@ -1060,11 +1060,15 @@ static vm_fault_t dmirror_devmem_fault(struct vm_fa=
-ult *vmf)
- 	if (migrate_vma_setup(&args))
- 		return VM_FAULT_SIGBUS;
-=20
--	ret =3D dmirror_devmem_fault_alloc_and_copy(&args, dmirror->mdevice);
-+	ret =3D dmirror_devmem_fault_alloc_and_copy(&args, dmirror);
- 	if (ret)
- 		return ret;
- 	migrate_vma_pages(&args);
--	dmirror_devmem_fault_finalize_and_map(&args, dmirror);
-+	/*
-+	 * No device finalize step is needed since
-+	 * dmirror_devmem_fault_alloc_and_copy() will have already
-+	 * invalidated the device page table.
-+	 */
- 	migrate_vma_finalize(&args);
- 	return 0;
- }
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftes=
-ts/vm/hmm-tests.c
-index b533dd08da1d..91d38a29956b 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -881,8 +881,9 @@ TEST_F(hmm, migrate)
- }
-=20
- /*
-- * Migrate anonymous memory to device private memory and fault it back to =
-system
-- * memory.
-+ * Migrate anonymous memory to device private memory and fault some of it =
-back
-+ * to system memory, then try migrating the resulting mix of system and de=
-vice
-+ * private memory to the device.
-  */
- TEST_F(hmm, migrate_fault)
- {
-@@ -924,8 +925,17 @@ TEST_F(hmm, migrate_fault)
- 	for (i =3D 0, ptr =3D buffer->mirror; i < size / sizeof(*ptr); ++i)
- 		ASSERT_EQ(ptr[i], i);
-=20
--	/* Fault pages back to system memory and check them. */
--	for (i =3D 0, ptr =3D buffer->ptr; i < size / sizeof(*ptr); ++i)
-+	/* Fault half the pages back to system memory and check them. */
-+	for (i =3D 0, ptr =3D buffer->ptr; i < size / (2 * sizeof(*ptr)); ++i)
-+		ASSERT_EQ(ptr[i], i);
-+
-+	/* Migrate memory to the device again. */
-+	ret =3D hmm_dmirror_cmd(self->fd, HMM_DMIRROR_MIGRATE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	/* Check what the device read. */
-+	for (i =3D 0, ptr =3D buffer->mirror; i < size / sizeof(*ptr); ++i)
- 		ASSERT_EQ(ptr[i], i);
-=20
- 	hmm_buffer_free(buffer);
---=20
-2.20.1
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> index 3901e3401c6b..7b2a142c9b8d 100644
+> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> @@ -566,7 +566,7 @@ static struct sun8i_ce_alg_template ce_algs[] = {
+>  static int sun8i_ce_dbgfs_read(struct seq_file *seq, void *v)
+>  {
+>  	struct sun8i_ce_dev *ce = seq->private;
+> -	int i;
+> +	unsigned int i;
+>  
+>  	for (i = 0; i < MAXFLOW; i++)
+>  		seq_printf(seq, "Channel %d: nreq %lu\n", i, ce->chanlist[i].stat_req);
+> @@ -778,7 +778,8 @@ static int sun8i_ce_get_clks(struct sun8i_ce_dev *ce)
+>  
+>  static int sun8i_ce_register_algs(struct sun8i_ce_dev *ce)
+>  {
+> -	int ce_method, err, id, i;
+> +	int ce_method, err, id;
+> +	unsigned int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
+>  		ce_algs[i].ce = ce;
+> @@ -858,7 +859,7 @@ static int sun8i_ce_register_algs(struct sun8i_ce_dev *ce)
+>  
+>  static void sun8i_ce_unregister_algs(struct sun8i_ce_dev *ce)
+>  {
+> -	int i;
+> +	unsigned int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
+>  		if (!ce_algs[i].ce)
 
