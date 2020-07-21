@@ -2,107 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8E02281B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FD22281C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgGUOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgGUOPr (ORCPT
+        id S1728796AbgGUORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:17:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33588 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726715AbgGUORo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:15:47 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7DFC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:15:47 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id 6so16234790qtt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=b6DsrydUx/QbWN78Y98wqygG+UFPG4/2noyfDIXaO1Q=;
-        b=ZeZv+Jdtru6aShCxXC4eqO2mhQMefh/NCT5gkoNuHTTZwabuZDWwtppyuS6d25xekJ
-         sHztR8j1lD58bJRXUNNGbqX040tfash+UO3yAkZacwVAlQmKqA0BXNxXQzXFvG2kSxxs
-         MOgPzq1gZwSNKNYQhRW0CiybWUYUcunJo0fgn51nvq3HfhldSs8EPHVnA8n0QerBMuVh
-         KUM6i68yf62YhirYLafdiJMqlQBtnWS+b9pkUEX8ae9+8qpXoHoaXbWAMbLko7hjeLwT
-         K580ksu8g6TcNb7oF2sTrRV6NvWYkwrKdTW9LLXufvWhwa8D0oLUWQHpsKfF0JSZhDit
-         sFCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=b6DsrydUx/QbWN78Y98wqygG+UFPG4/2noyfDIXaO1Q=;
-        b=eCZtTkcU38rMokbaq64XuRBt7aDRpwjHYeX0vnHBh7cPW9bpodkMxmweb9BlPY22iv
-         3vsKDqG2SAPbxDeyBcvdZdIHoXkr4roR+/LlKzzpM9xeYe8+I5kxegGkMtETL44+2ncA
-         xgR3ZPiuHId0fyHnOUB1OPI44e+k5E3PhX22Zb9cdKatVL71mvN3eYaDIBk+NQsPI+0C
-         ckhT74w3ermiHR9f2wQwrSfj2zfruaCa4Q61gEgVASweu4A52MYQFSd4cDG/8RvFGJ8A
-         4JZSqMU//qBNh0G+OfYHsh+ybyOywHA5KQdM4t17rzb5f5DpQPAAp3CsBMQu2uhfuvhC
-         93Ww==
-X-Gm-Message-State: AOAM533gTKO7pp0f0ObzKhnDIXpdx6F2CEeX2E7k9OtmWapzcV5wtxfs
-        yIJdD/9Fn2zqID1RUnHkRuNSWQ==
-X-Google-Smtp-Source: ABdhPJx7S5d1VBeKEJHQ6vaT8SnM6raxpHV2XUYvogmQFey8vBqS1FxxuiElEiqVQxkOoNQmPUn6eA==
-X-Received: by 2002:ac8:4c88:: with SMTP id j8mr28146774qtv.57.1595340946182;
-        Tue, 21 Jul 2020 07:15:46 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id h185sm2531667qkf.85.2020.07.21.07.15.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:15:45 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 10:15:39 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-Message-ID: <20200721141539.GA3696@lca.pw>
-References: <20200721112529.GJ4061@dhcp22.suse.cz>
- <664A07B6-DBCD-4520-84F1-241A4E7A339F@lca.pw>
- <20200721121752.GK4061@dhcp22.suse.cz>
- <20200721132343.GA4261@lca.pw>
- <20200721133835.GL4061@dhcp22.suse.cz>
+        Tue, 21 Jul 2020 10:17:44 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LEABH9056421;
+        Tue, 21 Jul 2020 10:17:06 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vurbve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 10:17:06 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06LEBM8G062937;
+        Tue, 21 Jul 2020 10:17:05 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vurbuf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 10:17:05 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LEBfiP001077;
+        Tue, 21 Jul 2020 14:17:03 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 32brbh3wq6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 14:17:03 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LEH0im9830718
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 14:17:00 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F4AB4C063;
+        Tue, 21 Jul 2020 14:17:00 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6B6F4C050;
+        Tue, 21 Jul 2020 14:16:56 +0000 (GMT)
+Received: from [9.199.35.129] (unknown [9.199.35.129])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Jul 2020 14:16:56 +0000 (GMT)
+Subject: Re: [PATCH v4 05/10] powerpc/dt_cpu_ftrs: Add feature for 2nd DAWR
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>
+Cc:     mikey@neuling.org, apopple@linux.ibm.com,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
+        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
+        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com>
+ <20200717040958.70561-6-ravi.bangoria@linux.ibm.com>
+ <CACzsE9oE+OMnWEXvbZZbq35YzpSzCbBHWEJcjtCgkcq-YrABng@mail.gmail.com>
+ <c34b1a66-2db6-c97a-1782-0d473c758502@linux.ibm.com>
+ <87mu3trtri.fsf@mpe.ellerman.id.au>
+ <62daa2d1-4e11-dcc1-cb1d-805ee4a156e0@linux.ibm.com>
+ <87d04prmgc.fsf@mpe.ellerman.id.au>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <a6654419-2438-7f8a-9094-c3decb53c54f@linux.ibm.com>
+Date:   Tue, 21 Jul 2020 19:46:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200721133835.GL4061@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87d04prmgc.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_08:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007210098
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 03:38:35PM +0200, Michal Hocko wrote:
-> On Tue 21-07-20 09:23:44, Qian Cai wrote:
-> > On Tue, Jul 21, 2020 at 02:17:52PM +0200, Michal Hocko wrote:
-> > > On Tue 21-07-20 07:44:07, Qian Cai wrote:
-> > > > 
-> > > > 
-> > > > > On Jul 21, 2020, at 7:25 AM, Michal Hocko <mhocko@kernel.org> wrote:
-> > > > > 
-> > > > > Are these really important? I believe I can dig that out from the bug
-> > > > > report but I didn't really consider that important enough.
-> > > > 
-> > > > Please dig them out. We have also been running those things on
-> > > > “large” powerpc as well and never saw such soft-lockups. Those
-> > > > details may give us some clues about the actual problem.
-> > > 
-> > > I strongly suspect this is not really relevant but just FYI this is
-> > > 16Node, 11.9TB with 1536CPUs system.
-> > 
-> > Okay, we are now talking about the HPC special case. Just brain-storming some
-> > ideas here.
-> > 
-> > 
-> > 1) What about increase the soft-lockup threshold early at boot and restore
-> > afterwards? As far as I can tell, those soft-lockups are just a few bursts of
-> > things and then cure itself after the booting.
-> 
-> Is this really better option than silencing soft lockup from the code
-> itself? What if the same access pattern happens later on?
 
-It is better because it does not require a code change? Did your customers see
-the similar soft-lockups after booting was done?
+
+On 7/21/20 7:37 PM, Michael Ellerman wrote:
+> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+>> On 7/21/20 4:59 PM, Michael Ellerman wrote:
+>>> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+>>>> On 7/17/20 11:14 AM, Jordan Niethe wrote:
+>>>>> On Fri, Jul 17, 2020 at 2:10 PM Ravi Bangoria
+>>>>> <ravi.bangoria@linux.ibm.com> wrote:
+>>>>>>
+>>>>>> Add new device-tree feature for 2nd DAWR. If this feature is present,
+>>>>>> 2nd DAWR is supported, otherwise not.
+>>>>>>
+>>>>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>>>>> ---
+>>>>>>     arch/powerpc/include/asm/cputable.h | 7 +++++--
+>>>>>>     arch/powerpc/kernel/dt_cpu_ftrs.c   | 7 +++++++
+>>>>>>     2 files changed, 12 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+>>>>>> index e506d429b1af..3445c86e1f6f 100644
+>>>>>> --- a/arch/powerpc/include/asm/cputable.h
+>>>>>> +++ b/arch/powerpc/include/asm/cputable.h
+>>>>>> @@ -214,6 +214,7 @@ static inline void cpu_feature_keys_init(void) { }
+>>>>>>     #define CPU_FTR_P9_TLBIE_ERAT_BUG      LONG_ASM_CONST(0x0001000000000000)
+>>>>>>     #define CPU_FTR_P9_RADIX_PREFETCH_BUG  LONG_ASM_CONST(0x0002000000000000)
+>>>>>>     #define CPU_FTR_ARCH_31                        LONG_ASM_CONST(0x0004000000000000)
+>>>>>> +#define CPU_FTR_DAWR1                  LONG_ASM_CONST(0x0008000000000000)
+>>>>>>
+>>>>>>     #ifndef __ASSEMBLY__
+>>>>>>
+>>>>>> @@ -497,14 +498,16 @@ static inline void cpu_feature_keys_init(void) { }
+>>>>>>     #define CPU_FTRS_POSSIBLE      \
+>>>>>>                (CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | CPU_FTRS_POWER8 | \
+>>>>>>                 CPU_FTR_ALTIVEC_COMP | CPU_FTR_VSX_COMP | CPU_FTRS_POWER9 | \
+>>>>>> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
+>>>>>> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
+>>>>>> +            CPU_FTR_DAWR1)
+>>>>>>     #else
+>>>>>>     #define CPU_FTRS_POSSIBLE      \
+>>>>>>                (CPU_FTRS_PPC970 | CPU_FTRS_POWER5 | \
+>>>>>>                 CPU_FTRS_POWER6 | CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | \
+>>>>>>                 CPU_FTRS_POWER8 | CPU_FTRS_CELL | CPU_FTRS_PA6T | \
+>>>>>>                 CPU_FTR_VSX_COMP | CPU_FTR_ALTIVEC_COMP | CPU_FTRS_POWER9 | \
+>>>>>> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
+>>>>>> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
+>>>>>> +            CPU_FTR_DAWR1)
+>>>
+>>>>> Instead of putting CPU_FTR_DAWR1 into CPU_FTRS_POSSIBLE should it go
+>>>>> into CPU_FTRS_POWER10?
+>>>>> Then it will be picked up by CPU_FTRS_POSSIBLE.
+>>>>
+>>>> I remember a discussion about this with Mikey and we decided to do it
+>>>> this way. Obviously, the purpose is to make CPU_FTR_DAWR1 independent of
+>>>> CPU_FTRS_POWER10 because DAWR1 is an optional feature in p10. I fear
+>>>> including CPU_FTR_DAWR1 in CPU_FTRS_POWER10 can make it forcefully enabled
+>>>> even when device-tree property is not present or pa-feature bit it not set,
+>>>> because we do:
+>>>>
+>>>>          {       /* 3.1-compliant processor, i.e. Power10 "architected" mode */
+>>>>                  .pvr_mask               = 0xffffffff,
+>>>>                  .pvr_value              = 0x0f000006,
+>>>>                  .cpu_name               = "POWER10 (architected)",
+>>>>                  .cpu_features           = CPU_FTRS_POWER10,
+>>>
+>>> The pa-features logic will turn it off if the feature bit is not set.
+>>>
+>>> So you should be able to put it in CPU_FTRS_POWER10.
+>>>
+>>> See for example CPU_FTR_NOEXECUTE.
+>>
+>> Ah ok. scan_features() clears the feature if the bit is not set in
+>> pa-features. So it should work find for powervm. I'll verify the same
+>> thing happens in case of baremetal where we use cpu-features not
+>> pa-features. If it works in baremetal as well, will put it in
+>> CPU_FTRS_POWER10.
+> 
+> When we use DT CPU features we don't use CPU_FTRS_POWER10 at all.
+> 
+> We construct a cpu_spec from scratch with just the base set of features:
+> 
+> static struct cpu_spec __initdata base_cpu_spec = {
+> 	.cpu_name		= NULL,
+> 	.cpu_features		= CPU_FTRS_DT_CPU_BASE,
+> 
+> 
+> And then individual features are enabled via the device tree flags.
+
+Ah good. I was under a wrong impression that we use cpu_specs[] for all
+the cases. Thanks mpe for explaining in detail :)
+
+Ravi
