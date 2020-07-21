@@ -2,151 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294C1227E94
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246C5227E7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgGULRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgGULRt (ORCPT
+        id S1729204AbgGULPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:15:43 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42624 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728159AbgGULPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:17:49 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4134DC061794;
-        Tue, 21 Jul 2020 04:17:49 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id u5so10578944pfn.7;
-        Tue, 21 Jul 2020 04:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oEglXBwLQOY/wf76maJo9jVEEGUkpTJTd012yFX+eg0=;
-        b=eQEcb0DlSutfs/x54NKruHBcmUgGN6eiLv1FT9CCcewYN67Lzfn79XkMbtizfdcXKQ
-         HgBBQ5zdJvo1jjeuRKujKhbNNhgta8mQGTKz+PjfpZkZYmcwMdQPSgOznKErnNn+VGhN
-         sTyAhUpEqBF0J68wJSFPdbT5fG8km6ffHmr4Iez77sN7VWc0PlgWF5StVbTz6g/aOjqN
-         MhUcX3v9MdrzLNja8K7FmRC4QKVS+irGXTVYqUCA1ePELWio6HMSovtatYv5vNwBGEY5
-         imyxa3WuNHKspJLvz5NbLFj/3hAFCXsNaf9mt51JG6P/e7E2h0QVQEWTwwvry6sfDxrV
-         GGtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oEglXBwLQOY/wf76maJo9jVEEGUkpTJTd012yFX+eg0=;
-        b=pT3oq7lact3GaW4LAIt5xTatxYu6RnvOjAtCFFx+2iezCtFN9IIWEetCOZynBlwoW5
-         OsZxwndXV7C5bE1JpG1/3BxxLbr096n22G1XJhQ0ZLMn+NOct+Gp4xKn7cnYCJuoW/3R
-         CEHSMV+kdbtmXAEqGyDr+vCgrNPu1JUh9cN1QsDiRE+/O8MbWohObrKuVBsQ8CWYYV0j
-         UKh9Gv/Vuo7Uwb56hiz6anMUlHqa7UwJJ3rdnRj/Pvqv2spgQ1y0YORn3HQGfTezWxJZ
-         smjDOc85jlT7YEPMaOpV+vCwUaRGKvtfOT59382Bc2dNVhtmDNPvTa4D/4zCtj7BFyTG
-         p4tA==
-X-Gm-Message-State: AOAM533HZ9Vie4o123ZcQviml0UlN1iaWmvI1cxLTxy9CmCpyQYX5DP7
-        iIsf4nBUrNbB5OP7RuDNqSA=
-X-Google-Smtp-Source: ABdhPJynYtaBeDQE5nq3mZYndVR3CbMhBrzTcaw3JP8v9Oz1OogSSSEN48kLJYaC2eSSY/A0bQxC0A==
-X-Received: by 2002:a63:b511:: with SMTP id y17mr21869900pge.425.1595330268751;
-        Tue, 21 Jul 2020 04:17:48 -0700 (PDT)
-Received: from xiaomi.mioffice.cn ([209.9.72.214])
-        by smtp.gmail.com with ESMTPSA id f72sm19829566pfa.66.2020.07.21.04.17.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 04:17:48 -0700 (PDT)
-From:   Qiwu Huang <yanziily@gmail.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jiangfei1@xiaomi.com,
-        Qiwu Huang <huangqiwu@xiaomi.com>
-Subject: [PATCH v6 1/4] power: supply: core: add quick charge type property
-Date:   Tue, 21 Jul 2020 19:15:36 +0800
-Message-Id: <c9d3199ec18625f9cc4448c3b2049ea2ae80358b.1595329640.git.huangqiwu@xiaomi.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1595329640.git.huangqiwu@xiaomi.com>
-References: <cover.1595329640.git.huangqiwu@xiaomi.com>
+        Tue, 21 Jul 2020 07:15:43 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7B9DF283D14;
+        Tue, 21 Jul 2020 12:15:40 +0100 (BST)
+Date:   Tue, 21 Jul 2020 13:15:37 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Helen Koike <helen.koike@collabora.com>, Brian.Starkey@arm.com
+Cc:     mchehab@kernel.org, hans.verkuil@cisco.com,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
+        linux-media@vger.kernel.org, tfiga@chromium.org,
+        hiroh@chromium.org, nicolas@ndufresne.ca, kernel@collabora.com,
+        narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
+        frkoenig@chromium.org, mjourdan@baylibre.com,
+        stanimir.varbanov@linaro.org
+Subject: Re: [PATCH v4 0/6] media: v4l2: Add extended fmt and buffer ioctls
+Message-ID: <20200721131537.6ff83c71@collabora.com>
+In-Reply-To: <20200717115435.2632623-1-helen.koike@collabora.com>
+References: <20200717115435.2632623-1-helen.koike@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiwu Huang <huangqiwu@xiaomi.com>
+Hello Helen,
 
-Reports the kind of quick charge type based on
-different adapter power.
+Just a few drive-by comments.
 
-Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
----
- Documentation/ABI/testing/sysfs-class-power | 21 +++++++++++++++++++++
- drivers/power/supply/power_supply_sysfs.c   |  1 +
- include/linux/power_supply.h                | 10 ++++++++++
- 3 files changed, 32 insertions(+)
+On Fri, 17 Jul 2020 08:54:29 -0300
+Helen Koike <helen.koike@collabora.com> wrote:
 
-diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
-index 216d61a22f1e..dd3773dcf16a 100644
---- a/Documentation/ABI/testing/sysfs-class-power
-+++ b/Documentation/ABI/testing/sysfs-class-power
-@@ -708,3 +708,24 @@ Description:
- 
- 		Access: Read
- 		Valid values: 1-31
-+
-+What:		/sys/class/power_supply/<supply_name>/quick_charge_type
-+Date:		Jul 2020
-+Contact:	Fei Jiang <jiangfei1@xiaomi.com>
-+		Description:
-+		Reports the kind of quick charge type based on different adapter power.
-+		Different quick charge type represent different charging power.
-+		QUICK_CHARGE_NORMAL : Charging Power <= 10W
-+		QUICK_CHARGE_FAST : 10W < Charging Power <= 20W
-+		QUICK_CHARGE_FLASH : 20W < Charging Power <= 30W
-+		QUICK_CHARGE_TURBE : 30W < Charging Power <= 50W
-+		QUICK_CHARGE_SUPER : Charging Power > 50W
-+
-+		Access: Read-Only
-+		Valid values:
-+			0: QUICK_CHARGE_NORMAL,
-+			1: QUICK_CHARGE_FAST,
-+			2: QUICK_CHARGE_FLASH,
-+			3: QUICK_CHARGE_TURBE,
-+			4: QUICK_CHARGE_SUPER.
-+
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-index bc79560229b5..9554d7907373 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -206,6 +206,7 @@ static struct power_supply_attr power_supply_attrs[] = {
- 	POWER_SUPPLY_ATTR(MODEL_NAME),
- 	POWER_SUPPLY_ATTR(MANUFACTURER),
- 	POWER_SUPPLY_ATTR(SERIAL_NUMBER),
-+	POWER_SUPPLY_ATTR(QUICK_CHARGE_TYPE),
- };
- 
- static struct attribute *
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index ac1345a48ad0..f35c661a2544 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -167,6 +167,7 @@ enum power_supply_property {
- 	POWER_SUPPLY_PROP_MODEL_NAME,
- 	POWER_SUPPLY_PROP_MANUFACTURER,
- 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
-+	POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE,
- };
- 
- enum power_supply_type {
-@@ -197,6 +198,15 @@ enum power_supply_usb_type {
- 	POWER_SUPPLY_USB_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
- };
- 
-+enum power_supply_quick_charge_type {
-+	QUICK_CHARGE_NORMAL = 0,		/* Charging Power <= 10W */
-+	QUICK_CHARGE_FAST,			/* 10W < Charging Power <= 20W */
-+	QUICK_CHARGE_FLASH,			/* 20W < Charging Power <= 30W */
-+	QUICK_CHARGE_TURBE,			/* 30W < Charging Power <= 50W */
-+	QUICK_CHARGE_SUPER,			/* Charging Power > 50W */
-+	QUICK_CHARGE_MAX,
-+};
-+
- enum power_supply_notifier_events {
- 	PSY_EVENT_PROP_CHANGED,
- };
--- 
-2.27.0
+> Hi,
+> 
+> I'm sorry for taking too long to submit v4.
+> 
+> It is not perfect, not all v4l2-compliance tests passes, but I'd like a review,
+> specially on the API and potential problems, so I can focus on improving implementation
+> and maybe drop the RFC tag for next version.
+> 
+> Follow below what changed in v4 and some items I'd like to discuss:
+> 
+> 
+> * Ioctl to replace v4l2_pix_format
+> ---------------------------------------------------------------------------------
+> During last media summit, we agreed to create ioctls that replace the v4l2_pix_format
+> struct and leave the other structs in the v4l2_format union alone.
+> Thus I refactored the code to receive struct v4l2_ext_pix_format, and I renamed the
+> ioctls, so now we have:
+> 
+> int ioctl(int fd, VIDIOC_G_EXT_FMT, struct v4l2_ext_pix_format *argp);
+
+Maybe use the EXT_PIX_FMT suffix here since the struct is really only
+about pixel formats.
+
+> int ioctl(int fd, VIDIOC_S_EXT_FMT, struct v4l2_ext_pix_format *argp);
+> int ioctl(int fd, VIDIOC_TRY_EXT_FMT, struct v4l2_ext_pix_format *argp);
+> 
+> The only valid types are V4L2_BUF_TYPE_VIDEO_CAPTURE and V4L2_BUF_TYPE_VIDEO_OUTPUT,
+> all the other types are invalid with this API.
+> 
+
+[...]
+
+> 
+> 
+> Boris Brezillon (5):
+>   media: v4l2: Extend pixel formats to unify single/multi-planar
+>     handling (and more)
+>   media: videobuf2: Expose helpers to implement the _ext_fmt and
+>     _ext_buf hooks
+>   media: mediabus: Add helpers to convert a ext_pix format to/from a
+>     mbus_fmt
+>   media: vivid: Convert the capture and output drivers to
+>     EXT_FMT/EXT_BUF
+>   media: vimc: Implement the ext_fmt and ext_buf hooks
+
+I think you should take ownership of these patches. The end result is
+likely to be completely different from what I initially posted, and
+you're the one doing the hard work here.
+
+> 
+> Hans Verkuil (1):
+>   media: v4l2: Add extended buffer operations
+> 
+>  .../media/common/videobuf2/videobuf2-core.c   |   2 +
+>  .../media/common/videobuf2/videobuf2-v4l2.c   | 549 +++++-----
+>  .../media/test-drivers/vimc/vimc-capture.c    |  61 +-
+>  drivers/media/test-drivers/vimc/vimc-common.c |   6 +-
+>  drivers/media/test-drivers/vimc/vimc-common.h |   2 +-
+>  drivers/media/test-drivers/vivid/vivid-core.c |  70 +-
+>  .../test-drivers/vivid/vivid-touch-cap.c      |  26 +-
+>  .../test-drivers/vivid/vivid-touch-cap.h      |   3 +-
+>  .../media/test-drivers/vivid/vivid-vid-cap.c  | 169 +---
+>  .../media/test-drivers/vivid/vivid-vid-cap.h  |  15 +-
+>  .../media/test-drivers/vivid/vivid-vid-out.c  | 193 ++--
+>  .../media/test-drivers/vivid/vivid-vid-out.h  |  15 +-
+>  drivers/media/v4l2-core/v4l2-dev.c            |  50 +-
+>  drivers/media/v4l2-core/v4l2-ioctl.c          | 934 ++++++++++++++++--
+>  include/media/v4l2-ioctl.h                    |  60 ++
+>  include/media/v4l2-mediabus.h                 |  42 +
+>  include/media/videobuf2-core.h                |   6 +-
+>  include/media/videobuf2-v4l2.h                |  21 +-
+>  include/uapi/linux/videodev2.h                | 144 +++
+>  19 files changed, 1650 insertions(+), 718 deletions(-)
+> 
 
