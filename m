@@ -2,58 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3282287A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70412287AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730861AbgGURmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:42:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730383AbgGURmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:42:12 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6DCE20792;
-        Tue, 21 Jul 2020 17:42:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595353331;
-        bh=4OevMx9uMIoav+Swk+McjWTokdsX9C23mmK745+ZYTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZKg7+l7gcgWou1XcZJ5oNSObkAqLRyTwRH31sSOxQU2cbpeo1xatMahyrj+RmqUR+
-         lGnRc3eHI3whFeY3qqr74SAsl3hvE1T/27x1CVaS2nnC/u9LBTi4y9bF5XAqdTYaiB
-         T5xKCUyPfZEOsisos2rwt3DmIsHEmoIFBT3vgTt8=
-Date:   Tue, 21 Jul 2020 23:12:07 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] phy: qualcomm: fix setting of tx_deamp_3_5db when
- device property read fails
-Message-ID: <20200721174207.GP12965@vkoul-mobl>
-References: <20200721150613.416876-1-colin.king@canonical.com>
+        id S1730916AbgGURmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730868AbgGURmf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 13:42:35 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7872CC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:42:35 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s189so12258498pgc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=E4KZgwVTI5aMyqyLhFG3oLM6lp0QMlQ+v/7xrQ4lxDs=;
+        b=oZ3BrUtmP+vLY3N3slRcKIuQ7yd0ZvpzWXZDGA+txT2uXl3KtRkQlZPRYpMbmi0nDm
+         gnT49lqnyjoTGBDP4UE1OYnWpllTkB0baayRG9MWBNY0yCXj6rJJuhW6pUtw47yJuh7a
+         jpRAvlP4Lb45W2/c/Ltk/q1+fTOpnqu+UbhjpVaH64FNUgsKqQPvKT1KpQSsOabJTKz2
+         89puFcMefNK36uviukBAAf2brQGgMcj2NvPx84gCPJZqt+afp6j5JNdzBylBzMe15xNq
+         fM2tN2jRjr6WMGttsZTUQMQfz3XBcBzAr+Jq3AHnLJQp2IpCOPIAECew14TlNXeDoqor
+         h80g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=E4KZgwVTI5aMyqyLhFG3oLM6lp0QMlQ+v/7xrQ4lxDs=;
+        b=EMdI0I8L379F/BgltiMJGB4RcONFJyu+IuXQMLMSTObHmfpLx87BqB7tvhZ8V+iFEE
+         v7IPPecUt0j4gXh3gDGrEVLJxtY1WXE49oqRar+r1PfbimfWzNcHtJ6fmFbqHiR/6iwK
+         /+CPJC9kH0R5pBdAZxRdpMB9TL0FW3GWM6kMAclJD2aI93EOYpOlWk7oCmp3bmjAbHWw
+         gwWJlQtuRCTyUERm25xtqPwb8nXZ6YWJD0U3wXFh0Un63ocJ1zFVX9zNxgZfJs8gxHZg
+         vZgJ70OSoBTVZox52Y1dtwZb7U0Ij+z3QOnoGDpdntcxoue3J/he404WFi2NXEfQAd8o
+         SBUg==
+X-Gm-Message-State: AOAM531ubVr/nT9iV+1PV2pynNwF7aUISksFe/NT7HfI2JL7zJo0mPCL
+        2F209kTxGvmT/T82RPlCy/6Kgcczd8I=
+X-Google-Smtp-Source: ABdhPJyx0AqwTp4Ow6VK7fzRhEUxTwYv15VH55g7hiaH9UyQhijrz82/lwbSAZsX7VvxpESMScUMvQ==
+X-Received: by 2002:a63:5b05:: with SMTP id p5mr23096072pgb.143.1595353355016;
+        Tue, 21 Jul 2020 10:42:35 -0700 (PDT)
+Received: from localhost ([2406:7400:73:d7b6:d055:3e56:d1e4:ce99])
+        by smtp.gmail.com with ESMTPSA id q14sm18238201pgk.86.2020.07.21.10.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 10:42:33 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 23:12:29 +0530
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>,
+        "bhuvanchandra.dv@toradex.com" <bhuvanchandra.dv@toradex.com>
+Subject: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
+Message-ID: <20200721174228.misj2mgqzcfz2lsj@pesu.pes.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kx56zhcajbwqldfb"
 Content-Disposition: inline
-In-Reply-To: <20200721150613.416876-1-colin.king@canonical.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-20, 16:06, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently when reading of the device property for "qcom,tx-deamp_3_5db"
-> fails the default is being assigned incorrectly to phy_dwc3->rx_eq. This
-> looks like a copy-n-paste error and in fact should be assigning the
-> default instead to phy_dwc3->tx_deamp_3_5db
 
-Applied, thanks
+--kx56zhcajbwqldfb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+prevent a bad shift operation by verifying that
+the argument to fls is non zero.
+
+Reported-by: "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
+Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+---
+v1 -> v2:
+	added Reported-by tag
+
+ drivers/tty/serial/fsl_lpuart.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuar=
+t.c
+index 7ca642249224..0cc64279cd2d 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -1168,7 +1168,8 @@ static inline int lpuart_start_rx_dma(struct lpuart_p=
+ort *sport)
+ 	 * 10ms at any baud rate.
+ 	 */
+ 	sport->rx_dma_rng_buf_len =3D (DMA_RX_TIMEOUT * baud /  bits / 1000) * 2;
+-	sport->rx_dma_rng_buf_len =3D (1 << (fls(sport->rx_dma_rng_buf_len) - 1));
++	if (sport->rx_dma_rng_buf_len !=3D 0)
++		sport->rx_dma_rng_buf_len =3D (1 << (fls(sport->rx_dma_rng_buf_len) - 1)=
+);
+ 	if (sport->rx_dma_rng_buf_len < 16)
+ 		sport->rx_dma_rng_buf_len =3D 16;
+=20
+--=20
+2.20.1
+
+
+--kx56zhcajbwqldfb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEIF+jd5Z5uS7xKTfpQZdt+T1HgiEFAl8XKQQACgkQQZdt+T1H
+giFRLwv/dorzPs5nBpoVYe3F6rKkcsPcUgftu5wmWsXMH7qtEsdOHt8bJ5Wsmfht
+BCtAyys8u14LXfoKvk5pDCq1JKJpnqSV6gNV8Mn5VYdnYAuIRJkGDj8nZjNvPLSf
+iQvHeyRa3rDCbSYb/eAtlPnLUwdYn+/tUYPyCQHECv/2NS6/skACNWfHftb3brdk
+Hhqad3BP6Og7w3T9f5eJnpQoE0tSEdP6R/wEcNXjG3SLrH/3RSI5uWW5aYOxMESy
+RikMQ9cFZMuuzjPaCAGn5n94mVUlw6qvtCXYq+Jxo9xVoHbR9wwBTg0B26Lj3/zY
+pemiPjMKcjnyHUjwFFVLVG9JkXWFM/QfmhFJZWL+AAAv6U2lFfo/TEocuAbEoMC5
+UVxHWP1SbPw3frLwHZkwni8qr+Yyko+9zlwuyc8Tsc09PtXr9nWXQYF65yBgi2ZO
+ijZSU7go9xPFJ14+4UBvfPdPx7bKkzO/GFUu3M2ijP6geBk+6bS4EabnWMH/EiYa
+qFeQEn7D
+=RgO/
+-----END PGP SIGNATURE-----
+
+--kx56zhcajbwqldfb--
