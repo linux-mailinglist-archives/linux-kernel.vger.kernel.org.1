@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992B62286A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC3622869C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbgGURDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
+        id S1729621AbgGURCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729344AbgGUQxh (ORCPT
+        with ESMTP id S1729266AbgGUQxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 12:53:37 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4B0C0619DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:53:32 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id c80so3525720wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:53:32 -0700 (PDT)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B7CC0619DE
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:53:33 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id f139so3564848wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 09:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NwtppsTcVvcZ5TZNh7CjWprzGgIi6+BwsTgR08pkjwY=;
-        b=YkPHg0MxyTyKTlPpIXza+hR1qRXWrYvubKsDsrdNbwnZxNPihEQmkgXkuKD1Cn2PXO
-         qDrEcklBJjkleM0dZOqAW1tHoiDjabYteyDFDBJwOxGswvVfvwcgkRjp58XKxawf0EFP
-         H018noIhx9M2ntKeM1XWTYeTfb7FIvwbirUuvjpXGOs6h0oTmchpNK9LsP+WvVlN7jkE
-         nvPDIflTK70gxnTrKR8U4POBc1mmwVUkkvNVXDCsFvHY3NIjkEiLdM0+0YUKUgp7Ons/
-         LiEMiij97V2m5Uu0K6AWuLxBvWud58YHphre0bWgHLqzx6TJlYqffgvHGU1ekQaXWgbo
-         4f9g==
+        bh=VmuP26pFXhq32+z5mcBmskWxvyaip5dpiXSHlITuiYI=;
+        b=LcdyzJ1L9NT7IlmRky2XGOi2dgCFGrHMpH9KW3K0KDnm9PRj9VQy05ZL/O1QsS621d
+         qBffdUU1ScWZ4v1PuOw+0KJfXsvDnbuqmzB4ueaSGEEOJQfY7hdgB4eF8/1s7j56IBTZ
+         mKUq3unYHA0D4FBQ4B0fp+K8W2rpfcaU6f7Ac3bD3WBW/FuxDaESlvDdZA95MmxQWF0v
+         RVKVjvl1EOtfxBBo5fAsnWy8EueV2i+KigQBiuPn4U0qXRHVzbAHDGzIhCOZu2p+OaQl
+         RQ7DzP6g7rTmMFGbEg2eRRuYLy2rWXHHoaFS5vyP1RHvY1ZWmpxpqQ9fb2/PM+UpQjs9
+         yXdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NwtppsTcVvcZ5TZNh7CjWprzGgIi6+BwsTgR08pkjwY=;
-        b=mI9l+VM0CQnmHyGOMJYfXEpnza3gCsOomjE7WT3lEhXelVZabSVl7mmdIbeVXg9OSi
-         l2JYW+36IlCIqykW/ceJfOIsSD1pgweTgaZUjNTuF1ufeRCB4C/bxrsj8cmAXnkyiU8A
-         hyDg6XU4Pev6ggVqq3T55JBr9l7whFjUVJOADYFPyqV4nk81JHZAOu7FTCUb/XtWIjTk
-         hft6TL/NEG+uVdga4SnlgqLiibDKC2Bz3yFGrfDIJ6CNnJtDv7awIxO+9/oFjPc0JO3E
-         JV5GIl0TUwEPd9QyIPbkk78vG+lcDo56nkr4hr/PMMKoo1itR4rxwMO/zEizM4at+ORH
-         Do/A==
-X-Gm-Message-State: AOAM5327132LEdD+ns5GjTAeXml/TWRjm3u900+xi0BZ1GUngXAA2rS6
-        LOi4CKWYf++dZVo71AMIUm4o0w==
-X-Google-Smtp-Source: ABdhPJz06SmuoOdh4tYpRVa5G9rtDS6HPN94BzXs9IQnMA84PpQ2veD0gjkBTx+kuHRfcHY4/U/BhA==
-X-Received: by 2002:a1c:19c5:: with SMTP id 188mr4849059wmz.124.1595350410173;
-        Tue, 21 Jul 2020 09:53:30 -0700 (PDT)
+        bh=VmuP26pFXhq32+z5mcBmskWxvyaip5dpiXSHlITuiYI=;
+        b=e95FkvszOmkTE0TzOJCQjogrKMZEEfpb2i9MZgwh4ihDyzril4Y3rqTMCdF5fEF5Ha
+         JYxHI4tSBjxK1EErEA++FEP1l+zbB680ivEKNExFAvMYz1iCOrc4ADwEeRk8OiJVzDE9
+         qrWHrX7+JBqoblIJOEb++Up+pwZbm/0nl6GxwEJPBeChTy7CAd7rLeA8duYmD6YrovO0
+         Z+In0F2e4T92nsXlsnsPIl3Sy7Ypf4UE6bP1eT0/OFcKM6nAVzct3mhntSFHw9kVLCfI
+         5yDTnQCgUdEm+sC7Ju736lQCgKGhJ23XqVE+upulY/2GoOvmrLgB6RDy6kjOz6JXEp8F
+         6kXw==
+X-Gm-Message-State: AOAM532WqUljrtKapEWgfKM9U+81H7qwpL/sTxR3CM2b1L072pzoMoa+
+        JV4pqVhfvJI7JjgGSjMKjBRH1w==
+X-Google-Smtp-Source: ABdhPJy1BZSc/XQ0qyoKoKoKDVWcSK8KAWiqlSbx6Vi2eEAQs2S9ZN6lynnWU9MMZ6w8cilLW1ffvQ==
+X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr5147693wma.66.1595350411794;
+        Tue, 21 Jul 2020 09:53:31 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id c25sm4058648wml.18.2020.07.21.09.53.28
+        by smtp.gmail.com with ESMTPSA id c25sm4058648wml.18.2020.07.21.09.53.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:53:29 -0700 (PDT)
+        Tue, 21 Jul 2020 09:53:31 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org
 Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
         lgirdwood@gmail.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 6/9] ASoC: q6asm: add support to gapless flag in q6asm open
-Date:   Tue, 21 Jul 2020 17:53:03 +0100
-Message-Id: <20200721165306.29082-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 7/9] ASoC: q6asm-dai: add next track metadata support
+Date:   Tue, 21 Jul 2020 17:53:04 +0100
+Message-Id: <20200721165306.29082-8-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
 References: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
@@ -67,72 +67,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support to gapless flag to q6asm_open_write().
+This patch adds support to metadata required to do a gapless playback.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 4 ++--
- sound/soc/qcom/qdsp6/q6asm.c     | 4 +++-
- sound/soc/qcom/qdsp6/q6asm.h     | 2 +-
- 3 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 6b9ceac2ceb2..a493350c8cc2 100644
+index a493350c8cc2..c4b4684b7824 100644
 --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
 +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -259,7 +259,7 @@ static int q6asm_dai_prepare(struct snd_soc_component *component,
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		ret = q6asm_open_write(prtd->audio_client, prtd->stream_id,
- 				       FORMAT_LINEAR_PCM,
--				       0, prtd->bits_per_sample);
-+				       0, prtd->bits_per_sample, false);
- 	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		ret = q6asm_open_read(prtd->audio_client, prtd->stream_id,
- 				      FORMAT_LINEAR_PCM,
-@@ -686,7 +686,7 @@ static int q6asm_dai_compr_set_params(struct snd_soc_component *component,
- 	if (dir == SND_COMPRESS_PLAYBACK) {
- 		ret = q6asm_open_write(prtd->audio_client, prtd->stream_id,
- 				       params->codec.id, params->codec.profile,
--				       prtd->bits_per_sample);
-+				       prtd->bits_per_sample, true);
+@@ -71,6 +71,8 @@ struct q6asm_dai_rtd {
+ 	uint32_t stream_id;
+ 	uint16_t session_id;
+ 	enum stream_state state;
++	uint32_t initial_samples_drop;
++	uint32_t trailing_samples_drop;
+ };
  
- 		if (ret < 0) {
- 			dev_err(dev, "q6asm_open_write failed\n");
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 14ec7dad5b65..22ac99029e56 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -923,7 +923,7 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
-  */
- int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
- 		     uint32_t format, u32 codec_profile,
--		     uint16_t bits_per_sample)
-+		     uint16_t bits_per_sample, bool is_gapless)
+ struct q6asm_dai_data {
+@@ -869,6 +871,28 @@ static int q6asm_dai_compr_set_params(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
++static int q6asm_dai_compr_set_metadata(struct snd_compr_stream *stream,
++					struct snd_compr_metadata *metadata)
++{
++	struct snd_compr_runtime *runtime = stream->runtime;
++	struct q6asm_dai_rtd *prtd = runtime->private_data;
++	int ret = 0;
++
++	switch (metadata->key) {
++	case SNDRV_COMPRESS_ENCODER_PADDING:
++		prtd->trailing_samples_drop = metadata->value[0];
++		break;
++	case SNDRV_COMPRESS_ENCODER_DELAY:
++		prtd->initial_samples_drop = metadata->value[0];
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
+ static int q6asm_dai_compr_trigger(struct snd_soc_component *component,
+ 				   struct snd_compr_stream *stream, int cmd)
  {
- 	struct asm_stream_cmd_open_write_v3 *open;
- 	struct apr_pkt *pkt;
-@@ -943,6 +943,8 @@ int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
- 	pkt->hdr.opcode = ASM_STREAM_CMD_OPEN_WRITE_V3;
- 	open->mode_flags = 0x00;
- 	open->mode_flags |= ASM_LEGACY_STREAM_SESSION;
-+	if (is_gapless)
-+		open->mode_flags |= BIT(ASM_SHIFT_GAPLESS_MODE_FLAG);
- 
- 	/* source endpoint : matrix */
- 	open->sink_endpointype = ASM_END_POINT_DEVICE_MATRIX;
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index e315f7ff5e54..69513ac1fa55 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -100,7 +100,7 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
- 		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t flags);
- int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
- 		     uint32_t format, u32 codec_profile,
--		     uint16_t bits_per_sample);
-+		     uint16_t bits_per_sample, bool is_gapless);
- 
- int q6asm_open_read(struct audio_client *ac, uint32_t stream_id,
- 		    uint32_t format, uint16_t bits_per_sample);
+@@ -985,6 +1009,7 @@ static struct snd_compress_ops q6asm_dai_compress_ops = {
+ 	.open		= q6asm_dai_compr_open,
+ 	.free		= q6asm_dai_compr_free,
+ 	.set_params	= q6asm_dai_compr_set_params,
++	.set_metadata	= q6asm_dai_compr_set_metadata,
+ 	.pointer	= q6asm_dai_compr_pointer,
+ 	.trigger	= q6asm_dai_compr_trigger,
+ 	.get_caps	= q6asm_dai_compr_get_caps,
 -- 
 2.21.0
 
