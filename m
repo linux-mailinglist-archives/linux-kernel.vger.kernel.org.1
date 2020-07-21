@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C7E228A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8404228A76
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgGUVOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 17:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S1731170AbgGUVPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 17:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731129AbgGUVOu (ORCPT
+        with ESMTP id S1731134AbgGUVOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:14:50 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE39C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:14:49 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u185so64580pfu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:14:49 -0700 (PDT)
+        Tue, 21 Jul 2020 17:14:51 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B628C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:14:51 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d1so10807038plr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:14:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=oSUWq982rBlWRI7hOTohIn18y5KqsT4lbUPrCubS9rQ=;
-        b=Qt3KHO5lvvUtQ8imVFOJ2VhAHOnvuWrMPARwSJIhErVMtjHNHMP5M58cIfz/ydEO3b
-         N8xJ6iroaX2XUBw+nW75h1JxrT0xcFO4rM4GGxT7PAtvL8GWT+6Yac0aO1mgkDSn7+YX
-         redNFf1wwK4hKomJtf+QYgF8/WFKRQFzX0RlPrYYMx9X1PdVztVvmiV38Zh2VpIw7NGy
-         nREPu12wtWIThP59O6Tza0z4xgsHIsButqmIlRK7WclqPsQCRBL3SZYFc0Y++V59JbUb
-         CUQEx5/xboqbc242yoVwbC6nDqv0hBljzLPz9BcwTSKLY/G+4AhD62tWPRwhPfYGFONa
-         hKVg==
+        bh=8Wwp/nTJzsUvhisUQ9+vaJpMJ0iH/g8jv6QNXb3X5ww=;
+        b=R46YDFvsp892X1mA7UDmA3obkdoXFygn2SPRBg1p9ocvU8u0SvQaYmqpvYBXPRYiKU
+         5+oz5AUctzTlpODshc8BvvGMEMSDeK5pEj6ZMB1D9fMQJEyMYhAR+DsyA1aNCtvRSIw6
+         erNog0J6vUpi1vJN+bhGmlH+vJVn55lRxbVhxQmQN7jOF29tA9EEuYrg0UOnTWGqBH2H
+         2HiBKtQiYtZI+SqoH7ikzMGaSA0XyGDFrBqO6LAeqme2Yn1INMnwWEhCzqfcl2u6iWiu
+         CTd6FICWjWbzpHAlp3gBKmAYl6XAaNA6wAllYMnHTZSWElLDFQAVYOfO7XPPq8D4brqb
+         BiEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oSUWq982rBlWRI7hOTohIn18y5KqsT4lbUPrCubS9rQ=;
-        b=R7ljKvZMoq6T3jKP/VazlbRSx02tq31+WBQfl9eCYJYXWjzl3DCqmwaYsvmHNTGC12
-         DoZ7/0yR0vcFf13R7HUJfdYfMER0XkcewFSLwvMRZRP3JwFHWMU2htovGICtbKPjYcmd
-         M1XlZ36TPTqVp1MctiJYhbl1vYLt7Jnld0zJVpMFX1dbhVt7q4e17ih5bfwusRUt6s1g
-         lXrydkY0qB9qf3s7qClyfQGN8vUIxilI3P+YxO2chWuc/k77y5LUW56P0paUy7Z0FCGQ
-         mpVoMi8KutQ7Bbfal+fG6ltVnxTpsO/jIlMJ/L7jgNdIbi+HHSixIozaruPUrO6EP5s+
-         0NYw==
-X-Gm-Message-State: AOAM531hfkgW/XyXLaMdAfrlqEiiWgAKQ+r2dj5s1ougmBF9UQvn1EPS
-        X3JDqK8OhyfJx6VlLcyZpvRj19waR1t4tQ==
-X-Google-Smtp-Source: ABdhPJyQntzppnYI6sfe3fXSIfegwAdBnN0ZD8OF2gPFZ9fMv/PTK9G75ha/vG9as5mIrSCMEF0NMg==
-X-Received: by 2002:a62:2b85:: with SMTP id r127mr24357616pfr.239.1595366089357;
-        Tue, 21 Jul 2020 14:14:49 -0700 (PDT)
+        bh=8Wwp/nTJzsUvhisUQ9+vaJpMJ0iH/g8jv6QNXb3X5ww=;
+        b=oTH0yr6RQO/bZUg3BRmfNLAxaZjJhQnpsj8yOJ1tXnV4NgIcocFhbNOCaza6DtvKXj
+         x62kGnIHjnxSJaLGiFL6YUTvzM8iYqrVGIkEPzL5TKHu9bLDfCdAF8yqSe1kkL/nRP5v
+         tB89TgHiau30FFnB7hWyMbHDm9B5YvQFXGRigRLYw3Ayku0T9nfkRtKjZmiHSbx2A4yx
+         N2mLWL2G763K8J+H7C0YmHLhZfYakMDOgT+FjeXAY/NeebsEZM+WP5iSPwSldgrj4OiM
+         iT6Ln1aeFT+qoxHX1X5/WtAeKtKewdBugxkRuxgRc0lfsr/melrog6U2x81FhXCHwCQk
+         bS1w==
+X-Gm-Message-State: AOAM5321ZGkbJiWe/DGQKR1992l/puputGJen/HNdf6ER2rAWSYB704A
+        TYA3Vx5T4OUSpmilKT3rcygEvw==
+X-Google-Smtp-Source: ABdhPJzyJvqDGRK1A9FroF7bWZIj9yO99S+GpeI/v/ztl4Hj14ZjS1n14DHIrndS7G5OAKQTZkXClw==
+X-Received: by 2002:a17:902:bd8a:: with SMTP id q10mr24858111pls.236.1595366090725;
+        Tue, 21 Jul 2020 14:14:50 -0700 (PDT)
 Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id cv7sm3966952pjb.9.2020.07.21.14.14.48
+        by smtp.gmail.com with ESMTPSA id i196sm18903141pgc.55.2020.07.21.14.14.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 14:14:48 -0700 (PDT)
+        Tue, 21 Jul 2020 14:14:50 -0700 (PDT)
 From:   Kevin Hilman <khilman@baylibre.com>
 To:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         Christian Hewitt <christianshewitt@gmail.com>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: meson: update spifc node name on Khadas VIM3/VIM3L
-Date:   Tue, 21 Jul 2020 14:14:44 -0700
-Message-Id: <159536607959.30777.2083924894013034325.b4-ty@baylibre.com>
+Subject: Re: [PATCH v3 0/2] arm64: dts: meson: add support for WeTek Core 2
+Date:   Tue, 21 Jul 2020 14:14:45 -0700
+Message-Id: <159536607960.30777.1598266947126340920.b4-ty@baylibre.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200718054505.4165-1-christianshewitt@gmail.com>
-References: <20200718054505.4165-1-christianshewitt@gmail.com>
+In-Reply-To: <20200719021421.7959-1-christianshewitt@gmail.com>
+References: <20200719021421.7959-1-christianshewitt@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,14 +67,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Jul 2020 05:45:05 +0000, Christian Hewitt wrote:
-> The VIM3/VIM3L Boards use w25q128 not w25q32 - this is a cosmetic change
-> only - the device probes fine with the current device-tree.
+On Sun, 19 Jul 2020 02:14:19 +0000, Christian Hewitt wrote:
+> This series adds support for the WeTek Core 2 which is a commercial box
+> device based on the Amlogic Q200 reference design.
+> 
+> v3 changes - fix BT node (enable-gpios > shutdown-gpios)
+> v2 changes - simplify ethernet disable
+> 
+> Christian Hewitt (2):
+>   dt-bindings: arm: amlogic: add support for the WeTek Core 2
+>   arm64: dts: meson: add support for the WeTek Core 2
+> 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: meson: update spifc node name on Khadas VIM3/VIM3L
-      commit: d57c69ca6d4ab890e8edac5c8e10c7c2b54d500c
+[1/2] dt-bindings: arm: amlogic: add support for the WeTek Core 2
+      commit: 8b6f53d7b94b8d23860ae44a56b0af404a6c7e4c
+[2/2] arm64: dts: meson: add support for the WeTek Core 2
+      commit: ea232b9ccccf2f55fe231441f3908c31c7136c4f
 
 Best regards,
 -- 
