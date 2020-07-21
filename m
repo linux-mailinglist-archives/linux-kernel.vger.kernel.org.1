@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5254C227504
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74198227506
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgGUBxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:53:01 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:40348 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGUBxB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:53:01 -0400
-Received: by mail-io1-f65.google.com with SMTP id l17so19667814iok.7;
-        Mon, 20 Jul 2020 18:53:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9KP0Rc8u4bVobD9Gj1dIehnk+YvHsu8cH9wSojjS1pw=;
-        b=b2EBRWcj3Knf3dshdCzhCSAi2J0/ruFrCLKZNwVsw5GJGtfz+PQHjzpMZicZZkEQoc
-         tgNDScbN5QSe1RMsS0vkSCxoPis0snDDCd6dcYeIXHytocSP/kc6UKMsNYPMwZCtLiVE
-         av2Zxt1p+nkfNTqy4iltZYiH5Wn9CxqNZw24vHTysSChsV92nRIAZnU9aFXKNVE1Me4s
-         j2lq3bHMMl2P/DpJpI2v36ByH1dlDwViClB5SatSlguy0J7ed2uWwMZOL0ZKwUabW93p
-         zsk+8+Ef3Irn/ap1ZrHM7kzmuJGMpYPQpi3dWNDEdwf1jRuLiuF2VgrhksRVMe8ZM9sB
-         qkLA==
-X-Gm-Message-State: AOAM530eXzq5Jx0c3/u4b38JOODsTf4HX2uXYWpg8Cqqz8b4iTaxygNe
-        2A9fnhTIksiexflE9/+EIw==
-X-Google-Smtp-Source: ABdhPJzaNK68W25st0exLMoy7RKom9FavgqN/p9iQOTVKMA8AHlp6hlZqOPW4z86KxVY7tE/qv2QBA==
-X-Received: by 2002:a02:9109:: with SMTP id a9mr30142492jag.130.1595296380320;
-        Mon, 20 Jul 2020 18:53:00 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id x71sm9924564ilk.43.2020.07.20.18.52.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 18:52:59 -0700 (PDT)
-Received: (nullmailer pid 3362142 invoked by uid 1000);
-        Tue, 21 Jul 2020 01:52:58 -0000
-Date:   Mon, 20 Jul 2020 19:52:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     robh+dt@kernel.org, arnd@arndb.de, miquel.raynal@bootlin.com,
-        vigneshr@ti.com, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, richard@nod.at
-Subject: Re: [PATCH] mtd: Replace HTTP links with HTTPS ones
-Message-ID: <20200721015258.GA3362089@bogus>
-References: <20200713165408.36229-1-grandmaster@al2klimov.de>
+        id S1726679AbgGUBzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:55:50 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39919 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725857AbgGUBzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:55:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9hWl2mDPz9sRN;
+        Tue, 21 Jul 2020 11:55:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595296547;
+        bh=TI85x241LSmUe5XSIcekXqnHuC4GGWRab8yFSyRxlcA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rzD/T6BpJhz2r+IQFX9QKORBhyA5HAbA7+b4IQmdYhQ9008KKKBjb1hlf1NWGLkMJ
+         JOXwGUSHbXajBkfZu1PlocMtvP/ZdZ9p8VppMstdnbtzj6cMtuWyKCL1zqGmzs5OM7
+         pTWHcYD6Au+3oPPLDI+M4ql1NY1p6uNwPK6kOPr3Nfa13vTu9QSqslAawD6C+2p8gZ
+         yX8bDrdU2qwZuTtlPHLIkruDRW8r4UA7qdARBJhRH4SYMfk5VRSIg/e7hc0s2gqCL/
+         LXbxafwNdv6upHrRwRRjQ6kQVs98Gs0lbpwAjA2TjLHplbxH0IDByLWaMQv/BQUUI5
+         kvu9garkZNOOQ==
+Date:   Tue, 21 Jul 2020 11:55:44 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nikita Danilov <ndanilov@marvell.com>,
+        Pavel Belous <pbelous@marvell.com>,
+        Mark Starovoytov <mstarovoitov@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20200721115544.338fa4c1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713165408.36229-1-grandmaster@al2klimov.de>
+Content-Type: multipart/signed; boundary="Sig_/aERApVzZM/gwHEPnOdxV1B7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Jul 2020 18:54:08 +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
-> 
->  If there are any URLs to be removed completely or at least not just HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
-> 
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
-> 
->  If you apply the patch, please let me know.
-> 
->  Sorry again to all maintainers who complained about subject lines.
->  Now I realized that you want an actually perfect prefixes,
->  not just subsystem ones.
->  I tried my best...
->  And yes, *I could* (at least half-)automate it.
->  Impossible is nothing! :)
-> 
-> 
->  Documentation/devicetree/bindings/mtd/davinci-nand.txt | 4 ++--
->  drivers/mtd/chips/Kconfig                              | 2 +-
->  drivers/mtd/maps/Kconfig                               | 2 +-
->  drivers/mtd/maps/sc520cdp.c                            | 2 +-
->  4 files changed, 5 insertions(+), 5 deletions(-)
-> 
+--Sig_/aERApVzZM/gwHEPnOdxV1B7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hi all,
+
+Today's linux-next merge of the net-next tree got a conflict in:
+
+  drivers/net/ethernet/aquantia/atlantic/aq_hw.h
+
+between commit:
+
+  23e500e88723 ("net: atlantic: disable PTP on AQC111, AQC112")
+
+from the net tree and commit:
+
+  1e41b3fee795 ("net: atlantic: add support for 64-bit reads/writes")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/aquantia/atlantic/aq_hw.h
+index 992fedbe4ce3,95ee1336ac79..000000000000
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_hw.h
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_hw.h
+@@@ -64,7 -67,7 +67,8 @@@ struct aq_hw_caps_s=20
+  	u8 rx_rings;
+  	bool flow_control;
+  	bool is_64_dma;
++ 	bool op64bit;
+ +	u32 quirks;
+  	u32 priv_data_len;
+  };
+ =20
+
+--Sig_/aERApVzZM/gwHEPnOdxV1B7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8WSyAACgkQAVBC80lX
+0GywIgf/YcPIa/ZunWj5EEScYBGTVxb1CE/vfw994++hj5Wo3PSTsMIispL4JcOJ
+A8jXjeI7N6GXKNol03QtPy1yK0DNEydvgjrx6f8w12D5N9Zhqx2MNVTU1X/cW+Am
+a7JYcbi4w7mQ0WkgMxDXitulJ0n9azNynIycaofQ3FX8+KZ6ci9Y0XX47VPxo71j
+SP7xf0I6mdHRUWzRLtgLPfunUFyhp3kBHLN4SVLXzEirrBQAm3IzA0jGlEkYEX2j
+3ao8/bAvwyz//Cjz45FpsgAM1Fd+aOL0yEmcm62gD6jibSNhk+Dv2yP9oIznK/ha
+gZ4imhw0EeGWm9u1gLoyacuOftO+ww==
+=6NSN
+-----END PGP SIGNATURE-----
+
+--Sig_/aERApVzZM/gwHEPnOdxV1B7--
