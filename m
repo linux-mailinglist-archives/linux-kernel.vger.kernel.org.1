@@ -2,237 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41AE22747E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D7B227486
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgGUBZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgGUBZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:25:52 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC2AC0619D5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:25:52 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f16so837155pjt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:25:52 -0700 (PDT)
+        id S1726359AbgGUB3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:29:32 -0400
+Received: from mail-eopbgr750130.outbound.protection.outlook.com ([40.107.75.130]:17521
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726029AbgGUB3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:29:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vj541ktkdzHmGPEWU8guOsv7CfVHPyJaZ1vEZJ2yn63yvFL5tkK4PeJ/MfkgnKYemmJxMiA22XzuCVAc9awE0FxCa0kIZhbUdViApwz6AMTnkdmtvr4G823eKRe0ooH71YW4xOoTCIetdnI4aRodrb3EBDuf2IgREtLHaMBcK5t+oy/LvxEzcsKLbtw1M2tSt+RnTRbMe5zz6hPyGdaZ4xr+hUe7cckOOA1ymfkttoppeqB/8C5QMer6+S+83eZTcOpGu9iw5SBgZsIU0rJ/eSbXs/h89bEaYQ7gagAOB9sAWjcaH29GRPEjOw46mLv+qQpkf1Sw7wpLe/ST1ZNgpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LBvW30MycsHksVGJ/ydS7ds/MoYvY9jYhxsqEg/0DmU=;
+ b=bylZ7iaj17f0beVcbMSJdt/+3UYshQeWZsdLCsTmPm3AGbAQe1IBHcxlJcF0nqVIJRjoyuozMyNkHh6YYmypOhnKa0B4t/iZg+bA7UnRxKd/j8yoVZ3Ef7nmVHuYHwEMct8X+YKVnbtuGcQwstn3xvNHMZlXfW6uXowzXxfVpFtbVsds3MCYwUWt3H514M7T2cPj/7Kd85vaW7Bv/v5d+6ZgoU3TShXKeyiR0bUUJ+HBYSsWG9vZBF+4dpFRo0dMQ5UwoJqdAxCz7315hFgKP9LwgLhnssjW1BZ1FUHqQ4aJvwoCo2c7Slrrc2LQLeI3k9ZdWCdJjsT7qZNdAzfjwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bayhubtech.com; dmarc=pass action=none
+ header.from=bayhubtech.com; dkim=pass header.d=bayhubtech.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=3SL61dihAHKQ5Ht3JKZwsIf+MYk0kZQ06Zncr9exNUs=;
-        b=pfNV1tpV1MiM7maphlEeXhHlc27jPtO3X0mWiOfbKEo1uVuTLEnPavTfmEqpHGXlG0
-         kI5nChADivSZJ/Y5dch6ZFhiNJmbFGziSNY1dzW6EuAyuogXajsDh41XX3k4UuqZ8bXT
-         Ls+h7Od/DacwDZ81hHBvZ2vmDPcL9rCM5nklhKAVog77j07GHoEAFc1P0rN+7YlyAdv6
-         Wy0iwIBMoWSYuM1Aye2ixh+j+35yRxpY6r9xP46QU20f6vLpdhNCW+eiCZwzVIqwWatQ
-         bjyP7XkrDYDAIEfrGerZrfNIZCnT5xjCZHAwTXlzcZyo+bhXGyX81PH1VNzgyuEiv9DZ
-         ACtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3SL61dihAHKQ5Ht3JKZwsIf+MYk0kZQ06Zncr9exNUs=;
-        b=DhPcstAnWoL0mbGBU4JEH2p0XMLMjq7FbcznRqulhITdHrNHoHTz7dX3aEunAlPRRS
-         nEmgFGsNC1LxLhiR1B9/xeEtKJwIlgIRmPHxhuouAF5jvT7CN2DsavdVZZwCEkXlIync
-         42xRKgOsxyJITB6AVbklh2LtvCkD3Dr80rm57XYUKs/P3eIEcucexU+VqCTmetue+tPl
-         JqVdZe3sCyIXyrPLCh2Gsb/z9kYWahQT+LLR/ABw9nv6UJExwlPSpg567XRW2MqSaTQE
-         s2KLUBU+YT9l25aKWqxBkdtTqIsiOT1wxlmbywpv7CoebpB2N/jaSKsi0YZP9AwBLROl
-         EJCg==
-X-Gm-Message-State: AOAM533JhC374OiKUf9nJBBvBHJoNdq5dGZ/uU7GFyJ5VzBwk0sEaHE+
-        wQSXFbhLQIqQ7lPajQ9Fq7O/kyX/jA0=
-X-Google-Smtp-Source: ABdhPJwp1ovg1df0tjWgNFcVMOrW2Xk42aBPcKAUAtGy7Z5/5lUywtIy9nlBAHwvFtwWWyB4Um4tTg==
-X-Received: by 2002:a17:902:c3cb:: with SMTP id j11mr10058164plj.324.1595294751414;
-        Mon, 20 Jul 2020 18:25:51 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id x13sm17571067pfj.122.2020.07.20.18.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 18:25:50 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Yu Chen <chenyu56@huawei.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [RESEND][PATCH] dts: hi3660: Add support for basic usb gadget on Hikey960
-Date:   Tue, 21 Jul 2020 01:25:47 +0000
-Message-Id: <20200721012547.83743-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
+ d=towerbridgetechnology.onmicrosoft.com;
+ s=selector2-towerbridgetechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LBvW30MycsHksVGJ/ydS7ds/MoYvY9jYhxsqEg/0DmU=;
+ b=eDsnM/ciWTdjRXu4u0kmKr1xA/EZzzH6PuyFb8FCJdWj0br37psbcrv3HDRy5Bo0Dk5u9BfyvqXU1hxp/0HoF20pkpeOXRkL1Vyc62oWBgPr/SSk7CtIF1hR0VjL6GTeO/dpfDtAxsIKC7RMxkTQEu2ROkc1JcxnZOtS/JDds7k=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=bayhubtech.com;
+Received: from BY5PR16MB3319.namprd16.prod.outlook.com (2603:10b6:a03:186::25)
+ by BYAPR16MB2998.namprd16.prod.outlook.com (2603:10b6:a03:e5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18; Tue, 21 Jul
+ 2020 01:29:27 +0000
+Received: from BY5PR16MB3319.namprd16.prod.outlook.com
+ ([fe80::fd57:47b2:eaeb:d004]) by BY5PR16MB3319.namprd16.prod.outlook.com
+ ([fe80::fd57:47b2:eaeb:d004%5]) with mapi id 15.20.3195.025; Tue, 21 Jul 2020
+ 01:29:27 +0000
+From:   shirley her <shirley.her@bayhubtech.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     shaper.liu@bayhubtech.com, chevron.li@bayhubtech.com,
+        xiaoguang.yu@bayhubtech.com, max.huang@bayhubtech.com,
+        shirley.her@bayhubtech.com
+Subject: [PATCH V1 2/2] mmc: sdhci-pci-o2micro: Add HW tuning for SDR104 mode
+Date:   Mon, 20 Jul 2020 18:27:00 -0700
+Message-Id: <20200721012700.8564-1-shirley.her@bayhubtech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR02CA0054.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::31) To BY5PR16MB3319.namprd16.prod.outlook.com
+ (2603:10b6:a03:186::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (209.36.105.184) by BYAPR02CA0054.namprd02.prod.outlook.com (2603:10b6:a03:54::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Tue, 21 Jul 2020 01:27:44 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [209.36.105.184]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1ddaf357-9e4b-474b-9988-08d82d157d29
+X-MS-TrafficTypeDiagnostic: BYAPR16MB2998:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR16MB29988B241806AD076D1021388B780@BYAPR16MB2998.namprd16.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TgA4h07uue7AcsTZIedVKSvnNEHnT0GoNiaypBLBzap8s61fJ1Gh6JHDtM7Yb3mzVEcR1IjnRoC2wh9sxmsuENPIvD4E9drCcacHDBWNzNticSR5OqhCTVqBbJXkEE70JGKoHJen3LyutJHtOoZF5vhM8WBQ9pIJoULCfQBIvmO+vMRf8AoXmLGklIUaveKCbQT+owQ/tagDm8mhL0btokXGwjr+W1b5fLEzawwqKw+QxNcxbl0dOOdYI/tJEcpMETtpHNxCM4JXTyhz+hn7RlIbvLaO4W7+A6sUPNFeMtzHB8h41Hhr0nAp2d6p4yNGz6ySB97GvkFhZsv1NcF9dP0vpJ0gGNioV/ofWIwfebeHfAcqJgKPadK1AHV7evqT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR16MB3319.namprd16.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39830400003)(346002)(366004)(136003)(376002)(6666004)(6486002)(4326008)(6512007)(36756003)(1076003)(107886003)(52116002)(69590400007)(6506007)(956004)(2616005)(508600001)(16526019)(26005)(8936002)(186003)(316002)(83380400001)(2906002)(5660300002)(66556008)(66476007)(86362001)(8676002)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Gy900oxOeBcjt0rOVHzyrWlQtcadCHqseJGeOpWH0gafK+jmDO0+NntxMeHaDE7OCBn8DCuLOLM2PfTQnDbfC0Xvhwk1QLTNKvjvJRuu+VkAyOlvQeWt1fuqcS8Gvnr6IFDKrieCq3I9CjXkFRKM6bPX3LDDUqA4D4G2ksSzFV0I/ulW0HxDVJfz34EezGz/A27THy1NFaW/3lQQPkXhAr3O7zPh69XEKZvuYGxqfz6V8wai36cS2ocj4PO25iJUi8LDGNdaHAnX9Nl4Un70JtayGUiHkI47tcu8ThTAGAugf8sOeSf1nniSCy/cqI2bpO1jeoawoORWoxf+TbShzv93YxZixM6qyk4WuvSfywVexzy5xjaI+fg1dYTEgwTbQUcH3bSUhkrnQjmAQyhR/tO/GoBOckAtbsAP7+oWv+brAJCvsqKl07jMRi+bv4Fk0fqHxQCehZvqZFpLv1YXt/aAAJ7ZwHswLFTxDTfEZdW3oF2tqfVBprVTaq38GSAG
+X-OriginatorOrg: bayhubtech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ddaf357-9e4b-474b-9988-08d82d157d29
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR16MB3319.namprd16.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2020 01:29:27.8377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0a7aae2b-8f2e-44df-ba2f-42de7f93c642
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hm99ab7K8aQ6di6yRPhu4XGc+AmXXo2eB/sHfOvS/Nb+k/ATFP+36bYhj6AnL8QO2p59urnx0AusVizNAokwAwdA6Vrv/uqJZShBHAeuo/g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR16MB2998
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds basic core dwc3, usb phy and rt1711h nodes for
-usb support on Hikey960.
+Add HW tuning support for SD host controller in SDR104 mode
 
-This does not enable the mux/hub functionality on the board, so
-the USB-A host ports will not function, but does allow the USB-C
-port to function in gadget mode (unfortunately not in host, as
-the hub/mux functionality is needed to enable vbus output to
-power devices in host mode).
-
-This is based on an old patch originally by Yu Chen.
-
-Cc: Yu Chen <chenyu56@huawei.com>
-Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc: Wei Xu <xuwei5@hisilicon.com>
-Cc: Binghui Wang <wangbinghui@hisilicon.com>
-Cc: YongQin Liu <yongqin.liu@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: devicetree@vger.kernel.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Shirley Her <shirley.her@bayhubtech.com>
 ---
- .../boot/dts/hisilicon/hi3660-hikey960.dts    | 72 +++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3660.dtsi     | 34 +++++++++
- 2 files changed, 106 insertions(+)
+Change in V1:
+1. Add HW tuning for SDR104 mode instead of SW tuning
+2. Change clock base to 208Mhz in SDR104 mode
+3. Add CMD and DATA line reset after HW tuning command
+---
+ drivers/mmc/host/sdhci-pci-o2micro.c | 33 ++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-index e035cf195b19..ff392a47562c 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-@@ -13,6 +13,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/usb/pd.h>
+diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
+index ed3c605fcf0c..fa76748d8929 100644
+--- a/drivers/mmc/host/sdhci-pci-o2micro.c
++++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+@@ -196,7 +196,7 @@ static void __sdhci_o2_execute_tuning(struct sdhci_host *host, u32 opcode)
+ {
+ 	int i;
  
- / {
- 	model = "HiKey960";
-@@ -526,6 +527,48 @@
- &i2c1 {
- 	status = "okay";
+-	sdhci_send_tuning(host, MMC_SEND_TUNING_BLOCK_HS200);
++	sdhci_send_tuning(host, opcode);
  
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "ok";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+		};
-+	};
-+
- 	adv7533: adv7533@39 {
- 		status = "ok";
- 		compatible = "adi,adv7533";
-@@ -612,3 +655,32 @@
- 		interrupts = <3 IRQ_TYPE_EDGE_RISING>;
- 	};
- };
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,lfps_filter_quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis_enblslpm_quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&rt1711h_ep>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-index c39b78989ff9..d25aac5e0bf8 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-@@ -1152,6 +1152,40 @@
- 				};
- 			};
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usb-phy {
-+				compatible = "hisilicon,hi3660-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,eye-diagram-param = <0x22466e4>;
-+			};
-+		};
-+
-+		dwc3: dwc3@ff100000 {
-+			compatible = "snps,dwc3";
-+			reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+			clocks = <&crg_ctrl HI3660_CLK_ABB_USB>,
-+				 <&crg_ctrl HI3660_ACLK_GATE_USB3OTG>;
-+			clock-names = "ref", "bus_early";
-+
-+			assigned-clocks = <&crg_ctrl HI3660_ACLK_GATE_USB3OTG>;
-+			assigned-clock-rates = <229000000>;
-+
-+			resets = <&crg_rst 0x90 8>,
-+				 <&crg_rst 0x90 7>,
-+				 <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 5>;
-+
-+			interrupts = <0 159 4>, <0 161 4>;
-+			phys = <&usb_phy>;
-+			phy-names = "usb3-phy";
-+		};
- 	};
- };
+ 	for (i = 0; i < 150; i++) {
+ 		u16 ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+@@ -305,10 +305,12 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 	 * This handler only implements the eMMC tuning that is specific to
+ 	 * this controller.  Fall back to the standard method for other TIMING.
+ 	 */
+-	if (host->timing != MMC_TIMING_MMC_HS200)
++	if ((host->timing != MMC_TIMING_MMC_HS200) &&
++		(host->timing != MMC_TIMING_UHS_SDR104))
+ 		return sdhci_execute_tuning(mmc, opcode);
  
+-	if (WARN_ON(opcode != MMC_SEND_TUNING_BLOCK_HS200))
++	if (WARN_ON((opcode != MMC_SEND_TUNING_BLOCK_HS200) &&
++			(opcode != MMC_SEND_TUNING_BLOCK)))
+ 		return -EINVAL;
+ 	/*
+ 	 * Judge the tuning reason, whether caused by dll shift
+@@ -342,6 +344,9 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 		sdhci_set_bus_width(host, current_bus_width);
+ 	}
+ 
++	sdhci_reset(host, SDHCI_RESET_CMD);
++	sdhci_reset(host, SDHCI_RESET_DATA);
++
+ 	host->flags &= ~SDHCI_HS400_TUNING;
+ 	return 0;
+ }
+@@ -369,7 +374,6 @@ static void o2_pci_led_enable(struct sdhci_pci_chip *chip)
+ 	scratch_32 |= O2_SD_LED_ENABLE;
+ 	pci_write_config_dword(chip->pdev,
+ 			       O2_SD_TEST_REG, scratch_32);
+-
+ }
+ 
+ static void sdhci_pci_o2_fujin2_pci_init(struct sdhci_pci_chip *chip)
+@@ -497,6 +501,10 @@ static void sdhci_o2_enable_clk(struct sdhci_host *host, u16 clk)
+ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
+ {
+ 	u16 clk;
++	u8 scratch;
++	u32 scratch_32;
++	struct sdhci_pci_slot *slot = sdhci_priv(host);
++	struct sdhci_pci_chip *chip = slot->chip;
+ 
+ 	host->mmc->actual_clock = 0;
+ 
+@@ -505,6 +513,23 @@ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
+ 	if (clock == 0)
+ 		return;
+ 
++	if ((host->timing == MMC_TIMING_UHS_SDR104) && (clock == 200000000)) {
++		pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch);
++
++		scratch &= 0x7f;
++		pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
++
++		pci_read_config_dword(chip->pdev, O2_SD_PLL_SETTING, &scratch_32);
++
++		if ((scratch_32 & 0xFFFF0000) != 0x2c280000)
++			o2_pci_set_baseclk(chip, 0x2c280000);
++
++		pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch);
++
++		scratch |= 0x80;
++		pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
++	}
++
+ 	clk = sdhci_calc_clk(host, clock, &host->mmc->actual_clock);
+ 	sdhci_o2_enable_clk(host, clk);
+ }
 -- 
-2.17.1
+2.25.1
 
