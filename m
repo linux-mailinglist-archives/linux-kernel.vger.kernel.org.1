@@ -2,197 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63585227C69
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9DA227C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgGUKDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:03:43 -0400
-Received: from mail-eopbgr80088.outbound.protection.outlook.com ([40.107.8.88]:34433
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729102AbgGUKDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ai0ey2mHfLjQfUqBOluMkvMKLAwoke6W22MKuXHDOYU=;
- b=igf4iLXwjAHXkgyTwVkNdV8ypcf26UYmESybooSB/UhFp8XJLztPvYazHLeYmIeDIw0Iaoa7yU4H9odaf5sA0fFiHyo08YIewFicbvX2gZo/nQZcbccgyT41z6EYUXMdjCIgrCvjH3q9t6rn68kiFCzLkmiP3yK5THEBOj2lzx4=
-Received: from MRXP264CA0039.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500:14::27)
- by DB7PR08MB3434.eurprd08.prod.outlook.com (2603:10a6:10:42::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18; Tue, 21 Jul
- 2020 10:03:32 +0000
-Received: from VE1EUR03FT013.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:500:14:cafe::1e) by MRXP264CA0039.outlook.office365.com
- (2603:10a6:500:14::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend
- Transport; Tue, 21 Jul 2020 10:03:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=bestguesspass
- action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- VE1EUR03FT013.mail.protection.outlook.com (10.152.19.37) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3195.18 via Frontend Transport; Tue, 21 Jul 2020 10:03:32 +0000
-Received: ("Tessian outbound 7de93d801f24:v62"); Tue, 21 Jul 2020 10:03:31 +0000
-X-CR-MTA-TID: 64aa7808
-Received: from ea91dfd565cb.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 6FF2EB22-C626-4A05-A06D-817920D350B2.1;
-        Tue, 21 Jul 2020 10:03:26 +0000
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id ea91dfd565cb.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Tue, 21 Jul 2020 10:03:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VsQfnNkY5/ZD0BEtfUkIVAt511x/F/BfjfazSo22zkrDBLa7kSQu2RNLDZprw1IC2fIZy0RZFI1lKX/rlMSHdIm4VjCbd3oJCbaBVU8Eq7YOouZziR/gxlhZh2Gu4MZzEdyGlJX8HKvKRaF0SvLpjt/X2Z/wBM2Va9k1t44ku20PUjsgi9oF/JWVbmTf5iUo8THytS8dMnF7qmp0+coStdxleHT0/vE8heIw6C9/p7zbhEFlv0GBmNM9vIWZG0dt7YKkLBJHOp2w7EUxTXfN6yL3aiOHK0/EpVmUBX8AOUD7+/yeDyZadknLkYvO8fDjTtdvTSrBeOLmh9kJRVin5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ai0ey2mHfLjQfUqBOluMkvMKLAwoke6W22MKuXHDOYU=;
- b=H0BvvWWORVFCUFbRMWIdU1mjJXVv14XHlhzVYR6CpXQKl8W8z+9dMz/QEnvRkIG+BilktCKHYnNzG1lgirUu0x7ej6g1DRIE4Z10BscR9hBMBblth8XzBjS6Sl68xzU1i0yprdQrDE5Onjdt80ABCnsaboP0gXlq54VSOrYb05qIMn4bGa0w87DUYiJaL0/Glj7UVbnmyEzkpCpO1TFA/rUTU88azIMPhTY36glUzF+lph6+o1UnXqUqzux8p5GOCHWkGKjvVtv+840yrz4b3GxgeXLGya9/utRr+20Rf1BRxR2zuA75oJNBEH6ETIKIx+BuPk9lfZKbu6hvWrIX4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ai0ey2mHfLjQfUqBOluMkvMKLAwoke6W22MKuXHDOYU=;
- b=igf4iLXwjAHXkgyTwVkNdV8ypcf26UYmESybooSB/UhFp8XJLztPvYazHLeYmIeDIw0Iaoa7yU4H9odaf5sA0fFiHyo08YIewFicbvX2gZo/nQZcbccgyT41z6EYUXMdjCIgrCvjH3q9t6rn68kiFCzLkmiP3yK5THEBOj2lzx4=
-Received: from HE1PR0802MB2555.eurprd08.prod.outlook.com (2603:10a6:3:e0::7)
- by HE1PR0801MB1833.eurprd08.prod.outlook.com (2603:10a6:3:80::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Tue, 21 Jul
- 2020 10:03:24 +0000
-Received: from HE1PR0802MB2555.eurprd08.prod.outlook.com
- ([fe80::9:c111:edc1:d65a]) by HE1PR0802MB2555.eurprd08.prod.outlook.com
- ([fe80::9:c111:edc1:d65a%6]) with mapi id 15.20.3195.026; Tue, 21 Jul 2020
- 10:03:24 +0000
-From:   Jianyong Wu <Jianyong.Wu@arm.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-CC:     "ericvh@gmail.com" <ericvh@gmail.com>, "hch@lst.de" <hch@lst.de>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "lucho@ionkov.net" <lucho@ionkov.net>,
-        "v9fs-developer@lists.sourceforge.net" 
-        <v9fs-developer@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kaly Xin <Kaly.Xin@arm.com>, Justin He <Justin.He@arm.com>,
-        Wei Chen <Wei.Chen@arm.com>
-Subject: RE: [RFC PATCH 1/2] vfs: pass file down when getattr to avoid losing
- info.
-Thread-Topic: [RFC PATCH 1/2] vfs: pass file down when getattr to avoid losing
- info.
-Thread-Index: AQHWXjeiNMxBqXo7yk2X9SbcHqU0bakQjqwAgAE4FHA=
-Date:   Tue, 21 Jul 2020 10:03:23 +0000
-Message-ID: <HE1PR0802MB2555AA0A535543B214155BE7F4780@HE1PR0802MB2555.eurprd08.prod.outlook.com>
-References: <20200720014622.37364-1-jianyong.wu@arm.com>
- <20200720014622.37364-2-jianyong.wu@arm.com> <20200720145340.GA13275@nautica>
-In-Reply-To: <20200720145340.GA13275@nautica>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ts-tracking-id: 690fd59d-d198-432f-baef-9141a2033527.1
-x-checkrecipientchecked: true
-Authentication-Results-Original: codewreck.org; dkim=none (message not signed)
- header.d=none;codewreck.org; dmarc=none action=none header.from=arm.com;
-x-originating-ip: [203.126.0.113]
-x-ms-publictraffictype: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fdef0d77-3b23-4850-26d8-08d82d5d5342
-x-ms-traffictypediagnostic: HE1PR0801MB1833:|DB7PR08MB3434:
-x-ms-exchange-transport-forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR08MB34348874652456BBEA931A81F4780@DB7PR08MB3434.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-nodisclaimer: true
-x-ms-oob-tlc-oobclassifiers: OLM:10000;OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: 3xtN0brkvolQZCtBkC4SKfoVvX2KkrxpBUZ9aRcMUgrdfvjfdHZlFAVpM7AYwOmxej20efX3NEadMeI+uXJI7QrGFhufoIfFZiWcJSGgCExWHOYBuXIqdDVuP+HrCky34fjVDH9udlfxXRIuMqDZW2wChv5zAXGq8xjhGoTOTU1T85ESxsvafduGMPkkkfUxUbSr0+0CyAmPwFZgvz23DvQqxd+zEgvveVGGWU24ou8MkBI27P26RraH1oelBJC4rR4VZSqkTt0dcx+YLWij84LvLl2329GIF3IXneLWk2bJ6Y0orLs6TVfqHx+SOzEjyMY43tsgkwQmVM4cqEU4XKKSIw+W43Ljp5kV1n86Gc/GzGdO19zYiM4sQv3/lOp8eODoYY+2J4ChYd0yTfDpig==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0802MB2555.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(366004)(136003)(376002)(396003)(8936002)(966005)(2906002)(76116006)(66946007)(66476007)(66556008)(64756008)(66446008)(71200400001)(83380400001)(8676002)(6916009)(7696005)(316002)(54906003)(5660300002)(33656002)(55016002)(53546011)(6506007)(9686003)(478600001)(52536014)(86362001)(186003)(26005)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: fvioaT89p7hh7QLSOUSvW0wPh8oD1YKlet6tCDPc2BA5e+NfmWIGt2utj93zyHG4Pe056q0nZCIwxIT3AZmErCIlclqOD3frX4c7p9+V1Zee3xIzlJWKxd38pifUmQXOytrnWmTA0PgDIV5v/zyMyFQTIJAY9uxslwlXGsvFwFeQiATwqmdKm48Qb8+w+G+RQPmeEIabVN3sjMHZXVxNqdR+2i6oh4zCAUKMHFdp5GzF5fK5wirYCBAEqmeIUMzL+TgJ/N33u7AdfTrZw+KefHy4D2wXFbDF6JRr+4Cc8IB+Ip0FCPXs6SoMZq7pMInA530K8d8Y76qmSQvOQPt0/KMjkp6RoaZTi2Un1MKIa6nNX+IcyZ4slupUI3FgUAZXVlrV3W/5OEIzILK8ccTamrN/xcp8MhLaLFDNaBaKv8tZX6+D/YYX0dlUkAWUayrP4gl9QGUx44tAvXdSgsy28hwFrLz8gXfFnmvsG0ZOLvE=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729030AbgGUKEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbgGUKEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:04:37 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C48C061794;
+        Tue, 21 Jul 2020 03:04:36 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id y3so3239890wrl.4;
+        Tue, 21 Jul 2020 03:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=9kfZnFlxwbeCeY/sHPCuLSh6ZnXJJMmz+SDIwwbdu9E=;
+        b=PKb38cekHSneOmGXC/KZtGcmxXFzo0uUDo9PKOuabHRjjJmTO/z6Rf6B8GM7bpGN2l
+         v27E6x4JeQEw+OW9xgdYfjdsPaTbXlp28g77WcgyAvJBTdNXLRhqSncfs9qbTW6Zp7f0
+         0ZicUgppvRM/IR1tISm7xSLVgjgktfeqSNut3z+JHVfqHG+WrBNpg4DbP20tQvKwtK1r
+         VbtlCDJCISSACgViqAm3m64V97OEEjH0oIcMKkGQWsLszRIAPD7qHrRuLdvN24277gvp
+         LN24jlhKmHcf74zx4absN617y+sHbCDBde6REsImTnErRZqqZaLozMgfqAJQ+nMNRIS8
+         RgVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=9kfZnFlxwbeCeY/sHPCuLSh6ZnXJJMmz+SDIwwbdu9E=;
+        b=oveORW5nrXSrQwUDC7gYoH7/PZ7BIda0xqxbbMy2TsuZS5c8U8s6VEfvpeOuReE+UB
+         U20NgGNVQv+1jz8s9m4SFSpI4YUJm6FOcQ2ojX1GZoHbvLjc58tC4my3645gPfE6QPiB
+         +3v/qZkIH7JoqQlIITrKLAGeKW18pG+ZZgVreE23GDVZfXLnPh/DRtpuF/0Kvw4taBbp
+         c/al29WtuckRj+dN2Q17ZLDOeBHJ+Dutb6GQNo2mC14KeFJKaQQ6Rw1yuek3iZ0Xyo8A
+         VBaK6ORmpc5+xOo+UUhZ97IsbOv8LTkFGamEfd/i29xEkdtC2Tbw9ucW1LFx6puNo5+q
+         pCIw==
+X-Gm-Message-State: AOAM530TBlaGBFmXpIPJlXjrpjmkVRf5+UnHYFoBCcs2lN/jh6KI/v66
+        w/sdD5V+Utztl+3/pRwOWM7vxzDt
+X-Google-Smtp-Source: ABdhPJxkreA8D1lZyT9flEpAyH6rQPt9aOtx31oJEByOFhUEoc5b9sDelo+U3/xY9rHr9llxABm3ZQ==
+X-Received: by 2002:adf:e68f:: with SMTP id r15mr17440922wrm.196.1595325875740;
+        Tue, 21 Jul 2020 03:04:35 -0700 (PDT)
+Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id s4sm30338553wre.53.2020.07.21.03.04.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 03:04:34 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 20:04:27 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>
+References: <1594868476.6k5kvx8684.astroid@bobo.none>
+        <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
+        <20200716085032.GO10769@hirez.programming.kicks-ass.net>
+        <1594892300.mxnq3b9a77.astroid@bobo.none>
+        <20200716110038.GA119549@hirez.programming.kicks-ass.net>
+        <1594906688.ikv6r4gznx.astroid@bobo.none>
+        <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com>
+        <1595213677.kxru89dqy2.astroid@bobo.none>
+        <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
+In-Reply-To: <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0801MB1833
-Original-Authentication-Results: codewreck.org; dkim=none (message not signed)
- header.d=none;codewreck.org; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT013.eop-EUR03.prod.protection.outlook.com
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(39860400002)(346002)(46966005)(6862004)(52536014)(36906005)(82310400002)(2906002)(81166007)(356005)(9686003)(33656002)(86362001)(5660300002)(55016002)(8936002)(316002)(336012)(82740400003)(478600001)(53546011)(6506007)(966005)(7696005)(70586007)(26005)(8676002)(186003)(54906003)(47076004)(4326008)(83380400001)(70206006);DIR:OUT;SFP:1101;
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 12df63be-d024-46cc-2363-08d82d5d4e5e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xkWE36j0p5Zo+Bu2YpWHi/gbYUg/1rxSzmCR2UY3P9R9LdGuU+RUqp9qRc0zN1+r/eFy94+sWzXhsSlUKRCUd8I6GmgNNuVKRPuXcQmEci4yvWZAUu6M8c/A2b+hOFT5Ux1KvoYKbaXY1J4u0OKALb8+Esc4F1MXFZGN3PPlW/AMp+k3CUphxo7k+aUybw6/1OJiMvs+prmY4WUnS6H1X9WH2nOC3wFN8LJZLLGKhyb/F+TWvNz8PHNytA2IsnuEmOdraZos+tamIpeSIR/zqnmgpDZAmhSzA/DR9HzMnAZYoiKkw4Gb4qPpYTrbxRefVDm8zEYhYqInz/yukwluRQyF6AoyiW/oiAIymeqkJsmSu+LO6LTD10bAWe5JkGCW6VXTQxjhXrUPEoCESK+pJJIieTPY4thq0ayc22Bg7qZQIn+IqEVhFpAtktk66ROQX5ipsPcYBc7H+1rfwEVySWKoXotF4ZTjUSrYDbpLc5s=
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2020 10:03:32.3528
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdef0d77-3b23-4850-26d8-08d82d5d5342
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT013.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR08MB3434
+Message-Id: <1595324577.x3bf55tpgu.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRG9taW5pcXVlIE1hcnRp
-bmV0IDxhc21hZGV1c0Bjb2Rld3JlY2sub3JnPg0KPiBTZW50OiBNb25kYXksIEp1bHkgMjAsIDIw
-MjAgMTA6NTQgUE0NCj4gVG86IEppYW55b25nIFd1IDxKaWFueW9uZy5XdUBhcm0uY29tPg0KPiBD
-YzogZXJpY3ZoQGdtYWlsLmNvbTsgaGNoQGxzdC5kZTsgZGhvd2VsbHNAcmVkaGF0LmNvbTsNCj4g
-bHVjaG9AaW9ua292Lm5ldDsgdjlmcy1kZXZlbG9wZXJAbGlzdHMuc291cmNlZm9yZ2UubmV0OyBs
-aW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgS2FseSBYaW4gPEthbHkuWGluQGFybS5j
-b20+OyBKdXN0aW4gSGUNCj4gPEp1c3Rpbi5IZUBhcm0uY29tPjsgV2VpIENoZW4gPFdlaS5DaGVu
-QGFybS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIDEvMl0gdmZzOiBwYXNzIGZpbGUg
-ZG93biB3aGVuIGdldGF0dHIgdG8gYXZvaWQgbG9zaW5nDQo+IGluZm8uDQo+DQo+IEppYW55b25n
-IFd1IHdyb3RlIG9uIE1vbiwgSnVsIDIwLCAyMDIwOg0KPiA+IEN1cnJlbnRseSwgZ2V0dGluZyBh
-dHRyaWJ1dGUgZm9yIGEgZmlsZSByZXByZXNlbnRlZCBieSBmZCBpcyBhbHdheXMgYnkNCj4gPiBp
-bm9kZSBvciBwYXRoIHdoaWNoIG1heSBsZWFkIHRvIGJ1ZyBmb3IgYSBjZXJ0YWluIG5ldHdvcmsg
-ZmlsZSBzeXN0ZW0uDQo+ID4gQWRkaW5nIGZpbGUgc3RydWN0IGludG8gc3RydWN0IGtzdGF0IGFu
-ZCBhc3NpZ25pbmcgZmlsZSBmb3IgaXQgaW4NCj4gPiB2ZnNfc3RhdHhfZmQgY2FuIGF2b2lkIHRo
-aXMgaXNzdWUuIFRoaXMgY2hhbmdlIHJlZmVycyB0byBzdHJ1Y3QgaXN0YXQuDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBKaWFueW9uZyBXdSA8amlhbnlvbmcud3VAYXJtLmNvbT4NCj4gPiAtLS0N
-Cj4gPiAgZnMvc3RhdC5jICAgICAgICAgICAgfCAxICsNCj4gPiAgaW5jbHVkZS9saW51eC9zdGF0
-LmggfCA2ICsrKysrKw0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQ0KPiA+
-DQo+ID4gZGlmZiAtLWdpdCBhL2ZzL3N0YXQuYyBiL2ZzL3N0YXQuYw0KPiA+IGluZGV4IDQ0Zjhh
-ZDM0NmRiNC4uMGRlZTU0ODdmNmQ2IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL3N0YXQuYw0KPiA+ICsr
-KyBiL2ZzL3N0YXQuYw0KPiA+IEBAIC0xNDcsNiArMTQ3LDcgQEAgaW50IHZmc19zdGF0eF9mZCh1
-bnNpZ25lZCBpbnQgZmQsIHN0cnVjdCBrc3RhdCAqc3RhdCwNCj4gPiAgcmV0dXJuIC1FSU5WQUw7
-DQo+ID4NCj4gPiAgZiA9IGZkZ2V0X3JhdyhmZCk7DQo+ID4gK3N0YXQtPmZpbHAgPSBmLmZpbGU7
-DQo+ID4gIGlmIChmLmZpbGUpIHsNCj4gPiAgZXJyb3IgPSB2ZnNfZ2V0YXR0cigmZi5maWxlLT5m
-X3BhdGgsIHN0YXQsDQo+ID4gICAgICByZXF1ZXN0X21hc2ssIHF1ZXJ5X2ZsYWdzKTsNCj4gPiBk
-aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9zdGF0LmggYi9pbmNsdWRlL2xpbnV4L3N0YXQuaCBp
-bmRleA0KPiA+IDU2NjE0YWY4M2Q0YS4uNDc1NWM1MjhkNDlhIDEwMDY0NA0KPiA+IC0tLSBhL2lu
-Y2x1ZGUvbGludXgvc3RhdC5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9zdGF0LmgNCj4gPiBA
-QCAtNDgsNiArNDgsMTIgQEAgc3RydWN0IGtzdGF0IHsNCj4gPiAgc3RydWN0IHRpbWVzcGVjNjQg
-YnRpbWU7LyogRmlsZSBjcmVhdGlvbiB0aW1lDQo+ICovDQo+ID4gIHU2NGJsb2NrczsNCj4gPiAg
-dTY0bW50X2lkOw0KPiA+ICsNCj4gPiArLyoNCj4gPiArICogTm90IGFuIGF0dHJpYnV0ZSwgYnV0
-IGFuIGF1eGlsaWFyeSBpbmZvIGZvciBmaWxlc3lzdGVtcyB3YW50aW5nIHRvDQo+ID4gKyAqIGlt
-cGxlbWVudCBhbiBmc3RhdCgpIGxpa2UgbWV0aG9kLg0KPiA+ICsgKi8NCj4gPiArc3RydWN0IGZp
-bGUqZmlscDsNCj4NCj4gSnVzdCwgbm8gOyBkb24ndCB0b3VjaCB0aGlzLCBpdCBpc24ndCBsaWtl
-bHkgdG8gZ2V0IGFjY2VwdGVkIGV2ZXIuDQo+IGZpbGUgb3BlcmF0aW9ucyBzaG91bGQgYWxsIGhh
-dmUgYSBmaWxwIGFyb3VuZCBhbHJlYWR5LCB3ZSBuZWVkIHRvIGZpeCB0aGlzIGluIG91cg0KPiBj
-b2RlLg0KPg0KT2ssIGJ1dCBJIHRoaW5rIGl0IG1heSBub3QgYmUgYW4gZWFzeSBqb2IgdG8gZml4
-IGl0IGluc2lkZSA5cC4NCg0KPiAoYWxzbyBtaXNzaW5nIHF1aXRlIGEgZmV3IENjIGlmIHlvdSBl
-dmVyIHdhbnQgdG8gdG91Y2ggdGhlc2UgYml0cywgYXQgbGVhc3QNCj4gbGludXgtZnNkZXZlbEAp
-DQo+IHRoYW5rcy4gU2hvdWxkIGhhdmUgYWRkZWQgdGhlbS4NCj4NCj4NCj4gRldJVyB0aGUgcHJv
-YmxlbSBoYXMgYmVlbiBkaXNjdXNzZWQgYSBmZXcgdGltZXMgcHJldmlvdXNseS4NCj4NCj4gSSdk
-IGFwcHJlY2lhdGUgaWYgeW91IGNvdWxkIHRha2Ugb3ZlciBmcm9tIEVyaWMgYW5kIEdyZWcncyBv
-bGQgc2VyaWVzIHRoYXQNCj4gaW50ZW5kZWQgdG8gZml4IHRoYXQ6DQo+IGh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL2xrbWwvMTQ2NjU5ODMyNTU2LjE1NzgxLjE3NDE0ODA2OTc1NjQxNTE2NjgzLg0K
-PiBzdGdpdEBiYWhpYS5sYW4vDQo+DQo+IGl0IGludHJvZHVjZWQgYSByYWNlIHNvbWV3aGVyZSwg
-YnV0IHRoZSBpZGVhIGxvb2tlZCBnb29kIGF0IHRoZSB0aW1lIHNvIGl0J3MNCj4gd29ydGggbG9v
-a2luZyBpbnRvLg0KDQpUaGFua3MsIEkgd2lsbCBsb29rIGludG8gaXQgdG8gZmluZCBzb21lIGlk
-ZWFzLiBpZiBJIGNhbiBnZXQgdGhlIHNvbHV0aW9uLCBJIHdpbGwgYmUgYmFjay4NCg0KVGhhbmtz
-DQpKaWFueW9uZw0KPg0KPiAtLQ0KPiBEb21pbmlxdWUNCklNUE9SVEFOVCBOT1RJQ0U6IFRoZSBj
-b250ZW50cyBvZiB0aGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGNvbmZpZGVudGlh
-bCBhbmQgbWF5IGFsc28gYmUgcHJpdmlsZWdlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVk
-IHJlY2lwaWVudCwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0ZWx5IGFuZCBkbyBu
-b3QgZGlzY2xvc2UgdGhlIGNvbnRlbnRzIHRvIGFueSBvdGhlciBwZXJzb24sIHVzZSBpdCBmb3Ig
-YW55IHB1cnBvc2UsIG9yIHN0b3JlIG9yIGNvcHkgdGhlIGluZm9ybWF0aW9uIGluIGFueSBtZWRp
-dW0uIFRoYW5rIHlvdS4NCg==
+Excerpts from Mathieu Desnoyers's message of July 21, 2020 2:46 am:
+> ----- On Jul 19, 2020, at 11:03 PM, Nicholas Piggin npiggin@gmail.com wro=
+te:
+>=20
+>> Excerpts from Mathieu Desnoyers's message of July 17, 2020 11:42 pm:
+>>> ----- On Jul 16, 2020, at 7:26 PM, Nicholas Piggin npiggin@gmail.com wr=
+ote:
+>>> [...]
+>>>>=20
+>>>> membarrier does replace barrier instructions on remote CPUs, which do
+>>>> order accesses performed by the kernel on the user address space. So
+>>>> membarrier should too I guess.
+>>>>=20
+>>>> Normal process context accesses like read(2) will do so because they
+>>>> don't get filtered out from IPIs, but kernel threads using the mm may
+>>>> not.
+>>>=20
+>>> But it should not be an issue, because membarrier's ordering is only wi=
+th
+>>> respect
+>>> to submit and completion of io_uring requests, which are performed thro=
+ugh
+>>> system calls from the context of user-space threads, which are called f=
+rom the
+>>> right mm.
+>>=20
+>> Is that true? Can io completions be written into an address space via a
+>> kernel thread? I don't know the io_uring code well but it looks like
+>> that's asynchonously using the user mm context.
+>=20
+> Indeed, the io completion appears to be signaled asynchronously between k=
+ernel
+> and user-space.
+
+Yep, many other places do similar with use_mm.
+
+[snip]
+
+> So as far as membarrier memory ordering dependencies are concerned, it re=
+lies
+> on the store-release/load-acquire dependency chain in the completion queu=
+e to
+> order against anything that was done prior to the completed requests.
+>=20
+> What is in-flight while the requests are being serviced provides no memor=
+y
+> ordering guarantee whatsoever.
+
+Yeah you're probably right in this case I think. Quite likely most kernel=20
+tasks that asynchronously write to user memory would at least have some=20
+kind of producer-consumer barriers.
+
+But is that restriction of all async modifications documented and enforced
+anywhere?
+
+>> How about other memory accesses via kthread_use_mm? Presumably there is
+>> still ordering requirement there for membarrier,
+>=20
+> Please provide an example case with memory accesses via kthread_use_mm wh=
+ere
+> ordering matters to support your concern.
+
+I think the concern Andy raised with io_uring was less a specific=20
+problem he saw and more a general concern that we have these memory=20
+accesses which are not synchronized with membarrier.
+
+>> so I really think
+>> it's a fragile interface with no real way for the user to know how
+>> kernel threads may use its mm for any particular reason, so membarrier
+>> should synchronize all possible kernel users as well.
+>=20
+> I strongly doubt so, but perhaps something should be clarified in the doc=
+umentation
+> if you have that feeling.
+
+I'd rather go the other way and say if you have reasoning or numbers for=20
+why PF_KTHREAD is an important optimisation above rq->curr =3D=3D rq->idle
+then we could think about keeping this subtlety with appropriate=20
+documentation added, otherwise we can just kill it and remove all doubt.
+
+That being said, the x86 sync core gap that I imagined could be fixed=20
+by changing to rq->curr =3D=3D rq->idle test does not actually exist becaus=
+e
+the global membarrier does not have a sync core option. So fixing the
+exit_lazy_tlb points that this series does *should* fix that. So
+PF_KTHREAD may be less problematic than I thought from implementation
+point of view, only semantics.
+
+Thanks,
+Nick
