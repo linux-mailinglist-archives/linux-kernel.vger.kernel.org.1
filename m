@@ -2,147 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE422283A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE682283A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729986AbgGUPWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:22:31 -0400
-Received: from mail.efficios.com ([167.114.26.124]:48708 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgGUPW3 (ORCPT
+        id S1730098AbgGUPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:23:12 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36278 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgGUPXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:22:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B74E72CC666;
-        Tue, 21 Jul 2020 11:22:28 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id upMwOGFpg_bC; Tue, 21 Jul 2020 11:22:28 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5870B2CC665;
-        Tue, 21 Jul 2020 11:22:28 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5870B2CC665
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1595344948;
-        bh=8uCfUfdQu4oiK+bNjIHkykJf9WIgaALv0rxaHjwJr0E=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=RqlkE4zVklECaxgeEECd1ul22p1CQT7ScOQBrY2/z5PANaX24xgz3b5ttCog1+uvi
-         87lYZRgkYGyBlftIRnErWHjpcLipK4MC/HJlE08bJovtVbKPiajoKGtCx3smOBtOZe
-         gmqRx/6ufGZy/xt3vJbp4rKPREWlvusJzUgA244/qb0TtUAeXv08r/tzVviS9oCASG
-         8xV2/jAxu71lpFnOTRWeH9fZSxLSopk8YPrXq3XcPaxSt/niiCJqtIEIXyFwfxm3R5
-         m1OOCxW2+aLYPclYCvGEqN7WdVBhv1b6TNXkE0Y2F0YKAHdybJmQc9gh/FcyHoLpx4
-         gHXfyvODcnJSg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dO6tyL1LYrsh; Tue, 21 Jul 2020 11:22:28 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 481932CC991;
-        Tue, 21 Jul 2020 11:22:28 -0400 (EDT)
-Date:   Tue, 21 Jul 2020 11:22:28 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>
-Message-ID: <2141750915.22379.1595344948206.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200721151947.GD10769@hirez.programming.kicks-ass.net>
-References: <1594868476.6k5kvx8684.astroid@bobo.none> <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com> <1595213677.kxru89dqy2.astroid@bobo.none> <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com> <1595324577.x3bf55tpgu.astroid@bobo.none> <20200721150656.GN119549@hirez.programming.kicks-ass.net> <616209816.22376.1595344513051.JavaMail.zimbra@efficios.com> <20200721151947.GD10769@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
- membarrier_mm_sync_core_before_usermode
+        Tue, 21 Jul 2020 11:23:11 -0400
+Received: by mail-wm1-f68.google.com with SMTP id 17so3290850wmo.1;
+        Tue, 21 Jul 2020 08:23:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=p7EhiTheSPT8YoryckcdBWxVTJmOmoe7ehYp9Iw7gw8=;
+        b=UqkSXF5N+1/sz1Hj7XufEOJ+w4s2U8XETUaGdksrr7H/2TGMTtbLZyztshkVfI9mnr
+         I6Z1H38DKAQcNHa0X3JUSRjBJMuTTsrSIeckFbTqRrN+I99YNNkTGyplw/xb0LzoSxfE
+         wkAMpn/upYfhUfzztgIUxFx1yRx4lMB2TSESXGW46/G2JQ1Um9hgRpqiQj4ari6npt6C
+         Hsky0hOHN2pca2InT8sm4aKvM3Hln3DXDyK5suTkZpxcc/bC/B55W/Q5bcbyWvWkhAlF
+         7Am8oY9cg3uZ1Yfxutfphn3Lbt9Bt2reTbheVwz2GeogMV5QqbpnTdZ6gX7+XkHE9xvq
+         dPXQ==
+X-Gm-Message-State: AOAM531bDodHJdadZMwPyrZhqZurEwsEUvCGV0RGNtJzYh3VJczHOwuv
+        UN4BykCY+LUHBVXuFyj29UM=
+X-Google-Smtp-Source: ABdhPJwWVBw3s/flYuwbNz80xtxewRBzFgP2+qrzIC5pqCiEUkA61+GqhztC/p9e/hTodVJH1xTvtQ==
+X-Received: by 2002:a7b:cf16:: with SMTP id l22mr4957939wmg.68.1595344989506;
+        Tue, 21 Jul 2020 08:23:09 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id d13sm37693674wrq.89.2020.07.21.08.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 08:23:08 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 15:23:07 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [RFC 02/11] Drivers: hv: vmbus: Move __vmbus_open()
+Message-ID: <20200721152307.5y66fvm2muyf3xqq@liuwe-devbox-debian-v2>
+References: <20200721014135.84140-1-boqun.feng@gmail.com>
+ <20200721014135.84140-3-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
-Thread-Index: 3qMKvpn4CTaC/gUF9DBM4QQjSdBktA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721014135.84140-3-boqun.feng@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 21, 2020, at 11:19 AM, Peter Zijlstra peterz@infradead.org wrote:
-
-> On Tue, Jul 21, 2020 at 11:15:13AM -0400, Mathieu Desnoyers wrote:
->> ----- On Jul 21, 2020, at 11:06 AM, Peter Zijlstra peterz@infradead.org wrote:
->> 
->> > On Tue, Jul 21, 2020 at 08:04:27PM +1000, Nicholas Piggin wrote:
->> > 
->> >> That being said, the x86 sync core gap that I imagined could be fixed
->> >> by changing to rq->curr == rq->idle test does not actually exist because
->> >> the global membarrier does not have a sync core option. So fixing the
->> >> exit_lazy_tlb points that this series does *should* fix that. So
->> >> PF_KTHREAD may be less problematic than I thought from implementation
->> >> point of view, only semantics.
->> > 
->> > So I've been trying to figure out where that PF_KTHREAD comes from,
->> > commit 227a4aadc75b ("sched/membarrier: Fix p->mm->membarrier_state racy
->> > load") changed 'p->mm' to '!(p->flags & PF_KTHREAD)'.
->> > 
->> > So the first version:
->> > 
->> >  https://lkml.kernel.org/r/20190906031300.1647-5-mathieu.desnoyers@efficios.com
->> > 
->> > appears to unconditionally send the IPI and checks p->mm in the IPI
->> > context, but then v2:
->> > 
->> >  https://lkml.kernel.org/r/20190908134909.12389-1-mathieu.desnoyers@efficios.com
->> > 
->> > has the current code. But I've been unable to find the reason the
->> > 'p->mm' test changed into '!(p->flags & PF_KTHREAD)'.
->> 
->> Looking back at my inbox, it seems like you are the one who proposed to
->> skip all kthreads:
->> 
->> https://lkml.kernel.org/r/20190904124333.GQ2332@hirez.programming.kicks-ass.net
+On Tue, Jul 21, 2020 at 09:41:26AM +0800, Boqun Feng wrote:
+> Pure function movement, no functional changes. The move is made, because
+> in a later change, __vmbus_open() will rely on some static functions
+> afterwards, so we sperate the move and the modification of
+> __vmbus_open() in two patches to make it easy to review.
 > 
-> I had a feeling it might've been me ;-) I just couldn't find the email.
-> 
->> > The comment doesn't really help either; sure we have the whole lazy mm
->> > thing, but that's ->active_mm, not ->mm.
->> > 
->> > Possibly it is because {,un}use_mm() do not have sufficient barriers to
->> > make the remote p->mm test work? Or were we over-eager with the !p->mm
->> > doesn't imply kthread 'cleanups' at the time?
->> 
->> The nice thing about adding back kthreads to the threads considered for
->> membarrier
->> IPI is that it has no observable effect on the user-space ABI. No pre-existing
->> kthread
->> rely on this, and we just provide an additional guarantee for future kthread
->> implementations.
->> 
->> > Also, I just realized, I still have a fix for use_mm() now
->> > kthread_use_mm() that seems to have been lost.
->> 
->> I suspect we need to at least document the memory barriers in kthread_use_mm and
->> kthread_unuse_mm to state that they are required by membarrier if we want to
->> ipi kthreads as well.
-> 
-> Right, so going by that email you found it was mostly a case of being
-> lazy, but yes, if we audit the kthread_{,un}use_mm() barriers and add
-> any other bits that might be needed, covering kthreads should be
-> possible.
-> 
-> No objections from me for making it so.
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-I'm OK on making membarrier cover kthreads using mm as well, provided we
-audit kthread_{,un}use_mm() to make sure the proper barriers are in place
-after setting task->mm and before clearing it.
-
-Thanks,
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
