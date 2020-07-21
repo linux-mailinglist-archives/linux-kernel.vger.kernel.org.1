@@ -2,194 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995C3227A63
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AAF227A7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgGUIS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgGUIS2 (ORCPT
+        id S1728730AbgGUITO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:19:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59690 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726089AbgGUITN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:18:28 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F496C0619D7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:18:27 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c80so1914544wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:subject:in-reply-to:date:message-id
-         :mime-version;
-        bh=uFols3Vwy8k+lqla1bufgTAtZft6D6LnLJ5Qc7u5vII=;
-        b=zIIeo0cQiwEviByTgiHHNai5h5U5Rf782O2PWltyl3GbkQSbOanQbppvj3h0oSMWs1
-         aKSrWnY895L/0WDPl4eqql+Hc2jz4xYDL0cdoy7YLcodAvW9U6dso7m3+X/fR6OvZPxe
-         K3jQymDXl1HhwsU/GFhhOtifl9XS+5QmAMgmvmPSAzQwQHjUhu8317u7r4ZBuMnXt+TM
-         FqP3+uK46+hYVyNzneHw/6aWzl0SSfzURKz2ovPhosS9ayCOBpw6vP4j2Pf3ABflegml
-         mZAdA/jq7a4B1jlXP95xs2NEXfBdEr5tenut24DCP3N02+31flVpnC63sNnQViGAjXFA
-         GFaA==
+        Tue, 21 Jul 2020 04:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595319551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xkmaD14CWjK3N3gJunf7XsZs5bmLEiFw/ANQQtol7cc=;
+        b=fiHvxlf8GbbFqpYs0MJOxG/EzzdP1i7dJh8iqDX7dU0/24Sj3FLVJbw2znymHy6m/Pemei
+        4I1JrXy8iVt1TB1UEPvMtW8QpCuIOTQM+5cUmsoze9jlQfaNmvM8wPSZJetNEx0Gi2Ku6L
+        SB44HOoamguevQyJfPkqHaVsodrJTLA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-DV1PV7yxOSWU7R6AG1IAzQ-1; Tue, 21 Jul 2020 04:18:57 -0400
+X-MC-Unique: DV1PV7yxOSWU7R6AG1IAzQ-1
+Received: by mail-wm1-f70.google.com with SMTP id q20so952003wme.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:18:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=uFols3Vwy8k+lqla1bufgTAtZft6D6LnLJ5Qc7u5vII=;
-        b=gcFQVgeeqdEwJkMn77iN+ALFc5boZQO5eQnv88ZxzWRaD75MIJS+7XpGiB5QtuXVrN
-         8E3NQiZZW3okqf6s3v1lPrpDx3bVIPAGoeeVTO1wO+QwG5gkaMi1PBeFzgUIYCtl73Oe
-         hFumOLchYo8IhfSxmZ6N9CcplAzJdkxSHlOkVEkjS8neA3IqrR9flUneMiV+uE+zDmk6
-         TxekEW7qfE2q4atGnYCtBL0jkFvc6pf9t9V7FCm6M1uey/cJmTY/5OnwG0bUmggP2+82
-         It+MtRoARc1GG+sCLg7Fyr/3X5q9LgLG5WVzPdze8EOk2sKw3fdwYMBHO7aMPk+X7zxC
-         8zTw==
-X-Gm-Message-State: AOAM5331c0q1x05V+kpAukupH5XK6/zdqfZNpmQJjIbjHBvENRidTDet
-        WcHZJkjSAM3M86nUWdyWuDFqZA==
-X-Google-Smtp-Source: ABdhPJxaxh+KiYHr8PnZ0bN843vkvicXfutHx9gtMYIJpxCBwkEhTh9yheXqd/6ys9g0Xahm9ORLDg==
-X-Received: by 2002:a7b:ca52:: with SMTP id m18mr2924047wml.92.1595319506349;
-        Tue, 21 Jul 2020 01:18:26 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id u20sm2313872wmc.42.2020.07.21.01.18.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xkmaD14CWjK3N3gJunf7XsZs5bmLEiFw/ANQQtol7cc=;
+        b=ZGaLFXRyWQCSkNnhMgjw/qG3H66f25MQdM/i8HBxyDrL3UB52MPnQUyDC77w8cnJjv
+         MDHCFo/Y8ydT89bYDdT2vplz+e3BGJknFr4L2j8f7f0DKknHR7nuE+UTuG9zhnI7U96Q
+         LGkYMqRSam5e4VWD5KVICIZFYa31jFBosdH1wc2MJ5ThZhCaa0rRfylAmKG1H7ypa1Ff
+         pGPih11XhYW8X9mtuVhF7a7jh7U65GUxqzSTpKPi07yhGSniLyxf9/m8b/WxJ+4BRNFS
+         112Hweb3yWlWv9i8lUF9yk0/0I5LTTrUC32Ah/PLIr5JSme9yCjkIIcyJ9YuRseys5sC
+         RjOw==
+X-Gm-Message-State: AOAM5332vqpXmZLuOa9U3Hrn+dywX59W7CeNqEq6l3a8S9SNcuwhYP21
+        kTDWWwuEwysRnca2EtSsj7pSXQbgOzKPvsJTisN6rU4I6RqR8du/YIBYmWdyZ3nN5eiiPKxt1Wp
+        4krbp5G79TTSK8F1i6CdOscxH
+X-Received: by 2002:a7b:c8c8:: with SMTP id f8mr3064956wml.142.1595319536580;
+        Tue, 21 Jul 2020 01:18:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzu53zATBiX8oH83PTvYrZiOs3LjcaWchQEItZ2BS8OgcP26ZDsNqGDj/whi2FZO5AjbvS6KA==
+X-Received: by 2002:a7b:c8c8:: with SMTP id f8mr3064931wml.142.1595319536353;
+        Tue, 21 Jul 2020 01:18:56 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-82-99.red.bezeqint.net. [79.182.82.99])
+        by smtp.gmail.com with ESMTPSA id k14sm35429226wrn.76.2020.07.21.01.18.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 01:18:25 -0700 (PDT)
-References: <20200718065739.7802-1-christianshewitt@gmail.com> <20200718065739.7802-5-christianshewitt@gmail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/12] arm64: dts: meson: add audio playback to nexbox-a1
-In-reply-to: <20200718065739.7802-5-christianshewitt@gmail.com>
-Date:   Tue, 21 Jul 2020 10:18:25 +0200
-Message-ID: <1jwo2x8eni.fsf@starbuckisacylon.baylibre.com>
+        Tue, 21 Jul 2020 01:18:55 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 04:18:51 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Shile Zhang <shile.zhang@linux.alibaba.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jiang Liu <liuj97@gmail.com>, linux-pci@vger.kernel.org,
+        bhelgaas@google.com
+Subject: Re: [PATCH v2] virtio_ring: use alloc_pages_node for NUMA-aware
+ allocation
+Message-ID: <20200721041550-mutt-send-email-mst@kernel.org>
+References: <20200721070013.62894-1-shile.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721070013.62894-1-shile.zhang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 03:00:13PM +0800, Shile Zhang wrote:
+> Use alloc_pages_node() allocate memory for vring queue with proper
+> NUMA affinity.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Suggested-by: Jiang Liu <liuj97@gmail.com>
+> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
 
-On Sat 18 Jul 2020 at 08:57, Christian Hewitt <christianshewitt@gmail.com> wrote:
+Do you observe any performance gains from this patch?
 
-> Add initial support is limited to HDMI i2s and SPDIF (LPCM).
->
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+I also wonder why isn't the probe code run on the correct numa node?
+That would fix a wide class of issues like this without need to tweak
+drivers.
+
+Bjorn, what do you think? Was this considered?
+
 > ---
->  .../boot/dts/amlogic/meson-gxm-nexbox-a1.dts  | 80 +++++++++++++++++++
->  1 file changed, 80 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-> index 83eca3af44ce..faca6fafc164 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-> @@ -10,6 +10,7 @@
->  /dts-v1/;
+> Changelog
+> v1 -> v2:
+> - fixed compile warning reported by LKP.
+> ---
+>  drivers/virtio/virtio_ring.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 58b96baa8d48..d38fd6872c8c 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -276,9 +276,11 @@ static void *vring_alloc_queue(struct virtio_device *vdev, size_t size,
+>  		return dma_alloc_coherent(vdev->dev.parent, size,
+>  					  dma_handle, flag);
+>  	} else {
+> -		void *queue = alloc_pages_exact(PAGE_ALIGN(size), flag);
+> -
+> -		if (queue) {
+> +		void *queue = NULL;
+> +		struct page *page = alloc_pages_node(dev_to_node(vdev->dev.parent),
+> +						     flag, get_order(size));
+> +		if (page) {
+> +			queue = page_address(page);
+>  			phys_addr_t phys_addr = virt_to_phys(queue);
+>  			*dma_handle = (dma_addr_t)phys_addr;
 >  
->  #include "meson-gxm.dtsi"
-> +#include <dt-bindings/sound/meson-aiu.h>
+> @@ -308,7 +310,7 @@ static void vring_free_queue(struct virtio_device *vdev, size_t size,
+>  	if (vring_use_dma_api(vdev))
+>  		dma_free_coherent(vdev->dev.parent, size, queue, dma_handle);
+>  	else
+> -		free_pages_exact(queue, PAGE_ALIGN(size));
+> +		free_pages((unsigned long)queue, get_order(size));
+>  }
 >  
->  / {
->  	compatible = "nexbox,a1", "amlogic,s912", "amlogic,meson-gxm";
-> @@ -24,11 +25,37 @@
->  		stdout-path = "serial0:115200n8";
->  	};
->  
-> +	spdif_dit: audio-codec-0 {
-> +		#sound-dai-cells = <0>;
-> +		compatible = "linux,spdif-dit";
-> +		status = "okay";
-> +		sound-name-prefix = "DIT";
-> +	};
-> +
->  	memory@0 {
->  		device_type = "memory";
->  		reg = <0x0 0x0 0x0 0x80000000>;
->  	};
->  
-> +	vddio_ao18: regulator-vddio_ao18 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDIO_AO18";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	hdmi_5v: regulator-hdmi-5v {
-> +		compatible = "regulator-fixed";
-> +
-> +		regulator-name = "HDMI_5V";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +
-> +		gpio = <&gpio GPIOH_3 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
-
-Please explain how this is related to change decribed in the commit
-description.
-
-> +
->  	vddio_boot: regulator-vddio-boot {
->  		compatible = "regulator-fixed";
->  		regulator-name = "VDDIO_BOOT";
-> @@ -75,6 +102,59 @@
->  			};
->  		};
->  	};
-> +
-> +	sound {
-> +		compatible = "amlogic,gx-sound-card";
-> +		model = "GXM-NEXBOX-A1";
-> +		assigned-clocks = <&clkc CLKID_MPLL0>,
-> +				  <&clkc CLKID_MPLL1>,
-> +				  <&clkc CLKID_MPLL2>;
-> +		assigned-clock-parents = <0>, <0>, <0>;
-> +		assigned-clock-rates = <294912000>,
-> +				       <270950400>,
-> +				       <393216000>;
-> +		status = "okay";
-> +
-> +		dai-link-0 {
-> +			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-> +		};
-> +
-> +		dai-link-1 {
-> +			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
-> +		};
-> +
-> +		dai-link-2 {
-> +			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-> +			dai-format = "i2s";
-> +			mclk-fs = <256>;
-> +
-> +			codec-0 {
-> +				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
-> +			};
-> +		};
-> +
-> +		dai-link-3 {
-> +			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
-> +
-> +			codec-0 {
-> +				sound-dai = <&spdif_dit>;
-> +			};
-> +		};
-> +
-> +		dai-link-4 {
-> +			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
-> +
-> +			codec-0 {
-> +				sound-dai = <&hdmi_tx>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&aiu {
-> +	status = "okay";
-> +	pinctrl-0 = <&spdif_out_h_pins>;
-> +	pinctrl-names = "default";
->  };
->  
->  &cec_AO {
+>  /*
+> -- 
+> 2.24.0.rc2
 
