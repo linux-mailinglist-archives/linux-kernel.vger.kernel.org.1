@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF74D228C04
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 00:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7A9228BFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 00:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731349AbgGUWge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 18:36:34 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:40918 "EHLO
+        id S1731324AbgGUWga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 18:36:30 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:40902 "EHLO
         lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgGUWgc (ORCPT
+        with ESMTP id S1726555AbgGUWg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 18:36:32 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LMaMnb125597;
-        Tue, 21 Jul 2020 17:36:22 -0500
+        Tue, 21 Jul 2020 18:36:27 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LMaNQp125601;
+        Tue, 21 Jul 2020 17:36:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595370982;
-        bh=OEsAttWzprHsc6R94CAL0mEmhDef5DxQVhrGxVmSMeI=;
+        s=ti-com-17Q1; t=1595370983;
+        bh=E/a2DHAgAGqQNbUAF6yrH694iVBxAHRORpK7Cq1xHrc=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=X3luzB2u8JYkDIX8cQh6bE+MHHUVXCX7PhB+hWvBjqcAO2siqHyN9/yyAn+AZ8k4N
-         eksvAdfl4XRYkyF+9yyxqcOZi775LVuGVvOn23SapDfzpcbIMsEr+HFwFAyCq34FlA
-         j8ybie4ZC7ErWOO4RJnEDLdy+S65XF39SX8Gd/eM=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LMaMro023681;
-        Tue, 21 Jul 2020 17:36:22 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+        b=g5wsPeY5MeN4Ikaotf2R16czCJGERdMo98PULVACjv1NaogYn369a59+xcxCiFNhX
+         +QhDySGNRwLaU4QFWno0IISr3Q4UcxTUMOSEYRjUYDtP9MkM8kB+BZK21vU0/aIABs
+         ljQn8LCCt3fRXKWbwK9/h6sIn2X+XRD+41yO+vM4=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06LMaNDR047712
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 17:36:23 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 21
  Jul 2020 17:36:22 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
  Frontend Transport; Tue, 21 Jul 2020 17:36:22 -0500
 Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LMaM4i028179;
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LMaMpT048621;
         Tue, 21 Jul 2020 17:36:22 -0500
 Received: from localhost ([10.250.34.248])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 06LMaMn0080798;
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 06LMaMMb080802;
         Tue, 21 Jul 2020 17:36:22 -0500
 From:   Suman Anna <s-anna@ti.com>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -47,9 +48,9 @@ CC:     Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
         <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH v5 1/6] dt-bindings: arm: keystone: Add common TI SCI bindings
-Date:   Tue, 21 Jul 2020 17:36:12 -0500
-Message-ID: <20200721223617.20312-2-s-anna@ti.com>
+Subject: [PATCH v5 2/6] remoteproc: Introduce rproc_of_parse_firmware() helper
+Date:   Tue, 21 Jul 2020 17:36:13 -0500
+Message-ID: <20200721223617.20312-3-s-anna@ti.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200721223617.20312-1-s-anna@ti.com>
 References: <20200721223617.20312-1-s-anna@ti.com>
@@ -62,92 +63,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a bindings document that defines the common TI SCI properties
-used by various K3 device management nodes such as clock controllers,
-interrupt controllers, reset controllers or remoteproc devices.
-
-The required properties for each device management node shall be
-specified in the respective binding document.
+Add a new helper function rproc_of_parse_firmware() to the remoteproc
+core that can be used by various remoteproc drivers to look up the
+the "firmware-name" property from a rproc device node. This property
+is already being used by multiple drivers, so this helper can avoid
+repeating equivalent code in remoteproc drivers.
 
 Signed-off-by: Suman Anna <s-anna@ti.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
-v5:
- - New patch refactored out for usage by remoteproc and other TI SCI
-   interrupt controller bindings
- - Patch based on remoteproc ti,k3-sci-proc.yaml binding (v4 patch 3)
-   with revised overall description and ti,sci-dev-id and no required
-   properties
-v4: https://patchwork.kernel.org/patch/11671455/
- - Addressed both of Rob's review comments on ti,sci-proc-ids property
-v3: https://patchwork.kernel.org/patch/11602317/
+v5: No changes, patch reordered
+v4: https://patchwork.kernel.org/patch/11671447/
+ - No changes
+v3: https://patchwork.kernel.org/patch/11602327/
 
- .../arm/keystone/ti,k3-sci-common.yaml        | 44 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
+ drivers/remoteproc/remoteproc_core.c     | 23 +++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_internal.h |  2 ++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
-new file mode 100644
-index 000000000000..7597bc93a55f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/keystone/ti,k3-sci-common.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 9f04c30c4aaf..c458b218d524 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -1034,6 +1034,29 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
+ }
+ EXPORT_SYMBOL(rproc_of_resm_mem_entry_init);
+ 
++/**
++ * rproc_of_parse_firmware() - parse and return the firmware-name
++ * @dev: pointer on device struct representing a rproc
++ * @index: index to use for the firmware-name retrieval
++ * @fw_name: pointer to a character string, in which the firmware
++ *           name is returned on success and unmodified otherwise.
++ *
++ * This is an OF helper function that parses a device's DT node for
++ * the "firmware-name" property and returns the firmware name pointer
++ * in @fw_name on success.
++ *
++ * Return: 0 on success, or an appropriate failure.
++ */
++int rproc_of_parse_firmware(struct device *dev, int index, const char **fw_name)
++{
++	int ret;
 +
-+title: Common K3 TI-SCI bindings
++	ret = of_property_read_string_index(dev->of_node, "firmware-name",
++					    index, fw_name);
++	return ret ? ret : 0;
++}
++EXPORT_SYMBOL(rproc_of_parse_firmware);
 +
-+maintainers:
-+  - Nishanth Menon <nm@ti.com>
-+
-+description: |
-+  The TI K3 family of SoCs usually have a central System Controller Processor
-+  that is responsible for managing various SoC-level resources like clocks,
-+  resets, interrupts etc. The communication with that processor is performed
-+  through the TI-SCI protocol.
-+
-+  Each specific device management node like a clock controller node, a reset
-+  controller node or an interrupt-controller node should define a common set
-+  of properties that enables them to implement the corresponding functionality
-+  over the TI-SCI protocol. The following are some of the common properties
-+  needed by such individual nodes. The required properties for each device
-+  management node is defined in the respective binding.
-+
-+properties:
-+  ti,sci:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Should be a phandle to the TI-SCI System Controller node
-+
-+  ti,sci-dev-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Should contain the TI-SCI device id corresponding to the device. Please
-+      refer to the corresponding System Controller documentation for valid
-+      values for the desired device.
-+
-+  ti,sci-proc-ids:
-+    description: Should contain a single tuple of <proc_id host_id>.
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    items:
-+      - description: TI-SCI processor id for the remote processor device
-+      - description: TI-SCI host id to which processor control ownership
-+                     should be transferred to
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d53db30d1365..61ab0b7ed54d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16902,6 +16902,7 @@ M:	Tero Kristo <t-kristo@ti.com>
- M:	Santosh Shilimkar <ssantosh@kernel.org>
- L:	linux-arm-kernel@lists.infradead.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
- F:	Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
- F:	Documentation/devicetree/bindings/clock/ti,sci-clk.txt
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
+ /*
+  * A lookup table for resource handlers. The indices are defined in
+  * enum fw_resource_type.
+diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+index 4ba7cb59d3e8..e5341e91d2fc 100644
+--- a/drivers/remoteproc/remoteproc_internal.h
++++ b/drivers/remoteproc/remoteproc_internal.h
+@@ -28,6 +28,8 @@ struct rproc_debug_trace {
+ void rproc_release(struct kref *kref);
+ irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
+ void rproc_vdev_release(struct kref *ref);
++int rproc_of_parse_firmware(struct device *dev, int index,
++			    const char **fw_name);
+ 
+ /* from remoteproc_virtio.c */
+ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id);
 -- 
 2.26.0
 
