@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E632276BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5BB2276AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgGUD3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 23:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35330 "EHLO
+        id S1728708AbgGUD0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 23:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGUD3u (ORCPT
+        with ESMTP id S1726719AbgGUD0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 23:29:50 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35488C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 20:29:50 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k5so955956pjg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 20:29:50 -0700 (PDT)
+        Mon, 20 Jul 2020 23:26:04 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A363DC061794;
+        Mon, 20 Jul 2020 20:26:04 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id x62so15161571qtd.3;
+        Mon, 20 Jul 2020 20:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MxGv80/RHZys1Fyrt2FNd0EFBhYyXaZisAhmtR8geU0=;
-        b=men9rtWsO17inFkfs3GVcIfF93QcNLgGSxjW9CIUyB8ldPfU/uOnTm3go7r55g1/5q
-         JmvSCUXjrA9rNV3Tl2T95LnVTSc3V9O4+eCFW4gPMA4TTLkpzY4nUC3hnUo0MTrkVTxk
-         2jP8GwMI29TsgJUv+tbiYrGD7E0i9zNCdAVWyHUF4B/YrqK6vx2dg5fagHKGwlQIj8fw
-         Ox9oW7TYiTY5/IxrKcAK3K1QopMVB2Ps3Iok/7CssSxG9mfb7/yojEYqmo5LrnbbRGPv
-         CD758d9mIkqRmrmvdlT+nDY6tGojuyvXiTTd+tTJonDrzLtVMBYZqsk1pwPJyg1H0UYf
-         TRCg==
+        bh=ZfnGMyKYW+BUBT0er2/ds3h94uyXvk6uP4Na6Sd7dqM=;
+        b=ZgGnhjHmN9X0QxRYGPySZ4XrjQkySTF9w/mrFp5Jk7IsNUf9wXbkQX5sm7kZvHwMyJ
+         rDjh48MTvZEJulXUuE01aw2X9O3/0RKmFi3utnGSKfE7HgZxCdrDDrkX8PiEd8MGLkQi
+         /ZWwi9cGHXPHwc/sGYv++lxmTLl67yHqgMXAGxKRfdIJHw4v3WaFrfGA/gU22FGrvK9u
+         u+ZHRsctgayQto7BA2cBIJzYbeWhaYCW17KWAwNYcB6dZcuh6YS+TSDPrxFH/H3Op8RC
+         sfYwe/9MnQBOv84jXL4ovN3PZ01lpO51UsehoapnyqmPd9zmWV1/dae2dlOznD9Rxl7P
+         ACUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MxGv80/RHZys1Fyrt2FNd0EFBhYyXaZisAhmtR8geU0=;
-        b=ltPWJhj6vukGqRi9hpew/4o4e4aIOb0EQh/aXnaJCkEloo7lBX3AJzm5lD+OJ8SqaU
-         vra+/0RzsMSoCN/F3V8chQBA/acKbbYJD37xEPR4R+d+Ssl5BjhvKm/JLWpwhhDsD948
-         T3wsYT+RQCsHJ+ljmODhoHiJfmOns6uyfBoPusORk6RmREIl0c8hcl2bI0/lpG4V8zbS
-         IeZB92RN7PYEh5jVHWDU0pGhncV81Gfhj2I5UWezQn/sxbXo2eypFCK1OH/kisiop5qr
-         DvGXr7U2d1M+9VIcpvMHGPzWVQ1UeyKPZCzVoQ4MpaoOCTSAYBEf2YFsw1GpqxfHxuYB
-         5GMw==
-X-Gm-Message-State: AOAM531oUaB5SppdEtTMyG0HUPLs6W58NAr6kkkaUa7vGQUVpXnXazRJ
-        KX0awukQsuHEA5INBGMjDo15rEwqdpfqwYg8TiLSbxwU
-X-Google-Smtp-Source: ABdhPJx3k6REPPn1/fkaOwx9O6wZzCcLn9v7xbM6r8FiA0K/h7GXT7YPwf2v50+n8W3XkCkQCr2/NamEtaAvVG0c8+E=
-X-Received: by 2002:a17:90a:784b:: with SMTP id y11mr2596953pjl.51.1595302189579;
- Mon, 20 Jul 2020 20:29:49 -0700 (PDT)
+        bh=ZfnGMyKYW+BUBT0er2/ds3h94uyXvk6uP4Na6Sd7dqM=;
+        b=CJQHepA2do727/HQ/bI8yZV3ZRgO+MAtSq2a9sE6hfAy1e4YrPAcnGlvweTsx9twAk
+         YKvK60mj6gQ/xic7K0Sl4XDIfz8zLo3jcH9Q0cq2TpxWxxBeyeliOL6FGWwma6nTWtIE
+         UFGT8+DpI4e7OuvnZh8n2fC2CjTgdn5bBv1579I8R7K7DFJDR+5b6y+6csZjDY22PFUd
+         1V+sXoZhqziu/Nq8Zzwxo2B8Q5xJYyg6ANRLuLdo+8mlT/A0pHbLlKB6yREQWmHkTI17
+         YLICw+tEMXfWrIvvK8TdGdQbazEBaPifkTsAnXRF6ZJzxHiWFVUxFi0yD2T3re16bRif
+         DNdA==
+X-Gm-Message-State: AOAM5327CnY3sPlPDgYK8PiSpOUxrMWJ6pm9oFNn4cXEQxAVhQyT7j6/
+        x0pCBqXaFxdzNbTCIOiPerogCzLWqlzxMpUaS1ndbDnEu1A=
+X-Google-Smtp-Source: ABdhPJwVup9ahUCuS5au2cnPlERX94DercWol9ASY1FYi6G7v1dnlDbbscj8P67iA+0+6uZhE9IPB+eGbrY3Yloi9wc=
+X-Received: by 2002:ac8:2f7b:: with SMTP id k56mr27412775qta.239.1595301963949;
+ Mon, 20 Jul 2020 20:26:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200716042053.1927676-1-saravanak@google.com>
-In-Reply-To: <20200716042053.1927676-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 20 Jul 2020 20:29:13 -0700
-Message-ID: <CAGETcx8mtZdkbcqJ6dTpesb=7wHrKbB9q=wrnihtNbT1rz6ocw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] regulator_sync_state() support
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <CAEQHRfAC9me4hGA+=+wcOpx+TAzqS723-kr_Y_Ej8dnWHp2fTw@mail.gmail.com>
+ <bf3dff0c9e2d4affa7044a882317144b@AcuMS.aculab.com>
+In-Reply-To: <bf3dff0c9e2d4affa7044a882317144b@AcuMS.aculab.com>
+From:   lebon zhou <lebon.zhou@gmail.com>
+Date:   Tue, 21 Jul 2020 04:23:03 +0000
+Message-ID: <CAEQHRfAE5pNCXko_HOamH-ffLe9fzSxvAh-yOnJe7OcPkFkV4A@mail.gmail.com>
+Subject: [PATCH] Fix memory overwriting issue when copy an address to user space
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 9:20 PM Saravana Kannan <saravanak@google.com> wrote:
+On Mon, Jul 20, 2020 at 11:12 PM David Laight <David.Laight@aculab.com> wrote:
 >
-> Consider the following example:
-> - regulator-X is provided by device-X.
-> - regulator-X is a supplier to device-A, device-B and device-C.
-> - device-A is off/inactive from boot.
-> - device-B and device-C are left on/active by the bootloader
-> - regulator-X is left on boot by the bootloader at 2000 mV to supply
->   device-B and device-C.
+> From: lebon zhou
+> > Sent: 20 July 2020 05:35
+> > To: davem@davemloft.net; kuba@kernel.org
+> > Cc: linux-kernel@vger.kernel.org; netdev@vger.kernel.org
+> > Subject: [PATCH] Fix memory overwriting issue when copy an address to user space
+> >
+> > When application provided buffer size less than sockaddr_storage, then
+> > kernel will overwrite some memory area which may cause memory corruption,
+> > e.g.: in recvmsg case, let msg_name=malloc(8) and msg_namelen=8, then
+> > usually application can call recvmsg successful but actually application
+> > memory get corrupted.
 >
-> Example boot sequence 1:
-> 1. device-X is probed successfully.
-> 2. device-A is probed by driver-A
->    a. driver-A gets regulator-X
->    b. driver-A votes on regulator-X
->    c. driver-A initializes device-A
->    d. driver-A votes off regulator-X
->    e. regulator-X is turned off.
-> 3. System crashes or device-B and device-C become unreliable because
->    regulator-X was turned off without following the proper quiescing
->    steps for device-B and device-C.
+> Where?
+> The copy_to_user() uses the short length provided by the user.
+> There is even a comment saying that if the address is truncated
+> the length returned to the user is the full length.
 >
-> Example boot sequence 2:
-> 1. device-X is probed successfully.
-> 2. device-B is probed by driver-B
->    a. driver-B gets regulator-X
->    b. driver-B votes on regulator-X
->    c. driver-B lowers device-B performance point.
->    d. driver-B lowers voltage vote to 1000 mV.
->    e. regulator-X voltage is lowered to 1000 mV.
-> 3. System crashes or device-C becomes unreliable because regulator-X
->    voltage was lowered to 1000 mV when device-C still needed it at 2000 mV
+> Maybe the application is reusing the msg without re-initialising
+> it properly.
 
-Marek,
-
-I'd appreciate it if you could test this series to see if it fixes
-your coupled regulator issue that you reported earlier. I'm expecting
-it to fix it without needing any special case handling in your
-regulator drivers. But it'll be good to get confirmation from you.
-
-Thanks,
-Saravana
+It is not related with copy_to_user(), it is about move_addr_to_user()
+implementation itself,
+there is comment /*After copying the data up to the limit the user
+specifies...*/, but the fact
+is when (ulen < klen), this function will copy more content to user
+buffer over than user
+specifies in @ulen, this will cause the user buffer to corrupt, this
+patch fixes this issue.
