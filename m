@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D6B22851B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5B6228522
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730248AbgGUQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:14:22 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43430 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728755AbgGUQOV (ORCPT
+        id S1730321AbgGUQOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:14:45 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57547 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1730090AbgGUQOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:14:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595348060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fttba9JGvdKbIgcVzwQauTkDjKGnPsdP2CmXjF+odHQ=;
-        b=WmqJqM5bLrHrSOHHbJk0K4nv4/cmkMDUVqPQbD5UIj+H5msPa3qTrqHHr6cpgbv4Ksi4+I
-        4CUwF8JjqbbNG+szFbCao/aJDEiQmEE8NUS3NxQ0RZOBakehYUrskMoqnrGDifsCHZ3isZ
-        FU/1qC8vUA4VLiYjLocMcnWzRWWr/1Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-UVCBfHMUPyqGz_SuqA1LmQ-1; Tue, 21 Jul 2020 12:14:18 -0400
-X-MC-Unique: UVCBfHMUPyqGz_SuqA1LmQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A2121DF0;
-        Tue, 21 Jul 2020 16:14:17 +0000 (UTC)
-Received: from jlaw-desktop.redhat.com (ovpn-114-255.rdu2.redhat.com [10.10.114.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DC4B28730C;
-        Tue, 21 Jul 2020 16:14:16 +0000 (UTC)
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-To:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] samples/livepatch: Add README.rst disclaimer
-Date:   Tue, 21 Jul 2020 12:14:07 -0400
-Message-Id: <20200721161407.26806-3-joe.lawrence@redhat.com>
-In-Reply-To: <20200721161407.26806-1-joe.lawrence@redhat.com>
-References: <20200721161407.26806-1-joe.lawrence@redhat.com>
+        Tue, 21 Jul 2020 12:14:45 -0400
+Received: (qmail 1279461 invoked by uid 1000); 21 Jul 2020 12:14:44 -0400
+Date:   Tue, 21 Jul 2020 12:14:44 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: kworker/0:3+pm hogging CPU
+Message-ID: <20200721161444.GE1272082@rowland.harvard.edu>
+References: <20200720151255.GE1228057@rowland.harvard.edu>
+ <20200720163355.GA4061@dhcp22.suse.cz>
+ <20200720173807.GJ1228057@rowland.harvard.edu>
+ <20200720174530.GB4061@dhcp22.suse.cz>
+ <20200720174812.GK1228057@rowland.harvard.edu>
+ <20200720181605.GC4061@dhcp22.suse.cz>
+ <20200720200243.GA1244989@rowland.harvard.edu>
+ <20200721055917.GD4061@dhcp22.suse.cz>
+ <20200721143325.GB1272082@rowland.harvard.edu>
+ <20200721160025.GP4061@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721160025.GP4061@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The livepatch samples aren't very careful with respect to compiler
-IPA-optimization of target kernel functions.
+On Tue, Jul 21, 2020 at 06:00:25PM +0200, Michal Hocko wrote:
+> On Tue 21-07-20 10:33:25, Alan Stern wrote:
+> [...]
+> 
+> Thanks a lot for your analysis. The laptop is slowly dying so this can
+> be related.
+> 
+> > So yes, this looks like a hardware design error.  Turning off 
+> > autosuspend by writing to the sysfs power/control file is probably the 
+> > best way to handle the problem.
+> 
+> I can use that workaround. But it seems that this also prevents me from
+> suspending the maching into RAM with
+> PM: Some devices failed to suspend, or early wake event detected
+> 
+> :/
+> 
+> If there is any workaround for that then I would be really happy but
+> considering the overal state of the machine I suspect this is not the
+> case.
 
-Add a quick disclaimer and pointer to the compiler-considerations.rst
-file to warn readers.
+As far as I know there is no workaround.
 
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
----
- samples/livepatch/README.rst | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
- create mode 100644 samples/livepatch/README.rst
+Of course, you could build your own personal kernel with the 
+over-current test removed from the driver.  But keeping that up-to-date 
+would be a nuisance.
 
-diff --git a/samples/livepatch/README.rst b/samples/livepatch/README.rst
-new file mode 100644
-index 000000000000..2f8ef945f2ac
---- /dev/null
-+++ b/samples/livepatch/README.rst
-@@ -0,0 +1,15 @@
-+.. SPDX-License-Identifier: GPL-2.0+
-+
-+==========
-+Disclaimer
-+==========
-+
-+The livepatch sample programs were written with idealized compiler
-+output in mind. That is to say that they do not consider ways in which
-+optimization may transform target kernel functions.
-+
-+The samples present only a simple API demonstration and should not be
-+considered completely safe.
-+
-+See the Documentation/livepatching/compiler-considerations.rst file for
-+more details on compiler optimizations and how they affect livepatching.
--- 
-2.21.3
+> Thanks again for your great help!
 
+You're welcome.
+
+Alan Stern
