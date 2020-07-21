@@ -2,169 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5722122891E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C703228920
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730733AbgGUT2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:28:02 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:48692 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729497AbgGUT2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:28:01 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 4E006BC148;
-        Tue, 21 Jul 2020 19:27:56 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] staging: comedi: pcl: Replace HTTP links with HTTPS ones
-Date:   Tue, 21 Jul 2020 21:27:50 +0200
-Message-Id: <20200721192750.67925-1-grandmaster@al2klimov.de>
+        id S1730765AbgGUT3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729171AbgGUT3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:29:06 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8052C061794;
+        Tue, 21 Jul 2020 12:29:05 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id w17so10674036ply.11;
+        Tue, 21 Jul 2020 12:29:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=62ADtBFBhYcqBVR6Gt91xol/T5WTzsilk8v+olTZ/u4=;
+        b=uPoRI6dPcH7lfcbfKHIbIv4yuwrI87QxMF6Nw7ID1lmREq/NbtC2uisUx/IF5Mk5HH
+         tRsfLSoD+27L/2AyGJI2YL7KUQEdkJ/9bZbDTn6KRL9NMx2QKe9RTSeTxCIpdRVcIULs
+         Wj2s1sQRMQcgkU0U7O7L85z6/63HYkKQOCFPrbOrGRQIcITgMoPEdHx94S0vetZvcEVp
+         DO1odYJ3Dcds8JKOJUIIAX9OmoTYDG5S6pvXwlkP8Y+cmySKaVv5sGa8QWxWlOz2iRo1
+         mVZRxiUkjUncXjz9R/IDl/zCavvndKt3Mv8ZVhi4dmWRkGBXeIARa0ztIAwmS67Jehzm
+         Gl6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=62ADtBFBhYcqBVR6Gt91xol/T5WTzsilk8v+olTZ/u4=;
+        b=IexVSx63YokFreZbOSxEnjdal7Lce1FtJX9svWJplrZ8D2s4JDzD62OUbW0SS7YCS1
+         Qo5g1tvMwW8v05Ny7GX+swTCTh/ngV18tWIrImbd8t9nH8UAH4cV6KjNTu/E/30701ku
+         tgCG9sWhJ4Ya+DzLEIbg7LJoW9lc0GBKQJmBGIAtPIk1Tlt0onyJyhpoObkoMR0OGuha
+         3WgeXT6oA/iQtdhH7xaX/PABPgic+fNYi44DafX5wOCuH5lAvOfyOD4bP+9AX6OGHAUD
+         OuDEUkItmHo/ambAjvvcTG/60dkaZduuPExh9yeqFcuDAdj5zZYHpg1gpAUjy38Zob5t
+         vAqw==
+X-Gm-Message-State: AOAM533LYsoF4HKE9gYwiT25vQQapZUyi+cBrG+Amb+F3dJjPyJdLjse
+        Vx3ds9+31Lo46Lvxbre+rBxIfCvSDqP4WcgxGHoXYF10
+X-Google-Smtp-Source: ABdhPJyeir2Od8+wU7HtiWqWxVS4QRSScuYupOa3OpwEVMcucaTqRg57rJZu9sx8CkLzSuDg/wzDllSvMGL3q32E8C0=
+X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr6527601pjp.228.1595359745442;
+ Tue, 21 Jul 2020 12:29:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <20200716072737.9535-1-cristian.pop@analog.com>
+In-Reply-To: <20200716072737.9535-1-cristian.pop@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Jul 2020 22:28:49 +0300
+Message-ID: <CAHp75VfoykNS5kqNt=0t4nHJS_+p5R2DUYKB02H3TCMQPNOisg@mail.gmail.com>
+Subject: Re: [RFC PATCH] one-bit-adc-dac: Add initial version of one bit ADC, DAC
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Thu, Jul 16, 2020 at 10:27 AM Cristian Pop <cristian.pop@analog.com> wrote:
+>
+> Implementation for 1-bit ADC (comparator) and a 1-bit DAC (switch)
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+...
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+> +struct one_bit_adc_dac_state {
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+> +       struct platform_device  *pdev;
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+Wouldn't 'struct device *dev;' be enough?
 
- If you apply the patch, please let me know.
+> +       struct gpio_descs       *in_gpio_descs;
+> +       struct gpio_descs       *out_gpio_descs;
+> +};
 
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+...
 
+> +{
+> +       struct one_bit_adc_dac_state *st = iio_priv(indio_dev);
+> +       int in_num_ch = 0, out_num_ch = 0;
+> +       int channel = chan->channel;
 
- drivers/staging/comedi/drivers/pcl711.c | 2 +-
- drivers/staging/comedi/drivers/pcl724.c | 2 +-
- drivers/staging/comedi/drivers/pcl726.c | 2 +-
- drivers/staging/comedi/drivers/pcl730.c | 2 +-
- drivers/staging/comedi/drivers/pcl812.c | 2 +-
- drivers/staging/comedi/drivers/pcl816.c | 2 +-
- drivers/staging/comedi/drivers/pcl818.c | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+> +       if (st->in_gpio_descs)
+> +               in_num_ch = st->in_gpio_descs->ndescs;
+> +
+> +       if (st->out_gpio_descs)
+> +               out_num_ch = st->out_gpio_descs->ndescs;
 
-diff --git a/drivers/staging/comedi/drivers/pcl711.c b/drivers/staging/comedi/drivers/pcl711.c
-index a5937206bf1c..2dbf69e30965 100644
---- a/drivers/staging/comedi/drivers/pcl711.c
-+++ b/drivers/staging/comedi/drivers/pcl711.c
-@@ -508,6 +508,6 @@ static struct comedi_driver pcl711_driver = {
- };
- module_comedi_driver(pcl711_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for PCL-711 compatible boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcl724.c b/drivers/staging/comedi/drivers/pcl724.c
-index 9c174f1f2fcf..1a5799278a7a 100644
---- a/drivers/staging/comedi/drivers/pcl724.c
-+++ b/drivers/staging/comedi/drivers/pcl724.c
-@@ -148,6 +148,6 @@ static struct comedi_driver pcl724_driver = {
- };
- module_comedi_driver(pcl724_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for 8255 based ISA and PC/104 DIO boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcl726.c b/drivers/staging/comedi/drivers/pcl726.c
-index 0963d85873a9..58b3d07ae907 100644
---- a/drivers/staging/comedi/drivers/pcl726.c
-+++ b/drivers/staging/comedi/drivers/pcl726.c
-@@ -418,6 +418,6 @@ static struct comedi_driver pcl726_driver = {
- };
- module_comedi_driver(pcl726_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Advantech PCL-726 & compatibles");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcl730.c b/drivers/staging/comedi/drivers/pcl730.c
-index 3d1e9150e5b5..32a29129e6e8 100644
---- a/drivers/staging/comedi/drivers/pcl730.c
-+++ b/drivers/staging/comedi/drivers/pcl730.c
-@@ -345,6 +345,6 @@ static struct comedi_driver pcl730_driver = {
- };
- module_comedi_driver(pcl730_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcl812.c b/drivers/staging/comedi/drivers/pcl812.c
-index aefc1b849cf7..b87ab3840eee 100644
---- a/drivers/staging/comedi/drivers/pcl812.c
-+++ b/drivers/staging/comedi/drivers/pcl812.c
-@@ -1331,6 +1331,6 @@ static struct comedi_driver pcl812_driver = {
- };
- module_comedi_driver(pcl812_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcl816.c b/drivers/staging/comedi/drivers/pcl816.c
-index d87cf6d4a161..c368a337a0ae 100644
---- a/drivers/staging/comedi/drivers/pcl816.c
-+++ b/drivers/staging/comedi/drivers/pcl816.c
-@@ -691,6 +691,6 @@ static struct comedi_driver pcl816_driver = {
- };
- module_comedi_driver(pcl816_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/pcl818.c b/drivers/staging/comedi/drivers/pcl818.c
-index 0af5315d4357..63e3011158f2 100644
---- a/drivers/staging/comedi/drivers/pcl818.c
-+++ b/drivers/staging/comedi/drivers/pcl818.c
-@@ -1132,6 +1132,6 @@ static struct comedi_driver pcl818_driver = {
- };
- module_comedi_driver(pcl818_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
+I'm wondering if you need these conditionals. Is it even possible you
+have ndescs > 0 and no descriptors?
+
+> +       switch (info) {
+> +       case IIO_CHAN_INFO_RAW:
+> +               if (channel < in_num_ch) {
+
+> +                       *val = gpiod_get_value_cansleep(
+> +                               st->in_gpio_descs->desc[channel]);
+
+Strange indentation...
+
+> +               } else {
+> +                       channel -= in_num_ch;
+
+> +                       *val = gpiod_get_value_cansleep(
+> +                               st->out_gpio_descs->desc[channel]);
+
+Ditto.
+
+> +               }
+> +               return IIO_VAL_INT;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +}
+> +
+> +static int one_bit_adc_dac_write_raw(struct iio_dev *indio_dev,
+> +                           struct iio_chan_spec const *chan,
+> +                           int val,
+> +                           int val2,
+> +                           long info)
+> +{
+
+Same comments as per previous function above.
+
+> +}
+
+...
+
+> +       ret = device_property_read_string_array(&st->pdev->dev,
+> +                                       propname,
+> +                                       gpio_names,
+> +                                       num_ch);
+
+> +       if (ret < 0)
+
+if (ret)
+
+> +               return ret;
+
+...
+
+> +       channels = devm_kcalloc(indio_dev->dev.parent, (in_num_ch + out_num_ch),
+
+Extra parentheses.
+
+> +                               sizeof(struct iio_chan_spec), GFP_KERNEL);
+
+sizeof(*channels) ?
+
+> +       if (!channels)
+> +               return -ENOMEM;
+
+...
+
+> +static const struct of_device_id one_bit_adc_dac_dt_match[] = {
+> +       { .compatible = "adi,one-bit-adc-dac" },
+
+> +       {},
+
+No comma here!
+
+> +};
+
+> +
+
+Unnecessary blank line.
+
+> +MODULE_DEVICE_TABLE(of, one_bit_adc_dac_dt_match);
+
+...
+
+> +
+
+Ditto.
+
+> +module_platform_driver(one_bit_adc_dac_driver);
+
 -- 
-2.27.0
-
+With Best Regards,
+Andy Shevchenko
