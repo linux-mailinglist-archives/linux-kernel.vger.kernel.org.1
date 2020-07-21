@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF1F228A43
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A59228A44
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 23:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731014AbgGUVAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 17:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
+        id S1731032AbgGUVAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 17:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgGUVAH (ORCPT
+        with ESMTP id S1726029AbgGUVAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:00:07 -0400
+        Tue, 21 Jul 2020 17:00:21 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1967CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:00:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FC1C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 14:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:In-Reply-To:References;
-        bh=DTQIuZB8c1fyynJQcCCnAFbsCacNAxGER4BIRMaS+h0=; b=fWWJmHwWmhSH2hLIxtmaDjNQbg
-        asRhE2+kU+rJXOdR9dWrt6LuCIHcKT/Mq6Nv2JoZzWeRxx5N1zgowcXzcm8BJKmZTe4bhU7KTJHYm
-        hTVGFd/FntBw3QslC2mfBrB6VNT3vXgTrsow12zzQ0Kk8WxF1xO4QBez7Xb4SEz8XNXwvsZ7dcVOn
-        b7YT5lExhKhnc8USSxICn8u+kBNrvbB6bJvSRCVSaNFu8fCW6Qd4LSKomm9Yum8wl9HMRIzb6Hc2c
-        YO/HIx/Uo/SgSw1UJ6lj2Ofi70ur1Faq2veJhhhMi8cRc/mExfu6xLOEGU4PQDVGLTqjTuTaF0EGB
-        fVpW85jg==;
+        bh=OwmmUSu+YwfeAN7y20o0JC90UT6XTQ3k5DrjwodZqbg=; b=YwGNS76usJRdbfvpxjWDQ1204I
+        dfyYcGSiXvyLKx5AwYgL6/Vu3uq6sDNav4PSUN3GCeOCLNRwgBXaxXHpc+WJVlpUWPFscJtP9lVEK
+        t4/ioxXmOtF4kGlekqsVpFLrm8/TFk6mtgHguhwoTbCNinx79DLSqojepSgwRlx8VqhSic2wJklQr
+        aPuryPP4eWU+YQixiEgizL+3BZBoQF7fubKAxw+42IHlh0AqZrjqQ6uRsUwVPKRR5Nq2cv99wNqXn
+        gAJwPrOjWUo/uRfi0r9QZMklOse/igh2j8fSjfmw1wILYqd9mIlcK9td283/bhgFZf+RyGEHqARB/
+        RGAfPEoA==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxzMq-0000Y2-7G; Tue, 21 Jul 2020 21:00:04 +0000
+        id 1jxzN2-0000aK-Cl; Tue, 21 Jul 2020 21:00:16 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org
-Subject: [PATCH] ARC: pgalloc.h: delete a duplicated word + other fixes
-Date:   Tue, 21 Jul 2020 13:59:58 -0700
-Message-Id: <20200721205958.15229-1-rdunlap@infradead.org>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        uclinux-h8-devel@lists.sourceforge.jp
+Subject: [PATCH] H8/300: flat.h: fix a duplicated word
+Date:   Tue, 21 Jul 2020 14:00:12 -0700
+Message-Id: <20200721210012.15304-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,29 +44,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the repeated word "to".
-Change "Thay" to "That".
-Add a closing right parenthesis.
+Change the phrase "is is" to "it is".
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: linux-snps-arc@lists.infradead.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
 ---
- arch/arc/include/asm/pgalloc.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/h8300/include/asm/flat.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200720.orig/arch/arc/include/asm/pgalloc.h
-+++ linux-next-20200720/arch/arc/include/asm/pgalloc.h
-@@ -18,10 +18,10 @@
-  * vineetg: April 2010
-  *  -Switched pgtable_t from being struct page * to unsigned long
-  *      =Needed so that Page Table allocator (pte_alloc_one) is not forced to
-- *       to deal with struct page. Thay way in future we can make it allocate
-+ *       deal with struct page. That way in future we can make it allocate
-  *       multiple PG Tbls in one Page Frame
-  *      =sweet side effect is avoiding calls to ugly page_address( ) from the
-- *       pg-tlb allocator sub-sys (pte_alloc_one, ptr_free, pmd_populate
-+ *       pg-tlb allocator sub-sys (pte_alloc_one, ptr_free, pmd_populate)
-  *
-  *  Amit Bhor, Sameer Dhavale: Codito Technologies 2004
+--- linux-next-20200720.orig/arch/h8300/include/asm/flat.h
++++ linux-next-20200720/arch/h8300/include/asm/flat.h
+@@ -12,7 +12,7 @@
+  * on the H8 a couple of the relocations have an instruction in the
+  * top byte.  As there can only be 24bits of address space,  we just
+  * always preserve that 8bits at the top,  when it isn't an instruction
+- * is is 0 (davidm@snapgear.com)
++ * it is 0 (davidm@snapgear.com)
   */
+ 
+ #define	flat_get_relocate_addr(rel)		(rel & ~0x00000001)
