@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FC0227F47
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1284E227F4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgGULu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:50:56 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53286 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgGULu4 (ORCPT
+        id S1729527AbgGULwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:52:45 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14261 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbgGULwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:50:56 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7AE771C0BE5; Tue, 21 Jul 2020 13:50:53 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 13:50:53 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Finley Xiao <finley.xiao@rock-chips.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: Re: [PATCH 4.19 123/133] thermal/drivers/cpufreq_cooling: Fix wrong
- frequency converted from power
-Message-ID: <20200721115053.GD17778@duo.ucw.cz>
-References: <20200720152803.732195882@linuxfoundation.org>
- <20200720152809.664822211@linuxfoundation.org>
+        Tue, 21 Jul 2020 07:52:45 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f16d6950000>; Tue, 21 Jul 2020 04:50:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 21 Jul 2020 04:52:45 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 21 Jul 2020 04:52:45 -0700
+Received: from [10.25.101.238] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Jul
+ 2020 11:52:38 +0000
+CC:     <spujar@nvidia.com>, <rlokhande@nvidia.com>, <digetx@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <thierry.reding@gmail.com>,
+        <linux-tegra@vger.kernel.org>, <swarren@nvidia.com>,
+        <sharadg@nvidia.com>, <nicoleotsuka@gmail.com>,
+        <viswanathl@nvidia.com>, <nwartikar@nvidia.com>,
+        <jonathanh@nvidia.com>, <atalambedu@nvidia.com>,
+        <mkumard@nvidia.com>, <dramesh@nvidia.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v5 00/11] Add ASoC AHUB components for Tegra210 and later
+To:     Mark Brown <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <kuninori.morimoto.gx@renesas.com>, <tiwai@suse.com>
+References: <1595134890-16470-1-git-send-email-spujar@nvidia.com>
+ <159525589435.6792.708136378511410418.b4-ty@kernel.org>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <72d45476-7050-187b-19d6-2ddb9b0ba97a@nvidia.com>
+Date:   Tue, 21 Jul 2020 17:22:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
-Content-Disposition: inline
-In-Reply-To: <20200720152809.664822211@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <159525589435.6792.708136378511410418.b4-ty@kernel.org>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595332245; bh=I7A23ZSDWorRZy3D4VQyChJjvsPD/dJJdKZBL01AyEU=;
+        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=hVhAHlWjK0Q60cjDRWNgeIlhcFJpQNO333aYgHZOCCeCWLvH9zsHW+xiu22sRg/+r
+         qUPJTzg/eC+7GHo3Rk4CRbDSJbH6YEtLs3HWNoMgt1OUIf2VMqmt3Uu0Cqmo6xObOq
+         wSjpcCcN6MdKHsyNmMieNBuXOYsb6b0LlvtgWJnr6HbpkCeCATqO68jhhdHX3vuaLe
+         N6oj1m8kCUHNnWymeEArxb4n4QCI1jvYvgvijDHK9U159AFdPRD16FamIsXU/IJeqE
+         nR6IAadACO3JLqykMd70eLNXo08sUtvLtRuwmgKbWE8P+d03Xr3fkELSZ54IEcG+MU
+         s5YfcVms9ZWuA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mark,
 
---k4f25fnPtRuIRUb3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/20/2020 8:08 PM, Mark Brown wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Sun, 19 Jul 2020 10:31:19 +0530, Sameer Pujar wrote:
+>> Overview
+>> ========
+>> Audio Processing Engine (APE) comprises of Audio DMA (ADMA) and Audio
+>> Hub (AHUB) unit. AHUB is a collection of hardware accelerators for audio
+>> pre-processing and post-processing. It also includes a programmable full
+>> crossbar for routing audio data across these accelerators.
+>>
+>> [...]
+> Applied to
+>
+>     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>
+> Thanks!
+>
+> [1/6] ASoC: dt-bindings: tegra: Add DT bindings for Tegra210
+>        commit: 665308c0b44a37339b9b3368f1dd61eb66acde87
+> [2/6] ASoC: tegra: Add support for CIF programming
+>        commit: 1c3b89fb7e4a78ddcd627e3f218a216e2136ae9b
+> [3/6] ASoC: tegra: Add Tegra210 based DMIC driver
+>        commit: 8c8ff982e9e2b2eb9255fc393f938915b0ddc127
+> [4/6] ASoC: tegra: Add Tegra210 based I2S driver
+>        commit: c0bfa98349d1796fe754dfac7f7f505bb60dcd83
+> [5/6] ASoC: tegra: Add Tegra210 based AHUB driver
+>        commit: 16e1bcc2caf446fa3e1daa040b59fd6f6272a766
+> [6/6] ASoC: tegra: Add Tegra186 based DSPK driver
+>        commit: 327ef64702668bb754eeea80ce402454d7a1302a
 
-Hi!
+I see that "[PATCH v5 07/11] ASoC: tegra: Add Tegra210 based ADMAIF 
+driver" is not applied as part of this. I wanted to understand if this 
+is because some more review comments are expected or there are other 
+reasons?
 
-> From: Finley Xiao <finley.xiao@rock-chips.com>
->=20
-> commit 371a3bc79c11b707d7a1b7a2c938dc3cc042fffb upstream.
->=20
-> The function cpu_power_to_freq is used to find a frequency and set the
-> cooling device to consume at most the power to be converted. For example,
-> if the power to be converted is 80mW, and the em table is as follow.
-> struct em_cap_state table[] =3D {
-> 	/* KHz     mW */
-> 	{ 1008000, 36, 0 },
-> 	{ 1200000, 49, 0 },
-> 	{ 1296000, 59, 0 },
-> 	{ 1416000, 72, 0 },
-> 	{ 1512000, 86, 0 },
-> };
-> The target frequency should be 1416000KHz, not 1512000KHz.
+Thanks,
+Sameer.
 
-It is possible that table is always sorted in the opposite direction
-in 4.19...
+>
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+>
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+>
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+>
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+>
+> Thanks,
+> Mark
 
-@@ -86,7 +72,7 @@ struct cpufreq_cooling_device {
--       struct freq_table *freq_table;  /* In descending order */
-
-(This was changed by a4e893e802e6a807df2e2f3f660f7399bc7e104e).
-
-> --- a/drivers/thermal/cpu_cooling.c
-> +++ b/drivers/thermal/cpu_cooling.c
-> @@ -278,11 +278,11 @@ static u32 cpu_power_to_freq(struct cpuf
->  	int i;
->  	struct freq_table *freq_table =3D cpufreq_cdev->freq_table;
-> =20
-> -	for (i =3D 1; i <=3D cpufreq_cdev->max_level; i++)
-> -		if (power > freq_table[i].power)
-> +	for (i =3D 0; i < cpufreq_cdev->max_level; i++)
-> +		if (power >=3D freq_table[i].power)
->  			break;
-> =20
-> -	return freq_table[i - 1].frequency;
-> +	return freq_table[i].frequency;
->  }
-
-In that case the patch makes some sense.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---k4f25fnPtRuIRUb3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxbWnQAKCRAw5/Bqldv6
-8q/RAJ9Sry87gkY8fVH9iRr2xhJEx8reGACdEQYdzu8cHPwsttl2CUMAY98gKIo=
-=+M6z
------END PGP SIGNATURE-----
-
---k4f25fnPtRuIRUb3--
