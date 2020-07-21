@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A4F227B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645F5227B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgGUJTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:19:52 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:56062 "EHLO inva021.nxp.com"
+        id S1728967AbgGUJTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:19:39 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:56076 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727048AbgGUJTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:19:33 -0400
+        id S1726521AbgGUJTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 05:19:34 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7376D200464;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B6A3420044D;
         Tue, 21 Jul 2020 11:19:32 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 675CA20044D;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AAF47200431;
         Tue, 21 Jul 2020 11:19:32 +0200 (CEST)
 Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 29294202A9;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 75AB9202A9;
         Tue, 21 Jul 2020 11:19:32 +0200 (CEST)
 From:   Ioana Ciornei <ioana.ciornei@nxp.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
         Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 4/6] staging: dpaa2-ethsw: destroy workqueue after deregistering the notifiers
-Date:   Tue, 21 Jul 2020 12:19:17 +0300
-Message-Id: <20200721091919.20394-5-ioana.ciornei@nxp.com>
+Subject: [PATCH 5/6] staging: dpaa2-ethsw: read the port state from firmware
+Date:   Tue, 21 Jul 2020 12:19:18 +0300
+Message-Id: <20200721091919.20394-6-ioana.ciornei@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200721091919.20394-1-ioana.ciornei@nxp.com>
 References: <20200721091919.20394-1-ioana.ciornei@nxp.com>
@@ -36,40 +36,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should destroy the switch workqueue only after deregistering the
-switchdev notifiers. Without this fix, we could end up with switchdev
-notifications on a draining workqueue and also with a lock up since the
-netdevice reference count is increased (in port_switchdev_event) and not
-decreased ever (since the workqueue did not run).
+Rely on the port state seen by the firmware since it will also be the
+one erroring out when trying to setup anything major when the port is
+up.
 
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
- drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-index 83e6bd4a803b..9114437645a8 100644
+index 9114437645a8..c6885912c60b 100644
 --- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
 +++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-@@ -1628,8 +1628,6 @@ static int ethsw_remove(struct fsl_mc_device *sw_dev)
+@@ -43,6 +43,25 @@ static int ethsw_add_vlan(struct ethsw_core *ethsw, u16 vid)
+ 	return 0;
+ }
  
- 	ethsw_teardown_irqs(sw_dev);
- 
--	destroy_workqueue(ethsw->workqueue);
--
- 	dpsw_disable(ethsw->mc_io, 0, ethsw->dpsw_handle);
- 
- 	for (i = 0; i < ethsw->sw_attr.num_ifs; i++) {
-@@ -1640,6 +1638,9 @@ static int ethsw_remove(struct fsl_mc_device *sw_dev)
- 	kfree(ethsw->ports);
- 
- 	ethsw_takedown(sw_dev);
++static bool ethsw_port_is_up(struct ethsw_port_priv *port_priv)
++{
++	struct net_device *netdev = port_priv->netdev;
++	struct dpsw_link_state state;
++	int err;
 +
-+	destroy_workqueue(ethsw->workqueue);
++	err = dpsw_if_get_link_state(port_priv->ethsw_data->mc_io, 0,
++				     port_priv->ethsw_data->dpsw_handle,
++				     port_priv->idx, &state);
++	if (err) {
++		netdev_err(netdev, "dpsw_if_get_link_state() err %d\n", err);
++		return true;
++	}
 +
- 	fsl_mc_portal_free(ethsw->mc_io);
++	WARN_ONCE(state.up > 1, "Garbage read into link_state");
++
++	return state.up ? true : false;
++}
++
+ static int ethsw_port_set_pvid(struct ethsw_port_priv *port_priv, u16 pvid)
+ {
+ 	struct ethsw_core *ethsw = port_priv->ethsw_data;
+@@ -61,7 +80,7 @@ static int ethsw_port_set_pvid(struct ethsw_port_priv *port_priv, u16 pvid)
+ 	tci_cfg.vlan_id = pvid;
  
- 	kfree(ethsw);
+ 	/* Interface needs to be down to change PVID */
+-	up = netif_running(netdev);
++	up = ethsw_port_is_up(port_priv);
+ 	if (up) {
+ 		err = dpsw_if_disable(ethsw->mc_io, 0,
+ 				      ethsw->dpsw_handle,
 -- 
 2.25.1
 
