@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A645022791C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 08:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7949C227921
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 08:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgGUGz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 02:55:58 -0400
-Received: from ozlabs.org ([203.11.71.1]:58821 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgGUGz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 02:55:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9qB25lVGz9sSJ;
-        Tue, 21 Jul 2020 16:55:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595314555;
-        bh=Q7OXuH3IujvF32fVyUqHqhi4eviDa7shPE0mEDAD2ZA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fqWzcFW4+XcuCOAf46YhWOrzWlu2gVqyBUv/krZuWxTDgJ2iaDueazKri5ocAzx0m
-         JBNiWfGczJ0LP4Sem67zSo1mAeK5z9QpIGw+XqH2axGw9C8b2rdxHqnEQuJ3EPZz1U
-         TARgd/JcGF94kXfOdhQqnOFipqj/L+4dvWXw7OM5ej6uVi101S99u5qXkrZw91KVWa
-         eUbWPnZ2E70kF5VxeZAeWNZfD5SDiljFZn6e1gf7nHTEFgpdlMh1q1Mz7jADF3umVQ
-         zf+JTJOq3s7/ZqpAXwLM1ETZX6vpPSl71fdSpVEaSLV/JZswMJmgR6trRT+NCYIB3L
-         doizQfpjqaZLw==
-Date:   Tue, 21 Jul 2020 16:55:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Miller <davem@davemloft.net>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: Re: mmotm 2020-07-20-19-06 uploaded (net/ipv6/ip6_vti.o)
-Message-ID: <20200721165553.713c51b3@canb.auug.org.au>
-In-Reply-To: <20200721165424.4aa21b81@canb.auug.org.au>
-References: <20200721020722.6C7YAze1t%akpm@linux-foundation.org>
-        <536c2421-7ae2-5657-ff31-fbd80bd71784@infradead.org>
-        <20200721165424.4aa21b81@canb.auug.org.au>
+        id S1728064AbgGUG6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 02:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgGUG6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 02:58:46 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187A7C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 23:58:46 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id gc15so1018254pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 23:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=Tno23bD6CNrvtvTJ8w81B3EthF3Ld5kpNkTOAg+JnsM=;
+        b=vCN0S6+uLMv5XxoT4ifN8Mdl3iTpXPghqyV86DALod7pGA+schHiD8gHYrnVqyy2Gw
+         NdGXaEZUVvaRR17C5MMQLEMJOasCO12cX8d8/FzpKEt1kD85nU46h0D6VmXzmYXg2B7v
+         2hKu8/RCGgdRfjVU69+QlDO6CK3QKrVdWQLkcjL9a/ioimyRVfuE6zOTpRBu/0bumC6S
+         i9kj2THROnCIdatTaUy+bAkDc5jXrTDRZr4PvOUqxZNskPpcLW+hWHvj+5BamjEUFbmg
+         Zorhst4Y4suuRAnj6TCsOBhs6wW1c+ILYfv0LVwl+X+R4s9rm0dJe1CCXaueL1jbqqFy
+         hz+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Tno23bD6CNrvtvTJ8w81B3EthF3Ld5kpNkTOAg+JnsM=;
+        b=bl3tFYM9uzGYYp5CFq94Pa2hzG/Zn168LdXSRRt0+GLlA2ieg0zqRnMtjXRKI+K3E0
+         bHZ25cE/qDENSeD9Xd1v6MXFuE9HgYSEt218NfMxXavXoCtnmZf+ymzrBsM3xM9HXRr4
+         PpY10Rm7X69v3ediBCYfIz0CLxyO8VEYe1qD1yT7CrWfqlMQcVkij4nG4H2JjxNbR703
+         OgwD5ncgjOCxr689CAWboXYfTozLtP44hr5AjUddkaOac+RI8TM28g+0d6TUcoibFjjX
+         MYR8ojkqC//U2w6wytVq++nn3WPi1NzJqUyu3ZvyQB9mlOklNnv5gD1ywFZlNPDY0yeb
+         iWdA==
+X-Gm-Message-State: AOAM533kRPVBR4H6G57y11xZiJ9Bws5/QXFO9RNe4VspTJ41d/FaqaQ3
+        yEjGNA7tOOOcIHVcmUr1LmmaNQ==
+X-Google-Smtp-Source: ABdhPJxckY0lmGlBsj/0MC92yIRwggmuPmCKttx9B6PanKuNgALvduemXmj14Lm7ruLSqbUmbcdjHA==
+X-Received: by 2002:a17:90b:400f:: with SMTP id ie15mr3235503pjb.94.1595314725521;
+        Mon, 20 Jul 2020 23:58:45 -0700 (PDT)
+Received: from ?IPv6:240e:362:4ac:f200:40d1:ed88:5dbd:3f3a? ([240e:362:4ac:f200:40d1:ed88:5dbd:3f3a])
+        by smtp.gmail.com with ESMTPSA id mv6sm1756670pjb.57.2020.07.20.23.58.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 23:58:44 -0700 (PDT)
+Subject: Re: [PATCH] uacce: fix some coding styles
+To:     Kai Ye <yekai13@huawei.com>, linux-accelerators@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com
+References: <1595229523-14103-1-git-send-email-yekai13@huawei.com>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <0775c541-5802-cdf3-e2aa-c62c027ab8a7@linaro.org>
+Date:   Tue, 21 Jul 2020 14:57:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/euP/RBZrNT3uFkFfv5_O0cu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1595229523-14103-1-git-send-email-yekai13@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/euP/RBZrNT3uFkFfv5_O0cu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Tue, 21 Jul 2020 16:54:24 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On 2020/7/20 下午3:18, Kai Ye wrote:
+> 1. add some parameter check.
+> 2. delete some redundant code.
+> 3. modify the module author information.
 >
-> On Mon, 20 Jul 2020 23:09:34 -0700 Randy Dunlap <rdunlap@infradead.org> w=
-rote:
-> >
-> > on i386:
-> >=20
-> > ld: net/ipv6/ip6_vti.o: in function `vti6_rcv_tunnel':
-> > ip6_vti.c:(.text+0x2d11): undefined reference to `xfrm6_tunnel_spi_look=
-up' =20
->=20
-> Caused by commit
->=20
->   08622869ed3f ("ip6_vti: support IP6IP6 tunnel processing with .cb_handl=
-er")
->=20
-> from the linux-next ipsec-next tree.
->=20
-> CONFIG_INET6_XFRM_TUNNEL=3Dm
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
+> Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+Thanks Kai.
+> ---
+>   drivers/misc/uacce/uacce.c | 28 +++++++++++++---------------
+>   1 file changed, 13 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> index 107028e..2e1af58 100644
+> --- a/drivers/misc/uacce/uacce.c
+> +++ b/drivers/misc/uacce/uacce.c
+> @@ -63,8 +63,12 @@ static long uacce_fops_unl_ioctl(struct file *filep,
+>   				 unsigned int cmd, unsigned long arg)
+>   {
+>   	struct uacce_queue *q = filep->private_data;
+> -	struct uacce_device *uacce = q->uacce;
+> +	struct uacce_device *uacce;
+> +
+> +	if (WARN_ON(!q))
+> +		return -EINVAL;
+WARN_ON should not be used in uacce, instead error can be printed in 
+user space driver.
+Error should not be printed in kernel log as pasid can be used by unpriv 
+user.
 
-I need to read ahead in my email :-)
+And I think we do not need check filep->private_data.
+The fd is double checked in __fget_files.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/euP/RBZrNT3uFkFfv5_O0cu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8WkXkACgkQAVBC80lX
-0Gy0pwf+OeRTrgcltii+j/ic9m/VaekZvTVtd1SKbimSlVNOEZFPvI4Qm7hhsR9g
-2czTCUKJQmJKyvjtgG9hHzMu0ahA7DPfeuBvv1hitKnTwvQexl9BW9Vm6pNtkEN6
-gulxuRMM30xucyIoPmggcBNPTXBGSQ+oAZ6UQww75wwaurmcdoENFNgn80nsb59/
-wqN7W47bWJ9OZAESIBEq1B75DJ7IZo/6OHrzWV0MJggEY7QTqUKd9M2o8ucGeEBf
-vo4o3J+3q+o9dLIXmwG2D1MQwVpwEI7oMiOzgVZvCyjUmPTXwhH7klV3FrReOt99
-9q6JBD4ZKGAOhqBEfqGwn1270NsnVg==
-=WkFR
------END PGP SIGNATURE-----
-
---Sig_/euP/RBZrNT3uFkFfv5_O0cu--
+Thanks
