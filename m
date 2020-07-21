@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D24D2279CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EC22279A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgGUHs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 03:48:28 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48158 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726803AbgGUHs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 03:48:26 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7784320154A;
-        Tue, 21 Jul 2020 09:48:24 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 33B892003FA;
-        Tue, 21 Jul 2020 09:48:20 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C720040305;
-        Tue, 21 Jul 2020 15:29:38 +0800 (SGT)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, bhelgaas@google.com, shawnguo@kernel.org,
-        festevam@gmail.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH 2/2] PCI: imx: add another regulator for imx pcie
-Date:   Tue, 21 Jul 2020 15:44:30 +0800
-Message-Id: <1595317470-9394-2-git-send-email-hongxing.zhu@nxp.com>
+        id S1728068AbgGUHpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 03:45:31 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:13786 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727916AbgGUHp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 03:45:29 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 21 Jul 2020 00:45:28 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Jul 2020 00:45:26 -0700
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 21 Jul 2020 13:15:00 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id 386A52BA8; Tue, 21 Jul 2020 13:14:59 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v9 0/2] ADD interconnect support for Qualcomm DWC3 driver
+Date:   Tue, 21 Jul 2020 13:14:47 +0530
+Message-Id: <1595317489-18432-1-git-send-email-sanm@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595317470-9394-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1595317470-9394-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One more regulator is required to turn on the external oscillator
-populated on the iMX6QP SABRESD board.
-Add another regulator to enable PCIe on iMX6QP SABRESD board.
+This path series aims to add interconnect support in
+dwc3-qcom driver on SDM845 and SC7180 SoCs.
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Changes from v8 -> v9
+  > Addressed comments from Matthias.
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 8f08ae53f53e..9e1563601835 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -81,6 +81,7 @@ struct imx6_pcie {
- 	u32			tx_swing_low;
- 	int			link_gen;
- 	struct regulator	*vpcie;
-+	struct regulator	*vepdev;
- 	void __iomem		*phy_base;
- 
- 	/* power domain for pcie */
-@@ -507,6 +508,14 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 			return;
- 		}
- 	}
-+	if (imx6_pcie->vepdev && !regulator_is_enabled(imx6_pcie->vepdev)) {
-+		ret = regulator_enable(imx6_pcie->vepdev);
-+		if (ret) {
-+			dev_err(dev, "failed to enable vepdev regulator: %d\n",
-+				ret);
-+			goto err_pcie_vepdev;
-+		}
-+	}
- 
- 	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
- 	if (ret) {
-@@ -595,6 +604,13 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- err_pcie_bus:
- 	clk_disable_unprepare(imx6_pcie->pcie_phy);
- err_pcie_phy:
-+	if (imx6_pcie->vepdev && regulator_is_enabled(imx6_pcie->vepdev) > 0) {
-+		ret = regulator_disable(imx6_pcie->vepdev);
-+		if (ret)
-+			dev_err(dev, "failed to disable vepdev regulator: %d\n",
-+				ret);
-+	}
-+err_pcie_vepdev:
- 	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0) {
- 		ret = regulator_disable(imx6_pcie->vpcie);
- 		if (ret)
-@@ -1178,6 +1194,12 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 			return PTR_ERR(imx6_pcie->vpcie);
- 		imx6_pcie->vpcie = NULL;
- 	}
-+	imx6_pcie->vepdev = devm_regulator_get_optional(&pdev->dev, "vepdev");
-+	if (IS_ERR(imx6_pcie->vepdev)) {
-+		if (PTR_ERR(imx6_pcie->vepdev) != -ENODEV)
-+			return PTR_ERR(imx6_pcie->vepdev);
-+		imx6_pcie->vepdev = NULL;
-+	}
- 
- 	platform_set_drvdata(pdev, imx6_pcie);
- 
+Changes from v7 -> v8
+  > Only driver change is pending all other patches are merged so dropped
+    from the series.
+  > Removed the device_is_bound call and getting speed from device tree
+    and rearranged interconnect functions to avoid forward declarations.	
+  > Added patch to specify maximum speed for dwc3 DT node.
+
+Changes from v6 -> v7
+  > [PATCH 2/4] Fixed review comments from Matthias in DWC3 driver.
+  > Other patches remain unchanged.
+
+Changes from v5 -> v6
+  > [PATCH 1/4] Addressed comments from Rob.
+  > [PATCH 2/4] Fixed review comments from Matthias in DWC3 driver.
+  > [PATCH 3/4] Ignoring 80 char limit in defining interconnect paths.
+  > Added [PATCH 4/4] in this series. Adding interconnect nodes for SC7180.
+    Depends on patch https://patchwork.kernel.org/patch/11417989/.	
+
+Changes from v4 -> v5
+  > [PATCH 1/3] Added the interconnect properties in yaml. This patch depends
+    on series https://patchwork.kernel.org/cover/11372641/.
+  > [PATCH 2/3] Fixed review comments from Matthias in DWC3 driver.
+  > [PATCH 3/3] Modified as per the new interconnect nodes in sdm845. Depends
+    on series https://patchwork.kernel.org/cover/11372211/. 
+
+
+Changes from v3 -> v4
+  > Fixed review comments from Matthias
+  > [PATCH 1/3] and [PATCH 3/3] remains unchanged
+
+Changes from v2 -> v3
+  > Fixed review comments from Matthias and Manu
+  > changed the functions prefix from usb_* to dwc3_qcom_*
+
+Changes since V1:
+  > Comments by Georgi Djakov on "[PATCH 2/3]" addressed
+  > [PATCH 1/3] and [PATCH 3/3] remains unchanged
+
+Sandeep Maheswaram (2):
+  usb: dwc3: qcom: Add interconnect support in dwc3 driver
+  arm64: dts: qcom: sc7180: Add maximum speed property for DWC3 USB node
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi |   1 +
+ drivers/usb/dwc3/dwc3-qcom.c         | 127 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 126 insertions(+), 2 deletions(-)
+
 -- 
-2.17.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
