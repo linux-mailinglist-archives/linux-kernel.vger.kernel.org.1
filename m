@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EFE2278C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 08:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88E92278CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 08:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgGUGUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 02:20:32 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:59785 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgGUGUc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 02:20:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595312432; x=1626848432;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=xTxsgU7dP+dCO7BF1/koKl7ClH5PjAb03Z2Nm54qNPk=;
-  b=K9ojjUlgR+yfVPAN6uzwIxEmGELmsH2AisMkzAjo7kMGsqhpifQZb9To
-   WzcVLnehnsFpZHrqAxWUvj5j9icxjo+ozOGXzXgjCGEjgJlgoaMAlolD2
-   4+zmAsNoAR2raPpUG/uSsDrRQ4q1w4z7P7kCd7D+xI9yPfeVRQBiDISIG
-   M=;
-IronPort-SDR: qM4kReuBMpJU/qxBHDDloek6Ba7oKCi+kJw7S8tzaLhq/funls180ueZKCSkZUqV5/0/DBFmgw
- Fz1OXn38iYvg==
-X-IronPort-AV: E=Sophos;i="5.75,377,1589241600"; 
-   d="scan'208";a="60238751"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 21 Jul 2020 06:20:29 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 0949F284BB9;
-        Tue, 21 Jul 2020 06:20:26 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 21 Jul 2020 06:20:26 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.180) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 21 Jul 2020 06:20:17 +0000
-Subject: Re: [PATCH v5 04/18] nitro_enclaves: Init PCI device driver
-To:     Alexander Graf <graf@amazon.com>, <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>
-References: <20200715194540.45532-1-andraprs@amazon.com>
- <20200715194540.45532-5-andraprs@amazon.com>
- <d2f717c1-895b-b947-7ec3-067e4f1dbf69@amazon.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <93c45468-d63c-2bc9-58d4-b7a6fa1dfad7@amazon.com>
-Date:   Tue, 21 Jul 2020 09:20:07 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1727121AbgGUGWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 02:22:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726053AbgGUGWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 02:22:23 -0400
+Received: from localhost (p5486cdb1.dip0.t-ipconnect.de [84.134.205.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CB0E20792;
+        Tue, 21 Jul 2020 06:22:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595312543;
+        bh=47dJEVMdxrfXF2oYeyAzojzZPGNAbJ4RDRe72YadUlk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aFO1sfzyiSsQ1aRHew1Fs3t3HI9JCj0gnJYlQfk/Wn+lFIwh2wcj9fdH+Uf4agaTQ
+         oHaCrMb0N0PX0kMcmZoQu3HE3aEJxxd8pAinpjgDk+f0OYHP+pE+UPzSlTZQ+7FEWP
+         CWY0zTjGWsjW1KPmZOKcxbu5Z+ZJNG/oCu+weqRQ=
+Date:   Tue, 21 Jul 2020 08:22:17 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Alain Volmat <alain.volmat@st.com>, mark.rutland@arm.com,
+        pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com
+Subject: Re: [PATCH v2 3/4] dt-bindings: i2c-stm32: add SMBus Alert bindings
+Message-ID: <20200721062217.GA1044@kunai>
+References: <1593070769-9106-1-git-send-email-alain.volmat@st.com>
+ <1593070769-9106-4-git-send-email-alain.volmat@st.com>
+ <20200630194107.GA999@ninjato>
+ <20200714023048.GA1151665@bogus>
 MIME-Version: 1.0
-In-Reply-To: <d2f717c1-895b-b947-7ec3-067e4f1dbf69@amazon.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.160.180]
-X-ClientProxiedBy: EX13D30UWC003.ant.amazon.com (10.43.162.122) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
+Content-Disposition: inline
+In-Reply-To: <20200714023048.GA1151665@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 20/07/2020 17:24, Alexander Graf wrote:
->
->
-> On 15.07.20 21:45, Andra Paraschiv wrote:
->> The Nitro Enclaves PCI device is used by the kernel driver as a means of
->> communication with the hypervisor on the host where the primary VM and
->> the enclaves run. It handles requests with regard to enclave lifetime.
->>
->> Setup the PCI device driver and add support for MSI-X interrupts.
->>
->> Signed-off-by: Alexandru-Catalin Vasile <lexnv@amazon.com>
->> Signed-off-by: Alexandru Ciobotaru <alcioa@amazon.com>
->> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->
-> Reviewed-by: Alexander Graf <graf@amazon.com>
+Hi Rob,
 
-Included the Rb, thanks for review.
+> > > The I2C/SMBUS framework already provides a mechanism to enable SMBus-=
+Alert
+> > > by naming an IRQ line "smbus_alert". However, on stm32, the SMBus-Ale=
+rt is
+> > > part of the i2c IRQ. Using the smbus_alert naming here would lead to =
+having
+> > > 2 handlers (the handler of the driver and the smbus_alert handler
+> > > from I2C/SMBUS framework) on the unique i2c IRQ of the stm32. Meaning=
+ that
+> > > the smbus_alert handler would get called for all IRQ generated by the=
+ stm32
+> > > I2C controller.
+> > >=20
+> > > For that reason, the smbus_alert IRQ naming cannot be used and a dedi=
+cated
+> > > binding is introduced.
+> >=20
+> > What if we update the core to not register another irq handler if the
+> > "smbus_alert" and main irq are the same?
+> >=20
+> > I think it could work. However, while trying to make a proof-of-concept,
+> > I found that irq descriptions in the generic i2c binding document are
+> > probably mixed up. And before fixing that, I'd like to get HostNotify
+> > done first.
+>=20
+> Why does this even need to be in DT? Can't the driver just register that=
+=20
+> it supports SMBus alert or have some call to the core signaling an SMBus=
+=20
+> alert?=20
 
-Andra
+If we emulate this SMBus behaviour with I2C, it means we apply
+additional restrictions. In this case, there is an address which can't
+be used anymore. Because there is another case of additional
+restrictions, I proposed the binding "smbus" which means this bus is not
+I2C but SMBus, so it is more restricted.
+
+Thanks,
+
+   Wolfram
 
 
+--8t9RHnE3ZwKMSgU+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
- Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
-omania. Registration number J22/2621/2005.
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8WiZIACgkQFA3kzBSg
+Kbagiw/8CFregwnGWfzJ8CixS6lpRM7jx77tfodUx9ozPR0J2bZ0XG7itMnirLQO
+VIMV2kRUkbaIO3Gfwr0WTM2HvL3Ej5lIJttqPPcm4ZxvYvPhX6eZEe7fYquFnnje
+7/uxFH+GgXqjRfWLVtSG4uwFg7WV70UEQ52E8lORH/PJEdYya/7ICWebcdIfTWhQ
+W+XV4pN08sYkPBUo775Fan2JxruVmISkr/dNRZztLT4PMpczhUf+BQMdOIyrmPO7
+Ix/pPt2inVZfZHzYrM53SXzdOritt6OhYG0xHrdwtTgg4mL2b/Ov1qJCYKDlGGBY
+T00o2ynEp8/IqIXHZ2huw3zplAMvVpxgPFjesoE4tNUwlGjaaGuWECfoFGmdJNJ1
+p2xiXrKLl+6Vlwg+NoDuqZwyL7NY1pEweyCkHjcYs58XrFCoHPbfsvhHcERIgytY
+N4QRmRjTI0D+WtyrNcoBbphl/RtSLAn59lP7SwuiLb9fslTQ34srGDPJXfFBageK
+i1bPBMYMnN3fWD1I29OzDZjPQZPYPzH0qVDKFIj5DLtEx9lM6aUOzKm6EQgduoWn
+rQ+wJX+vml0lfIXZ6jjKBv+JwKg9cvloJlqSlVwVPBLscgn0ptmw6jUuofXtETAg
+cBuIRLHb+u+rorqO89KpaxDXuI/ZFP/zNxC6/4el9FLFawCJ3ZY=
+=ORZA
+-----END PGP SIGNATURE-----
+
+--8t9RHnE3ZwKMSgU+--
