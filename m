@@ -2,141 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EDC2289BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDBC2289C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730383AbgGUUVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 16:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        id S1730312AbgGUUY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 16:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729928AbgGUUVa (ORCPT
+        with ESMTP id S1726763AbgGUUY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 16:21:30 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816C2C0619DC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:21:30 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so10751199pls.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yz8Pn1+0L8o3BW9wpfpvX9tjdPGaAfKllQBX5CrlbQA=;
-        b=tCHfjNfYorbKQEm370wu+jdtqr5TvIQgpuBB45Meg4+6fvhDoSy7tjjQ60WD2XSNa3
-         VAGHh2UdTa2UOJPsZ69yp3xCXwzso7pk7mtlf6iVxZwd0UkCe8sc1QItaFmzwclayQy4
-         /OP3wFrzmne7MneChKgBMj45sambaMnWKho/Tx3GUMzt2xp9UDVwYZIMR0bTlqDB/BhQ
-         4htZmZDIpFHd9nayV/wqx0K84Mm+EHMrjWGnwrMmW3Kl5KnSagx7zOeNzuG96jpcKRRg
-         gRcgYXztpjnImvOH+bttP99fbubzOEUGNg3OKwCh5wVDVwAE1TZyN3/TuzHsST3VtgdS
-         3nbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yz8Pn1+0L8o3BW9wpfpvX9tjdPGaAfKllQBX5CrlbQA=;
-        b=B2YDlMYTZujfFetYdWNotAw73Rlw0/myL6A3aPQA2yxaumjorCzvmRM2WkEhbqbQAM
-         uNyvIO7H66MAmW45GsRB/bdoXcwzGhQSVjlsXiNChlwMXU3dwJbO9apTtItLiB6YtY9n
-         OikgVxCdDQkvbQq2BRhkD6J4rRX4OcSGdXsm4c/9VZA3QWrBZK/CBdxd5FpGSESKfPPw
-         9TmgtmXmXDEbsMKREFkBOuKpnnFxVdI9x82Xf5lkKgUfjZbi6oIAeXWIs53ByaCW8LIv
-         y//XQ+IQoauEvBuwB3mFB0OZjrWWOvYB+eLkTa02OxT9i4GOmbZBiUwkn9zuXnJkiLSw
-         M9Jg==
-X-Gm-Message-State: AOAM533scfDl+BLKGpntiy0NboekuajfPsWs3X7LViN581fr0VJrnVwW
-        mQ5xA4j0iUQemAJjqilr/9WLFA==
-X-Google-Smtp-Source: ABdhPJytqLVViBfMVx0NR9p31f2ZvvL3YV4+D+msQxUeUSoE+b4kNfAIQ8/jDFn0Tw3ueffWJro/wA==
-X-Received: by 2002:a17:90a:290e:: with SMTP id g14mr6723735pjd.85.1595362889850;
-        Tue, 21 Jul 2020 13:21:29 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id t1sm19324221pgq.66.2020.07.21.13.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 13:21:29 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 14:21:27 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Alexandre Bailon <abailon@baylibre.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] remoteproc: mtk_vpu_rproc: Don't try to load empty
- PT_LOAD segment
-Message-ID: <20200721202127.GB1227776@xps15>
-References: <20200713132927.24925-1-abailon@baylibre.com>
- <20200713132927.24925-5-abailon@baylibre.com>
+        Tue, 21 Jul 2020 16:24:28 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76703C061794;
+        Tue, 21 Jul 2020 13:24:28 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxyoL-00HPjR-34; Tue, 21 Jul 2020 20:24:25 +0000
+Date:   Tue, 21 Jul 2020 21:24:25 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC][CFT][PATCHSET] saner calling conventions for csum-and-copy
+ primitives
+Message-ID: <20200721202425.GA2786714@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200713132927.24925-5-abailon@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 03:29:25PM +0200, Alexandre Bailon wrote:
-> The firmware generated by our toolchain contains many empty PT_LOAD
-> segments. The elf loader don't manage it and will raise an error:
-> "bad phdr da 0x0 mem 0x0".
-> To workaround it, implement the sanity_check callback to detect the
-> empty PT_LOAD segment and change it to PT_NULL.
-> In that way, the elf load won't try to load the segment.
+	We have 3 per-architecture primitives that copy data and return
+the checksum.  One is csum_partial_copy_nocheck() (kernel-to-kernel),
+other two - csum_and_copy_from_user() and csum_and_copy_to_user().
 
-This patch doesn't address the real problem, which are empty load segments.  In
-my opinion that should be dealt with rather than having to patch things up.  On
-the flip side I suspect that you don't control all the process and that systems
-are out there with faulty fw images.  As such:
+	There are default implementations, but for quite a few architectures
+these are done in assembler of varying unpleasantness.  The calling conventions
+are due to a large pile of historical accidents; right now they are
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+__wsum csum_partial_copy_nocheck(src, dst, len, initial_sum):
+	copy len bytes of data from src to dst, return something that is
+comparable mod 65535 with checksum of that data added to initial_sum.
+As always, __wsum values are defined only modulo 65535 - different kernel
+configs can yield different 32bit values on the same data, identical blocks
+of data at different address can yield different 32bit values (on the same
+kernel), etc.  Relatively few call sites.
 
-> 
-> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
-> ---
->  drivers/remoteproc/mtk_apu_rproc.c | 35 +++++++++++++++++++++++++++---
->  1 file changed, 32 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/mtk_apu_rproc.c b/drivers/remoteproc/mtk_apu_rproc.c
-> index f2342b747a35..565b3adca5de 100644
-> --- a/drivers/remoteproc/mtk_apu_rproc.c
-> +++ b/drivers/remoteproc/mtk_apu_rproc.c
-> @@ -137,10 +137,39 @@ static void mtk_vpu_rproc_kick(struct rproc *rproc, int vqid)
->  	vpu_write32(vpu_rproc, CORE_CTL_XTENSA_INT, 1 << vqid);
->  }
->  
-> +int mtk_vpu_elf_sanity_check(struct rproc *rproc, const struct firmware *fw)
-> +{
-> +	const u8 *elf_data = fw->data;
-> +	struct elf32_hdr *ehdr;
-> +	struct elf32_phdr *phdr;
-> +	int ret;
-> +	int i;
-> +
-> +	ret = rproc_elf_sanity_check(rproc, fw);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ehdr = (struct elf32_hdr *)elf_data;
-> +	phdr = (struct elf32_phdr *)(elf_data + ehdr->e_phoff);
-> +
-> +	for (i = 0; i < ehdr->e_phnum; i++, phdr++) {
-> +		/* Remove empty PT_LOAD section */
-> +		if (phdr->p_type == PT_LOAD && !phdr->p_paddr)
-> +			phdr->p_type = PT_NULL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static const struct rproc_ops mtk_vpu_rproc_ops = {
-> -	.start		= mtk_vpu_rproc_start,
-> -	.stop		= mtk_vpu_rproc_stop,
-> -	.kick		= mtk_vpu_rproc_kick,
-> +	.start			= mtk_vpu_rproc_start,
-> +	.stop			= mtk_vpu_rproc_stop,
-> +	.kick			= mtk_vpu_rproc_kick,
-> +	.load			= rproc_elf_load_segments,
-> +	.parse_fw		= rproc_elf_load_rsc_table,
-> +	.find_loaded_rsc_table	= rproc_elf_find_loaded_rsc_table,
-> +	.sanity_check		= mtk_vpu_elf_sanity_check,
-> +	.get_boot_addr		= rproc_elf_get_boot_addr,
->  };
->  
->  static irqreturn_t mtk_vpu_rproc_callback(int irq, void *data)
-> -- 
-> 2.26.2
-> 
+__wsum csum_and_copy_from_user(src, dst, len, initial_sum, errp)
+	copy len bytes of data from src (in userspace) to dst.  In case
+we can't copy the entire thing, set *errp to -EFAULT.  Otherwise *errp
+is left unmodified and we return something that is comparable mod 65535
+with the checksum of that data added to initial_sum.  Only two call sites
+(both in lib/iov_iter.c).  In case of an error, the copied data is
+discarded, along with the return value.
+
+__wsum csum_and_copy_to_user(src, dst, len, initial_sum, errp)
+	copy len bytes of data from src to dst (in userspace).  In case
+we can't copy the entire thing, set *errp to -EFAULT.  Otherwise *errp
+is left unmodified and we return something that is comparable mod 65535
+with the checksum of that data added to initial_sum.  Only one call site
+(in lib/iov_iter.c).  In case of an error, the copied data is
+discarded, along with the return value.
+
+The guts of these primitives are at the very least similar to each other;
+on architectures with common address space for kernel and userland all
+three are often implemented via a single asm helper.  Unfortunately, the
+exception handlers are overcomplicated; if nothing else, they need to
+pass a pointer to store -EFAULT into and some instances are trying to
+zero the rest of destination (or the entire destination) when we fail to
+fetch some data.
+
+Note, BTW, that "userspace" in the above is real userspace - we never have
+csum_and_copy_..._user() called under KERNEL_DS.
+
+It's far too convoluted and that code had been accumulated a lot of cruft
+over the years - for example, I'm fairly certain that nobody has read amd64
+instances through since about 2005.
+
+It's not that hard to untangle, though.  First of all, initial_sum part is
+pointless - there is only one caller that ever passes something other than
+zero and that one is easy to massage so that it, too, would pass zero (it
+sums and copies the fragments attached to skb, then does the same to the
+main part; doing the main part first gets rid of the problem).
+
+Furthermore, using 0xffffffff instead of 0 will yield a non-zero value
+comparable mod 0xffff with the original one, due to the way csum_add() works;
+the same goes for its open-coded asm equivalents, as well as various "folding"
+primitives.
+
+That allows to use a simpler method of reporting an error - simply return
+zero.  I.e.
+__wsum csum_partial_copy_nocheck(src, dst, len)
+	copy len bytes of data from src to dst, return something that is
+comparable mod 65535 with checksum of that data.
+
+__wsum csum_and_copy_from_user(src, dst, len)
+	copy len bytes of data from src (in userspace) to dst.  In case
+we can't copy the entire thing, return 0.  Otherwise return something non-zero
+that is comparable mod 65535 with the checksum of that data.
+
+__wsum csum_and_copy_to_user(src, dst, len)
+	copy len bytes of data from src to dst (in userspace).  In case
+we can't copy the entire thing, return 0.  Otherwise return something non-zero
+that is comparable mod 65535 with the checksum of that data.
+
+Exception handlers become trivial that way, of course, and quite a few gross
+hacks in them go away.
+
+The branch is based at 5.8-rc1 and can be found in
+git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.csum_and_copy
+Individual patches will go in followups.
+
+First we get rid of passing the initial sum for csum_partial_copy_nocheck():
+      skb_copy_and_csum_bits(): don't bother with the last argument
+      icmp_push_reply(): reorder adding the checksum up
+      csum_partial_copy_nocheck(): drop the last argument
+Next comes the minimal conversion of csum_and_copy_..._user() to new calling
+conventions.  Asm parts are left unchanged at that point, which makes for
+a reasonably small patch.  We could split that into per-architecture parts,
+but IMO it's better done that way - no need of temporary "has this architecture
+already switched" config symbols, etc.
+      csum_and_copy_..._user(): pass 0xffffffff instead of 0 as initial sum
+      saner calling conventions for csum_and_copy_..._user()
+Finally, we propagate the change of calling conventions down into the asm
+helpers.  That's done on per-architecture basis (and only for the architectures
+that are not using the default instances, of course).
+      alpha: propagate the calling convention changes down to csum_partial_copy.c helpers
+      arm: propagate the calling convention changes down to csum_partial_copy_from_user()
+      m68k: get rid of zeroing destination on error in csum_and_copy_from_user()
+      sh: propage the calling conventions change down to csum_partial_copy_generic()
+      i386: propagate the calling conventions change down to csum_partial_copy_generic()
+      sparc32: propagate the calling conventions change down to __csum_partial_copy_sparc_generic()
+      mips: csum_and_copy_{to,from}_user() are never called under KERNEL_DS
+      mips: __csum_partial_copy_kernel() has no users left
+      mips: propagate the calling convention change down into __csum_partial_copy_..._user()
+      xtensa: propagate the calling conventions change down into csum_partial_copy_generic()
+      sparc64: propagate the calling convention changes down to __csum_partial_copy_...()
+      amd64: switch csum_partial_copy_generic() to new calling conventions
+      ppc: propagate the calling conventions change down to csum_partial_copy_generic()
+
+Only lightly tested; a lot of asm shite is killed off, so I would really like the
+architecture maintainers to look through that thing.  Please, review.
+
+Diffstat:
+ arch/alpha/include/asm/checksum.h         |   4 +-
+ arch/alpha/lib/csum_partial_copy.c        | 164 ++++++++-----------
+ arch/arm/include/asm/checksum.h           |  16 +-
+ arch/arm/lib/csumpartialcopy.S            |   4 +-
+ arch/arm/lib/csumpartialcopygeneric.S     |   1 +
+ arch/arm/lib/csumpartialcopyuser.S        |  26 +--
+ arch/hexagon/include/asm/checksum.h       |   3 +-
+ arch/hexagon/lib/checksum.c               |   4 +-
+ arch/ia64/include/asm/checksum.h          |   3 +-
+ arch/ia64/lib/csum_partial_copy.c         |   4 +-
+ arch/m68k/include/asm/checksum.h          |   6 +-
+ arch/m68k/lib/checksum.c                  |  88 +++-------
+ arch/mips/include/asm/checksum.h          |  66 ++------
+ arch/mips/lib/csum_partial.S              | 261 ++++++++++--------------------
+ arch/nios2/include/asm/checksum.h         |   4 +-
+ arch/parisc/include/asm/checksum.h        |  22 +--
+ arch/parisc/lib/checksum.c                |   7 +-
+ arch/powerpc/include/asm/checksum.h       |  12 +-
+ arch/powerpc/lib/checksum_32.S            |  74 ++++-----
+ arch/powerpc/lib/checksum_64.S            |  37 ++---
+ arch/powerpc/lib/checksum_wrappers.c      |  74 ++-------
+ arch/s390/include/asm/checksum.h          |   4 +-
+ arch/sh/include/asm/checksum_32.h         |  35 ++--
+ arch/sh/lib/checksum.S                    | 119 ++++----------
+ arch/sparc/include/asm/checksum.h         |   1 +
+ arch/sparc/include/asm/checksum_32.h      |  70 ++------
+ arch/sparc/include/asm/checksum_64.h      |  39 +----
+ arch/sparc/lib/checksum_32.S              | 202 +++++------------------
+ arch/sparc/lib/csum_copy.S                |   3 +-
+ arch/sparc/lib/csum_copy_from_user.S      |   4 +-
+ arch/sparc/lib/csum_copy_to_user.S        |   4 +-
+ arch/sparc/mm/fault_32.c                  |   6 +-
+ arch/x86/include/asm/checksum_32.h        |  40 ++---
+ arch/x86/include/asm/checksum_64.h        |  14 +-
+ arch/x86/lib/checksum_32.S                | 117 +++++---------
+ arch/x86/lib/csum-copy_64.S               | 140 +++++++++-------
+ arch/x86/lib/csum-wrappers_64.c           |  86 ++--------
+ arch/x86/um/asm/checksum.h                |   5 +-
+ arch/x86/um/asm/checksum_32.h             |  23 ---
+ arch/xtensa/include/asm/checksum.h        |  33 ++--
+ arch/xtensa/lib/checksum.S                |  67 ++------
+ drivers/net/ethernet/3com/typhoon.c       |   3 +-
+ drivers/net/ethernet/sun/sunvnet_common.c |   2 +-
+ include/asm-generic/checksum.h            |   4 +-
+ include/linux/skbuff.h                    |   2 +-
+ include/net/checksum.h                    |  15 +-
+ lib/iov_iter.c                            |  21 ++-
+ net/core/skbuff.c                         |  13 +-
+ net/ipv4/icmp.c                           |  10 +-
+ net/ipv4/ip_output.c                      |   6 +-
+ net/ipv4/raw.c                            |   2 +-
+ net/ipv6/icmp.c                           |   4 +-
+ net/ipv6/ip6_output.c                     |   2 +-
+ net/ipv6/raw.c                            |   2 +-
+ net/sunrpc/socklib.c                      |   2 +-
+ 55 files changed, 609 insertions(+), 1371 deletions(-)
