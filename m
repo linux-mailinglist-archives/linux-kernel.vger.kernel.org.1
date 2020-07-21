@@ -2,251 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC252276AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF8A2276B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgGUDZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 23:25:42 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:34416 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728647AbgGUDZk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 23:25:40 -0400
-Received: by mail-io1-f66.google.com with SMTP id q74so19929979iod.1;
-        Mon, 20 Jul 2020 20:25:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PbmHXiUgYZ7K3k3+4SC1dxQ0M9qSdVSxsuVwkOW5+Ow=;
-        b=kdcyTZrdm44HBnXC9CerCLcMLYi1ecm0OmRxEB8f30NZI435BlzTnMIwXCnlclcrRs
-         iXUbVvRuAvT8VnyEDLJ8qp6sbUjDqC0cIQY0fTXRnwuaauuYnuZGV1uuKBnRjH3CgS6j
-         6sjAFqZbWYO6wF2W+ddRRKgV/KOI9B23b++N5ezvp9iJVZ1SJzSwNi6Py4OHtdJAnpXC
-         i43LbeUvgeI3g6M+tBO/KQE48aspgOe4w8SdKh4F2gXjj71jmr+dsXIQf1iDszeH2e4z
-         EEYq+ic0BPdZ+HwhHu2RVrnL2KRcGaD1qakYIaejASmv3dIXFEZhjRitGd1fQyZKc/WB
-         kNGw==
-X-Gm-Message-State: AOAM532SWFYVFGh9OUNDVYERviQ8nG7Avz1vaoJggrUokE8vJW6jgbkb
-        yTKAcQHEgfbtK1tspjR7iw==
-X-Google-Smtp-Source: ABdhPJycudUTQZUWHZqdt3WKQxrt/MH89xE6iuGVYnrVJSrbXkzUig2eq2rAIRTz4FYtbGGk+4363w==
-X-Received: by 2002:a05:6602:1610:: with SMTP id x16mr25769599iow.68.1595301939583;
-        Mon, 20 Jul 2020 20:25:39 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id p12sm9772317ilj.16.2020.07.20.20.25.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 20:25:38 -0700 (PDT)
-Received: (nullmailer pid 3491686 invoked by uid 1000);
-        Tue, 21 Jul 2020 03:25:36 -0000
-Date:   Mon, 20 Jul 2020 21:25:36 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        dianders@chromium.org, heiko@sntech.de,
-        Caesar Wang <wxt@rock-chips.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: power: rockchip: Convert to json-schema
-Message-ID: <20200721032536.GA3476792@bogus>
-References: <20200715170216.2875868-1-enric.balletbo@collabora.com>
+        id S1728722AbgGUD0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 23:26:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:38376 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726715AbgGUD0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 23:26:43 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A0D07E63F265E152B026;
+        Tue, 21 Jul 2020 11:26:39 +0800 (CST)
+Received: from [10.174.187.22] (10.174.187.22) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 21 Jul 2020 11:26:31 +0800
+Subject: Re: [PATCH 0/9] arm64: Stolen time support
+To:     Steven Price <steven.price@arm.com>
+References: <20190802145017.42543-1-steven.price@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-doc@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Will Deacon <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <xiexiangyou@huawei.com>, <yebiaoxiang@huawei.com>,
+        "wanghaibin.wang@huawei.com >> Wanghaibin (D)" 
+        <wanghaibin.wang@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <1611996b-1ec1-dee7-ed61-b3b9df23f138@huawei.com>
+Date:   Tue, 21 Jul 2020 11:26:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200715170216.2875868-1-enric.balletbo@collabora.com>
+In-Reply-To: <20190802145017.42543-1-steven.price@arm.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.22]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 07:02:16PM +0200, Enric Balletbo i Serra wrote:
-> Convert the soc/rockchip/power_domain.txt binding document to json-schema
-> and move to the power bindings directory.
+Hi Steven,
+
+On 2019/8/2 22:50, Steven Price wrote:
+> This series add support for paravirtualized time for arm64 guests and
+> KVM hosts following the specification in Arm's document DEN 0057A:
 > 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
+> https://developer.arm.com/docs/den0057/a
 > 
->  .../power/rockchip,power-controller.yaml      | 154 ++++++++++++++++++
->  .../bindings/soc/rockchip/power_domain.txt    | 136 ----------------
->  2 files changed, 154 insertions(+), 136 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+> It implements support for stolen time, allowing the guest to
+> identify time when it is forcibly not executing.
 > 
-> diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> new file mode 100644
-> index 000000000000..af50cf2b3e63
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> @@ -0,0 +1,154 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip Power Domains
-> +
-> +maintainers:
-> +  - Caesar Wang <wxt@rock-chips.com>
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +
-> +description: |
-> +  Rockchip processors include support for multiple power domains which can be
-> +  powered up/down by software based on different application scenes to save power.
-> +
-> +  Power domains contained within power-controller node are generic power domain
-> +  providers documented in Documentation/devicetree/bindings/power/power-domain.yaml.
-> +
-> +  IP cores belonging to a power domain should contain a 'power-domains'
-> +  property that is a phandle for the power domain node representing the domain.
-> +
-> +properties:
-> +  power-controller:
-> +    type: object
-> +    description: List of power domains provided by this controller.
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - rockchip,px30-power-controller
-> +          - rockchip,rk3036-power-controller
-> +          - rockchip,rk3066-power-controller
-> +          - rockchip,rk3128-power-controller
-> +          - rockchip,rk3188-power-controller
-> +          - rockchip,rk3228-power-controller
-> +          - rockchip,rk3288-power-controller
-> +          - rockchip,rk3328-power-controller
-> +          - rockchip,rk3366-power-controller
-> +          - rockchip,rk3368-power-controller
-> +          - rockchip,rk3399-power-controller
-> +
-> +      reg:
-> +        description: |
-> +          Power domain index. Valid values are defined in:
-> +          "include/dt-bindings/power/px30-power.h" - for PX30 type power domain.
-> +          "include/dt-bindings/power/rk3036-power.h" - for RK3036 type power domain.
-> +          "include/dt-bindings/power/rk3066-power.h" - for RK3066 type power domain.
-> +          "include/dt-bindings/power/rk3128-power.h" - for RK3128 type power domain.
-> +          "include/dt-bindings/power/rk3188-power.h" - for RK3188 type power domain.
-> +          "include/dt-bindings/power/rk3228-power.h" - for RK3228 type power domain.
-> +          "include/dt-bindings/power/rk3288-power.h" - for RK3288 type power domain.
-> +          "include/dt-bindings/power/rk3328-power.h" - for RK3328 type power domain.
-> +          "include/dt-bindings/power/rk3366-power.h" - for RK3366 type power domain.
-> +          "include/dt-bindings/power/rk3368-power.h" - for RK3368 type power domain.
-> +          "include/dt-bindings/power/rk3399-power.h" - for RK3399 type power domain.
-> +        maxItems: 1
-> +
-> +      clocks:
-> +        description: |
-> +          A number of phandles to clocks that need to be enabled while power domain
-> +          switches state.
-> +      pm_qos:
-> +        description: |
-> +          A number of phandles to qos blocks which need to be saved and restored
-> +          while power domain switches state.
-> +
-> +      power-supply: true
-> +
-> +    required:
-> +      - compatible
-> +      - reg
+> It doesn't implement support for Live Physical Time (LPT) as there are
+> some concerns about the overheads and approach in the above
+Do you plan to pick up LPT support? As there is demand of cross-frequency migration
+(from older platform to newer platform).
 
-You need:
+I am not clear about the overheads and approach problem here, could you please
+give some detail information? Maybe we can work together to solve these concerns. :-)
 
-       additionalProperties: false
-
-(with indentation). Then you will get a bunch of errors as you are 
-missing a level of nodes. The 'power-controller' node doesn't have 
-'reg' for example. You'll need to use 'patternProperties' with '^pd_'.
-
-And to describe the nested power domains, you have to describe yet 
-another level. You can do a $ref with something like:
-
-$ref: '#/properties/power-controller/patternProperties/^pd_'
-
-That creates a circular reference though and I'm not sure what will 
-happen. :)
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3399-cru.h>
-> +    #include <dt-bindings/power/rk3399-power.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        qos_iep: qos@ffa98000 {
-> +            compatible = "syscon";
-
-This will generate a warning now. 'syscon' should not be used alone.
-
-> +            reg = <0x0 0xffa98000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_r: qos@ffab0000 {
-> +            compatible = "syscon";
-> +            reg = <0x0 0xffab0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_w: qos@ffab0080 {
-> +            compatible = "syscon";
-> +            reg = <0x0 0xffab0080 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m0: qos@ffab8000 {
-> +            compatible = "syscon";
-> +            reg = <0x0 0xffab8000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_r: qos@ffac0000 {
-> +            compatible = "syscon";
-> +            reg = <0x0 0xffac0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_w: qos@ffac0080 {
-> +            compatible = "syscon";
-> +            reg = <0x0 0xffac0080 0x0 0x20>;
-> +        };
-> +
-> +        power-management@ff310000 {
-> +            compatible = "rockchip,rk3399-pmu", "syscon", "simple-mfd";
-> +            reg = <0x0 0xff310000 0x0 0x1000>;
-> +
-> +            power-controller {
-> +                compatible = "rockchip,rk3399-power-controller";
-> +                #power-domain-cells = <1>;
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                /* These power domains are grouped by VD_CENTER */
-> +                pd_iep@RK3399_PD_IEP {
-> +                    reg = <RK3399_PD_IEP>;
-> +                    clocks = <&cru ACLK_IEP>,
-> +                             <&cru HCLK_IEP>;
-> +                    pm_qos = <&qos_iep>;
-> +                };
-> +                pd_rga@RK3399_PD_RGA {
-> +                    reg = <RK3399_PD_RGA>;
-> +                    clocks = <&cru ACLK_RGA>,
-> +                             <&cru HCLK_RGA>;
-> +                    pm_qos = <&qos_rga_r>,
-> +                             <&qos_rga_w>;
-> +                };
-> +                pd_vcodec@RK3399_PD_VCODEC {
-> +                    reg = <RK3399_PD_VCODEC>;
-> +                    clocks = <&cru ACLK_VCODEC>,
-> +                             <&cru HCLK_VCODEC>;
-> +                    pm_qos = <&qos_video_m0>;
-> +                };
-> +                pd_vdu@RK3399_PD_VDU {
-> +                    reg = <RK3399_PD_VDU>;
-> +                    clocks = <&cru ACLK_VDU>,
-> +                             <&cru HCLK_VDU>;
-> +                    pm_qos = <&qos_video_m1_r>,
-> +                             <&qos_video_m1_w>;
-> +                };
-> +            };
-> +        };
-> +    };
+Thanks,
+Keqian
+> specification, and I expect an updated version of the specification to
+> be released soon with just the stolen time parts.
+> 
+> I previously posted a series including LPT (as well as stolen time):
+> https://lore.kernel.org/kvmarm/20181212150226.38051-1-steven.price@arm.com/
+> 
+> Patches 2, 5, 7 and 8 are cleanup patches and could be taken separately.
+> 
+> Christoffer Dall (1):
+>   KVM: arm/arm64: Factor out hypercall handling from PSCI code
+> 
+> Steven Price (8):
+>   KVM: arm64: Document PV-time interface
+>   KVM: arm64: Implement PV_FEATURES call
+>   KVM: arm64: Support stolen time reporting via shared structure
+>   KVM: Allow kvm_device_ops to be const
+>   KVM: arm64: Provide a PV_TIME device to user space
+>   arm/arm64: Provide a wrapper for SMCCC 1.1 calls
+>   arm/arm64: Make use of the SMCCC 1.1 wrapper
+>   arm64: Retrieve stolen time as paravirtualized guest
+> 
+>  Documentation/virtual/kvm/arm/pvtime.txt | 107 +++++++++++++
+>  arch/arm/kvm/Makefile                    |   2 +-
+>  arch/arm/kvm/handle_exit.c               |   2 +-
+>  arch/arm/mm/proc-v7-bugs.c               |  13 +-
+>  arch/arm64/include/asm/kvm_host.h        |  13 +-
+>  arch/arm64/include/asm/kvm_mmu.h         |   2 +
+>  arch/arm64/include/asm/pvclock-abi.h     |  20 +++
+>  arch/arm64/include/uapi/asm/kvm.h        |   6 +
+>  arch/arm64/kernel/Makefile               |   1 +
+>  arch/arm64/kernel/cpu_errata.c           |  80 ++++------
+>  arch/arm64/kernel/kvm.c                  | 155 ++++++++++++++++++
+>  arch/arm64/kvm/Kconfig                   |   1 +
+>  arch/arm64/kvm/Makefile                  |   2 +
+>  arch/arm64/kvm/handle_exit.c             |   4 +-
+>  include/kvm/arm_hypercalls.h             |  44 ++++++
+>  include/kvm/arm_psci.h                   |   2 +-
+>  include/linux/arm-smccc.h                |  58 +++++++
+>  include/linux/cpuhotplug.h               |   1 +
+>  include/linux/kvm_host.h                 |   4 +-
+>  include/linux/kvm_types.h                |   2 +
+>  include/uapi/linux/kvm.h                 |   2 +
+>  virt/kvm/arm/arm.c                       |  18 +++
+>  virt/kvm/arm/hypercalls.c                | 138 ++++++++++++++++
+>  virt/kvm/arm/mmu.c                       |  44 ++++++
+>  virt/kvm/arm/psci.c                      |  84 +---------
+>  virt/kvm/arm/pvtime.c                    | 190 +++++++++++++++++++++++
+>  virt/kvm/kvm_main.c                      |   6 +-
+>  27 files changed, 848 insertions(+), 153 deletions(-)
+>  create mode 100644 Documentation/virtual/kvm/arm/pvtime.txt
+>  create mode 100644 arch/arm64/include/asm/pvclock-abi.h
+>  create mode 100644 arch/arm64/kernel/kvm.c
+>  create mode 100644 include/kvm/arm_hypercalls.h
+>  create mode 100644 virt/kvm/arm/hypercalls.c
+>  create mode 100644 virt/kvm/arm/pvtime.c
+> 
