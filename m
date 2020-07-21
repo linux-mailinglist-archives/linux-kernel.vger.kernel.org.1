@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FE2227A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414B2227A38
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgGUIIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        id S1728401AbgGUIJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGUIIu (ORCPT
+        with ESMTP id S1728109AbgGUIJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:08:50 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3868BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:08:50 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t4so15678639iln.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:08:50 -0700 (PDT)
+        Tue, 21 Jul 2020 04:09:26 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680AAC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:09:26 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v8so20453461iox.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:09:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nZmOPn0DichQdD/K1y4txGn+Prk7FOcLNnpnpP5AyFI=;
-        b=RP8PdGrwx+KwuEp4jtgxcCXSAKBi5CaWVPqEj3BTcXfL6UBjb/xAsssH0ihJwspDiT
-         tUF+YMGPLJ/RamsL00L00MSzLBGgoXgYvuNCLuSAvkfQNcuPCJW73S4ocUNN+4Ufyq76
-         18tvvjhEnOJGn9YIuFsUAD97GYe+dcsLtOuP1PNCYisW6QIy8pQpX5BU40JedhvqC7+D
-         uxwMCZ698AywHS0+LkDCeKoq4twPcl98mOJmDdU+ouQFT5fiJFHDgbNcdgb1uTXVLKSx
-         tA7CRCrHQXahL9E6PaHIz8DxrvixU+XW88PCQY9QyuU61wlvut8W/ck37jjZK+rrB90a
-         fetg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=5uXIl0XLm92YFeb9hC7/nZPQwctVwAjVznJvDpfY4JA=;
+        b=Z7YTfmBRYzgiLjTyCve9aAjphgcb0+ObYh3oHepQRhMwZyFB++g2mWAGL0JDeTp8aD
+         InojmbW9YEjLNF5awNkn+TNBlQWw06mmCbOt9s+LjFM0RNt3fT+hFp2X/I6ylm22xF9J
+         25JA8OLozcUeYNPWqpbl3hLX0Em7Pl8QQfMmxFdVad27K9x8NVz3ukH7cpnFy38T7mLd
+         5B1eIDSKGHseIeNZ5hKP2Bec38ZEug+8Vg3JwNFtCajpVLXV/7KrqSjLxjsEVIhVgcEM
+         2Bmz2G4+KgMTvrvcugQB77fngUBurRfSGIhGROJzuwGf/TxNvvtxvuB7kfdiJUKQMcF0
+         C1/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nZmOPn0DichQdD/K1y4txGn+Prk7FOcLNnpnpP5AyFI=;
-        b=tFTM4vm1LSX9Qsr07BrxVMP/ValUM7/Tj6+oMBq2GveyebMEeDHxFkwJtU7LsaoA+J
-         ODlvBAFgPA6pW7M1IE86kgalxVYxSC5mgCpAfmM5NtmjmAQxKmysrALgXJs5d3YOlEDG
-         bG1HIZSmyxTvLz/S/Wwr05eM/yAFLMPtNo73NvbT7xmDLRiHDp7PnMppJHYnKYZL/Gav
-         jL14NZT3LePtA+kLy1hZSWN0RUKY0DK9QaWEJUBxnt4tFDD18U3jpv/goxXDL7raDa6M
-         lOT2ApXGM0T2vk9rLbIkq6BJqFbuyo31K1FCVuu1FQlkShe9thRqf/yqOv+ZLM+57B/n
-         g4EQ==
-X-Gm-Message-State: AOAM531aD2uQ59rzP5N49Xp5YDYtLtQxh0hYO2UTfVYAJTXxObCaUr7w
-        Q+dQ92I9qo6sB/YuSubbVNEXEyaq8Ee9qC6vQP8=
-X-Google-Smtp-Source: ABdhPJyhC82Lm+DVOwSX0UjN3g9h6L5h9iHbAWUtCz5LuAJ6ZfRwUaYZYZUJ0yu1onScSyS6mcjsNgy+RpMJ1sgArQo=
-X-Received: by 2002:a92:c213:: with SMTP id j19mr27796809ilo.40.1595318929590;
- Tue, 21 Jul 2020 01:08:49 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=5uXIl0XLm92YFeb9hC7/nZPQwctVwAjVznJvDpfY4JA=;
+        b=XCUlRxfpQTA3En9rbvDQblkBXkxH45irGZki41RwHbWCXhz52FmnT4iEs5st7KekS5
+         SPJz8DYCoAwHrr11pTULh94nBYcb5dDE8R7U0jiXJLafojg3m+IH/fMpwp8PR0It/Oyg
+         LbDpu3GSVhXz0fh4VcuubYenn42qhSmctn0Amf62SMC6V0yItLbQGlZi7nSJbX91lO0R
+         h3fo5qBwdCOaJ5zDYJz1KQKHxIJ0jE5ZVo6qMNWy/D+7Ji9hUWdtpT6YNhTgOyFdq4Bo
+         SfTIWjQ9tg+cUDjg1mTR41b+KAmD8rZarX7KDeulWb4C2AIMRV9HC9KwI2THD0SHMroM
+         l+2w==
+X-Gm-Message-State: AOAM5317yAF2c+kUDJN3NjZwpYypIAXgYbAop0iUbrUyjDvLnvCJqR+8
+        n8du3uCMGn8QJTrjcWIJlfzOkI+XX/xx1iaJiN0=
+X-Google-Smtp-Source: ABdhPJwJjDDw1jCoNYRglUU8gaMF9Ud4ZDStHzoQsHFjXUSA/wEcBRRJj9GmbOlYntc0genQn+Hz+OBwFOZTCncaLHU=
+X-Received: by 2002:a02:ce9a:: with SMTP id y26mr31164481jaq.121.1595318965508;
+ Tue, 21 Jul 2020 01:09:25 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a6b:720c:0:0:0:0:0 with HTTP; Tue, 21 Jul 2020 01:08:49
- -0700 (PDT)
-Reply-To: westernunion.collector@collector.org
-From:   WESTERN UNION MONEY TRANSFER OFFICE <missdeborahyak@gmail.com>
-Date:   Tue, 21 Jul 2020 09:08:49 +0100
-Message-ID: <CAKTUmzKUCzRLJh4j7KwaM6WH++pTjiH1gN-h3G6yvouWKBPmmA@mail.gmail.com>
-Subject: THE MONEY HAS BEEN SENT, PLEASE CONFIRM
-To:     undisclosed-recipients:;
+References: <20200720204925.3654302-1-ndesaulniers@google.com>
+In-Reply-To: <20200720204925.3654302-1-ndesaulniers@google.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 21 Jul 2020 10:09:14 +0200
+Message-ID: <CA+icZUUzRM-pwVfAYMn-26cB-2SSvG_0jdh-aWHiuA+hFFFJ+Q@mail.gmail.com>
+Subject: Re: [PATCH v3 00/11] i386 Clang support
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Dear Beneficiary;
+On Mon, Jul 20, 2020 at 10:49 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> Resend of Brian's v2 with Acks from Peter and Linus collected, as well
+> as the final patch (mine) added. The commit of the final patch discusses
+> some of the architectural differences between GCC and Clang, and the
+> kernels tickling of this difference for i386, which necessitated these
+> patches.
+>
+> Brian Gerst (10):
+>   x86/percpu: Introduce size abstraction macros
+>   x86/percpu: Clean up percpu_to_op()
+>   x86/percpu: Clean up percpu_from_op()
+>   x86/percpu: Clean up percpu_add_op()
+>   x86/percpu: Remove "e" constraint from XADD
+>   x86/percpu: Clean up percpu_add_return_op()
+>   x86/percpu: Clean up percpu_xchg_op()
+>   x86/percpu: Clean up percpu_cmpxchg_op()
+>   x86/percpu: Clean up percpu_stable_op()
+>   x86/percpu: Remove unused PER_CPU() macro
+>
+> Nick Desaulniers (1):
+>   x86: support i386 with Clang
+>
+>  arch/x86/include/asm/percpu.h  | 510 +++++++++++----------------------
+>  arch/x86/include/asm/uaccess.h |   4 +-
+>  2 files changed, 175 insertions(+), 339 deletions(-)
+>
+> --
+> 2.28.0.rc0.105.gf9edc3c819-goog
+>
 
-Our Operation Manager has extract your 1st payment of $5,000.00 out of
-your total fund of ($1.5million) We need your full information for the
-transfer.
+Hi,
 
-We scheduled installmental sums of USD $5,000.00 daily through the
-cash fast Western Union, payment at counter as directed and we have
-commenced the relevant programming and the documentations of the said
-fund, as we are instructed to make the first payment of USD$5,000.00
-MTCN available in your name upon the receipt of your information from
-you as follows.
+I have tested this patchset v3 on top of Linux v5.8-rc6 with a
+selfmade llvm-toolchain (snapshot version: v11+git-e05c7e400f3a plus
+cherry-picked 8b354cc8db41).
 
-Your Name,
+This happened out of interest if this is in good shape together with
+my Debian AMD64 system.
+I checked my build-log and dmesg-output and it looks good.
 
-Address,
+Feel free to add my...
 
-Telephone
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 
-ID CARD
+Thanks.
 
-Contact our Operational Manager,Mr WETAYEM MYSHEAR through our office
-email for more enlightenment on your money.
-
-Email (westernunion.collector@collector.org)
-
-Thanks
-
-Managnment
-
-W.U.M.T
+Regards,
+- Sedat -
