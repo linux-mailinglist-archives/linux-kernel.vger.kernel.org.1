@@ -2,187 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38442287B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351662287B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730919AbgGURn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:43:26 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:43785 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727873AbgGURnY (ORCPT
+        id S1728847AbgGURpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgGURpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:43:24 -0400
-Received: by mail-il1-f198.google.com with SMTP id y13so14001248ila.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:43:23 -0700 (PDT)
+        Tue, 21 Jul 2020 13:45:43 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A82AC061794;
+        Tue, 21 Jul 2020 10:45:43 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o13so12282097pgf.0;
+        Tue, 21 Jul 2020 10:45:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kMWXOlhE34MA+0PIvAVKS1uhdD3FiDsb7PHPebuEoZY=;
+        b=e5r6rqWhkz1D+xEyJQ+A/wRC9svCFYIA/poy4ke6itdgG7CpS0i+mv2bzRmmpcwrKn
+         nt/o9IDu1lmc6TLvfdcgza3WVESfyQUimp6ZF/cND1ap8+9U7GNORYDzKz8aRCUatR17
+         mg/Q7qLa9lBeRaFlWykxJztwMpt2vbuWfT71ct9zgWfAUaHgsw7ySyZ0Kgn6R4yhfLCv
+         0GTg6QEjekW3YoD9W701yGgD9OQNwd+DRASQWzJKF1LODJ/KDMkplElD5z3SLm5ulEtg
+         Ey4Z8PvxOHZyyOIXLm5iZi2zVIKj2pCfMIoKiq6lXRKL3goC1d8wD1S5oT6SL8UnyHiL
+         O5Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=f3ilAsPWne+l30RZDpnCQuFgQo75PrB19pYOE98eehA=;
-        b=h1R9t3oT1x3+7+UVPh0HfoNqjO8FZDUVpF6XXECC29dDsDYK3WGpMx+pNUrm+ftwxt
-         scZZdTdMyfNPXwJp6s89jh1ORqQbUqfJnIjyRAbG5LbXdBql2C9r1WFRqNSjdG8G9OH6
-         D3K5f5WFTcj4ITAl0Y2hFkFbQGT8fzfSE1KMkd3+yAOgHixfUsv+KkeQZ2njRimhUB1D
-         w8PI4kpdu/V9AL/KaSFAJzpCpM2NMdBFDT2eOVX9Gmj27pH7z/9WTOpEvSBawS7J6u5W
-         ZMkP9uYbns7eZTPfBgfzDU9A97E0ZNr5ESxKJ0AILVlL6nHLUyCwC/AJho4iww/psFso
-         MTDQ==
-X-Gm-Message-State: AOAM531rLZWERNGjG1HbAa1UnqNuHjJeaX1i05druz7nX1vLE3+HWX1i
-        2JMCMjnVLeN3/1jaxuHlCFeVEsnGtLiSqWsQUFgnL9x9oRMx
-X-Google-Smtp-Source: ABdhPJy74/scayIhZIglw8c4FDir/ENLQwrMLIrLmJJs3mcM/zQsDwJriGV+Zyd+2e/OfK7ZsEwoVokddD5IYrvWF7FCh7OGsYly
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kMWXOlhE34MA+0PIvAVKS1uhdD3FiDsb7PHPebuEoZY=;
+        b=GoJETSRVvW7NjxrIzmo/BqI5dGc/e4FB9Myldj3B1GkI509SnzkbwkjreLqF3GHGWD
+         WwSRGxPRqYq8J5nFyj35AvuPiT4rf+6eMENtCX2YjsVJ8pZUbAv1niDyUmN9tVu42QVC
+         M9ZI56GnxVOvlTc++J5nv8ISMKCt9SvboEHARnRsq95xbGSYt81BqNAdSCepSKzeRgWL
+         zkk+CgGrmBCdcBolbDuBprYytuHnnR7Ki94tTayPocgTqlaSkGkvCt+gpM9pUrzamhWs
+         PpxTR0tfcKgcMLgJ/2kaqh/yFv0y0BibSgXDanxxRkzoBB8YYq+rpFYOQd6T9iiUY8Ua
+         nZaw==
+X-Gm-Message-State: AOAM533aUrQZNVLxBzt6awVPgR8gYLHhmYULKT549ze4CzvcdYT2SLUh
+        IDzMkPijO5KxQCIb39nKMZg=
+X-Google-Smtp-Source: ABdhPJwz2bMFIRQptPzYyQJia13UKDt6ya0pa9DA7+/aArwfYhQqDG6+ZoqEvGe/O/cJZRst6Gm8Fw==
+X-Received: by 2002:a63:504a:: with SMTP id q10mr22964237pgl.377.1595353542619;
+        Tue, 21 Jul 2020 10:45:42 -0700 (PDT)
+Received: from gmail.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id t188sm21859891pfc.198.2020.07.21.10.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 10:45:41 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 23:13:53 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v1] crypto: ccp: sp-pci: use generic power management
+Message-ID: <20200721174353.GA398461@gmail.com>
+References: <20200721123146.81710-1-vaibhavgupta40@gmail.com>
+ <7100976b-cf7c-c304-e2a6-660876e310af@amd.com>
+ <20200721163056.GA396078@gmail.com>
+ <95db9ba2-ffbb-ca92-6a70-1ee401920eed@amd.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c08:: with SMTP id w8mr27214423iov.129.1595353402891;
- Tue, 21 Jul 2020 10:43:22 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 10:43:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dee84305aaf72849@google.com>
-Subject: BUG: stack guard page was hit in pvclock_clocksource_read
-From:   syzbot <syzbot+33db977d6e575c4884b1@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jgross@suse.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, pbonzini@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vincenzo.frascino@arm.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <95db9ba2-ffbb-ca92-6a70-1ee401920eed@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jul 21, 2020 at 12:15:13PM -0500, Tom Lendacky wrote:
+> On 7/21/20 11:30 AM, Vaibhav Gupta wrote:
+> > On Tue, Jul 21, 2020 at 10:19:33AM -0500, Tom Lendacky wrote:
+> >> On 7/21/20 7:31 AM, Vaibhav Gupta wrote:
+> >>> +bool __maybe_unused ccp_queues_suspended(struct ccp_device *ccp)
+> >>
+> >> These aren't static functions, so is the __maybe_unused necessary?
+> >>
+> >> (Same comment on the other non-static functions changed below)
+> >>
+> >>>  {
+> >>> +	.driver.pm = &sp_pci_pm_ops,
+> >>>  };
+> >>>  
+> >>>  int sp_pci_init(void)
+> >>> diff --git a/drivers/crypto/ccp/sp-platform.c b/drivers/crypto/ccp/sp-platform.c
+> >>> index 831aac1393a2..9dba52fbee99 100644
+> >>> --- a/drivers/crypto/ccp/sp-platform.c
+> >>> +++ b/drivers/crypto/ccp/sp-platform.c
+> >>
+> >> This file use the same "#ifdef CONFIG_PM" to define the suspend and resume
+> >> functions (see sp_platform_driver variable). Doesn't that need to be
+> >> updated similar to sp-pci.c? Not sure how this compile tested successfully
+> >> unless your kernel config didn't have CONFIG_PM defined?
+> > I am not sure but my .config file has "CONFIG_PM=y"
+> 
+> Ok, my miss on that, you didn't update the sp_platform_suspend signature,
+> so no issue there.
+> 
+> > 
+> > The motive is update PM of sp-pci. Months ago, we decided to remove
+> > "#ifdef CONFIG_PM" container and mark the callbacks as __maybe_unused.
+> 
+> Is this being done only for struct pci_driver structures then? Or will
+> there be a follow on effort for struct platform_driver structures?
+>
+For now, I am updating all the PCI drivers supporting legacy callbacks for
+power management. It is part of my Linux Kernel Mentorsship Program project.
+I will talk to Bjorn about this for sure.
+> I can see the need for the __maybe_unused on the sp_pci_suspend() and
+> sp_pci_resume() functions since those are static functions that may cause
+> warnings depending on whether CONFIG_PM_SLEEP is defined or not.
+> 
+> The ccp_dev_suspend() and ccp_dev_resume() functions, though, are external
+> functions that I would think shouldn't require the __may_unused attribute
+> because the compiler wouldn't know if they are invoked or not within that
+> file (similar to how the sp_suspend() and sp_resume() weren't modified to
+> include the __maybe_unused attribute).
+Yes you are right. External functions should not require __maybe_unused. I got
+confused by the kbuild error in one of my previous patches.
+But those functions must have been static. I will have to dig out the mail to
+check it.
+> Can you try a compile test without
+> changing those functions and without CONFIG_PM=y and see if you run into
+> issues?
+Sure, I will run this and check if it throws any warning/error.
 
-syzbot found the following issue on:
-
-HEAD commit:    473309fb net: dp83640: fix SIOCSHWTSTAMP to update the str..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=175443e7100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=368e8612711aa2cc
-dashboard link: https://syzkaller.appspot.com/bug?extid=33db977d6e575c4884b1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+33db977d6e575c4884b1@syzkaller.appspotmail.com
-
-BUG: stack guard page was hit at 00000000568268d5 (stack is 00000000fd6fd35d..00000000fd6d22ec)
-kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 30079 Comm: syz-executor.0 Not tainted 5.8.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:pvclock_clocksource_read+0x21/0x510 arch/x86/kernel/pvclock.c:68
-Code: 2e 0f 1f 84 00 00 00 00 00 48 ba 00 00 00 00 00 fc ff df 48 89 f8 41 57 48 c1 e8 03 41 56 41 55 41 54 4c 8d 67 03 55 4c 89 e1 <53> 48 c1 e9 03 48 89 fb 48 83 ec 58 0f b6 04 10 0f b6 14 11 48 89
-RSP: 0018:ffffc90016598000 EFLAGS: 00010806
-RAX: 1ffffffff17cec00 RBX: ffff8880ae620dc0 RCX: ffffffff8be76003
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: ffffffff8be76000
-RBP: ffff888059596380 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff8be76003
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f3e110c1700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90016597ff8 CR3: 000000005d14d000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kvm_clock_read arch/x86/kernel/kvmclock.c:90 [inline]
- kvm_sched_clock_read+0x14/0x40 arch/x86/kernel/kvmclock.c:102
- paravirt_sched_clock arch/x86/include/asm/paravirt.h:22 [inline]
- sched_clock+0x2a/0x40 arch/x86/kernel/tsc.c:252
- sched_clock_cpu+0x18/0x1b0 kernel/sched/clock.c:371
- irqtime_account_irq+0x63/0x280 kernel/sched/cputime.c:60
- account_irq_enter_time include/linux/vtime.h:109 [inline]
- irq_enter_rcu+0x61/0x140 kernel/softirq.c:356
- sysvec_apic_timer_interrupt+0x13/0x120 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:587
-RIP: 0010:__orc_find+0x9b/0xf0 arch/x86/kernel/unwind_orc.c:58
-Code: d8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 48 48 63 03 48 01 d8 48 39 c1 73 b0 4c 8d 63 fc 49 39 ec 73 b3 4d 29 ee 49 c1 fe 02 <4b> 8d 04 76 48 8d 04 46 48 83 c4 10 5b 5d 41 5c 41 5d 41 5e 41 5f
-RSP: 0018:ffffc90016598190 EFLAGS: 00000246
-RAX: ffffffff84b1c69e RBX: ffffffff8ae8fef8 RCX: ffffffff84b1cb81
-RDX: 0000000000000000 RSI: ffffffff8b5be90e RDI: ffffffff8ae8fef8
-RBP: ffffffff8ae8fefc R08: ffffffff8b5be944 R09: ffffffff8b5be90e
-R10: 000000000007201e R11: 00000000000c2499 R12: ffffffff8ae8fef8
-R13: ffffffff8ae8fef8 R14: 0000000000000000 R15: dffffc0000000000
- orc_find arch/x86/kernel/unwind_orc.c:172 [inline]
- unwind_next_frame+0x342/0x1f90 arch/x86/kernel/unwind_orc.c:446
- arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:123
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- pskb_expand_head+0x15a/0x1040 net/core/skbuff.c:1627
- netlink_trim+0x1ea/0x240 net/netlink/af_netlink.c:1285
- netlink_broadcast_filtered+0x65/0xdc0 net/netlink/af_netlink.c:1490
- netlink_broadcast net/netlink/af_netlink.c:1535 [inline]
- nlmsg_multicast include/net/netlink.h:1020 [inline]
- nlmsg_notify+0x90/0x250 net/netlink/af_netlink.c:2512
- rtnl_notify net/core/rtnetlink.c:737 [inline]
- rtmsg_ifinfo_send net/core/rtnetlink.c:3725 [inline]
- rtmsg_ifinfo_event net/core/rtnetlink.c:3740 [inline]
- rtmsg_ifinfo_event net/core/rtnetlink.c:3728 [inline]
- rtnetlink_event+0x193/0x1d0 net/core/rtnetlink.c:5511
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
- call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
- call_netdevice_notifiers net/core/dev.c:2053 [inline]
- netdev_features_change net/core/dev.c:1443 [inline]
- netdev_sync_lower_features net/core/dev.c:9056 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9187
- netdev_change_features+0x61/0xb0 net/core/dev.c:9259
- bond_compute_features+0x502/0xa00 drivers/net/bonding/bond_main.c:1188
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3237 [inline]
- bond_netdev_event+0x81f/0xb30 drivers/net/bonding/bond_main.c:3277
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
- call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
- call_netdevice_notifiers net/core/dev.c:2053 [inline]
- netdev_features_change net/core/dev.c:1443 [inline]
- netdev_sync_lower_features net/core/dev.c:9056 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9187
- netdev_change_features+0x61/0xb0 net/core/dev.c:9259
- bond_compute_features+0x502/0xa00 drivers/net/bonding/bond_main.c:1188
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3237 [inline]
- bond_netdev_event+0x81f/0xb30 drivers/net/bonding/bond_main.c:3277
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
- call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
- call_netdevice_notifiers net/core/dev.c:2053 [inline]
- netdev_features_change net/core/dev.c:1443 [inline]
- netdev_sync_lower_features net/core/dev.c:9056 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9187
- netdev_change_features+0x61/0xb0 net/core/dev.c:9259
- bond_compute_features+0x502/0xa00 drivers/net/bonding/bond_main.c:1188
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3237 [inline]
- bond_netdev_event+0x81f/0xb30 drivers/net/bonding/bond_main.c:3277
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
- call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
- call_netdevice_notifiers net/core/dev.c:2053 [inline]
- netdev_features_change net/core/dev.c:1443 [inline]
- netdev_sync_lower_features net/core/dev.c:9056 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9187
- netdev_change_features+0x61/0xb0 net/core/dev.c:9259
- bond_compute_features+0x502/0xa00 drivers/net/bonding/bond_main.c:1188
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3237 [inline]
- bond_netdev_event+0x81f/0xb30 drivers/net/bonding/bond_main.c:3277
-Lost 627 message(s)!
----[ end trace 203af1b41d4d3a41 ]---
-RIP: 0010:pvclock_clocksource_read+0x21/0x510 arch/x86/kernel/pvclock.c:68
-Code: 2e 0f 1f 84 00 00 00 00 00 48 ba 00 00 00 00 00 fc ff df 48 89 f8 41 57 48 c1 e8 03 41 56 41 55 41 54 4c 8d 67 03 55 4c 89 e1 <53> 48 c1 e9 03 48 89 fb 48 83 ec 58 0f b6 04 10 0f b6 14 11 48 89
-RSP: 0018:ffffc90016598000 EFLAGS: 00010806
-RAX: 1ffffffff17cec00 RBX: ffff8880ae620dc0 RCX: ffffffff8be76003
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: ffffffff8be76000
-RBP: ffff888059596380 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff8be76003
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f3e110c1700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90016597ff8 CR3: 000000005d14d000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks a lot!
+--Vaibhav Gupta
+> 
+> Thanks,
+> Tom
+> 
+> > Hence, I did similar changes to all files on which sp-pci is dependent.
+> > 
+> > This caused change in function defintion and declaration of sp_suspend().
+> > 
+> > sp-pci is not depended upon sp-platform. sp-platform was modified only because
+> > it also invoked sp_suspend() which got modified.
+> > 
+> > Thus, I didn't made any other changes to sp-platofrm.
+> > 
+> > Thanks
+> > Vaibhav Gupta
+> >>
+> >> Thanks,
+> >> Tom
+> >>
+> >>> @@ -207,7 +207,7 @@ static int sp_platform_suspend(struct platform_device *pdev,
+> >>>  	struct device *dev = &pdev->dev;
+> >>>  	struct sp_device *sp = dev_get_drvdata(dev);
+> >>>  
+> >>> -	return sp_suspend(sp, state);
+> >>> +	return sp_suspend(sp);
+> >>>  }
+> >>>  
+> >>>  static int sp_platform_resume(struct platform_device *pdev)
+> >>>
