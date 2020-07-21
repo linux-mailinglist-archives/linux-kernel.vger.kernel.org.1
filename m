@@ -2,220 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12353227BAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3392B227BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbgGUJZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGUJZL (ORCPT
+        id S1728971AbgGUJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:27:07 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:4088 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726089AbgGUJ1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:25:11 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6609FC061794;
-        Tue, 21 Jul 2020 02:25:11 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id x9so23289454ljc.5;
-        Tue, 21 Jul 2020 02:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ze6lJWvJHZbmrt8N27YOntoBu13Av/K4oTVWvmf42EM=;
-        b=Sg0rQeFUrG/1Joo1uXLswuZgL8HlliGcFZBnS7LPFBO0yiQa6vpYGNpyG1QVcQ4gjo
-         eVUJva/qdPy31j6nav5crh4VtOaDJdkCm5Q8G/eT8G5Y3ehbfx7cGBi/jSJXZm5FMYjT
-         XtiyGdwDLA+4nEc7zf+GLmrwEfRtIvSgMi+tktHNmpafTUy7PHes4Z73wLY4o2Oqw9X5
-         6UaogLOr9+pp0xHgZ/kUxwoDTR34U3PLocaYUDw7JVhaUXcjcmtQYpCpst/m+f23g3TE
-         7tuTllKB2WGle9AHQLNJaZmBA3KPtyPLUiszU0gyA28I79yFWXc6gs4Te4ybM8ZxxhH2
-         rULA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ze6lJWvJHZbmrt8N27YOntoBu13Av/K4oTVWvmf42EM=;
-        b=bqEIb0EtCZ3I8di3vGXZtATBIBUA4MVAPfTtsazFpBXXyCvm6JILS3jMLsTrJyZPFD
-         zcKu0DEDQTDiNna0rNRJvKgMA1wQWbSMho1E0dmNv9z6zMP5fGtEvUpy54K02JzwTcKU
-         mNgWvB17iWy+6QBPY1u5bc03kO3TF+T2GkqxC1eBsA/ZoHevqE08LLy5ZBzWi3MuhRfA
-         2a5x4w2lJ96sb09IYa0Quzii0G9L3cgEaoMzEWUhMAaQGioMebqFW9zrZ9qWms1kkAXz
-         ecQ5dYxBKVmz/EbAgbKg4LcPkHqqsoqKJS/kr0txUV5v+lld8akl6TIJPxC9uO+nAQLg
-         0GKA==
-X-Gm-Message-State: AOAM533rHaO8B7GUkRHK96sunq3kiStlKvX3JQgVOrW7nsSet8RDaKd5
-        Hry1bhhOpjX+0Sl3FkKSdS4mDee5LlraxI/BCwI=
-X-Google-Smtp-Source: ABdhPJyVqq/e5qtdfaM4Pt8zraL2Gu3jDazqIA7Ge6GF1VOUJm15J1RP3WN1Q8JW4PbN5N5rOWnxwOMnPvEAva9XsBw=
-X-Received: by 2002:a2e:3602:: with SMTP id d2mr12878639lja.152.1595323509227;
- Tue, 21 Jul 2020 02:25:09 -0700 (PDT)
+        Tue, 21 Jul 2020 05:27:07 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06L9CEG6002901;
+        Tue, 21 Jul 2020 11:26:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=OV14C0Y2Erm6Xcl0qlPZn5PrJ9Zz3pkJLyGKIPrp1ME=;
+ b=RuwQJ5VLINxzOtwl1mwiDuXHrnjRDULmwK7XQ+lMUhEYOhiKW4Aui9UNdvdWuegirH9I
+ w1i8YBd+T8e2ra6AKt4douIqqERpKBCFYMfZseWmtzBSxAqrWj47CWDC2qrNo2p/KF7W
+ h+HkN62IxXQdWBWgTvRrmJvKMEFJo+5Zqv433EnyStuEy3mkQOV0ZNerZ8WVrrDJTZJ8
+ N/4QPyzdRDXhnnEXv0mBkUHmPxgMVtik/v0IEwTxBMXojp/j1VxRetKwLxiR5k8w6VPs
+ h8qYV+dwqQjUUVYqo3a0L7mnNDSUFMs+pZKnnmUIPZFs/MqfxD5/wafsFhtBKkMjcA4J Mg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32cux07u0b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 11:26:27 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4B1A710002A;
+        Tue, 21 Jul 2020 11:26:24 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1B7342A8DBF;
+        Tue, 21 Jul 2020 11:26:24 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 21 Jul
+ 2020 11:26:23 +0200
+Subject: Re: [PATCH 3/3] ARM: dts: stm32: add initial support for
+ stm32mp157-odyssey board
+To:     Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20200706173353.20525-1-marcin.sloniewski@gmail.com>
+ <20200706173353.20525-3-marcin.sloniewski@gmail.com>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <832ce94d-0635-634f-7d56-aa21d53652ae@st.com>
+Date:   Tue, 21 Jul 2020 11:26:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200719141034.8403-1-christianshewitt@gmail.com>
- <20200719141034.8403-4-christianshewitt@gmail.com> <90da2697-9dcc-1d75-eded-bf4bdc4b594b@baylibre.com>
- <fc679db1-be92-c384-0fe2-3b06c920ea75@baylibre.com>
-In-Reply-To: <fc679db1-be92-c384-0fe2-3b06c920ea75@baylibre.com>
-From:   Dongjin Kim <tobetter@gmail.com>
-Date:   Tue, 21 Jul 2020 18:24:57 +0900
-Message-ID: <CADoNuNepjmZgdAVAMM8Y6FA8uL5rd96e5qdn1_HDHKj6Lsnu6A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: meson: add support for the ODROID-N2+
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dongjin Kim <tobetter@hardkernel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200706173353.20525-3-marcin.sloniewski@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_02:2020-07-21,2020-07-21 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can we use "Hardkernel ODROID-N2Plus" instead of "Hardkernel ODROID-N2+"?
+Hi Marcin,
 
-Thanks,
-Dongjin.
+On 7/6/20 7:33 PM, Marcin Sloniewski wrote:
+> Add support for Seeed Studio's stm32mp157c odyssey board.
+> Board consists of SoM with stm32mp157c with 4GB eMMC and 512 MB DDR3 RAM
+> and carrier board with USB and ETH interfaces, SD card connector,
+> wifi and BT chip AP6236.
+> 
+> In this patch only basic kernel boot is supported and interfacing
+> SD card and on-board eMMC.
+> 
+> Signed-off-by: Marcin Sloniewski <marcin.sloniewski@gmail.com>
+
+Thanks for adding a new STM32MP157 board. Nothing to say about your DT 
+patchs except that Makefile update is missing.
+
+regards
+Alex
 
 
-
-On Tue, Jul 21, 2020 at 5:24 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On 21/07/2020 10:10, Neil Armstrong wrote:
-> > On 19/07/2020 16:10, Christian Hewitt wrote:
-> >> HardKernel ODROID-N2+ uses an Amlogic S922X rev. C chip capable of higher
-> >> clock speeds than the original ODROID-N2. Hardkernel supports the big cpu
-> >> cluster at 2.4GHz and the little cpu cluster at 2.0GHz. Opp points and
-> >> regulator changess are from the HardKernel Linux kernel sources.
-> >>
-> >> Suggested-by: Dongjin Kim <tobetter@hardkernel.com>
-> >> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> >> ---
-> >>  arch/arm64/boot/dts/amlogic/Makefile          |  1 +
-> >>  .../dts/amlogic/meson-g12b-odroid-n2-plus.dts | 53 +++++++++++++++++++
-> >>  2 files changed, 54 insertions(+)
-> >>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> >>
-> >> diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-> >> index 5cac4d1d487d..6dc508b80133 100644
-> >> --- a/arch/arm64/boot/dts/amlogic/Makefile
-> >> +++ b/arch/arm64/boot/dts/amlogic/Makefile
-> >> @@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
-> >>  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
-> >>  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
-> >>  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
-> >> +dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2-plus.dtb
-> >>  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-ugoos-am6.dtb
-> >>  dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-kii-pro.dtb
-> >>  dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-nanopi-k2.dtb
-> >> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> >> new file mode 100644
-> >> index 000000000000..99e96be509f8
-> >> --- /dev/null
-> >> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> >> @@ -0,0 +1,53 @@
-> >> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> >> +/*
-> >> + * Copyright (c) 2019 BayLibre, SAS
-> >> + * Author: Neil Armstrong <narmstrong@baylibre.com>
-> >> + */
-> >> +
-> >> +/dts-v1/;
-> >> +
-> >> +#include "meson-g12b-odroid-n2.dtsi"
-> >> +
-> >> +/ {
-> >> +    compatible = "hardkernel,odroid-n2-plus", "amlogic,s922x", "amlogic,g12b";
-> >> +    model = "Hardkernel ODROID-N2+";
-> >> +
-> >> +    vddcpu_a: regulator-vddcpu-a {
-> >> +            regulator-min-microvolt = <680000>;
-> >> +            regulator-max-microvolt = <1040000>;
-> >> +
-> >> +            pwms = <&pwm_ab 0 1500 0>;
-> >> +    };
-> >> +
-> >> +    vddcpu_b: regulator-vddcpu-b {
-> >> +            regulator-min-microvolt = <680000>;
-> >> +            regulator-max-microvolt = <1040000>;
-> >> +
-> >> +            pwms = <&pwm_AO_cd 1 1500 0>;
-> >> +    };
-> >> +
-> >> +    cpu_opp_table_0: opp-table-0 {
-> >> +            opp-1908000000 {
-> >> +                    opp-hz = /bits/ 64 <1908000000>;
-> >> +                    opp-microvolt = <1030000>;
-> >> +            };
-> >> +
-> >> +            opp-2016000000 {
-> >> +                    opp-hz = /bits/ 64 <2016000000>;
-> >> +                    opp-microvolt = <1040000>;
-> >> +            };
-> >> +    };
-> >> +
-> >> +    cpub_opp_table_1: opp-table-1 {
-> >> +            opp-2304000000 {
-> >> +                    opp-hz = /bits/ 64 <2304000000>;
-> >> +                    opp-microvolt = <1030000>;
-> >> +            };
-> >> +
-> >> +            opp-2400000000 {
-> >> +                    opp-hz = /bits/ 64 <2400000000>;
-> >> +                    opp-microvolt = <1040000>;
-> >> +            };
-> >> +    };
-> >> +};
-> >> +
-> >>
-> > Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-> >
->
-> Wait no, it should be:
->
-> / {
->         compatible = "hardkernel,odroid-n2-plus", "amlogic,s922x", "amlogic,g12b";
->         model = "Hardkernel ODROID-N2+";
-> };
->
-> &vddcpu_a {
->         regulator-min-microvolt = <680000>;
->         regulator-max-microvolt = <1040000>;
->
->         pwms = <&pwm_ab 0 1500 0>;
-> };
->
-> &vddcpu_b {
->         regulator-min-microvolt = <680000>;
->         regulator-max-microvolt = <1040000>;
->
->         pwms = <&pwm_AO_cd 1 1500 0>;
-> };
->
-> &cpu_opp_table_0 {
->                 opp-1908000000 {
->                 opp-hz = /bits/ 64 <1908000000>;
->                 opp-microvolt = <1030000>;
->         };
->
->         opp-2016000000 {
->                 opp-hz = /bits/ 64 <2016000000>;
->                 opp-microvolt = <1040000>;
->         };
-> };
->
-> &cpub_opp_table_1 {
->         opp-2304000000 {
->                 opp-hz = /bits/ 64 <2304000000>;
->                 opp-microvolt = <1030000>;
->         };
->
->         opp-2400000000 {
->                 opp-hz = /bits/ 64 <2400000000>;
->                 opp-microvolt = <1040000>;
->         };
-> };
->
-> Neil
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> ---
+>   .../arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 276 ++++++++++++++++++
+>   arch/arm/boot/dts/stm32mp157c-odyssey.dts     |  72 +++++
+>   2 files changed, 348 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+>   create mode 100644 arch/arm/boot/dts/stm32mp157c-odyssey.dts
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+> new file mode 100644
+> index 000000000000..620ff9e7f370
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+> @@ -0,0 +1,276 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +/*
+> + * Copyright (C) 2020 Marcin Sloniewski <marcin.sloniewski@gmail.com>.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "stm32mp157.dtsi"
+> +#include "stm32mp15xc.dtsi"
+> +#include "stm32mp15-pinctrl.dtsi"
+> +#include "stm32mp15xxac-pinctrl.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/mfd/st,stpmic1.h>
+> +
+> +/ {
+> +	model = "Seeed Studio Odyssey-STM32MP157C SOM";
+> +	compatible = "seeed,stm32mp157c-odyssey-som", "st,stm32mp157";
+> +
+> +	memory@c0000000 {
+> +		reg = <0xc0000000 0x20000000>;
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		mcuram2: mcuram2@10000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10000000 0x40000>;
+> +			no-map;
+> +		};
+> +
+> +		vdev0vring0: vdev0vring0@10040000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10040000 0x1000>;
+> +			no-map;
+> +		};
+> +
+> +		vdev0vring1: vdev0vring1@10041000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10041000 0x1000>;
+> +			no-map;
+> +		};
+> +
+> +		vdev0buffer: vdev0buffer@10042000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10042000 0x4000>;
+> +			no-map;
+> +		};
+> +
+> +		mcuram: mcuram@30000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x30000000 0x40000>;
+> +			no-map;
+> +		};
+> +
+> +		retram: retram@38000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x38000000 0x10000>;
+> +			no-map;
+> +		};
+> +
+> +		gpu_reserved: gpu@d4000000 {
+> +			reg = <0xd4000000 0x4000000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+> +	led {
+> +		compatible = "gpio-leds";
+> +		blue {
+> +			label = "heartbeat";
+> +			gpios = <&gpiog 3 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +			default-state = "off";
+> +		};
+> +	};
+> +};
+> +
+> +&gpu {
+> +	contiguous-area = <&gpu_reserved>;
+> +	status = "okay";
+> +};
+> +
+> +&i2c2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c2_pins_a>;
+> +	i2c-scl-rising-time-ns = <185>;
+> +	i2c-scl-falling-time-ns = <20>;
+> +	status = "okay";
+> +	/* spare dmas for other usage */
+> +	/delete-property/dmas;
+> +	/delete-property/dma-names;
+> +
+> +	pmic: stpmic@33 {
+> +		compatible = "st,stpmic1";
+> +		reg = <0x33>;
+> +		interrupts-extended = <&gpioa 0 IRQ_TYPE_EDGE_FALLING>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <2>;
+> +		status = "okay";
+> +
+> +		regulators {
+> +			compatible = "st,stpmic1-regulators";
+> +			ldo1-supply = <&v3v3>;
+> +			ldo3-supply = <&vdd_ddr>;
+> +			ldo6-supply = <&v3v3>;
+> +			pwr_sw1-supply = <&bst_out>;
+> +			pwr_sw2-supply = <&bst_out>;
+> +
+> +			vddcore: buck1 {
+> +				regulator-name = "vddcore";
+> +				regulator-min-microvolt = <800000>;
+> +				regulator-max-microvolt = <1350000>;
+> +				regulator-always-on;
+> +				regulator-initial-mode = <0>;
+> +				regulator-over-current-protection;
+> +			};
+> +
+> +			vdd_ddr: buck2 {
+> +				regulator-name = "vdd_ddr";
+> +				regulator-min-microvolt = <1350000>;
+> +				regulator-max-microvolt = <1350000>;
+> +				regulator-always-on;
+> +				regulator-initial-mode = <0>;
+> +				regulator-over-current-protection;
+> +			};
+> +
+> +			vdd: buck3 {
+> +				regulator-name = "vdd";
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +				st,mask-reset;
+> +				regulator-initial-mode = <0>;
+> +				regulator-over-current-protection;
+> +			};
+> +
+> +			v3v3: buck4 {
+> +				regulator-name = "v3v3";
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +				regulator-over-current-protection;
+> +				regulator-initial-mode = <0>;
+> +			};
+> +
+> +			v1v8_audio: ldo1 {
+> +				regulator-name = "v1v8_audio";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-always-on;
+> +				interrupts = <IT_CURLIM_LDO1 0>;
+> +			};
+> +
+> +			v3v3_hdmi: ldo2 {
+> +				regulator-name = "v3v3_hdmi";
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +				interrupts = <IT_CURLIM_LDO2 0>;
+> +			};
+> +
+> +			vtt_ddr: ldo3 {
+> +				regulator-name = "vtt_ddr";
+> +				regulator-min-microvolt = <500000>;
+> +				regulator-max-microvolt = <750000>;
+> +				regulator-always-on;
+> +				regulator-over-current-protection;
+> +			};
+> +
+> +			vdd_usb: ldo4 {
+> +				regulator-name = "vdd_usb";
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				interrupts = <IT_CURLIM_LDO4 0>;
+> +			};
+> +
+> +			vdda: ldo5 {
+> +				regulator-name = "vdda";
+> +				regulator-min-microvolt = <2900000>;
+> +				regulator-max-microvolt = <2900000>;
+> +				interrupts = <IT_CURLIM_LDO5 0>;
+> +				regulator-boot-on;
+> +			};
+> +
+> +			v1v2_hdmi: ldo6 {
+> +				regulator-name = "v1v2_hdmi";
+> +				regulator-min-microvolt = <1200000>;
+> +				regulator-max-microvolt = <1200000>;
+> +				regulator-always-on;
+> +				interrupts = <IT_CURLIM_LDO6 0>;
+> +			};
+> +
+> +			vref_ddr: vref_ddr {
+> +				regulator-name = "vref_ddr";
+> +				regulator-always-on;
+> +				regulator-over-current-protection;
+> +			};
+> +
+> +			 bst_out: boost {
+> +				regulator-name = "bst_out";
+> +				interrupts = <IT_OCP_BOOST 0>;
+> +			 };
+> +
+> +			vbus_otg: pwr_sw1 {
+> +				regulator-name = "vbus_otg";
+> +				interrupts = <IT_OCP_OTG 0>;
+> +			 };
+> +
+> +			 vbus_sw: pwr_sw2 {
+> +				regulator-name = "vbus_sw";
+> +				interrupts = <IT_OCP_SWOUT 0>;
+> +				regulator-active-discharge;
+> +			 };
+> +		};
+> +
+> +		onkey {
+> +			compatible = "st,stpmic1-onkey";
+> +			interrupts = <IT_PONKEY_F 0>, <IT_PONKEY_R 0>;
+> +			interrupt-names = "onkey-falling", "onkey-rising";
+> +			power-off-time-sec = <10>;
+> +			status = "okay";
+> +		};
+> +
+> +		watchdog {
+> +			compatible = "st,stpmic1-wdt";
+> +			status = "disabled";
+> +		};
+> +	};
+> +};
+> +
+> +&ipcc {
+> +	status = "okay";
+> +};
+> +
+> +&iwdg2 {
+> +	timeout-sec = <32>;
+> +	status = "okay";
+> +};
+> +
+> +&m4_rproc {
+> +	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+> +			<&vdev0vring1>, <&vdev0buffer>;
+> +	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>;
+> +	mbox-names = "vq0", "vq1", "shutdown";
+> +	interrupt-parent = <&exti>;
+> +	interrupts = <68 1>;
+> +	status = "okay";
+> +};
+> +
+> +&rng1 {
+> +	status = "okay";
+> +};
+> +
+> +&rtc {
+> +	status = "okay";
+> +};
+> +
+> +&sdmmc2 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a>;
+> +	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_a>;
+> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_a>;
+> +	non-removable;
+> +	no-sd;
+> +	no-sdio;
+> +	st,neg-edge;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&v3v3>;
+> +	vqmmc-supply = <&v3v3>;
+> +	mmc-ddr-3_3v;
+> +	status = "okay";
+> +};
+> +
+> diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey.dts b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
+> new file mode 100644
+> index 000000000000..6c1b091af14f
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
+> @@ -0,0 +1,72 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +/*
+> + * Copyright (C) 2020 Marcin Sloniewski <marcin.sloniewski@gmail.com>.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "stm32mp157c-odyssey-som.dtsi"
+> +
+> +/ {
+> +	model = "Seeed Studio Odyssey-STM32MP157C Board";
+> +	compatible = "seeed,stm32mp157c-odyssey", "st,stm32mp157";
+> +
+> +	aliases {
+> +		ethernet0 = &ethernet0;
+> +		serial0 = &uart4;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +};
+> +
+> +&ethernet0 {
+> +	status = "okay";
+> +	pinctrl-0 = <&ethernet0_rgmii_pins_a>;
+> +	pinctrl-1 = <&ethernet0_rgmii_pins_sleep_a>;
+> +	pinctrl-names = "default", "sleep";
+> +	phy-mode = "rgmii-id";
+> +	max-speed = <1000>;
+> +	phy-handle = <&phy0>;
+> +
+> +	mdio0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		compatible = "snps,dwmac-mdio";
+> +		phy0: ethernet-phy@0 {
+> +			reg = <0>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c1 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&i2c1_pins_a>;
+> +	pinctrl-1 = <&i2c1_pins_sleep_a>;
+> +	i2c-scl-rising-time-ns = <100>;
+> +	i2c-scl-falling-time-ns = <7>;
+> +	status = "okay";
+> +	/delete-property/dmas;
+> +	/delete-property/dma-names;
+> +};
+> +
+> +&sdmmc1 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc1_b4_pins_a>;
+> +	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
+> +	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
+> +	cd-gpios = <&gpiob 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+> +	disable-wp;
+> +	st,neg-edge;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&v3v3>;
+> +	status = "okay";
+> +};
+> +
+> +&uart4 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart4_pins_a>;
+> +	status = "okay";
+> +};
+> +
+> 
