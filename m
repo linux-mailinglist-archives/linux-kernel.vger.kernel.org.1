@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B066B22775F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 06:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA25227790
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 06:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgGUEUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 00:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S1726127AbgGUE1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 00:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgGUEUF (ORCPT
+        with ESMTP id S1726010AbgGUE1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 00:20:05 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BA8C0619D6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:20:05 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id v10so11573518qvm.17
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:20:05 -0700 (PDT)
+        Tue, 21 Jul 2020 00:27:08 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B03C0619D7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:27:08 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j19so11331273pgm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=BihrwH3YWr7bTCjry1NXThJajsBWv/A/wcqD0l396O4=;
-        b=Gkxs/4L9w2KYJeqo1YzrritKtKVPQXS0nv3cFc1jhGooz2i2RqPdhiqYoQnp1qX6Fy
-         v0erMgNID5uKlh2JzkyqRUT3P2dNJPgGSUmyE/T5ReFLtmy2MGmujoy8D+zW9wi/mNkp
-         rOVTsvULqQVx9jc4HxHbW8MaJS/1Tgjjza0iSFEIf3TswCxVOm4j8tuNunvWr+cxf1Ts
-         hZYjAoCTG/p/3fEt/AbyH4JtklfW7Es9V6gVD8dewOgW2vhglnCtms5VhrnhEVBBrkbx
-         HsHa51amlowN1sfv6HI5H1SbmFc//YgFuisS3nLFiSmSjpetTSEK0L5bn028gUR8C5rs
-         T+uA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jIb2rFOZN8gwoOlXTkxPZa6eyeZDpgkSyS7W8wCzIJg=;
+        b=WvDaw8DXxILkRr/NoclGFf0Rt0bm/iie3CNU3ZYfRBxlZ3lZovpsXOcdh3xgFByHih
+         aU4ABPVp2FzRKAoUX9PQtPZU5+8n8XyIuUFBWdNFPjrloSZ1wwtOW85Gx+3KkNcwxMY4
+         AVxsqdoadhQc1+eyMrH2gYFo6d/D2sDR6TXHQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=BihrwH3YWr7bTCjry1NXThJajsBWv/A/wcqD0l396O4=;
-        b=XUiA6Nn9UF/7K4mSlSxYej3Vs/8Z3hODz0Y/ZpLFsKoLDb5x+1SsjkgmK4bMRLhNfB
-         t0+eeVH4ycaeQBRfpB/zxZaKLgh6Y+AAG3Jb1O2Qb2o7zv7MlzJCbOS67Be8MkMKrhNN
-         1x83+54nae4o5yz9QwKNnaYnh6q25vYAvtKHg5IuEU14Pj8VOwsRHCEJ9OLxbO9NMEH2
-         WMsbVMdUFkZuPcyArTeSq7pzYs/g53Xly5CCRFVO7UhmdNHUBlKqjEbBjKFfAw1YVbZ3
-         3gI8brtfjtpevp7+5+iJIGUr6noYW5M9umT22GA7CYUdfMvQCJWdxrD2vTnFYu7Uc+jc
-         dang==
-X-Gm-Message-State: AOAM531ZtPOcyknUH315vnvHxK8k7o2UfnmK/8XDaBMzHHhbWqriYRW6
-        Gb3KlP8f2pR3+M/XdcxdXkYoqxeIiwD3
-X-Google-Smtp-Source: ABdhPJyws38D0FLgRfDbVjjMTi43YQTPV6lXnjuE3rDLoFlOp9lJ5MDKjHMYRc9vl3OPwcPnhjiqPGbn9gBf
-X-Received: by 2002:a05:6214:927:: with SMTP id dk7mr24912062qvb.26.1595305204150;
- Mon, 20 Jul 2020 21:20:04 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 21:19:38 -0700
-Message-Id: <20200721041940.4029552-1-maskray@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v2] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
-From:   Fangrui Song <maskray@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Cc:     stable@vger.kernel.org, Jian Cai <jiancai@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jIb2rFOZN8gwoOlXTkxPZa6eyeZDpgkSyS7W8wCzIJg=;
+        b=AD6kJXor/qz3gIUg+ndW37mQ4ReqPSMn3H/Mz3CrtlGJH2Ztx+1wWXEXy4TlCK54A7
+         KI5varzxPVcNWbqcoSytgVLuFb1Tsbx/RkIir/h/GWQTLg5OsxqwFhhWIG5X3bOtqc6Y
+         PvPhVXF0yrpemFUBCdChMQVg5kv1OBHYC05XBWYWYi575V3k/gWvU3YVa9uqjU3pJykS
+         JRoRgiGffsm93FEj9KHv3R9KUW61fZ1CWp28CRgZeKYqFY0+CPU/IzCe1RsG0LkTkg38
+         dEt6O/TcaD1toTij4Ee6VkuQZq39Ln8qx1Xxu9D6bddZ52C72eVX9Qsoutrj6lelmCmx
+         C1mg==
+X-Gm-Message-State: AOAM530+fscRF4BUpPWsQPf6ZL04nBHCqxroiL6IGFVyaYLPRXOYQG0+
+        FUKFU1V7pAeJzQC7O+I43t9C7g==
+X-Google-Smtp-Source: ABdhPJz9Vh2IOS/1uRlQ2nI9iXmkt0IM/J22K0/Kq13gyoo2noXO6h6x9nUFPTbwdyISrFtDedLw5w==
+X-Received: by 2002:a63:395:: with SMTP id 143mr21310754pgd.57.1595305627807;
+        Mon, 20 Jul 2020 21:27:07 -0700 (PDT)
+Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
+        by smtp.gmail.com with ESMTPSA id o8sm1207075pjf.37.2020.07.20.21.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 21:27:06 -0700 (PDT)
+From:   Alexandru Stan <amstan@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Alexandru Stan <amstan@chromium.org>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH 0/3] PWM backlight interpolation adjustments
+Date:   Mon, 20 Jul 2020 21:25:19 -0700
+Message-Id: <20200721042522.2403410-1-amstan@chromium.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
-$(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-elfedit,
-GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
-/usr/bin/ and Clang as of 11 will search for both
-$(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
+I was trying to adjust the brightness for a new chromebook:
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2291209
+Like a lot of panels, the low end needs to be cropped,
+and now that we have the interpolation stuff I wanted to make use of it
+and bake in even the curve.
 
-GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
-$(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
-$(prefix)aarch64-linux-gnu/$needle rarely contains executables.
+I found the behavior a little unintuitive and non-linear. See patch 1
+for a suggested fix for this.
 
-To better model how GCC's -B/--prefix takes in effect in practice, newer
-Clang (since
-https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90)
-only searches for $(prefix)$needle. Currently it will find /usr/bin/as
-instead of /usr/bin/aarch64-linux-gnu-as.
+Unfortunatelly a few veyron dts files were relying on this
+(perhaps weird) behavior. Those devices also want a minimum brightness.
+The issue is that they also want the 0% point for turning off the
+display.
+https://github.com/torvalds/linux/commit/6233269bce47bd450196a671ab28eb1ec5eb88d9#diff-e401ae20091bbfb311a062c464f4f47fL23
 
-Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)
-(/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
-appropriate cross compiling GNU as (when -no-integrated-as is in
-effect).
+So the idea here is to change those dts files to only say <3 255> (patch
+3), and add in a virtual 0% point at the bottom of the scale (patch 2).
 
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1099
----
-Changes in v2:
-* Updated description to add tags and the llvm-project commit link.
-* Fixed a typo.
----
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We have to do this conditionally because it seems some devices like to
+have the scale inverted:
+  % git grep "brightness-levels\s*=\s*<\s*[1-9]"|cat
+  arch/arm/boot/dts/tegra124-apalis-eval.dts:             brightness-levels = <255 231 223 207 191 159 127 0>;
 
-diff --git a/Makefile b/Makefile
-index 0b5f8538bde5..3ac83e375b61 100644
---- a/Makefile
-+++ b/Makefile
-@@ -567,7 +567,7 @@ ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
- ifneq ($(CROSS_COMPILE),)
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
- GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
--CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
-+CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)
- GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
- endif
- ifneq ($(GCC_TOOLCHAIN),)
+
+Alexandru Stan (3):
+  backlight: pwm_bl: Fix interpolation
+  backlight: pwm_bl: Artificially add 0% during interpolation
+  ARM: dts: rockchip: Remove 0 point in backlight
+
+ arch/arm/boot/dts/rk3288-veyron-jaq.dts    |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-tiger.dts  |  2 +-
+ drivers/video/backlight/pwm_bl.c           | 78 +++++++++++-----------
+ 4 files changed, 42 insertions(+), 42 deletions(-)
+
 -- 
-2.28.0.rc0.105.gf9edc3c819-goog
+2.27.0
 
