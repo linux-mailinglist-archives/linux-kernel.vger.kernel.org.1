@@ -2,126 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDAA2286E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6F92286EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730079AbgGURMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbgGURMb (ORCPT
+        id S1730499AbgGUROm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:14:42 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:64752 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729967AbgGUROl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:12:31 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04982C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:12:31 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id a14so7089196wra.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=li6Ai+i2GC9C2OTaxMc0Mm8uFP4T7o+Xp3gc7X+SoOc=;
-        b=CBLL6J3+4BY47pbGZDKfS3eUO0MuL+xxmDwYvkPLz+F0w7xObrTNc4OCTQJ77r+PZc
-         PkcbMxfQBkNxnJjFM/d/avBDGMSIm4x6knuvfkMPQepOuywO2A7Phgg0HcvmVaoGqS9r
-         uY6esEnIkMOUODqmMoAURXJArcolQUBL5vokt043mskZU6k5nicicHp6Non51tsyiWbi
-         bAsdGtuT0/xhIBHD/vXN+cjudpAJlhCf9jdhqmMX2mYhMBxZazqDsJuTfdSWwFFxu0Et
-         Ky+4GrQATUHqiPJ1Yy+N9iAGQYGaLgE+0CvZurAkFuiDYyTUYv/1Z1cJ+iSs8CDFU6rc
-         GkGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=li6Ai+i2GC9C2OTaxMc0Mm8uFP4T7o+Xp3gc7X+SoOc=;
-        b=lFjUXOzyFsdY0v2V55ajIp5L6a5sTw2s1S3q+qrze7lovESUkH6IBEG/DxHO157SBM
-         Z7ohnKFoOR8vqIsbnMtLvo5tv0SRvQJFuk45wpR8AlGC6TDafLqiZWn7PS0K3j3a9MaV
-         nNMwlkHUBfE8HkKqqBntaOXKtm4tjnDlWRw72ceGy2Z5GrgpbrPIBav9YjF52ytIJqYY
-         H8m5aDa66GlFQcL7pd9QMyTQWz0IkuB/4YKTbG+QVVRY1DWqzHJ1X8iHKbsbg2ZKnUvP
-         jarIGSglQmEd5nZb0iDWChCdoOlqilbM3l1B7OWbuNMdXVdMufiayU/m+WbwPweojNDG
-         0qkQ==
-X-Gm-Message-State: AOAM530virVxNzLNtt/DpZ+ywi/eol5kJ6n34+xFQcIDeTH+2auck65n
-        i9BzPGG7QPPQ2Ypxrug3WX3CvBMdk29BzOxX0Hs=
-X-Google-Smtp-Source: ABdhPJz0YdT8vSTroiEpfkQ8rGiMvt24vskGTjqyubws9569N+5uFZFHkZwRAwl+PoYL3HniBDCOUD8LWlWswqc6nPc=
-X-Received: by 2002:a5d:618e:: with SMTP id j14mr1345774wru.374.1595351549684;
- Tue, 21 Jul 2020 10:12:29 -0700 (PDT)
+        Tue, 21 Jul 2020 13:14:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1595351681; x=1626887681;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=fkusY/rZnoHUUkkCkx7on0e3uqJv5otXccNgfSdW2xg=;
+  b=ejmxlAvDm8Cz0FzZgb3N9g5RSwE/5t88WGc+dSihwDp88hpO8ucY+Uhf
+   lb4xA/M1BdH+voemaQxWLhvZgwL8mUAPBALgEkAaRWmRey3u47HzgSs8U
+   +mYLtlue1oySuflMVcJA/gHMhCRBGP1UKNU2SOqLwA6owEP3isvaNeQCo
+   LB8q2s4SDADZdS8KxASOUYf1r0ie6iTxkaFkwyncVSURcgjuzG24Z2cO/
+   A0UyMCX73EA+LIgoBjg8nWe1naat5QjdqpAzhNeAoRVQ2ZDFmvrUV/0Vy
+   Za+9yMtfGXowpSB/IWOtiYFFjkMnKaHyZkZbqkDTGdtFsnLcwaZ/z07RO
+   Q==;
+IronPort-SDR: W9KznHSrzhC9ttuaNSxXdfKqAcbuJXO89ByKoBbzXLX4fj4ZWbJ0it0/7IZUuoyvFnnhZBSiP0
+ 5nhlppiN+uFiiwRGxU/wz1k4g39Iq3MqtDiM2hSkSu0HerguObUv3HmRXvQATqry/AGqTdwsR7
+ tD+T8mGt7Ka+R7FRyE4btIZlnh/gUIyueVzfSuogCoSFvdgm1jEa3q12v/eUhhVnp3dWVzx4o3
+ s+GPsc9p4/cFLv1kZhqpS1E63CIGfknbH7iZja6REiYs3URENjFCfTCr/uYBFZsWUOjnvh0wjr
+ e34=
+X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
+   d="scan'208";a="84811168"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jul 2020 10:14:40 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 21 Jul 2020 10:14:40 -0700
+Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 21 Jul 2020 10:13:46 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <andrew@lunn.ch>,
+        <f.fainelli@gmail.com>, <robh+dt@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH net-next v2 0/7] Add an MDIO sub-node under MACB
+Date:   Tue, 21 Jul 2020 20:13:09 +0300
+Message-ID: <20200721171316.1427582-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200717070958.41489-1-qiuwenbo@phytium.com.cn>
-In-Reply-To: <20200717070958.41489-1-qiuwenbo@phytium.com.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 21 Jul 2020 13:12:17 -0400
-Message-ID: <CADnq5_MbawfSJBQ5xurAcUfu8mxN32aUBNqv=295wgaadxKk9Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/powerplay: fix a crash when overclocking Vega M
-To:     Qiu Wenbo <qiuwenbo@phytium.com.cn>
-Cc:     Evan Quan <evan.quan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        David Airlie <airlied@linux.ie>,
-        YueHaibing <yuehaibing@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Eric Huang <JinHuiEric.Huang@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        yu kuai <yukuai3@huawei.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Adding the PHY nodes directly under the Ethernet node became deprecated,
+so the aim of this patch series is to make MACB use an MDIO node as
+container for MDIO devices.
+This patch series starts with a small patch to use the device-managed
+devm_mdiobus_alloc(). In the next two patches we update the bindings and
+adapt macb driver to parse the device-tree PHY nodes from under an MDIO
+node. The last patches add the MDIO node in the device-trees of sama5d2,
+sama5d3, samad4 and sam9x60 boards.
 
-Alex
+Changes in v2:
+ - renamed patch 2/7 from "macb: bindings doc: use an MDIO node as a
+   container for PHY nodes" to "dt-bindings: net: macb: use an MDIO
+   node as a container for PHY nodes"
+ - added back a newline removed by mistake in patch 3/7
 
-On Fri, Jul 17, 2020 at 8:23 AM Qiu Wenbo <qiuwenbo@phytium.com.cn> wrote:
->
-> Avoid kernel crash when vddci_control is SMU7_VOLTAGE_CONTROL_NONE and
-> vddci_voltage_table is empty. It has been tested on Intel Hades Canyon
-> (i7-8809G).
->
-> Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208489
-> Fixes: ac7822b0026f ("drm/amd/powerplay: add smumgr support for VEGAM (v2)")
-> Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
-> ---
->  drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-> index 3da71a088b92..0ecc18b55ffb 100644
-> --- a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-> +++ b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-> @@ -644,9 +644,6 @@ static int vegam_get_dependency_volt_by_clk(struct pp_hwmgr *hwmgr,
->
->         /* sclk is bigger than max sclk in the dependence table */
->         *voltage |= (dep_table->entries[i - 1].vddc * VOLTAGE_SCALE) << VDDC_SHIFT;
-> -       vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
-> -                       (dep_table->entries[i - 1].vddc -
-> -                                       (uint16_t)VDDC_VDDCI_DELTA));
->
->         if (SMU7_VOLTAGE_CONTROL_NONE == data->vddci_control)
->                 *voltage |= (data->vbios_boot_state.vddci_bootup_value *
-> @@ -654,8 +651,13 @@ static int vegam_get_dependency_volt_by_clk(struct pp_hwmgr *hwmgr,
->         else if (dep_table->entries[i - 1].vddci)
->                 *voltage |= (dep_table->entries[i - 1].vddci *
->                                 VOLTAGE_SCALE) << VDDC_SHIFT;
-> -       else
-> +       else {
-> +               vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
-> +                               (dep_table->entries[i - 1].vddc -
-> +                                               (uint16_t)VDDC_VDDCI_DELTA));
-> +
->                 *voltage |= (vddci * VOLTAGE_SCALE) << VDDCI_SHIFT;
-> +       }
->
->         if (SMU7_VOLTAGE_CONTROL_NONE == data->mvdd_control)
->                 *mvdd = data->vbios_boot_state.mvdd_bootup_value * VOLTAGE_SCALE;
-> --
-> 2.27.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Codrin Ciubotariu (7):
+  net: macb: use device-managed devm_mdiobus_alloc()
+  dt-bindings: net: macb: use an MDIO node as a container for PHY nodes
+  net: macb: parse PHY nodes found under an MDIO node
+  ARM: dts: at91: sama5d2: add an mdio sub-node to macb
+  ARM: dts: at91: sama5d3: add an mdio sub-node to macb
+  ARM: dts: at91: sama5d4: add an mdio sub-node to macb
+  ARM: dts: at91: sam9x60: add an mdio sub-node to macb
+
+ Documentation/devicetree/bindings/net/macb.txt | 15 ++++++++++++---
+ arch/arm/boot/dts/at91-sam9x60ek.dts           |  8 ++++++--
+ arch/arm/boot/dts/at91-sama5d27_som1.dtsi      | 16 ++++++++++------
+ arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi    | 17 ++++++++++-------
+ arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts      | 13 ++++++++-----
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts    | 12 ++++++++----
+ arch/arm/boot/dts/at91-sama5d3_xplained.dts    | 16 ++++++++++++----
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts    | 12 ++++++++----
+ drivers/net/ethernet/cadence/macb_main.c       | 18 ++++++++++++------
+ 9 files changed, 86 insertions(+), 41 deletions(-)
+
+-- 
+2.25.1
+
