@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D494D2283F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C332283F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730051AbgGUPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:37:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56906 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726919AbgGUPhs (ORCPT
+        id S1730003AbgGUPhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728468AbgGUPhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:37:48 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LFV7eU013815;
-        Tue, 21 Jul 2020 11:37:23 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1x72sy8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 11:37:23 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06LFXRC6023229;
-        Tue, 21 Jul 2020 11:37:22 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1x72sxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 11:37:22 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06LFKkx5004483;
-        Tue, 21 Jul 2020 15:37:20 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 32dbmn0pas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jul 2020 15:37:20 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06LFbHiP59703496
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Jul 2020 15:37:17 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C8035A4057;
-        Tue, 21 Jul 2020 15:37:17 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB2ECA4040;
-        Tue, 21 Jul 2020 15:37:15 +0000 (GMT)
-Received: from pratiks-thinkpad.ibmuc.com (unknown [9.79.210.59])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 21 Jul 2020 15:37:15 +0000 (GMT)
-From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, benh@kernel.crashing.org,
-        paulus@samba.org, mikey@neuling.org, ego@linux.vnet.ibm.com,
-        svaidy@linux.ibm.com, psampat@linux.ibm.com,
-        pratik.r.sampat@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] powerpc/powernv/idle: Exclude mfspr on HID1,4,5 on P9 and above
-Date:   Tue, 21 Jul 2020 21:07:08 +0530
-Message-Id: <20200721153708.89057-4-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200721153708.89057-1-psampat@linux.ibm.com>
-References: <20200721153708.89057-1-psampat@linux.ibm.com>
+        Tue, 21 Jul 2020 11:37:34 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E39C0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:37:34 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id x13so10594537vsx.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tWncqL+S0JRCizmsP5rH0IHxLZuIk79rLB6DbhdOm9I=;
+        b=T3dGBYsTOIpcHNQoowJYtKuYY0MZO/UhYOaNQu3Qc2UgihSHCcGkaq0xMl5uqUy7yh
+         zTeMTnL/JkLkX4/67imzIFGXXVXP1WPuX15rGKq7zlPhzmmka7ZJIpqYlb3SRMTLQceT
+         djxthG6Nuz+/gp17xBeTM3AVDGu0MVNlq8M9k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tWncqL+S0JRCizmsP5rH0IHxLZuIk79rLB6DbhdOm9I=;
+        b=ofkpthvIxTLsrAcsQOdUiVAfa2oHCRKaMEeAwYNnYESGGKB3P6wJJGEszZamsibNVx
+         CppNH871j342gJDi1jfMlmmuBPgpRzIxDd+c7V1RZVaOS6DdBfdu8XTfLJcwj8XkjK6Q
+         HBbSnOExQUAUzATvMH3xLAhmbdpHZem0EObiA2kz0sZrgvrPivfqpMTF16OjG3TbD6mM
+         qfR0OVDOKdonwY8MW6G/MaEojnp33tKhdVjKkWeEEA8v0OqcTIqdqds66jQ56eJS4it+
+         Dl4CCPhIEwayJTyL6TqhUlHbI6RWFR7fzh4PnbhydSnPgd3FQf1+J6pK8yoUf8m4HM6O
+         A31g==
+X-Gm-Message-State: AOAM533C9q829Qg4sxx+ciiJqi9cFm1e3+0ZzhQ6jWNWfy8gn2uuftr3
+        MgIFDBSJcgVtTrsBaXvznbq6fm71rUQ=
+X-Google-Smtp-Source: ABdhPJx1/QcsZqEB/AxwVgBPAkfV7VFUQM9BQ9UfMbiIfBE9Ylcnpg3lWOZhVnsK4GRfWggQj6cyOw==
+X-Received: by 2002:a67:1305:: with SMTP id 5mr20106778vst.52.1595345852871;
+        Tue, 21 Jul 2020 08:37:32 -0700 (PDT)
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
+        by smtp.gmail.com with ESMTPSA id e14sm2779975vsa.33.2020.07.21.08.37.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 08:37:31 -0700 (PDT)
+Received: by mail-ua1-f42.google.com with SMTP id g4so6353828uaq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:37:31 -0700 (PDT)
+X-Received: by 2002:a9f:3dc6:: with SMTP id e6mr21464631uaj.104.1595345851301;
+ Tue, 21 Jul 2020 08:37:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-21_09:2020-07-21,2020-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- impostorscore=0 spamscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=783 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007210110
+References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
+ <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
+ <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+ <871rlcx8uv.fsf@codeaurora.org> <CALhWmc1PbTKhrkaPn9yfpx3gZHAMuR-bPY=4_o4wQHv_H5D9dA@mail.gmail.com>
+ <CALhWmc3i9Z+KiG1cJNvpSWNsiFhOa5jBw=XfcFz_gKwi_5QibA@mail.gmail.com>
+ <CALhWmc1B0+SONV6_AF+nUzgxZdekPD3sZuhrsmwVQx1Q-cgT_g@mail.gmail.com>
+ <CALhWmc0qF5stKRcikjwbeFmE-32hNCDazgQdqTMidUyt7u-T1Q@mail.gmail.com>
+ <CALhWmc0JtQZE5CfLPb1WnwhE9wCYsjE-53kYWbwtFCs1k7FrCQ@mail.gmail.com> <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
+In-Reply-To: <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 21 Jul 2020 08:37:19 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UdeQTxbgitY3cQc+s8Pc7Lna7TWpAfzJdfXz-whjX1Qg@mail.gmail.com>
+Message-ID: <CAD=FV=UdeQTxbgitY3cQc+s8Pc7Lna7TWpAfzJdfXz-whjX1Qg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+To:     Peter Oh <peter.oh@eero.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        Brian Norris <briannorris@chromium.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Rakesh Pillai <pillair@codeaurora.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POWER9 onwards the support for the registers HID1, HID4, HID5 has been
-receded.
-Although mfspr on the above registers worked in Power9, In Power10
-simulator is unrecognized. Moving their assignment under the
-check for machines lower than Power9
+Hi,
 
-Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/powerpc/platforms/powernv/idle.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Mon, Jul 20, 2020 at 6:32 PM Peter Oh <peter.oh@eero.com> wrote:
+>
+> I'll take my word back.
+> It's not this patch problem, but by others.
+> I have 2 extra patches before the 3 patches so my system looks like
+>
+> backports from ath.git 5.6-rc1 + linux kernel 4.4 (similar to OpenWrt)
+> On top of the working system, I cherry-picked these 5.
+>
+> #1.
+> ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
+> ath.git commit 521fc37be3d879561ca5ab42d64719cf94116af0
+> #2.
+> ath10k: Fix NULL pointer dereference in AHB device probe
+> wireless-drivers.git commit 1cfd3426ef989b83fa6176490a38777057e57f6c
+> #3.
+> ath10k: Add interrupt summary based CE processing
+> https://patchwork.kernel.org/patch/11628299/
+> #4.
+> ath10k: Keep track of which interrupts fired, don't poll them
+> https://patchwork.kernel.org/patch/11654631/
+> #5.
+> ath10k: Get rid of "per_ce_irq" hw param
+> https://patchwork.kernel.org/patch/11654633/
+>
+> The error "[  14.226184] ath10k_ahb a000000.wifi: failed to receive
+> initialized event from target: 80000000" is because of #1 and #2,
+> since this happens even after I reverted #3~#5.
+> Once I reverted all except #1 I got another crash.
+>
+> [   11.179595] !#%&PageFault P<__ath10k_ce_rx_post_buf+0x14/0x98
+> [ath10k_core]> L<0x4bc00> F<005> [0000000c]
+> [   11.179643] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000c
+> [   11.439207] [<7f15a69c>] (__ath10k_ce_rx_post_buf [ath10k_core])
+> from [<7f15a874>] (ath10k_ce_rx_post_buf+0x3c/0x50 [ath10k_core])
+> [   11.447204] [<7f15a874>] (ath10k_ce_rx_post_buf [ath10k_core]) from
+> [<7f2889a4>] (ath10k_pci_diag_read_mem+0x104/0x2a8 [ath10k_pci])
+> [   11.458706] [<7f2889a4>] (ath10k_pci_diag_read_mem [ath10k_pci])
+> from [<7f288b68>] (ath10k_pci_diag_read32+0x1c/0x2c [ath10k_pci])
+> [   11.470767] [<7f288b68>] (ath10k_pci_diag_read32 [ath10k_pci]) from
+> [<7f28abe8>] (ath10k_pci_init_config+0x2c/0x290 [ath10k_pci])
+> [   11.482314] [<7f28abe8>] (ath10k_pci_init_config [ath10k_pci]) from
+> [<7f28d160>] (ath10k_ahb_hif_power_up+0x7c/0xe8 [ath10k_pci])
+> [   11.494153] [<7f28d160>] (ath10k_ahb_hif_power_up [ath10k_pci])
+> from [<7f135348>] (ath10k_core_register_work+0x84/0x8f8 [ath10k_core])
+> [   11.505766] [<7f135348>] (ath10k_core_register_work [ath10k_core])
+> from [<8023b614>] (process_one_work+0x1c0/0x2f8)
+> [   11.517594] [<8023b614>] (process_one_work) from [<8023c650>]
+> (worker_thread+0x280/0x3c0)
+> [   11.527919] [<8023c650>] (worker_thread) from [<802408f8>]
+> (kthread+0xd8/0xe8)
+> [   11.536247] [<802408f8>] (kthread) from [<80209ce8>]
+> (ret_from_fork+0x14/0x2c)
+>
+> When I revert #1 eventually, my system is back to working.
+> So I'm blaming the #1 and #2 could have potential bugs or require
+> ath.git branch up-to-date.
 
-diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
-index 28462d59a8e1..92098d6106be 100644
---- a/arch/powerpc/platforms/powernv/idle.c
-+++ b/arch/powerpc/platforms/powernv/idle.c
-@@ -73,9 +73,6 @@ static int pnv_save_sprs_for_deep_states(void)
- 	 */
- 	uint64_t lpcr_val	= mfspr(SPRN_LPCR);
- 	uint64_t hid0_val	= mfspr(SPRN_HID0);
--	uint64_t hid1_val	= mfspr(SPRN_HID1);
--	uint64_t hid4_val	= mfspr(SPRN_HID4);
--	uint64_t hid5_val	= mfspr(SPRN_HID5);
- 	uint64_t hmeer_val	= mfspr(SPRN_HMEER);
- 	uint64_t msr_val = MSR_IDLE;
- 	uint64_t psscr_val = pnv_deepest_stop_psscr_val;
-@@ -117,6 +114,9 @@ static int pnv_save_sprs_for_deep_states(void)
- 
- 			/* Only p8 needs to set extra HID regiters */
- 			if (!cpu_has_feature(CPU_FTR_ARCH_300)) {
-+				uint64_t hid1_val = mfspr(SPRN_HID1);
-+				uint64_t hid4_val = mfspr(SPRN_HID4);
-+				uint64_t hid5_val = mfspr(SPRN_HID5);
- 
- 				rc = opal_slw_set_reg(pir, SPRN_HID1, hid1_val);
- 				if (rc != 0)
--- 
-2.25.4
+You caught me just as I was signing off yesterday evening, but just to
+confirm that you are now fairly certain that none of the 3 patches I
+was involved with[*] are related to your problems.  If that's wrong
+and there's an action I need to take on the patches then let me know!
+:-)
 
+[*] The three patches I was involved with:
+
+ath10k: Add interrupt summary based CE processing
+https://patchwork.kernel.org/patch/11628299/
+
+ath10k: Keep track of which interrupts fired, don't poll them
+https://patchwork.kernel.org/patch/11654631/
+
+ath10k: Get rid of "per_ce_irq" hw param
+https://patchwork.kernel.org/patch/11654633/
+
+-Doug
