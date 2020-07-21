@@ -2,82 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320AF227E74
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636E4227E76
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729874AbgGULKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729852AbgGULKR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:10:17 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2738C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:10:16 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id u64so5579305qka.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=H3jGQ+Q00bEAjs/SzGOhSf6h7ixnLICnjJ2zv+AV0Gw=;
-        b=Jw7bbZnWwO2y5HGZtUYeJffra6s0naaeIP+Owlmy84iwUEIE20sjMU91V65yCcT/M4
-         pxAcmFWWfFryF4HAg88/jRfyf2zGat2j2AI3TYZFTuP0mkY4dsQiwzKUCNPkMAfcHeff
-         MdJM2UTj8CnVmynB1uTwpherDk6MvGTrt9RSDDsfVpQ1WI/kv1DHLInxl4mWGJJZmGNe
-         C1Di1kOWFeFAS46Bcmz7Ok66rvO3ReXayFqSNwxt0dUhnmVSsRocluzpAiXgmU8Wien2
-         TliC0rP2g6tue7tGcR7nLMjd+K3B2Qd8jdvB7JRa/MsozXLauIEtsx4k7EQwNGuSt8r/
-         5PtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=H3jGQ+Q00bEAjs/SzGOhSf6h7ixnLICnjJ2zv+AV0Gw=;
-        b=lSXvyb575J2fiF8jAA4XTNv2gblhx4vxf1frlgQIqQDAM2PR1IQ6Q1tAYJK2RGI1u/
-         BqGDhAmr3FeWR8Ag19mxo/9dFykc3vVhQppgAaUhMr6GQX1NFz2sCOxIdM8mLCLCzzhp
-         p++QlU209QtEFdW1YLrWZGgyUMsq7iG8K1v3iubGlEXYRygzzO2uuTQSkBueurA4xr1o
-         t7hWkfXq/FCH7t3Sv2WKxmz0QERDiWcfAk0fNO/4p74yOunxk73MplNYpzW8OlmKYnEH
-         diP93MlNKcpff1QuQxbKr98Q9eQwCguctz6cXDrMeJPqACqtw8fk9luiKiAK99IEnqz5
-         qpIg==
-X-Gm-Message-State: AOAM530yYxLPqSp1T0LylC2hPKWbValuYEuVJoIYuS/12NcFUsFcNahM
-        9AByVf+SmZRbft4tBoHlz8pbnQ==
-X-Google-Smtp-Source: ABdhPJxY+MZ+2vyW+b7sxJZ2xM5AByPkCXheZ4c7LNt34yH68P/80cKmIIKlv/SGCoh1nUbZBWdN4Q==
-X-Received: by 2002:a05:620a:16c8:: with SMTP id a8mr2560369qkn.81.1595329816067;
-        Tue, 21 Jul 2020 04:10:16 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id i10sm2602684qkn.126.2020.07.21.04.10.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 04:10:15 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-Date:   Tue, 21 Jul 2020 07:10:14 -0400
-Message-Id: <FCC3EB2D-9F11-4E9E-88F4-40B2926B35CC@lca.pw>
-References: <20200721063258.17140-1-mhocko@kernel.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-In-Reply-To: <20200721063258.17140-1-mhocko@kernel.org>
-To:     Michal Hocko <mhocko@kernel.org>
-X-Mailer: iPhone Mail (17F80)
+        id S1729433AbgGULLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:11:36 -0400
+Received: from mga05.intel.com ([192.55.52.43]:3246 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726415AbgGULLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 07:11:36 -0400
+IronPort-SDR: H5L8TR32KUrf10VKSNSTlfxE5Gg79xlwcFzNJ8JcGzIwIamFN4/X4tS7gNNeVwTV6+ONK+Bich
+ TUzyqRN9TiSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="234959776"
+X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; 
+   d="scan'208";a="234959776"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 04:11:35 -0700
+IronPort-SDR: eklNAwX4xWa+9uK/DjjxV7jmUyfXgBiKZgwXNgmcV3R2Vlihi5bPxlI98Iu6ftHwdsVO90hK+z
+ PkhIDpZNjyMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; 
+   d="scan'208";a="310208520"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Jul 2020 04:11:32 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 0EE49FC; Tue, 21 Jul 2020 14:11:31 +0300 (EEST)
+Date:   Tue, 21 Jul 2020 14:11:31 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: kernel BUG at include/linux/swapops.h:LINE!
+Message-ID: <20200721111131.bo3g6qkcvbhpupon@black.fi.intel.com>
+References: <000000000000bc4fd705a6e090e2@google.com>
+ <0000000000004c38cd05aad1d13f@google.com>
+ <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 20, 2020 at 04:51:44PM -0700, Andrew Morton wrote:
+> On Sun, 19 Jul 2020 14:10:19 -0700 syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com> wrote:
+> 
+> > syzbot has found a reproducer for the following issue on:
+> > 
+> > HEAD commit:    4c43049f Add linux-next specific files for 20200716
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=12c56087100000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=2c76d72659687242
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=c48f34012b06c4ac67dd
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1344abeb100000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com
+> 
+> Thanks.
+> 
+> __handle_mm_fault
+>   ->pmd_migration_entry_wait
+>     ->migration_entry_to_page
+> 
+> stumbled onto an unlocked page.
+> 
+> I don't immediately see a cause.  Perhaps Matthew's "THP prep patches",
+> perhaps something else.
+> 
+> Is it possible to perform a bisection?
 
+Maybe it's related to the new lock_page_async()?
 
-> On Jul 21, 2020, at 2:33 AM, Michal Hocko <mhocko@kernel.org> wrote:
->=20
-> on a large ppc machine. The very likely cause is a suboptimal
-> configuration when systed-udev spawns way too many workders to bring the
-> system up.
+> > ------------[ cut here ]------------
+> > kernel BUG at include/linux/swapops.h:197!
+> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> > CPU: 1 PID: 19938 Comm: syz-executor.2 Not tainted 5.8.0-rc5-next-20200716-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
+> > RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
+> > RIP: 0010:pmd_migration_entry_wait+0x493/0x520 mm/migrate.c:368
+> > Code: 4d 8d 66 ff e9 1f fe ff ff e8 b9 c4 be ff 49 8d 5f ff e9 58 fe ff ff e8 ab c4 be ff 4d 8d 66 ff e9 a9 fe ff ff e8 9d c4 be ff <0f> 0b e8 96 c4 be ff 0f 0b e8 8f c4 be ff 4c 8d 65 ff eb a7 48 89
+> > RSP: 0018:ffffc9001095fb70 EFLAGS: 00010293
+> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81b56a24
+> > RDX: ffff888092022240 RSI: ffffffff81b56b43 RDI: 0000000000000001
+> > RBP: ffffea0008468080 R08: 0000000000000000 R09: ffffea0008468087
+> > R10: 0000000000000000 R11: 0000000000000000 R12: ffffea0008468080
+> > R13: ffff888015d2e0c0 R14: 0000000000000000 R15: 0000000000000000
+> > FS:  00007f55eb477700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000020000080 CR3: 000000021ad87000 CR4: 00000000001526e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  __handle_mm_fault mm/memory.c:4349 [inline]
+> >  handle_mm_fault+0x23cf/0x45e0 mm/memory.c:4465
+> >  do_user_addr_fault+0x598/0xbf0 arch/x86/mm/fault.c:1294
+> >  handle_page_fault arch/x86/mm/fault.c:1351 [inline]
+> >  exc_page_fault+0xab/0x170 arch/x86/mm/fault.c:1404
+> >  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:544
+> > RIP: 0010:copy_user_generic_unrolled+0x89/0xc0 arch/x86/lib/copy_user_64.S:91
+> > Code: 38 4c 89 47 20 4c 89 4f 28 4c 89 57 30 4c 89 5f 38 48 8d 76 40 48 8d 7f 40 ff c9 75 b6 89 d1 83 e2 07 c1 e9 03 74 12 4c 8b 06 <4c> 89 07 48 8d 76 08 48 8d 7f 08 ff c9 75 ee 21 d2 74 10 89 d1 8a
+> > RSP: 0018:ffffc9001095fe48 EFLAGS: 00010202
+> > RAX: 0000000000000001 RBX: 0000000020000080 RCX: 0000000000000001
+> > RDX: 0000000000000000 RSI: ffffc9001095fea8 RDI: 0000000020000080
+> > RBP: ffffc9001095fea8 R08: 0000000400000003 R09: ffffc9001095feaf
+> > R10: fffff5200212bfd5 R11: 0000000000000000 R12: 0000000000000008
+> > R13: 0000000020000088 R14: 00007ffffffff000 R15: 0000000000000000
+> >  copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
+> >  raw_copy_to_user arch/x86/include/asm/uaccess_64.h:74 [inline]
+> >  _copy_to_user+0x11e/0x160 lib/usercopy.c:30
+> >  copy_to_user include/linux/uaccess.h:168 [inline]
+> >  do_pipe2+0x128/0x1b0 fs/pipe.c:1014
+> >  __do_sys_pipe fs/pipe.c:1035 [inline]
+> >  __se_sys_pipe fs/pipe.c:1033 [inline]
+> >  __x64_sys_pipe+0x2f/0x40 fs/pipe.c:1033
+> >  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x45c1d9
+> > Code: Bad RIP value.
+> > RSP: 002b:00007f55eb476c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000016
+> > RAX: ffffffffffffffda RBX: 0000000000022ac0 RCX: 000000000045c1d9
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000080
+> > RBP: 000000000078c070 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c04c
+> > R13: 00007ffcfc120ecf R14: 00007f55eb4779c0 R15: 000000000078c04c
+> > Modules linked in:
+> > ---[ end trace ea73d933d66ff0d4 ]---
+> > RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
+> > RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
+> > RIP: 0010:pmd_migration_entry_wait+0x493/0x520 mm/migrate.c:368
+> > Code: 4d 8d 66 ff e9 1f fe ff ff e8 b9 c4 be ff 49 8d 5f ff e9 58 fe ff ff e8 ab c4 be ff 4d 8d 66 ff e9 a9 fe ff ff e8 9d c4 be ff <0f> 0b e8 96 c4 be ff 0f 0b e8 8f c4 be ff 4c 8d 65 ff eb a7 48 89
+> > RSP: 0018:ffffc9001095fb70 EFLAGS: 00010293
+> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81b56a24
+> > RDX: ffff888092022240 RSI: ffffffff81b56b43 RDI: 0000000000000001
+> > RBP: ffffea0008468080 R08: 0000000000000000 R09: ffffea0008468087
+> > R10: 0000000000000000 R11: 0000000000000000 R12: ffffea0008468080
+> > R13: ffff888015d2e0c0 R14: 0000000000000000 R15: 0000000000000000
+> > FS:  00007f55eb477700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000020000080 CR3: 000000021ad87000 CR4: 00000000001526e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > 
 
-This is strange. The problem description is missing quite a few important de=
-tails. For example, what systems exactly are those? How many CPUs, memory an=
-d NUMA nodes were you talking about? Which kernel version was it reported? H=
-ow many workers from systemd-udev was =E2=80=9Cmisconfigured=E2=80=9D?=
+-- 
+ Kirill A. Shutemov
