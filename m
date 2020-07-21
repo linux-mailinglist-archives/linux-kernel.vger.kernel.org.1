@@ -2,151 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BA0227AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4451B227AEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728713AbgGUIaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:30:30 -0400
-Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:57868 "EHLO
-        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGUIaa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:30:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1595320229;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=BzY2QweQF/rQiDbWv7Jn9Mmq9ZfmwWs8Ov87vMZGyUU=;
-  b=EgMid7TNjyXMwcvfL5EWSkFvLKZOp3SiwIul+X1NQONWcx8nYYRaDkKT
-   Yp3BqBNCq+c58oYIKa6rgy3+oVHpFi3ZKSJqKQfxjW5Bvm3XctTEoY0TN
-   vWWzf4Jlovt1F4f7BUfYn07vujKfiWgiL0rWlb2KFLv5kT7+SnwNAzd63
-   o=;
-Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: x0OiNrk4e0Kv/geF7/GsMS3ajUnY+7gsSFFEXbjmHoWrn0Lxe6gtvxgEn0GR/cqaG+YYQcjcmB
- y9cXZDaFN18y2oIa9h8b9NAh7AkUkC7xN6pUY0g7UBLeXlTrlJ4gdZ2eS3wMmI4P/wL7ISLp8w
- /rH69WDGB4HRSyD8Mi1RPaLwy67UwO/DxY+phNhaDtpaI/XDgb+g5Z7PhX+c3q5qRqoauEaBxR
- Eblv/h6LWWnHOFZ3YXG0BABZ9rg/RT1Z7xPJGXBV02waTGeDtwxItb0TozFEIVA2hEWlnwbpcU
- zt4=
-X-SBRS: 2.7
-X-MesageID: 23153757
-X-Ironport-Server: esa1.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.75,378,1589256000"; 
-   d="scan'208";a="23153757"
-Date:   Tue, 21 Jul 2020 10:30:18 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Anchal Agarwal <anchalag@amazon.com>,
-        <marmarek@invisiblethingslab.com>
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <x86@kernel.org>, <jgross@suse.com>, <linux-pm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kamatam@amazon.com>,
-        <sstabellini@kernel.org>, <konrad.wilk@oracle.com>,
-        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
-        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
-        <eduval@amazon.com>, <sblbir@amazon.com>,
-        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend
- mode
-Message-ID: <20200721083018.GM7191@Air-de-Roger>
-References: <cover.1593665947.git.anchalag@amazon.com>
- <20200702182136.GA3511@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <50298859-0d0e-6eb0-029b-30df2a4ecd63@oracle.com>
- <20200715204943.GB17938@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com>
- <20200717191009.GA3387@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <5464f384-d4b4-73f0-d39e-60ba9800d804@oracle.com>
- <20200720093705.GG7191@Air-de-Roger>
- <20200721001736.GB19610@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+        id S1728902AbgGUIka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:40:30 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44083 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726673AbgGUIk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 04:40:29 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jxnp2-0007dy-00; Tue, 21 Jul 2020 10:40:24 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D2B5DC0880; Tue, 21 Jul 2020 10:30:08 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 10:30:08 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/6] mips: Add DT bindings for MIPS CDMM and MIPS GIC
+Message-ID: <20200721083008.GA9399@alpha.franken.de>
+References: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200721001736.GB19610@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+In-Reply-To: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marek: I'm adding you in case you could be able to give this a try and
-make sure it doesn't break suspend for dom0.
+On Tue, Jul 14, 2020 at 03:57:46PM +0300, Serge Semin wrote:
+> Daniel, Rafael, Thomas (Gleixner), could you specifically take a look at
+> the last patch in this series? If you are ok with that, please explicitly
+> ack. We need at least one of your blessing to merge the series in, since
+> the code and DT-related patches here have been mostly reviewed. We've
+> missed the last merge window. It would be pity to miss the next one...
+> 
+> Regarding this patchset origin. Recently I've submitted a series of
+> patchset's which provided multiple fixes for the MIPS arch subsystem and
+> the MIPS GIC and DW APB Timer drivers, which were required for the
+> Baikal-T1 SoC correctly working with those drivers. Mostly those patchsets
+> have been already merged into the corresponding subsystems, but several
+> patches have been left floating since noone really responded for review
+> except Rob provided his approval regarding DT bindings. Thus in this
+> patchset I've collected all the leftovers so not to loose them in a pale
+> of the maintainers email logs.
+> 
+> The patchset includes the following updates: MIPS CPC and GIC DT bindings
+> legacy text-based file are converted to the DT schema (Rob has already
+> reviewed them), add MIPS CDMM DT node support to place the CDMM block at
+> the platform-specific MMIO range, make sure MIPS CDMM is available for
+> MIPS_R5 CPUs.
+> 
+> Seeing the series concerns the MIPS-related drivers it's better to merge
+> it in through the MIPS repository:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/
+> 
+> This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+> base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+> tag: v5.7-rc4
+> 
+> Suggestion.
+> Since Paul isn't looking after the MIPS arch code anymore, Ralf hasn't
+> been seen maintaining MIPS for a long time, Thomas is only responsible
+> for the next part of it:
+> 	F:      Documentation/devicetree/bindings/mips/
+> 	F:      Documentation/mips/
+> 	F:      arch/mips/
+> 	F:      drivers/platform/mips/
+> the MIPS-specific drivers like:
+> 	F:	drivers/bus/mips_cdmm.c
+> 	F:	drivers/irqchip/irq-mips-cpu.c
+> 	F:	drivers/irqchip/irq-mips-gic.c
+> 	F:	drivers/clocksource/mips-gic-timer.c
+> 	F:	drivers/cpuidle/cpuidle-cps.c
+> seem to be left for the subsystems maintainers to support. So if you don't
+> mind or unless there is a better alternative, I can help with looking
+> after them to ease the maintainers review burden and since I'll be working
+> on our MIPS-based SoC drivers integrating into the mainline kernel repo
+> anyway. Thomas agreed to join in maintaining that drivers.
+> 
+> Previous patchsets:
+> mips: Prepare MIPS-arch code for Baikal-T1 SoC support:
+> Link: https://lore.kernel.org/linux-mips/20200306124807.3596F80307C2@mail.baikalelectronics.ru
+> Link: https://lore.kernel.org/linux-mips/20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru
+> Link: https://lore.kernel.org/linux-mips/20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru
+> 
+> clocksource: Fix MIPS GIC and DW APB Timer for Baikal-T1 SoC support:
+> Link: https://lore.kernel.org/linux-rtc/20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru
+> Link: https://lore.kernel.org/linux-rtc/20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru
+> Link: https://lore.kernel.org/linux-rtc/20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru
+> 
+> Changelog prev:
+> - Add yaml-based bindings file for MIPS CDMM dt-node.
+> - Convert mti,mips-cpc to DT schema.
+> - Use a shorter summary describing the bindings modification patches.
+> - Rearrange the SoBs with adding Alexey' co-development tag.
+> - Lowercase the hex numbers in the dt-bindings.
+> 
+> Changelog v2:
+> - Resend.
+> 
+> Link: https://lore.kernel.org/linux-mips/20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru
+> Changelog v3:
+> - Keep F: MAINTAINERS section alphabetically ordered.
+> - Add Thomas as the co-maintainer of the MIPS CPU and GIC IRQchip, MIPS
+>   GIC timer and MIPS CPS CPUidle drivers.
+> 
+> Link: https://lore.kernel.org/linux-mips/20200602100921.1155-1-Sergey.Semin@baikalelectronics.ru
+> Changelog v4:
+> - Resend.
+> 
+> Link: https://lore.kernel.org/linux-mips/20200617223201.23259-1-Sergey.Semin@baikalelectronics.ru
+> Changelog v5:
+> - Consider address and size cells being <1> by default for the DT examples.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: James Hogan <jhogan@kernel.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Serge Semin (6):
+>   dt-bindings: power: Convert mti,mips-cpc to DT schema
+>   dt-bindings: interrupt-controller: Convert mti,gic to DT schema
+>   dt-bindings: bus: Add MIPS CDMM controller
+>   mips: cdmm: Add mti,mips-cdmm dtb node support
+>   bus: cdmm: Add MIPS R5 arch support
+>   MAINTAINERS: Add maintainers for MIPS core drivers
+> 
+>  .../bindings/bus/mti,mips-cdmm.yaml           |  35 +++++
+>  .../interrupt-controller/mips-gic.txt         |  67 --------
+>  .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
+>  .../bindings/power/mti,mips-cpc.txt           |   8 -
+>  .../bindings/power/mti,mips-cpc.yaml          |  35 +++++
+>  MAINTAINERS                                   |  11 ++
+>  drivers/bus/Kconfig                           |   2 +-
+>  drivers/bus/mips_cdmm.c                       |  15 ++
+>  8 files changed, 245 insertions(+), 76 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+>  create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
 
-On Tue, Jul 21, 2020 at 12:17:36AM +0000, Anchal Agarwal wrote:
-> On Mon, Jul 20, 2020 at 11:37:05AM +0200, Roger Pau Monné wrote:
-> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > 
-> > 
-> > 
-> > On Sat, Jul 18, 2020 at 09:47:04PM -0400, Boris Ostrovsky wrote:
-> > > (Roger, question for you at the very end)
-> > >
-> > > On 7/17/20 3:10 PM, Anchal Agarwal wrote:
-> > > > On Wed, Jul 15, 2020 at 05:18:08PM -0400, Boris Ostrovsky wrote:
-> > > >> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > > >>
-> > > >>
-> > > >>
-> > > >> On 7/15/20 4:49 PM, Anchal Agarwal wrote:
-> > > >>> On Mon, Jul 13, 2020 at 11:52:01AM -0400, Boris Ostrovsky wrote:
-> > > >>>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > > >>>>
-> > > >>>>
-> > > >>>>
-> > > >>>> On 7/2/20 2:21 PM, Anchal Agarwal wrote:
-> > > >>>> And PVH dom0.
-> > > >>> That's another good use case to make it work with however, I still
-> > > >>> think that should be tested/worked upon separately as the feature itself
-> > > >>> (PVH Dom0) is very new.
-> > > >>
-> > > >> Same question here --- will this break PVH dom0?
-> > > >>
-> > > > I haven't tested it as a part of this series. Is that a blocker here?
-> > >
-> > >
-> > > I suspect dom0 will not do well now as far as hibernation goes, in which
-> > > case you are not breaking anything.
-> > >
-> > >
-> > > Roger?
-> > 
-> > I sadly don't have any box ATM that supports hibernation where I
-> > could test it. We have hibernation support for PV dom0, so while I
-> > haven't done anything specific to support or test hibernation on PVH
-> > dom0 I would at least aim to not make this any worse, and hence the
-> > check should at least also fail for a PVH dom0?
-> > 
-> > if (!xen_hvm_domain() || xen_initial_domain())
-> >     return -ENODEV;
-> > 
-> > Ie: none of this should be applied to a PVH dom0, as it doesn't have
-> > PV devices and hence should follow the bare metal device suspend.
-> >
-> So from what I understand you meant for any guest running on pvh dom0 should not 
-> hibernate if hibernation is triggered from within the guest or should they?
+series applied to mips-next.
 
-Er no to both I think. What I meant is that a PVH dom0 should be able
-to properly suspend, and we should make sure this work doesn't make
-this any harder (or breaks it if it's currently working).
+Thomas.
 
-Or at least that's how I understood the question raised by Boris.
-
-You are adding code to the generic suspend path that's also used by dom0
-in order to perform bare metal suspension. This is fine now for a PV
-dom0 because the code is gated on xen_hvm_domain, but you should also
-take into account that a PVH dom0 is considered a HVM domain, and
-hence will get the notifier registered.
-
-> > Also I would contact the QubesOS guys, they rely heavily on the
-> > suspend feature for dom0, and that's something not currently tested by
-> > osstest so any breakages there go unnoticed.
-> > 
-> Was this for me or Boris? If its the former then I have no idea how to?
-
-I've now added Marek.
-
-Roger.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
