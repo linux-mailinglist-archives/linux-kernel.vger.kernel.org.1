@@ -2,90 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D74C227859
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 07:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7EC227862
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 07:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgGUFwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 01:52:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45867 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726003AbgGUFwG (ORCPT
+        id S1726867AbgGUF7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 01:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgGUF7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 01:52:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595310724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aLjkj/NtDRd3xkfHAYuSB+hneYUy009qM+qF11a/0w8=;
-        b=CUUfkrqevHLtn5YJBMPCZaYKdGDM6U2Vy/ByEcDArD6G9nK5sGPJf5/ohCXfqEVUWpmJvB
-        sFcvdUt08E3/ZKxzD0eTSupMo91loNpOsr+xD0FDltOheCbIgSkdes5JkPmPUnHfolMppJ
-        7ORA+SELD43PhpYsLdtsTYlGhCpVxZA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-OuMNqS5uP7OfxFt7hiEfjA-1; Tue, 21 Jul 2020 01:52:02 -0400
-X-MC-Unique: OuMNqS5uP7OfxFt7hiEfjA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 445A118C63C2;
-        Tue, 21 Jul 2020 05:52:01 +0000 (UTC)
-Received: from [10.72.12.202] (ovpn-12-202.pek2.redhat.com [10.72.12.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 07D1619C66;
-        Tue, 21 Jul 2020 05:51:55 +0000 (UTC)
-Subject: Re: [PATCH V2 vhost next 10/10] vdpa/mlx5: Add VDPA driver for
- supported mlx5 devices
-To:     Eli Cohen <eli@mellanox.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com
-References: <20200720071416.32112-1-eli@mellanox.com>
- <20200720071416.32112-11-eli@mellanox.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <73209efd-f513-fec2-e4f7-51e71f08c9fe@redhat.com>
-Date:   Tue, 21 Jul 2020 13:51:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 21 Jul 2020 01:59:16 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44A5C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 22:59:16 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id md7so1117710pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 22:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=KMmzvRDJd+7JQh3nAfR3C392m0BpTUJ+3ePAUF20ipM=;
+        b=Rxv84i0QAHjDtaiOwh/2J3sKXar2+ERm+ATC8Q8Xfyc6nMJXbwVIhxRyXUP7SVjfjn
+         eQwUEXhTG6oJTATxSLbFZDVKCQZ8LHhZvaqcBbUlVl2wUb8bRcMtUal/mqZnQfb0LhnE
+         RFJNs7S2GBbfDx2RAk/LtKpF31pDh4oP37amc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=KMmzvRDJd+7JQh3nAfR3C392m0BpTUJ+3ePAUF20ipM=;
+        b=j6tMErg19EVRvumMjQ9JcpHkgbEWOfFP1B5JD+hu+wI8YdZ3fAoTPeNZRe3y4A6JTZ
+         Oo6KyMr5T6ILL0ErCSkwEaUhUQfn3rcjDuowFTBrXxQH2y7BaQNAT1Zl916DisQoQWoD
+         E08f/gddsXlHfOB2i3mAz20PCm6kwfFudO7usYwn0UXsmPH3KMiaWIxJV8dsk/iz1nbY
+         u8x+/UeAsxkTrFQ4DQwY/tlmUpsOBuOFYsP59Aj9ZaexYpRWt7slnuu5WpkRnm+F44BP
+         uxF2jxU02PaIQGTl+IdvMok6xRZgzf6dRAms6SQprjhcz0Ke5N2IryjJuKPotJdynSuv
+         Hdgw==
+X-Gm-Message-State: AOAM5300rNkxoUlyLhviw7DOXX9/RBAwNOYLlrSCky1RcvfCix3QYRO+
+        rv53P4rAft584zOtPjF/BN8O5A==
+X-Google-Smtp-Source: ABdhPJyPsf7kVDCbzPver/0zOXuRkOwd1jKCYu5DVQc3foP0eJly1X6oGmB7HiIREep2HWy6KWn53A==
+X-Received: by 2002:a17:90b:46d0:: with SMTP id jx16mr2894431pjb.222.1595311156227;
+        Mon, 20 Jul 2020 22:59:16 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id nh14sm1594205pjb.4.2020.07.20.22.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 22:59:15 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20200720071416.32112-11-eli@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200720172448.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
+References: <20200720172448.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
+Subject: Re: [PATCH] i2c: i2c-qcom-geni: Fix DMA transfer race
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Wolfram Sang <wsa@the-dreams.de>
+Date:   Mon, 20 Jul 2020 22:59:14 -0700
+Message-ID: <159531115483.3847286.18280088484118119899@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Douglas Anderson (2020-07-20 17:24:53)
+> When I have KASAN enabled on my kernel and I start stressing the
+> touchscreen my system tends to hang.  The touchscreen is one of the
+> only things that does a lot of big i2c transfers and ends up hitting
+> the DMA paths in the geni i2c driver.  It appears that KASAN adds
+> enough delay in my system to tickle a race condition in the DMA setup
+> code.
+>=20
+> When the system hangs, I found that it was running the geni_i2c_irq()
+> over and over again.  It had these:
+>=20
+> m_stat   =3D 0x04000080
+> rx_st    =3D 0x30000011
+> dm_tx_st =3D 0x00000000
+> dm_rx_st =3D 0x00000000
+> dma      =3D 0x00000001
+>=20
+> Notably we're in DMA mode but are getting M_RX_IRQ_EN and
+> M_RX_FIFO_WATERMARK_EN over and over again.
+>=20
+> Putting some traces in geni_i2c_rx_one_msg() showed that when we
+> failed we were getting to the start of geni_i2c_rx_one_msg() but were
+> never executing geni_se_rx_dma_prep().
+>=20
+> I believe that the problem here is that we are writing the transfer
+> length and setting up the geni command before we run
+> geni_se_rx_dma_prep().  If a transfer makes it far enough before we do
+> that then we get into the state I have observed.  Let's change the
+> order, which seems to work fine.
 
-On 2020/7/20 下午3:14, Eli Cohen wrote:
-> Add a front end VDPA driver that registers in the VDPA bus and provides
-> networking to a guest. The VDPA driver creates the necessary resources
-> on the VF it is driving such that data path will be offloaded.
->
-> Notifications are being communicated through the driver.
->
-> Currently, only VFs are supported. In subsequent patches we will have
-> devlink support to control which VF is used for VDPA and which function
-> is used for regular networking.
->
-> Reviewed-by: Parav Pandit<parav@mellanox.com>
-> Signed-off-by: Eli Cohen<eli@mellanox.com>
+Does the length matter or the I2C_READ m_cmd matter? Or somehow both?
+Otherwise it sounds correct to me that we're configuring it to start the
+read before mapping the buffer.
+
+>=20
+> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm=
+ GENI I2C controller")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
-> Changes from V0:
-> 1. Fix include path usage
-> 2. Fix use after free in qp_create()
-> 3. Consistently use mvq->initialized to check if a vq was initialized.
-> 4. Remove unused local variable.
-> 5. Defer modifyig vq to ready to driver ok
-> 6. suspend hardware vq in set_vq_ready(0)
-> 7. Remove reservation for control VQ since it multi queue is not supported in this version
-> 8. Avoid call put_device() since this is not a pci device driver.
+>=20
+>  drivers/i2c/busses/i2c-qcom-geni.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
+qcom-geni.c
+> index 18d1e4fd4cf3..21e27f10510a 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -366,15 +366,15 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev =
+*gi2c, struct i2c_msg *msg,
+>         else
+>                 geni_se_select_mode(se, GENI_SE_FIFO);
+> =20
+> -       writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
+> -       geni_se_setup_m_cmd(se, I2C_READ, m_param);
+> -
+>         if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
+>                 geni_se_select_mode(se, GENI_SE_FIFO);
+>                 i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>                 dma_buf =3D NULL;
+>         }
+> =20
 
+I worry that we also need a dmb() here to make sure the dma buffer is
+properly mapped before this write to the device is attempted. But it may
+only matter to be before the I2C_READ.
 
-Looks good to me.
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
+> +       writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
+> +       geni_se_setup_m_cmd(se, I2C_READ, m_param);
+> +
+>         time_left =3D wait_for_completion_timeout(&gi2c->done, XFER_TIMEO=
+UT);
+>         if (!time_left)
+>                 geni_i2c_abort_xfer(gi2c);
