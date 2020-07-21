@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B3D227472
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8119227475
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgGUBRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgGUBRq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:17:46 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BEFC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:17:45 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id gc9so747047pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 18:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/n872cM2M3CLkRHUgVO55nk5U5BBIV7BrPLcG211bhQ=;
-        b=Kd2f1DpQAICU8hxcTKxIt59+qYM3UA0c492sd8XUrW/ph+nhKdOyCFFtJUT4wgoemm
-         7Xu6UZtnu/A9GUS8HmPZEHyMXYnE0l77ZrZDvmRHWFURz48wW3Txed71f+K2Xd4O/s4v
-         J7RblJMknVcIeTYRZZzesbWmF1qTJ5F7R8mjGjC3hPFe31HJdxYyEmR+AaRi9VsvYgNj
-         fbOQWXDCwtBcI2R+POQ1SDx18v9wAxcc6vn+EGsHuXbQ/UXxQMvNf6HrgduKQdyxnnGi
-         PDSWiZNqoIeGptGSzIR2yfmp27Qk+aq80JP1S/+jaccP0uII5jlI7yjzEkuvYuGc4PFe
-         Eawg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=/n872cM2M3CLkRHUgVO55nk5U5BBIV7BrPLcG211bhQ=;
-        b=DX3UBSP9KpITqPLC3piFO9pRD0VbYWpcox699IjF5gjKVFw0YjdIuCv6bzvD3aKfhs
-         ETwmNZ90k0zgwYJdV2FWAjTjEuT8+bVf48Rl25TI/9iqaozHGcucl/vJFYpKsfu3HOii
-         dfOs6E1rbcMVeOBcYgM0HUNL2WyfvYL5xKAb6o18rMK81mazwk+/BNl0cS6RAfSG1QFM
-         JKqynK4NVga3MmVM17HSihavkdetJi2qZN5ny/0inuKF0qyXt7DjTP1VnYCGKKZtibGC
-         IA0Bj1MIcNDgJ0jyNZIxoQeSIAFAoePfLp3FXNgrR4eGWBI+ppqfU4ZSbGz36Zv4Wjzq
-         DvBw==
-X-Gm-Message-State: AOAM531x9t6e7epwuR1/yZDdqiinhwZRMBpFGbWCyi5FyTOSjCdjkE9k
-        g+ty36K8cRG2OoLcsbcoKCf6kQ==
-X-Google-Smtp-Source: ABdhPJyZDnF0IgmpupMMlaGLLmbAiAkmqi/pDJEdE7GNxD7OYpkKqAPoSVxXLay5KCsO4CZQXtsokw==
-X-Received: by 2002:a17:90a:784b:: with SMTP id y11mr2144112pjl.51.1595294264663;
-        Mon, 20 Jul 2020 18:17:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id o23sm18965104pfd.126.2020.07.20.18.17.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 18:17:44 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 18:17:44 -0700 (PDT)
-X-Google-Original-Date: Mon, 20 Jul 2020 18:17:42 PDT (-0700)
-Subject:     Re: [PATCH 1/1] riscv: Enable ARCH_HAS_FAST_MULTIPLIER for RV64I
-In-Reply-To: <20200709051922.13110-1-maochenxi@eswin.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        chenxi.mao2013@gmail.com, maochenxi@eswin.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     maochenxi@eswin.com
-Message-ID: <mhng-e8fe18f0-e6d7-4ee2-8a9b-a00dbf0b338b@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1726780AbgGUBUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:20:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7799 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726016AbgGUBUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:20:31 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CDA83C04CAAF79530EFA;
+        Tue, 21 Jul 2020 09:20:27 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.16) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 21 Jul 2020
+ 09:20:17 +0800
+Subject: Re: [PATCH] ipmi/watchdog: add missing newlines when printing
+ parameters by sysfs
+To:     <minyard@acm.org>
+CC:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <openipmi-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <guohanjun@huawei.com>
+References: <1595210605-27888-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20200720195234.GC2952@minyard.net>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <908fcbf2-efbb-b3f4-0666-2da79fbe99c4@huawei.com>
+Date:   Tue, 21 Jul 2020 09:20:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200720195234.GC2952@minyard.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.16]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Jul 2020 22:19:22 PDT (-0700), maochenxi@eswin.com wrote:
-> Enable ARCH_HAS_FAST_MULTIPLIER on RV64I
-> which works fine on GCC-9.3 and GCC-10.1
->
-> PS2: remove ARCH_SUPPORTS_INT128 because of RV64I already enabled.
->
-> Signed-off-by: Chenxi Mao <maochenxi@eswin.com>
-> ---
->  arch/riscv/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 128192e14ff2..84e6777fecad 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -202,6 +202,7 @@ config ARCH_RV64I
->  	bool "RV64I"
->  	select 64BIT
->  	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
-> +	select ARCH_HAS_FAST_MULTIPLIER
->  	select HAVE_DYNAMIC_FTRACE if MMU
->  	select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
->  	select HAVE_FTRACE_MCOUNT_RECORD
+Hi Corey,
 
-Ah, thanks -- this one didn't show up when I was looking at the last one.  I
-think we can put the fast multiplier on rv32 and rv64, there shouldn't be any
-difference there.  I guess in theory we should be sticking this all in some
-sort of "platform type" optimization flags, but that's probably bit much for
-now.
+Thanks for your reply !
+
+On 2020/7/21 3:52, Corey Minyard wrote:
+> On Mon, Jul 20, 2020 at 10:03:25AM +0800, Xiongfeng Wang wrote:
+>> When I cat some ipmi_watchdog parameters by sysfs, it displays as
+>> follows. It's better to add a newline for easy reading.
+>>
+>> root@(none):/# cat /sys/module/ipmi_watchdog/parameters/action
+>> resetroot@(none):/# cat /sys/module/ipmi_watchdog/parameters/preaction
+>> pre_noneroot@(none):/# cat /sys/module/ipmi_watchdog/parameters/preop
+>> preop_noneroot@(none):/#
+> 
+> Yeah, that's not consistent with other things displayed in the kernel.
+> 
+>>
+>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>> ---
+>>  drivers/char/ipmi/ipmi_watchdog.c | 8 ++++++--
+>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
+>> index 55986e1..3e05a1d 100644
+>> --- a/drivers/char/ipmi/ipmi_watchdog.c
+>> +++ b/drivers/char/ipmi/ipmi_watchdog.c
+>> @@ -232,12 +232,16 @@ static int set_param_str(const char *val, const struct kernel_param *kp)
+>>  static int get_param_str(char *buffer, const struct kernel_param *kp)
+>>  {
+>>  	action_fn fn = (action_fn) kp->arg;
+>> -	int       rv;
+>> +	int rv, len;
+>>  
+>>  	rv = fn(NULL, buffer);
+>>  	if (rv)
+>>  		return rv;
+>> -	return strlen(buffer);
+>> +
+>> +	len = strlen(buffer);
+>> +	len += sprintf(buffer + len, "\n");
+> 
+> sprintf is kind of overkill to stick a \n on the end of a line.  How
+> about:
+> 
+> 	buffer[len++] = '\n';
+> 
+> Since you are returning the length, you shouldn't need to nil terminate
+> the string.
+
+Thanks for your advice. I will change it in the next version.
+
+> 
+> An unrelated question: Are you using any of the special functions of the
+> IPMI watchdog, like the pretimeout?
+
+I am not using any special functions of the IPMI watchdog. It's just that I cat
+the parameters below 'ipmi_watchdog' and find we can add a newline here.
+
+Thanks,
+Xiongfeng
+
+> 
+> -corey
+> 
+>> +
+>> +	return len;
+>>  }
+>>  
+>>  
+>> -- 
+>> 1.7.12.4
+>>
+> 
+> .
+> 
+
