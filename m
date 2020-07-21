@@ -2,87 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA85228C31
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 00:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DCC228C34
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 00:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731123AbgGUWrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 18:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgGUWrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 18:47:35 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EFD12073A;
-        Tue, 21 Jul 2020 22:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595371654;
-        bh=lC9beQZcJxAVoggStwsSQD4umxKrJ5gvYRxSjxfqKgs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vx2lExdiuSTzdGyDGpUWaWm3KIVvWLX+wqdqJi/pB5vdLoMo7Hx7K8TbX5hX3b/WI
-         3rJfUp6uDE82W2HgBA4+PnVgtCqN9E8bSfBTarxi9JrjF8Flrt0COeCscy4vDNTYz8
-         BosH/RsIk27dGwTnoKIkR2ErINMfPJ7IE5Eky59o=
-Date:   Tue, 21 Jul 2020 23:47:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Clark Wang <xiaoning.wang@nxp.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] spi: lpspi: fix kernel warning dump when probe fail
- after calling spi_register
-Message-ID: <20200721224721.GA33193@sirena.org.uk>
-References: <20200714075251.12777-1-xiaoning.wang@nxp.com>
- <20200714075251.12777-4-xiaoning.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
-Content-Disposition: inline
-In-Reply-To: <20200714075251.12777-4-xiaoning.wang@nxp.com>
-X-Cookie: Wanna buy a duck?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1731237AbgGUWtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 18:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgGUWtf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 18:49:35 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DDAC061794;
+        Tue, 21 Jul 2020 15:49:35 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4741B11E45904;
+        Tue, 21 Jul 2020 15:32:50 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 15:49:34 -0700 (PDT)
+Message-Id: <20200721.154934.1304491888556758023.davem@davemloft.net>
+To:     tanhuazhong@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
+        linuxarm@huawei.com, kuba@kernel.org
+Subject: Re: [PATCH net 0/4] net: hns3: fixes for -net
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1595329434-46766-1-git-send-email-tanhuazhong@huawei.com>
+References: <1595329434-46766-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 Jul 2020 15:32:50 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Huazhong Tan <tanhuazhong@huawei.com>
+Date: Tue, 21 Jul 2020 19:03:50 +0800
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> There are some bugfixes for the HNS3 ethernet driver.
 
-On Tue, Jul 14, 2020 at 03:52:49PM +0800, Clark Wang wrote:
-> Calling devm_spi_register_controller() too early will cause problem.
-> When probe failed occurs after calling devm_spi_register_controller(),
-> the call of spi_controller_put() will trigger the following warning dump.
-
-This doesn't apply against current code, please check and resend.
-
-> [    2.092138] ------------[ cut here ]------------
-> [    2.096876] kernfs: can not remove 'uevent', no directory
-> [    2.102440] WARNING: CPU: 0 PID: 181 at fs/kernfs/dir.c:1503 kernfs_remove_by_name_ns+0xa0/0xb0
-> [    2.111142] Modules linked in:
-> [    2.114207] CPU: 0 PID: 181 Comm: kworker/0:7 Not tainted 5.4.24-05024-g775c6e8a738c-dirty #1314
-
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative (it often is
-for search engines if nothing else) then it's usually better to pull out
-the relevant sections.
-
---EVF5PPMfhYS0aIcm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8XcHkACgkQJNaLcl1U
-h9ABZwf/QAz1ZkBEQ11WvbVv1FhvqZyXhY4kxfUBGqxMBeIkKzTZqZQCusd0T7Ah
-47kcDS0t9QQE4haXfLRe7PiGvA16xTmm2px8W+vlQbkxnDIwYmIaBueWiiNXGL3x
-tIiV3nicZgAtkdYHC+XZeVTYAgsZCzywC1la/kfSjYTAU0ltKIN+DEtkQu7gbaRL
-Wh+0/Cqj8CKFJiNTyXIUiJrvRDmpbCCqUaVwhJxnom0P197kiD4SiJhp3KynaqWM
-FQZvkIfFu+U/242IVGKbgOe1grcSKZ1fCdYBwON+F5RWvLy1HdLRNmK6uyEmoLXp
-2HUXFj147kxJE/POHBVcdnidhfwwzw==
-=XZW9
------END PGP SIGNATURE-----
-
---EVF5PPMfhYS0aIcm--
+Series applied, thank you.
