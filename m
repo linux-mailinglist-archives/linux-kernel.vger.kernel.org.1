@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F288228978
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F234D22897E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730999AbgGUTsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
+        id S1730950AbgGUTv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730902AbgGUTsY (ORCPT
+        with ESMTP id S1728683AbgGUTv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:48:24 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B552C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:48:24 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jxyFO-0001s2-C9; Tue, 21 Jul 2020 21:48:18 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jxyFL-0002S5-Pn; Tue, 21 Jul 2020 21:48:15 +0200
-Date:   Tue, 21 Jul 2020 21:48:15 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        kernel@pengutronix.de, Jiri Slaby <jslaby@suse.com>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v7 3/3] leds: trigger: implement a tty trigger
-Message-ID: <20200721194815.mmkqccrkbgrly4xz@pengutronix.de>
-References: <20200707165958.16522-1-u.kleine-koenig@pengutronix.de>
- <20200707165958.16522-4-u.kleine-koenig@pengutronix.de>
- <20200714071355.GY3453@localhost>
+        Tue, 21 Jul 2020 15:51:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F09C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P2JzSWRqxLYlDAhbvSb5CG3LChZDp/jOA9dGTX2ajrs=; b=RmUoe1GIlACXI3VqsoIKpR2ggR
+        /ulgN5A5y6GA/SpzQkOl8Dy21aof5dCfN3RINM7gRqaYzdN9IJvSuu3hRqU7oygPnd88mnTPrrMoF
+        vsKGuNz44x5K6ZAGmOSbSOSzRJgV+VMwT21U2yg00LGrubgkXsngMGD9HIMiiW6QSSiO1bqWNC9KE
+        IU0GHjYdFyUi7Rgeay+P0yUz56GJ5A+zC8Dm4FBG3/Dl/T3Cx2BzVlLhNdxjVgGCsgg9vMD8jLZcQ
+        6+2tpEsvKpdKyxvYLRLgbekqChLCzIuPdv/QNmAFi1pUPyCf5ee0FAZva7B8wZlKU9M357pjtPvCV
+        NRQgPzzw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxyIY-0001QV-34; Tue, 21 Jul 2020 19:51:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 04366304D28;
+        Tue, 21 Jul 2020 21:51:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E2EDB29A6A87E; Tue, 21 Jul 2020 21:51:32 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 21:51:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Paul Moore <paul@paul-moore.com>, edumazet@google.com,
+        paulmck@kernel.org, shakeelb@google.com,
+        James Morris <jamorris@linux.microsoft.com>,
+        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
+        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Convert nsproxy, groups, and creds to refcount_t
+Message-ID: <20200721195132.GJ10769@hirez.programming.kicks-ass.net>
+References: <202006142054.C00B3E9C9@keescook>
+ <20200612183450.4189588-1-keescook@chromium.org>
+ <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com>
+ <544539.1595328664@warthog.procyon.org.uk>
+ <202007211144.A68C31D@keescook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zvqjc74lbtmuk5mp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200714071355.GY3453@localhost>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <202007211144.A68C31D@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 11:44:53AM -0700, Kees Cook wrote:
+> On Tue, Jul 21, 2020 at 11:51:04AM +0100, David Howells wrote:
+> > Kees Cook <keescook@chromium.org> wrote:
+> > 
+> > > > Should mm->mm_users also be replaced by refcount_t?
+> > > 
+> > > I'll say "yes". :)
+> > > https://lore.kernel.org/lkml/1487671124-11188-1-git-send-email-elena.reshetova@intel.com/
+> > > 
+> > > > In addition, is it better to change all variables that use
+> > > > atomic_dec_and_test to control the release process to refconut_t?
+> > > 
+> > > For the most part, yes. The following may find a lot of them:
+> > > scripts/coccinelle/api/atomic_as_refcounter.cocci
+> > 
+> > I've been gradually undoing some of the conversions as there's no equivalent
+> > of atomic_add_return() and atomic_dec_return() that allow me to log the
+> > altered refcount through a tracepoint.
+> 
+> Please do not _undo_ the changes; just add the API you need.
 
---zvqjc74lbtmuk5mp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+add_return and sub_return are horrible interface for refcount, which is
+the problem.
 
-Hello Johan,
+If you meant: refcount_dec(), but want the old value for tracing, you
+want a different ordering than if you wanted to do
+refcount_dec_and_test(); dec_return can't know this.
 
-On Tue, Jul 14, 2020 at 09:13:55AM +0200, Johan Hovold wrote:
-> On Tue, Jul 07, 2020 at 06:59:58PM +0200, Uwe Kleine-K=F6nig wrote:
-> > +	while (firstrun ||
-> > +	       icount.rx !=3D trigger_data->rx ||
-> > +	       icount.tx !=3D trigger_data->tx) {
-> > +
-> > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
-> > +
-> > +		msleep(100);
-> > +
-> > +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-> > +
-> > +		trigger_data->rx =3D icount.rx;
-> > +		trigger_data->tx =3D icount.tx;
-> > +		firstrun =3D false;
-> > +
-> > +		ret =3D tty_get_icount(trigger_data->tty, &icount);
-> > +		if (ret)
-> > +			return;
-> > +	}
->=20
-> Haven't looked at the latest proposal in detail, but this looks broken
-> as you can potentially loop indefinitely in a worker thread, and with no
-> way to stop the trigger (delayed work).
+David, would something like a __refcount_*() API work where there is a
+3rd argument (int *), which, if !NULL, will be assigned the old value?
 
-I don't think that potentially looping indefinitely is a problem, but
-indeed it should drop the lock during each iteration. Will think about
-how to adapt.
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---zvqjc74lbtmuk5mp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8XRnwACgkQwfwUeK3K
-7Amnzgf7B6qXFayz/hez5dZd56jkGWR2qylUkUhIOVrcN2Hy/4LQVN19AQApbKxm
-yJenogV8p+3pTPsMPlhmUUI3+XxCCkroJBiLfWM8RFFUWX9TSq4CcDLRT9yTR3xs
-EmUdBFsiSyo2TbSyodkrrIh94Z67X9dTLfBscPQ0efohhnZwvkfN/AUYv0it+OOI
-Ey2kTi2hDQiVLjuHqjGzis3BBTNZ+dEtiVWxG1PSspVQS+SVkK3NYLs1EOyyQK2e
-35egTCI/Pu5AE0r5lGTmedJY4r3FJ8/ryv4XU/EGdksRbstsDIBG5URpDO9qFgh1
-PbgnINd7pMuotKk05cWlSNfAt9INrw==
-=p7Zb
------END PGP SIGNATURE-----
-
---zvqjc74lbtmuk5mp--
