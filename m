@@ -2,89 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDCD228A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97A9228A3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 22:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgGUUzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 16:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        id S1730639AbgGUU6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 16:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgGUUzf (ORCPT
+        with ESMTP id S1728893AbgGUU6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 16:55:35 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429D4C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:55:35 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id d17so180655ljl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:55:35 -0700 (PDT)
+        Tue, 21 Jul 2020 16:58:31 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F66AC0619DB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:58:31 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d4so36815pgk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:58:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5KRiHv2XxTSwjqo2aYpnWdG35oO+7c1dy//AB5MhpN4=;
-        b=Jj2v8BbF9aFwfyh4SlEc5xGD2Jkm85ro0pkQAN9Qh5SCte9chsHa0MTDGlrlrYOUnr
-         qsrB/WGMv4QRtcmrjfHqV3qnwuFkg3bs24FSnkJ2Dr12TO2e4spYOc6bZ7QujxB0peZ5
-         dJEib7JFK1g/8C0P5RZ8tSVuMh3jQsph/s/dM=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X52qI9IuX8ehsLxlnySnmok7XL1KtNCuLE+99FuZBeI=;
+        b=mHdARhUTuiPaFxjw12aZ6Wa9+kLghKQ0fq8ZJpwVAledPTAoh2U3VGDsfsyr4CtWiS
+         NXuH7AFqDcCmAepHllRQ4Wq6geSc5R3h6YB/TWlMfokX4+eEHRFZKFDVxGqrMiu2MRku
+         91nIm/w9OxN3qHJykIwzJ//I2SrZPpLlqSXMiGkKwGrq7deQxUUahBBRIdBCDYalvXeO
+         RXkwNN69nSl3vRbDjY12ItnzNxSn54y5LrsKUYN1XwkelXZrn2ofOPGVf1/ffcUuaa7h
+         a83DRCCTf2xgI5VIfkzGeDM08SV43UCY0a72ArB/oCDawwpiJKf3+5B7lUPaBFF2NcE8
+         0C2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5KRiHv2XxTSwjqo2aYpnWdG35oO+7c1dy//AB5MhpN4=;
-        b=pfyjZLuHmR8PDixU8e7hSXQCvS1oyFMbVCrYBGCs0FU6XsIL/7CYd9FGDfrn2+9+p0
-         UMZ2RqahauLm2m7Wd6unicAktEcY9ix59vPrZVIzbsWiBzyG4IpsXzmWjiKl7ksao7Xu
-         9EtsSMeqHP2AVdL6rueccsA0Xfq10c59aag+ZvtIaDGSm8d7C9xe3siBULrCSjvPTMLm
-         pQo/qiPr9c7M/R0QqSEXi1S5dLCh+mJB53FV19y6AUKYjhn6BVBprmEL3jBLMloXoILg
-         JMPSXWOgPjRnzUOKMynJzfpyu1L4T3qazI6EXjWbuY2hS8AYtUUzMtaws/zyO38mg4f1
-         WkfA==
-X-Gm-Message-State: AOAM530IbwNkPJP9nPpfvm2uKsUmcBzKxhVyn/OrnV+28sX4x+H10HLj
-        h7M6slaLWEYFbL/j1BZBjBY9S33/s/s=
-X-Google-Smtp-Source: ABdhPJx6Duk/tw/gpG5hm7Ll0HwNdoDS+W7WWO7A28YcToNCeXo+Hm1Jir000oHGmZvErwKxfgN7Vg==
-X-Received: by 2002:a2e:9254:: with SMTP id v20mr14526665ljg.282.1595364933496;
-        Tue, 21 Jul 2020 13:55:33 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id z186sm3836131lfa.6.2020.07.21.13.55.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 13:55:32 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id k13so104086lfo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 13:55:32 -0700 (PDT)
-X-Received: by 2002:ac2:58d5:: with SMTP id u21mr4244433lfo.31.1595364932160;
- Tue, 21 Jul 2020 13:55:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X52qI9IuX8ehsLxlnySnmok7XL1KtNCuLE+99FuZBeI=;
+        b=DI2FgMQcZa60KsOnQ7oUXTet6vIFLbdNIVARYR+LFcoL9B6ZIBliv8t1bGrRkaWYGU
+         uPysZagP7ctZUzUOU9v0dt2SP4fPWWXdjTQmGUk/j+HHmkpdy82FQdx+/x1lPBw5iNtH
+         K3lYRxtlKcgK/l4kSP6Nd55CXPcDxXCaWYarKhEr1tHUxvixVeIGjksZxYUcSCJmalje
+         npKXYpjMvmbMQMBsQYHmQlge5kvTcvBcBErwbIFA8Ou50K2tSVCnWzF7feQjephkFmFn
+         mQ4lR/eOu/g4Nc+E+jCFU+M0VvPyg09vLb7MeXDzxt7xWPbasxTTIgTwHpT0R0UbWNBQ
+         6tEQ==
+X-Gm-Message-State: AOAM533vStv/S26bkrz5qRHjjA1GuvJO3F6X8C2txhYxztwhe5ARbU7K
+        tQKWaGlsx6kDO+KWCzhBFf86pA==
+X-Google-Smtp-Source: ABdhPJzipImp2FJDXR65FI4cQBfU1/ZWv6fskJvunQo3KeiwYFfoMSTrdro0BQYaNbHlwWG5ksZP1g==
+X-Received: by 2002:a63:c049:: with SMTP id z9mr19741380pgi.353.1595365110347;
+        Tue, 21 Jul 2020 13:58:30 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id z25sm21277934pfg.140.2020.07.21.13.58.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 13:58:29 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 13:56:35 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>, agross@kernel.org,
+        ohad@wizery.com, corbet@lwn.net, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] remoteproc: Add remoteproc character device
+ interface
+Message-ID: <20200721205635.GM2922385@builder.lan>
+References: <1594148870-27276-1-git-send-email-sidgup@codeaurora.org>
+ <1594148870-27276-2-git-send-email-sidgup@codeaurora.org>
+ <20200715201839.GA3204081@xps15>
+ <20200715215149.GA3267350@xps15>
+ <81d7514c-727e-b4dc-e4ac-74a25966ccaf@codeaurora.org>
 MIME-Version: 1.0
-References: <20200721202425.GA2786714@ZenIV.linux.org.uk> <20200721202549.4150745-1-viro@ZenIV.linux.org.uk>
- <20200721202549.4150745-4-viro@ZenIV.linux.org.uk>
-In-Reply-To: <20200721202549.4150745-4-viro@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 21 Jul 2020 13:55:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiYS3sHp9bvRn3KmkFKnK-Pb0ksL+-gRRHLK_ZjJqQf=w@mail.gmail.com>
-Message-ID: <CAHk-=wiYS3sHp9bvRn3KmkFKnK-Pb0ksL+-gRRHLK_ZjJqQf=w@mail.gmail.com>
-Subject: Re: [PATCH 04/18] csum_and_copy_..._user(): pass 0xffffffff instead
- of 0 as initial sum
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81d7514c-727e-b4dc-e4ac-74a25966ccaf@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 1:25 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Preparation for the change of calling conventions; right now all
-> callers pass 0 as initial sum.  Passing 0xffffffff instead yields
-> the values comparable mod 0xffff and guarantees that 0 will not
-> be returned on success.
+On Tue 21 Jul 12:16 PDT 2020, Siddharth Gupta wrote:
+> On 7/15/2020 2:51 PM, Mathieu Poirier wrote:
+> > On Wed, Jul 15, 2020 at 02:18:39PM -0600, Mathieu Poirier wrote:
+> > > On Tue, Jul 07, 2020 at 12:07:49PM -0700, Siddharth Gupta wrote:
+[..]
+> > > > diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+[..]
+> > > > +int rproc_char_device_add(struct rproc *rproc)
+> > > > +{
+> > > > +	int ret;
+> > > > +	dev_t cdevt;
+> > > > +
+> > > > +	cdev_init(&rproc->char_dev, &rproc_fops);
+> > > > +	rproc->char_dev.owner = THIS_MODULE;
+> > > > +
+> > > > +	cdevt = MKDEV(rproc_major, rproc->index);
+> > > > +	ret = cdev_add(&rproc->char_dev, cdevt, 1);
+> > Trying this patchset on my side gave me the following splat[1].  After finding
+> > the root case I can't understand how you haven't see it on your side when you
+> > tested the feature.
+> > 
+> > [1]. https://pastebin.com/aYTUUCdQ
 
-This seems dangerous to me.
+Mathieu, I've looked at this back and forth. Afaict this implies that
+rproc_major is still 0. Could it be that either alloc_chrdev_region()
+failed or somehow has yet to be called when you hit this point?
 
-Maybe some implementation depends on the fact that they actually do
-the csum 16 bits at a time, and never see an overflow in "int",
-because they keep folding things.
+> Hey Mathieu,
+> 
+> We aren't able to reproduce the error that you are seeing, the splat is
+> coming
+> from the check for whiteout device[1] - which shouldn't happen because of
+> the
+> find_dynamic_major call[2], right?
+> 
+> We are successfully seeing all our character device files and able to
+> successfully boot remoteprocs. From what I read and understood about
+> whiteout
+> devices they will be hidden in the fs.
+> 
+> Could you provide more details about your configuration and testing?
+> 
+> [1]: https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L486
+> <https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L123>
+> [2]: https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L123
+> 
+> <https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L486>
+> > > > +	if (ret < 0)
+> > > > +		goto out;
+> > > > +
+> > > > +	rproc->dev.devt = cdevt;
+> > > > +out:
+> > > > +	return ret;
+> > > > +}
+> > > > +
+> > > > +void rproc_char_device_remove(struct rproc *rproc)
+> > > > +{
+> > > > +	__unregister_chrdev(rproc_major, rproc->index, 1, "remoteproc");
+> > > > +}
+> > > > +
+> > > > +void __init rproc_init_cdev(void)
+> > > > +{
+> > > > +	int ret;
+> > > > +
+> > > > +	ret = alloc_chrdev_region(&rproc_major, 0, NUM_RPROC_DEVICES, "remoteproc");
+> > > > +	if (ret < 0)
+> > > > +		pr_err("Failed to alloc rproc_cdev region, err %d\n", ret);
+> > > > +}
+> > > > +
+> > > > +void __exit rproc_exit_cdev(void)
+> > > > +{
+> > > > +	unregister_chrdev_region(MKDEV(rproc_major, 0), NUM_RPROC_DEVICES);
+> > > Please go back to the comment I made on this during my last review and respin.
+> > After digging in the code while debugging the above problem, I don't see how
+> > unregistering the chrdev region the way it is done here would have worked.
+> Since this is compiled statically and not built as a module, we will never
+> exercise the code path, so I will remove it in the next patchset.
+> 
 
-You now break that assumption, and give it an initial value that the
-csum code itself would never generate, and wouldn't handle right.
+You're right Siddharth, since we changed CONFIG_REMOTEPROC to bool it's no longer
+possible to hit remoteproc_exit(), so you can omit this function
+entirely. (And we should clean up the rest of that as well)
 
-But I didn't check. Maybe we don't have anything that stupid in the kernel.
+[..]
+> > > > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+[..]
+> > > > @@ -488,6 +489,8 @@ struct rproc_dump_segment {
+> > > >    * @auto_boot: flag to indicate if remote processor should be auto-started
+> > > >    * @dump_segments: list of segments in the firmware
+> > > >    * @nb_vdev: number of vdev currently handled by rproc
+> > > > + * @char_dev: character device of the rproc
+> > > > + * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
+> > > >    */
+> > > >   struct rproc {
+> > > >   	struct list_head node;
+> > > > @@ -523,6 +526,8 @@ struct rproc {
+> > > >   	int nb_vdev;
+> > > >   	u8 elf_class;
+> > > >   	u16 elf_machine;
+> > > > +	struct cdev char_dev;
 
-              Linus
+As stated privately, I assumed based on this name that this is a struct
+device related to that character device. So please rename this cdev to
+save me from doing this mistake again.
+
+Thanks,
+Bjorn
