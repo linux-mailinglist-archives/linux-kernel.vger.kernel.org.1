@@ -2,321 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0245228884
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F5222888C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730271AbgGUSqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgGUSqX (ORCPT
+        id S1729314AbgGUSvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:51:09 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21468 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727000AbgGUSvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:46:23 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D3BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:46:23 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 2B8A4BC148;
-        Tue, 21 Jul 2020 18:46:19 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] staging: comedi: amplc: Replace HTTP links with HTTPS ones
-Date:   Tue, 21 Jul 2020 20:46:13 +0200
-Message-Id: <20200721184613.67596-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
+        Tue, 21 Jul 2020 14:51:08 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LInZ1H030107;
+        Tue, 21 Jul 2020 11:50:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=4s+vd1Qc9vSJKOvGKojMsuSCa8vtZBJEKSLRiGpxA3w=;
+ b=cDnJ+ovuuciqwx/l19WDmRARlx5xsi75yxvZ7+yvbHmqb5U7LFDS/e3MwwAcvsmrfvTd
+ 7xvnMf2aQ9AsFEXz/lpZN7ikZ3QQvODpYFEXZv/n0jCjdxIHmmnHjcZk+fJCSgslzgXR
+ xSnIvQz498MfVUtpiDRSGufnOa+dp1sk2qg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32bxkmnfk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 21 Jul 2020 11:50:05 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 21 Jul 2020 11:50:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NjkCpZ+uZ78KoEI9yIZlfoO/QmfOda6FJZLZo9FQTrzdGV8BlJbxh95JPzV6p9ci8WwckvF0V+F+K8v+u7JLoP/SjduS/SSCV+DGt4iUA6xCzHsFQHwLY3yytu7W+WMMhANvAN8LFeTdBI8MRUR4SzctP4KRKs08T97ksmKvQpoUOktugJe+Ev4gsxbd8Ic+/4h8l9ZV0TVf21CqCEpImB95ozS9j7JA4LSLEQXPihXFf3OFBqkAF++7SLB/4geKpiY0lxxO6kxEiM26akTQetBW51Onp1sFxjra2Qvcr15fPanwe3AVzkYTPT7HOf4nk/Uul8DSQI/mMXJFMLCa3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8M/cBuC1UyRRanrQRIl6K2fS1SHf26nXYrCdKmFdo1w=;
+ b=MoCv3QbKUKzj3yhlfgTcDDlATEUI7x2e5xVVQf5wHD4P+QOowDMUdCtWDgSf4Fw0dmC4UT4NUQoqec+YwsoeJ6SBD2EChPE4pol6MQrcyCJc289jYdz5qV2GJRkNiM6YVnp4BH3zFpt6cpo9s8UHuZfOU5lhS6ZUHfv+6tI8W9oo1jWrIYFMcxcvwOlZNyRnUMuIk8NPIIVo0feYQJ9EeFeXdXZRhOT+05Ioqpvb84IM8Q2Et4urrjRQsgCOOKP1XfSO9rj3vkemdfNyUPpsGu3jy2hGkNBPqB2P6FwMcy2WqTXxundmTtHDoXSLXyTpDz8C5nszo757WfMZxMI4jA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8M/cBuC1UyRRanrQRIl6K2fS1SHf26nXYrCdKmFdo1w=;
+ b=eVR13tM6LmOUJtBI+kf7aLDL7nNl3ZWaG9CrWmDURhrh0/dCO7Iw/VvmvlBmw/d3vILOSa+EJbNV1nm4yp69su+sDf4y7W+GE6Gz7r8s5USmOT/9WGrxu2gxsdGBe+Yrt+/I53fqSesrhdlAIKkPmj6UqHNL5me5gl6cr0oI7X4=
+Authentication-Results: cmpxchg.org; dkim=none (message not signed)
+ header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3032.namprd15.prod.outlook.com (2603:10b6:a03:ff::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Tue, 21 Jul
+ 2020 18:50:02 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3195.026; Tue, 21 Jul 2020
+ 18:50:02 +0000
+Date:   Tue, 21 Jul 2020 11:49:59 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+CC:     jingrui <jingrui@huawei.com>, "tj@kernel.org" <tj@kernel.org>,
+        Lizefan <lizefan@huawei.com>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        caihaomin <caihaomin@huawei.com>,
+        "Weiwei (N)" <wick.wei@huawei.com>, <guro@cmpxchg.org>
+Subject: Re: PROBLEM: cgroup cost too much memory when transfer small files
+ to tmpfs
+Message-ID: <20200721184959.GA8266@carbon.DHCP.thefacebook.com>
+References: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
+ <20200721174126.GA271870@cmpxchg.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+In-Reply-To: <20200721174126.GA271870@cmpxchg.org>
+X-ClientProxiedBy: BY3PR10CA0017.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::22) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:cfe6) by BY3PR10CA0017.namprd10.prod.outlook.com (2603:10b6:a03:255::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.19 via Frontend Transport; Tue, 21 Jul 2020 18:50:01 +0000
+X-Originating-IP: [2620:10d:c090:400::5:cfe6]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c79e7a70-b69a-48e5-7f34-08d82da6e033
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3032:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3032EF737B208BC0DA8A50A4BE780@BYAPR15MB3032.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: x2jkWD3qI4mc8/hZg1GEBqPnjkFz9ig6yl7zx7A/RTjP3rJxGhKV3ZhRtfr/745fVrPfv/dvQF4ISl1pwLl8w3X6+MFeAxYvEl6DOTf3Go4bUnDOs66XEXU4aY3GbbFTlMhojQtImzZtkJr94xAENZfAiLpWxfyeuGF0yjH7DsuRrEsrY985jwHiMjYaJHtBRUhJbAhuvhWooKElBaAX0TOebJ6Ry5eFa6TrHIXlIL/sqrXXO62fxEBzj6LmZrlNcMUtcNxCrzRk3J90nSQ2Y4fqsfwn0z4b8mil9ZtxYIo3yN3NuFWs4A6hA3WoBb5VQOA6X898RBoHi7lxK1YmyIT8tdx29Sw0VPM3pkmLHKb4K+nAjWzRCF+B2Wl1EMHTPAurwLkcTBiTgm4tXzYjSS7fcKeXoWHNLLTWTQTBwslkFqOZRzxojo8gwdDQ1j7N1cYEeXFmwcrhEbCHEfMvgQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(55016002)(9686003)(6916009)(498600001)(8676002)(186003)(66556008)(966005)(7696005)(6506007)(66476007)(52116002)(66946007)(83380400001)(16526019)(33656002)(54906003)(1076003)(7416002)(8936002)(5660300002)(4326008)(2906002)(86362001)(17423001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 4WCQOa9sKGotPeizdFQTeUY6x2Q390urivMWNjmmiHgWQpD6nOedb3Z0383f+fhCtgizepreSAs4Hf7ru5OHM6lulgHqoTdiWkyhtheFdrg5pw5Ou0vyKHWFnPWVssW3mgqv5q73FE5bFEM2Bj4IUfPBrsekGQ9hkpWpKvvAPigvMim0ycczmJWV16uPeJR9p+Ydi9nxxdbmsL6BBwd8pxjdKU0SU0k6oUeWjGfGa6ULm7TMF4FlhKMf0Qs4oNlu5w2ueWQjfzDYTE97GcHiCXWiMPskm3+fOx6A8GWo8swQuZWJHsJs5PbH+HzzWbgocYqNS4cb+vxPg5FF6Pu5usap8W0xq5OpDEDATUq8s7oquQS2VK6FUK8M6taXFTVY0DH4tQ+he+4p6gEuui7I+zwm22OqgrU4e/ulq3K9OCdCPRd+9NFS5pGET1IABya8p8tlu088NEDhoyVjJ+GUW+1jZNSROQlZkFcQfL99pvC+uU5keN88f1Ljtfg3s5ZBspd/lQIxLO51gyp4K/9/tw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: c79e7a70-b69a-48e5-7f34-08d82da6e033
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2020 18:50:02.5225
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ntfcFz1D3j7Mo8evoAhckKH9MA4biLJAK6dNkWIHeXkTjh/nZmWu2nIoJOIrdgRB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3032
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_14:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ adultscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 spamscore=0 phishscore=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007210125
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tue, Jul 21, 2020 at 01:41:26PM -0400, Johannes Weiner wrote:
+> On Tue, Jul 21, 2020 at 11:19:52AM +0000, jingrui wrote:
+> > Cc: Johannes Weiner <hannes@cmpxchg.org> ; Michal Hocko <mhocko@kernel.org>; Vladimir Davydov <vdavydov.dev@gmail.com>
+> > 
+> > Thanks.
+> > 
+> > ---
+> > PROBLEM: cgroup cost too much memory when transfer small files to tmpfs.
+> > 
+> > keywords: cgroup PERCPU/memory cost too much.
+> > 
+> > description:
+> > 
+> > We send small files from node-A to node-B tmpfs /tmp directory using sftp. On
+> > node-B the systemd configured with pam on like below.
+> > 
+> > cat /etc/pam.d/password-auth | grep systemd
+> > -session     optional      pam_systemd.so
+> > 
+> > So when transfer a file, a systemd session is created, that means a cgroup is
+> > created, then file saved at /tmp will associated with a cgroup object. After
+> > file transferred, session and cgroup-dir will be removed, but the file in /tmp
+> > still associated with the cgroup object. The PERCPU memory in cgroup/css object
+> > cost a lot(about 0.5MB/per-cgroup-object) on 200/cpus machine.
+> 
+> CC Roman who had a patch series to free all this extended (percpu)
+> memory upon cgroup deletion:
+> 
+> https://lore.kernel.org/patchwork/cover/1050508/
+> 
+> It looks like it never got merged for some reason.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+The mentioned patchset can make the problem less noticeable, but can't solve it completely.
+It has never been merged, because the dying cgroup problem was mostly solved by other methods:
+slab memory reparenting and various reclaim fixes. So there was no more reason to complicate
+the code to release the memcg memory early.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+The overhead of creating and destroying a new memory cgroup for a transfer of a small
+file will be noticeable anyway. So IMO the solution is to use a single cgroup for all
+transfers. I don't know if systemd supports such mode out of the box, but it shouldn't
+be hard to add it.
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+But also I wonder if we need a special tmpfs mount option, something like "noaccount".
+Not only for this specific case, but also for the case when tmpfs is extensively
+shared between multiple cgroups or if it's used to pass some data from one cgroup
+to another, or if we care about the performance more than about the accounting;
+in other words for cases where the accounting makes more harm than good.
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/staging/comedi/drivers/amplc_dio200.c        | 4 ++--
- drivers/staging/comedi/drivers/amplc_dio200.h        | 2 +-
- drivers/staging/comedi/drivers/amplc_dio200_common.c | 4 ++--
- drivers/staging/comedi/drivers/amplc_dio200_pci.c    | 4 ++--
- drivers/staging/comedi/drivers/amplc_pc236.c         | 4 ++--
- drivers/staging/comedi/drivers/amplc_pc236.h         | 2 +-
- drivers/staging/comedi/drivers/amplc_pc236_common.c  | 4 ++--
- drivers/staging/comedi/drivers/amplc_pc263.c         | 4 ++--
- drivers/staging/comedi/drivers/amplc_pci224.c        | 4 ++--
- drivers/staging/comedi/drivers/amplc_pci230.c        | 2 +-
- drivers/staging/comedi/drivers/amplc_pci236.c        | 4 ++--
- drivers/staging/comedi/drivers/amplc_pci263.c        | 4 ++--
- 12 files changed, 21 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/staging/comedi/drivers/amplc_dio200.c b/drivers/staging/comedi/drivers/amplc_dio200.c
-index 26e63d64ffc6..fa19c9e7c56b 100644
---- a/drivers/staging/comedi/drivers/amplc_dio200.c
-+++ b/drivers/staging/comedi/drivers/amplc_dio200.c
-@@ -4,7 +4,7 @@
-  *
-  * Driver for Amplicon PC212E, PC214E, PC215E, PC218E, PC272E.
-  *
-- * Copyright (C) 2005-2013 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2005-2013 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 1998,2000 David A. Schleef <ds@schleef.org>
-@@ -260,6 +260,6 @@ static struct comedi_driver amplc_dio200_driver = {
- };
- module_comedi_driver(amplc_dio200_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon 200 Series ISA DIO boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_dio200.h b/drivers/staging/comedi/drivers/amplc_dio200.h
-index 1d81393be6df..745baaf940ee 100644
---- a/drivers/staging/comedi/drivers/amplc_dio200.h
-+++ b/drivers/staging/comedi/drivers/amplc_dio200.h
-@@ -5,7 +5,7 @@
-  * Header for amplc_dio200.c, amplc_dio200_common.c and
-  * amplc_dio200_pci.c.
-  *
-- * Copyright (C) 2005-2013 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2005-2013 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 1998,2000 David A. Schleef <ds@schleef.org>
-diff --git a/drivers/staging/comedi/drivers/amplc_dio200_common.c b/drivers/staging/comedi/drivers/amplc_dio200_common.c
-index 0b2f04b02ebc..a3454130d5f8 100644
---- a/drivers/staging/comedi/drivers/amplc_dio200_common.c
-+++ b/drivers/staging/comedi/drivers/amplc_dio200_common.c
-@@ -4,7 +4,7 @@
-  *
-  * Common support code for "amplc_dio200" and "amplc_dio200_pci".
-  *
-- * Copyright (C) 2005-2013 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2005-2013 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 1998,2000 David A. Schleef <ds@schleef.org>
-@@ -853,6 +853,6 @@ static void __exit amplc_dio200_common_exit(void)
- }
- module_exit(amplc_dio200_common_exit);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi helper for amplc_dio200 and amplc_dio200_pci");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_dio200_pci.c b/drivers/staging/comedi/drivers/amplc_dio200_pci.c
-index 30d239731e0b..1bd7a42c8464 100644
---- a/drivers/staging/comedi/drivers/amplc_dio200_pci.c
-+++ b/drivers/staging/comedi/drivers/amplc_dio200_pci.c
-@@ -3,7 +3,7 @@
-  *
-  * Driver for Amplicon PCI215, PCI272, PCIe215, PCIe236, PCIe296.
-  *
-- * Copyright (C) 2005-2013 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2005-2013 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 1998,2000 David A. Schleef <ds@schleef.org>
-@@ -410,6 +410,6 @@ static struct pci_driver dio200_pci_pci_driver = {
- };
- module_comedi_pci_driver(dio200_pci_comedi_driver, dio200_pci_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon 200 Series PCI(e) DIO boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pc236.c b/drivers/staging/comedi/drivers/amplc_pc236.c
-index b7dd15f5ec63..c377af1d5246 100644
---- a/drivers/staging/comedi/drivers/amplc_pc236.c
-+++ b/drivers/staging/comedi/drivers/amplc_pc236.c
-@@ -3,7 +3,7 @@
-  * comedi/drivers/amplc_pc236.c
-  * Driver for Amplicon PC36AT DIO boards.
-  *
-- * Copyright (C) 2002 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2002 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 2000 David A. Schleef <ds@schleef.org>
-@@ -71,6 +71,6 @@ static struct comedi_driver amplc_pc236_driver = {
- 
- module_comedi_driver(amplc_pc236_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon PC36AT DIO boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pc236.h b/drivers/staging/comedi/drivers/amplc_pc236.h
-index 45e933ee8735..7e72729f7492 100644
---- a/drivers/staging/comedi/drivers/amplc_pc236.h
-+++ b/drivers/staging/comedi/drivers/amplc_pc236.h
-@@ -3,7 +3,7 @@
-  * comedi/drivers/amplc_pc236.h
-  * Header for "amplc_pc236", "amplc_pci236" and "amplc_pc236_common".
-  *
-- * Copyright (C) 2002-2014 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2002-2014 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 2000 David A. Schleef <ds@schleef.org>
-diff --git a/drivers/staging/comedi/drivers/amplc_pc236_common.c b/drivers/staging/comedi/drivers/amplc_pc236_common.c
-index 01b90e4eca8a..043752663188 100644
---- a/drivers/staging/comedi/drivers/amplc_pc236_common.c
-+++ b/drivers/staging/comedi/drivers/amplc_pc236_common.c
-@@ -3,7 +3,7 @@
-  * comedi/drivers/amplc_pc236_common.c
-  * Common support code for "amplc_pc236" and "amplc_pci236".
-  *
-- * Copyright (C) 2002-2014 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2002-2014 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 2000 David A. Schleef <ds@schleef.org>
-@@ -186,6 +186,6 @@ static void __exit amplc_pc236_common_exit(void)
- }
- module_exit(amplc_pc236_common_exit);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi helper for amplc_pc236 and amplc_pci236");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pc263.c b/drivers/staging/comedi/drivers/amplc_pc263.c
-index 84c989f12faf..68da6098ee84 100644
---- a/drivers/staging/comedi/drivers/amplc_pc263.c
-+++ b/drivers/staging/comedi/drivers/amplc_pc263.c
-@@ -2,7 +2,7 @@
- /*
-  * Driver for Amplicon PC263 relay board.
-  *
-- * Copyright (C) 2002 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2002 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 2000 David A. Schleef <ds@schleef.org>
-@@ -97,6 +97,6 @@ static struct comedi_driver amplc_pc263_driver = {
- 
- module_comedi_driver(amplc_pc263_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon PC263 relay board");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pci224.c b/drivers/staging/comedi/drivers/amplc_pci224.c
-index 657b736ef46d..bcf6d61af863 100644
---- a/drivers/staging/comedi/drivers/amplc_pci224.c
-+++ b/drivers/staging/comedi/drivers/amplc_pci224.c
-@@ -3,7 +3,7 @@
-  * comedi/drivers/amplc_pci224.c
-  * Driver for Amplicon PCI224 and PCI234 AO boards.
-  *
-- * Copyright (C) 2005 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2005 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 1998,2000 David A. Schleef <ds@schleef.org>
-@@ -1138,6 +1138,6 @@ static struct pci_driver amplc_pci224_pci_driver = {
- };
- module_comedi_pci_driver(amplc_pci224_driver, amplc_pci224_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon PCI224 and PCI234 AO boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pci230.c b/drivers/staging/comedi/drivers/amplc_pci230.c
-index f7e673121864..8911dc2bd2c6 100644
---- a/drivers/staging/comedi/drivers/amplc_pci230.c
-+++ b/drivers/staging/comedi/drivers/amplc_pci230.c
-@@ -2570,6 +2570,6 @@ static struct pci_driver amplc_pci230_pci_driver = {
- };
- module_comedi_pci_driver(amplc_pci230_driver, amplc_pci230_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon PCI230(+) and PCI260(+)");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pci236.c b/drivers/staging/comedi/drivers/amplc_pci236.c
-index 86ea876a11be..e7f6fa4d101a 100644
---- a/drivers/staging/comedi/drivers/amplc_pci236.c
-+++ b/drivers/staging/comedi/drivers/amplc_pci236.c
-@@ -3,7 +3,7 @@
-  * comedi/drivers/amplc_pci236.c
-  * Driver for Amplicon PCI236 DIO boards.
-  *
-- * Copyright (C) 2002-2014 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2002-2014 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 2000 David A. Schleef <ds@schleef.org>
-@@ -139,6 +139,6 @@ static struct pci_driver amplc_pci236_pci_driver = {
- 
- module_comedi_pci_driver(amplc_pci236_driver, amplc_pci236_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon PCI236 DIO boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/amplc_pci263.c b/drivers/staging/comedi/drivers/amplc_pci263.c
-index c3efe14020a8..9217973f1141 100644
---- a/drivers/staging/comedi/drivers/amplc_pci263.c
-+++ b/drivers/staging/comedi/drivers/amplc_pci263.c
-@@ -2,7 +2,7 @@
- /*
-  * Driver for Amplicon PCI263 relay board.
-  *
-- * Copyright (C) 2002 MEV Ltd. <http://www.mev.co.uk/>
-+ * Copyright (C) 2002 MEV Ltd. <https://www.mev.co.uk/>
-  *
-  * COMEDI - Linux Control and Measurement Device Interface
-  * Copyright (C) 2000 David A. Schleef <ds@schleef.org>
-@@ -106,6 +106,6 @@ static struct pci_driver amplc_pci263_pci_driver = {
- };
- module_comedi_pci_driver(amplc_pci263_driver, amplc_pci263_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Amplicon PCI263 relay board");
- MODULE_LICENSE("GPL");
--- 
-2.27.0
-
+Thanks!
