@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA200227CB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3291227CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgGUKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGUKRM (ORCPT
+        id S1729143AbgGUKRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:17:40 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:21974 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgGUKRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:17:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F7AC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:17:12 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j18so2255500wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:17:12 -0700 (PDT)
+        Tue, 21 Jul 2020 06:17:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Bl3XIfXLjah4oPLTL/rDwdpYDwZ3/9YGgHZMl8zqpLA=;
-        b=L1RvLKNqtxs6nWiVoFNg7xichLnVL9Lw3ZKE0k6yBdT/h/bZSuUjuNni35i5O+T0wX
-         hqWkOEcklsePlmH06tF2lai3NWe0NMjpCEPFYtiqRQOeGdIOzwlvUIHmMMCVLHQcG+pl
-         EPHj4l00LRIcJrkcjr3sg+qPq3wjU7VAABRN0xVdtHiV+yETGHhP09DmQHGNXTNItqRw
-         Wf38K8gqyd6DE4EObx8W201R6UdLtP19Qn4vBHLs2h1Mmrq4bc/8FieHxRNjvaU6EBP9
-         WyWnbBxtC5js/1G51fWbyPja+pMNFlbQc0UBS9hhuu5iT/frnPqiFChyfAv1JPDIcoAb
-         MRzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Bl3XIfXLjah4oPLTL/rDwdpYDwZ3/9YGgHZMl8zqpLA=;
-        b=LrYsdCiOga+96ZRoWd02oLWLVmvM8jNk4sHaJshYEY0VXfdJty3AhqIf5dxeKM7Khr
-         +mq5lllXlvIpO2cK0jxFpbLFtN/lRMTVo2uCKb6y9OwU/5iS4ACuSeOG2lkFJ4L8m9Uu
-         QSSnQdxJ5+oQ6ZjHYbnJvpYj49/5z8Hn//TZQBf3V6VFio0681jfvG9afvxVAoUx2cYc
-         McF5No+gjaitAZo17kECszYtoTpi1d5D5I7ofP9aezGQ1YnAKvGdxKkCTpeA38iVlB/+
-         TcM3qtENQ5FYqyOYPO21g94AQJg6MbdIZ2ozY5G0Hip69F4W11LqtHfjz9/r6gxb0Wkn
-         xVqQ==
-X-Gm-Message-State: AOAM531SyH2LIWWe1lxHZXLwqLq9W27b667JxXR7UWuthQvPnjxqJ7PZ
-        45XbatMndAWI0b6jb3LS4zi8zg==
-X-Google-Smtp-Source: ABdhPJzaSOzBg/P/7Wo8uh3IBjKdlBxyt8Ncn2NlVZKOs8h2lFF2aYdaM13WWnx7mJ8ljvT5Y/hECg==
-X-Received: by 2002:a1c:e088:: with SMTP id x130mr3252719wmg.14.1595326630904;
-        Tue, 21 Jul 2020 03:17:10 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:3590:b402:869a:11fc? ([2a01:e34:ed2f:f020:3590:b402:869a:11fc])
-        by smtp.googlemail.com with ESMTPSA id w12sm39791729wrm.79.2020.07.21.03.17.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 03:17:10 -0700 (PDT)
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: CLOCKSOURCE,
- CLOCKEVENT DRIVERS
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        tglx@linutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20200708165856.15322-1-grandmaster@al2klimov.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f84744cb-92a3-a731-732f-996bd556ae87@linaro.org>
-Date:   Tue, 21 Jul 2020 12:17:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1595326654; x=1626862654;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=/xLOkM2JYhUnLrEu5qMRjWL8+VI4XlSHNdQQX9qcfLU=;
+  b=D+WP0ntTMQ2m+VZxOuLYtYhaJZhW39kycdQt65letnpFLWmdmkvGNnCD
+   111HZMN+VPuSN9azzteb+0VfCX8jp0AH5CDQ+0VtkDuyvpfTuXyH3oElT
+   BtBcOfoKQQVYhxst1Mxy0mTD47KOXJL/1wYda9kuLZiXGzBjiKgzJDCuy
+   k=;
+IronPort-SDR: +bTGDocgGFhqFJ2NyJdStaKUP0hPLzbGvbFh2wXWM73ksqIUl1QDz4KpRby1Sr7bRT5W588z1Q
+ moud+KP/mfMw==
+X-IronPort-AV: E=Sophos;i="5.75,378,1589241600"; 
+   d="scan'208";a="43267821"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 21 Jul 2020 10:17:33 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 70B31A1FA6;
+        Tue, 21 Jul 2020 10:17:32 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 21 Jul 2020 10:17:32 +0000
+Received: from 38f9d3867b82.ant.amazon.com (10.43.162.73) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 21 Jul 2020 10:17:26 +0000
+Subject: Re: [PATCH v5 05/18] nitro_enclaves: Handle PCI device command
+ requests
+To:     Andra Paraschiv <andraprs@amazon.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "David Duncan" <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        "David Woodhouse" <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Karen Noel <knoel@redhat.com>,
+        "Martin Pohlack" <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>, kbuild test robot <lkp@intel.com>
+References: <20200715194540.45532-1-andraprs@amazon.com>
+ <20200715194540.45532-6-andraprs@amazon.com>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <87d25260-24e7-319a-f94f-d1eb77c3da00@amazon.de>
+Date:   Tue, 21 Jul 2020 12:17:24 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200708165856.15322-1-grandmaster@al2klimov.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200715194540.45532-6-andraprs@amazon.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.73]
+X-ClientProxiedBy: EX13D16UWB003.ant.amazon.com (10.43.161.194) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/07/2020 18:58, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
-
-Applied, thanks
 
 
+On 15.07.20 21:45, Andra Paraschiv wrote:
+> The Nitro Enclaves PCI device exposes a MMIO space that this driver
+> uses to submit command requests and to receive command replies e.g. for
+> enclave creation / termination or setting enclave resources.
+> =
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> Add logic for handling PCI device command requests based on the given
+> command type.
+> =
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> Register an MSI-X interrupt vector for command reply notifications to
+> handle this type of communication events.
+> =
+
+> Signed-off-by: Alexandru-Catalin Vasile <lexnv@amazon.com>
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> =
+
+> Fix issue reported in:
+> https://lore.kernel.org/lkml/202004231644.xTmN4Z1z%25lkp@intel.com/
+> =
+
+> Reported-by: kbuild test robot <lkp@intel.com>
+
+This means that the overall patch is a fix that was reported by the test =
+
+rebot. I doubt that's what you mean. Just remove the line.
+
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+
+Reviewed-by: Alexander Graf <graf@amazon.com>
+
+
+Alex
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
