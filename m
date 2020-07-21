@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B3D2279BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCE72279C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgGUHre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 03:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
+        id S1728235AbgGUHsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 03:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgGUHrd (ORCPT
+        with ESMTP id S1726691AbgGUHsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 03:47:33 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41200C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 00:47:33 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id q4so23086129lji.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 00:47:33 -0700 (PDT)
+        Tue, 21 Jul 2020 03:48:07 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55259C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 00:48:06 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id d17so23037478ljl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 00:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=u3nXJRiSdppGTtPj2ppffsfRJMywt07Ft1M0Vjk21zc=;
-        b=YxKBrfQ1VUCxq106/ImDl/osIy9f5cCVJPpaJSz6duopNcJ5cMjnp3+7ajb8vE06Fb
-         oSfrS/y0P+KgjEEVnhaPqrBToNHJTSNfK/Ej8ZqGbNrSjvURVqcdwVVINTfvDNp9pbya
-         d0ni5oGuM0QpweP64/dk/1phaqWFIVSiQ+iaibeJa3sfumYFAfL1X7Z0dSGyy2nNz+1A
-         Km1kp1bQrupLOacS1kdRMnTT7ueOin38M5b5tYuJoWU0wPoTjEzSVUZXazuXt6etedV+
-         9VxW9/mksXP7zR04PmR0EbpYdvsXHWofyAgc9AVHV2vL6G525qOuLB2UVy2jRYS5mcr/
-         N8ug==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=9fj+mlGbPwbJel6oxJ0D6OKXqr3G/qYico6GQrfC1qA=;
+        b=cZ9RE5fPSflQWEsddknmkKOYwdvv9eV+TRDLjiyN0BX0Hr600TOyTuLrq9FQn1KT5S
+         OOQR2+fbkdsI3nnYTEjTau9KeNre62JPteKeBxzMmUM4xaakYJM5Esfy1wlVIhZhKNpJ
+         k3cFbxc8olENVw5Pk1gTLP33hTMTHynfKaL7KyTj1sF/Dgxfmxn8LX14N3S0A13n35am
+         +l2sgUK+cbzhZSyqpFe7RSUh+ODJCxNxE86Y8qwsVSC3B5PmGE9qmsdPJrrVs83b0s/D
+         zXlUtLcw/Cfli+yx49HUr71aZm43kaWJL6wekqUFiBD5piMa7YKGUPSZT41S15cy3Pgk
+         /dZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=u3nXJRiSdppGTtPj2ppffsfRJMywt07Ft1M0Vjk21zc=;
-        b=CDXfR/5g3lZV5rR7SuXp+vX5Iuq9iAH4tKvRZ1+zpu6kb7njWBftNVaJijBnklEQxz
-         TyDvkkYFm7ens5LrqfT8BUGZYSvvIlNMmew4Z04vOMzCrxixHI7zU6bWCJqhuX7Nt4go
-         gTHa4AvTGnjRWlrPPiWF2EDU/0L2yrx0mTWInKXzdVjWgBvEhDQTf+P860P/ZLPkOmIB
-         BtPXL02v9eUPoFY17mrpGWPec4dwsLkPxvDxWhQUXdtOo+yICkyjqoY2GWdlOEZqzLMi
-         MSa0TJm93Pn17Zif6L8xJMmqs/13qHLkV79BfWANGNw6yTcxdFp6fyEeOxe98x8if10t
-         RpoA==
-X-Gm-Message-State: AOAM533c9vaXRrQxfwSHOdR2h/IEawkpB+ed7DpXu8ZDJAr5/7yGqhfA
-        uG3i5IUJBAzdpLNl1xU4YKTuz/k+dsE=
-X-Google-Smtp-Source: ABdhPJxdoABtefVextDp7MWon7gvzta5PmjzgLS7mmgtJCLxMrSAj2wajyrHjBe6DdsCmTmyIw7qlw==
-X-Received: by 2002:a05:651c:50d:: with SMTP id o13mr13083297ljp.181.1595317651371;
-        Tue, 21 Jul 2020 00:47:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=9fj+mlGbPwbJel6oxJ0D6OKXqr3G/qYico6GQrfC1qA=;
+        b=RJ6F+tD4hT3QR+ZvexOBzpB9mAN37HpK031vYn/z7+pG1C9sYIsosSIzsWqvYUWYki
+         p/N6089/Qkd7BAOLH3khnFwUZ3Vuir3sG0hiVBzBuZWz2BklNuLR8+iqRWo+mJRASLbT
+         rfCUGTdfes7WOx5z+SQSt6+oCtnWVvbUd0NobGp2NGId92JPkKfiURWUTjR0Yxdbz2Qo
+         FqwRntw51btkRIn73fjtiN8Y7h6itijORK6YswdVrfIVWQTF+nymNm30fioW7y9cCplN
+         O0LaL4VJv7iVc/5VFEkjIIexzUDzAbf4gY0fwxn5hvgaTM2wfJVnOU64+ujj4EShDlZO
+         9qyQ==
+X-Gm-Message-State: AOAM533hdyjroGW36gNEXdud0vxOHVDYB699wrLizNY2/m2KIVBflVCq
+        wrRGTGiRIvbBbgPREFtHuPVNrQ==
+X-Google-Smtp-Source: ABdhPJymcoDeM/UpJDvJp0uFJhhf4P4WUSwQOIlEDLwYBl27ww4QUTQeqpTuZ8eoq9uH2nmBgETLLg==
+X-Received: by 2002:a05:651c:319:: with SMTP id a25mr12603508ljp.272.1595317684778;
+        Tue, 21 Jul 2020 00:48:04 -0700 (PDT)
 Received: from localhost.localdomain ([195.24.90.54])
-        by smtp.gmail.com with ESMTPSA id d2sm4045334ljg.6.2020.07.21.00.47.27
+        by smtp.gmail.com with ESMTPSA id d2sm4045334ljg.6.2020.07.21.00.47.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 00:47:30 -0700 (PDT)
+        Tue, 21 Jul 2020 00:48:04 -0700 (PDT)
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
 To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
@@ -58,50 +59,103 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Maheshwar Ajja <majja@codeaurora.org>,
         Nicolas Dufresne <nicolas@ndufresne.ca>,
         Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 0/6] Add new controls for CQ and Frame-skip
-Date:   Tue, 21 Jul 2020 10:45:32 +0300
-Message-Id: <20200721074538.505-1-stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 1/6] media: v4l2-ctrls: Add encoder constant quality control
+Date:   Tue, 21 Jul 2020 10:45:33 +0300
+Message-Id: <20200721074538.505-2-stanimir.varbanov@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200721074538.505-1-stanimir.varbanov@linaro.org>
+References: <20200721074538.505-1-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Maheshwar Ajja <majja@codeaurora.org>
 
-Here is v2 with following changes:
+When V4L2_CID_MPEG_VIDEO_BITRATE_MODE value is
+V4L2_MPEG_VIDEO_BITRATE_MODE_CQ, encoder will produce
+constant quality output indicated by
+V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY control value.
+Encoder will choose appropriate quantization parameter
+and bitrate to produce requested frame quality level.
 
- * 3/6 Added references for VBV size and h264 CPB size - requested by Nicolas
- * 4/6 Fixed compile warning
+Signed-off-by: Maheshwar Ajja <majja@codeaurora.org>
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 10 ++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c                   |  2 ++
+ include/uapi/linux/v4l2-controls.h                     |  2 ++
+ 3 files changed, 14 insertions(+)
 
-Previous version can be found at [1].
-
-regards,
-Stan
-
-[1] https://lkml.org/lkml/2020/7/20/619
-
-Maheshwar Ajja (1):
-  media: v4l2-ctrls: Add encoder constant quality control
-
-Stanimir Varbanov (5):
-  venus: venc: Add support for constant quality control
-  media: v4l2-ctrl: Add frame-skip std encoder control
-  venus: venc: Add support for frame-skip mode v4l2 control
-  media: s5p-mfc: Use standard frame skip mode control
-  media: docs: Deprecate mfc frame skip control
-
- .../media/v4l/ext-ctrls-codec.rst             | 53 +++++++++++++++++++
- drivers/media/platform/qcom/venus/core.h      |  2 +
- drivers/media/platform/qcom/venus/hfi_cmds.c  | 37 ++++++++++++-
- .../media/platform/qcom/venus/hfi_helper.h    | 10 +++-
- drivers/media/platform/qcom/venus/venc.c      | 20 +++++--
- .../media/platform/qcom/venus/venc_ctrls.c    | 18 ++++++-
- drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |  6 +++
- drivers/media/v4l2-core/v4l2-ctrls.c          | 12 +++++
- include/uapi/linux/v4l2-controls.h            |  8 +++
- 9 files changed, 160 insertions(+), 6 deletions(-)
-
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index d0d506a444b1..b9d3f7ae6486 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -581,6 +581,8 @@ enum v4l2_mpeg_video_bitrate_mode -
+       - Variable bitrate
+     * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_CBR``
+       - Constant bitrate
++    * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_CQ``
++      - Constant quality
+ 
+ 
+ 
+@@ -592,6 +594,14 @@ enum v4l2_mpeg_video_bitrate_mode -
+     the average video bitrate. It is ignored if the video bitrate mode
+     is set to constant bitrate.
+ 
++``V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY (integer)``
++    Constant quality level control. This control is applicable when
++    ``V4L2_CID_MPEG_VIDEO_BITRATE_MODE`` value is
++    ``V4L2_MPEG_VIDEO_BITRATE_MODE_CQ``. Valid range is 1 to 100
++    where 1 indicates lowest quality and 100 indicates highest quality.
++    Encoder will decide the appropriate quantization parameter and
++    bitrate to produce requested frame quality.
++
+ ``V4L2_CID_MPEG_VIDEO_TEMPORAL_DECIMATION (integer)``
+     For every captured frame, skip this many subsequent frames (default
+     0).
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+index 3f3fbcd60cc6..bc00d02e411f 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+@@ -200,6 +200,7 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+ 	static const char * const mpeg_video_bitrate_mode[] = {
+ 		"Variable Bitrate",
+ 		"Constant Bitrate",
++		"Constant Quality",
+ 		NULL
+ 	};
+ 	static const char * const mpeg_stream_type[] = {
+@@ -832,6 +833,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_MPEG_VIDEO_GOP_CLOSURE:	return "Video GOP Closure";
+ 	case V4L2_CID_MPEG_VIDEO_PULLDOWN:	return "Video Pulldown";
+ 	case V4L2_CID_MPEG_VIDEO_BITRATE_MODE:	return "Video Bitrate Mode";
++	case V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY:	return "Constant Quality";
+ 	case V4L2_CID_MPEG_VIDEO_BITRATE:	return "Video Bitrate";
+ 	case V4L2_CID_MPEG_VIDEO_BITRATE_PEAK:	return "Video Peak Bitrate";
+ 	case V4L2_CID_MPEG_VIDEO_TEMPORAL_DECIMATION: return "Video Temporal Decimation";
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 62271418c1be..0f7e4388dcce 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -375,6 +375,7 @@ enum v4l2_mpeg_video_aspect {
+ enum v4l2_mpeg_video_bitrate_mode {
+ 	V4L2_MPEG_VIDEO_BITRATE_MODE_VBR = 0,
+ 	V4L2_MPEG_VIDEO_BITRATE_MODE_CBR = 1,
++	V4L2_MPEG_VIDEO_BITRATE_MODE_CQ  = 2,
+ };
+ #define V4L2_CID_MPEG_VIDEO_BITRATE		(V4L2_CID_MPEG_BASE+207)
+ #define V4L2_CID_MPEG_VIDEO_BITRATE_PEAK	(V4L2_CID_MPEG_BASE+208)
+@@ -742,6 +743,7 @@ enum v4l2_cid_mpeg_video_hevc_size_of_length_field {
+ #define V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L6_BR	(V4L2_CID_MPEG_BASE + 642)
+ #define V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES	(V4L2_CID_MPEG_BASE + 643)
+ #define V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR	(V4L2_CID_MPEG_BASE + 644)
++#define V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY		(V4L2_CID_MPEG_BASE + 645)
+ 
+ /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
+ #define V4L2_CID_MPEG_CX2341X_BASE				(V4L2_CTRL_CLASS_MPEG | 0x1000)
 -- 
 2.17.1
 
