@@ -2,620 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826CE227ABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC4F227AB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgGUIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:33:42 -0400
-Received: from mga03.intel.com ([134.134.136.65]:51196 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgGUIdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 04:33:41 -0400
-IronPort-SDR: 0ZmKsv65dzCjaYMo8Ar7qaw2gHKdtC2R/4rV+akaRor6/uASzyowQIrX2VWXkfgg5lte/uikVE
- 9BkNirxMVayA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="150074841"
-X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; 
-   d="scan'208";a="150074841"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 01:33:40 -0700
-IronPort-SDR: aPNM2sVIiY9V+pIKUD/UPBXIcrCirIbMWgFgXgzSg+nFKWKU85RyHkvQ8y9weKv0zFNAFLK4nO
- buy3NRqfwTgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; 
-   d="scan'208";a="301548175"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga002.jf.intel.com with ESMTP; 21 Jul 2020 01:33:38 -0700
-Date:   Tue, 21 Jul 2020 16:30:30 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: Re: [PATCH 2/2] fpga: dfl: create a dfl bus type to support DFL
-  devices
-Message-ID: <20200721083030.GG17091@yilunxu-OptiPlex-7050>
-References: <1594791498-14495-1-git-send-email-yilun.xu@intel.com>
- <1594791498-14495-3-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB38195AA712F8089090695CE5857C0@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S1728085AbgGUIcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbgGUIcf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 04:32:35 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E3DC0619D7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:32:35 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id b205so4350327vkb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=PoeTzQAbfq8diFTwwkNIgvAU88Rk11ryiy5bkw2TiLE=;
+        b=qkm0DThRajhvOArCsxPVp1WLsRduMWxTjOVSRdgSHGFQtywjmua1Zl9383pSh24DNb
+         v0XyxiAVaFN2kT0lLlfTZxPoDCc49BlaWLllFJu333dYWH0XizRN0yZWSClvUoe5d6gX
+         5sPeNxdD+omjnrlErPeHqeUtaI4YymmCxSP2Any4uMGd2Vtc6B+yXnsrudl4a+QS6I5t
+         c3h6RTazDPN8jUdsGPBOoWcIzUERpPhQ7NJ6MXoscqG3OHeeveIZgFeFBRolVcqYRIPp
+         hDZkPeoG5EFi2oluChUeG6rVI385un+IOgpRNfE2rp+hWQ6dGV/zma8+Tqot6ol7oInA
+         Mk2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=PoeTzQAbfq8diFTwwkNIgvAU88Rk11ryiy5bkw2TiLE=;
+        b=UzNlLomenbmnsdiHJ/AP6OjPzTWD16FwbVtkm7zjhXH0HwLhlyQ1uyGNn/nd/RDXBa
+         RDC1jZwU8UwP4q51K8KqoxPHI5Q17CfOm38HyGk02Ymr81y6U2l32jqN8NYFtD19niUf
+         hJueITsiS75rBw4CK+GKVgzal8Z85WyZTvV//dk+1loBIW41mg4zmBAFCtMYCZP3/tNp
+         PDLHRwEn3aUt5dWofYpA215GNgddbZ+bPNeehWR9VbG8Y5anMqgNjO517IUC/8YcOQHN
+         AeKiileBMKiR8+C0wg6b7B/9oyVBOdv64IFT+w//YbmkMaLIxv3HmgjN3Uv6pyyINwA2
+         E7Kw==
+X-Gm-Message-State: AOAM530FWGHov1EnQRCQobJ1bIoNTP2hfbCRkq9+g5LdSEI+HYu47aWb
+        7OrKdAl5hTogLWDqdX4V6KA8sp5KaqvF/wFp44rHzQ==
+X-Google-Smtp-Source: ABdhPJwbf5Rm4LJQfuNeEBXEFYSArJpqfyxXBcSf96bg1G+qIb4bGdA0GfWckqnuMBu8NcbcIyGsk60Fg5COAjcw1MY=
+X-Received: by 2002:a1f:a14f:: with SMTP id k76mr19527994vke.0.1595320353996;
+ Tue, 21 Jul 2020 01:32:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB38195AA712F8089090695CE5857C0@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 21 Jul 2020 14:02:22 +0530
+Message-ID: <CA+G9fYvGXOcsF=70FVwOxqVYOeGTUuzhUzh5od1cKV1hshsW_g@mail.gmail.com>
+Subject: stable-rc 4.14: arm64: Internal error: Oops: clk_reparent
+ __clk_set_parent_before on db410c
+To:     linux- stable <stable@vger.kernel.org>, linux-clk@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>, jcrouse@codeaurora.org,
+        Eric Anholt <eric@anholt.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        samuel@sholland.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 06:26:37PM +0800, Wu, Hao wrote:
-> > -----Original Message-----
-> > From: Xu, Yilun <yilun.xu@intel.com>
-> > Sent: Wednesday, July 15, 2020 1:38 PM
-> > To: mdf@kernel.org; linux-fpga@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Cc: trix@redhat.com; lgoncalv@redhat.com; Xu, Yilun <yilun.xu@intel.com>;
-> > Wu, Hao <hao.wu@intel.com>; Matthew Gerlach
-> > <matthew.gerlach@linux.intel.com>; Weight, Russell H
-> > <russell.h.weight@intel.com>
-> > Subject: [PATCH 2/2] fpga: dfl: create a dfl bus type to support DFL devices
-> >
-> > A new bus type "dfl" is introduced for private features which are not
-> > initialized by DFL feature drivers (dfl-fme & dfl-afu drivers). So these
-> > private features could be handled by separate driver modules.
-> >
-> > DFL framework will create DFL devices on enumeration.
-> 
-> Actually these DFL devices are created in AFU/FME driver initialization or real
-> core DFL code, is my understanding correct?
+Kernel Internal oops while booting stable-rc 4.14 kernel on qcom db410c device
+this problem happened only once on this specific platform.
+and  rcu_preempt detected stalls on CPUs/tasks detected after this and
+board hung.
 
-Yes I could change the comments.
+metadata:
+  git branch: linux-4.14.y
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  git commit: 5b1e982af0f810358664827a6333affb4f5d8eb5
+  git describe: v4.14.188-126-g5b1e982af0f8
+  make_kernelversion: 4.14.189-rc1
+  kernel-config:
+https://builds.tuxbuild.com/12PM71zBW-5EAp5ztC_yxg/kernel.config
 
-> 
-> > DFL drivers could
-> > be registered on this bus to match these DFL devices. They are matched by
-> > dfl type & feature_id.
-> >
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-dfl |  15 ++
-> >  drivers/fpga/dfl.c                      | 248 ++++++++++++++++++++++++++++++--
-> >  drivers/fpga/dfl.h                      |  85 +++++++++++
-> >  3 files changed, 340 insertions(+), 8 deletions(-)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl
-> > b/Documentation/ABI/testing/sysfs-bus-dfl
-> > new file mode 100644
-> > index 0000000..cd00abc
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-bus-dfl
-> > @@ -0,0 +1,15 @@
-> > +What:/sys/bus/dfl/devices/.../type
-> > +Date:March 2020
-> > +KernelVersion:5.7
-> 
-> I guess you need to update the date and target kernel version.
+Crash dump:
 
-Yes
+[    5.424958] Unable to handle kernel paging request at virtual
+address 00001008
+[    5.435485] Mem abort info:
+[    5.442509]   Exception class = DABT (current EL), IL = 32 bits
+[    5.445203]   SET = 0, FnV = 0
+[[    5.451101]   EA = 0, S1PTW =[    5.454226] Data abort info:
+[    5.457264]   ISV = 0, ISS = 0x00000044
+[    5.460390]   CM = 0, WnR = 1
+[    5.463951] user pgtable: 4k pages, 48-bit VAs, pgd = ffff80003d66d000
+[    5.467078] [0000000000001008] *pgd=0000000000000000
+[    5.473503] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+[    5.479838] Modules linked in: adv7511 msm mdt_loader msm_rng
+drm_kms_helper rng_core drm fuse
+[    5.485405] Process kworker/2:0 (pid: 21, stack limit = 0xffff000009450000)
+[    5.494090] CPU: 2 PID: 21 Comm: kworker/2:0 Not tainted 4.14.189-rc1 #1
+[    5.501036] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    5.507996] Workqueue: events deferred_probe_work_func
+[    5.514935] task: ffff80003d454380 task.stack: ffff000009450000
+[    5.520155] pc : clk_reparent+0x60/0xe8
+[    5.526058] lr : __clk_set_parent_before+0x40/0x88
+[    5.529882] sp : ffff000009453640 pstate : 800001c5
+[    5.534748] x29: ffff000009453640 x28: ffff0000090b7000
+[    5.539615] x27: ffff80003fe7c478 x26: ffff0000094537a8
+[    5.545175] x25: 0000000000000001 x24: ffff000009239038
+[    5.550736] x23: ffff80003b6be688 x22: 0000000000000000
+[    5.556297] x21: 0000000000000000 x20: ffff80003c9d8c00
+[    5.561858] x19: ffff80003d798900 x18: 00000000fffffffe
+[    5.567419] x17: 0000ffff7fdbb6a0 x16: ffff00000821ad98
+[    5.572980] x15: 0000000000000001 x14: ffffffffffffffff
+[    5.578540] x13: ffff0000094537c8 x12: 0000000000000010
+[    5.584102] x11: 0000000000000010 x10: 0101010101010101
+[    5.589663] x9 : 0000000000000000 x8 : 7f7f7f7f7f7f7f7f
+[    5.595223] x7 : fefefefefeff6e77 x6 : 0000000000000140
+[    5.600784] x5 : 0000000000000001 x4 : ffff80003c9d8c00
+[    5.606344] x3 : ffff80003d798900 x2 : 0000000000000004
+[    5.611905] x1 : ffff80003d7989a8 x0 : 0000000000001000
+[    5.617467] Call trace:
+[    5.623030]  clk_reparent+0x60/0xe8
+[    5.625465]  __clk_set_parent_before+0x40/0x88
+[    5.628943]  clk_register+0x330/0x618
+[    5.633668]  pll_28nm_register+0xa4/0x340 [msm]
+[    5.637492]  msm_dsi_pll_28nm_init+0xc8/0x1d8 [msm]
+[    5.642007]  msm_dsi_pll_init+0x34/0xe0 [msm]
+[    5.646870]  dsi_phy_driver_probe+0x1cc/0x310 [msm]
+[    5.651196]  platform_drv_probe+0x58/0xb8
+[    5.656060]  driver_probe_device+0x228/0x2d0
+[    5.660231]  __device_attach_driver+0xb8/0xe8
+[    5.664750]  bus_for_each_drv+0x64/0xa0
+[    5.669269]  __device_attach+0xcc/0x138
+[    5.673093]  device_initial_probe+0x10/0x18
+[    5.676918]  bus_probe_device+0x90/0x98
+[    5.681088]  device_add+0x3c4/0x5a8
+[    5.684915]  of_device_add+0x40/0x58
+[    5.688392]  of_platform_device_create_pdata+0x80/0xe8
+[    5.692219]  of_platform_bus_create+0xd4/0x308
+[    5.697432]  of_platform_populate+0x48/0xb8
+[    5.702143]  msm_pdev_probe+0x3c/0x328 [msm]
+[    5.706125]  platform_drv_probe+0x58/0xb8
+[    5.710642]  driver_probe_device+0x228/0x2d0
+[    5.714814]  __device_attach_driver+0xb8/0xe8
+[    5.719334]  bus_for_each_drv+0x64/0xa0
+[    5.723852]  __device_attach+0xcc/0x138
+[    5.727677]  device_initial_probe+0x10/0x18
+[    5.731502]  bus_probe_device+0x90/0x98
+[    5.735675]  deferred_probe_work_func+0xa4/0x140
+[    5.739502]  process_one_work+0x19c/0x300
+[    5.744366]  worker_thread+0x4c/0x420
+[    5.748539]  kthread+0x100/0x130
+[    5.752362]  ret_from_fork+0x10/0x1c
+[    5.755842] Code: 54000260 f9405080 f9005460 b4000040 (f9000401)
+[    5.759669] ---[ end trace 6d70d7dd8a236384 ]---
+[    5.765922] note: kworker/2:0[21] exited with preempt_count 1
+[   26.777168] INFO: rcu_preempt detected stalls on CPUs/tasks:
+[   26.777204] 0-...: (1 GPs behind) idle=2fa/140000000000001/0
+softirq=1679/1723 fqs=2625
+[   26.783112] 1-...: (1 GPs behind) idle=53a/140000000000000/0
+softirq=1946/1958 fqs=2625
+[   26.791444] (detected by 3, t=5252 jiffies, g=58, c=57, q=2362)
+[   26.799781] Task dump for CPU 0:
+[   26.806033] systemd-udevd   R  running task        0  2533      1 0x00000202
+[   26.809515] Call trace:
+[   26.816814]  __switch_to+0xe8/0x148
+[   26.819248]  __wake_up_common+0x80/0x170
+[   26.822724]  __wake_up_common_lock+0x7c/0xa8
+[   26.826897]  __wake_up_sync_key+0x1c/0x28
+[   26.831416]  sock_def_readable+0x40/0x88
+[   26.835584] Task dump for CPU 1:
+[   26.839755] systemd         R  running task        0     1      0 0x0000000a
+[   26.843237] Call trace:
+[   26.850531]  __switch_to+0xe8/0x148
+[   26.852968]  0xffff800009fc8000
+[   26.856467] INFO: rcu_sched detected stalls on CPUs/tasks:
+[   26.859584] 0-...: (1 GPs behind) idle=2fa/140000000000001/0
+softirq=1722/1723 fqs=2625
+[   26.865145] 1-...: (1 GPs behind) idle=53a/140000000000000/0
+softirq=1957/1958 fqs=2625
+[   26.873477] (detected by 3, t=5270 jiffies, g=-150, c=-151, q=3)
+[   26.881815] Task dump for CPU 0:
+[   26.888067] systemd-udevd   R  running task        0  2533      1 0x00000202
+[   26.891549] Call trace:
+[   26.898845]  __switch_to+0xe8/0x148
+[   26.901281]  __wake_up_common+0x80/0x170
+[   26.904758]  __wake_up_common_lock+0x7c/0xa8
+[   26.908931]  __wake_up_sync_key+0x1c/0x28
+[   26.913449]  sock_def_readable+0x40/0x88
+[   26.917618] Task dump for CPU 1:
+[   26.921790] systemd         R  running task        0     1      0 0x0000000a
+[   26.925271] Call trace:
+[   26.932565]  __switch_to+0xe8/0x148
+[   26.935002]  0xffff800009fc8000
+[   41.449201] random: crng init done
+[   41.449221] random: 7 urandom warning(s) missed due to ratelimiting
+[   89.797164] INFO: rcu_preempt detected stalls on CPUs/tasks:
+[   89.797195] 0-...: (1 GPs behind) idle=2fa/140000000000001/0
+softirq=1679/1723 fqs=10482
+[   89.803103] 1-...: (1 GPs behind) idle=53a/140000000000000/0
+softirq=1946/1958 fqs=10482
+[   89.811437] (detected by 3, t=21007 jiffies, g=58, c=57, q=2578)
+[   89.819773] Task dump for CPU 0:
+[   89.826027] systemd-udevd   R  running task        0  2533      1 0x00000202
+[   89.829508] Call trace:
+[   89.836807]  __switch_to+0xe8/0x148
+[   89.839241]  __wake_up_common+0x80/0x170
+[   89.842717]  __wake_up_common_lock+0x7c/0xa8
+[   89.846891]  __wake_up_sync_key+0x1c/0x28
+[   89.851410]  sock_def_readable+0x40/0x88
+<System Hung>
 
-> 
-> > +Contact:Xu Yilun <yilun.xu@intel.com>
-> > +Description:Read-only. It returns type of DFL FIU of the device. Now DFL
-> > +supports 2 FIU types, 0 for FME, 1 for PORT.
-> > +Format: 0x%x
-> 
-> Or consider just print the string instead here?
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/build/v4.14.188-126-g5b1e982af0f8/testrun/2969667/suite/linux-log-parser/test/check-kernel-oops-1592908/log
 
-I think we don't have to. Keeping it align with dfl_device_id.type may
-be better. 
 
-> 
-> > +
-> > +What:/sys/bus/dfl/devices/.../feature_id
-> > +Date:March 2020
-> > +KernelVersion:5.7
-> 
-> Ditto.
-
-Yes
-
-> 
-> > +Contact:Xu Yilun <yilun.xu@intel.com>
-> > +Description:Read-only. It returns feature identifier local to its DFL FIU
-> > +type.
-> > +Format: 0x%llx
-> > diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> > index 7dc6411..93f9d6d 100644
-> > --- a/drivers/fpga/dfl.c
-> > +++ b/drivers/fpga/dfl.c
-> > @@ -30,12 +30,6 @@ static DEFINE_MUTEX(dfl_id_mutex);
-> >   * index to dfl_chardevs table. If no chardev support just set devt_type
-> >   * as one invalid index (DFL_FPGA_DEVT_MAX).
-> >   */
-> > -enum dfl_id_type {
-> > -FME_ID,/* fme id allocation and mapping */
-> > -PORT_ID,/* port id allocation and mapping */
-> > -DFL_ID_MAX,
-> > -};
-> > -
-> >  enum dfl_fpga_devt_type {
-> >  DFL_FPGA_DEVT_FME,
-> >  DFL_FPGA_DEVT_PORT,
-> > @@ -255,6 +249,228 @@ static bool is_header_feature(struct dfl_feature
-> > *feature)
-> >  return feature->id == FEATURE_ID_FIU_HEADER;
-> >  }
-> >
-> > +static const struct dfl_device_id *
-> > +dfl_match_one_device(const struct dfl_device_id *id,
-> > +     struct dfl_device *dfl_dev)
-> 
-> Why start a new line here, it's just 80 char here. : )
-> BTW: you can use ddev instead of dfl_dev here for a shorter name.
-
-Yes.
-
-> 
-> > +{
-> > +if (id->type == dfl_dev->type &&
-> > +    id->feature_id == dfl_dev->feature_id)
-> > +return id;
-> > +
-> > +return NULL;
-> > +}
-> > +
-> > +static int dfl_bus_match(struct device *dev, struct device_driver *drv)
-> > +{
-> > +struct dfl_device *dfl_dev = to_dfl_dev(dev);
-> > +struct dfl_driver *dfl_drv = to_dfl_drv(drv);
-> > +const struct dfl_device_id *id_entry = dfl_drv->id_table;
-> > +
-> > +while (id_entry->feature_id) {
-> > +if (dfl_match_one_device(id_entry, dfl_dev)) {
-> > +dfl_dev->id_entry = id_entry;
-> > +return 1;
-> > +}
-> > +id_entry++;
-> > +}
-> > +
-> > +return 0;
-> > +}
-> > +
-> > +static int dfl_bus_probe(struct device *dev)
-> > +{
-> > +struct dfl_device *dfl_dev = to_dfl_dev(dev);
-> > +struct dfl_driver *dfl_drv = to_dfl_drv(dev->driver);
-> > +
-> > +return dfl_drv->probe(dfl_dev);
-> > +}
-> > +
-> > +static int dfl_bus_remove(struct device *dev)
-> > +{
-> > +struct dfl_device *dfl_dev = to_dfl_dev(dev);
-> > +struct dfl_driver *dfl_drv = to_dfl_drv(dev->driver);
-> > +
-> > +if (dfl_drv->remove)
-> > +dfl_drv->remove(dfl_dev);
-> > +
-> > +return 0;
-> > +}
-> > +
-> > +static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
-> > +{
-> > +struct dfl_device *dfl_dev = to_dfl_dev(dev);
-> > +
-> > +if (add_uevent_var(env, "MODALIAS=dfl:%08x:%016llx",
-> > +   dfl_dev->type, dfl_dev->feature_id))
-> 
-> I see for pci bus, it's using v%08Xd%08X... should we consider adding one
-> "t" to indicate that value is for type? Will that be simpler to the users?
-
-Yes I could add the tags, maybe "dfl:t%08xf%016llx". So it will not
-cause conflicted modalias if a new id field is added.
-
-> 
-> > +return -ENOMEM;
-> > +
-> > +return 0;
-> > +}
-> > +
-> > +/* show dfl info fields */
-> > +#define dfl_info_attr(field, format_string)\
-> > +static ssize_t\
-> > +field##_show(struct device *dev, struct device_attribute *attr,
-> > \
-> > +     char *buf)\
-> > +{\
-> > +struct dfl_device *dfl_dev = to_dfl_dev(dev);\
-> > +\
-> > +return sprintf(buf, format_string, dfl_dev->field);\
-> > +}\
-> > +static DEVICE_ATTR_RO(field)
-> > +
-> > +dfl_info_attr(type, "0x%x\n");
-> > +dfl_info_attr(feature_id, "0x%llx\n");
-> > +
-> > +static struct attribute *dfl_dev_attrs[] = {
-> > +&dev_attr_type.attr,
-> > +&dev_attr_feature_id.attr,
-> > +NULL,
-> > +};
-> > +
-> > +ATTRIBUTE_GROUPS(dfl_dev);
-> > +
-> > +static struct bus_type dfl_bus_type = {
-> > +.name= "dfl",
-> > +.match= dfl_bus_match,
-> > +.probe= dfl_bus_probe,
-> > +.remove= dfl_bus_remove,
-> > +.uevent= dfl_bus_uevent,
-> > +.dev_groups= dfl_dev_groups,
-> > +};
-> > +
-> > +static void release_dfl_dev(struct device *dev)
-> > +{
-> > +struct dfl_device *dfl_dev = to_dfl_dev(dev);
-> > +
-> > +release_resource(&dfl_dev->mmio_res);
-> > +kfree(dfl_dev->irqs);
-> > +kfree(dfl_dev);
-> > +}
-> > +
-> > +static struct dfl_device *
-> > +dfl_dev_add(struct dfl_feature_platform_data *pdata,
-> > +    struct dfl_feature *feature)
-> > +{
-> > +struct platform_device *pdev = pdata->dev;
-> > +struct dfl_device *dfl_dev;
-> > +int i, ret;
-> > +
-> > +dfl_dev = kzalloc(sizeof(*dfl_dev), GFP_KERNEL);
-> > +if (!dfl_dev)
-> > +return ERR_PTR(-ENOMEM);
-> > +
-> > +dfl_dev->cdev = pdata->dfl_cdev;
-> > +
-> > +dfl_dev->mmio_res.parent = &pdev->resource[feature-
-> > >resource_index];
-> > +dfl_dev->mmio_res.flags = IORESOURCE_MEM;
-> > +dfl_dev->mmio_res.start =
-> > +pdev->resource[feature->resource_index].start;
-> > +dfl_dev->mmio_res.end = pdev->resource[feature-
-> > >resource_index].end;
-> > +
-> > +/* then add irq resource */
-> > +if (feature->nr_irqs) {
-> > +dfl_dev->irqs = kcalloc(feature->nr_irqs,
-> > +sizeof(*dfl_dev->irqs), GFP_KERNEL);
-> > +if (!dfl_dev->irqs) {
-> > +ret = -ENOMEM;
-> > +goto free_dfl_dev;
-> > +}
-> > +
-> > +for (i = 0; i < feature->nr_irqs; i++)
-> > +dfl_dev->irqs[i] = feature->irq_ctx[i].irq;
-> > +
-> > +dfl_dev->num_irqs = feature->nr_irqs;
-> > +}
-> > +
-> > +dfl_dev->type = feature_dev_id_type(pdev);
-> > +dfl_dev->feature_id = (unsigned long long)feature->id;
-> > +
-> > +dfl_dev->dev.parent  = &pdev->dev;
-> > +dfl_dev->dev.bus     = &dfl_bus_type;
-> > +dfl_dev->dev.release = release_dfl_dev;
-> > +dev_set_name(&dfl_dev->dev, "%s.%d", dev_name(&pdev->dev),
-> > +     feature->index);
-> 
-> Or it's better to have a generic name for the device on the bus.
-
-mm.. It is good suggestion, we should have a unified name for dfl
-devices.
-
-How about ("dfl.%d.%d", pdev->id, feature->index)
-
-> 
-> > +
-> > +dfl_dev->mmio_res.name = dev_name(&dfl_dev->dev);
-> > +ret = insert_resource(dfl_dev->mmio_res.parent, &dfl_dev-
-> > >mmio_res);
-> > +if (ret) {
-> > +dev_err(&pdev->dev, "%s failed to claim resource: %pR\n",
-> > +dev_name(&dfl_dev->dev), &dfl_dev->mmio_res);
-> > +goto free_irqs;
-> > +}
-> > +
-> > +ret = device_register(&dfl_dev->dev);
-> > +if (ret) {
-> > +put_device(&dfl_dev->dev);
-> > +return ERR_PTR(ret);
-> > +}
-> > +
-> > +dev_info(&pdev->dev, "add dfl_dev: %s\n",
-> > + dev_name(&dfl_dev->dev));
-> > +return dfl_dev;
-> > +
-> > +free_irqs:
-> > +kfree(dfl_dev->irqs);
-> > +free_dfl_dev:
-> > +kfree(dfl_dev);
-> > +return ERR_PTR(ret);
-> > +}
-> > +
-> > +static void dfl_devs_uinit(struct dfl_feature_platform_data *pdata)
-> > +{
-> > +struct dfl_device *dfl_dev;
-> > +struct dfl_feature *feature;
-> > +
-> > +dfl_fpga_dev_for_each_feature(pdata, feature) {
-> > +if (!feature->ioaddr && feature->priv) {
-> > +dfl_dev = feature->priv;
-> > +device_unregister(&dfl_dev->dev);
-> > +feature->priv = NULL;
-> > +}
-> > +}
-> > +}
-> > +
-> > +static int dfl_devs_init(struct platform_device *pdev)
-> > +{
-> > +struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev-
-> > >dev);
-> > +struct dfl_feature *feature;
-> > +struct dfl_device *dfl_dev;
-> > +
-> > +dfl_fpga_dev_for_each_feature(pdata, feature) {
-> > +if (feature->ioaddr || feature->priv)
-> > +continue;
-> > +
-> > +dfl_dev = dfl_dev_add(pdata, feature);
-> > +if (IS_ERR(dfl_dev)) {
-> > +dfl_devs_uinit(pdata);
-> > +return PTR_ERR(dfl_dev);
-> > +}
-> > +
-> > +feature->priv = dfl_dev;
-> 
-> If
-> 
-> > +}
-> > +
-> > +return 0;
-> > +}
-> > +
-> > +int __dfl_driver_register(struct dfl_driver *dfl_drv, struct module *owner)
-> > +{
-> > +if (!dfl_drv || !dfl_drv->probe || !dfl_drv->id_table)
-> > +return -EINVAL;
-> > +
-> > +dfl_drv->drv.owner = owner;
-> > +dfl_drv->drv.bus = &dfl_bus_type;
-> > +
-> > +return driver_register(&dfl_drv->drv);
-> > +}
-> > +EXPORT_SYMBOL(__dfl_driver_register);
-> > +
-> > +void dfl_driver_unregister(struct dfl_driver *dfl_drv)
-> > +{
-> > +driver_unregister(&dfl_drv->drv);
-> > +}
-> > +EXPORT_SYMBOL(dfl_driver_unregister);
-> > +
-> >  /**
-> >   * dfl_fpga_dev_feature_uinit - uinit for sub features of dfl feature device
-> >   * @pdev: feature device.
-> > @@ -264,12 +480,15 @@ void dfl_fpga_dev_feature_uinit(struct
-> > platform_device *pdev)
-> >  struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev-
-> > >dev);
-> >  struct dfl_feature *feature;
-> >
-> > -dfl_fpga_dev_for_each_feature(pdata, feature)
-> > +dfl_devs_uinit(pdata);
-> > +
-> > +dfl_fpga_dev_for_each_feature(pdata, feature) {
-> >  if (feature->ops) {
-> >  if (feature->ops->uinit)
-> >  feature->ops->uinit(pdev, feature);
-> >  feature->ops = NULL;
-> >  }
-> > +}
-> >  }
-> >  EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_uinit);
-> >
-> > @@ -348,6 +567,10 @@ int dfl_fpga_dev_feature_init(struct
-> > platform_device *pdev,
-> >  drv++;
-> >  }
-> >
-> > +ret = dfl_devs_init(pdev);
-> > +if (ret)
-> > +goto exit;
-> > +
-> >  return 0;
-> >  exit:
-> >  dfl_fpga_dev_feature_uinit(pdev);
-> > @@ -553,6 +776,8 @@ static int build_info_commit_dev(struct
-> > build_feature_devs_info *binfo)
-> >  struct dfl_feature_irq_ctx *ctx;
-> >  unsigned int i;
-> >
-> > +feature->index = index;
-> > +
-> >  /* save resource information for each feature */
-> >  feature->dev = fdev;
-> >  feature->id = finfo->fid;
-> > @@ -1295,11 +1520,17 @@ static int __init dfl_fpga_init(void)
-> >  {
-> >  int ret;
-> >
-> > +ret = bus_register(&dfl_bus_type);
-> > +if (ret)
-> > +return ret;
-> > +
-> >  dfl_ids_init();
-> >
-> >  ret = dfl_chardev_init();
-> > -if (ret)
-> > +if (ret) {
-> >  dfl_ids_destroy();
-> > +bus_unregister(&dfl_bus_type);
-> > +}
-> >
-> >  return ret;
-> >  }
-> > @@ -1637,6 +1868,7 @@ static void __exit dfl_fpga_exit(void)
-> >  {
-> >  dfl_chardev_uinit();
-> >  dfl_ids_destroy();
-> > +bus_unregister(&dfl_bus_type);
-> >  }
-> >
-> >  module_init(dfl_fpga_init);
-> > diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> > index f605c28..d00aa1c 100644
-> > --- a/drivers/fpga/dfl.h
-> > +++ b/drivers/fpga/dfl.h
-> > @@ -229,6 +229,10 @@ struct dfl_feature_irq_ctx {
-> >   *
-> >   * @dev: ptr to pdev of the feature device which has the sub feature.
-> >   * @id: sub feature id.
-> > + * @index: unique identifier for an sub feature within the feature device.
-> > + *   It is possible that multiply sub features with same feature id are
-> > + *   listed in one feature device. So an incremental index (start from 0)
-> > + *   is needed to identify each sub feature.
-> >   * @resource_index: each sub feature has one mmio resource for its
-> > registers.
-> >   *    this index is used to find its mmio resource from the
-> >   *    feature dev (platform device)'s reources.
-> > @@ -241,6 +245,7 @@ struct dfl_feature_irq_ctx {
-> >  struct dfl_feature {
-> >  struct platform_device *dev;
-> >  u64 id;
-> > +int index;
-> >  int resource_index;
-> >  void __iomem *ioaddr;
-> >  struct dfl_feature_irq_ctx *irq_ctx;
-> > @@ -515,4 +520,84 @@ long dfl_feature_ioctl_set_irq(struct
-> > platform_device *pdev,
-> >         struct dfl_feature *feature,
-> >         unsigned long arg);
-> >
-> > +/**
-> > + * enum dfl_id_type - define the DFL FIU types
-> > + */
-> > +enum dfl_id_type {
-> > +FME_ID,
-> > +PORT_ID,
-> > +DFL_ID_MAX,
-> > +};
-> > +
-> > +/**
-> > + * struct dfl_device_id -  dfl device identifier
-> > + * @type: Type of DFL FIU of the device. See enum dfl_id_type.
-> > + * @feature_id: 64 bits feature identifier local to its DFL FIU type.
-> > + * @driver_data: Driver specific data
-> > + */
-> > +struct dfl_device_id {
-> > +unsigned int type;
-> > +unsigned long long feature_id;
-> > +unsigned long driver_data;
-> 
-> Seems not used yet for driver_data, or can be in later patch with real users.
-
-I think we may keep this. Cause modpost also need this struct
-dfl_device_id, I think it would be better we don't frequently change the
-struct to avoid sync problem between kernel & modpost.
-
-> 
-> > +};
-> > +
-> > +/**
-> > + * struct dfl_device - represent an dfl device on dfl bus
-> > + *
-> > + * @dev: Generic device interface.
-> > + * @type: Type of DFL FIU of the device. See enum dfl_id_type.
-> > + * @feature_id: 64 bits feature identifier local to its DFL FIU type.
-> > + * @mmio_res: MMIO resource of this dfl device.
-> > + * @irqs: List of Linux IRQ numbers of this dfl device.
-> > + * @num_irqs: number of IRQs supported by this dfl device.
-> > + * @cdev: pointer to DFL FPGA container device this dfl device belongs to.
-> > + * @id_entry: matched id entry in dfl driver's id table.
-> > + */
-> > +struct dfl_device {
-> > +struct device dev;
-> > +unsigned int type;
-> > +unsigned long long feature_id;
-> > +struct resource mmio_res;
-> > +int *irqs;
-> > +unsigned int num_irqs;
-> > +struct dfl_fpga_cdev *cdev;
-> > +const struct dfl_device_id *id_entry;
-> > +};
-> > +
-> > +/**
-> > + * struct dfl_driver - represent an dfl device driver
-> > + *
-> > + * @drv: Driver model structure.
-> > + * @id_table: Pointer to table of device IDs the driver is interested in.
-> > + * @probe: Callback for device binding.
-> > + * @remove: Callback for device unbinding.
-> > + */
-> > +struct dfl_driver {
-> > +struct device_driver drv;
-> > +const struct dfl_device_id *id_table;
-> > +
-> > +int (*probe)(struct dfl_device *dfl_dev);
-> > +int (*remove)(struct dfl_device *dfl_dev);
-> > +};
-> > +
-> > +#define to_dfl_dev(d) container_of(d, struct dfl_device, dev)
-> > +#define to_dfl_drv(d) container_of(d, struct dfl_driver, drv)
-> > +
-> > +/*
-> > + * use a macro to avoid include chaining to get THIS_MODULE
-> > + */
-> > +#define dfl_driver_register(drv) \
-> > +__dfl_driver_register(drv, THIS_MODULE)
-> > +int __dfl_driver_register(struct dfl_driver *dfl_drv, struct module *owner);
-> > +void dfl_driver_unregister(struct dfl_driver *dfl_drv);
-> > +
-> > +/* module_dfl_driver() - Helper macro for drivers that don't do
-> 
-> /*
->  * module_dfl_driver()
-
-Yes
-
-> 
-> > + * anything special in module init/exit.  This eliminates a lot of
-> > + * boilerplate.  Each module may only use this macro once, and
-> > + * calling it replaces module_init() and module_exit()
-> > + */
-> > +#define module_dfl_driver(__dfl_driver) \
-> > +module_driver(__dfl_driver, dfl_driver_register, \
-> > +      dfl_driver_unregister)
-> > +
-> >  #endif /* __FPGA_DFL_H */
-> 
-> BTW: maybe it's better to have one patch to add a driver using this bus as an example?
-
-Yes I can also sent a dfl_n3000_nios driver in next version
-
-Thanks,
-Yilun
-
-> 
-> Thanks
-> Hao
-> 
-> > --
-> > 2.7.4
+-- 
+Linaro LKFT
+https://lkft.linaro.org
