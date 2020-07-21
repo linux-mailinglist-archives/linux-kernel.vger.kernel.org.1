@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AF2227ECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F87227ED1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgGUL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:27:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34304 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgGUL1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:27:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ABB26AB7D;
-        Tue, 21 Jul 2020 11:27:46 +0000 (UTC)
-Date:   Tue, 21 Jul 2020 13:27:39 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>, nstange@suse.de
-Subject: Re: [PATCH] Revert "kbuild: use -flive-patching when CONFIG_LIVEPATCH
- is enabled"
-In-Reply-To: <fc7d4932-a043-1adc-fd9b-96211c508f64@redhat.com>
-Message-ID: <alpine.LSU.2.21.2007211322210.31851@pobox.suse.cz>
-References: <696262e997359666afa053fe7d1a9fb2bb373964.1595010490.git.jpoimboe@redhat.com> <fc7d4932-a043-1adc-fd9b-96211c508f64@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1729681AbgGUL1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:27:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51918 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgGUL1n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 07:27:43 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9DC911C0BE5; Tue, 21 Jul 2020 13:27:40 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 13:27:40 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc:     Pavel Machek <pavel@denx.de>, stable@kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>, gregkh@duo.ucw.cz,
+        roscaeugeniu@gmail.com, stern@rowland.harvard.edu,
+        qais.yousef@arm.com, linux@prisktech.co.nz,
+        mathias.nyman@intel.com, oneukum@suse.de, linux-usb@vger.kernel.org
+Subject: Re: hibernation reverts in 4.19.134: better alternative?
+Message-ID: <20200721112740.GA17778@duo.ucw.cz>
+References: <20200720101522.GB13137@amd>
+ <20200721065054.GA8290@lxhi-065.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
+Content-Disposition: inline
+In-Reply-To: <20200721065054.GA8290@lxhi-065.adit-jv.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Jul 2020, Joe Lawrence wrote:
 
-> On 7/17/20 2:29 PM, Josh Poimboeuf wrote:
-> > Use of the new -flive-patching flag was introduced with the following
-> > commit:
-> > 
-> >    43bd3a95c98e ("kbuild: use -flive-patching when CONFIG_LIVEPATCH is
-> >    enabled")
-> > 
-> > This flag has several drawbacks:
-> > 
-> > [ ... snip ... ]
-> > 
-> > - While there *is* a distro which relies on this flag for their distro
-> >    livepatch module builds, there's not a publicly documented way to
-> >    create safe livepatch modules with it.  Its use seems to be based on
-> >    tribal knowledge.  It serves no benefit to those who don't know how to
-> >    use it.
-> > 
-> >    (In fact, I believe the current livepatch documentation and samples
-> >    are misleading and dangerous, and should be corrected.  Or at least
-> >    amended with a disclaimer.  But I don't feel qualified to make such
-> >    changes.)
-> 
-> FWIW, I'm not exactly qualified to document source-based creation either,
-> however I have written a few of the samples and obviously the kselftest
-> modules.
-> 
-> The samples should certainly include a disclaimer (ie, they are only for API
-> demonstration purposes!) and eventually it would be great if the kselftest
-> modules could guarantee their safety as well.  I don't know quite yet how we
-> can automate that, but perhaps some kind of post-build sanity check could
-> verify that they are in fact patching what they intend to patch.
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That's a good idea. We should have something like that. I don't know how 
-to make it nice. Just horrible post-build hacks that would check that 
-modules were compiled as expected
- 
-> As for a more general, long-form warning about optimizations, I grabbed
-> Miroslav's LPC slides from a few years back and poked around at some
-> IPA-optimized disassembly... Here are my notes that attempt to capture some
-> common cases:
-> 
-> http://file.bos.redhat.com/~jolawren/klp-compiler-notes/livepatch/compiler-considerations.html
-> 
-> It's not complete and I lost steam about 80% of the way through today. 
-> :)  But if it looks useful enough to add to Documentation/livepatch, we 
-> can work on it on-list and try to steer folks into using the automated
-> kpatch-build, objtool (eventually) or a source-based safety checklist.
+Hi!
 
-It looks really useful. Could you prepare a patch and submit it, please? 
-We could discuss it there.
+> On Mon, Jul 20, 2020 at 12:15:22PM +0200, Pavel Machek wrote:
+> > This is queued for 4.19.134-stable, reverting 3 patches. But it seems
+> > better alternative is available...
+> >=20
+> > commit f3e697b7b6f5e2c570226f8f8692fb7db57215ec
+> > Author: Sasha Levin <sashal@kernel.org>
+> > Date:   Fri Jul 17 12:58:32 2020 -0400
+> >=20
+> >     Revert "usb/ohci-platform: Fix a warning when hibernating"
+> >    =20
+> >     This reverts commit c83258a757687ffccce37ed73dba56cc6d4b8a1b.
+> >    =20
+> >     Eugeniu Rosca writes:
+> >=20
+> > ...
+> >=20
+> >     > - Backporting 987351e1ea7772 ("phy: core: Add consumer device
+> >     >   link support") to v4.14.187 looks challenging enough, so probab=
+ly not
+> >     >   worth it. Anybody to contradict this?
+> >=20
+> > Backporting 987351e1ea7772 to 4.4 may be "interesting", but backport
+>=20
+> Typo? 4.14 meant?
 
-> The
-> source-based steps have been posted on-list a few times, but I think it only
-> needs to be formalized in a doc.
+4.4 meant. I care about 4.4 and 4.19.
 
-Yes, I think they were. We discussed it with Nicolai to (better) document 
-our workflow. It is currently based on klp-ccp 
-(https://github.com/SUSE/klp-ccp), but we need a proper documentation how 
-to prepare a live patch starting with an ordinary patch.
+> > to 4.19 seems trivial, here, and it seems to work ok according to CIP
+> > test suites:
+> >=20
+> > https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipelines/1684874=
+77
+> >=20
+> > (You can simply apply 987351e1ea7772 ignoring one file that is not yet
+> > present in 4.19.)
+>=20
+> Technically yes. Backporting 987351e1ea7772 to v4.19.x avoids the panic.
+> But it means integrating a v5.6 feature (isn't 987351e1ea7772 one?) into
+> the v4.19.x stable tree. Isn't v4.19.x (just like any other stable
+> branch) supposed to contain just fixes?
 
-Thanks
-Miroslav
+Well, backport might be preffered to reverting 3 patches that will
+re-introduce WARN()s. Yes, documentation does not match reality here.
+
+> Should then any missing prerequisite features be pumped in into the
+> stable tree, whenever backporting a bugfix produces unexpected results?
+>=20
+> FWIW I confirm that:
+> * setup [A] leads to the issue reported in [C]
+> * setup [B] resolves the issue reported in [C]
+
+Thank you!
+
+> [A] v4.19 + 16bdc04cc98 + 1cb3b0095c3 + 79112cc3c29f
+> [B] v4.19 + 16bdc04cc98 + 1cb3b0095c3 + 79112cc3c29f + 987351e1ea7
+> [C] https://lore.kernel.org/linux-usb/20200709070023.GA18414@lxhi-065.adi=
+t-jv.com/
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--3V7upXqbjpZ4EhLz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxbRLAAKCRAw5/Bqldv6
+8gemAKCaQwdHz0sm2+FFlMPzlc0Mr9Bt2gCffVQ9yd4JJPpnRhhrQP873z6IUi8=
+=UcJi
+-----END PGP SIGNATURE-----
+
+--3V7upXqbjpZ4EhLz--
