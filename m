@@ -2,169 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF852274F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5254C227504
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 03:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgGUBpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 21:45:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:56794 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725954AbgGUBpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 21:45:49 -0400
-IronPort-SDR: gfO2w3nz5I7iUFtj1/p6SmRbBe+Cn+55w39LJTf7cXDzokuRCcHywkIO+CjYqVtyegNOFXf8lT
- qkkSAZUhW7cg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="130121533"
-X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
-   d="scan'208";a="130121533"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 18:45:48 -0700
-IronPort-SDR: KRaxwk92I+jel9tcLEJ2Nj2mexLNFK2VnXAavZ9QcNJIPrp9Lbx2Yh71ym9Ka0GtwL3+p924nn
- p5m1lOXlOLCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
-   d="scan'208";a="326229072"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by FMSMGA003.fm.intel.com with ESMTP; 20 Jul 2020 18:45:48 -0700
-Date:   Mon, 20 Jul 2020 18:52:33 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v5 2/5] iommu/uapi: Add argsz for user filled data
-Message-ID: <20200720185233.3e5841c1@jacob-builder>
-In-Reply-To: <1538ec69-62a2-ea04-0870-a583fc63a2bf@redhat.com>
-References: <1594925117-64892-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1594925117-64892-3-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1538ec69-62a2-ea04-0870-a583fc63a2bf@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1727820AbgGUBxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 21:53:01 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40348 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgGUBxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 21:53:01 -0400
+Received: by mail-io1-f65.google.com with SMTP id l17so19667814iok.7;
+        Mon, 20 Jul 2020 18:53:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9KP0Rc8u4bVobD9Gj1dIehnk+YvHsu8cH9wSojjS1pw=;
+        b=b2EBRWcj3Knf3dshdCzhCSAi2J0/ruFrCLKZNwVsw5GJGtfz+PQHjzpMZicZZkEQoc
+         tgNDScbN5QSe1RMsS0vkSCxoPis0snDDCd6dcYeIXHytocSP/kc6UKMsNYPMwZCtLiVE
+         av2Zxt1p+nkfNTqy4iltZYiH5Wn9CxqNZw24vHTysSChsV92nRIAZnU9aFXKNVE1Me4s
+         j2lq3bHMMl2P/DpJpI2v36ByH1dlDwViClB5SatSlguy0J7ed2uWwMZOL0ZKwUabW93p
+         zsk+8+Ef3Irn/ap1ZrHM7kzmuJGMpYPQpi3dWNDEdwf1jRuLiuF2VgrhksRVMe8ZM9sB
+         qkLA==
+X-Gm-Message-State: AOAM530eXzq5Jx0c3/u4b38JOODsTf4HX2uXYWpg8Cqqz8b4iTaxygNe
+        2A9fnhTIksiexflE9/+EIw==
+X-Google-Smtp-Source: ABdhPJzaNK68W25st0exLMoy7RKom9FavgqN/p9iQOTVKMA8AHlp6hlZqOPW4z86KxVY7tE/qv2QBA==
+X-Received: by 2002:a02:9109:: with SMTP id a9mr30142492jag.130.1595296380320;
+        Mon, 20 Jul 2020 18:53:00 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id x71sm9924564ilk.43.2020.07.20.18.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 18:52:59 -0700 (PDT)
+Received: (nullmailer pid 3362142 invoked by uid 1000);
+        Tue, 21 Jul 2020 01:52:58 -0000
+Date:   Mon, 20 Jul 2020 19:52:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     robh+dt@kernel.org, arnd@arndb.de, miquel.raynal@bootlin.com,
+        vigneshr@ti.com, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org, richard@nod.at
+Subject: Re: [PATCH] mtd: Replace HTTP links with HTTPS ones
+Message-ID: <20200721015258.GA3362089@bogus>
+References: <20200713165408.36229-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713165408.36229-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020 15:44:23 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
-
-> Hi Jacob,
+On Mon, 13 Jul 2020 18:54:08 +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 > 
-> On 7/16/20 8:45 PM, Jacob Pan wrote:
-> > As IOMMU UAPI gets extended, user data size may increase. To support
-> > backward compatibiliy, this patch introduces a size field to each
-> > UAPI data structures. It is *always* the responsibility for the
-> > user to fill in the correct size. Padding fields are adjusted to
-> > ensure 8 byte alignment.
-> > 
-> > Specific scenarios for user data handling are documented in:
-> > Documentation/userspace-api/iommu.rst
-> > 
-> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  include/uapi/linux/iommu.h | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> > index e907b7091a46..d5e9014f690e 100644
-> > --- a/include/uapi/linux/iommu.h
-> > +++ b/include/uapi/linux/iommu.h
-> > @@ -135,6 +135,7 @@ enum iommu_page_response_code {
-> >  
-> >  /**
-> >   * struct iommu_page_response - Generic page response information
-> > + * @argsz: User filled size of this data
-> >   * @version: API version of this structure
-> >   * @flags: encodes whether the corresponding fields are valid
-> >   *         (IOMMU_FAULT_PAGE_RESPONSE_* values)
-> > @@ -143,6 +144,7 @@ enum iommu_page_response_code {
-> >   * @code: response code from &enum iommu_page_response_code
-> >   */
-> >  struct iommu_page_response {
-> > +	__u32	argsz;
-> >  #define IOMMU_PAGE_RESP_VERSION_1	1  
-> Don't you need to incr the version for all the modified structs?
-not literal "flags" but @cache and @granularity are flags in reality. I
-think that is OK. I also updated document to say "flags or equivalent".
-
-> >  	__u32	version;
-> >  #define IOMMU_PAGE_RESP_PASID_VALID	(1 << 0)
-> > @@ -218,6 +220,7 @@ struct iommu_inv_pasid_info {
-> >  /**
-> >   * struct iommu_cache_invalidate_info - First level/stage
-> > invalidation
-> >   *     information
-> > + * @argsz: User filled size of this data
-> >   * @version: API version of this structure
-> >   * @cache: bitfield that allows to select which caches to
-> > invalidate
-> >   * @granularity: defines the lowest granularity used for the
-> > invalidation: @@ -246,6 +249,7 @@ struct iommu_inv_pasid_info {
-> >   * must support the used granularity.
-> >   */
-> >  struct iommu_cache_invalidate_info {
-> > +	__u32	argsz;
-> >  #define IOMMU_CACHE_INVALIDATE_INFO_VERSION_1 1
-> >  	__u32	version;  
-> so there is no "flags" field in this struct. Is it OK?
-> >  /* IOMMU paging structure cache */
-> > @@ -255,7 +259,7 @@ struct iommu_cache_invalidate_info {
-> >  #define IOMMU_CACHE_INV_TYPE_NR		(3)
-> >  	__u8	cache;
-> >  	__u8	granularity;
-> > -	__u8	padding[2];
-> > +	__u8	padding[6];
-> >  	union {
-> >  		struct iommu_inv_pasid_info pasid_info;
-> >  		struct iommu_inv_addr_info addr_info;
-> > @@ -292,6 +296,7 @@ struct iommu_gpasid_bind_data_vtd {
-> >  
-> >  /**
-> >   * struct iommu_gpasid_bind_data - Information about device and
-> > guest PASID binding
-> > + * @argsz:	User filled size of this data
-> >   * @version:	Version of this data structure
-> >   * @format:	PASID table entry format
-> >   * @flags:	Additional information on guest bind request
-> > @@ -309,17 +314,18 @@ struct iommu_gpasid_bind_data_vtd {
-> >   * PASID to host PASID based on this bind data.
-> >   */
-> >  struct iommu_gpasid_bind_data {
-> > +	__u32 argsz;
-> >  #define IOMMU_GPASID_BIND_VERSION_1	1
-> >  	__u32 version;
-> >  #define IOMMU_PASID_FORMAT_INTEL_VTD	1
-> >  	__u32 format;
-> > +	__u32 addr_width;
-> >  #define IOMMU_SVA_GPASID_VAL	(1 << 0) /* guest PASID valid
-> > */ __u64 flags;
-> >  	__u64 gpgd;
-> >  	__u64 hpasid;
-> >  	__u64 gpasid;
-> > -	__u32 addr_width;
-> > -	__u8  padding[12];
-> > +	__u8  padding[8];
-> >  	/* Vendor specific data */
-> >  	union {
-> >  		struct iommu_gpasid_bind_data_vtd vtd;
-> >   
-> Thanks
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
 > 
-> Eric
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely or at least not just HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+>  Sorry again to all maintainers who complained about subject lines.
+>  Now I realized that you want an actually perfect prefixes,
+>  not just subsystem ones.
+>  I tried my best...
+>  And yes, *I could* (at least half-)automate it.
+>  Impossible is nothing! :)
+> 
+> 
+>  Documentation/devicetree/bindings/mtd/davinci-nand.txt | 4 ++--
+>  drivers/mtd/chips/Kconfig                              | 2 +-
+>  drivers/mtd/maps/Kconfig                               | 2 +-
+>  drivers/mtd/maps/sc520cdp.c                            | 2 +-
+>  4 files changed, 5 insertions(+), 5 deletions(-)
 > 
 
-[Jacob Pan]
+Acked-by: Rob Herring <robh@kernel.org>
