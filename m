@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7949C227921
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 08:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E29227924
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 09:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbgGUG6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 02:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgGUG6q (ORCPT
+        id S1728443AbgGUHAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 03:00:39 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:2776 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726510AbgGUHAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 02:58:46 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187A7C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 23:58:46 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc15so1018254pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 23:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=Tno23bD6CNrvtvTJ8w81B3EthF3Ld5kpNkTOAg+JnsM=;
-        b=vCN0S6+uLMv5XxoT4ifN8Mdl3iTpXPghqyV86DALod7pGA+schHiD8gHYrnVqyy2Gw
-         NdGXaEZUVvaRR17C5MMQLEMJOasCO12cX8d8/FzpKEt1kD85nU46h0D6VmXzmYXg2B7v
-         2hKu8/RCGgdRfjVU69+QlDO6CK3QKrVdWQLkcjL9a/ioimyRVfuE6zOTpRBu/0bumC6S
-         i9kj2THROnCIdatTaUy+bAkDc5jXrTDRZr4PvOUqxZNskPpcLW+hWHvj+5BamjEUFbmg
-         Zorhst4Y4suuRAnj6TCsOBhs6wW1c+ILYfv0LVwl+X+R4s9rm0dJe1CCXaueL1jbqqFy
-         hz+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Tno23bD6CNrvtvTJ8w81B3EthF3Ld5kpNkTOAg+JnsM=;
-        b=bl3tFYM9uzGYYp5CFq94Pa2hzG/Zn168LdXSRRt0+GLlA2ieg0zqRnMtjXRKI+K3E0
-         bHZ25cE/qDENSeD9Xd1v6MXFuE9HgYSEt218NfMxXavXoCtnmZf+ymzrBsM3xM9HXRr4
-         PpY10Rm7X69v3ediBCYfIz0CLxyO8VEYe1qD1yT7CrWfqlMQcVkij4nG4H2JjxNbR703
-         OgwD5ncgjOCxr689CAWboXYfTozLtP44hr5AjUddkaOac+RI8TM28g+0d6TUcoibFjjX
-         MYR8ojkqC//U2w6wytVq++nn3WPi1NzJqUyu3ZvyQB9mlOklNnv5gD1ywFZlNPDY0yeb
-         iWdA==
-X-Gm-Message-State: AOAM533kRPVBR4H6G57y11xZiJ9Bws5/QXFO9RNe4VspTJ41d/FaqaQ3
-        yEjGNA7tOOOcIHVcmUr1LmmaNQ==
-X-Google-Smtp-Source: ABdhPJxckY0lmGlBsj/0MC92yIRwggmuPmCKttx9B6PanKuNgALvduemXmj14Lm7ruLSqbUmbcdjHA==
-X-Received: by 2002:a17:90b:400f:: with SMTP id ie15mr3235503pjb.94.1595314725521;
-        Mon, 20 Jul 2020 23:58:45 -0700 (PDT)
-Received: from ?IPv6:240e:362:4ac:f200:40d1:ed88:5dbd:3f3a? ([240e:362:4ac:f200:40d1:ed88:5dbd:3f3a])
-        by smtp.gmail.com with ESMTPSA id mv6sm1756670pjb.57.2020.07.20.23.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jul 2020 23:58:44 -0700 (PDT)
-Subject: Re: [PATCH] uacce: fix some coding styles
-To:     Kai Ye <yekai13@huawei.com>, linux-accelerators@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-References: <1595229523-14103-1-git-send-email-yekai13@huawei.com>
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <0775c541-5802-cdf3-e2aa-c62c027ab8a7@linaro.org>
-Date:   Tue, 21 Jul 2020 14:57:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 21 Jul 2020 03:00:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=shile.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U3O7OTC_1595314816;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:shile.zhang@linux.alibaba.com fp:SMTPD_---0U3O7OTC_1595314816)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Jul 2020 15:00:22 +0800
+From:   Shile Zhang <shile.zhang@linux.alibaba.com>
+To:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        kernel test robot <lkp@intel.com>,
+        Jiang Liu <liuj97@gmail.com>
+Subject: [PATCH v2] virtio_ring: use alloc_pages_node for NUMA-aware allocation
+Date:   Tue, 21 Jul 2020 15:00:13 +0800
+Message-Id: <20200721070013.62894-1-shile.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <1595229523-14103-1-git-send-email-yekai13@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use alloc_pages_node() allocate memory for vring queue with proper
+NUMA affinity.
 
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Jiang Liu <liuj97@gmail.com>
+Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+---
+Changelog
+v1 -> v2:
+- fixed compile warning reported by LKP.
+---
+ drivers/virtio/virtio_ring.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-On 2020/7/20 下午3:18, Kai Ye wrote:
-> 1. add some parameter check.
-> 2. delete some redundant code.
-> 3. modify the module author information.
->
-> Signed-off-by: Kai Ye <yekai13@huawei.com>
-> Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
-Thanks Kai.
-> ---
->   drivers/misc/uacce/uacce.c | 28 +++++++++++++---------------
->   1 file changed, 13 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-> index 107028e..2e1af58 100644
-> --- a/drivers/misc/uacce/uacce.c
-> +++ b/drivers/misc/uacce/uacce.c
-> @@ -63,8 +63,12 @@ static long uacce_fops_unl_ioctl(struct file *filep,
->   				 unsigned int cmd, unsigned long arg)
->   {
->   	struct uacce_queue *q = filep->private_data;
-> -	struct uacce_device *uacce = q->uacce;
-> +	struct uacce_device *uacce;
-> +
-> +	if (WARN_ON(!q))
-> +		return -EINVAL;
-WARN_ON should not be used in uacce, instead error can be printed in 
-user space driver.
-Error should not be printed in kernel log as pasid can be used by unpriv 
-user.
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 58b96baa8d48..d38fd6872c8c 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -276,9 +276,11 @@ static void *vring_alloc_queue(struct virtio_device *vdev, size_t size,
+ 		return dma_alloc_coherent(vdev->dev.parent, size,
+ 					  dma_handle, flag);
+ 	} else {
+-		void *queue = alloc_pages_exact(PAGE_ALIGN(size), flag);
+-
+-		if (queue) {
++		void *queue = NULL;
++		struct page *page = alloc_pages_node(dev_to_node(vdev->dev.parent),
++						     flag, get_order(size));
++		if (page) {
++			queue = page_address(page);
+ 			phys_addr_t phys_addr = virt_to_phys(queue);
+ 			*dma_handle = (dma_addr_t)phys_addr;
+ 
+@@ -308,7 +310,7 @@ static void vring_free_queue(struct virtio_device *vdev, size_t size,
+ 	if (vring_use_dma_api(vdev))
+ 		dma_free_coherent(vdev->dev.parent, size, queue, dma_handle);
+ 	else
+-		free_pages_exact(queue, PAGE_ALIGN(size));
++		free_pages((unsigned long)queue, get_order(size));
+ }
+ 
+ /*
+-- 
+2.24.0.rc2
 
-And I think we do not need check filep->private_data.
-The fd is double checked in __fget_files.
-
-Thanks
