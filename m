@@ -2,502 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFE6227EB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B83A227EC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729646AbgGULYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:24:41 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:15613 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726415AbgGULYk (ORCPT
+        id S1729704AbgGULZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:25:49 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:48750 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728108AbgGULZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:24:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595330679; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=E6L59/Ozc1QteuCwKkA3fDY1+jBQ6ETDFtphXkifNJc=; b=Nc5semkOnf0Uap5hxmN/fVUScvFutm5pBnUupc2IWdjBqk2cOCPjxKAJl2nOs2eoD7nsr4Wo
- 4APWK2Mc/MXMjU3RkLpYTG61lBcUH+R9P9Xj+Lr15mB1IKwHLVQYLaZJL90U2TlgUVEBGZdz
- P46slsTNSNT1DypVeXckIqopCWA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n16.prod.us-west-2.postgun.com with SMTP id
- 5f16d076eef925b694f11580 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Jul 2020 11:24:38
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 664D8C433CA; Tue, 21 Jul 2020 11:24:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [183.83.71.149])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 221BEC433C6;
-        Tue, 21 Jul 2020 11:24:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 221BEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Peter Oh'" <peter.oh@eero.com>,
-        "'Kalle Valo'" <kvalo@codeaurora.org>
-Cc:     "'Brian Norris'" <briannorris@chromium.org>,
-        "'Doug Anderson'" <dianders@chromium.org>,
-        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
-        "'ath10k'" <ath10k@lists.infradead.org>,
-        "'LKML'" <linux-kernel@vger.kernel.org>
-References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org> <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com> <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com> <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com> <871rlcx8uv.fsf@codeaurora.org> <CALhWmc1PbTKhrkaPn9yfpx3gZHAMuR-bPY=4_o4wQHv_H5D9dA@mail.gmail.com> <CALhWmc3i9Z+KiG1cJNvpSWNsiFhOa5jBw=XfcFz_gKwi_5QibA@mail.gmail.com> <CALhWmc1B0+SONV6_AF+nUzgxZdekPD3sZuhrsmwVQx1Q-cgT_g@mail.gmail.com> <CALhWmc0qF5stKRcikjwbeFmE-32hNCDazgQdqTMidUyt7u-T1Q@mail.gmail.com> <CALhWmc0JtQZE5CfLPb1WnwhE9wCYsjE-53kYWbwtFCs1k7FrCQ@mail.gmail.com> <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
-In-Reply-To: <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
-Subject: RE: [PATCH] ath10k: Add interrupt summary based CE processing
-Date:   Tue, 21 Jul 2020 16:54:30 +0530
-Message-ID: <000201d65f51$83d2ac60$8b780520$@codeaurora.org>
+        Tue, 21 Jul 2020 07:25:49 -0400
+X-UUID: 0515596a95c24048a7b50e6f2c9789e6-20200721
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qpykmZSQGs2bMX7gw2YPF5m+GwO54FLnah9QDtNvrQ0=;
+        b=ZRsNNfLe2QClA7ks/IJQ35Eb2WrkD3idGZMPmzmS5ZcXcFbVPc1u1eiC1TCntDcxiRiiePXhccXyq7TIX7P/TKHaqCp+sHB+YRbGNufIqdQExCocbCLvStuwJJ2eqgxjx3kRj5Hynm8dwpKyZniVfhH6iZmfzNYLoVW1SACiRi0=;
+X-UUID: 0515596a95c24048a7b50e6f2c9789e6-20200721
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 1266660983; Tue, 21 Jul 2020 19:25:42 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 21 Jul
+ 2020 19:25:39 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 21 Jul 2020 19:25:39 +0800
+Message-ID: <1595330677.16172.55.camel@mhfsdcap03>
+Subject: Re: [PATCH v2] iommu/mediatek: check 4GB mode by reading infracfg
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Miles Chen <miles.chen@mediatek.com>,
+        Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>,
+        <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chao Hao <chao.hao@mediatek.com>
+Date:   Tue, 21 Jul 2020 19:24:37 +0800
+In-Reply-To: <cbdd2820-fd3c-3e51-8140-58408dcf3cd3@gmail.com>
+References: <20200721021619.25575-1-miles.chen@mediatek.com>
+         <cbdd2820-fd3c-3e51-8140-58408dcf3cd3@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGA15dfEFvBa4XggNphJju/sylmMAM3+LYgASJJg3EBYf6DCAFrMZ6MAfh/wC4Dd031iAI67U4pAS1+lKUCgVu2AQJBeMaOqRbffQA=
-Content-Language: en-us
+X-TM-SNTS-SMTP: FAB7B75237DE000BACAED1A8055572801DDE7023171D49975F3AB582270F9ECD2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Peter Oh <peter.oh@eero.com>
-> Sent: Tuesday, July 21, 2020 7:03 AM
-> To: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Brian Norris <briannorris@chromium.org>; Doug Anderson
-> <dianders@chromium.org>; linux-wireless <linux-
-> wireless@vger.kernel.org>; Rakesh Pillai <pillair@codeaurora.org>; =
-ath10k
-> <ath10k@lists.infradead.org>; LKML <linux-kernel@vger.kernel.org>
-> Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
->=20
-> I'll take my word back.
-> It's not this patch problem, but by others.
-> I have 2 extra patches before the 3 patches so my system looks like
->=20
-> backports from ath.git 5.6-rc1 + linux kernel 4.4 (similar to OpenWrt)
-> On top of the working system, I cherry-picked these 5.
->=20
-> #1.
-> ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
-> ath.git commit 521fc37be3d879561ca5ab42d64719cf94116af0
-> #2.
-> ath10k: Fix NULL pointer dereference in AHB device probe
-> wireless-drivers.git commit 1cfd3426ef989b83fa6176490a38777057e57f6c
-> #3.
-> ath10k: Add interrupt summary based CE processing
-> https://patchwork.kernel.org/patch/11628299/
-
-Hi Peter,
-This patch is applicable only for snoc target WCN3990, since there is a =
-check for per_ce_irq.
-For PCI targets, per_ce_irq is false, and hence follows a different =
-path.
-
-Thanks,
-Rakesh Pillai.
-
-
-
-> #4.
-> ath10k: Keep track of which interrupts fired, don't poll them
-> https://patchwork.kernel.org/patch/11654631/
-> #5.
-> ath10k: Get rid of "per_ce_irq" hw param
-> https://patchwork.kernel.org/patch/11654633/
->=20
-> The error "[  14.226184] ath10k_ahb a000000.wifi: failed to receive
-> initialized event from target: 80000000" is because of #1 and #2,
-> since this happens even after I reverted #3~#5.
-> Once I reverted all except #1 I got another crash.
->=20
-> [   11.179595] !#%&PageFault P<__ath10k_ce_rx_post_buf+0x14/0x98
-> [ath10k_core]> L<0x4bc00> F<005> [0000000c]
-> [   11.179643] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000c
-> [   11.439207] [<7f15a69c>] (__ath10k_ce_rx_post_buf [ath10k_core])
-> from [<7f15a874>] (ath10k_ce_rx_post_buf+0x3c/0x50 [ath10k_core])
-> [   11.447204] [<7f15a874>] (ath10k_ce_rx_post_buf [ath10k_core]) from
-> [<7f2889a4>] (ath10k_pci_diag_read_mem+0x104/0x2a8 [ath10k_pci])
-> [   11.458706] [<7f2889a4>] (ath10k_pci_diag_read_mem [ath10k_pci])
-> from [<7f288b68>] (ath10k_pci_diag_read32+0x1c/0x2c [ath10k_pci])
-> [   11.470767] [<7f288b68>] (ath10k_pci_diag_read32 [ath10k_pci]) from
-> [<7f28abe8>] (ath10k_pci_init_config+0x2c/0x290 [ath10k_pci])
-> [   11.482314] [<7f28abe8>] (ath10k_pci_init_config [ath10k_pci]) from
-> [<7f28d160>] (ath10k_ahb_hif_power_up+0x7c/0xe8 [ath10k_pci])
-> [   11.494153] [<7f28d160>] (ath10k_ahb_hif_power_up [ath10k_pci])
-> from [<7f135348>] (ath10k_core_register_work+0x84/0x8f8 [ath10k_core])
-> [   11.505766] [<7f135348>] (ath10k_core_register_work [ath10k_core])
-> from [<8023b614>] (process_one_work+0x1c0/0x2f8)
-> [   11.517594] [<8023b614>] (process_one_work) from [<8023c650>]
-> (worker_thread+0x280/0x3c0)
-> [   11.527919] [<8023c650>] (worker_thread) from [<802408f8>]
-> (kthread+0xd8/0xe8)
-> [   11.536247] [<802408f8>] (kthread) from [<80209ce8>]
-> (ret_from_fork+0x14/0x2c)
->=20
-> When I revert #1 eventually, my system is back to working.
-> So I'm blaming the #1 and #2 could have potential bugs or require
-> ath.git branch up-to-date.
->=20
-> On Mon, Jul 20, 2020 at 5:58 PM Peter Oh <peter.oh@eero.com> wrote:
-> >
-> > My previous email wasn't sent out.
-> >
-> > At first I gave these 3 patches.
-> > ath10k: Add interrupt summary based CE processing
-> >     https://patchwork.kernel.org/patch/11628299/
-> > ath10k: Keep track of which interrupts fired, don't poll them
-> >     https://patchwork.kernel.org/patch/11654631/
-> > ath10k: Get rid of "per_ce_irq" hw param
-> >     https://patchwork.kernel.org/patch/11654633/
-> > and saw the crash happen and then reverted the top 2 and used the =
-very
-> > first one, but it is still happening.
-> >
-> > On Mon, Jul 20, 2020 at 5:56 PM Peter Oh <peter.oh@eero.com> wrote:
-> > >
-> > > Since IPQ4019 doesn't support per CE based interrupt summary, I =
-doubt
-> > > if this change is correct.
-> > > +       ath10k_ce_engine_int_status_clear(ar, ctrl_addr,
-> > > +                                         wm_regs->cc_mask | =
-wm_regs->wm_mask);
-> > >
-> > >
-> > > On Mon, Jul 20, 2020 at 5:53 PM Peter Oh <peter.oh@eero.com> =
-wrote:
-> > > >
-> > > > At first I gave these 3 patches.
-> > > > ath10k: Add interrupt summary based CE processing
-> > > >     https://patchwork.kernel.org/patch/11628299/
-> > > > ath10k: Keep track of which interrupts fired, don't poll them
-> > > >     https://patchwork.kernel.org/patch/11654631/
-> > > > ath10k: Get rid of "per_ce_irq" hw param
-> > > >     https://patchwork.kernel.org/patch/11654633/
-> > > > and saw the crash happen and then reverted the top 2 and used =
-the
-> very first one, but it is still happening.
-> > > >
-> > > >
-> > > >
-> > > > On Mon, Jul 20, 2020 at 5:43 PM Peter Oh <peter.oh@eero.com>
-> wrote:
-> > > >>
-> > > >> I've run 3 units and one of them happens the problem always =
-while
-> the
-> > > >> other 2 are barely happening.
-> > > >>
-> > > >> On Mon, Jul 20, 2020 at 5:33 PM Peter Oh <peter.oh@eero.com>
-> wrote:
-> > > >> >
-> > > >> > I'm getting this panic on IPQ4019 system after cherry-picked =
-this
-> > > >> > single patch on top of working system.
-> > > >> >
-> > > >> > [   14.226184] ath10k_ahb a000000.wifi: failed to receive =
-initialized
-> > > >> > event from target: 80000000
-> > > >> > [   14.326406] !#%&PageFault P<find_dr+0x28/0x64>
-> > > >> > L<devres_remove+0x38/0x70> F<005> [00000008]
-> > > >> > [   14.326447] Unable to handle kernel NULL pointer =
-dereference at
-> > > >> > virtual address 00000008
-> > > >> > [   14.333569] pgd =3D 80cac000
-> > > >> > [   14.341892] [00000008] *pgd=3D00000000
-> > > >> > [   14.347804] !#%&Abort P<find_dr+0x28/0x64>
-> > > >> > L<devres_remove+0x38/0x70> F<005> FILE<PageFault>
-> > > >> > [   14.348067] Internal error: PageFault: 5 [#1] PREEMPT SMP =
-ARM
-> > > >> > [   14.356568] Modules linked in: ath10k_pci(+) ecm =
-shortcut_fe_drv
-> > > >> > shortcut_fe ath10k_core ath mac80211 cfg80211 compat
-> > > >> > [   14.372537] CPU: 3 PID: 301 Comm: systemd-modules Not =
-tainted
-> > > >> > 4.4.60-yocto-standard-eero #1
-> > > >> > [   14.372805] Hardware name: Qualcomm (Flattened Device =
-Tree)
-> > > >> > [   14.380961] task: 9b492300 ti: 9d3f0000 task.ti: 9d3f0000
-> > > >> > [   14.386516] PC is at find_dr+0x28/0x64
-> > > >> > [   14.392069] LR is at devres_remove+0x38/0x70
-> > > >> > [   14.395720] pc : [<804aa498>]    lr : [<804aa564>]    psr: =
-00010193
-> > > >> > [   14.395720] sp : 9d3f7cc8  ip : 00000000  fp : 7f18b380
-> > > >> > [   14.400155] r10: 9d995610  r9 : 9b73db64  r8 : 9b740b00
-> > > >> > [   14.411343] r7 : 80430990  r6 : 8043097c  r5 : 9b73da10  =
-r4 : 00000000
-> > > >> > [   14.416554] r3 : 9b740b00  r2 : 8043097c  r1 : 80430990  =
-r0 : 9b73da10
-> > > >> > [   14.423153] Flags: nzcv  IRQs off  FIQs on  Mode SVC_32  =
-ISA ARM
-> > > >> > Segment user
-> > > >> > [   14.429663] Control: 10c5387d  Table: 80cac06a  DAC: =
-00000055
-> > > >> > [   14.436865] Process systemd-modules (pid: 301, stack limit =
-=3D
-> 0x9d3f0210)
-> > > >> > [   14.442683] Stack: (0x9d3f7cc8 to 0x9d3f8000)
-> > > >> > [   14.449455] 7cc0:                   9b73da10 a0010113 =
-80430990
-> > > >> > 8043097c 9b740b00 9b73db60
-> > > >> > [   14.453716] 7ce0: 9d995610 804aa564 9b740b00 9dbd1f20 =
-9d995600
-> > > >> > 9d995600 ffffff92 00000000
-> > > >> > [   14.461876] 7d00: 9d995610 804aac4c 9b740b00 80430a94 =
-9dbd5f20
-> > > >> > 7f28c584 9dbd5f20 7f28cf28
-> > > >> > [   14.470035] 7d20: 7f28f3b2 9dbd1f20 00000001 9cae5960 =
-9d9a16e0
-> > > >> > 00000000 00000000 00000000
-> > > >> > [   14.478196] 7d40: 8162d420 7f28c9d4 9d995610 7f28fb94 =
-8162d42c
-> > > >> > 815a59e0 8162d420 00000003
-> > > >> > [   14.486355] 7d60: 9d3f7f54 804a96cc 9d995610 00000000 =
-7f28fb94
-> > > >> > 804a7df8 7f28fb94 9d995610
-> > > >> > [   14.494516] 7d80: 9d995610 7f28fb94 9d995644 815d8400 =
-00000000
-> > > >> > 0000001c 9cae60c8 804a7f9c
-> > > >> > [   14.502675] 7da0: 00000000 7f28fb94 804a7f50 804a62c0 =
-9d81fc5c
-> > > >> > 9d9f6634 7f28fb94 9b739a00
-> > > >> > [   14.510834] 7dc0: 815a5908 804a7344 7f28f3b2 7f28f3b3 =
-7f28fb94
-> > > >> > 7f293000 00000000 815b6d48
-> > > >> > [   14.518995] 7de0: 815b6d48 804a87a4 9cae61c0 7f293000 =
-00000000
-> > > >> > 7f28d2e8 9cae61c0 7f29300c
-> > > >> > [   14.527153] 7e00: 9cae61c0 80213468 0018bce1 00000001 =
-8040003f
-> > > >> > 802b19d0 9e34ea98 00000000
-> > > >> > [   14.535315] 7e20: 9e34eaa8 9e34ea98 8040003e 9e34e8a0
-> 9e34e8a0
-> > > >> > 9bae8100 9d3f0000 9d801e40
-> > > >> > [   14.543474] 7e40: 00004eb1 9e34e8a0 9bae8080 9d3f0000 =
-81621200
-> > > >> > 7f28fc00 00000001 81599848
-> > > >> > [   14.551632] 7e60: 7f28fc00 00000001 9cae6180 7f28fc48 =
-00000001
-> > > >> > 80287704 7f28fc00 9e34e8a0
-> > > >> > [   14.559793] 7e80: 7f28fc00 00000001 9cae60c0 80289298 =
-7f28fc0c
-> > > >> > 00007fff 7f28fc00 80286a58
-> > > >> > [   14.567952] 7ea0: 00000000 815998c4 a13e1138 7f293100 =
-a13dba30
-> > > >> > 8088bd0c 7f28fdc4 76cea5cc
-> > > >> > [   14.576112] 7ec0: 9d3f7f54 802861d4 00000000 00000000 =
-00000000
-> > > >> > 00000000 00000000 00000000
-> > > >> > [   14.584269] 7ee0: 6e72656b 00006c65 00000000 00000000 =
-00000000
-> > > >> > 00000000 00000000 00000000
-> > > >> > [   14.592430] 7f00: 00000000 00000000 00000000 00000000 =
-00000000
-> > > >> > 00000000 00000000 81599848
-> > > >> > [   14.600590] 7f20: 00000000 00000000 76cea5cc 00000008 =
-0000017b
-> > > >> > 80209de4 9d3f0000 00000000
-> > > >> > [   14.608751] 7f40: 00000000 80289594 9d3f0000 00000000 =
-7e85fbbc
-> > > >> > a13d4000 0000d1b0 a13e0b48
-> > > >> > [   14.616911] 7f60: a13e09ac a13dd590 00007e08 00008ca8 =
-00000000
-> > > >> > 00000000 00000000 0000313c
-> > > >> > [   14.625070] 7f80: 00000026 00000027 0000001d 00000000 =
-00000016
-> > > >> > 00000000 00000000 00000000
-> > > >> > [   14.633230] 7fa0: 5654ca48 80209c40 00000000 00000000 =
-00000008
-> > > >> > 76cea5cc 00000000 00000000
-> > > >> > [   14.641390] 7fc0: 00000000 00000000 5654ca48 0000017b =
-00000000
-> > > >> > 00000001 76ea754f 00000000
-> > > >> > [   14.649549] 7fe0: 7e85fbc0 7e85fbb0 76ce281c 76c6b830 =
-600f0010
-> > > >> > 00000008 00000000 00000000
-> > > >> > [   14.657717] [<804aa498>] (find_dr) from [<804aa564>]
-> > > >> > (devres_remove+0x38/0x70)
-> > > >> > [   14.665868] [<804aa564>] (devres_remove) from [<804aac4c>]
-> > > >> > (devres_destroy+0x8/0x24)
-> > > >> > [   14.672989] [<804aac4c>] (devres_destroy) from =
-[<80430a94>]
-> > > >> > (devm_iounmap+0x18/0x44)
-> > > >> > [   14.680927] [<80430a94>] (devm_iounmap) from [<7f28c584>]
-> > > >> > (ath10k_ahb_resource_deinit+0x20/0x74 [ath10k_pci])
-> > > >> > [   14.688671] [<7f28c584>] (ath10k_ahb_resource_deinit
-> [ath10k_pci])
-> > > >> > from [<7f28cf28>] (ath10k_ahb_probe+0x554/0x6f4 [ath10k_pci])
-> > > >> > [   14.698454] [<7f28cf28>] (ath10k_ahb_probe [ath10k_pci]) =
-from
-> > > >> > [<804a96cc>] (platform_drv_probe+0x50/0x9c)
-> > > >> > [   14.710061] [<804a96cc>] (platform_drv_probe) from =
-[<804a7df8>]
-> > > >> > (driver_probe_device+0x2ac/0x404)
-> > > >> > [   14.719520] [<804a7df8>] (driver_probe_device) from
-> [<804a7f9c>]
-> > > >> > (__driver_attach+0x4c/0x8c)
-> > > >> > [   14.728374] [<804a7f9c>] (__driver_attach) from =
-[<804a62c0>]
-> > > >> > (bus_for_each_dev+0x7c/0x8c)
-> > > >> > [   14.736880] [<804a62c0>] (bus_for_each_dev) from =
-[<804a7344>]
-> > > >> > (bus_add_driver+0x1b4/0x234)
-> > > >> > [   14.744952] [<804a7344>] (bus_add_driver) from =
-[<804a87a4>]
-> > > >> > (driver_register+0xa0/0xe0)
-> > > >> > [   14.753136] [<804a87a4>] (driver_register) from =
-[<7f28d2e8>]
-> > > >> > (ath10k_ahb_init+0x10/0x38 [ath10k_pci])
-> > > >> > [   14.761061] [<7f28d2e8>] (ath10k_ahb_init [ath10k_pci]) =
-from
-> > > >> > [<7f29300c>] (__init_backport+0xc/0x100 [ath10k_pci])
-> > > >> > [   14.770418] [<7f29300c>] (__init_backport [ath10k_pci]) =
-from
-> > > >> > [<80213468>] (do_one_initcall+0x1c4/0x20c)
-> > > >> > [   14.780633] [<80213468>] (do_one_initcall) from =
-[<80287704>]
-> > > >> > (do_init_module+0x54/0x1ac)
-> > > >> > [   14.789916] [<80287704>] (do_init_module) from =
-[<80289298>]
-> > > >> > (load_module+0x19e0/0x1b04)
-> > > >> > [   14.798249] [<80289298>] (load_module) from [<80289594>]
-> > > >> > (SyS_finit_module+0x8c/0x9c)
-> > > >> > [   14.805975] [<80289594>] (SyS_finit_module) from =
-[<80209c40>]
-> > > >> > (ret_fast_syscall+0x0/0x34)
-> > > >> > [   14.813959] Code: e1a08003 e1540009 03a04000 0a00000c
-> (e5943008)
-> > > >> > [   14.822108] ---[ end trace f4da008c1c165fb3 ]---
-> > > >> > [   14.830623] Kernel panic - not syncing: Fatal exception
-> > > >> > [   14.832876] CPU1: stopping
-> > > >> > [   14.837820] CPU: 1 PID: 343 Comm: rngd Tainted: G      D
-> > > >> > 4.4.60-yocto-standard-eero #1
-> > > >> > [   14.840601] Hardware name: Qualcomm (Flattened Device =
-Tree)
-> > > >> > [   14.849210] [<8021ed7c>] (unwind_backtrace) from =
-[<8021b730>]
-> > > >> > (show_stack+0x10/0x14)
-> > > >> > [   14.854672] [<8021b730>] (show_stack) from [<8041b8dc>]
-> > > >> > (dump_stack+0x7c/0x98)
-> > > >> > [   14.862658] [<8041b8dc>] (dump_stack) from [<8021dfc8>]
-> > > >> > (handle_IPI+0xdc/0x164)
-> > > >> > [   14.869688] [<8021dfc8>] (handle_IPI) from [<802093e8>]
-> > > >> > (gic_handle_irq+0x80/0x8c)
-> > > >> > [   14.876893] [<802093e8>] (gic_handle_irq) from =
-[<8020a844>]
-> > > >> > (__irq_usr+0x44/0x60)
-> > > >> > [   14.884524] Exception stack(0x9beaffb0 to 0x9beafff8)
-> > > >> > [   14.892076] ffa0:                                     =
-0c27987c
-> > > >> > 40016b9f 0c27987d 0000001f
-> > > >> > [   14.897118] ffc0: 00000001 763fedbc 565a344c 54b3de80 =
-54b3e50c
-> > > >> > 00000001 7e817c00 763fed0c
-> > > >> > [   14.905277] ffe0: fffffffe 763fecc0 00000018 76ec3e18 =
-30010010
-> ffffffff
-> > > >> > [   14.913430] CPU2: stopping
-> > > >> > [   14.919849] CPU: 2 PID: 344 Comm: rngd Tainted: G      D
-> > > >> > 4.4.60-yocto-standard-eero #1
-> > > >> > [   14.922631] Hardware name: Qualcomm (Flattened Device =
-Tree)
-> > > >> > [   14.931236] [<8021ed7c>] (unwind_backtrace) from =
-[<8021b730>]
-> > > >> > (show_stack+0x10/0x14)
-> > > >> > [   14.936703] [<8021b730>] (show_stack) from [<8041b8dc>]
-> > > >> > (dump_stack+0x7c/0x98)
-> > > >> > [   14.944688] [<8041b8dc>] (dump_stack) from [<8021dfc8>]
-> > > >> > (handle_IPI+0xdc/0x164)
-> > > >> > [   14.951719] [<8021dfc8>] (handle_IPI) from [<802093e8>]
-> > > >> > (gic_handle_irq+0x80/0x8c)
-> > > >> > [   14.958924] [<802093e8>] (gic_handle_irq) from =
-[<8020a844>]
-> > > >> > (__irq_usr+0x44/0x60)
-> > > >> > [   14.966554] Exception stack(0x9beb7fb0 to 0x9beb7ff8)
-> > > >> > [   14.974107] 7fa0:                                     =
-fffffff7
-> > > >> > 00000017 a6000000 0000014a
-> > > >> > [   14.979150] 7fc0: 00000002 759fedbc 565a3470 54b3de80 =
-54b3e50c
-> > > >> > 00000001 7e817c00 759fed0c
-> > > >> > [   14.987307] 7fe0: 00000009 759fecc0 00000018 76ec3cdc =
-80010010
-> ffffffff
-> > > >> > [   14.995461] CPU0: stopping
-> > > >> > [   15.001882] CPU: 0 PID: 341 Comm: rngd Tainted: G      D
-> > > >> > 4.4.60-yocto-standard-eero #1
-> > > >> > [   15.004663] Hardware name: Qualcomm (Flattened Device =
-Tree)
-> > > >> > [   15.013267] [<8021ed7c>] (unwind_backtrace) from =
-[<8021b730>]
-> > > >> > (show_stack+0x10/0x14)
-> > > >> > [   15.018734] [<8021b730>] (show_stack) from [<8041b8dc>]
-> > > >> > (dump_stack+0x7c/0x98)
-> > > >> > [   15.026719] [<8041b8dc>] (dump_stack) from [<8021dfc8>]
-> > > >> > (handle_IPI+0xdc/0x164)
-> > > >> > [   15.033752] [<8021dfc8>] (handle_IPI) from [<802093e8>]
-> > > >> > (gic_handle_irq+0x80/0x8c)
-> > > >> > [   15.040955] [<802093e8>] (gic_handle_irq) from =
-[<8020a844>]
-> > > >> > (__irq_usr+0x44/0x60)
-> > > >> > [   15.048585] Exception stack(0x9be87fb0 to 0x9be87ff8)
-> > > >> > [   15.056139] 7fa0:                                     =
-00000000
-> > > >> > 00000000 a7e3391d 6a11d866
-> > > >> > [   15.061181] 7fc0: 00000000 76d15dbc 565a3428 54b3de80 =
-54b3e50c
-> > > >> > 00000001 7e817c00 76d15d0c
-> > > >> > [   15.069339] 7fe0: ffffffeb 76d15cc0 00000018 76ec3d60 =
-80010010
-> ffffffff
-> > > >> > [   15.091080] Rebooting in 5 seconds..
-> > > >> >
-> > > >> >
-> > > >> > On Wed, Jul 15, 2020 at 11:39 PM Kalle Valo
-> <kvalo@codeaurora.org> wrote:
-> > > >> > >
-> > > >> > > Brian Norris <briannorris@chromium.org> writes:
-> > > >> > >
-> > > >> > > > On Fri, Jun 26, 2020 at 2:49 PM Doug Anderson
-> <dianders@chromium.org> wrote:
-> > > >> > > >> I should also note that, while I'm not terribly familiar =
-with Kalle's
-> > > >> > > >> workflow, I would have expected to see him in the "To:" =
-list.
-> I've
-> > > >> > > >> added him, but it's possible he'll need you to repost =
-the patch
-> with
-> > > >> > > >> him in the "To:" list.
-> > > >> > > >
-> > > >> > > >
-> =
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
-> atches#who_to_address
-> > > >> > > >
-> =
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatche=
-s
-> > > >> > > >
-> > > >> > > > Patchwork is his patch queue, so I don't think you need =
-to
-> address him directly.
-> > > >> > >
-> > > >> > > Yup, I take all patches from patchwork so no need to Cc me.
-> > > >> > >
-> > > >> > > --
-> > > >> > >
-> =
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
-> atches
+T24gVHVlLCAyMDIwLTA3LTIxIGF0IDExOjQwICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMjEvMDcvMjAyMCAwNDoxNiwgTWlsZXMgQ2hlbiB3cm90ZToNCj4gPiBJbiBw
+cmV2aW91cyBkaXNjdXNzaW9uIFsxXSBhbmQgWzJdLCB3ZSBmb3VuZCB0aGF0IGl0IGlzIHJpc2t5
+IHRvDQo+ID4gdXNlIG1heF9wZm4gb3IgdG90YWxyYW1fcGFnZXMgdG8gdGVsbCBpZiA0R0IgbW9k
+ZSBpcyBlbmFibGVkLg0KPiA+IA0KPiA+IENoZWNrIDRHQiBtb2RlIGJ5IHJlYWRpbmcgaW5mcmFj
+ZmcgcmVnaXN0ZXIsIHJlbW92ZSB0aGUgdXNhZ2UNCj4gPiBvZiB0aGUgdW4tZXhwb3J0ZWQgc3lt
+Ym9sIG1heF9wZm4uDQo+ID4gDQo+ID4gVGhpcyBpcyBhIHN0ZXAgdG93YXJkcyBidWlsZGluZyBt
+dGtfaW9tbXUgYXMgYSBrZXJuZWwgbW9kdWxlLg0KPiA+IA0KPiA+IENoYW5nZSBzaW5jZSB2MToN
+Cj4gPiAxLiByZW1vdmUgdGhlIHBoYW5kbGUgdXNhZ2UsIHNlYXJjaCBmb3IgaW5mcmFjZmcgaW5z
+dGVhZCBbM10NCj4gPiAyLiB1c2UgaW5mcmFjZmcgaW5zdGVhZCBvZiBpbmZyYWNmZ19yZWdtYXAN
+Cj4gPiAzLiBtb3ZlIGluZnJhY2ZnIGRlZmluaXRhaW9ucyB0byBsaW51eC9zb2MvbWVkaWF0ZWsv
+aW5mcmFjZmcuaA0KPiA+IDQuIHVwZGF0ZSBlbmFibGVfNEdCIG9ubHkgd2hlbiBoYXNfNGdiX21v
+ZGUNCj4gPiANCj4gPiBbMV0gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvNi8zLzczMw0KPiA+
+IFsyXSBodHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC82LzQvMTM2DQo+ID4gWzNdIGh0dHBzOi8v
+bGttbC5vcmcvbGttbC8yMDIwLzcvMTUvMTE0Nw0KPiA+IA0KPiA+IENjOiBNaWtlIFJhcG9wb3J0
+IDxycHB0QGxpbnV4LmlibS5jb20+DQo+ID4gQ2M6IERhdmlkIEhpbGRlbmJyYW5kIDxkYXZpZEBy
+ZWRoYXQuY29tPg0KPiA+IENjOiBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCj4gPiBD
+YzogWWluZ2pvZSBDaGVuIDx5aW5nam9lLmNoZW5AbWVkaWF0ZWsuY29tPg0KPiA+IENjOiBDaHJp
+c3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4NCj4gPiBDYzogWW9uZyBXdSA8eW9uZy53dUBtZWRp
+YXRlay5jb20+DQo+ID4gQ2M6IENoYW8gSGFvIDxjaGFvLmhhb0BtZWRpYXRlay5jb20+DQo+ID4g
+Q2M6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+ID4gQ2M6IE1hdHRoaWFzIEJydWdn
+ZXIgPG1hdHRoaWFzLmJnZ0BnbWFpbC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWlsZXMgQ2hl
+biA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL2lvbW11
+L210a19pb21tdS5jICAgICAgICAgICAgIHwgMjYgKysrKysrKysrKysrKysrKysrKysrLS0tLS0N
+Cj4gPiAgIGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmggfCAgMyArKysNCj4g
+PiAgIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4g
+PiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyBiL2RyaXZlcnMv
+aW9tbXUvbXRrX2lvbW11LmMNCj4gPiBpbmRleCAyYmU5NmYxY2RiZDIuLjE2NzY1ZjUzMjg1MyAx
+MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+ID4gKysrIGIvZHJp
+dmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiA+IEBAIC0zLDcgKzMsNiBAQA0KPiA+ICAgICogQ29w
+eXJpZ2h0IChjKSAyMDE1LTIwMTYgTWVkaWFUZWsgSW5jLg0KPiA+ICAgICogQXV0aG9yOiBZb25n
+IFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCj4gPiAgICAqLw0KPiA+IC0jaW5jbHVkZSA8bGlu
+dXgvbWVtYmxvY2suaD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9idWcuaD4NCj4gPiAgICNpbmNs
+dWRlIDxsaW51eC9jbGsuaD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9jb21wb25lbnQuaD4NCj4g
+PiBAQCAtMTUsMTMgKzE0LDE2IEBADQo+ID4gICAjaW5jbHVkZSA8bGludXgvaW9tbXUuaD4NCj4g
+PiAgICNpbmNsdWRlIDxsaW51eC9pb3BvbGwuaD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9saXN0
+Lmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9tZmQvc3lzY29uLmg+DQo+ID4gICAjaW5jbHVkZSA8
+bGludXgvb2ZfYWRkcmVzcy5oPg0KPiA+ICAgI2luY2x1ZGUgPGxpbnV4L29mX2lvbW11Lmg+DQo+
+ID4gICAjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQo+ID4gICAjaW5jbHVkZSA8bGludXgvb2Zf
+cGxhdGZvcm0uaD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4g
+PiArI2luY2x1ZGUgPGxpbnV4L3JlZ21hcC5oPg0KPiA+ICAgI2luY2x1ZGUgPGxpbnV4L3NsYWIu
+aD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9zcGlubG9jay5oPg0KPiA+ICsjaW5jbHVkZSA8bGlu
+dXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmg+DQo+ID4gICAjaW5jbHVkZSA8YXNtL2JhcnJpZXIu
+aD4NCj4gPiAgICNpbmNsdWRlIDxzb2MvbWVkaWF0ZWsvc21pLmg+DQo+ID4gICANCj4gPiBAQCAt
+NTk5LDggKzYwMSwxMCBAQCBzdGF0aWMgaW50IG10a19pb21tdV9wcm9iZShzdHJ1Y3QgcGxhdGZv
+cm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgCXN0cnVjdCByZXNvdXJjZSAgICAgICAgICpyZXM7DQo+
+ID4gICAJcmVzb3VyY2Vfc2l6ZV90CQlpb2FkZHI7DQo+ID4gICAJc3RydWN0IGNvbXBvbmVudF9t
+YXRjaCAgKm1hdGNoID0gTlVMTDsNCj4gPiArCXN0cnVjdCByZWdtYXAJCSppbmZyYWNmZzsNCj4g
+PiAgIAl2b2lkICAgICAgICAgICAgICAgICAgICAqcHJvdGVjdDsNCj4gPiAgIAlpbnQgICAgICAg
+ICAgICAgICAgICAgICBpLCBsYXJiX25yLCByZXQ7DQo+ID4gKwl1MzIJCQl2YWw7DQo+ID4gICAN
+Cj4gPiAgIAlkYXRhID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCpkYXRhKSwgR0ZQX0tFUk5F
+TCk7DQo+ID4gICAJaWYgKCFkYXRhKQ0KPiA+IEBAIC02MTQsMTAgKzYxOCwyMiBAQCBzdGF0aWMg
+aW50IG10a19pb21tdV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAg
+CQlyZXR1cm4gLUVOT01FTTsNCj4gPiAgIAlkYXRhLT5wcm90ZWN0X2Jhc2UgPSBBTElHTih2aXJ0
+X3RvX3BoeXMocHJvdGVjdCksIE1US19QUk9URUNUX1BBX0FMSUdOKTsNCj4gPiAgIA0KPiA+IC0J
+LyogV2hldGhlciB0aGUgY3VycmVudCBkcmFtIGlzIG92ZXIgNEdCICovDQo+ID4gLQlkYXRhLT5l
+bmFibGVfNEdCID0gISEobWF4X3BmbiA+IChCSVRfVUxMKDMyKSA+PiBQQUdFX1NISUZUKSk7DQo+
+ID4gLQlpZiAoIWRhdGEtPnBsYXRfZGF0YS0+aGFzXzRnYl9tb2RlKQ0KPiA+IC0JCWRhdGEtPmVu
+YWJsZV80R0IgPSBmYWxzZTsNCj4gPiArCWRhdGEtPmVuYWJsZV80R0IgPSBmYWxzZTsNCj4gPiAr
+CWlmIChkYXRhLT5wbGF0X2RhdGEtPmhhc180Z2JfbW9kZSkgew0KPiA+ICsJCWluZnJhY2ZnID0g
+c3lzY29uX3JlZ21hcF9sb29rdXBfYnlfY29tcGF0aWJsZSgNCj4gPiArCQkJCSJtZWRpYXRlayxt
+dDgxNzMtaW5mcmFjZmciKTsNCj4gPiArCQlpZiAoSVNfRVJSKGluZnJhY2ZnKSkgew0KPiA+ICsJ
+CQlpbmZyYWNmZyA9IHN5c2Nvbl9yZWdtYXBfbG9va3VwX2J5X2NvbXBhdGlibGUoDQo+ID4gKwkJ
+CQkJIm1lZGlhdGVrLG10MjcxMi1pbmZyYWNmZyIpOw0KPiA+ICsJCQlpZiAoSVNfRVJSKGluZnJh
+Y2ZnKSkNCj4gPiArCQkJCXJldHVybiBQVFJfRVJSKGluZnJhY2ZnKTsNCj4gDQo+IEkgdGhpbmsg
+d2Ugc2hvdWxkIGNoZWNrIG00dV9wbGF0IGluc3RlYWQgdG8gZGVjaWRlIHdoaWNoIGNvbXBhdGli
+bGUgd2UgaGF2ZSB0byANCj4gbG9vayBmb3IuDQo+IEFub3RoZXIgb3B0aW9uIHdvdWxkIGJlIHRv
+IGFkZCBhIGdlbmVyYWwgY29tcGF0aWJsZSBzb21ldGhpbmcgbGlrZSANCj4gIm10ay1pbmZyYWNm
+ZyIgYW5kIHNlYXJjaCBmb3IgdGhhdC4gVGhhdCB3b3VsZCBuZWVkIGFuIHVwZGF0ZSBvZiBhbGwg
+RFRTIGhhdmluZyANCj4gYSBpbmZyYWNmZyBjb21wYXRpYmxlIHJpZ2h0IG5vdy4gQWZ0ZXIgdGhp
+bmtpbmcgdHdpY2UsIHRoaXMgd291bGQgYnJlYWsgbmV3ZXIgDQo+IGtlcm5lbCB3aXRoIG9sZGVy
+IGRldmljZSB0cmVlLCBzbyBtYXliZSBpdCdzIGJldHRlciB0byBnbyB3aXRoIG00dV9wbGF0IHN3
+aXRjaCANCj4gc3RhdGVtZW50Lg0KDQpBZGQgYSAiY2hhciAqaW5mcmFjZmciIGluIHRoZSBwbGF0
+X2RhdGEsIFVzZSB0aGUgbXQyNzEyLCBtdDgxNzMNCmNvcnJlc3BvbmRpbmcgc3RyaW5nIGluIGl0
+LiBJZiBpdCBpcyBOVUxMLCBJdCBtZWFucyB0aGUgImVuYWJsZV80R0IiDQphbHdheXMgaXMgZmFs
+c2UuIFRoZW4gd2UgYWxzbyBjYW4gcmVtb3ZlIHRoZSBmbGFnICJoYXNfNGdiX21vZGUiLg0KDQpp
+cyB0aGlzIE9LPw0KDQo+IA0KPiBSZWdhcmRzLA0KPiBNYXR0aGlhcw0KPiANCj4gPiArDQo+ID4g
+KwkJfQ0KPiA+ICsJCXJldCA9IHJlZ21hcF9yZWFkKGluZnJhY2ZnLCBSRUdfSU5GUkFfTUlTQywg
+JnZhbCk7DQo+ID4gKwkJaWYgKHJldCkNCj4gPiArCQkJcmV0dXJuIHJldDsNCj4gPiArCQlkYXRh
+LT5lbmFibGVfNEdCID0gISEodmFsICYgRl9ERFJfNEdCX1NVUFBPUlRfRU4pOw0KPiA+ICsJfQ0K
+PiA+ICAgDQo+ID4gICAJcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VS
+Q0VfTUVNLCAwKTsNCj4gPiAgIAlkYXRhLT5iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKGRl
+diwgcmVzKTsNCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvaW5m
+cmFjZmcuaCBiL2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmgNCj4gPiBpbmRl
+eCBmZDI1ZjAxNDg1NjYuLjIzMzQ2M2Q3ODljNiAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xp
+bnV4L3NvYy9tZWRpYXRlay9pbmZyYWNmZy5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9zb2Mv
+bWVkaWF0ZWsvaW5mcmFjZmcuaA0KPiA+IEBAIC0zMiw2ICszMiw5IEBADQo+ID4gICAjZGVmaW5l
+IE1UNzYyMl9UT1BfQVhJX1BST1RfRU5fV0IJCShCSVQoMikgfCBCSVQoNikgfCBcDQo+ID4gICAJ
+CQkJCQkgQklUKDcpIHwgQklUKDgpKQ0KPiA+ICAgDQo+ID4gKyNkZWZpbmUgUkVHX0lORlJBX01J
+U0MJCQkJMHhmMDANCj4gPiArI2RlZmluZSBGX0REUl80R0JfU1VQUE9SVF9FTgkJCUJJVCgxMykN
+Cj4gPiArDQo+ID4gICBpbnQgbXRrX2luZnJhY2ZnX3NldF9idXNfcHJvdGVjdGlvbihzdHJ1Y3Qg
+cmVnbWFwICppbmZyYWNmZywgdTMyIG1hc2ssDQo+ID4gICAJCWJvb2wgcmVnX3VwZGF0ZSk7DQo+
+ID4gICBpbnQgbXRrX2luZnJhY2ZnX2NsZWFyX2J1c19wcm90ZWN0aW9uKHN0cnVjdCByZWdtYXAg
+KmluZnJhY2ZnLCB1MzIgbWFzaywNCj4gPiANCg0K
 
