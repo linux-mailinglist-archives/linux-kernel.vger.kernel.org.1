@@ -2,174 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4429B2288CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555862288E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730674AbgGUTH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
+        id S1730539AbgGUTJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730564AbgGUTHD (ORCPT
+        with ESMTP id S1730300AbgGUTJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:07:03 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F879C0619DF
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:07:03 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id A26DFBC1B9;
-        Tue, 21 Jul 2020 19:06:59 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        gregkh@linuxfoundation.org, mh12gx2825@gmail.com,
-        zhengbin13@huawei.com, dan.carpenter@oracle.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] staging: comedi: dt: Replace HTTP links with HTTPS ones
-Date:   Tue, 21 Jul 2020 21:06:53 +0200
-Message-Id: <20200721190653.67751-1-grandmaster@al2klimov.de>
+        Tue, 21 Jul 2020 15:09:33 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA11C0619DA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:09:33 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id f16so2142882pjt.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NAFt6C2lnvpS45jVhw23Ap3Sp8296UwbtX9tobHLa1g=;
+        b=icFK+j1QmdrfPm1agUfJealBTpwFHPXzo+8S/+STX6KNUWATkXlIlCEWGl2IAB0Kaw
+         81hUL9l2hd6YXn1feWWISzSrw+hQRCIGKNVJbWKr7A8mt5ntyHbZ7HqDqAM0G+A1AosL
+         C4oIXZNzgs1qwn+vlMLHBWHD7jiCUNtg/I8HA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NAFt6C2lnvpS45jVhw23Ap3Sp8296UwbtX9tobHLa1g=;
+        b=ir3Pvek4+f9B41gWGV/eHzBc56mVaT8nuZvK3D9lL4TB1wvfP/WZGKmh70XaHzjD0A
+         fxtA6Q15l66R6DZHCtAcfbcZdMf+e8fO+xTDyDirKEWbfrTEohdNxY8UhlH1smL4F3Oh
+         Jy/oIpWF4UaXkWrds27zP+dMgKQT/1sdgr0m4ndO+nl14C91kq6EBir8q7ztHsvSyejk
+         L/lZD7v4oxneYnyhsdIAe3APlyQEdePYviIrav+ESgLwtbn3tLeKsyectNdZ47JeoOfA
+         I+7bBJK5UEfOhz1xvVT7akAPwju/1iJBUIlbdEfMhc8LNW+NkR2QJt64ByHQyvg8wOwo
+         s0Ng==
+X-Gm-Message-State: AOAM530kcSagiK59gLflJZdsycaMZa49bmJkOk0UlghlQDDXGa4RAtXh
+        SSLLxU6dwEkmANJ9lNdX0CGfYLvMUR0=
+X-Google-Smtp-Source: ABdhPJzWAwKHQkMx9PJ9EAZVnXplkjPUmWmAhBJFL+0Oc7tM+S4Ojo/uUW20rsqp3QBbghADINzeSA==
+X-Received: by 2002:a17:902:7612:: with SMTP id k18mr22356298pll.187.1595358572696;
+        Tue, 21 Jul 2020 12:09:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c139sm20745411pfb.65.2020.07.21.12.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 12:09:31 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 12:09:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        davidgow@google.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3] lib: Convert test_user_copy to KUnit test
+Message-ID: <202007211207.5BAA9D8D@keescook>
+References: <20200721174654.72132-1-vitor@massaru.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721174654.72132-1-vitor@massaru.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tue, Jul 21, 2020 at 02:46:54PM -0300, Vitor Massaru Iha wrote:
+> This adds the conversion of the runtime tests of test_user_copy fuctions,
+> from `lib/test_user_copy.c`to KUnit tests.
+> 
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> ---
+> v2:
+>     * splitted patch in 3:
+>         - Allows to install and load modules in root filesystem;
+>         - Provides an userspace memory context when tests are compiled
+>           as module;
+>         - Convert test_user_copy to KUnit test;
+>     * removed entry for CONFIG_TEST_USER_COPY;
+>     * replaced pr_warn to KUNIT_EXPECT_FALSE_MSG in test macro to
+>       decrease the diff;
+> v3:
+>     * rebased with last kunit branch
+>     * Please apply this commit from kunit-fixes:
+>         3f37d14b8a3152441f36b6bc74000996679f0998
+>       And these from patchwork:
+>         https://patchwork.kernel.org/patch/11676331/
+>         https://patchwork.kernel.org/patch/11676335/
+> ---
+>  lib/Kconfig.debug                           | 28 ++++++++------
+>  lib/Makefile                                |  2 +-
+>  lib/{test_user_copy.c => user_copy_kunit.c} | 42 +++++++++------------
+>  3 files changed, 35 insertions(+), 37 deletions(-)
+>  rename lib/{test_user_copy.c => user_copy_kunit.c} (91%)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 9ad9210d70a1..f699a3624ae7 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2078,18 +2078,6 @@ config TEST_VMALLOC
+> 
+>  	  If unsure, say N.
+> 
+> -config TEST_USER_COPY
+> -	tristate "Test user/kernel boundary protections"
+> -	depends on m
+> -	help
+> -	  This builds the "test_user_copy" module that runs sanity checks
+> -	  on the copy_to/from_user infrastructure, making sure basic
+> -	  user/kernel boundary testing is working. If it fails to load,
+> -	  a regression has been detected in the user/kernel memory boundary
+> -	  protections.
+> -
+> -	  If unsure, say N.
+> -
+>  config TEST_BPF
+>  	tristate "Test BPF filter functionality"
+>  	depends on m && NET
+> @@ -2154,6 +2142,22 @@ config SYSCTL_KUNIT_TEST
+> 
+>  	  If unsure, say N.
+> 
+> +config USER_COPY_KUNIT
+> +	tristate "KUnit Test for user/kernel boundary protections"
+> +	depends on KUNIT
+> +	depends on m
+> +	help
+> +	  This builds the "user_copy_kunit" module that runs sanity checks
+> +	  on the copy_to/from_user infrastructure, making sure basic
+> +	  user/kernel boundary testing is working. If it fails to load,
+> +	  a regression has been detected in the user/kernel memory boundary
+> +	  protections.
+> +
+> +	  For more information on KUnit and unit tests in general please refer
+> +	  to the KUnit documentation in Documentation/dev-tools/kunit/.
+> +
+> +	  If unsure, say N.
+> +
+>  config LIST_KUNIT_TEST
+>  	tristate "KUnit Test for Kernel Linked-list structures" if !KUNIT_ALL_TESTS
+>  	depends on KUNIT
+> diff --git a/lib/Makefile b/lib/Makefile
+> index b1c42c10073b..8c145f85accc 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -78,7 +78,6 @@ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+>  obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+>  obj-$(CONFIG_TEST_RHASHTABLE) += test_rhashtable.o
+>  obj-$(CONFIG_TEST_SORT) += test_sort.o
+> -obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
+>  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
+>  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
+>  obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+> @@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+>  # KUnit tests
+>  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+>  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+> +obj-$(CONFIG_USER_COPY_KUNIT) += user_copy_kunit.o
+> diff --git a/lib/test_user_copy.c b/lib/user_copy_kunit.c
+> similarity index 91%
+> rename from lib/test_user_copy.c
+> rename to lib/user_copy_kunit.c
+> index 5ff04d8fe971..a10ddd15b4cd 100644
+> --- a/lib/test_user_copy.c
+> +++ b/lib/user_copy_kunit.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/vmalloc.h>
+> +#include <kunit/test.h>
+> 
+>  /*
+>   * Several 32-bit architectures support 64-bit {get,put}_user() calls.
+> @@ -35,7 +36,7 @@
+>  ({									\
+>  	int cond = (condition);						\
+>  	if (cond)							\
+> -		pr_warn("[%d] " msg "\n", __LINE__, ##__VA_ARGS__);	\
+> +		KUNIT_EXPECT_FALSE_MSG(test, cond, msg, ##__VA_ARGS__);	\
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+I'm surprised any of this compiles with both a macro and arg named
+"test". :) Can you change the arg to something with more clarity?
+"context" or "kunit" seems better.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+>  	cond;								\
+>  })
+> 
+> @@ -44,7 +45,7 @@ static bool is_zeroed(void *from, size_t size)
+>  	return memchr_inv(from, 0x0, size) == NULL;
+>  }
+> 
+> -static int test_check_nonzero_user(char *kmem, char __user *umem, size_t size)
+> +static int test_check_nonzero_user(struct kunit *test, char *kmem, char __user *umem, size_t size)
+>  {
+>  	int ret = 0;
+>  	size_t start, end, i, zero_start, zero_end;
+> @@ -102,7 +103,7 @@ static int test_check_nonzero_user(char *kmem, char __user *umem, size_t size)
+>  	return ret;
+>  }
+> 
+> -static int test_copy_struct_from_user(char *kmem, char __user *umem,
+> +static int test_copy_struct_from_user(struct kunit *test, char *kmem, char __user *umem,
+>  				      size_t size)
+>  {
+>  	int ret = 0;
+> @@ -177,7 +178,7 @@ static int test_copy_struct_from_user(char *kmem, char __user *umem,
+>  	return ret;
+>  }
+> 
+> -static int __init test_user_copy_init(void)
+> +static void user_copy_test(struct kunit *test)
+>  {
+>  	int ret = 0;
+>  	char *kmem;
+> @@ -192,16 +193,14 @@ static int __init test_user_copy_init(void)
+>  #endif
+> 
+>  	kmem = kmalloc(PAGE_SIZE * 2, GFP_KERNEL);
+> -	if (!kmem)
+> -		return -ENOMEM;
+> +	KUNIT_EXPECT_FALSE_MSG(test, kmem == NULL, "kmalloc failed");
 
- If there are any URLs to be removed completely
- or at least not (just) HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+This would need to be an ASSERT, yes?
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  	user_addr = vm_mmap(NULL, 0, PAGE_SIZE * 2,
+>  			    PROT_READ | PROT_WRITE | PROT_EXEC,
+>  			    MAP_ANONYMOUS | MAP_PRIVATE, 0);
+>  	if (user_addr >= (unsigned long)(TASK_SIZE)) {
+> -		pr_warn("Failed to allocate user memory\n");
+>  		kfree(kmem);
+> -		return -ENOMEM;
+> +		KUNIT_FAIL(test, "Failed to allocate user memory");
+>  	}
 
- If you apply the patch, please let me know.
+Why FAIL instead of ASSERT?
 
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+> 
+>  	usermem = (char __user *)user_addr;
+> @@ -245,9 +244,9 @@ static int __init test_user_copy_init(void)
+>  #undef test_legit
+> 
+>  	/* Test usage of check_nonzero_user(). */
+> -	ret |= test_check_nonzero_user(kmem, usermem, 2 * PAGE_SIZE);
+> +	ret |= test_check_nonzero_user(test, kmem, usermem, 2 * PAGE_SIZE);
+>  	/* Test usage of copy_struct_from_user(). */
+> -	ret |= test_copy_struct_from_user(kmem, usermem, 2 * PAGE_SIZE);
+> +	ret |= test_copy_struct_from_user(test, kmem, usermem, 2 * PAGE_SIZE);
+> 
+>  	/*
+>  	 * Invalid usage: none of these copies should succeed.
+> @@ -309,23 +308,18 @@ static int __init test_user_copy_init(void)
+> 
+>  	vm_munmap(user_addr, PAGE_SIZE * 2);
+>  	kfree(kmem);
+> -
+> -	if (ret == 0) {
+> -		pr_info("tests passed.\n");
+> -		return 0;
+> -	}
+> -
+> -	return -EINVAL;
 
+Does KUnit provide a end-of-test summary now?
 
- drivers/staging/comedi/drivers/dt2801.c | 2 +-
- drivers/staging/comedi/drivers/dt2811.c | 2 +-
- drivers/staging/comedi/drivers/dt2814.c | 2 +-
- drivers/staging/comedi/drivers/dt2815.c | 2 +-
- drivers/staging/comedi/drivers/dt2817.c | 2 +-
- drivers/staging/comedi/drivers/dt282x.c | 2 +-
- drivers/staging/comedi/drivers/dt3000.c | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+>  }
+> 
+> -module_init(test_user_copy_init);
+> -
+> -static void __exit test_user_copy_exit(void)
+> -{
+> -	pr_info("unloaded.\n");
+> -}
+> +static struct kunit_case user_copy_test_cases[] = {
+> +	KUNIT_CASE(user_copy_test),
+> +	{}
+> +};
+> 
+> -module_exit(test_user_copy_exit);
+> +static struct kunit_suite user_copy_test_suite = {
+> +	.name = "user_copy",
+> +	.test_cases = user_copy_test_cases,
+> +};
+> 
+> +kunit_test_suites(&user_copy_test_suite);
+>  MODULE_AUTHOR("Kees Cook <keescook@chromium.org>");
+>  MODULE_LICENSE("GPL");
+> 
+> base-commit: d43c7fb05765152d4d4a39a8ef957c4ea14d8847
+> --
+> 2.26.2
+> 
 
-diff --git a/drivers/staging/comedi/drivers/dt2801.c b/drivers/staging/comedi/drivers/dt2801.c
-index a29880981d81..0d571d817b4e 100644
---- a/drivers/staging/comedi/drivers/dt2801.c
-+++ b/drivers/staging/comedi/drivers/dt2801.c
-@@ -640,6 +640,6 @@ static struct comedi_driver dt2801_driver = {
- };
- module_comedi_driver(dt2801_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/dt2811.c b/drivers/staging/comedi/drivers/dt2811.c
-index 8a1f9efe7d4e..0eb5e6ba6916 100644
---- a/drivers/staging/comedi/drivers/dt2811.c
-+++ b/drivers/staging/comedi/drivers/dt2811.c
-@@ -640,6 +640,6 @@ static struct comedi_driver dt2811_driver = {
- };
- module_comedi_driver(dt2811_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Data Translation DT2811 series boards");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/dt2814.c b/drivers/staging/comedi/drivers/dt2814.c
-index d2c715737361..bcf4d5444faf 100644
---- a/drivers/staging/comedi/drivers/dt2814.c
-+++ b/drivers/staging/comedi/drivers/dt2814.c
-@@ -285,6 +285,6 @@ static struct comedi_driver dt2814_driver = {
- };
- module_comedi_driver(dt2814_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/dt2815.c b/drivers/staging/comedi/drivers/dt2815.c
-index 78a7c1b3448a..5906f32aa01f 100644
---- a/drivers/staging/comedi/drivers/dt2815.c
-+++ b/drivers/staging/comedi/drivers/dt2815.c
-@@ -212,6 +212,6 @@ static struct comedi_driver dt2815_driver = {
- };
- module_comedi_driver(dt2815_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/dt2817.c b/drivers/staging/comedi/drivers/dt2817.c
-index 9babb2a5196a..7c1463e835d3 100644
---- a/drivers/staging/comedi/drivers/dt2817.c
-+++ b/drivers/staging/comedi/drivers/dt2817.c
-@@ -135,6 +135,6 @@ static struct comedi_driver dt2817_driver = {
- };
- module_comedi_driver(dt2817_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi low-level driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/dt282x.c b/drivers/staging/comedi/drivers/dt282x.c
-index 89dc84d3c803..2656b4b0e3d0 100644
---- a/drivers/staging/comedi/drivers/dt282x.c
-+++ b/drivers/staging/comedi/drivers/dt282x.c
-@@ -1167,6 +1167,6 @@ static struct comedi_driver dt282x_driver = {
- };
- module_comedi_driver(dt282x_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Data Translation DT2821 series");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/staging/comedi/drivers/dt3000.c b/drivers/staging/comedi/drivers/dt3000.c
-index 011e19161b78..ec27aa4730d4 100644
---- a/drivers/staging/comedi/drivers/dt3000.c
-+++ b/drivers/staging/comedi/drivers/dt3000.c
-@@ -735,6 +735,6 @@ static struct pci_driver dt3000_pci_driver = {
- };
- module_comedi_pci_driver(dt3000_driver, dt3000_pci_driver);
- 
--MODULE_AUTHOR("Comedi http://www.comedi.org");
-+MODULE_AUTHOR("Comedi https://www.comedi.org");
- MODULE_DESCRIPTION("Comedi driver for Data Translation DT3000 series boards");
- MODULE_LICENSE("GPL");
+Otherwise, yes, looking good.
+
 -- 
-2.27.0
-
+Kees Cook
