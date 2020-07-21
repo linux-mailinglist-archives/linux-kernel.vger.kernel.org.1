@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BF222842F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCFC228433
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 17:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730014AbgGUPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 11:49:43 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44439 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgGUPtn (ORCPT
+        id S1730039AbgGUPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 11:50:29 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58709 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726029AbgGUPu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:49:43 -0400
-Received: by mail-wr1-f66.google.com with SMTP id b6so21671397wrs.11
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:49:41 -0700 (PDT)
+        Tue, 21 Jul 2020 11:50:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595346627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T1eqkdT+65WSXffQEgvHX8BA45HzVx3nhgyMOFl0KCM=;
+        b=UP7zCLnnpowVd6qJFEsLetQAX3K9eAXa2xNxOktoGGz4vv9a5TKhepCADUcl2fy3UIp3lp
+        P8Dr3wfQst4Vh5DpmCAjzxAbWGIn0TZn6ZBJSYTgUA3MCci96srkwom2LIXzfqDifh1/pL
+        QMfZ2UTEQtyEgqB6ynjpg6FQBXIUN/s=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-7uoDVYEiMIudxce89YgGvw-1; Tue, 21 Jul 2020 11:50:23 -0400
+X-MC-Unique: 7uoDVYEiMIudxce89YgGvw-1
+Received: by mail-qv1-f71.google.com with SMTP id u1so12606745qvu.18
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 08:50:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xtdmt+rnuzEMChFrWyb/dtdXZAk0jWQrZ/8hX8rAe9g=;
-        b=muZyO22wnVJZAEeN0JzpPU5MgnxpN6q9Qmf7eJNFJkxhPxPyJeoSo41bXMGA+hEwpN
-         Q/PPPRYhjf1XzZjCuhrsO9bxMYEhIIXW+CjHiVQhoSSQ+Mm0jnmE0p3KmBBhJRNrbrh7
-         MbFCviTs2qbdNEu5MYlS9gPbpwVL7ZFqTRezRDgSv4dbGjxkKghSwBGoQq0SSa+wVcMc
-         Twiowfuyay4tdPUVddb6FmPo3OQXQlKfvEtWLW+D5egO38MrmUVO9D8saL6KIwlMmoyj
-         IOjVE/VzENtTfZxqnNSUnvGZrIX5wzP4Q5NwjQpeoFiU/Sp9fsZ9bzBXLVmMc91f2WbK
-         hkTA==
-X-Gm-Message-State: AOAM532fH7JEGGZCIYdfoWJwtpxXYbxuvM+JodV4GRZzcUMyoCja3ZiN
-        T5ODRx9xyIpc1cAiqJSHPjg=
-X-Google-Smtp-Source: ABdhPJxy4F2wodkJo49QxNFn3BgSfG8D2cN6gDXk89JOUVRjjB4/hpsD+Uemj9tul5q4R9wlsOVHFg==
-X-Received: by 2002:a5d:6a8d:: with SMTP id s13mr19257556wru.201.1595346581091;
-        Tue, 21 Jul 2020 08:49:41 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id 138sm4050398wmb.1.2020.07.21.08.49.40
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=T1eqkdT+65WSXffQEgvHX8BA45HzVx3nhgyMOFl0KCM=;
+        b=TQ7JiQw9gGmZscfqau25hVPP062xvD/Ea5980v2FXhJMlatXxkL+7abaFb0Wel54dv
+         FMKU6PdXlpkvTivz6L/vOfW0YMH0hIOSgcz7s3Y1V5W4R24lLlUxMFR0sWdB5ubQhyCq
+         khUuMEP/vLYV9/QwqyQD+g2aE28R1FuMzB8W1LhvVzF3eg+a03XdcocXlyjLXlB+BKP7
+         SyqdZPGODUOczNRzKGh7j3ijEGyEBZlE68JkE5VPcvVNOHLEpJkUqXVF/eerQ1aIjwME
+         5+eZsu3c6Po8+pMPxm8FrHcyZ6bJPy/DN0wScjP1SLpN6SAvF6gHDnzmh4t6Mgvl7zOU
+         SClw==
+X-Gm-Message-State: AOAM532CYQPJnWhK6p/CQE2XHXXChBH/DEWrXVGeL+th3LDG2KfYsRRm
+        M3vY7m5CZFAVhZJLYPgadc31L4JiNVoamip9uVxS1v0UZ5ykXcKjBYb+mAkKfjcWxxBP7L/kNXW
+        cevTV5KhSjgktqpkiZn5oqUnm
+X-Received: by 2002:aed:2f46:: with SMTP id l64mr29601840qtd.1.1595346622841;
+        Tue, 21 Jul 2020 08:50:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRfxmS1vh9brmkhzM4t8kBfNgHEn/slIPecHCsCE4ib2gN5E/VVud9VW0vl+hQQ4YSUuRZ2Q==
+X-Received: by 2002:aed:2f46:: with SMTP id l64mr29601827qtd.1.1595346622609;
+        Tue, 21 Jul 2020 08:50:22 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id m17sm202763qtm.92.2020.07.21.08.50.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 08:49:40 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 17:49:39 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-Message-ID: <20200721154939.GO4061@dhcp22.suse.cz>
-References: <20200721063258.17140-1-mhocko@kernel.org>
- <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+        Tue, 21 Jul 2020 08:50:21 -0700 (PDT)
+Message-ID: <4e90a54c61e3ecb19802d7ea811c58a51ac457ed.camel@redhat.com>
+Subject: Re: [PATCH -next] drm/nouveau/kms/nvd9-: Fix file release memory
+ leak
+From:   Lyude Paul <lyude@redhat.com>
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Date:   Tue, 21 Jul 2020 11:50:20 -0400
+In-Reply-To: <20200721151701.51412-1-weiyongjun1@huawei.com>
+References: <20200721151701.51412-1-weiyongjun1@huawei.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21-07-20 08:33:33, Linus Torvalds wrote:
-> On Mon, Jul 20, 2020 at 11:33 PM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > The lockup is in page_unlock in do_read_fault and I suspect that this is
-> > yet another effect of a very long waitqueue chain which has been
-> > addresses by 11a19c7b099f ("sched/wait: Introduce wakeup boomark in
-> > wake_up_page_bit") previously.
-> 
-> Hmm.
-> 
-> I do not believe that you can actually get to the point where you have
-> a million waiters and it takes 20+ seconds to wake everybody up.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-I was really suprised as well!
+Thanks!
 
-> More likely, it's actually *caused* by that commit 11a19c7b099f, and
-> what might be happening is that other CPU's are just adding new
-> waiters to the list *while* we're waking things up, because somebody
-> else already got the page lock again.
+On Tue, 2020-07-21 at 15:17 +0000, Wei Yongjun wrote:
+> When using single_open() for opening, single_release() should be
+> used instead of seq_release(), otherwise there is a memory leak.
 > 
-> Humor me.. Does something like this work instead? It's
-> whitespace-damaged because of just a cut-and-paste, but it's entirely
-> untested, and I haven't really thought about any memory ordering
-> issues, but I think it's ok.
+> Fixes: 12885ecbfe62 ("drm/nouveau/kms/nvd9-: Add CRC support")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  drivers/gpu/drm/nouveau/dispnv50/crc.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> The logic is that anybody who called wake_up_page_bit() _must_ have
-> cleared that bit before that. So if we ever see it set again (and
-> memory ordering doesn't matter), then clearly somebody else got access
-> to the page bit (whichever it was), and we should not
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/crc.c
+> b/drivers/gpu/drm/nouveau/dispnv50/crc.c
+> index f17fb6d56757..4971a1042415 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/crc.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/crc.c
+> @@ -706,6 +706,7 @@ static const struct file_operations
+> nv50_crc_flip_threshold_fops = {
+>  	.open = nv50_crc_debugfs_flip_threshold_open,
+>  	.read = seq_read,
+>  	.write = nv50_crc_debugfs_flip_threshold_set,
+> +	.release = single_release,
+>  };
+>  
+>  int nv50_head_crc_late_register(struct nv50_head *head)
 > 
->  (a) waste time waking up people who can't get the bit anyway
 > 
->  (b) be in a  livelock where other CPU's continually add themselves to
-> the wait queue because somebody else got the bit.
 > 
-> and it's that (b) case that I think happens for you.
-> 
-> NOTE! Totally UNTESTED patch follows. I think it's good, but maybe
-> somebody sees some problem with this approach?
-
-I can ask them to give it a try.
-
 -- 
-Michal Hocko
-SUSE Labs
+Cheers,
+	Lyude Paul (she/her)
+	Software Engineer at Red Hat
+
