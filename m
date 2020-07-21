@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B1F227B8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC8C227B87
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728993AbgGUJTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:19:48 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:56092 "EHLO inva021.nxp.com"
+        id S1728983AbgGUJTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgGUJTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:19:34 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 05BBE200854;
-        Tue, 21 Jul 2020 11:19:33 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EDDBE200431;
-        Tue, 21 Jul 2020 11:19:32 +0200 (CEST)
-Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id B8F3B202A9;
-        Tue, 21 Jul 2020 11:19:32 +0200 (CEST)
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 6/6] staging: dpaa2-ethsw: check if there is space for a new VLAN
-Date:   Tue, 21 Jul 2020 12:19:19 +0300
-Message-Id: <20200721091919.20394-7-ioana.ciornei@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200721091919.20394-1-ioana.ciornei@nxp.com>
-References: <20200721091919.20394-1-ioana.ciornei@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728517AbgGUJTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 05:19:42 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D32A420792;
+        Tue, 21 Jul 2020 09:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595323181;
+        bh=iWSM5sXQBJiu2/PDHyjMEVSdorbsAd0mMLH0MoE6yL0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=k0PcAnU2G2Dcb1gik0r5DAyFmzIwE1Dgn5Sqp7oV26zQBsqQDyEZtfuN93RIxphym
+         qmoed8RV8WypvdDLOAfmvic2mHeu3sozsWHYBW+Qy7sXJZeIH8BYReZJGQBeKmYcfn
+         PAhJ6YaVqCa1WcZ2uri/3v67UZDVnQQQmnBKSL4g=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200716122620.4538-1-aford173@gmail.com>
+References: <20200716122620.4538-1-aford173@gmail.com>
+Subject: Re: [PATCH V3] clk: vc5: Add memory check to prevent oops
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     dan.carpenter@oracle.com, luca@lucaceresoli.net,
+        aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org
+To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
+Date:   Tue, 21 Jul 2020 02:19:41 -0700
+Message-ID: <159532318111.3847286.6874293188283317151@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid getting into a WARNING as below by checking, while in the prepare
-state of the transactional operation, if there is space for a new VLAN.
-If we reached the maximum number, return an appropriate error.
+Quoting Adam Ford (2020-07-16 05:26:20)
+> When getting the names of the child nodes, kasprintf is used to
+> allocate memory which is used to create the string for the node
+> name.  Unfortunately, there is no memory check to determine
+> if this allocation fails, it may cause an error when trying
+> to get child node name.
+>=20
+> This patch will check if the memory allocation fails, and returns
+> and -ENOMEM error instead of blindly moving on.
+>=20
+> Fixes: 260249f929e8 ("clk: vc5: Enable addition output configurations of =
+the Versaclock")
+>=20
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+> V3:   Fix spelling error, and use the style of checking (!variable) inste=
+ad of
+>       (variable =3D=3D NULL)
+>=20
+> V2:   Fix an issue where a goto was going to use an unitialized variable.
 
-[ 6503.657564] eth3: Commit of object (id=1) failed.
-[ 6503.657588] WARNING: CPU: 2 PID: 17144 at net/switchdev/switchdev.c:277 switchdev_port_obj_add_now+0xcc/0x110
-...
-[ 6503.657628] x1 : 70887ce26695c500 x0 : 0000000000000000
-[ 6503.657630] Call trace:
-[ 6503.657633]  switchdev_port_obj_add_now+0xcc/0x110
-[ 6503.657635]  switchdev_port_obj_add+0x40/0xc0
-[ 6503.657638]  br_switchdev_port_vlan_add+0x50/0x78
-[ 6503.657640]  __vlan_add+0x2dc/0x758
-[ 6503.657642]  nbp_vlan_add+0xc0/0x180
-[ 6503.657644]  br_vlan_info.isra.0+0x68/0x128
-[ 6503.657646]  br_process_vlan_info+0x224/0x2f8
-[ 6503.657647]  br_afspec+0x158/0x188
-[ 6503.657649]  br_setlink+0x1a4/0x290
-
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-index c6885912c60b..19fc0401e261 100644
---- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-+++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-@@ -979,10 +979,27 @@ static int port_vlans_add(struct net_device *netdev,
- 			  struct switchdev_trans *trans)
- {
- 	struct ethsw_port_priv *port_priv = netdev_priv(netdev);
--	int vid, err = 0;
-+	struct ethsw_core *ethsw = port_priv->ethsw_data;
-+	struct dpsw_attr *attr = &ethsw->sw_attr;
-+	int vid, err = 0, new_vlans = 0;
-+
-+	if (switchdev_trans_ph_prepare(trans)) {
-+		for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++)
-+			if (!port_priv->ethsw_data->vlans[vid])
-+				new_vlans++;
-+
-+		/* Check if there is space for a new VLAN */
-+		err = dpsw_get_attributes(ethsw->mc_io, 0, ethsw->dpsw_handle,
-+					  &ethsw->sw_attr);
-+		if (err) {
-+			netdev_err(netdev, "dpsw_get_attributes err %d\n", err);
-+			return err;
-+		}
-+		if (attr->max_vlans - attr->num_vlans < new_vlans)
-+			return -ENOSPC;
- 
--	if (switchdev_trans_ph_prepare(trans))
- 		return 0;
-+	}
- 
- 	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
- 		if (!port_priv->ethsw_data->vlans[vid]) {
--- 
-2.25.1
-
+Is the patch from Colin also needed?
+https://lore.kernel.org/r/20200625132736.88832-1-colin.king@canonical.com
