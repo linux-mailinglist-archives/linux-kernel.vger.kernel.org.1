@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0988228547
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9858C22854A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730101AbgGUQ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:27:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39704 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727115AbgGUQ12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:27:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CD59EAD79;
-        Tue, 21 Jul 2020 16:27:33 +0000 (UTC)
-Message-ID: <6db722947546221ed99d3f473f78e1a6de65d7d6.camel@suse.de>
-Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Tue, 21 Jul 2020 18:27:24 +0200
-In-Reply-To: <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com>
-References: <20200708164936.9340-1-nsaenzjulienne@suse.de>
-         <CAMi1Hd35tRM=cnmzwX=SDgu-OoXi1Xj+twFkoULaVZBbTpe6sw@mail.gmail.com>
-         <550b30a86c0785049d24c945e2c6628d491cee3a.camel@suse.de>
-         <CAMi1Hd2V2pJjP=USS4r-Z3vK-aq7_aBy-jcVNk1GvbdEQAuzWg@mail.gmail.com>
-         <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
-         <CAMi1Hd0=ZsGhTkSy221EP9Vb3GMOcS0UMczX2u5X9qK37_ea1A@mail.gmail.com>
-         <01831596e4a2a6c9c066138b23bd30435f8e5569.camel@suse.de>
-         <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1730195AbgGUQ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728432AbgGUQ2Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:28:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E194C061794;
+        Tue, 21 Jul 2020 09:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=a+vDF8klKlLTFVbzGxgCmq6Vs3NgcEzh4gR2/6Zjx5g=; b=guiWR2T7PBVPkbvAVhOr60Kvui
+        l2UXKw673ergZoSXKNmfQjKRjogJ/g01Lq893KzeYPeIXVw8vB8SaUgZdeHZgCR326mY81MveE68A
+        muGTOv3y41ZQmAk57Zc7e1HqC6j/WVhTnLq8rGmnGk16dhl5tmUfid1+ZrsEENi5+wTa/Xb45qcfO
+        9MaqUzoQK9tKcHjbdVKdiNUxSVSGM2DQFu8gJNrpnUdPm2727HsYJRov1ySZx1wo7D17J91XFhBZI
+        wiBxwqywcetwumgrPiWWXNc4IRHPstS7KoNaOtYFovlhevHrGk9XTvtCOMr+urpmJoDBg8qQ1JMhm
+        CTP8NzZQ==;
+Received: from [2001:4bb8:18c:2acc:5b1c:6483:bd6d:e406] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxv7r-0007Qq-67; Tue, 21 Jul 2020 16:28:19 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: add file system helpers that take kernel pointers for the init code v2
+Date:   Tue, 21 Jul 2020 18:27:54 +0200
+Message-Id: <20200721162818.197315-1-hch@lst.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-21 at 20:52 +0530, Amit Pundir wrote:
+Hi Al and Linus,
 
-[...]
+currently a lot of the file system calls in the early in code (and the
+devtmpfs kthread) rely on the implicit set_fs(KERNEL_DS) during boot.
+This is one of the few last remaining places we need to deal with to kill
+off set_fs entirely, so this series adds new helpers that take kernel
+pointers.  These helpers are in init/ and marked __init and thus will
+be discarded after bootup.  A few also need to be duplicated in devtmpfs,
+though unfortunately.
 
-> > > > Can you try booting *without* my patch and this in the kernel
-> > > > command
-> > > > line: "cma=16M@0x100000000-0x200000000".
-> > > 
-> > > It doesn't boot with this added kernel command line.
-> > 
-> > For the record, this placed the CMA in the [4GB, 8GB] address space
-> > instead of you setup's default: [3GB, 4GB]. All atomic pools fall
-> > in
-> > that memory area without my patch, which makes me think some of the
-> > devices on your board might not like higher addresses.
-> > 
-> 
-> Thank you Nicolas for the details. Though we don't set the CMA
-> alloc-ranges explicitly in upstream sdm845 dts, but I dug around and
-> found that CMA alloc-ranges in the downstream kernel are indeed in
-> lower address space.
-> https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/dipper-q-oss/arch/arm64/boot/dts/qcom/sdm845.dtsi#L662
-> 
-> /* global autoconfigured region for contiguous allocations */
-> linux,cma {
->         compatible = "shared-dma-pool";
->         alloc-ranges = <0 0x00000000 0 0xffffffff>;
->         reusable;
->         alignment = <0 0x400000>;
->         size = <0 0x2000000>;
->         linux,cma-default;
-> };
+The series sits on top of my previous
 
-Pretty standard, and similar to what it's being used upstream by
-default.
+  "decruft the early init / initrd / initramfs code v2"
 
-> 
-> > What happens if you boot with my troublesome patch with this in
-> > your
-> > device tree? (insert it at the bottom of sdm845-beryllium.dts)
-> > 
-> > &soc {
-> >         dma-ranges = <0 0 0 0 0x1 0>;
-> > };
-> > 
-> 
-> Device still doesn't boot up to adb shell.
+series.
 
-Let's get a bigger hammer, I'm just looking for clues here. Can you
-apply this and provide the dmesg output.
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 6bc74a2d5127..2160676bf488 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -268,6 +268,8 @@ void *dma_alloc_from_pool(struct device *dev, size_t size,
-                        schedule_work(&atomic_pool_work);
-        }
- 
-+       dev_info(dev, "%s: size %lx, phys addr %llx, flags 0x%x\n", __func__, size, phys, flags);
-+
-        return ptr;
- }
-  
+Git tree:
 
-Regards,
-Nicolas
+    git://git.infradead.org/users/hch/misc.git init_path
 
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/init_path
+
+
+Changes since v1:
+ - avoid most core VFS changes
+ - renamed the functions and move them to init/ and devtmpfs
+ - drop a bunch of cleanups that can be submitted independently now
+
+
+Diffstat:
