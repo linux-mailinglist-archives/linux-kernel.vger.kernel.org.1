@@ -2,304 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA03227EF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CA2227EF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgGULa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729826AbgGULaX (ORCPT
+        id S1729745AbgGULbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:31:14 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:37720 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgGULbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:30:23 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0229C0619D9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:30:23 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id q5so20837244wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:30:23 -0700 (PDT)
+        Tue, 21 Jul 2020 07:31:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595331073; x=1626867073;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=m0p35NIssA5AOML2PWxm0js9e1Oongh6EVmxbW5ScaM=;
+  b=kUg35GFqAqd38g11Hu88/oLCO5AkR+1IN1q3F+FfByamPjLqwg4ZqCcl
+   K3ZQubjJgDGxZjamVXokAb0WC2yF8pKS/vNF/rze39JFHPsfAgL8yA4wI
+   2wb6J39uxQBwUnkeU2CaGHjq/lmrHj9wmznyuisF0TPM/KpTcKZyQe0zl
+   f1O/dEjAlQv1sRh/MaPORDww3LciXkfcGNVz0BM2jsdXsBIHEhrwU5Ubz
+   /nKjSVqZCfHKrSkVFUXr1Of5WzOiM8fpdyM3n6DhAgWfQI97Js92ynVDy
+   2v/csNUD4v+Tfy+gNjBwwOqRdypQvIRRWURMG41wfOwpRBKL113aoPLgq
+   w==;
+IronPort-SDR: rGJQAhneiP4UshgKM2y+mLpjqpW0XWJqEjwQ7dF6PNQk70Z7Fyp/kQ2rGuE+rKifz1+OtlAyeb
+ nBpJshpiYXegznq5wlzTlnPCA7mRyoF0e/02JHqAtEvNQz2quP0KwsHJ4CSUXKV1eJDb0HTWl8
+ CfA6AAn77Agspv0e4FDiUzVDTGV8kRfXlDhUR4sVyFUfct+Gz4sB9+9Bpy174WT45hal06Idzo
+ WOeYO1L5t1e8BJdtP2+QMKlnd5smn8YC6PdaATNMRHyKb19Q4abkhyOr084iWrM8gNbTlYgxUw
+ lDs=
+X-IronPort-AV: E=Sophos;i="5.75,378,1589212800"; 
+   d="scan'208";a="252290203"
+Received: from mail-co1nam11lp2172.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.172])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Jul 2020 19:31:11 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R/4pzPaarRDm5kY27ikCGheY4aKh+moqFNEYwjc1IixXapABQ/xw4yYz7HPnxzZselJQ7uv+dBA1qYfbxPoKh8kFxaj6lcs/Lr6QVZ2//Z7MpDRF3BQvW3M2KRhKAM1uUJw+HpadV4IqEXPwbFrPWFfNfO9ZdZe4+8odfGV0H24zn06aVgtG/vQPcpIM3MSPL6Maw9EyP5tXS8KqXnd9n2ZAQEteFFd23GYaOrKtnOH3sJRcBSk/+aHhIbkyN0U02BD49tZLut/jT1m77H78iMbK4x9mLMgXHzNjmX58ZifYRZve7kC/eU+uvFifwlFOdRxLy/lNAPjUzu6YgdzDIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vtV/Ushrn0O+ECod7x/5Y90ynao4a8kGegcG2c0/gY=;
+ b=YwzdKooeaRbKSrTwwrvA+jTX4vqF4qFheFxRuZMKofogotc6M8AN2I6VhbjDuOyZR/wBC+AKiHxPedAoydLmPKXx7mIIbBUeLV09GrEs7byvqaEXfZiRRgd8SBBf6pHBZRfk152IpSFMi4Y/lGX9wk9LtzlQhTUHaPfLAY6qjzr6jMxni7kgL5Nr7l8eSDpJ2MZurLBMOFA1cXMIdAtCShsZtPg90kjSJu3AjSKetYBoQl0WAN625kMOD5Osva8ww8zQtfVy6e4J9v3/nYCb7yl7ZiNhaKCXboEdDVIJJMPymQzItIHhU9dUIG6l+IAE8j5IyWCY12EJq0AdbqZ2Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lDCzyRG0rg1IT+D0XJL6mCguANQqA8rXobavVZvW96Y=;
-        b=ZnnrxRa4si/xuCUdSQINme4yglZDejh1OO0DnrcmRn5h18itVyWY4KRvRkI/WNZ/Ll
-         E/VPLadw2MbujNKNCVgXWitzmPWRAKdk5XTCel3V5qpcX6FGrqmGTmm4p15DMboso/NS
-         FV4C1to8Pfy/qNsRbWTocSYQZzf6KtgCql62o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lDCzyRG0rg1IT+D0XJL6mCguANQqA8rXobavVZvW96Y=;
-        b=jQ7VI3sypQb57SeBq2Nqk8wwAc03uaW8zW9gkEFcfeW9IowxJBZexyrQvs/L+3PQcR
-         eSuQrn1v4CtMjVDpiWFvPYfQKF3G0fVD62jSlrrnoRMsQbAWqfpXMKRqCEOvVQVxlnWP
-         Uv7GmAFe6zF6VvBVthGrVY7HtIUQYjqUcaXC2Bd4SK7VlKyT3hr7N/veRUBwH7ldwo5q
-         gZoPlbkKRfVDIvcDg9cnhRyeTJRXTHAxYLvI6Y9RP/fQ7+fVCgsQtAu7LYoN2Cqe5g6S
-         NVoWJpb68VLqgAstj//P6GsNNc2IvfcEZq00jzV/Q6XQBi1XVCXKFg/qjXPA6PCLAVgN
-         8OtA==
-X-Gm-Message-State: AOAM531UqKAUgO8LEQ3raKLKTkWSdVs/slDD0Njd3D+sp1cZyj2y8K20
-        XiTpfn0qYCOQlK0dSrsNUmKWS43+5uF/16jz8feWLQ==
-X-Google-Smtp-Source: ABdhPJwbrVnmzJ0PnXN6sJ8jR7GyGTkbutQcRFVK+AheZaDBzYwZNbSJrjKJ1Gle1sfdgNlgwcpeGqJ0VnvJV9KH3Mw=
-X-Received: by 2002:a05:6000:1209:: with SMTP id e9mr12809989wrx.404.1595331021943;
- Tue, 21 Jul 2020 04:30:21 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vtV/Ushrn0O+ECod7x/5Y90ynao4a8kGegcG2c0/gY=;
+ b=Bie0L6GXRJeWmmTJpowFGDDYZASwYEzUzVTd4WrcPxCUWNl4ahF4h5e+PiX3hDplajSTCoPd7uffv5TZjp43t3k5B72POzCJQonISc8Wel2UjqFDKJFfJxtwFTfyrblTTe9A0ZGBi31Jx9R81L0t6an6OHaBvRuHjQwEYAWBd3A=
+Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
+ by CY4PR04MB1176.namprd04.prod.outlook.com (2603:10b6:903:ba::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.24; Tue, 21 Jul
+ 2020 11:31:10 +0000
+Received: from CY4PR04MB3751.namprd04.prod.outlook.com
+ ([fe80::d9e5:135e:cfd9:4de0]) by CY4PR04MB3751.namprd04.prod.outlook.com
+ ([fe80::d9e5:135e:cfd9:4de0%7]) with mapi id 15.20.3195.025; Tue, 21 Jul 2020
+ 11:31:10 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Keith Busch <kbusch@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ajay Joshi <Ajay.Joshi@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
+        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Alex Dubov <oakad@yahoo.com>
+Subject: Re: [PATCH 01/10] block: introduce blk_is_valid_logical_block_size
+Thread-Topic: [PATCH 01/10] block: introduce blk_is_valid_logical_block_size
+Thread-Index: AQHWX00wSEUVG8TRcky47gGqEX5tBw==
+Date:   Tue, 21 Jul 2020 11:31:10 +0000
+Message-ID: <CY4PR04MB37515A4950060845E5860755E7780@CY4PR04MB3751.namprd04.prod.outlook.com>
+References: <20200721105239.8270-1-mlevitsk@redhat.com>
+ <20200721105239.8270-2-mlevitsk@redhat.com>
+ <CY4PR04MB37512BDEFD7B977FCD32A10AE7780@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <cef747910431d81524e455e6380df1c610d1884c.camel@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.182.57]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7864c567-2879-4189-aa3c-08d82d699125
+x-ms-traffictypediagnostic: CY4PR04MB1176:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR04MB11765C8145E64D5E655AB266E7780@CY4PR04MB1176.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H+cdYwzlG1gqDWCLOBZk+Qhhqaipm5xADkY2SLvQyB5pcq31wQf424l4v9y3EUjHar5tZB9QnOAvuwgWNH9Sgf81VxR2Buf7diD36P0sXmrA40wj2V3d+BnP2GYaJbqXw2AkD07mcQLICBBdlHwXZObS+96gNyKosXeRnPW4BFr5CNY1dgsuSxt/d/763EJv3Aia2eOGCxESg/rH5rsl3gQOmpyv1eMkRfnh4f9DGtcAkxDsVZghjUD/7g7dCkyrrPdJjeV6AjVFtcSqIc+8/Vka9h+O5+K05PR0SaoXIcTQARYGiv6MWbs+zzj0Az9uO3B0ZXpiBkl4PZ+j6y8ALg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(396003)(376002)(39860400002)(366004)(76116006)(91956017)(7416002)(86362001)(83380400001)(71200400001)(26005)(66556008)(66446008)(5660300002)(52536014)(55016002)(7696005)(478600001)(8936002)(6506007)(110136005)(2906002)(54906003)(53546011)(66476007)(9686003)(33656002)(316002)(64756008)(186003)(8676002)(66946007)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: FETAigmvrFLi+tMDT0laPSrYRNzyL15WFiO3MJu2w1sPjvhc7h5VOduvLKVppmUORkxkYr/Vi3AD3ffTJM7yUsG054zBWF3K5gjcdAxsHv6N6Uxz1lmxP3AWtkDfHUI8eVI4w2ffLmug99RDkmX3k5HXE8N/Oezxsg6Ee/XPTPjyydbHkrINQFGAltm79U2CkL4eHX6MeSKs3izXpKh+fmKRN5ceMH3USHOftthLBe055cBhEijQEe0kGt9ZekpB3jiqmTYtVbLgEyXDHzGNwcytfzrGPvtDmjASZFJgGowoCR1WhnJZD5+mNYUE22Mvxs3phTcqSbyoixQIo1zJo+6/sFjDoCHU5VBaW47cfyJNUkLG3nwPmqUl4SC/H4tk39L50XuAvB5J+fu6hsgWrQXX/rqNTlLg+q+ObYOGUvftoXfSLJUltaYrbOEdM8QBAgI3qqNasZb0BV4mNpFmSpStSCR0O2QNdLq1U1RZcpT8pHbv/Xmy9aZuItQfJRaU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200717120207.3471030-1-cychiang@chromium.org> <CAD=FV=XFayyvT-b9C3f4pXNkboH7kb7ikyi9qJxmNvowOfkjqQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=XFayyvT-b9C3f4pXNkboH7kb7ikyi9qJxmNvowOfkjqQ@mail.gmail.com>
-From:   Cheng-yi Chiang <cychiang@chromium.org>
-Date:   Tue, 21 Jul 2020 19:29:55 +0800
-Message-ID: <CAFv8NwLpVCy4CY8_h0qd7aAEPmaKa3gQYmA3sT1b9fs6fxwtLA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Taniya Das <tdas@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7864c567-2879-4189-aa3c-08d82d699125
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2020 11:31:10.0297
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g3Rd0N9ktRlPFO/TECg2ASTK1CZUx2R6MZpF2OFQGAjh4bqEhlnqapi5PcTtjsKrpBCSjOg53ljVr68j8axx8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB1176
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 11:03 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-
-Thanks for the review!
-
-> On Fri, Jul 17, 2020 at 5:02 AM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
-> >
-> > Add devicetree bindings documentation file for sc7180 sound card.
-> >
-> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > ---
-> >  .../bindings/sound/qcom,sc7180.yaml           | 123 ++++++++++++++++++
-> >  1 file changed, 123 insertions(+)
->
-> A bit of a mechanical review since my audio knowledge is not strong.
->
->
-> >  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> > new file mode 100644
-> > index 000000000000..d60d2880d991
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> > @@ -0,0 +1,123 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
-> > +
-> > +maintainers:
-> > +  - Rohit kumar <rohitkr@codeaurora.org>
-> > +  - Cheng-Yi Chiang <cychiang@chromium.org>
-> > +
-> > +description: |
-> > +  This binding describes the SC7180 sound card, which uses LPASS for audio.
->
-> nit: you don't need the pipe at the end of the "description" line.
-> That means that newlines are important and you don't need it.
->
->
-Thanks for the explanation. Fixed in v2.
-> > +definitions:
->
-> I haven't yet seen much yaml using definitions like this.  It feels
-> like overkill for some of these properties, especially ones that are
-> only ever used once in the "properties:" section and are/or are really
-> simple.
->
->
-ACK. In v2 I only kept dai definition and removed others.
-
-> > +  link-name:
-> > +    description: Indicates dai-link name and PCM stream name.
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    maxItems: 1
-> > +
-> > +  dai:
-> > +    type: object
-> > +    properties:
-> > +      sound-dai:
-> > +        maxItems: 1
-> > +        $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +        description: phandle array of the codec or CPU DAI
-> > +
-> > +    required:
-> > +      - sound-dai
-> > +
-> > +  unidirectional:
-> > +    description: Specify direction of unidirectional dai link.
-> > +                 0 for playback only. 1 for capture only.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
->
-> So if the property isn't there then it's _not_ unidirectional and if
-> it is there then this specifies the direction, right?  I almost wonder
-> if this should just be two boolean properties, like:
->
-> playback-only;
-> capture-only;
->
-> ...but I guess I'd leave it to Rob and/or Mark to say what they liked
-> better.  In any case if you keep it how you have it then you should
-> use yaml to force it to be either 0 or 1 if present.
->
->
-ACK
-Use playback-only and capture-only in v2 instead.
-
-> > +
-> > +properties:
-> > +  compatible:
-> > +    contains:
-> > +      enum:
-> > +        - qcom,sc7180-sndcard
->
-> Just:
->
-> properties:
->   compatible:
->     const: qcom,sc7180-sndcard
->
->
-
-Fixed in v2.
-
->
-> > +  audio-routing:
-> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> > +    description: |-
-> > +      A list of the connections between audio components. Each entry is a
-> > +      pair of strings, the first being the connection's sink, the second
-> > +      being the connection's source.
->
-> You don't need the "|-" after the "description:".  That says newlines
-> are important but strip the newline from the end.
->
-Fixed in v2.
->
-> > +  model:
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    description: User specified audio sound card name
-> > +
-> > +patternProperties:
-> > +  "^dai-link-[0-9]+$":
-> > +    description: |
-> > +      Each subnode represents a dai link. Subnodes of each dai links would be
-> > +      cpu/codec dais.
->
-> From looking at "simple-card.yaml", I'm gonna guess that instead of
-> encoding the link number in the name of the node that you should
-> actually use a unit address and a reg in the subnodes.
-
-Thanks for the explanation. Fixed in v2.
-I think this naming is better, although there is no usage in the
-machine driver for the reg.
-
->
-> ...also, again your description doesn't need the "|" at the end.
-> Maybe <https://yaml-multiline.info/> will be useful to you?
->
->
-
-Thanks for the explanation and the pointer!
-
-> > +    type: object
-> > +
-> > +    properties:
-> > +      link-name:
-> > +        $ref: "#/definitions/link-name"
-> > +
-> > +      unidirectional:
-> > +        $ref: "#/definitions/unidirectional"
-> > +
-> > +      cpu:
-> > +        $ref: "#/definitions/dai"
-> > +
-> > +      codec:
-> > +        $ref: "#/definitions/dai"
-> > +
-> > +    required:
-> > +      - link-name
-> > +      - cpu
-> > +      - codec
-> > +
-> > +    additionalProperties: false
-> > +
-> > +examples:
-> > +
-> > +  - |
-> > +    snd {
->
-> Can you use the full node name "sound" here?
->
->
-Fixed in v2.
-> > +        compatible = "qcom,sc7180-sndcard";
-> > +        model = "sc7180-snd-card";
-> > +
-> > +        pinctrl-names = "default";
-> > +        pinctrl-0 = <&sec_mi2s_active &sec_mi2s_dout_active
-> > +                     &sec_mi2s_ws_active &pri_mi2s_active
-> > +                     &pri_mi2s_dout_active &pri_mi2s_ws_active
-> > +                     &pri_mi2s_din_active &pri_mi2s_mclk_active>;
->
-> I think pinctrl is usually not in the dt examples.
->
-Fixed in v2.
-
-> ...also, shouldn't the mi2s pinctrl be in the i2s nodes, not in the
-> overall sound node?
-
-Yes. Thanks for pointing this out. Fixed in dts file in chromium.
-
->
->
-> > +        audio-routing =
-> > +                    "Headphone Jack", "HPOL",
-> > +                    "Headphone Jack", "HPOR";
-> > +
-> > +        dai-link-0 {
-> > +            link-name = "MultiMedia0";
-> > +            cpu {
-> > +                sound-dai = <&lpass_cpu 0>;
-> > +            };
-> > +
-> > +            codec {
-> > +                sound-dai = <&alc5682 0>;
-> > +            };
-> > +        };
-> > +
-> > +        dai-link-1 {
-> > +            link-name = "MultiMedia1";
-> > +            unidirectional = <0>;
-> > +            cpu {
-> > +                sound-dai = <&lpass_cpu 1>;
-> > +            };
-> > +
-> > +            codec {
-> > +                sound-dai = <&max98357a>;
-> > +            };
-> > +        };
-> > +    };
-> > --
-> > 2.28.0.rc0.105.gf9edc3c819-goog
-> >
+On 2020/07/21 20:09, Maxim Levitsky wrote:=0A=
+> On Tue, 2020-07-21 at 11:05 +0000, Damien Le Moal wrote:=0A=
+>> On 2020/07/21 19:53, Maxim Levitsky wrote:=0A=
+>>> Kernel block layer has never supported logical block=0A=
+>>> sizes less that SECTOR_SIZE nor larger that PAGE_SIZE.=0A=
+>>>=0A=
+>>> Some drivers have runtime configurable block size,=0A=
+>>> so it makes sense to have common helper for that.=0A=
+>>=0A=
+>> ...common helper to check the validity of the logical block size set by =
+the driver.=0A=
+> Agree, will fix.=0A=
+>>=0A=
+>> ("for that" does not refer to a clear action)=0A=
+>>=0A=
+>>> Signed-off-by: Maxim Levitsky  <mlevitsk@redhat.com>=0A=
+>>> ---=0A=
+>>>  block/blk-settings.c   | 18 ++++++++++++++++++=0A=
+>>>  include/linux/blkdev.h |  1 +=0A=
+>>>  2 files changed, 19 insertions(+)=0A=
+>>>=0A=
+>>> diff --git a/block/blk-settings.c b/block/blk-settings.c=0A=
+>>> index 9a2c23cd97007..3c4ef0d00c2bc 100644=0A=
+>>> --- a/block/blk-settings.c=0A=
+>>> +++ b/block/blk-settings.c=0A=
+>>> @@ -311,6 +311,21 @@ void blk_queue_max_segment_size(struct request_que=
+ue *q, unsigned int max_size)=0A=
+>>>  }=0A=
+>>>  EXPORT_SYMBOL(blk_queue_max_segment_size);=0A=
+>>>  =0A=
+>>> +=0A=
+>>> +/**=0A=
+>>> + * blk_check_logical_block_size - check if logical block size is suppo=
+rted=0A=
+>>> + * by the kernel=0A=
+>>> + * @size:  the logical block size, in bytes=0A=
+>>> + *=0A=
+>>> + * Description:=0A=
+>>> + *   This function checks if the block layers supports given block siz=
+e=0A=
+>>> + **/=0A=
+>>> +bool blk_is_valid_logical_block_size(unsigned int size)=0A=
+>>> +{=0A=
+>>> +	return size >=3D SECTOR_SIZE && size <=3D PAGE_SIZE && !is_power_of_2=
+(size);=0A=
+> Note here a typo, made in last minute change which I didn't test.=0A=
+> It should be without '!'=0A=
+=0A=
+Oh ! Indeed. I missed that.=0A=
+=0A=
+> =0A=
+> Best regards,=0A=
+> 	Maxim Levitsky=0A=
+> =0A=
+>>> +}=0A=
+>>> +EXPORT_SYMBOL(blk_is_valid_logical_block_size);=0A=
+>>> +=0A=
+>>>  /**=0A=
+>>>   * blk_queue_logical_block_size - set logical block size for the queue=
+=0A=
+>>>   * @q:  the request queue for the device=0A=
+>>> @@ -323,6 +338,8 @@ EXPORT_SYMBOL(blk_queue_max_segment_size);=0A=
+>>>   **/=0A=
+>>>  void blk_queue_logical_block_size(struct request_queue *q, unsigned in=
+t size)=0A=
+>>>  {=0A=
+>>> +	WARN_ON(!blk_is_valid_logical_block_size(size));=0A=
+>>> +=0A=
+>>>  	q->limits.logical_block_size =3D size;=0A=
+>>>  =0A=
+>>>  	if (q->limits.physical_block_size < size)=0A=
+>>> @@ -330,6 +347,7 @@ void blk_queue_logical_block_size(struct request_qu=
+eue *q, unsigned int size)=0A=
+>>>  =0A=
+>>>  	if (q->limits.io_min < q->limits.physical_block_size)=0A=
+>>>  		q->limits.io_min =3D q->limits.physical_block_size;=0A=
+>>> +=0A=
+>>=0A=
+>> white line change.=0A=
+>>=0A=
+>>>  }=0A=
+>>>  EXPORT_SYMBOL(blk_queue_logical_block_size);=0A=
+>>>  =0A=
+>>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h=0A=
+>>> index 57241417ff2f8..2ed3151397e41 100644=0A=
+>>> --- a/include/linux/blkdev.h=0A=
+>>> +++ b/include/linux/blkdev.h=0A=
+>>> @@ -1099,6 +1099,7 @@ extern void blk_queue_max_write_same_sectors(stru=
+ct request_queue *q,=0A=
+>>>  		unsigned int max_write_same_sectors);=0A=
+>>>  extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q=
+,=0A=
+>>>  		unsigned int max_write_same_sectors);=0A=
+>>> +extern bool blk_is_valid_logical_block_size(unsigned int size);=0A=
+>>>  extern void blk_queue_logical_block_size(struct request_queue *, unsig=
+ned int);=0A=
+>>>  extern void blk_queue_max_zone_append_sectors(struct request_queue *q,=
+=0A=
+>>>  		unsigned int max_zone_append_sectors);=0A=
+>>>=0A=
+>>=0A=
+>>=0A=
+> =0A=
+> =0A=
+> =0A=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
