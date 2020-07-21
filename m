@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9A922773D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785F1227735
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 05:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgGUDuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 23:50:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:19298 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgGUDuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 23:50:24 -0400
-IronPort-SDR: LeaxCREqBpNwJ1VzedhPfGNGNXpsZWDRKicQ8SilmBBUxRB0CQQrdsTOIksa/Ta4lHOGSVU7bH
- FWyOucN2sa2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="137545709"
-X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
-   d="scan'208";a="137545709"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 20:50:23 -0700
-IronPort-SDR: /5XVtmUxVOAjLvfPM7pFQIbvZL+4s8LLGFglLW4KaEq8z7NF1SHp30/MisacreC+3NaIYSZZeA
- G260C8MNucVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
-   d="scan'208";a="310084736"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Jul 2020 20:50:20 -0700
-Date:   Tue, 21 Jul 2020 11:47:13 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        yilun.xu@intel.com
-Subject: Re: [PATCH v2 3/3] mfd: intel-m10-bmc: add Max10 BMC chip support
-  for Intel FPGA PAC
-Message-ID: <20200721034713.GB17091@yilunxu-OptiPlex-7050>
-References: <1594896174-18826-1-git-send-email-yilun.xu@intel.com>
- <1594896174-18826-4-git-send-email-yilun.xu@intel.com>
- <20200717181609.GB905@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717181609.GB905@sirena.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1728519AbgGUDsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 23:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726856AbgGUDsa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Jul 2020 23:48:30 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3BBC0619D5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 20:48:30 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id q70so977503pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 20:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ViVaDO5oP+OL8w0ZrOLdN+B0u9kKdP2UMYXI8VNm2p4=;
+        b=NngNwvlKr8DyPwkp6B8Cc9RgoKa0fgLTu9HvA6JSLDLnjlF+OpYt9A3XH8Qqn1/pLF
+         uD2aAHCoIZMOSnB2bOd/1Q26Y+v9ohVWPhQoJp6CalGkutOcaD4hlhIrCY/q2/SHk9Xf
+         I+fUzvzxM4+u/HEo7Hq+Gwt56qFHh6hIFuShM8tOxmJxbCcwfbZr9TUZnKRaz5D3jIXH
+         +T9mqeldkMRLLJrc0XkdqNbEVooQ/E/FSD/fIpbbSselQX+vU16xBtbYcJ0swrD209dq
+         JATvN7fyE5JZsPxwOcYQKfisTUEv4F7Ky7kjGRxl3g6BL3qBWjikZUfWyXmcWFrNoxOp
+         xRZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ViVaDO5oP+OL8w0ZrOLdN+B0u9kKdP2UMYXI8VNm2p4=;
+        b=lR5pljT7j8Jq8hXKs+AvP10ObyDUU8MTOvCuzA3oExhpB9/0oDYzAHI3QE1k7tN2zI
+         djI4RaxJ+Cy/zORpkPALNZ7UJvJ4UPmzy4qnNO5dnPLlm7zRAUtoOhBQKWA+hpC9DYVb
+         isRKtk6P1YSEbd99OWyK+pDaF2bzgPIEEwIoPGIFV0qxq7MZMHK1MkicUxJbWx1Ppo9e
+         w/KND5Qsi22Wp6fK/6njP5ufnyLT4DwQ49N6avgBws6rNUFAuoVD208KOq2yC5pbhQRP
+         /Yn42m/hWkyy/deDqlbGA95I6N/lkksAG3PzgrX9oppdjRyabElhHhJGzuYKwjK01cen
+         bGCw==
+X-Gm-Message-State: AOAM530zENvx6rBmma+G7Bngt8t7n1ohX+tt3hnajOQ5ItdE1nyGAH/l
+        b2s327bHGjKz83jzUnl4oQmAlZH0YkzJ/dDS
+X-Google-Smtp-Source: ABdhPJxO6ZsGscYpNxobxUu8cxt3GraaIqR1qtuyR+YRtt2KMInQAweh7GiWeUMWYQQ2lo4wu0IdvNNucNnpivqJ
+X-Received: by 2002:a17:902:ac88:: with SMTP id h8mr18410229plr.220.1595303309733;
+ Mon, 20 Jul 2020 20:48:29 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 03:48:15 +0000
+Message-Id: <20200721034815.2045545-1-linchuyuan@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+Subject: [PATCH v3] dt-bindings: hwmon: adm1272: add analog,temp1-enable binding
+From:   Chu Lin <linchuyuan@google.com>
+To:     linux@roeck-us.net, robh+dt@kernel.org, jdelvare@suse.com
+Cc:     belgaied@google.com, jasonling@google.com, linchuyuan@google.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhongqil@google.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 07:16:09PM +0100, Mark Brown wrote:
-> On Thu, Jul 16, 2020 at 06:42:54PM +0800, Xu Yilun wrote:
-> 
-> > +static const struct spi_device_id m10bmc_spi_id[] = {
-> > +	{ "m10-n3000", M10_N3000 },
-> > +	{ }
-> > +};
-> > +MODULE_DEVICE_TABLE(spi, m10bmc_spi_id);
-> 
-> > +static struct spi_driver intel_m10bmc_spi_driver = {
-> > +	.driver = {
-> > +		.name = "intel-m10-bmc",
-> > +		.dev_groups = m10bmc_dev_groups,
-> > +	},
-> > +	.probe = intel_m10_bmc_spi_probe,
-> > +	.id_table = m10bmc_spi_id,
-> > +};
-> 
-> > +module_spi_driver(intel_m10bmc_spi_driver);
-> 
-> This device has no ACPI information - how will it be instantiated?
+Problem:
+	adm1272 and adm1278 supports temperature sampling. The
+current way of enabling it requires the user manually unbind the device
+from the driver, flip the temperature sampling control bit and then bind
+the device back to the driver. It would be nice if we can control this in a
+better way by reading the dt.
 
-In our case, The m10-bmc is connected to the intel FPGA (PAC N3000),
-which uses the Device Feature List (DFL) mechanism to enumerate features
-(devices) on FPGA. Each feature in DFL has a feature_id. And for this
-m10-n3000 feature (feature_id = 0xd), it contains a spi-altera & a
-m10-n3000 chip. So the DFL subsystem would help enumerate the info.
+Solution:
+	Introducing device tree binding analog,temp1-enable. If the
+flag is set, flip the temp1_en control bit on probing.
 
-Recently I added the platform data for slave information in spi-altera,
-to support this use case.
+Testing:
+make dt_binding_check
 
-Thanks,
-Yilun
+Signed-off-by: Chu Lin <linchuyuan@google.com>
+---
+ChangeLog v1->v2:
+ - Rename adm1272-adm1278-temp1-en to analog-temperature1-enable
+
+ChangeLog v2->v3:
+ - Rename analog-temperature1-enable analog,temp1-enable
+
+ Documentation/devicetree/bindings/hwmon/adm1275.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/hwmon/adm1275.txt b/Documentation/devicetree/bindings/hwmon/adm1275.txt
+index 1ecd03f3da4d..22ca5a321d5c 100644
+--- a/Documentation/devicetree/bindings/hwmon/adm1275.txt
++++ b/Documentation/devicetree/bindings/hwmon/adm1275.txt
+@@ -15,6 +15,8 @@ Optional properties:
+ 
+ - shunt-resistor-micro-ohms
+ 	Shunt resistor value in micro-Ohm
++- analog,temp1-enable
++	Enable temperature sampling. This is supported on adm1272 and adm1278
+ 
+ Example:
+ 
+@@ -22,4 +24,5 @@ adm1272@10 {
+ 	compatible = "adi,adm1272";
+ 	reg = <0x10>;
+ 	shunt-resistor-micro-ohms = <500>;
++	analog,temp1-enable;
+ };
+-- 
+2.28.0.rc0.105.gf9edc3c819-goog
+
