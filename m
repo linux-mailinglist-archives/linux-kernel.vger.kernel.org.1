@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8CB2286E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EC0228727
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729771AbgGURNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728922AbgGURNS (ORCPT
+        id S1730042AbgGURTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:19:02 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:35316 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgGURTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:13:18 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6782FC0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:13:18 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b92so1984839pjc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=E/evRAxQv9wC1IBTfLSSH1C/LoK52iYqFAGcwxLVcvM=;
-        b=vl1y61irQ6IqN1iXXdBBp6aGkbn7nsuUYwWsR7kbkuwgM+AI+1GwgK6wq9n1UaibBl
-         OJ5u0HKV0wfUOMN2htBwMp1qN9FtsfT25h6sAvVnaSBIr9cP8CQSud5AJCotMd8z/jJj
-         MyEyBMjR53T9MlusrkP1o/y7UirwLkHXzi8NYTZ3FPynDj0UMZ2MJFNjMQeTsQy1q2yA
-         oz98dleZSAJJGjNe/XRok54J4wwlMZwzrfuAhqO4SXm0ugGbuF2o2iAa9i/uk+AHSsij
-         NdsPzWy0UpvxW6qdAif/byOa2sjP+y4WT7AymmvjC4hb5mgZJM16zb4yqRMzKidg+4Fp
-         WybA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=E/evRAxQv9wC1IBTfLSSH1C/LoK52iYqFAGcwxLVcvM=;
-        b=kBJxk2GpIPaQGZ3iAoGSa+QJYACPSsJcOS2ZufVITEWv0UAqLkmWCip70PLroCXVDy
-         nFTGQFIh0Mmha5M1EBSMWp7/epg5V+OCkrcoVF0mZ54PXT2s97HJ4Z8ymAiPlj5OSEJx
-         ZzcXfgG/blZNukFrCohVbuKJH321wRvcNBTD8ln9Kvz8Qt6mEAOcMnAYIJRl6OnxYCY4
-         +dbEyLI6DvdLHTAI9U59nc0Nv7iDqgHtgv6mlqglE3oS3RxCKTrmZ07j4zQOARc49pqW
-         YLu8TQAjY8Mutv1DRjD38bZCcDhCvjhF3ECPchmmw8Z3yriggDguNNTBHK4p4BK23N6J
-         weog==
-X-Gm-Message-State: AOAM532jF7uDhdVIAucu5xurdKM34mgaCrxzcRWrtdpo0H3WOpXG+qRj
-        hikZgoA5qs/B6OUzSygQhbI7vQ==
-X-Google-Smtp-Source: ABdhPJwdOFfbigDBGE8Fvtv0h2GqbL4mnhEqW8RFMW9+XZ5hgHXm4e5NPSNleXYpxdVALCWXwYVfyg==
-X-Received: by 2002:a17:902:8c86:: with SMTP id t6mr23782766plo.41.1595351597828;
-        Tue, 21 Jul 2020 10:13:17 -0700 (PDT)
-Received: from localhost ([2406:7400:73:d7b6:d055:3e56:d1e4:ce99])
-        by smtp.gmail.com with ESMTPSA id j3sm20361061pfe.102.2020.07.21.10.13.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 10:13:16 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 22:43:11 +0530
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
-Message-ID: <20200721171311.xlt256fq2qmw4e6p@pesu.pes.edu>
+        Tue, 21 Jul 2020 13:19:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1595351941; x=1626887941;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ezYFKCqH/5hy28icqYteFOzwEiGJTFlqWA/30ubs58w=;
+  b=Tf0eOfWTAe+nXgReySOrJxOjdKZcYw1yy9iUbWuln0iZ1VdCaGpYeIDB
+   rYw1QfdZenhJncXp24jCa78baW2vvGqpNqo+xiyDpMEq0KtQyovUb/iDE
+   TnzN+jXrLzpue05zWVoYLZv0hGCAqAGrTLyyuvf1fwjRx5WT1X4kDxFhn
+   CAbpoMh/tC7vEuHM7CWqdGajHNwQmmn09lCHBCS2MSfuXLwu3UXFT2YZ1
+   O6fJMIdkdoM46g81ROeRDMZ3Uw4yU3eLyut5fe1YywycOz2oLHQ/4q8p4
+   XKOhiP346LdxWpEmSV3gIlMR9y+L7/u0t4kcWzF+6UGc8GGc+v6dtlg0i
+   w==;
+IronPort-SDR: JSYWO+OjTE4pFjk0/3Pe4owm1/AghDIxxkkQmcAKbcTKh0Ls39YkO08aG1JAwt1CE0rLcrpVWz
+ XfOi3+3Hi8S7fi2VqbcbZDl6UYPP6wvWlwdRITeTFSoafBcHvyoyHKGgii/PWZgxsT1Oa9brEu
+ 8/rgCbBoZ/+YaCKcPmH4J8giOhv1xuZJRGMZlUUyopFn7wHiTWcYNnNV6TvsLYbXIeG9uzUf+B
+ zQaAOZKih9MSfhkAP8ZNCaCbW1ZsiNXcjsC606LXlGHLoE502JDYrAcSM4rRzfw7wZbmsKJrk0
+ EMM=
+X-IronPort-AV: E=Sophos;i="5.75,379,1589266800"; 
+   d="scan'208";a="82697502"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jul 2020 10:19:00 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 21 Jul 2020 10:18:23 -0700
+Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 21 Jul 2020 10:17:34 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <andrew@lunn.ch>,
+        <f.fainelli@gmail.com>, <robh+dt@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH net-next v2 3/7] net: macb: parse PHY nodes found under an MDIO node
+Date:   Tue, 21 Jul 2020 20:13:12 +0300
+Message-ID: <20200721171316.1427582-4-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200721171316.1427582-1-codrin.ciubotariu@microchip.com>
+References: <20200721171316.1427582-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pjqqqiiuizvpdnsc"
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The MACB embeds an MDIO bus controller. For this reason, the PHY nodes
+were represented as sub-nodes in the MACB node. Generally, the
+Ethernet controller is different than the MDIO controller, so the PHYs
+are probed by a separate MDIO driver. Since adding the PHY nodes directly
+under the ETH node became deprecated, we adjust the MACB driver to look
+for an MDIO node and register the subnode MDIO devices.
 
---pjqqqiiuizvpdnsc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-prevent a bad shift operation by verifying that
-sport->rx_dma_rng_buf_len is non zero.
-
-Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- drivers/tty/serial/fsl_lpuart.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuar=
-t.c
-index 7ca642249224..0cc64279cd2d 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1168,7 +1168,8 @@ static inline int lpuart_start_rx_dma(struct lpuart_p=
-ort *sport)
- 	 * 10ms at any baud rate.
- 	 */
- 	sport->rx_dma_rng_buf_len =3D (DMA_RX_TIMEOUT * baud /  bits / 1000) * 2;
--	sport->rx_dma_rng_buf_len =3D (1 << (fls(sport->rx_dma_rng_buf_len) - 1));
-+	if (sport->rx_dma_rng_buf_len !=3D 0)
-+		sport->rx_dma_rng_buf_len =3D (1 << (fls(sport->rx_dma_rng_buf_len) - 1)=
-);
- 	if (sport->rx_dma_rng_buf_len < 16)
- 		sport->rx_dma_rng_buf_len =3D 16;
-=20
---=20
-2.20.1
+Changes in v2:
+ - readded newline removed by mistake;
 
+ drivers/net/ethernet/cadence/macb_main.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---pjqqqiiuizvpdnsc
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 89fe7af5e408..b25c64b45148 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -740,10 +740,20 @@ static int macb_mii_probe(struct net_device *dev)
+ static int macb_mdiobus_register(struct macb *bp)
+ {
+ 	struct device_node *child, *np = bp->pdev->dev.of_node;
++	struct device_node *mdio_node;
++	int ret;
+ 
+ 	if (of_phy_is_fixed_link(np))
+ 		return mdiobus_register(bp->mii_bus);
+ 
++	/* if an MDIO node is present, it should contain the PHY nodes */
++	mdio_node = of_get_child_by_name(np, "mdio");
++	if (mdio_node) {
++		ret = of_mdiobus_register(bp->mii_bus, mdio_node);
++		of_node_put(mdio_node);
++		return ret;
++	}
++
+ 	/* Only create the PHY from the device tree if at least one PHY is
+ 	 * described. Otherwise scan the entire MDIO bus. We do this to support
+ 	 * old device tree that did not follow the best practices and did not
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEIF+jd5Z5uS7xKTfpQZdt+T1HgiEFAl8XIicACgkQQZdt+T1H
-giGZOgv+L8g4Jh6L37Ro8HsApiPYnD387kVOAC6akZXRFY/zZJiRUaG252xkBX2e
-3EJFeBipsM4mm/+z3ABf+53dsqXdD0BctquGN+vopi990RUtsGzIIL9fY9AIiO5f
-VWUl7HdJ12Sa3GzTWXs1BWnRJePAe6gOthS89dJSD63NttrOgflsKUtyybXRcLbf
-TJt2WyOJ6OTPRUVXkK6KLrkd622+ggfW48Rk3SSTkgJVDBBatAxPNIzTy8WQJm2K
-J5pGLOmh9qauLHtbzpM1WLwXFD2yIMwPeiztWNTnqKlV5bGbDEm9GWZqsWaBje3L
-2tK3y0ozsoZyGcat8O0Tc6zupwgpriDqS6Vkf9J3n0Ik/PkPwzkn9O5UOwnT3iJW
-V7BlOARoAMru8J3vlSESGbgk44z4V4Ob7cae4pl019F3EV8z6i9vexRs9e8Cq/zU
-4GLvLa/hvX9WqNPRZfuJYSWtflCjw8N9U5A8nlQeNWbouzy/2K2SN3aDf9cbLm3y
-a71rzsqk
-=7KTV
------END PGP SIGNATURE-----
-
---pjqqqiiuizvpdnsc--
