@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F742286E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9ED2286F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 19:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730305AbgGUROV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 13:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729951AbgGUROT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:14:19 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F94BC0619DA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:14:19 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id t11so11016843pfq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 10:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=Pf9387P6pQdIdEtt81PR6nfU9ZoFkF+G5kNWohKHeqo=;
-        b=UVkWJ6lS4iOeLNd8CBsIehrgJ94bCAMS6q7pQ46939s2553llSYJyO5E6HDitxAeX4
-         qfEuxj70/BEtHyHrTTWLsn4DsR8C8pVGXrkDZRux0j59Sy4NqRXpL+4Z1CWXcRGJVV6y
-         kKKJ7AfnpX1EpnFbC83wv78jdiEdP9Mr++Vji9pWRRDDoWN9t93AJuLO1lILyPEoXOAc
-         N0rph+BKWwaCPdfrdB/czzgQJVvSxxpJi+5Ya9rkiA7pnjvpQhPzV7bzWm3JorR8HGRI
-         3xrkyyqCrUUrKqG7EKvUePPJugeUey8c2ia1Vk+szG/2l+kd8vOfgPxWV9yEULZFnW3C
-         9rFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=Pf9387P6pQdIdEtt81PR6nfU9ZoFkF+G5kNWohKHeqo=;
-        b=iM90lN+//a5NMyPxFUfr2P/yVKaIC91zgbTXH4Y6rklQrX17WKwsbTQcsqMpApwOdC
-         I74Ke/1Y5qHTbItvfPV1L9w9aaVJ6ZdezGfSyFCuhE/RtLWLH/zUxRFF0BGqT7wijbB4
-         CSX0HXLIHZ8pTvBi0niBaDQyCzsDhQrD/++FzWb59AEL/aFVo4zcjhzcBjx0rexbHAjE
-         N2iiEN5aQRoRWnlkAFbP24+DyNZ7YY4ZEJQFsCQyigskCzuoWHEKmn12FzSLlxvpuVoj
-         mj8RxZv8jPDUdPypEajrv9PKGVjZzfTCePv5mWeSRyncAfKmXkV1UqeDjLd1zaFfXBO4
-         T1bw==
-X-Gm-Message-State: AOAM5327WhihoiSoslzoeDN5oE7aUsmYve5lRwTVn3F2u3nwnqslCqhB
-        M+/ak5pcYSIBsaynKJC7Kvlmpg==
-X-Google-Smtp-Source: ABdhPJx+igMiGHQSrnF0vS4TSQeTCbzR3biiWzZ7JbPKt7DqbIPWTGkovOoFDaoP9+T7ibJjtcpg3w==
-X-Received: by 2002:a63:7f5d:: with SMTP id p29mr23273143pgn.259.1595351658706;
-        Tue, 21 Jul 2020 10:14:18 -0700 (PDT)
-Received: from localhost ([2406:7400:73:d7b6:d055:3e56:d1e4:ce99])
-        by smtp.gmail.com with ESMTPSA id z25sm20953188pfg.140.2020.07.21.10.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 10:14:17 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 22:44:12 +0530
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] tty: serial: fsl_lpuart.c: fix a parentheses coding
- style issue
-Message-ID: <20200721171412.xfpzswsrjn7savco@pesu.pes.edu>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a6njxhymkk2m2bqq"
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+        id S1730593AbgGUROr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 13:14:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31410 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730015AbgGUROp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 13:14:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595351684; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=wHZHpcJq6IQCRL0ELXQS25dwFzpXsMpPaN59eDhrOwE=; b=Gwye8wk0x5sURVZ6grSGM2O8brJ1Bd9bIg0990I6esY5OiyhDT9+C5E0xK5JJx0SgYvpdN6I
+ IBvrvhcObv69LzeiLCeqoGet9cahhu4DJLSL2vAwePq5Dvy/REPMFpLdqygfDAByrgzNsOTX
+ 5YX2LzOoTBrYW8fcI8phh4yEQUs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f172283ed710aec6255b503 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Jul 2020 17:14:43
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2BCDCC433A1; Tue, 21 Jul 2020 17:14:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8E2A5C433CB;
+        Tue, 21 Jul 2020 17:14:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8E2A5C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     ath10k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvalo@codeaurora.org, johannes@sipsolutions.net,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        dianders@chromium.org, evgreen@chromium.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [RFC 0/7] Add support to process rx packets in thread
+Date:   Tue, 21 Jul 2020 22:44:19 +0530
+Message-Id: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+NAPI gets scheduled on the CPU core which got the
+interrupt. The linux scheduler cannot move it to a
+different core, even if the CPU on which NAPI is running
+is heavily loaded. This can lead to degraded wifi
+performance when running traffic at peak data rates.
 
---a6njxhymkk2m2bqq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A thread on the other hand can be moved to different
+CPU cores, if the one on which its running is heavily
+loaded. During high incoming data traffic, this gives
+better performance, since the thread can be moved to a
+less loaded or sometimes even a more powerful CPU core
+to account for the required CPU performance in order
+to process the incoming packets.
 
-add parentheses to expression to improve
-code readability.
+This patch series adds the support to use a high priority
+thread to process the incoming packets, as opposed to
+everything being done in NAPI context.
 
-Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+The rx thread can be enabled by using a module parameter
+when loading the ath10k_snoc module.
+
 ---
- drivers/tty/serial/fsl_lpuart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch series is dependent on the below patch series
+https://patchwork.kernel.org/project/ath10k/list/?series=315759
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuar=
-t.c
-index 0cc64279cd2d..3108f5ab57fa 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1167,7 +1167,7 @@ static inline int lpuart_start_rx_dma(struct lpuart_p=
-ort *sport)
- 	 * Calculate length of one DMA buffer size to keep latency below
- 	 * 10ms at any baud rate.
- 	 */
--	sport->rx_dma_rng_buf_len =3D (DMA_RX_TIMEOUT * baud /  bits / 1000) * 2;
-+	sport->rx_dma_rng_buf_len =3D (((DMA_RX_TIMEOUT * baud) / bits) / 1000) *=
- 2;
- 	if (sport->rx_dma_rng_buf_len !=3D 0)
- 		sport->rx_dma_rng_buf_len =3D (1 << (fls(sport->rx_dma_rng_buf_len) - 1)=
-);
- 	if (sport->rx_dma_rng_buf_len < 16)
---=20
-2.20.1
+Rakesh Pillai (7):
+  mac80211: Add check for napi handle before WARN_ON
+  ath10k: Add support to process rx packet in thread
+  ath10k: Add module param to enable rx thread
+  ath10k: Do not exhaust budget on process tx completion
+  ath10k: Handle the rx packet processing in thread
+  ath10k: Add deliver to stack from thread context
+  ath10k: Handle rx thread suspend and resume
 
+ drivers/net/wireless/ath/ath10k/core.c   |  64 +++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h   |  33 ++++++++++
+ drivers/net/wireless/ath/ath10k/htt.h    |   2 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  66 ++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/snoc.c   | 105 ++++++++++++++++++++++++++++++-
+ net/mac80211/rx.c                        |   2 +-
+ 6 files changed, 253 insertions(+), 19 deletions(-)
 
---a6njxhymkk2m2bqq
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEIF+jd5Z5uS7xKTfpQZdt+T1HgiEFAl8XImQACgkQQZdt+T1H
-giERlQv/S2icA1m53XUpMbtlbFJcZrJOA4QwY8aR5B7zHmpZglXUk4JXNwTQGCme
-aGRKGFGVeD3oGpYRK+wF0LjfuXQQwZ9DZ00z6mf7uAf3a5CQp/pGGOAUdOkEKnfY
-TZX9FbREERoiF7bMuVyH2yDu7kCbsXPRzRMqpeQorIHOTFoQqX1WUa+e3GgVdlWc
-lvcGQeGHLlzCEZcQTktr6zlQlGeyeRw37VyOc24Bq9mgbBaZnk4Mxo/R8YxGrRrF
-5kH7Xu2mxrQ/eUuX9O44xr5MBgMMlbHixclzAxUfGb9wZai/LPrJPi2ZbbgTbB2G
-WlpJJ/PH7e19W43IxiF497l738xGOag2yFe4R7lMfHJW2GkVW3L/Fn23XUQYAKuq
-bqohITqc0sD/gs3ALeKPrk9Jx1Fj20rD7x/tGJV79IYB80cBiTT8U0dh8KcIZk4a
-bMMILiwpydGQ7o5nBX2NVNtmS7UFdfgYfIYZe+MnaIe9NpnGt7wz9zF6pfcsCzeD
-ViqUR9gu
-=01qZ
------END PGP SIGNATURE-----
-
---a6njxhymkk2m2bqq--
