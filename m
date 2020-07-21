@@ -2,143 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B61227A0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE6E227A0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 10:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgGUIBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 04:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        id S1728476AbgGUIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 04:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgGUIBD (ORCPT
+        with ESMTP id S1726919AbgGUIBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 04:01:03 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864E2C0619D8;
-        Tue, 21 Jul 2020 01:01:03 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 207so10363311pfu.3;
-        Tue, 21 Jul 2020 01:01:03 -0700 (PDT)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E201C0619D7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:01:03 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c80so1863833wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 01:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FKztgh8Zky/8/rtOQRmpObjZaYTW88VeKPdEo6E56Zs=;
-        b=NVJa/eVdnXncXoZ/3vDBSMzZJvOHbsuk+Sj56FDAS5xrQoD08c5yVOuKNaylUAdI2D
-         6iu2gn0/Um54HkxD8aMFvcUNKvmzBqT4cjNx+gKlpVEK8twYFLtaGeBCxxK9dHkCGPZq
-         XJ6sNfmD3xGnPzVaj0DuOv4KpCUqUPGdKnhREI9CsTGJmWKr2tNgVdckZe3ZoRIvC0KF
-         mDr9iN4N9t21vAgSvmdpIBsalhT12FCFCMMtCx7rNRYh4YvoI5C5olGAkYP9M+g18dOp
-         Cx17859vzfonmY4ZWm1hI4LyUQzlQ+r7R8HaUMgM9yKWa//bcfESPP3xZnE57eHWxu14
-         ghKQ==
+        bh=Xe1xj2UJLfRzN8/gTK/6++OrG88WTatlRMlGCyzzmm0=;
+        b=zsvHmLfjJ3qIlSGraoav1lLUCKJ/WL8hivFRPMZNBQHsH2XPKEh2SAQzhDCIpwiats
+         fhjY+KetWr8J33BQn6NZHAg3Y+MFvouR4bFQir9X3ZmFALluilzLXqoXzlXbHA8zsWpB
+         Qwou99IYa9UBi509MshAlJ0GqkURcmdzNgsK6216LL03oMhW52Tc1WFpdUAE3HgrmOwi
+         IEbV1Zc1MQjLOSNutwmxJsoU7CNK38wPZXKz1lBOd81g6NGj9mydvIWrHiBeg3DLWd17
+         P9+ttlijTMJJeJNmHKoh3TbEEy+/cQe2LRixU9JTBkbl91gjmY9mS4f58ehOhhJzkyZq
+         leCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FKztgh8Zky/8/rtOQRmpObjZaYTW88VeKPdEo6E56Zs=;
-        b=Ll1rCkdPd9XLxDJv43eknrOS3kiCYXIh/rUPUAnvksfDD0ZTeS5KjBZq0ZYwamdVd2
-         y1IedXLRZ359b5sBFz8cz+P5Gxu9EkNNhdVHEXikmC2Hrc7jkIJ9Fl+XpPVHTXLQh39u
-         MyQ67YIlzdp/fUkx9yi2CpNR2LvIRk/2wQVXzgMPqC84h66nJ/0vUsgVLaIaeDNj5iIZ
-         60UBHZuEjfD7JdO/jNRKNwxwBpxlzAz2iuYhZxs1h6qIxM1C5R+pGp/+uS2B3mHXWxT4
-         6+ha9EN/RYsa6ogHST51Gu1saRTHbzf9yE8j5kbXCLtP63D2W+WgLKmNCpRWReKJUAtm
-         Ei6A==
-X-Gm-Message-State: AOAM53093pUxuoDr/Q0FLipe+DDTDakt8t96XPMfmkZGy3DaEqWkGvBQ
-        t0TjLRO7g62+m67ZsTEIHoI=
-X-Google-Smtp-Source: ABdhPJw6K7r/HonYmgqw9HnF4JWA+2Yrlp3PlFPTCgT3A0Rf8Dj0K6UnTTAfMcQKwDNRW9g5N4ZcPQ==
-X-Received: by 2002:a62:7c97:: with SMTP id x145mr24122060pfc.80.1595318462971;
-        Tue, 21 Jul 2020 01:01:02 -0700 (PDT)
-Received: from localhost ([2601:647:5800:8d47:9eef:d5ff:fefc:64ae])
-        by smtp.gmail.com with ESMTPSA id a2sm19500731pfg.120.2020.07.21.01.01.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jul 2020 01:01:02 -0700 (PDT)
-From:   Brian Norris <computersforpeace@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, <linux-kernel@vger.kernel.org>,
-        Brian Norris <computersforpeace@gmail.com>
-Subject: [RFC PATCH] firmware: qcom_scm: disable SDI at boot
-Date:   Tue, 21 Jul 2020 01:00:54 -0700
-Message-Id: <20200721080054.2803881-1-computersforpeace@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Xe1xj2UJLfRzN8/gTK/6++OrG88WTatlRMlGCyzzmm0=;
+        b=KYXf9Kau9IwxYefsfRwxdkcs/PRJ/n1d9h0eEzGplBx8+hzokfcc4t+DM9qNMzS4aB
+         dA4eIKb94AHTbQVGO1Siq8F9uTeGTpxXWpcYBW71yysXscas7F3WEdzW+s+M6E6lXEvX
+         XarWiY2wILJBgUG78SWWuyhCaAzmdESqc5l8g3IQvPnKNlqq5Cuk4WgUPouxrljpSnN/
+         lxNX09BuEE0onZ7gpQRx5KvFTNBGW3Q2lIwzPFcBccgbqvHCr7Bke4qhDsZLT7MRdzWe
+         5KnMo0v6kqZbOVZpYxchkOgqfKqE4dKGeKoHUjrNdh1Hg/nSNnkNYDrqzwJEcrf5cwz+
+         7i/w==
+X-Gm-Message-State: AOAM530UAgZ5GwCGteoJlM+o58XrTCC+gBldTb/Ee06r/tgPcNE4uafT
+        MhYOC0bzsmIw6T6jcsqj9f3/Pg==
+X-Google-Smtp-Source: ABdhPJxIG3rVQw6vw0k3oB8t3+wUKdYuDLOTbrVMTvJW5oh4CXFN4wQ+Swr+xv7YFmD05HcBhlsuEQ==
+X-Received: by 2002:a1c:48c5:: with SMTP id v188mr2796746wma.58.1595318461729;
+        Tue, 21 Jul 2020 01:01:01 -0700 (PDT)
+Received: from [10.1.2.12] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id 26sm2294065wmj.25.2020.07.21.01.01.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jul 2020 01:01:00 -0700 (PDT)
+Subject: Re: [PATCH v2 05/14] spi: spi-meson-spifc: Fix misdocumenting of
+ 'dev' in 'struct meson_spifc'
+To:     Lee Jones <lee.jones@linaro.org>, broonie@kernel.org
+Cc:     Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, Beniamino Galvani <b.galvani@gmail.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200717135424.2442271-1-lee.jones@linaro.org>
+ <20200717135424.2442271-6-lee.jones@linaro.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <6655a485-fc5a-690e-b752-59f12d545cc0@baylibre.com>
+Date:   Tue, 21 Jul 2020 10:00:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200717135424.2442271-6-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*** Disclaimer: I know extremely little about Qualcomm's undocumented
-SMC API. ***
+On 17/07/2020 15:54, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/spi/spi-meson-spifc.c:80: warning: Function parameter or member 'dev' not described in 'meson_spifc'
+> 
+> Cc: Kevin Hilman <khilman@baylibre.com>
+> Cc: Beniamino Galvani <b.galvani@gmail.com>
+> Cc: linux-amlogic@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/spi/spi-meson-spifc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-meson-spifc.c b/drivers/spi/spi-meson-spifc.c
+> index c7b0399802913..8eca6f24cb799 100644
+> --- a/drivers/spi/spi-meson-spifc.c
+> +++ b/drivers/spi/spi-meson-spifc.c
+> @@ -70,7 +70,7 @@
+>   * @master:	the SPI master
+>   * @regmap:	regmap for device registers
+>   * @clk:	input clock of the built-in baud rate generator
+> - * @device:	the device structure
+> + * @dev:	the device structure
+>   */
+>  struct meson_spifc {
+>  	struct spi_master *master;
+> 
 
-I'm trying to get upstream support for an IPQ4019 device I have, and by
-default, warm boot does not work properly -- it appears to trap into
-TrustZone. I find that the downstream/vendor kernel makes this call at
-boot, with notes about the watchdog and SDI configuration. It appears
-some of this is leftover from when they had download-mode enabled, as
-well as some other debug features, and they didn't get completely turned
-off in the production bootloader. But I reall can't tell that well; I'm
-just going off the minimal source code and git logs.
-
-Because this is so undocumented, I can't tell what the right thing to do
-is -- should this go behind a DT property? Should I apply it only for
-ipq4019? Is there a better way to describe and document the bits used in
-this command?
-
-If it helps, I can try to shop around for some testing on other systems.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/firmware/qcom_scm.c | 20 ++++++++++++++++++++
- drivers/firmware/qcom_scm.h |  1 +
- 2 files changed, 21 insertions(+)
-
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 0e7233a20f34..70c46f1668d1 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -394,6 +394,20 @@ static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
- 	return qcom_scm_call(__scm->dev, &desc, NULL);
- }
- 
-+static int __qcom_scm_disable_sdi(struct device *dev)
-+{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_BOOT,
-+		.cmd = QCOM_SCM_BOOT_CONFIG_SDI,
-+		.arginfo = QCOM_SCM_ARGS(2),
-+		.args[0] = 1  /* 1: disable watchdog debug */,
-+		.args[1] = 0  /* 0: disable SDI */,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+	};
-+
-+	return qcom_scm_call(__scm->dev, &desc, NULL);
-+}
-+
- static void qcom_scm_set_download_mode(bool enable)
- {
- 	bool avail;
-@@ -1122,6 +1136,12 @@ static int qcom_scm_probe(struct platform_device *pdev)
- 	if (download_mode)
- 		qcom_scm_set_download_mode(true);
- 
-+	/*
-+	 * Some bootloaders leave this enabled by default, which prevents
-+	 * normal warm reboot.
-+	 */
-+	__qcom_scm_disable_sdi(__scm->dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-index d9ed670da222..39c3dc0dfc50 100644
---- a/drivers/firmware/qcom_scm.h
-+++ b/drivers/firmware/qcom_scm.h
-@@ -74,6 +74,7 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- #define QCOM_SCM_SVC_BOOT		0x01
- #define QCOM_SCM_BOOT_SET_ADDR		0x01
- #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
-+#define QCOM_SCM_BOOT_CONFIG_SDI	0x09
- #define QCOM_SCM_BOOT_SET_DLOAD_MODE	0x10
- #define QCOM_SCM_BOOT_SET_REMOTE_STATE	0x0a
- #define QCOM_SCM_FLUSH_FLAG_MASK	0x3
--- 
-2.27.0
-
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
