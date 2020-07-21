@@ -2,80 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058022281C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58922281DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbgGUORx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        id S1729019AbgGUOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgGUORw (ORCPT
+        with ESMTP id S1726412AbgGUOTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:17:52 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8216CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:17:52 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id lx13so21833836ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 07:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=92B9Cr8GU+Q5NgJRD18dkOQr+Iz15oRaXg+fWztZRyA=;
-        b=bJZ16ap+pQMf7ty/juukMn4SocAmm/ff1ygm7N0ZhctiTX7Ns9EKRvJFGiWSYr6Fae
-         MsLGWGopirywHezMYylNS3uCobm9k23Lu1ehcGBHC7UAgBWqRN2J7FceziM5zoLy3S5G
-         nffshkNWk9HRgb8P+dihyPwG9xY0ajeCk1dpQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=92B9Cr8GU+Q5NgJRD18dkOQr+Iz15oRaXg+fWztZRyA=;
-        b=hGmIstVhigfpHk6EmwAYaZTeIcnCvwVU1f2TY4CTbtKz4orttqsulhVRn4+2I2kEUC
-         ipgJ+MQS4KIq1DBcFxstb6uD34dMX8olGaoXJCA64LruVKTGd3r4ftlxUNM+uwe3yQ7r
-         ZSkrVuwM8TgpbyhPIfIbawZws2Adl/DIqcqzWgomaHS+HGDNH1eCFVE1WQ6VHZafYrmB
-         Xeived83Rtys6ZzyBU3G7ccDsnrIW7EJN7RL6clecEXB43j57UgfOUYsIj2g5xcSVPTY
-         0jZzEw5P4goIg1v3NRuEiy42k2Kj1DEehFR2HFqLQ7CAeI1bDo0ItWYo+QY9XCOk2VGf
-         Qc/Q==
-X-Gm-Message-State: AOAM5330hX7n/afY4bW5X1WDDY7jVAwMIiwvHojDrn07zHDW/crrQgiQ
-        kCo0PB+GyZ7X0H5RfYsjTbUW86sdlH+hQg==
-X-Google-Smtp-Source: ABdhPJyccHcLc9w0tbdjL2+q9etH/eT/z0pNkYnnAk8OzzAk4DWaXSVGwWP1HddfI+2gNfO3RmPNWg==
-X-Received: by 2002:a17:906:f907:: with SMTP id lc7mr20435966ejb.143.1595341070869;
-        Tue, 21 Jul 2020 07:17:50 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:180::1:70f9])
-        by smtp.gmail.com with ESMTPSA id cw14sm17469727edb.88.2020.07.21.07.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:17:50 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 15:17:49 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-Message-ID: <20200721141749.GA742741@chrisdown.name>
-References: <20200721063258.17140-1-mhocko@kernel.org>
+        Tue, 21 Jul 2020 10:19:09 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D9BC0619DA;
+        Tue, 21 Jul 2020 07:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eXpfk1ooDp9WmjVCuYrQskrwc9qrONU71/gOTT/8jIs=; b=dAhgFPlVD3G9z+H8gQSZ6CNDD4
+        a8tKY26rktKszNHdh/s+554HFR+4m5iwgWaKIE7O5QOte4l/YH+BVXk5K7QK8YI55DdmlEwLq+Z0e
+        19IADhFrEzHC6r96axPMo7w3lSfBms3Ol0hj0NleZYid91Wa7Gktc7027grlpWebsxytQJy0m+eSg
+        5WrUr1e1KSA/9BL70cf0m8zt1f4b9PiNG8XFazPjcxpErYTHJNO+8XnpMrK4SzbIHcZr3Qdeu7s08
+        YLTNxTxJdbQN7z1vfp+Xt6Cp+hl/D5voGSuDkCb3mrku4E+ihNkLPogOs575xSW/aBVN+Q7vogpt1
+        +7z3X0IA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxt6j-0000fh-HN; Tue, 21 Jul 2020 14:19:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B0323060EF;
+        Tue, 21 Jul 2020 16:18:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15E50203B8783; Tue, 21 Jul 2020 16:18:59 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 16:18:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     paulmck@kernel.org, will@kernel.org, arnd@arndb.de,
+        mark.rutland@arm.com, dvyukov@google.com, glider@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH 8/8] locking/atomics: Use read-write instrumentation for
+ atomic RMWs
+Message-ID: <20200721141859.GC10769@hirez.programming.kicks-ass.net>
+References: <20200721103016.3287832-1-elver@google.com>
+ <20200721103016.3287832-9-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721063258.17140-1-mhocko@kernel.org>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20200721103016.3287832-9-elver@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I understand the pragmatic considerations here, but I'm quite concerned about 
-the maintainability and long-term ability to reason about a patch like this.  
-For example, how do we know when this patch is safe to remove? Also, what other 
-precedent does this set for us covering for poor userspace behaviour?
+On Tue, Jul 21, 2020 at 12:30:16PM +0200, Marco Elver wrote:
 
-Speaking as a systemd maintainer, if udev could be doing something better on 
-these machines, we'd be more than receptive to help fix it. In general I am 
-against explicit watchdog tweaking here because a.) there's potential to mask 
-other problems, and b.) it seems like the kind of one-off trivia nobody is 
-going to remember exists when doing complex debugging in future.
+> diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+> index 6afadf73da17..5cdcce703660 100755
+> --- a/scripts/atomic/gen-atomic-instrumented.sh
+> +++ b/scripts/atomic/gen-atomic-instrumented.sh
+> @@ -5,9 +5,10 @@ ATOMICDIR=$(dirname $0)
+>  
+>  . ${ATOMICDIR}/atomic-tbl.sh
+>  
+> -#gen_param_check(arg)
+> +#gen_param_check(meta, arg)
+>  gen_param_check()
+>  {
+> +	local meta="$1"; shift
+>  	local arg="$1"; shift
+>  	local type="${arg%%:*}"
+>  	local name="$(gen_param_name "${arg}")"
+> @@ -17,17 +18,24 @@ gen_param_check()
+>  	i) return;;
+>  	esac
+>  
+> -	# We don't write to constant parameters
+> -	[ ${type#c} != ${type} ] && rw="read"
+> +	if [ ${type#c} != ${type} ]; then
+> +		# We don't write to constant parameters
+> +		rw="read"
+> +	elif [ "${meta}" != "s" ]; then
+> +		# Atomic RMW
+> +		rw="read_write"
+> +	fi
 
-Is there anything preventing this being remedied in udev, instead of the 
-kernel?
+If we have meta, should we then not be consistent and use it for read
+too? Mark?
+
+>  
+>  	printf "\tinstrument_atomic_${rw}(${name}, sizeof(*${name}));\n"
+>  }
+>  
+> -#gen_param_check(arg...)
+> +#gen_params_checks(meta, arg...)
+>  gen_params_checks()
+>  {
+> +	local meta="$1"; shift
+> +
+>  	while [ "$#" -gt 0 ]; do
+> -		gen_param_check "$1"
+> +		gen_param_check "$meta" "$1"
+>  		shift;
+>  	done
+>  }
+> @@ -77,7 +85,7 @@ gen_proto_order_variant()
+>  
+>  	local ret="$(gen_ret_type "${meta}" "${int}")"
+>  	local params="$(gen_params "${int}" "${atomic}" "$@")"
+> -	local checks="$(gen_params_checks "$@")"
+> +	local checks="$(gen_params_checks "${meta}" "$@")"
+>  	local args="$(gen_args "$@")"
+>  	local retstmt="$(gen_ret_stmt "${meta}")"
+>  
+> -- 
+> 2.28.0.rc0.105.gf9edc3c819-goog
+> 
