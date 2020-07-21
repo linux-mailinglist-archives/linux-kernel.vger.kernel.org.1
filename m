@@ -2,311 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28797227F06
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEC2227F08
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgGULgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgGULgj (ORCPT
+        id S1729620AbgGULgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:36:49 -0400
+Received: from sonic312-23.consmr.mail.ne1.yahoo.com ([66.163.191.204]:36273
+        "EHLO sonic312-23.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726942AbgGULgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:36:39 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DDFC0619D8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:36:39 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c80so2496872wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yj1qnl1WLfnKvv1xFJMIVkm5J+E8pmta5ysPZcg545M=;
-        b=Ra1p4VangqmV7CM2mbg0ENHiGKAvqOGmm3QzHbwuXOK6VwYR47xfLyfWeo4Z9vQOKG
-         xNLUEYZ4KalALdotcQoLjc0oegPpaaIMiry4Npz1FVNm4E1sHQQ7RwqhFy+x89bkbaVN
-         1cIXj7j9IG5jR3Ki9Dshx719g4/0p3B0VXkOQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yj1qnl1WLfnKvv1xFJMIVkm5J+E8pmta5ysPZcg545M=;
-        b=SKbH4TYkfthBOH/e1ek7ikVCZtczmqBy3tsMMIJQxYEhdkVa/VN1eT0Qq3cjCIj7O/
-         2CWtiyLPKzyeNwJnGSij3Cay0OpAhBDxfUEkIvawYN3aZxmv7LDw1YDrnrL8Bl2h+ytp
-         7APOE+QryVvpI5/X4uMuKTWn5uSjITklBJpeN9+FNL5HbtIJOddOkgY3E1TQxn0aucjO
-         dMocYU2QS5XHbZvGT8nx/0g0bA7haWcuZnORWxNvM2/WkDMlJzXwhyNwhFdWNwLUNNOc
-         CL22sy9Ptg9Tg/39Q/0zP4oWLcRGfqFaZUHwznSsVlZg2B4RWWCU6ouibShZlz55+r9H
-         HmRQ==
-X-Gm-Message-State: AOAM533LTFSDHlqeYPxWetKeBdGsdIQtrgh6kZvZs2oe9boXCI7Y4+1C
-        EpjYsPWoS8slhz5GEDE+FkkKDz4lLlWFCsU+MEZ1XQ==
-X-Google-Smtp-Source: ABdhPJwh6lTkGfTci7wgoDwi1kHu85IEqFzskg/QiL2w0OvgAKxpMaamWsYAIfpujP6j1Keo8EsqOTDtjZZF3ildGPU=
-X-Received: by 2002:a1c:6246:: with SMTP id w67mr3574806wmb.42.1595331397735;
- Tue, 21 Jul 2020 04:36:37 -0700 (PDT)
+        Tue, 21 Jul 2020 07:36:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595331408; bh=noZqzc0DO7ubYu76k6w0ZDMYGSjIHNz057Kts8cuH1w=; h=Date:From:Reply-To:Subject:References:From:Subject; b=QYYk0lvbFsyuQCqh1obBMMFEt0Im1jQIH2hGvowMPBFItRzHRY7nwzxMQlubCYsDwqhh+BH6FmamWtxgSDq8JVe1DU8kh6oXC4ve7QX0GG1zwIkG9PBwNwtGWBU4ls//9o8w7/uee9RhRNNfclckXjDa2S4o5JcGOB5qW62ccmTSmxYv16kBPRmhxmQ5sK8TKUIU+iJNeAvKuG9MJeQ8Fovvcis99CyFyEjq961yoX7Sxkcs4+cRbXnsnw9mrMGRU6HS+cdzPJ0dcq/jQyXXKNDYit0Hwy80QshGugxhqTB7m17JaFHqYHjaPkCLCZXQzs+kK+UoJDE//NHVFmXSkg==
+X-YMail-OSG: 5fxo4_cVM1nnmUMxa.I9EU6MFNlE55439P3ZvWi22G3hph1.U53AUqFaZEGD0kj
+ dMpgL2ptu56StoQnyhITeH.wFvAKG1sHqvE1Rp2K5XFSRQIjeQt18ZAxHxpBMtn7IFWvXYf.4Byb
+ CE2l_w9FdqpVmDTT1zI.Ft4qMpglKuPajaS8hNiVWYkga2UXuAYR8cZ7GmAjCYTnn0va_P0EBdVE
+ UPV0zvA1yww2ZrUlvu2_uBLBZE0GkfMiU4oXBsE1Hwc6wkkAHX.RK3YK2zeHM8cbIdIOK9h7b1ww
+ p7IYAs5UPI4ardLjZTeLhXrS.yTYSmDjJ6pCDGEAgE4zNGQeNIsH5BYO6YvPJUxVqoM80F_bh9Dw
+ 3qVFokGM62AbGt4c3.zLsQ.iK2HLS8RTqvx9fYMKx0xIo6qVeqswnybmU_9Fks0V3dB86t.MB4cm
+ wjVbbXoIEvaTNB6SqvaXLsuSb1aHn7ZlNYwSg09nm2wD15OyC5gP2hYvOvAE8Hjz.2.yGzIGTeFL
+ zgyRj5kwGHFI8jxNOqQXlwaqcWydLN4dwfuXNG5jtRm7.3EApB1JwR3sq3njPCkhpb51bTq2ZgI1
+ c6KXJOlsIZTVHnDSBPEOMLbLs1R19..zlYxviczClpO2yaHCqHtmE6wb3fI0XGyV2INdHHqsZ23M
+ CX7ny9SdQc2YsJclNfhpVZK8YXbKHTy1X0HgzWFhrz_XWEBl_9ObH1Fdo3Kdy07rC6WrWNMDhhX3
+ 76ljfBJYRFRVRSSUcFrKaSyZTCKJ_kEAShr2zbka1U_uR3_MWxJ5s0Ej9BRx.pZMtZBvlrBGhL0O
+ UwYRjD0jdgzDP4PgHU6P0w0C9abQLc_1S82GYzk09WcO2fwV9OMnBk9CeINSpJ7Uzv4Rl3B75v6p
+ IBkt1BjD5W4cHfAHKr3u_VXR9ES6Ck8nG5jb3uZucmXAtYy8fu9BCMF9HQ0exXwSnq2Xhdlr1.q.
+ 69uCSiReLEO8iaPb4KwsPM9Lat9Z9MawSdzJCvP6Px1nz1WGisbK5J9CeG9nhOOwG7jxpLb9uqsu
+ yT_ySjkTjZGciIS8JhaEvfoMLjyeMJd8dxf.ItWyPNn9fuzPIzpHRGgAM..pEIN3SGkn36AUKvv4
+ AOxo0_8mcmjadNzPjG4.JgKF6phC4d0cZt.I3EpdONIRP8phB4PS0JITBLzCj1oY2haC35ws01iP
+ ZPtqM.Rci2IeGiwr0fQzwSab7tZgKf7i6zZeAklzqFUl9BKOuBGs06xV2tNudrePnlJJub4D4TYf
+ Fny4AHJVDlk3CuuIZkDJPjYrl8Qfl26bC4Q1NlH.iCfCl.8A_ghbi2ONnjd5fRwvhsEwXQiUGVJb
+ E
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Jul 2020 11:36:48 +0000
+Date:   Tue, 21 Jul 2020 11:36:44 +0000 (UTC)
+From:   Philippe Don <phisiaka01@gmail.com>
+Reply-To: phisiaka1@gmail.com
+Message-ID: <63492591.4811734.1595331404972@mail.yahoo.com>
+Subject: I am Dr. Philippe Don,
 MIME-Version: 1.0
-References: <20200717120207.3471030-1-cychiang@chromium.org>
- <20200717120207.3471030-2-cychiang@chromium.org> <CA+Px+wV211AhRVTecU7OS6uP2AQw7v7Gu5x41L4dgW3xR8mA-A@mail.gmail.com>
-In-Reply-To: <CA+Px+wV211AhRVTecU7OS6uP2AQw7v7Gu5x41L4dgW3xR8mA-A@mail.gmail.com>
-From:   Cheng-yi Chiang <cychiang@chromium.org>
-Date:   Tue, 21 Jul 2020 19:36:10 +0800
-Message-ID: <CAFv8Nw+n9nQio7-3GS0sYrj58D9+Rpq39u4RTDJ0rVgvKtdj1A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: qcom: sc7180: Add machine driver for sound card registration
-To:     Tzung-Bi Shih <tzungbi@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Ajit Pandey <ajitp@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <63492591.4811734.1595331404972.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 10.0; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tzung-Bi,
-Thanks for the review!
-On Mon, Jul 20, 2020 at 10:47 AM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Fri, Jul 17, 2020 at 8:02 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
-> > diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-> > new file mode 100644
-> > index 000000000000..cbe6b487d432
-> > --- /dev/null
-> > +++ b/sound/soc/qcom/sc7180.c
-> > @@ -0,0 +1,410 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> > + *
-> > + * sc7180.c -- ALSA SoC Machine driver for SC7180
-> > + */
-> Use "//" for all lines (see https://lkml.org/lkml/2020/5/14/332).
->
+Attention: Friend,
 
-Thanks for the pointer. Fixed in v2.
+How are you, I am Dr. Philippe Don Siaka, a medical doctor working with Gab=
+riel Toure Hospital Bamako Mali, please don't be upset by the way i am send=
+ing this message to you without knowing you before, i  only trying to rende=
+r help that is needed from me by someone who is no more with us in this wor=
+ld,
 
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/of_device.h>
-> > +#include <sound/core.h>
-> > +#include <sound/pcm.h>
-> > +#include <sound/pcm_params.h>
-> > +#include <sound/jack.h>
-> > +#include <sound/soc.h>
-> > +#include <uapi/linux/input-event-codes.h>
-> > +#include <dt-bindings/sound/sc7180-lpass.h>
-> > +#include "../codecs/rt5682.h"
-> > +#include "common.h"
-> > +#include "lpass.h"
-> Insert a blank line in between <...> and "..." and sort the list
-> alphabetically to make it less likely to conflict.
+A woman who had an accident with her car was brought to our Hospital some w=
+eeks ago and i was her doctor for some hours before she died, well may her =
+soul rest in peace Amen, her names are Ms. Young-shin Kim, From South Korea=
+ Nationality,
 
-Fixed in v2.
+Now why i need you is because of her last words to me before she dies, she =
+told me about a deposit she made with Islamic Development Bank ISDB in Turk=
+ey, The sum of(=E2=82=AC5,500,000)Five Million Five Hundred Thousand Euros,=
+ according to her she deposited the money without any next of kin because s=
+he don't have any child or relatives,
 
->
-> > +static int sc7180_snd_hw_params(struct snd_pcm_substream *substream,
-> > +                               struct snd_pcm_hw_params *params)
-> > +{
-> Dummy function?  Or is it still work in progress?
->
-Removed in v2.
+according to her she was an orphan, All this was a top secret from her and =
+she asked me to look for someone from Asia Nationality if possible or anywh=
+ere out of Africa continent who will contact the Bank in Turkey so that the=
+ fund can be transfer to the person for charity purposes, she gave me some =
+vital information about the bank and the money which i will give to you whe=
+n i get your update. her words about the fund according to her she wants th=
+e money to be used for charity purposes to help some less privileged in our=
+ society 70% of the money will be for the charity work and 30% will be for =
+the person who will do the work. I am waiting for your update on this matte=
+r.
 
-> > +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +       int ret = 0;
-> > +
-> > +       switch (cpu_dai->id) {
-> > +       case MI2S_PRIMARY:
-> > +               break;
-> > +       case MI2S_SECONDARY:
-> > +               break;
-> > +       default:
-> > +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-> -EINVAL.
->
-Removed in v2.
-> > +static int sc7180_dai_init(struct snd_soc_pcm_runtime *rtd)
-> > +{
-> > +       struct snd_soc_component *component;
-> > +       struct snd_soc_card *card = rtd->card;
-> > +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> > +       struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
-> > +       struct snd_jack *jack;
-> > +       int rval;
-> > +
-> > +       if (!pdata->jack_setup) {
-> > +               rval = snd_soc_card_jack_new(
-> > +                               card, "Headset Jack",
-> > +                               SND_JACK_HEADSET |
-> > +                               SND_JACK_HEADPHONE |
-> > +                               SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-> > +                               SND_JACK_BTN_2 | SND_JACK_BTN_3,
-> > +                               &pdata->jack, NULL, 0);
-> > +
-> > +               if (rval < 0) {
-> > +                       dev_err(card->dev, "Unable to add Headphone Jack\n");
-> > +                       return rval;
-> > +               }
-> > +
-> > +               jack = pdata->jack.jack;
-> > +
-> > +               snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> > +               snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> > +               snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> > +               snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-> > +               pdata->jack_setup = true;
-> This block is something I don't expect to be in "dai_init" (i.e. there
-> is only 1 headset jack, why do we need to run the code for n times).
->
-Thanks for the suggestion. In v2 I am using aux device so this
-function is cleaned up to be specific to aux device for jack
-detection.
-
-> > +       switch (cpu_dai->id) {
-> > +       case MI2S_PRIMARY:
-> > +               jack  = pdata->jack.jack;
-> > +               component = codec_dai->component;
-> > +
-> > +               jack->private_data = component;
-> > +               jack->private_free = sc7180_jack_free;
-> > +               rval = snd_soc_component_set_jack(component,
-> > +                                                 &pdata->jack, NULL);
-> > +               if (rval != 0 && rval != -EOPNOTSUPP) {
-> > +                       dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-> > +                       return rval;
-> > +               }
-> > +               break;
-> > +       case MI2S_SECONDARY:
-> > +               break;
-> > +       default:
-> > +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-> -EINVAL.
->
-Removed in v2.
-> > +static int sc7180_snd_startup(struct snd_pcm_substream *substream)
-> > +{
-> > +       unsigned int codec_dai_fmt = SND_SOC_DAIFMT_CBS_CFS;
-> > +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +       struct snd_soc_card *card = rtd->card;
-> > +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> > +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> > +       int ret;
-> > +
-> > +       switch (cpu_dai->id) {
-> > +       case MI2S_PRIMARY:
-> > +               codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
-> If the format is fixed, could it put somewhere statically?
->
-Fixed in v2.
-> > +               if (++data->pri_mi2s_clk_count == 1) {
-> Don't it need to be atomic?
->
-soc_pcm_open and soc_pcm_close are protected by card->pcm_mutex so
-they will happen in sequence.
-
-> > +                       snd_soc_dai_set_sysclk(cpu_dai,
-> > +                                              LPASS_MCLK0,
-> > +                                              DEFAULT_MCLK_RATE,
-> > +                                              SNDRV_PCM_STREAM_PLAYBACK);
-> > +               }
-> > +               snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
-> > +
-> > +               /* Configure PLL1 for codec */
-> > +               ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
-> > +                                         DEFAULT_MCLK_RATE, RT5682_PLL1_FREQ);
-> > +               if (ret < 0) {
-> > +                       dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-> > +                       return ret;
-> > +               }
-> > +
-> > +               /* Configure sysclk for codec */
-> > +               ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-> > +                                            RT5682_PLL1_FREQ,
-> > +                                            SND_SOC_CLOCK_IN);
-> > +               if (ret < 0)
-> > +                       dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n",
-> > +                               ret);
-> > +
-> > +               break;
-> > +       case MI2S_SECONDARY:
-> > +               break;
-> > +       default:
-> > +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-> -EINVAL.
-Fixed in v2
->
-> > +static void  sc7180_snd_shutdown(struct snd_pcm_substream *substream)
-> > +{
-> > +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +       struct snd_soc_card *card = rtd->card;
-> > +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> > +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +
-> > +       switch (cpu_dai->id) {
-> > +       case MI2S_PRIMARY:
-> > +               if (--data->pri_mi2s_clk_count == 0) {
-> Atomic?
-ditto
->
-> > +                       snd_soc_dai_set_sysclk(cpu_dai,
-> > +                                              LPASS_MCLK0,
-> > +                                              0,
-> > +                                              SNDRV_PCM_STREAM_PLAYBACK);
-> > +               }
-> > +               break;
-> > +       case MI2S_SECONDARY:
-> > +               break;
-> > +       default:
-> > +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-> -EINVAL.
->
-not needed since this returns void
-> > +static int sc7180_snd_platform_probe(struct platform_device *pdev)
-> > +{
-> > +       struct snd_soc_card *card;
-> > +       struct sc7180_snd_data *data;
-> > +       struct device *dev = &pdev->dev;
-> > +       int ret;
-> > +
-> > +       card = kzalloc(sizeof(*card), GFP_KERNEL);
-> > +       if (!card)
-> > +               return -ENOMEM;
-> Looks like you don't need to allocate the card in runtime.  Also you
-> need to use the devm version if needed.
->
-Thanks for the great suggestion. In v2 I am using a static sound card.
-Also, use devm wherever possible to greatly simplify the code.
-
-> > +       /* Allocate the private data */
-> > +       data = kzalloc(sizeof(*data), GFP_KERNEL);
-> Use devm.
->
-Fixed in v2.
-> > +       card->dapm_widgets = sc7180_snd_widgets;
-> > +       card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
-> Can the struct snd_soc_card allocate statically?
->
-Fixed in v2.
-> > +       sc7180_add_ops(card);
-> > +       ret = snd_soc_register_card(card);
-> devm.
->
->
-> I didn't dive into the logic too much.  Would need another round
-> review if any newer version.
-
-Thanks again.
+Thanks & Best Regards,
+Dr. Philippe Don Siaka,    =09
