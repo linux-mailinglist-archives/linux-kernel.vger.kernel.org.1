@@ -2,188 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F72C2288E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B542288ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730613AbgGUTKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbgGUTKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:10:13 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD62C061794;
-        Tue, 21 Jul 2020 12:10:13 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id 72so10669847ple.0;
-        Tue, 21 Jul 2020 12:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4VasfkiSgNbg3DexTWANpLNDcXThnixKgOSNULSjEfA=;
-        b=L9R5y5TOMDt5OSaIal5MpxYPE3IRn8eYeUblKvHeUBPtWb6EUIWGKE2VT+eAMkxjGc
-         ynef9fttbPpB+yehrjn+pvfUNSJhbYhuV/bhM0ZQ8KWiCrBUg1Zw9Pwy/3aioG4+tld2
-         oVcw3VtTD8UkhQ46qzxSQ5zYhnQ0PVgUqNOJRjU3yjaf9abOdqvi9FS1bee3nfc4dFxO
-         iclQYqam/wcL4ZGgaIIUZ9T6c4AdhBd2gRTtztcgtbXrrQJ6+LE/ym3vAF/NagaeEy/T
-         6qP/CAO3l5JqEBln2UMnk7SfUuPmBa5pHxVZfQLKm7nhMzePuUoM/aNf6RNcNwzWs6Xl
-         opGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4VasfkiSgNbg3DexTWANpLNDcXThnixKgOSNULSjEfA=;
-        b=a2xbtQiWMxdUKu/OZpB3DSl+B4KceSJ+s5gbu9VuDqtEHa5xyN48Uft+p39m5g5fw7
-         cHtsIeIrU/hLaUzvdzU2zp7idBYuo7+0sEUIWofuNCd215EChtPUx4pb0CxWZciPaMi1
-         SBxvFnXJe9wx0LL44CeEntSqzlH+vfSca8rRlaCcbn0/2YyzLIHlOW2I2c0cRDFnz4Nm
-         Z4+kIERQfBsFSVxRGcSNZgV2cTKgEgfLb3JHx+bqf/UsSZzPhTjCpty1ztNUsAu2ABgQ
-         fhn4JZ4W2Qg/xvuVJmKfjPLSqmasxS/pOg/IsPton0Cf80Kav3pVTzCdnnpHGHCPbJJQ
-         joUQ==
-X-Gm-Message-State: AOAM533i0O+i8mfLTSds4KbpAW/8SHzGQBYxL+ToQGYR/PY06Saqfd8k
-        Osz5b0xWDtY3xWw0iJZDpNY=
-X-Google-Smtp-Source: ABdhPJwsmp2qZSeuy2yPW5EEVFEiG516nTfieiUGxmaw74pJ1ZL26UW/kpW5rXGE7uJCS9W48CMFcw==
-X-Received: by 2002:a17:90a:ec0a:: with SMTP id l10mr5615119pjy.152.1595358612670;
-        Tue, 21 Jul 2020 12:10:12 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e3b])
-        by smtp.gmail.com with ESMTPSA id k189sm21202915pfd.175.2020.07.21.12.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 12:10:11 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 12:10:09 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        brouer@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH v3 bpf-next 1/2] bpf: separate bpf_get_[stack|stackid]
- for perf events BPF
-Message-ID: <20200721191009.5khr7blivtuv3qfj@ast-mbp.dhcp.thefacebook.com>
-References: <20200716225933.196342-1-songliubraving@fb.com>
- <20200716225933.196342-2-songliubraving@fb.com>
+        id S1730418AbgGUTLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:11:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726960AbgGUTLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:11:01 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5521420672;
+        Tue, 21 Jul 2020 19:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595358660;
+        bh=OlmCX2de/3OxbnjjVkYRe3fW0bGYvRFlFzYJVgpLwhc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oebsANsy49BHYSke+RFZfL+t8n9fPF3BLcmXjooGoTG0jsIdJOoR64J+ZLLy47IIw
+         LskPo93YTdGVsT4EvxwxMZTczZHKZjohsi+wTP4kSvZ55I+8g/Au8NzcHJ7t8ACfSd
+         7aUmnDA1it6zGeMJ/xCs3E48NCyZiutWg0gOrZGs=
+Date:   Tue, 21 Jul 2020 21:11:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jslaby@suse.com, Hanjun Guo <guohanjun@huawei.com>,
+        "Libin (Huawei)" <huawei.libin@huawei.com>
+Subject: Re: [PATCH] serial: 8250: fix null-ptr-deref in serial8250_start_tx()
+Message-ID: <20200721191108.GB2605882@kroah.com>
+References: <20200721143852.4058352-1-yangyingliang@huawei.com>
+ <20200721104819.GA1678476@kroah.com>
+ <b0cbee3f-05cd-b15c-06db-68c223c9944c@huawei.com>
+ <571a38df-37a3-3680-bea0-b4698d4b417a@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200716225933.196342-2-songliubraving@fb.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <571a38df-37a3-3680-bea0-b4698d4b417a@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:59:32PM -0700, Song Liu wrote:
-> +
-> +BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
-> +	   struct bpf_map *, map, u64, flags)
-> +{
-> +	struct perf_event *event = ctx->event;
-> +	struct perf_callchain_entry *trace;
-> +	bool has_kernel, has_user;
-> +	bool kernel, user;
-> +
-> +	/* perf_sample_data doesn't have callchain, use bpf_get_stackid */
-> +	if (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY))
+On Tue, Jul 21, 2020 at 08:18:11PM +0800, Yang Yingliang wrote:
+> 
+> On 2020/7/21 19:54, Yang Yingliang wrote:
+> > 
+> > On 2020/7/21 18:48, Greg KH wrote:
+> > > On Tue, Jul 21, 2020 at 02:38:52PM +0000, Yang Yingliang wrote:
+> > > > I got null-ptr-deref in serial8250_start_tx():
+> > > > 
+> > > > [   78.114630] Unable to handle kernel NULL pointer dereference
+> > > > at virtual address 0000000000000000
+> > > > [   78.123778] Mem abort info:
+> > > > [   78.126560]   ESR = 0x86000007
+> > > > [   78.129603]   EC = 0x21: IABT (current EL), IL = 32 bits
+> > > > [   78.134891]   SET = 0, FnV = 0
+> > > > [   78.137933]   EA = 0, S1PTW = 0
+> > > > [   78.141064] user pgtable: 64k pages, 48-bit VAs,
+> > > > pgdp=00000027d41a8600
+> > > > [   78.147562] [0000000000000000] pgd=00000027893f0003,
+> > > > p4d=00000027893f0003, pud=00000027893f0003,
+> > > > pmd=00000027c9a20003, pte=0000000000000000
+> > > > [   78.160029] Internal error: Oops: 86000007 [#1] SMP
+> > > > [   78.164886] Modules linked in: sunrpc vfat fat aes_ce_blk
+> > > > crypto_simd cryptd aes_ce_cipher crct10dif_ce ghash_ce sha2_ce
+> > > > sha256_arm64 sha1_ce ses enclosure sg sbsa_gwdt ipmi_ssif
+> > > > spi_dw_mmio sch_fq_codel vhost_net tun vhost vhost_iotlb tap
+> > > > ip_tables ext4 mbcache jbd2 ahci hisi_sas_v3_hw libahci
+> > > > hisi_sas_main libsas hns3 scsi_transport_sas hclge libata
+> > > > megaraid_sas ipmi_si hnae3 ipmi_devintf ipmi_msghandler
+> > > > br_netfilter bridge stp llc nvme nvme_core xt_sctp sctp
+> > > > libcrc32c dm_mod nbd
+> > > > [   78.207383] CPU: 11 PID: 23258 Comm: null-ptr Not tainted
+> > > > 5.8.0-rc6+ #48
+> > > > [   78.214056] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC,
+> > > > BIOS 2280-V2 CS V3.B210.01 03/12/2020
+> > > > [   78.222888] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+> > > > [   78.228435] pc : 0x0
+> > > > [   78.230618] lr : serial8250_start_tx+0x160/0x260
+> > > > [   78.235215] sp : ffff800062eefb80
+> > > > [   78.238517] x29: ffff800062eefb80 x28: 0000000000000fff
+> > > > [   78.243807] x27: ffff800062eefd80 x26: ffff202fd83b3000
+> > > > [   78.249098] x25: ffff800062eefd80 x24: ffff202fd83b3000
+> > > > [   78.254388] x23: ffff002fc5e50be8 x22: 0000000000000002
+> > > > [   78.259679] x21: 0000000000000001 x20: 0000000000000000
+> > > > [   78.264969] x19: ffffa688827eecc8 x18: 0000000000000000
+> > > > [   78.270259] x17: 0000000000000000 x16: 0000000000000000
+> > > > [   78.275550] x15: ffffa68881bc67a8 x14: 00000000000002e6
+> > > > [   78.280841] x13: ffffa68881bc67a8 x12: 000000000000c539
+> > > > [   78.286131] x11: d37a6f4de9bd37a7 x10: ffffa68881cccff0
+> > > > [   78.291421] x9 : ffffa68881bc6000 x8 : ffffa688819daa88
+> > > > [   78.296711] x7 : ffffa688822a0f20 x6 : ffffa688819e0000
+> > > > [   78.302002] x5 : ffff800062eef9d0 x4 : ffffa68881e707a8
+> > > > [   78.307292] x3 : 0000000000000000 x2 : 0000000000000002
+> > > > [   78.312582] x1 : 0000000000000001 x0 : ffffa688827eecc8
+> > > > [   78.317873] Call trace:
+> > > > [   78.320312]  0x0
+> > > > [   78.322147]  __uart_start.isra.9+0x64/0x78
+> > > > [   78.326229]  uart_start+0xb8/0x1c8
+> > > > [   78.329620]  uart_flush_chars+0x24/0x30
+> > > > [   78.333442]  n_tty_receive_buf_common+0x7b0/0xc30
+> > > > [   78.338128]  n_tty_receive_buf+0x44/0x2c8
+> > > > [   78.342122]  tty_ioctl+0x348/0x11f8
+> > > > [   78.345599]  ksys_ioctl+0xd8/0xf8
+> > > > [   78.348903]  __arm64_sys_ioctl+0x2c/0xc8
+> > > > [   78.352812]  el0_svc_common.constprop.2+0x88/0x1b0
+> > > > [   78.357583]  do_el0_svc+0x44/0xd0
+> > > > [   78.360887]  el0_sync_handler+0x14c/0x1d0
+> > > > [   78.364880]  el0_sync+0x140/0x180
+> > > > [   78.368185] Code: bad PC value
+> > > > 
+> > > > SERIAL_PORT_DFNS is not defined on each arch, if it's not defined,
+> > > > serial8250_set_defaults() won't be called in
+> > > > serial8250_isa_init_ports(),
+> > > > so the p->serial_in pointer won't be initialized, and it leads a
+> > > > null-ptr-deref.
+> > > > Fix this problem by calling serial8250_set_defaults() after init
+> > > > uart port.
+> > > > 
+> > > > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > > > ---
+> > > >   drivers/tty/serial/8250/8250_core.c | 2 +-
+> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > Does this fix a specific commit, or has this issue always been present?
+> > > What has caused it to happen now that no one else has seen this?
+> > 
+> > I think it's always been present on the arch that not defined
+> > SERIAL_PORT_DFNS.
+> > 
+> > I got this on arm64 and here is the C reproducer:
+> > 
+> > // autogenerated by syzkaller (https://github.com/google/syzkaller)
+> > 
+> > #define _GNU_SOURCE
+> > 
+> > #include <endian.h>
+> > #include <stdint.h>
+> > #include <stdio.h>
+> > #include <stdlib.h>
+> > #include <string.h>
+> > #include <sys/syscall.h>
+> > #include <sys/types.h>
+> > #include <unistd.h>
+> > 
+> > #ifndef __NR_ioctl
+> > #define __NR_ioctl 29
+> > #endif
+> > #ifndef __NR_mmap
+> > #define __NR_mmap 222
+> > #endif
+> > #ifndef __NR_openat
+> > #define __NR_openat 56
+> > #endif
+> > 
+> > uint64_t r[1] = {0xffffffffffffffff};
+> > 
+> > int main(void)
+> > {
+> >     syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 3ul, 0x32ul, -1, 0);
+> >     intptr_t res = 0;
+> >     memcpy((void*)0x20000040, "/dev/ttyS3\000", 11);
+> >     res = syscall(__NR_openat, 0xffffffffffffff9cul, 0x20000040ul,
+> > 0x401ul, 0ul);
+> >     if (res != -1)
+> >         r[0] = res;
+> >     syscall(__NR_ioctl, r[0], 0x5412ul, 0x20000080ul);
+> >     return 0;
+> > }
+> > 
+> It's can be reproduced with CONFIG_SERIAL_8250_RUNTIME_UARTS=8 and
+> 
+> by opening ttyS4 on x86_64. Because the size of SERIAL_PORT_DFNS is 4 and
+> 
+> the pointers of ttyS4 ~ ttyS7 won't be initialized.
 
-what if event was not created with PERF_SAMPLE_CALLCHAIN ?
-Calling the helper will still cause crashes, no?
+Ah, good catch, yeah, that's not nice.  I'll go queue this up now,
+thanks for the fix!
 
-> +		return bpf_get_stackid((unsigned long)(ctx->regs),
-> +				       (unsigned long) map, flags, 0, 0);
-> +
-> +	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
-> +			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
-> +		return -EINVAL;
-> +
-> +	user = flags & BPF_F_USER_STACK;
-> +	kernel = !user;
-> +
-> +	has_kernel = !event->attr.exclude_callchain_kernel;
-> +	has_user = !event->attr.exclude_callchain_user;
-> +
-> +	if ((kernel && !has_kernel) || (user && !has_user))
-> +		return -EINVAL;
-
-this will break existing users in a way that will be very hard for them to debug.
-If they happen to set exclude_callchain_* flags during perf_event_open
-the helpers will be failing at run-time.
-One can argue that when precise_ip=1 the bpf_get_stack is broken, but
-this is a change in behavior.
-It also seems to be broken when PERF_SAMPLE_CALLCHAIN was not set at event
-creation time, but precise_ip=1 was.
-
-> +
-> +	trace = ctx->data->callchain;
-> +	if (unlikely(!trace))
-> +		return -EFAULT;
-> +
-> +	if (has_kernel && has_user) {
-
-shouldn't it be || ?
-
-> +		__u64 nr_kernel = count_kernel_ip(trace);
-> +		int ret;
-> +
-> +		if (kernel) {
-> +			__u64 nr = trace->nr;
-> +
-> +			trace->nr = nr_kernel;
-> +			ret = __bpf_get_stackid(map, trace, flags);
-> +
-> +			/* restore nr */
-> +			trace->nr = nr;
-> +		} else { /* user */
-> +			u64 skip = flags & BPF_F_SKIP_FIELD_MASK;
-> +
-> +			skip += nr_kernel;
-> +			if (skip > BPF_F_SKIP_FIELD_MASK)
-> +				return -EFAULT;
-> +
-> +			flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
-> +			ret = __bpf_get_stackid(map, trace, flags);
-> +		}
-> +		return ret;
-> +	}
-> +	return __bpf_get_stackid(map, trace, flags);
-...
-> +	if (has_kernel && has_user) {
-> +		__u64 nr_kernel = count_kernel_ip(trace);
-> +		int ret;
-> +
-> +		if (kernel) {
-> +			__u64 nr = trace->nr;
-> +
-> +			trace->nr = nr_kernel;
-> +			ret = __bpf_get_stack(ctx->regs, NULL, trace, buf,
-> +					      size, flags);
-> +
-> +			/* restore nr */
-> +			trace->nr = nr;
-> +		} else { /* user */
-> +			u64 skip = flags & BPF_F_SKIP_FIELD_MASK;
-> +
-> +			skip += nr_kernel;
-> +			if (skip > BPF_F_SKIP_FIELD_MASK)
-> +				goto clear;
-> +
-> +			flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
-> +			ret = __bpf_get_stack(ctx->regs, NULL, trace, buf,
-> +					      size, flags);
-> +		}
-
-Looks like copy-paste. I think there should be a way to make it
-into common helper.
-
-I think the main isssue is wrong interaction with event attr flags.
-I think the verifier should detect that bpf_get_stack/bpf_get_stackid
-were used and prevent attaching to perf_event with attr.precise_ip=1
-and PERF_SAMPLE_CALLCHAIN is not specified.
-I was thinking whether attaching bpf to event can force setting of
-PERF_SAMPLE_CALLCHAIN, but that would be a surprising behavior,
-so not a good idea.
-So the only thing left is to reject attach when bpf_get_stack is used
-in two cases:
-if attr.precise_ip=1 and PERF_SAMPLE_CALLCHAIN is not set.
-  (since it will lead to crashes)
-if attr.precise_ip=1 and PERF_SAMPLE_CALLCHAIN is set,
-but exclude_callchain_[user|kernel]=1 is set too.
-  (since it will lead to surprising behavior of bpf_get_stack)
-
-Other ideas?
+greg k-h
