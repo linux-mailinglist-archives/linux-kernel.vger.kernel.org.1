@@ -2,92 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76D4227DEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30945227DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729337AbgGUK6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:58:01 -0400
-Received: from mag000.melma-kun.biz ([219.117.245.65]:56261 "EHLO
-        mag000.melma-kun.biz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGUK6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:58:01 -0400
-X-Greylist: delayed 326 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Jul 2020 06:58:00 EDT
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?iso-2022-jp?B?GyRCOWI5OzY1MHckLDhsJGshIiUzJW0lSiROOWI5O0A4PSI/JiRYJE4xRjZBISEhQSUqJXMlaSUkJXM6QkNMMnEhQRsoQg==?=
-From:   =?ISO-2022-JP?B?GyRCJTglZyVWJUklaSVVJUglOyVfJUohPDE/MUQ8PBsoQg==?= 
-        <info@hr-saiyo.work>
-Date:   Tue, 21 Jul 2020 19:58:01 +0900
-Reply-To: info@hr-saiyo.work
-Message-Id: <20200621195801.19915@hr-saiyo.work>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+        id S1729391AbgGUK6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:58:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59825 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726089AbgGUK6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:58:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595329110; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=VU4DqtwT3aYjFZK+vCZ6Mf063e7LJok4TZ4IWKWCI9E=; b=WUtLxzKEh+ams80W1TeKdK5xsBY95hV5rD+ioWQ9hn1fePXA+2/acVTR+y/ChUrDy4NP2MZk
+ l+0zw2LR92fKc3JU0tn84l4oFx9Vn3hWv2jjhCjXMjD8M9bI2HwMI+GpXMUY+wruoKGWIPIJ
+ HbfGgxHoWYCh3yg9LBW9odm29/o=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n16.prod.us-east-1.postgun.com with SMTP id
+ 5f16ca501e603dbb4472bad2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Jul 2020 10:58:24
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E22AC43395; Tue, 21 Jul 2020 10:58:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.8] (unknown [106.213.150.157])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: msavaliy)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7271BC433C6;
+        Tue, 21 Jul 2020 10:58:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7271BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=msavaliy@codeaurora.org
+Subject: Re: [PATCH] i2c: i2c-qcom-geni: Fix DMA transfer race
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Wolfram Sang <wsa@the-dreams.de>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200720172448.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
+ <159531115483.3847286.18280088484118119899@swboyd.mtv.corp.google.com>
+ <159531527579.3847286.1254956818647049462@swboyd.mtv.corp.google.com>
+From:   "Mukesh, Savaliya" <msavaliy@codeaurora.org>
+Message-ID: <6d90f383-54d7-cee1-d064-dca51ce39e14@codeaurora.org>
+Date:   Tue, 21 Jul 2020 16:28:11 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <159531527579.3847286.1254956818647049462@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ジョブドラフトセミナー運営室より
-高校新卒採用の最前線セミナーのご案内です。
 
-――――――――――――――――――――――――――――
+On 7/21/2020 12:37 PM, Stephen Boyd wrote:
+> Quoting Stephen Boyd (2020-07-20 22:59:14)
+>> I worry that we also need a dmb() here to make sure the dma buffer is
+>> properly mapped before this write to the device is attempted. But it may
+>> only matter to be before the I2C_READ.
+>>
+> I'm suggesting this patch instead where we make geni_se_setup_m_cmd()
+> use a writel() so that it has the proper barrier semantics to wait for
+> the other memory writes that happened in program order before this point
+> to complete before the device is kicked to do a read or a write.
 
-　　　　　　 〜オンライン座談会〜
-　　　　　就職担当の先生へ直撃質問!!
-　　　コロナで変わった、高校現場の“リアル”
+Not sure if the issue was because of the barrier, but fundamentally for 
+read operation, before FIFO data gets written by the DMA to memory,
 
-　　　　　　　　▼　詳細　▼
-　　　　 https://hr-saiyo.work/200727/
+buffer should be present. Hence the previous change from Doug seem to be 
+fine as well.
 
-――――――――――――――――――――――――――――
-
-コロナウイルスにより、高校生の就職活動の現場では
-企業・生徒・教員それぞれにかつて無いほどの混乱が起きています。
-
-
-そこでこの度、お互いの認識のズレを解消すべく
-現役の就職担当の高校教諭をゲストに招き、
-オンライン座談会を開催いたします。
-
-
-選考スケジュール変更の影響は？
-就職人数はどう変わる？
-高校訪問の対応は可能か？
-生徒に求人を紹介するタイミングは？
-生徒に勧めたい企業と勧めたくない企業の差は？
-ネットの企業情報などは実際見ているのか？etc…
-
-
-視聴者様が直接ご質問できる時間も設けています。
-
-高校側のリアルな本音をお聞きしたい方は是非ともご参加ください。
-
-
-　 ▼　詳細・申込　▼
-　 　　https://hr-saiyo.work/200727/
-
-
-――――――――――――――――――――――――――――
-
-　　　　　　 〜オンライン座談会〜
-　　　　　就職担当の先生へ直撃質問!!
-　　　コロナで変わった、高校現場の“リアル”
-
-　 日程：7月27日
-　 時間：13:00〜14:00
-　 会場：オンライン開催(ご自宅や職場で視聴可能)
-　
-　 ■　https://hr-saiyo.work/200727/　■
-
-――――――――――――――――――――――――――――
-　本メールのご不要な方には大変ご迷惑をおかけいたしました。
-　配信停止ご希望の方は、お手数ですが「配信不要」とご返信いただくか、
-　下記アドレスより、お手続きをお願いいたします。
-　 https://form9dm.site/kaijo/
-――――――――――――――――――――――――――――
-   ジョブドラフトセミナー運営室(株式会社ジンジブ)
-　 住所：東京都港区浜松町2丁目7-19　KDX浜松町ビル5階    
- 　TEL：03-5777-2679
-　 Mail：info@hr-service.work
-――――――――――――――――――――――――――――
+> ----8<----
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index 18d1e4fd4cf3..7f130829bf01 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -367,7 +367,6 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   		geni_se_select_mode(se, GENI_SE_FIFO);
+>   
+>   	writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
+> -	geni_se_setup_m_cmd(se, I2C_READ, m_param);
+>   
+>   	if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
+>   		geni_se_select_mode(se, GENI_SE_FIFO);
+> @@ -375,6 +374,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   		dma_buf = NULL;
+>   	}
+>   
+> +	geni_se_setup_m_cmd(se, I2C_READ, m_param);
+> +
+>   	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>   	if (!time_left)
+>   		geni_i2c_abort_xfer(gi2c);
+> @@ -408,7 +409,6 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   		geni_se_select_mode(se, GENI_SE_FIFO);
+>   
+>   	writel_relaxed(len, se->base + SE_I2C_TX_TRANS_LEN);
+> -	geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
+>   
+>   	if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &tx_dma)) {
+>   		geni_se_select_mode(se, GENI_SE_FIFO);
+> @@ -416,6 +416,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   		dma_buf = NULL;
+>   	}
+>   
+> +	geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
+> +
+>   	if (!dma_buf) /* Get FIFO IRQ */
+>   		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
+>   
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index dd464943f717..1dc134e9eb36 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -262,7 +262,7 @@ static inline void geni_se_setup_m_cmd(struct geni_se *se, u32 cmd, u32 params)
+>   	u32 m_cmd;
+>   
+>   	m_cmd = (cmd << M_OPCODE_SHFT) | (params & M_PARAMS_MSK);
+> -	writel_relaxed(m_cmd, se->base + SE_GENI_M_CMD0);
+> +	writel(m_cmd, se->base + SE_GENI_M_CMD0);
+>   }
+>   
+>   /**
