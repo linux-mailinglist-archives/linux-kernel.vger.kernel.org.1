@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD0C2281A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C40F2281A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 16:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgGUOHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 10:07:22 -0400
-Received: from ozlabs.org ([203.11.71.1]:49901 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgGUOHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:07:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BB0ll6WTvz9sPB;
-        Wed, 22 Jul 2020 00:07:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1595340439;
-        bh=pEIZzV48lY9oMztWrQ5y0yoN1x11b53snuVDYzGP9yQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SaAY7VXP+8gsFiGhyvEZfA+oRA9StiLhZfuy+2pKRVNobM60s5ZrvgssW4zf9X62a
-         MZVWmqNQd3ogXkhQzVYT2D6VyVqWKDqOTPUqeXt46kCvuhO/J2IMGdZCQAUUqN0SIL
-         4dfQwOKoWzFqHPbN+FBeidh2+nu4W84rUbGweXJpIruRz3B4B0YQrtTDgf479Rar/y
-         Viw/52UZYPrBmgsgdov8KvZxHChLO16wRqgypswzCaGIaVwaE290Pt0mbM8PutKM3/
-         Xb8erB7zonG4Bzma/IFDuaXKb0iPg7coE2wqu+/YiWJI8VuHLFsB4OK2ql0qU6+xD9
-         nx9GykCYcRn6A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Cc:     mikey@neuling.org, apopple@linux.ibm.com,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        naveen.n.rao@linux.vnet.ibm.com, peterz@infradead.org,
-        jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
-        mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Subject: Re: [PATCH v4 05/10] powerpc/dt_cpu_ftrs: Add feature for 2nd DAWR
-In-Reply-To: <62daa2d1-4e11-dcc1-cb1d-805ee4a156e0@linux.ibm.com>
-References: <20200717040958.70561-1-ravi.bangoria@linux.ibm.com> <20200717040958.70561-6-ravi.bangoria@linux.ibm.com> <CACzsE9oE+OMnWEXvbZZbq35YzpSzCbBHWEJcjtCgkcq-YrABng@mail.gmail.com> <c34b1a66-2db6-c97a-1782-0d473c758502@linux.ibm.com> <87mu3trtri.fsf@mpe.ellerman.id.au> <62daa2d1-4e11-dcc1-cb1d-805ee4a156e0@linux.ibm.com>
-Date:   Wed, 22 Jul 2020 00:07:15 +1000
-Message-ID: <87d04prmgc.fsf@mpe.ellerman.id.au>
+        id S1728189AbgGUOJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 10:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgGUOJi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 10:09:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6FBC061794;
+        Tue, 21 Jul 2020 07:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bck5iFe0qNEfND6yPrfltx4XHg11WKlZZGgqWSXEbeM=; b=DG5AbKr2hMKTJx8kECWtW35DUW
+        d8nrcG8IEz6EezQuspJJvlr01E63u5FpZUYe/E8yH3amhIvoHVrXSCnuILKCJ4tShC/KtnhPERuPc
+        hICPqgwPI8AkE5moy4RkF72cTtMe0n58XkH1qrTN96udzHXopziPnDJUEM8SpsakWuR+sSlGl0caS
+        NBCU3AoyxrLsrH2vkA7HsMEcMekkwiS5Rp/Y+hYOWT4gsUYljRhZAyRvV1w3fgr/fAfuiuDECwBJz
+        b74PjsC52zjnJdTEDVGQW8UoUBiY/wTtfXYLsxXBr42SVrjiK/RIB716f0BH7GLUumYtmxCE83TxG
+        kJ25CU4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxsxW-0007Zu-U5; Tue, 21 Jul 2020 14:09:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18E353011C6;
+        Tue, 21 Jul 2020 16:09:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 03D43203C0597; Tue, 21 Jul 2020 16:09:29 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 16:09:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     paulmck@kernel.org, will@kernel.org, arnd@arndb.de,
+        mark.rutland@arm.com, dvyukov@google.com, glider@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH 4/8] kcsan: Add missing CONFIG_KCSAN_IGNORE_ATOMICS checks
+Message-ID: <20200721140929.GB10769@hirez.programming.kicks-ass.net>
+References: <20200721103016.3287832-1-elver@google.com>
+ <20200721103016.3287832-5-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721103016.3287832-5-elver@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
-> On 7/21/20 4:59 PM, Michael Ellerman wrote:
->> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
->>> On 7/17/20 11:14 AM, Jordan Niethe wrote:
->>>> On Fri, Jul 17, 2020 at 2:10 PM Ravi Bangoria
->>>> <ravi.bangoria@linux.ibm.com> wrote:
->>>>>
->>>>> Add new device-tree feature for 2nd DAWR. If this feature is present,
->>>>> 2nd DAWR is supported, otherwise not.
->>>>>
->>>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
->>>>> ---
->>>>>    arch/powerpc/include/asm/cputable.h | 7 +++++--
->>>>>    arch/powerpc/kernel/dt_cpu_ftrs.c   | 7 +++++++
->>>>>    2 files changed, 12 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
->>>>> index e506d429b1af..3445c86e1f6f 100644
->>>>> --- a/arch/powerpc/include/asm/cputable.h
->>>>> +++ b/arch/powerpc/include/asm/cputable.h
->>>>> @@ -214,6 +214,7 @@ static inline void cpu_feature_keys_init(void) { }
->>>>>    #define CPU_FTR_P9_TLBIE_ERAT_BUG      LONG_ASM_CONST(0x0001000000000000)
->>>>>    #define CPU_FTR_P9_RADIX_PREFETCH_BUG  LONG_ASM_CONST(0x0002000000000000)
->>>>>    #define CPU_FTR_ARCH_31                        LONG_ASM_CONST(0x0004000000000000)
->>>>> +#define CPU_FTR_DAWR1                  LONG_ASM_CONST(0x0008000000000000)
->>>>>
->>>>>    #ifndef __ASSEMBLY__
->>>>>
->>>>> @@ -497,14 +498,16 @@ static inline void cpu_feature_keys_init(void) { }
->>>>>    #define CPU_FTRS_POSSIBLE      \
->>>>>               (CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | CPU_FTRS_POWER8 | \
->>>>>                CPU_FTR_ALTIVEC_COMP | CPU_FTR_VSX_COMP | CPU_FTRS_POWER9 | \
->>>>> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
->>>>> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
->>>>> +            CPU_FTR_DAWR1)
->>>>>    #else
->>>>>    #define CPU_FTRS_POSSIBLE      \
->>>>>               (CPU_FTRS_PPC970 | CPU_FTRS_POWER5 | \
->>>>>                CPU_FTRS_POWER6 | CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | \
->>>>>                CPU_FTRS_POWER8 | CPU_FTRS_CELL | CPU_FTRS_PA6T | \
->>>>>                CPU_FTR_VSX_COMP | CPU_FTR_ALTIVEC_COMP | CPU_FTRS_POWER9 | \
->>>>> -            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
->>>>> +            CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
->>>>> +            CPU_FTR_DAWR1)
->> 
->>>> Instead of putting CPU_FTR_DAWR1 into CPU_FTRS_POSSIBLE should it go
->>>> into CPU_FTRS_POWER10?
->>>> Then it will be picked up by CPU_FTRS_POSSIBLE.
->>>
->>> I remember a discussion about this with Mikey and we decided to do it
->>> this way. Obviously, the purpose is to make CPU_FTR_DAWR1 independent of
->>> CPU_FTRS_POWER10 because DAWR1 is an optional feature in p10. I fear
->>> including CPU_FTR_DAWR1 in CPU_FTRS_POWER10 can make it forcefully enabled
->>> even when device-tree property is not present or pa-feature bit it not set,
->>> because we do:
->>>
->>>         {       /* 3.1-compliant processor, i.e. Power10 "architected" mode */
->>>                 .pvr_mask               = 0xffffffff,
->>>                 .pvr_value              = 0x0f000006,
->>>                 .cpu_name               = "POWER10 (architected)",
->>>                 .cpu_features           = CPU_FTRS_POWER10,
->> 
->> The pa-features logic will turn it off if the feature bit is not set.
->> 
->> So you should be able to put it in CPU_FTRS_POWER10.
->> 
->> See for example CPU_FTR_NOEXECUTE.
->
-> Ah ok. scan_features() clears the feature if the bit is not set in
-> pa-features. So it should work find for powervm. I'll verify the same
-> thing happens in case of baremetal where we use cpu-features not
-> pa-features. If it works in baremetal as well, will put it in
-> CPU_FTRS_POWER10.
-
-When we use DT CPU features we don't use CPU_FTRS_POWER10 at all.
-
-We construct a cpu_spec from scratch with just the base set of features:
-
-static struct cpu_spec __initdata base_cpu_spec = {
-	.cpu_name		= NULL,
-	.cpu_features		= CPU_FTRS_DT_CPU_BASE,
+On Tue, Jul 21, 2020 at 12:30:12PM +0200, Marco Elver wrote:
+> Add missing CONFIG_KCSAN_IGNORE_ATOMICS checks for the builtin atomics
+> instrumentation.
+> 
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> Added to this series, as it would otherwise cause patch conflicts.
+> ---
+>  kernel/kcsan/core.c | 25 +++++++++++++++++--------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+> index 4633baebf84e..f53524ea0292 100644
+> --- a/kernel/kcsan/core.c
+> +++ b/kernel/kcsan/core.c
+> @@ -892,14 +892,17 @@ EXPORT_SYMBOL(__tsan_init);
+>  	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder);                      \
+>  	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder)                       \
+>  	{                                                                                          \
+> -		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_ATOMIC);                      \
+> +		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS))                                      \
+> +			check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_ATOMIC);              \
+>  		return __atomic_load_n(ptr, memorder);                                             \
+>  	}                                                                                          \
+>  	EXPORT_SYMBOL(__tsan_atomic##bits##_load);                                                 \
+>  	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder);                   \
+>  	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder)                    \
+>  	{                                                                                          \
+> -		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
+> +		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS))                                      \
+> +			check_access(ptr, bits / BITS_PER_BYTE,                                    \
+> +				     KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC);                    \
+>  		__atomic_store_n(ptr, v, memorder);                                                \
+>  	}                                                                                          \
+>  	EXPORT_SYMBOL(__tsan_atomic##bits##_store)
+> @@ -908,8 +911,10 @@ EXPORT_SYMBOL(__tsan_init);
+>  	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder);                 \
+>  	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder)                  \
+>  	{                                                                                          \
+> -		check_access(ptr, bits / BITS_PER_BYTE,                                            \
+> -			     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC);    \
+> +		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS))                                      \
+> +			check_access(ptr, bits / BITS_PER_BYTE,                                    \
+> +				     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE |                  \
+> +					     KCSAN_ACCESS_ATOMIC);                                 \
+>  		return __atomic_##op##suffix(ptr, v, memorder);                                    \
+>  	}                                                                                          \
+>  	EXPORT_SYMBOL(__tsan_atomic##bits##_##op)
+> @@ -937,8 +942,10 @@ EXPORT_SYMBOL(__tsan_init);
+>  	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
+>  							      u##bits val, int mo, int fail_mo)    \
+>  	{                                                                                          \
+> -		check_access(ptr, bits / BITS_PER_BYTE,                                            \
+> -			     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC);    \
+> +		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS))                                      \
+> +			check_access(ptr, bits / BITS_PER_BYTE,                                    \
+> +				     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE |                  \
+> +					     KCSAN_ACCESS_ATOMIC);                                 \
+>  		return __atomic_compare_exchange_n(ptr, exp, val, weak, mo, fail_mo);              \
+>  	}                                                                                          \
+>  	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_##strength)
+> @@ -949,8 +956,10 @@ EXPORT_SYMBOL(__tsan_init);
+>  	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
+>  							   int mo, int fail_mo)                    \
+>  	{                                                                                          \
+> -		check_access(ptr, bits / BITS_PER_BYTE,                                            \
+> -			     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC);    \
+> +		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS))                                      \
+> +			check_access(ptr, bits / BITS_PER_BYTE,                                    \
+> +				     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE |                  \
+> +					     KCSAN_ACCESS_ATOMIC);                                 \
+>  		__atomic_compare_exchange_n(ptr, &exp, val, 0, mo, fail_mo);                       \
+>  		return exp;                                                                        \
+>  	}                                                                                          \
 
 
-And then individual features are enabled via the device tree flags.
-
-cheers
+*groan*, that could really do with a bucket of '{', '}'. Also, it is
+inconsistent in style with the existing use in
+DEFINE_TSAN_VOLATILE_READ_WRITE() where the define causes an early
+return.
