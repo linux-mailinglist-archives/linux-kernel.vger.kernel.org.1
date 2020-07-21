@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90DE22809C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08B322809E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 15:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgGUNKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 09:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S1728270AbgGUNKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 09:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgGUNKT (ORCPT
+        with ESMTP id S1726769AbgGUNKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:10:19 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8376C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 06:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bzG30uW1QQPXIbjKnRH60T7j2KtPqcKAnWW8zGBS+p4=; b=gBCispH2vUYT6jHwGHUaXqA38T
-        TMI2m2ybmBFqs6CytlGY81XoeXAgxE39spZ3vnYqqQLlPGVaM0nt7vpWtEjOTC1upvIdBN3+cTJlW
-        W06aJDt8/8od4+aOFddejW++uKTYQGECb2efV8ZEmahIWF6BFDTklg+4hKd7jCV4FUVoOHysARFNQ
-        wUuYkKNfO8An4LVy101So4sWQIzm6e+f59g7uu2oll47wk7p8qvt9WYlYvgOMTaXMrvZSLJtFNR5h
-        c4dMpMdpI66Vbi+rrUq31Wcab8bY41eAMjGk1roYgdaiI2fz7XTgr1FR2Wbwo6i4ixCyLnep36Ozt
-        s5q1zpgg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxs29-0001G7-29; Tue, 21 Jul 2020 13:10:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4632A301AC6;
-        Tue, 21 Jul 2020 15:10:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3363920FEE06D; Tue, 21 Jul 2020 15:10:11 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 15:10:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-Subject: Re: [PATCH V6 11/14] perf/x86/intel: Disable sample-read the slots
- and metrics events
-Message-ID: <20200721131011.GY10769@hirez.programming.kicks-ass.net>
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-12-kan.liang@linux.intel.com>
+        Tue, 21 Jul 2020 09:10:55 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8898C061794;
+        Tue, 21 Jul 2020 06:10:54 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id n26so21629655ejx.0;
+        Tue, 21 Jul 2020 06:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UspCEUKKntGVrAvJln8sV8cJn+MtvW60MDv5uJ278pY=;
+        b=IsEuky7qsWKxla86BSugpUsvVOg8tmt3M1HDn+Uc6Xvv09+aAShmYBOI3mP05HPaxa
+         4JsJp9K8AzMlIF9enlA7JHgyTozRUYYoK7M8HJLzz8GR6o+hc9DlLLuhkl0dMC3DVP9Y
+         pX3gIA6VD/nHVnaNWVibRYZdJ35Qdm/SHiEcLIMM8ZrhAxG0ibMmQO0pDQwGiH0lo+tc
+         IG3Gkn8h0IOEDtPlxN7L0CZ1r4M6uWtPO+N5Jv3b2LljLUq/WiLcJaD/i3JwJRk7ab3Z
+         7JoPD9ycseeieEcmyLUtSJkuBitAEMd5+AYBS6tQcs9GEHmPLqJNunlV93a/ewEcNKpS
+         RfWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UspCEUKKntGVrAvJln8sV8cJn+MtvW60MDv5uJ278pY=;
+        b=TXs8gwuaBNZeJYGmwfkjk8B9qyoysShQqJWHRWEFtEYiUSQ32txVrWr6XUTiAtQv0I
+         NMONghd3Lw+BVNE5BJNQ8nSdI3+jmOBDD9jVTBCmlzYPOxqc0f/uwlqS37RH7dBFmPOw
+         BWVYogFivUWCFCWtSgt5VGAnRlZbzm4rpTFCVO2Yi603H+OJfxw9xBP/1F3DZzbFf7M9
+         SGgxbyCrBdPwTMsZU4qY9GHv2II1Eae9w9/f4GUaSg2/AonL+qn8a/LdESqKI+kFDABD
+         wSJWc/unyfAFNaMoVVBepoZuvUowrjEVcCUYh75lKkDNmKnc2oF4H4ixyHQscyqNJtCn
+         5FZg==
+X-Gm-Message-State: AOAM530OQY5Q5QX0pUeqPey9UsdazVUepNr8nFFeBEUhrHm8mXSEtTin
+        UEa9yBV2FxoqjKA0OC3TK1g=
+X-Google-Smtp-Source: ABdhPJzcmF5L2aR3yjodBcFiE4f1TdBlzsDNXt6PtuYRZxeZtAC9eOAXkTNT1GQHOE8EE6OlgjjMnQ==
+X-Received: by 2002:a17:906:d963:: with SMTP id rp3mr24135477ejb.54.1595337053676;
+        Tue, 21 Jul 2020 06:10:53 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id q17sm16619830ejd.20.2020.07.21.06.10.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 06:10:52 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 15:10:51 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/86] 4.9.231-rc1 review
+Message-ID: <20200721131051.GB44604@ulmo>
+References: <20200720152753.138974850@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aM3YZ0Iwxop3KEKx"
 Content-Disposition: inline
-In-Reply-To: <20200717140554.22863-12-kan.liang@linux.intel.com>
+In-Reply-To: <20200720152753.138974850@linuxfoundation.org>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 07:05:51AM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> Users fail to sample-read the slots and metrics events, e.g.,
-> perf record -e '{slots, topdown-retiring}:S'.
-> 
-> When reading the metrics event, the fixed counter 3 (slots) has to be
-> reset, which impacts the sampling of the slots event.
-> 
-> Add a specific validate_group() support to reject the case and error out
-> for Ice Lake.
-> 
-> An alternative fix may unconditionally disable slots sampling, but it's
-> not a decent fix. Users may want to only sample the slot events
-> without the topdown metrics events.
-> 
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 
-I'm confused by this; it doesn't make sense.
+--aM3YZ0Iwxop3KEKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Should not patch 7 have something like the below instead?
+On Mon, Jul 20, 2020 at 05:35:56PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.231 release.
+> There are 86 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Wed, 22 Jul 2020 15:27:31 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.231=
+-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git=
+ linux-4.9.y
+> and the diffstat can be found below.
+>=20
+> thanks,
+>=20
+> greg k-h
 
-Also, I think there is a bug when we create a group like this and then
-kill the leader, in that case the core code will 'promote' the sibling
-metric events to their own individual events, see perf_group_detach().
+All tests passing for Tegra ...
 
-We need additional code to move those events into unrecoverable ERROR
-state. A new group_caps flag could indicate this promotion isn't
-allowed.
+Test results for stable-v4.9:
+    8 builds:   8 pass, 0 fail
+    16 boots:   16 pass, 0 fail
+    30 tests:   30 pass, 0 fail
 
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3441,8 +3441,22 @@ static int intel_pmu_hw_config(struct pe
- 	 * A flag PERF_X86_EVENT_TOPDOWN is applied for the case.
- 	 */
- 	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
--		if (is_metric_event(event) && is_sampling_event(event))
--			return -EINVAL;
-+
-+		if (is_metric_event(event)) {
-+			struct perf_event *leader = event->group_leader;
-+
-+			if (is_sampling_event(event))
-+				return -EINVAL;
-+
-+			if (leader == event)
-+				return -EINVAL;
-+
-+			if (!is_slots_event(leader))
-+				return -EINVAL;
-+
-+			if (is_sampling_event(leader))
-+				return -EINVAL;
-+		}
- 
- 		if (!is_sampling_event(event)) {
- 			if (event->attr.config1 != 0)
+Linux version:  4.9.231-rc1-g8c3f33eeb0cc
+Boards tested:  tegra124-jetson-tk1, tegra20-ventana,
+                tegra210-p2371-2180, tegra30-cardhu-a04
+
+Cheers,
+Thierry
+
+--aM3YZ0Iwxop3KEKx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8W6VsACgkQ3SOs138+
+s6EJnxAAnyshar2aayeddVUNnsWbYqvxeOqNzp6ukeoWExDBz7WVQNBa3mVf6yXN
+mAUvZaW2IR3k+xtjdaNk7f6ubaK3ec6GkfXssChc5PWic+eoVj+33JB6gmpmk8Yo
+N01+0woddAS6neXdaBYcwQliQmcduhx+x1Wwrvr6G7GuW8ELtBiipnMXXWuKo8ll
+KWueojmZncfd3Jy4bwTHb0ZDGS4H+GBYurM61ywiqceEZZ2opdjqV93n3AiMurdS
+Vg1umglEn0s859S+iZJ7rm5/aSMgVmvAp9UhbDs6XAIxCy7zNJb1g5s+Nb5acdI6
+FNylm39OHjqduQhkny/o5F+s80LMdo8LTjXdpvCxa3YEw5ZRzxrub7GOTn5KfdhR
+FJ9VV+aF6eChVUgeka/Aohf1J8+e+EYFW/pLMMi4EEszJB6RwVwCejAFJkitTsp+
+bGVtX4arOct+3Q5KUQrv1obbXzhMIu6ip9OT+OiPIRPEqrPy+E1QlgLBKHNdSPgN
+F3ZamUmCGqRuTYgXzXzmE/b5Smu85fRCUWz3lVSTabknWw2UfXyO2aJykIni5RsJ
+DpcaJG23h6DuaOpAM/LF3ensJBwGTXtYJQ84KT21dLO6oLIdk4iIHsurYAZmk9qc
+c2Xy4ELyHjNTZJj2sGzg+163ThH1VDaM86u8vBJ9KRfLCCiHL9A=
+=OJ4b
+-----END PGP SIGNATURE-----
+
+--aM3YZ0Iwxop3KEKx--
