@@ -2,45 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CA5228830
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE411228835
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729975AbgGUS1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:27:06 -0400
-Received: from verein.lst.de ([213.95.11.211]:53387 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgGUS1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:27:04 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CFAA068AFE; Tue, 21 Jul 2020 20:27:01 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 20:27:01 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH 06/24] md: open code vfs_stat in md_setup_drive
-Message-ID: <20200721182701.GB14450@lst.de>
-References: <20200721162818.197315-1-hch@lst.de> <20200721162818.197315-7-hch@lst.de> <20200721165539.GT2786714@ZenIV.linux.org.uk>
+        id S1728922AbgGUS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726658AbgGUS3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 14:29:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B208CC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:29:02 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id w9so8491397ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4jBpCAfHmvrXMsleahVys7l2Kbtf/JTxu6AXTIkM0eQ=;
+        b=ph86JCwgAqK1FafyGhguYtYD9m1MR+zqcBbTXsg8IP83H4jR+1Msy9ofw8JwBHPkBH
+         ryf1PDwI/2ck3LAn4CYZ0jSaBhoePx1DxNUmO5leaJ6oichh5CjPdWJbFpZn8nSQ1mP6
+         6FQ3HutBUXBCSfAseimn6jrVVkEt4TsA2fysQRViTliWKVuA0tVxqN6yxHra5zMM6Z/2
+         u0DKVHBff+qBD72/RB5fnv06htnRbIlmW4Ebk5kQNqyZ+peu2f4/dUJrwDFX0OSPu02P
+         EnhYv13WCFw4l82yHLWeV1x5LOWZII9u0MXBFgkyo1uIjj01lDL4T6fcx3O1kZwYXd3Q
+         CHTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4jBpCAfHmvrXMsleahVys7l2Kbtf/JTxu6AXTIkM0eQ=;
+        b=VmUH6G2sD6C0iyqn+d5jfKOFMW7lfrHMSioFDdbEXOYCtH5t3iraR+OjJuTbP7NKe5
+         1bhk7VCajBcRaG8tDfq9lObxyPs1y3scmhcdKsdXj4jfhWznLoP7JKy7brJ6eRc/hrcR
+         Z1NwcxKXhX+DBwCEe2jBK9zFcUR+0HMlzAf53MQVSoTXUHMfM5QOTjjQrFBUYYqi3M1T
+         jXeACQVabfr6mz98Nz4nai5N3gng6GUbZrwfvJeCMzIvAEUmuZU2ObFAMrR79U/lO74D
+         DD8Rn3V4VR9NDKrF5fDHVkdunAFykega/Kmc5Sc3f4rVYb1srbmPeAiNgNCpboXtFPyW
+         f4vw==
+X-Gm-Message-State: AOAM532R8BSrxGkhPdweah/yUErJKFmBVAface8deRZ3/A7J452lF6Id
+        Io4J7GhmOwZS0yujz+E5AxA=
+X-Google-Smtp-Source: ABdhPJyEgjQbISmhm3byo3MXCSUHt+hp1xt7nWYRb4nRip5I+01vDGLbcwHA7g6DLRR1xMIebM/Eig==
+X-Received: by 2002:a17:906:a84d:: with SMTP id dx13mr25279915ejb.246.1595356141506;
+        Tue, 21 Jul 2020 11:29:01 -0700 (PDT)
+Received: from localhost.localdomain ([178.233.178.9])
+        by smtp.gmail.com with ESMTPSA id q6sm16959454ejn.30.2020.07.21.11.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 11:29:00 -0700 (PDT)
+From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH] ASoC: rk3399_gru_sound: Add DAPM pins, kcontrols for jack detection
+Date:   Tue, 21 Jul 2020 21:27:10 +0300
+Message-Id: <20200721182709.6895-1-alpernebiyasak@gmail.com>
+X-Mailer: git-send-email 2.28.0.rc1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721165539.GT2786714@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 05:55:39PM +0100, Al Viro wrote:
-> How about fs/for_init.c and putting the damn helpers there?  With
-> calling conventions as close to syscalls as possible, and a fat
-> comment regarding their intended use being _ONLY_ the setup
-> in should-have-been-done-in-userland parts of init?
+PulseAudio (and perhaps other userspace utilities) can not detect any
+jack for rk3399_gru_sound as the driver doesn't expose related Jack
+kcontrols.
 
-Where do you want the prototypes to go?  Also do you want devtmpfs
-use the same helpers, which then't can't be marked __init (mount,
-chdir, chroot), or separate copies?
+This patch adds two DAPM pins to the headset jack, where the
+snd_soc_card_jack_new() call automatically creates "Headphones Jack" and
+"Headset Mic Jack" kcontrols from them.
+
+With an appropriate ALSA UCM config specifying JackControl fields for
+the "Headphones" and "Headset" (mic) devices, PulseAudio can detect
+plug/unplug events for both of them after this patch.
+
+Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+---
+
+ sound/soc/rockchip/rk3399_gru_sound.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index f45e5aaa4b30..c17d146717a8 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -32,6 +32,19 @@ static unsigned int dmic_wakeup_delay;
+ 
+ static struct snd_soc_jack rockchip_sound_jack;
+ 
++/* Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin rockchip_sound_jack_pins[] = {
++	{
++		.pin = "Headphones",
++		.mask = SND_JACK_HEADPHONE,
++	},
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
++	},
++
++};
++
+ static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphones", NULL),
+ 	SND_SOC_DAPM_SPK("Speakers", NULL),
+@@ -176,7 +189,9 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 				    SND_JACK_HEADSET | SND_JACK_LINEOUT |
+ 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
+-				    &rockchip_sound_jack, NULL, 0);
++				    &rockchip_sound_jack,
++				    rockchip_sound_jack_pins,
++				    ARRAY_SIZE(rockchip_sound_jack_pins));
+ 
+ 	if (ret) {
+ 		dev_err(rtd->card->dev, "New Headset Jack failed! (%d)\n", ret);
+-- 
+2.28.0.rc1
+
