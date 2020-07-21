@@ -2,158 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49BC228C3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 00:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C683228C42
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 00:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731396AbgGUWwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 18:52:18 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36576 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726148AbgGUWwR (ORCPT
+        id S1731304AbgGUWww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 18:52:52 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:42666 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgGUWwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 18:52:17 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LMowJT022793;
-        Tue, 21 Jul 2020 15:51:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=WB4KQ7j37AuoU7UYpmKdi1pPbtiGnhuG61OpH45ZyR8=;
- b=lj009JeVgnw8etvWi6msQ/RQ/kJqvkKDnky9dxcg6tMadftVuWIXtjBzrvgUIYalTv+x
- vAAbN0dHLcCIOqAxQyd7HG7p9bzUX5y1oMxWKh0TgWEqCjXjJt6hHC19T8V+YXh8c6Vu
- 6LRrNxwHKGPkCCchdlbtVwX4YuvpqUDKVJo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32chbnuusk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 21 Jul 2020 15:51:59 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 21 Jul 2020 15:51:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KOpkdb43DgZ+M+pC6tYrfSvRk7BHTTt5Sau/icE/dU0i4YHhf3ufQfS0Jle9Jb1BR9MgzNXdYLne55k+tDIf8frHa18y4leXeNWviB7QWTlQ6BOU7wzqzYwIAODkvANzEFbf283Be3vV/HVkbjNpCJKofWU7/dILQ4f5i3cUIPqkRs1wJ9QpL35j/VOwpLvTxXpUiAHyHyz0884GB2Kis4NeiA3Actoe34HvD7e/wQk0kGz7olzcp76BWD2nNt1/Pt8loE4hlFNWPof7wk5jcDKlR6aXekpFVkgeNVE517WL4IyXxGu0v4fvE4M2RF0VBnmljQSf6O76PjHLJZUiDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WB4KQ7j37AuoU7UYpmKdi1pPbtiGnhuG61OpH45ZyR8=;
- b=EPbW2Gqu5pZaQksOAkGjMs96QkZBfRJ8+pa5iVuHcOjQoFJG5fWEMrOp3D9UpfWsxIuuJDpKLeqmQakmCE+YUsnE787LLS+l34ygJtaP6DQrvA6oVCl1sH3lp0xGN4wC1UfkmlCf/A9IuAeljtwhRJeWYR22VvnOk2VsEgrZHSIJyaP1lkLPzh0OJxV1A4ayIWI2fEGw2fdPewvQMNTlt096rTP5uJG68CzAaRlYarQWQaCfTH2dWfDOH/GghST+UjLgnGDiRRP7WO5Fc7H7gronJHF6ydlNBiBFPPGxzOjJNLJZarxxKbP94Jxx5oTO7BdHz+NPH4cfYSK140lYjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WB4KQ7j37AuoU7UYpmKdi1pPbtiGnhuG61OpH45ZyR8=;
- b=QPEDa6L4VtEUPIjCzik8f7MvD+wm56iXl6Yn50MfcuzKQtjUpU9U/HtghWlRc/SbeyF61aqPPGCuStrqy5UXIjuGlZ9+agiIzc1VyxZOLdJnA0i0UNPsQb+GxwYMWdRZTDPdtp6FgkgkKYULwFC2UaqolMd4OhH/4/Nd/HI5t2E=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2776.namprd15.prod.outlook.com (2603:10b6:a03:154::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Tue, 21 Jul
- 2020 22:51:54 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3195.026; Tue, 21 Jul 2020
- 22:51:52 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>
-Subject: Re: [PATCH v3 bpf-next 1/2] bpf: separate bpf_get_[stack|stackid] for
- perf events BPF
-Thread-Topic: [PATCH v3 bpf-next 1/2] bpf: separate bpf_get_[stack|stackid]
- for perf events BPF
-Thread-Index: AQHWW8VAnRb4OqAgyEOVqqMnP7xn/akSbY+AgAA6uICAAADggIAAAlmA
-Date:   Tue, 21 Jul 2020 22:51:52 +0000
-Message-ID: <A11D2C64-DD12-4ECD-99E5-EE9558BB73A7@fb.com>
-References: <20200716225933.196342-1-songliubraving@fb.com>
- <20200716225933.196342-2-songliubraving@fb.com>
- <20200721191009.5khr7blivtuv3qfj@ast-mbp.dhcp.thefacebook.com>
- <42DEE452-F411-4098-917B-11B23AC99F5F@fb.com>
- <CAADnVQJPmo3He3cdUUbMm4DtTDNBeWRMRkNzPw8S3GdxxODemA@mail.gmail.com>
-In-Reply-To: <CAADnVQJPmo3He3cdUUbMm4DtTDNBeWRMRkNzPw8S3GdxxODemA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:bb45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 30b54855-933a-4417-a394-08d82dc8a90e
-x-ms-traffictypediagnostic: BYAPR15MB2776:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2776F634A24898F992EF9332B3780@BYAPR15MB2776.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QrPQzQI5N3sTNjLTDaLcfgDDgPZE4tyenqctOBXWl3BxjjvtSUJB/UPo/vUcjRqhaQHKr8J5R/0YrpLjzErXLGeim0sUXNO/zVysZKvbPuyvlDShhZOh4r6Nlg8+v2yImVX8K2qUIvLccX1MZ/3V6f8aaunJ45+Hx6SJ8l4h1JwMW4apZqQu2mzUQo802Orv3j0HpDY3fD9xASzonrR2er2ErKiEveviAGPQzEfEifHOw3hdkNIlsJzv7OZNWuT5TggFSGB/xBjb4nVlxxHtW4ILJd52WOeNw5kgiJu2+gaL68Jk5R58t3QhTGnjCQHhhmucSRITu0ZWIfX42GGIAg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(136003)(39860400002)(396003)(376002)(86362001)(71200400001)(2906002)(478600001)(6506007)(2616005)(53546011)(6916009)(4326008)(186003)(66556008)(8936002)(66446008)(64756008)(7416002)(83380400001)(5660300002)(54906003)(6486002)(36756003)(8676002)(6512007)(66946007)(316002)(33656002)(4744005)(76116006)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: v6+OPe8KJJxehqUs1hW+lC1HCvg/Yt8NXV2epSlhsuFcBS9CimjijtLsKaB3pXYN7rceMk3TfSyPTX7ieY1qDYSWgY32eyDn+GaaHWlqVNZM0VXW7dTxMGRbI0dzpnXd+F2ID6UxrXIYij9ev+vlXY0iWN1eK2OxJ9306qTUa56qhrE0JFXGnsTvNq/MiSLf29zuQi+p8IPSzJS6ngbdL+2yQhOt6JiTGKYYB9vEL/5LhgqeqDZuVfZXacQ2GEKBbN7K/MJSVofyEPplZrguM24y5T1lPeNqbhNxY9pLq7Z7FVzwfMr4mPu5mrXxKxgEYt+rL0I83/jd46lnDQp2o9lBlTR+lctVfuCEPntpNf7VrGw8BN9/aSdO6sSGQdZcmejhKAnLxtKt3ck09kCXdszGZvhlqLIBBYWWLLk6IF4ECaupAV5gf61ypLxz3nLzw5jF+/Zxb/HzBfrDArmtjv0dtJ44SWK+PvqabC4WYv1iPdCw01a0busyYKTpLHNyxeZHIEGtP/Zat3f1l0GacA==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6660011528DDBD42AF77EAA8A020459E@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 21 Jul 2020 18:52:51 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06LMqoin129242;
+        Tue, 21 Jul 2020 17:52:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595371970;
+        bh=W8/NLAP7AQ8ZoUh2X7uGYM9F/8jWUbu2kIHr9OgpfJQ=;
+        h=From:To:CC:Subject:Date;
+        b=SFz2YKTh5sVwtHGaXHR2Hi0sKBsFO7FKQ7i3CrZGwqRCMrUbrlpCZNA+FFnlnZ8CS
+         Wa9vtL10+eQY0tL10yK27I58uvDFGmEkA5u5xlsGAYz83z4f7+QYN2EGg4VxCf3sAI
+         k6VsJAFbeR7zryX1RRaIPPnPeJcmYC+3Be2o18oU=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06LMqo2f112472
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 17:52:50 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 21
+ Jul 2020 17:52:49 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 21 Jul 2020 17:52:49 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06LMqm3l057785;
+        Tue, 21 Jul 2020 17:52:48 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] dt-bindings: phy: ti: phy-gmii-sel: convert bindings to json-schema
+Date:   Wed, 22 Jul 2020 01:52:47 +0300
+Message-ID: <20200721225247.31034-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30b54855-933a-4417-a394-08d82dc8a90e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2020 22:51:52.4014
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: l5KjRVUP6fm650ytdAe/fnGuAeNioRlvW2DoJAOM6HELdwxmUoHNOn86UTO1/7sQZ9T0keBXJOMUzA14/Q3uHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2776
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-21_15:2020-07-21,2020-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 malwarescore=0 suspectscore=0 clxscore=1015 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007210143
-X-FB-Internal: deliver
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the CPSW Port's Interface Mode Selection PHY bindings documentation
+to json-schema.
 
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ .../bindings/phy/ti,phy-gmii-sel.yaml         | 104 ++++++++++++++++++
+ .../bindings/phy/ti-phy-gmii-sel.txt          |  69 ------------
+ 2 files changed, 104 insertions(+), 69 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/ti,phy-gmii-sel.yaml
+ delete mode 100644 Documentation/devicetree/bindings/phy/ti-phy-gmii-sel.txt
 
-> On Jul 21, 2020, at 3:43 PM, Alexei Starovoitov <alexei.starovoitov@gmail=
-.com> wrote:
->=20
-> On Tue, Jul 21, 2020 at 3:40 PM Song Liu <songliubraving@fb.com> wrote:
->>=20
->> We only need to block precise_ip >=3D 2. precise_ip =3D=3D 1 is OK.
->=20
-> Are you sure?
-> intel_pmu_hw_config() has:
-> if (event->attr.precise_ip) {
->    if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
->            event->attr.sample_type |=3D __PERF_SAMPLE_CALLCHAIN_EARLY;
-> }
+diff --git a/Documentation/devicetree/bindings/phy/ti,phy-gmii-sel.yaml b/Documentation/devicetree/bindings/phy/ti,phy-gmii-sel.yaml
+new file mode 100644
+index 000000000000..bcec422d7734
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/ti,phy-gmii-sel.yaml
+@@ -0,0 +1,104 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/phy/ti,phy-gmii-sel.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: CPSW Port's Interface Mode Selection PHY Tree Bindings
++
++maintainers:
++  - Kishon Vijay Abraham I <kishon@ti.com>
++
++description: |
++  TI am335x/am437x/dra7(am5)/dm814x CPSW3G Ethernet Subsystem supports
++  two 10/100/1000 Ethernet ports with selectable G/MII, RMII, and RGMII interfaces.
++  The interface mode is selected by configuring the MII mode selection register(s)
++  (GMII_SEL) in the System Control Module chapter (SCM). GMII_SEL register(s) and
++  bit fields placement in SCM are different between SoCs while fields meaning
++  is the same.
++                                               +--------------+
++        +-------------------------------+      |SCM           |
++        |                     CPSW      |      |  +---------+ |
++        |        +--------------------------------+gmii_sel | |
++        |        |                      |      |  +---------+ |
++        |   +----v---+     +--------+   |      +--------------+
++        |   |Port 1..<--+-->GMII/MII<------->
++        |   |        |  |  |        |   |
++        |   +--------+  |  +--------+   |
++        |               |               |
++        |               |  +--------+   |
++        |               |  | RMII   <------->
++        |               +-->        |   |
++        |               |  +--------+   |
++        |               |               |
++        |               |  +--------+   |
++        |               |  | RGMII  <------->
++        |               +-->        |   |
++        |                  +--------+   |
++        +-------------------------------+
++
++  CPSW Port's Interface Mode Selection PHY describes MII interface mode between
++  CPSW Port and Ethernet PHY which depends on Eth PHY and board configuration.
++  |
++  CPSW Port's Interface Mode Selection PHY device should defined as child device
++  of SCM node (scm_conf) and can be attached to each CPSW port node using standard
++  PHY bindings.
++
++properties:
++  compatible:
++    enum:
++      - ti,am3352-phy-gmii-sel
++      - ti,dra7xx-phy-gmii-sel
++      - ti,am43xx-phy-gmii-sel
++      - ti,dm814-phy-gmii-sel
++      - ti,am654-phy-gmii-sel
++
++  reg:
++    description: Address and length of the register set for the device
++
++  '#phy-cells': true
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - ti,dra7xx-phy-gmii-sel
++              - ti,dm814-phy-gmii-sel
++              - ti,am654-phy-gmii-sel
++    then:
++      properties:
++        '#phy-cells':
++          const: 1
++          description: CPSW port number (starting from 1)
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - ti,am3352-phy-gmii-sel
++              - ti,am43xx-phy-gmii-sel
++    then:
++      properties:
++        '#phy-cells':
++          const: 2
++          description: |
++            - CPSW port number (starting from 1)
++            - RMII refclk mode
++
++required:
++  - compatible
++  - reg
++  - '#phy-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    phy_gmii_sel: phy-gmii-sel@650 {
++        compatible = "ti,am3352-phy-gmii-sel";
++        reg = <0x650 0x4>;
++        #phy-cells = <2>;
++    };
+diff --git a/Documentation/devicetree/bindings/phy/ti-phy-gmii-sel.txt b/Documentation/devicetree/bindings/phy/ti-phy-gmii-sel.txt
+deleted file mode 100644
+index 83b78c1c0644..000000000000
+--- a/Documentation/devicetree/bindings/phy/ti-phy-gmii-sel.txt
++++ /dev/null
+@@ -1,69 +0,0 @@
+-CPSW Port's Interface Mode Selection PHY Tree Bindings
+------------------------------------------------
+-
+-TI am335x/am437x/dra7(am5)/dm814x CPSW3G Ethernet Subsystem supports
+-two 10/100/1000 Ethernet ports with selectable G/MII, RMII, and RGMII interfaces.
+-The interface mode is selected by configuring the MII mode selection register(s)
+-(GMII_SEL) in the System Control Module chapter (SCM). GMII_SEL register(s) and
+-bit fields placement in SCM are different between SoCs while fields meaning
+-is the same.
+-                                               +--------------+
+-        +-------------------------------+      |SCM           |
+-        |                     CPSW      |      |  +---------+ |
+-        |        +--------------------------------+gmii_sel | |
+-        |        |                      |      |  +---------+ |
+-        |   +----v---+     +--------+   |      +--------------+
+-        |   |Port 1..<--+-->GMII/MII<------->
+-        |   |        |  |  |        |   |
+-        |   +--------+  |  +--------+   |
+-        |               |               |
+-        |               |  +--------+   |
+-        |               |  | RMII   <------->
+-        |               +-->        |   |
+-        |               |  +--------+   |
+-        |               |               |
+-        |               |  +--------+   |
+-        |               |  | RGMII  <------->
+-        |               +-->        |   |
+-        |                  +--------+   |
+-        +-------------------------------+
+-
+-CPSW Port's Interface Mode Selection PHY describes MII interface mode between
+-CPSW Port and Ethernet PHY which depends on Eth PHY and board configuration.
+-
+-CPSW Port's Interface Mode Selection PHY device should defined as child device
+-of SCM node (scm_conf) and can be attached to each CPSW port node using standard
+-PHY bindings (See phy/phy-bindings.txt).
+-
+-Required properties:
+-- compatible		: Should be "ti,am3352-phy-gmii-sel" for am335x platform
+-			  "ti,dra7xx-phy-gmii-sel" for dra7xx/am57xx platform
+-			  "ti,am43xx-phy-gmii-sel" for am43xx platform
+-			  "ti,dm814-phy-gmii-sel" for dm814x platform
+-			  "ti,am654-phy-gmii-sel" for AM654x/J721E platform
+-- reg			: Address and length of the register set for the device
+-- #phy-cells		: must be 2.
+-			  cell 1 - CPSW port number (starting from 1)
+-			  cell 2 - RMII refclk mode
+-
+-Examples:
+-	phy_gmii_sel: phy-gmii-sel {
+-		compatible = "ti,am3352-phy-gmii-sel";
+-		reg = <0x650 0x4>;
+-		#phy-cells = <2>;
+-	};
+-
+-	mac: ethernet@4a100000 {
+-		compatible = "ti,am335x-cpsw","ti,cpsw";
+-		...
+-
+-		cpsw_emac0: slave@4a100200 {
+-			...
+-			phys = <&phy_gmii_sel 1 1>;
+-		};
+-
+-		cpsw_emac1: slave@4a100300 {
+-			...
+-			phys = <&phy_gmii_sel 2 1>;
+-		};
+-	};
+-- 
+2.17.1
 
-The bit that breaks the unwinder was in setup_pebs_fixed_sample_data():
-
-                if (x86_pmu.intel_cap.pebs_format >=3D 2) {
-                        set_linear_ip(regs, pebs->real_ip);
-                        regs->flags |=3D PERF_EFLAGS_EXACT;
-                }=20
-
-"real_ip" causes the issue.=20
-
-But on a second thought, it is probably better also blocks precise_ip =3D=
-=3D 1,=20
-to match the logic in intel_pmu_hw_config().=20
-
-Thanks,
-Song=
