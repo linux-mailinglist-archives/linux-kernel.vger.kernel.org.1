@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DA32273B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749092273C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgGUAVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 20:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        id S1727784AbgGUAZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 20:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgGUAVv (ORCPT
+        with ESMTP id S1726742AbgGUAZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:21:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE1BC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 17:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fdAHbX0dv/Do17AwhRlUboAs/IVQysOkwB9uhIN83/c=; b=Co9/0eJChJlv5VWl9j+o3g66BO
-        WHJjIzX+YqUX8XvniVwgmiX3DTD+E3jqTB7HWk7RYNXuFDtB9CS3Lxo4uJABLj2kK0ejh0ZbxpLZx
-        30xWnG+GMKgH1s28c8sElSXwLgwdpIc0WFPRfmrg5Poe0BuuugQ4d3DE2AGU21W39JCfmFeIdTUMh
-        Lxw1WZBco/NyQPqkE0roHaoveO76Jwz/lu/3pLOrVnavtfDYr/SnsJ3lrybmMdiOq+1YTEF1bQVj5
-        u4QyJSXj9Xen/soPjNzNB5fXEss0fZgO/wwKns53RfK5zZOAtsteXLvuxltlCCkEPhWIMhP6sD0mq
-        rYzDTcOQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxg2V-0004xy-Tb; Tue, 21 Jul 2020 00:21:47 +0000
-Date:   Tue, 21 Jul 2020 01:21:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: kernel BUG at include/linux/swapops.h:LINE!
-Message-ID: <20200721002147.GA15516@casper.infradead.org>
-References: <000000000000bc4fd705a6e090e2@google.com>
- <0000000000004c38cd05aad1d13f@google.com>
- <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
+        Mon, 20 Jul 2020 20:25:20 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D88C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 17:25:20 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id md7so772011pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 17:25:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7cxptc4I/uOK5zTa3+O6Lrt7Z3UnpyH3/NcfeHtxs2k=;
+        b=kqv7FzFYlqpP35k6zN5lEaueIoVHx4Ipg0XpEcOUS507nHuC7IasfUG4xSY3fS+4c+
+         U97ZTSg7nK0i9ELt24YJchzv8voKn3LYiLQ4QkEFEjSYIimDtPnAgd0hlQInqTQCkVqw
+         je1vEb0N7spgKaymso/hwf1GgdqwGG2XYauNA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7cxptc4I/uOK5zTa3+O6Lrt7Z3UnpyH3/NcfeHtxs2k=;
+        b=LhBwnNZi30CJVhuzPyFwR4yLQaSITeNTzFngJxedZInt8uikfvbBvE5VCVZFjACJG1
+         uBrpAtTrnfYzCx58caOa0Le52exDo9T3oat9wcet33Cl7XCg6QkpJIlct7GcdCBcKRwe
+         8Fl18W3eEUw7UF8n+r5OHoboK8e/fHXSzV3igGjDy5SW1JafWqSPJUh5dIh50awBYgLz
+         SElOikmJ0H9CFNLE5hXiAkA9Yg/o/A07IaIqH2yODZUal5HUYc8zwkVeZGjECE+FSzcb
+         T6DTGbjApRqNlUtL8uiQoaPT9+i7ZMd8Aoe8vxmMWa89kpsGarJM+ceU8o4sqmm4PZMi
+         +yIA==
+X-Gm-Message-State: AOAM532zoLiZXI2p5UPXa2vjytfhrfDwqYt3tegKKJhAzMdZLo3AVVrZ
+        i82bhleS8L6YAFGh1wL4WRJIBg==
+X-Google-Smtp-Source: ABdhPJxHW7frVmS8V0RoIetzAbs38yiQVoktU5vXv/PCZdocNsbIVSOuKk3PhCURyty5yY8RldMy+w==
+X-Received: by 2002:a17:90a:31ce:: with SMTP id j14mr1898552pjf.65.1595291120112;
+        Mon, 20 Jul 2020 17:25:20 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id 17sm758669pjl.30.2020.07.20.17.25.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 17:25:19 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, swboyd@chromium.org,
+        Akash Asthana <akashast@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: i2c-qcom-geni: Fix DMA transfer race
+Date:   Mon, 20 Jul 2020 17:24:53 -0700
+Message-Id: <20200720172448.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 04:51:44PM -0700, Andrew Morton wrote:
-> On Sun, 19 Jul 2020 14:10:19 -0700 syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com> wrote:
-> 
-> > syzbot has found a reproducer for the following issue on:
-> > 
-> > HEAD commit:    4c43049f Add linux-next specific files for 20200716
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12c56087100000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=2c76d72659687242
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=c48f34012b06c4ac67dd
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1344abeb100000
-> > 
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com
-> 
-> Thanks.
-> 
-> __handle_mm_fault
->   ->pmd_migration_entry_wait
->     ->migration_entry_to_page
-> 
-> stumbled onto an unlocked page.
-> 
-> I don't immediately see a cause.  Perhaps Matthew's "THP prep patches",
-> perhaps something else.
+When I have KASAN enabled on my kernel and I start stressing the
+touchscreen my system tends to hang.  The touchscreen is one of the
+only things that does a lot of big i2c transfers and ends up hitting
+the DMA paths in the geni i2c driver.  It appears that KASAN adds
+enough delay in my system to tickle a race condition in the DMA setup
+code.
 
-That's interesting.  I'm currently chasing that signature too.  Of course,
-almost anything can cause this.
+When the system hangs, I found that it was running the geni_i2c_irq()
+over and over again.  It had these:
 
-What I do have in my tree is a patch to turn that WARN_ON into a
-VM_BUG_ON_PAGE and what I see is not just an unlocked page, but one
-that's been freed.
+m_stat   = 0x04000080
+rx_st    = 0x30000011
+dm_tx_st = 0x00000000
+dm_rx_st = 0x00000000
+dma      = 0x00000001
 
-> Is it possible to perform a bisection?
+Notably we're in DMA mode but are getting M_RX_IRQ_EN and
+M_RX_FIFO_WATERMARK_EN over and over again.
 
-My testing (xfstests with the full THP patch set) takes about 45 minutes
-to hit this bug usually.  Sometimes two hours.  I haven't tried running
-it against fewer patches because I thought it was related to having THPs
-smaller than PMD size in the page cache.
+Putting some traces in geni_i2c_rx_one_msg() showed that when we
+failed we were getting to the start of geni_i2c_rx_one_msg() but were
+never executing geni_se_rx_dma_prep().
 
-I don't think it is my patches because they're essentially just a rename.
-But of course, I've been wrong before ...
+I believe that the problem here is that we are writing the transfer
+length and setting up the geni command before we run
+geni_se_rx_dma_prep().  If a transfer makes it far enough before we do
+that then we get into the state I have observed.  Let's change the
+order, which seems to work fine.
+
+Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/i2c/busses/i2c-qcom-geni.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index 18d1e4fd4cf3..21e27f10510a 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -366,15 +366,15 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 	else
+ 		geni_se_select_mode(se, GENI_SE_FIFO);
+ 
+-	writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
+-	geni_se_setup_m_cmd(se, I2C_READ, m_param);
+-
+ 	if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
+ 		geni_se_select_mode(se, GENI_SE_FIFO);
+ 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+ 		dma_buf = NULL;
+ 	}
+ 
++	writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
++	geni_se_setup_m_cmd(se, I2C_READ, m_param);
++
+ 	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+ 	if (!time_left)
+ 		geni_i2c_abort_xfer(gi2c);
+-- 
+2.28.0.rc0.142.g3c755180ce-goog
+
