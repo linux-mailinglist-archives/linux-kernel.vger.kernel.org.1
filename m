@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986B52284FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F22D2284FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 18:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729988AbgGUQKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 12:10:03 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:39735 "EHLO
+        id S1730083AbgGUQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 12:10:33 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:35101 "EHLO
         mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgGUQKD (ORCPT
+        with ESMTP id S1726646AbgGUQKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:10:03 -0400
-Received: by mail-io1-f66.google.com with SMTP id z6so4496358iow.6;
-        Tue, 21 Jul 2020 09:10:02 -0700 (PDT)
+        Tue, 21 Jul 2020 12:10:32 -0400
+Received: by mail-io1-f66.google.com with SMTP id v8so22011203iox.2;
+        Tue, 21 Jul 2020 09:10:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5vZnPunGzHzcF0JaBHQsiLzx0dizWC0QJDWGM3L9f5c=;
-        b=Qe6l6ChpgZQSHZx99WDVTCgXFqWMSt1vF3QN7sXtysHW0sUBUM29JDgig2QOlB/8em
-         mRIgUrnvKNT2m4i7kFeexRcC/zTDD7fXcu/JX8lDuYLZigNMrRpgsWp/L7iz3qhxPELp
-         tC2AsQSL4Ggn1b0b2Etf5dGrvmbkj/UDBNZVtWEiaN5XqlGbeU8mzEcxTJ1L07BDyxi7
-         MXcTYKtbGZkrEyewIEn/EgInBp6lwK8dakaISqoH1fyc7dlOm7nVyW/BnhFY3IDFQb2A
-         U8CutkE/Fj41G8euYJcOd7dDkT4GGr1Ug5EFxwn/HcoJm19AYsPXfIvaPsrotp8UXVjp
-         fuHA==
-X-Gm-Message-State: AOAM533QJzvS036bwFA0x/0R6LxEOx4wPEk3mcac0+rU8zqUnpqh6YUT
-        ya4g31VdNEG5KWqwHZDp6Q==
-X-Google-Smtp-Source: ABdhPJw/GMPRXuRPapKDmiimXNT1feeBi8f4deFqtacLZt7Z7EGOGgBWwTEEUTrlaQ4Q9UqmXfWaCA==
-X-Received: by 2002:a6b:7210:: with SMTP id n16mr28740129ioc.177.1595347802108;
-        Tue, 21 Jul 2020 09:10:02 -0700 (PDT)
+        bh=VwfsV06hD71inBjFyFOL8OsY8zC4624povq1N9705fc=;
+        b=UvRI+ZEGhdPp012Mx92PNnr2Bu9Bao+Kl+aRGZC9PBNQhDHkThxMeZTeZUtEwVq7Cy
+         1XgpNLdqZQHDGyLV3OOA1CcpR1vs6scyL5fwIZtrojPXry7nYoqVrm7G7nPmA+F/gC4n
+         N6/uqMeaunJglT/YD6YH0T1iefdqYylullP7AnAl488BvDzVi5FMwJUtB1W9xGegCMYc
+         +fjKZ7+oG4q72u5Z4tqBSL3ZEPwlsy6ov81qTi4w68IP0dteizUGJkAWSBeH8XSzAQJT
+         Xle7YhL/MLCMsUt58uyRYXrXYgEWfVAnB1z+vcm0pJDqjuhssNV/yL2vlbnUWFRd/M7y
+         fMpw==
+X-Gm-Message-State: AOAM531Cp4puLOgXsV7of/WnIvcY4Izipe1DVQvS54isAed5gbrP6/2/
+        Mmabd2qHSa7uPLs1EjGX+gnbxbgDSyll
+X-Google-Smtp-Source: ABdhPJxdf2sFFoZrRlvrQtZQpOQz8vyHwSZpLmkP5dADwW0WJNMXv9lHuLaPhOMa2aM31cLgfKbrWQ==
+X-Received: by 2002:a5d:9699:: with SMTP id m25mr28818001ion.74.1595347831374;
+        Tue, 21 Jul 2020 09:10:31 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id d6sm10604898ilq.27.2020.07.21.09.09.59
+        by smtp.gmail.com with ESMTPSA id e16sm11571007iow.37.2020.07.21.09.10.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 09:10:01 -0700 (PDT)
-Received: (nullmailer pid 388371 invoked by uid 1000);
-        Tue, 21 Jul 2020 16:09:58 -0000
-Date:   Tue, 21 Jul 2020 10:09:58 -0600
+        Tue, 21 Jul 2020 09:10:30 -0700 (PDT)
+Received: (nullmailer pid 389136 invoked by uid 1000);
+        Tue, 21 Jul 2020 16:10:28 -0000
+Date:   Tue, 21 Jul 2020 10:10:28 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     robh+dt@kernel.org, dri-devel@lists.freedesktop.org,
-        krzk@kernel.org, sboyd@kernel.org, paul.walmsley@sifive.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        daniel@ffwll.ch, airlied@linux.ie
-Subject: Re: [PATCH for v5.9] dt-bindings: drm/bridge: Replace HTTP links
- with HTTPS ones
-Message-ID: <20200721160958.GA388320@bogus>
-References: <20200719174457.60674-1-grandmaster@al2klimov.de>
+Cc:     linux-omap@vger.kernel.org, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org, tony@atomide.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH for v5.9] mfd: Replace HTTP links with HTTPS ones
+Message-ID: <20200721161028.GA389086@bogus>
+References: <20200719195613.61458-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200719174457.60674-1-grandmaster@al2klimov.de>
+In-Reply-To: <20200719195613.61458-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Jul 2020 19:44:57 +0200, Alexander A. Klimov wrote:
+On Sun, 19 Jul 2020 21:56:13 +0200, Alexander A. Klimov wrote:
 > Rationale:
 > Reduces attack surface on kernel devs opening the links for MITM
 > as HTTPS traffic is much harder to manipulate.
@@ -96,8 +94,29 @@ On Sun, 19 Jul 2020 19:44:57 +0200, Alexander A. Klimov wrote:
 >  Impossible is nothing! :)
 > 
 > 
->  .../devicetree/bindings/display/bridge/ti,sn65dsi86.txt         | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/mfd/twl-family.txt | 2 +-
+>  drivers/mfd/hi6421-pmic-core.c                       | 2 +-
+>  drivers/mfd/lp873x.c                                 | 2 +-
+>  drivers/mfd/lp87565.c                                | 2 +-
+>  drivers/mfd/omap-usb-host.c                          | 2 +-
+>  drivers/mfd/omap-usb-tll.c                           | 2 +-
+>  drivers/mfd/smsc-ece1099.c                           | 2 +-
+>  drivers/mfd/ti_am335x_tscadc.c                       | 2 +-
+>  drivers/mfd/tps65086.c                               | 2 +-
+>  drivers/mfd/tps65217.c                               | 2 +-
+>  drivers/mfd/tps65218.c                               | 2 +-
+>  drivers/mfd/tps65912-core.c                          | 2 +-
+>  drivers/mfd/tps65912-i2c.c                           | 2 +-
+>  drivers/mfd/tps65912-spi.c                           | 2 +-
+>  include/linux/mfd/hi6421-pmic.h                      | 2 +-
+>  include/linux/mfd/lp873x.h                           | 2 +-
+>  include/linux/mfd/lp87565.h                          | 2 +-
+>  include/linux/mfd/ti_am335x_tscadc.h                 | 2 +-
+>  include/linux/mfd/tps65086.h                         | 2 +-
+>  include/linux/mfd/tps65217.h                         | 2 +-
+>  include/linux/mfd/tps65218.h                         | 2 +-
+>  include/linux/mfd/tps65912.h                         | 2 +-
+>  22 files changed, 22 insertions(+), 22 deletions(-)
 > 
 
-Applied, thanks!
+Acked-by: Rob Herring <robh@kernel.org>
