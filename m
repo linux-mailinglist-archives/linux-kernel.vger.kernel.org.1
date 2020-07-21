@@ -2,188 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CCA228065
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D1E22806D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 14:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgGUM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 08:58:05 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:36149 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbgGUM6F (ORCPT
+        id S1728214AbgGUM7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 08:59:24 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:5744 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727121AbgGUM7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 08:58:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595336283; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zL4Vmv3VgfCA8IfWdHITcCzdfO+3oA2nyWU0ZMt5Q0A=;
- b=lvPF60XYJ0SmmDp55xnzlL8muUzN24O5fQvCpGOul3sHRPn5ijUjOL8FbeTqfYUhTebbZZ1D
- 7j3SWZZtOTYQfPfvFN1vriVY7W1Z7xmREhIdToAIjXDrmNtbQeJ/hS9yJxBRnByUNmSV38MH
- D3aOC3bbts7iHhZVoIraY/YK6lQ=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f16e64fcf983e60a8b3d3a1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Jul 2020 12:57:51
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 03221C433A0; Tue, 21 Jul 2020 12:57:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kalyan_t)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF31AC433C9;
-        Tue, 21 Jul 2020 12:57:49 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Jul 2020 18:27:49 +0530
-From:   kalyan_t@codeaurora.org
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Zheng Bin <zhengbin13@huawei.com>, Sean Paul <sean@poorly.run>,
+        Tue, 21 Jul 2020 08:59:23 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06LCv7SQ024874;
+        Tue, 21 Jul 2020 14:58:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=FG8Jpl88uMJR2Haodeqb+M02x+DZQPQlOWwZUmrVcUA=;
+ b=EnkM8LhL48Qm5Tc33FT+Mm9bbek5SiuCwmBudd95SfBBA3CMuo4EC1mHnE+nEZb5eibf
+ XrSHD1iOYavvex1XaflRy+33LRTvHIKC5TsKjmC7h0Z2j/7e4fg+cG3kBcDptsU/uBG0
+ U/BsrIjOPjcpVmAq+XNveXjyAq3vgACDJc5VdBmj/aVZyLflszg5DrGYcN/KcJmfc1X+
+ 0pWax5B1Pkqf9WMIjH3L5TCcC1p38SicwwsranTlt4dtYjGCvsf+QROOlvtfOLWEGhpU
+ YoyxN7GiYXeVYmstM/jxDHNa7Yu6F0/u649t99REgf9mJX7YwwnMLQUIK1ujWh0rMBUs dw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32bs6uwy66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 14:58:50 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4FBBE100034;
+        Tue, 21 Jul 2020 14:58:50 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2F5D32BE25A;
+        Tue, 21 Jul 2020 14:58:50 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 21 Jul
+ 2020 14:58:49 +0200
+Subject: Re: [PATCH v5 0/8] Enable ili9341 and l3gd20 on stm32f429-disco
+To:     dillon min <dillon.minfei@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <p.zabel@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Steev Klimaszewski <steev@gentoo.org>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: fix/enable 6bpc dither with
- split-lm
-In-Reply-To: <CAF6AEGuV7vTseh5KmCremhhfR1E4sAY1oPAwtCOCtYb1vx=A0g@mail.gmail.com>
-References: <20200715221955.3209856-1-robdclark@gmail.com>
- <92c9e9d08dfa014f1589186a68902de7@codeaurora.org>
- <CAF6AEGuV7vTseh5KmCremhhfR1E4sAY1oPAwtCOCtYb1vx=A0g@mail.gmail.com>
-Message-ID: <dbd08d83075ce6356a233f66b3001cc7@codeaurora.org>
-X-Sender: kalyan_t@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <broonie@kernel.org>
+ <1590378062-7965-1-git-send-email-dillon.minfei@gmail.com>
+ <198ad79c-ab12-55f0-814f-afc454a7e8ef@st.com>
+ <CAL9mu0L3ZF5+nh2ENzxnu0f6AAh1ygoWx1bEkS3WkJt8TN7C7Q@mail.gmail.com>
+ <d7986a59-1337-ca33-fed0-0b6af458dbbb@st.com>
+ <CAL9mu0LyJ9RP4_m_43a-eCfEUp=1A2ZEQQLwZ2Xg4kzfsXruhA@mail.gmail.com>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <112dd65b-2a3c-a776-8d31-f0d0b8f2c355@st.com>
+Date:   Tue, 21 Jul 2020 14:58:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAL9mu0LyJ9RP4_m_43a-eCfEUp=1A2ZEQQLwZ2Xg4kzfsXruhA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG8NODE1.st.com (10.75.127.22) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_08:2020-07-21,2020-07-21 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-20 20:53, Rob Clark wrote:
-> On Mon, Jul 20, 2020 at 5:53 AM <kalyan_t@codeaurora.org> wrote:
->> 
->> On 2020-07-16 03:49, Rob Clark wrote:
->> > From: Rob Clark <robdclark@chromium.org>
->> >
->> > If split-lm is used (for ex, on sdm845), we can have multiple ping-
->> > pongs, but only a single phys encoder.  We need to configure dithering
->> > on each of them.
->> >
->> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-      Reviewed-by: Kalyan Thota <kalyan_t@codeaurora.org>
->> > ---
->> >  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 22 ++++++++++---------
->> >  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   |  3 +--
->> >  2 files changed, 13 insertions(+), 12 deletions(-)
->> >
->> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> > index 46df0ff75b85..9b98b63c77fb 100644
->> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> > @@ -212,14 +212,14 @@ static u32 dither_matrix[DITHER_MATRIX_SZ] = {
->> >       15, 7, 13, 5, 3, 11, 1, 9, 12, 4, 14, 6, 0, 8, 2, 10
->> >  };
->> >
->> > -static void _dpu_encoder_setup_dither(struct dpu_encoder_phys *phys)
->> > +static void _dpu_encoder_setup_dither(struct dpu_hw_pingpong *hw_pp,
->> > unsigned bpc)
->> >  {
->> >       struct dpu_hw_dither_cfg dither_cfg = { 0 };
->> >
->> > -     if (!phys->hw_pp || !phys->hw_pp->ops.setup_dither)
->> > +     if (!hw_pp->ops.setup_dither)
->> >               return;
->> >
->> > -     switch (phys->connector->display_info.bpc) {
->> > +     switch (bpc) {
->> >       case 6:
->> >               dither_cfg.c0_bitdepth = 6;
->> >               dither_cfg.c1_bitdepth = 6;
->> > @@ -228,14 +228,14 @@ static void _dpu_encoder_setup_dither(struct
->> > dpu_encoder_phys *phys)
->> >               dither_cfg.temporal_en = 0;
->> >               break;
->> >       default:
->> > -             phys->hw_pp->ops.setup_dither(phys->hw_pp, NULL);
->> > +             hw_pp->ops.setup_dither(hw_pp, NULL);
->> >               return;
->> >       }
->> >
->> >       memcpy(&dither_cfg.matrix, dither_matrix,
->> >                       sizeof(u32) * DITHER_MATRIX_SZ);
->> >
->> > -     phys->hw_pp->ops.setup_dither(phys->hw_pp, &dither_cfg);
->> > +     hw_pp->ops.setup_dither(hw_pp, &dither_cfg);
->> >  }
->> >
->> >  void dpu_encoder_helper_report_irq_timeout(struct dpu_encoder_phys
->> > *phys_enc,
->> > @@ -1132,11 +1132,13 @@ static void
->> > _dpu_encoder_virt_enable_helper(struct drm_encoder *drm_enc)
->> >
->> >       _dpu_encoder_update_vsync_source(dpu_enc, &dpu_enc->disp_info);
->> >
->> > -     if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI) {
->> > -             for (i = 0; i < dpu_enc->num_phys_encs; i++) {
->> > -                     struct dpu_encoder_phys *phys = dpu_enc->phys_encs[i];
->> > -
->> > -                     _dpu_encoder_setup_dither(phys);
->> > +     if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI &&
->> > +                     !WARN_ON(dpu_enc->num_phys_encs == 0)) {
->> > +             unsigned bpc = dpu_enc->phys_encs[0]->connector->display_info.bpc;
->> > +             for (i = 0; i < MAX_CHANNELS_PER_ENC; i++) {
->> > +                     if (!dpu_enc->hw_pp[i])
->> > +                             continue;
->> > +                     _dpu_encoder_setup_dither(dpu_enc->hw_pp[i], bpc);
->> >               }
->> >       }
->> >  }
->> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
->> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
->> > index 7411ab6bf6af..bea4ab5c58c5 100644
->> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
->> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
->> > @@ -231,8 +231,7 @@ static void _setup_pingpong_ops(struct
->> > dpu_hw_pingpong *c,
->> >       c->ops.poll_timeout_wr_ptr = dpu_hw_pp_poll_timeout_wr_ptr;
->> >       c->ops.get_line_count = dpu_hw_pp_get_line_count;
->> >
->> > -     if (test_bit(DPU_PINGPONG_DITHER, &features) &&
->> > -             IS_SC7180_TARGET(c->hw.hwversion))
->> > +     if (test_bit(DPU_PINGPONG_DITHER, &features))
->> >               c->ops.setup_dither = dpu_hw_pp_setup_dither;
->> >  };
->> 
->> Change looks good to me
-> 
-> Does that count as a Reviewed-by?
-> 
-Sure i have added the tag.
 
-> BR,
-> -R
+
+On 7/21/20 2:55 PM, dillon min wrote:
+> Hi, Alexandre,
 > 
->> 
->> - Kalyan
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+> 
+> On Tue, Jul 21, 2020 at 7:54 PM Alexandre Torgue
+> <alexandre.torgue@st.com> wrote:
+>>
+>>
+>>
+>> On 7/21/20 12:39 PM, dillon min wrote:
+>>> Hi Alexandre,
+>>>
+>>> On Tue, Jul 21, 2020 at 5:19 PM Alexandre Torgue
+>>> <alexandre.torgue@st.com> wrote:
+>>>>
+>>>> Hi Dillon
+>>>>
+>>>> On 5/25/20 5:40 AM, dillon.minfei@gmail.com wrote:
+>>>>> From: dillon min <dillon.minfei@gmail.com>
+>>>>>
+>>>>> V5's update based on Mark Brown's suggestion, use 'SPI_MASTER_MUST_RX'
+>>>>> for SPI_SIMPLEX_RX mode on stm32 spi controller.
+>>>>>
+>>>>> V5:
+>>>>> 1 instead of add send dummy data out under SIMPLEX_RX mode,
+>>>>>       add flags 'SPI_CONTROLLER_MUST_TX' for stm32 spi driver
+>>>>> 2 bypass 'SPI_CONTROLLER_MUST_TX' and 'SPI_CONTROLLER_MUST_RX' under
+>>>>> 'SPI_3WIRE' mode
+>>>>>
+>>>>
+>>>> Concerning DT patches, they look goods for me. However I'll merge them
+>>>> when drivers parts will be merged.
+>>>>
+>>>> regards
+>>>> Alex
+>>> This patchset status is :
+>>> dts:
+>>>       ARM: dts: stm32: Add dma config for spi5
+>>>       ARM: dts: stm32: Add pin map for ltdc & spi5 on stm32f429-disco board
+>>>       ARM: dts: stm32: enable ltdc binding with ili9341, gyro l3gd20 on
+>>>         stm32429-disco board
+>>>
+>>> panel-bindings: Reviewed-by: Rob Herring， need more reviewing to merge
+>>>       dt-bindings: display: panel: Add ilitek ili9341 panel bindings
+>>>
+>>> clk: Acked-by: Stephen Boyd , need more reviewing to merge
+>>>       clk: stm32: Fix stm32f429's ltdc driver hang in set clock rate,
+>>>         fix duplicated ltdc clock register to 'clk_core' case ltdc's clock
+>>>           turn off by clk_disable_unused()
+>>>
+>>> drm-panel:  Reviewed-by: Linus Walleij . need more reviewing to merge
+>>>       drm/panel: Add ilitek ili9341 panel driver
+>>>
+>>> spi-driver: Acked-by: Mark Brown ，merged into mainline
+>>>       spi: stm32: Add 'SPI_SIMPLEX_RX', 'SPI_3WIRE_RX' support for stm32f4
+>>>       spi: flags 'SPI_CONTROLLER_MUST_RX' and 'SPI_CONTROLLER_MUST_TX' can't
+>>>         becoexit with 'SPI_3WIRE' mode
+>>>
+>>> For ili9341 drivers, it seems to need more time to review, or might be dropped.
+>>> since the drm maintainer might create a new interface to support
+>>> DPI,DBI,DSI in one driver.
+>>> Currently it's under discussion. I will rework the ili9341 driver after that.
+>>>
+>>> But, we can use the existing "drivers/gpu/drm/tiny/ili9341.c" driver to support
+>>> ili9341 on stm32f429-disco board only using the spi bus. except the
+>>> display refresh performance is not as good as the ltdc interface.
+>>>
+>>> I can submit a new patch just with dts changed this week for it, if you need.
+>>>
+>>
+>>
+>> Thanks for this status. I'm close to send my PR for v5.9. There is no
+>> needs to have an intermediate version (Except you absolutely want it).
+>>
+>> Thanks
+>> alex
+> Ok, I prefer to use the ltdc interface to drive ili9341 either.
+
+Ok, so let's wait for the full review of this series.
+
+Cheers
+Alex
+
+> 
+> Thanks,
+> Dillon.
+>>
+>>> Thanks,
+>>> Dillon.
+>>>>
+>>>>
+>>>>
+>>>>> V4:
+>>>>> According to alexandre torgue's suggestion, combine ili9341 and
+>>>>> l3gd20's modification on stm32f429-disco board to one patchset.
+>>>>>
+>>>>> Changes:
+>>>>>
+>>>>> ili9341:
+>>>>>
+>>>>> 1 update ili9341 panel driver according to Linus's suggestion
+>>>>> 2 drop V1's No.5 patch, sumbit new changes for clk-stm32f4
+>>>>> 3 merge l3gd20's change to this patchset
+>>>>>
+>>>>> V3:
+>>>>> 1 merge original tiny/ili9341.c driver to panel/panel-ilitek-ili9341.c
+>>>>>      to support serial spi & parallel rgb interface in one driver.
+>>>>> 2 update ilitek,ili9341.yaml dts binding documentation.
+>>>>> 3 update stm32f429-disco dts binding
+>>>>>
+>>>>> V2:
+>>>>> 1 verify ilitek,ili9341.yaml with make O=../linux-stm32
+>>>>>      dt_binding_check
+>>>>>      DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/panel/
+>>>>>      ilitek,ili9341.yaml
+>>>>>
+>>>>> V1:
+>>>>> 1 add ili9341 drm panel driver
+>>>>> 2 add ltdc, spi5 controller for stm32f429-disco
+>>>>> 3 add ltdc, spi5 pin map for stm32f429-disco
+>>>>> 4 add docs about ili9341
+>>>>> 5 fix ltdc driver loading hang in clk set rate bug
+>>>>>
+>>>>>
+>>>>> L3gd20:
+>>>>> V3:
+>>>>> 1 merge stm32f429-disco dtbs binding with ili9341 part
+>>>>>
+>>>>> V2:
+>>>>> 1 insert blank line at stm32f420-disco.dts line 143
+>>>>> 2 add more description for l3gd20 in commit message
+>>>>>
+>>>>> V1:
+>>>>> 1 enable spi5 controller on stm32f429-disco (dts)
+>>>>> 2 add spi5 pinmap for stm32f429-disco  (dts)
+>>>>> 3 add SPI_SIMPLEX_RX, SPI_3WIRE_RX support for stm32f4
+>>>>>
+>>>>>
+>>>>> dillon min (8):
+>>>>>      ARM: dts: stm32: Add dma config for spi5
+>>>>>      ARM: dts: stm32: Add pin map for ltdc & spi5 on stm32f429-disco board
+>>>>>      ARM: dts: stm32: enable ltdc binding with ili9341, gyro l3gd20 on
+>>>>>        stm32429-disco board
+>>>>>      dt-bindings: display: panel: Add ilitek ili9341 panel bindings
+>>>>>      clk: stm32: Fix stm32f429's ltdc driver hang in set clock rate,
+>>>>>        fix duplicated ltdc clock register to 'clk_core' case ltdc's clock
+>>>>>          turn off by clk_disable_unused()
+>>>>>      drm/panel: Add ilitek ili9341 panel driver
+>>>>>      spi: stm32: Add 'SPI_SIMPLEX_RX', 'SPI_3WIRE_RX' support for stm32f4
+>>>>>      spi: flags 'SPI_CONTROLLER_MUST_RX' and 'SPI_CONTROLLER_MUST_TX' can't
+>>>>>        be     coexit with 'SPI_3WIRE' mode
+>>>>>
+>>>>>     .../bindings/display/panel/ilitek,ili9341.yaml     |   69 ++
+>>>>>     arch/arm/boot/dts/stm32f4-pinctrl.dtsi             |   67 +
+>>>>>     arch/arm/boot/dts/stm32f429-disco.dts              |   48 +
+>>>>>     arch/arm/boot/dts/stm32f429.dtsi                   |    3 +
+>>>>>     drivers/clk/clk-stm32f4.c                          |    7 +-
+>>>>>     drivers/gpu/drm/panel/Kconfig                      |   12 +
+>>>>>     drivers/gpu/drm/panel/Makefile                     |    1 +
+>>>>>     drivers/gpu/drm/panel/panel-ilitek-ili9341.c       | 1301 ++++++++++++++++++++
+>>>>>     drivers/spi/spi-stm32.c                            |   19 +-
+>>>>>     drivers/spi/spi.c                                  |    3 +-
+>>>>>     10 files changed, 1521 insertions(+), 9 deletions(-)
+>>>>>     create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
+>>>>>     create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+>>>>>
