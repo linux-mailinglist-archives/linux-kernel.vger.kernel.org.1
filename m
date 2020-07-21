@@ -2,103 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A13227439
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0D3227422
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 02:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgGUA5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Jul 2020 20:57:11 -0400
-Received: from sonic307-16.consmr.mail.ne1.yahoo.com ([66.163.190.39]:42675
-        "EHLO sonic307-16.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728009AbgGUA5J (ORCPT
+        id S1727815AbgGUAwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Jul 2020 20:52:25 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.250]:40359 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726425AbgGUAwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:57:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595293028; bh=0CHC+re3Lg12wtapqmZiuSmzuO0jp0HvYX3Xhxuru+I=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=gc50MvHwpsJUEN8yBYJ45+nt2gi0ECcAfnIrNDGl9elan6v+xnCWA7MzVC/ZWIUm9NzSodKMFQcd9acEFfazfcmzsIC7Lj1I5TG2LV1Q0hd9F9SW7Kx+SFKJNyW54RhyDz4fLTJpE6pO3hMU67wzIgvit2Bz86ubwxZBkxZvOmgtg6001IZNOdaDukMA8qgpvLpnTF13W6d6ufWrTcS/8xvc5SPgRiSS6ADAPJJ3cc4Ydhyrrb6wlh7nahh0Fvdvm9UVK6yyi6Ydw7R/cGleQPwPzK1FeWPimeOUL1+sovYmT556oyaOX4DTt3xgq3xJLYYJQntvhXsX7S2yOlK6Cg==
-X-YMail-OSG: zLYKgBQVM1khUVbN7dTBmXEbI8LpzzshYS7aWJJehT22feStu5gXyOH.W8D.aD8
- mfoehi0R5XlNvoS0cqJmHAZkBFe1Ai_REvgHb6e68itl2qAlX7SLVomThNKber1cMByvZTa8nuXT
- DpKcnQt5ZDj1F1wTkxJW7fPOiX8bhP_Qm8CtI2vAGl_OThlf98pJWB_YN1LBOy41NP5ZgsPjI1r_
- pRPLu4q5RJTsTzQWkOYw0SN0FezwKSMpEZboI9DG.Zi5KlGzmganQ09uvwyYAAd8p2W2g0wQFqtw
- 9b9E99Gi2iNiW7JwYb7gdMfmAubOF28RhZqUS3dr5nhU4dkaBNk805hMGsBoIQZL7hZnUPAyMbxB
- GKk5ZCFwVa0HzIi1mQGe8xE1vi4b3av9X0E8Qli97k8dky8KfabxaYh0XdLzxdB.4_.gWrbbaFS4
- M2jv5Ds_6bab1LYun_ZreWZW0mtY4A02mcpFLgO_rcbLKe6nIdklZG.Cx4uRTc4cEIKrPGeNNgp2
- M2bpU1F3bIYTcU8WWej4EB5mW3XP333H_XaPWnU1LL39DusL3a7zHzwiJA6ffqAqBJUigxsWwljv
- SETtZIQcgudD1kU21oOPRvyjRiEgK0vkGQuh_ai2yfQ7AKAIP._C42W_hEm7UkASTPAZo5UDnu6i
- SSuWY9ZF_1KUkNPkNZZss69S.KXBF9mCzD3jCkEsAjGRX.9JSoRahGxJHOaimSKSzGBA6zvU0OlQ
- enXybu4HKqsA4r3L0f1WZT4eAqGFPuRI._1w7k_YsnBinuYXKvKMkTm3moCAYlLqGNI1I6GGUzLG
- yx8hCu8Bdd6j9StIODgBKVvcRs8mSTep0xPaTrD9Y6tGP4MA5HM9m_Z0QuTgJiz9.H3.ll78OhEB
- .mPYAQmjd2cyCtNAA9.WJrnHlpjgffXZszPE8QqVfK7Dn7KWZXzKeW6qzP7kQt5BMUZbQlXcmGS4
- o8e2nbjU7eHYlGHyRa581gx16nx1iIHScpRlLI1eNUc_BzFPAEhvAInkExqWeZ45P8dKnxiw21Gi
- 1J0qD_UI870pQx89JiMUFJNWZg0guyNh2vmNswCEtvV8sxwDO_SF3jmAJJoEv8epvrlt7lwrwsdV
- 4zmwFQ9buw8nLhYcy9uL3Vkmc5FO2pZiGpBVsAGluf0t1vOY4skZjzVTCyN0igKx0D88iISOfafC
- DljfnWNPpnU_7fiPwhgdhlyeP6A7hX1jmopNpuaMxxyVaFJEUc7kSAPKIcR_ZGbVYAPU1Avbrw2k
- gVfzyefxu7nlWbbrxIhxwtip.dzop4cqu6p9RXJCXjtED7sa0pn55fv2HC8s7e6zHuCG6l1qatO2
- Ife0ZfVS8.QHHuKgbX.6CLs4_DwNcK93DXVrJNmjxhEZApBGDG4LrLld5tlqhEUlo.Mw891AvQFH
- QhqzvEUvtSqFyxYAI6Hj.xyc-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Jul 2020 00:57:08 +0000
-Received: by smtp421.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 7f1506f069518a44952a27ea8fef8594;
-          Tue, 21 Jul 2020 00:57:04 +0000 (UTC)
-Subject: Re: [PATCH] Smack: fix use-after-free in smk_write_relabel_self()
-To:     Eric Biggers <ebiggers@kernel.org>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+e6416dabb497a650da40@syzkaller.appspotmail.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <0000000000000279c705a799ae31@google.com>
- <20200708201520.140376-1-ebiggers@kernel.org>
- <20200721003830.GC7464@sol.localdomain>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <4b7b9cbc-2c8d-0582-67f4-a8b095b78959@schaufler-ca.com>
-Date:   Mon, 20 Jul 2020 17:57:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 20 Jul 2020 20:52:24 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id ED50740175BDB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 19:52:21 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id xgW5jAgUtwgQAxgW5jFUkH; Mon, 20 Jul 2020 19:52:21 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qXXnuyugAj0CxbikFnZtaAad162hlkPdrwWBrGHiC+8=; b=f1ROkizOA3uczfGV/hoC9UCD3m
+        01d5IcdTgp1V3THs6SldNLRN3UfyDG3Exzwhr+Aqbfleb7N+r7YfYML3zgaynrjT3CyRa4GpJZegD
+        j4zE10JXVNbpr3umAqe3zcuntiALosOrMy9JdI79hIxtE6ucCP0TjGxKO1ZPNyYWIAWS5rqZl0SAh
+        KkRyEEUyTsZFp/s3tRrXxkHqdZEfyxmw2dsvqWXaaZrzuQ0m6ztje+syhOtFz5/1wF49cP/8Mfox7
+        nprDkocQyOWjdlISPG6jYaTvK5btgiE9tIJyMFK7WsZhdMt/czkUnZxRvB/YXKNPYdUy4hYRDatUK
+        JP0Xv2+w==;
+Received: from [200.68.140.17] (port=10763 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jxgW5-000CaQ-I6; Mon, 20 Jul 2020 19:52:21 -0500
+Subject: Re: [PATCH v2][next] phy: samsung-ufs: Fix IS_ERR argument
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        "'Gustavo A. R. Silva'" <gustavoars@kernel.org>,
+        'Kishon Vijay Abraham I' <kishon@ti.com>,
+        'Vinod Koul' <vkoul@kernel.org>,
+        'Seungwon Jeon' <essuuj@gmail.com>,
+        'Kiwoong Kim' <kwmad.kim@samsung.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <CGME20200720132147epcas5p14aba715032bcda00fad2147cac8b354b@epcas5p1.samsung.com>
+ <20200720132718.GA13413@embeddedor>
+ <042d01d65ef8$6c683f80$4538be80$@samsung.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <165b7af1-eb5c-7819-48e8-4ce322756587@embeddedor.com>
+Date:   Mon, 20 Jul 2020 19:58:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200721003830.GC7464@sol.localdomain>
+In-Reply-To: <042d01d65ef8$6c683f80$4538be80$@samsung.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Mailer: WebService/1.1.16271 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.140.17
+X-Source-L: No
+X-Exim-ID: 1jxgW5-000CaQ-I6
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [200.68.140.17]:10763
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/2020 5:38 PM, Eric Biggers wrote:
-> On Wed, Jul 08, 2020 at 01:15:20PM -0700, Eric Biggers wrote:
->> From: Eric Biggers <ebiggers@google.com>
->>
->> smk_write_relabel_self() frees memory from the task's credentials with
->> no locking, which can easily cause a use-after-free because multiple
->> tasks can share the same credentials structure.
->>
->> Fix this by using prepare_creds() and commit_creds() to correctly modify
->> the task's credentials.
->>
->> Reproducer for "BUG: KASAN: use-after-free in smk_write_relabel_self":
->>
->> 	#include <fcntl.h>
->> 	#include <pthread.h>
->> 	#include <unistd.h>
->>
->> 	static void *thrproc(void *arg)
->> 	{
->> 		int fd = open("/sys/fs/smackfs/relabel-self", O_WRONLY);
->> 		for (;;) write(fd, "foo", 3);
->> 	}
->>
->> 	int main()
->> 	{
->> 		pthread_t t;
->> 		pthread_create(&t, NULL, thrproc, NULL);
->> 		thrproc(NULL);
->> 	}
->>
->> Reported-by: syzbot+e6416dabb497a650da40@syzkaller.appspotmail.com
->> Fixes: 38416e53936e ("Smack: limited capability for changing process label")
->> Cc: <stable@vger.kernel.org> # v4.4+
->> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Ping.
 
-I have queued your patch and will be pushing it for next shortly.
 
+On 7/20/20 19:46, Alim Akhtar wrote:
+> Hi Gustavo,
+> 
+>> -----Original Message-----
+>> From: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Sent: 20 July 2020 18:57
+>> To: Kishon Vijay Abraham I <kishon@ti.com>; Vinod Koul <vkoul@kernel.org>;
+>> Seungwon Jeon <essuuj@gmail.com>; Alim Akhtar
+>> <alim.akhtar@samsung.com>; Kiwoong Kim <kwmad.kim@samsung.com>
+>> Cc: linux-kernel@vger.kernel.org; Gustavo A. R. Silva
+> <gustavoars@kernel.org>
+>> Subject: [PATCH v2][next] phy: samsung-ufs: Fix IS_ERR argument
+>>
+>> Fix IS_ERR argument in samsung_ufs_phy_symbol_clk_init(). The proper
+>> argument to be passed to IS_ERR() is phy->rx1_symbol_clk.
+>>
+>> This bug was detected with the help of Coccinelle.
+>>
+>> Fixes: bca21e930451 ("phy: samsung-ufs: add UFS PHY driver for samsung
+> SoC")
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+> Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+> 
+
+Thanks, Alim.
+
+--
+Gustavo
+
+>> Changes in v2:
+>>  - Update subject line and changelog text.
+>>
+>>  drivers/phy/samsung/phy-samsung-ufs.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/phy/samsung/phy-samsung-ufs.c
+>> b/drivers/phy/samsung/phy-samsung-ufs.c
+>> index 43ef77d1d96c..9832599a0283 100644
+>> --- a/drivers/phy/samsung/phy-samsung-ufs.c
+>> +++ b/drivers/phy/samsung/phy-samsung-ufs.c
+>> @@ -147,7 +147,7 @@ static int samsung_ufs_phy_symbol_clk_init(struct
+>> samsung_ufs_phy *phy)
+>>  	}
+>>
+>>  	phy->rx1_symbol_clk = devm_clk_get(phy->dev, "rx1_symbol_clk");
+>> -	if (IS_ERR(phy->rx0_symbol_clk)) {
+>> +	if (IS_ERR(phy->rx1_symbol_clk)) {
+>>  		dev_err(phy->dev, "failed to get rx1_symbol_clk clock\n");
+>>  		return PTR_ERR(phy->rx1_symbol_clk);
+>>  	}
+>> --
+>> 2.27.0
+> 
+> 
