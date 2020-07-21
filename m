@@ -2,60 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B196C22888A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A65228891
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 20:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgGUSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 14:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        id S1729935AbgGUSxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 14:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbgGUSvA (ORCPT
+        with ESMTP id S1726960AbgGUSxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:51:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26777C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 11:51:00 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595357458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qdipnKXv3gOGqH0ByEIYykeYoO9kup3rKdufCdBST5o=;
-        b=OSjdCDdl0En8O17RWQ2kJMkhJc48ZoYrrAGhVElzkTziId74MGCnajDN+06rmSVCW1QVr7
-        cM65LcmmT/xjJg76JHHyeHe9vskF8WyWPPHpRwljtRC9n3JvxYrKY2duFWsUwz7qxUm5kV
-        rZNg3YM1HTY2aLwyZdk6j9JfDv1MyNuumYvFxCCZnnVaXmbDP25pahtKU/kLEtMUiucXvw
-        G2tfoUBJ3IEIUbEGiw3aVwRmq/W5+kXZ+RkVot8ySNUNnfuzE7MTHHXLEK7m8ba5iAZBwi
-        35HMPg1pBWa7wIdAWM/eqHS0RMcGetDeQy5tJ7mphc4srdmyEo5UHatsam7TSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595357458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qdipnKXv3gOGqH0ByEIYykeYoO9kup3rKdufCdBST5o=;
-        b=vhzC+AvwODodfdah/REw2j3SxBIkVwbF7H0+QNRbTVowXyai3t6WQuaoOgy3lzl9kvt/0t
-        JZf8OHm/WU3Zr5AQ==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer timer handling to task_work
-In-Reply-To: <87eep7nvv6.fsf@nanos.tec.linutronix.de>
-References: <20200716201923.228696399@linutronix.de> <20200716202044.734067877@linutronix.de> <20200716225458.GL5523@worktop.programming.kicks-ass.net> <87tuy6q965.fsf@nanos.tec.linutronix.de> <87eep7nvv6.fsf@nanos.tec.linutronix.de>
-Date:   Tue, 21 Jul 2020 20:50:57 +0200
-Message-ID: <87y2nc3dny.fsf@nanos.tec.linutronix.de>
+        Tue, 21 Jul 2020 14:53:41 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF96C061794;
+        Tue, 21 Jul 2020 11:53:41 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id f12so22644541eja.9;
+        Tue, 21 Jul 2020 11:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnSVvBPLgxOr7Okxa4+yFdbMwIKkVndKbRuepRfY/Zs=;
+        b=eek7cfh8H0FIKKTKyBOBHTZXYqIWxEk2P6Dapr54GUi+cu4HMdvEVwngy6fLz1aDzg
+         U0nFCc4ud2FYMXTUQrRiT3tbHejhwGgihOl42ahAgrjrWuM+I6d+6HakuuuzNG5ftqYA
+         xuCEbud/W7cgGEpDBQ5xy/W+JlSt3RtlznZhLpdcwEYoAyVWbDcCOYYwBrNxKEgeoOMC
+         6FDXsMt+noVatUZPGb7f1gVvQIHr5TUNngAYmHT2s7tnARRznT1CYQ4c0RqU9o93V5wz
+         509Oa0X8gkl6SAoeDJ4Kup24jKoQqX8R2+/nUcXa20nn62TkcC4RLCZ7amX1hKN/LYhJ
+         nd8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnSVvBPLgxOr7Okxa4+yFdbMwIKkVndKbRuepRfY/Zs=;
+        b=coRf4wJI8Rh1ItClLp4utGOuQwLkeGBPwogMY7slXBQM4npE8un8nLwZq5cLxzbaWH
+         MEbZSfYuKgVkHKj1U7/2nO8J5UmO+EMDmVZuhHVuldaSXxMWMoARNVzsrZeAQbUHNqZS
+         EKcIGFCovFEcIS9ocZV/wo242/Kq6ylOj2FLsuBIHTFcfjSuJXksFycqfXp74MQz1FG7
+         fljWcsifggYKf2g8Y6ztfoa99AQUTIbP7PY8x10BTlJaSNF8qwQ/xsCKjVZnQEbfOW98
+         ht6HkxomTE6aAJWlSG55hXp/QgYLRPo2e+z6dXixLf6voCv0loftBv8RyJ60YMIcC++P
+         SfEw==
+X-Gm-Message-State: AOAM532kl+jW3RRLtZw+hCbaq5p4uORU7bdTdgtuWML1y+V0NXiw+pkl
+        QXzAlhz9YewbGQQCm6CpCG0=
+X-Google-Smtp-Source: ABdhPJziAjyw97m/l3cd7CXgr1VWPs/5ficOCx+UJ5aQJNaPKvKkhN4gy0cXRhfSU6uY54k9dE/I3Q==
+X-Received: by 2002:a17:906:7c8:: with SMTP id m8mr26420200ejc.527.1595357618581;
+        Tue, 21 Jul 2020 11:53:38 -0700 (PDT)
+Received: from blackhead.home ([2a01:112f:a1c:7900:7316:ce1e:7b0b:6bd7])
+        by smtp.gmail.com with ESMTPSA id f10sm17585506edr.69.2020.07.21.11.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 11:53:38 -0700 (PDT)
+From:   Marcin Sloniewski <marcin.sloniewski@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/3] dt-bindings: vendor-prefixes: add Seeed Studio
+Date:   Tue, 21 Jul 2020 20:53:12 +0200
+Message-Id: <20200721185317.208722-1-marcin.sloniewski@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
->
-> Bah, that creates a dependency on sched/core ...
+Add the "seeed" vendor prefix for Seeed Technology Co., Ltd
+Website: https://www.seeedstudio.com/
 
-Only when looking at the wrong tree :)
+Signed-off-by: Marcin Sloniewski <marcin.sloniewski@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 9aeab66be85f..7dd03b3e9d3c 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -902,6 +902,8 @@ patternProperties:
+     description: Schindler
+   "^seagate,.*":
+     description: Seagate Technology PLC
++  "^seeed,.*":
++    description: Seeed Technology Co., Ltd
+   "^seirobotics,.*":
+     description: Shenzhen SEI Robotics Co., Ltd
+   "^semtech,.*":
+-- 
+2.27.0
+
