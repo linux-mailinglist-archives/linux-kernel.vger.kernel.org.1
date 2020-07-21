@@ -2,178 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED55A227F20
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03005227F22
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 13:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729841AbgGULj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 07:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729629AbgGULjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 07:39:55 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F557C0619D8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:39:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o2so2545348wmh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 04:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0J627pM80T7+XlutPkaKlOVr/z1gAAVKrENSM8VXItA=;
-        b=aomBaqjhstgNyLO0iG3oISEZgsZDk7I+CDVjJSDyjcwaHIcVOM0K5+HMK231PboQEK
-         A2/ll23OKsSMzr4PBzWM/DbQPDdAXv8woUbnirpcylvahf9sCXpntRikrd5FDy6LQZ2B
-         SmTb9NoSOXZFwQaGSGnrM85rIzJ/RYWvzWs9TqfX4QDozPArJJYYN0fR+XV8WYEazdak
-         fqfgAyk+tRfLhx++g8eDu4I6cSvQqVY7/E7HpFo2iRa2PN0jocZFSwPjXCv94ELTWkDr
-         ll6e0eO5qV6cSOnljZYyuajsWMjDhHTcfa6BE6Fz+nVCFLQK3gnfas6LdEJB9o1fiMwF
-         ZjAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0J627pM80T7+XlutPkaKlOVr/z1gAAVKrENSM8VXItA=;
-        b=mDCgq/akkuBAnxjuf+Nq1e0TrPBXQ8BtiNRoFCjEvcPH7sBtN+bXDz+jH+gl2XBUjy
-         ivhlCO4cF+BUYCtE3DXViGOgdEznrPj7TAEh/7c5rIZ6safXhjqGB1pzQy73fAZ0J9S1
-         L6sur0/IcsDoeZFaIw3HpBqPtDYi16MpW3lZ3/2amfC5NDbAjb3+huhrH1yZjj9aVCCC
-         8NMjyCnXwvV58nzkc3HjJz5ou/DSbkdRHEEg6InIw11YmXN0sGaGrJ/3blBwpAm+m+Yj
-         PBm5E2aUBv6/DV9YmMKaSZhaT+A6Kh5hS8y2Ze+CsXuxaeKLHqQxyUxIjscZyoaS4eGx
-         o5ag==
-X-Gm-Message-State: AOAM532zjMzgP3aiHORMC2ltX+fy/cvsb+RZ0meA2u10VAtIlUEqvqA5
-        hTGWqEDabOg/JChXIvY2RJ7fDDonFAVLZFpuaeiiEQ==
-X-Google-Smtp-Source: ABdhPJynaPKpbU6Sa4qfZHuvA4C6P4PN6EGPDdcoeLrQHPieARti1aWDcQP+/gphRMVoWP2V8oJ4kkwKrU/hwUWo/t4=
-X-Received: by 2002:a1c:2d91:: with SMTP id t139mr3589796wmt.3.1595331593814;
- Tue, 21 Jul 2020 04:39:53 -0700 (PDT)
+        id S1729861AbgGULky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 07:40:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728580AbgGULky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 07:40:54 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 300BF2073A;
+        Tue, 21 Jul 2020 11:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595331653;
+        bh=KcPGx9QiMCmxNN2YSoGE/dQIrCs7akN/oOdzsJC69/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mj34L9PXujfgj94Dv1Bc0pSVSYyGAuYifoobe26I7vzlECi2pAFm4j3KlfcCohwAR
+         p2Xlcs9vVlaLLmXr5UwEacq0xvjx2j6aGix63EXm0A6cvXhD0RxBFXXcYjlXCn2LTW
+         iK482uy/vXnfjeC8Wz2I5jBNfUU4affwg+F5EH04=
+Date:   Tue, 21 Jul 2020 13:41:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>, od@zcrc.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] usb: common: usb-conn-gpio: Register optional
+ charger
+Message-ID: <20200721114101.GA1761915@kroah.com>
+References: <20200621224807.882184-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20200717075101.263332-1-anup.patel@wdc.com> <20200717075101.263332-5-anup.patel@wdc.com>
- <CAOnJCULcffij3-d-TsQixj5TZdatBdUcC-y73L=W-+5h41ytKQ@mail.gmail.com>
-In-Reply-To: <CAOnJCULcffij3-d-TsQixj5TZdatBdUcC-y73L=W-+5h41ytKQ@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 21 Jul 2020 17:09:41 +0530
-Message-ID: <CAAhSdy1cbKA9iwBPYMX5xaYFe_BxnB2Sm_ftHPPDq+96SeKbnA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] dt-bindings: timer: Add CLINT bindings
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Emil Renner Berhing <kernel@esmil.dk>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200621224807.882184-1-paul@crapouillou.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 6:45 AM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Fri, Jul 17, 2020 at 12:52 AM Anup Patel <anup.patel@wdc.com> wrote:
-> >
-> > We add DT bindings documentation for CLINT device.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> > Tested-by: Emil Renner Berhing <kernel@esmil.dk>
-> > ---
-> >  .../bindings/timer/sifive,clint.yaml          | 58 +++++++++++++++++++
-> >  1 file changed, 58 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> > new file mode 100644
-> > index 000000000000..8ad115611860
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> > @@ -0,0 +1,58 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/timer/sifive,clint.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: SiFive Core Local Interruptor
-> > +
-> > +maintainers:
-> > +  - Palmer Dabbelt <palmer@dabbelt.com>
-> > +  - Anup Patel <anup.patel@wdc.com>
-> > +
-> > +description:
-> > +  SiFive (and other RISC-V) SOCs include an implementation of the SiFive
-> > +  Core Local Interruptor (CLINT) for M-mode timer and M-mode inter-processor
-> > +  interrupts. It directly connects to the timer and inter-processor interrupt
-> > +  lines of various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local
-> > +  interrupt controller is the parent interrupt controller for CLINT device.
-> > +  The clock frequency of CLINT is specified via "timebase-frequency" DT
-> > +  property of "/cpus" DT node. The "timebase-frequency" DT property is
-> > +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: sifive,clint0
-> > +      - const: sifive,fu540-c000-clint
-> > +
-> > +    description:
-> > +      Should be "sifive,<chip>-clint" and "sifive,clint<version>".
-> > +      Supported compatible strings are -
-> > +      "sifive,fu540-c000-clint" for the SiFive CLINT v0 as integrated
-> > +      onto the SiFive FU540 chip, and "sifive,clint0" for the SiFive
-> > +      CLINT v0 IP block with no chip integration tweaks.
-> > +      Please refer to sifive-blocks-ip-versioning.txt for details
-> > +
->
-> As the DT binding suggests that the clint device should be named as "sifive,**",
-> I think we should change the DT property in kendryte dts as well.
+On Mon, Jun 22, 2020 at 12:48:07AM +0200, Paul Cercueil wrote:
+> Register a power supply charger, if the Kconfig option
+> USB_CONN_GPIO_CHARGER is set, whose online state depends on whether
+> the USB role is set to device or not.
+> 
+> This is useful when the USB role is the only way to know if the device
+> is charging from USB. The API is the standard power supply charger API,
+> you get a /sys/class/power_supply/xxx/online node which tells you the
+> state of the charger.
+> 
+> The sole purpose of this is to give userspace applications a way to
+> know whether or not the charger is plugged.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/usb/common/Kconfig         | 11 +++++++
+>  drivers/usb/common/usb-conn-gpio.c | 47 ++++++++++++++++++++++++++++++
+>  2 files changed, 58 insertions(+)
+> 
+> diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
+> index d611477aae41..5405ae96c68f 100644
+> --- a/drivers/usb/common/Kconfig
+> +++ b/drivers/usb/common/Kconfig
+> @@ -49,3 +49,14 @@ config USB_CONN_GPIO
+>  
+>  	  To compile the driver as a module, choose M here: the module will
+>  	  be called usb-conn-gpio.ko
+> +
+> +if USB_CONN_GPIO
+> +
+> +config USB_CONN_GPIO_CHARGER
+> +	bool "USB charger support"
+> +	select POWER_SUPPLY
+> +	help
+> +	  Register a charger with the power supply subsystem. This will allow
+> +	  userspace to know whether or not the device is charging from USB.
 
-Okay, I will do it as a separate patch.
+Why make this an option at all?  Why wouldn't we always want this here?
 
->
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts-extended:
-> > +    minItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts-extended
-> > +
-> > +examples:
-> > +  - |
-> > +    clint@2000000 {
-> > +      compatible = "sifive,clint0", "sifive,fu540-c000-clint";
-> > +      interrupts-extended = <&cpu1intc 3 &cpu1intc 7
-> > +                             &cpu2intc 3 &cpu2intc 7
-> > +                             &cpu3intc 3 &cpu3intc 7
-> > +                             &cpu4intc 3 &cpu4intc 7>;
-> > +       reg = <0x2000000 0x4000000>;
-> > +    };
-> > +...
-> > --
-> > 2.25.1
-> >
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
->
-> Otherwise,
->
-> Reviewed-by: Atish Patra <atish.patra@wdc.com>
->
-> --
-> Regards,
-> Atish
+As this is a charger, exporting that information to userspace should
+probably always happen, right?
 
-Regards,
-Anup
+thanks,
+
+greg k-h
