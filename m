@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DA6227B6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3033227B7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 11:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbgGUJOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 05:14:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:60368 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgGUJOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 05:14:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB2AA106F;
-        Tue, 21 Jul 2020 02:14:42 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92B0F3F718;
-        Tue, 21 Jul 2020 02:14:41 -0700 (PDT)
-References: <20200717124017.GB6067@redhat.com> <2c8ef23c-43b4-39d4-8e84-92769c948da9@kernel.org> <20200718171406.GB16791@redhat.com> <20200718174448.4btbjcvp6wbbdgts@wittgenstein> <badcb9d5-f628-2be1-7a72-902cf08010bd@kernel.org> <20200720064326.GA6612@redhat.com> <20200720082657.GC6612@redhat.com> <20200720084106.GJ10769@hirez.programming.kicks-ass.net> <20200720105924.GE43129@hirez.programming.kicks-ass.net> <20200720140224.GD6612@redhat.com> <20200720142105.GR10769@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        christian@brauner.io, "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: 5.8-rc*: kernel BUG at kernel/signal.c:1917
-In-reply-to: <20200720142105.GR10769@hirez.programming.kicks-ass.net>
-Date:   Tue, 21 Jul 2020 10:14:36 +0100
-Message-ID: <jhjtuy1i60z.mognet@arm.com>
+        id S1728845AbgGUJRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 05:17:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41598 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726521AbgGUJRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 05:17:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595323049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vdcb3GpaeXFOSfLkJZmSHSJJPdtDgx51ddaWwtlFe/o=;
+        b=f+qYbDDvS+Rjqw28g89UuI7NGCXPdY/wo/JyRFjqSoC+aRvFKP1OYHjQ1o//bWrTywQ05r
+        voWggHZoVhSNQ71XzNTugOlhcJgWg+rt09tuM+HQULpRJLoCHZ4yuUUN9ijSU5+v4Iq2gs
+        8wrPPOxqTaXUF+HPa7kMA0LO4LPXFuU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-jGgrkyG6MEK7hCSMYKmD_Q-1; Tue, 21 Jul 2020 05:17:25 -0400
+X-MC-Unique: jGgrkyG6MEK7hCSMYKmD_Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34C79100CCC2;
+        Tue, 21 Jul 2020 09:17:24 +0000 (UTC)
+Received: from localhost (ovpn-12-170.pek2.redhat.com [10.72.12.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 92ABE7621A;
+        Tue, 21 Jul 2020 09:17:23 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 17:17:20 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH 1/5] mm/hugetlb.c: Fix typo of glb_reserve
+Message-ID: <20200721091720.GM32539@MiWiFi-R3L-srv>
+References: <20200720062623.13135-1-bhe@redhat.com>
+ <20200720062623.13135-2-bhe@redhat.com>
+ <0834fb69-7cc0-8c0f-d5aa-8ed6ffe9a2e2@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0834fb69-7cc0-8c0f-d5aa-8ed6ffe9a2e2@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/20/20 at 03:32pm, Mike Kravetz wrote:
+> On 7/19/20 11:26 PM, Baoquan He wrote:
+> > The local variable is for global reservation of region.
+> > 
+> > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > ---
+> >  mm/hugetlb.c | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index f24acb3af741..191a585bb315 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -3649,7 +3649,7 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
+> >  	struct resv_map *resv = vma_resv_map(vma);
+> >  	struct hugepage_subpool *spool = subpool_vma(vma);
+> >  	unsigned long reserve, start, end;
+> > -	long gbl_reserve;
+> > +	long glb_reserve;
+> 
+> I see both 'gbl' and 'glb' being used for global in variable names.  grep will
+> actually return more hits for gbl than glb.  Unless there is consensus that
+> 'glb' should be used for global, I would prefer not to make this change.
 
-On 20/07/20 15:21, Peter Zijlstra wrote:
-> On Mon, Jul 20, 2020 at 04:02:24PM +0200, Oleg Nesterov wrote:
->> I have to admit, I do not understand the usage of prev_state in schedule(),
->> it looks really, really subtle...
->
-> Right, so commit dbfb089d360 solved a problem where schedule() re-read
-> prev->state vs prev->on_rq = 0. That is, schedule()'s dequeue and
-> ttwu()'s enqueue disagreed over sched_contributes_to_load. and as a
-> result load-accounting went wobbly.
->
-> Now, looking at that commit again, I might've solved the problem twice
-> :-P
->
-> So on the one hand, I provider ordering:
->
->       LOAD p->state		LOAD-ACQUIRE p->on_rq == 0
->       MB
->       STORE p->on_rq, 0	STORE p->state, TASK_WAKING
->
-> such that ttwu() will only change p->state, after on_rq==0, which is
-> after loading p->state in schedule().
->
-> At the same time, I also had schedule() set
-> p->sched_contributes_to_load once, and then consistently used that value
-> throughout, without ever looking at p->state again, which too makes it
-> much harder to mess load-avg up.
->
->
-> Now, the ordering in schedule(), relies on doing the p->state load
-> before:
->
->       spin_lock(rq->lock)
->       smp_mb__after_spinlock();
->
-> and doing a re-load check after, with the assumption that if the reload
-> is different, it will not block.
->
-> That said, in a crossed email, I just proposed we could simplify all
-> this like so.. but now I need to go ask people to re-validate that
-> loadavg muck again :-/
->
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index a2a244af9a53..437fc3b241f2 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4193,9 +4193,6 @@ static void __sched notrace __schedule(bool preempt)
->       local_irq_disable();
->       rcu_note_context_switch(preempt);
->
-> -	/* See deactivate_task() below. */
-> -	prev_state = prev->state;
-> -
->       /*
->        * Make sure that signal_pending_state()->signal_pending() below
->        * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
-> @@ -4223,7 +4220,8 @@ static void __sched notrace __schedule(bool preempt)
->        * We must re-load prev->state in case ttwu_remote() changed it
->        * before we acquired rq->lock.
->        */
-> -	if (!preempt && prev_state && prev_state == prev->state) {
-> +	prev_state = prev->state;
+Ah, I thought it's typo, so it's just another kind of abbreviation. Then
+I am fine to drop this patch.
 
-AFAICT the ttwu/schedule ordering dance + the "trick" of updating
-p->sched_contributes_to_load in __schedule() under rq lock ensures loadavg
-accounting won't go awry here. I'm still a bit low on coffee, but that does
-LGTM.
+Thanks a lot for careful reviewing on this patchset.
 
+Thanks
+Baoquan
 
-> +	if (!preempt && prev_state) {
->               if (signal_pending_state(prev_state, prev)) {
->                       prev->state = TASK_RUNNING;
->               } else {
-> @@ -4237,10 +4235,12 @@ static void __sched notrace __schedule(bool preempt)
->
->                       /*
->                        * __schedule()			ttwu()
-> -			 *   prev_state = prev->state;	  if (READ_ONCE(p->on_rq) && ...)
-> -			 *   LOCK rq->lock		    goto out;
-> -			 *   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
-> -			 *   p->on_rq = 0;		  p->state = TASK_WAKING;
-> +			 *   if (prev_state)		  if (p->on_rq && ...)
-> +			 *     p->on_rq = 0;		    goto out;
-> +			 *				  smp_acquire__after_ctrl_dep();
-> +			 *				  p->state = TASK_WAKING
-> +			 *
-> +			 * Where __schedule() and ttwu() have matching control dependencies.
->                        *
->                        * After this, schedule() must not care about p->state any more.
->                        */
