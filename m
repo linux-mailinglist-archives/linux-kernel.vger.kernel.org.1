@@ -2,172 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9DA227C6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39E6227C75
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 12:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgGUKEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 06:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        id S1729197AbgGUKFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 06:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727942AbgGUKEh (ORCPT
+        with ESMTP id S1726976AbgGUKFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 06:04:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C48C061794;
-        Tue, 21 Jul 2020 03:04:36 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id y3so3239890wrl.4;
-        Tue, 21 Jul 2020 03:04:36 -0700 (PDT)
+        Tue, 21 Jul 2020 06:05:02 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F828C0619D8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:05:02 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id x13so10040686vsx.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 03:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=9kfZnFlxwbeCeY/sHPCuLSh6ZnXJJMmz+SDIwwbdu9E=;
-        b=PKb38cekHSneOmGXC/KZtGcmxXFzo0uUDo9PKOuabHRjjJmTO/z6Rf6B8GM7bpGN2l
-         v27E6x4JeQEw+OW9xgdYfjdsPaTbXlp28g77WcgyAvJBTdNXLRhqSncfs9qbTW6Zp7f0
-         0ZicUgppvRM/IR1tISm7xSLVgjgktfeqSNut3z+JHVfqHG+WrBNpg4DbP20tQvKwtK1r
-         VbtlCDJCISSACgViqAm3m64V97OEEjH0oIcMKkGQWsLszRIAPD7qHrRuLdvN24277gvp
-         LN24jlhKmHcf74zx4absN617y+sHbCDBde6REsImTnErRZqqZaLozMgfqAJQ+nMNRIS8
-         RgVA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DZxYe5F17/UOWPF6juw9B6bodvCKqZ8eb70Nj76RBOQ=;
+        b=Z+OWQYN4GeYyvQh2sT0ZPpBL9rs3ALi2SinMwePZUJrslKEg126Nubmsq0pckNPJkJ
+         G901hFrBh18W50WAQ7wbTkPUEskaxzXdqqitYbYHmwllRmm9wWjGDvhr4SxXZ31A2VNG
+         qXOJN0rKkrBwgpSSOnDqd+O9+kmIyAN/u6OYMkFM7HVc3+HgDusMcExpuGsvjHTeNkGm
+         FTMOrkkIIlmE7kC4X1D/BUxpUNlN8GS44fR8avHN4UlAzWr+yAxjna7vHvirKEwdF8CE
+         koEZivgJ0FhTM85zgQag+BWr+LQG2YYNEZlX9W1oXGDj8PA6WAtOF4VZzj1fKVyxgn7q
+         jYhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=9kfZnFlxwbeCeY/sHPCuLSh6ZnXJJMmz+SDIwwbdu9E=;
-        b=oveORW5nrXSrQwUDC7gYoH7/PZ7BIda0xqxbbMy2TsuZS5c8U8s6VEfvpeOuReE+UB
-         U20NgGNVQv+1jz8s9m4SFSpI4YUJm6FOcQ2ojX1GZoHbvLjc58tC4my3645gPfE6QPiB
-         +3v/qZkIH7JoqQlIITrKLAGeKW18pG+ZZgVreE23GDVZfXLnPh/DRtpuF/0Kvw4taBbp
-         c/al29WtuckRj+dN2Q17ZLDOeBHJ+Dutb6GQNo2mC14KeFJKaQQ6Rw1yuek3iZ0Xyo8A
-         VBaK6ORmpc5+xOo+UUhZ97IsbOv8LTkFGamEfd/i29xEkdtC2Tbw9ucW1LFx6puNo5+q
-         pCIw==
-X-Gm-Message-State: AOAM530TBlaGBFmXpIPJlXjrpjmkVRf5+UnHYFoBCcs2lN/jh6KI/v66
-        w/sdD5V+Utztl+3/pRwOWM7vxzDt
-X-Google-Smtp-Source: ABdhPJxkreA8D1lZyT9flEpAyH6rQPt9aOtx31oJEByOFhUEoc5b9sDelo+U3/xY9rHr9llxABm3ZQ==
-X-Received: by 2002:adf:e68f:: with SMTP id r15mr17440922wrm.196.1595325875740;
-        Tue, 21 Jul 2020 03:04:35 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id s4sm30338553wre.53.2020.07.21.03.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 03:04:34 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 20:04:27 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
- membarrier_mm_sync_core_before_usermode
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>
-References: <1594868476.6k5kvx8684.astroid@bobo.none>
-        <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
-        <20200716085032.GO10769@hirez.programming.kicks-ass.net>
-        <1594892300.mxnq3b9a77.astroid@bobo.none>
-        <20200716110038.GA119549@hirez.programming.kicks-ass.net>
-        <1594906688.ikv6r4gznx.astroid@bobo.none>
-        <1314561373.18530.1594993363050.JavaMail.zimbra@efficios.com>
-        <1595213677.kxru89dqy2.astroid@bobo.none>
-        <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
-In-Reply-To: <2055788870.20749.1595263590675.JavaMail.zimbra@efficios.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DZxYe5F17/UOWPF6juw9B6bodvCKqZ8eb70Nj76RBOQ=;
+        b=Ay5g16mUUZxXEM9Cqt+PkdFvcPr8MjEw6sjV7xn8wVWXW+6vPmkEjZr1VWdmVtRahy
+         tH6T/pq+7oa6nIbFpzY5GFV2xva81m6awXo8o77L3EovMe72x2yPLT+MsRcfBZlmSAr4
+         5mgVpkz5f9RWq7Jgkt+wv9kqHi0m2BpvALU7DFx++WYOU2zmnNoTOc+XOt32C2onCZH6
+         4taiRq6ArU7IRuX+5qYivUSbgA7h+Oza5yHMfq2ky3OhkOlmmLqeEJ9Wqfb0oF4Z7MPi
+         RdEXOQB7AaBtFOC85VuW8aTrSUNySzL3VWVp3JUDuYlXTvCwg41vYWhFp70Ki5rNoTJ5
+         REYg==
+X-Gm-Message-State: AOAM531ucXQmFLBKnNMVko/L4WxTPgV2gh4tQKXvGaM8Fqeu3rQNGedh
+        8pH+qksuanULmassHhEmzWrgKeDMRShJ9VDGnrik8Q==
+X-Google-Smtp-Source: ABdhPJx9BMPVcvTz2IGb981toraC3zQUry/Y/3hz9GX+NHDG8dzhVtgCtqeX3yjz6NdF+BoO/CeZXYPkUsG1ECTkRgg=
+X-Received: by 2002:a05:6102:14d:: with SMTP id a13mr19344739vsr.142.1595325901421;
+ Tue, 21 Jul 2020 03:05:01 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1595324577.x3bf55tpgu.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
+References: <20200720152820.122442056@linuxfoundation.org>
+In-Reply-To: <20200720152820.122442056@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 21 Jul 2020 15:34:49 +0530
+Message-ID: <CA+G9fYt_HQbAVT8obg59CkOTpHh=gYyQdjcx8PeMdo2Ba-A+Dw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/215] 5.4.53-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Mathieu Desnoyers's message of July 21, 2020 2:46 am:
-> ----- On Jul 19, 2020, at 11:03 PM, Nicholas Piggin npiggin@gmail.com wro=
-te:
->=20
->> Excerpts from Mathieu Desnoyers's message of July 17, 2020 11:42 pm:
->>> ----- On Jul 16, 2020, at 7:26 PM, Nicholas Piggin npiggin@gmail.com wr=
-ote:
->>> [...]
->>>>=20
->>>> membarrier does replace barrier instructions on remote CPUs, which do
->>>> order accesses performed by the kernel on the user address space. So
->>>> membarrier should too I guess.
->>>>=20
->>>> Normal process context accesses like read(2) will do so because they
->>>> don't get filtered out from IPIs, but kernel threads using the mm may
->>>> not.
->>>=20
->>> But it should not be an issue, because membarrier's ordering is only wi=
-th
->>> respect
->>> to submit and completion of io_uring requests, which are performed thro=
-ugh
->>> system calls from the context of user-space threads, which are called f=
-rom the
->>> right mm.
->>=20
->> Is that true? Can io completions be written into an address space via a
->> kernel thread? I don't know the io_uring code well but it looks like
->> that's asynchonously using the user mm context.
->=20
-> Indeed, the io completion appears to be signaled asynchronously between k=
-ernel
-> and user-space.
+On Mon, 20 Jul 2020 at 21:27, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.53 release.
+> There are 215 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 22 Jul 2020 15:27:31 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.53-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Yep, many other places do similar with use_mm.
+Results from Linaro=E2=80=99s test farm.
+Regressions detected on arm and arm64 (Juno-r2)
 
-[snip]
+perf test cases failed
+  perf:
+    * perf_record_test
+    * perf_report_test
+    * Track-with-sched_switch (ignore intermittent failure)
 
-> So as far as membarrier memory ordering dependencies are concerned, it re=
-lies
-> on the store-release/load-acquire dependency chain in the completion queu=
-e to
-> order against anything that was done prior to the completed requests.
->=20
-> What is in-flight while the requests are being serviced provides no memor=
-y
-> ordering guarantee whatsoever.
+Bad case:
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.002 MB perf-lava-test.data ]
 
-Yeah you're probably right in this case I think. Quite likely most kernel=20
-tasks that asynchronously write to user memory would at least have some=20
-kind of producer-consumer barriers.
+when it was pass it prints number of samples like below,
+Good case:
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.004 MB perf-lava-test.data (46 samples)=
+ ]
 
-But is that restriction of all async modifications documented and enforced
-anywhere?
+steps to reproduce:
+# perf record -e cycles -o perf-lava-test.data ls -a  2>&1 | tee perf-recor=
+d.log
 
->> How about other memory accesses via kthread_use_mm? Presumably there is
->> still ordering requirement there for membarrier,
->=20
-> Please provide an example case with memory accesses via kthread_use_mm wh=
-ere
-> ordering matters to support your concern.
+Link to full test:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/build/v5.4.52-216=
+-g95f1079149bd/testrun/2969631/suite/perf/test/perf_record_test/log
 
-I think the concern Andy raised with io_uring was less a specific=20
-problem he saw and more a general concern that we have these memory=20
-accesses which are not synchronized with membarrier.
+test case:
+https://github.com/Linaro/test-definitions/blob/master/automated/linux/perf=
+/perf.sh
 
->> so I really think
->> it's a fragile interface with no real way for the user to know how
->> kernel threads may use its mm for any particular reason, so membarrier
->> should synchronize all possible kernel users as well.
->=20
-> I strongly doubt so, but perhaps something should be clarified in the doc=
-umentation
-> if you have that feeling.
+Summary
+------------------------------------------------------------------------
 
-I'd rather go the other way and say if you have reasoning or numbers for=20
-why PF_KTHREAD is an important optimisation above rq->curr =3D=3D rq->idle
-then we could think about keeping this subtlety with appropriate=20
-documentation added, otherwise we can just kill it and remove all doubt.
+kernel: 5.4.53-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 95f1079149bd5596df492ff3dd12dacdd264e0ea
+git describe: v5.4.52-216-g95f1079149bd
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
+ld/v5.4.52-216-g95f1079149bd
 
-That being said, the x86 sync core gap that I imagined could be fixed=20
-by changing to rq->curr =3D=3D rq->idle test does not actually exist becaus=
-e
-the global membarrier does not have a sync core option. So fixing the
-exit_lazy_tlb points that this series does *should* fix that. So
-PF_KTHREAD may be less problematic than I thought from implementation
-point of view, only semantics.
+Regressions (compared to build v5.4.52)
+------------------------------------------------------------------------
+  perf:
+    * perf_record_test
+    * perf_report_test
+    * Track-with-sched_switch (ignore intermittent failure)
 
-Thanks,
-Nick
+No fixes (compared to build v5.4.52)
+
+Ran 36089 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
