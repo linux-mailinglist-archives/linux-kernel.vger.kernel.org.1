@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306F9228902
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B5A228904
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730576AbgGUTSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 15:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S1730389AbgGUTUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 15:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbgGUTSV (ORCPT
+        with ESMTP id S1727801AbgGUTUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:18:21 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABD0C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:18:20 -0700 (PDT)
+        Tue, 21 Jul 2020 15:20:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A427DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 12:20:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=o9oymOdRtXGBWxhCuRCIUyVAr5ZVv5Qq2LLyDa4+QxA=; b=GiVqDkxP6Uc0PwgRFkbJanO9TX
-        LHUfjIHSZ7nEBg/C+vhAMIZrworBNIQRb5do4Zx7aWPg+DH4lXB+Q5uXtcFhI9WvsEM5thl3GG2Yq
-        GgMsG9JdTv5wFhWO7vfiCO3bzsznrgURte4gnUdYb1EQ3YcyXraT8PQaP2GBvWbB3tZSMEg+Su0fr
-        vKti10E+rWIimxGOvMRdbNuV4Co82qm4vB9YmqS9N+kd+G7V4ObTD58ayCnR+tty8FkGP8WvEzgK9
-        +hunYHcStEWms+HwxFFQMcLaTQQNNsCET/2CLSBG0n35faYXs2KRIqDBBWtke1snFCGqI5fezUXsd
-        WIG7qYgQ==;
+        bh=VhiQA6qev8PWeov/hSb1BErF1Q8azhYHkTiZfTrt8pE=; b=leGPhWIGaMSDBw2JNEVNvsOkGe
+        nB4QK89Tr1IHLRgdVJ0wqikAmCEA5yXVgWKMmx8I0vK9X24cnML/gjmaXgtgNUQw9384WjA+4Or4h
+        L4QMRYGhbMOr7Py2ejR+ezbA2lavO5T9rTwQercFCsNThT42ZvqWOjB4cTgpvcd+IWrwUwmRVIzSp
+        4KDxwcAXQdml67PpXqT1S9QFE0qf8GT102f9l41tcsqiHzCOrdJNMkY63yeU9YE+XPElWceyPm8P5
+        gYP/DbdqUSzpGDw81M8Me7V0l5Ff1Re5WvepqvidwOceJOyaArpUSrzapEY/V0CArMQAwXZKCmF7V
+        Hhbq9C3A==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxxmJ-0000Xy-5U; Tue, 21 Jul 2020 19:18:15 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jxxo3-0008Ve-02; Tue, 21 Jul 2020 19:20:03 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D3F9304D28;
-        Tue, 21 Jul 2020 21:18:11 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A385304D28;
+        Tue, 21 Jul 2020 21:20:02 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2579B20140AC3; Tue, 21 Jul 2020 21:18:11 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 21:18:11 +0200
+        id 76F4C20140AC3; Tue, 21 Jul 2020 21:20:02 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 21:20:02 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-Subject: Re: [PATCH V6 11/14] perf/x86/intel: Disable sample-read the slots
- and metrics events
-Message-ID: <20200721191811.GH10769@hirez.programming.kicks-ass.net>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     kan.liang@linux.intel.com, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH V6 09/14] perf/x86/intel: Support TopDown metrics on Ice
+ Lake
+Message-ID: <20200721192002.GI10769@hirez.programming.kicks-ass.net>
 References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-12-kan.liang@linux.intel.com>
- <20200721131011.GY10769@hirez.programming.kicks-ass.net>
- <b24b9bd3-bbfb-98d4-4df3-c263e002dcf5@linux.intel.com>
+ <20200717140554.22863-10-kan.liang@linux.intel.com>
+ <20200721124042.GX10769@hirez.programming.kicks-ass.net>
+ <20200721173859.GG1180481@tassilo.jf.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b24b9bd3-bbfb-98d4-4df3-c263e002dcf5@linux.intel.com>
+In-Reply-To: <20200721173859.GG1180481@tassilo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 12:07:29PM -0400, Liang, Kan wrote:
+On Tue, Jul 21, 2020 at 10:38:59AM -0700, Andi Kleen wrote:
+> > Also, that for_each_set_bit() loop, trying to find the events to
+> > update...
+> > 
+> > Can't we, instead, make the SLOTS update advance 5 running counters in
+> > cpuc and feed the events off of that?
+> 
+> The original patches implemented this through a perf transaction and a
+> cache.  I think what you're suggesting is similar to the old cache.
 
-> I'm trying to produce the bug mentioned above, but I'm not sure under what
-> situation, the core code will 'promote' the sibling metric events?
-
-Create an event group:
-
-	fd = sys_perf_event_open();
-	fd1 = sys_perf_event_open(.group_fd = fd);
-	...
-
-then kill the group leader:
-
-	close(fd);
-
-Then the sibling events: fdN, should get promoted. Ideally try and use
-fd1 in a read or so after this.
-
-> I tried the suggested code below. It works well for the sample-read case.
-> Perf tool errors out as expected.
-
-I'm not sure you can create that case with perf-tool, it's a bit of a
-daft thing to do, so you'll have to write a custom program.
+I can't remember :-) Anyway, the TXN_READ thing Kan pointed out should
+work fine, I just missed it when reading through the code.
