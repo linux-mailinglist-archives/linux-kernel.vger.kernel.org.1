@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F761227796
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 06:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DA1227798
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Jul 2020 06:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgGUE1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 00:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S1726821AbgGUE11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 00:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgGUE1U (ORCPT
+        with ESMTP id S1726705AbgGUE1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 00:27:20 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C10C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:27:20 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m9so10133939pfh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:27:20 -0700 (PDT)
+        Tue, 21 Jul 2020 00:27:24 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39DEC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:27:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j19so11331534pgm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Jul 2020 21:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N/wJfZ0DKQLS30NQ3l5EIxZJq9J06grk8ARjTDSck7w=;
-        b=PFRa/z5GQ2aechR5xdic5ratkkROo9TDbkDV0lfEhzl5c2wyBrpnCvl57h3r6cKVo6
-         pxMZ02n3ejPcvOlM99KP4pcnPYYp5sRlNo/dXiQZyn4d8IORomjDiBWZKyIRJOjrllZF
-         SdnwlQpb6nT2RAeLooiCOTqO33gn75W0W9hgQ=
+        bh=v5DIRukwkI98RYm4Qg9DISHCAkP2l2iEddWUuvGqnjI=;
+        b=N/dp9Ioq7OLVcCOwash9KSFssj8jIbJUFR6b8tP8e+vEJwiLmWFgkAsVB9nOd0if4D
+         P3ZLOqJgVpdVgZ347tBVo6nFNCBHouz4wA3H96fDyiMLb1tysqPqlqkrdGyFLbVqJtj2
+         NKTnsjColGrhQmU4O9/Vhs4VscuviZPH175ls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N/wJfZ0DKQLS30NQ3l5EIxZJq9J06grk8ARjTDSck7w=;
-        b=kpxmXqqPR3lHCBwJduNDNFLx0JNvySk+ZpW6zeibYDDMmxTZA5nzgwJDPGXP5FxOuc
-         9zvNLJ8NMtnOCPowlWNojoREakmv66zwLMb6PD07g3gsS1fiX1jeVudwjKeoRpIeIp4u
-         4RGKYO8MW1GX17biMAW7Vgj8aZZhnzxHy28k08KtMRsiGevoiG89i2RwTCpHnfX57V7O
-         Ml3pS7VIS2EZ4SThLlLCPMwInbbEXYJhE/NE65GlhNXOFG5vVriTnZsD4AXKjpv7yHkB
-         ABv8DSdqb7W1uypmT1zcvEYeBHGR5kmnK/8dKSP+BVyx7ZMgYqzc2U7ArRGdYtXHPL03
-         CPzw==
-X-Gm-Message-State: AOAM531+hDI335r071yORbi9NdKuIqNr48if28d57nSPiHrxCkpDRSrr
-        cEgPE4wYP2SOeODFATMnUqxtnQ==
-X-Google-Smtp-Source: ABdhPJyUx8c12Dq9u0oNfnaJvKI51s1Ej6i9NFYa2LGNRTz8LXng/MMLgsjl9D/uUGj8e5JMXp2RVw==
-X-Received: by 2002:a62:647:: with SMTP id 68mr12022813pfg.45.1595305639994;
-        Mon, 20 Jul 2020 21:27:19 -0700 (PDT)
+        bh=v5DIRukwkI98RYm4Qg9DISHCAkP2l2iEddWUuvGqnjI=;
+        b=uEewLq4PXsEfF3QxqF5dZYpLMNjlZUQ+KceTL5TRUxv+ZTEaDJYyxBMiIusTK2SXRF
+         KB4nZgXCibUpoVS/mxcf4fafPiRGJtFIEiQv9nRhf/mN3KYA596dQ5FGP8wykyzdDQOB
+         uew4YkCxad3ECDSplGdDTVj6TLgVpMcAi/2xTshHBNi6PnwsJMWM8I64tO9kSkBTMSGC
+         CIFvQD3Ktl8H3i3sJwn+Oog3ScYQQI8M5kkrBdboAZBYea0CGn7ry8qiz2iLvc9HNsZf
+         yTXHbbrDOmWWAuf0RW5KgeYVbbMyPElQhCbFEvV/6KSAD6BQf1cg9MMsILoWEXE2C+z6
+         UpOg==
+X-Gm-Message-State: AOAM53158OSNSPgbsVTfb+bmM6mcpbh+sQBrCqvwSXcbBuSLxcCzE8ll
+        JkWhe+VtuuwA/mH1LjBhmO4fjQ==
+X-Google-Smtp-Source: ABdhPJysPuat1sQO+DzVyz8AlUl5gUkPbkn8rHbNtm3EfbnoGtqhvO3PEyZiKFezujfJ6TOP2pe3oA==
+X-Received: by 2002:a63:b956:: with SMTP id v22mr21098040pgo.242.1595305644265;
+        Mon, 20 Jul 2020 21:27:24 -0700 (PDT)
 Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
-        by smtp.gmail.com with ESMTPSA id o8sm1207075pjf.37.2020.07.20.21.27.15
+        by smtp.gmail.com with ESMTPSA id o8sm1207075pjf.37.2020.07.20.21.27.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 21:27:19 -0700 (PDT)
+        Mon, 20 Jul 2020 21:27:23 -0700 (PDT)
 From:   Alexandru Stan <amstan@chromium.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
@@ -58,11 +58,11 @@ Cc:     Matthias Kaehlcke <mka@chromium.org>,
         Douglas Anderson <dianders@chromium.org>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Alexandru Stan <amstan@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: [PATCH 2/3] backlight: pwm_bl: Artificially add 0% during interpolation
-Date:   Mon, 20 Jul 2020 21:25:21 -0700
-Message-Id: <20200720212502.2.Iab4d2192e4cf50226e0a58d58df7d90ef92713ce@changeid>
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: [PATCH 3/3] ARM: dts: rockchip: Remove 0 point in backlight
+Date:   Mon, 20 Jul 2020 21:25:22 -0700
+Message-Id: <20200720212502.3.I96b8d872ec51171f19274e43e96cadc092881271@changeid>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200721042522.2403410-1-amstan@chromium.org>
 References: <20200721042522.2403410-1-amstan@chromium.org>
@@ -73,35 +73,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some displays need the low end of the curve cropped in order to make
-them happy. In that case we still want to have the 0% point, even though
-anything between 0% and 5%(example) would be skipped.
+After the "PWM backlight interpolation adjustments" patches, the
+backlight interpolation works a little differently. The way these
+dts files were working before was relying on a bug (IMHO).
+
+Remove the 0-3 range since otherwise we would have a 252 long
+interpolation that would slowly go between 0 and 3, looking really bad
+in userspace.
+
+We'll still have the 0% point available to userspace, "backlight:
+pwm_bl: Artificially add 0% during interpolation" takes care of that.
 
 Signed-off-by: Alexandru Stan <amstan@chromium.org>
 ---
 
- drivers/video/backlight/pwm_bl.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/boot/dts/rk3288-veyron-jaq.dts    | 2 +-
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts | 2 +-
+ arch/arm/boot/dts/rk3288-veyron-tiger.dts  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-index 5193a72305a2..b24711ddf504 100644
---- a/drivers/video/backlight/pwm_bl.c
-+++ b/drivers/video/backlight/pwm_bl.c
-@@ -349,6 +349,14 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			/* Fill in the last point, since no line starts here. */
- 			table[x2] = y2;
+diff --git a/arch/arm/boot/dts/rk3288-veyron-jaq.dts b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+index 171ba6185b6d..af4b21636c08 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-jaq.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+@@ -20,7 +20,7 @@ / {
  
-+			/*
-+			 * If we don't start at 0 yet we're increasing, assume
-+			 * the dts wanted to crop the low end of the range, so
-+			 * insert a 0 to provide a display off mode.
-+			 */
-+			if (table[0] > 0 && table[0] < table[num_levels - 1])
-+				table[0] = 0;
-+
- 			/*
- 			 * As we use interpolation lets remove current
- 			 * brightness levels table and replace for the
+ &backlight {
+ 	/* Jaq panel PWM must be >= 3%, so start non-zero brightness at 8 */
+-	brightness-levels = <0 8 255>;
++	brightness-levels = <8 255>;
+ 	num-interpolated-steps = <247>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index 383fad1a88a1..b25aa2f3cbee 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -39,7 +39,7 @@ volum_up {
+ 
+ &backlight {
+ 	/* Minnie panel PWM must be >= 1%, so start non-zero brightness at 3 */
+-	brightness-levels = <0 3 255>;
++	brightness-levels = <3 255>;
+ 	num-interpolated-steps = <252>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-tiger.dts b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+index 069f0c2c1fdf..52a84cbe7a90 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-tiger.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+@@ -23,7 +23,7 @@ / {
+ 
+ &backlight {
+ 	/* Tiger panel PWM must be >= 1%, so start non-zero brightness at 3 */
+-	brightness-levels = <0 3 255>;
++	brightness-levels = <3 255>;
+ 	num-interpolated-steps = <252>;
+ };
+ 
 -- 
 2.27.0
 
