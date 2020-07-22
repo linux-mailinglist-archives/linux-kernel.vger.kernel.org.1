@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58583229F17
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278BB229EFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732333AbgGVSP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgGVSP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:15:27 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D3BC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:15:27 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id a1so2344797edt.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+SReuFYVGjLRX5r5xj5YpIfyUC4xzq9ishSeECc8oc0=;
-        b=NuIYTIiKaQc1CsD0KXBC5Yhe7GX8yMqprWzzn8wTzzFy0PzxzGczcaGqdeb4YKryxx
-         gDGjWE4EW1L+rsFD2ozcBAmUlUjqvHcfmeZTjicgfj/G2zjx+4h3skQn3dcUWxhf/HGA
-         34blS1DVtvnecxc1FIU189JqspE7/zPXYiT+P+DU7dpREkeZiHpbse3hobDGVMvtNzbD
-         KrJtaaqMOlcqXc8kDvP2uFSCHPNCwCqMldtmcSw2My/VgU3ZZIe/FRFIcNJ7iFkbw6cy
-         utbf98JYdXdwWcsEetVbf/K56+HhaYsRX5rkPaO+4MJKlgRMduJzLaAbfn7bk7LRFtsA
-         Fi8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+SReuFYVGjLRX5r5xj5YpIfyUC4xzq9ishSeECc8oc0=;
-        b=glUuiAqfrjO8mvqv0N2vF7J20xaOadXxBEKmhG2DifPp7kZil1e9lmC/+Ns+9ubi8l
-         q0YBB2pjBzGIqwiI5k7A4xUGbdOJzucsnQLLrE08dMctgdlaPE6heI8LI0bPHHWuYDXc
-         rS1FNzHEIN4AMCzphphv3+1UTQ4v0JwZVdJQ87jwGJRcBx4076bdeWd8TfYVdyL4LL1C
-         IeHvInKrxeDwVIMwyzQZvK2nkEa6XsASTB9NKLp8Wp8usOZJYsL8mg25UwDEtDobGszu
-         D7qB+3lnSWWyscwJAIHm3TNPtWtRdqBXQ3B+nxPqHCfr6J2RR7DsSMbPLObfeBentDUD
-         3g4g==
-X-Gm-Message-State: AOAM533yEvl4fqXZvP9B/YpqkxsIWPwg6FrGOYvRzFcpPQellDozNTeE
-        O6Nz0w5Nn/t9V6TBQlje9BgsYKJ1QCPk7+3+k0Umdg==
-X-Google-Smtp-Source: ABdhPJxrA+hjx0Q1mNxWSy2JCrzqouCMw/jbe01R8hqj3aXOsgJE0QWv/Xu+8L2SG1RhOKQ8MRvH9R8RbRpmUUnfeh4=
-X-Received: by 2002:a50:931e:: with SMTP id m30mr677030eda.341.1595441726019;
- Wed, 22 Jul 2020 11:15:26 -0700 (PDT)
+        id S1731569AbgGVSKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726535AbgGVSKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 14:10:00 -0400
+Received: from embeddedor (unknown [201.162.161.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5556820787;
+        Wed, 22 Jul 2020 18:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595441399;
+        bh=NmBDYRLXE7yLQ1W+FnfOFlvtKPX0dfdhfwoZ8FHxDT8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iYVbcMsE8a7W1Haau6s6tTXgFjXgPMpVvTDvGoDTQ/dz8fhA6nyAWpXmz7iDBWBqw
+         GxmT9dleWu7/T82+SNsyX4P3Ijv+Tn3KL0VDu3vX9o6zKApBdYkdhO7OTaxzhPE71r
+         qZoWTJ1H9pXPj9bYXH6AaJke5ycpJ77sRlRUixmw=
+Date:   Wed, 22 Jul 2020 13:15:34 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] mei: hdcp: Replace one-element array with
+ flexible-array member
+Message-ID: <20200722181534.GA31357@embeddedor>
 MIME-Version: 1.0
-References: <20200624203200.78870-12-samitolvanen@google.com> <20200717202620.GA768846@bjorn-Precision-5520>
-In-Reply-To: <20200717202620.GA768846@bjorn-Precision-5520>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 22 Jul 2020 11:15:14 -0700
-Message-ID: <CABCJKudTCwt3J19u8Em493a3Z9J2SD+imtVZTpz5cPv7Wza5iQ@mail.gmail.com>
-Subject: Re: [PATCH 11/22] pci: lto: fix PREL32 relocations
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+There is a regular need in the kernel to provide a way to declare
+having a dynamically sized set of trailing elements in a structure.
+Kernel code should always use “flexible array members”[1] for these
+cases. The older style of one-element or zero-length arrays should
+no longer be used[2].
 
-On Fri, Jul 17, 2020 at 1:26 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> OK by me, but please update the subject to match convention:
->
->   PCI: Fix PREL32 relocations for LTO
->
-> and include a hint in the commit log about what LTO is.  At least
-> expand the initialism once.  Googling for "LTO" isn't very useful.
->
->   With Clang's Link Time Optimization (LTO), the compiler ... ?
+Also, make use of the array_size() helper instead of the open-coded
+version in memcpy(). These sorts of multiplication factors need to
+be wrapped in array_size().
 
-Sure, I'll change this in the next version. Thanks for taking a look!
+And while there, use the preferred form for passing a size of a struct.
+The alternative form where struct name is spelled out hurts readability
+and introduces an opportunity for a bug when the pointer variable type is
+changed but the corresponding sizeof that is passed as argument is not.
 
-Sami
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://github.com/KSPP/linux/issues/79
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/misc/mei/hdcp/mei_hdcp.c | 2 +-
+ drivers/misc/mei/hdcp/mei_hdcp.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+index e6c3dc595617..d1d3e025ca0e 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.c
++++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+@@ -572,7 +572,7 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+ 	       HDCP_2_2_MPRIME_LEN);
+ 	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+ 	memcpy(verify_mprime_in.streams, data->streams,
+-	       (data->k * sizeof(struct hdcp2_streamid_type)));
++	       array_size(data->k, sizeof(*data->streams)));
+ 
+ 	verify_mprime_in.k = cpu_to_be16(data->k);
+ 
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.h b/drivers/misc/mei/hdcp/mei_hdcp.h
+index 18ffc773fa18..834757f5e072 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.h
++++ b/drivers/misc/mei/hdcp/mei_hdcp.h
+@@ -358,7 +358,7 @@ struct wired_cmd_repeater_auth_stream_req_in {
+ 	u8				seq_num_m[HDCP_2_2_SEQ_NUM_LEN];
+ 	u8				m_prime[HDCP_2_2_MPRIME_LEN];
+ 	__be16				k;
+-	struct hdcp2_streamid_type	streams[1];
++	struct hdcp2_streamid_type	streams[];
+ } __packed;
+ 
+ struct wired_cmd_repeater_auth_stream_req_out {
+-- 
+2.27.0
+
