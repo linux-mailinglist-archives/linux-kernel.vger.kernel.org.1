@@ -2,569 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D771229B50
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176FA229B4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732676AbgGVPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60476 "EHLO
+        id S1732716AbgGVPZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730382AbgGVPZK (ORCPT
+        with ESMTP id S1730382AbgGVPZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:25:10 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056C2C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:25:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id y3so2312224wrl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:25:09 -0700 (PDT)
+        Wed, 22 Jul 2020 11:25:05 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7356BC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:25:04 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 17so2400707wmo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:25:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4OwvBdzIoU9cc/pobR9mxvBnL6043dbqvY4avJ3y2AY=;
-        b=ASuVmEsMGK2RT7ozX81teicrktOQ8fqt0vFs9VFlIhnVVSKQ4P7AxfEK47NAbEnuvc
-         aqeyu2xBF9IGKE7uLCI2XjFKVOJWhbmKOmrFke6R6vxVJbYkBYQ/oU4A23sWKCxtpv7y
-         ZVj8f1jM+SNBSqg2uZ4cR/7wUoXwc4UlTMVOZXnXgaYZ6zgayLZQDp8mY/AtIE/Qt1PA
-         bBqc0ePyVEtY+GM664XMQcQlWdCNhVCVRtbhnjEqDuJn5d+FjUUWWVNKnUUgOv8DfL7q
-         ppegf2eE7+Rgak1CO8S5EeIpZsx5nLaR1VIpJmmGAdLZmaIFZgTGmTSv+OmWb72+FjZy
-         b57w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GzpjkunuhHZpNCtp+UnJMkYMMtPlO9A+rgbio4BwCmw=;
+        b=aG/jx05ydxlbuWKp3bVJ7fWM5H1emziGd8sHOgk9BSu1xFZju0i2/PlThhHwqx/2d9
+         jH59xbqJ0lgmFtMjmX1zgTe2RQwJ+n2UMk2N2TYZf/cXIJ5NHfbIX4ClbQFlRBdz9cx5
+         U3dHbF8rISWcHZfAsdbfG3B002bN7swP3Ahzc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=4OwvBdzIoU9cc/pobR9mxvBnL6043dbqvY4avJ3y2AY=;
-        b=fHEHAKHJNo5A80RH4TuFATToXKL9iHCOY631o+PLDzw6RBAE96edES0XpBL3QrzQNf
-         jBmHeKrxPX4EfOMA5zJ3/SxMlL+CcDcKQlda93vaCuI8NLA/QO29PDGPbDM2R3AIaDa3
-         /jyyPiWs9OFATIS28XB0SGriH+gcUjEU81/PXZ2uk0cD/Sn9fXcFXB+p9QNsFPiQWKzA
-         u3xMOCwAnYsVzyHrroszzy47OIpD4aXYykgpPZi7knfUvdgSYGMmPR9fmPqkjnbmaRYk
-         5SkS1xNw54pD+/tPZSw62vthl2PbEv8OSaM5fZkL1jXr0V6DpaIhetOuCnJ2b5IQhNcb
-         GydA==
-X-Gm-Message-State: AOAM533S5PK56uZ+HhOGH9ZIw9W184yG3cvIt5bRDMUKq9E0ReEhyTOq
-        gGLKb+UrkrnT7/SkaVjNC5E=
-X-Google-Smtp-Source: ABdhPJwYyEBjin5uDO/UwUSwNNUC5RWgWEIJghMtZPpLgyiDjsKXbk6nMnXNdR6hcxPuJRrtCeW1gQ==
-X-Received: by 2002:adf:de91:: with SMTP id w17mr124434wrl.108.1595431508462;
-        Wed, 22 Jul 2020 08:25:08 -0700 (PDT)
-Received: from localhost.localdomain ([80.71.140.73])
-        by smtp.gmail.com with ESMTPSA id 60sm298547wrs.20.2020.07.22.08.25.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GzpjkunuhHZpNCtp+UnJMkYMMtPlO9A+rgbio4BwCmw=;
+        b=Ar43ovyZKOkSPgqadUt/OKNZxfV2i3bNQKvIEAI8TOWwEv+chFORXzaeDacSQC0iIN
+         r9s3Ei/wpuitl++CP2YzQhGg/E6WVgf2QqvcP0YBVC6Q8EZzrELohtCvj065wguIG2LJ
+         BRZC6pvkPGTotKBGyrZr/DtBLoKUCYHaSO3su9N3BTE0a/tEYLEeTH67M15OJtJlfPZm
+         rpu+//bhb8g/jA01fccOQFDRITxlnYwlY7sgfLqHbtT0XbB4bQI9d9XS3FEj4p03DEX0
+         vjgE69ncVLbJeYBx8qRGgGHegHLovIJXRAzIBoAw4SLBbo1U2amkKh3uBJ+BJLnMmzaq
+         2Ssw==
+X-Gm-Message-State: AOAM531GsxmNbDcUkDc9noVaKpJNtGPt7fIueCoTPucdt1PxR9j7BJRB
+        QqiYynx++6yvUTIdRk47X/hwFw==
+X-Google-Smtp-Source: ABdhPJyli9nYQTECIz58WQcrAIR9eMkF5YpVYAe6Yijs2QsfIgsl3ieTCFbf++acxjDD1+j7Wr+8QQ==
+X-Received: by 2002:a1c:6583:: with SMTP id z125mr138284wmb.173.1595431502265;
+        Wed, 22 Jul 2020 08:25:02 -0700 (PDT)
+Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
+        by smtp.gmail.com with ESMTPSA id r10sm318795wrm.17.2020.07.22.08.25.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 08:25:07 -0700 (PDT)
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     linux-riscv@lists.infradead.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Luke Nelson <lukenels@cs.washington.edu>,
-        Zong Li <zong@andestech.com>, Andreas Schwab <schwab@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] riscv: Clean up module relocations
-Date:   Wed, 22 Jul 2020 17:24:22 +0200
-Message-Id: <20200722152422.72532-2-kernel@esmil.dk>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200722152422.72532-1-kernel@esmil.dk>
-References: <20200722152422.72532-1-kernel@esmil.dk>
+        Wed, 22 Jul 2020 08:25:01 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 15:24:59 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        eddie.cai.linux@gmail.com, mchehab@kernel.org, heiko@sntech.de,
+        jacob2.chen@rock-chips.com, jeffy.chen@rock-chips.com,
+        zyc@rock-chips.com, linux-kernel@vger.kernel.org,
+        hans.verkuil@cisco.com, sakari.ailus@linux.intel.com,
+        kernel@collabora.com, ezequiel@collabora.com,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        zhengsq@rock-chips.com, Jacob Chen <cc@rock-chips.com>,
+        Allon Huang <allon.huang@rock-chips.com>
+Subject: Re: [PATCH v8 05/14] media: rkisp1: add Rockchip ISP1 subdev driver
+Message-ID: <20200722152459.GC1828171@chromium.org>
+References: <20190730184256.30338-1-helen.koike@collabora.com>
+ <20190730184256.30338-6-helen.koike@collabora.com>
+ <20190816001323.GF5011@pendragon.ideasonboard.com>
+ <30b6367d-9088-d755-d041-904ff2a48130@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30b6367d-9088-d755-d041-904ff2a48130@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out generation of different types of immediates.
+Hi Dafna,
 
-Also RISC-V has a number of instruction pairs to
-generate 32bit immediates or jump/call offsets. Eg.:
+On Sat, Jul 11, 2020 at 01:04:31PM +0200, Dafna Hirschfeld wrote:
+> Hi Laurent,
+> 
+> On 16.08.19 02:13, Laurent Pinchart wrote:
+> > Hello Helen,
+> > 
+> > Thank you for the patch.
+> > 
+> > On Tue, Jul 30, 2019 at 03:42:47PM -0300, Helen Koike wrote:
+[snip]
+> > > +static void rkisp1_isp_queue_event_sof(struct rkisp1_isp_subdev *isp)
+> > > +{
+> > > +	struct v4l2_event event = {
+> > > +		.type = V4L2_EVENT_FRAME_SYNC,
+> > > +		.u.frame_sync.frame_sequence =
+> > > +			atomic_inc_return(&isp->frm_sync_seq) - 1,
+> > 
+> > I would move the increment to the caller, hiding it in this function is
+> > error-prone (and if you look at the caller I'm pointing out one possible
+> > error :-)).
+> > 
+> > In general usage of frm_sync_seq through the driver seems to be very
+> > race-prone. It's read in various IRQ handling functions, all coming from
+> > the same IRQ, so that part is fine (and wouldn't require an atomic
+> > variable), but when read from the buffer queue handlers I really get a
+> > red light flashing in my head. I'll try to investigate more when
+> > reviewing the next patches.
+> 
+> I see that the only place were 'frame_sequence' is read outside of the irq
+> handlers is in the capture in 'rkisp1_vb2_buf_queue':
+> 
+> 	/*
+>          * If there's no next buffer assigned, queue this buffer directly
+>          * as the next buffer, and update the memory interface.
+>          */
+>         if (cap->is_streaming && !cap->buf.next &&
+>             atomic_read(&cap->rkisp1->isp.frame_sequence) == -1) {
+>                 cap->buf.next = ispbuf;
+>                 rkisp1_set_next_buf(cap);
+>         } else {
+>                 list_add_tail(&ispbuf->queue, &cap->buf.queue);
+>         }
+> This "if" condition seems very specific, a case where we already stream but v-start was not yet received.
+> I think it is possible to remove the test 'atomic_read(&cap->rkisp1->isp.frame_sequence) == -1'
+> from the above condition so that the next buffer is updated in case it is null not just before the first
+> v-start signal.
+> 
 
-lui   rd, hi20
-addi  rd, rd, lo12
+We don't have this special case in the Chrome OS code.
 
-..where hi20 is the upper 20bits to load into register rd
-and lo12 is the lower 12bits. However lo12 is interpreted
-as a signed 12bit value. Hence the old code calculates
-hi20 and lo12 for 32bit immediates imm like this:
+I suppose it would make it possible to resume the capture 1 frame
+earlier after a queue underrun, as otherwise the new buffer would be
+only programmed after the next frame start interrupt and used for the
+next-next frame.  However, it's racy, because programming of the buffer
+addresses is not atomic and could end up with the hardware using few
+plane addresses from the new buffer and few from the dummy buffer.
 
-hi20 = (imm + 0x800) & 0xfffff000;
-lo12 = (imm - hi20) & 0xfff;
+Given that and also the fact that a queue underrun is a very special
+case, where the system was already having problems catching up, I'd just
+remove this special case.
 
-This patch simplifies it to:
+[snip]
+> > > +void rkisp1_isp_isr(unsigned int isp_mis, struct rkisp1_device *dev)
+> > > +{
+> > > +	void __iomem *base = dev->base_addr;
+> > > +	unsigned int isp_mis_tmp = 0;
+> > 
+> > _tmp are never good names :-S
+> > 
+> > > +	unsigned int isp_err = 0;
+> > 
+> > Neither of these variable need to be initialised to 0.
+> > 
+> > > +
+> > > +	/* start edge of v_sync */
+> > > +	if (isp_mis & CIF_ISP_V_START) {
+> > > +		rkisp1_isp_queue_event_sof(&dev->isp_sdev);
+> > 
+> > This will increment the frame sequence number. What if the interrupt is
+> > slightly delayed and the next frame starts before we get a change to
+> > copy the sequence number to the buffers (before they will complete
+> > below) ?
+> 
+> Do you mean that we get two sequental v-start signals and then the next
+> frame-end signal in MI_MIS belongs to the first v-start signal of the two?
+> How can this be solved? I wonder if any v-start signal has a later signal
+> that correspond to the same frame so that we can follow it?
+> 
+> Maybe we should have one counter that is incremented on v-start signal,
+> and another counter that is incremented uppon some other signal?
+>
 
-hi20 = (imm + 0x800) & 0xfffff000;
-lo12 = imm & 0xfff;
+We're talking about a hard IRQ. I can't imagine the interrupt handler
+being delayed for a time close to a full frame interval (~16ms for 60
+fps) to trigger such scenario.
 
-..which amounts to the same: imm - hi20 may be become
-negative/underflow, but it doesn't change the lower 12 bits.
+> > 
+> > > +
+> > > +		writel(CIF_ISP_V_START, base + CIF_ISP_ICR);
+> > 
+> > Do you need to clear all interrupt bits individually, can't you write
+> > isp_mis to CIF_ISP_ICR at the beginning of the function to clear them
+> > all in one go ?
+> > 
+> > > +		isp_mis_tmp = readl(base + CIF_ISP_MIS);
+> > > +		if (isp_mis_tmp & CIF_ISP_V_START)
+> > > +			v4l2_err(&dev->v4l2_dev, "isp icr v_statr err: 0x%x\n",
+> > > +				 isp_mis_tmp);
+> > 
+> > This require some explanation. It looks like a naive way to protect
+> > against something, but I think it could trigger under normal
+> > circumstances if IRQ handling is delayed, and wouldn't do much anyway.
+> > Same for the similar constructs below.
+> > 
+> > > +	}
+> > > +
+> > > +	if ((isp_mis & CIF_ISP_PIC_SIZE_ERROR)) {
+> > > +		/* Clear pic_size_error */
+> > > +		writel(CIF_ISP_PIC_SIZE_ERROR, base + CIF_ISP_ICR);
+> > > +		isp_err = readl(base + CIF_ISP_ERR);
+> > > +		v4l2_err(&dev->v4l2_dev,
+> > > +			 "CIF_ISP_PIC_SIZE_ERROR (0x%08x)", isp_err);
+> > 
+> > What does this mean ?
+> > 
+> > > +		writel(isp_err, base + CIF_ISP_ERR_CLR);
+> > > +	} else if ((isp_mis & CIF_ISP_DATA_LOSS)) {
+> > 
+> > Are CIF_ISP_PIC_SIZE_ERROR and CIF_ISP_DATA_LOSS mutually exclusive ?
+> > 
+> > > +		/* Clear data_loss */
+> > > +		writel(CIF_ISP_DATA_LOSS, base + CIF_ISP_ICR);
+> > > +		v4l2_err(&dev->v4l2_dev, "CIF_ISP_DATA_LOSS\n");
+> > > +		writel(CIF_ISP_DATA_LOSS, base + CIF_ISP_ICR);
+> > > +	}
+> > > +
+> > > +	/* sampled input frame is complete */
+> > > +	if (isp_mis & CIF_ISP_FRAME_IN) {
+> > > +		writel(CIF_ISP_FRAME_IN, base + CIF_ISP_ICR);
+> > > +		isp_mis_tmp = readl(base + CIF_ISP_MIS);
+> > > +		if (isp_mis_tmp & CIF_ISP_FRAME_IN)
+> > > +			v4l2_err(&dev->v4l2_dev, "isp icr frame_in err: 0x%x\n",
+> > > +				 isp_mis_tmp);
+> > > +	}
+> > > +
+> > > +	/* frame was completely put out */
+> > 
+> > "put out" ? :-) What's the difference between ISP_FRAME_IN and ISP_FRAME
+> > ? The two comments could do with a bit of brush up, and I think the
+> > ISP_FRAME_IN interrupt could be disabled as it doesn't perform any
+> > action.
+> 
+> Those two oneline comments are just copy-paste from the datasheet.
+> 
+> ""
+> 5 MIS_FRAME_IN sampled input frame is complete
+> 1 MIS_FRAME frame was completely put out
+> ""
+> 
+> Unfrotunately, the datasheet does not add any further explanation about those signals.
+> 
+> 
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
----
+My loose recollection is that the former is signaled when then frame
+is fully input to the ISP and the latter when the ISP completes
+outputting the frame to the next block in the pipeline, but someone
+would need to verify this, for example by printing timestamps for all
+the various interrupts.
 
-My hope is that we can eventually factor out the code to generate
-immediates and instructions so it can be reused both here, in the
-jump-label code and in the bpf-jit code, but let's take it
-one step at a time.
+> > 
+> > > +	if (isp_mis & CIF_ISP_FRAME) {
+> > > +		u32 isp_ris = 0;
+> > 
+> > No need to initialise this to 0.
+> > 
+> > > +		/* Clear Frame In (ISP) */
+> > > +		writel(CIF_ISP_FRAME, base + CIF_ISP_ICR);
+> > > +		isp_mis_tmp = readl(base + CIF_ISP_MIS);
+> > > +		if (isp_mis_tmp & CIF_ISP_FRAME)
+> > > +			v4l2_err(&dev->v4l2_dev,
+> > > +				 "isp icr frame end err: 0x%x\n", isp_mis_tmp);
+> > > +
+> > > +		isp_ris = readl(base + CIF_ISP_RIS);
+> > > +		if (isp_ris & (CIF_ISP_AWB_DONE | CIF_ISP_AFM_FIN |
+> > > +			       CIF_ISP_EXP_END | CIF_ISP_HIST_MEASURE_RDY))
+> > > +			rkisp1_stats_isr(&dev->stats_vdev, isp_ris);
+> > 
+> > Is there a guarantee that the statistics will be fully written out
+> > before the video frame itself ? And doesn't this test if any of the
+> > statistics is complete, not all of them ? I think the logic is wrong, it
+> 
+> The datasheet does not add any explanation of what is expected to come first.
+> Should we wait until all statistics measurements are done? In the struct
+> sent to userspace there is a bitmaks for which of the statistics are read.
+> I think that if only part of the statistics are ready, we can already send the once
+> that are ready to userspace.
+>
 
-/Emil
+If we look further into the code, rkisp1_stats_isr() checks the
+interrupt status mask passed to it and reads out only the parameters
+with indicated completion. The statistics metadata buffer format
+includes a bit mask which tells the userspace which measurements are
+available.
 
- arch/riscv/kernel/module.c | 290 +++++++++++++++++++++----------------
- 1 file changed, 163 insertions(+), 127 deletions(-)
+However, I think I've spotted a bug there. At the beginning of
+rkisp1_stats_isr(), all the 4 interrupt status bits are cleared,
+regardless of the mask used later to decide which readouts need to be
+done. This could mean that with an unfortunate timing, some measurements
+would be lost. So at least the code should be fixed to only clear the
+interrupts bits really handled.
 
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 05b2162d96be..7a80aaaa56a1 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -2,8 +2,10 @@
- /*
-  *
-  *  Copyright (C) 2017 Zihao Yu
-+ *  Copyright (C) 2020 Emil Renner Berthing
-  */
- 
-+#include <linux/bits.h>
- #include <linux/elf.h>
- #include <linux/err.h>
- #include <linux/errno.h>
-@@ -13,24 +15,91 @@
- #include <linux/pgtable.h>
- #include <asm/sections.h>
- 
--static int riscv_insn_rmw(u8 *location, u32 keep, u32 set)
-+#define RISCV_INSN_I_IMM_MASK 0xfff00000U
-+#define RISCV_INSN_S_IMM_MASK 0xfe000f80U
-+#define RISCV_INSN_B_IMM_MASK 0xfe000f80U
-+#define RISCV_INSN_U_IMM_MASK 0xfffff000U
-+#define RISCV_INSN_J_IMM_MASK 0xfffff000U
-+
-+#define RISCV_INSN_CI_IMM_MASK  0x107cU
-+#define RISCV_INSN_CSS_IMM_MASK 0x1f80U
-+#define RISCV_INSN_CIW_IMM_MASK 0x1fe0U
-+#define RISCV_INSN_CL_IMM_MASK  0x1c60U
-+#define RISCV_INSN_CS_IMM_MASK  0x1c60U
-+#define RISCV_INSN_CB_IMM_MASK  0x1c7cU
-+#define RISCV_INSN_CJ_IMM_MASK  0x1ffcU
-+
-+static u32 riscv_insn_i_imm(u32 imm)
-+{
-+	return (imm & GENMASK(11, 0)) << 20;
-+}
-+
-+static u32 riscv_insn_s_imm(u32 imm)
-+{
-+	return (imm & GENMASK( 4, 0)) << ( 7 - 0) |
-+	       (imm & GENMASK(11, 5)) << (25 - 5);
-+}
-+
-+static u32 riscv_insn_b_imm(u32 imm)
-+{
-+	return (imm & GENMASK(11, 11)) >> (11 -  7) |
-+	       (imm & GENMASK( 4,  1)) << ( 8 -  1) |
-+	       (imm & GENMASK(10,  5)) << (25 -  5) |
-+	       (imm & GENMASK(12, 12)) << (31 - 12);
-+}
-+
-+static u32 riscv_insn_u_imm(u32 imm)
-+{
-+	return imm & GENMASK(31, 12);
-+}
-+
-+static u32 riscv_insn_j_imm(u32 imm)
-+{
-+	return (imm & GENMASK(19, 12)) << (12 - 12) |
-+	       (imm & GENMASK(11, 11)) << (20 - 11) |
-+	       (imm & GENMASK(10,  1)) << (21 -  1) |
-+	       (imm & GENMASK(20, 20)) << (31 - 20);
-+}
-+
-+static u16 riscv_insn_rvc_branch_imm(u16 imm)
-+{
-+	return (imm & GENMASK(5, 5)) >> ( 5 - 2) |
-+	       (imm & GENMASK(2, 1)) << ( 3 - 1) |
-+	       (imm & GENMASK(7, 6)) >> ( 6 - 5) |
-+	       (imm & GENMASK(4, 3)) << (10 - 3) |
-+	       (imm & GENMASK(8, 8)) << (12 - 8);
-+}
-+
-+static u16 riscv_insn_rvc_jump_imm(u16 imm)
-+{
-+	return (imm & GENMASK( 5,  5)) >> ( 5 -  2) |
-+	       (imm & GENMASK( 3,  1)) << ( 3 -  1) |
-+	       (imm & GENMASK( 7,  7)) >> ( 7 -  6) |
-+	       (imm & GENMASK( 6,  6)) << ( 7 -  6) |
-+	       (imm & GENMASK(10, 10)) >> (10 -  8) |
-+	       (imm & GENMASK( 9,  8)) << ( 9 -  8) |
-+	       (imm & GENMASK( 4,  4)) << (11 -  4) |
-+	       (imm & GENMASK(11, 11)) << (12 - 11);
-+}
-+
-+static int riscv_insn_rmw(u8 *location, u32 mask, u32 value)
- {
- 	u16 *parcel = (u16 *)location;
- 	u32 insn = (u32)parcel[0] | (u32)parcel[1] << 16;
- 
--	insn &= keep;
--	insn |= set;
-+	insn &= ~mask;
-+	insn |= value;
- 
- 	parcel[0] = insn;
- 	parcel[1] = insn >> 16;
- 	return 0;
- }
- 
--static int riscv_insn_rvc_rmw(u8 *location, u16 keep, u16 set)
-+static int riscv_insn_rvc_rmw(u8 *location, u16 mask, u16 value)
- {
- 	u16 *parcel = (u16 *)location;
- 
--	*parcel = (*parcel & keep) | set;
-+	*parcel = (*parcel & ~mask) | value;
- 	return 0;
- }
- 
-@@ -55,55 +124,40 @@ static int apply_r_riscv_branch_rela(struct module *me, u8 *location,
- 				     Elf_Addr v)
- {
- 	ptrdiff_t offset = (u8 *)v - location;
--	u32 imm12 = (offset & 0x1000) << (31 - 12);
--	u32 imm11 = (offset & 0x800) >> (11 - 7);
--	u32 imm10_5 = (offset & 0x7e0) << (30 - 10);
--	u32 imm4_1 = (offset & 0x1e) << (11 - 4);
- 
--	return riscv_insn_rmw(location, 0x1fff07f, imm12 | imm11 | imm10_5 | imm4_1);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_B_IMM_MASK,
-+			riscv_insn_b_imm(offset));
- }
- 
- static int apply_r_riscv_jal_rela(struct module *me, u8 *location,
- 				  Elf_Addr v)
- {
- 	ptrdiff_t offset = (u8 *)v - location;
--	u32 imm20 = (offset & 0x100000) << (31 - 20);
--	u32 imm19_12 = (offset & 0xff000);
--	u32 imm11 = (offset & 0x800) << (20 - 11);
--	u32 imm10_1 = (offset & 0x7fe) << (30 - 10);
- 
--	return riscv_insn_rmw(location, 0xfff, imm20 | imm19_12 | imm11 | imm10_1);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_J_IMM_MASK,
-+			riscv_insn_j_imm(offset));
- }
- 
- static int apply_r_riscv_rvc_branch_rela(struct module *me, u8 *location,
- 					 Elf_Addr v)
- {
- 	ptrdiff_t offset = (u8 *)v - location;
--	u16 imm8 = (offset & 0x100) << (12 - 8);
--	u16 imm7_6 = (offset & 0xc0) >> (6 - 5);
--	u16 imm5 = (offset & 0x20) >> (5 - 2);
--	u16 imm4_3 = (offset & 0x18) << (12 - 5);
--	u16 imm2_1 = (offset & 0x6) << (12 - 10);
- 
--	return riscv_insn_rvc_rmw(location, 0xe383,
--			imm8 | imm7_6 | imm5 | imm4_3 | imm2_1);
-+	return riscv_insn_rvc_rmw(location,
-+			RISCV_INSN_CB_IMM_MASK,
-+			riscv_insn_rvc_branch_imm(offset));
- }
- 
- static int apply_r_riscv_rvc_jump_rela(struct module *me, u8 *location,
- 				       Elf_Addr v)
- {
- 	ptrdiff_t offset = (u8 *)v - location;
--	u16 imm11 = (offset & 0x800) << (12 - 11);
--	u16 imm10 = (offset & 0x400) >> (10 - 8);
--	u16 imm9_8 = (offset & 0x300) << (12 - 11);
--	u16 imm7 = (offset & 0x80) >> (7 - 6);
--	u16 imm6 = (offset & 0x40) << (12 - 11);
--	u16 imm5 = (offset & 0x20) >> (5 - 2);
--	u16 imm4 = (offset & 0x10) << (12 - 5);
--	u16 imm3_1 = (offset & 0xe) << (12 - 10);
- 
--	return riscv_insn_rvc_rmw(location, 0xe003,
--			imm11 | imm10 | imm9_8 | imm7 | imm6 | imm5 | imm4 | imm3_1);
-+	return riscv_insn_rvc_rmw(location,
-+			RISCV_INSN_CJ_IMM_MASK,
-+			riscv_insn_rvc_jump_imm(offset));
- }
- 
- static int apply_r_riscv_pcrel_hi20_rela(struct module *me, u8 *location,
-@@ -118,30 +172,27 @@ static int apply_r_riscv_pcrel_hi20_rela(struct module *me, u8 *location,
- 		return -EINVAL;
- 	}
- 
--	return riscv_insn_rmw(location, 0xfff, (offset + 0x800) & 0xfffff000);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_U_IMM_MASK,
-+			riscv_insn_u_imm(offset + 0x800));
- }
- 
- static int apply_r_riscv_pcrel_lo12_i_rela(struct module *me, u8 *location,
- 					   Elf_Addr v)
- {
--	/*
--	 * v is the lo12 value to fill. It is calculated before calling this
--	 * handler.
--	 */
--	return riscv_insn_rmw(location, 0xfffff, (v & 0xfff) << 20);
-+	/* v is already the relative offset */
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_I_IMM_MASK,
-+			riscv_insn_i_imm(v));
- }
- 
- static int apply_r_riscv_pcrel_lo12_s_rela(struct module *me, u8 *location,
- 					   Elf_Addr v)
- {
--	/*
--	 * v is the lo12 value to fill. It is calculated before calling this
--	 * handler.
--	 */
--	u32 imm11_5 = (v & 0xfe0) << (31 - 11);
--	u32 imm4_0 = (v & 0x1f) << (11 - 4);
--
--	return riscv_insn_rmw(location, 0x1fff07f, imm11_5 | imm4_0);
-+	/* v is already the relative offset */
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_S_IMM_MASK,
-+			riscv_insn_s_imm(v));
- }
- 
- static int apply_r_riscv_hi20_rela(struct module *me, u8 *location,
-@@ -154,29 +205,27 @@ static int apply_r_riscv_hi20_rela(struct module *me, u8 *location,
- 		return -EINVAL;
- 	}
- 
--	return riscv_insn_rmw(location, 0xfff, ((s32)v + 0x800) & 0xfffff000);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_U_IMM_MASK,
-+			riscv_insn_u_imm(v + 0x800));
- }
- 
- static int apply_r_riscv_lo12_i_rela(struct module *me, u8 *location,
- 				     Elf_Addr v)
- {
- 	/* Skip medlow checking because of filtering by HI20 already */
--	s32 hi20 = ((s32)v + 0x800) & 0xfffff000;
--	s32 lo12 = ((s32)v - hi20);
--
--	return riscv_insn_rmw(location, 0xfffff, (lo12 & 0xfff) << 20);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_I_IMM_MASK,
-+			riscv_insn_i_imm(v));
- }
- 
- static int apply_r_riscv_lo12_s_rela(struct module *me, u8 *location,
- 				     Elf_Addr v)
- {
- 	/* Skip medlow checking because of filtering by HI20 already */
--	s32 hi20 = ((s32)v + 0x800) & 0xfffff000;
--	s32 lo12 = ((s32)v - hi20);
--	u32 imm11_5 = (lo12 & 0xfe0) << (31 - 11);
--	u32 imm4_0 = (lo12 & 0x1f) << (11 - 4);
--
--	return riscv_insn_rmw(location, 0x1fff07f, imm11_5 | imm4_0);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_S_IMM_MASK,
-+			riscv_insn_s_imm(v));
- }
- 
- static int apply_r_riscv_got_hi20_rela(struct module *me, u8 *location,
-@@ -195,17 +244,17 @@ static int apply_r_riscv_got_hi20_rela(struct module *me, u8 *location,
- 		return -EINVAL;
- 	}
- 
--	return riscv_insn_rmw(location, 0xfff, (offset + 0x800) & 0xfffff000);
-+	return riscv_insn_rmw(location,
-+			RISCV_INSN_U_IMM_MASK,
-+			riscv_insn_u_imm(offset + 0x800));
- }
- 
- static int apply_r_riscv_call_plt_rela(struct module *me, u8 *location,
- 				       Elf_Addr v)
- {
- 	ptrdiff_t offset = (u8 *)v - location;
--	s32 fill_v = offset;
--	u32 hi20, lo12;
- 
--	if (offset != fill_v) {
-+	if (offset != (s32)offset) {
- 		/* Only emit the plt entry if offset over 32-bit range */
- 		if (IS_ENABLED(CONFIG_MODULE_SECTIONS)) {
- 			unsigned long entry = module_emit_plt_entry(me, v);
-@@ -218,30 +267,32 @@ static int apply_r_riscv_call_plt_rela(struct module *me, u8 *location,
- 		}
- 	}
- 
--	hi20 = (offset + 0x800) & 0xfffff000;
--	lo12 = (offset - hi20) & 0xfff;
--	riscv_insn_rmw(location, 0xfff, hi20);
--	return riscv_insn_rmw(location + 4, 0xfffff, lo12 << 20);
-+	riscv_insn_rmw(location,
-+			RISCV_INSN_U_IMM_MASK,
-+			riscv_insn_u_imm(offset + 0x800));
-+	return riscv_insn_rmw(location + 4,
-+			RISCV_INSN_I_IMM_MASK,
-+			riscv_insn_i_imm(offset));
- }
- 
- static int apply_r_riscv_call_rela(struct module *me, u8 *location,
- 				   Elf_Addr v)
- {
- 	ptrdiff_t offset = (u8 *)v - location;
--	s32 fill_v = offset;
--	u32 hi20, lo12;
- 
--	if (offset != fill_v) {
-+	if (offset != (s32)offset) {
- 		pr_err(
- 		  "%s: target %016llx can not be addressed by the 32-bit offset from PC = %p\n",
- 		  me->name, (long long)v, location);
- 		return -EINVAL;
- 	}
- 
--	hi20 = (offset + 0x800) & 0xfffff000;
--	lo12 = (offset - hi20) & 0xfff;
--	riscv_insn_rmw(location, 0xfff, hi20);
--	return riscv_insn_rmw(location + 4, 0xfffff, lo12 << 20);
-+	riscv_insn_rmw(location,
-+			RISCV_INSN_U_IMM_MASK,
-+			riscv_insn_u_imm(offset + 0x800));
-+	return riscv_insn_rmw(location + 4,
-+			RISCV_INSN_I_IMM_MASK,
-+			riscv_insn_i_imm(offset));
- }
- 
- static int apply_r_riscv_relax_rela(struct module *me, u8 *location,
-@@ -287,7 +338,7 @@ static int apply_r_riscv_sub64_rela(struct module *me, u8 *location,
- 	return 0;
- }
- 
--static int (*reloc_handlers_rela[]) (struct module *me, u8 *location,
-+static int (*reloc_handlers_rela[])(struct module *me, u8 *location,
- 				Elf_Addr v) = {
- 	[R_RISCV_32]			= apply_r_riscv_32_rela,
- 	[R_RISCV_64]			= apply_r_riscv_64_rela,
-@@ -316,24 +367,23 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 		       unsigned int symindex, unsigned int relsec,
- 		       struct module *me)
- {
--	Elf_Rela *rel = (void *) sechdrs[relsec].sh_addr;
--	int (*handler)(struct module *me, u8 *location, Elf_Addr v);
--	Elf_Sym *sym;
--	u8 *location;
--	unsigned int i, type;
--	Elf_Addr v;
--	int res;
-+	Elf_Rela *rel = (Elf_Rela *)sechdrs[relsec].sh_addr;
-+	unsigned int entries = sechdrs[relsec].sh_size / sizeof(*rel);
-+	unsigned int i;
- 
- 	pr_debug("Applying relocate section %u to %u\n", relsec,
- 	       sechdrs[relsec].sh_info);
- 
--	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
--		/* This is where to make the change */
--		location = (u8 *)sechdrs[sechdrs[relsec].sh_info].sh_addr
--			+ rel[i].r_offset;
--		/* This is the symbol it is referring to */
--		sym = (Elf_Sym *)sechdrs[symindex].sh_addr
-+	for (i = 0; i < entries; i++) {
-+		Elf_Sym *sym = (Elf_Sym *)sechdrs[symindex].sh_addr
- 			+ ELF_RISCV_R_SYM(rel[i].r_info);
-+		Elf_Addr loc = sechdrs[sechdrs[relsec].sh_info].sh_addr
-+			+ rel[i].r_offset;
-+		unsigned int type = ELF_RISCV_R_TYPE(rel[i].r_info);
-+		int (*handler)(struct module *me, u8 *location, Elf_Addr v);
-+		Elf_Addr v;
-+		int res;
-+
- 		if (IS_ERR_VALUE(sym->st_value)) {
- 			/* Ignore unresolved weak symbol */
- 			if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
-@@ -343,8 +393,6 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 			return -ENOENT;
- 		}
- 
--		type = ELF_RISCV_R_TYPE(rel[i].r_info);
--
- 		if (type < ARRAY_SIZE(reloc_handlers_rela))
- 			handler = reloc_handlers_rela[type];
- 		else
-@@ -361,48 +409,36 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 		if (type == R_RISCV_PCREL_LO12_I || type == R_RISCV_PCREL_LO12_S) {
- 			unsigned int j;
- 
--			for (j = 0; j < sechdrs[relsec].sh_size / sizeof(*rel); j++) {
--				unsigned long hi20_loc =
--					sechdrs[sechdrs[relsec].sh_info].sh_addr
-+			/* find the corresponding HI20 entry */
-+			for (j = 0; j < entries; j++) {
-+				Elf_Sym *hi20_sym = (Elf_Sym *)sechdrs[symindex].sh_addr
-+					+ ELF_RISCV_R_SYM(rel[j].r_info);
-+				Elf_Addr hi20_loc = sechdrs[sechdrs[relsec].sh_info].sh_addr
- 					+ rel[j].r_offset;
--				u32 hi20_type = ELF_RISCV_R_TYPE(rel[j].r_info);
--
--				/* Find the corresponding HI20 relocation entry */
--				if (hi20_loc == sym->st_value
--				    && (hi20_type == R_RISCV_PCREL_HI20
--					|| hi20_type == R_RISCV_GOT_HI20)) {
--					s32 hi20, lo12;
--					Elf_Sym *hi20_sym =
--						(Elf_Sym *)sechdrs[symindex].sh_addr
--						+ ELF_RISCV_R_SYM(rel[j].r_info);
--					unsigned long hi20_sym_val =
--						hi20_sym->st_value
--						+ rel[j].r_addend;
--
--					/* Calculate lo12 */
--					size_t offset = hi20_sym_val - hi20_loc;
--					if (IS_ENABLED(CONFIG_MODULE_SECTIONS)
--					    && hi20_type == R_RISCV_GOT_HI20) {
--						offset = module_emit_got_entry(
--							 me, hi20_sym_val);
--						offset = offset - hi20_loc;
--					}
--					hi20 = (offset + 0x800) & 0xfffff000;
--					lo12 = offset - hi20;
--					v = lo12;
--
--					break;
--				}
--			}
--			if (j == sechdrs[relsec].sh_size / sizeof(*rel)) {
--				pr_err(
--				  "%s: Can not find HI20 relocation information\n",
--				  me->name);
--				return -EINVAL;
-+				unsigned int hi20_type = ELF_RISCV_R_TYPE(rel[j].r_info);
-+
-+				if (hi20_loc != sym->st_value ||
-+						(hi20_type != R_RISCV_PCREL_HI20 &&
-+						 hi20_type != R_RISCV_GOT_HI20))
-+					continue;
-+
-+				/* calculate relative offset */
-+				v = hi20_sym->st_value + rel[j].r_addend;
-+
-+				if (IS_ENABLED(CONFIG_MODULE_SECTIONS) &&
-+						hi20_type == R_RISCV_GOT_HI20)
-+					v = module_emit_got_entry(me, v);
-+
-+				v -= hi20_loc;
-+				goto handle_reloc;
- 			}
--		}
- 
--		res = handler(me, location, v);
-+			pr_err("%s: Cannot find HI20 relocation information\n",
-+					me->name);
-+			return -EINVAL;
-+		}
-+handle_reloc:
-+		res = handler(me, (u8 *)loc, v);
- 		if (res)
- 			return res;
- 	}
--- 
-2.27.0
+As for whether to send separate buffers for each measurement, I guess
+it's not a bad thing to let the userspace access the ones available
+earlier. Now I only don't recall why we decided to put all the
+measurements into one metadata structure, rather than splitting the 4
+into their own structures and buffer queues...
 
+> > seems it should be moved out of the CIF_ISP_FRAME test, to a test of its
+> > own. It's hard to tell for sure without extra information though (for
+> > instance why are the stats-related bits read from CIF_ISP_RIS, when
+> > they seem to be documented as valid in CIF_ISP_ISR), but this should be
+> > validated, and most probably fixed. Care should be taken to keep
+> > synchronisation of sequence number between the different queues.
+> 
+> I see that the capture buffers are done before incrementing the frame_sequence with
+> the following explanation:
+> 
+> 	/*
+>          * Call rkisp1_capture_isr() first to handle the frame that
+>          * potentially completed using the current frame_sequence number before
+>          * it is potentially incremented by rkisp1_isp_isr() in the vertical
+>          * sync.
+>          */
+> 
+> I think reading the stats/params should also be done before calling rkisp1_capture_isr
+> for the same reason. (so to match the correct frame_sequence)
+
+My recollection of the sequence of interrupts in this hardware is like
+this:
+
+CIF_ISP_V_START (frame 0)
+  CIF_ISP_FRAME_IN (frame 0)
+    CIF_ISP_FRAME (frame 0)
+      CIF_ISP_AWB_DONE
+      CIF_ISP_AFM_FIN
+      CIF_ISP_EXP_END
+      CIF_ISP_HIST_MEASURE_RDY
+      CIF_MI_FRAME*
+      CIF_ISP_V_START (frame 1)
+        CIF_ISP_FRAME_IN (frame 1)
+          CIF_ISP_FRAME (frame 1)
+            ...
+
+where the interrupts at the same indentation level can happen
+independently of each other. Again, someone would have to verify this.
+
+Best regards,
+Tomasz
