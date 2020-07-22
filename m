@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF8722958B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B3722958F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731511AbgGVJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726153AbgGVJ4v (ORCPT
+        id S1731628AbgGVJ6z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Jul 2020 05:58:55 -0400
+Received: from mail.fireflyinternet.com ([77.68.26.236]:61882 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726153AbgGVJ6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:56:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF842C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:56:50 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f2so1269352wrp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0xnQ/4hQ2Xpb1P3P7eG0JudBdmWStFiMCuMdD4rUBv8=;
-        b=Mce3UA+bY7rBT9FL+oxnaddk0ue9EKfxXahp/1NiIBjGDDy/qJ/1OkOG+4y2+BO0nD
-         I75Lc15Vf7mgq+pqs3h8apWlzK0eMeFZMlOlaXrts74ddZcD/LdS0GQXcVt5ef8lMS6D
-         KpsOAiDvs7S6aGdhYgXTKBORSCs8UDip6SmUcswsK6JpR2M0H745/CQcxpK9FFp5VyCw
-         aLRXsvLshoz537ybDpJ/ScfR8xWMj9jzh4pTl5Vc5/u3yeu+u2nDoTHH1QFmxmedOz2z
-         Brsk/+l4vyO9nbVDonUKIGXn6UOw1WAy69soipR5W/EGJH0YIx/gOGreqt7QWelm66Zc
-         JS+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0xnQ/4hQ2Xpb1P3P7eG0JudBdmWStFiMCuMdD4rUBv8=;
-        b=YJAHgodCuuAObqpeOUPv4eF72T/fTDbqjgbrN8dR5mtIUUu4cKGoF3uCCwJDvisBUl
-         uSE1C3ucIaLDAYrrg9crR/UpXFHtvNJZCOESGfY0jH6z7StUwT21/X81ulP3ENBCLcym
-         flOI3WDDeWVN/9xbwcw18y1brjS7qb//4RrI7AX0NokcY7qoZXlAr9mDJi0I108yjEfj
-         NCUO3LsxJssHnlNnF2/ucZHhDfbE32ATQWWHVAKSl4IH+JSVmhWqSYesoja3BlAoVUJa
-         RykRS9W7qpZ3T4SvshtlZF9YYPXk4vOdotVxhXBJm4RWSfQE7heFVVCAD3doHZco9SAv
-         0psA==
-X-Gm-Message-State: AOAM531CzGkzDtK315XYTx+j7fsid3qDEJoQW1W46VpD3v/zoIHT6GAA
-        s5scWFdEdO+6EnaSpWuPkVxB7A==
-X-Google-Smtp-Source: ABdhPJwARd6rDJnGgGWAfHD4Lty5BptW2nH6HgW896WzFmKMP2SqPRp1isXAIV3ddTfpCCvsd3tI0Q==
-X-Received: by 2002:adf:9ed4:: with SMTP id b20mr5923702wrf.206.1595411809624;
-        Wed, 22 Jul 2020 02:56:49 -0700 (PDT)
-Received: from dell ([2.27.167.94])
-        by smtp.gmail.com with ESMTPSA id a134sm7704101wmd.17.2020.07.22.02.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 02:56:49 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 10:56:47 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     linux-kernel@vger.kernel.org, phh@phh.me, stefan@agner.ch,
-        b.galvani@gmail.com
-Subject: Re: [PATCH] mfd: rn5t618: Fix caching of battery related registers
-Message-ID: <20200722095647.GM621928@dell>
-References: <20200717210002.27366-1-andreas@kemnade.info>
+        Wed, 22 Jul 2020 05:58:54 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21893827-1500050 
+        for multiple; Wed, 22 Jul 2020 10:57:56 +0100
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200717210002.27366-1-andreas@kemnade.info>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200721113719.GI119549@hirez.programming.kicks-ass.net>
+References: <20200622100122.477087977@infradead.org> <20200622100825.726200103@infradead.org> <159532854586.15672.5123219635720172265@build.alporthouse.com> <20200721113719.GI119549@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH -v2 1/5] sched: Fix ttwu() race
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, paulmck@kernel.org, frederic@kernel.org,
+        torvalds@linux-foundation.org, hch@lst.de
+To:     peterz@infradead.org
+Date:   Wed, 22 Jul 2020 10:57:56 +0100
+Message-ID: <159541187604.15672.2433896906671712337@build.alporthouse.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020, Andreas Kemnade wrote:
-
-> Battery status changes dynamically, so the corresponding registers
-> need to be considered volatile. Affected registers are:
-> - fuel gauge
-> - battery status
-> - battery interrupt
+Quoting peterz@infradead.org (2020-07-21 12:37:19)
+> On Tue, Jul 21, 2020 at 11:49:05AM +0100, Chris Wilson wrote:
+> > Quoting Peter Zijlstra (2020-06-22 11:01:23)
+> > > @@ -2378,6 +2385,9 @@ static inline bool ttwu_queue_cond(int c
+> > >  static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+> > >  {
+> > >         if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(cpu, wake_flags)) {
+> > > +               if (WARN_ON_ONCE(cpu == smp_processor_id()))
+> > > +                       return false;
+> > > +
+> > >                 sched_clock_cpu(cpu); /* Sync clocks across CPUs */
+> > >                 __ttwu_queue_wakelist(p, cpu, wake_flags);
+> > >                 return true;
+> > 
+> > We've been hitting this warning frequently, but have never seen the
+> > rcu-torture-esque oops ourselves.
 > 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
->  drivers/mfd/rn5t618.c | 3 +++
->  1 file changed, 3 insertions(+)
+> How easy is it to hit this? What, if anything, can I do to make my own
+> computer go bang?
 
-Applied, thanks.
+I tried reproducing it in a mockup, hrtimer + irq_work + waitqueue, but
+it remains elusive. It pops up in an obscure HW tests where we are
+exercising timeout handling for rogue HW.
+> 
+> > <4> [181.766705] RIP: 0010:ttwu_queue_wakelist+0xbc/0xd0
+> > <4> [181.766710] Code: 00 00 00 5b 5d 41 5c 41 5d c3 31 c0 5b 5d 41 5c 41 5d c3 31 c0 f6 c3 08 74 f2 48 c7 c2 00 ad 03 00 83 7c 11 40 01 77 e4 eb 80 <0f> 0b 31 c0 eb dc 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 bf 17
+> > <4> [181.766726] RSP: 0018:ffffc90000003e08 EFLAGS: 00010046
+> > <4> [181.766733] RAX: 0000000000000000 RBX: 00000000ffffffff RCX: ffff888276a00000
+> > <4> [181.766740] RDX: 000000000003ad00 RSI: ffffffff8232045b RDI: ffffffff8233103e
+> > <4> [181.766747] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+> > <4> [181.766754] R10: 00000000d3fa25c3 R11: 0000000053712267 R12: ffff88825b912940
+> > <4> [181.766761] R13: 0000000000000000 R14: 0000000000000087 R15: 000000000003ad00
+> > <4> [181.766769] FS:  0000000000000000(0000) GS:ffff888276a00000(0000) knlGS:0000000000000000
+> > <4> [181.766777] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > <4> [181.766783] CR2: 000055b8245814e0 CR3: 0000000005610003 CR4: 00000000003606f0
+> > <4> [181.766790] Call Trace:
+> > <4> [181.766794]  <IRQ>
+> > <4> [181.766798]  try_to_wake_up+0x21b/0x690
+> > <4> [181.766805]  autoremove_wake_function+0xc/0x50
+> > <4> [181.766858]  __i915_sw_fence_complete+0x1ee/0x250 [i915]
+> > <4> [181.766912]  dma_i915_sw_fence_wake+0x2d/0x40 [i915]
+> 
+> Please, don't trim oopses..
+> 
+> > We are seeing this on the ttwu_queue() path, so with p->on_cpu=0, and the
+> > warning is cleared up by
+> > 
+> > -               if (WARN_ON_ONCE(cpu == smp_processor_id()))
+> > +               if (WARN_ON_ONCE(p->on_cpu && cpu == smp_processor_id()))
+> > 
+> > which would appear to restore the old behaviour for ttwu_queue() and
+> > seem to be consistent with the intent of this patch. Hopefully this
+> > helps identify the problem correctly.
+> 
+> Hurmph, that's actively wrong. We should never queue to self, as that
+> would result in self-IPI, which is not possible on a bunch of archs. It
+> works for you because x86 can in fact do that.
+> 
+> So ttwu_queue_cond() will only return true when:
+> 
+>  - target-cpu and current-cpu do not share cache;
+>    so it cannot be this condition, because you _always_
+>    share cache with yourself.
+> 
+>  - when WF_ON_CPU and target-cpu has nr_running <= 1;
+>    which means p->on_cpu == true.
+> 
+> So now you have cpu == smp_processor_id() && p->on_cpu == 1, however
+> your modified WARN contradicts that.
+> 
+> *puzzle*
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Perhaps more damning is that I can replace WF_ON_CPU with p->on_cpu to
+suppress the warning:
+
+-static inline bool ttwu_queue_cond(int cpu, int wake_flags)
++static inline bool ttwu_queue_cond(struct task_struct *p, int cpu, int wake_flags)
+ {
+        /*
+         * If the CPU does not share cache, then queue the task on the
+@@ -2370,7 +2370,7 @@ static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+         * the soon-to-be-idle CPU as the current CPU is likely busy.
+         * nr_running is checked to avoid unnecessary task stacking.
+         */
+-       if ((wake_flags & WF_ON_CPU) && cpu_rq(cpu)->nr_running <= 1)
++       if (p->on_cpu && cpu_rq(cpu)->nr_running <= 1)
+                return true;
+
+        return false;
+@@ -2378,7 +2378,7 @@ static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+
+ static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+ {
+-       if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(cpu, wake_flags)) {
++       if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(p, cpu, wake_flags)) {
+                if (WARN_ON_ONCE(cpu == smp_processor_id()))
+                        return false;
