@@ -2,243 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8A52291BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAC02291EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731461AbgGVHKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:10:02 -0400
-Received: from mail-eopbgr680086.outbound.protection.outlook.com ([40.107.68.86]:49959
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728063AbgGVHJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:09:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZSJ/BlPehGoAIMJjkGwCiv9Wq3PQ8jbVn8BRtD8wHIdzE3qPc4K+5GbGFCyUYcnWgn1lyfXuU88QmG847m0e6L4bFoqXkYoj7otcDsf+9KroeyyL/JDXzzWkliivjCYj48PeAV4TkhZbhkXaL4fR4kHZ+xLGKIGTObyOyf7ymDNlIdeYZh6xPNgrTnf4+huoxWQeay6DsOoTP7j6qJXs8lTGDdYw4ps0yPrhA5ivlyXn0sacvHvZgL8zZPVo/4PObVE8aJRrT7fIfPWabpogmMtdRhsygaFHrvW1AEdUzit/RYRoQMvaW4ICpZrSpbEWOR7m0pD+KU+ny48UgotBMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GmFdi2scGz1OVqTFGp8mqvD/8d5wjmTPuW7BfwhRvKM=;
- b=TLLeYRNoNCU798GiopG62WsElEZAg2ckY3tmxhWsBrfwpQR9IRDhkpKro9kOL2lHxerT0jM/ZHXsNMaIGomA3bIh2POmLF6cOIWbvv2dcwtzImnOErnJygddXOSPOjt3T2vFRqKu7FyTZLMsNGQuYwlXer11PyOlGrHZsA+qlup94wESt1gEh3TYSF94ANnmmK5BYN9N0olq+82D6039mk+xwhD/Ee3OEMANEQXUnlEOpflAE2v4YMVxoiFd41fKgT9tLFUZwVSkprZdm1yT5XaQ9j72vXU2so/Gvqk+Z2eTSsRjdiKyWyG6vZWr/2vEHxlJgmEspSKr8E9jtS9hdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=avnet.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GmFdi2scGz1OVqTFGp8mqvD/8d5wjmTPuW7BfwhRvKM=;
- b=aMBLaj7ct0jYLuO43XgcRXyUWsaAPxWbC8Vx2LMZRjjzMSJPTIhZCEpkerQfriRydzaO/bC6IYg3iCF6fnZo2c8/mKX0LNavaHOxjP2g7qsPR1elh5xMq17QkYN/KI/oZ9voFdJdhD8bUFpp28v+OWDMwC6Vcl6v8tmlMZHGEr4=
-Received: from CY4PR12CA0039.namprd12.prod.outlook.com (2603:10b6:903:129::25)
- by DM6PR02MB5913.namprd02.prod.outlook.com (2603:10b6:5:157::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Wed, 22 Jul
- 2020 07:09:54 +0000
-Received: from CY1NAM02FT012.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:129:cafe::8a) by CY4PR12CA0039.outlook.office365.com
- (2603:10b6:903:129::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend
- Transport; Wed, 22 Jul 2020 07:09:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; avnet.com; dkim=none (message not signed)
- header.d=none;avnet.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- CY1NAM02FT012.mail.protection.outlook.com (10.152.75.158) with Microsoft SMTP
- Server id 15.20.3216.10 via Frontend Transport; Wed, 22 Jul 2020 07:09:53
- +0000
-Received: from [149.199.38.66] (port=60679 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
-        id 1jy8rB-0002Jq-4f; Wed, 22 Jul 2020 00:08:01 -0700
-Received: from [127.0.0.1] (helo=xsj-smtp-dlp1.xlnx.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
-        id 1jy8sy-0001GB-G2; Wed, 22 Jul 2020 00:09:52 -0700
-Received: from xsj-pvapsmtp01 (mailhost.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 06M79pe8016849;
-        Wed, 22 Jul 2020 00:09:51 -0700
-Received: from [10.140.6.35] (helo=xhdsaipava40.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <lakshmis@xhdsaipava40.xilinx.com>)
-        id 1jy8sw-0001Fr-OU; Wed, 22 Jul 2020 00:09:50 -0700
-Received: by xhdsaipava40.xilinx.com (Postfix, from userid 14964)
-        id 1D36413C0556; Wed, 22 Jul 2020 12:46:07 +0530 (IST)
-From:   Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com,
-        saikrishna12468@gmail.com,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Subject: [PATCH v2 2/2] reset: reset-zynqmp: Added support for Versal platform
-Date:   Wed, 22 Jul 2020 12:46:05 +0530
-Message-Id: <1595402165-8282-3-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595402165-8282-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-References: <1595402165-8282-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(39860400002)(396003)(46966005)(2616005)(2906002)(26005)(81166007)(82310400002)(8676002)(8936002)(356005)(4326008)(47076004)(186003)(6266002)(336012)(107886003)(5660300002)(316002)(426003)(70586007)(82740400003)(6636002)(42186006)(70206006)(478600001)(83380400001)(110136005)(36756003);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
+        id S1730374AbgGVHRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:17:30 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48334 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727096AbgGVHR2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 03:17:28 -0400
+X-UUID: 7a2513fa0d424fa1a7682445476d6c20-20200722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=0eYS2Sr9yV83oAq6NJ7EPUIvy6CetJuQT3lQICq8KtI=;
+        b=eiGybXaI8Y+E4yJdFDB9GZh+xxct51/zsUP0YJWa2H+gIUVbnQbJzQs9vxlYKJ/Vh+IID3oXb1Yhr34TJST3HN/oq9/qtgq61Kbq7kYRQBceIMrjc7Lu8rLPnXS0oHwJxN0F9zPU24Vg0Y5SzLpb9WG7p5iw7CQC8ew5Xmd/w44=;
+X-UUID: 7a2513fa0d424fa1a7682445476d6c20-20200722
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1610361252; Wed, 22 Jul 2020 15:17:21 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Jul 2020 15:17:17 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 15:17:18 +0800
+Message-ID: <1595402238.10848.3.camel@mtkswgap22>
+Subject: Re: [PATCH v2] iommu/mediatek: check 4GB mode by reading infracfg
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        "Rob Herring" <robh@kernel.org>,
+        <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chao Hao <chao.hao@mediatek.com>
+Date:   Wed, 22 Jul 2020 15:17:18 +0800
+In-Reply-To: <28bf052f-e388-d300-4abe-38f17bff01b6@gmail.com>
+References: <20200721021619.25575-1-miles.chen@mediatek.com>
+         <cbdd2820-fd3c-3e51-8140-58408dcf3cd3@gmail.com>
+         <1595330677.16172.55.camel@mhfsdcap03>
+         <28bf052f-e388-d300-4abe-38f17bff01b6@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: fcf61859-c539-42a7-96bc-08d82e0e3b7e
-X-MS-TrafficTypeDiagnostic: DM6PR02MB5913:
-X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-X-Microsoft-Antispam-PRVS: <DM6PR02MB5913DEAB569DBD116F0CA691BD790@DM6PR02MB5913.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /2aDVX5/bv2JOUhocJCG4fWTiaC82uf1YZuHZxSAbxwsyZFbr1OcdvIdopt4tpBMKxMuXZic1fMOtCEF2T5K7SbKdqviR+rY00Pj4w/OiP3ot8997BXLPgQ4mTrWnYiN2zKxqbbR7ChEP+DJIAt5ySSUDFsEYJMTSSgcWot8Im45eb1Vz2afv/6Skfqu5yOdkgu/m6K3eq6Iy323FKezRz2RsMqPG0tBKWZkh+IjfABR7sVUSvAXk6F5wDQc8aEttX4P4THusoXxkXmhP7lbiL9GLQ3pWXHK6fF8VBmgEQ7EQyI0fQMbXiOCGZUQNLHiPJmONV6TvBl8X6N0sDmDvbgGvyRosipsEd0q59Q7Krtv7PAKTDnPas9culEHKw18+bVkEXuFbHAzVgDxywQ30A==
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2020 07:09:53.5366
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcf61859-c539-42a7-96bc-08d82e0e3b7e
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT012.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5913
+X-TM-SNTS-SMTP: 58DFCF7CA20D7056E3E09FFF1EF0DBB987C420E96805A5AFD92BC2023E6D19FD2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updated the reset driver to support Versal platform.
-As part of adding Versal support
-- Added Versal specific compatible string.
-- Reset Id and number of resets are different for Versal and ZynqMP,
-hence taken care of these two based on compatible string.
-
-Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
----
- drivers/reset/reset-zynqmp.c | 50 +++++++++++++++++++++++++++++++-----
- 1 file changed, 44 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
-index 373ea8d4f7a1..ebd433fa09dd 100644
---- a/drivers/reset/reset-zynqmp.c
-+++ b/drivers/reset/reset-zynqmp.c
-@@ -9,12 +9,20 @@
- #include <linux/platform_device.h>
- #include <linux/reset-controller.h>
- #include <linux/firmware/xlnx-zynqmp.h>
-+#include <linux/of_device.h>
- 
- #define ZYNQMP_NR_RESETS (ZYNQMP_PM_RESET_END - ZYNQMP_PM_RESET_START)
- #define ZYNQMP_RESET_ID ZYNQMP_PM_RESET_START
-+#define VERSAL_NR_RESETS	95
-+
-+struct zynqmp_reset_soc_data {
-+	u32 reset_id;
-+	u32 num_resets;
-+};
- 
- struct zynqmp_reset_data {
- 	struct reset_controller_dev rcdev;
-+	const struct zynqmp_reset_soc_data *data;
- };
- 
- static inline struct zynqmp_reset_data *
-@@ -26,23 +34,28 @@ to_zynqmp_reset_data(struct reset_controller_dev *rcdev)
- static int zynqmp_reset_assert(struct reset_controller_dev *rcdev,
- 			       unsigned long id)
- {
--	return zynqmp_pm_reset_assert(ZYNQMP_RESET_ID + id,
-+	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
-+
-+	return zynqmp_pm_reset_assert(priv->data->reset_id + id,
- 				      PM_RESET_ACTION_ASSERT);
- }
- 
- static int zynqmp_reset_deassert(struct reset_controller_dev *rcdev,
- 				 unsigned long id)
- {
--	return zynqmp_pm_reset_assert(ZYNQMP_RESET_ID + id,
-+	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
-+
-+	return zynqmp_pm_reset_assert(priv->data->reset_id + id,
- 				      PM_RESET_ACTION_RELEASE);
- }
- 
- static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
- 			       unsigned long id)
- {
-+	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
- 	int val, err;
- 
--	err = zynqmp_pm_reset_get_status(ZYNQMP_RESET_ID + id, &val);
-+	err = zynqmp_pm_reset_get_status(priv->data->reset_id + id, &val);
- 	if (err)
- 		return err;
- 
-@@ -52,10 +65,28 @@ static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
- static int zynqmp_reset_reset(struct reset_controller_dev *rcdev,
- 			      unsigned long id)
- {
--	return zynqmp_pm_reset_assert(ZYNQMP_RESET_ID + id,
-+	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
-+
-+	return zynqmp_pm_reset_assert(priv->data->reset_id + id,
- 				      PM_RESET_ACTION_PULSE);
- }
- 
-+static int zynqmp_reset_of_xlate(struct reset_controller_dev *rcdev,
-+				 const struct of_phandle_args *reset_spec)
-+{
-+	return reset_spec->args[0];
-+}
-+
-+static const struct zynqmp_reset_soc_data zynqmp_reset_data = {
-+	.reset_id = ZYNQMP_RESET_ID,
-+	.num_resets = ZYNQMP_NR_RESETS,
-+};
-+
-+static const struct zynqmp_reset_soc_data versal_reset_data = {
-+        .reset_id = 0,
-+        .num_resets = VERSAL_NR_RESETS,
-+};
-+
- static const struct reset_control_ops zynqmp_reset_ops = {
- 	.reset = zynqmp_reset_reset,
- 	.assert = zynqmp_reset_assert,
-@@ -71,18 +102,25 @@ static int zynqmp_reset_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
- 
-+	priv->data = of_device_get_match_data(&pdev->dev);
-+	if (!priv->data)
-+		return -EINVAL;
-+
- 	platform_set_drvdata(pdev, priv);
- 
- 	priv->rcdev.ops = &zynqmp_reset_ops;
- 	priv->rcdev.owner = THIS_MODULE;
- 	priv->rcdev.of_node = pdev->dev.of_node;
--	priv->rcdev.nr_resets = ZYNQMP_NR_RESETS;
-+	priv->rcdev.nr_resets = priv->data->num_resets;
-+	priv->rcdev.of_reset_n_cells = 1;
-+	priv->rcdev.of_xlate = zynqmp_reset_of_xlate;
- 
- 	return devm_reset_controller_register(&pdev->dev, &priv->rcdev);
- }
- 
- static const struct of_device_id zynqmp_reset_dt_ids[] = {
--	{ .compatible = "xlnx,zynqmp-reset", },
-+	{ .compatible = "xlnx,zynqmp-reset", .data = &zynqmp_reset_data, },
-+	{ .compatible = "xlnx,versal-reset", .data = &versal_reset_data, },
- 	{ /* sentinel */ },
- };
- 
--- 
-2.17.1
+T24gVHVlLCAyMDIwLTA3LTIxIGF0IDIzOjE5ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMjEvMDcvMjAyMCAxMzoyNCwgWW9uZyBXdSB3cm90ZToNCj4gPiBPbiBUdWUs
+IDIwMjAtMDctMjEgYXQgMTE6NDAgKzAyMDAsIE1hdHRoaWFzIEJydWdnZXIgd3JvdGU6DQo+ID4+
+DQo+ID4+IE9uIDIxLzA3LzIwMjAgMDQ6MTYsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4+PiBJbiBw
+cmV2aW91cyBkaXNjdXNzaW9uIFsxXSBhbmQgWzJdLCB3ZSBmb3VuZCB0aGF0IGl0IGlzIHJpc2t5
+IHRvDQo+ID4+PiB1c2UgbWF4X3BmbiBvciB0b3RhbHJhbV9wYWdlcyB0byB0ZWxsIGlmIDRHQiBt
+b2RlIGlzIGVuYWJsZWQuDQo+ID4+Pg0KPiA+Pj4gQ2hlY2sgNEdCIG1vZGUgYnkgcmVhZGluZyBp
+bmZyYWNmZyByZWdpc3RlciwgcmVtb3ZlIHRoZSB1c2FnZQ0KPiA+Pj4gb2YgdGhlIHVuLWV4cG9y
+dGVkIHN5bWJvbCBtYXhfcGZuLg0KPiA+Pj4NCj4gPj4+IFRoaXMgaXMgYSBzdGVwIHRvd2FyZHMg
+YnVpbGRpbmcgbXRrX2lvbW11IGFzIGEga2VybmVsIG1vZHVsZS4NCj4gPj4+DQo+ID4+PiBDaGFu
+Z2Ugc2luY2UgdjE6DQo+ID4+PiAxLiByZW1vdmUgdGhlIHBoYW5kbGUgdXNhZ2UsIHNlYXJjaCBm
+b3IgaW5mcmFjZmcgaW5zdGVhZCBbM10NCj4gPj4+IDIuIHVzZSBpbmZyYWNmZyBpbnN0ZWFkIG9m
+IGluZnJhY2ZnX3JlZ21hcA0KPiA+Pj4gMy4gbW92ZSBpbmZyYWNmZyBkZWZpbml0YWlvbnMgdG8g
+bGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmgNCj4gPj4+IDQuIHVwZGF0ZSBlbmFibGVfNEdC
+IG9ubHkgd2hlbiBoYXNfNGdiX21vZGUNCj4gPj4+DQo+ID4+PiBbMV0gaHR0cHM6Ly91cmxkZWZl
+bnNlLmNvbS92My9fX2h0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzYvMy83MzNfXzshIUNUUk5L
+QTl3TWcwQVJidyF3NVlqWTgzWVJMOV9pamdYSHdCMXgyRG5iNUJxaUZVSThINUlBeUFXV0ZNdlVK
+S0k5UWJqX3p0YTJBYWlGWmVqaVEkIA0KPiA+Pj4gWzJdIGh0dHBzOi8vdXJsZGVmZW5zZS5jb20v
+djMvX19odHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC82LzQvMTM2X187ISFDVFJOS0E5d01nMEFS
+YnchdzVZalk4M1lSTDlfaWpnWEh3QjF4MkRuYjVCcWlGVUk4SDVJQXlBV1dGTXZVSktJOVFial96
+dGEyQWE5VTJ5UXlnJCANCj4gPj4+IFszXSBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0
+cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvNy8xNS8xMTQ3X187ISFDVFJOS0E5d01nMEFSYnchdzVZ
+alk4M1lSTDlfaWpnWEh3QjF4MkRuYjVCcWlGVUk4SDVJQXlBV1dGTXZVSktJOVFial96dGEyQWF4
+cGtfV2p3JCANCj4gPj4+DQo+ID4+PiBDYzogTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51eC5pYm0u
+Y29tPg0KPiA+Pj4gQ2M6IERhdmlkIEhpbGRlbmJyYW5kIDxkYXZpZEByZWRoYXQuY29tPg0KPiA+
+Pj4gQ2M6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+Pj4gQ2M6IFlpbmdqb2Ug
+Q2hlbiA8eWluZ2pvZS5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPj4+IENjOiBDaHJpc3RvcGggSGVs
+bHdpZyA8aGNoQGxzdC5kZT4NCj4gPj4+IENjOiBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNv
+bT4NCj4gPj4+IENjOiBDaGFvIEhhbyA8Y2hhby5oYW9AbWVkaWF0ZWsuY29tPg0KPiA+Pj4gQ2M6
+IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+ID4+PiBDYzogTWF0dGhpYXMgQnJ1Z2dl
+ciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCj4gPj4+IFNpZ25lZC1vZmYtYnk6IE1pbGVzIENo
+ZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0KPiA+Pj4gLS0tDQo+ID4+PiAgICBkcml2ZXJz
+L2lvbW11L210a19pb21tdS5jICAgICAgICAgICAgIHwgMjYgKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0NCj4gPj4+ICAgIGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmggfCAg
+MyArKysNCj4gPj4+ICAgIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgNSBkZWxl
+dGlvbnMoLSkNCj4gPj4+DQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9t
+bXUuYyBiL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMNCj4gPj4+IGluZGV4IDJiZTk2ZjFjZGJk
+Mi4uMTY3NjVmNTMyODUzIDEwMDY0NA0KPiA+Pj4gLS0tIGEvZHJpdmVycy9pb21tdS9tdGtfaW9t
+bXUuYw0KPiA+Pj4gKysrIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiA+Pj4gQEAgLTMs
+NyArMyw2IEBADQo+ID4+PiAgICAgKiBDb3B5cmlnaHQgKGMpIDIwMTUtMjAxNiBNZWRpYVRlayBJ
+bmMuDQo+ID4+PiAgICAgKiBBdXRob3I6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0K
+PiA+Pj4gICAgICovDQo+ID4+PiAtI2luY2x1ZGUgPGxpbnV4L21lbWJsb2NrLmg+DQo+ID4+PiAg
+ICAjaW5jbHVkZSA8bGludXgvYnVnLmg+DQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvY2xrLmg+
+DQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvY29tcG9uZW50Lmg+DQo+ID4+PiBAQCAtMTUsMTMg
+KzE0LDE2IEBADQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvaW9tbXUuaD4NCj4gPj4+ICAgICNp
+bmNsdWRlIDxsaW51eC9pb3BvbGwuaD4NCj4gPj4+ICAgICNpbmNsdWRlIDxsaW51eC9saXN0Lmg+
+DQo+ID4+PiArI2luY2x1ZGUgPGxpbnV4L21mZC9zeXNjb24uaD4NCj4gPj4+ICAgICNpbmNsdWRl
+IDxsaW51eC9vZl9hZGRyZXNzLmg+DQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvb2ZfaW9tbXUu
+aD4NCj4gPj4+ICAgICNpbmNsdWRlIDxsaW51eC9vZl9pcnEuaD4NCj4gPj4+ICAgICNpbmNsdWRl
+IDxsaW51eC9vZl9wbGF0Zm9ybS5oPg0KPiA+Pj4gICAgI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3Jt
+X2RldmljZS5oPg0KPiA+Pj4gKyNpbmNsdWRlIDxsaW51eC9yZWdtYXAuaD4NCj4gPj4+ICAgICNp
+bmNsdWRlIDxsaW51eC9zbGFiLmg+DQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvc3BpbmxvY2su
+aD4NCj4gPj4+ICsjaW5jbHVkZSA8bGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmg+DQo+ID4+
+PiAgICAjaW5jbHVkZSA8YXNtL2JhcnJpZXIuaD4NCj4gPj4+ICAgICNpbmNsdWRlIDxzb2MvbWVk
+aWF0ZWsvc21pLmg+DQo+ID4+PiAgICANCj4gPj4+IEBAIC01OTksOCArNjAxLDEwIEBAIHN0YXRp
+YyBpbnQgbXRrX2lvbW11X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4+
+PiAgICAJc3RydWN0IHJlc291cmNlICAgICAgICAgKnJlczsNCj4gPj4+ICAgIAlyZXNvdXJjZV9z
+aXplX3QJCWlvYWRkcjsNCj4gPj4+ICAgIAlzdHJ1Y3QgY29tcG9uZW50X21hdGNoICAqbWF0Y2gg
+PSBOVUxMOw0KPiA+Pj4gKwlzdHJ1Y3QgcmVnbWFwCQkqaW5mcmFjZmc7DQo+ID4+PiAgICAJdm9p
+ZCAgICAgICAgICAgICAgICAgICAgKnByb3RlY3Q7DQo+ID4+PiAgICAJaW50ICAgICAgICAgICAg
+ICAgICAgICAgaSwgbGFyYl9uciwgcmV0Ow0KPiA+Pj4gKwl1MzIJCQl2YWw7DQo+ID4+PiAgICAN
+Cj4gPj4+ICAgIAlkYXRhID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCpkYXRhKSwgR0ZQX0tF
+Uk5FTCk7DQo+ID4+PiAgICAJaWYgKCFkYXRhKQ0KPiA+Pj4gQEAgLTYxNCwxMCArNjE4LDIyIEBA
+IHN0YXRpYyBpbnQgbXRrX2lvbW11X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
+DQo+ID4+PiAgICAJCXJldHVybiAtRU5PTUVNOw0KPiA+Pj4gICAgCWRhdGEtPnByb3RlY3RfYmFz
+ZSA9IEFMSUdOKHZpcnRfdG9fcGh5cyhwcm90ZWN0KSwgTVRLX1BST1RFQ1RfUEFfQUxJR04pOw0K
+PiA+Pj4gICAgDQo+ID4+PiAtCS8qIFdoZXRoZXIgdGhlIGN1cnJlbnQgZHJhbSBpcyBvdmVyIDRH
+QiAqLw0KPiA+Pj4gLQlkYXRhLT5lbmFibGVfNEdCID0gISEobWF4X3BmbiA+IChCSVRfVUxMKDMy
+KSA+PiBQQUdFX1NISUZUKSk7DQo+ID4+PiAtCWlmICghZGF0YS0+cGxhdF9kYXRhLT5oYXNfNGdi
+X21vZGUpDQo+ID4+PiAtCQlkYXRhLT5lbmFibGVfNEdCID0gZmFsc2U7DQo+ID4+PiArCWRhdGEt
+PmVuYWJsZV80R0IgPSBmYWxzZTsNCj4gPj4+ICsJaWYgKGRhdGEtPnBsYXRfZGF0YS0+aGFzXzRn
+Yl9tb2RlKSB7DQo+ID4+PiArCQlpbmZyYWNmZyA9IHN5c2Nvbl9yZWdtYXBfbG9va3VwX2J5X2Nv
+bXBhdGlibGUoDQo+ID4+PiArCQkJCSJtZWRpYXRlayxtdDgxNzMtaW5mcmFjZmciKTsNCj4gPj4+
+ICsJCWlmIChJU19FUlIoaW5mcmFjZmcpKSB7DQo+ID4+PiArCQkJaW5mcmFjZmcgPSBzeXNjb25f
+cmVnbWFwX2xvb2t1cF9ieV9jb21wYXRpYmxlKA0KPiA+Pj4gKwkJCQkJIm1lZGlhdGVrLG10Mjcx
+Mi1pbmZyYWNmZyIpOw0KPiA+Pj4gKwkJCWlmIChJU19FUlIoaW5mcmFjZmcpKQ0KPiA+Pj4gKwkJ
+CQlyZXR1cm4gUFRSX0VSUihpbmZyYWNmZyk7DQo+ID4+DQo+ID4+IEkgdGhpbmsgd2Ugc2hvdWxk
+IGNoZWNrIG00dV9wbGF0IGluc3RlYWQgdG8gZGVjaWRlIHdoaWNoIGNvbXBhdGlibGUgd2UgaGF2
+ZSB0bw0KPiA+PiBsb29rIGZvci4NCj4gPj4gQW5vdGhlciBvcHRpb24gd291bGQgYmUgdG8gYWRk
+IGEgZ2VuZXJhbCBjb21wYXRpYmxlIHNvbWV0aGluZyBsaWtlDQo+ID4+ICJtdGstaW5mcmFjZmci
+IGFuZCBzZWFyY2ggZm9yIHRoYXQuIFRoYXQgd291bGQgbmVlZCBhbiB1cGRhdGUgb2YgYWxsIERU
+UyBoYXZpbmcNCj4gPj4gYSBpbmZyYWNmZyBjb21wYXRpYmxlIHJpZ2h0IG5vdy4gQWZ0ZXIgdGhp
+bmtpbmcgdHdpY2UsIHRoaXMgd291bGQgYnJlYWsgbmV3ZXINCj4gPj4ga2VybmVsIHdpdGggb2xk
+ZXIgZGV2aWNlIHRyZWUsIHNvIG1heWJlIGl0J3MgYmV0dGVyIHRvIGdvIHdpdGggbTR1X3BsYXQg
+c3dpdGNoDQo+ID4+IHN0YXRlbWVudC4NCj4gPiANCj4gPiBBZGQgYSAiY2hhciAqaW5mcmFjZmci
+IGluIHRoZSBwbGF0X2RhdGEsIFVzZSB0aGUgbXQyNzEyLCBtdDgxNzMNCj4gPiBjb3JyZXNwb25k
+aW5nIHN0cmluZyBpbiBpdC4gSWYgaXQgaXMgTlVMTCwgSXQgbWVhbnMgdGhlICJlbmFibGVfNEdC
+Ig0KPiA+IGFsd2F5cyBpcyBmYWxzZS4gVGhlbiB3ZSBhbHNvIGNhbiByZW1vdmUgdGhlIGZsYWcg
+Imhhc180Z2JfbW9kZSIuDQo+ID4gDQo+ID4gaXMgdGhpcyBPSz8NCj4gPiANCj4gDQo+IEl0J3Mg
+YW4gb3B0aW9uLCBidXQgSSBwZXJzb25hbGx5IGZpbmQgdGhhdCBhIGJpdCBoYWNreS4NCg0KVGhh
+bmtzIFlvbmcgYW5kIE1hdHRoaWFzIGZvciB5b3VyIGNvbW1lbnQuDQpJIHdpbGwgdHJ5IGFkZGlu
+ZyBhIGNoYXIgKmluZnJhY2ZnIGluIHBhdGNoIHYzLg0KDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IE1h
+dHRoaWFzDQoNCg==
 
