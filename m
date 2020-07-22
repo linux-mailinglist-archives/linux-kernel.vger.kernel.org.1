@@ -2,122 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5A3229B31
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E723229B35
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732774AbgGVPTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
+        id S1732807AbgGVPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgGVPTI (ORCPT
+        with ESMTP id S1728046AbgGVPUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:19:08 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CFEC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:08 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc15so3022460pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:08 -0700 (PDT)
+        Wed, 22 Jul 2020 11:20:17 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD13C0619DC;
+        Wed, 22 Jul 2020 08:20:17 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id di5so1155679qvb.11;
+        Wed, 22 Jul 2020 08:20:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=Hnc1prn4gqdZY/uJrCuRN7dMv55IchBRg3AjBbSa9HY=;
-        b=oEqY+uZztK+GTH0rvS82TpQ0E5rlT8GitcDlEjjT6sUzuHIY7BWKb0Y28BvioJW1t8
-         KbnjWbWqaykvr8qEBeOQeaSBW04aI69x4f+b5jxjvyZgP/WBQKnScj4HyMZyLbbI4fCA
-         cd+DJ8fiePq0JoH+Q5dFOpPkKuocgEjWCJ+IbNbN8ZjxYoSjyhJcPzhzKIt7iH2CThGN
-         3b7yzo/9XgNvtmnS+CAODzPUVvoAo+P7LJXRIgFzCVFdJbCOXl3UjXhjF1nSj/KB9r4L
-         kO53qX9tcHwFOgGp20vQ5QhxARO0STGcaOcgrsn+RgmyFeaPxjHnFtQ9xpnUZCX1nRWh
-         VRcw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mC+9VCisrQOLG6kTWdRwYqg9YnRsNnWuSWD6BGUaBPU=;
+        b=FZ8HekGeo5ShXhCW8K3Qz+diyX/yNtoMBwYcfNlQOkYqwJMOBDgkjjnrXxMcFytvl0
+         EUX2omBZVUM4mZLAJv89P8Bsab6RM96iDKoWFBid86ut6Rknmzs9hd4FivGcc5tzWmQe
+         WPpqaU6RcomIDNnm5zy7m/x16lXpOcKVuJ8icY/dPG9fNcMZwDbSClIimXXW4FeW0x/k
+         sYD9XbJqXHFmkDNHbxUi39CWdyXfFfd2joCrE6kn+tBk1FIU6AqzTvCiRBhFHukdqTv/
+         A/2auoshCGbIidQlhZt5lalBFxNltjZZYOPyxB0qTqMD5DqmgL5eZl/75YGNCnWB3mq1
+         /gDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=Hnc1prn4gqdZY/uJrCuRN7dMv55IchBRg3AjBbSa9HY=;
-        b=Dip85Bc+E9DZjylNQQyAh+V84gBO9wrBaJEGGbr7t4RChnIYO4xFWhvY98Jsgls1XK
-         Q578Zn4Ups+6LQcJL68zPpbSqyHerCiRgJbjUAUCjB6PxAfn+yk1ZX4VOYsc2ZUv/QR6
-         seRBtubwpc0m9J+SczCYMBvCDDfOy6aIZDYJS5fHaq+31/yqWqNNhzh8R61mJ+UTi+rD
-         Sq7uMfFgDzrrnxZVKBV9H6hb1vO0urgwoz6vgr2lxkiV+IwLlLw3ZjQCWmQ5rtvKtr1S
-         E3vOJnx67nJEIvL94rG/emvOb+hA7aSZNiMj2+uXhX+g8f7QNVCm0QGLOh3Xzuk2o6uL
-         3sPg==
-X-Gm-Message-State: AOAM53234KgB7ChBcsr4tny+kX5G+RxXrl1a2tFvChS2QI7VH+ZsVpje
-        QDMtqTEdsXtJ6ztCD+dmXoQ=
-X-Google-Smtp-Source: ABdhPJyQgeFZerWlXivVvCHlBW+hxP8zzZ9rASx4/DF8X48FIeK29YiPlb+nmor4Ax1S/z2qIUAaPQ==
-X-Received: by 2002:a17:90a:3684:: with SMTP id t4mr10143619pjb.91.1595431147867;
-        Wed, 22 Jul 2020 08:19:07 -0700 (PDT)
-Received: from localhost ([1.23.142.145])
-        by smtp.gmail.com with ESMTPSA id 64sm281319pgb.63.2020.07.22.08.19.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mC+9VCisrQOLG6kTWdRwYqg9YnRsNnWuSWD6BGUaBPU=;
+        b=EpJUoU3ByiX0FpbuMhoow2vNygHAiYkh8DUefhVS65aKN+pxJrkSTl6p2Yzm67VN46
+         G9NCXk+D/j7/6LjZQbYolTFW6pN9nldmLQ63/Za6nmkVpWlb9T9DWHgnshgJmNdAbEwj
+         Co1P1IZey/92VGygwhX0BIYtPFYxV+ooKUtstBIrKWQIQRNbe9P8uyJUQ8aNEbyQK0W7
+         0WD4MhoYjNSg2oqJT7TmPDYSoxKu6Vamn0qXSyxo3tL8FIf5PoA6ESmlyCXFpxM3J4AX
+         /YYzSwfasBz8l8oe2yanmEIGOPvnIPxz/zlqVbHqWIRK5DDgGS3eBCDJ5YrRQANhxii+
+         VIaw==
+X-Gm-Message-State: AOAM531ePh71OXvi/pIJxzl5rr7fTuYcuEk6V4gHBMiZM14u+ei/FC0N
+        5WhaEmTmD3igUuuihK4RdA==
+X-Google-Smtp-Source: ABdhPJyQlAbWhv80O6xSt+eVr/q5xPqqgm6J3gKBuQeelHhV7/HpWfRDD0xY6q8tS7Z3mN/bUfbdRQ==
+X-Received: by 2002:ad4:4583:: with SMTP id x3mr454680qvu.133.1595431216569;
+        Wed, 22 Jul 2020 08:20:16 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id 16sm147427qkv.48.2020.07.22.08.20.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 08:19:06 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 20:49:00 +0530
-From:   Mrinal Pandey <mrinalmni@gmail.com>
-To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        insafonov@gmail.com, straube.linux@gmail.com,
-        simon.fodin@gmail.com, yepeilin.cs@gmail.com,
-        saurav.girepunje@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8188eu: Fix an indent coding style issue
-Message-ID: <20200722151900.5dcebtavkdi5cc77@mrinalpandey>
+        Wed, 22 Jul 2020 08:20:16 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Joerg Reuter <jreuter@yaina.de>, Ralf Baechle <ralf@linux-mips.org>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH net] AX.25: Fix out-of-bounds read in ax25_connect()
+Date:   Wed, 22 Jul 2020 11:19:01 -0400
+Message-Id: <20200722151901.350003-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fpt4wn3ldqcwypba"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Checks on `addr_len` and `fsa->fsa_ax25.sax25_ndigis` are insufficient.
+ax25_connect() can go out of bounds when `fsa->fsa_ax25.sax25_ndigis`
+equals to 7 or 8. Fix it.
 
---fpt4wn3ldqcwypba
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This issue has been reported as a KMSAN uninit-value bug, because in such
+a case, ax25_connect() reaches into the uninitialized portion of the
+`struct sockaddr_storage` statically allocated in __sys_connect().
 
-Only a single tab space is required after the if statement.
-Fix this issue by running scripts/checkpatch.pl on the file.
+It is safe to remove `fsa->fsa_ax25.sax25_ndigis > AX25_MAX_DIGIS` because
+`addr_len` is guaranteed to be less than or equal to
+`sizeof(struct full_sockaddr_ax25)`.
 
-Signed-off-by: Mrinal Pandey <mrinalmni@gmail.com>
+Reported-by: syzbot+c82752228ed975b0a623@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=55ef9d629f3b3d7d70b69558015b63b48d01af66
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 ---
- drivers/staging/rtl8188eu/core/rtw_recv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ax25/af_ax25.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rt=
-l8188eu/core/rtw_recv.c
-index 656fe70ae4fb..0a4c1b2686b5 100644
---- a/drivers/staging/rtl8188eu/core/rtw_recv.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
-@@ -671,8 +671,8 @@ static int sta2sta_data_frame(struct adapter *adapter,
- 		if (mcast) {
- 			/*  For AP mode, if DA =3D=3D MCAST, then BSSID should be also MCAST */
- 			if (!is_multicast_ether_addr(pattrib->bssid)) {
--					ret =3D _FAIL;
--					goto exit;
-+				ret =3D _FAIL;
-+				goto exit;
- 			}
- 		} else { /*  not mc-frame */
- 			/*  For AP mode, if DA is non-MCAST, then it must be BSSID, and bssid =
-=3D=3D BSSID */
---=20
+diff --git a/net/ax25/af_ax25.c b/net/ax25/af_ax25.c
+index fd91cd34f25e..ef5bf116157a 100644
+--- a/net/ax25/af_ax25.c
++++ b/net/ax25/af_ax25.c
+@@ -1187,7 +1187,9 @@ static int __must_check ax25_connect(struct socket *sock,
+ 	if (addr_len > sizeof(struct sockaddr_ax25) &&
+ 	    fsa->fsa_ax25.sax25_ndigis != 0) {
+ 		/* Valid number of digipeaters ? */
+-		if (fsa->fsa_ax25.sax25_ndigis < 1 || fsa->fsa_ax25.sax25_ndigis > AX25_MAX_DIGIS) {
++		if (fsa->fsa_ax25.sax25_ndigis < 1 ||
++		    addr_len < sizeof(struct sockaddr_ax25) +
++		    sizeof(ax25_address) * fsa->fsa_ax25.sax25_ndigis) {
+ 			err = -EINVAL;
+ 			goto out_release;
+ 		}
+-- 
 2.25.1
 
-
---fpt4wn3ldqcwypba
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE8DwCG1PwaC2uTI99xIwpEWwxhGQFAl8YWN4ACgkQxIwpEWwx
-hGTV7BAAi1/qy9HC1pFSyKBVuey7wA8uYsw2/tIGlmHamM7UunyD9mOdyTKjHQaH
-VKUukWo1302Gl2kiUG/mfLRbEzcZedY/qOuUfVaxP1Nfa+Hp25W4rfn6Mt0CXo7D
-sneUd2HAexEvPn+qN+EoiZC/tCa/VqbwwPMovJ8/3riORAsSPhb661YHceJVjIjH
-FI1peJln9zfGYTViju4CtIXbJpfADvntrDG9QJO/B8QLpcWr6WmefvJ+worv+ouZ
-JUecDwPsPC5OCgm2Nqi1gNwfhHZzgVkyT7ucDgZCWeCYLazFffWZ2UoAKho23fmQ
-iQnzjCG66tX5MZpwZObrWda2csvXtuZi019i0iBE9ZxD+2/G+5nAZ3OT5bChPK2o
-lm9OYzJXaOJZZHRWVNM4FFLk/bzhuda9b/l9rjwKJqVLZXfn67TqvYhhPHp03CF9
-2EEU92f+RTUlrO2m64AcBGitpzqOPTtFOKRtSONYFcukSonrXKPUSwQ75I2LeaoF
-ICo7G3j2mzOcxIk+9XP4WtMvjclbzYwIJzIEElfHGXZxFc1AlIaEdZW13vHel3gA
-hVJDUGHV9OqltqNXkryvj3vZ3QjRAUwC7OF0a8P/7QFOTrpS3DlgRGo/CYASwYZj
-drGAErnjTln/x3+oMapcZUQxJsJRBbJDvxgugCaGIdD4WaHeiC0=
-=vAMR
------END PGP SIGNATURE-----
-
---fpt4wn3ldqcwypba--
