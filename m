@@ -2,171 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0C7228F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95FB228F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgGVEyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 00:54:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61616 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725862AbgGVEyT (ORCPT
+        id S1726964AbgGVE5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 00:57:47 -0400
+Received: from smtprelay0174.hostedemail.com ([216.40.44.174]:38800 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725862AbgGVE5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 00:54:19 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06M4ZESW115676;
-        Wed, 22 Jul 2020 00:53:51 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vrm7h3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 00:53:51 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06M4bH8E127245;
-        Wed, 22 Jul 2020 00:53:50 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vrm7gw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 00:53:50 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06M4jAhq016647;
-        Wed, 22 Jul 2020 04:53:50 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03wdc.us.ibm.com with ESMTP id 32brq9956e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 04:53:50 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06M4rnrs36569406
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 04:53:49 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 786B0BE051;
-        Wed, 22 Jul 2020 04:53:49 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9CB87BE058;
-        Wed, 22 Jul 2020 04:53:48 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.82.72])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Jul 2020 04:53:48 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 307DA2E48A9; Wed, 22 Jul 2020 10:23:44 +0530 (IST)
-Date:   Wed, 22 Jul 2020 10:23:44 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, npiggin@gmail.com, benh@kernel.crashing.org,
-        paulus@samba.org, mikey@neuling.org, ego@linux.vnet.ibm.com,
-        svaidy@linux.ibm.com, pratik.r.sampat@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] powerpc/powernv/idle: Rename
- pnv_first_spr_loss_level variable
-Message-ID: <20200722045344.GA30454@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200721153708.89057-1-psampat@linux.ibm.com>
- <20200721153708.89057-3-psampat@linux.ibm.com>
+        Wed, 22 Jul 2020 00:57:47 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 47E931829508C;
+        Wed, 22 Jul 2020 04:57:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3865:3866:3867:3868:3872:4321:5007:8660:10004:10400:10848:11232:11658:11914:12296:12297:12555:12740:12760:12895:13069:13138:13148:13230:13231:13311:13357:13439:14093:14096:14097:14181:14394:14659:14721:21080:21220:21433:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: milk10_2f0383b26f33
+X-Filterd-Recvd-Size: 2811
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 22 Jul 2020 04:57:44 +0000 (UTC)
+Message-ID: <b545eb4e3f2b4b676959e4666ef536f2691041eb.camel@perches.com>
+Subject: [PATCH] Makefile.extrawarn: Move sign-compare from W=2 to W=3
+From:   Joe Perches <joe@perches.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net,
+        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org
+Date:   Tue, 21 Jul 2020 21:57:43 -0700
+In-Reply-To: <11ac49bc33546ef9ebc4120878206bd882667d8a.camel@perches.com>
+References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
+         <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
+         <11ac49bc33546ef9ebc4120878206bd882667d8a.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721153708.89057-3-psampat@linux.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_02:2020-07-21,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 phishscore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220031
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 09:07:07PM +0530, Pratik Rajesh Sampat wrote:
-> Replace the variable name from using "pnv_first_spr_loss_level" to
-> "deep_spr_loss_state".
-> 
-> pnv_first_spr_loss_level is supposed to be the earliest state that
-> has OPAL_PM_LOSE_FULL_CONTEXT set, in other places the kernel uses the
-> "deep" states as terminology. Hence renaming the variable to be coherent
-> to its semantics.
-> 
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+This -Wsign-compare compiler warning can be very noisy
+and most of the suggested conversions are unnecessary.
 
-Acked-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Make the warning W=3 so it's described under the
+"can most likely be ignored" block.
 
-> ---
->  arch/powerpc/platforms/powernv/idle.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+On Tue, 2020-07-21 at 14:32 -0700, Joe Perches wrote:
+> On Tue, 2020-07-21 at 19:06 +0000, Corentin Labbe wrote:
+> > This patch fixes the warning:
+> > warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
 > 
-> diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
-> index 642abf0b8329..28462d59a8e1 100644
-> --- a/arch/powerpc/platforms/powernv/idle.c
-> +++ b/arch/powerpc/platforms/powernv/idle.c
-> @@ -48,7 +48,7 @@ static bool default_stop_found;
->   * First stop state levels when SPR and TB loss can occur.
->   */
->  static u64 pnv_first_tb_loss_level = MAX_STOP_STATE + 1;
-> -static u64 pnv_first_spr_loss_level = MAX_STOP_STATE + 1;
-> +static u64 deep_spr_loss_state = MAX_STOP_STATE + 1;
-> 
->  /*
->   * psscr value and mask of the deepest stop idle state.
-> @@ -657,7 +657,7 @@ static unsigned long power9_idle_stop(unsigned long psscr, bool mmu_on)
->  		  */
->  		mmcr0		= mfspr(SPRN_MMCR0);
->  	}
-> -	if ((psscr & PSSCR_RL_MASK) >= pnv_first_spr_loss_level) {
-> +	if ((psscr & PSSCR_RL_MASK) >= deep_spr_loss_state) {
->  		sprs.lpcr	= mfspr(SPRN_LPCR);
->  		sprs.hfscr	= mfspr(SPRN_HFSCR);
->  		sprs.fscr	= mfspr(SPRN_FSCR);
-> @@ -741,7 +741,7 @@ static unsigned long power9_idle_stop(unsigned long psscr, bool mmu_on)
->  	 * just always test PSSCR for SPR/TB state loss.
->  	 */
->  	pls = (psscr & PSSCR_PLS) >> PSSCR_PLS_SHIFT;
-> -	if (likely(pls < pnv_first_spr_loss_level)) {
-> +	if (likely(pls < deep_spr_loss_state)) {
->  		if (sprs_saved)
->  			atomic_stop_thread_idle();
->  		goto out;
-> @@ -1088,7 +1088,7 @@ static void __init pnv_power9_idle_init(void)
->  	 * the deepest loss-less (OPAL_PM_STOP_INST_FAST) stop state.
->  	 */
->  	pnv_first_tb_loss_level = MAX_STOP_STATE + 1;
-> -	pnv_first_spr_loss_level = MAX_STOP_STATE + 1;
-> +	deep_spr_loss_state = MAX_STOP_STATE + 1;
->  	for (i = 0; i < nr_pnv_idle_states; i++) {
->  		int err;
->  		struct pnv_idle_states_t *state = &pnv_idle_states[i];
-> @@ -1099,8 +1099,8 @@ static void __init pnv_power9_idle_init(void)
->  			pnv_first_tb_loss_level = psscr_rl;
-> 
->  		if ((state->flags & OPAL_PM_LOSE_FULL_CONTEXT) &&
-> -		     (pnv_first_spr_loss_level > psscr_rl))
-> -			pnv_first_spr_loss_level = psscr_rl;
-> +		     (deep_spr_loss_state > psscr_rl))
-> +			deep_spr_loss_state = psscr_rl;
-> 
->  		/*
->  		 * The idle code does not deal with TB loss occurring
-> @@ -1111,8 +1111,8 @@ static void __init pnv_power9_idle_init(void)
->  		 * compatibility.
->  		 */
->  		if ((state->flags & OPAL_PM_TIMEBASE_STOP) &&
-> -		     (pnv_first_spr_loss_level > psscr_rl))
-> -			pnv_first_spr_loss_level = psscr_rl;
-> +		     (deep_spr_loss_state > psscr_rl))
-> +			deep_spr_loss_state = psscr_rl;
-> 
->  		err = validate_psscr_val_mask(&state->psscr_val,
->  					      &state->psscr_mask,
-> @@ -1158,7 +1158,7 @@ static void __init pnv_power9_idle_init(void)
->  	}
-> 
->  	pr_info("cpuidle-powernv: First stop level that may lose SPRs = 0x%llx\n",
-> -		pnv_first_spr_loss_level);
-> +		deep_spr_loss_state);
-> 
->  	pr_info("cpuidle-powernv: First stop level that may lose timebase = 0x%llx\n",
->  		pnv_first_tb_loss_level);
-> -- 
-> 2.25.4
-> 
+> I think these do not really need conversion.
+> Are these useful compiler warnings ?
+
+Perhaps move the warning from W=2 to W=3 so
+it's described as "can most likely be ignored"
+
+ scripts/Makefile.extrawarn | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 62c275685b75..95e4cdb94fe9 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -66,7 +66,6 @@ KBUILD_CFLAGS += -Wnested-externs
+ KBUILD_CFLAGS += -Wshadow
+ KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
+ KBUILD_CFLAGS += -Wmissing-field-initializers
+-KBUILD_CFLAGS += -Wsign-compare
+ KBUILD_CFLAGS += -Wtype-limits
+ KBUILD_CFLAGS += $(call cc-option, -Wmaybe-uninitialized)
+ KBUILD_CFLAGS += $(call cc-option, -Wunused-macros)
+@@ -87,6 +86,7 @@ KBUILD_CFLAGS += -Wpacked
+ KBUILD_CFLAGS += -Wpadded
+ KBUILD_CFLAGS += -Wpointer-arith
+ KBUILD_CFLAGS += -Wredundant-decls
++KBUILD_CFLAGS += -Wsign-compare
+ KBUILD_CFLAGS += -Wswitch-default
+ KBUILD_CFLAGS += $(call cc-option, -Wpacked-bitfield-compat)
+ 
+
+
