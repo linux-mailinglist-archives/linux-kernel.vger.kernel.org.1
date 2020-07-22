@@ -2,111 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B252291FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD005229200
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732013AbgGVHSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:18:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27030 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728338AbgGVHSw (ORCPT
+        id S1732018AbgGVHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:20:19 -0400
+Received: from mail4.tencent.com ([183.57.53.109]:34838 "EHLO
+        mail4.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728338AbgGVHUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:18:52 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06M71WMu191977;
-        Wed, 22 Jul 2020 03:18:27 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1wkqx6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 03:18:27 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06M7C1Wp002112;
-        Wed, 22 Jul 2020 07:18:26 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 32brbh4n3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 07:18:25 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06M7INhq65012112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 07:18:23 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1907FA4053;
-        Wed, 22 Jul 2020 07:18:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 94437A4051;
-        Wed, 22 Jul 2020 07:18:22 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.57.80])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Jul 2020 07:18:22 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] KVM: PPC: Book3S HV: rework secure mem slot
- dropping
-To:     Ram Pai <linuxram@us.ibm.com>, paulus@samba.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, mpe@ellerman.id.au, sukadev@linux.ibm.com,
-        bauerman@linux.ibm.com, bharata@linux.ibm.com,
-        Paul Mackerras <paulus@ozlabs.org>
-References: <20200721104202.15727-1-ldufour@linux.ibm.com>
- <20200721104202.15727-3-ldufour@linux.ibm.com>
- <20200721213736.GG7339@oc0525413822.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <9158d2d7-7446-6eaa-8c88-666264c53dda@linux.ibm.com>
-Date:   Wed, 22 Jul 2020 09:18:20 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200721213736.GG7339@oc0525413822.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 22 Jul 2020 03:20:17 -0400
+Received: from EX-SZ020.tencent.com (unknown [10.28.6.40])
+        by mail4.tencent.com (Postfix) with ESMTP id B5702724D6;
+        Wed, 22 Jul 2020 15:20:13 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1595402413;
+        bh=AsYlnjFF2hYKj+7FKYMNeD7e5NE3fdzhp7oH/PzpvYU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=GPpx9vughH3O4VqknGZLt6yFJ5PC1HUDD6Mwg4VvOD6LT5kSo0kKzO4qGRWdrrfZ4
+         8R5Gqkx35QNqeht4VBkGakJ+DYb7FUhxCkT91+Ae5raq1dsqX/44bWVwUHK0YNYwv6
+         1CUkb6/sudfv0EsVeLOIzV35OmQtChgA5H/LapWU=
+Received: from EX-SZ004.tencent.com (10.28.6.25) by EX-SZ020.tencent.com
+ (10.28.6.40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Wed, 22 Jul
+ 2020 15:20:13 +0800
+Received: from EX-SZ012.tencent.com (10.28.6.36) by EX-SZ004.tencent.com
+ (10.28.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Wed, 22 Jul
+ 2020 15:20:13 +0800
+Received: from EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b]) by
+ EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b%3]) with mapi id
+ 15.01.1847.007; Wed, 22 Jul 2020 15:20:13 +0800
+From:   =?iso-2022-jp?B?YmVuYmppYW5nKBskQj5VSTcbKEIp?= 
+        <benbjiang@tencent.com>
+To:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Tim Chen" <tim.c.chen@linux.intel.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pjt@google.com" <pjt@google.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
+        "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "kerrnel@google.com" <kerrnel@google.com>,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "vineethrp@gmail.com" <vineethrp@gmail.com>,
+        "Chen Yu" <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation
+ corner case(Internet mail)
+Thread-Topic: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation
+ corner case(Internet mail)
+Thread-Index: AQHWTyYlpLP1bK1w0UWTtI+YyeyPMKkSzKoA
+Date:   Wed, 22 Jul 2020 07:20:13 +0000
+Message-ID: <8C431BBC-154C-4AAC-8876-FFFF173AE2B9@tencent.com>
+References: <cover.1593530334.git.vpillai@digitalocean.com>
+ <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
+In-Reply-To: <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_03:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- mlxlogscore=500 impostorscore=0 mlxscore=0 suspectscore=0 bulkscore=0
- clxscore=1015 spamscore=0 lowpriorityscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220048
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [9.19.161.93]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <BBBF2514D607514095EA89A79DFF2015@tencent.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 21/07/2020 à 23:37, Ram Pai a écrit :
-> On Tue, Jul 21, 2020 at 12:42:02PM +0200, Laurent Dufour wrote:
->> When a secure memslot is dropped, all the pages backed in the secure device
->> (aka really backed by secure memory by the Ultravisor) should be paged out
->> to a normal page. Previously, this was achieved by triggering the page
->> fault mechanism which is calling kvmppc_svm_page_out() on each pages.
->>
->> This can't work when hot unplugging a memory slot because the memory slot
->> is flagged as invalid and gfn_to_pfn() is then not trying to access the
->> page, so the page fault mechanism is not triggered.
->>
->> Since the final goal is to make a call to kvmppc_svm_page_out() it seems
->> simpler to directly calling it instead of triggering such a mechanism. This
->              ^^ call directly instead of triggering..
-> 
->> way kvmppc_uvmem_drop_pages() can be called even when hot unplugging a
->> memslot.
->>
->> Since kvmppc_uvmem_drop_pages() is already holding kvm->arch.uvmem_lock,
->> the call to __kvmppc_svm_page_out() is made.
->> As __kvmppc_svm_page_out needs the vma pointer to migrate the pages, the
->> VMA is fetched in a lazy way, to not trigger find_vma() all the time. In
->> addition, the mmap_sem is help in read mode during that time, not in write
-> 		          ^^ held
-> 
->> mode since the virual memory layout is not impacted, and
->> kvm->arch.uvmem_lock prevents concurrent operation on the secure device.
->>
->> Cc: Ram Pai <linuxram@us.ibm.com>
-> 
-> Reviewed-by: Ram Pai <linuxram@us.ibm.com>
 
-Thanks for reviewing this series.
 
-Regarding the wordsmithing, Paul, could you manage that when pulling the series?
+> On Jul 1, 2020, at 5:32 AM, Vineeth Remanan Pillai <vpillai@digitalocean.=
+com> wrote:
+>=20
+> From: vpillai <vpillai@digitalocean.com>
+>=20
+> If there is only one long running local task and the sibling is
+> forced idle, it  might not get a chance to run until a schedule
+> event happens on any cpu in the core.
+>=20
+> So we check for this condition during a tick to see if a sibling
+> is starved and then give it a chance to schedule.
+Hi,
 
-Thanks,
-Laurent.
+There may be other similar starvation cases this patch can not cover.=20
+Such as, If there is one long running RT task and sibling is forced idle, t=
+hen all tasks with different cookies on all siblings could be starving fore=
+ver.
+Current load-balances seems not able to pull the starved tasks away.=20
+Would load-balance be more aware of core-scheduling to make things better? =
+:)
+
+Thx.
+Regards,
+Jiang=20
+
+>=20
+> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
+> Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> ---
+> kernel/sched/fair.c | 39 +++++++++++++++++++++++++++++++++++++++
+> 1 file changed, 39 insertions(+)
+>=20
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ae17507533a0..49fb93296e35 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10613,6 +10613,40 @@ static void rq_offline_fair(struct rq *rq)
+>=20
+> #endif /* CONFIG_SMP */
+>=20
+> +#ifdef CONFIG_SCHED_CORE
+> +static inline bool
+> +__entity_slice_used(struct sched_entity *se)
+> +{
+> +	return (se->sum_exec_runtime - se->prev_sum_exec_runtime) >
+> +		sched_slice(cfs_rq_of(se), se);
+> +}
+> +
+> +/*
+> + * If runqueue has only one task which used up its slice and if the sibl=
+ing
+> + * is forced idle, then trigger schedule to give forced idle task a chan=
+ce.
+> + */
+> +static void resched_forceidle_sibling(struct rq *rq, struct sched_entity=
+ *se)
+> +{
+> +	int cpu =3D cpu_of(rq), sibling_cpu;
+> +
+> +	if (rq->cfs.nr_running > 1 || !__entity_slice_used(se))
+> +		return;
+> +
+> +	for_each_cpu(sibling_cpu, cpu_smt_mask(cpu)) {
+> +		struct rq *sibling_rq;
+> +		if (sibling_cpu =3D=3D cpu)
+> +			continue;
+> +		if (cpu_is_offline(sibling_cpu))
+> +			continue;
+> +
+> +		sibling_rq =3D cpu_rq(sibling_cpu);
+> +		if (sibling_rq->core_forceidle) {
+> +			resched_curr(sibling_rq);
+> +		}
+> +	}
+> +}
+> +#endif
+> +
+> /*
+>  * scheduler tick hitting a task of our scheduling class.
+>  *
+> @@ -10636,6 +10670,11 @@ static void task_tick_fair(struct rq *rq, struct=
+ task_struct *curr, int queued)
+>=20
+> 	update_misfit_status(curr, rq);
+> 	update_overutilized_status(task_rq(curr));
+> +
+> +#ifdef CONFIG_SCHED_CORE
+> +	if (sched_core_enabled(rq))
+> +		resched_forceidle_sibling(rq, &curr->se);
+> +#endif
+> }
+>=20
+> /*
+> --=20
+> 2.17.1
+>=20
+>=20
+
