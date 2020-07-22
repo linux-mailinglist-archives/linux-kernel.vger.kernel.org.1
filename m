@@ -2,132 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C7E22952B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8287229561
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731090AbgGVJkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgGVJkN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:40:13 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C41C0619DC;
-        Wed, 22 Jul 2020 02:40:13 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id 8so898990pjj.1;
-        Wed, 22 Jul 2020 02:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BTqwNESkYaInlEDNf57EMyqM2P7fZXzlbKUeW0yvUD4=;
-        b=o4iNIqmLE3FMfgb+OrQxj1Mvl7e5Ktc/ApMTal4syItnYfN0BAe2XnpaUzhm0rM0k/
-         XF1Q2fnTdqMsgjbVIP/xo53gFE1AJYhE5Eo8og5XjkOhmuR9h9egGUwT4ECUIIBG13ZS
-         As+Cd5uLnkVzWNsqBTWaHQivC+6Vj7wZdg15/11Sh3S/aoVPw4ktv5ekYAcuEHsCIsfx
-         qsYTU3fjpLaJGJOxz4tfEic4/iu8d9kIG/tgkhP3ozEwJyJ+YapN6sygf1Pg9MGeDKcb
-         UmcFjl+6MH0IkTRQ5ItaxJh/2iuq1N3ACESAfcFIoCE6AN1qOA3ghtea5XYGqQhDHvN0
-         2LRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BTqwNESkYaInlEDNf57EMyqM2P7fZXzlbKUeW0yvUD4=;
-        b=gTZTmvCWVfqjAQ9QmfqA8dG3oA8tsGyngIXp9qxVNL2AexNUtbDaNPXbOIP4IfW66B
-         pmtoT+W7VCBShE6nTHZNsnR/tjR329VaFonV0E2Krvq+iXX4UjYS+imajZ96F4kn8DOm
-         v9ooAkwAZIAEunHPZFe1m+GhvTqZRvdhJXHPPFmvccvSXSroxqSLm/e0vHAI5os94sFh
-         x9xNzPY+JVPxvNGnPG8dWu6coONl5H1tmIhaYsDICaFm6LgCpvq5o2Ujyv3OKONnPNaR
-         dzpGueLt1zbrXzMO12PfRY+vlBUzFiLbLsA2wu5MNSsLoVaWETHon7zkinHXPWf30vXj
-         V2Ww==
-X-Gm-Message-State: AOAM530zZ/TaVmudAUY8HCWRmX35T4RGsYBAOvx3udTxjFPx7YdEmC4B
-        bsRgmI6FanGb+WD5Xh6KfvS1mmgTYsQ=
-X-Google-Smtp-Source: ABdhPJwA3Tif2dJS3Jcbh7lrpxlRuo7QjIrMiXPTHfBnLUzHEC1t1fuB4Qd3JlCqC057HkVnUJsnuA==
-X-Received: by 2002:a17:902:7790:: with SMTP id o16mr23785608pll.299.1595410812927;
-        Wed, 22 Jul 2020 02:40:12 -0700 (PDT)
-Received: from ?IPv6:2409:4072:6418:58eb:d028:8959:a8a3:a7bc? ([2409:4072:6418:58eb:d028:8959:a8a3:a7bc])
-        by smtp.gmail.com with ESMTPSA id g5sm5959977pjl.31.2020.07.22.02.40.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 02:40:12 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] iio: gyro: Add driver support for ADXRS290
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        darius.berghe@analog.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-References: <20200721181926.27046-1-nish.malpani25@gmail.com>
- <CAHp75Vdr+Uo2uw3mzYP+LMRgp-eyi+YjG=O+wGVqyYx-+MRCaw@mail.gmail.com>
- <7ba8469a-dd8c-1686-6d26-e2a4cbfedce9@gmail.com>
- <CAHp75VdYVC9n7-2MH62J46N0p+sNSE9QVwonor5QfdnvL4hoLg@mail.gmail.com>
-From:   Nishant Malpani <nish.malpani25@gmail.com>
-Message-ID: <5cb55101-af5c-b6a2-d770-9717f8a463cc@gmail.com>
-Date:   Wed, 22 Jul 2020 15:10:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1731669AbgGVJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:47:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8351 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730142AbgGVJre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 05:47:34 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E06B03B132C9DC4F16B9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 17:47:30 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 22 Jul 2020 17:47:23 +0800
+From:   Hanjun Guo <guohanjun@huawei.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, Hanjun Guo <guohanjun@huawei.com>
+Subject: [PATCH] mailbox: pcc: Put the PCCT table for error path
+Date:   Wed, 22 Jul 2020 17:40:40 +0800
+Message-ID: <1595410840-15231-1-git-send-email-guohanjun@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdYVC9n7-2MH62J46N0p+sNSE9QVwonor5QfdnvL4hoLg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The acpi_get_table() should be coupled with acpi_put_table() if
+the mapped table is not used at runtime to release the table
+mapping.
 
-On 22/07/20 3:08 am, Andy Shevchenko wrote:
-> On Tue, Jul 21, 2020 at 11:35 PM Nishant Malpani
-> <nish.malpani25@gmail.com> wrote:
->> On 22/07/20 1:16 am, Andy Shevchenko wrote:
->>> On Tue, Jul 21, 2020 at 9:20 PM Nishant Malpani
->>> <nish.malpani25@gmail.com> wrote:
-> 
-> ...
-> 
->>>> +               *vals = (const int *)adxrs290_lpf_3db_freq_tbl;
->>>
->>> Why casting?
->>>
->> adxrs290_lpf_3db_freq_tbl is of type (int *)[2], right? Without the
->> casting, an incompatible-pointer-type error is thrown.
->>
->>> ...
->>>
->>>> +               *vals = (const int *)adxrs290_hpf_3db_freq_tbl;
->>>
->>> Ditto.
->>>
->> See above comment.
-> 
-> Can't you declare table as const int?
-> 
-I'm not sure I understand you completely here; do you mean const int *? 
-So, an array of alternate integer and fractional parts? I suppose that's 
-possible but we'd be introducing unwanted complexity I feel - for 
-example, currently the index of the 3db frequency in the table is used 
-to directly map & set bits in the filter register corresponding to that 
-frequency but with the approach you share, we'd have to apply a 
-transformation (div by 2) to set the same bits in the filter register. 
-Do you think the added complexity justifies the removal of the casting?
+In acpi_pcc_probe(), the PCCT table entries will be used as private
+data for communication chan at runtime, but the table should be put
+for error path.
 
-> ...
-> 
->>>> +       /* max transition time to measurement mode */
->>>> +       msleep_interruptible(ADXRS290_MAX_TRANSITION_TIME_MS);
->>>
->>> I'm not sure what the point of interruptible variant here?
->>>
->> I referred Documentation/timers/timers-howto.rst for this.
->> My reasoning was shaped to use the interruptible variant because the
->> transition settles in a time *less than* 100ms and since 100ms is quite
->> a huge time to sleep, it should be interrupted in case a signal arrives.
-> 
-> This is probe of the device,
-> What are the expectations here?
-> 
-I fail to understand why this can't be used in the probe() but perhaps 
-in a routine to standby/resume. Could you please elaborate?
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+---
+ drivers/mailbox/pcc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-With regards,
-Nishant Malpani
+diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+index 8c7fac3..ef9ecd1 100644
+--- a/drivers/mailbox/pcc.c
++++ b/drivers/mailbox/pcc.c
+@@ -457,14 +457,17 @@ static int __init acpi_pcc_probe(void)
+ 			pr_warn("Error parsing PCC subspaces from PCCT\n");
+ 		else
+ 			pr_warn("Invalid PCCT: %d PCC subspaces\n", count);
+-		return -EINVAL;
++
++		rc = -EINVAL;
++		goto err_put_pcct;
+ 	}
+ 
+ 	pcc_mbox_channels = kcalloc(count, sizeof(struct mbox_chan),
+ 				    GFP_KERNEL);
+ 	if (!pcc_mbox_channels) {
+ 		pr_err("Could not allocate space for PCC mbox channels\n");
+-		return -ENOMEM;
++		rc = -ENOMEM;
++		goto err_put_pcct;
+ 	}
+ 
+ 	pcc_doorbell_vaddr = kcalloc(count, sizeof(void *), GFP_KERNEL);
+@@ -535,6 +538,8 @@ static int __init acpi_pcc_probe(void)
+ 	kfree(pcc_doorbell_vaddr);
+ err_free_mbox:
+ 	kfree(pcc_mbox_channels);
++err_put_pcct:
++	acpi_put_table(pcct_tbl);
+ 	return rc;
+ }
+ 
+-- 
+1.7.12.4
+
