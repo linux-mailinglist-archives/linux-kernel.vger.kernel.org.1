@@ -2,123 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CFF229482
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599C222948E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgGVJLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:11:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31015 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726147AbgGVJLm (ORCPT
+        id S1731173AbgGVJMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:12:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46884 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgGVJM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:11:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595409100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NzcEIWaSLdd63tVnMlQ4l8CfKkfEyUhff3HORkpk1pw=;
-        b=b8dBzOj024FywY5Penqxp9mkStAXHSUSvE0NXHrAhTSsV6PWTD8143jgEO36fVYNYozMUl
-        0+u20vnIhrZUqhVffNNVe8BMhW/mu8GqGpNzjqujDPDflU+8UdT6Xnh3mPwUmQoQwb0rch
-        W1HFKDXUNYtlRxvdwMabiI8Vu9wtORQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-318-W9xiyZCdNjaZWfNh6eB9Eg-1; Wed, 22 Jul 2020 05:11:36 -0400
-X-MC-Unique: W9xiyZCdNjaZWfNh6eB9Eg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1173C746E;
-        Wed, 22 Jul 2020 09:11:33 +0000 (UTC)
-Received: from fedora-32-enviroment (unknown [10.35.206.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 477AC5C1C3;
-        Wed, 22 Jul 2020 09:11:18 +0000 (UTC)
-Message-ID: <f16aba1020019530564f0869a67951282104a5d2.camel@redhat.com>
-Subject: Re: [PATCH 02/10] block: virtio-blk: check logical block size
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ajay Joshi <ajay.joshi@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
-        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
-        "open list:VIRTIO CORE AND NET DRIVERS" 
-        <virtualization@lists.linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Alex Dubov <oakad@yahoo.com>
-Date:   Wed, 22 Jul 2020 12:11:17 +0300
-In-Reply-To: <yq1zh7sfedj.fsf@ca-mkp.ca.oracle.com>
-References: <20200721105239.8270-1-mlevitsk@redhat.com>
-         <20200721105239.8270-3-mlevitsk@redhat.com> <20200721151437.GB10620@lst.de>
-         <yq1zh7sfedj.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Wed, 22 Jul 2020 05:12:27 -0400
+Date:   Wed, 22 Jul 2020 09:12:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595409143;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=z1qh6CSfw9mrQCVNV5ghiXKMtbtljaK+YtCwdajf64o=;
+        b=3Ef6DFxXuzKOIAnMqLrT29a09z5KCKybKm9H9nJPUGkpGHzH1KkEhrA+r82MmRU6EZ863H
+        dqVH2wBWqEPjPAq8qH5vCSZHxBvbPjl4P40y+87hfeNGa9E7MX4la1uRQZHxDFaodcuXd3
+        51iZP32jmcIcv/K1+oHwNB0880mkeZVdz/J6c71zkfT30DYbDoFKl4Q/SskO3dz7Fg1xJm
+        PZQBJp8XUrhAWLOlSOe3Aip+kfpaStfNpQhL0HS+6P1RN5M8wy4Klg6lZDUyPKpF4Qilic
+        4IvpFEqrJGy8Y7js3JtxWZIRLq/+MCVPihQBIbKsm5PEHEuW0zk0a4g1bRqNPw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595409143;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=z1qh6CSfw9mrQCVNV5ghiXKMtbtljaK+YtCwdajf64o=;
+        b=6P67u8ldZozTPG2baKfnJrUdRxFUfbKtE7BUtNHefbENijSxzxbHNLREMp/d3KTbaFqnG6
+        1gsl0Cpk8ghK3zBA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched: Fix race against ptrace_freeze_trace()
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
+Message-ID: <159540914264.4006.8441424283734137782.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-21 at 22:55 -0400, Martin K. Petersen wrote:
-> Christoph,
-> 
-> > Hmm, I wonder if we should simply add the check and warning to
-> > blk_queue_logical_block_size and add an error in that case.  Then
-> > drivers only have to check the error return, which might add a lot
-> > less boiler plate code.
-> 
-> Yep, I agree.
-> 
+The following commit has been merged into the sched/urgent branch of tip:
 
-I also agree that this would be cleaner (I actually tried to implement
-this the way you suggest), but let me explain my reasoning for doing it
-this way.
+Commit-ID:     d136122f58458479fd8926020ba2937de61d7f65
+Gitweb:        https://git.kernel.org/tip/d136122f58458479fd8926020ba2937de61d7f65
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 20 Jul 2020 17:20:21 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 22 Jul 2020 10:22:00 +02:00
 
-The problem is that most current users of blk_queue_logical_block_size
-(43 uses in the tree, out of which only 9 use constant block size) check
-for the block size relatively early, often store it in some internal
-struct etc, prior to calling blk_queue_logical_block_size thus making
-them only to rely on blk_queue_logical_block_size as the check for 
-block size validity will need non-trivial changes in their code.
+sched: Fix race against ptrace_freeze_trace()
 
-Instead of this adding blk_is_valid_logical_block_size allowed me
-to trivially convert most of the uses.
+There is apparently one site that violates the rule that only current
+and ttwu() will modify task->state, namely ptrace_{,un}freeze_traced()
+will change task->state for a remote task.
 
-For RFC I converted only some drivers that I am more familiar with
-and/or can test but I can remove the driver's own checks in most other
-drivers with low chance of introducing a bug, even if I can't test the
-driver.
+Oleg explains:
 
-What do you think?
+  "TASK_TRACED/TASK_STOPPED was always protected by siglock. In
+particular, ttwu(__TASK_TRACED) must be always called with siglock
+held. That is why ptrace_freeze_traced() assumes it can safely do
+s/TASK_TRACED/__TASK_TRACED/ under spin_lock(siglock)."
 
-I can also both make blk_queue_logical_block_size return an error value,
-and have blk_is_valid_logical_block_size and use either of these checks,
-depending on the driver with eventual goal of un-exporting
-blk_is_valid_logical_block_size.
+This breaks the ordering scheme introduced by commit:
 
-Also note that I did add WARN_ON to blk_queue_logical_block_size.
+  dbfb089d360b ("sched: Fix loadavg accounting race")
 
-Best regards,
-	Maxim Levitsky
+Specifically, the reload not matching no longer implies we don't have
+to block.
 
+Simply things by noting that what we need is a LOAD->STORE ordering
+and this can be provided by a control dependency.
+
+So replace:
+
+	prev_state = prev->state;
+	raw_spin_lock(&rq->lock);
+	smp_mb__after_spinlock(); /* SMP-MB */
+	if (... && prev_state && prev_state == prev->state)
+		deactivate_task();
+
+with:
+
+	prev_state = prev->state;
+	if (... && prev_state) /* CTRL-DEP */
+		deactivate_task();
+
+Since that already implies the 'prev->state' load must be complete
+before allowing the 'prev->on_rq = 0' store to become visible.
+
+Fixes: dbfb089d360b ("sched: Fix loadavg accounting race")
+Reported-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Tested-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Tested-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ kernel/sched/core.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e15543c..5dece9b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4119,9 +4119,6 @@ static void __sched notrace __schedule(bool preempt)
+ 	local_irq_disable();
+ 	rcu_note_context_switch(preempt);
+ 
+-	/* See deactivate_task() below. */
+-	prev_state = prev->state;
+-
+ 	/*
+ 	 * Make sure that signal_pending_state()->signal_pending() below
+ 	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+@@ -4145,11 +4142,16 @@ static void __sched notrace __schedule(bool preempt)
+ 	update_rq_clock(rq);
+ 
+ 	switch_count = &prev->nivcsw;
++
+ 	/*
+-	 * We must re-load prev->state in case ttwu_remote() changed it
+-	 * before we acquired rq->lock.
++	 * We must load prev->state once (task_struct::state is volatile), such
++	 * that:
++	 *
++	 *  - we form a control dependency vs deactivate_task() below.
++	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
+ 	 */
+-	if (!preempt && prev_state && prev_state == prev->state) {
++	prev_state = prev->state;
++	if (!preempt && prev_state) {
+ 		if (signal_pending_state(prev_state, prev)) {
+ 			prev->state = TASK_RUNNING;
+ 		} else {
+@@ -4163,10 +4165,12 @@ static void __sched notrace __schedule(bool preempt)
+ 
+ 			/*
+ 			 * __schedule()			ttwu()
+-			 *   prev_state = prev->state;	  if (READ_ONCE(p->on_rq) && ...)
+-			 *   LOCK rq->lock		    goto out;
+-			 *   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
+-			 *   p->on_rq = 0;		  p->state = TASK_WAKING;
++			 *   prev_state = prev->state;    if (p->on_rq && ...)
++			 *   if (prev_state)		    goto out;
++			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
++			 *				  p->state = TASK_WAKING
++			 *
++			 * Where __schedule() and ttwu() have matching control dependencies.
+ 			 *
+ 			 * After this, schedule() must not care about p->state any more.
+ 			 */
