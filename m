@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E05B22970D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6C7229709
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732288AbgGVLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 07:04:38 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:56330 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732274AbgGVLEe (ORCPT
+        id S1732256AbgGVLEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 07:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729064AbgGVLEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:04:34 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MB4KRQ072692;
-        Wed, 22 Jul 2020 06:04:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595415860;
-        bh=DtJwoqJOryWTFyHfyKQF/gJr0EGo+ETG/evSupvzR8s=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=n5Nd/cdiJ1Lx/nqL7VNyBrlwj5KxpsYEkT8v0sogqIrstaEmv5s/gMcHrwQXHFrlw
-         Z0kC9YqHQfwP5H5IaDdukNzjVP68m4bTq3cBZx7UBx/6XC2KvLvW10QEzq1iLR58qG
-         FRoyUQhZRrMU/CjQilyjMmM3+hkzzP2aQoW2Rcjo=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MB4KdP020667
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 06:04:20 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Jul 2020 06:04:20 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Jul 2020 06:04:20 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MB3IFn078616;
-        Wed, 22 Jul 2020 06:04:17 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v8 15/15] MAINTAINERS: Add Kishon Vijay Abraham I for TI J721E SoC PCIe
-Date:   Wed, 22 Jul 2020 16:33:17 +0530
-Message-ID: <20200722110317.4744-16-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200722110317.4744-1-kishon@ti.com>
-References: <20200722110317.4744-1-kishon@ti.com>
+        Wed, 22 Jul 2020 07:04:23 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0664DC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 04:04:23 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a15so1460740wrh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 04:04:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=OCy4M+IerAUwrGq+R10RYFBywYGUc8/udZhkNLn8gcA=;
+        b=blnhOXIRlgBIHslJnR+DyX3qRw0egROpKwj7Y0Zkk0MMdUtpreXtgx75Kq1wPrfpcw
+         YT0xqBP0X9bvfkLrjDAjTmnTxzFZrZQIvAqUg6rrrRMpE1+2Am8fg/BMXJTPLpUCrRHG
+         WG4KDPcO+AnnCn+WJph8oQSDcEQOtFVBnYkClbRvOg2bqXfvK2yeOn1d/J2s59wzpd0b
+         VTw1CPE1C6poESLQsUVR+9mx8lbuqnKWymfrOoz608Ea4C1gFhgHQ1OA0EBcrOP2hpnE
+         2Z07LwLiO83BYhupbyWqS0g8hcUHHqXlNFYa0FOnBXmju5sMmeNIWSPap5YxzMnH1UeX
+         n0Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=OCy4M+IerAUwrGq+R10RYFBywYGUc8/udZhkNLn8gcA=;
+        b=Mc9dCG7d+wS0lzUm7bVrMVmSvoordyyrxIn+slHaG6921MIcSvpgYcEbaoHpKK3DEO
+         wdGWducVgsFi3a3QsrWPBrs16bkRtQdHyIhA8r7MVKGCuCcrv6YGKyy5iHHF4ymcBLrl
+         MdtGzwz7zjTOKkDPnMHdBj5DwIsvctTk6brwszWBkKyCRoSSnyfm+umPpRv25jCyvdFv
+         0zkz5OGqhaP30I5n4P+VaeIqPmN/6gdZCx7n2mKxudoKkibT/6O2ioVeE0Nnjtwc5DOR
+         3bIhxJE/3X7jwnf+BdjIaFFJCU6cDfcmpBomBf11c8Jz/2CxkfkWWp68KuAXpKvpsTPO
+         mV/g==
+X-Gm-Message-State: AOAM530FgtPxffUNg0y9gVUWOKkjPYjOuxuSnaocyCrG7Np8s7xGolEe
+        HpgUV2Lh/z7lPx2SQAMDrcTFTS1ybIQ=
+X-Google-Smtp-Source: ABdhPJyen9XQxbMOmxYyIRo9xkcOiFhcP/BsUcVILGQr7xM0UXW3SkKzFeItTtT4WGFXCvo6Y3Wceg==
+X-Received: by 2002:adf:ea06:: with SMTP id q6mr29366083wrm.69.1595415861662;
+        Wed, 22 Jul 2020 04:04:21 -0700 (PDT)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id t2sm6735027wma.43.2020.07.22.04.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 04:04:21 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 08:04:11 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-usp@googlegroups.com, twoerner@gmail.com
+Subject: [PATCH] drm/vkms: add missing drm_crtc_vblank_put to the get/put
+ pair on flush
+Message-ID: <20200722110411.ebkv6knvc6mzw5uf@smtp.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Kishon Vijay Abraham I as MAINTAINER for TI J721E SoC PCIe.
+This patch adds a missing drm_crtc_vblank_put op to the pair
+drm_crtc_vblank_get/put (inc/decrement counter to guarantee vblanks).
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+It clears the execution of the following kms_cursor_crc subtests:
+1. pipe-A-cursor-[size,alpha-opaque, NxN-(on-screen, off-screen, sliding,
+   random, fast-moving])] - successful when running individually.
+2. pipe-A-cursor-dpms passes again
+3. pipe-A-cursor-suspend also passes
+
+The issue was initially tracked in the sequential execution of IGT
+kms_cursor_crc subtest: when running the test sequence or one of its
+subtests twice, the odd execs complete and the pairs get stuck in an
+endless wait. In the IGT code, calling a wait_for_vblank before the start
+of CRC capture prevented the busy-wait. But the problem persisted in the
+pipe-A-cursor-dpms and -suspend subtests.
+
+Checking the history, the pipe-A-cursor-dpms subtest was successful when,
+in vkms_atomic_commit_tail, instead of using the flip_done op, it used
+wait_for_vblanks. Another way to prevent blocking was wait_one_vblank when
+enabling crtc. However, in both cases, pipe-A-cursor-suspend persisted
+blocking in the 2nd start of CRC capture, which may indicate that
+something got stuck in the step of CRC setup. Indeed, wait_one_vblank in
+the crc setup was able to sync things and free all kms_cursor_crc
+subtests.
+
+Tracing and comparing a clean run with a blocked one:
+- in a clean one, vkms_crtc_atomic_flush enables vblanks;
+- when blocked, only in next op, vkms_crtc_atomic_enable, the vblanks
+started. Moreover, a series of vkms_vblank_simulate flow out until
+disabling vblanks.
+Also watching the steps of vkms_crtc_atomic_flush, when the very first
+drm_crtc_vblank_get returned an error, the subtest crashed. On the other
+hand, when vblank_get succeeded, the subtest completed. Finally, checking
+the flush steps: it increases counter to hold a vblank reference (get),
+but there isn't a op to decreased it and release vblanks (put).
+
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
+Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
 ---
- MAINTAINERS | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/vkms/vkms_crtc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68f21d46614c..6df9b54d3003 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13149,12 +13149,14 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/pci/designware-pcie.txt
- F:	drivers/pci/controller/dwc/*designware*
+diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+index ac85e17428f8..a99d6b4a92dd 100644
+--- a/drivers/gpu/drm/vkms/vkms_crtc.c
++++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+@@ -246,6 +246,7 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
  
--PCI DRIVER FOR TI DRA7XX
-+PCI DRIVER FOR TI DRA7XX/J721E
- M:	Kishon Vijay Abraham I <kishon@ti.com>
- L:	linux-omap@vger.kernel.org
- L:	linux-pci@vger.kernel.org
-+L:	linux-arm-kernel@lists.infradead.org
- S:	Supported
- F:	Documentation/devicetree/bindings/pci/ti-pci.txt
-+F:	drivers/pci/controller/cadence/pci-j721e.c
- F:	drivers/pci/controller/dwc/pci-dra7xx.c
+ 		spin_unlock(&crtc->dev->event_lock);
  
- PCI DRIVER FOR TI KEYSTONE
++		drm_crtc_vblank_put(crtc);
+ 		crtc->state->event = NULL;
+ 	}
+ 
 -- 
-2.17.1
+2.27.0
 
