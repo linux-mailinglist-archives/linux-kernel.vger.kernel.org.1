@@ -2,228 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E38229058
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 08:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F4122905B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 08:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgGVGIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 02:08:44 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8182 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726147AbgGVGIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 02:08:44 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06M5WjHE026378;
-        Wed, 22 Jul 2020 02:07:13 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32bvqwa3hx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 02:07:13 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06M64nEL013635;
-        Wed, 22 Jul 2020 06:07:11 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 32brq84p1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 06:07:11 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06M679iP51445850
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 06:07:09 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEBC7A4054;
-        Wed, 22 Jul 2020 06:07:08 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9F133A405C;
-        Wed, 22 Jul 2020 06:07:07 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.205.118])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 22 Jul 2020 06:07:07 +0000 (GMT)
-Date:   Wed, 22 Jul 2020 09:07:05 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Wei Li <liwei213@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        saberlily.xia@hisilicon.com, puck.chen@hisilicon.com,
-        butao@hisilicon.com, fengbaopeng2@hisilicon.com,
-        nsaenzjulienne@suse.de, steve.capper@arm.com,
-        song.bao.hua@hisilicon.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sujunfei2@hisilicon.com
-Subject: Re: [PATCH] arm64: mm: free unused memmap for sparse memory model
- that define VMEMMAP
-Message-ID: <20200722060705.GK802087@linux.ibm.com>
-References: <20200721073203.107862-1-liwei213@huawei.com>
+        id S1728436AbgGVGJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 02:09:57 -0400
+Received: from mout.web.de ([212.227.17.11]:43233 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726147AbgGVGJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 02:09:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1595398179;
+        bh=se+nqzDtn8pUiCYMScXYBHNGJoeSJRKWNOzOXalTpQY=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=dTpyKn3AX9+9fehtrRn3/qQCTNkk52gW6YxSVENxq29c7Kl5yarXuYkRhK9CHkvmK
+         etcHADHdyvcrGaO4I+EplzaqK0VjoJQot7so5Qh3yTCTnsHn9fMnFkxeX1mj43feex
+         tha1r6RY9+h8zpq54uS135z1EyDAg3872nCI9wXE=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.82.161]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LoHTx-1kUgkU20Zl-00gHTg; Wed, 22
+ Jul 2020 08:09:39 +0200
+Subject: Re: [v3 2/3] coccinelle: api: extend memdup_user rule with
+ vmemdup_user()
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Denis Efremov <efremov@linux.com>,
+        Coccinelle <cocci@systeme.lip6.fr>
+Cc:     Gilles Muller <Gilles.Muller@lip6.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <e3d2ffb9-2a47-3d77-0501-9d48845435bd@web.de>
+ <alpine.DEB.2.22.394.2007211158310.2487@hadrien>
+ <0b326e2b-723c-3482-c0ef-5d6592a9c6cb@web.de>
+ <alpine.DEB.2.22.394.2007220801590.2918@hadrien>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <07a06754-94dd-60b1-1ad1-9e602c86b1f8@web.de>
+Date:   Wed, 22 Jul 2020 08:09:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721073203.107862-1-liwei213@huawei.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_02:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
- suspectscore=5 adultscore=0 clxscore=1011 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007220040
+In-Reply-To: <alpine.DEB.2.22.394.2007220801590.2918@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+X-Provags-ID: V03:K1:AkJyGSSy8f7k0ACFmZZ+laOPQMpPH7SCUzpPj4NN7LYdpGthsrn
+ xd2bl9v/yWBaPb2tsyDxsIYOMh+7RdAoHAYdhfy5so2PCWjeicbsAs10oFn3yJFhIeuDk+J
+ glW5JVwvMH9cAp0lPAgssrYumCX+poDrHrR27RunBdw1bR4V2hfxnXXEQRscLd9G2sfxvFl
+ rVKzbCmdZZTDgAUZmKz2g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:X97opvYO4rU=:LWyXmsRmrj+wXY217gg31n
+ +8Ct07xIHOHIdcuyh2mNEQX3sf88jvJGZicCfqqn65RzyLEWS3+/toaYtPmdWnnTsgJ2TRJnz
+ 2eTWgcRH62TtGnA3BeLOaym9mA5WhDwQDtZKJlpHsCOvjlQFgpG94Di2RDeQfjwNwrX2LSPgL
+ Q8lt2pO4tenyZX+3DNTKE8GUuw2csp66e43jDFDYkjpuGw1rfF6ax3PnNq39eivqBO3rpksPH
+ A9OWpw+zNbQB6UnLwJK5oyst6Dp8ci+sk/2DGaWVNRVmhWN6jcQOI8yOl1oe3MhpiOapQbmJ0
+ ZW6mS/RQaWqPTk01Rg20ntS8LrGulbiYjGPqxBN0Zl/vqqmVP1cyNu1qGEv6tP0zT0T2Uy/JM
+ 1YxomnPSvAjQE39xqFJPoAoTMh4bOIxiMX3w59rm4XkYAN54lYaEO0j9pthIXhbWs/YLAkYu1
+ MnwIvJaUPvNSePjW12P5b5BIJp8lsMS3COjZX7Mv5lLmx/7k5Q4XDyMhpUBEuZJ1j7GlpPuUz
+ Kw29WMGszLRhp2j+RhP9Tb8uNG1DKa1rLaUrSTaCWghCJBwJ5MVoC5z3kVAZr2vCprBhUMENe
+ PeIqAKXkUjn2GpLaP9XlWUA4nm9RTLhb82mA2qI8ysUpd+BKEiqFtpGhPrt8x64YO7DOCL9o/
+ Nab01Fjqs5TXgCAYcEJZJZ+COGEqwiQD/Z0tXHSzRMjbLTYGyOFUguAZNacud1N5H1HEDNTJY
+ F7pzzAsQl4XachB/E8pB1pbvgLlfrdaJkZWYKJuqbwPuXcS2/LYnXRU8fFEiJrGvMzm1oFyvE
+ J1rfxUZkrqWmX0aLwj/mQQy+6rsvUTpUbGyyum0kZ8C2UdokpfriqwD2bQY+VSGvf+XB7RHJE
+ c+wqi4ps8NNbzaOJXv4rStMfIANMK/qw2mjty20peRbXQF+o+j0+v15ApaqTg38qvieShmlRB
+ vbodszYMXoBNqjZhkmKDXwKbRYt4zopmkbh7GmTUCZKnztvJs6QL9sbHXE/kvmXHpYtfoqhAi
+ 1aCPlKgEtt9jtibVyRRqntdC+udpifIVAdmzjyUNLvWck3lSVrx3RLm7ia5kRKfEW/SrtZvVs
+ ezJhUo1PgPxKn/FTDTzJu42qvngiLe/0Aeus16tZxg9FUL67ervkYAGZdHgoBuGjsqyCDiDeC
+ NRf4OOOtxEdAOfaw7Uu119cuojT0pCR+E+8HwhIue8/Oa5ztR9SfQ/vgbXaJDRP5p94+xMUyk
+ zZ5rwMcH/ERC9xw+HiYBXeVgzg9e+Zwq4mPSP0g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> Markus, you are welcome to try this since you are concerned about it.
 
-On Tue, Jul 21, 2020 at 03:32:03PM +0800, Wei Li wrote:
-> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
-> do not free the reserved memory for the page map, this patch do it.
+I dare to point software design variations for some reasons.
 
-Are there numbers showing how much memory is actually freed?
 
-The freeing of empty memmap would become rather complex with these
-changes, do the memory savings justify it?
+> But it doesn't matter.
 
-> Signed-off-by: Wei Li <liwei213@huawei.com>
-> Signed-off-by: Chen Feng <puck.chen@hisilicon.com>
-> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
-> ---
->  arch/arm64/mm/init.c | 81 +++++++++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 71 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 1e93cfc7c47a..d1b56b47d5ba 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -441,7 +441,48 @@ void __init bootmem_init(void)
->  	memblock_dump_all();
->  }
-> 
-> -#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> +#ifdef CONFIG_SPARSEMEM_VMEMMAP
-> +#define VMEMMAP_PAGE_INUSE 0xFD
-> +static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
-> +{
-> +	unsigned long addr, end;
-> +	unsigned long next;
-> +	pmd_t *pmd;
-> +	void *page_addr;
-> +	phys_addr_t phys_addr;
-> +
-> +	addr = (unsigned long)pfn_to_page(start_pfn);
-> +	end = (unsigned long)pfn_to_page(end_pfn);
-> +
-> +	pmd = pmd_offset(pud_offset(pgd_offset_k(addr), addr), addr);
-> +	for (; addr < end; addr = next, pmd++) {
-> +		next = pmd_addr_end(addr, end);
-> +
-> +		if (!pmd_present(*pmd))
-> +			continue;
-> +
-> +		if (IS_ALIGNED(addr, PMD_SIZE) &&
-> +			IS_ALIGNED(next, PMD_SIZE)) {
-> +			phys_addr = __pfn_to_phys(pmd_pfn(*pmd));
-> +			free_bootmem(phys_addr, PMD_SIZE);
-> +			pmd_clear(pmd);
-> +		} else {
-> +			/* If here, we are freeing vmemmap pages. */
-> +			memset((void *)addr, VMEMMAP_PAGE_INUSE, next - addr);
-> +			page_addr = page_address(pmd_page(*pmd));
-> +
-> +			if (!memchr_inv(page_addr, VMEMMAP_PAGE_INUSE,
-> +				PMD_SIZE)) {
-> +				phys_addr = __pfn_to_phys(pmd_pfn(*pmd));
-> +				free_bootmem(phys_addr, PMD_SIZE);
-> +				pmd_clear(pmd);
-> +			}
-> +		}
-> +	}
-> +
-> +	flush_tlb_all();
-> +}
-> +#else
->  static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
->  {
->  	struct page *start_pg, *end_pg;
-> @@ -468,31 +509,53 @@ static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
->  		memblock_free(pg, pgend - pg);
->  }
-> 
-> +#endif
-> +
->  /*
->   * The mem_map array can get very big. Free the unused area of the memory map.
->   */
->  static void __init free_unused_memmap(void)
->  {
-> -	unsigned long start, prev_end = 0;
-> +	unsigned long start, cur_start, prev_end = 0;
->  	struct memblock_region *reg;
-> 
->  	for_each_memblock(memory, reg) {
-> -		start = __phys_to_pfn(reg->base);
-> +		cur_start = __phys_to_pfn(reg->base);
-> 
->  #ifdef CONFIG_SPARSEMEM
->  		/*
->  		 * Take care not to free memmap entries that don't exist due
->  		 * to SPARSEMEM sections which aren't present.
->  		 */
-> -		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
-> -#endif
-> +		start = min(cur_start, ALIGN(prev_end, PAGES_PER_SECTION));
-> +
->  		/*
-> -		 * If we had a previous bank, and there is a space between the
-> -		 * current bank and the previous, free it.
-> +		 * Free memory in the case of:
-> +		 * 1. if cur_start - prev_end <= PAGES_PER_SECTION,
-> +		 * free pre_end ~ cur_start.
-> +		 * 2. if cur_start - prev_end > PAGES_PER_SECTION,
-> +		 * free pre_end ~ ALIGN(prev_end, PAGES_PER_SECTION).
->  		 */
->  		if (prev_end && prev_end < start)
->  			free_memmap(prev_end, start);
-> 
-> +		/*
-> +		 * Free memory in the case of:
-> +		 * if cur_start - prev_end > PAGES_PER_SECTION,
-> +		 * free ALIGN_DOWN(cur_start, PAGES_PER_SECTION) ~ cur_start.
-> +		 */
-> +		if (cur_start > start &&
-> +		    !IS_ALIGNED(cur_start, PAGES_PER_SECTION))
-> +			free_memmap(ALIGN_DOWN(cur_start, PAGES_PER_SECTION),
-> +				    cur_start);
-> +#else
-> +		/*
-> +		 * If we had a previous bank, and there is a space between the
-> +		 * current bank and the previous, free it.
-> +		 */
-> +		if (prev_end && prev_end < cur_start)
-> +			free_memmap(prev_end, cur_start);
-> +#endif
->  		/*
->  		 * Align up here since the VM subsystem insists that the
->  		 * memmap entries are valid from the bank end aligned to
-> @@ -507,7 +570,6 @@ static void __init free_unused_memmap(void)
->  		free_memmap(prev_end, ALIGN(prev_end, PAGES_PER_SECTION));
->  #endif
->  }
-> -#endif	/* !CONFIG_SPARSEMEM_VMEMMAP */
-> 
->  /*
->   * mem_init() marks the free areas in the mem_map and tells us how much memory
-> @@ -524,9 +586,8 @@ void __init mem_init(void)
-> 
->  	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
-> 
-> -#ifndef CONFIG_SPARSEMEM_VMEMMAP
->  	free_unused_memmap();
-> -#endif
-> +
->  	/* this will put all unused low memory onto the freelists */
->  	memblock_free_all();
-> 
-> --
-> 2.15.0
-> 
+Under which circumstances would you begin to care more for involved differences
+in corresponding run time characteristics?
 
--- 
-Sincerely yours,
-Mike.
+Regards,
+Markus
