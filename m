@@ -2,343 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB4822A021
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3985922A049
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732575AbgGVT0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 15:26:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:57714 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgGVT0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 15:26:47 -0400
-IronPort-SDR: XxQ2WnUIbMfHX0eNd//YoYRjWlgUAqdSdB2WakIbMVZ9SFsrWZfyW0XmQy8N5WQyMSlq4R9Va+
- bebyBALzKgtw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="137909789"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="137909789"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 12:26:47 -0700
-IronPort-SDR: nOsE7Ndks8lSoQBqh5yBvMiPKKBNLvRMHW0l9mkBz1g+CUd17noPE20kLlMNgjsKOnwCymm0AP
- sBxYwMpXKu0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="318758537"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 22 Jul 2020 12:26:47 -0700
-Received: from [10.251.9.199] (kliang2-mobl.ccr.corp.intel.com [10.251.9.199])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 6C5FA5802E4;
-        Wed, 22 Jul 2020 12:26:46 -0700 (PDT)
-Subject: Re: [PATCH V6 11/14] perf/x86/intel: Disable sample-read the slots
- and metrics events
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com
-References: <20200717140554.22863-1-kan.liang@linux.intel.com>
- <20200717140554.22863-12-kan.liang@linux.intel.com>
- <20200721131011.GY10769@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <1bfa475e-2f7c-31e0-5114-34ac9808e4d6@linux.intel.com>
-Date:   Wed, 22 Jul 2020 15:26:44 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732537AbgGVTsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 15:48:40 -0400
+Received: from gateway24.websitewelcome.com ([192.185.51.202]:35903 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726157AbgGVTsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 15:48:39 -0400
+X-Greylist: delayed 1268 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Jul 2020 15:48:38 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 04C24418AF
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 14:25:46 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id yKLBjQFbCSxZVyKLBj2qw5; Wed, 22 Jul 2020 14:23:45 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jJEeIskCU94/uy46H+vlxkYWS0tQWGpTRtC/J7YvjtU=; b=uP27SHBaPuzgMSCx/+bPwwtbXw
+        dtKmf6+REHWhATru6rkj220R5+2gwiX7INCBvTl8cRN99t9+g8gzZwMqidh0ZtKtEMKmQbfMZrkAB
+        4jdDIgQUHqN3fViUk99eHq/UJJKenBYsppy1iYCs/GdlP+bBuwVh94bs4M4JkYNOCmWwWQlIjYfYL
+        6IZJAZxu6lvfSdCA6bKJv049xzjp/CU6VauL1LPk+d5GLfm7OZMgr15O1SLYbvsT9FiREzyVp+FQp
+        kA/bBzLmuChOfZDSg8VsD1uyhbGkrcXxLTAy01CGumGH6D2hIVVdO0hvz3+PAScu9lCpsYBzk8iAB
+        tQu580jQ==;
+Received: from [201.162.161.216] (port=41852 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jyKLA-0014CO-OK; Wed, 22 Jul 2020 14:23:44 -0500
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <20200714214516.GA1040@embeddedor>
+ <5198b29f-2e62-4910-4a4d-52c7991915c5@embeddedor.com>
+ <3cac21c8798b48bdb412a5504126489f@intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Subject: Re: [PATCH v2] mei: Avoid the use of one-element arrays
+Message-ID: <b79bbb51-50e4-6437-b485-eaecdb3fa18e@embeddedor.com>
+Date:   Wed, 22 Jul 2020 14:29:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200721131011.GY10769@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <3cac21c8798b48bdb412a5504126489f@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.161.216
+X-Source-L: No
+X-Exim-ID: 1jyKLA-0014CO-OK
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [201.162.161.216]:41852
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tomas,
 
+Please, see my comments below...
 
-On 7/21/2020 9:10 AM, Peter Zijlstra wrote:
-> On Fri, Jul 17, 2020 at 07:05:51AM -0700, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> Users fail to sample-read the slots and metrics events, e.g.,
->> perf record -e '{slots, topdown-retiring}:S'.
->>
->> When reading the metrics event, the fixed counter 3 (slots) has to be
->> reset, which impacts the sampling of the slots event.
->>
->> Add a specific validate_group() support to reject the case and error out
->> for Ice Lake.
->>
->> An alternative fix may unconditionally disable slots sampling, but it's
->> not a decent fix. Users may want to only sample the slot events
->> without the topdown metrics events.
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+On 7/22/20 14:04, Winkler, Tomas wrote:
 > 
-> I'm confused by this; it doesn't make sense.
+>>
+>> Hi all,
+>>
+>> Friendly ping: who can take this? :)
+>>
+>> Thanks
+>> --
+>> Gustavo
+>>
+>> On 7/14/20 16:45, Gustavo A. R. Silva wrote:
+>>> One-element arrays are being deprecated[1]. Replace the one-element
+>>> arrays with a simple value type u8 reserved, once this is just a
+>>> placeholder for alignment.
+>>>
+>>> Also, while there, use the preferred form for passing a size of a struct.
+>>> The alternative form where struct name is spelled out hurts
+>>> readability and introduces an opportunity for a bug when the variable
+>>> type is changed but the corresponding sizeof that is passed as argument is
+>> not.
+>>>
+>>> [1] https://github.com/KSPP/linux/issues/79
+>>>
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>> Changes in v2:
+>>>  - Use a more concise changelog text.
+>>>
+>>>  drivers/misc/mei/hbm.c | 4 ++--
+>>>  drivers/misc/mei/hw.h  | 6 +++---
+>>>  2 files changed, 5 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c index
+>>> a44094cdbc36..f020d5594154 100644
+>>> --- a/drivers/misc/mei/hbm.c
+>>> +++ b/drivers/misc/mei/hbm.c
+>>> @@ -408,14 +408,14 @@ static int mei_hbm_add_cl_resp(struct mei_device
+>>> *dev, u8 addr, u8 status)  {
+>>>  	struct mei_msg_hdr mei_hdr;
+>>>  	struct hbm_add_client_response resp;
+>>> -	const size_t len = sizeof(struct hbm_add_client_response);
+>>> +	const size_t len = sizeof(resp);
+>>>  	int ret;
+>>>
+>>>  	dev_dbg(dev->dev, "adding client response\n");
+>>>
+>>>  	mei_hbm_hdr(&mei_hdr, len);
+>>>
+>>> -	memset(&resp, 0, sizeof(struct hbm_add_client_response));
+>>> +	memset(&resp, 0, len);
+>>>  	resp.hbm_cmd = MEI_HBM_ADD_CLIENT_RES_CMD;
+>>>  	resp.me_addr = addr;
+>>>  	resp.status  = status;
 > 
-> Should not patch 7 have something like the below instead?
+> This should be probably in a different patch it's not related to the second part.
 > 
-> Also, I think there is a bug when we create a group like this and then
-> kill the leader, in that case the core code will 'promote' the sibling
-> metric events to their own individual events, see perf_group_detach().
+>>> diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h index
+>>> b1a8d5ec88b3..8c0297f0e7f3 100644
+>>> --- a/drivers/misc/mei/hw.h
+>>> +++ b/drivers/misc/mei/hw.h
+> I have second thoughts of this part as all reserved fields in this file are of form u8 reserved[X], 
+> so we will lose that uniformity with this change, you have to look at the file as whole
+> not just at the patch.  So I prefer we drop that part of the patch. 
 > 
-> We need additional code to move those events into unrecoverable ERROR
-> state. A new group_caps flag could indicate this promotion isn't
-> allowed.
 
-Yes, I can produce the bug with a custom program. The below patch can 
-fix it. I will add it into the upcoming V7 patch set.
+This is actually the main point of this patch: the removal of one-element arrays.
+And yeah, every place in the kernel that uses the form that you mention will see
+it's uniformity slightly modified, and that's for a good cause: the removal of
+one-element arrays, so we can enable bounds checking.
 
- From c90d4c19b24392e6bd9ff3c6d23d0d300bfa774f Mon Sep 17 00:00:00 2001
-From: Kan Liang <kan.liang@linux.intel.com>
-Date: Wed, 22 Jul 2020 12:06:32 -0700
-Subject: [PATCH] perf/core: Add a new PERF_EV_CAP_COEXIST event capability
+Thanks
+--
+Gustavo
 
-Current perf assumes that group events are independent. Close an event
-doesn't impact the value of the other events in the same group. If the
-closed event is a member, after the event closure, other events are
-running like a group. If the closed event is a leader, after the
-closure, other events are running as singleton events.
-
-However, the assumption is not correct anymore, e.g., the TopDown slots
-and metrics events. The slots and metrics events must coexist in the
-same group. If the slots event is closed, the value for the metrics
-events is invalid.
-
-Add a new PERF_EV_CAP_COEXIST event capability to indicate the
-relationship among group events.
-
-If any event with the flag is detached from the group, split the group
-into singleton events, and move the events, which also have the flag,
-to the unrecoverable ERROR state.
-
-The leader of a PERF_EV_CAP_COEXIST group has to be updated at last.
-Move perf_event__header_size(leader); to the end of perf_group_detach().
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
-  arch/x86/events/intel/core.c |  2 ++
-  include/linux/perf_event.h   |  5 ++++
-  kernel/events/core.c         | 52 +++++++++++++++++++++++++++++++++---
-  3 files changed, 55 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 35694f6337c9..b0ab638e48ee 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3659,6 +3659,8 @@ static int intel_pmu_hw_config(struct perf_event 
-*event)
-  				return -EINVAL;
-
-  			event->hw.flags |= PERF_X86_EVENT_TOPDOWN;
-+
-+			event->event_caps |= PERF_EV_CAP_COEXIST;
-  		}
-  	}
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index a26f3c9589b7..aa60a1381aa1 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -585,9 +585,14 @@ typedef void (*perf_overflow_handler_t)(struct 
-perf_event *,
-   * PERF_EV_CAP_SOFTWARE: Is a software event.
-   * PERF_EV_CAP_READ_ACTIVE_PKG: A CPU event (or cgroup event) that can 
-be read
-   * from any CPU in the package where it is active.
-+ * PERF_EV_CAP_COEXIST: An event with this flag must coexist with other 
-sibling
-+ * events, which have the same flag. If any event with the flag is detached
-+ * from the group, split the group into singleton events, and move the 
-events
-+ * with the flag to the unrecoverable ERROR state.
-   */
-  #define PERF_EV_CAP_SOFTWARE		BIT(0)
-  #define PERF_EV_CAP_READ_ACTIVE_PKG	BIT(1)
-+#define PERF_EV_CAP_COEXIST		BIT(2)
-
-  #define SWEVENT_HLIST_BITS		8
-  #define SWEVENT_HLIST_SIZE		(1 << SWEVENT_HLIST_BITS)
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 7c436d705fbd..e35d549a356d 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -2133,10 +2133,28 @@ static inline struct list_head 
-*get_event_list(struct perf_event *event)
-  	return event->attr.pinned ? &ctx->pinned_active : &ctx->flexible_active;
-  }
-
-+/*
-+ * If the event has PERF_EV_CAP_COEXIST capability,
-+ * schedule it out and move it into the ERROR state.
-+ */
-+static inline void perf_remove_coexist_events(struct perf_event *event)
-+{
-+	struct perf_event_context *ctx = event->ctx;
-+	struct perf_cpu_context *cpuctx = __get_cpu_context(ctx);
-+
-+	if (!(event->event_caps & PERF_EV_CAP_COEXIST))
-+		return;
-+
-+	event_sched_out(event, cpuctx, ctx);
-+	perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
-+}
-+
-  static void perf_group_detach(struct perf_event *event)
-  {
-+	struct perf_event *leader = event->group_leader;
-  	struct perf_event *sibling, *tmp;
-  	struct perf_event_context *ctx = event->ctx;
-+	bool cap_coexist = !!(event->event_caps & PERF_EV_CAP_COEXIST);
-
-  	lockdep_assert_held(&ctx->lock);
-
-@@ -2150,15 +2168,25 @@ static void perf_group_detach(struct perf_event 
-*event)
-
-  	perf_put_aux_event(event);
-
-+	/*
-+	 * If a PERF_EV_CAP_COEXIST event is detached,
-+	 * split the group into singleton events.
-+	 */
-+	if (cap_coexist) {
-+		event = leader;
-+		goto split_group;
-+	}
-+
-  	/*
-  	 * If this is a sibling, remove it from its group.
-  	 */
--	if (event->group_leader != event) {
-+	if (leader != event) {
-  		list_del_init(&event->sibling_list);
-  		event->group_leader->nr_siblings--;
-  		goto out;
-  	}
-
-+split_group:
-  	/*
-  	 * If this was a group event with sibling events then
-  	 * upgrade the siblings to singleton events by adding them
-@@ -2172,6 +2200,10 @@ static void perf_group_detach(struct perf_event 
-*event)
-  		/* Inherit group flags from the previous leader */
-  		sibling->group_caps = event->group_caps;
-
-+		/* Remove sibling PERF_EV_CAP_COEXIST event */
-+		if (cap_coexist)
-+			perf_remove_coexist_events(sibling);
-+
-  		if (!RB_EMPTY_NODE(&event->group_node)) {
-  			add_event_to_groups(sibling, event->ctx);
-
-@@ -2181,12 +2213,24 @@ static void perf_group_detach(struct perf_event 
-*event)
-
-  		WARN_ON_ONCE(sibling->ctx != event->ctx);
-  	}
--
-  out:
--	perf_event__header_size(event->group_leader);
-
--	for_each_sibling_event(tmp, event->group_leader)
-+	for_each_sibling_event(tmp, leader)
-  		perf_event__header_size(tmp);
-+
-+	/*
-+	 * Change the leader of a PERF_EV_CAP_COEXIST group into
-+	 * a singleton event. If the leader is a PERF_EV_CAP_COEXIST
-+	 * event as well, remove it.
-+	 */
-+
-+	if (cap_coexist) {
-+		list_del_init(&leader->sibling_list);
-+		leader->group_leader->nr_siblings = 0;
-+		perf_remove_coexist_events(leader);
-+	}
-+
-+	perf_event__header_size(leader);
-  }
-
-  static bool is_orphaned_event(struct perf_event *event)
--- 
-2.17.1
-
-
-> 
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3441,8 +3441,22 @@ static int intel_pmu_hw_config(struct pe
->   	 * A flag PERF_X86_EVENT_TOPDOWN is applied for the case.
->   	 */
->   	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
-> -		if (is_metric_event(event) && is_sampling_event(event))
-> -			return -EINVAL;
-> +
-> +		if (is_metric_event(event)) {
-> +			struct perf_event *leader = event->group_leader;
-> +
-> +			if (is_sampling_event(event))
-> +				return -EINVAL;
-> +
-> +			if (leader == event)
-> +				return -EINVAL;
-> +
-> +			if (!is_slots_event(leader))
-> +				return -EINVAL;
-> +
-> +			if (is_sampling_event(leader))
-> +				return -EINVAL;
-> +		}
-
-The leader doesn't need to be a slots event, e.g., {cycles, slots, 
-topdown_fe_bound} is also a valid group.
-But the slots event must be before all metric events.
-
-So I will also use the below codes to replace the above one in V7.
-
-
-+		if (is_metric_event(event)) {
-+			struct perf_event *leader = event->group_leader;
-+			struct perf_event *sibling;
-+
-+			/* The metric events don't support sampling. */
-+			if (is_sampling_event(event))
-+				return -EINVAL;
-+
-+			/* The metric events cannot be a group leader. */
-+			if (leader == event)
-+				return -EINVAL;
-+
-+			/*
-+			 * The slots event cannot be the leader of a topdown
-+			 * sample-read group, e.g., {slots, topdown-retiring}:S
-+			 */
-+			if (is_slots_event(leader) && is_sampling_event(leader))
-+				return -EINVAL;
-+
-+			/*
-+			 * The slots event must be before the metric events,
-+			 * because we only update the values of a topdown
-+			 * group once with the slots event.
-+			 */
-+			if (!is_slots_event(leader)) {
-+				for_each_sibling_event(sibling, leader) {
-+					if (is_slots_event(sibling))
-+						break;
-+					if (is_metric_event(sibling))
-+						return -EINVAL;
-+				}
-+			}
-+		}
-
-
-
-Thanks,
-Kan
-
+>>> @@ -346,13 +346,13 @@ struct hbm_add_client_request {
+>>>   * @hbm_cmd: bus message command header
+>>>   * @me_addr: address of the client in ME
+>>>   * @status: if HBMS_SUCCESS then the client can now accept connections.
+>>> - * @reserved: reserved
+>>> + * @reserved: reserved for alignment.
+>>>   */
+>>>  struct hbm_add_client_response {
+>>>  	u8 hbm_cmd;
+>>>  	u8 me_addr;
+>>>  	u8 status;
+>>> -	u8 reserved[1];
+>>> +	u8 reserved;
+>>>  } __packed;
+>>>
+>>>  /**
+>>> @@ -461,7 +461,7 @@ struct hbm_notification {
+>>>  	u8 hbm_cmd;
+>>>  	u8 me_addr;
+>>>  	u8 host_addr;
+>>> -	u8 reserved[1];
+>>> +	u8 reserved;
+>>>  } __packed;
+>>>
+>>>  /**
+>>>
