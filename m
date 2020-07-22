@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B649622A070
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393BE22A06E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbgGVUC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 16:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgGVUC6 (ORCPT
+        id S1732488AbgGVUCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 16:02:33 -0400
+Received: from smtprelay0037.hostedemail.com ([216.40.44.37]:40610 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726462AbgGVUCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:02:58 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1559C0619DC;
-        Wed, 22 Jul 2020 13:02:58 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id n5so1867687pgf.7;
-        Wed, 22 Jul 2020 13:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8TVQ7HTR8nifrCWHMhxbEqy5HUNl692zo6KwqDMUDFg=;
-        b=aaUhQwdpSSqQAOd8p+RQ6hjlLiXsro6kTfFRenpOHNUr54L83Cn2lKYvx2pRrJDvz2
-         PxXF7upKVpZHr1oO1sPSw3fO43vqI2XTrjWBZq1BRtizqK3Xbd3MWZIcq4FZLbWz9faJ
-         Guxda7heJJ5HJVvH79ZBIloLMatu5ulxpAKLjzV2ifVoaw9xWA3ays3lr4thSkfOgkmP
-         xCoInG6+I71AKonlaWkmoOShsDIb+564rm3ADis4h/8hav6RXGU/3qusOiNhBIL7QDtz
-         b7NIlfnOfW0OwtX7MeZuHGjnGvS3x91oe9radk3OVPuwcmV2Jjm5k9737YyqF070ifWw
-         vLCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8TVQ7HTR8nifrCWHMhxbEqy5HUNl692zo6KwqDMUDFg=;
-        b=Hzd+Dlj016Tj9BtMuzKY+pH1Zu3IKoNDuY55M641hdl18YVlfHP5/dfSOXp0d6jadt
-         pyyIKw/gCXzjACSfba/LqLj+dLonf7cOa5LjVLgEzYI7xZIUbjgZwgBVjtFxgOM6aMSX
-         00n0ZSSeIt4ZdwQ8GV17XuBES8hywHJUZumf1PdCJZQ00HBWAE8CNG5biSDpUR3dg7Ca
-         ybJ28mgM7aj1/Rs7eFzbUTRuLaObQt1tYcrg0v35+4+8/jeOx2O652+oIkynnPZ3iwvq
-         /bQC5U0Ek5Ovsf3DEjzeHh6gnsm0Ctl3kEfWg0wA1hqjwD6euBzi4tjOFhT2lT5PTZcy
-         ytXw==
-X-Gm-Message-State: AOAM532ajLw2AvLDUPruCaYy8rjV7Pg8bdGu+F9GqzPuM5xUayzW8coK
-        S//UeiSynl2FtW0toG26SHg=
-X-Google-Smtp-Source: ABdhPJx+nD2Z4T0ULOHNz5iOvh4C/4EGxLKGNQcm83/T4FTLUSIEIG20sO3SvYGvakj67hBBPM0yVA==
-X-Received: by 2002:a63:cb05:: with SMTP id p5mr1359392pgg.120.1595448178313;
-        Wed, 22 Jul 2020 13:02:58 -0700 (PDT)
-Received: from gmail.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id y7sm421071pgk.93.2020.07.22.13.02.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 13:02:57 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 01:31:34 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] spi: spi-topcliff-pch: use generic power management
-Message-ID: <20200722200134.GA4310@gmail.com>
-References: <20200720155714.714114-1-vaibhavgupta40@gmail.com>
- <159542550175.19884.5724047291778558359.b4-ty@kernel.org>
+        Wed, 22 Jul 2020 16:02:33 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id B60D41842C03F;
+        Wed, 22 Jul 2020 20:02:30 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:2894:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:4321:5007:7576:9108:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30012:30054:30075:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: force93_1a17f4e26f38
+X-Filterd-Recvd-Size: 1832
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 22 Jul 2020 20:02:28 +0000 (UTC)
+Message-ID: <2bdd6b8ec731d180023d593b679afc66def19b4f.camel@perches.com>
+Subject: Re: [PATCH v2] KEYS: remove redundant memset
+From:   Joe Perches <joe@perches.com>
+To:     trix@redhat.com, dhowells@redhat.com,
+        jarkko.sakkinen@linux.intel.com, jmorris@namei.org,
+        serge@hallyn.com, denkenz@gmail.com, marcel@holtmann.org
+Cc:     keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 22 Jul 2020 13:02:27 -0700
+In-Reply-To: <20200722134610.31947-1-trix@redhat.com>
+References: <20200722134610.31947-1-trix@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <159542550175.19884.5724047291778558359.b4-ty@kernel.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 02:45:17PM +0100, Mark Brown wrote:
-> On Mon, 20 Jul 2020 21:27:15 +0530, Vaibhav Gupta wrote:
-> > Drivers using legacy PM have to manage PCI states and device's PM states
-> > themselves. They also need to take care of configuration registers.
-> > 
-> > With improved and powerful support of generic PM, PCI Core takes care of
-> > above mentioned, device-independent, jobs.
-> > 
-> > This driver makes use of PCI helper functions like
-> > pci_save/restore_state(), pci_enable/disable_device(), pci_enable_wake()
-> > and pci_set_power_state() to do required operations. In generic mode, they
-> > are no longer needed.
-> > 
-> > [...]
+On Wed, 2020-07-22 at 06:46 -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Applied to
+> Reviewing use of memset in keyctrl_pkey.c
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> keyctl_pkey_params_get prologue code to set params up
 > 
-> Thanks!
+> 	memset(params, 0, sizeof(*params));
+> 	params->encoding = "raw";
 > 
-> [1/1] spi: spi-topcliff-pch: use generic power management
->       commit: f185bcc779808df5d31bc332b79b5f1455ee910b
+> keyctl_pkey_query has the same prologue
+> and calls keyctl_pkey_params_get.
 > 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
+> So remove the prologue.
 > 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-Thanks,
---Vaibhav Gupta
-> 
-> Thanks,
-> Mark
+> Fixes: 00d60fd3b932 ("KEYS: Provide keyctls to drive the new key type ops for asymmetric keys [ver #2]")
+
+At best, this is a micro optimization.
+
+How is this appropriate for a Fixes: line?
+
+> diff --git a/security/keys/keyctl_pkey.c b/security/keys/keyctl_pkey.c
+[]
+> @@ -166,8 +166,6 @@ long keyctl_pkey_query(key_serial_t id,
+>  	struct kernel_pkey_query res;
+>  	long ret;
+>  
+> -	memset(&params, 0, sizeof(params));
+> -
+>  	ret = keyctl_pkey_params_get(id, _info, &params);
+>  	if (ret < 0)
+>  		goto error;
+
