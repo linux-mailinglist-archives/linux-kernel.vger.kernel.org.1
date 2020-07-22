@@ -2,110 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D47228F2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5607228F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgGVEbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 00:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgGVEbD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 00:31:03 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7FEC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:31:03 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b9so335121plx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3XBwyiS78uMYFOfDxL2yQtlSZ0Cbw1xcLCghfCTCxaQ=;
-        b=bjQFtuCX725epKazSyvziW9h0IATYdDlWjzt0BjDpBJltgvz//m/0gmsKbyxRLRG9C
-         lm6goDLk1rPXhXN1DLtw6T/10uCt2Vmi9TdUXwwa+5M1xqnpXgYqTIsoOzDX27MPxII5
-         T0xAJ7bL6zKeoyEP98GW1McxTPjdXX8f19lRUWxpMEU3Q6cOIpiHbF4rreqrG7Rc9SmG
-         AmUIXTSJYWULcDJip8HHTGTK1oFSRixvhaEyhWcVf5BcLPoa+bp8HeRZtcBHQcwAyCND
-         ftBxpYFYgWujyQvWdmAsFptn+IphIv1QDTVEhkN+pZenv6Vyt25cVYg1fIRj5HNaatpN
-         xYLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3XBwyiS78uMYFOfDxL2yQtlSZ0Cbw1xcLCghfCTCxaQ=;
-        b=EpRqkbhF6fhjBZ5dyCxw1Cd57/AyabPQxAnbrsVR3GP7Dzdffq+FrhIw/WWoTxGNMA
-         vIkN1y0HvQOrlRpKGDlHI2U8OEFEZYNjIVl+5fCuN8hXZFyIoqLS/T/QRjsF+3FrMx5R
-         aaVbjQ+jYZBzltCnXIGtqSDceq4ujLqdqup2SMeLORo46PqvJZlSc8NFsMaBaqi7GZ+d
-         RkljoYqMQzHD9tMv5OB+e7BIY1MNtfbZD5ckU5aoinOWMh+0BwDaEFgJDSS2+iJofMqy
-         JNHePtTOZk5xODMaVphvDqUnktM6K+47Z+8eCi+of48nywp/qR6381SRthjGiGLDTB3l
-         SvzA==
-X-Gm-Message-State: AOAM530DBRJujUBtFXPy0GVN0/oc1un1lBRXhKERelZHDCHKOZMLiVKq
-        PN3nMijMVFPI/2eLRG4OvmPBFg==
-X-Google-Smtp-Source: ABdhPJxPeCOq9ly4uwRkU0U7gGky2kIzhcKTahzjSYwyY0NWkH4fS3oyeN8+WZHGupmMCcbGskp2TQ==
-X-Received: by 2002:a17:902:9683:: with SMTP id n3mr24548708plp.65.1595392263131;
-        Tue, 21 Jul 2020 21:31:03 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id l23sm4764543pjy.45.2020.07.21.21.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 21:31:02 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 21:29:09 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     agross@kernel.org, akashast@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] soc: qcom: geni: Fix unused lable warning
-Message-ID: <20200722042909.GJ1218486@builder.lan>
-References: <20200722020619.25988-1-yuehaibing@huawei.com>
+        id S1726723AbgGVElF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 00:41:05 -0400
+Received: from mail.jv-coder.de ([5.9.79.73]:57448 "EHLO mail.jv-coder.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725790AbgGVElE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 00:41:04 -0400
+X-Greylist: delayed 609 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Jul 2020 00:41:03 EDT
+Received: from [192.168.178.40] (unknown [188.192.1.13])
+        by mail.jv-coder.de (Postfix) with ESMTPSA id 76A089F9A0;
+        Wed, 22 Jul 2020 04:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+        t=1595392253; bh=JX25Z7miF33xQKsoIB4LHrNzRi+FKRC5QwlnvDzVD1c=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version;
+        b=jsPTxW6Bl4cctZsYDUab/u/Bzlau4D3SjfEhwjdqurR3kOGScNANmWrtjPxb/OJ5N
+         GD/djUzvh1nDYq16r8ux66Jv3v/aR0NwWhuaKzxn0sMcvdb7HZlHhkR/NFzkO3f9c9
+         lX48qRRwcWkKZXuxej39XPZI6dW82XBOy42sF34I=
+Subject: Re: [BUG RT] dump-capture kernel not executed for panic in interrupt
+ context
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Joerg Vehlow <joerg.vehlow@aox-tech.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Huang Ying <ying.huang@intel.com>
+References: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
+ <20200528084614.0c949e8d@gandalf.local.home>
+From:   Joerg Vehlow <lkml@jv-coder.de>
+Message-ID: <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de>
+Date:   Wed, 22 Jul 2020 06:30:53 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Disposition: inline
+In-Reply-To: <20200528084614.0c949e8d@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200722020619.25988-1-yuehaibing@huawei.com>
+Content-Language: en-US
+X-Spam-Status: No, score=4.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,HELO_MISC_IP,NICE_REPLY_A,RCVD_IN_PBL,
+        RCVD_IN_SORBS_DUL,RDNS_NONE autolearn=no autolearn_force=no
+        version=3.4.4
+X-Spam-Level: ****
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.jv-coder.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21 Jul 19:06 PDT 2020, YueHaibing wrote:
+Hi Andrew,
 
-> If CONFIG_SERIAL_EARLYCON is not set, gcc warns this:
-> 
-> drivers/soc/qcom/qcom-geni-se.c: In function �geni_se_probe�:
-> drivers/soc/qcom/qcom-geni-se.c:914:1: warning: label �exit� defined but not used [-Wunused-label]
->  exit:
->  ^~~~
-> 
-> Fixes: 048eb908a1f2 ("soc: qcom-geni-se: Add interconnect support to fix earlycon crash")
+it's been two month now and no reaction from you. Maybe you did not see 
+this mail from Steven.
+Please look at this issue.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Greets,
 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Jörg
 
-and applied.
+On 5/28/2020 2:46 PM, Steven Rostedt wrote:
+> Hi Joerg,
+>
+> This does look like Andrew's commit (from 2008) is buggy (and this is a
+> mainline bug, not an RT one). (top posting this so Andrew knows to look
+> further ;-)
+>
+> On Thu, 28 May 2020 13:41:08 +0200
+> Joerg Vehlow <lkml@jv-coder.de> wrote:
+>
+>> Hi,
+>>
+>> I think I found a bug in the kernel with rt patches (or maybe even without).
+>> This applies to all kernels propably starting at 2.6.27.
+>>
+>> When a kernel panic is triggered from an interrupt handler, the dump-capture
+>> kernel is not started, instead the system acts as if it was not installed.
+>> The reason for this is, that panic calls __crash_kexec, which is protected
+>> by a mutex. On an rt kernel this mutex is an rt mutex and when trylock
+>> is called
+>> on an rt mutex, the first check is whether the current kthread is in an
+>> nmi or
+>> irq handler. If it is, the function just returns 0 -> locking failed.
+>>
+>> According to rt_mutex_trylock documentation, it is not allowed to call this
+>> function from an irq handler, but panic can be called from everywhere
+>> and thus
+>> rt_mutex_trylock can be called from everywhere. Actually even
+>> mutex_trylock has
+>> the comment, that it is not supposed to be used from interrupt context,
+>> but it
+>> still locks the mutex. I guess this could also be a bug in the non-rt
+>> kernel.
+>>
+>> I found this problem using a test module, that triggers the softlock
+>> detection.
+>> It is a pretty simple module, that creates a kthread, that disables
+>> preemption,
+>> spins 60 seconds in an endless loop and then reenables preemption and
+>> terminates
+>> the thread. This reliably triggers the softlock detection and if
+>> kernel.softlockup_panic=0, the system resumes perfectly fine afterwards. If
+>> kernel.softlockup_panic=1 I would expect the dump-capture kernel to be
+>> executed,
+>> but it is not due to the bug (without rt patches it works), instead the
+>> panic
+>> function is executed until the end to the endless loop.
+>>
+>>
+>> A stacktrace captured at the trylock call inside kexec_code looks like this:
+>> #0  __rt_mutex_trylock (lock=0xffffffff81701aa0 <kexec_mutex>) at
+>> /usr/src/kernel/kernel/locking/rtmutex.c:2110
+>> #1  0xffffffff8087601a in _mutex_trylock (lock=<optimised out>) at
+>> /usr/src/kernel/kernel/locking/mutex-rt.c:185
+>> #2  0xffffffff803022a0 in __crash_kexec (regs=0x0 <irq_stack_union>) at
+>> /usr/src/kernel/kernel/kexec_core.c:941
+>> #3  0xffffffff8027af59 in panic (fmt=0xffffffff80fa3d66 "softlockup:
+>> hung tasks") at /usr/src/kernel/kernel/panic.c:198
+>> #4  0xffffffff80325b6d in watchdog_timer_fn (hrtimer=<optimised out>) at
+>> /usr/src/kernel/kernel/watchdog.c:464
+>> #5  0xffffffff802e6b90 in __run_hrtimer (flags=<optimised out>,
+>> now=<optimised out>, timer=<optimised out>, base=<optimised out>,
+>> cpu_base=<optimised out>) at /usr/src/kernel/kernel/time/hrtimer.c:1417
+>> #6  __hrtimer_run_queues (cpu_base=0xffff88807db1c000, now=<optimised
+>> out>, flags=<optimised out>, active_mask=<optimised out>) at
+>> /usr/src/kernel/kernel/time/hrtimer.c:1479
+>> #7  0xffffffff802e7704 in hrtimer_interrupt (dev=<optimised out>) at
+>> /usr/src/kernel/kernel/time/hrtimer.c:1539
+>> #8  0xffffffff80a020f2 in local_apic_timer_interrupt () at
+>> /usr/src/kernel/arch/x86/kernel/apic/apic.c:1067
+>> #9  smp_apic_timer_interrupt (regs=<optimised out>) at
+>> /usr/src/kernel/arch/x86/kernel/apic/apic.c:1092
+>> #10 0xffffffff80a015df in apic_timer_interrupt () at
+>> /usr/src/kernel/arch/x86/entry/entry_64.S:909
+>>
+>>
+>> Obviously and as expected the panic was triggered in the context of the apic
+>> interrupt. So in_irq() is true and trylock fails.
+>>
+>>
+>> About 12 years ago this was not implemented using a mutex, but using xchg.
+>> See: 8c5a1cf0ad3ac5fcdf51314a63b16a440870f6a2
+> Yes, that commit is wrong, because mutex_trylock() is not to be taken in
+> interrupt context, where crash_kexec() looks like it can be called.
+>
+> Unless back then crash_kexec() wasn't called in interrupt context, then the
+> commit that calls it from that combined with this commit is the issue.
+>
+> -- Steve
+>
+>>
+>> Since my knowledege about mutexes inside the kernel is very limited, I
+>> do not
+>> know how this can be fixed and whether it should be fixed in the rt
+>> patches or
+>> if this really is a bug in mainline kernel (because trylock is also not
+>> allowed
+>> to be used in interrupt handlers.
+>>
+>>
+>> Jörg
 
-Thanks,
-Bjorn
-
-> ---
->  drivers/soc/qcom/qcom-geni-se.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-> index 3413129d73ef..d0e4f520cff8 100644
-> --- a/drivers/soc/qcom/qcom-geni-se.c
-> +++ b/drivers/soc/qcom/qcom-geni-se.c
-> @@ -910,8 +910,8 @@ static int geni_se_probe(struct platform_device *pdev)
->  	if (of_get_compatible_child(pdev->dev.of_node, "qcom,geni-debug-uart"))
->  		earlycon_wrapper = wrapper;
->  	of_node_put(pdev->dev.of_node);
-> -#endif
->  exit:
-> +#endif
->  	dev_set_drvdata(dev, wrapper);
->  	dev_dbg(dev, "GENI SE Driver probed\n");
->  	return devm_of_platform_populate(dev);
-> -- 
-> 2.17.1
-> 
-> 
