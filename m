@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B436228ED5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8335E228EDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731999AbgGVD5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 23:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S1726033AbgGVEAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 00:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731886AbgGVD5E (ORCPT
+        with ESMTP id S1725385AbgGVEAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 23:57:04 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE054C061794;
-        Tue, 21 Jul 2020 20:57:03 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k5so470043pjg.3;
-        Tue, 21 Jul 2020 20:57:03 -0700 (PDT)
+        Wed, 22 Jul 2020 00:00:48 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C22BC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:00:48 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id 8so470976pjj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:00:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ejoo3rO99IZBQPRKW1OTgn8zf/3hAJuMMg27TmWfP+Q=;
-        b=VXVhWK8MlscmTy1bvIXvmKuFGU44qSqaAtvdMosv9fuyjE2YXLfjBezi75DjdgNsI6
-         WetaYfdjiLVp+vV7tL135FtWDYArPWzyoRuYPS44KnuP8JCwAwZ8nJx6mKdsGcmjFN4O
-         UdkHFqQ74wK3M6V2WZi7iKlzKXXXBmyBR8MujScSCmAuBO4CTBw6eJ0+KGgZCpmT/5Eb
-         mFzXvIR/so+VjJbj5nVz+DoxYKffQKoBmq/MSu9pHRzD3o3y9BBC4ZmEJy5Lvp1U9l8z
-         Q+ShxUIx22H7nCkH3yCHWO8EU+hta5wyCOcUImjBbvx5+r+PSnNMPkk+pwiNClDgM5u6
-         Zwpw==
+        bh=xa3ZZYGnoP85/3zV1lZZil7QKFpmT3uyhbiDkzmb3pw=;
+        b=d7qkkZzBvWH2EGTJl6d/xeU0OZVDjSrLJ0nJ9h+STGVXGF2EOVqbTk7CSjMjiON26V
+         M0LwvjihL4Vm/tB7kntykC0gcYIEyVe4rJ+F4xJN7YKkmJ9pIZQ6WV8ABzM0AjYgNMSu
+         /pSoTz+NB+wDP/hvAhMUfF3f+yh5RPf6Q6z3NYGDWAa/ruh7OkmiToFTCAcxl3AdZ2AR
+         V7lBXEDYIeMkNe6eTzGsTfWP+LEgeSuFVXA4wr2BO40XXyyQgK8ZsILcysIJePJCb7Wq
+         PA3492XWoXkhab/RVxAyvIcbXxc1NezI07/4N5tVAah3lUxgpE9pNLJuVwBG12azvHfi
+         nqhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ejoo3rO99IZBQPRKW1OTgn8zf/3hAJuMMg27TmWfP+Q=;
-        b=IYi7eIDcoLAAFmRuUl2GWIkkbXS5tkN3Pd/9AyKbe8bqed58miNghYAjtaRvInZ2TK
-         jvBWiLqbMtN6o0aBgLPc3Jd388AfNLFIdiUZiFGJIW4yCnOzZbQ+YKfWfn6fV9sK1cP6
-         x77za2B8yg59nVG/OfjAW7m89UDEbndzDjvELWpjpaYzl7uOkSddUAWkfpY5L7br1Hzt
-         cwVppYwcb1i1b8zKD7ROkcHxLrY/lPUxVBM1mlCbM6qgY/UqWp7kWavdYdt5plSES1iW
-         MrIZbjV+Tmyldaoe6nanA4NfcDDeEKxl6+81jqBh2mEexf0shHN6cS+T+bPpbvRJVLtp
-         wREA==
-X-Gm-Message-State: AOAM532G3fbOEw6kET9eRvfzbWOdrA56qIc3GImDIO39EZ/9krXaw+U9
-        ze54LJCwApJfFr7aDNbEpsONwkAMKFo4wTB++L2auw==
-X-Google-Smtp-Source: ABdhPJzsrWI6yfXZXfqTDdc6Eemz6SwGqaWtrigchgHMM/oN4Qj11ro+26f0+OFV8IV1aztKYu4E5wJ36htkctlhZ90=
-X-Received: by 2002:a17:902:8ecb:: with SMTP id x11mr19444104plo.123.1595390223558;
- Tue, 21 Jul 2020 20:57:03 -0700 (PDT)
+        bh=xa3ZZYGnoP85/3zV1lZZil7QKFpmT3uyhbiDkzmb3pw=;
+        b=QeqX36b47wRQTdvmT1Cszs7LnvZZnw2vdq4wDOAbRlsmMgdxlsoFCywGegSWO9uMMZ
+         rGDCeGm0PfsYVi8j08AnqCMNxlSMG49R++4RNiCvs/JJh1dWLKarmzA0JHJb5TI/G4cp
+         ZYB1QJH6rx4NgLlG5q7Wcz6Vb+A5avF+a7ejYHHgiNsg52VxQxV2JbVK05wQ9Xbfn1a6
+         wISkololdkFMWdJHNTeszXXai3RrDWGB6bDjV0k8Ct++tL1iGtG6ZjwEVR6dgIvjpKqz
+         aas71FPeMIz7Z/O/6+wPk7V0UfelxM2Pr+EHCFhEPc8J610w9cypIw2rNAghLTfptd/w
+         vFrA==
+X-Gm-Message-State: AOAM531Q8jZHzx/EjpCpyOvpGIt8ov5eqIPN9uw/uG3rpb8Q5+T0HCc0
+        NgCm89uyqbLhCWJz0VzNqU5f1II2YC1uLiKbm3c=
+X-Google-Smtp-Source: ABdhPJxMnoMbokZoyYXBiE1wvxWIhZnR0lnPeJYdNlzCOuI35DjncY/cX4KxwfkPDilk9thENiU4THsQoZzGthKL3D4=
+X-Received: by 2002:a17:90a:20e9:: with SMTP id f96mr8129677pjg.13.1595390448025;
+ Tue, 21 Jul 2020 21:00:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200722004707.779601-1-masahiroy@kernel.org>
-In-Reply-To: <20200722004707.779601-1-masahiroy@kernel.org>
+References: <20200721093748.26627-1-jcmvbkbc@gmail.com> <CAK7LNARtTZD5x3CYLVj48dwC9n7Z4kMx1gCLq3aD2_OfQKuXnA@mail.gmail.com>
+In-Reply-To: <CAK7LNARtTZD5x3CYLVj48dwC9n7Z4kMx1gCLq3aD2_OfQKuXnA@mail.gmail.com>
 From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 21 Jul 2020 20:56:52 -0700
-Message-ID: <CAMo8BfJv38cPOAOOMGn8R7-CtBy2BCbMRkMAeXNZ=A4YbtTPbw@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: add boot subdirectories build artifacts to 'targets'
+Date:   Tue, 21 Jul 2020 21:00:37 -0700
+Message-ID: <CAMo8BfKS=nJi_BdOCYTzRutKBSHwZ8ZNOuk=+ZGD_mi6zwJ=Bw@mail.gmail.com>
+Subject: Re: [PATCH v2] xtensa: add boot subdirectories targets to extra-y
 To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 5:47 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Tue, Jul 21, 2020 at 5:53 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> On Tue, Jul 21, 2020 at 6:37 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
+> > The commit 8fe87a92f262 ("kbuild: always create directories of targets")
+> > exposed an issue in the xtensa makefiles that results in the following
+> > build error in a clean directory:
 >
-> Xtensa always rebuilds the following even if nothing in the source code
-> has been changed. Passing V=2 shows the reason.
+> But, we need to fix this in the kbuild tree
+> to retain the bisectability.
 >
->   AS      arch/xtensa/boot/boot-elf/bootstrap.o - due to bootstrap.o not in $(targets)
->   LDS     arch/xtensa/boot/boot-elf/boot.lds - due to boot.lds not in $(targets)
+> I will insert the following before the offending commit.
+> https://patchwork.kernel.org/patch/11676883/
 >
-> They are built by if_changed(_dep). Add them to 'targets' so .*.cmd files
-> are included.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/xtensa/boot/boot-elf/Makefile     | 1 +
->  arch/xtensa/boot/boot-redboot/Makefile | 1 +
->  2 files changed, 2 insertions(+)
+> I used 'targets' instead of 'extra-y'
+> because they are built on demand
+> while building the final boot image.
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Sure, please go ahead with your version.
+Thank you for taking care of it.
 
--- 
-Thanks.
 -- Max
