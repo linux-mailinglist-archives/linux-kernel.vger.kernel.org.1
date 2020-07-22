@@ -2,83 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8287229561
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1377D229535
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731669AbgGVJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:47:35 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8351 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730142AbgGVJre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:47:34 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E06B03B132C9DC4F16B9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 17:47:30 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 22 Jul 2020 17:47:23 +0800
-From:   Hanjun Guo <guohanjun@huawei.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH] mailbox: pcc: Put the PCCT table for error path
-Date:   Wed, 22 Jul 2020 17:40:40 +0800
-Message-ID: <1595410840-15231-1-git-send-email-guohanjun@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1731085AbgGVJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:43:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21208 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727034AbgGVJnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 05:43:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595410996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Kb/Abqzc1wwGUB57wyooGlyiAmmMs/m2j0ybHDH3Uc=;
+        b=OvyoCQRc6lDxNo+evSuS+fCcqphzfFaEzcN95OB4YVo2FZqDdpv7q1URfUuLPHEWVRrYxk
+        DfrJwPCGDD8nHm6iyencmWf98b8k108fQffYCNRc9/WRur7oNMRw/9+vuCW0yTxqtRUmKI
+        vXwOpnU713EES53GoAjQDSD3yMgIcK4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-6Fw3fOseN2GzzilEEkJeHA-1; Wed, 22 Jul 2020 05:43:13 -0400
+X-MC-Unique: 6Fw3fOseN2GzzilEEkJeHA-1
+Received: by mail-ed1-f69.google.com with SMTP id u25so568892edq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:43:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=5Kb/Abqzc1wwGUB57wyooGlyiAmmMs/m2j0ybHDH3Uc=;
+        b=lQxefjoPkAMkPEj6G5r6K0Sy7S4EafXakuRxJEYE6i8q/Tizjk4jcKSMR+X7bhA5I8
+         IDutPtV50Cbql/i/f0xHFKPrSkhpWdjHvRzSUSgVymW23ZRj3wPxRA8h8ys7skB66f5y
+         9wkKBfIqZWY8ZEmvNTzUK6J7VRIssuuNTWFx/A++fA8uXtKM5bXPSq30mTfB0zl+iJ83
+         sYpjcNWERfVQl2mqrrw0rkI1UZtU5uAmC+GKdBoIMYgT00LlfnqSLKMY3HrruB1GckDz
+         NJRQ+DeK4nUENRpuw7hmLQiiSdgwYkHLVIolI9PeSPQQQuk2aEC7BLnyUDJquFJbZris
+         1LRg==
+X-Gm-Message-State: AOAM532FdUu/b4s1kJv5RpEMjhjQrr/bl/YkeemgurmN6laMH2hHX8Vu
+        a24IJfSk8m24ygpqDoLE4sZBWnYxFhV+JS/1MVzYMoBIQ9ti5ldy4LCFbBXVypB1f+a4E7fag8/
+        bFedP2ZwZ/x4GjyZ9MMwXR8L7
+X-Received: by 2002:a17:906:2b9b:: with SMTP id m27mr4987689ejg.19.1595410992396;
+        Wed, 22 Jul 2020 02:43:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx79uCW95X1s9k7qWVHGXqTcMrE2CCXxJ+5xye1vKxSac5AbBD7Ow2dhnLE/qSMpg8Md5C5bg==
+X-Received: by 2002:a17:906:2b9b:: with SMTP id m27mr4987673ejg.19.1595410992177;
+        Wed, 22 Jul 2020 02:43:12 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id d24sm18338851eje.21.2020.07.22.02.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 02:43:11 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Julia Suvorova <jusual@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Julia Suvorova <jusual@redhat.com>, kvm@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH] x86/PCI: Use MMCONFIG by default for KVM guests
+In-Reply-To: <20200722001513.298315-1-jusual@redhat.com>
+References: <20200722001513.298315-1-jusual@redhat.com>
+Date:   Wed, 22 Jul 2020 11:43:10 +0200
+Message-ID: <87d04nq40h.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The acpi_get_table() should be coupled with acpi_put_table() if
-the mapped table is not used at runtime to release the table
-mapping.
+Julia Suvorova <jusual@redhat.com> writes:
 
-In acpi_pcc_probe(), the PCCT table entries will be used as private
-data for communication chan at runtime, but the table should be put
-for error path.
+> Scanning for PCI devices at boot takes a long time for KVM guests. It
+> can be reduced if KVM will handle all configuration space accesses for
+> non-existent devices without going to userspace [1]. But for this to
+> work, all accesses must go through MMCONFIG.
+> This change allows to use pci_mmcfg as raw_pci_ops for 64-bit KVM
+> guests making MMCONFIG the default access method.
+>
+> [1] https://lkml.org/lkml/2020/5/14/936
+>
+> Signed-off-by: Julia Suvorova <jusual@redhat.com>
+> ---
+>  arch/x86/pci/direct.c      | 5 +++++
+>  arch/x86/pci/mmconfig_64.c | 3 +++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/arch/x86/pci/direct.c b/arch/x86/pci/direct.c
+> index a51074c55982..8ff6b65d8f48 100644
+> --- a/arch/x86/pci/direct.c
+> +++ b/arch/x86/pci/direct.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/init.h>
+>  #include <linux/dmi.h>
+> +#include <linux/kvm_para.h>
+>  #include <asm/pci_x86.h>
+>  
+>  /*
+> @@ -264,6 +265,10 @@ void __init pci_direct_init(int type)
+>  {
+>  	if (type == 0)
+>  		return;
+> +
+> +	if (raw_pci_ext_ops && kvm_para_available())
+> +		return;
+> +
+>  	printk(KERN_INFO "PCI: Using configuration type %d for base access\n",
+>  		 type);
+>  	if (type == 1) {
+> diff --git a/arch/x86/pci/mmconfig_64.c b/arch/x86/pci/mmconfig_64.c
+> index 0c7b6e66c644..9eb772821766 100644
+> --- a/arch/x86/pci/mmconfig_64.c
+> +++ b/arch/x86/pci/mmconfig_64.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/init.h>
+>  #include <linux/acpi.h>
+>  #include <linux/bitmap.h>
+> +#include <linux/kvm_para.h>
+>  #include <linux/rcupdate.h>
+>  #include <asm/e820/api.h>
+>  #include <asm/pci_x86.h>
+> @@ -122,6 +123,8 @@ int __init pci_mmcfg_arch_init(void)
+>  		}
+>  
+>  	raw_pci_ext_ops = &pci_mmcfg;
+> +	if (kvm_para_available())
+> +		raw_pci_ops = &pci_mmcfg;
+>  
+>  	return 1;
+>  }
 
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
----
- drivers/mailbox/pcc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+This implies mmconfig access method is always functional (when present)
+for all KVM guests, regardless of hypervisor version/which KVM userspace
+is is use/... In case the assumption is true the patch looks good (to
+me) but in case it isn't or if we think that more control over this
+is needed we may want to introduce a PV feature bit for KVM.
 
-diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-index 8c7fac3..ef9ecd1 100644
---- a/drivers/mailbox/pcc.c
-+++ b/drivers/mailbox/pcc.c
-@@ -457,14 +457,17 @@ static int __init acpi_pcc_probe(void)
- 			pr_warn("Error parsing PCC subspaces from PCCT\n");
- 		else
- 			pr_warn("Invalid PCCT: %d PCC subspaces\n", count);
--		return -EINVAL;
-+
-+		rc = -EINVAL;
-+		goto err_put_pcct;
- 	}
- 
- 	pcc_mbox_channels = kcalloc(count, sizeof(struct mbox_chan),
- 				    GFP_KERNEL);
- 	if (!pcc_mbox_channels) {
- 		pr_err("Could not allocate space for PCC mbox channels\n");
--		return -ENOMEM;
-+		rc = -ENOMEM;
-+		goto err_put_pcct;
- 	}
- 
- 	pcc_doorbell_vaddr = kcalloc(count, sizeof(void *), GFP_KERNEL);
-@@ -535,6 +538,8 @@ static int __init acpi_pcc_probe(void)
- 	kfree(pcc_doorbell_vaddr);
- err_free_mbox:
- 	kfree(pcc_mbox_channels);
-+err_put_pcct:
-+	acpi_put_table(pcct_tbl);
- 	return rc;
- }
- 
+Also, I'm thinking about moving this to arch/x86/kernel/kvm.c: we can
+override x86_init.pci.arch_init and reassign raw_pci_ops after doing
+pci_arch_init().
+
+Cc: kvm@vger.kernel.org
+
 -- 
-1.7.12.4
+Vitaly
 
