@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207F32295A7
+	by mail.lfdr.de (Postfix) with ESMTP id 94CC92295A8
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731325AbgGVKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
+        id S1731673AbgGVKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726153AbgGVKIM (ORCPT
+        with ESMTP id S1726153AbgGVKIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:12 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FB6C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:11 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s10so1288304wrw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:11 -0700 (PDT)
+        Wed, 22 Jul 2020 06:08:13 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AD0C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:12 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a14so1316053wra.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ro6SNV9RoLRZMwUVnPvL5fbb9jQlUACUXGTf1bZXpQ=;
-        b=IVQbrFjmMPwQ3h5jlriZWZjn/t4s8IS47nt9oPYCNA7d8/P4yefnm68rB+i0rLAbz2
-         4cAkVu95G+LE3negDmxTA08pNB29gCqZA/Fa3TBADmWp0wp+vbNFktXiMWUypwIjtLp+
-         sp5K8qLvl+8QiRJiHUW5ktW3Zp74z3wKiuL3z7qoCugIQZhzkyNLPOeNlS1Itigh9XNR
-         vSPlKRWym5jlsLgYfg7eaykTP8At26NZL5tzjZJ/xD++LQYfpAc/Bm3ywxGdOxPIN1qn
-         06mGX2vwxE3QSzYMRWz42FM7YAsVRgGPNTELjCHl7qXnr1LmSMDBGnffYlvmdSS4molR
-         6Oxw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0pfIx0Qut2dD6gNBwCzcD0XIuQfHiiY0nxSbNEpbg8o=;
+        b=xg9RGuW9966NcN+bBp/hoNZJTbzJ/itBLyXaNSEAdkrJiSmzd2sj2/ZagGQWkY36WW
+         r0a03TYRxIj8DKxHKKGgpS+VUtYSmB08pM6e2i9G4+WyRCb+E0GSmJNFHRUMrf7tV9gk
+         qo9IbI8YLINwrZGuA88aFdszQaWLc0tp6G7c7GjzC80z0a0ekYnMi+ATLvmcahvKScx+
+         sLLAuJxTyTzkdbD+0/luozgBELcRRFTTc7WG6yBy7+0jihn338gb6ZMQUPB1cln7zQPl
+         u+0vFU2h5bE+Jmvxe7smAlP4u0EWj0s+4UDIC52TUsVUUCnT7lC778KC5N+PfLsIX7/b
+         ckJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ro6SNV9RoLRZMwUVnPvL5fbb9jQlUACUXGTf1bZXpQ=;
-        b=WL1tZ5UM4SYCrK9E9gD1vN0v6UR+zyinHFE2pMqxtRglixGWmud4ZVafIYxqwNbEag
-         AYndDaySFeqXLBPCCB3z+e9C36NFE6GyuGm7kzEFXvfjCW1cEUmyjdrVpkNXfDU+DSD4
-         /j8UWCXL92kssyCqYlGQgc4SGMHTq2Faz1wjHmCj3Lado+GOQd8xhfC2tOGP7pS0oJpo
-         Vmdd6V8otyzzUUp/l/VAPQkRKcQo/t7X5T2nROQ5wUAKV0cLP7VQ0HAF5kSxUq0H6rP8
-         vGznVmhLcXIBpT4sUZvq/kDqwDTB6IOlQba0MlI/71Sm4ASKh0NXFu35XnRAJlmnHOpm
-         xzVQ==
-X-Gm-Message-State: AOAM532tdGjggywmBsHo57Q7lPlxclxRCwFYrTcVNmZ2ew2WHACOE1ye
-        YTbrqBWGeEUVeVFuUry0/18hVpUlmQ4=
-X-Google-Smtp-Source: ABdhPJyyQfFz9wRLdHPRPzeyOYsUTH3Mwygtr/jM1+BV0935sSubEd3aaZu0NGm7w33dft9D8J/6mQ==
-X-Received: by 2002:a5d:6284:: with SMTP id k4mr18486845wru.372.1595412490458;
-        Wed, 22 Jul 2020 03:08:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0pfIx0Qut2dD6gNBwCzcD0XIuQfHiiY0nxSbNEpbg8o=;
+        b=MFRLYx1ciyDCZO5uN8hKDhEF3hwF3inhntpvG+DIEpkoJcptRPGVAubqvB1TCA0mrA
+         +y2U2VtMgKL1SBJSflp5mTY+zfK0csNjikeMcbC561XS6QSJQW3anrfoCPuztRDdvob5
+         nZIH3J7IIBdiBCwGblU0H+bj4q6xYOMGdhTKUVU8BMe27Gb2+pgH/rW3JC61MKwSPLQi
+         6bWwGafRDQclORUbcy5mU/ytIIgX5NPSPwfybtp8wbYnScBfCeWyv4yTsD4gGG94Xq32
+         8euaIVRjS94CpJe7J7AM11goFhpWO2dK1UYfjYVJB+C+N5bsY7nDhNx1yegMxPLXcy1D
+         +WXA==
+X-Gm-Message-State: AOAM530znF2KOg/HKn4QmhR0RNSVmuqLZI6SAqdanIYHXIlF4U725gEF
+        3axZax84zG0h5QcT4Z46/39j6xtP6Ik=
+X-Google-Smtp-Source: ABdhPJyllcN8dagYVE1zQLerS6DIphs7nsBOylKTcRTvivNH8KYSmMPi/qMMioB2JB2gXZAoIHD4nw==
+X-Received: by 2002:adf:a299:: with SMTP id s25mr16235528wra.106.1595412491542;
+        Wed, 22 Jul 2020 03:08:11 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.09
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:09 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:10 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 00/14] nvmem: patches (set 1) for 5.9
-Date:   Wed, 22 Jul 2020 11:06:51 +0100
-Message-Id: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 01/14] nvmem: sprd: Fix return value of sprd_efuse_probe()
+Date:   Wed, 22 Jul 2020 11:06:52 +0100
+Message-Id: <20200722100705.7772-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
+References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-Here are some nvmem patches for 5.9 which includes
-- adding support to AUTO devid for providers which have multiple instances.
-- add new nvmem_cell_read_u8()
-- new sc27xx provider, add write support to qfprom.
-- few trivial fixes.
+When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+to check the return value and return PTR_ERR() if failed.
 
-Can you please queue them up for 5.9.
+Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/nvmem/sprd-efuse.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-thanks for you help,
-srini
-
-Andreas Färber (2):
-  nvmem: core: Grammar fixes for help text
-  nvmem: core: Add nvmem_cell_read_u8()
-
-Douglas Anderson (1):
-  nvmem: Enforce nvmem stride in the sysfs interface
-
-Freeman Liu (1):
-  nvmem: sc27xx: add sc2730 efuse support
-
-Guru Das Srinagesh (1):
-  nvmem: qcom-spmi-sdam: Enable multiple devices
-
-Matteo Croce (1):
-  nvmem: update Kconfig description
-
-Ravi Kumar Bokka (3):
-  dt-bindings: nvmem: qfprom: Convert to yaml
-  dt-bindings: nvmem: Add properties needed for blowing fuses
-  nvmem: qfprom: Add fuse blowing support
-
-Srinivas Kandagatla (2):
-  nvmem: core: add support to auto devid
-  nvmem: qfprom: use NVMEM_DEVID_AUTO for multiple instances
-
-Tiezhu Yang (2):
-  nvmem: sprd: Fix return value of sprd_efuse_probe()
-  MAINTAINERS: Add git tree for NVMEM FRAMEWORK
-
-Yangtao Li (1):
-  dt-bindings: nvmem: SID: add binding for A100's SID controller
-
- .../nvmem/allwinner,sun4i-a10-sid.yaml        |  19 +-
- .../bindings/nvmem/qcom,qfprom.yaml           |  96 ++++++
- .../devicetree/bindings/nvmem/qfprom.txt      |  35 --
- MAINTAINERS                                   |   1 +
- drivers/nvmem/Kconfig                         |   3 -
- drivers/nvmem/core.c                          |  43 ++-
- drivers/nvmem/qcom-spmi-sdam.c                |   4 +-
- drivers/nvmem/qfprom.c                        | 315 +++++++++++++++++-
- drivers/nvmem/sc27xx-efuse.c                  |  27 +-
- drivers/nvmem/sprd-efuse.c                    |   4 +-
- include/linux/nvmem-consumer.h                |   1 +
- include/linux/nvmem-provider.h                |   3 +
- 12 files changed, 479 insertions(+), 72 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
- delete mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.txt
-
+diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+index 925feb21d5ad..59523245db8a 100644
+--- a/drivers/nvmem/sprd-efuse.c
++++ b/drivers/nvmem/sprd-efuse.c
+@@ -378,8 +378,8 @@ static int sprd_efuse_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	efuse->base = devm_platform_ioremap_resource(pdev, 0);
+-	if (!efuse->base)
+-		return -ENOMEM;
++	if (IS_ERR(efuse->base))
++		return PTR_ERR(efuse->base);
+ 
+ 	ret = of_hwspin_lock_get_id(np, 0);
+ 	if (ret < 0) {
 -- 
 2.21.0
 
