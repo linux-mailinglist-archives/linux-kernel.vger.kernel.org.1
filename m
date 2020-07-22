@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F92229410
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA53E229415
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730653AbgGVIxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 04:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        id S1730963AbgGVIyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 04:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgGVIxL (ORCPT
+        with ESMTP id S1726997AbgGVIyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:53:11 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E50AC0619DC;
-        Wed, 22 Jul 2020 01:53:11 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k1so818346pjt.5;
-        Wed, 22 Jul 2020 01:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ka/5B4XRoVBmAt67iPN2Z7sgxTFm48YODme+2RimFZE=;
-        b=s87Z385hZ5l+b/oIspabCEyqUEkKhQIX9Wi1g6CN5r/JNB/21zVc6tOvcl0oGU/2TD
-         Z8kDRye9okGm1naX3gouEQEEga5gL+JG7U8E2PPOEMmkg38RmacKXJzdIziq3/6wGIrr
-         Aoe+msfaONNAq1j2rjQrUcNp3aruR7G6Wv0ucg1o9NOpdcZRR58lef0jE9Fz26orzynH
-         /5Coy0NXwu9cFTmSNNEYEjU0DA1YdXG9+ixBE6Vj6jo8iSSsecFsz1xomgrxa4VhSDF8
-         t92CIABEwTp+IxUgBDPme+XbXH4Ig8z+8Y5Q7Nqjr2CqsEXwjOemP4xa+ccigTddWaXY
-         SD2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ka/5B4XRoVBmAt67iPN2Z7sgxTFm48YODme+2RimFZE=;
-        b=EpD8P3WsOKKfzB/Pc2RsNbZiViTCWLwNTHwR69OFurIVMuKFqJs3zYBvJS2qh9gPIA
-         705DgoOFW8rQjYgZp4uxm+i1MQnQypEuW7oJiAii86hLdoeCjvkPelcXwd3F7r6D+ICb
-         bpdmjh7TTnFByI1V8cQ3GUmCIP/npgFOUbEGrhdlC6wBvh9z7P1roa3BiN0BwYhP1c0p
-         ym6teo3l+7I2LiY1DaDkDFCen3ciw3WfwfHgs53JNA1KTCDCyY9hp7CAM6yOWSKgE2AE
-         Rrc/EfZmCG3zm7f735BPD0ViUeIDv5+WbN/r5ukgT/L/u4eIkxT+fnj6dwRLvQuW4a1s
-         Bgyg==
-X-Gm-Message-State: AOAM530pNDAPhgyyBRFb1SqxUFNV4dBzRpcxqWz+eRL1cPhTQUFQlwFH
-        MkL4pul2Qs10iJ8qkJlIPSfH7LK+Fb8JMWlq1F0+fvXJ
-X-Google-Smtp-Source: ABdhPJxz0ZAJ0aHy5furHHpzY9F5tAklILXmF9Mb3Ra2G6CiJicgkp19/NfrXFg7rW6Ht6NEGCeYyxG8FMpQUaTeEOY=
-X-Received: by 2002:a17:902:9a4b:: with SMTP id x11mr25751245plv.255.1595407990982;
- Wed, 22 Jul 2020 01:53:10 -0700 (PDT)
+        Wed, 22 Jul 2020 04:54:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6292EC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 01:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2Z73rgNzULE5N7bg+bwWraBZnyK5vQPqWDQ36XJiXik=; b=qMkOu+zicovwtaHxhU7/JCNNZA
+        anhh7VzJHSzHkfXX8/EeXDtu9RIIG5u4IS5ZaRGdmniEPdQ1c01p30A2Iyf+G5cQXvGX8GWwmrWCw
+        6UhCwjdOD0egAM/WhuB2DLDc/yqviqFYqMKFwkNG7iZ7kFYAGDVOpjiW+Cs4ab9z1PDT7r/mgRtEe
+        Cd/WmMNeiqEn0tpGwq2x5Y4n6zFlqi03e/nDaGGK14jTpvIwgs736id3Ei+W7t378ptk8F2ERFH2A
+        V4Lj1RA9iqNF3s6R9ktGwmZ06VpHEOieNXFNanHIjc7PsmuO13h+9HK7P7MAwyG0OuijwTpw+IoUU
+        PuLw3CpQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyAVw-0004gu-Cf; Wed, 22 Jul 2020 08:54:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD79A304E03;
+        Wed, 22 Jul 2020 10:54:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B221A21A7D50F; Wed, 22 Jul 2020 10:54:11 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 10:54:11 +0200
+From:   peterz@infradead.org
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <michaele@au1.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Piggin <npiggin@au1.ibm.com>,
+        Oliver OHalloran <oliveroh@au1.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@linux.ibm.com>,
+        Anton Blanchard <anton@au1.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v2 06/10] powerpc/smp: Generalize 2nd sched domain
+Message-ID: <20200722085411.GI43129@hirez.programming.kicks-ass.net>
+References: <20200721113814.32284-1-srikar@linux.vnet.ibm.com>
+ <20200721113814.32284-7-srikar@linux.vnet.ibm.com>
+ <20200722074624.GP119549@hirez.programming.kicks-ass.net>
+ <20200722081822.GG9290@linux.vnet.ibm.com>
+ <20200722084854.GL10769@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200721233814.GA3058@embeddedor>
-In-Reply-To: <20200721233814.GA3058@embeddedor>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 22 Jul 2020 11:52:56 +0300
-Message-ID: <CAHp75VcinO2QrQfk-GqfFic=Ktah5s-ndLigmVNdfvfo5cS_Pw@mail.gmail.com>
-Subject: Re: [PATCH][next] i2c: designware: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722084854.GL10769@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 2:48 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1].
+On Wed, Jul 22, 2020 at 10:48:54AM +0200, Peter Zijlstra wrote:
+> But reading your explanation, it looks like the Linux topology setup
+> could actually unravel the fused-faux-SMT8 into two independent SMT4
+> parts, negating that firmware option.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-Perhaps you may do it as Link: tag?
-
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/i2c/busses/i2c-designware-pcidrv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-> index 8522134f9ea9..55c83a7a24f3 100644
-> --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-> @@ -90,7 +90,7 @@ static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
->         switch (pdev->device) {
->         case 0x0817:
->                 dev->timings.bus_freq_hz = I2C_MAX_STANDARD_MODE_FREQ;
-> -               /* fall through */
-> +               fallthrough;
->         case 0x0818:
->         case 0x0819:
->                 c->bus_num = pdev->device - 0x817 + 3;
-> --
-> 2.27.0
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Ah, it looks like that's exactly what you're doing. Nice!
