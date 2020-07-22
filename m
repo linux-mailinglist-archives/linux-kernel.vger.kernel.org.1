@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51A2229B4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB8B229B52
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732849AbgGVPZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730382AbgGVPZH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:25:07 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D42C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:25:07 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b11so1527435lfe.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=ZZVwlxeqmX6G0EA/Mr693geGtRjCRxDovI8UeX3tF/E=;
-        b=C5QgKmMNi+duOmChNMdNcV7BGLjrPc3dfMM+ZXrRADwRwk9gQmIk9fyldZ8raTbfsY
-         +OoZL6gEZ+O+mW/cguLPp4m+bFPF2MyxCw8213plzO16nE+FM2d/mwgx1v89BPTVDE0A
-         onNVGJZK10OLklPw6MDZurhbTKsl32XQFTgDk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=ZZVwlxeqmX6G0EA/Mr693geGtRjCRxDovI8UeX3tF/E=;
-        b=QJKqhDbj81BwAgO5OHXfh7cyjN8RXjv7YRSVij7lG7tKM1BKad1RKb37p3oecdk9Pc
-         2j6H7tkZB+0FUPZTVV5Cjg60ert5VCzoOzqjDxPnziPMpz4O3MSm+DzxtT0dlYzaC3L+
-         WULUxwlOwB8JNoVS6elZ9gLBQEe7JQS8iQjrQOu17WbrRHkdLfw5HzB+BsMEEIh8Lsut
-         GWE6UB3FuSMSzPOIE2WlPbrR28Wbyp1IARAobW0WdPLSUNOgBBAVzK8tWiXkl+PkqCHs
-         c1p+hEPuX8xg9KfYzhiEPdzb6/vqAKLswxYSFo6KHlou3bF2jGyGwpft9DzNO0Khr8tL
-         bPDA==
-X-Gm-Message-State: AOAM5300zhh8P8r78r3AMPt5hBAmO/r5f0eGIkXzkX+oXXNsN+gedELj
-        mCThnOpBVHqDZHstcfTHKARJOQ==
-X-Google-Smtp-Source: ABdhPJytm/cO+POWytM1rrXYfKAEreT3hfBCxb11O1PqsNQPR1Eago6islkfmq8GEVq+PzNlx90VdA==
-X-Received: by 2002:ac2:4158:: with SMTP id c24mr16372289lfi.109.1595431505679;
-        Wed, 22 Jul 2020 08:25:05 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id h21sm194610ljk.31.2020.07.22.08.25.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 08:25:05 -0700 (PDT)
-References: <87wo2vwxq6.fsf@cloudflare.com> <20200722144212.27106-1-kuniyu@amazon.co.jp> <87v9ifwq2p.fsf@cloudflare.com> <CA+FuTScto+Z_qgFxJBzhPUNEruAvKLSTL7-0AnyP-M6Gon_e5Q@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
-In-reply-to: <CA+FuTScto+Z_qgFxJBzhPUNEruAvKLSTL7-0AnyP-M6Gon_e5Q@mail.gmail.com>
-Date:   Wed, 22 Jul 2020 17:25:04 +0200
-Message-ID: <87tuxzwp0v.fsf@cloudflare.com>
+        id S1732876AbgGVPZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728812AbgGVPZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 11:25:28 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08FC4206F5;
+        Wed, 22 Jul 2020 15:25:26 +0000 (UTC)
+Date:   Wed, 22 Jul 2020 11:25:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        jbaron@akamai.com, mingo@redhat.com, kernel@axis.com,
+        corbet@lwn.net, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH] dynamic debug: allow printing to trace event
+Message-ID: <20200722112525.694880d3@oasis.local.home>
+In-Reply-To: <87eep3zmg9.fsf@jogness.linutronix.de>
+References: <20200721141105.16034-1-vincent.whitchurch@axis.com>
+ <20200721173045.540ae500@oasis.local.home>
+ <87eep3zmg9.fsf@jogness.linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 05:05 PM CEST, Willem de Bruijn wrote:
-> On Wed, Jul 22, 2020 at 11:02 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Wed, Jul 22, 2020 at 04:42 PM CEST, Kuniyuki Iwashima wrote:
->> > Can I submit a patch to net tree that rewrites udp[46]_lib_lookup2() to
->> > use only 'result' ?
->>
->> Feel free. That should make the conflict resolution even easier later
->> on.
->
-> Thanks for the detailed analysis, Jakub.
->
-> Would it be easier to fix this wholly in bpf-next, by introducing
-> reuseport_result there?
+On Wed, 22 Jul 2020 15:58:22 +0206
+John Ogness <john.ogness@linutronix.de> wrote:
 
-Did you mean replicating the Kuniyuki fix in bpf-next, or just
-introducing the intermediate 'reuseport_result' var?
+> >> +static void dynamic_printk(unsigned int flags, const char *fmt, ...)
+> >> +{
+> >> +	if (flags & _DPRINTK_FLAGS_TRACE) {
+> >> +		va_list args;
+> >> +
+> >> +		va_start(args, fmt);
+> >> +		/*
+> >> +		 * All callers include the KERN_DEBUG prefix to keep the
+> >> +		 * vprintk case simple; strip it out for tracing.
+> >> +		 */
+> >> +		dynamic_trace(fmt + strlen(KERN_DEBUG), args);  
+> 
+> Do we really need a separate tracing event for this? Why not just:
+> 
+>                 ftrace_vprintk(fmt + strlen(KERN_DEBUG), args);
 
-I'm assuming the former, so that the conflict resolving later on will
-reduce to selecting everything from bpf-next side.
+It must be an event, one that can be enabled or disabled separately
+from trace_printk().
 
-TBH, I don't what is the preferred way to handle it. Perhaps DaveM or
-Alexei/Daniel can say what would make their life easiest?
+If you are asking if this could be something like trace_printk(), which
+ftrace_vprintk() is. The reason for that nasty banner when people use
+trace_printk() is to keep developers from using it as their personal
+debugging tool in production.
+
+A trace_printk() can not be discretely disabled. It's either totally
+on, or totally off. And since it is used for debugging, if there's
+trace_printk()s all over the kernel, you will have to deal with the
+noise of everyone else's trace_printk(), making trace_printk() useless.
+
+Thus, NAK on using ftrace_vprintk() here.
+
+-- Steve
