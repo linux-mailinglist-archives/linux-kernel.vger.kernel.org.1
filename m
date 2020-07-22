@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0CB229529
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C7E22952B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731755AbgGVJi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:38:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:53116 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgGVJiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:38:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CDA11045;
-        Wed, 22 Jul 2020 02:38:54 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B76023F66F;
-        Wed, 22 Jul 2020 02:38:52 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        dietmar.eggemann@arm.com, catalin.marinas@arm.com,
-        sudeep.holla@arm.com, will@kernel.org, linux@armlinux.org.uk
-Cc:     mingo@redhat.com, peterz@infradead.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH v2 7/7] cpufreq: make schedutil the default for arm and arm64
-Date:   Wed, 22 Jul 2020 10:37:32 +0100
-Message-Id: <20200722093732.14297-8-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200722093732.14297-1-ionela.voinescu@arm.com>
-References: <20200722093732.14297-1-ionela.voinescu@arm.com>
+        id S1731090AbgGVJkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgGVJkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 05:40:13 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C41C0619DC;
+        Wed, 22 Jul 2020 02:40:13 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 8so898990pjj.1;
+        Wed, 22 Jul 2020 02:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BTqwNESkYaInlEDNf57EMyqM2P7fZXzlbKUeW0yvUD4=;
+        b=o4iNIqmLE3FMfgb+OrQxj1Mvl7e5Ktc/ApMTal4syItnYfN0BAe2XnpaUzhm0rM0k/
+         XF1Q2fnTdqMsgjbVIP/xo53gFE1AJYhE5Eo8og5XjkOhmuR9h9egGUwT4ECUIIBG13ZS
+         As+Cd5uLnkVzWNsqBTWaHQivC+6Vj7wZdg15/11Sh3S/aoVPw4ktv5ekYAcuEHsCIsfx
+         qsYTU3fjpLaJGJOxz4tfEic4/iu8d9kIG/tgkhP3ozEwJyJ+YapN6sygf1Pg9MGeDKcb
+         UmcFjl+6MH0IkTRQ5ItaxJh/2iuq1N3ACESAfcFIoCE6AN1qOA3ghtea5XYGqQhDHvN0
+         2LRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BTqwNESkYaInlEDNf57EMyqM2P7fZXzlbKUeW0yvUD4=;
+        b=gTZTmvCWVfqjAQ9QmfqA8dG3oA8tsGyngIXp9qxVNL2AexNUtbDaNPXbOIP4IfW66B
+         pmtoT+W7VCBShE6nTHZNsnR/tjR329VaFonV0E2Krvq+iXX4UjYS+imajZ96F4kn8DOm
+         v9ooAkwAZIAEunHPZFe1m+GhvTqZRvdhJXHPPFmvccvSXSroxqSLm/e0vHAI5os94sFh
+         x9xNzPY+JVPxvNGnPG8dWu6coONl5H1tmIhaYsDICaFm6LgCpvq5o2Ujyv3OKONnPNaR
+         dzpGueLt1zbrXzMO12PfRY+vlBUzFiLbLsA2wu5MNSsLoVaWETHon7zkinHXPWf30vXj
+         V2Ww==
+X-Gm-Message-State: AOAM530zZ/TaVmudAUY8HCWRmX35T4RGsYBAOvx3udTxjFPx7YdEmC4B
+        bsRgmI6FanGb+WD5Xh6KfvS1mmgTYsQ=
+X-Google-Smtp-Source: ABdhPJwA3Tif2dJS3Jcbh7lrpxlRuo7QjIrMiXPTHfBnLUzHEC1t1fuB4Qd3JlCqC057HkVnUJsnuA==
+X-Received: by 2002:a17:902:7790:: with SMTP id o16mr23785608pll.299.1595410812927;
+        Wed, 22 Jul 2020 02:40:12 -0700 (PDT)
+Received: from ?IPv6:2409:4072:6418:58eb:d028:8959:a8a3:a7bc? ([2409:4072:6418:58eb:d028:8959:a8a3:a7bc])
+        by smtp.gmail.com with ESMTPSA id g5sm5959977pjl.31.2020.07.22.02.40.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 02:40:12 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] iio: gyro: Add driver support for ADXRS290
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        darius.berghe@analog.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+References: <20200721181926.27046-1-nish.malpani25@gmail.com>
+ <CAHp75Vdr+Uo2uw3mzYP+LMRgp-eyi+YjG=O+wGVqyYx-+MRCaw@mail.gmail.com>
+ <7ba8469a-dd8c-1686-6d26-e2a4cbfedce9@gmail.com>
+ <CAHp75VdYVC9n7-2MH62J46N0p+sNSE9QVwonor5QfdnvL4hoLg@mail.gmail.com>
+From:   Nishant Malpani <nish.malpani25@gmail.com>
+Message-ID: <5cb55101-af5c-b6a2-d770-9717f8a463cc@gmail.com>
+Date:   Wed, 22 Jul 2020 15:10:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VdYVC9n7-2MH62J46N0p+sNSE9QVwonor5QfdnvL4hoLg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
 
-schedutil is already a hard-requirement for EAS, which has lead to making
-it default on arm (when CONFIG_BIG_LITTLE), see:
+On 22/07/20 3:08 am, Andy Shevchenko wrote:
+> On Tue, Jul 21, 2020 at 11:35 PM Nishant Malpani
+> <nish.malpani25@gmail.com> wrote:
+>> On 22/07/20 1:16 am, Andy Shevchenko wrote:
+>>> On Tue, Jul 21, 2020 at 9:20 PM Nishant Malpani
+>>> <nish.malpani25@gmail.com> wrote:
+> 
+> ...
+> 
+>>>> +               *vals = (const int *)adxrs290_lpf_3db_freq_tbl;
+>>>
+>>> Why casting?
+>>>
+>> adxrs290_lpf_3db_freq_tbl is of type (int *)[2], right? Without the
+>> casting, an incompatible-pointer-type error is thrown.
+>>
+>>> ...
+>>>
+>>>> +               *vals = (const int *)adxrs290_hpf_3db_freq_tbl;
+>>>
+>>> Ditto.
+>>>
+>> See above comment.
+> 
+> Can't you declare table as const int?
+> 
+I'm not sure I understand you completely here; do you mean const int *? 
+So, an array of alternate integer and fractional parts? I suppose that's 
+possible but we'd be introducing unwanted complexity I feel - for 
+example, currently the index of the 3db frequency in the table is used 
+to directly map & set bits in the filter register corresponding to that 
+frequency but with the approach you share, we'd have to apply a 
+transformation (div by 2) to set the same bits in the filter register. 
+Do you think the added complexity justifies the removal of the casting?
 
-  commit 8fdcca8e254a ("cpufreq: Select schedutil when using big.LITTLE")
+> ...
+> 
+>>>> +       /* max transition time to measurement mode */
+>>>> +       msleep_interruptible(ADXRS290_MAX_TRANSITION_TIME_MS);
+>>>
+>>> I'm not sure what the point of interruptible variant here?
+>>>
+>> I referred Documentation/timers/timers-howto.rst for this.
+>> My reasoning was shaped to use the interruptible variant because the
+>> transition settles in a time *less than* 100ms and since 100ms is quite
+>> a huge time to sleep, it should be interrupted in case a signal arrives.
+> 
+> This is probe of the device,
+> What are the expectations here?
+> 
+I fail to understand why this can't be used in the probe() but perhaps 
+in a routine to standby/resume. Could you please elaborate?
 
-One thing worth pointing out is that schedutil isn't only relevant for
-asymmetric CPU capacity systems; for instance, schedutil is the only
-governor that honours util-clamp performance requests. Another good example
-of this is x86 switching to using it by default in:
-
-  commit a00ec3874e7d ("cpufreq: intel_pstate: Select schedutil as the default governor")
-
-Arguably it should be made the default for all architectures, but it seems
-better to wait for them to also gain frequency invariance powers. Make it
-the default for arm && arm64 for now.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index e91750132552..2c7171e0b001 100644
---- a/drivers/cpufreq/Kconfig
-+++ b/drivers/cpufreq/Kconfig
-@@ -37,7 +37,7 @@ config CPU_FREQ_STAT
- choice
- 	prompt "Default CPUFreq governor"
- 	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
--	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if BIG_LITTLE
-+	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
- 	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
- 	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
- 	help
--- 
-2.17.1
-
+With regards,
+Nishant Malpani
