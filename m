@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF5222A2CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD0322A2D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733086AbgGVXDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 19:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        id S1729843AbgGVXIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 19:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgGVXDV (ORCPT
+        with ESMTP id S1726447AbgGVXIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 19:03:21 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269D6C0619DC;
-        Wed, 22 Jul 2020 16:03:21 -0700 (PDT)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id D28885C3C5A;
-        Thu, 23 Jul 2020 01:03:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1595458998;
+        Wed, 22 Jul 2020 19:08:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8538DC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 16:08:44 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595459322;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bdMZJqRkVGvuWEDFrcGlBP7yBOdaxQVCDcUt6SHzHQg=;
-        b=cKt3xtSu46nk8Lwaf8+GZ04qFypC6ZpJQSjGkh8auUvRnBlnXOgNRKPBh5ewMryAh+/0qy
-        +6BxM/HIGRpokoTk/d0r4vUcn09Aw/h/YydoIkfL7XTX6k0KJDuKZ9ynSWyE1hIcBuXlzN
-        Q/2hK0IdSNKG/WqSSB7KyHTgvS6dcUI=
+        bh=WyEi4r6pHlCnjds15Evf4SyPGIdz2gkscTmxlZ56a7c=;
+        b=0VIdlQaYmuU15xJKR2Vpu8IZRz4nGtHhg8vfaQlvdhVSw+gcedvuz9juuJ2Mfcgx7trj4X
+        kbQwll7FYVjPNFGijxlpSc2RiWrM4y6VSLSVMhdp7sD1aW1N3q6cRap0AaNBEEkj3N9WCs
+        tl34aWpmmKv7kaVT5q7SpQdjRRbDvKOxMQt8TC2TYTbwo8v+GLGu3FhGn23e+oJEPUeFb4
+        atu/+nq4gdgQ3zkiR+l+HVGP/Gd4rLOVZNbFZ+EhSkW6xWMuda+VVKryw/PVrEyn06hHhN
+        zORjEhukzQw/gufdOpxK5k9zEad0IWjYw83raD4ZyNd4HGDhfLtpGPeg9oISjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595459322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WyEi4r6pHlCnjds15Evf4SyPGIdz2gkscTmxlZ56a7c=;
+        b=2PJLzQX5a1QOkaKYxq4l13cl5Zpw5jHy6laMnbmQ2JW1XUOLxYwXKK1aNkm9iQpfwwWxzB
+        fIy/OIU1EhYvkkBw==
+To:     Dennis Zhou <dennis@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3 00/11] i386 Clang support
+In-Reply-To: <20200721222754.GA820494@google.com>
+References: <20200720204925.3654302-1-ndesaulniers@google.com> <20200721222754.GA820494@google.com>
+Date:   Thu, 23 Jul 2020 01:08:42 +0200
+Message-ID: <87blk7ywp1.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 23 Jul 2020 01:03:18 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     Christian Hewitt <christianshewitt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dongjin Kim <tobetter@hardkernel.com>
-Subject: Re: [PATCH 3/3] arm64: dts: meson: add support for the ODROID-N2+
-In-Reply-To: <20200719141034.8403-4-christianshewitt@gmail.com>
-References: <20200719141034.8403-1-christianshewitt@gmail.com>
- <20200719141034.8403-4-christianshewitt@gmail.com>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <9e2894b3ad0311dcd8179237305d1cd5@agner.ch>
-X-Sender: stefan@agner.ch
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+Dennis Zhou <dennis@kernel.org> writes:
+> On Mon, Jul 20, 2020 at 01:49:14PM -0700, Nick Desaulniers wrote:
+>> Resend of Brian's v2 with Acks from Peter and Linus collected, as well
+>> as the final patch (mine) added. The commit of the final patch discusses
+>> some of the architectural differences between GCC and Clang, and the
+>> kernels tickling of this difference for i386, which necessitated these
+>> patches.
+>> 
+>> Brian Gerst (10):
+>>   x86/percpu: Introduce size abstraction macros
+>>   x86/percpu: Clean up percpu_to_op()
+>>   x86/percpu: Clean up percpu_from_op()
+>>   x86/percpu: Clean up percpu_add_op()
+>>   x86/percpu: Remove "e" constraint from XADD
+>>   x86/percpu: Clean up percpu_add_return_op()
+>>   x86/percpu: Clean up percpu_xchg_op()
+>>   x86/percpu: Clean up percpu_cmpxchg_op()
+>>   x86/percpu: Clean up percpu_stable_op()
+>>   x86/percpu: Remove unused PER_CPU() macro
+>> 
+>> Nick Desaulniers (1):
+>>   x86: support i386 with Clang
+>> 
+>>  arch/x86/include/asm/percpu.h  | 510 +++++++++++----------------------
+>>  arch/x86/include/asm/uaccess.h |   4 +-
+>>  2 files changed, 175 insertions(+), 339 deletions(-)
+>> 
+>> -- 
+>> 2.28.0.rc0.105.gf9edc3c819-goog
+>> 
+>
+> This looks great to me! I applied it to for-5.9.
 
-On 2020-07-19 16:10, Christian Hewitt wrote:
-> HardKernel ODROID-N2+ uses an Amlogic S922X rev. C chip capable of higher
-> clock speeds than the original ODROID-N2. Hardkernel supports the big cpu
-> cluster at 2.4GHz and the little cpu cluster at 2.0GHz. Opp points and
-> regulator changess are from the HardKernel Linux kernel sources.
+You applied it? I'm not aware that you're maintaining x86 nowadays.
 
-According to the ODROID wiki those values are already in the
-overclocking range:
-https://wiki.odroid.com/odroid-n2/hardware/overclocking
+Thanks,
 
-From what I can tell, for ODROID-N2 upstream Linux so far used defaults
-from meson-g12b-s922x.dtsi, which were 1896MHz for the A53 and 1704MHz
-for the A73 (so it seems currently the A73 running even 100MHz below
-"Stock").
-
-I guess we should pick either Stock or Overclock for the two models.
-Unless there is another good reason not to?
-
---
-Stefan
-
-> 
-> Suggested-by: Dongjin Kim <tobetter@hardkernel.com>
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
->  arch/arm64/boot/dts/amlogic/Makefile          |  1 +
->  .../dts/amlogic/meson-g12b-odroid-n2-plus.dts | 53 +++++++++++++++++++
->  2 files changed, 54 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/Makefile
-> b/arch/arm64/boot/dts/amlogic/Makefile
-> index 5cac4d1d487d..6dc508b80133 100644
-> --- a/arch/arm64/boot/dts/amlogic/Makefile
-> +++ b/arch/arm64/boot/dts/amlogic/Makefile
-> @@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
-> +dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2-plus.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12b-ugoos-am6.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-kii-pro.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-nanopi-k2.dtb
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> new file mode 100644
-> index 000000000000..99e96be509f8
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-> @@ -0,0 +1,53 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2019 BayLibre, SAS
-> + * Author: Neil Armstrong <narmstrong@baylibre.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "meson-g12b-odroid-n2.dtsi"
-> +
-> +/ {
-> +	compatible = "hardkernel,odroid-n2-plus", "amlogic,s922x", "amlogic,g12b";
-> +	model = "Hardkernel ODROID-N2+";
-> +
-> +	vddcpu_a: regulator-vddcpu-a {
-> +		regulator-min-microvolt = <680000>;
-> +		regulator-max-microvolt = <1040000>;
-> +
-> +		pwms = <&pwm_ab 0 1500 0>;
-> +	};
-> +
-> +	vddcpu_b: regulator-vddcpu-b {
-> +		regulator-min-microvolt = <680000>;
-> +		regulator-max-microvolt = <1040000>;
-> +
-> +		pwms = <&pwm_AO_cd 1 1500 0>;
-> +	};
-> +
-> +	cpu_opp_table_0: opp-table-0 {
-> +		opp-1908000000 {
-> +			opp-hz = /bits/ 64 <1908000000>;
-> +			opp-microvolt = <1030000>;
-> +		};
-> +
-> +		opp-2016000000 {
-> +			opp-hz = /bits/ 64 <2016000000>;
-> +			opp-microvolt = <1040000>;
-> +		};
-> +	};
-> +
-> +	cpub_opp_table_1: opp-table-1 {
-> +		opp-2304000000 {
-> +			opp-hz = /bits/ 64 <2304000000>;
-> +			opp-microvolt = <1030000>;
-> +		};
-> +
-> +		opp-2400000000 {
-> +			opp-hz = /bits/ 64 <2400000000>;
-> +			opp-microvolt = <1040000>;
-> +		};
-> +	};
-> +};
-> +
+        tglx
