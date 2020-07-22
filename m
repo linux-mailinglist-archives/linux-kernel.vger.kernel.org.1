@@ -2,125 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6DF22900E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BCD229011
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgGVFqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 01:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbgGVFqk (ORCPT
+        id S1728147AbgGVFsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 01:48:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3598 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726696AbgGVFsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:46:40 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B162C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:46:40 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s189so592414pgc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c3WKCCywdgvLGCz57S7am54sr0h7w7V/JrEMUHUMU/o=;
-        b=fCuEEXu++BATZZEgu63jyhgE+Y1XNFfh/hfRTuYGDp7tRoc6LbkGOtZmRlJEX0Q4mc
-         58Wx5DrHLgqWGA15ODfmp4BD+A6kqkaXmwBVAcQy7tZT4nC6LrgGJ3lzv06Ej9jur88k
-         XGQBpKOytzyljGp9JTo/2ytrZBP2jJniHbB1MwjDRZhque2NwdZ0aWGsgryRqU+3DE9U
-         m+vgwzNJSvheMii7MxNhJxPUYaZbP4XIj428wVkVonkWkFnWlNi3Hd/UlX/sByadTgHP
-         sXR0VV6uQ74NOk6fTFxzR7f22jvf+xzhKswTeZHjL411qPbZeON+M2WgzsdrCjh868sb
-         i6BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=c3WKCCywdgvLGCz57S7am54sr0h7w7V/JrEMUHUMU/o=;
-        b=jRkuC/v/F5Tj0AZz+3naoWfl++jrWNsGvbu56QzOb+BehDedyFpMkH11GpXA74ko5j
-         0K5PBnJzjMzf9ANkD0OYcgE82fLHxLlf1yFdfDv2DPcSLvVdCsdfAu8x3MgUGYNdIkjB
-         XtvkTHjSYubMfkFOgTxbqQuWsEfEMDxgDpcn8YQQL0JqQvuTehslgLUl8nwd/F7TWRbY
-         h6eKn/iAmI2pGnBTHrhWrBLSweKdezz2022fy+3g11K68kBMYvgz2AfDhk3yGGk6FmiG
-         /JdYBOkJhV+LtlmMpLNLLmSXBzw737DRZyxyqv6+ZS0YvOBxY0xbVeqyyXG14zaI5zAk
-         idKQ==
-X-Gm-Message-State: AOAM533k2Qv+yWgayPj2IDJiJam/9ihKSyDcrD2QW2EzJyzeV/43SrgC
-        yA2UzOZPs8UGpjwGM0MfsLNBqg==
-X-Google-Smtp-Source: ABdhPJwR06FNegYVsAU8o74hwv373Yq9KlDunC4jItd8mIVMPn3zgJSHBlM3MLtzBDjvCEtSQnV5Fg==
-X-Received: by 2002:a62:7505:: with SMTP id q5mr25490271pfc.262.1595396799507;
-        Tue, 21 Jul 2020 22:46:39 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id r16sm22153983pfh.64.2020.07.21.22.46.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 22:46:38 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 22:46:38 -0700 (PDT)
-X-Google-Original-Date: Tue, 21 Jul 2020 22:46:37 PDT (-0700)
-Subject:     Re: [PATCH v5 1/4] riscv: Move kernel mapping to vmalloc zone
-In-Reply-To: <87sgdkqhjx.fsf@mpe.ellerman.id.au>
-CC:     benh@kernel.crashing.org, alex@ghiti.fr, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>, zong.li@sifive.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-mm@kvack.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     mpe@ellerman.id.au
-Message-ID: <mhng-378c6e4e-9eba-4bfd-89d6-b4d2549ff3a1@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 22 Jul 2020 01:48:40 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06M5WOY3004944;
+        Wed, 22 Jul 2020 01:48:28 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vve1np-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 01:48:28 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06M5ZF1K012186;
+        Wed, 22 Jul 2020 01:48:28 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1vve1ne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 01:48:28 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06M5k5Wb022676;
+        Wed, 22 Jul 2020 05:48:27 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 32d5dq7g4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 05:48:27 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06M5mP5H48496980
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 05:48:25 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E41B124054;
+        Wed, 22 Jul 2020 05:48:25 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9A28124052;
+        Wed, 22 Jul 2020 05:48:24 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.82.72])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Jul 2020 05:48:24 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 101B02E3C48; Wed, 22 Jul 2020 11:18:20 +0530 (IST)
+Date:   Wed, 22 Jul 2020 11:18:19 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <michaele@au1.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Piggin <npiggin@au1.ibm.com>,
+        Oliver OHalloran <oliveroh@au1.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@linux.ibm.com>,
+        Anton Blanchard <anton@au1.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v2 02/10] powerpc/smp: Merge Power9 topology with Power
+ topology
+Message-ID: <20200722054819.GB31038@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200721113814.32284-1-srikar@linux.vnet.ibm.com>
+ <20200721113814.32284-3-srikar@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721113814.32284-3-srikar@linux.vnet.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_02:2020-07-21,2020-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007220036
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 21:50:42 PDT (-0700), mpe@ellerman.id.au wrote:
-> Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
->> On Tue, 2020-07-21 at 16:48 -0700, Palmer Dabbelt wrote:
->>> > Why ? Branch distance limits ? You can't use trampolines ?
->>>
->>> Nothing fundamental, it's just that we don't have a large code model in the C
->>> compiler.  As a result all the global symbols are resolved as 32-bit
->>> PC-relative accesses.  We could fix this with a fast large code model, but then
->>> the kernel would need to relax global symbol references in modules and we don't
->>> even do that for the simple code models we have now.  FWIW, some of the
->>> proposed large code models are essentially just split-PLT/GOT and therefor
->>> don't require relaxation, but at that point we're essentially PIC until we
->>> have more that 2GiB of kernel text -- and even then, we keep all the
->>> performance issues.
->>
->> My memory might be out of date but I *think* we do it on powerpc
->> without going to a large code model, but just having the in-kernel
->> linker insert trampolines.
->
-> We build modules with the large code model, and always have AFAIK:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/powerpc/Makefile?commit=4fa640dc52302b5e62b01b05c755b055549633ae#n129
->
->   # -mcmodel=medium breaks modules because it uses 32bit offsets from
->   # the TOC pointer to create pointers where possible. Pointers into the
->   # percpu data area are created by this method.
->   #
->   # The kernel module loader relocates the percpu data section from the
->   # original location (starting with 0xd...) to somewhere in the base
->   # kernel percpu data space (starting with 0xc...). We need a full
->   # 64bit relocation for this to work, hence -mcmodel=large.
->   KBUILD_CFLAGS_MODULE += -mcmodel=large
+On Tue, Jul 21, 2020 at 05:08:06PM +0530, Srikar Dronamraju wrote:
+> A new sched_domain_topology_level was added just for Power9. However the
+> same can be achieved by merging powerpc_topology with power9_topology
+> and makes the code more simpler especially when adding a new sched
+> domain.
+> 
+> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Michael Ellerman <michaele@au1.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Nick Piggin <npiggin@au1.ibm.com>
+> Cc: Oliver OHalloran <oliveroh@au1.ibm.com>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Michael Neuling <mikey@linux.ibm.com>
+> Cc: Anton Blanchard <anton@au1.ibm.com>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+> Cc: Jordan Niethe <jniethe5@gmail.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+> Changelog v1 -> v2:
+> powerpc/smp: Merge Power9 topology with Power topology
+> 	Replaced a reference to cpu_smt_mask with per_cpu(cpu_sibling_map, cpu)
+> 	since cpu_smt_mask is only defined under CONFIG_SCHED_SMT
+> 
+>  arch/powerpc/kernel/smp.c | 33 ++++++++++-----------------------
+>  1 file changed, 10 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index 680c0edcc59d..0e0b118d9b6e 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -1315,7 +1315,7 @@ int setup_profiling_timer(unsigned int multiplier)
+>  }
+> 
+>  #ifdef CONFIG_SCHED_SMT
+> -/* cpumask of CPUs with asymetric SMT dependancy */
+> +/* cpumask of CPUs with asymmetric SMT dependency */
+>  static int powerpc_smt_flags(void)
+>  {
+>  	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
+> @@ -1328,14 +1328,6 @@ static int powerpc_smt_flags(void)
+>  }
+>  #endif
+> 
+> -static struct sched_domain_topology_level powerpc_topology[] = {
+> -#ifdef CONFIG_SCHED_SMT
+> -	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+> -#endif
+> -	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
+> -	{ NULL, },
+> -};
+> -
+>  /*
+>   * P9 has a slightly odd architecture where pairs of cores share an L2 cache.
+>   * This topology makes it *much* cheaper to migrate tasks between adjacent cores
+> @@ -1353,7 +1345,13 @@ static int powerpc_shared_cache_flags(void)
+>   */
+>  static const struct cpumask *shared_cache_mask(int cpu)
+>  {
+> -	return cpu_l2_cache_mask(cpu);
+> +	if (shared_caches)
+> +		return cpu_l2_cache_mask(cpu);
+> +
+> +	if (has_big_cores)
+> +		return cpu_smallcore_mask(cpu);
+> +
+> +	return per_cpu(cpu_sibling_map, cpu);
+>  }
 
-Well, a fast large code model would solve a lot of problems :).  Unfortunately
-we just don't have enough people working on this stuff to do that.  It's a
-somewhat tricky thing to do on RISC-V as there aren't any quick sequences for
-long addresses, but I don't think we're that much worse off than everyone else.
-At some point I had a bunch of designs written up, but they probably went along
-with my SiFive computer.  I think we ended up decided that the best bet would
-be to distribute constant tables throughout the text such that they're
-accessible via the 32-bit PC-relative loads at any point -- essentially the
-multi-GOT stuff that MIPS used for big objects.  Doing that well is a lot of
-work and doing it poorly is just as slow as PIC, so we never got around to it.
 
-> We also insert trampolines for branches, but IIUC that's a separate
-> issue.
+It might be helpful to enumerate the consequences of this change:
 
-"PowerPC branch trampolines" points me here
-https://sourceware.org/binutils/docs-2.20/ld/PowerPC-ELF32.html .  That sounds
-like what we're doing already in the medium code models: we have short and
-medium control transfer sequences, linker relaxation optimizes them when
-possible.  Since we rely on linker relaxation pretty heavily we just don't
-bother with the smaller code model: it'd be a 12-bit address space for data and
-a 21-bit address space for text (with 13-bit maximum function size).  Instead
-of building out such a small code model we just spent time improving the linker.
+With this patch, on POWER7 and POWER8
+
+   SMT and CACHE domains' cpumasks will both be
+   per_cpu(cpu_sibling_map, cpu).
+
+   On POWER7 SMT level flags has the following
+   (SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES | SD_ASYM_PACKING)
+
+   On POWER8 SMT level flags has the following
+   (SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES).
+
+   On both POWER7 and POWER8, CACHE level flags only has
+   SD_SHARE_PKG_RESOURCES
+
+   Thus, on both POWER7 and POWER8, since the SMT and CACHE cpumasks
+   are the same and since CACHE has no additional flags which SMT does
+   not, the parent domain CACHE will be degenerated.
+
+   Hence we will have SMT --> DIE --> NUMA as before without the
+   patch. So the patch introduces no behavioural change. Only change
+   is an additional degeneration of the CACHE domain.
+
+On POWER9 : Baremetal.
+   SMT level cpumask = per_cpu(cpu_sibling_map, cpu)
+
+   Since the caches are shared for a pair of two cores,
+   CACHE level cpumask = cpu_l2_cache_mask(cpu)
+
+   Thus, we will have SMT --> CACHE --> DIE --> NUMA as before.  No
+   behavioural change.
+
+On POWER9 : LPAR
+   SMT level cpumask = cpu_smallcore_mask(cpu).
+
+   Since the caches are shared,
+   CACHE level cpumask = cpu_l2_cache_mask(cpu).
+
+   Thus, we will have SMT --> CACHE --> DIE --> NUMA as before.  Again
+   no change in behaviour.
+
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+
+--
+Thanks and Regards
+gautham.
