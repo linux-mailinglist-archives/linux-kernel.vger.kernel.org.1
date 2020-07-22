@@ -2,175 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D10E229B5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62E9229B82
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732891AbgGVP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:28:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727778AbgGVP20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:28:26 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1732959AbgGVPdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732687AbgGVPdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 11:33:22 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF89C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=tnE2QcGso/BBm62aYkEJDg/K9hAdP+FR0nkIemAjNPY=; b=mk0PvoGfuFReIV2yyVnlhidasR
+        a997mjYi0WxNxvl+MT9nsYn+Uc1R8dfAZnGLrf4FfprDpc/7IPBevsKCSC5914HvkgrigxHS0gJp5
+        zP5Qt6KyF+HHXU5FiYeXP7+DHPXA40ph+Pa4KKX3GZALblrl4hvNC983o+nt6xjgKHxcNZl7eDVN/
+        RuLWa1cssBXaSo6tJCmKmeiTOwog42FSEc4HfhiboAQkQvbG8QY62JSr3kAgm8yAzYHXu4wKotHPL
+        VZNI/809+vAf09cLsLOQuQgCI20WZdCcCbzCwo3GWtwb4wxU7bMZlJyNGQdREaNThjiJmOB8zzNrY
+        AUvak30g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyGjw-0007sQ-VJ; Wed, 22 Jul 2020 15:33:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAE94207DD;
-        Wed, 22 Jul 2020 15:28:24 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 11:28:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        "jbaron@akamai.com" <jbaron@akamai.com>,
-        "mingo@redhat.com" <mingo@redhat.com>, kernel <kernel@axis.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH] dynamic debug: allow printing to trace event
-Message-ID: <20200722112823.3ba72d31@oasis.local.home>
-In-Reply-To: <20200722144952.2mewrgebgkyr2zyf@axis.com>
-References: <20200721141105.16034-1-vincent.whitchurch@axis.com>
-        <20200721173045.540ae500@oasis.local.home>
-        <87eep3zmg9.fsf@jogness.linutronix.de>
-        <20200722144952.2mewrgebgkyr2zyf@axis.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36E21307865;
+        Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 37EBD200D416D; Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
+Message-ID: <20200722150149.525408253@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 22 Jul 2020 17:01:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
+        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
+        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
+        oleg@redhat.com, peterz@infradead.org
+Subject: [RFC][PATCH 0/9] smp: irq_work / smp_call_function rework
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Jul 2020 16:49:52 +0200
-Vincent Whitchurch <vincent.whitchurch@axis.com> wrote:
+Hi,
 
->  Do we really need a separate tracing event for this? Why not just:
-> > 
-> >                 ftrace_vprintk(fmt + strlen(KERN_DEBUG), args);  
-> 
-> Thanks, I tried that out now and it seems to work, but it results in the
-> trace_printk() splat (even if the feature is not used), though:
-> 
->  **********************************************************
->  **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
->  **                                                      **
->  ** trace_printk() being used. Allocating extra memory.  **
->  **                                                      **
->  ** This means that this is a DEBUG kernel and it is     **
->  ** unsafe for production use.                           **
->  **                                                      **
->  ** If you see this message and you are not debugging    **
->  ** the kernel, report this immediately to your vendor!  **
->  **                                                      **
->  **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
->  **********************************************************
+Here are a number of patches that continue the irq_work / smp_call_function
+integration / cleanup.
 
-And that is done purposely. No DO NOT USE ftrace_vprintk()!!!
+One of the biggest warts in this area is smp_call_function_single_async(); it
+looks like a useful function but is incredibly hard to use correctly due to the
+test-and-set LOCK on the csd not being atomic. This means you need to be
+incredibly careful to not corrupt the csd.
 
-I explained why to John.
+Simple patterns like allowing any CPU to IPI any other CPU end up requiring
+nr_cpu^2 storage because of this.
 
-For you, I made this quick patch. If this works for you, I can make it
-into a formal patch. It includes a test use case in do_sys_openat2() to
-show the file name and file descriptor. Obviously, that wont be part of
-the final patch.
+On top of that the csd has external data, vs the more common internal/embedded
+data pattern.
 
-Thoughts?
+Now, irq_work has the embedded data pattern, but requires arch support for
+self-IPI. But because irq_work for remote CPUs relies on the smp_call_function
+infrastructure we can implement a generic irq_work_queue_remote().
 
--- Steve
+Then it goes a bit ugly, and I introduce irq_work_queue_remote_static() that is
+non-atomic in exactly the same way smp_call_function_single_async() is now, but
+at least it has embedded data. A few performance sensitive users of
+smp_call_function_single_async() are converted.
 
-diff --git a/fs/open.c b/fs/open.c
-index b69d6eed67e6..ea19478a2220 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -32,6 +32,7 @@
- #include <linux/ima.h>
- #include <linux/dnotify.h>
- #include <linux/compat.h>
-+#include <trace/events/printk.h>
- 
- #include "internal.h"
- 
-@@ -1127,6 +1128,15 @@ struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
- }
- EXPORT_SYMBOL(file_open_root);
- 
-+static void do_trace_vprintk(const char *fmt, ...)
-+{
-+	va_list ap;
-+
-+	va_start(ap, fmt);
-+	trace_vprintk(fmt, ap);
-+	va_end(ap);
-+}
-+
- static long do_sys_openat2(int dfd, const char __user *filename,
- 			   struct open_how *how)
- {
-@@ -1141,6 +1151,8 @@ static long do_sys_openat2(int dfd, const char __user *filename,
- 	if (IS_ERR(tmp))
- 		return PTR_ERR(tmp);
- 
-+	do_trace_vprintk("file=%s fd=%d\n", tmp->name, fd);
-+
- 	fd = get_unused_fd_flags(how->flags);
- 	if (fd >= 0) {
- 		struct file *f = do_filp_open(dfd, tmp, &op);
-diff --git a/include/trace/events/printk.h b/include/trace/events/printk.h
-index 13d405b2fd8b..60d9ca21acf9 100644
---- a/include/trace/events/printk.h
-+++ b/include/trace/events/printk.h
-@@ -31,6 +31,53 @@ TRACE_EVENT(console,
- 
- 	TP_printk("%s", __get_str(msg))
- );
-+
-+#ifndef __FIND_VPRINTK_LEN_H
-+#define __FIND_VPRINTK_LEN_H
-+/* The header is called multiple times, but this should not be */
-+static inline int find_vprintk_len(const char *fmt, va_list args)
-+{
-+	va_list va;
-+	int len;
-+
-+	va_copy(va, args);
-+	len = vsnprintf(NULL, 0, fmt, va);
-+	va_end(va);
-+	return len + 1;
-+}
-+#endif
-+
-+TRACE_EVENT(vprintk,
-+	TP_PROTO(const char *fmt, va_list args),
-+
-+	TP_ARGS(fmt, args),
-+
-+	TP_STRUCT__entry(
-+		__dynamic_array(char, msg, find_vprintk_len(fmt, args))
-+	),
-+
-+	TP_fast_assign(
-+		va_list ap;
-+		int len = find_vprintk_len(fmt, args);
-+
-+		va_copy(ap, args);
-+		len = vsnprintf(__get_str(msg), len, fmt, ap);
-+		va_end(ap);
-+		/*
-+		 * Each trace entry is printed in a new line.
-+		 * If the msg finishes with '\n', cut it off
-+		 * to avoid blank lines in the trace.
-+		 */
-+		if ((len > 0) && (__get_str(msg)[len-1] == '\n'))
-+			len -= 1;
-+
-+		__get_str(msg)[len] = 0;
-+	),
-+
-+	TP_printk("%s", __get_str(msg))
-+);
-+
-+
- #endif /* _TRACE_PRINTK_H */
- 
- /* This part must be outside protection */
+Finally, smp_call_function_single_async() is made safer by using an atomic
+test-and-set.
+
+TL;DR, I think at least the first few patches should go in the next round, but
+the rest can use some feedback.
+
