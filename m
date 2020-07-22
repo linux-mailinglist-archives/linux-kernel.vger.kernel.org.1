@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A359822923B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750D22923D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730457AbgGVHjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:39:04 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:35036 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730296AbgGVHjD (ORCPT
+        id S1730500AbgGVHjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:39:08 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:23413 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728992AbgGVHjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:39:03 -0400
+        Wed, 22 Jul 2020 03:39:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595403542; x=1626939542;
+  t=1595403545; x=1626939545;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=R+uFFyYA7jlvJSdHYMkGV8OUFOabhODqF7Yvyb39l44=;
-  b=ZPFeMx1zxH3drG+r2cHudXG/qrvsPZEGDejlSy8aYxnQgknG7RpAcw1j
-   rOBw9oVm4MD0lhfHX1dO5hekU1u9/Dut5dSBsfJFvjbbTz7lnRjEc18EC
-   D+yXbUNvjRh80dmj/cLTo7aFuh2I5MDFsT9shRB0jnsMpL7ClKPfId1YB
-   4UaM5mYMTjH23Dqd2CxkX9NhYvXkx3phbTdjggY8CVAWDzaAEDhAjMPl9
-   GhOiuYRPa9kbvklnbnpEt2tKZNHABn7CkVjQXkSUFsPQsGW1Rf8S3Mypt
-   a37g0TNfZABbu6h8lQOVkdEU28YDFoy6chVg0GR06fHOjwvReEA/TSMQK
-   w==;
-IronPort-SDR: bphNlZQWXoljoD0TKXO3B/cr+yO3qcdVFBWe07iuLAQ+tJefaEtvx9Wx3rwQZOBnMZdCDpJ4mi
- EsklkZFN0B1rGX91XvTpOMdUAdc8q4GV/6vWGGvSPIm+KlOhzsfj5470KYNaftN+CiO8FBb8I5
- Do/7u4kG/7EnMOFlVFidiUpz874q0RGlHCWERVO8Ic1lf5bdqkPiZXZB32HJdVb67AfD4HMySR
- c80/cZiJZK0Ybf7KPFgasRelDFPr9N6tLg7ksxtolFRuXD2W8kptu3Ek9YlHSwO2eM9Uw9GZ1n
- Ivo=
+  bh=Mx5qNI6SKDaX4fYwafSWV0rZJ0buUqtkfN1L0ooylh4=;
+  b=AuA8bZzrazf4INbBSn1AZ151V/atkRyz+CxU2V4RqYljssp5qfkJPhYI
+   R2Hhb/XRKDmoFr44KrcthWJXKH19Ha29/0Sd41OzgLul9dEE8LLdfkugW
+   VaxFt/uOXHA7PGDCWq9So1xDeD9BQ21gHXoiCTdtC6VD7S9vZ/igTseeI
+   oxc69XAMN2XWmzyHK2/vvdPRJoFtLLqY/fgB5p7MpaHAuI6jFShx0JnEj
+   6q8sUspZPvR1+JlR0MTcWS5K4ZX2I5Jlhmlr/vF0rdgNM0pGWsMPnHqyr
+   rJdascjEaVON1gOe0glXxMykXIePvBahZBMu5JMkETY6o56RK6NEribqg
+   Q==;
+IronPort-SDR: 3JVOmTzegiMdw7xKa1Oy2vF4zOhLsZwXATLgyg9msS8rOLs0WfTGT+W+6Ma9nPcDyVoZ7EwjRA
+ WkERcVEwkuP7qfPeTmUw9xAMpJbplt63ITHNz55fxxv8pe33gll4zgoxkI0aZ1u6PKVbn81qTl
+ OxItQfq4G58Q7rHoLpyQ8VvbvYrV0Fifmyv2jCrPXORkN8FchCZA0K6YKvhFIQGvKksJXeVaTl
+ 8XfuQYkLOP0syVaNOy6VNq36OAitp8wUu4KdFzl4eEo4Ni3IYMpQlsT1az+PJ+PUZgvknuGVUh
+ iDY=
 X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
-   d="scan'208";a="20120823"
+   d="scan'208";a="82772070"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:00 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:04 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 00:38:22 -0700
+ 15.1.1979.3; Wed, 22 Jul 2020 00:39:03 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:38:57 -0700
+ 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:39:00 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         "Claudiu Beznea" <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 08/18] clk: at91: sckc: register slow_rc with accuracy option
-Date:   Wed, 22 Jul 2020 10:38:16 +0300
-Message-ID: <1595403506-8209-9-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 09/18] clk: at91: replace conditional operator with double logical not
+Date:   Wed, 22 Jul 2020 10:38:17 +0300
+Message-ID: <1595403506-8209-10-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
@@ -62,35 +62,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chapter 57.7.5 of SAM9X60 datasheet specifies that the maximum drift of
-this oscillator is +- 3KHz. Use that value and the formula at [1]
-or the calculator at [2] to compute the PPB value.
+Replace conditional operator with double logical not as code
+may be simpler to read.
 
-[1] https://www.everythingrf.com/rf-calculators/ppm-to-hz-calculator
-[2] https://www.changpuak.ch/electronics/ppm_to_Hz_converter.php
-
-Fixes: 04bcc4275e601 ("clk: at91: sckc: add support for SAM9X60")
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/clk/at91/sckc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/clk/at91/clk-generated.c  | 2 +-
+ drivers/clk/at91/clk-main.c       | 6 +++---
+ drivers/clk/at91/clk-master.c     | 2 +-
+ drivers/clk/at91/clk-peripheral.c | 2 +-
+ drivers/clk/at91/clk-system.c     | 4 ++--
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/at91/sckc.c b/drivers/clk/at91/sckc.c
-index 15dc4cd86d76..2d65770d8665 100644
---- a/drivers/clk/at91/sckc.c
-+++ b/drivers/clk/at91/sckc.c
-@@ -471,8 +471,9 @@ static void __init of_sam9x60_sckc_setup(struct device_node *np)
- 	if (!regbase)
- 		return;
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index f8e557e0e1b8..2448bdc63425 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -83,7 +83,7 @@ static int clk_generated_is_enabled(struct clk_hw *hw)
+ 	regmap_read(gck->regmap, gck->layout->offset, &status);
+ 	spin_unlock_irqrestore(gck->lock, flags);
  
--	slow_rc = clk_hw_register_fixed_rate(NULL, parent_names[0], NULL, 0,
--					     32768);
-+	slow_rc = clk_hw_register_fixed_rate_with_accuracy(NULL, parent_names[0],
-+							   NULL, 0, 32768,
-+							   93750000);
- 	if (IS_ERR(slow_rc))
- 		return;
+-	return status & AT91_PMC_PCR_GCKEN ? 1 : 0;
++	return !!(status & AT91_PMC_PCR_GCKEN);
+ }
  
+ static unsigned long
+diff --git a/drivers/clk/at91/clk-main.c b/drivers/clk/at91/clk-main.c
+index 37c22667e831..5c83e899084f 100644
+--- a/drivers/clk/at91/clk-main.c
++++ b/drivers/clk/at91/clk-main.c
+@@ -175,7 +175,7 @@ static bool clk_main_rc_osc_ready(struct regmap *regmap)
+ 
+ 	regmap_read(regmap, AT91_PMC_SR, &status);
+ 
+-	return status & AT91_PMC_MOSCRCS;
++	return !!(status & AT91_PMC_MOSCRCS);
+ }
+ 
+ static int clk_main_rc_osc_prepare(struct clk_hw *hw)
+@@ -336,7 +336,7 @@ static int clk_rm9200_main_is_prepared(struct clk_hw *hw)
+ 
+ 	regmap_read(clkmain->regmap, AT91_CKGR_MCFR, &status);
+ 
+-	return status & AT91_PMC_MAINRDY ? 1 : 0;
++	return !!(status & AT91_PMC_MAINRDY);
+ }
+ 
+ static unsigned long clk_rm9200_main_recalc_rate(struct clk_hw *hw,
+@@ -398,7 +398,7 @@ static inline bool clk_sam9x5_main_ready(struct regmap *regmap)
+ 
+ 	regmap_read(regmap, AT91_PMC_SR, &status);
+ 
+-	return status & AT91_PMC_MOSCSELS ? 1 : 0;
++	return !!(status & AT91_PMC_MOSCSELS);
+ }
+ 
+ static int clk_sam9x5_main_prepare(struct clk_hw *hw)
+diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
+index e7e0ba652de1..88d545b1698c 100644
+--- a/drivers/clk/at91/clk-master.c
++++ b/drivers/clk/at91/clk-master.c
+@@ -33,7 +33,7 @@ static inline bool clk_master_ready(struct regmap *regmap)
+ 
+ 	regmap_read(regmap, AT91_PMC_SR, &status);
+ 
+-	return status & AT91_PMC_MCKRDY ? 1 : 0;
++	return !!(status & AT91_PMC_MCKRDY);
+ }
+ 
+ static int clk_master_prepare(struct clk_hw *hw)
+diff --git a/drivers/clk/at91/clk-peripheral.c b/drivers/clk/at91/clk-peripheral.c
+index c2ab4860a2bf..4c9a4147dfe5 100644
+--- a/drivers/clk/at91/clk-peripheral.c
++++ b/drivers/clk/at91/clk-peripheral.c
+@@ -208,7 +208,7 @@ static int clk_sam9x5_peripheral_is_enabled(struct clk_hw *hw)
+ 	regmap_read(periph->regmap, periph->layout->offset, &status);
+ 	spin_unlock_irqrestore(periph->lock, flags);
+ 
+-	return status & AT91_PMC_PCR_EN ? 1 : 0;
++	return !!(status & AT91_PMC_PCR_EN);
+ }
+ 
+ static unsigned long
+diff --git a/drivers/clk/at91/clk-system.c b/drivers/clk/at91/clk-system.c
+index c4b3877aa445..f83ec0de86c3 100644
+--- a/drivers/clk/at91/clk-system.c
++++ b/drivers/clk/at91/clk-system.c
+@@ -34,7 +34,7 @@ static inline bool clk_system_ready(struct regmap *regmap, int id)
+ 
+ 	regmap_read(regmap, AT91_PMC_SR, &status);
+ 
+-	return status & (1 << id) ? 1 : 0;
++	return !!(status & (1 << id));
+ }
+ 
+ static int clk_system_prepare(struct clk_hw *hw)
+@@ -74,7 +74,7 @@ static int clk_system_is_prepared(struct clk_hw *hw)
+ 
+ 	regmap_read(sys->regmap, AT91_PMC_SR, &status);
+ 
+-	return status & (1 << sys->id) ? 1 : 0;
++	return !!(status & (1 << sys->id));
+ }
+ 
+ static const struct clk_ops system_ops = {
 -- 
 2.7.4
 
