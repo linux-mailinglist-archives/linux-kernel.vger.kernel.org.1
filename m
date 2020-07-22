@@ -2,232 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E90D22A204
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23A722A1CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730750AbgGVWMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 18:12:55 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:39130 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733156AbgGVWMv (ORCPT
+        id S1732998AbgGVWLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 18:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgGVWLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 18:12:51 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MM6NwC027312;
-        Wed, 22 Jul 2020 15:12:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0818;
- bh=Ssj4J4qySheODq3g8D9MIv3C9Zs4Q9sn3HtKtpEr3Pc=;
- b=OyyvejPfiz52NLhxS51C3ta+UCJWNxNrKUgRzDJ0XoheInoAp+A4MiAViZsRX8e4etb4
- 6SC7NU763s4Ee3AEjwZm7UGCjN2n70Lubx2gk/W41gRrOdslMy2SFljpMNAXha9vAwg0
- J9INMhEcIt3IhRxYhqZOSpnaeUa1JXomW0heVMW/YqMK0WJIJf+tjDwZ17JzW8Zo1gDF
- CZELG3b83UXUaJv54/RK6Z/hEubw2XeICvDT60iYOoUCQQ4eCCYQVygbylMNP4PhJitn
- 8D6LC8BZBs0kPxYfvN+qb/ty07P9mzWURFPsGSu+PXALGF9etMytIezvqK8zk5mrHmn2 Bg== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 32bxentxa8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 15:12:35 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Jul
- 2020 15:12:34 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Jul 2020 15:12:34 -0700
-Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
-        by maili.marvell.com (Postfix) with ESMTP id E97F53F7040;
-        Wed, 22 Jul 2020 15:12:27 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Alexander Lobakin <alobakin@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        "Ariel Elior" <aelior@marvell.com>,
-        Denis Bolotin <denis.bolotin@marvell.com>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 net-next 13/15] qede: reformat net_device_ops declarations
-Date:   Thu, 23 Jul 2020 01:10:43 +0300
-Message-ID: <20200722221045.5436-14-alobakin@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200722221045.5436-1-alobakin@marvell.com>
-References: <20200722221045.5436-1-alobakin@marvell.com>
+        Wed, 22 Jul 2020 18:11:05 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8921DC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 15:11:04 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id u12so2213426lff.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 15:11:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mKcnks++BVJckGT27RdKRDX4KPgvtTbjBQBJPx6EVtE=;
+        b=HfjxMSNXOBFs72NZQwzgLB+n1HTdUhb2cUmrKtKW+8eiwn4OoCtnYZdYaBLyuKrcQk
+         UfOFr2okT+3ozHOJ2IfVHuWgMZEiY+vOc8DmYBkD/QLBRZQfVAs94sB2DMASW5ElGu2q
+         P25unJrMLZmaAUjrKbNr8RMGKLunq02CX9d4s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mKcnks++BVJckGT27RdKRDX4KPgvtTbjBQBJPx6EVtE=;
+        b=Jf+e5iFKL5zj4MqLUaAmMLorS76CiFnrJw1SUPZwlxkhaet9Pauj4FHrlFIRmKWACJ
+         Q7ShBZTef0lSL7nlG+OTP29KolTlpx8A5BpYCPBCtVqcUpDDoL38M8IoRxi3RfXcFlmG
+         kcmMfhNzDROIZEoGaYWlGOR3r//CJx91ZfEiVJEZ/kTh37hIq1D4vDC4WkOLDmJZKv8k
+         nctOblvJdABifkUsSvFIYbdxUgqb1YVcsU6/d1K/AQcjE7bau/9S/fp1rAclnGNgjjcU
+         q97WhBSfY+ebeNdMl/zkFJB+akSMGqnJ7grxyvE5k+uKhckJHNtVg05Uv6xHIKh+szV+
+         Cpqg==
+X-Gm-Message-State: AOAM530gmuoWAH5INaXlBvsYtA/ctE9TJei1xuIm8KwqATgB9n2e0oGZ
+        HRE+EG8awONpc9FipgJB9lWaPtM+5K4=
+X-Google-Smtp-Source: ABdhPJxosU6FFBca4Dy+IoqpqG0yo77BQOCFrM+6ZRl7XhjF/jxsCAkYPKSmF/NQPqcgGZ2345Sivw==
+X-Received: by 2002:a05:6512:74b:: with SMTP id c11mr654342lfs.119.1595455862650;
+        Wed, 22 Jul 2020 15:11:02 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id 2sm893935lfr.48.2020.07.22.15.11.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 15:11:01 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id b30so2185137lfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 15:11:01 -0700 (PDT)
+X-Received: by 2002:ac2:58d5:: with SMTP id u21mr673351lfo.31.1595455860915;
+ Wed, 22 Jul 2020 15:11:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_16:2020-07-22,2020-07-22 signatures=0
+References: <20200721063258.17140-1-mhocko@kernel.org> <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+ <CAHk-=whb0=rjc1WR+F_r_syw5Ld4=ebuNJmmpaPEzfjZRD5Y-w@mail.gmail.com> <alpine.LSU.2.11.2007221359450.1017@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2007221359450.1017@eggly.anvils>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Jul 2020 15:10:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
+Message-ID: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct the indentation of net_device_ops declarations for fancier look.
+On Wed, Jul 22, 2020 at 2:29 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> -#define PAGE_WAIT_TABLE_BITS 8
+> +#define PAGE_WAIT_TABLE_BITS 10
 
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/net/ethernet/qlogic/qede/qede_main.c | 122 +++++++++----------
- 1 file changed, 61 insertions(+), 61 deletions(-)
+Well, that seems harmless even on small machines.
 
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index b5a95f165520..92bcdfa27961 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -639,79 +639,79 @@ qede_setup_tc_offload(struct net_device *dev, enum tc_setup_type type,
- }
- 
- static const struct net_device_ops qede_netdev_ops = {
--	.ndo_open = qede_open,
--	.ndo_stop = qede_close,
--	.ndo_start_xmit = qede_start_xmit,
--	.ndo_select_queue = qede_select_queue,
--	.ndo_set_rx_mode = qede_set_rx_mode,
--	.ndo_set_mac_address = qede_set_mac_addr,
--	.ndo_validate_addr = eth_validate_addr,
--	.ndo_change_mtu = qede_change_mtu,
--	.ndo_do_ioctl = qede_ioctl,
--	.ndo_tx_timeout = qede_tx_timeout,
-+	.ndo_open		= qede_open,
-+	.ndo_stop		= qede_close,
-+	.ndo_start_xmit		= qede_start_xmit,
-+	.ndo_select_queue	= qede_select_queue,
-+	.ndo_set_rx_mode	= qede_set_rx_mode,
-+	.ndo_set_mac_address	= qede_set_mac_addr,
-+	.ndo_validate_addr	= eth_validate_addr,
-+	.ndo_change_mtu		= qede_change_mtu,
-+	.ndo_do_ioctl		= qede_ioctl,
-+	.ndo_tx_timeout		= qede_tx_timeout,
- #ifdef CONFIG_QED_SRIOV
--	.ndo_set_vf_mac = qede_set_vf_mac,
--	.ndo_set_vf_vlan = qede_set_vf_vlan,
--	.ndo_set_vf_trust = qede_set_vf_trust,
-+	.ndo_set_vf_mac		= qede_set_vf_mac,
-+	.ndo_set_vf_vlan	= qede_set_vf_vlan,
-+	.ndo_set_vf_trust	= qede_set_vf_trust,
- #endif
--	.ndo_vlan_rx_add_vid = qede_vlan_rx_add_vid,
--	.ndo_vlan_rx_kill_vid = qede_vlan_rx_kill_vid,
--	.ndo_fix_features = qede_fix_features,
--	.ndo_set_features = qede_set_features,
--	.ndo_get_stats64 = qede_get_stats64,
-+	.ndo_vlan_rx_add_vid	= qede_vlan_rx_add_vid,
-+	.ndo_vlan_rx_kill_vid	= qede_vlan_rx_kill_vid,
-+	.ndo_fix_features	= qede_fix_features,
-+	.ndo_set_features	= qede_set_features,
-+	.ndo_get_stats64	= qede_get_stats64,
- #ifdef CONFIG_QED_SRIOV
--	.ndo_set_vf_link_state = qede_set_vf_link_state,
--	.ndo_set_vf_spoofchk = qede_set_vf_spoofchk,
--	.ndo_get_vf_config = qede_get_vf_config,
--	.ndo_set_vf_rate = qede_set_vf_rate,
-+	.ndo_set_vf_link_state	= qede_set_vf_link_state,
-+	.ndo_set_vf_spoofchk	= qede_set_vf_spoofchk,
-+	.ndo_get_vf_config	= qede_get_vf_config,
-+	.ndo_set_vf_rate	= qede_set_vf_rate,
- #endif
--	.ndo_udp_tunnel_add = udp_tunnel_nic_add_port,
--	.ndo_udp_tunnel_del = udp_tunnel_nic_del_port,
--	.ndo_features_check = qede_features_check,
--	.ndo_bpf = qede_xdp,
-+	.ndo_udp_tunnel_add	= udp_tunnel_nic_add_port,
-+	.ndo_udp_tunnel_del	= udp_tunnel_nic_del_port,
-+	.ndo_features_check	= qede_features_check,
-+	.ndo_bpf		= qede_xdp,
- #ifdef CONFIG_RFS_ACCEL
--	.ndo_rx_flow_steer = qede_rx_flow_steer,
-+	.ndo_rx_flow_steer	= qede_rx_flow_steer,
- #endif
--	.ndo_setup_tc = qede_setup_tc_offload,
-+	.ndo_setup_tc		= qede_setup_tc_offload,
- };
- 
- static const struct net_device_ops qede_netdev_vf_ops = {
--	.ndo_open = qede_open,
--	.ndo_stop = qede_close,
--	.ndo_start_xmit = qede_start_xmit,
--	.ndo_select_queue = qede_select_queue,
--	.ndo_set_rx_mode = qede_set_rx_mode,
--	.ndo_set_mac_address = qede_set_mac_addr,
--	.ndo_validate_addr = eth_validate_addr,
--	.ndo_change_mtu = qede_change_mtu,
--	.ndo_vlan_rx_add_vid = qede_vlan_rx_add_vid,
--	.ndo_vlan_rx_kill_vid = qede_vlan_rx_kill_vid,
--	.ndo_fix_features = qede_fix_features,
--	.ndo_set_features = qede_set_features,
--	.ndo_get_stats64 = qede_get_stats64,
--	.ndo_udp_tunnel_add = udp_tunnel_nic_add_port,
--	.ndo_udp_tunnel_del = udp_tunnel_nic_del_port,
--	.ndo_features_check = qede_features_check,
-+	.ndo_open		= qede_open,
-+	.ndo_stop		= qede_close,
-+	.ndo_start_xmit		= qede_start_xmit,
-+	.ndo_select_queue	= qede_select_queue,
-+	.ndo_set_rx_mode	= qede_set_rx_mode,
-+	.ndo_set_mac_address	= qede_set_mac_addr,
-+	.ndo_validate_addr	= eth_validate_addr,
-+	.ndo_change_mtu		= qede_change_mtu,
-+	.ndo_vlan_rx_add_vid	= qede_vlan_rx_add_vid,
-+	.ndo_vlan_rx_kill_vid	= qede_vlan_rx_kill_vid,
-+	.ndo_fix_features	= qede_fix_features,
-+	.ndo_set_features	= qede_set_features,
-+	.ndo_get_stats64	= qede_get_stats64,
-+	.ndo_udp_tunnel_add	= udp_tunnel_nic_add_port,
-+	.ndo_udp_tunnel_del	= udp_tunnel_nic_del_port,
-+	.ndo_features_check	= qede_features_check,
- };
- 
- static const struct net_device_ops qede_netdev_vf_xdp_ops = {
--	.ndo_open = qede_open,
--	.ndo_stop = qede_close,
--	.ndo_start_xmit = qede_start_xmit,
--	.ndo_select_queue = qede_select_queue,
--	.ndo_set_rx_mode = qede_set_rx_mode,
--	.ndo_set_mac_address = qede_set_mac_addr,
--	.ndo_validate_addr = eth_validate_addr,
--	.ndo_change_mtu = qede_change_mtu,
--	.ndo_vlan_rx_add_vid = qede_vlan_rx_add_vid,
--	.ndo_vlan_rx_kill_vid = qede_vlan_rx_kill_vid,
--	.ndo_fix_features = qede_fix_features,
--	.ndo_set_features = qede_set_features,
--	.ndo_get_stats64 = qede_get_stats64,
--	.ndo_udp_tunnel_add = udp_tunnel_nic_add_port,
--	.ndo_udp_tunnel_del = udp_tunnel_nic_del_port,
--	.ndo_features_check = qede_features_check,
--	.ndo_bpf = qede_xdp,
-+	.ndo_open		= qede_open,
-+	.ndo_stop		= qede_close,
-+	.ndo_start_xmit		= qede_start_xmit,
-+	.ndo_select_queue	= qede_select_queue,
-+	.ndo_set_rx_mode	= qede_set_rx_mode,
-+	.ndo_set_mac_address	= qede_set_mac_addr,
-+	.ndo_validate_addr	= eth_validate_addr,
-+	.ndo_change_mtu		= qede_change_mtu,
-+	.ndo_vlan_rx_add_vid	= qede_vlan_rx_add_vid,
-+	.ndo_vlan_rx_kill_vid	= qede_vlan_rx_kill_vid,
-+	.ndo_fix_features	= qede_fix_features,
-+	.ndo_set_features	= qede_set_features,
-+	.ndo_get_stats64	= qede_get_stats64,
-+	.ndo_udp_tunnel_add	= udp_tunnel_nic_add_port,
-+	.ndo_udp_tunnel_del	= udp_tunnel_nic_del_port,
-+	.ndo_features_check	= qede_features_check,
-+	.ndo_bpf		= qede_xdp,
- };
- 
- /* -------------------------------------------------------------------------
--- 
-2.25.1
+> +       bool first_time = true;
+>         bool thrashing = false;
+>         bool delayacct = false;
+>         unsigned long pflags;
+> @@ -1134,7 +1135,12 @@ static inline int wait_on_page_bit_commo
+>                 spin_lock_irq(&q->lock);
+>
+>                 if (likely(list_empty(&wait->entry))) {
+> -                       __add_wait_queue_entry_tail(q, wait);
+> +                       if (first_time) {
+> +                               __add_wait_queue_entry_tail(q, wait);
+> +                               first_time = false;
+> +                       } else {
+> +                               __add_wait_queue(q, wait);
+> +                       }
+>                         SetPageWaiters(page);
+>                 }
 
+This seems very hacky.
+
+And in fact, looking closer, I'd say that there are more serious problems here.
+
+Look at that WQ_FLAG_EXCLUSIVE thing: non-exclusive waits should
+always go at the head (because they're not going to steal the bit,
+they just want to know when it got cleared), and exclusive waits
+should always go at the tail (because of fairness).
+
+But that's not at all what we do.
+
+Your patch adds even more confusion to this nasty area.
+
+And your third one:
+
+> +               if (ret)
+> +                       woken++;
+>
+> -               if (bookmark && (++cnt > WAITQUEUE_WALK_BREAK_CNT) &&
+> +               if (bookmark && (++cnt > WAITQUEUE_WALK_BREAK_CNT) && woken &&
+
+I've got two reactions to this
+
+ (a) we should not need a new "woken" variable, we should just set a
+high bit of "cnt" and make WAITQUEUE_WALK_BREAK_CNT contain that high
+bit
+
+     (Tune "high bit" to whatever you want: it could be either the
+_real_ high bit of the variable, or it could be something like "128",
+which would mean that you'd break out after 128 non-waking entries).
+
+ (b) Ugh, what hackery and magic behavior regardless
+
+I'm really starting to hate that wait_on_page_bit_common() function.
+
+See a few weeks ago how the function looks buggy to begin with
+
+  https://lore.kernel.org/lkml/CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com/
+
+and that never got resolved either (but probably never happens in practice).
+
+              Linus
