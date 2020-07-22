@@ -2,104 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7EF228FB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A66228FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgGVFa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 01:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgGVFa2 (ORCPT
+        id S1728134AbgGVFfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 01:35:33 -0400
+Received: from mail.conatel.gob.ve ([201.248.69.230]:45697 "EHLO
+        mail.conatel.gob.ve" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728103AbgGVFfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:30:28 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA73CC0619DC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:30:27 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id u5so571357pfn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dl6zwzhq+FsMerc9qwgjpE1ja24WRPYdLlSyn3M9Lhc=;
-        b=wFYPLNpIceaExhbJzjXzj6tDwJR+E2dHZTr/ewhWaneEnAkKVT4tW3ngs4Ana5WOY4
-         JfAbIvMdjf1VIJe9UXtwIm9fjoqxZ4usIYpwHCVaZavJIFFd+fnrU6vME5UiA3OflLMv
-         PjFwR9gTJfbDkCNCnxFjdkM5ybfl439hSbbNWHF+AANDuDpkYtixQfBLNPZswGRM2DZc
-         A+KAoq8xOpfUBwZcC55ebWCtTICdrxK1ie00kDe8G4+14vi1XxzOFtfhfeTXnUap7efU
-         QN1XAOgUSvgdOOotJ2DjwrU3ZOPO07v9BSL1HUBLvu0PwWszIbIqxbQX6Ez2fani/u8w
-         0nmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dl6zwzhq+FsMerc9qwgjpE1ja24WRPYdLlSyn3M9Lhc=;
-        b=adlZn+5OmkhEbQbVIy7Ba+YbUu3Fe0eVefvjsQ1oqZ4SinxhZE+XteTlQy1/TumILB
-         BysGMu4ZfwrF/q4s9RQCRmdUUGQDSypQlNY0s1eGSv+E90yXTJBiRy/SVp7fGBV7UKvX
-         zvvZf1oOrHP9IM7UFiXNz3EbVYJOghbUj/s2IDuPAfJCMXCFsUJeXOQoqPGnP3y8t3/d
-         YYnEGG1rX/r6XDNCoTLV5b8gQ9jX6jv8tJ71mSIo6QxhIC9FG/yaHvI7GHVXF1f8Em/i
-         olOCaiAvA4XJQm5TGa0ACfHWY01uQ3Od+CnmPvsJrj5+kasJtIwGr5mgo4PpN6Q4ziB8
-         ZPIQ==
-X-Gm-Message-State: AOAM530oErOp0tYPRyOIpIwltuTNVMI1Y49neRsNrOL+EjUc32H59IE0
-        oGAY2z3rEJ5cKxvs4E+il6Z14Q==
-X-Google-Smtp-Source: ABdhPJwOr+y0DG+QB+DOdgrlRofbLELHLiFlXrD3oG8oQpR/O3B/puROrAIHaF3LxSmr19O0mGHgVA==
-X-Received: by 2002:a62:8fc6:: with SMTP id n189mr25703478pfd.10.1595395827137;
-        Tue, 21 Jul 2020 22:30:27 -0700 (PDT)
-Received: from localhost ([182.77.116.224])
-        by smtp.gmail.com with ESMTPSA id ml8sm4857037pjb.47.2020.07.21.22.30.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Jul 2020 22:30:26 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 11:00:23 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-Message-ID: <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu>
- <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu>
- <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
+        Wed, 22 Jul 2020 01:35:32 -0400
+X-Greylist: delayed 618 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Jul 2020 01:35:31 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.conatel.gob.ve (Postfix) with ESMTP id 97DDD12C906D;
+        Wed, 22 Jul 2020 01:20:14 -0400 (-04)
+Received: from mail.conatel.gob.ve ([127.0.0.1])
+        by localhost (mail.conatel.gob.ve [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ZxKwBgt9hZYb; Wed, 22 Jul 2020 01:20:13 -0400 (-04)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.conatel.gob.ve (Postfix) with ESMTP id 4D29212C9060;
+        Wed, 22 Jul 2020 01:20:13 -0400 (-04)
+DKIM-Filter: OpenDKIM Filter v2.9.2 mail.conatel.gob.ve 4D29212C9060
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conatel.gob.ve;
+        s=5C18DDE8-FD64-11E3-A8EF-B68B774165DB; t=1595395213;
+        bh=qHntwlxyfk1wGFYNFGIaQfkZ2NWrar+v71e/s8td7iM=;
+        h=Date:From:Reply-To:Message-ID:Subject:MIME-Version:Content-Type:
+         Content-Transfer-Encoding;
+        b=ffai6V8lb6DW+OqOZ/dPZxE+6MPjQMOXixdZcFIiAV5NaGpg7/FVSWAO1Z7kukIpq
+         eUs+J520GGqi/Uay4LCoaugAPB8UWUXn1MqCGkKK+IpYjJtM7JtSN4WFvFIkLGIRgG
+         zN8gupYZg97VXlxAcQPmBMkMgxzWnrXHDhZ0BvgE=
+X-Virus-Scanned: amavisd-new at conatel.gob.ve
+Received: from mail.conatel.gob.ve ([127.0.0.1])
+        by localhost (mail.conatel.gob.ve [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4MAKUxteAojF; Wed, 22 Jul 2020 01:20:13 -0400 (-04)
+Received: from mail.conatel.gob.ve (correo.conatel.int [10.1.1.21])
+        by mail.conatel.gob.ve (Postfix) with ESMTP id 693E312C65FE;
+        Wed, 22 Jul 2020 01:20:12 -0400 (-04)
+Date:   Wed, 22 Jul 2020 00:50:12 -0430 (VET)
+From:   Lerynne West <acarrasquel@conatel.gob.ve>
+Reply-To: Lerynne West <callumfoundation01@outlook.com>
+Message-ID: <1240323268.80453.1595395212312.JavaMail.zimbra@conatel.gob.ve>
+Subject: RE
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
-User-Agent: NeoMutt/20170609 (1.8.3)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.0.4.46]
+X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
+Thread-Topic: RE
+Thread-Index: FBZ+EihGWz6fzNOdubMExJWbONuVWQ==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-20, 07:28, Rob Clark wrote:
-> With your ack, I can add the patch the dev_pm_opp_set_bw patch to my
-> tree and merge it via msm-next -> drm-next -> linus
 
-I wanted to send it via my tree, but its okay. Pick this patch from
-linux-next and add my Ack, I will drop it after that.
 
-a8351c12c6c7 OPP: Add and export helper to set bandwidth
+Hallo, Sie haben eine Spende in H&ouml;he von 2.800.000,00 &euro;. Ich habe die America-Lotterie in Amerika im Wert von 343 Millionen Dollar gewonnen und einen Teil davon an f&uuml;nf gl&uuml;ckliche Menschen und Wohlt&auml;tigkeitsorganisationen gespendet, um an das Leben meines verstorbenen Sohnes zu erinnern, der an Krebs gestorben ist Viele Menschen, die von diesem Coronavirus betroffen sind, kontaktieren mich f&uuml;r weitere Informationen unter; callumfoundation01@outlook.com
 
-> Otherwise I can send a second later pull req that adds the final patch
-> after has rebased to 5.9-rc1 (by which point the opp next tree will
-> have presumably been merged
-
-The PM stuff gets pushed fairly early and so I was asking you to
-rebase just on my tree, so you could have sent the pull request right
-after the PM tree landed there instead of waiting for rc1.
-
-But its fine now.
-
--- 
-viresh
+Gr&uuml;&szlig;e
+Mrs.Lerynne West
