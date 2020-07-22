@@ -2,125 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996C8229ACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC0E229AD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732796AbgGVO5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 10:57:25 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:57058 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732143AbgGVO5Y (ORCPT
+        id S1732750AbgGVO6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 10:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729642AbgGVO6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 10:57:24 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MEvBpk004910;
-        Wed, 22 Jul 2020 09:57:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595429831;
-        bh=4Uf4TRn5vUb8L0d8FDIOQK0Qy4pBZfSImAAgzuqEAOI=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=mL54vk1csAw2axZ2LgbskInwLF51fwF3sqNSAbtJmQPnQ+NO8K+aigcaM2ZgLIiWd
-         jyRAPQKq+uyfL2ZoIGSZMXzlI7a8uCGPISwHFS4WI45IZLPPYrYlnqHlr4dUlB640r
-         w2gFe2LMSAvbbRB84nDLNHy7f70k5ZbcXbpBEWrU=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MEv67o090277
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 09:57:11 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Jul 2020 09:57:06 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Jul 2020 09:57:06 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MEv4fq071548;
-        Wed, 22 Jul 2020 09:57:05 -0500
-Subject: Re: [PATCH -next] ASoC: ti: fix SND_SOC_J721E_EVM warnings & errors
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        moderated for non-subscribers <alsa-devel@alsa-project.org>,
-        Mark Brown <broonie@kernel.org>
-References: <e74c690c-c7f8-fd42-e461-4f33571df4ef@infradead.org>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <8a5baa38-e5a9-ab82-d186-9939733e4d7e@ti.com>
-Date:   Wed, 22 Jul 2020 17:58:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 22 Jul 2020 10:58:24 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8987FC0619DC;
+        Wed, 22 Jul 2020 07:58:24 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id n5so1396900pgf.7;
+        Wed, 22 Jul 2020 07:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rgu9zeGviejGy94qeYWhRJ1bbRjnbZasOXc4G8oQ1bI=;
+        b=tyQPpi/zMyDRImS8JXG4zlQJED6yn6PwaRxs8995TCC6A+iil5qrCnXX4Fj+t3+yD9
+         tVSXtpTQWkDz2Zs6efB0LcsXvVty8E+TsZIfHIRqMs2tzGiWYNYyIc07GYRqlpZouc/a
+         +ZtxF4VaWQ8anTj2KdsKEB6IPj+GiOo6GDCoVEWCSCZIKNoZw0h9X+f4zL6QoqH4dXuS
+         B44wX/XCODUThAUuAaYBLADtPsPLpdVxrLJQcZfwIi8GbK6acU/3gj58sCJgTcWhQG7X
+         IxXbM5BjZ3iMHTZS6++VWR+9XPIEIWhXz2ooyarBX3xzF8qJG4tERlHYZ0tkt+N1DOhm
+         q5dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rgu9zeGviejGy94qeYWhRJ1bbRjnbZasOXc4G8oQ1bI=;
+        b=cWyvBia9gM/EB44a0n5EWaT86Y9Gzi4hxuL683ctLqJzpRPzQRAvUkmwbXQk2v8k1m
+         /BRD2tUL+N9luBlwKxLltkhzEfrWgnJ42yQM3g/aloidCrTBndMUot5Y2842Z20qMRTK
+         dLoe3xrIoKXlveHG5u2Q2Fq0PzHFFUdztac2m5gz7AFpa2t0EahNE+sLhuBYOD4s/w7+
+         UiZ05K6WJLa1QBtDGLLxGFi4DCQUY9PWLlbmAuZosPqDSWJi9F7Y1mzAocr1T57IEn0G
+         fVgOwbAhV2UYVgh9cUgAmkfs1VdmYGPI5A7Ex460u2fxrhoVQ95sOJ26malXi05UFWeq
+         pExA==
+X-Gm-Message-State: AOAM5317lc+d/ZBj0OFV7GmUOsb6dt5uDuS7HLhnkdrKZP619JBOLHC8
+        yLDQ3fEce39qU3xaqgn/6FnrcFPgtW09+w==
+X-Google-Smtp-Source: ABdhPJzjePhzyy8eV1LUj5gRxYGGMT6XU0BUo1Div4o1tRdGISWYu2QSSURGA9LTku1A89w5S74AFQ==
+X-Received: by 2002:a63:be4e:: with SMTP id g14mr215565pgo.193.1595429903995;
+        Wed, 22 Jul 2020 07:58:23 -0700 (PDT)
+Received: from rahulg-ThinkPad-T450 ([122.175.125.202])
+        by smtp.gmail.com with ESMTPSA id j5sm216214pgi.42.2020.07.22.07.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 07:58:23 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 20:28:19 +0530
+From:   Rahul Gottipati <rahul.blr97@gmail.com>
+To:     mchehab@kernel.org
+Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] media: atomisp: Fix coding style issue - correct
+ multiline comments
+Message-ID: <f7973bfc099576423553660313cb5a3f7f28529f.1595429109.git.rahul.blr97@gmail.com>
+References: <cover.1595429109.git.rahul.blr97@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e74c690c-c7f8-fd42-e461-4f33571df4ef@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1595429109.git.rahul.blr97@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+This fixes some coding style issues of multiline comments to
+correct a few checkpatch.pl warnings.
 
-On 20/07/2020 21.32, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
->=20
-> SND_SOC_J721E_EVM should not select SND_SOC_PCM3168A_I2C when I2C
-> is not enabled. That causes build errors, so make this driver's
-> symbol depend on I2C.
+Signed-off-by: Rahul Gottipati <rahul.blr97@gmail.com>
+---
 
-Thank you for the fix!
+Changes in v3:
+	Made changes to keep first line blank in multiline comments.
+Changes in v2:
+	Distributed changes across 2 patches instead of the previous 1.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+ .../staging/media/atomisp/pci/atomisp_ioctl.c | 26 ++++++++++++-------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-> WARNING: unmet direct dependencies detected for SND_SOC_PCM3168A_I2C
->   Depends on [n]: SOUND [=3Dm] && !UML && SND [=3Dm] && SND_SOC [=3Dm] =
-&& I2C [=3Dn]
->   Selected by [m]:
->   - SND_SOC_J721E_EVM [=3Dm] && SOUND [=3Dm] && !UML && SND [=3Dm] && S=
-ND_SOC [=3Dm] && (DMA_OMAP [=3Dy] || TI_EDMA [=3Dm] || TI_K3_UDMA [=3Dn] =
-|| COMPILE_TEST [=3Dy]) && (ARCH_K3_J721E_SOC [=3Dn] || COMPILE_TEST [=3D=
-y])
->=20
-> ../sound/soc/codecs/pcm3168a-i2c.c:59:1: warning: data definition has n=
-o type or storage class
->  module_i2c_driver(pcm3168a_i2c_driver);
->  ^~~~~~~~~~~~~~~~~
-> ../sound/soc/codecs/pcm3168a-i2c.c:59:1: error: type defaults to =E2=80=
-=98int=E2=80=99 in declaration of =E2=80=98module_i2c_driver=E2=80=99 [-W=
-error=3Dimplicit-int]
-> ../sound/soc/codecs/pcm3168a-i2c.c:59:1: warning: parameter names (with=
-out types) in function declaration
-> ../sound/soc/codecs/pcm3168a-i2c.c:49:26: warning: =E2=80=98pcm3168a_i2=
-c_driver=E2=80=99 defined but not used [-Wunused-variable]
->  static struct i2c_driver pcm3168a_i2c_driver =3D {
->                           ^~~~~~~~~~~~~~~~~~~
-> cc1: some warnings being treated as errors
->=20
->=20
-> Fixes: 6748d0559059 ("ASoC: ti: Add custom machine driver for j721e EVM=
- (CPB and IVI)")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> ---
->  sound/soc/ti/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
->=20
-> --- linux-next-20200720.orig/sound/soc/ti/Kconfig
-> +++ linux-next-20200720/sound/soc/ti/Kconfig
-> @@ -222,6 +222,7 @@ config SND_SOC_DM365_VOICE_CODEC_MODULE
->  config SND_SOC_J721E_EVM
->  	tristate "SoC Audio support for j721e EVM"
->  	depends on ARCH_K3_J721E_SOC || COMPILE_TEST
-> +	depends on I2C
->  	select SND_SOC_PCM3168A_I2C
->  	select SND_SOC_DAVINCI_MCASP
->  	help
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+index 4fc4bdd85ce0..3d609753e0af 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+@@ -1275,13 +1275,15 @@ static int atomisp_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 		}
+ 	}
+ 
+-	/* Workaround: Due to the design of HALv3,
++	/*
++	 * Workaround: Due to the design of HALv3,
+ 	 * sometimes in ZSL or SDV mode HAL needs to
+ 	 * capture multiple images within one streaming cycle.
+ 	 * But the capture number cannot be determined by HAL.
+ 	 * So HAL only sets the capture number to be 1 and queue multiple
+ 	 * buffers. Atomisp driver needs to check this case and re-trigger
+-	 * CSS to do capture when new buffer is queued. */
++	 * CSS to do capture when new buffer is queued.
++	 */
+ 	if (asd->continuous_mode->val &&
+ 	    atomisp_subdev_source_pad(vdev)
+ 	    == ATOMISP_SUBDEV_PAD_SOURCE_CAPTURE &&
+@@ -1806,7 +1808,7 @@ static int atomisp_streamon(struct file *file, void *fh,
+ 		/*
+ 		 * set freq to max when streaming count > 1 which indicate
+ 		 * dual camera would run
+-		*/
++		 */
+ 		if (atomisp_streaming_count(isp) > 1) {
+ 			if (atomisp_freq_scaling(isp,
+ 						 ATOMISP_DFS_MODE_MAX, false) < 0)
+@@ -2437,8 +2439,10 @@ static int atomisp_g_ext_ctrls(struct file *file, void *fh,
+ 	struct v4l2_control ctrl;
+ 	int i, ret = 0;
+ 
+-	/* input_lock is not need for the Camera related IOCTLs
+-	 * The input_lock downgrade the FPS of 3A*/
++	/*
++	 * input_lock is not need for the Camera related IOCTLs
++	 * The input_lock downgrade the FPS of 3A
++	 */
+ 	ret = atomisp_camera_g_ext_ctrls(file, fh, c);
+ 	if (ret != -EINVAL)
+ 		return ret;
+@@ -2520,8 +2524,10 @@ static int atomisp_camera_s_ext_ctrls(struct file *file, void *fh,
+ 				ret =
+ 				    v4l2_s_ctrl(NULL, isp->flash->ctrl_handler,
+ 						&ctrl);
+-				/* When flash mode is changed we need to reset
+-				 * flash state */
++				/*
++				 * When flash mode is changed we need to reset
++				 * flash state
++				 */
+ 				if (ctrl.id == V4L2_CID_FLASH_MODE) {
+ 					asd->params.flash_state =
+ 					    ATOMISP_FLASH_IDLE;
+@@ -2559,8 +2565,10 @@ static int atomisp_s_ext_ctrls(struct file *file, void *fh,
+ 	struct v4l2_control ctrl;
+ 	int i, ret = 0;
+ 
+-	/* input_lock is not need for the Camera related IOCTLs
+-	 * The input_lock downgrade the FPS of 3A*/
++	/*
++	 * input_lock is not need for the Camera related IOCTLs
++	 * The input_lock downgrade the FPS of 3A
++	 */
+ 	ret = atomisp_camera_s_ext_ctrls(file, fh, c);
+ 	if (ret != -EINVAL)
+ 		return ret;
+-- 
+2.25.1
 
