@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C41228E3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8EE228E45
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgGVCin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 22:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731621AbgGVCin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 22:38:43 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96C3C061794;
-        Tue, 21 Jul 2020 19:38:42 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d1so230453plr.8;
-        Tue, 21 Jul 2020 19:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vNRW7z5cqSryapjbTJumBqetCY3C3HUg/svKvIOBSpc=;
-        b=afEtrL1sXJiLMGMhqiM6tfsfpIgUqIhg/yoDKKj6xaKj37o3j29zKPXT6Nm5RETNYP
-         dIXrNmyhf1GzW/UnbKge7XpAoBittGZE8u17bKid0xV0kkZycBHb+ojS3VOvOiU5JNOp
-         0PXo71A/sB9jm4eh/XtSlIBt/WTW3S4AtWffJRTXsg6F5906AmC6weOs50smsAGn/g9q
-         qPaTPqvutmSnpnE55SRqilCCsWgbNHe8adk3w5jAZcEFM2X1PwCa9kMzQu1iMjDqdzwP
-         v6lfKKzGee6m7bUDc7twPCTA+9y6XWsdx/VGcY7s0K0SuUv5CNSi0jJ4pEjbimaTFw2x
-         AfQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vNRW7z5cqSryapjbTJumBqetCY3C3HUg/svKvIOBSpc=;
-        b=qaVqNou0fk4elxW1MlPsRtGhBdJZm0sxyVrsNfj726/w27JflHmHYsUc5AxZQfuq38
-         kECdmOpun/0Lh6p2TR5WHnMcV4M1Jb58+vKjczcU2coA6zyV90cBgpEyzCv1d9x/1lD3
-         60nAmHKFQkL2UU1PstT6c+s/MS+QuDHhBlHahbATIOheBBK+M0leJPMFHmjqjgASQDot
-         lPD7UwyXcOYfxcf4OD7gQAIZoJoR+tgO+5BaFRunhBLm5bEj43NmUBn83QRurPzeGCHu
-         Wp7nncSR0PFuebkgTHmnLSNGZicjUDcozMugGrBQUt+HwIQ3CPOXlvSRTcypLJAz5et9
-         yTtA==
-X-Gm-Message-State: AOAM5307Ve4aIlyi6ZaubSPzki+5lJW/qFIaAuwomP8MGhfvrToQ6GeU
-        7yl5B4AlJVK+JHAsc6cbZnZNBq0Q
-X-Google-Smtp-Source: ABdhPJwTJE/4ZseohlMQmRrdxEbrI/0srpGzpJejTObobsX+uMoJRp9M2Oxi5vp2nz7micD52WE6wQ==
-X-Received: by 2002:a17:902:ee94:: with SMTP id a20mr22145813pld.337.1595385522324;
-        Tue, 21 Jul 2020 19:38:42 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x7sm21133592pfq.197.2020.07.21.19.38.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Jul 2020 19:38:41 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 19:38:40 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sh: add missing EXPORT_SYMBOL() for __delay
-Message-ID: <20200722023840.GA55317@roeck-us.net>
-References: <87wob2clos.wl-kuninori.morimoto.gx@renesas.com>
+        id S1731832AbgGVCpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 22:45:07 -0400
+Received: from mga01.intel.com ([192.55.52.88]:47877 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731614AbgGVCpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 22:45:06 -0400
+IronPort-SDR: 8UbQCrr7550MDX6THsk15UgbiZSPcwoXH8ZT23pp9jca74yWvVq6usBNGOKk7C6lO6+jxQuwxF
+ 2ez1RE+t5UlQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="168406624"
+X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
+   d="scan'208";a="168406624"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2020 19:45:06 -0700
+IronPort-SDR: RmFrsz1pSqV972rnpbM1aylP3SgTt9vSuztKszdJZg4PSgL0Fca7zEH2cHTU+JIBJOV9MRyXS9
+ gPOevvMW1Rsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
+   d="scan'208";a="392541736"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Jul 2020 19:45:05 -0700
+Cc:     baolu.lu@linux.intel.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: Subject: Re: [PATCH 1/1] iommu/vt-d: Skip TE disabling on quirky
+ gfx dedicated iommu
+To:     "Miao, Jun" <Jun.Miao@windriver.com>
+References: <DM6PR11MB2587034DFBEDFB091CE9AAD58E790@DM6PR11MB2587.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <0f4b6760-bb8f-ebd3-ab9d-4ecba819883c@linux.intel.com>
+Date:   Wed, 22 Jul 2020 10:40:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wob2clos.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <DM6PR11MB2587034DFBEDFB091CE9AAD58E790@DM6PR11MB2587.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 11:38:43AM +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> __delay() is used from kernel module.
-> We need EXPORT_SYMBOL(), otherwise we will get compile error.
-> 
-> ERROR: "__delay" [drivers/net/phy/mdio-cavium.ko] undefined!
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Jun,
 
-I must admit that this patch completely baffles me. __delay was
-already exported, only elsewhere in the file. With this patch
-in place, it is exported twice, and all sh builds in -next fail
-with
+On 7/22/20 10:26 AM, Miao, Jun wrote:
+>>> Kernel panic - not syncing: DMAR hardware is malfunctioning
+>>> CPU: 0 PID: 347 Comm: rtcwake Not tainted 5.4.0-yocto-standard #124
+>>> Hardware name: Intel Corporation Ice Lake Client Platform/IceLake U DDR4
+>>> SODIMM PD RVP TLC, BIOS ICLSFWR1.R00.3162.A00.1904162000 04/16/2019
+>>> Call Trace:
+>>>    dump_stack+0x59/0x75
+>>>    panic+0xff/0x2d4
+>>>    iommu_disable_translation+0x88/0x90
+>>>    iommu_suspend+0x12f/0x1b0
+>>>    syscore_suspend+0x6c/0x220
+>>>    suspend_devices_and_enter+0x313/0x840
+>>>    pm_suspend+0x30d/0x390
+>>>    state_store+0x82/0xf0
+>>>    kobj_attr_store+0x12/0x20
+>>>    sysfs_kf_write+0x3c/0x50
+>>>    kernfs_fop_write+0x11d/0x190
+>>>    __vfs_write+0x1b/0x40
+>>>    vfs_write+0xc6/0x1d0
+>>>    ksys_write+0x5e/0xe0
+>>>    __x64_sys_write+0x1a/0x20
+>>>    do_syscall_64+0x4d/0x150
+>>>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>> RIP: 0033:0x7f97b8080113
+>>> Code: 8b 15 81 bd 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00
+>>> 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff
+>>> 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
+>>> RSP: 002b:00007ffcfa6f48b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>>> RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f97b8080113
+>>> RDX: 0000000000000004 RSI: 000055e7db03b700 RDI: 0000000000000004
+>>> RBP: 000055e7db03b700 R08: 000055e7db03b700 R09: 0000000000000004
+>>> R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000004
+>>> R13: 000055e7db039380 R14: 0000000000000004 R15: 00007f97b814d700
+>>> Kernel Offset: 0x38a00000 from 0xffffffff81000000 (relocation range:
+>>> 0xffffffff80000000-0xffffffffbfffffff)
+>>> ---[ end Kernel panic - not syncing: DMAR hardware is malfunctioning ]---
+>
 
-In file included from include/linux/linkage.h:7,
-                 from arch/sh/include/asm/bug.h:5,
-                 from include/linux/bug.h:5,
-                 from include/linux/thread_info.h:12,
-                 from include/asm-generic/current.h:5,
-                 from ./arch/sh/include/generated/asm/current.h:1,
-                 from include/linux/sched.h:12,
-                 from arch/sh/lib/delay.c:8:
-include/linux/export.h:67:36: error: redefinition of '__ksymtab___delay'
+Do you mean that system hangs in iommu_disable_translation() without 
+this fix.
 
-Guenter
+> [S3 successfully with the patch]
 
-> ---
->  arch/sh/lib/delay.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/sh/lib/delay.c b/arch/sh/lib/delay.c
-> index dad8e6a..540e670 100644
-> --- a/arch/sh/lib/delay.c
-> +++ b/arch/sh/lib/delay.c
-> @@ -29,6 +29,7 @@ void __delay(unsigned long loops)
->  		: "0" (loops)
->  		: "t");
->  }
-> +EXPORT_SYMBOL(__delay);
->  
->  inline void __const_udelay(unsigned long xloops)
->  {
+And, this failure disappeared after you applied this fix?
+
+Best regards,
+baolu
