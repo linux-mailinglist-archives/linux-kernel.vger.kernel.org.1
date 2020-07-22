@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8335E228EDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9E2228EE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726033AbgGVEAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 00:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgGVEAs (ORCPT
+        id S1726115AbgGVEGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 00:06:11 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:49914 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgGVEGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 00:00:48 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C22BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:00:48 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 8so470976pjj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xa3ZZYGnoP85/3zV1lZZil7QKFpmT3uyhbiDkzmb3pw=;
-        b=d7qkkZzBvWH2EGTJl6d/xeU0OZVDjSrLJ0nJ9h+STGVXGF2EOVqbTk7CSjMjiON26V
-         M0LwvjihL4Vm/tB7kntykC0gcYIEyVe4rJ+F4xJN7YKkmJ9pIZQ6WV8ABzM0AjYgNMSu
-         /pSoTz+NB+wDP/hvAhMUfF3f+yh5RPf6Q6z3NYGDWAa/ruh7OkmiToFTCAcxl3AdZ2AR
-         V7lBXEDYIeMkNe6eTzGsTfWP+LEgeSuFVXA4wr2BO40XXyyQgK8ZsILcysIJePJCb7Wq
-         PA3492XWoXkhab/RVxAyvIcbXxc1NezI07/4N5tVAah3lUxgpE9pNLJuVwBG12azvHfi
-         nqhQ==
+        Wed, 22 Jul 2020 00:06:10 -0400
+Received: by mail-io1-f69.google.com with SMTP id l7so972899ioq.16
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:06:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xa3ZZYGnoP85/3zV1lZZil7QKFpmT3uyhbiDkzmb3pw=;
-        b=QeqX36b47wRQTdvmT1Cszs7LnvZZnw2vdq4wDOAbRlsmMgdxlsoFCywGegSWO9uMMZ
-         rGDCeGm0PfsYVi8j08AnqCMNxlSMG49R++4RNiCvs/JJh1dWLKarmzA0JHJb5TI/G4cp
-         ZYB1QJH6rx4NgLlG5q7Wcz6Vb+A5avF+a7ejYHHgiNsg52VxQxV2JbVK05wQ9Xbfn1a6
-         wISkololdkFMWdJHNTeszXXai3RrDWGB6bDjV0k8Ct++tL1iGtG6ZjwEVR6dgIvjpKqz
-         aas71FPeMIz7Z/O/6+wPk7V0UfelxM2Pr+EHCFhEPc8J610w9cypIw2rNAghLTfptd/w
-         vFrA==
-X-Gm-Message-State: AOAM531Q8jZHzx/EjpCpyOvpGIt8ov5eqIPN9uw/uG3rpb8Q5+T0HCc0
-        NgCm89uyqbLhCWJz0VzNqU5f1II2YC1uLiKbm3c=
-X-Google-Smtp-Source: ABdhPJxMnoMbokZoyYXBiE1wvxWIhZnR0lnPeJYdNlzCOuI35DjncY/cX4KxwfkPDilk9thENiU4THsQoZzGthKL3D4=
-X-Received: by 2002:a17:90a:20e9:: with SMTP id f96mr8129677pjg.13.1595390448025;
- Tue, 21 Jul 2020 21:00:48 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Owb9IwFQyEhlVcf9dWP5KUWd0T8KeX4hhSQrT09WLVM=;
+        b=CP81L087Bc4iKfWzTxZyMbI+tGM9Xd0Ypk7EYlCn0nlj2CAaLnuru79te8u2g0vPh+
+         EJW4rOV0Km4sM7IXokH/w5locy7ocMbvVtIddc2QoybGjWeN/Wi5nvcudF/URX+hmhCP
+         LGxf0jk6wx4HyUKiI5rsjehIvj4LZtvA1tYXPZh//3YKHWJW6Xau8Pwp0kBjpy26tdxh
+         bAqmyV1hwknMbjGTqgLW4iczZUoz8bduBKeoaChUIt+J4cr+mdoocViXj5Ldazqahd/W
+         IndvcLioU4Ex8lARBbjWs5ol/RSaYxOGmAdCpE0sej8GBzzrregKimTvYLvbMO9uUbTs
+         caCA==
+X-Gm-Message-State: AOAM5309fdsMwU6TLrDmcySVn0M10J7PwbYpe59tBcfriGDywG4CH/K2
+        1E3DnHwLuq6EV44T88zZu07fa5jc20fe+evYaxe7hkRyUq34
+X-Google-Smtp-Source: ABdhPJxKpX5QgCSXASidAUn4JI3ECIT+TNoa9CsBVnxXzDo3xE1LrhnckTuw5OGA3oXZjUbSGH9HOco+uX28Ij1pPBz+qD8v0bh9
 MIME-Version: 1.0
-References: <20200721093748.26627-1-jcmvbkbc@gmail.com> <CAK7LNARtTZD5x3CYLVj48dwC9n7Z4kMx1gCLq3aD2_OfQKuXnA@mail.gmail.com>
-In-Reply-To: <CAK7LNARtTZD5x3CYLVj48dwC9n7Z4kMx1gCLq3aD2_OfQKuXnA@mail.gmail.com>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 21 Jul 2020 21:00:37 -0700
-Message-ID: <CAMo8BfKS=nJi_BdOCYTzRutKBSHwZ8ZNOuk=+ZGD_mi6zwJ=Bw@mail.gmail.com>
-Subject: Re: [PATCH v2] xtensa: add boot subdirectories targets to extra-y
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6638:1a:: with SMTP id z26mr9254802jao.15.1595390770006;
+ Tue, 21 Jul 2020 21:06:10 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 21:06:10 -0700
+In-Reply-To: <20200722031640.nobv2bfgex46sngo@pesu.pes.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001fd19405aaffdc0a@google.com>
+Subject: Re: WARNING in pvr2_i2c_core_done
+From:   syzbot <syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com>
+To:     Markus.Elfring@web.de, andreyknvl@google.com,
+        bkkarthik@pesu.pes.edu, dan.carpenter@oracle.com,
+        gregkh@linuxfoundation.org, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 5:53 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> On Tue, Jul 21, 2020 at 6:37 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
-> > The commit 8fe87a92f262 ("kbuild: always create directories of targets")
-> > exposed an issue in the xtensa makefiles that results in the following
-> > build error in a clean directory:
->
-> But, we need to fix this in the kbuild tree
-> to retain the bisectability.
->
-> I will insert the following before the offending commit.
-> https://patchwork.kernel.org/patch/11676883/
->
-> I used 'targets' instead of 'extra-y'
-> because they are built on demand
-> while building the final boot image.
+Hello,
 
-Sure, please go ahead with your version.
-Thank you for taking care of it.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in kernfs_find_ns
 
--- Max
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+pvrusb2: Invalid write control endpoint
+general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
+CPU: 0 PID: 78 Comm: pvrusb2-context Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kernfs_find_ns+0x31/0x370 fs/kernfs/dir.c:829
+Code: 49 89 d6 41 55 41 54 55 48 89 fd 53 48 83 ec 08 e8 f4 61 af ff 48 8d 7d 70 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 1e 03 00 00 48 8d bd 98 00 00 00 48 8b 5d 70 48
+RSP: 0018:ffff8881d419f938 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffffffff863789c0 RCX: ffffffff85a79ba7
+RDX: 000000000000000e RSI: ffffffff81901d1c RDI: 0000000000000070
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff873ed1e7
+R10: fffffbfff0e7da3c R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff863790e0
+FS:  0000000000000000(0000) GS:ffff8881db200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3a7e248000 CR3: 00000001d2224000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kernfs_find_and_get_ns+0x2f/0x60 fs/kernfs/dir.c:906
+ kernfs_find_and_get include/linux/kernfs.h:548 [inline]
+ sysfs_unmerge_group+0x5d/0x160 fs/sysfs/group.c:366
+ dpm_sysfs_remove+0x62/0xb0 drivers/base/power/sysfs.c:790
+ device_del+0x18b/0xd20 drivers/base/core.c:2834
+ device_unregister+0x22/0xc0 drivers/base/core.c:2889
+ i2c_unregister_device include/linux/err.h:41 [inline]
+ i2c_client_dev_release+0x39/0x50 drivers/i2c/i2c-core-base.c:465
+ device_release+0x71/0x200 drivers/base/core.c:1559
+ kobject_cleanup lib/kobject.c:693 [inline]
+ kobject_release lib/kobject.c:722 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x245/0x540 lib/kobject.c:739
+ put_device drivers/base/core.c:2779 [inline]
+ device_unregister+0x34/0xc0 drivers/base/core.c:2890
+ i2c_unregister_device+0x38/0x40 include/linux/err.h:41
+ v4l2_i2c_new_subdev_board+0x159/0x2c0 drivers/media/v4l2-core/v4l2-i2c.c:114
+ v4l2_i2c_new_subdev+0xb8/0xf0 drivers/media/v4l2-core/v4l2-i2c.c:135
+ pvr2_hdw_load_subdev drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2023 [inline]
+ pvr2_hdw_load_modules drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2075 [inline]
+ pvr2_hdw_setup_low drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2156 [inline]
+ pvr2_hdw_setup drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2262 [inline]
+ pvr2_hdw_initialize+0xc8d/0x3600 drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2339
+ pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:109 [inline]
+ pvr2_context_thread_func+0x250/0x850 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+ kthread+0x392/0x470 kernel/kthread.c:291
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
+Modules linked in:
+---[ end trace a2576a16aa8e791c ]---
+RIP: 0010:kernfs_find_ns+0x31/0x370 fs/kernfs/dir.c:829
+Code: 49 89 d6 41 55 41 54 55 48 89 fd 53 48 83 ec 08 e8 f4 61 af ff 48 8d 7d 70 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 1e 03 00 00 48 8d bd 98 00 00 00 48 8b 5d 70 48
+RSP: 0018:ffff8881d419f938 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffffffff863789c0 RCX: ffffffff85a79ba7
+RDX: 000000000000000e RSI: ffffffff81901d1c RDI: 0000000000000070
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff873ed1e7
+R10: fffffbfff0e7da3c R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff863790e0
+FS:  0000000000000000(0000) GS:ffff8881db200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3a7e248000 CR3: 00000001d2224000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+Tested on:
+
+commit:         b791d1bd Merge tag 'locking-kcsan-2020-06-11' of git://git..
+git tree:       https://github.com/google/kasan.git usb-fuzzer
+console output: https://syzkaller.appspot.com/x/log.txt?x=1208f437100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ccf1899337a6e343
+dashboard link: https://syzkaller.appspot.com/bug?extid=e74a998ca8f1df9cc332
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14d56430900000
+
