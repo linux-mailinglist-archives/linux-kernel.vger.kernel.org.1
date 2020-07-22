@@ -2,118 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71263229D7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B69229D82
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbgGVQt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 12:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgGVQt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:49:59 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5588C0619E0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:49:58 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x5so1964520wmi.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c2nAerlR11FC4bc73llJS+KYZxx6imSwhCd66cb6xO8=;
-        b=iAS4i7TglEthtM/HZoQ129NxIbAtlHbTqcU68I1QgUbrfqibKhoXmm4OOKNTANCwwO
-         dDsDzmsdKb1tq45zSfE32cuCYKQQti6f+rkD6mNU0uEzCnoNmuKSt3ZdSw0z9drysK/p
-         FA4OVFOefwYD7WqHRBtaiA6S2O/ku6Ov4e6Fznk+jppwkjQm9YwjBqkEubIq9JkkT9cV
-         0UcJyzCM4ZYWSHbV8kNK4BWo+SkGwTNZQXKwnJDfGZ/XwA7Zd6CqpmSSDvG+fb31YdnK
-         nUthXh+VCOPiFxtW76Skle8eGPMLQ0vYPTZP0SjRb10yjIaPbmX/2NaZE0VSmwbboM4V
-         00nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c2nAerlR11FC4bc73llJS+KYZxx6imSwhCd66cb6xO8=;
-        b=fHn+bniys09bF7BMgOaw/hdC9iEl+wa9ybZMNH85/Zqu/OR4JKcUI3i+TZt6clojL5
-         hAoEPmiWRNBZkCIR7yqXlsb9pWVVqjqXSTSh4cxkjoMucz1m9YQS+8sPXrWn7XpJNHu4
-         tTYYZKz9hP6fmadibMO4aNRQvMfdEhZbSuF9mxdSDExTemny3pgpP+ZlwRoIuDbvFtyS
-         T2/84r+3taqI+d2Tf17nbU3IfqnvEajWK68PnF9uGCYqTiDNt7b+uALLcc7wFAgvjPUF
-         gdWQN0c4v1OxdnEwoyMq6PpQ277zLS4ii7aRgPygy2HSUMnKYz+uycTiDj10CYM1kSmR
-         xchQ==
-X-Gm-Message-State: AOAM533nnZmsMRih7kPUjC/by6l/jzzFd4yzRBo5OTMka1YhE/gM4x2o
-        ACxpjCiKVLnHD4Y0NcNSzf6lKg==
-X-Google-Smtp-Source: ABdhPJzy1AZnXOnkwBJorSdXJuVH0ao3cr5xpLz10DDOsUZL37/6MCteU3K8UfOKE0lSMg3jHPcIyw==
-X-Received: by 2002:a1c:18e:: with SMTP id 136mr457537wmb.93.1595436597304;
-        Wed, 22 Jul 2020 09:49:57 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:dca7:8d30:33fa:daac? ([2a01:e34:ed2f:f020:dca7:8d30:33fa:daac])
-        by smtp.googlemail.com with ESMTPSA id p8sm667819wrq.9.2020.07.22.09.49.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 09:49:56 -0700 (PDT)
-Subject: Re: [PATCH v10 0/2] Add support for the OST in Ingenic X1000.
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        tglx@linutronix.de, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com, paul@crapouillou.net
-References: <20200720173134.22826-1-zhouyanjie@wanyeetech.com>
- <6aca88ad-1e20-97da-effe-fa5a4cec789c@linaro.org>
- <0ace68b6-9d75-8b8f-c108-89863cb6d03d@wanyeetech.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8129fbbf-652d-5429-4b8a-63038cd42ccb@linaro.org>
-Date:   Wed, 22 Jul 2020 18:49:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1731142AbgGVQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 12:50:54 -0400
+Received: from mga07.intel.com ([134.134.136.100]:12009 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726642AbgGVQux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 12:50:53 -0400
+IronPort-SDR: yiVEIujHbbYbaMEjiDiNcyTh5qmSgLPkrBiPOSmYpj6la6z/3lzSMs9ZwvI9PzJlF9sItzlAOc
+ b/rp1EmHkp+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="215002841"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="215002841"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 09:50:51 -0700
+IronPort-SDR: L+8m7J8RWmfQdUFP7nNVsRis/hvFKPt3CUmzdUuG4sPpU5xSTU/i5zwca/aG50/A9u2+9/d4gx
+ vrvmDvcVD7gw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="462526859"
+Received: from orsmsx101.amr.corp.intel.com ([10.22.225.128])
+  by orsmga005.jf.intel.com with ESMTP; 22 Jul 2020 09:50:50 -0700
+Received: from [10.254.181.38] (10.254.181.38) by ORSMSX101.amr.corp.intel.com
+ (10.22.225.128) with Microsoft SMTP Server (TLS) id 14.3.439.0; Wed, 22 Jul
+ 2020 09:50:50 -0700
+Subject: Re: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI
+ irq domain
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>
+CC:     <vkoul@kernel.org>, <maz@kernel.org>, <bhelgaas@google.com>,
+        <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
+        <tglx@linutronix.de>, <hpa@zytor.com>,
+        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
+        <ashok.raj@intel.com>, <yi.l.liu@intel.com>, <baolu.lu@intel.com>,
+        <kevin.tian@intel.com>, <sanjay.k.kumar@intel.com>,
+        <tony.luck@intel.com>, <jing.lin@intel.com>,
+        <dan.j.williams@intel.com>, <kwankhede@nvidia.com>,
+        <eric.auger@redhat.com>, <parav@mellanox.com>,
+        <dave.hansen@intel.com>, <netanelg@mellanox.com>,
+        <shahafs@mellanox.com>, <yan.y.zhao@linux.intel.com>,
+        <pbonzini@redhat.com>, <samuel.ortiz@intel.com>,
+        <mona.hossain@intel.com>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>
+References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
+ <159534734833.28840.10067945890695808535.stgit@djiang5-desk3.ch.intel.com>
+ <20200721161344.GA2021248@mellanox.com>
+From:   "Dey, Megha" <megha.dey@intel.com>
+Message-ID: <a99af84f-f3ef-ee3c-1f94-680909e97868@intel.com>
+Date:   Wed, 22 Jul 2020 09:50:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <0ace68b6-9d75-8b8f-c108-89863cb6d03d@wanyeetech.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200721161344.GA2021248@mellanox.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.254.181.38]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/07/2020 18:47, Zhou Yanjie wrote:
-> Hello Daniel,
+Hi Jason,
+
+On 7/21/2020 9:13 AM, Jason Gunthorpe wrote:
+> On Tue, Jul 21, 2020 at 09:02:28AM -0700, Dave Jiang wrote:
+>> From: Megha Dey <megha.dey@intel.com>
+>>
+>> Add support for the creation of a new DEV_MSI irq domain. It creates a
+>> new irq chip associated with the DEV_MSI domain and adds the necessary
+>> domain operations to it.
+>>
+>> Add a new config option DEV_MSI which must be enabled by any
+>> driver that wants to support device-specific message-signaled-interrupts
+>> outside of PCI-MSI(-X).
+>>
+>> Lastly, add device specific mask/unmask callbacks in addition to a write
+>> function to the platform_msi_ops.
+>>
+>> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+>> Signed-off-by: Megha Dey <megha.dey@intel.com>
+>> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+>>   arch/x86/include/asm/hw_irq.h |    5 ++
+>>   drivers/base/Kconfig          |    7 +++
+>>   drivers/base/Makefile         |    1
+>>   drivers/base/dev-msi.c        |   95 +++++++++++++++++++++++++++++++++++++++++
+>>   drivers/base/platform-msi.c   |   45 +++++++++++++------
+>>   drivers/base/platform-msi.h   |   23 ++++++++++
+>>   include/linux/msi.h           |    8 +++
+>>   7 files changed, 168 insertions(+), 16 deletions(-)
+>>   create mode 100644 drivers/base/dev-msi.c
+>>   create mode 100644 drivers/base/platform-msi.h
+>>
+>> diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
+>> index 74c12437401e..8ecd7570589d 100644
+>> +++ b/arch/x86/include/asm/hw_irq.h
+>> @@ -61,6 +61,11 @@ struct irq_alloc_info {
+>>   			irq_hw_number_t	msi_hwirq;
+>>   		};
+>>   #endif
+>> +#ifdef CONFIG_DEV_MSI
+>> +		struct {
+>> +			irq_hw_number_t hwirq;
+>> +		};
+>> +#endif
 > 
-> 在 2020/7/21 下午8:53, Daniel Lezcano 写道:
->> On 20/07/2020 19:31, 周琰杰 (Zhou Yanjie) wrote:
->>> v9->v10:
->>> Fix errors which case "make dt_binding_check" failed.
->>>
->>> 周琰杰 (Zhou Yanjie) (2):
->>>    dt-bindings: timer: Add Ingenic X1000 OST bindings.
->>>    clocksource: Ingenic: Add support for the Ingenic X1000 OST.
->>>
->>>   .../devicetree/bindings/timer/ingenic,sysost.yaml  |  63 +++
->>>   drivers/clocksource/Kconfig                        |  12 +-
->>>   drivers/clocksource/Makefile                       |   1 +
->>>   drivers/clocksource/ingenic-sysost.c               | 539
->>> +++++++++++++++++++++
->>>   include/dt-bindings/clock/ingenic,sysost.h         |  12 +
->>>   5 files changed, 626 insertions(+), 1 deletion(-)
->>>   create mode 100644
->>> Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
->>>   create mode 100644 drivers/clocksource/ingenic-sysost.c
->>>   create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
->> Applied, thanks
+> Why is this in this patch? I didn't see an obvious place where it is
+> used?
+
+Since I have introduced the DEV-MSI domain and related ops, this is 
+required in the dev_msi_set_hwirq and dev_msi_set_desc in this patch.
+
+>>   
+>> +static void __platform_msi_desc_mask_unmask_irq(struct msi_desc *desc, u32 mask)
+>> +{
+>> +	const struct platform_msi_ops *ops;
+>> +
+>> +	ops = desc->platform.msi_priv_data->ops;
+>> +	if (!ops)
+>> +		return;
+>> +
+>> +	if (mask) {
+>> +		if (ops->irq_mask)
+>> +			ops->irq_mask(desc);
+>> +	} else {
+>> +		if (ops->irq_unmask)
+>> +			ops->irq_unmask(desc);
+>> +	}
+>> +}
+>> +
+>> +void platform_msi_mask_irq(struct irq_data *data)
+>> +{
+>> +	__platform_msi_desc_mask_unmask_irq(irq_data_get_msi_desc(data), 1);
+>> +}
+>> +
+>> +void platform_msi_unmask_irq(struct irq_data *data)
+>> +{
+>> +	__platform_msi_desc_mask_unmask_irq(irq_data_get_msi_desc(data), 0);
+>> +}
 > 
+> This is a bit convoluted, just call the op directly:
 > 
-> I'm very sorry, I found some typos in this series, do I need to send a
-> v11 to fix these typos?
+> void platform_msi_unmask_irq(struct irq_data *data)
+> {
+> 	const struct platform_msi_ops *ops = desc->platform.msi_priv_data->ops;
+> 
+> 	if (ops->irq_unmask)
+> 		ops->irq_unmask(desc);
+> }
+>
 
-As your convenience, V11 or patches on top of V10. But please do it
-quickly as I'm preparing the PR.
+Sure, I will update this.
 
-Thanks
+>> diff --git a/include/linux/msi.h b/include/linux/msi.h
+>> index 7f6a8eb51aca..1da97f905720 100644
+>> +++ b/include/linux/msi.h
+>> @@ -323,9 +323,13 @@ enum {
+>>   
+>>   /*
+>>    * platform_msi_ops - Callbacks for platform MSI ops
+>> + * @irq_mask:   mask an interrupt source
+>> + * @irq_unmask: unmask an interrupt source
+>>    * @write_msg:	write message content
+>>    */
+>>   struct platform_msi_ops {
+>> +	unsigned int            (*irq_mask)(struct msi_desc *desc);
+>> +	unsigned int            (*irq_unmask)(struct msi_desc *desc);
+> 
+> Why do these functions return things if the only call site throws it
+> away?
 
-  -- Daniel
+Hmmm, fair enough, I will change it to void.
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> 
+> Jason
+> 
