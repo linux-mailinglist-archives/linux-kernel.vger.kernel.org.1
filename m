@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A5228D2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 02:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7245C228D31
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 02:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731458AbgGVAoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 20:44:06 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60275 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726468AbgGVAoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 20:44:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BBGtW10frz9sR4;
-        Wed, 22 Jul 2020 10:44:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595378643;
-        bh=HWIIhnG4c5m+8etDE8Vn31V6Al/spuQpJSoHGrnNFOA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dPVC1J92D4brCD7Vt1/F2txmldkjFMejL9zEkv7JznOtRCOUp14nZicBHzdbzyZIN
-         mfNMrdDCbSeOMkN5m5vD3wZd9mGwSEAK6B1DGW4AkEzxuE/kOCs2RC+JhyBu1Fopy2
-         WDMhpErApi1zxWYETMN3LHI8jGsQ5p14fpKnMeZ7mgEWmTLQJQhsv1Y511z53Vx7Y1
-         XrbyJq6wQa/XP92acKhlER+fshogiweN9S0baC/NOzd69Qz3X/IxYtYRJX+XgJrH2s
-         23lZWl2Qun0AF7fnq6p47ZZkLT1mn+SF693PzN73FseLHjgQqr+2AU2zbkmnH5DaaU
-         xicUsBYjOmFnA==
-Date:   Wed, 22 Jul 2020 10:44:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <ren_guo@c-sky.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the xtensa tree with the csky tree
-Message-ID: <20200722104402.5f95bcc1@canb.auug.org.au>
+        id S1731207AbgGVAr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 20:47:59 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:36963 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgGVAr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 20:47:58 -0400
+Received: from oscar.flets-west.jp (softbank126025067101.bbtec.net [126.25.67.101]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 06M0lCmA017008;
+        Wed, 22 Jul 2020 09:47:12 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 06M0lCmA017008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1595378833;
+        bh=eG+ayNnFCXKOBzxmUjHFFQOzueXyYgjhP95zI9sGS9o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U/oZ8DycR+wdfRU3577VbpGliWLjPEp+xCgcXj4QnkJDTHtMBdfxtDgPHZnNnHJKG
+         TDbqE3F2T8wGtDwIFDV0qIpRraRdzKX7VrNuLubw/+NB6nMtpvqa74i8rllr57Txlr
+         pzDQPyR94wJVSYqco/b56hyR15eV0Y+xEAwlRWN9XuEi+QY79yMV221IAE58u3lopc
+         OAbDglRecAa0EYtowdZzpQur6X6RRq6ZGj3XQqtQa3guLwsFxzCXEBzp3f6vaH0GZ9
+         t11G/4zR1fuLv+hatEOOPKF4yU9qtN2PEwv8uHM1dI2x4Jzncp6POYpl2w1NnxIQM7
+         VGRmfykr26B0w==
+X-Nifty-SrcIP: [126.25.67.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] xtensa: add boot subdirectories build artifacts to 'targets'
+Date:   Wed, 22 Jul 2020 09:47:07 +0900
+Message-Id: <20200722004707.779601-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/29F/PfU2JgwE1THz1oU0DyX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/29F/PfU2JgwE1THz1oU0DyX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Xtensa always rebuilds the following even if nothing in the source code
+has been changed. Passing V=2 shows the reason.
 
-Hi all,
+  AS      arch/xtensa/boot/boot-elf/bootstrap.o - due to bootstrap.o not in $(targets)
+  LDS     arch/xtensa/boot/boot-elf/boot.lds - due to boot.lds not in $(targets)
 
-Today's linux-next merge of the xtensa tree got a conflict in:
+They are built by if_changed(_dep). Add them to 'targets' so .*.cmd files
+are included.
 
-  tools/testing/selftests/seccomp/seccomp_bpf.c
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-between commit:
+ arch/xtensa/boot/boot-elf/Makefile     | 1 +
+ arch/xtensa/boot/boot-redboot/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
 
-  f4dd2edafba0 ("csky: add support for SECCOMP and SECCOMP_FILTER")
+diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
+index 12ae1e91cb75..badee63dae27 100644
+--- a/arch/xtensa/boot/boot-elf/Makefile
++++ b/arch/xtensa/boot/boot-elf/Makefile
+@@ -15,6 +15,7 @@ export CPPFLAGS_boot.lds += -P -C
+ export KBUILD_AFLAGS += -mtext-section-literals
+ 
+ boot-y		:= bootstrap.o
++targets		+= $(boot-y) boot.lds
+ 
+ OBJS		:= $(addprefix $(obj)/,$(boot-y))
+ 
+diff --git a/arch/xtensa/boot/boot-redboot/Makefile b/arch/xtensa/boot/boot-redboot/Makefile
+index 8632473ad319..1a277dd57b2a 100644
+--- a/arch/xtensa/boot/boot-redboot/Makefile
++++ b/arch/xtensa/boot/boot-redboot/Makefile
+@@ -13,6 +13,7 @@ endif
+ LD_ARGS	= -T $(srctree)/$(obj)/boot.ld
+ 
+ boot-y	:= bootstrap.o
++targets	+= $(boot-y)
+ 
+ OBJS	:= $(addprefix $(obj)/,$(boot-y))
+ LIBS	:= arch/xtensa/boot/lib/lib.a arch/xtensa/lib/lib.a
+-- 
+2.25.1
 
-from the csky tree and commit:
-
-  deccfc9ce639 ("selftests/seccomp: add xtensa support")
-
-from the xtensa tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/seccomp/seccomp_bpf.c
-index 8d18a0ddafdd,1b445c2e7fbe..000000000000
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@@ -1704,7 -1704,7 +1714,7 @@@ void change_syscall(struct __test_metad
- =20
-  #if defined(__x86_64__) || defined(__i386__) || defined(__powerpc__) || \
-  	defined(__s390__) || defined(__hppa__) || defined(__riscv) || \
-- 	defined(__csky__)
- -	defined(__xtensa__)
-++	defined(__csky__) || defined(__xtensa__)
-  	{
-  		regs.SYSCALL_NUM =3D syscall;
-  	}
-
---Sig_/29F/PfU2JgwE1THz1oU0DyX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8Xi9IACgkQAVBC80lX
-0GzPpQf+IFV67SA3EFrfTacozaVBNTPDo/ZIBE0366Xu7i7j5jlXgU0GSX1OcIGx
-U/voFs7l1OuwpfCHuHycxTqsfYlnSLO/HUpbzjaSPePaFSspTAHZ8EKwgQbSgZs6
-2hucAjKtWx8AEsO6dVkkzIS/hAlckkajx5Iucz0WZQgEnlE6t+V7cGsm/YmtrDfI
-kwFah4ie5g1VDRS1pPJ+eb5WvtNVZDE4VlN9gjO/41UW5neCOi25fPFYADtBjnFV
-ArT/8reLSHxF05Nrqy//CyLwanjtgA87KLzgoOC/RTXMtGdxxyPmp750/0o6bMjL
-35HQ6WE1u4gp/XJ5UfSsNM9jbP5VvA==
-=Tqz2
------END PGP SIGNATURE-----
-
---Sig_/29F/PfU2JgwE1THz1oU0DyX--
