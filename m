@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51117228DEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3117228E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731686AbgGVCTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 22:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731595AbgGVCTp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 22:19:45 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AABAC061794;
-        Tue, 21 Jul 2020 19:19:45 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k27so397425pgm.2;
-        Tue, 21 Jul 2020 19:19:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7wV7qhzZv3sbD4+KlzCK0zK14sIgrZ5cvRZxkccSQFE=;
-        b=hs7r6WmJiGZaRzMcj/QB6p0Qh7iJvLcLJvjwlInb0zYm6qRskYLKwviZ8EiP/3mmWZ
-         fvn6G4N481ZG3jla5XGocLKM/bAtJaDD8K7dX3ADizZygeTZg23SrewAUvcwmeWYbQ9M
-         F08xMcrfmzxbPqMWY61CkRe0LfsO7+erliQ7+SLASCoaC75iptIUdfNtYalJVQkkjzb/
-         FWyujWLlOyNrpCdGKAHjo72HmWGifFoN7drdyhAcVKKlBWRUA2ZJcXIEm44PQuhgo4k+
-         /DIqEkq7nozbSbvS6rQm6IOsjX1jE2GOZ8RmWmqNglcm2n7sHcv5yPXq3EsQ+SkplbVr
-         EVYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7wV7qhzZv3sbD4+KlzCK0zK14sIgrZ5cvRZxkccSQFE=;
-        b=kqVL4Eml3DObIcl/PSbJyqXNwGBIN47b9qjPgXzNxT5vgZkkhLDHVlMxnQrH4mnHGn
-         8OX4J2AcaWNO50LkEedjX+lj03uwDt96Z9L9pY3elqadxAf/PW9xpgysZoOddMbckvPI
-         wY6Dv7QSiHKzj1TUqeqhC30RQUSmAJcFcBD3MceaMbX/dOMX9SylZOYllEwbzJVMFZsY
-         Ym2F2dgGahxqEa6zM3Df+LOYmpX0lX2i87Cef8qKUEmGbZg7PUA4PHAkjNL7KJO6kZf1
-         0u0w4Cr4T/0wLfcjZ2ufITTq0HIFweF5NQTPN/buTZI1UTh2qRN13wBcuPNk8mSbt6DJ
-         7TGg==
-X-Gm-Message-State: AOAM533XjOG77rogxIW2H7Bt9X5Rm88VlHmzoJt8syfDupnNaNVd9isY
-        ibTAcJl4DA11W+4eWp62dI1giizMom0=
-X-Google-Smtp-Source: ABdhPJwco5bqHMdH+WElYnXoVzzywA0mbkIqRlI/FiDiOZLhyQ1sx13ZUtCN1IGbQ2tIzggG4hRLhA==
-X-Received: by 2002:a63:6dc1:: with SMTP id i184mr24987085pgc.345.1595384384680;
-        Tue, 21 Jul 2020 19:19:44 -0700 (PDT)
-Received: from haswell.lan ([2604:3d09:e37f:fce0::d4a])
-        by smtp.gmail.com with ESMTPSA id n2sm344237pfq.140.2020.07.21.19.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 19:19:43 -0700 (PDT)
-From:   Robert Hancock <hancockrwd@gmail.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Hancock <hancockrwd@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] PCI: Disallow ASPM on ASMedia ASM1083/1085 PCIe-PCI bridge
-Date:   Tue, 21 Jul 2020 20:18:03 -0600
-Message-Id: <20200722021803.17958-1-hancockrwd@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1731730AbgGVC3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 22:29:40 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:64449 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731595AbgGVC3k (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 22:29:40 -0400
+X-Greylist: delayed 601 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Jul 2020 22:29:38 EDT
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="36533941"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 22 Jul 2020 10:19:36 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(139077:0:AUTH_RELAY)
+        (envelope-from <dave.wang@emc.com.tw>); Wed, 22 Jul 2020 10:19:34 +0800 (CST)
+Received: from 192.168.33.57
+        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2477:0:AUTH_RELAY)
+        (envelope-from <dave.wang@emc.com.tw>); Wed, 22 Jul 2020 10:19:33 +0800 (CST)
+From:   "Dave.Wang" <dave.wang@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     <Linux-input@vger.kernel.org>, <Linux-kernel@vger.kernel.org>,
+        <phoenix@emc.com.tw>, <josh.chen@emc.com.tw>,
+        <jingle.wu@emc.com.tw>, <kai.heng.feng@canonical.com>
+References: <20191209111107.32239-1-dave.wang@emc.com.tw> <20200721161236.GI1665100@dtor-ws>
+In-Reply-To: <20200721161236.GI1665100@dtor-ws>
+Subject: RE: [PATCH 1/3] Input: elan_i2c - Do no operation for elan_smbus_set_mode function
+Date:   Wed, 22 Jul 2020 10:19:33 +0800
+Message-ID: <002601d65fce$8a0148d0$9e03da70$@emc.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQKMobxR7qDwdRZsC9ditFT1DgHVnAJCKYzFp5RE3UA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYxMjlcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1jNzQ1ODM0Mi1jYmMxLTExZWEtYWE4Yy04OGQ3ZjY1NjczMzBcYW1lLXRlc3RcYzc0NTgzNDMtY2JjMS0xMWVhLWFhOGMtODhkN2Y2NTY3MzMwYm9keS50eHQiIHN6PSIyNDMwIiB0PSIxMzIzOTg1Nzk3MzEyNzIyMzUiIGg9IjNHWVo1d1lBSHpXRHEvZk1ZN0pOb3ljV3pWTT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently ASPM handling was changed to no longer disable ASPM on all
-PCIe to PCI bridges. Unfortunately these ASMedia PCIe to PCI bridge
-devices don't seem to function properly with ASPM enabled, as they
-cause the parent PCIe root port to cause repeated AER timeout errors.
-In addition to flooding the kernel log, this also causes the machine
-to wake up immediately after suspend is initiated.
+Dear Dmitry,
 
-Fixes: 66ff14e59e8a ("PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges")
-Cc: stable@vger.kernel.org
-Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
----
- drivers/pci/quirks.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Are there devices that do not trigger errors?
+=> Yes, there exist devices that would act normally. However, our team
+cannot organize the rule to recognize which devices could trigger this
+command without error. 
+What I sure about is that some devices would get TP no function while
+triggering this command. 
+Besides, ABS mode had been set in P/S2 protocol, so there is no need to set
+ABS mode again in SMBUS driver. 
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 812bfc32ecb8..e5713114f2ab 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -2330,6 +2330,19 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f1, quirk_disable_aspm_l0s);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f4, quirk_disable_aspm_l0s);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1508, quirk_disable_aspm_l0s);
- 
-+static void quirk_disable_aspm_l0s_l1(struct pci_dev *dev)
-+{
-+	pci_info(dev, "Disabling ASPM L0s/L1\n");
-+	pci_disable_link_state(dev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
-+}
-+
-+/*
-+ * ASM1083/1085 PCIe-PCI bridge devices cause AER timeout errors on the
-+ * upstream PCIe root port when ASPM is enabled. At least L0s mode is affected,
-+ * disable both L0s and L1 for now to be safe.
-+ */
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x1080, quirk_disable_aspm_l0s_l1);
-+
- /*
-  * Some Pericom PCIe-to-PCI bridges in reverse mode need the PCIe Retrain
-  * Link bit cleared after starting the link retrain process to allow this
--- 
-2.26.2
+How do we put SMbus devices into low power mode?
+=> As far as I am concerned, core.c only set the mode into ABS mode or
+ENABLE_CALIBRATE mode after updating firmware. 
+I don't know what or when to set SMbus devices into low power mode.
+
+Best regards,
+Dave
+
+-----Original Message-----
+From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
+Sent: Wednesday, July 22, 2020 12:13 AM
+To: Dave Wang <dave.wang@emc.com.tw>
+Cc: Linux-input@vger.kernel.org; Linux-kernel@vger.kernel.org;
+phoenix@emc.com.tw; josh.chen@emc.com.tw; jingle.wu@emc.com.tw;
+kai.heng.feng@canonical.com
+Subject: Re: [PATCH 1/3] Input: elan_i2c - Do no operation for
+elan_smbus_set_mode function
+
+Hi Dave,
+
+On Mon, Dec 09, 2019 at 06:11:07AM -0500, Dave Wang wrote:
+> Some touchpads might get error while triggerring the set_mode command 
+> in SMBus interface. Do no operation for elan_smbus_set_mode function.
+
+Are there devices that do not trigger errors? How do we put SMbus devices
+into low power mode?
+
+> 
+> Signed-off-by: Dave Wang <dave.wang@emc.com.tw>
+> ---
+>  drivers/input/mouse/elan_i2c_smbus.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/input/mouse/elan_i2c_smbus.c 
+> b/drivers/input/mouse/elan_i2c_smbus.c
+> index 8c3185d54c73..bcb9ec4a7a6b 100644
+> --- a/drivers/input/mouse/elan_i2c_smbus.c
+> +++ b/drivers/input/mouse/elan_i2c_smbus.c
+> @@ -84,10 +84,7 @@ static int elan_smbus_initialize(struct i2c_client 
+> *client)
+>  
+>  static int elan_smbus_set_mode(struct i2c_client *client, u8 mode)  {
+> -	u8 cmd[4] = { 0x00, 0x07, 0x00, mode };
+> -
+> -	return i2c_smbus_write_block_data(client, ETP_SMBUS_IAP_CMD,
+> -					  sizeof(cmd), cmd);
+> +	return 0; /* A no-op */
+>  }
+>  
+>  static int elan_smbus_sleep_control(struct i2c_client *client, bool 
+> sleep)
+> --
+> 2.17.1
+> 
+
+Thanks.
+
+--
+Dmitry
 
