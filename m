@@ -2,173 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7269122A0CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C34F22A0CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732963AbgGVUd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 16:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgGVUd4 (ORCPT
+        id S1732696AbgGVUfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 16:35:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50072 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgGVUfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:33:56 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0303AC0619DC;
-        Wed, 22 Jul 2020 13:33:56 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b92so1991089pjc.4;
-        Wed, 22 Jul 2020 13:33:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pq467vccqzYp1M1jQhDSkSEoLcyh52UM7Yn3BzMUZWU=;
-        b=Nx7arILkrN9sPH/CCElelQE44Zghok008Plxv4BhLXWXt+XHfYy5W/1vfIA3wMIqW/
-         ffpgRqz03Ye1JGTHUJ8LGBSyK23Lx5nDSlEv7Ik+tccqcG6Uo4krJLYRpQrHf/zS+miE
-         zX+UIKm2+i33xO/oGQr9F0uP1rnpQ1ZQcLG6xATD+SYibPH+5epS73WP6FmUEoR0qujE
-         /rvMgeMMSiPVVrKhfQEWY7MEs9UZPRHrWJIwH3E01rxsydJwD1Yr+tV3A6IDnFFy/C43
-         KYw70f20MNMlr5OngghDvY+ereRJ8v+jpEwiv+423ftRySOHlsUURh6j1WUSeqfNa1Wn
-         mwyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pq467vccqzYp1M1jQhDSkSEoLcyh52UM7Yn3BzMUZWU=;
-        b=CBY6FhyDURQvX4voavnpnNfwoSdPIMjcPNYR5XEaL7ZJj5U0gRPYFanFUauhSpXQna
-         v1djalkftANBP8lMAuW2jNARNXPR8bHO5OiEPvcgWu8c+hor3ryyjRMFARbcJznWu+hL
-         mH85sSO1auDauyXqNEWp6rMeztRHpTmhXeo+SwwXScFj8Ri+BeMBWtrQk9IoDwiZCjMU
-         Bja9c2IWYNLFuS4jONn/PnTrcr1qeV2WoykvXJ71h2tbfUaoYfyiEUS6GDjDvfZahIOZ
-         2xWRiE4Lj7+Wilv+L+6s1ZYfiVbetw8L82GNyGin3C5yKkZdcfbmy5ZG23YJs1/Gkvkt
-         2ICA==
-X-Gm-Message-State: AOAM533v5YYBnQkLGE4VibUjbDizdfJYg7ETClnRSmsQAleRUxA2bxz6
-        IGVMGUOHkk6iEma2uKGSngY=
-X-Google-Smtp-Source: ABdhPJzVZ3YITvtTekh3eUYtyR1c1bsCLWAJSiDCBFxKC2/9tQImXbeKoSRFfAIs9LyUDft8h9FrJQ==
-X-Received: by 2002:a17:902:6544:: with SMTP id d4mr1072791pln.138.1595450035501;
-        Wed, 22 Jul 2020 13:33:55 -0700 (PDT)
-Received: from localhost.localdomain.com (cpe-172-90-68-11.socal.res.rr.com. [172.90.68.11])
-        by smtp.gmail.com with ESMTPSA id ml8sm531637pjb.47.2020.07.22.13.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 13:33:54 -0700 (PDT)
-From:   Chris Healy <cphealy@gmail.com>
-X-Google-Original-From: Chris Healy <cphealy@gmail.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, stefan@agner.ch,
-        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        festevam@gmail.com
-Cc:     Chris Healy <cphealy@gmail.com>
-Subject: [PATCH v2] ARM: dts: ZII: Disable HW Ethernet switch reset GPIOs
-Date:   Wed, 22 Jul 2020 13:33:41 -0700
-Message-Id: <20200722203341.578651-1-cphealy@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 22 Jul 2020 16:35:20 -0400
+Received: from 2.general.sarnold.us.vpn ([10.172.64.71] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.arnold@canonical.com>)
+        id 1jyLSP-0006Dv-4C; Wed, 22 Jul 2020 20:35:17 +0000
+Date:   Wed, 22 Jul 2020 20:35:14 +0000
+From:   Seth Arnold <seth.arnold@canonical.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, apparmor@lists.ubuntu.com
+Subject: Re: [apparmor] [PATCH] security: apparmor: file.h: delete duplicated
+ word
+Message-ID: <20200722203514.GB84486@millbarge>
+References: <20200719180835.24658-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Disposition: inline
+In-Reply-To: <20200719180835.24658-1-rdunlap@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Healy <cphealy@gmail.com>
 
-Disable Ethernet switch reset GPIO with ZII platforms that have it
-enabled.  HW switch reset results in a reset of the copper PHYs
-inside of the switch.  We want to avoid this reset of the copper PHYs
-in the switch as this results in unnecessary broader network disruption on
-a soft reboot of the application processor.
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With the HW GPIO removed, the switch driver still performs a soft reset of
-the switch core which has been shown to sufficiently meet our needs with
-other ZII platforms that do not have the HW switch reset GPIO defined. 
+On Sun, Jul 19, 2020 at 11:08:35AM -0700, Randy Dunlap wrote:
+> Delete the doubled word "then" in a comment.
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: John Johansen <john.johansen@canonical.com>
+> Cc: apparmor@lists.ubuntu.com
 
-Signed-off-by: Chris Healy <cphealy@gmail.com>
----
-v2:
-- Update the description to more accurately reflect why we are making the change
+Reviewed-by: Seth Arnold <seth.arnold@canonical.com>
 
- arch/arm/boot/dts/vf610-zii-cfu1.dts      | 2 --
- arch/arm/boot/dts/vf610-zii-spb4.dts      | 2 --
- arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts  | 2 --
- arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts | 2 --
- 4 files changed, 8 deletions(-)
+Thanks
 
-diff --git a/arch/arm/boot/dts/vf610-zii-cfu1.dts b/arch/arm/boot/dts/vf610-zii-cfu1.dts
-index 64e0e9509226..50da0c94e1b7 100644
---- a/arch/arm/boot/dts/vf610-zii-cfu1.dts
-+++ b/arch/arm/boot/dts/vf610-zii-cfu1.dts
-@@ -172,7 +172,6 @@ switch0: switch0@0 {
- 			interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
--			reset-gpios = <&gpio3 11 GPIO_ACTIVE_LOW>;
- 
- 			ports {
- 				#address-cells = <1>;
-@@ -356,7 +355,6 @@ VF610_PAD_PTE13__GPIO_118	0x3043
- 	pinctrl_switch: switch-grp {
- 		fsl,pins = <
- 			VF610_PAD_PTB28__GPIO_98		0x3061
--			VF610_PAD_PTE2__GPIO_107		0x1042
- 		>;
- 	};
- 
-diff --git a/arch/arm/boot/dts/vf610-zii-spb4.dts b/arch/arm/boot/dts/vf610-zii-spb4.dts
-index 9e5187ba3fa6..6c6ec46fd015 100644
---- a/arch/arm/boot/dts/vf610-zii-spb4.dts
-+++ b/arch/arm/boot/dts/vf610-zii-spb4.dts
-@@ -129,7 +129,6 @@ switch0: switch0@0 {
- 			pinctrl-names = "default";
- 			reg = <0>;
- 			eeprom-length = <65536>;
--			reset-gpios = <&gpio3 11 GPIO_ACTIVE_LOW>;
- 			interrupt-parent = <&gpio3>;
- 			interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 			interrupt-controller;
-@@ -326,7 +325,6 @@ VF610_PAD_PTC17__ENET_RMII1_TXEN	0x30d2
- 
- 	pinctrl_gpio_switch0: pinctrl-gpio-switch0 {
- 		fsl,pins = <
--			VF610_PAD_PTE2__GPIO_107		0x31c2
- 			VF610_PAD_PTB28__GPIO_98		0x219d
- 		>;
- 	};
-diff --git a/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts b/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-index 569614b08f04..73fdace4cb42 100644
---- a/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-+++ b/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-@@ -118,7 +118,6 @@ switch0: switch0@0 {
- 			pinctrl-names = "default";
- 			reg = <0>;
- 			eeprom-length = <65536>;
--			reset-gpios = <&gpio3 11 GPIO_ACTIVE_LOW>;
- 			interrupt-parent = <&gpio3>;
- 			interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 			interrupt-controller;
-@@ -293,7 +292,6 @@ VF610_PAD_PTB24__GPIO_94		0x219d
- 
- 	pinctrl_gpio_switch0: pinctrl-gpio-switch0 {
- 		fsl,pins = <
--			VF610_PAD_PTE2__GPIO_107		0x31c2
- 			VF610_PAD_PTB28__GPIO_98		0x219d
- 		>;
- 	};
-diff --git a/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts b/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
-index b6b0f302b7b4..fe600ab2e4bd 100644
---- a/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
-+++ b/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
-@@ -143,7 +143,6 @@ switch0: switch0@0 {
- 			pinctrl-names = "default";
- 			reg = <0>;
- 			eeprom-length = <65536>;
--			reset-gpios = <&gpio3 11 GPIO_ACTIVE_LOW>;
- 			interrupt-parent = <&gpio3>;
- 			interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 			interrupt-controller;
-@@ -333,7 +332,6 @@ VF610_PAD_PTC17__ENET_RMII1_TXEN	0x30d2
- 
- 	pinctrl_gpio_switch0: pinctrl-gpio-switch0 {
- 		fsl,pins = <
--			VF610_PAD_PTE2__GPIO_107		0x31c2
- 			VF610_PAD_PTB28__GPIO_98		0x219d
- 		>;
- 	};
--- 
-2.26.2
+> ---
+>  security/apparmor/include/file.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> --- linux-next-20200717.orig/security/apparmor/include/file.h
+> +++ linux-next-20200717/security/apparmor/include/file.h
+> @@ -167,7 +167,7 @@ int aa_audit_file(struct aa_profile *pro
+>   * @perms: permission table indexed by the matched state accept entry of=
+ @dfa
+>   * @trans: transition table for indexed by named x transitions
+>   *
+> - * File permission are determined by matching a path against @dfa and th=
+en
+> + * File permission are determined by matching a path against @dfa and
+>   * then using the value of the accept entry for the matching state as
+>   * an index into @perms.  If a named exec transition is required it is
+>   * looked up in the transition table.
+>=20
 
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEQVAQ8bojyMcg37H18yFyWZ2NLpcFAl8Yov4ACgkQ8yFyWZ2N
+Lped0wf7BOUDobQFJ75lulsDDZ+njuj+aWldahIGtNOsBSkxOxo8jU/yFQ3CcvOV
+K1VxjYqkhxU5QhWceVFsQ8DN8ILghdb6yofJ9vfnuSgdqcifzwoHbku3Ul99hZyo
+sN5MkQKlLdMsksQCWEvHvB7ofMguuHjHbsYlqPOspdMMLPOEetFzte+irh0cNUyg
+T+oIcWtW9ZUZLSOzmMCM8siFK9lZ2f72zzUpiG1jHxWq9RqVivcKDXGIsvuJtBvZ
+oPALNws2CAWFpwwHj217PkTwVifdPhdvT80ujs27vIim0I2bmSYBF21pYZ5K9pOW
+iAA3GhT6OVL5aXhhQIA6btoyPWbsnw==
+=GKRw
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
