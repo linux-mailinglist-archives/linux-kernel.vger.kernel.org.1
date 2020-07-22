@@ -2,212 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520AD229B22
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18337229B30
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732645AbgGVPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728365AbgGVPRR (ORCPT
+        id S1732752AbgGVPTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:19:10 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:6850 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728256AbgGVPTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:17:17 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81591C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:17:17 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id g37so2000490otb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:17:17 -0700 (PDT)
+        Wed, 22 Jul 2020 11:19:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1595431147; x=1626967147;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=ooqY3uGKQ/zgrFWYr14l/c7bm1A04x+u2YSAEJbXLQA=;
+  b=lmc1Q07VSErzaZw0Skfx+2gbwkFdDdLvmAikYy32PjkyY9r4Rn8kGR4s
+   tTRCObYfQLy78T5p4qxMG7DsT6f23MSy+/MaJLFVu3Y/asTZXWKlnoJFm
+   nGirZiM7d8uBGJpl6nXWEOPfcVFwbKPNY7JIcO98NFYYP67lwtnm90qEg
+   nA3W+HBpw7YXwy/5jbDD/9NFUoNdnrWw6YP38T2+1WNaxe3S+CrZqxx/q
+   Fo0pRtM+IXjC+iyzvHboQNCAnXEUEPD5s8gGEMlXGzKxFp6Isr3Z06gpi
+   iQYNXkw65xwSEHgQRWwHNHZLxQACQnJK7bCoI48GUh1mQqOIRrjwwqxa8
+   Q==;
+IronPort-SDR: VqsjRegBCQFsrbN30qox5E2NF99kYPh6bVNox3uvII9TfGWLPdEzW9C0XKLdWH9uAjMSbQ064v
+ kA7MI/30FrwCCYIu7PMIHzjASj4ZbrL/i0vKQGw+ykm7Um/4T31aKp4CGRKQO+bptjVh+q14qH
+ 4eUEYXv071GHgJWu15Ny0GdWRuF5dPRbD/3dHLZ/cw+HPHyvjwkflmtM4+kJE2b73JQysvtGDc
+ mPib5Q/0tdq+FcYRS6l7HXUwm3elg6VO3x+ufpFFtyK+K7hkMK0JX681/vnRe16J/aveBnVndu
+ pYA=
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="84211138"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 08:18:53 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 22 Jul 2020 08:18:14 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Wed, 22 Jul 2020 08:18:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P2+U8UAYL5LULdfXfWwo5Svdktic+IFEBI2jkc8FkiNc3cdyjAdSvK72brnZ7MaeO3Dnbw9BSjFgPqWJqEZ8/09qFhAciamtAZTw/zuW3rWcSvIpfdIEaqsht2eZMehdmi+BI1WVOLBUrKg7qDo4FqLFxge9zDAcTrv2cNikDLXOxMs5NQiQ9E0Kv3loep1qYM2bz8+nupEe2BIpJ0xkelMWWzCKY8xsPR4kZ4e2Mf13ZFZGAhqN2Vj1eZbB6JEeRBhJJ45R6zuEWrzkIqbyS0cKG5oQlLWZaYDxEz0woVQf+sAtJfsU+KQ1VYDkzD/CGllUJ7n3MofVXf0sVQe44g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ooqY3uGKQ/zgrFWYr14l/c7bm1A04x+u2YSAEJbXLQA=;
+ b=MhnzProomCwRjTUZVOrEm5oyDDlbOiYx18u91VwcU6ynn1uFFQXWdr0C804qb4GxUNwb4PaxDZ1YE6tncnqMpx/WMywX0Uoo7WRo5aqGLTk09lvR6P2Zj3Jc+ibAMDb3qeOvAVpWRPu4gMC8AiPIKe9b74Ex1a1k2yw07JSIn1mB/8w5cFJZRtFVDAtsTMDBQ98HzE5863Hs+d6lNsTfLcOdQsg7RvuwM+mNhtC25KNwtQ9gREnZjWwt2EIgRdvMrynG9y+fxu0jHqmCIW/ssU44ZsiwdKMzcesdSxcFV4/Y5mdgg9u6+miadra8KbRqzdQJMKXAVYTvXe6Qxh5P2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GFIb9RkIl/5PngvU9D0g83i5c49gu3ClHdgFBkg+KM8=;
-        b=RXUSEw8qJFw8zLM/pCnMRbbGAaNGa6zJKqY2tKmsL3PX1BCaa3s3lIOXS2gBkQs1UB
-         dfezQ5FiOvR54RgsynRvuMmNUJqxnTxnC8kS3N1z5b7efvEqVJ7/2vT9mF4SDvhmnzDg
-         efRMbUpNZ1UUrXfwqg3k4U7dyLaEdiKBtaY0Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GFIb9RkIl/5PngvU9D0g83i5c49gu3ClHdgFBkg+KM8=;
-        b=YoPiwvJmXLK9i77LAnujDToTp+uv+onlliFopSfV4R3BZqhMqMCBiDSJvgXx1LMS/r
-         yll4257qXoj02cOP7KURuajTk0fXGs/+JaVV2WzgIFFzP9904EAkueEY4TiSfh5o2zxe
-         Pk3L+EVyzxNCfNQVWRM1xuWWEPCKyNOj7NKZAWl5YorK7yBffn522QLrO+hKfO+W76X2
-         gmpjugs4ob6xYBNj4W7Hk5a5OO2TAAYOBTWxHKnYzJKdcd2UOcSqgm7XT93iKyrQT/lv
-         rR7AvL9EqK3He/iYZcpRy/hFBMG8HUKVzdN0IjNiNyd0iQjYjiYAvCbUtQxqSNJHR8Th
-         CNVw==
-X-Gm-Message-State: AOAM533PvYZJnHPH9KiEyDymLOedGPfVaBR1cAgINGLHe9x9qcnNf9yC
-        GYTaxrk4qFkP7ATYTiRxTOUlG6LIwvTll0Aq568VVQ==
-X-Google-Smtp-Source: ABdhPJwq097xNK22VXYcucjcITK4+EiOAQwRfLVk02HO2+jzyTqyuSkROCzJkE/yY+59ufwNy6k+Z3mUhliCdhF0J+c=
-X-Received: by 2002:a05:6830:1613:: with SMTP id g19mr366916otr.303.1595431036827;
- Wed, 22 Jul 2020 08:17:16 -0700 (PDT)
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ooqY3uGKQ/zgrFWYr14l/c7bm1A04x+u2YSAEJbXLQA=;
+ b=fMt8p13Jmdcwn0I/8aZV2jFdKVHM+K0xNwfenw2BobFlnlBYT1rKbdAp565UXwc6mZlHG9VYVz798FYemLnwc5ckk+zAqLhWQXIlz86XGqjpSNadIgftqzO9Zy1zQ7Rnr4Lvtegs+FAoqhxCkfqe6BCQK4L21uhtyT3ZJahVvK4=
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
+ by BYAPR11MB3830.namprd11.prod.outlook.com (2603:10b6:a03:fc::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Wed, 22 Jul
+ 2020 15:18:51 +0000
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::7424:cb9d:3c63:5181]) by BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::7424:cb9d:3c63:5181%7]) with mapi id 15.20.3216.022; Wed, 22 Jul 2020
+ 15:18:51 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <mika.westerberg@linux.intel.com>
+CC:     <alexander.sverdlin@nokia.com>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <ibr@ilbers.de>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Simulate WRDI command
+Thread-Topic: [PATCH] mtd: spi-nor: intel-spi: Simulate WRDI command
+Thread-Index: AQHWYDReSXNx4qFwZkKE6j6AE/Ov3Q==
+Date:   Wed, 22 Jul 2020 15:18:50 +0000
+Message-ID: <99e3f6c7-e9a6-584c-883a-0882f5137b7b@microchip.com>
+References: <282e1305-fd08-e446-1a22-eb4dff78cfb4@nokia.com>
+ <b5c17892-24ec-a690-96ca-d2238b8925d1@microchip.com>
+ <20200722143604.GQ5180@lahna.fi.intel.com>
+In-Reply-To: <20200722143604.GQ5180@lahna.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [79.115.63.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8bfc29cb-d35a-4103-0c10-08d82e5289ff
+x-ms-traffictypediagnostic: BYAPR11MB3830:
+x-microsoft-antispam-prvs: <BYAPR11MB3830138B30E9D67AB6B8D969F0790@BYAPR11MB3830.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DiGoKIeTuv2MCHCpBaA8Uq00GsWLBjXI/6xqvene1ZMSyzS6FKxRwinpk/FQo6M6SnLNp/xgPScS6Mdx52W2GFQwBIiittg5z6y7beTXN2OiDpfy8fGVnX3Jr9DclzmuUV4avb8Op4Vrkp5v2DXD/pQd8nLi0BpTfz+MrrOSDRp7cpXF9aFf6a8BbgIg56ishMLHZLsEE5kWzhuM9SgT6N6IVupJI6eNiUbWoi4HXICHV591xG4guOGj/11FB+cCKlRU5y+ggQ645Qz2wbQNjhesfj+aHI1xiWxlZUX6bImz8+6yuuieIJT2VHXQ67U/WCH/tSU5FjmApJ0AXeb/uIbbUCuqtRvrKxziF7Tcl2nA5gZsTHrhWLJVBpvZRCGj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2856.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(39860400002)(396003)(136003)(376002)(346002)(4326008)(6512007)(53546011)(31686004)(86362001)(6506007)(6486002)(26005)(478600001)(5660300002)(6916009)(186003)(54906003)(66946007)(2906002)(76116006)(8936002)(91956017)(31696002)(66556008)(66476007)(36756003)(64756008)(66446008)(71200400001)(316002)(8676002)(2616005)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: TBFvLdwd7wvyujqGidNSwtKmADVPbzrsAWgRYNGjv+mIlwlFM7vabhKa3ndztMmDSnchY8m/UhJtOIuELt4OSxDIGu0/4a1d3tBO6nEzZ0KVoNi3haQL+DrBzdMIhRdIpjqkou3ni+7psl99cFmSKGMysyK0STXpx0sy/5E+dTBEfwwfiwxrtg18mHTdDlkulK93fMCRfIEdendglj9rKlWIkIBcji+OZLXp6X1AvduUgtPbSomDesie7nrO04FWkeF/cFkzjBKpnfRs1gi1sgPTxKEJl8lYTYV53LDsB54euNTXhbrw1cw5GksjRhF8sHuE4FN54W0nojrx2ZbD5JatlOsyyQeDINlaK+1s5sfFTEMYAd25ZyXRyZnzOj8bzFEeLA6AyDFGdghF9mG2TqlyXPrZjqoC8DLU5ReAeFCPiNaP9kNnKWLKZ1+J2osvoJiL5gl6A1Jzvr8/5YLYGSYT1QdRo24kzEslkXUgmamNzYFVlu3ad5tgpLWLx/zI
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1C58886E6C4FFB4C9BC373984F80B070@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200722110411.ebkv6knvc6mzw5uf@smtp.gmail.com>
- <20200722120502.GK6419@phenom.ffwll.local> <20200722140604.27dfzfnzug5vb75r@smtp.gmail.com>
-In-Reply-To: <20200722140604.27dfzfnzug5vb75r@smtp.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 22 Jul 2020 17:17:05 +0200
-Message-ID: <CAKMK7uHWCnJ+3YnP2FwVGH6cEDkmPnH9ALjY_1R51QVs0HPG0Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/vkms: add missing drm_crtc_vblank_put to the get/put
- pair on flush
-To:     Melissa Wen <melissa.srw@gmail.com>
-Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-usp@googlegroups.com, Trevor Woerner <twoerner@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bfc29cb-d35a-4103-0c10-08d82e5289ff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 15:18:50.9045
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Hi1YpRg0f0vRMBUhbNzwVyw9CImGlmNSfOBOeGmyrDUaD8ynVLWF3gZWsHtymvkjihhCvHVHZPSBUH3yeaUQjopxHWdeejVzKWLvlChjPSA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3830
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 4:06 PM Melissa Wen <melissa.srw@gmail.com> wrote:
->
-> On 07/22, daniel@ffwll.ch wrote:
-> > On Wed, Jul 22, 2020 at 08:04:11AM -0300, Melissa Wen wrote:
-> > > This patch adds a missing drm_crtc_vblank_put op to the pair
-> > > drm_crtc_vblank_get/put (inc/decrement counter to guarantee vblanks).
-> > >
-> > > It clears the execution of the following kms_cursor_crc subtests:
-> > > 1. pipe-A-cursor-[size,alpha-opaque, NxN-(on-screen, off-screen, sliding,
-> > >    random, fast-moving])] - successful when running individually.
-> > > 2. pipe-A-cursor-dpms passes again
-> > > 3. pipe-A-cursor-suspend also passes
-> > >
-> > > The issue was initially tracked in the sequential execution of IGT
-> > > kms_cursor_crc subtest: when running the test sequence or one of its
-> > > subtests twice, the odd execs complete and the pairs get stuck in an
-> > > endless wait. In the IGT code, calling a wait_for_vblank before the start
-> > > of CRC capture prevented the busy-wait. But the problem persisted in the
-> > > pipe-A-cursor-dpms and -suspend subtests.
-> > >
-> > > Checking the history, the pipe-A-cursor-dpms subtest was successful when,
-> > > in vkms_atomic_commit_tail, instead of using the flip_done op, it used
-> > > wait_for_vblanks. Another way to prevent blocking was wait_one_vblank when
-> > > enabling crtc. However, in both cases, pipe-A-cursor-suspend persisted
-> > > blocking in the 2nd start of CRC capture, which may indicate that
-> > > something got stuck in the step of CRC setup. Indeed, wait_one_vblank in
-> > > the crc setup was able to sync things and free all kms_cursor_crc
-> > > subtests.
-> > >
-> > > Tracing and comparing a clean run with a blocked one:
-> > > - in a clean one, vkms_crtc_atomic_flush enables vblanks;
-> > > - when blocked, only in next op, vkms_crtc_atomic_enable, the vblanks
-> > > started. Moreover, a series of vkms_vblank_simulate flow out until
-> > > disabling vblanks.
-> > > Also watching the steps of vkms_crtc_atomic_flush, when the very first
-> > > drm_crtc_vblank_get returned an error, the subtest crashed. On the other
-> > > hand, when vblank_get succeeded, the subtest completed. Finally, checking
-> > > the flush steps: it increases counter to hold a vblank reference (get),
-> > > but there isn't a op to decreased it and release vblanks (put).
-> > >
-> > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> > > Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
-> > > Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
-> > > ---
-> > >  drivers/gpu/drm/vkms/vkms_crtc.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-> > > index ac85e17428f8..a99d6b4a92dd 100644
-> > > --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> > > +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> > > @@ -246,6 +246,7 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
-> > >
-> > >             spin_unlock(&crtc->dev->event_lock);
-> > >
-> > > +           drm_crtc_vblank_put(crtc);
-> >
-> > Uh so I reviewed this a bit more carefully now, and I dont think this is
-> > the correct bugfix. From the kerneldoc of drm_crtc_arm_vblank_event():
-> >
-> >  * Caller must hold a vblank reference for the event @e acquired by a
-> >  * drm_crtc_vblank_get(), which will be dropped when the next vblank arrives.
-> >
-> > So when we call drm_crtc_arm_vblank_event then the vblank_put gets called
-> > for us. And that's the only case where we successfully acquired a vblank
-> > interrupt reference since on failure of drm_crtc_vblank_get (0 indicates
-> > success for that function, failure negative error number) we directly send
-> > out the event.
-> >
-> > So something else fishy is going on, and now I'm totally confused why this
-> > even happens.
-> >
-> > We also have a pile of WARN_ON checks in drm_crtc_vblank_put to make sure
-> > we don't underflow the refcount, so it's also not that I think (except if
-> > this patch creates more WARNING backtraces).
-> >
-> > But clearly it changes behaviour somehow ... can you try to figure out
-> > what changes? Maybe print out the vblank->refcount at various points in
-> > the driver, and maybe also trace when exactly the fake vkms vblank hrtimer
-> > is enabled/disabled ...
->
-> :(
->
-> I can check these, but I also have other suspicions. When I place the
-> drm_crct_vblank_put out of the if (at the end of flush), it not only solve
-> the issue of blocking on kms_cursor_crc, but also the WARN_ON on kms_flip
-> doesn't appear anymore (a total cleanup). Just after:
->
-> vkms_output->composer_state = to_vkms_crtc_state(crtc->state);
->
-> looks like there is something stuck around here.
-
-Hm do you have the full WARNING for this? Maybe this gives me an idea
-what's going wrong.
-
-> Besides, there is a lock at atomic_begin:
->
->   /* This lock is held across the atomic commit to block vblank timer
->    * from scheduling vkms_composer_worker until the composer is updated
->    */
->   spin_lock_irq(&vkms_output->lock);
->
-> that seems to be released on atomic_flush and make me suspect something
-> missing on the composer update.
-
-atomic_begin/atomic_flush are symmetric functions an always called
-around all the plane updates. So having the spin_lock in _begin and
-the spin_unlock in _flush should be symmetric and correct.
-
-If you want to make sure, recompile with CONFIG_PROVE_LOCKING, which
-should immmediately give you a huge splat in dmesg if there's anything
-unbalanced with locking.
-
-> I'll check all these things and come back with news (hope) :)
-
-Have fun chasing stuff :-)
-
-Cheers, Daniel
-
-
->
-> Thanks,
->
-> Melissa
-> >
-> > I'm totally confused about what's going on here now.
-> > -Daniel
-> >
-> > >             crtc->state->event = NULL;
-> > >     }
-> > >
-> > > --
-> > > 2.27.0
-> > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+T24gNy8yMi8yMCA1OjM2IFBNLCBNaWthIFdlc3RlcmJlcmcgd3JvdGU6DQo+IEVYVEVSTkFMIEVN
+QUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtu
+b3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gSGksDQo+IA0KPiBPbiBXZWQsIEp1bCAyMiwg
+MjAyMCBhdCAwMjoyODozMFBNICswMDAwLCBUdWRvci5BbWJhcnVzQG1pY3JvY2hpcC5jb20gd3Jv
+dGU6DQo+PiArIE1pa2ENCj4+DQo+PiBIaSwgTWlrYSwNCj4+DQo+PiBXb3VsZCB5b3UgcGxlYXNl
+IHJldmlldyB0aGUgcGF0Y2ggZnJvbSBiZWxvdz8NCj4gDQo+IFN1cmUsIHRoZXJlIGlzIG1pbm9y
+IGNvbW1lbnQgYmVsb3cuDQo+IA0KPj4NCj4+IFRoYW5rcyENCj4+DQo+PiBPbiA3LzIyLzIwIDU6
+MDEgUE0sIEFsZXhhbmRlciBTdmVyZGxpbiB3cm90ZToNCj4+PiBFWFRFUk5BTCBFTUFJTDogRG8g
+bm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IHRoZSBj
+b250ZW50IGlzIHNhZmUNCj4+Pg0KPj4+IEZyb206IEFsZXhhbmRlciBTdmVyZGxpbiA8YWxleGFu
+ZGVyLnN2ZXJkbGluQG5va2lhLmNvbT4NCj4+Pg0KPj4+IEFmdGVyIHNwaV9ub3Jfd3JpdGVfZGlz
+YWJsZSgpIHJldHVybiBjb2RlIGNoZWNrcyB3ZXJlIGludHJvZHVjZWQgaW4gdGhlDQo+Pj4gc3Bp
+LW5vciBmcm9udCBlbmQgaW50ZWwtc3BpIGJhY2tlbmQgc3RvcHBlZCB0byB3b3JrIGJlY2F1c2Ug
+V1JESSB3YXMgbmV2ZXINCj4+PiBzdXBwb3J0ZWQgYW5kIGFsd2F5cyBmYWlsZWQuDQo+Pj4NCj4+
+PiBKdXN0IHByZXRlbmQgaXQgd2FzIHN1Y2Vzc2Z1bCBhbmQgaWdub3JlIHRoZSBjb21tYW5kIGl0
+c2VsZi4gSFcgc2VxdWVuY2VyDQo+Pj4gc2hhbGwgZG8gdGhlIHJpZ2h0IHRoaW5nIGF1dG9tYXRp
+Y2FsbHksIHdoaWxlIHdpdGggU1cgc2VxdWVuY2VyIHdlIGNhbm5vdA0KPj4+IGRvIGl0IGFueXdh
+eSwgYmVjYXVzZSB0aGUgb25seSB0b29sIHdlIGhhZCB3YXMgcHJlb3Bjb2RlIGFuZCBpdCBtYWtl
+cyBubw0KPj4+IHNlbnNlIGZvciBXUkRJLg0KPj4+DQo+Pj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5l
+bC5vcmcNCj4+PiBGaXhlczogYmNlNjc5ZTVhZTNhICgibXRkOiBzcGktbm9yOiBDaGVjayBmb3Ig
+ZXJyb3JzIGFmdGVyIGVhY2ggUmVnaXN0ZXIgT3BlcmF0aW9uIikNCj4+PiBTaWduZWQtb2ZmLWJ5
+OiBBbGV4YW5kZXIgU3ZlcmRsaW4gPGFsZXhhbmRlci5zdmVyZGxpbkBub2tpYS5jb20+DQo+Pj4g
+LS0tDQo+Pj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJvbGxlcnMvaW50ZWwtc3BpLmMgfCA4
+ICsrKysrKysrDQo+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKykNCj4+Pg0KPj4+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvbnRyb2xsZXJzL2ludGVsLXNwaS5j
+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb250cm9sbGVycy9pbnRlbC1zcGkuYw0KPj4+IGluZGV4
+IDYxZDJhMGEuLjEzNGIzNTYgMTAwNjQ0DQo+Pj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9j
+b250cm9sbGVycy9pbnRlbC1zcGkuYw0KPj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29u
+dHJvbGxlcnMvaW50ZWwtc3BpLmMNCj4+PiBAQCAtNjEyLDYgKzYxMiwxNCBAQCBzdGF0aWMgaW50
+IGludGVsX3NwaV93cml0ZV9yZWcoc3RydWN0IHNwaV9ub3IgKm5vciwgdTggb3Bjb2RlLCBjb25z
+dCB1OCAqYnVmLA0KPj4+ICAgICAgICAgICAgICAgICByZXR1cm4gMDsNCj4+PiAgICAgICAgIH0N
+Cj4+Pg0KPj4+ICsgICAgICAgLyoNCj4+PiArICAgICAgICAqIFdlIGhvcGUgdGhhdCBIVyBzZXF1
+ZW5jZXIgd2lsbCBkbyB0aGUgcmlnaHQgdGhpbmcgYXV0b21hdGljYWxseSBhbmQNCj4+PiArICAg
+ICAgICAqIHdpdGggdGhlIFNXIHNldWVuY2VyIHdlIGNhbm5vdCB1c2UgcHJlb3Bjb2RlIGFueSB3
+YXksIHNvIGp1c3QgaWdub3JlDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5eXl5e
+DQo+IFR5cG8sIHNob3VsZCBiZSBzZXF1ZW5jZXIuDQo+IA0KPiBPdGhlcndpc2UgbG9va3MgZ29v
+ZCB0byBtZS4NCj4gDQoNCkl0IGxvb2tzIGdvb2QgdG8gbWUgdG9vLiBTaG91bGQgSSBhZGQgeW91
+ciBSLWIgdGFnIHdoZW4gYXBwbHlpbmc/DQpJIGNhbiBmaXggdGhlIHR5cG8uDQoNCkNoZWVycywN
+CnRhDQoNCg==
