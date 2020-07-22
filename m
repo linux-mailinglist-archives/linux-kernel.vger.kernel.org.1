@@ -2,92 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1749722A186
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 23:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379EB22A190
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 23:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgGVVtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 17:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgGVVtV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 17:49:21 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E950EC0619DC;
-        Wed, 22 Jul 2020 14:49:20 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id b205so919704vkb.8;
-        Wed, 22 Jul 2020 14:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ithjliQLqJY6tGxYNN/Cp/9uoUkvQUM6Qu6DjieyS3M=;
-        b=S28SZVzvTqBP++BXwAVzA8kidLotcnQaXAEfAlpiKNPt9dVr/RVP+Y6zLJSlQYC8hK
-         AyT/8BCNlBMUqVrjql1fSSSDlWysrQg2yRTd/F32IB7YuAM3euDwMJ2FHC1/kLnZ0uk9
-         1EKjUKLsRrsNO/Wsz1X8h86cvyEbFT/nB/HdUQftPpcT6IqFRLKchmaYN4YwywSNAxwX
-         0RLfKMKrMlWigH16BQrYX0yEEfpdkAXLn7kd85gKBVxxruTeD/ZhZBc/iHXFX+q2Flhr
-         Pkl9g/IIfHpiRUkx6UDxngGdtMMZpTBLOKiPoGXnxstkoCj9fsTpEz/gmbf8/1xMgYV8
-         PTtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ithjliQLqJY6tGxYNN/Cp/9uoUkvQUM6Qu6DjieyS3M=;
-        b=Z3isM2E49RbyfseGtQJEmNIc2wlJS3MBArkv4l64xd+amWcw3OitrijYbVM0etDb0j
-         UHtamIqs/z3jLBS4+PcyfhTRXa9eq31A3iXn6ht+FehvGOEH4Se27XaPYA/hL9PNfqMY
-         F/RHO1mvayFeqpjNlUSL5JyVtqqqFQM+ccllIpP6I+Cxftm6WZS1mWsMNJ75cKymnPAB
-         KmO4IZCHnD9gS4mPEjAcWAd/WYCY0Pcrhdd8cEHQnw9gKAhblzAa5tVRZkcVKfg00JFr
-         N2z0Ze6jTtgIu1jGpU9NmCfI7Rc6XdFdeJB88BHTcAKroInHLXc1kLVETLQvYDVKxI3T
-         JaeQ==
-X-Gm-Message-State: AOAM531Paql10/60SOBY+f5zNIiKaxnZyKa6XIzGTtiEOa6LxC+0rAie
-        4UxIB6lIek2SuveKiS6Uco88/4aO4zjmBJ3CDaw=
-X-Google-Smtp-Source: ABdhPJyyvmZr7Bt/PIKq8EkvKIF9yqm4tipgYWw+E8JY4c7+nItck3eN+1grf9hY5s++vEf73w5bBOrA+DdFGicoFCc=
-X-Received: by 2002:a1f:f848:: with SMTP id w69mr1525600vkh.86.1595454560034;
- Wed, 22 Jul 2020 14:49:20 -0700 (PDT)
+        id S1730998AbgGVVvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 17:51:12 -0400
+Received: from mga07.intel.com ([134.134.136.100]:41792 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgGVVvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 17:51:12 -0400
+IronPort-SDR: HwsQbk0TWSfuuENpSsI/MWJAzMpADdtIL5KWSu1RLHIxnC6d62S/eo2YuTlXWJPMZiPuSuFQpm
+ 5NejZhbQ1CzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="215054053"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="215054053"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 14:51:11 -0700
+IronPort-SDR: hXRvpcYPNFUqC1zkGA6YRhuyoy9gCwpTUaay6IEA8VgoTeuJWInt7jEBpZvxo4pLqooSuV+bYG
+ FWkYS3tPDYXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="272122519"
+Received: from lkp-server01.sh.intel.com (HELO 7a9a14fb1d52) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Jul 2020 14:51:10 -0700
+Received: from kbuild by 7a9a14fb1d52 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jyMdp-00007c-FR; Wed, 22 Jul 2020 21:51:09 +0000
+Date:   Thu, 23 Jul 2020 05:49:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ 2ac5413e5edca6910d2ae157187a889e94be2b62
+Message-ID: <5f18b486.vJDfkMwCF6rwI58A%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200722203341.578651-1-cphealy@gmail.com>
-In-Reply-To: <20200722203341.578651-1-cphealy@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 22 Jul 2020 18:49:08 -0300
-Message-ID: <CAOMZO5DfuU5dGALFOmryn=xpRq+wWfpQjZEhBje9JAQ8jkXPjw@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: ZII: Disable HW Ethernet switch reset GPIOs
-To:     Chris Healy <cphealy@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  perf/core
+branch HEAD: 2ac5413e5edca6910d2ae157187a889e94be2b62  x86/perf: Fix a typo
 
-On Wed, Jul 22, 2020 at 5:33 PM Chris Healy <cphealy@gmail.com> wrote:
->
-> From: Chris Healy <cphealy@gmail.com>
->
-> Disable Ethernet switch reset GPIO with ZII platforms that have it
-> enabled.  HW switch reset results in a reset of the copper PHYs
-> inside of the switch.  We want to avoid this reset of the copper PHYs
-> in the switch as this results in unnecessary broader network disruption on
-> a soft reboot of the application processor.
->
-> With the HW GPIO removed, the switch driver still performs a soft reset of
-> the switch core which has been shown to sufficiently meet our needs with
-> other ZII platforms that do not have the HW switch reset GPIO defined.
->
-> Signed-off-by: Chris Healy <cphealy@gmail.com>
-> ---
-> v2:
-> - Update the description to more accurately reflect why we are making the change
+elapsed time: 802m
 
-Updated description is clear now:
+configs tested: 107
+configs skipped: 4
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+c6x                                 defconfig
+c6x                        evmc6474_defconfig
+sh                               alldefconfig
+mips                         bigsur_defconfig
+arm                           sama5_defconfig
+arm                           omap1_defconfig
+mips                            e55_defconfig
+c6x                         dsk6455_defconfig
+m68k                         amcore_defconfig
+arm                          simpad_defconfig
+mips                   sb1250_swarm_defconfig
+arm                         shannon_defconfig
+arm                      footbridge_defconfig
+s390                             alldefconfig
+c6x                               allnoconfig
+powerpc                       ppc64_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200719
+i386                 randconfig-a006-20200719
+i386                 randconfig-a002-20200719
+i386                 randconfig-a005-20200719
+i386                 randconfig-a003-20200719
+i386                 randconfig-a004-20200719
+x86_64               randconfig-a005-20200719
+x86_64               randconfig-a002-20200719
+x86_64               randconfig-a006-20200719
+x86_64               randconfig-a001-20200719
+x86_64               randconfig-a003-20200719
+x86_64               randconfig-a004-20200719
+i386                 randconfig-a015-20200719
+i386                 randconfig-a011-20200719
+i386                 randconfig-a016-20200719
+i386                 randconfig-a012-20200719
+i386                 randconfig-a013-20200719
+i386                 randconfig-a014-20200719
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
