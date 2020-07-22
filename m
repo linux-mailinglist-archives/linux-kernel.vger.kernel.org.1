@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080642295AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458D42295B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731970AbgGVKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
+        id S1732086AbgGVKI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731827AbgGVKIR (ORCPT
+        with ESMTP id S1731846AbgGVKIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:17 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80790C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id q5so1311562wru.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
+        Wed, 22 Jul 2020 06:08:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EABDC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so1316478wrl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=b7MHzZy3dLUbUKgFsuoCa2haBWbgdsFC/rkxBf0pOCE=;
-        b=tylk89Y9R/WsK1vHSa15PqrZHOFhBR0CRu9KY18pz/omNvuM2CHoEE6LWu36LoUuT1
-         mej7PLQjvWB8T/yZ9bObTIBHJAGiBHufiKUFgqCekidPKOju7n951eHQKn1CjVLcufPs
-         Xr46TRJox8AFb0hEWTjbeVi7JUbC5s+1OdnLJN8NE9Nqun1cEVsB+rHKsa0bdrFjssgj
-         UHcQrc0E5GLjGAO2N0GPwshyYWFtybG9t68qTayXB9B6GLB63lyYvOx8tX/sqLGsXGLQ
-         DvBgNKOm6We3GUXKMm1eRYxu1A9mPSspxNb0MVAA5jnkuU/swCdfeX3w29dalDId6LpS
-         RlHw==
+        bh=A5OyaDKazB9R0G5RFCOuxIA9I8H8rA5wRtI5qxedDLM=;
+        b=AWkmOFENuGxlgm20HEjydkPvslOX3oGwjR3KF/ZAEBdeKMzzbfwTt0wGynwt1wZ3qc
+         QAAUaBeYd3z1sHUeQAyPWP7XMvQCT1Y0EpzbVgDeS16UANAn3X839Fj4KDW1gNacxK49
+         OuBRJMAOPSxTNO60xUuc15pPBCeRUtCADQLB278Plwp2zT9BMWsl0WoE5HGDoFvp6Xfv
+         rCgGp4XA8NkE89K8OAA92Cz2skzTIU9lk7kHepDjDfDiKxXAZ7oLD/U8Cj+fC4AkNM2m
+         agBkI1cP2ZOnukdm9a0Zwy9RsI86NVq1aYrFCnRFJNmVQOd9/9K+AmeTwsWX60P+sgVs
+         eGag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=b7MHzZy3dLUbUKgFsuoCa2haBWbgdsFC/rkxBf0pOCE=;
-        b=BrSvTw24OjGutp12rufvwWUgiJ/DD6qEt6+K3K6kJ5J7hraoKwPeIg7iYrlh7pcSYP
-         ncVMYEpu6yvq8YOZq5vh2/a9Qz6vJ1UJpxZossGHQLYZL+uwCyO1mL0KhBlZDGYbcUJ4
-         /iakK1tLL4ANss6tac3j6V1ME/p/1HrfFGYrsb+v+kkx7FoPLTt9dvcNXbzO4VgjNGcJ
-         VyezQIi1CE82eZea3AZWMI/mYysTXQNwWulxnEe1EHVSFIQTQa5qP7Devvvx2skQjwmT
-         v+ri/TWHaGAYNUC/MYK1ey6C5UuxH4ktmKQrZ48GmEj1j+p9WsPEHMjsKdlfobMkUuOq
-         tO3Q==
-X-Gm-Message-State: AOAM533w5cyvV/+uuKkG73QfqZtOwj9YUBjcLM8/udOeAaCk9+gWXpzF
-        /FwimuR+7dIhkX/dzQI+6Ynegw==
-X-Google-Smtp-Source: ABdhPJw5NX+3YS7bKnYW1y7+mhlDsZpx2T5bYmvlBREVySZL13To636OIvpkomV+FXJBeQHF+KYejA==
-X-Received: by 2002:adf:82f6:: with SMTP id 109mr9487741wrc.25.1595412496224;
-        Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
+        bh=A5OyaDKazB9R0G5RFCOuxIA9I8H8rA5wRtI5qxedDLM=;
+        b=XeAXzVAQto/08Eyh+BRhO5/rwQ+NmNlKcBWF4XF2FvViBw6Lo7c75WP/FjAbEf7LrG
+         CXp7jJSVfB9m5u6mClQz4X8dRYzu3F0/MOvtCCTSgyinJPHmYrgQxv9Q3HQi51mz2Om+
+         nbLAEVaZ7FXIYti6zFsaj/jdUUvrR3GHh2QE1gqhRg3pxAtp0TgQpL65qrr+0fH4HcCE
+         kX7dSdAp4m/V7u0eZ5+npnHlVq92/EHZPuOQvLLCa7NWM5J4B7wu7Rulo4N/VVJfNf08
+         w3i0L6Qf2F0ymYOo6+8+8rrmWtUaRW7I7unSYjcASeD2Yjttw5mZh01dASChmqnXBcrq
+         z8qw==
+X-Gm-Message-State: AOAM530+3GdpSt2Nr62Ikg1fNMc6gehalZ/F+IbhfqfaCvrrKKWoIlxT
+        kiPN2gxUz7BdYbA5FtMLeH/suw==
+X-Google-Smtp-Source: ABdhPJwm2kjoQc9ihWHv0VlE/0oihzewOO8+TnZja0V1rUhp5ZndjI4gaMiZ1uSWMVejAVcPv45RSA==
+X-Received: by 2002:adf:9f12:: with SMTP id l18mr17693457wrf.35.1595412497232;
+        Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.15
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 05/14] nvmem: core: Grammar fixes for help text
-Date:   Wed, 22 Jul 2020 11:06:56 +0100
-Message-Id: <20200722100705.7772-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 06/14] nvmem: core: Add nvmem_cell_read_u8()
+Date:   Wed, 22 Jul 2020 11:06:57 +0100
+Message-Id: <20200722100705.7772-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
@@ -69,75 +69,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andreas Färber <afaerber@suse.de>
 
-It's "an unsigned" but "a U".
-Similarly, "an entry" but "a binary entry".
+Complement the u16, u32 and u64 helpers with a u8 variant to ease
+accessing byte-sized values.
 
-While at it, also drop superfluous articles for negative and zero.
+This helper will be useful for Realtek Digital Home Center platforms,
+which store some byte and sub-byte sized values in non-volatile memory.
 
 Signed-off-by: Andreas Färber <afaerber@suse.de>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/nvmem/core.c           | 15 +++++++++++++++
+ include/linux/nvmem-consumer.h |  1 +
+ 2 files changed, 16 insertions(+)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index fc480d636be2..95bed31391cd 100644
+index 95bed31391cd..d6bacc878500 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -573,7 +573,7 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
- 
- /**
-  * nvmem_register() - Register a nvmem device for given nvmem_config.
-- * Also creates an binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
-+ * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
-  *
-  * @config: nvmem device configuration with which nvmem device is created.
-  *
-@@ -728,7 +728,7 @@ static void devm_nvmem_release(struct device *dev, void *res)
- /**
-  * devm_nvmem_register() - Register a managed nvmem device for given
-  * nvmem_config.
-- * Also creates an binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
-+ * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
-  *
-  * @dev: Device that uses the nvmem device.
-  * @config: nvmem device configuration with which nvmem device is created.
-@@ -772,7 +772,7 @@ static int devm_nvmem_match(struct device *dev, void *res, void *data)
-  * @dev: Device that uses the nvmem device.
-  * @nvmem: Pointer to previously registered nvmem device.
-  *
-- * Return: Will be an negative on error or a zero on success.
-+ * Return: Will be negative on error or zero on success.
-  */
- int devm_nvmem_unregister(struct device *dev, struct nvmem_device *nvmem)
- {
-@@ -1375,7 +1375,7 @@ static int nvmem_cell_read_common(struct device *dev, const char *cell_id,
+@@ -1374,6 +1374,21 @@ static int nvmem_cell_read_common(struct device *dev, const char *cell_id,
+ 	return 0;
  }
  
++/**
++ * nvmem_cell_read_u8() - Read a cell value as a u8
++ *
++ * @dev: Device that requests the nvmem cell.
++ * @cell_id: Name of nvmem cell to read.
++ * @val: pointer to output value.
++ *
++ * Return: 0 on success or negative errno.
++ */
++int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val)
++{
++	return nvmem_cell_read_common(dev, cell_id, val, sizeof(*val));
++}
++EXPORT_SYMBOL_GPL(nvmem_cell_read_u8);
++
  /**
-- * nvmem_cell_read_u16() - Read a cell value as an u16
-+ * nvmem_cell_read_u16() - Read a cell value as a u16
+  * nvmem_cell_read_u16() - Read a cell value as a u16
   *
-  * @dev: Device that requests the nvmem cell.
-  * @cell_id: Name of nvmem cell to read.
-@@ -1390,7 +1390,7 @@ int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val)
- EXPORT_SYMBOL_GPL(nvmem_cell_read_u16);
- 
- /**
-- * nvmem_cell_read_u32() - Read a cell value as an u32
-+ * nvmem_cell_read_u32() - Read a cell value as a u32
-  *
-  * @dev: Device that requests the nvmem cell.
-  * @cell_id: Name of nvmem cell to read.
-@@ -1405,7 +1405,7 @@ int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val)
- EXPORT_SYMBOL_GPL(nvmem_cell_read_u32);
- 
- /**
-- * nvmem_cell_read_u64() - Read a cell value as an u64
-+ * nvmem_cell_read_u64() - Read a cell value as a u64
-  *
-  * @dev: Device that requests the nvmem cell.
-  * @cell_id: Name of nvmem cell to read.
+diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+index 1b311d27c9b8..052293f4cbdb 100644
+--- a/include/linux/nvmem-consumer.h
++++ b/include/linux/nvmem-consumer.h
+@@ -61,6 +61,7 @@ void nvmem_cell_put(struct nvmem_cell *cell);
+ void devm_nvmem_cell_put(struct device *dev, struct nvmem_cell *cell);
+ void *nvmem_cell_read(struct nvmem_cell *cell, size_t *len);
+ int nvmem_cell_write(struct nvmem_cell *cell, void *buf, size_t len);
++int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val);
+ int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val);
+ int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val);
+ int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val);
 -- 
 2.21.0
 
