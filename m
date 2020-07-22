@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E83229881
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164E8229886
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732355AbgGVMtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:49:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgGVMtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:49:08 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDE9E206C1;
-        Wed, 22 Jul 2020 12:49:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595422148;
-        bh=y3/4VJCTRdIlYtphkAE/Gn/RBkNRjFdO0z0AevSXdDQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R95PcF3fQb8RRElBysX344SHutjTptnkFKl5DK4fDoo+4qOVSdceuYQAA/W5HpTPN
-         Io/MI+EDIlmspZ+jT13cgU9jOELZz6N0p9ruzumMfbEO+UQjrr+Ewwh4lpuHOSxUJH
-         CTMyBJx7isU9/8GjSJPz8+j88gu5g9/aVqKHhdgU=
-Date:   Wed, 22 Jul 2020 14:49:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.7 000/243] 5.7.10-rc2 review
-Message-ID: <20200722124914.GD3155653@kroah.com>
-References: <20200720191523.845282610@linuxfoundation.org>
- <20200721163829.GF239562@roeck-us.net>
+        id S1732371AbgGVMtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:49:32 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54018 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgGVMtb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:49:31 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8E2601C0BD8; Wed, 22 Jul 2020 14:49:28 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 14:49:28 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     jacek.anaszewski@gmail.com, dmurphy@ti.com, robh+dt@kernel.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] leds: Replace HTTP links with HTTPS ones
+Message-ID: <20200722124928.3gya2v3g6g2mdgia@duo.ucw.cz>
+References: <20200713145115.35121-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="kj5yxf4eo4ywrkfx"
 Content-Disposition: inline
-In-Reply-To: <20200721163829.GF239562@roeck-us.net>
+In-Reply-To: <20200713145115.35121-1-grandmaster@al2klimov.de>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 09:38:29AM -0700, Guenter Roeck wrote:
-> On Mon, Jul 20, 2020 at 09:16:26PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.7.10 release.
-> > There are 243 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 22 Jul 2020 19:14:36 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 431 pass: 431 fail: 0
 
-Thanks for testing all of these and letting me know.
+--kj5yxf4eo4ywrkfx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+Hi!
+
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>=20
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+>=20
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+
+Thanks, applied.
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--kj5yxf4eo4ywrkfx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxg12AAKCRAw5/Bqldv6
+8kj8AKC0kAL1fOx5tgtV1gIAvHOIwWwj6QCgsq0+6+rj1i2Lvg6b7fEjCUEEzxc=
+=XAWI
+-----END PGP SIGNATURE-----
+
+--kj5yxf4eo4ywrkfx--
