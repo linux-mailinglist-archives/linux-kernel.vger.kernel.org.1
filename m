@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4D2228DBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F016228DC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731696AbgGVBov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 21:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731570AbgGVBov (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 21:44:51 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C45C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:44:51 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d7so169919plq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yRf1KkzEQtnGqiMsmmJMd1M1Ly6X4XyFRu3fx8vPXY0=;
-        b=XQHFTK8TLwZMhMuzQyIKFEykOxgVlgNBf9kaI3gUbbLyJWGbwT3FRt8tHlFdtILJ4c
-         162oajiVIQqH8z1mqFu5PRaz343GNQwde5dW8LT3G148vliNleRUs5HvY7OBsX/0nzdO
-         qbhS0vkY3rnvqHNeTlOB854yvG8n6FdfxEyDRdnQFrtELcOJgj8NCiPdmISu8WcAqbdO
-         AoShQJKs6FsZDnsSYHlYzxKbnJKmrMQBX9SwdOH5Ew0MP8n1r5T9Je3XFJt6wqvJUUmR
-         yvTngVKx+sAR2oB9r5jHVsZ4bpXAi6kMAHBA61m52VwIXLg+hopolQSiecm6SQUxU24l
-         L7yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=yRf1KkzEQtnGqiMsmmJMd1M1Ly6X4XyFRu3fx8vPXY0=;
-        b=dIyMbOw9mmg5C16XOSYsBvnYXbwTZbfwqUPhOsVkpMAa1Hp+Mz15y03SUfUg5X8MJt
-         /kTxY2+KTOkHfST1j1gfdN5pihNCPRgqSraqwxgFIMxi7xI7ilcDYBPIewZ3eGYGxakL
-         M3SEx8EKt+hgoSfhicVgddXwVhEKJCZbN5hs4XMEoH/4F0mPlascLc4FaX1m06pekQAd
-         j+j3ccskHMvCct3uV/GMBTxqsm9duKMI6Q0uOTS8RbPeow0fAzLHPiiH1FwOS8Hzv5/l
-         3pIpjV5C4uTcThIQPJOtHxmpmvH00tGSC9kUm6UobaX2ndw9F3QOn9jEwbSLtWFrMeW5
-         GsDQ==
-X-Gm-Message-State: AOAM530YYH6ap71Y8iS1q4o3Rgpo3RS+eA5QMt2EKGrKIB1hZPQEWfI4
-        YabydWHTTaZZxWSs53zvpT340iYlq5Y=
-X-Google-Smtp-Source: ABdhPJwywb/lnJmZV4jLcblWIs0VYXUeViGyBDggD6qYivCicW5bfW11E23m5aEUiqrPdmqQ4G5gHA==
-X-Received: by 2002:a17:90a:4fa2:: with SMTP id q31mr8100898pjh.178.1595382290361;
-        Tue, 21 Jul 2020 18:44:50 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 4sm18359304pgk.68.2020.07.21.18.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 18:44:49 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 18:44:49 -0700 (PDT)
-X-Google-Original-Date: Tue, 21 Jul 2020 18:44:46 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Cleanup unnecessary define in asm-offset.c
-In-Reply-To: <1594561309-65026-1-git-send-email-guoren@kernel.org>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, guoren@kernel.org,
-        guoren@linux.alibaba.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     guoren@kernel.org
-Message-ID: <mhng-6e379a55-7e6a-46aa-8faa-011756333d92@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1731718AbgGVBuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 21:50:10 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:55044 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731614AbgGVBuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Jul 2020 21:50:09 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 158CA2007A3;
+        Wed, 22 Jul 2020 03:50:07 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F14D9200779;
+        Wed, 22 Jul 2020 03:49:53 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AAE8C4031C;
+        Wed, 22 Jul 2020 09:31:04 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, peter.chen@nxp.com,
+        oleksandr.suvorov@toradex.com, andreas@kemnade.info,
+        peng.fan@nxp.com, hverkuil-cisco@xs4all.nl, olof@lixom.net,
+        krzk@kernel.org, alexandre.torgue@st.com, patrice.chotard@st.com,
+        arnd@arndb.de, m.szyprowski@samsung.com, joel@jms.id.au,
+        lkundrak@v3.sk, christian.gmeiner@gmail.com,
+        bjorn.andersson@linaro.org, leoyang.li@nxp.com,
+        geert+renesas@glider.be, michael@walle.cc,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/4] gpio: mxc: Support module build
+Date:   Wed, 22 Jul 2020 09:45:50 +0800
+Message-Id: <1595382353-17486-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Jul 2020 06:41:49 PDT (-0700), guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
->
->  - TASK_THREAD_SP is duplicated define
->  - TASK_STACK is no use at all
->  - Don't worry about thread_info's offset in task_struct, have
->    a look on comment in include/linux/sched.h:
->
-> struct task_struct {
-> 	/*
-> 	 * For reasons of header soup (see current_thread_info()), this
-> 	 * must be the first element of task_struct.
-> 	 */
-> 	struct thread_info		thread_info;
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> ---
->  arch/riscv/kernel/asm-offsets.c | 3 ---
->  arch/riscv/kernel/entry.S       | 5 -----
->  2 files changed, 8 deletions(-)
->
-> diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
-> index 07cb9c1..db20344 100644
-> --- a/arch/riscv/kernel/asm-offsets.c
-> +++ b/arch/riscv/kernel/asm-offsets.c
-> @@ -27,9 +27,6 @@ void asm_offsets(void)
->  	OFFSET(TASK_THREAD_S9, task_struct, thread.s[9]);
->  	OFFSET(TASK_THREAD_S10, task_struct, thread.s[10]);
->  	OFFSET(TASK_THREAD_S11, task_struct, thread.s[11]);
-> -	OFFSET(TASK_THREAD_SP, task_struct, thread.sp);
-> -	OFFSET(TASK_STACK, task_struct, stack);
-> -	OFFSET(TASK_TI, task_struct, thread_info);
->  	OFFSET(TASK_TI_FLAGS, task_struct, thread_info.flags);
->  	OFFSET(TASK_TI_PREEMPT_COUNT, task_struct, thread_info.preempt_count);
->  	OFFSET(TASK_TI_KERNEL_SP, task_struct, thread_info.kernel_sp);
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index cae7e6d..3e8707e 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -389,12 +389,7 @@ ENTRY(__switch_to)
->  	lw a4, TASK_TI_CPU(a1)
->  	sw a3, TASK_TI_CPU(a1)
->  	sw a4, TASK_TI_CPU(a0)
-> -#if TASK_TI != 0
-> -#error "TASK_TI != 0: tp will contain a 'struct thread_info', not a 'struct task_struct' so get_current() won't work."
-> -	addi tp, a1, TASK_TI
-> -#else
->  	move tp, a1
-> -#endif
+Change config to tristate, add module device table, module author,
+description and license to support module build for i.MX GPIO driver.
 
-Seems reasonable.  That was really there to save anyone who got bit by the
-conversion to to THREAD_INFO_IN_TASK.
+As this is a SoC GPIO module, it provides common functions for most
+of the peripheral devices, such as GPIO pins control, secondary
+interrupt controller for GPIO pins IRQ etc., without GPIO driver, most
+of the peripheral devices will NOT work properly, so GPIO module is
+similar with clock, pinctrl driver that should be loaded ONCE and
+never unloaded.
 
-I've added a comment and put this on for-next.
+Since MXC GPIO driver needs to have init function to register syscore
+ops once, here still use subsys_initcall(), NOT module_platform_driver().
 
-Thanks!
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- no code change, just add detail explanation about why this patch
+	  does NOT support module unloaded.
+---
+ drivers/gpio/Kconfig    | 2 +-
+ drivers/gpio/gpio-mxc.c | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
->  	ret
->  ENDPROC(__switch_to)
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 8030fd9..468916b 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -397,7 +397,7 @@ config GPIO_MVEBU
+ 	select REGMAP_MMIO
+ 
+ config GPIO_MXC
+-	def_bool y
++	tristate "i.MX GPIO support"
+ 	depends on ARCH_MXC || COMPILE_TEST
+ 	select GPIO_GENERIC
+ 	select GENERIC_IRQ_CHIP
+diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
+index 64278a4..643f4c55 100644
+--- a/drivers/gpio/gpio-mxc.c
++++ b/drivers/gpio/gpio-mxc.c
+@@ -15,6 +15,7 @@
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/irqchip/chained_irq.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/syscore_ops.h>
+@@ -158,6 +159,7 @@ static const struct of_device_id mxc_gpio_dt_ids[] = {
+ 	{ .compatible = "fsl,imx7d-gpio", .data = &mxc_gpio_devtype[IMX35_GPIO], },
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, mxc_gpio_dt_ids);
+ 
+ /*
+  * MX2 has one interrupt *for all* gpio ports. The list is used
+@@ -604,3 +606,7 @@ static int __init gpio_mxc_init(void)
+ 	return platform_driver_register(&mxc_gpio_driver);
+ }
+ subsys_initcall(gpio_mxc_init);
++
++MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
++MODULE_DESCRIPTION("i.MX GPIO Driver");
++MODULE_LICENSE("GPL");
+-- 
+2.7.4
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
