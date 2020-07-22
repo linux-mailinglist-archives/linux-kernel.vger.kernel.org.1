@@ -2,213 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBBB22A35D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E98222A36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733217AbgGVX4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 19:56:09 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43878 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733148AbgGVX4G (ORCPT
+        id S1733301AbgGVX4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 19:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729198AbgGVX4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 19:56:06 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MNu282130860;
-        Wed, 22 Jul 2020 18:56:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595462162;
-        bh=m2Gd1D1Kjb/YffaHcNGXcDodTvrBFg4KPXr7w4wLz6g=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=V19oSDG3bM1YRR2bSik02AV/tKsqrJ+6sEPGlZYZ2yPhEUq86T5tK3AG+WzUEBEkg
-         zMTXxzrPhYFd5FhtyO+iKUDUDFAZc3dAwQ1d5mP39wCMqheuBxlDLquqXKPOX67d2O
-         N2YoRuQaFgn86x8N7LCILV79J/tRyau4/VE5io2o=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MNu27V105634
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 18:56:02 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Jul 2020 18:56:01 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Jul 2020 18:56:01 -0500
-Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MNu1ZD022072;
-        Wed, 22 Jul 2020 18:56:01 -0500
-Received: from localhost ([10.250.34.248])
-        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 06MNu1ON072356;
-        Wed, 22 Jul 2020 18:56:01 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH v3 4/4] remoteproc: k3-r5: Add loading support for on-chip SRAM regions
-Date:   Wed, 22 Jul 2020 18:55:54 -0500
-Message-ID: <20200722235554.7511-5-s-anna@ti.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200722235554.7511-1-s-anna@ti.com>
-References: <20200722235554.7511-1-s-anna@ti.com>
+        Wed, 22 Jul 2020 19:56:50 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1319CC0619E1;
+        Wed, 22 Jul 2020 16:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+o+RK6ajhbuXa8t53WrOJ/qO/QqSI4MSwqISfWHz0Bo=; b=AOTr95qzy3NNS7ydya0oEhrj0x
+        IXsE0BLHInLxK7LMENdQilIfh2cpaGkvHT95pCgdQwNllmzwOLo3+ojeCbEeS4ONogdi/FdZvcsKA
+        vAAlb2nO3vfaHmXrCG9JS/bvR5nFxAh//2dmSV204vs1qw1GWAabgr/uWXOtCYgSy/mF0P8ZAPH1a
+        0M834X7yscfS6C56SWvXovBm3e9oXECz2XoS4GyQhiQw3PA9SiSIXRP8eb+3AJdmfYbzvrwZxEpS7
+        UoeZWuAa/x/uCWzeKIKFz1PRB4jr7Bgi4tjCA67T2axhMjY8cp+HgOR0/H1DXp/uKqGGDB/OHYF0s
+        5GlHzNUw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyOb0-0007ot-PD; Wed, 22 Jul 2020 23:56:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4C193060EF;
+        Thu, 23 Jul 2020 01:56:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8E31729BEC9E1; Thu, 23 Jul 2020 01:56:20 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 01:56:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC][PATCH] objtool,x86_64: Replace recordmcount with objtool
+Message-ID: <20200722235620.GR10769@hirez.programming.kicks-ass.net>
+References: <20200624212737.GV4817@hirez.programming.kicks-ass.net>
+ <20200624214530.GA120457@google.com>
+ <20200625074530.GW4817@hirez.programming.kicks-ass.net>
+ <20200625161503.GB173089@google.com>
+ <20200625200235.GQ4781@hirez.programming.kicks-ass.net>
+ <20200625224042.GA169781@google.com>
+ <20200626112931.GF4817@hirez.programming.kicks-ass.net>
+ <20200722135542.41127cc4@oasis.local.home>
+ <20200722184137.GP10769@hirez.programming.kicks-ass.net>
+ <20200722150943.53046592@oasis.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722150943.53046592@oasis.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The K3 SoCs has various internal on-chip SRAM memories like the SRAM
-within the MCU domain or the shared MSMC RAM within NavSS that can be
-used for multiple purposes. One such purpose is to have the R5F cores
-use a portion of such on-chip SRAM for fast-access data or to directly
-execute code.
+On Wed, Jul 22, 2020 at 03:09:43PM -0400, Steven Rostedt wrote:
+> On Wed, 22 Jul 2020 20:41:37 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > That said, Andi Kleen added an option to gcc called -mnop-mcount which
+> > > will have gcc do both create the mcount section and convert the calls
+> > > into nops. When doing so, it defines CC_USING_NOP_MCOUNT which will
+> > > tell ftrace to expect the calls to already be converted.  
+> > 
+> > That seems like the much easier solution, then we can forget about
+> > recordmcount / objtool entirely for this.
+> 
+> Of course that was only for some gcc compilers, and I'm not sure if
+> clang can do this.
+> 
+> Or do you just see all compilers doing this in the future, and not
+> worrying about record-mcount at all, and bothering with objtool?
 
-Add support to the K3 R5 remoteproc driver to parse and support
-loading into such memories. The SRAM regions need to be mapped as
-normal non-cacheable memory to avoid kernel crashes when the remoteproc
-loader code uses the Arm64 memset library function (the "DC ZVA"
-instruction throws a alignment fault on device type memory).
+I got the GCC version wrong :/ Both -mnop-mcount and -mrecord-mcount
+landed in GCC-5, where our minimum GCC is now at 4.9.
 
-These SRAM regions are completely optional as not all firmware images
-require these memories, and any such memory has to be reserved as such
-in the DTS files.
-
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
-v3: No code changes, picked up review tags
-v2: https://patchwork.kernel.org/patch/11632991/
-v1: https://patchwork.kernel.org/patch/11456373/
-
- drivers/remoteproc/ti_k3_r5_remoteproc.c | 79 ++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
-
-diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
-index 3a27fe881e30..fc473a90edef 100644
---- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
-+++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
-@@ -85,7 +85,9 @@ struct k3_r5_cluster {
-  * @dev: cached device pointer
-  * @rproc: rproc handle representing this core
-  * @mem: internal memory regions data
-+ * @sram: on-chip SRAM memory regions data
-  * @num_mems: number of internal memory regions
-+ * @num_sram: number of on-chip SRAM memory regions
-  * @reset: reset control handle
-  * @tsp: TI-SCI processor control handle
-  * @ti_sci: TI-SCI handle
-@@ -99,7 +101,9 @@ struct k3_r5_core {
- 	struct device *dev;
- 	struct rproc *rproc;
- 	struct k3_r5_mem *mem;
-+	struct k3_r5_mem *sram;
- 	int num_mems;
-+	int num_sram;
- 	struct reset_control *reset;
- 	struct ti_sci_proc *tsp;
- 	const struct ti_sci_handle *ti_sci;
-@@ -587,6 +591,18 @@ static void *k3_r5_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
- 		}
- 	}
- 
-+	/* handle any SRAM regions using SoC-view addresses */
-+	for (i = 0; i < core->num_sram; i++) {
-+		dev_addr = core->sram[i].dev_addr;
-+		size = core->sram[i].size;
-+
-+		if (da >= dev_addr && ((da + len) <= (dev_addr + size))) {
-+			offset = da - dev_addr;
-+			va = core->sram[i].cpu_addr + offset;
-+			return (__force void *)va;
-+		}
-+	}
-+
- 	/* handle static DDR reserved memory regions */
- 	for (i = 0; i < kproc->num_rmems; i++) {
- 		dev_addr = kproc->rmem[i].dev_addr;
-@@ -1027,6 +1043,63 @@ static int k3_r5_core_of_get_internal_memories(struct platform_device *pdev,
- 	return 0;
- }
- 
-+static int k3_r5_core_of_get_sram_memories(struct platform_device *pdev,
-+					   struct k3_r5_core *core)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *sram_np;
-+	struct resource res;
-+	int num_sram;
-+	int i, ret;
-+
-+	num_sram = of_property_count_elems_of_size(np, "sram", sizeof(phandle));
-+	if (num_sram <= 0) {
-+		dev_dbg(dev, "device does not use reserved on-chip memories, num_sram = %d\n",
-+			num_sram);
-+		return 0;
-+	}
-+
-+	core->sram = devm_kcalloc(dev, num_sram, sizeof(*core->sram), GFP_KERNEL);
-+	if (!core->sram)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < num_sram; i++) {
-+		sram_np = of_parse_phandle(np, "sram", i);
-+		if (!sram_np)
-+			return -EINVAL;
-+
-+		if (!of_device_is_available(sram_np)) {
-+			of_node_put(sram_np);
-+			return -EINVAL;
-+		}
-+
-+		ret = of_address_to_resource(sram_np, 0, &res);
-+		of_node_put(sram_np);
-+		if (ret)
-+			return -EINVAL;
-+
-+		core->sram[i].bus_addr = res.start;
-+		core->sram[i].dev_addr = res.start;
-+		core->sram[i].size = resource_size(&res);
-+		core->sram[i].cpu_addr = devm_ioremap_wc(dev, res.start,
-+							 resource_size(&res));
-+		if (!core->sram[i].cpu_addr) {
-+			dev_err(dev, "failed to parse and map sram%d memory at %pad\n",
-+				i, &res.start);
-+			return -ENOMEM;
-+		}
-+
-+		dev_dbg(dev, "memory sram%d: bus addr %pa size 0x%zx va %pK da 0x%x\n",
-+			i, &core->sram[i].bus_addr,
-+			core->sram[i].size, core->sram[i].cpu_addr,
-+			core->sram[i].dev_addr);
-+	}
-+	core->num_sram = num_sram;
-+
-+	return 0;
-+}
-+
- static
- struct ti_sci_proc *k3_r5_core_of_get_tsp(struct device *dev,
- 					  const struct ti_sci_handle *sci)
-@@ -1142,6 +1215,12 @@ static int k3_r5_core_of_init(struct platform_device *pdev)
- 		goto err;
- 	}
- 
-+	ret = k3_r5_core_of_get_sram_memories(pdev, core);
-+	if (ret) {
-+		dev_err(dev, "failed to get sram memories, ret = %d\n", ret);
-+		goto err;
-+	}
-+
- 	ret = ti_sci_proc_request(core->tsp);
- 	if (ret < 0) {
- 		dev_err(dev, "ti_sci_proc_request failed, ret = %d\n", ret);
--- 
-2.26.0
-
+Anyway, what do you prefer, I suppose I can make objtool whatever we
+need, that patch is trivial. Simply recording the sites and not
+rewriting them should be simple enough.
