@@ -2,154 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7619322A212
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FA522A1B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387409AbgGVWM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 18:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733190AbgGVWLn (ORCPT
+        id S1732945AbgGVWBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 18:01:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52396 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729684AbgGVWBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 18:11:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5436EC0619DC;
-        Wed, 22 Jul 2020 15:11:43 -0700 (PDT)
-Message-Id: <20200722220520.979724969@linutronix.de>
+        Wed, 22 Jul 2020 18:01:12 -0400
+Date:   Wed, 22 Jul 2020 22:01:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595455901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=fyK4bEaw4vLDvxA5c9xUboQ6FfeyiYAtOZNHTGpDJ/Q=;
-        b=3Avni9XQxVhjGJAzbNZiEgYS9TgBI8N9MS854IyYeyIIhMIuAs2KBxo0kmHl5+VAvHtw1V
-        vnzPqLzI4voN3IvLygtntQEbFMyobIBlnDuzB+W5bhZj5jvZIdi7uumWY8QNKyzuOjpbFX
-        /jEPsmreWiQh9FHo1c36nuodpgv7NYnX7gTNFHG6Dc5ONtvdtGsj+VD2sEoX7YOKFifCP7
-        +81x0VGKI/3Frnc6gjnYQHroALTJDGvvPoRVC+Out7hm11yfDKP71SJsfGiPAN6dsw0Dgo
-        ghxcGCCG2LyCaMy2oaa2XCdaAwIcppozD0P1KYN8aqJ/LhzvWB8HSfNUCIb5Hw==
+        s=2020; t=1595455269;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8vC2rczS7cb9x0lBYxBobwszS5essgctZGSYg+Cq6lk=;
+        b=Z2hVIImCXZxMoQFAOaUseQzEhTF1zrhgqrducwKBnstQ+uwgiUfdOjVKJdqAUrl/ON6B0T
+        XS9vk9z2LC75g0OJZWpkGcJuhKiVeVyja+7R/NBtrAKEcVQumrR9pbHtcKxlmFOEepCFXA
+        VDx3+wKLAr8mezggsAB59PCWTAf0X9z9URFSXnzxXJq/r1jb9F8tel+Q3pfMk7na2yskxL
+        MbzYr6dTlSscSo3ljdcG6zE7td9XFTlp/NYuQZaazn5DZk2icbtzoq369AFVW7BG1VjEgV
+        TVKCpGvXtRKz31oIqHJCDb5oTLpKqogpqdVe0gUjdD+kEhOqIQhd9hGvltnHeQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595455901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=fyK4bEaw4vLDvxA5c9xUboQ6FfeyiYAtOZNHTGpDJ/Q=;
-        b=xR0tkiw7OdTpq6Bydhg5ii+LnuP8DgtDNKPR9xkR5JZ5Z2DGjEn/gU+5HQr5fveqGIsJxk
-        TLpSeOD9n6o1NEBQ==
-Date:   Thu, 23 Jul 2020 00:00:09 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, linux-arch@vger.kernel.org,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [patch V5 15/15] x86/kvm: Use generic xfer to guest work function
-References: <20200722215954.464281930@linutronix.de>
+        s=2020e; t=1595455269;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8vC2rczS7cb9x0lBYxBobwszS5essgctZGSYg+Cq6lk=;
+        b=KXLOtstEKWVj9ozYSjDx+mB28HwgJpBg7vB98xY3uJoacbvUlyZtkKGXDh5oU2iHxwf4ex
+        Yq8y/G/72edzH+Cg==
+From:   "tip-bot2 for Dmitry Safonov" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] x86/dumpstack: Show registers dump with trace's log level
+Cc:     Dmitry Safonov <dima@arista.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200629144847.492794-4-dima@arista.com>
+References: <20200629144847.492794-4-dima@arista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Message-ID: <159545526866.4006.11068497413049659542.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+The following commit has been merged into the x86/core branch of tip:
 
-Use the generic infrastructure to check for and handle pending work before
-transitioning into guest mode.
+Commit-ID:     ef2ff0f5d6008d325c9a068e20981c0d0acc4d6b
+Gitweb:        https://git.kernel.org/tip/ef2ff0f5d6008d325c9a068e20981c0d0acc4d6b
+Author:        Dmitry Safonov <dima@arista.com>
+AuthorDate:    Mon, 29 Jun 2020 15:48:47 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 22 Jul 2020 23:56:54 +02:00
 
-This now handles TIF_NOTIFY_RESUME as well which was ignored so
-far. Handling it is important as this covers task work and task work will
-be used to offload the heavy lifting of POSIX CPU timers to thread context.
+x86/dumpstack: Show registers dump with trace's log level
 
+show_trace_log_lvl() provides x86 platform-specific way to unwind
+backtrace with a given log level. Unfortunately, registers dump(s) are
+not printed with the same log level - instead, KERN_DEFAULT is always
+used.
+
+Arista's switches uses quite common setup with rsyslog, where only
+urgent messages goes to console (console_log_level=KERN_ERR), everything
+else goes into /var/log/ as the console baud-rate often is indecently
+slow (9600 bps).
+
+Backtrace dumps without registers printed have proven to be as useful as
+morning standups. Furthermore, in order to introduce KERN_UNSUPPRESSED
+(which I believe is still the most elegant way to fix raciness of sysrq[1])
+the log level should be passed down the stack to register dumping
+functions. Besides, there is a potential use-case for printing traces
+with KERN_DEBUG level [2] (where registers dump shouldn't appear with
+higher log level).
+
+After all preparations are done, provide log_lvl parameter for
+show_regs_if_on_stack() and wire up to actual log level used as
+an argument for show_trace_log_lvl().
+
+[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/
+[2]: https://lore.kernel.org/linux-doc/20190724170249.9644-1-dima@arista.com/
+
+Signed-off-by: Dmitry Safonov <dima@arista.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V5: Rename exit -> xfer
----
- arch/x86/kvm/Kconfig   |    1 +
- arch/x86/kvm/vmx/vmx.c |   11 +++++------
- arch/x86/kvm/x86.c     |   15 ++++++---------
- 3 files changed, 12 insertions(+), 15 deletions(-)
+Acked-by: Petr Mladek <pmladek@suse.com>
+Link: https://lkml.kernel.org/r/20200629144847.492794-4-dima@arista.com
 
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -42,6 +42,7 @@ config KVM
- 	select HAVE_KVM_MSI
- 	select HAVE_KVM_CPU_RELAX_INTERCEPT
- 	select HAVE_KVM_NO_POLL
-+	select KVM_XFER_TO_GUEST_WORK
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	select KVM_VFIO
- 	select SRCU
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -27,6 +27,7 @@
- #include <linux/slab.h>
- #include <linux/tboot.h>
- #include <linux/trace_events.h>
-+#include <linux/entry-kvm.h>
+---
+ arch/x86/kernel/dumpstack.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 4954d66..f9a3526 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -134,7 +134,7 @@ void show_iret_regs(struct pt_regs *regs, const char *log_lvl)
+ }
  
- #include <asm/apic.h>
- #include <asm/asm.h>
-@@ -5376,14 +5377,12 @@ static int handle_invalid_guest_state(st
- 		}
+ static void show_regs_if_on_stack(struct stack_info *info, struct pt_regs *regs,
+-				  bool partial)
++				  bool partial, const char *log_lvl)
+ {
+ 	/*
+ 	 * These on_stack() checks aren't strictly necessary: the unwind code
+@@ -146,7 +146,7 @@ static void show_regs_if_on_stack(struct stack_info *info, struct pt_regs *regs,
+ 	 * they can be printed in the right context.
+ 	 */
+ 	if (!partial && on_stack(info, regs, sizeof(*regs))) {
+-		__show_regs(regs, SHOW_REGS_SHORT, KERN_DEFAULT);
++		__show_regs(regs, SHOW_REGS_SHORT, log_lvl);
+ 
+ 	} else if (partial && on_stack(info, (void *)regs + IRET_FRAME_OFFSET,
+ 				       IRET_FRAME_SIZE)) {
+@@ -155,7 +155,7 @@ static void show_regs_if_on_stack(struct stack_info *info, struct pt_regs *regs,
+ 		 * full pt_regs might not have been saved yet.  In that case
+ 		 * just print the iret frame.
+ 		 */
+-		show_iret_regs(regs, KERN_DEFAULT);
++		show_iret_regs(regs, log_lvl);
+ 	}
+ }
+ 
+@@ -210,7 +210,7 @@ void show_trace_log_lvl(struct task_struct *task, struct pt_regs *regs,
+ 			printk("%s <%s>\n", log_lvl, stack_name);
+ 
+ 		if (regs)
+-			show_regs_if_on_stack(&stack_info, regs, partial);
++			show_regs_if_on_stack(&stack_info, regs, partial, log_lvl);
  
  		/*
--		 * Note, return 1 and not 0, vcpu_run() is responsible for
--		 * morphing the pending signal into the proper return code.
-+		 * Note, return 1 and not 0, vcpu_run() will invoke
-+		 * xfer_to_guest_mode() which will create a proper return
-+		 * code.
- 		 */
--		if (signal_pending(current))
-+		if (__xfer_to_guest_mode_work_pending())
- 			return 1;
--
--		if (need_resched())
--			schedule();
- 	}
- 
- 	return 1;
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -56,6 +56,7 @@
- #include <linux/sched/stat.h>
- #include <linux/sched/isolation.h>
- #include <linux/mem_encrypt.h>
-+#include <linux/entry-kvm.h>
- 
- #include <trace/events/kvm.h>
- 
-@@ -1585,7 +1586,7 @@ EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
- bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
- {
- 	return vcpu->mode == EXITING_GUEST_MODE || kvm_request_pending(vcpu) ||
--		need_resched() || signal_pending(current);
-+		xfer_to_guest_mode_work_pending();
- }
- EXPORT_SYMBOL_GPL(kvm_vcpu_exit_request);
- 
-@@ -8676,15 +8677,11 @@ static int vcpu_run(struct kvm_vcpu *vcp
- 			break;
+ 		 * Scan the stack, printing any text addresses we find.  At the
+@@ -271,7 +271,7 @@ next:
+ 			/* if the frame has entry regs, print them */
+ 			regs = unwind_get_entry_regs(&state, &partial);
+ 			if (regs)
+-				show_regs_if_on_stack(&stack_info, regs, partial);
++				show_regs_if_on_stack(&stack_info, regs, partial, log_lvl);
  		}
  
--		if (signal_pending(current)) {
--			r = -EINTR;
--			vcpu->run->exit_reason = KVM_EXIT_INTR;
--			++vcpu->stat.signal_exits;
--			break;
--		}
--		if (need_resched()) {
-+		if (xfer_to_guest_mode_work_pending()) {
- 			srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
--			cond_resched();
-+			r = xfer_to_guest_mode(vcpu);
-+			if (r)
-+				return r;
- 			vcpu->srcu_idx = srcu_read_lock(&kvm->srcu);
- 		}
- 	}
-
+ 		if (stack_name)
