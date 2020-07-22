@@ -2,68 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAF7229EC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1735B229EC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgGVRwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:52:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgGVRwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:52:49 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98897207E8;
-        Wed, 22 Jul 2020 17:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595440368;
-        bh=vrnmZaIRwliX53vKBQ1d28+Q7Z0/op5TGz4Tmb8WGq8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MT5KD0YChPzECugkAoboefewuQBRltWzpOPiPz+eGS/ldE9SkVjtBIHXxJ6AsKZy+
-         eaelqTIBaEU9qQYYGbVy7BnKaL6SxxdeQmEE7XfPqIjxBKlkI3qJ0o1zfePMA19NI2
-         fe2lG/NpdREikmYTJMHGU6ovyy3KqjDZ521FeDM0=
-Date:   Wed, 22 Jul 2020 12:52:47 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v2 3/3] skd: use generic power management
-Message-ID: <20200722175247.GA1293794@bjorn-Precision-5520>
+        id S1728936AbgGVRza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgGVRz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 13:55:29 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F85C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 10:55:29 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id f12so3165587eja.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 10:55:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v6guxX6mZtix0UN5UXZjDkdDZ88VY9pbVBPWoe8hGYQ=;
+        b=jPRuwLr32SMDzzTNsRbghRPMenaWVD+B/SVzZF1Uc1Llsq/ZIivz/T2o5NrbEYVBeE
+         80cewu8Dm2oDPeU2T5l8KbRX5uCRRPNXKGZe76hTgXrlYJ4elRmCeqOka6AyaKkp+a7s
+         tnk/332zp8t1AETZ0FjTRzFOtOuc0geYlT+Ui0cQOsKgBbPK877a7fzOmuv04SvVY9Pu
+         +blOv/fx0pZSJyb9xbRMaNxgo93g9vImKoXda8tZHsytWfDipNMj8tq3VHHssp6jgGAj
+         GBl2XSguaL63ZfAPPVPBL2RhYT6Zk1UWJ/FvurSAG62Qi/1i4ReuK4AkuI7H4wYv56hZ
+         YOsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v6guxX6mZtix0UN5UXZjDkdDZ88VY9pbVBPWoe8hGYQ=;
+        b=RQCVvWOXTvshBTBK8xHa28pjMKrPOTJ6+/UgPnnaiVphWq+mFS8QPMWJrbYxaCeNbi
+         3I5Vix8l9pCLheyY/YZBaazZ/Vcko2M5dmn5LOTiwp3onVGi4UraNiOWYe7xopTKBkSq
+         eOPQQuRK1ZDXOuRStegdboIbw3wBOZKipFRcvSA9hD5CXD1BOnv0TNc1Rpbh+QKOgFxm
+         6t/SjDKDvHb31LbOiryazYdqtrGKmyW03++N6C+hrUFRctJVy7y+Kscp0L03Myxjim/E
+         PYVrjrZmY0BxodiTkbUstUkCtFhJQixFtsZviWwKSsurD0y/mdcFP11IucDO6FStPmZ0
+         /IbQ==
+X-Gm-Message-State: AOAM5318yaEOyjV5+c40s3K6926I61U3Lp7zQ7yuP/l/Zv3j4mwQ/rwm
+        gR2rMEw4V5zK5/XnvoHNLSxlz/AsADmATGKPb3ofI+fX
+X-Google-Smtp-Source: ABdhPJzQHgTVTJmsdSnHKQg+hRAmObEtDQPCwtFEQ4cKuewxqthv0FypycyZ0js2NzGr+FeBDN0d6aQyo6ktu11WGNc=
+X-Received: by 2002:a17:907:2058:: with SMTP id pg24mr741268ejb.79.1595440528090;
+ Wed, 22 Jul 2020 10:55:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721070939.GB51743@gmail.com>
+References: <20200722121439.44328-1-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20200722121439.44328-1-kirill.shutemov@linux.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 22 Jul 2020 10:54:41 -0700
+Message-ID: <CAHbLzkpYxxO=p82upzjRBW5eD0iwMRC=_9KheiRP54MHwaAGvg@mail.gmail.com>
+Subject: Re: [PATCH] khugepaged: Fix null-pointer dereference due to race
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot+ed318e8b790ca72c5ad0@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 12:39:39PM +0530, Vaibhav Gupta wrote:
-> Okay. I will improve on it. Just inform me after testing that if any other
-> changes are required. I guess [PATCH 1/3] and [PATCH 2/3] are okay, so I will
-> only send v3 of [PATCH 3/3] after suggested changes.
+On Wed, Jul 22, 2020 at 5:14 AM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+>
+> khugepaged has to drop mmap lock several times while collapsing a page.
+> The situation can change while the lock is dropped and we need to
+> re-validate that the VMA is still in place and the PMD is still subject
+> for collapse.
+>
+> But we miss one corner case: while collapsing an anonymous pages the VMA
+> could be replaced with file VMA. If the file VMA doesn't have any
+> private pages we get NULL pointer dereference:
+>
+>         general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+>         KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>         anon_vma_lock_write include/linux/rmap.h:120 [inline]
+>         collapse_huge_page mm/khugepaged.c:1110 [inline]
+>         khugepaged_scan_pmd mm/khugepaged.c:1349 [inline]
+>         khugepaged_scan_mm_slot mm/khugepaged.c:2110 [inline]
+>         khugepaged_do_scan mm/khugepaged.c:2193 [inline]
+>         khugepaged+0x3bba/0x5a10 mm/khugepaged.c:2238
+>
+> The fix is to make sure that the VMA is anonymous in
+> hugepage_vma_revalidate(). The helper is only used for collapsing
+> anonymous pages.
+>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+> Reported-by: syzbot+ed318e8b790ca72c5ad0@syzkaller.appspotmail.com
 
-FWIW, there's a recent conversation on users@linux.kernel.org about
-updating individual patches in a series (sorry, can't find a link to
-it).  But the gist of it was that posting only [v3 3/3] leads to
-confusion because
+Acked-by: Yang Shi <yang.shi@linux.alibaba.com>
 
-  - we can't tell whether [v3 1/3] and [v3 2/3] got lost en-route, and
+I think this is worth backporting to stable as well.
 
-  - collecting things from v2 and v3 is more work for the maintainer.
-
-Bottom line: repost the whole series, even if some patches haven't
-changed.
-
-Bjorn
+> ---
+>  mm/khugepaged.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index b043c40a21d4..700f5160f3e4 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -958,6 +958,9 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
+>                 return SCAN_ADDRESS_RANGE;
+>         if (!hugepage_vma_check(vma, vma->vm_flags))
+>                 return SCAN_VMA_CHECK;
+> +       /* Anon VMA expected */
+> +       if (!vma->anon_vma || vma->vm_ops)
+> +               return SCAN_VMA_CHECK;
+>         return 0;
+>  }
+>
+> --
+> 2.26.2
+>
+>
