@@ -2,80 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5FD229F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B7C229F87
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732111AbgGVSta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:49:30 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:47398 "EHLO gloria.sntech.de"
+        id S1732420AbgGVSte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgGVSta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:49:30 -0400
-Received: from x2f7fa19.dyn.telefonica.de ([2.247.250.25] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jyJny-0005KA-ST; Wed, 22 Jul 2020 20:49:26 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        William Wu <william.wu@rock-chips.com>
-Subject: Re: [PATCH v3] ARM: dts: rockchip: Add usb host0 ohci node for rk3288
-Date:   Wed, 22 Jul 2020 20:49:25 +0200
-Message-ID: <2630968.GxkqStg1Zh@phil>
-In-Reply-To: <CAMty3ZCxynb3_GTxhf=Nrf=F=SbijqEfDVysCzQ1KXsF_MCjxw@mail.gmail.com>
-References: <20200720105846.367776-1-jagan@amarulasolutions.com> <8444056.acRTkLjuym@phil> <CAMty3ZCxynb3_GTxhf=Nrf=F=SbijqEfDVysCzQ1KXsF_MCjxw@mail.gmail.com>
+        id S1731267AbgGVStb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 14:49:31 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 341D120737;
+        Wed, 22 Jul 2020 18:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595443770;
+        bh=gO3cXOzvy7Hq12xriUJlLk8YeDSUw0K4gKPAY31EVvU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zKmNT3LVGoJm6irB1/Z7Ez+GKGkn+3h7Hy+fkbvlJOrmU66C965ch3Amy8F6s6dAh
+         h0rm22i1E6GpdqviWExH9yw7iB32rx1YAVTlHQ2hXkgvHwg76hza6XLrfNGhv1BHFh
+         cd6QPXs9uv9UoVIR39dM6UEmT2K0Z2AKX5Sr79j4=
+Date:   Wed, 22 Jul 2020 20:49:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mei: Avoid the use of one-element arrays
+Message-ID: <20200722184935.GA581127@kroah.com>
+References: <20200714214516.GA1040@embeddedor>
+ <5198b29f-2e62-4910-4a4d-52c7991915c5@embeddedor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5198b29f-2e62-4910-4a4d-52c7991915c5@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 22. Juli 2020, 20:46:55 CEST schrieb Jagan Teki:
-> Hi Heiko,
+On Wed, Jul 22, 2020 at 01:27:10PM -0500, Gustavo A. R. Silva wrote:
+> Hi all,
 > 
-> On Thu, Jul 23, 2020 at 12:04 AM Heiko Stuebner <heiko@sntech.de> wrote:
-> >
-> > Hi Jaganm
-> >
-> > Am Montag, 20. Juli 2020, 12:58:46 CEST schrieb Jagan Teki:
-> > > rk3288 and rk3288w have a usb host0 ohci controller.
-> > >
-> > > Although rk3288 ohci doesn't actually work on hardware, but
-> > > rk3288w ohci can work well.
-> > >
-> > > So add usb host0 ohci node in rk3288 dtsi and the quirk in
-> > > ohci platform driver will disable ohci on rk3288.
-> >
-> > If I remember the discussion correctly, we expect the board dts
-> > or the bootloader to enable the ohci, right?
-> > So that block go away ... just making sure, I don't remember
-> > untrue stuff ;-)
-> 
-> Our (with Robin) initial discussion [1] is to manage OHCI enablement
-> in the bootloader but since it requires many checks at bootloader
-> level we finally rely on board dts to enable it as normal.
+> Friendly ping: who can take this? :)
 
-ok, so I'll just drop this paragraph when applying.
-
-
-
-> 
-> [1] https://lkml.org/lkml/2020/7/3/424
-> 
-> Jagan.
-> 
-
-
-
-
+I will, give me a chance...
