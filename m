@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AF8228F87
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C6C228F97
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgGVFIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 01:08:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgGVFIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:08:51 -0400
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F30820771;
-        Wed, 22 Jul 2020 05:08:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595394531;
-        bh=DaoTdcyJI9RaUKeacnQJ4Hs0IpG/0+Iat2hoSYkDO7I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xqhAu2ueVA+WoDVByXVyll1yJSdkntZ7TgcBKBr5Z3Z1K1FUz+rdvvycnGnhaXsoK
-         UenlR6fmF+Q/ewltq5SuaPi2MgCKWWz9YVQz//xIxvbc/HMIbmBmeTh0FLMB5nKHk8
-         l2vwoYG0nI9s5XTBfXaylMA5ePwlz6rLYBxSMbn4=
-Received: by mail-lf1-f47.google.com with SMTP id u25so593633lfm.1;
-        Tue, 21 Jul 2020 22:08:51 -0700 (PDT)
-X-Gm-Message-State: AOAM533sTXZz2SU15GGSFH2itYJ1ssDKoYtyvzawKXqAfrA6ZMf1JB+H
-        DBGYeN8IEd1Q30bOfQjcGbwLqWcbVo4tEIcS6UE=
-X-Google-Smtp-Source: ABdhPJzBOrRHqiVjRuAEeMVLGTv2NJ6bLFAbKswTYPum2C5gT/XsvqYPEet1PjYMpqnu74zTBHMLW9u1TFAHRG/dvpY=
-X-Received: by 2002:a19:be53:: with SMTP id o80mr15169025lff.33.1595394529460;
- Tue, 21 Jul 2020 22:08:49 -0700 (PDT)
+        id S1727036AbgGVFTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 01:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgGVFTQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 01:19:16 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A65AC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:19:16 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id md7so558487pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Dmd/Tm2NKIlPmtmf250Rr5po/tBi+tVL5ukErGpu6/M=;
+        b=fZW1F7DltafThR0vBDMpn78I1muDP0lGZn3RhT1ELTFKpoeX8LXcT8AlQBpWyexuw0
+         SaOCdrpFD6Btz0PYfdejP8xgqBzdxb6cIwiEbUkCsix7k0RPv/Rqxd+khvFbANg8mvEu
+         Tf8EX+3Fg/sG2aUMJ23I+Lve68oOIld2MKKXqsC3M3Ou35QKn6jaI/Ml3moPaK6lgPTB
+         V8xSL3NXBlulAaqHu/8dvSZlaVfJNh+HyBQSe2ZHB+fL6eMRyMb9UT2Ci4ITKksV1gA4
+         k8vTH33euyrNNE+FsnGAByJLOlZfWdtTdfhh/9CAv6S5K3f9M8SIRJeRgu4ux08/UjKn
+         3xdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Dmd/Tm2NKIlPmtmf250Rr5po/tBi+tVL5ukErGpu6/M=;
+        b=frl5WoG8f9vY+GBY5twtPBxqWtse/fPtIQ4cYxZ4VNGBaUD6QOLvcABMFVeq+xPVPN
+         yJ9Vh27NSVuh/bAvj1keCTBz4VPBZz5YLWYAFmuZM2CKmA1UaL34OxMTVSBmT2fAXeeV
+         YVFDiQX4UYbw5FDg6sOwvw4QB4YelFDA6jDhWEPuu1Hi77XWzbMdpZu5nyihBdZP465+
+         1+8ZCAPrCqVb8XCheq/acXhBtlaXyq+tu2w82RMCmJxdF8+q28pS92YtoUEDtU+rvgaJ
+         tq0W7vpo/HR9J4gGIMtftpEBnENkcECSJwgZQzU+u0RDyReeTgraYGOgr31D9VWlPUeO
+         OmCw==
+X-Gm-Message-State: AOAM532p8jYK0+FUCkchSemcXeu7IzWfPbgzJi7PLUFrGt4QA4RqiBqW
+        P/62pbltzk9uN09V7rHAM3shlA==
+X-Google-Smtp-Source: ABdhPJyXyJC/r6TNRCFBvIm4BOX5hZWyrt2U6MzGfh0U8fNwL8IQsJTk6C62jeiorB+OWFvXacBrQw==
+X-Received: by 2002:a17:902:8204:: with SMTP id x4mr26310498pln.16.1595395155749;
+        Tue, 21 Jul 2020 22:19:15 -0700 (PDT)
+Received: from C02ZK051LVCK.local.net ([61.120.150.77])
+        by smtp.gmail.com with ESMTPSA id h3sm4971462pjz.23.2020.07.21.22.19.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 21 Jul 2020 22:19:12 -0700 (PDT)
+From:   Xin He <hexin.op@bytedance.com>
+To:     airlied@linux.ie, kraxel@redhat.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Xin He <hexin.op@bytedance.com>,
+        Qi Liu <liuqi.16@bytedance.com>
+Subject: [PATCH] drm/virtio: fix memory leak in virtio_gpu_cleanup_object()
+Date:   Wed, 22 Jul 2020 13:18:51 +0800
+Message-Id: <20200722051851.72662-1-hexin.op@bytedance.com>
+X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
 MIME-Version: 1.0
-References: <d01bc32e-3b17-bd4d-faf6-29b4b931c9f6@infradead.org>
-In-Reply-To: <d01bc32e-3b17-bd4d-faf6-29b4b931c9f6@infradead.org>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 21 Jul 2020 22:08:38 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7Mg-oKrSrtTUsDq1FGKTQJ30UVKV5en5SCJLrmKBcf2A@mail.gmail.com>
-Message-ID: <CAPhsuW7Mg-oKrSrtTUsDq1FGKTQJ30UVKV5en5SCJLrmKBcf2A@mail.gmail.com>
-Subject: Re: [PATCH] raid: md_p.h: drop duplicated word in a comment
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-raid <linux-raid@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 4:37 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> From: Randy Dunlap <rdunlap@infradead.org>
->
-> Drop the doubled word "the" in a comment.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Song Liu <song@kernel.org>
-> Cc: linux-raid@vger.kernel.org
+Before setting shmem->pages to NULL, kfree() should
+be called.
 
-Applied to md-next. Thanks!
+Signed-off-by: Xin He <hexin.op@bytedance.com>
+Reviewed-by: Qi Liu <liuqi.16@bytedance.com>
+---
+ drivers/gpu/drm/virtio/virtgpu_object.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  include/uapi/linux/raid/md_p.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-next-20200714.orig/include/uapi/linux/raid/md_p.h
-> +++ linux-next-20200714/include/uapi/linux/raid/md_p.h
-> @@ -123,7 +123,7 @@ typedef struct mdp_device_descriptor_s {
->
->  /*
->   * Notes:
-> - * - if an array is being reshaped (restriped) in order to change the
-> + * - if an array is being reshaped (restriped) in order to change
->   *   the number of active devices in the array, 'raid_disks' will be
->   *   the larger of the old and new numbers.  'delta_disks' will
->   *   be the "new - old".  So if +ve, raid_disks is the new value, and
->
+diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+index 6ccbd01cd888..703b5cd51751 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_object.c
++++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+@@ -79,6 +79,7 @@ void virtio_gpu_cleanup_object(struct virtio_gpu_object *bo)
+ 			}
+ 
+ 			sg_free_table(shmem->pages);
++			kfree(shmem->pages);
+ 			shmem->pages = NULL;
+ 			drm_gem_shmem_unpin(&bo->base.base);
+ 		}
+-- 
+2.21.1 (Apple Git-122.3)
+
