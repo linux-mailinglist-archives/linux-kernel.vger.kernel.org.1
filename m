@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61F4229BC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4C6229BBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732863AbgGVPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:48:06 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58600 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726717AbgGVPsG (ORCPT
+        id S1732633AbgGVPrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726717AbgGVPrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:48:06 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MFlIF8110020;
-        Wed, 22 Jul 2020 10:47:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595432838;
-        bh=XJ+ytuhtkKd7PxGGLQoO++jTzbDtr8cHVrzy6/eyodU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=c7zvVHqazamxkG/ApE8+1P25eW3S2f2pqRoCasN3ZDxa50JlDEbRyN+KC43VmhI6F
-         spFMVxwOAUS3eZPPjFMa51sU5UAKMTSBH7UwZ7k3Owh5sQet+4iufLXiwrAR1ihJRC
-         LakTLixG1MOQaPwykB7/fwnUtG0ugS9Gy0LWbwKM=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MFlIWJ083089;
-        Wed, 22 Jul 2020 10:47:18 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Jul 2020 10:47:17 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Jul 2020 10:47:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MFlHsk009607;
-        Wed, 22 Jul 2020 10:47:17 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v2 2/2] ASoC: tas2562: Update shutdown GPIO property
-Date:   Wed, 22 Jul 2020 10:47:06 -0500
-Message-ID: <20200722154706.9657-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200722154706.9657-1-dmurphy@ti.com>
-References: <20200722154706.9657-1-dmurphy@ti.com>
+        Wed, 22 Jul 2020 11:47:15 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BF5C0619DC;
+        Wed, 22 Jul 2020 08:47:14 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id a8so2021556edy.1;
+        Wed, 22 Jul 2020 08:47:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HoVUwkD/CbiG5/MELncVn64RYUZvFJVClzUVyeNxr7M=;
+        b=jE/wvq2Q7DTuw3xPwzOgwmtTwSpZfjrNYA9x3yVk3+2T2eZUI/GEgnLpFbxI7Oys1M
+         UV9a7dxVhM8s44FwUkVvBzxdfz0k++qzn1KZCGRDyHgV/bi8uUfwkUl7n/njVt5USEzp
+         koIaslLr1+G4INekfMHW9X9OEMNNUC/96hRiys7d64trF8Y2VlxoGrz5kp1cQDtwkkDC
+         IACBthdVY/UuorfPqXW3COp/2ZOi0p7OXVZjqDycs6bxKPoUb880KG37PEk20CBA38gM
+         WiTrUjRruZEca5HkHPTOF4H0F3lCG4LWfW48bf6wjMQO4FFNj9m55HAwnHQcHUUPQ2tT
+         dhKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HoVUwkD/CbiG5/MELncVn64RYUZvFJVClzUVyeNxr7M=;
+        b=TepTsI4lgwLGPajU+52RFFt0Bah1V6CuMwmbShiZafF5iWy4VgfqSaAsMW4FfzTJ12
+         vnRZs/M7vZ6qBoc4JzDV5IhtCOlkNkDKNnt7xiICQJVsTytUmmImamDmqLPYIVE/tvzz
+         ypqS6pYqFwcrsO0jfx9palannGdKFUrKEE9/rAEeT3fhug9T5iPAwoPs5US+OLNXpRh8
+         wU759yiVVQHAFhuUYlmuFyVqY+TUIGEHcD5bvBH0IQHlSrkYIBsQ6OStCDnFOZfE/Fsm
+         L9aPIX5FrPFbfBAHPEPDa+EFwt1weTo4jOpan38uLoNBkFvy6u/MveELyc18cuthWnjm
+         h98g==
+X-Gm-Message-State: AOAM530rsz3ucdbBK5sHVetF5q7GbaxDkGnmeV/QsGWN/A9O1H1dsJ0e
+        2K8fhYtHsDmexuD3j8053+KmLyVK4ZhBJPmT6Z0=
+X-Google-Smtp-Source: ABdhPJxosJN11zDQSjXmhENnAY8a/xTlojpLCi063iaBnlxh58oOjashgy9Fq9WU5WMvUzog9st58umRz18yVM4p8bo=
+X-Received: by 2002:a50:cd1a:: with SMTP id z26mr117686edi.120.1595432832953;
+ Wed, 22 Jul 2020 08:47:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
+ <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
+ <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu> <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
+ <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu> <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
+ <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
+In-Reply-To: <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 22 Jul 2020 08:47:49 -0700
+Message-ID: <CAF6AEGsOZshgBUnUKUF_hOLNHmvrvsDwPzX24-RKos6MZEeusg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
+        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
+        Jonathan <jonathan@marek.ca>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dave Airlie <airlied@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the shutdown GPIO property to be shutdown from shut-down.
+On Tue, Jul 21, 2020 at 10:30 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 21-07-20, 07:28, Rob Clark wrote:
+> > With your ack, I can add the patch the dev_pm_opp_set_bw patch to my
+> > tree and merge it via msm-next -> drm-next -> linus
+>
+> I wanted to send it via my tree, but its okay. Pick this patch from
+> linux-next and add my Ack, I will drop it after that.
+>
+> a8351c12c6c7 OPP: Add and export helper to set bandwidth
 
-Fixes: c173dba44c2d2 ("ASoC: tas2562: Introduce the TAS2562 amplifier")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
+Thanks, I'll do that
 
-v2 - Set sdz_gpio to NULL if gpio property not present.
+>
+> > Otherwise I can send a second later pull req that adds the final patch
+> > after has rebased to 5.9-rc1 (by which point the opp next tree will
+> > have presumably been merged
+>
+> The PM stuff gets pushed fairly early and so I was asking you to
+> rebase just on my tree, so you could have sent the pull request right
+> after the PM tree landed there instead of waiting for rc1.
 
- sound/soc/codecs/tas2562.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+I guess I should have explained that my tree gets pulled first into
+drm-next, which then gets pulled by Linus.
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index e74628061040..8a53633a3853 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -680,12 +680,25 @@ static int tas2562_parse_dt(struct tas2562_data *tas2562)
- 	struct device *dev = tas2562->dev;
- 	int ret = 0;
- 
--	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down",
--						    GPIOD_OUT_HIGH);
-+	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shutdown",
-+						      GPIOD_OUT_HIGH);
- 	if (IS_ERR(tas2562->sdz_gpio)) {
--		if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER) {
--			tas2562->sdz_gpio = NULL;
-+		tas2562->sdz_gpio = NULL;
-+		if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER)
- 			return -EPROBE_DEFER;
-+	}
-+
-+	/*
-+	 * The shut-down property is deprecated but needs to be checked for
-+	 * backwards compatibility.
-+	 */
-+	if (tas2562->sdz_gpio == NULL) {
-+		tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down",
-+							      GPIOD_OUT_HIGH);
-+		if (IS_ERR(tas2562->sdz_gpio)) {
-+			tas2562->sdz_gpio = NULL;
-+			if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
- 		}
- 	}
- 
--- 
-2.27.0
+BR,
+-R
 
+> But its fine now.
+>
+> --
+> viresh
