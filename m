@@ -2,254 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A001D22900F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63D8229016
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgGVFr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 01:47:56 -0400
-Received: from mail-am6eur05on2078.outbound.protection.outlook.com ([40.107.22.78]:10592
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726696AbgGVFrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:47:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D9kW/Djg9D5PNkShtZK2KWHNJeH1+FXrPHKYec7yuWKlUfxxcqqtoH0iG1bNRziZ9pJk9lMXpstjJB248nqQieoViNgjj41NbsQP0rKg0oyiCac5lY9v0F+MI0Oa0F1dmrxjNdp9KHixFYV5fFaY1IEbobSMsy9lEfL9Gg2s/AunGuYsQxb20GOxOYc6PSYHwXLZaVQWTXDyAGTF5OpO4z/7lzKyv2FSN47rp/kqjX/4BBaqAJcl24rkX5lWXAnMwkZLcHdbzfqqmfY69OCj/LBD8jD2Em5Ba5w2lUUAdOChKql6nVX4otowiDDenvQrSr+z1V1NgW/fyOG50BuZ1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GYWwqWPtvv7UD3rHyfAFJM2/UVBbRfO1quttY+Vu8Jc=;
- b=YLXkPZc5Pmn7k0mE9HqEvdYyGVCQHX7Lxzn1iJMRku58yPj0/hYfTw8y7ef+KDSYNRqk9lKue2Frbq/MITIqcpdMI5jqA85ok5oM/LIfvqdwk6xt7zRxDAHJeGtCX4iQgWj6LyoMKfIlXnol36ujFWR/L1KuSRJokEch/h8ay44jiWjSG3SI+4DkMX6ldOws7MmUQQiRMkguWSBdPwaMXtkbEWy5vfzJzt26S3BK37lFQST4R7jtCMJJkm31QD4uzfBkUZ7Q+t2mvrdviuq+QjWHVaAK+2wxcmfmRGm5+Ux6x5CHGm/KmXvxsy/uO0ftw54lF5C0TxJ09gYlQv/1tQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GYWwqWPtvv7UD3rHyfAFJM2/UVBbRfO1quttY+Vu8Jc=;
- b=SR4z5E0mvg/b1Jw8WiQ+6t+JG9Mgy/8AbA83V3jcae7tm2cJKz4eximcAkObROLHcwn/jY+MZv0a9blH1EvWk2yPNlazpphslBpnRFat8SPewXjmoHsv6VpiYAYtcptPOREGKlZefGiZnw11Z0TGHNGNJ4L3LRnwd8jTYRCJB18=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5103.eurprd04.prod.outlook.com (2603:10a6:803:51::19)
- by VI1PR04MB5104.eurprd04.prod.outlook.com (2603:10a6:803:5a::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21; Wed, 22 Jul
- 2020 05:47:51 +0000
-Received: from VI1PR04MB5103.eurprd04.prod.outlook.com
- ([fe80::596d:cc81:f48a:daf7]) by VI1PR04MB5103.eurprd04.prod.outlook.com
- ([fe80::596d:cc81:f48a:daf7%2]) with mapi id 15.20.3216.022; Wed, 22 Jul 2020
- 05:47:51 +0000
-From:   hongbo.wang@nxp.com
-To:     xiaoliang.yang_1@nxp.com, allan.nielsen@microchip.com,
-        po.liu@nxp.com, claudiu.manoil@nxp.com,
-        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, vivien.didelot@gmail.com,
-        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
-        kuba@kernel.org, vinicius.gomes@intel.com,
-        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        horatiu.vultur@microchip.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, linux-devel@linux.nxdi.nxp.com
-Cc:     "hongbo.wang" <hongbo.wang@nxp.com>
-Subject: [PATCH] net: dsa: ocelot: Add support for QinQ Operation
-Date:   Wed, 22 Jul 2020 13:50:48 +0800
-Message-Id: <20200722055048.6129-1-hongbo.wang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0207.apcprd06.prod.outlook.com
- (2603:1096:4:68::15) To VI1PR04MB5103.eurprd04.prod.outlook.com
- (2603:10a6:803:51::19)
+        id S1728170AbgGVFvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 01:51:07 -0400
+Received: from mout.web.de ([212.227.17.11]:37439 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726696AbgGVFvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 01:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1595397057;
+        bh=3izP8XYHA/yvm0I7CIvqICYR2MaUspjWymZm5rkHWLU=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=EK1m3f4LcGyzIW47a7ZGQfpbuL+L/Aq0VhYP+W41OQVv2xN6bUwLdhCv+2YsoKLzr
+         nhCM9Mcz4ggPLcuDdsNOGhX+M8dA7R4aDqhkIRzggwlg7KFRvWFh9iBRBs1QjkqUdt
+         R79sZS3oYluMtHgIBZxR/ECDEJiDzDgieUww2EFg=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.82.161]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0Lhvpu-1kb2zD34FO-00nAIA; Wed, 22
+ Jul 2020 07:50:57 +0200
+Subject: Re: [PATCH v3 2/3] coccinelle: api: extend memdup_user rule with
+ vmemdup_user()
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Denis Efremov <efremov@linux.com>,
+        Coccinelle <cocci@systeme.lip6.fr>
+Cc:     Gilles Muller <Gilles.Muller@lip6.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <e3d2ffb9-2a47-3d77-0501-9d48845435bd@web.de>
+ <alpine.DEB.2.22.394.2007211158310.2487@hadrien>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <0b326e2b-723c-3482-c0ef-5d6592a9c6cb@web.de>
+Date:   Wed, 22 Jul 2020 07:50:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from whb-OptiPlex-790.ap.freescale.net (119.31.174.73) by SG2PR06CA0207.apcprd06.prod.outlook.com (2603:1096:4:68::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21 via Frontend Transport; Wed, 22 Jul 2020 05:47:43 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.73]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 43688d52-fa06-4f65-3dae-08d82e02c534
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5104:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB51046079FF8BBBE7822A0211E1790@VI1PR04MB5104.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pXYTQbR/ARbMDrNM9VTIHQcy+loJU/YeivNQYzoEWPjfmMnBUItG5V8bBWYpgopOrQXytcq/mWrOKNbu+syHLTrLV0pT6JoqRHet3+ZhOxrH63bYSxQD2VjOTMqSXXEWUJrpWjZEAerZI1aWITywTSLslpyEJh23HpMkJo0FpRINi9KM5r/f0xoKi23bSaVHf182kpUEf1flGHKAuGm8KmmyjKxIqxKheeo3G3Kpz6muNE0iw25RRbD+BORxB7BZBiE+InLYIbW/21zCt3y2TFz8odG2PKbeOVQtGq/SPP3xmG/RWZNDJlFfuzC1FuN3veeLkMzsH+nQLDK0JAM54Dj42cuzbcEAHjP85AnokrlBY+yaXUIRpEmSSVTnuMne
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5103.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(376002)(366004)(396003)(346002)(2616005)(956004)(6506007)(36756003)(26005)(1076003)(8676002)(86362001)(186003)(16526019)(4326008)(83380400001)(8936002)(66476007)(66946007)(66556008)(6512007)(9686003)(6486002)(5660300002)(7416002)(478600001)(2906002)(52116002)(316002)(921003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: cfWVFmSfiFF0ZDW+PexLDwr/0C+Gpw+mJGxx8iKy/9Xy11JUyVzbxY4f6XPmX3rqvU7Ky1Pjj0noWWloiPijpUkehZZagi+R+tbsuvPZZXKVCb/jn+/dOXqnYAFv+ZWKeXQGg+QXt8eXUrDl6GQRvNhPQUqaJoAwifc9NvY84Fm7JIAOyRpJd1zQxhR+BD/QfrnFQ7P0dsNRPI/+d1jArTvb2K/VJ5lmpsYiZI3K0DobveFQeiRj8atzHDC0lQfd3lGDfhR1+EjIElFwyWn4WKurpleAoCWpjurPhytpNvAAodEjYvm++cKSE2iBIQCItROHBVZRg0eOSogEDGHFLT28r4Y5nEantS1Ku7M81MVslu/deZWLub4/yPSF/EHa1vJdaltod+ZNPWnijjiHbca3d9tcU/KN9ZHco6rDl/ossbOl0CZcmUHluWLr2FMOXiUv7lNiq7OuQryL1klb8D4zcN2z+LwJ/xsO3AhN2MU=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43688d52-fa06-4f65-3dae-08d82e02c534
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5103.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2020 05:47:50.9960
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9N0I2jsS8jT6Bo8kFk8KdwPLr6XzCuQJxuz2xFJpdu4DbEU3hMi7oHdmG5nh9W9xd8R7TsCiQO+wWRNi2V/HBQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5104
+In-Reply-To: <alpine.DEB.2.22.394.2007211158310.2487@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:X6M5Z+GHeifdLKxn1U0ULa4+yoQLXcCLD0b6Ltj4pPIOkiYuQ5B
+ 352zBVeOdEGN7SMazd/nMrFK2ZhC4EhT4ffXzkP+7cjfm2xs/DdqSteUO83Awqi2Ni0ZIno
+ Lf7Ix2xf5S2macFMBqRx44/SqirgJaYhR79okFawYgsSlPiygBUDxdjPNnfdOPZljnMprr9
+ gPdwMmMtDsjtHqMF4mpEg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0glh+mEEE6w=:h5uu7lQgv/qiT+IbjmDzg+
+ EC+kwUxwYSY5Bz5vkn2UEfAuP/NGbCflXrOC/rA0sGZUFcplYXkCeVc3j/Nz3bOuV425aq+2i
+ HzBsdyKqoaiPetVw8u7Ol1e6liFMEc2iWs35ll+TKt1V77v3GlM3jK2w2rxhOOuIdJ0Rfbor3
+ ll4TkpsMpq6ygrFdb8yLpYj/+MciJMyh5S+CoyWpLyQI/S3nh+ZZNhFgPc1KtIg7/8o2DHRVT
+ zm7yY+9QXM14kXo26Pch1ttsAL39zSGkpTHh5dAwgNlH0HZu9dsio+dIxUukG6TKpenL1g0/f
+ 0o+w01iQrJaI9e9hGh/zzvjyMQtLLJq4hMeu6daTbbItveU3Lpw5J+QQ/8dJGwMha4tCMvDEx
+ DyPcAoMBRtUjg1cN9aPCAytAKY2EQV3+9hkcZngZWe7k2I6u4lpDYQFP6yk/mYRNdEuwxPUxI
+ L2Y6r2T13yHZSc7ZxlTZm22JhMLQbr1NmyqCNLcE/qXSG0QJP4Rpid79MGxtVjwCbcugDAvEA
+ Vz21YoITySf0VRtjqOclJ7WZTZ3VSoYQpfq4cWo6Yuu7lI5zuNvbt95QF5hcpLzl5R2pkQebC
+ 4niD4igbUlZz4EVd2rU+W3TXcfFfL6GhOKseeAJqdRlejx5knFEMO2pLeXMn0DfD0ZvvOAGfj
+ /gDADug2IFjM3R99Bt6hJebsHHU3VgX63uGta/CZIvf9/hxlYd9amGCzJh2LeHtOhV0Iaiji+
+ 0LVyp5Myub2zQ2DFlK2UDop73CJFc+EIxZe5xX5/0P0kE6SyIdd70f44R5Fxv6i1i4HdKwwyG
+ Jid2CXW1G9Z6EDXhs5OjwE72Q7iOBfiE6SWaqx09GeiPCSLwMor0xGWzF8VsHkq3yiuglADB5
+ PThDiFEFyXmUphQj1Mlrt2VG/HKT7S2kxOc5AgcJD+bX3rwnIf9P35MN95V6qchoCR4hJWuzL
+ Mk2w8i1CV4fEBkWOI0lBXNME3QHa0XfpEfTKSUNP/tIHE2lUFjvgjzrpb8Boqtdg+UfCnCgzz
+ Yi2ih4NJ0svBUyzbbkeOaF5TQP4ogdDDdth3O1xs2qJHrTdNbsGebB1yoWigqdgwCPboKfNdn
+ /b7IR76yA6+2VtZ/7o6QZ1ObaSsCm1xNyruOIbPhX71B338GznxFKaoAbmHWPAS6GZld8BEjw
+ QJ/AdOq4/bcL2e/o1Wbd6aBIDlAjkEh7IDPforN3BtSnuMofxeEuZEyTazJR6ehWgQlHvgJPi
+ fOtLIdYag1KoU+RW4VbtTkWkUVWe23ZUmyL+//w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "hongbo.wang" <hongbo.wang@nxp.com>
+>>> +@depends on patch@
+>>> +expression from,to,size;
+>>> +identifier l1,l2;
+>>> +@@
+>>> +
+>>> +-  to =3D \(kvmalloc\|kvzalloc\)(size,\(GFP_KERNEL\|GFP_USER\));
+>>> ++  to =3D vmemdup_user(from,size);
+>>
+>> I propose to combine the desired adjustment with the previous SmPL rule
+>> by using another disjunction.
 
-This featue can be test using network test tools
-    TX-tool -----> swp0  -----> swp1 -----> RX-tool
+How do you think about to check run time characteristics for
+the following SmPL script sketches?
 
-TX-tool simulates Customer that will send and receive packets with single
-VLAN tag(CTAG), RX-tool simulates Service-Provider that will send and
-receive packets with double VLAN tag(STAG and CTAG). This refers to
-"4.3.3 Provider Bridges and Q-in-Q Operation" in VSC99599_1_00_TS.pdf.
+A)
+@R1@
+@@
+// Change something
 
-The related test commands:
-1.
-ip link add dev br0 type bridge
-ip link set dev swp0 master br0
-ip link set dev swp1 master br0
-2.
-ip link add link swp0 name swp0.111 type vlan id 111
-ip link add link swp1 name swp1.111 type vlan protocol 802.1ad id 111
-3.
-bridge vlan add dev swp0 vid 100 pvid
-bridge vlan add dev swp1 vid 100
-bridge vlan del dev swp1 vid 1 pvid
-bridge vlan add dev swp1 vid 200 pvid untagged
-Result:
-Customer(tpid:8100 vid:111) -> swp0 -> swp1 -> Service-Provider(STAG \
-                    tpid:88A8 vid:100, CTAG tpid:8100 vid:111)
+@R2@
+@@
+// Change another thing
 
-Signed-off-by: hongbo.wang <hongbo.wang@nxp.com>
----
- drivers/net/dsa/ocelot/felix.c     |  8 ++++++
- drivers/net/ethernet/mscc/ocelot.c | 44 ++++++++++++++++++++++++------
- include/soc/mscc/ocelot.h          |  1 +
- 3 files changed, 45 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
-index c69d9592a2b7..12b46cb6549c 100644
---- a/drivers/net/dsa/ocelot/felix.c
-+++ b/drivers/net/dsa/ocelot/felix.c
-@@ -132,9 +132,13 @@ static void felix_vlan_add(struct dsa_switch *ds, int port,
- {
- 	struct ocelot *ocelot = ds->priv;
- 	u16 flags = vlan->flags;
-+	struct ocelot_port *ocelot_port = ocelot->ports[port];
- 	u16 vid;
- 	int err;
- 
-+	if (vlan->proto == ETH_P_8021AD)
-+		ocelot_port->qinq_mode = true;
-+
- 	if (dsa_is_cpu_port(ds, port))
- 		flags &= ~BRIDGE_VLAN_INFO_UNTAGGED;
- 
-@@ -154,9 +158,13 @@ static int felix_vlan_del(struct dsa_switch *ds, int port,
- 			  const struct switchdev_obj_port_vlan *vlan)
- {
- 	struct ocelot *ocelot = ds->priv;
-+	struct ocelot_port *ocelot_port = ocelot->ports[port];
- 	u16 vid;
- 	int err;
- 
-+	if (vlan->proto == ETH_P_8021AD)
-+		ocelot_port->qinq_mode = false;
-+
- 	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
- 		err = ocelot_vlan_del(ocelot, port, vid);
- 		if (err) {
-diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-index f2d94b026d88..621277e875a5 100644
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -144,6 +144,8 @@ static int ocelot_port_set_native_vlan(struct ocelot *ocelot, int port,
- {
- 	struct ocelot_port *ocelot_port = ocelot->ports[port];
- 	u32 val = 0;
-+	u32 tag_tpid = 0;
-+	u32 port_tpid = 0;
- 
- 	if (ocelot_port->vid != vid) {
- 		/* Always permit deleting the native VLAN (vid = 0) */
-@@ -156,8 +158,14 @@ static int ocelot_port_set_native_vlan(struct ocelot *ocelot, int port,
- 		ocelot_port->vid = vid;
- 	}
- 
--	ocelot_rmw_gix(ocelot, REW_PORT_VLAN_CFG_PORT_VID(vid),
--		       REW_PORT_VLAN_CFG_PORT_VID_M,
-+	if (ocelot_port->qinq_mode)
-+		port_tpid = REW_PORT_VLAN_CFG_PORT_TPID(ETH_P_8021AD);
-+	else
-+		port_tpid = REW_PORT_VLAN_CFG_PORT_TPID(ETH_P_8021Q);
-+
-+	ocelot_rmw_gix(ocelot, REW_PORT_VLAN_CFG_PORT_VID(vid) | port_tpid,
-+		       REW_PORT_VLAN_CFG_PORT_VID_M |
-+		       REW_PORT_VLAN_CFG_PORT_TPID_M,
- 		       REW_PORT_VLAN_CFG, port);
- 
- 	if (ocelot_port->vlan_aware && !ocelot_port->vid)
-@@ -180,12 +188,28 @@ static int ocelot_port_set_native_vlan(struct ocelot *ocelot, int port,
- 		else
- 			/* Tag all frames */
- 			val = REW_TAG_CFG_TAG_CFG(3);
-+
-+		if (ocelot_port->qinq_mode)
-+			tag_tpid = REW_TAG_CFG_TAG_TPID_CFG(1);
-+		else
-+			tag_tpid = REW_TAG_CFG_TAG_TPID_CFG(0);
- 	} else {
--		/* Port tagging disabled. */
--		val = REW_TAG_CFG_TAG_CFG(0);
-+		if (ocelot_port->qinq_mode) {
-+			if (ocelot_port->vid)
-+				val = REW_TAG_CFG_TAG_CFG(1);
-+			else
-+				val = REW_TAG_CFG_TAG_CFG(3);
-+
-+			tag_tpid = REW_TAG_CFG_TAG_TPID_CFG(1);
-+		} else {
-+			/* Port tagging disabled. */
-+			val = REW_TAG_CFG_TAG_CFG(0);
-+			tag_tpid = REW_TAG_CFG_TAG_TPID_CFG(0);
-+		}
- 	}
--	ocelot_rmw_gix(ocelot, val,
--		       REW_TAG_CFG_TAG_CFG_M,
-+
-+	ocelot_rmw_gix(ocelot, val | tag_tpid,
-+		       REW_TAG_CFG_TAG_CFG_M | REW_TAG_CFG_TAG_TPID_CFG_M,
- 		       REW_TAG_CFG, port);
- 
- 	return 0;
-@@ -216,11 +240,15 @@ EXPORT_SYMBOL(ocelot_port_vlan_filtering);
- /* Default vlan to clasify for untagged frames (may be zero) */
- static void ocelot_port_set_pvid(struct ocelot *ocelot, int port, u16 pvid)
- {
-+	u32 tag_type = 0;
- 	struct ocelot_port *ocelot_port = ocelot->ports[port];
- 
-+	if (ocelot_port->qinq_mode)
-+		tag_type = ANA_PORT_VLAN_CFG_VLAN_TAG_TYPE;
-+
- 	ocelot_rmw_gix(ocelot,
--		       ANA_PORT_VLAN_CFG_VLAN_VID(pvid),
--		       ANA_PORT_VLAN_CFG_VLAN_VID_M,
-+		       ANA_PORT_VLAN_CFG_VLAN_VID(pvid) | tag_type,
-+		       ANA_PORT_VLAN_CFG_VLAN_VID_M | tag_type,
- 		       ANA_PORT_VLAN_CFG, port);
- 
- 	ocelot_port->pvid = pvid;
-diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
-index da369b12005f..cc394740078e 100644
---- a/include/soc/mscc/ocelot.h
-+++ b/include/soc/mscc/ocelot.h
-@@ -556,6 +556,7 @@ struct ocelot_port {
- 	struct regmap			*target;
- 
- 	bool				vlan_aware;
-+	bool				qinq_mode;
- 
- 	/* Ingress default VLAN (pvid) */
- 	u16				pvid;
--- 
-2.17.1
+B)
+@Replacement_with_disjunction@
+@@
+(
+// R1: Change something
+|
+// R2: Change another thing
+)
 
+
+>>> +@rv depends on !patch@
+>>> +expression from,to,size;
+>>> +position p;
+>>> +statement S1,S2;
+>>> +@@
+>>> +
+>>> +*  to =3D \(kvmalloc@p\|kvzalloc@p\)(size,\(GFP_KERNEL\|GFP_USER\));
+>>> +   if (to=3D=3DNULL || ...) S1
+>>> +   if (copy_from_user(to, from, size) !=3D 0)
+>>> +   S2
+>>
+>> * Can it be helpful to omit the SmPL asterisk functionality from
+>>   the operation modes =E2=80=9Corg=E2=80=9D and =E2=80=9Creport=E2=80=
+=9D?
+>>
+>> * Should the operation mode =E2=80=9Ccontext=E2=80=9D work without an e=
+xtra position metavariable?
+>
+> This is fine as is in all three aspects.
+
+Is every technique from the Coccinelle software required for
+each operation mode in such data processing approaches?
+
+Regards,
+Markus
