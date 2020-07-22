@@ -2,79 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EE9228EC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55C9228ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731959AbgGVDyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 23:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
+        id S1731989AbgGVD4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 23:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731793AbgGVDyJ (ORCPT
+        with ESMTP id S1731920AbgGVD4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 23:54:09 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53D9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 20:54:09 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id p1so305979pls.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 20:54:09 -0700 (PDT)
+        Tue, 21 Jul 2020 23:56:22 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF2EC0619DC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 20:56:22 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id t11so468313pfq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 20:56:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kv16/ZtjvsqzwhA67RXGlNKlymdPTZgYcbB4t9a+XQQ=;
-        b=teU76l4onNGxGGAkHnfmRlYyyoNjrAl9sepXE+/Q09UB3kodYSezX/yBSJS+QYvmNa
-         rveHjIAqpceNwjoChgvGHRZc/hnLc9EB7NI7dtGueridPlvY10dO856x0XkjS7tWECEE
-         tVH7ySR5EdkQQtKFM62MYFe0IgX4VMKj2lpFGVI9keCTmxOTfV65woEDPjrsPLkvR5LJ
-         x+FvkLyBB9D4Mw03wpJH6B+05Otq8WappntG5IUU2LIcCjclzqC8nJsEtGJkxPMhjFkG
-         VoEhVcA/8PfcbbNxQYhyg0EcdY/nqDwa2oOpkh6w16ESpfoybMuLkNtPcJK5rM9EclS1
-         yMmg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eocmnDIsQLfevW1nQrEzuqjG8rUX3ygxa1czr+P2gmM=;
+        b=TI6grtPKFFAbd5jxTwUjjnzEFinPbwpMNEo11SKc2mYL6DD7emvsK1cLuMTc8516xv
+         Ne1q/n2DwtDGb9PQrePzYtMrzeldMxy7T8Mnq2o2s7/YUhEKn5FNwNo8Q7/p6wzyFyy1
+         eCDzDFcZe1tGeMY9FQT9Yu/PwG2w0p+KtUYQyOjGiKmeoE13kgZnLpnARa8wefs9qC4j
+         LbGN8tQN/0wwo+NrlxEzflKqwwO+oklwCQ6tXBB3vvCIfpjG1Qi0jPkQxppiyOLy/sXy
+         BFUN5FuUFf7P3DcLvPNxa7GyfC8a1WCC1iOda2F32hdJ3nOrI/S12pcYWhuBHPhWJtSF
+         NTJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kv16/ZtjvsqzwhA67RXGlNKlymdPTZgYcbB4t9a+XQQ=;
-        b=mNIgvyJcv3dmQV7NLE1Q7uI+wgtWC8PH1uPCveFDrR3ZoWs0/d2fX2HOF7o1BFBc0t
-         v2huT6i20+fdinlmcLtGpeQkdpjjEHDYSGUaDrahxR1aRKGFPYXfVbR4GFtIJDEXvbY3
-         ShkvXsQEw7K0apDqLEKfYbSDKVOR6HgB2QAtnljlwtnnyHdzbcNdc9cfS559+xeohv+3
-         HIQ7ZLnDAKaXqpNVPecXojFWFm99sv8dtKx0VyS6BTUSqN/orQ9+LvFvUhbRgjc6nAOu
-         W57ADDdFmMOng6G/IG0ko+4pTGkXflD9/7fvbpY/33cy5swjC2HP8eeGiNuDniqHxl01
-         2IXw==
-X-Gm-Message-State: AOAM5315QXBrlX9SSoN4ZnT3LF1bxuTx5rzV43rwlFlRSc2bu6v3x0Oz
-        QIswX/3KBI/rO8OwmLuylAObcin0ph4XJ3r/CaA=
-X-Google-Smtp-Source: ABdhPJwLXKXlBkbUAozr7t276aXIY29yYGr0q6JEskKQGLgYu10nsGdUytlaq69xIjhcH2qrdUFm/wzJ96H8ikmYiS4=
-X-Received: by 2002:a17:90b:1045:: with SMTP id gq5mr8043357pjb.30.1595390049137;
- Tue, 21 Jul 2020 20:54:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eocmnDIsQLfevW1nQrEzuqjG8rUX3ygxa1czr+P2gmM=;
+        b=aN03PezwVpBBFAf7L+XZdYWeOyamfQrDEwNnj5fxXhFdXAVbhme1BAAim6EXDBTcVa
+         ZBI5psZ2G9J6841Gyk3ydEJyZ06B7wC4ke/UTSfmQ8BIvR3KUgHAaxEJFGsAy0pH0wi8
+         rBioduFi+dIQOAsEZWYshbu9f4Nrl6AJeDhmJtgeuhrp8ygvMPfDbpfhDPhEArtAGI1k
+         goyuwC2C1x/BphFQVLsoEGjM2kGbyzIu3gV9UN9B8YN+x911jUFDxbzIxzM0gi6hzH4Z
+         faR9bJH5ojS5C9aY6hmBIF3vVDbEWFGfF6IVsFyC7yke3GQ3jUXw+wvRvfI8Oarwp/WF
+         X7xg==
+X-Gm-Message-State: AOAM5317G6euAaokftO45wKlajasS2phPyr3av21JMI30CcuU5/6Wh50
+        zZ+Cx7WutMyr0ht850/aW1hL4A==
+X-Google-Smtp-Source: ABdhPJwejzId9c6+xg8NWwUEGs51S8vMOaY1Z1gQDLh5jElHYxI3WwTJQ6RdiKmoi6Cph1s04ez8sg==
+X-Received: by 2002:a05:6a00:5c:: with SMTP id i28mr27768787pfk.274.1595390181536;
+        Tue, 21 Jul 2020 20:56:21 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id r6sm19592723pgn.65.2020.07.21.20.56.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 20:56:20 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 20:54:27 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com
+Subject: Re: [PATCH v2 1/2] remoteproc: qcom_q6v5_mss: Add modem debug policy
+ support
+Message-ID: <20200722035427.GQ388985@builder.lan>
+References: <20200721112935.25716-1-sibis@codeaurora.org>
+ <20200721112935.25716-2-sibis@codeaurora.org>
 MIME-Version: 1.0
-References: <20200721220035.32584-1-jcmvbkbc@gmail.com> <20200721230426.GC2786714@ZenIV.linux.org.uk>
-In-Reply-To: <20200721230426.GC2786714@ZenIV.linux.org.uk>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 21 Jul 2020 20:53:57 -0700
-Message-ID: <CAMo8BfJeM0_MHcZWc4aZs0XVv9XH3vXwpiU0xjmU1G24fXV4tw@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: fix access check in csum_and_copy_from_user
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721112935.25716-2-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 4:04 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Tue, Jul 21, 2020 at 03:00:35PM -0700, Max Filippov wrote:
-> > Commit d341659f470b ("xtensa: switch to providing
-> > csum_and_copy_from_user()") introduced access check, but incorrectly
-> > tested dst instead of src.
-> > Fix access_ok argument in csum_and_copy_from_user.
->
-> Applied, with apologies...  Which tree do you want it to go through?
-> I'm dropping it into vfs.git#fixes, will send to Linus unless you
-> prefer it to go some other way...
+On Tue 21 Jul 04:29 PDT 2020, Sibi Sankar wrote:
 
-NP. Anything that will go into 5.8 is good.
+> Add modem debug policy support which will enable coredumps and live
+> debug support when the msadp firmware is present on secure devices.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+> 
+> v2:
+>  * Use request_firmware_direct [Bjorn]
+>  * Use Bjorn's template to show if debug policy is present
+>  * Add size check to prevent memcpy out of bounds [Bjorn]
+> 
+>  drivers/remoteproc/qcom_q6v5_mss.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index 0b6f260eb5349..49cd16e050533 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -189,6 +189,7 @@ struct q6v5 {
+>  	phys_addr_t mba_phys;
+>  	void *mba_region;
+>  	size_t mba_size;
+> +	size_t dp_size;
+>  
+>  	phys_addr_t mpss_phys;
+>  	phys_addr_t mpss_reloc;
+> @@ -408,6 +409,14 @@ static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
+>  static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
+>  {
+>  	struct q6v5 *qproc = rproc->priv;
+> +	const struct firmware *dp_fw;
+> +
+> +	if (!request_firmware_direct(&dp_fw, "msadp", qproc->dev) && fw->size <= SZ_1M &&
+> +	    (SZ_1M + dp_fw->size) <= qproc->mba_size) {
+> +		memcpy(qproc->mba_region + SZ_1M, dp_fw->data, dp_fw->size);
+> +		qproc->dp_size = dp_fw->size;
+> +		release_firmware(dp_fw);
 
--- 
-Thanks.
--- Max
+If request_firmware_direct() succeeds, but return a firmware blob bigger
+than mba_size - SZ_1M you won't get here and will end up leaking dp_fw.
+
+Additionally, there really isn't a need for requesting the firmware in
+the first place if fw->size > SZ_1M.
+
+So I think it's better if you break this out in it's own function where
+you don't need to squeeze everything into one or two conditionals.
+
+Regards,
+Bjorn
+
+> +	}
+>  
+>  	memcpy(qproc->mba_region, fw->data, fw->size);
+>  
+> @@ -896,6 +905,10 @@ static int q6v5_mba_load(struct q6v5 *qproc)
+>  	}
+>  
+>  	writel(qproc->mba_phys, qproc->rmb_base + RMB_MBA_IMAGE_REG);
+> +	if (qproc->dp_size) {
+> +		writel(qproc->mba_phys + SZ_1M, qproc->rmb_base + RMB_PMI_CODE_START_REG);
+> +		writel(qproc->dp_size, qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
+> +	}
+>  
+>  	ret = q6v5proc_reset(qproc);
+>  	if (ret)
+> @@ -1257,7 +1270,8 @@ static int q6v5_start(struct rproc *rproc)
+>  	if (ret)
+>  		return ret;
+>  
+> -	dev_info(qproc->dev, "MBA booted, loading mpss\n");
+> +	dev_info(qproc->dev, "MBA booted with%s debug policy, loading mpss\n",
+> +		 qproc->dp_size ? "" : "out");
+>  
+>  	ret = q6v5_mpss_load(qproc);
+>  	if (ret)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
