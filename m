@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458D42295B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755912295AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732086AbgGVKI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        id S1732000AbgGVKI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731846AbgGVKIS (ORCPT
+        with ESMTP id S1731763AbgGVKIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EABDC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y3so1316478wrl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
+        Wed, 22 Jul 2020 06:08:19 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DA3C0619DE
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:19 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id q5so1311673wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=A5OyaDKazB9R0G5RFCOuxIA9I8H8rA5wRtI5qxedDLM=;
-        b=AWkmOFENuGxlgm20HEjydkPvslOX3oGwjR3KF/ZAEBdeKMzzbfwTt0wGynwt1wZ3qc
-         QAAUaBeYd3z1sHUeQAyPWP7XMvQCT1Y0EpzbVgDeS16UANAn3X839Fj4KDW1gNacxK49
-         OuBRJMAOPSxTNO60xUuc15pPBCeRUtCADQLB278Plwp2zT9BMWsl0WoE5HGDoFvp6Xfv
-         rCgGp4XA8NkE89K8OAA92Cz2skzTIU9lk7kHepDjDfDiKxXAZ7oLD/U8Cj+fC4AkNM2m
-         agBkI1cP2ZOnukdm9a0Zwy9RsI86NVq1aYrFCnRFJNmVQOd9/9K+AmeTwsWX60P+sgVs
-         eGag==
+        bh=Btc0g5x84xxnafSkEaCj9XqLxAIyY2p5cpnuhdTuhb0=;
+        b=ErqMyEJUREbiw53rbZz/8AVYs2B+ZLfxstvCL67hKDuFCai1+OxL5vF7kGs639VPQk
+         y1+snnyo09vSGwyT0OLAl7StW8zCuN/n2J8HULQs7T86xGm4jCdwEMJDNDvpq/zmWDOk
+         I+DqXFPDNU1qgknu6G31IhUqjGk62In0XT11SlaFQPNOAP5cS10UNLGmCtkoE2kyPoi2
+         Pr5DuNkOkwrfGX4sFgjFk5XzsHw13L4ES67CKizqZpfyfuStuqNoU6R7kkfH5SEJBaQI
+         3NVnRHn6KFKRtk5VdxARugjlkWdbkSNTAYcJ1SsFBM69jfVOChAnCgmQ3EfmzPw+tWjX
+         egmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A5OyaDKazB9R0G5RFCOuxIA9I8H8rA5wRtI5qxedDLM=;
-        b=XeAXzVAQto/08Eyh+BRhO5/rwQ+NmNlKcBWF4XF2FvViBw6Lo7c75WP/FjAbEf7LrG
-         CXp7jJSVfB9m5u6mClQz4X8dRYzu3F0/MOvtCCTSgyinJPHmYrgQxv9Q3HQi51mz2Om+
-         nbLAEVaZ7FXIYti6zFsaj/jdUUvrR3GHh2QE1gqhRg3pxAtp0TgQpL65qrr+0fH4HcCE
-         kX7dSdAp4m/V7u0eZ5+npnHlVq92/EHZPuOQvLLCa7NWM5J4B7wu7Rulo4N/VVJfNf08
-         w3i0L6Qf2F0ymYOo6+8+8rrmWtUaRW7I7unSYjcASeD2Yjttw5mZh01dASChmqnXBcrq
-         z8qw==
-X-Gm-Message-State: AOAM530+3GdpSt2Nr62Ikg1fNMc6gehalZ/F+IbhfqfaCvrrKKWoIlxT
-        kiPN2gxUz7BdYbA5FtMLeH/suw==
-X-Google-Smtp-Source: ABdhPJwm2kjoQc9ihWHv0VlE/0oihzewOO8+TnZja0V1rUhp5ZndjI4gaMiZ1uSWMVejAVcPv45RSA==
-X-Received: by 2002:adf:9f12:: with SMTP id l18mr17693457wrf.35.1595412497232;
-        Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
+        bh=Btc0g5x84xxnafSkEaCj9XqLxAIyY2p5cpnuhdTuhb0=;
+        b=Vw+fLa2LqDjIqtaxzht4sSEgCEKOdDyTHaOVGYTqyyMew+FoukeXofXNJrH097d+JR
+         P4FrJ4wT9bWuo3+z8u+Oxe0LCiBfIFGvhNJuhjXjXNCqpzCabaSSS3JrsT84LuVxGHA+
+         sHjDAnQ5d0HRtLRuQ0um81qqX4+VMTX99lv1u77DTWdOEY2mPzJwBUvj9mcK0r2cLI4j
+         9pA9nIH8+ejCoYqrAqp5nKnSieP+e7WK2fDvBWlFRt/VVXTojnuEY1s0lFWt8YYsYmbt
+         vEtX6qTOhm0QPmoOklI0q80EnFkFsL0N1c/sdF5LMSAKPPPcTPzAb4SN9fHWGrpTYeEr
+         8Pdg==
+X-Gm-Message-State: AOAM533zEdbd0PY9JycmRxjUa8kNk+haEJ32aUU6Kz7h0/n3uACHIM1+
+        6CClUN9mC0BgybqvGQVFCQNmZQ==
+X-Google-Smtp-Source: ABdhPJz8zKglWWc2vlh6Bm7ka33YAunUiFuw+0mrl4YxSZ5wXKZQ+kNwk/rcQt/1XPC/GOe4CucZcA==
+X-Received: by 2002:adf:a299:: with SMTP id s25mr16235958wra.106.1595412498194;
+        Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.16
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 06/14] nvmem: core: Add nvmem_cell_read_u8()
-Date:   Wed, 22 Jul 2020 11:06:57 +0100
-Message-Id: <20200722100705.7772-7-srinivas.kandagatla@linaro.org>
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 07/14] nvmem: core: add support to auto devid
+Date:   Wed, 22 Jul 2020 11:06:58 +0100
+Message-Id: <20200722100705.7772-8-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Färber <afaerber@suse.de>
+For nvmem providers which have multiple instances, it is required
+to suffix the provider name with proper id, so that they do not
+confict for the same name. Currently the core does not handle
+this case properly eventhough core already has logic to generate the id.
 
-Complement the u16, u32 and u64 helpers with a u8 variant to ease
-accessing byte-sized values.
+This patch add new devid type NVMEM_DEVID_AUTO for providers to be
+able to allow core to assign id and append it to provier name.
 
-This helper will be useful for Realtek Digital Home Center platforms,
-which store some byte and sub-byte sized values in non-volatile memory.
-
-Signed-off-by: Andreas Färber <afaerber@suse.de>
+Reported-by: Shawn Guo <shawn.guo@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Tested-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- drivers/nvmem/core.c           | 15 +++++++++++++++
- include/linux/nvmem-consumer.h |  1 +
- 2 files changed, 16 insertions(+)
+ drivers/nvmem/core.c           | 10 ++++++++--
+ include/linux/nvmem-provider.h |  3 +++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 95bed31391cd..d6bacc878500 100644
+index d6bacc878500..6cd3edb2eaf6 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -1374,6 +1374,21 @@ static int nvmem_cell_read_common(struct device *dev, const char *cell_id,
- 	return 0;
- }
+@@ -635,12 +635,18 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+ 	if (!config->no_of_node)
+ 		nvmem->dev.of_node = config->dev->of_node;
  
-+/**
-+ * nvmem_cell_read_u8() - Read a cell value as a u8
-+ *
-+ * @dev: Device that requests the nvmem cell.
-+ * @cell_id: Name of nvmem cell to read.
-+ * @val: pointer to output value.
-+ *
-+ * Return: 0 on success or negative errno.
-+ */
-+int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val)
-+{
-+	return nvmem_cell_read_common(dev, cell_id, val, sizeof(*val));
-+}
-+EXPORT_SYMBOL_GPL(nvmem_cell_read_u8);
+-	if (config->id == -1 && config->name) {
++	switch (config->id) {
++	case NVMEM_DEVID_NONE:
+ 		dev_set_name(&nvmem->dev, "%s", config->name);
+-	} else {
++		break;
++	case NVMEM_DEVID_AUTO:
++		dev_set_name(&nvmem->dev, "%s%d", config->name, nvmem->id);
++		break;
++	default:
+ 		dev_set_name(&nvmem->dev, "%s%d",
+ 			     config->name ? : "nvmem",
+ 			     config->name ? config->id : nvmem->id);
++		break;
+ 	}
+ 
+ 	nvmem->read_only = device_property_present(config->dev, "read-only") ||
+diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+index 6d6f8e5d24c9..06409a6c40bc 100644
+--- a/include/linux/nvmem-provider.h
++++ b/include/linux/nvmem-provider.h
+@@ -27,6 +27,9 @@ enum nvmem_type {
+ 	NVMEM_TYPE_BATTERY_BACKED,
+ };
+ 
++#define NVMEM_DEVID_NONE	(-1)
++#define NVMEM_DEVID_AUTO	(-2)
 +
  /**
-  * nvmem_cell_read_u16() - Read a cell value as a u16
+  * struct nvmem_config - NVMEM device configuration
   *
-diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-index 1b311d27c9b8..052293f4cbdb 100644
---- a/include/linux/nvmem-consumer.h
-+++ b/include/linux/nvmem-consumer.h
-@@ -61,6 +61,7 @@ void nvmem_cell_put(struct nvmem_cell *cell);
- void devm_nvmem_cell_put(struct device *dev, struct nvmem_cell *cell);
- void *nvmem_cell_read(struct nvmem_cell *cell, size_t *len);
- int nvmem_cell_write(struct nvmem_cell *cell, void *buf, size_t len);
-+int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val);
- int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val);
- int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val);
- int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val);
 -- 
 2.21.0
 
