@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F74229AB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457D6229ABA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732781AbgGVOyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 10:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        id S1732731AbgGVOzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 10:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732657AbgGVOyF (ORCPT
+        with ESMTP id S1730465AbgGVOzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 10:54:05 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F333AC0619DC;
-        Wed, 22 Jul 2020 07:54:04 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q74so2869294iod.1;
-        Wed, 22 Jul 2020 07:54:04 -0700 (PDT)
+        Wed, 22 Jul 2020 10:55:32 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FC4C0619DC;
+        Wed, 22 Jul 2020 07:55:32 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id q17so1109971pls.9;
+        Wed, 22 Jul 2020 07:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OADXM0KWhLmqJmz0AqH4iopPYtJqKSmc3a8uf13KWHw=;
-        b=dkHfU4piZQZLLU82ppQk6hVZ1uOkXtvbi59PgVcl8jb6Ejh+q9DW36WOjv28VKkqY9
-         pD6KJOdK9g5wr8Bf8nxLY5Mv8LL5satch+ApNwHniPPNkwfeG3WTJ9Cg1s2lACEqzEYK
-         4YMv2auliqhoEadsIVDN36WHfUvPaVt1VIN1RK9cHiXEV3xbkckBqLV1AipyasoMJ47M
-         m8DAovJAtklZO+LJrBfwL8/ANB/XQk6RTKqhxcHnhQHFPFWH+ktkkb0QIPsxPDrVNNxr
-         xeexIWsb18SKDnS1HT1OPjjkOPoLXPLxdpblesyzzU+SUu2SaBsO3D0mZv4M9WZEFtkk
-         S7fg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eBk8dn3TkE/mXBf9J+w2oBabvbVjCrfi1xVwK+Vqgqw=;
+        b=ev6cmxvAmJcG8uKwSIUBEVa6/oL3l8xdeiA7PtFrooZLz5A1LTGpHCweRDRjOsbZI9
+         xJ5vka2DHiQMI3yYv/yI3er0WN4B+WRfwwaI5oMZOW4cR02rJqnoAOrhr1eiY21o7Tgs
+         89sv4eEbwc5i1mR3WK81S4YdmV5Jbq2yo770mCCcpwPs0OTQt7Cit/CBEngZGxWlDkn9
+         +rPcsmac1KE3nCUi/WwNA/cJ8eM+RSU3OsX+rIYEGowxrHOgkWHFKHV53axGaEe0p1xj
+         btpLczsLmZgSUyBwVEmvV8By14/bkdD7HIsaAwWlf+y+Tnb+kbqDRWNQpunNeuzz29oO
+         v8OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OADXM0KWhLmqJmz0AqH4iopPYtJqKSmc3a8uf13KWHw=;
-        b=BaZ0s1DeJrAa4dbYOZ2VnkRaFuBGz+7zeuYFe89uBtncVaRNbI/gQ7cR0g7DclGk7P
-         iODEmItPqOXs9rkdT6frRF3uKAbKrndbHUG7JZe1oltXA5ySDZt/JhXB9QAuiMGpnnpq
-         X+Nt11VRG/ilu80sL4kjglQSW9gfqlnxyxbd0NDCqrsDLsrC3mPDzi8U0VFK04BCslPZ
-         NwyMHP/WGtqaybkQaTqpnCkQejLtT855dHdJHVDoLL6mpRXkdpmAT+p2r3+kJjOrEogI
-         KS8T1hYFzhwEjHZ4O13XSLIgsv8swzEkBzXwAJ9hLjHG3tdxodJGOj3tJDF7Qpfc+US+
-         QW4g==
-X-Gm-Message-State: AOAM533OaEsz5Eg9qL1er1rCt3jKgB6IK3a+1Xx4vjdlGgj8GXqWLOgH
-        wXBYL/sjKmcSj4NqT+mqFsirhfx81OnTjdHj9Ux882A7pv0=
-X-Google-Smtp-Source: ABdhPJzQJaAbYewU9MA/Ib3Rq2MJiG21mch8BEVHivLJt9xht7ckNEsFHmwyL3Ftc7Y59rl2ChMAE0kzTIm12ZPM8xc=
-X-Received: by 2002:a6b:c9c4:: with SMTP id z187mr141353iof.27.1595429644293;
- Wed, 22 Jul 2020 07:54:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eBk8dn3TkE/mXBf9J+w2oBabvbVjCrfi1xVwK+Vqgqw=;
+        b=ipipcc6Oiy12A4sNuTgtlZSqj551A/Y1PR5/bHuwBNRgu+IlTK5XyoOXvFYmpOJKJZ
+         yv/Mpf0WycDSyXNpNHPyzLczP4CH94it5uOwIJM9uk05Ed+IRoaTGx7vxVgeGyVndDxc
+         cqurt+4jWukXq7edC+oS7pH3EhDvZY9wZCNKM8EBrfFx4NcQyNQN7QeiEZ472KANH4QU
+         yMvEANF9o3cYaoNmZ7vLzf33iGDLUAvw/MTuR+gkiT6P2WMXobV0APALXw4uYPOXbhZj
+         MgOwPmABUZVIVkcjGNR4tlfOyp770I5/YncvhbVBt1+lILAoj4uE0w6unYCmBxY6ne0G
+         ESPA==
+X-Gm-Message-State: AOAM533aA1rqNmM/1rq91D/6LPttYoqkyRl/EPz34TPiHjIXkC8ltPbk
+        aLgYNl/xfkWz3qEfPkjNEGx6klVgURgchw==
+X-Google-Smtp-Source: ABdhPJw76w0kPEqMDGiPNMC3LgNmJdLi4c/82+Yx46SIE0fzhwYuMQnjpKhrCTmnG5E5YsPcg/tjnQ==
+X-Received: by 2002:a17:902:7b92:: with SMTP id w18mr27157399pll.258.1595429732044;
+        Wed, 22 Jul 2020 07:55:32 -0700 (PDT)
+Received: from rahulg-ThinkPad-T450 ([122.175.125.202])
+        by smtp.gmail.com with ESMTPSA id m19sm230252pgd.13.2020.07.22.07.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 07:55:31 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 20:25:28 +0530
+From:   Rahul Gottipati <rahul.blr97@gmail.com>
+To:     mchehab@kernel.org
+Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] media: atomisp: Fix coding style issue - remove
+ beginning whitespaces
+Message-ID: <250fcbc1d5b766e9494e1ecbc379ed76d7dc28c8.1595429109.git.rahul.blr97@gmail.com>
+References: <cover.1595429109.git.rahul.blr97@gmail.com>
 MIME-Version: 1.0
-References: <20200720155217.274994-1-robdclark@gmail.com> <CA+G9fYtj1RBYcPhXZRm-qm5ygtdLj1jD8vFZSqQvwi_DNJLBwQ@mail.gmail.com>
- <20200722131009.GD27672@8bytes.org>
-In-Reply-To: <20200722131009.GD27672@8bytes.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 22 Jul 2020 07:54:40 -0700
-Message-ID: <CAF6AEGteY6Mwy+jQaj6Vo0e4bMW6P1q19PMmdOqQrxr-RQxkQg@mail.gmail.com>
-Subject: Re: [PATCH] iommu/qcom: Use domain rather than dev as tlb cookie
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1595429109.git.rahul.blr97@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 6:10 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> On Tue, Jul 21, 2020 at 12:45:17AM +0530, Naresh Kamboju wrote:
-> > On Mon, 20 Jul 2020 at 21:21, Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > The device may be torn down, but the domain should still be valid.  Lets
-> > > use that as the tlb flush ops cookie.
-> > >
-> > > Fixes a problem reported in [1]
-> >
-> > This proposed fix patch applied on top of linux mainline master
-> > and boot test PASS on db410c.
-> >
-> > The reported problem got fixed.
->
-> Is this needed for v5.8/stable? A fixes tag would be great too.
+This removes whitespaces at the beginning of a few lines to fix
+some checkpatch.pl warnings.
 
-looks like, yes:
+Signed-off-by: Rahul Gottipati <rahul.blr97@gmail.com>
+---
 
-Fixes: 09b5dfff9ad6 ("iommu/qcom: Use accessor functions for iommu
-private data")
+Changes in v3:
+	Changed style of function headers in response to review comments
+Changes in v2:
+	Distributed changes across 2 patches instead of the previous 1
 
-BR,
--R
+ drivers/staging/media/atomisp/pci/atomisp_ioctl.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
->
-> Regards,
->
->         Joerg
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+index 9404a678fa6f..4fc4bdd85ce0 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+@@ -511,8 +511,8 @@ const struct atomisp_format_bridge atomisp_output_fmts[] = {
+ #endif
+ };
+ 
+-const struct atomisp_format_bridge *atomisp_get_format_bridge(
+-    unsigned int pixelformat)
++const struct atomisp_format_bridge *
++atomisp_get_format_bridge(unsigned int pixelformat)
+ {
+ 	unsigned int i;
+ 
+@@ -524,8 +524,8 @@ const struct atomisp_format_bridge *atomisp_get_format_bridge(
+ 	return NULL;
+ }
+ 
+-const struct atomisp_format_bridge *atomisp_get_format_bridge_from_mbus(
+-    u32 mbus_code)
++const struct atomisp_format_bridge *
++atomisp_get_format_bridge_from_mbus(u32 mbus_code)
+ {
+ 	unsigned int i;
+ 
+@@ -606,8 +606,8 @@ static int atomisp_enum_input(struct file *file, void *fh,
+ 	return 0;
+ }
+ 
+-static unsigned int atomisp_subdev_streaming_count(
+-    struct atomisp_sub_device *asd)
++static unsigned int
++atomisp_subdev_streaming_count(struct atomisp_sub_device *asd)
+ {
+ 	return asd->video_out_preview.capq.streaming
+ 	       + asd->video_out_capture.capq.streaming
+-- 
+2.25.1
+
