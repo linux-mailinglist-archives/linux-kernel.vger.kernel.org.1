@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD50F229243
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A25E229247
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730678AbgGVHjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:39:20 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:23413 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730617AbgGVHjR (ORCPT
+        id S1730746AbgGVHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:39:25 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:35912 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730617AbgGVHjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:39:17 -0400
+        Wed, 22 Jul 2020 03:39:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595403555; x=1626939555;
+  t=1595403562; x=1626939562;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=oURAU4DGWL3mFMY+Lw1NVxLEsg2r2biBRPsLMwX3NXw=;
-  b=c4sC2fzzeGUtVBdEzwGpJMoGHcdABwJRX5VQBDfF6dZJH+mB/pcaAVt/
-   aIx7M4Il6yuxBC3wYfVsFDppUoIpgdXGGgRYOQa9PmmDYfdNAelEoLdk/
-   b/o9kfixOhD/gHgmJaxBTYnII6CrPGhlfAMGx5SQ6x3GSUOvSFBR0JJL2
-   8yj1mbsgxpHXIWLEp4k7a2SMpkHoPxlszrj+RGL/1XefbIOlOJRle4lPZ
-   mCyyNlzfU99O0xX8ek+eeJbn8GL8OFgoXKiycP3pZQP6vWd/A4V4040aE
-   tPcsn0T6Szv8qrm25JX6sX0DT3SX+3XQR8NGY1bQZhO7unHJe8KPr3Q7+
+  bh=UFiLg3HndQzEMmbFV+IqhvK1C6Up8/+N0yxf7QIo9nY=;
+  b=DWo1Pdk/DSvbPQxKxiK5Gb5GfV+wb9k3NngA7XWz9eiabdfuiTqPk0jA
+   6nh3YW5e2zv1pyh7arem6NaO0low9zIpSoL0T0wIseyhmgz2rjSncgLkH
+   MGib2vxBeP8lpODPPnP8Qz+kzWcPWWpL0tSGNOhhRggZN8NhqLX4OmDUg
+   cdduVbZw+hF2Ya0EOQ6XDCfhi3e9k7yGf7VGPQWtgDnSi41eejdaKDIKl
+   zKk50lEsT125DR3WSeOdVSPkFaDz0dDrUQW/HtWYShJ4lfGevKXm5PkfW
+   s2U9y9vynGfVRVMTv2rk8BshrKfEpA+UHeQRCYSQw8Kpg9eVfesPyUJrK
    Q==;
-IronPort-SDR: +1wlgp3pnau4rGn3nkix9axRLK+Xl8CHQtAX+SOKDFILUK66cFajWYM1QVvEgFWTHzhtz/gqS0
- CZA1Ien39+RRp1ptk5q5lZgGbDamy2hTHrY/pOX1s24N3w41dUUn/LsvTbvE9v9LHzvS/tDXIt
- h4NyP4rv9WjBlx3VjcvM1lnMiZPSPJYu+78zA0zqmw4mIBj37ZIVIB0wl9RaDQGdl34TfbmJKA
- lqqY5Fpx0S/fkfcy2+JZsgCjmp4XZ30S/48oj4wjHgyWjjDXHr/jO9CxxtTb9jBc+NbWHNwCrM
- I7I=
+IronPort-SDR: CUPdrQ2ymy8QDH5xg0rodkZZjge4wHSPeWQhuJ2fHGMwcP52zJ1B48aAbieTnlkfZUD8x42kCv
+ ceCpkt1DLbjw1rWpHS8PQxU9x1mYnfkV24CykkLZZoZE8PgEvElCvTnY1Tr7XdXzTqwxbmgaXm
+ YpRCMgbf6E0iQ68a+KUVGsqhttql9+6GezpSWpNMybO4mSfuAfdOqSiGYgLYD1RaI8hg5Yd/MZ
+ JY8KlAZZRWWbGVNZ6LTeuBx1G+U2uOBk/tC/Sxc2P8d97gbU+o+vAsg5L05i0RnbOgGidbVYEq
+ js4=
 X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
-   d="scan'208";a="82772110"
+   d="scan'208";a="84153210"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:15 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:21 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 00:39:14 -0700
+ 15.1.1979.3; Wed, 22 Jul 2020 00:38:38 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:39:11 -0700
+ 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:39:15 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         "Claudiu Beznea" <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 12/18] clk: at91: clk-master: add master clock support for SAMA7G5
-Date:   Wed, 22 Jul 2020 10:38:20 +0300
-Message-ID: <1595403506-8209-13-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 13/18] clk: at91: clk-peripheral: add support for changeable parent rate
+Date:   Wed, 22 Jul 2020 10:38:21 +0300
+Message-ID: <1595403506-8209-14-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
@@ -62,113 +62,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add master clock support (MCK1..4) for SAMA7G5. SAMA7G5's PMC has
-multiple master clocks feeding different subsystems. One of them
-feeds image subsystem and is changeable based on image subsystem
-needs.
+Some peripheral clocks on SAMA7G5 supports requesting parent to change
+its rate (image related clocks: csi, csi2dc, isc). Add support
+so that if registered with this option the clock rate to be
+requested from parent.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/clk/at91/clk-master.c | 310 +++++++++++++++++++++++++++++++++++++++++-
- drivers/clk/at91/pmc.h        |   7 +
- include/linux/clk/at91_pmc.h  |   1 +
- 3 files changed, 313 insertions(+), 5 deletions(-)
+ drivers/clk/at91/at91sam9n12.c    |   2 +-
+ drivers/clk/at91/at91sam9x5.c     |   4 +-
+ drivers/clk/at91/clk-peripheral.c | 109 ++++++++++++++++++++++++++++++++++++--
+ drivers/clk/at91/dt-compat.c      |   3 +-
+ drivers/clk/at91/pmc.h            |   3 +-
+ drivers/clk/at91/sam9x60.c        |   2 +-
+ drivers/clk/at91/sama5d2.c        |   5 +-
+ drivers/clk/at91/sama5d3.c        |   3 +-
+ drivers/clk/at91/sama5d4.c        |   4 +-
+ 9 files changed, 119 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
-index 88d545b1698c..bd0d8a69a2cf 100644
---- a/drivers/clk/at91/clk-master.c
-+++ b/drivers/clk/at91/clk-master.c
-@@ -17,30 +17,49 @@
- #define MASTER_DIV_SHIFT	8
- #define MASTER_DIV_MASK		0x3
+diff --git a/drivers/clk/at91/at91sam9n12.c b/drivers/clk/at91/at91sam9n12.c
+index 630dc5d87171..f4c36e6e4deb 100644
+--- a/drivers/clk/at91/at91sam9n12.c
++++ b/drivers/clk/at91/at91sam9n12.c
+@@ -222,7 +222,7 @@ static void __init at91sam9n12_pmc_setup(struct device_node *np)
+ 							 at91sam9n12_periphck[i].n,
+ 							 "masterck",
+ 							 at91sam9n12_periphck[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
  
-+#define PMC_MCR			0x30
-+#define PMC_MCR_ID_MSK		GENMASK(3, 0)
-+#define PMC_MCR_CMD		BIT(7)
-+#define PMC_MCR_DIV		GENMASK(10, 8)
-+#define PMC_MCR_CSS		GENMASK(20, 16)
-+#define PMC_MCR_CSS_SHIFT	(16)
-+#define PMC_MCR_EN		BIT(28)
-+
-+#define PMC_MCR_ID(x)		((x) & PMC_MCR_ID_MSK)
-+
-+#define MASTER_MAX_ID		4
-+
- #define to_clk_master(hw) container_of(hw, struct clk_master, hw)
+diff --git a/drivers/clk/at91/at91sam9x5.c b/drivers/clk/at91/at91sam9x5.c
+index 0ce3da080287..52a9d2f7ec83 100644
+--- a/drivers/clk/at91/at91sam9x5.c
++++ b/drivers/clk/at91/at91sam9x5.c
+@@ -257,7 +257,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 							 at91sam9x5_periphck[i].n,
+ 							 "masterck",
+ 							 at91sam9x5_periphck[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
  
- struct clk_master {
- 	struct clk_hw hw;
- 	struct regmap *regmap;
-+	spinlock_t *lock;
- 	const struct clk_master_layout *layout;
- 	const struct clk_master_characteristics *characteristics;
-+	u32 *mux_table;
- 	u32 mckr;
+@@ -270,7 +270,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 							 extra_pcks[i].n,
+ 							 "masterck",
+ 							 extra_pcks[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
+diff --git a/drivers/clk/at91/clk-peripheral.c b/drivers/clk/at91/clk-peripheral.c
+index 4c9a4147dfe5..7867eaf0447f 100644
+--- a/drivers/clk/at91/clk-peripheral.c
++++ b/drivers/clk/at91/clk-peripheral.c
+@@ -38,6 +38,7 @@ struct clk_sam9x5_peripheral {
+ 	u32 div;
+ 	const struct clk_pcr_layout *layout;
+ 	bool auto_div;
 +	int chg_pid;
-+	u8 id;
-+	u8 parent;
-+	u8 div;
  };
  
--static inline bool clk_master_ready(struct regmap *regmap)
-+static inline bool clk_master_ready(struct clk_master *master)
- {
-+	unsigned int bit = master->id ? AT91_PMC_MCKXRDY : AT91_PMC_MCKRDY;
- 	unsigned int status;
- 
--	regmap_read(regmap, AT91_PMC_SR, &status);
-+	regmap_read(master->regmap, AT91_PMC_SR, &status);
- 
--	return !!(status & AT91_PMC_MCKRDY);
-+	return !!(status & bit);
+ #define to_clk_sam9x5_peripheral(hw) \
+@@ -238,6 +239,87 @@ clk_sam9x5_peripheral_recalc_rate(struct clk_hw *hw,
+ 	return parent_rate >> periph->div;
  }
  
- static int clk_master_prepare(struct clk_hw *hw)
- {
- 	struct clk_master *master = to_clk_master(hw);
- 
--	while (!clk_master_ready(master->regmap))
-+	while (!clk_master_ready(master))
- 		cpu_relax();
- 
- 	return 0;
-@@ -50,7 +69,7 @@ static int clk_master_is_prepared(struct clk_hw *hw)
- {
- 	struct clk_master *master = to_clk_master(hw);
- 
--	return clk_master_ready(master->regmap);
-+	return clk_master_ready(master);
- }
- 
- static unsigned long clk_master_recalc_rate(struct clk_hw *hw,
-@@ -143,6 +162,287 @@ at91_clk_register_master(struct regmap *regmap,
- 	return hw;
- }
- 
-+static unsigned long
-+clk_sama7g5_master_recalc_rate(struct clk_hw *hw,
-+			       unsigned long parent_rate)
++static void clk_sam9x5_peripheral_best_diff(struct clk_rate_request *req,
++					    struct clk_hw *parent,
++					    unsigned long parent_rate,
++					    u32 shift, long *best_diff,
++					    long *best_rate)
 +{
-+	struct clk_master *master = to_clk_master(hw);
-+
-+	return DIV_ROUND_CLOSEST_ULL(parent_rate, (1 << master->div));
-+}
-+
-+static void clk_sama7g5_master_best_diff(struct clk_rate_request *req,
-+					 struct clk_hw *parent,
-+					 unsigned long parent_rate,
-+					 long *best_rate,
-+					 long *best_diff,
-+					 u32 div)
-+{
-+	unsigned long tmp_rate, tmp_diff;
-+
-+	if (div == MASTER_PRES_MAX)
-+		tmp_rate = parent_rate / 3;
-+	else
-+		tmp_rate = parent_rate >> div;
-+
-+	tmp_diff = abs(req->rate - tmp_rate);
++	unsigned long tmp_rate = parent_rate >> shift;
++	unsigned long tmp_diff = abs(req->rate - tmp_rate);
 +
 +	if (*best_diff < 0 || *best_diff >= tmp_diff) {
 +		*best_rate = tmp_rate;
@@ -178,287 +148,225 @@ index 88d545b1698c..bd0d8a69a2cf 100644
 +	}
 +}
 +
-+static int clk_sama7g5_master_determine_rate(struct clk_hw *hw,
-+					     struct clk_rate_request *req)
++static int clk_sam9x5_peripheral_determine_rate(struct clk_hw *hw,
++						struct clk_rate_request *req)
 +{
-+	struct clk_master *master = to_clk_master(hw);
++	struct clk_sam9x5_peripheral *periph = to_clk_sam9x5_peripheral(hw);
++	struct clk_hw *parent = clk_hw_get_parent(hw);
 +	struct clk_rate_request req_parent = *req;
-+	struct clk_hw *parent;
-+	long best_rate = LONG_MIN, best_diff = LONG_MIN;
-+	unsigned long parent_rate;
-+	unsigned int div, i;
++	unsigned long parent_rate = clk_hw_get_rate(parent);
++	unsigned long tmp_rate;
++	long best_rate = LONG_MIN;
++	long best_diff = LONG_MIN;
++	u32 shift;
 +
-+	/* First: check the dividers of MCR. */
-+	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-+		parent = clk_hw_get_parent_by_index(hw, i);
-+		if (!parent)
++	if (periph->id < PERIPHERAL_ID_MIN || !periph->range.max)
++		return parent_rate;
++
++	/* Fist step: check the available dividers. */
++	for (shift = 0; shift <= PERIPHERAL_MAX_SHIFT; shift++) {
++		tmp_rate = parent_rate >> shift;
++
++		if (periph->range.max && tmp_rate > periph->range.max)
 +			continue;
 +
-+		parent_rate = clk_hw_get_rate(parent);
-+		if (!parent_rate)
-+			continue;
++		clk_sam9x5_peripheral_best_diff(req, parent, parent_rate,
++						shift, &best_diff, &best_rate);
 +
-+		for (div = 0; div < MASTER_PRES_MAX + 1; div++) {
-+			clk_sama7g5_master_best_diff(req, parent, parent_rate,
-+						     &best_rate, &best_diff,
-+						     div);
-+			if (!best_diff)
-+				break;
-+		}
-+
-+		if (!best_diff)
++		if (!best_diff || best_rate <= req->rate)
 +			break;
 +	}
 +
-+	/* Second: try to request rate form changeable parent. */
-+	if (master->chg_pid < 0)
++	if (periph->chg_pid < 0)
 +		goto end;
 +
-+	parent = clk_hw_get_parent_by_index(hw, master->chg_pid);
++	/* Step two: try to request rate from parent. */
++	parent = clk_hw_get_parent_by_index(hw, periph->chg_pid);
 +	if (!parent)
 +		goto end;
 +
-+	for (div = 0; div < MASTER_PRES_MAX + 1; div++) {
-+		if (div == MASTER_PRES_MAX)
-+			req_parent.rate = req->rate * 3;
-+		else
-+			req_parent.rate = req->rate << div;
++	for (shift = 0; shift <= PERIPHERAL_MAX_SHIFT; shift++) {
++		req_parent.rate = req->rate << shift;
 +
 +		if (__clk_determine_rate(parent, &req_parent))
 +			continue;
 +
-+		clk_sama7g5_master_best_diff(req, parent, req_parent.rate,
-+					     &best_rate, &best_diff, div);
++		clk_sam9x5_peripheral_best_diff(req, parent, req_parent.rate,
++						shift, &best_diff, &best_rate);
 +
 +		if (!best_diff)
 +			break;
 +	}
-+
 +end:
-+	pr_debug("MCK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
++	if (best_rate < 0 ||
++	    (periph->range.max && best_rate > periph->range.max))
++		return -EINVAL;
++
++	pr_debug("PCK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
 +		 __func__, best_rate,
 +		 __clk_get_name((req->best_parent_hw)->clk),
-+		req->best_parent_rate);
-+
-+	if (best_rate < 0)
-+		return -EINVAL;
++		 req->best_parent_rate);
 +
 +	req->rate = best_rate;
 +
 +	return 0;
 +}
 +
-+static u8 clk_sama7g5_master_get_parent(struct clk_hw *hw)
-+{
-+	struct clk_master *master = to_clk_master(hw);
-+	unsigned long flags;
-+	u8 index;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+	index = clk_mux_val_to_index(&master->hw, master->mux_table, 0,
-+				     master->parent);
-+	spin_unlock_irqrestore(master->lock, flags);
-+
-+	return index;
-+}
-+
-+static int clk_sama7g5_master_set_parent(struct clk_hw *hw, u8 index)
-+{
-+	struct clk_master *master = to_clk_master(hw);
-+	unsigned long flags;
-+
-+	if (index >= clk_hw_get_num_parents(hw))
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+	master->parent = clk_mux_index_to_val(master->mux_table, 0, index);
-+	spin_unlock_irqrestore(master->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int clk_sama7g5_master_enable(struct clk_hw *hw)
-+{
-+	struct clk_master *master = to_clk_master(hw);
-+	unsigned long flags;
-+	unsigned int val, cparent;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+
-+	regmap_write(master->regmap, PMC_MCR, PMC_MCR_ID(master->id));
-+	regmap_read(master->regmap, PMC_MCR, &val);
-+	regmap_update_bits(master->regmap, PMC_MCR,
-+			   PMC_MCR_EN | PMC_MCR_CSS | PMC_MCR_DIV |
-+			   PMC_MCR_CMD | PMC_MCR_ID_MSK,
-+			   PMC_MCR_EN | (master->parent << PMC_MCR_CSS_SHIFT) |
-+			   (master->div << MASTER_DIV_SHIFT) |
-+			   PMC_MCR_CMD | PMC_MCR_ID(master->id));
-+
-+	cparent = (val & PMC_MCR_CSS) >> PMC_MCR_CSS_SHIFT;
-+
-+	/* Wait here only if parent is being changed. */
-+	while ((cparent != master->parent) && !clk_master_ready(master))
-+		cpu_relax();
-+
-+	spin_unlock_irqrestore(master->lock, flags);
-+
-+	return 0;
-+}
-+
-+static void clk_sama7g5_master_disable(struct clk_hw *hw)
-+{
-+	struct clk_master *master = to_clk_master(hw);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+
-+	regmap_write(master->regmap, PMC_MCR, master->id);
-+	regmap_update_bits(master->regmap, PMC_MCR,
-+			   PMC_MCR_EN | PMC_MCR_CMD | PMC_MCR_ID_MSK,
-+			   PMC_MCR_CMD | PMC_MCR_ID(master->id));
-+
-+	spin_unlock_irqrestore(master->lock, flags);
-+}
-+
-+static int clk_sama7g5_master_is_enabled(struct clk_hw *hw)
-+{
-+	struct clk_master *master = to_clk_master(hw);
-+	unsigned long flags;
-+	unsigned int val;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+
-+	regmap_write(master->regmap, PMC_MCR, master->id);
-+	regmap_read(master->regmap, PMC_MCR, &val);
-+
-+	spin_unlock_irqrestore(master->lock, flags);
-+
-+	return !!(val & PMC_MCR_EN);
-+}
-+
-+static int clk_sama7g5_master_set_rate(struct clk_hw *hw, unsigned long rate,
-+				       unsigned long parent_rate)
-+{
-+	struct clk_master *master = to_clk_master(hw);
-+	unsigned long div, flags;
-+
-+	div = DIV_ROUND_CLOSEST(parent_rate, rate);
-+	if ((div > (1 << (MASTER_PRES_MAX - 1))) || (div & (div - 1)))
-+		return -EINVAL;
-+
-+	if (div == 3)
-+		div = MASTER_PRES_MAX;
-+	else
-+		div = ffs(div) - 1;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+	master->div = div;
-+	spin_unlock_irqrestore(master->lock, flags);
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops sama7g5_master_ops = {
-+	.enable = clk_sama7g5_master_enable,
-+	.disable = clk_sama7g5_master_disable,
-+	.is_enabled = clk_sama7g5_master_is_enabled,
-+	.recalc_rate = clk_sama7g5_master_recalc_rate,
-+	.determine_rate = clk_sama7g5_master_determine_rate,
-+	.set_rate = clk_sama7g5_master_set_rate,
-+	.get_parent = clk_sama7g5_master_get_parent,
-+	.set_parent = clk_sama7g5_master_set_parent,
+ static long clk_sam9x5_peripheral_round_rate(struct clk_hw *hw,
+ 					     unsigned long rate,
+ 					     unsigned long *parent_rate)
+@@ -320,11 +402,21 @@ static const struct clk_ops sam9x5_peripheral_ops = {
+ 	.set_rate = clk_sam9x5_peripheral_set_rate,
+ };
+ 
++static const struct clk_ops sam9x5_peripheral_chg_ops = {
++	.enable = clk_sam9x5_peripheral_enable,
++	.disable = clk_sam9x5_peripheral_disable,
++	.is_enabled = clk_sam9x5_peripheral_is_enabled,
++	.recalc_rate = clk_sam9x5_peripheral_recalc_rate,
++	.determine_rate = clk_sam9x5_peripheral_determine_rate,
++	.set_rate = clk_sam9x5_peripheral_set_rate,
 +};
 +
-+struct clk_hw * __init
-+at91_clk_sama7g5_register_master(struct regmap *regmap,
-+				 const char *name, int num_parents,
-+				 const char **parent_names,
-+				 u32 *mux_table,
-+				 spinlock_t *lock, u8 id,
-+				 bool critical, int chg_pid)
-+{
-+	struct clk_master *master;
-+	struct clk_hw *hw;
-+	struct clk_init_data init;
-+	unsigned long flags;
-+	unsigned int val;
-+	int ret;
-+
-+	if (!name || !num_parents || !parent_names || !mux_table ||
-+	    !lock || id > MASTER_MAX_ID)
-+		return ERR_PTR(-EINVAL);
-+
-+	master = kzalloc(sizeof(*master), GFP_KERNEL);
-+	if (!master)
-+		return ERR_PTR(-ENOMEM);
-+
-+	init.name = name;
-+	init.ops = &sama7g5_master_ops;
-+	init.parent_names = parent_names;
-+	init.num_parents = num_parents;
-+	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
-+	if (chg_pid >= 0)
-+		init.flags |= CLK_SET_RATE_PARENT;
-+	if (critical)
-+		init.flags |= CLK_IS_CRITICAL;
-+
-+	master->hw.init = &init;
-+	master->regmap = regmap;
-+	master->id = id;
-+	master->chg_pid = chg_pid;
-+	master->lock = lock;
-+	master->mux_table = mux_table;
-+
-+	spin_lock_irqsave(master->lock, flags);
-+	regmap_write(master->regmap, PMC_MCR, master->id);
-+	regmap_read(master->regmap, PMC_MCR, &val);
-+	master->parent = (val & PMC_MCR_CSS) >> PMC_MCR_CSS_SHIFT;
-+	master->div = (val & PMC_MCR_DIV) >> MASTER_DIV_SHIFT;
-+	spin_unlock_irqrestore(master->lock, flags);
-+
-+	hw = &master->hw;
-+	ret = clk_hw_register(NULL, &master->hw);
-+	if (ret) {
-+		kfree(master);
-+		hw = ERR_PTR(ret);
+ struct clk_hw * __init
+ at91_clk_register_sam9x5_peripheral(struct regmap *regmap, spinlock_t *lock,
+ 				    const struct clk_pcr_layout *layout,
+ 				    const char *name, const char *parent_name,
+-				    u32 id, const struct clk_range *range)
++				    u32 id, const struct clk_range *range,
++				    int chg_pid)
+ {
+ 	struct clk_sam9x5_peripheral *periph;
+ 	struct clk_init_data init;
+@@ -339,10 +431,16 @@ at91_clk_register_sam9x5_peripheral(struct regmap *regmap, spinlock_t *lock,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	init.name = name;
+-	init.ops = &sam9x5_peripheral_ops;
+-	init.parent_names = (parent_name ? &parent_name : NULL);
+-	init.num_parents = (parent_name ? 1 : 0);
+-	init.flags = 0;
++	init.parent_names = &parent_name;
++	init.num_parents = 1;
++	if (chg_pid < 0) {
++		init.flags = 0;
++		init.ops = &sam9x5_peripheral_ops;
++	} else {
++		init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
++			     CLK_SET_RATE_PARENT;
++		init.ops = &sam9x5_peripheral_chg_ops;
 +	}
-+
-+	return hw;
-+}
-+
- const struct clk_master_layout at91rm9200_master_layout = {
- 	.mask = 0x31F,
- 	.pres_shift = 2,
+ 
+ 	periph->id = id;
+ 	periph->hw.init = &init;
+@@ -353,6 +451,7 @@ at91_clk_register_sam9x5_peripheral(struct regmap *regmap, spinlock_t *lock,
+ 		periph->auto_div = true;
+ 	periph->layout = layout;
+ 	periph->range = *range;
++	periph->chg_pid = chg_pid;
+ 
+ 	hw = &periph->hw;
+ 	ret = clk_hw_register(NULL, &periph->hw);
+diff --git a/drivers/clk/at91/dt-compat.c b/drivers/clk/at91/dt-compat.c
+index cc95d42f4d53..1b90c4f7b1d1 100644
+--- a/drivers/clk/at91/dt-compat.c
++++ b/drivers/clk/at91/dt-compat.c
+@@ -463,7 +463,8 @@ of_at91_clk_periph_setup(struct device_node *np, u8 type)
+ 								 &dt_pcr_layout,
+ 								 name,
+ 								 parent_name,
+-								 id, &range);
++								 id, &range,
++								 INT_MIN);
+ 		}
+ 
+ 		if (IS_ERR(hw))
 diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 2bfe1405f9f8..29d150feaa46 100644
+index 29d150feaa46..34c9506e6275 100644
 --- a/drivers/clk/at91/pmc.h
 +++ b/drivers/clk/at91/pmc.h
-@@ -155,6 +155,13 @@ at91_clk_register_master(struct regmap *regmap, const char *name,
- 			 const struct clk_master_characteristics *characteristics);
+@@ -168,7 +168,8 @@ struct clk_hw * __init
+ at91_clk_register_sam9x5_peripheral(struct regmap *regmap, spinlock_t *lock,
+ 				    const struct clk_pcr_layout *layout,
+ 				    const char *name, const char *parent_name,
+-				    u32 id, const struct clk_range *range);
++				    u32 id, const struct clk_range *range,
++				    int chg_pid);
  
  struct clk_hw * __init
-+at91_clk_sama7g5_register_master(struct regmap *regmap,
-+				 const char *name, int num_parents,
-+				 const char **parent_names, u32 *mux_table,
-+				 spinlock_t *lock, u8 id, bool critical,
-+				 int chg_pid);
-+
-+struct clk_hw * __init
- at91_clk_register_peripheral(struct regmap *regmap, const char *name,
- 			     const char *parent_name, u32 id);
- struct clk_hw * __init
-diff --git a/include/linux/clk/at91_pmc.h b/include/linux/clk/at91_pmc.h
-index 49a53a137610..77d6dabc4c3c 100644
---- a/include/linux/clk/at91_pmc.h
-+++ b/include/linux/clk/at91_pmc.h
-@@ -174,6 +174,7 @@
- #define		AT91_PMC_MOSCRCS	(1 << 17)		/* Main On-Chip RC [some SAM9] */
- #define		AT91_PMC_CFDEV		(1 << 18)		/* Clock Failure Detector Event [some SAM9] */
- #define		AT91_PMC_GCKRDY		(1 << 24)		/* Generated Clocks */
-+#define		AT91_PMC_MCKXRDY	(1 << 26)		/* Master Clock x [x=1..4] Ready Status */
- #define	AT91_PMC_IMR		0x6c			/* Interrupt Mask Register */
+ at91_clk_register_pll(struct regmap *regmap, const char *name,
+diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
+index 3ad16d74577e..25b57c6105cd 100644
+--- a/drivers/clk/at91/sam9x60.c
++++ b/drivers/clk/at91/sam9x60.c
+@@ -277,7 +277,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 							 sam9x60_periphck[i].n,
+ 							 "masterck",
+ 							 sam9x60_periphck[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
  
- #define AT91_PMC_FSMR		0x70		/* Fast Startup Mode Register */
+diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
+index 6a685d00f16d..c7765b664940 100644
+--- a/drivers/clk/at91/sama5d2.c
++++ b/drivers/clk/at91/sama5d2.c
+@@ -291,7 +291,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 							 sama5d2_periphck[i].n,
+ 							 "masterck",
+ 							 sama5d2_periphck[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
+@@ -304,7 +304,8 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 							 sama5d2_periph32ck[i].n,
+ 							 "h32mxck",
+ 							 sama5d2_periph32ck[i].id,
+-							 &sama5d2_periph32ck[i].r);
++							 &sama5d2_periph32ck[i].r,
++							 INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
+diff --git a/drivers/clk/at91/sama5d3.c b/drivers/clk/at91/sama5d3.c
+index 5e4e44dd4c37..1597124609e5 100644
+--- a/drivers/clk/at91/sama5d3.c
++++ b/drivers/clk/at91/sama5d3.c
+@@ -223,7 +223,8 @@ static void __init sama5d3_pmc_setup(struct device_node *np)
+ 							 sama5d3_periphck[i].n,
+ 							 "masterck",
+ 							 sama5d3_periphck[i].id,
+-							 &sama5d3_periphck[i].r);
++							 &sama5d3_periphck[i].r,
++							 INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
+diff --git a/drivers/clk/at91/sama5d4.c b/drivers/clk/at91/sama5d4.c
+index 662ff5fa6e98..fa121897d95d 100644
+--- a/drivers/clk/at91/sama5d4.c
++++ b/drivers/clk/at91/sama5d4.c
+@@ -246,7 +246,7 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
+ 							 sama5d4_periphck[i].n,
+ 							 "masterck",
+ 							 sama5d4_periphck[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
+@@ -259,7 +259,7 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
+ 							 sama5d4_periph32ck[i].n,
+ 							 "h32mxck",
+ 							 sama5d4_periph32ck[i].id,
+-							 &range);
++							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
 -- 
 2.7.4
 
