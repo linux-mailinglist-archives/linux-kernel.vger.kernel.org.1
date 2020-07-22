@@ -2,103 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5132822990A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2AF22990E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbgGVNO0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Jul 2020 09:14:26 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:53483 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726003AbgGVNO0 (ORCPT
+        id S1732114AbgGVNOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgGVNOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:14:26 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-116-sW_rWl1MOCeWFYsGvVYncg-1; Wed, 22 Jul 2020 14:14:22 +0100
-X-MC-Unique: sW_rWl1MOCeWFYsGvVYncg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 22 Jul 2020 14:14:22 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 22 Jul 2020 14:14:22 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Catalin Marinas' <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] raw_copy_from_user() semantics
-Thread-Topic: [RFC] raw_copy_from_user() semantics
-Thread-Index: AQHWYBxygAO6HUS840aFW/LsMa1rTakTksjw
-Date:   Wed, 22 Jul 2020 13:14:21 +0000
-Message-ID: <8fde1b9044a34ff59eb5ff3dafbf2b97@AcuMS.aculab.com>
-References: <20200719031733.GI2786714@ZenIV.linux.org.uk>
- <CAHk-=wi7f5vG+s=aFsskzcTRs+f7MVHK9yJFZtUEfndy6ScKRQ@mail.gmail.com>
- <CAHk-=wirA7zJJB17KJPCE-V9pKwn8VKxXTeiaM+F+Sa1Xd2SWA@mail.gmail.com>
- <20200722113707.GC27540@gaia>
-In-Reply-To: <20200722113707.GC27540@gaia>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 22 Jul 2020 09:14:38 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D06C0619DC;
+        Wed, 22 Jul 2020 06:14:37 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3F279329;
+        Wed, 22 Jul 2020 15:14:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1595423676;
+        bh=Yy1kPitq1p4+UT+TJhQ9MFHfEcOUO4nuS8woENFDtKE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iUx5z42nUo41McjzpXcpPYK3kDiTO0mS1R0i5jJXLLU3o3kpDsQg+ihnlOuKkDYxX
+         sfXX1nV021EDZeAuXNHMdFQKl2tey7qXoTUZT4lGFnkv5g5LDVx2Vko187/pg+yYdP
+         OhB1hAttWuHlUPXd0sIziaSJsIWioKxfeEu5GqWo=
+Date:   Wed, 22 Jul 2020 16:14:30 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [PATCH v5 3/4] drm/bridge: Introduce LT9611 DSI to HDMI bridge
+Message-ID: <20200722131430.GJ5833@pendragon.ideasonboard.com>
+References: <20200708103559.132300-1-vkoul@kernel.org>
+ <20200708103559.132300-4-vkoul@kernel.org>
+ <20200719171806.GA55541@ravnborg.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200719171806.GA55541@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catalin Marinas
-> Sent: 22 July 2020 12:37
-> 
-> On Sun, Jul 19, 2020 at 12:34:11PM -0700, Linus Torvalds wrote:
-> > On Sun, Jul 19, 2020 at 12:28 PM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > > I think we should try to get rid of the exact semantics.
-> >
-> > Side note: I think one of the historical reasons for the exact
-> > semantics was that we used to do things like the mount option copying
-> > with a "copy_from_user()" iirc.
-> >
-> > And that could take a fault at the end of the stack etc, because
-> > "copy_mount_options()" is nasty and doesn't get a size, and just
-> > copies "up to 4kB" of data.
-> >
-> > It's a mistake in the interface, but it is what it is. But we've
-> > always handled the inexact count there anyway by originally doing byte
-> > accesses, and at some point you optimized it to just look at where
-> > page boundaries might be..
-> 
-> And we may have to change this again since, with arm64 MTE, the page
-> boundary check is insufficient:
-> 
-> https://lore.kernel.org/linux-fsdevel/20200715170844.30064-25-catalin.marinas@arm.com/
-> 
-> While currently the fault path is unlikely to trigger, with MTE in user
-> space it's a lot more likely since the buffer (e.g. a string) is
-> normally less than 4K and the adjacent addresses would have a different
-> colour.
-> 
-> I looked (though briefly) into passing the copy_from_user() problem to
-> filesystems that would presumably know better how much to copy. In most
-> cases the options are string, so something like strncpy_from_user()
-> would work. For mount options as binary blobs (IIUC btrfs) maybe the fs
-> has a better way to figure out how much to copy.
+Hello,
 
-What about changing the mount code to loop calling get_user()
-to read aligned words until failure?
-Mount is fairly uncommon and the extra cost is probably small compared
-to the rest of doing a mount.
+On Sun, Jul 19, 2020 at 07:18:06PM +0200, Sam Ravnborg wrote:
+> Hi Vinod.
+> 
+> Three trivial points below.
+> The rest looks good.
+> 
+> With these fixed you can add:
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> 
+> 	Sam
+> 
+> On Wed, Jul 08, 2020 at 04:05:58PM +0530, Vinod Koul wrote:
+> > Lontium Lt9611 is a DSI to HDMI bridge which supports two DSI ports and
+> > I2S port as an input and HDMI port as output
+> > 
+> > Co-developed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > Tested-by: John Stultz <john.stultz@linaro.org>
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  drivers/gpu/drm/bridge/Kconfig          |   13 +
+> >  drivers/gpu/drm/bridge/Makefile         |    1 +
+> >  drivers/gpu/drm/bridge/lontium-lt9611.c | 1142 +++++++++++++++++++++++
+> >  3 files changed, 1156 insertions(+)
+> >  create mode 100644 drivers/gpu/drm/bridge/lontium-lt9611.c
+> > 
+> > +
+> > +#include <drm/drm_probe_helper.h>
+> > +#include <drm/drm_atomic_helper.h>
+> > +#include <drm/drm_bridge.h>
+> > +#include <drm/drm_mipi_dsi.h>
+> > +#include <drm/drm_print.h>
+> 
+> In alphabetical order. drm_probe_helper needs to be moved.
+> 
+> > +
+> > +#define EDID_SEG_SIZE	256
+> > +#define EDID_LEN	32
+> > +#define EDID_LOOP	8
+> > +#define KEY_DDC_ACCS_DONE 0x02
+> > +#define DDC_NO_ACK	0x50
+> > +
+> 
+> > +static void lt9611_pcr_setup(struct lt9611 *lt9611, const struct drm_display_mode *mode)
+> > +{
+> > +	const struct reg_sequence reg_cfg[] = {
+> > +		{ 0x830b, 0x01 },
+> > +		{ 0x830c, 0x10 },
+> > +		{ 0x8348, 0x00 },
+> > +		{ 0x8349, 0x81 },
+> > +
+> > +		/* stage 1 */
+> > +		{ 0x8321, 0x4a },
+> > +		{ 0x8324, 0x71 },
+> > +		{ 0x8325, 0x30 },
+> > +		{ 0x832a, 0x01 },
+> > +
+> > +		/* stage 2 */
+> > +		{ 0x834a, 0x40 },
+> > +		{ 0x831d, 0x10 },
+> > +
+> > +		/* MK limit */
+> > +		{ 0x832d, 0x38 },
+> > +		{ 0x8331, 0x08 },
+> > +	};
+> > +	const struct reg_sequence reg_cfg2[] = {
+> > +			{ 0x830b, 0x03 },
+> > +			{ 0x830c, 0xd0 },
+> > +			{ 0x8348, 0x03 },
+> > +			{ 0x8349, 0xe0 },
+> > +			{ 0x8324, 0x72 },
+> > +			{ 0x8325, 0x00 },
+> > +			{ 0x832a, 0x01 },
+> > +			{ 0x834a, 0x10 },
+> > +			{ 0x831d, 0x10 },
+> > +			{ 0x8326, 0x37 },
+> 
+> Block above is indented one tab too much.
+> 
+> > +static int lt9611_bridge_attach(struct drm_bridge *bridge,
+> > +				enum drm_bridge_attach_flags flags)
+> > +{
+> > +	struct lt9611 *lt9611 = bridge_to_lt9611(bridge);
+> > +	int ret;
+> > +
+> > +	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+> > +		dev_err(lt9611->dev, "Fix bridge driver to make connector optional!");
+> > +		return -EINVAL;
+> > +	}
+>
+> This should say that the display driver should be fixed.
+> If a display driver expects this bridge to create the connector
+> it would not work.
 
-	David
+Actually, for new bridge drivers, connector creation should be optional
+from the start. We don't want a failure in that case, the feature should
+be implemented.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+Regards,
 
+Laurent Pinchart
