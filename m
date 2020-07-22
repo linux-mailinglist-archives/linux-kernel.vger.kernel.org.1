@@ -2,155 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7342229A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D68229A9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732769AbgGVOm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 10:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730973AbgGVOm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 10:42:27 -0400
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98ABD20787;
-        Wed, 22 Jul 2020 14:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595428946;
-        bh=wk9uc9EFeU1U4bZjuLI5oT7Ft4gFDxjC68gV7uHyIQU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R1rLrUiJOsu7Jts6Z0NU9U/t9UkTln7Iy+U9KrDK4pWNWUGAJ3q+e/6imP0mGETbl
-         KFjcPQUz+kR+c2XAyWPDQZrrACYdPKJSvD481tqUPAxzo8O59XknINk5F662atu6LQ
-         fnV85N6Mm7FSf8goxWEiQoE62PMEWGgIyV5Bky2U=
-Received: by mail-oo1-f41.google.com with SMTP id t6so461467ooh.4;
-        Wed, 22 Jul 2020 07:42:26 -0700 (PDT)
-X-Gm-Message-State: AOAM532K0Qx8WkH6nCpjDJvsoK4lUjZ5KzLGdhkgtiPX7NefUMPfauT0
-        /u/ht0drKVN6n2Ow0ipQftk93ZwuwX+EcVXkyA==
-X-Google-Smtp-Source: ABdhPJyQP1ZRMVJKJdH4QnM2k+ib1BqJI5c0CwiJkic3VdGrn99f7M/qMgn52dXNwA8FzcQBsfsiYcZtAdhuSLxTl7A=
-X-Received: by 2002:a4a:9c0f:: with SMTP id y15mr254900ooj.81.1595428945904;
- Wed, 22 Jul 2020 07:42:25 -0700 (PDT)
+        id S1732689AbgGVOw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 10:52:27 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:65359 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730346AbgGVOw1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 10:52:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1595429547; x=1626965547;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=+omhnPDjGYNd4Aearh2KyiqpdHXwk+4wB4wi06Z0vyc=;
+  b=HsfQOyNJwjNhekCIKrBeZBldJ06xUeeLGNEzX/q5jwZ5XRfQVelRlZle
+   tQ23TunSwxuuj6LJrd7gz9jD4fmpnpEVPaXmgZ9olZVXcHYscFCmZ/yC9
+   QNm2hSIJnNSzjom9qFwycbinC8ChThk7/ZE9hWCc4/4Hmo7qv4v2hMuBF
+   I=;
+IronPort-SDR: je7CCMBZRTnBiWsrQdDcOiwQ4IcE7geaSNzeudp/9vT99k5lvGkQPOBXGXhXdJqU9L8uD6l3ot
+ AlU8QQnmv5GA==
+X-IronPort-AV: E=Sophos;i="5.75,383,1589241600"; 
+   d="scan'208";a="53764065"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Jul 2020 14:42:24 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id 0F8EEA411A;
+        Wed, 22 Jul 2020 14:42:23 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 22 Jul 2020 14:42:22 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.34) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 22 Jul 2020 14:42:17 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <jakub@cloudflare.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <kernel-team@cloudflare.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <linux-next@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <sfr@canb.auug.org.au>,
+        <willemb@google.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
+Date:   Wed, 22 Jul 2020 23:42:12 +0900
+Message-ID: <20200722144212.27106-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <87wo2vwxq6.fsf@cloudflare.com>
+References: <87wo2vwxq6.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20200622075956.171058-1-bjorn.andersson@linaro.org>
- <20200622075956.171058-2-bjorn.andersson@linaro.org> <CAL_JsqKW+R=rygii7N69o28h5780qx645RhPXGQZ4jw3kHadhw@mail.gmail.com>
- <20200722044615.GR388985@builder.lan>
-In-Reply-To: <20200722044615.GR388985@builder.lan>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 22 Jul 2020 08:42:08 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLa9GBtbgN6aL7AQ=A6V-YRtPgYqh6XgM2kpx532+r4Gg@mail.gmail.com>
-Message-ID: <CAL_JsqLa9GBtbgN6aL7AQ=A6V-YRtPgYqh6XgM2kpx532+r4Gg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: hwlock: qcom: Migrate binding to YAML
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.34]
+X-ClientProxiedBy: EX13D05UWC004.ant.amazon.com (10.43.162.223) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 10:48 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Tue 21 Jul 08:13 PDT 2020, Rob Herring wrote:
->
-> > On Mon, Jun 22, 2020 at 1:59 AM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > Migrate the Qualcomm TCSR mutex binding to YAML to allow validation.
-> > >
-> > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > ---
-> > >
-> > > Changes since v1:
-> > > - Actually remove the old binding doc
-> > >
-> > >  .../bindings/hwlock/qcom-hwspinlock.txt       | 39 --------------
-> > >  .../bindings/hwlock/qcom-hwspinlock.yaml      | 51 +++++++++++++++++++
-> > >  2 files changed, 51 insertions(+), 39 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.txt
-> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+Date:   Wed, 22 Jul 2020 14:17:05 +0200
+> On Wed, Jul 22, 2020 at 05:21 AM CEST, Stephen Rothwell wrote:
+> > Hi all,
 > >
-> > [...]
+> > Today's linux-next merge of the bpf-next tree got conflicts in:
 > >
-> > > diff --git a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-> > > new file mode 100644
-> > > index 000000000000..71e63b52edd5
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-> > > @@ -0,0 +1,51 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/hwlock/qcom-hwspinlock.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Qualcomm Hardware Mutex Block
-> > > +
-> > > +maintainers:
-> > > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > +
-> > > +description:
-> > > +  The hardware block provides mutexes utilized between different processors on
-> > > +  the SoC as part of the communication protocol used by these processors.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - qcom,sfpb-mutex
-> > > +      - qcom,tcsr-mutex
-> > > +
-> > > +  '#hwlock-cells':
-> > > +    const: 1
-> > > +
-> > > +  syscon:
-> > > +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-> > > +    description:
-> > > +      Should be a triple of phandle referencing the TCSR mutex syscon, offset
-> > > +      of first mutex within the syscon and stride between each mutex.
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - '#hwlock-cells'
-> > > +  - syscon
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +        tcsr_mutex_block: syscon@fd484000 {
-> > > +                compatible = "syscon";
+> >   net/ipv4/udp.c
+> >   net/ipv6/udp.c
 > >
-> > 'syscon' alone now generates warnings. Can you drop this node or add a
-> > specific compatible.
+> > between commit:
 > >
->
-> In the binding examples or in the dts files as well?
+> >   efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.")
+> >
+> > from the net tree and commits:
+> >
+> >   7629c73a1466 ("udp: Extract helper for selecting socket from reuseport group")
+> >   2a08748cd384 ("udp6: Extract helper for selecting socket from reuseport group")
+> >
+> > from the bpf-next tree.
+> >
+> > I fixed it up (I wasn't sure how to proceed, so I used the latter
+> > version) and can carry the fix as necessary. This is now fixed as far
+> > as linux-next is concerned, but any non trivial conflicts should be
+> > mentioned to your upstream maintainer when your tree is submitted for
+> > merging.  You may also want to consider cooperating with the maintainer
+> > of the conflicting tree to minimise any particularly complex conflicts.
+> 
+> This one is a bit tricky.
+> 
+> Looking at how code in udp[46]_lib_lookup2 evolved, first:
+> 
+>   acdcecc61285 ("udp: correct reuseport selection with connected sockets")
+> 
+> 1) exluded connected UDP sockets from reuseport group during lookup, and
+> 2) limited fast reuseport return to groups with no connected sockets,
+> 
+> The second change had an uninteded side-effect of discarding reuseport
+> socket selection when reuseport group contained connected sockets.
+> 
+> Then, recent
+> 
+>   efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.")
+> 
+> rectified it by recording reuseport socket selection as lookup result
+> candidate, in case fast reuseport return did not happen because
+> reuseport group had connected sockets.
+> 
+> I belive that changes in commit efc6b6f6c311 can be rewritten as below
+> to the same effect, by realizing that we are always setting the 'result'
+> if 'score > badness'. Either to what reuseport_select_sock() returned or
+> to 'sk' that scored higher than current 'badness' threshold.
 
-Both, but only the examples need to be warning free at this point. So
-just dropping the node in the example is enough and you can solve this
-for dts files later if you wish.
+Good point!
+It looks good to me.
 
-> The hardware block here is named "TCSR_MUTEX", so the natural compatible
-> to add here would be "qcom,tcsr-mutex", but that already has a meaning -
-> and the syscon node here doesn't carry all required properties...
 
-So you have 2 nodes pointing to the same h/w? Also a no-no...
+> ---8<---
+> static struct sock *udp4_lib_lookup2(struct net *net,
+> 				     __be32 saddr, __be16 sport,
+> 				     __be32 daddr, unsigned int hnum,
+> 				     int dif, int sdif,
+> 				     struct udp_hslot *hslot2,
+> 				     struct sk_buff *skb)
+> {
+> 	struct sock *sk, *result;
+> 	int score, badness;
+> 	u32 hash = 0;
+> 
+> 	result = NULL;
+> 	badness = 0;
+> 	udp_portaddr_for_each_entry_rcu(sk, &hslot2->head) {
+> 		score = compute_score(sk, net, saddr, sport,
+> 				      daddr, hnum, dif, sdif);
+> 		if (score > badness) {
+> 			result = NULL;
+> 			if (sk->sk_reuseport &&
+> 			    sk->sk_state != TCP_ESTABLISHED) {
+> 				hash = udp_ehashfn(net, daddr, hnum,
+> 						   saddr, sport);
+> 				result = reuseport_select_sock(sk, hash, skb,
+> 							       sizeof(struct udphdr));
+> 				if (result && !reuseport_has_conns(sk, false))
+> 					return result;
+> 			}
+> 			if (!result)
+> 				result = sk;
+> 			badness = score;
+> 		}
+> 	}
+> 	return result;
+> }
+> ---8<---
+> 
+> From there, it is now easier to resolve the conflict with
+> 
+>   7629c73a1466 ("udp: Extract helper for selecting socket from reuseport group")
+>   2a08748cd384 ("udp6: Extract helper for selecting socket from reuseport group")
+> 
+> which extract the 'if (sk->sk_reuseport && sk->sk_state !=
+> TCP_ESTABLISHED)' block into a helper called lookup_reuseport().
+> 
+> To merge the two, we need to pull the reuseport_has_conns() check up
+> from lookup_reuseport() and back into udp[46]_lib_lookup2(), because now
+> we want to record reuseport socket selection even if reuseport group has
+> connections.
+> 
+> The only other call site of lookup_reuseport() is in
+> udp[46]_lookup_run_bpf(). We don't want to discard the reuseport
+> selected socket if group has connections there either, so no changes are
+> needed. And, now that I think about it, the current behavior in
+> udp[46]_lookup_run_bpf() is not right.
+> 
+> The end result for udp4 will look like:
+> 
+> ---8<---
+> static inline struct sock *lookup_reuseport(struct net *net, struct sock *sk,
+> 					    struct sk_buff *skb,
+> 					    __be32 saddr, __be16 sport,
+> 					    __be32 daddr, unsigned short hnum)
+> {
+> 	struct sock *reuse_sk = NULL;
+> 	u32 hash;
+> 
+> 	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
+> 		hash = udp_ehashfn(net, daddr, hnum, saddr, sport);
+> 		reuse_sk = reuseport_select_sock(sk, hash, skb,
+> 						 sizeof(struct udphdr));
+> 	}
+> 	return reuse_sk;
+> }
+> 
+> /* called with rcu_read_lock() */
+> static struct sock *udp4_lib_lookup2(struct net *net,
+> 				     __be32 saddr, __be16 sport,
+> 				     __be32 daddr, unsigned int hnum,
+> 				     int dif, int sdif,
+> 				     struct udp_hslot *hslot2,
+> 				     struct sk_buff *skb)
+> {
+> 	struct sock *sk, *result;
+> 	int score, badness;
+> 
+> 	result = NULL;
+> 	badness = 0;
+> 	udp_portaddr_for_each_entry_rcu(sk, &hslot2->head) {
+> 		score = compute_score(sk, net, saddr, sport,
+> 				      daddr, hnum, dif, sdif);
+> 		if (score > badness) {
+> 			result = lookup_reuseport(net, sk, skb,
+> 						  saddr, sport, daddr, hnum);
+> 			if (result && !reuseport_has_conns(sk, false))
+> 				return result;
+> 			if (!result)
+> 				result = sk;
+> 			badness = score;
+> 		}
+> 	}
+> 	return result;
+> }
+> ---8<---
+> 
+> I will submit a patch that pulls the reuseport_has_conns() check from
+> lookup_reuseport() to bpf-next. That should bring the two sides of the
+> merge closer. Please let me know if I can help in any other way.
+> 
+> Also, please take a look at the 3-way diff below from my attempt to
+> merge net tree into bpf-next tree taking the described approach.
+> 
+> Thanks,
+> -jkbs
 
-> Should we perhaps just remove the split model (syscon and
-> qcom,tcsr-mutex as different nodes) from the example and dts files?
-> (While maintaining backwards compatibility in the binding and driver)
->
-> For the platforms where we have other drivers that needs to poke in this
-> syscon it seems to work fine to say:
->         compatible = "qcom,tcsr-mutex", "syscon";
+Can I submit a patch to net tree that rewrites udp[46]_lib_lookup2() to
+use only 'result' ?
 
-Yes. 'syscon' just means automagically create a regmap.
-
-Rob
+Best Regards,
+Kuniyuki
