@@ -2,154 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117DC22A08B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BFD22A084
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732646AbgGVULQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 16:11:16 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58693 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732754AbgGVULO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:11:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595448673; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=REoXVWQbHijBuNKTFEkR7jVwMDFykpE2PFboAKq4xoI=; b=paJ+8JMLtppbiWg6yuvjaYftW3+izvjPwVK3mcqmZerrAc0w5MMXGziLceCt8RIsnIo9inrm
- tLwk3JGEX2OJrWbmfWgenM0xSflug25EuRfL57K0NddNyQ25d2EJX9pqMq0mwtNR0M1xK9e0
- hfe6HhBeDDkix7QTeScFN9NeEQ0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5f189d6165270fa5953aeb2b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 22 Jul 2020 20:11:13
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E3B65C433A0; Wed, 22 Jul 2020 20:11:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1D69C43391;
-        Wed, 22 Jul 2020 20:11:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1D69C43391
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        evgreen@chromium.org, ohad@wizery.com,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v3 3/3] remoteproc: qcom_q6v5_mss: Add modem debug policy support
-Date:   Thu, 23 Jul 2020 01:40:47 +0530
-Message-Id: <20200722201047.12975-4-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200722201047.12975-1-sibis@codeaurora.org>
-References: <20200722201047.12975-1-sibis@codeaurora.org>
+        id S1731927AbgGVULD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 16:11:03 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59227 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgGVULD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 16:11:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595448661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+z8Sjy8ZptOYQPBj+H820e2EKukutEsqDOT5iiJ3PDM=;
+        b=YFI/F6onfTPy859uWiW4y+mYExQ6TcfQmCBeorkF4J6L6xqj70gQxQGv9n0DtlZVxTSuHp
+        r1auikkcfi1FnatLezCbA2zDZZ299eGayp3hbuqTloxS11NQeqLJLFpsiWX5cfHMR75R8z
+        +gaY6Ol1gx640keM/pPKpat4KZnG8C0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-DATXNlbRMde62i8CrBzfFA-1; Wed, 22 Jul 2020 16:11:00 -0400
+X-MC-Unique: DATXNlbRMde62i8CrBzfFA-1
+Received: by mail-qk1-f199.google.com with SMTP id h4so2202968qkl.23
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:11:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+z8Sjy8ZptOYQPBj+H820e2EKukutEsqDOT5iiJ3PDM=;
+        b=FE3usbBMpGDn0huTpwgRj+/+zNqj5OnMlVfHFbF+7+kBV2SglfSFxSngO7lh8VeZQW
+         GYVulmYP6NPXqqWzAKaqggfJim8Bw6ELP73VYE9e1p+lzDrz5j7+uNwEzio8DQWxUXQD
+         IATSO1pXgL06fB9sMVuVt4jVXD7EO7o5B0kV1ymOtXKYRiUJk82tVpvRBaPhqCS8/j76
+         oH8nKEKnNcZm6rfQD/+VNlgL/80ER35Xx+h4R1PX2Ly2bZDnFUTw5PDTXLK5A/yJ7p9O
+         6iwC+I8jvFiSPQO0gUpV4nNYSmgnrqBrAyXRMi5D2YO166svmDePqFxan4QlYAAH1CpF
+         nXiA==
+X-Gm-Message-State: AOAM5301ECUu6ntGbDmjw9OKL0HrmupWuGJrOE+Wls4BECTnv/0C9ZuI
+        YSNuTiZEFLfNVbm7rtCTSCWF2UoMgtaGj56d7Dn/9cIAh5fleGSjNTaOA3UneaJqYlsgrRorVW1
+        OfQBUQqm3fH59SVvytmpoW0iR
+X-Received: by 2002:a05:620a:230:: with SMTP id u16mr1636733qkm.387.1595448659274;
+        Wed, 22 Jul 2020 13:10:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzh0P/cdl6d05hqmcebLmXrq3sWiqikrcPUldQ6BQFsWF/cpmfObT/Kf16aCA1SldNDaH+SmQ==
+X-Received: by 2002:a05:620a:230:: with SMTP id u16mr1636711qkm.387.1595448659017;
+        Wed, 22 Jul 2020 13:10:59 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id o2sm743539qkh.102.2020.07.22.13.10.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 13:10:58 -0700 (PDT)
+Subject: Re: [PATCH v2] KEYS: remove redundant memset
+To:     Joe Perches <joe@perches.com>, dhowells@redhat.com,
+        jarkko.sakkinen@linux.intel.com, jmorris@namei.org,
+        serge@hallyn.com, denkenz@gmail.com, marcel@holtmann.org
+Cc:     keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200722134610.31947-1-trix@redhat.com>
+ <2bdd6b8ec731d180023d593b679afc66def19b4f.camel@perches.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <e36c364e-22f4-c520-04da-ca1196fec049@redhat.com>
+Date:   Wed, 22 Jul 2020 13:10:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <2bdd6b8ec731d180023d593b679afc66def19b4f.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add modem debug policy support which will enable coredumps and live
-debug support when the msadp firmware is present on secure devices.
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
-
-v3:
- * Fix dp_fw leak and create a separate func for dp load [Bjorn]
- * Reset dp_size on mba_reclaim
-
-v2:
- * Use request_firmware_direct [Bjorn]
- * Use Bjorn's template to show if debug policy is present
- * Add size check to prevent memcpy out of bounds [Bjorn]
-
- drivers/remoteproc/qcom_q6v5_mss.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index f4aa61ba220dc..da99c8504a346 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -191,6 +191,7 @@ struct q6v5 {
- 	phys_addr_t mba_phys;
- 	void *mba_region;
- 	size_t mba_size;
-+	size_t dp_size;
- 
- 	phys_addr_t mpss_phys;
- 	phys_addr_t mpss_reloc;
-@@ -408,6 +409,21 @@ static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
- 				   current_perm, next, perms);
- }
- 
-+static void q6v5_debug_policy_load(struct q6v5 *qproc)
-+{
-+	const struct firmware *dp_fw;
-+
-+	if (request_firmware_direct(&dp_fw, "msadp", qproc->dev))
-+		return;
-+
-+	if (SZ_1M + dp_fw->size <= qproc->mba_size) {
-+		memcpy(qproc->mba_region + SZ_1M, dp_fw->data, dp_fw->size);
-+		qproc->dp_size = dp_fw->size;
-+	}
-+
-+	release_firmware(dp_fw);
-+}
-+
- static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
- {
- 	struct q6v5 *qproc = rproc->priv;
-@@ -419,6 +435,7 @@ static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
- 	}
- 
- 	memcpy(qproc->mba_region, fw->data, fw->size);
-+	q6v5_debug_policy_load(qproc);
- 
- 	return 0;
- }
-@@ -928,6 +945,10 @@ static int q6v5_mba_load(struct q6v5 *qproc)
- 	}
- 
- 	writel(qproc->mba_phys, qproc->rmb_base + RMB_MBA_IMAGE_REG);
-+	if (qproc->dp_size) {
-+		writel(qproc->mba_phys + SZ_1M, qproc->rmb_base + RMB_PMI_CODE_START_REG);
-+		writel(qproc->dp_size, qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
-+	}
- 
- 	ret = q6v5proc_reset(qproc);
- 	if (ret)
-@@ -996,6 +1017,7 @@ static void q6v5_mba_reclaim(struct q6v5 *qproc)
- 	u32 val;
- 
- 	qproc->dump_mba_loaded = false;
-+	qproc->dp_size = 0;
- 
- 	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_q6);
- 	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_modem);
-@@ -1290,7 +1312,8 @@ static int q6v5_start(struct rproc *rproc)
- 	if (ret)
- 		return ret;
- 
--	dev_info(qproc->dev, "MBA booted, loading mpss\n");
-+	dev_info(qproc->dev, "MBA booted with%s debug policy, loading mpss\n",
-+		 qproc->dp_size ? "" : "out");
- 
- 	ret = q6v5_mpss_load(qproc);
- 	if (ret)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On 7/22/20 1:02 PM, Joe Perches wrote:
+> On Wed, 2020-07-22 at 06:46 -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Reviewing use of memset in keyctrl_pkey.c
+>>
+>> keyctl_pkey_params_get prologue code to set params up
+>>
+>> 	memset(params, 0, sizeof(*params));
+>> 	params->encoding = "raw";
+>>
+>> keyctl_pkey_query has the same prologue
+>> and calls keyctl_pkey_params_get.
+>>
+>> So remove the prologue.
+>>
+>> Fixes: 00d60fd3b932 ("KEYS: Provide keyctls to drive the new key type ops for asymmetric keys [ver #2]")
+> At best, this is a micro optimization.
+Yes
+> How is this appropriate for a Fixes: line?
+Removing unneeded code is not a fix?
+>
+>> diff --git a/security/keys/keyctl_pkey.c b/security/keys/keyctl_pkey.c
+> []
+>> @@ -166,8 +166,6 @@ long keyctl_pkey_query(key_serial_t id,
+>>  	struct kernel_pkey_query res;
+>>  	long ret;
+>>  
+>> -	memset(&params, 0, sizeof(params));
+>> -
+>>  	ret = keyctl_pkey_params_get(id, _info, &params);
+>>  	if (ret < 0)
+>>  		goto error;
 
