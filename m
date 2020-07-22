@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3430229D08
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D48229D16
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbgGVQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 12:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
+        id S1728135AbgGVQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 12:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgGVQV5 (ORCPT
+        with ESMTP id S1726711AbgGVQ06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:21:57 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DB7C0619DC;
-        Wed, 22 Jul 2020 09:21:56 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id a8so2106947edy.1;
-        Wed, 22 Jul 2020 09:21:56 -0700 (PDT)
+        Wed, 22 Jul 2020 12:26:58 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECC6C0619E3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:26:57 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id h16so1801412ilj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=W2qj1Sf7PcrqUHXAEb/THg9pMML97014ZTi7y/wfL04=;
-        b=ioZ5xj2jTbe7BEk/Bqjg2VgBz+XxeUzFPUDEwAk+U+gklxUhzB7JOtM47FKMBzI7/W
-         4Xtsw84QyHLJ0S/F/2opJdyiZj987J4IhcHRaYI9EgJBhyQDn514g0HG989uTQr/q5Ll
-         b4/oDtkbIZkuF0McM2VEViP0sdubi91rFcStMfdJ4l0hzSyXc6up5wL6FfOXimij0Dnv
-         fdcU+G3TD92c77Kvaui4aNVO70yaDmxfSq72sqDqZbGNaw25ajW/zIh6n4JiC7cQrS4D
-         i9I0Q+41wubABe2D+7epIOqr+AYYXGxsyHeMKppZ+oM0TKZ/EQNdATDmECFNn1Tl7ZdI
-         JRsA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2kHXQvVGBuGkaVHirVH2ldXpqiigd2kMJlKCki7PqMg=;
+        b=ra98AzIYvVtLIKFmQ0582LpmVzZLDFtXPiDLxSIB7SoDAYKfzHUmecVZxZuP/M6Pvb
+         fDufO1C+Q4FiAbYniw6ePsXq6IniiF94IvlcqmWtmSWtqcN5EqOCbg+nsxHw7v2/BzpD
+         yqdQ4eKGDs88B1pTQ+/lVZ3atNYajhFCrKFlxc6iGCv2w9U5QibkcB5fjdiaYFspwg/7
+         DUAeDu27aJnyG2kaxKFRHFuV9pRJvCocGy9/pSs9I4O2w31H+artkiu+wABWqj20BtFU
+         4mfkDrAHear+tV6pm6mm5Q1TEtNXZAq/Blh918qa8SfTMXEI9nUlQIkjpdOHfrsto+Ju
+         hfqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=W2qj1Sf7PcrqUHXAEb/THg9pMML97014ZTi7y/wfL04=;
-        b=dvKY4/K8zRu5AHxrCViJQwlCgIcdLLyPTl8G/xbiavuotoaA+MOe+bNCxS/RfbsIe7
-         ixJJWx5fnvwtsu1buXMWK4eVc2e9t1sqJ5sh6MWN/g6DIA78oqybYxE49cgHkTRtKnqd
-         6CKNbZuuqolmzl/jsmm0BQ560yXE0sncLHPnusSXz+vSbtcW7tz4dNxO/ncwPnIT+4Ek
-         fsOC5YVhJqE/rBBy8EXKLPBsRDydXUazngdT0okOgDV5yiAE+lwTM3oTp5mcz1jaVf6G
-         UdwPGmpiZRq/hNu3KUauu0HJt+QLHnhIKQ3l1eymMkxqpU5d9c3F3OkWiO5iOPU51qLd
-         rV8Q==
-X-Gm-Message-State: AOAM5311Ub4EFPcD3NEKj630EdI9bzTLoXpN+5q9Q9D2Fb6qaz9O0U3y
-        udQTT7Z2s+qWhkoJMwEAxel4/biQZQ==
-X-Google-Smtp-Source: ABdhPJzxZviNNCmkzibAM7leGeJhF+rekVwrsCPYdkZWiHOdx8u1zheaFmjCV2hc1imeMTTKrBWVxw==
-X-Received: by 2002:aa7:c6d3:: with SMTP id b19mr207732eds.207.1595434915199;
-        Wed, 22 Jul 2020 09:21:55 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:e00:b1ec:e192:dc67:8149? ([2a02:810b:f40:e00:b1ec:e192:dc67:8149])
-        by smtp.gmail.com with ESMTPSA id o20sm88850ejr.64.2020.07.22.09.21.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 09:21:54 -0700 (PDT)
-Subject: Re: [PATCH] clk: rockchip: add CLK_IGNORE_UNUSED to RK3188
- sclk_mac_lbtest
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200722143137.863-1-knaerzche@gmail.com>
- <3075813.JVNIx54Eim@diego>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <fb58ddad-7683-3b4a-f99e-d90b86056e1f@gmail.com>
-Date:   Wed, 22 Jul 2020 18:21:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2kHXQvVGBuGkaVHirVH2ldXpqiigd2kMJlKCki7PqMg=;
+        b=LbpEJ1DsLriK2EAnuqdnVMPpna/noGn9EMbhQ0kAqH/7aberHz4Vh/EB+JQZovLATA
+         kdMiXjP/FbJ1Wles6chodS3UCYu2fjkfF+z9FFV5sNuUfmQDm73TLigHMDYyvpwgMOIr
+         uvwMHdJF6K4h0HVLIRx7bNOoURMhnd6EAILGO6BxBL6E86BItvVcFxZBfJ02V2ssBPfN
+         sO/Jb9+81Z17J+x2/TV6yeADN+8r+q8l2CBgCY0Mqhphx1PXPV8Nj3Q41K2jK1tk8QyL
+         HB91PCahzhok0fUue7pTUg6/Fcst2JDO1ebax2St+lH4tw82BMq0abQxEgXKD6z5SuuF
+         s3mQ==
+X-Gm-Message-State: AOAM530603fvJ/RZSK++nlpQBBI7EHDQAk3KgEVt97TKBq9q3Ny+6Ar3
+        F75O0qz8TRHwoIolczSyK9ywmP+6AVdWSBdQRqgoig==
+X-Google-Smtp-Source: ABdhPJzNeJo6F0VTZ0S6U9fuGWdBKZjH6dGksbNLyWqgmXOtrkpA/UinCG7oju3HCUHK5DY6DzL72Fr4547fWGtbqgk=
+X-Received: by 2002:a05:6e02:1253:: with SMTP id j19mr673988ilq.145.1595435216934;
+ Wed, 22 Jul 2020 09:26:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3075813.JVNIx54Eim@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200722062552.212200-1-hch@lst.de> <20200722062552.212200-12-hch@lst.de>
+In-Reply-To: <20200722062552.212200-12-hch@lst.de>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 22 Jul 2020 09:26:45 -0700
+Message-ID: <CALvZod6zF7Ak8KWf4dq0pEF2ty7JN_SyNE7PxLjrfF+EuDbZ2w@mail.gmail.com>
+Subject: Re: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Tue, Jul 21, 2020 at 11:27 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> There is no point in trying to call bdev_read_page if SWP_SYNCHRONOUS_IO
+> is not set, as the device won't support it.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/page_io.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+>
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index ccda7679008851..442061348dfb26 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -403,15 +403,17 @@ int swap_readpage(struct page *page, bool synchronous)
+>                 goto out;
+>         }
+>
+> -       ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+> -       if (!ret) {
+> -               if (trylock_page(page)) {
+> -                       swap_slot_free_notify(page);
+> -                       unlock_page(page);
+> -               }
+> +       if (sis->flags & SWP_SYNCHRONOUS_IO) {
+> +               ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+> +               if (ret) {
 
-Am 22.07.20 um 16:37 schrieb Heiko Stübner:
-> Hi,
->
-> Am Mittwoch, 22. Juli 2020, 16:31:37 CEST schrieb Alex Bee:
->> Since the loopbacktest clock is not exported and is not touched in the
->> driver, it needs the CLK_IGNORE_UNUSED flag in order to get the emac
->> working.
-> could you please add it to the rk3188_critical_clocks array instead.
-> CLK_IGNORE_UNUSED only protects it against the clock subsystem
-> disabling it on boot, while as critical clock it also gets protected later.
->
-> Thanks
-> Heiko
->
-wasn't aware of that and changed it in v2.
->> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->> ---
->>   drivers/clk/rockchip/clk-rk3188.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/clk/rockchip/clk-rk3188.c b/drivers/clk/rockchip/clk-rk3188.c
->> index 77aebfb1d6d5..892b1edc3444 100644
->> --- a/drivers/clk/rockchip/clk-rk3188.c
->> +++ b/drivers/clk/rockchip/clk-rk3188.c
->> @@ -354,7 +354,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
->>   			RK2928_CLKGATE_CON(2), 5, GFLAGS),
->>   	MUX(SCLK_MAC, "sclk_macref", mux_sclk_macref_p, CLK_SET_RATE_PARENT,
->>   			RK2928_CLKSEL_CON(21), 4, 1, MFLAGS),
->> -	GATE(0, "sclk_mac_lbtest", "sclk_macref", 0,
->> +	GATE(0, "sclk_mac_lbtest", "sclk_macref", CLK_IGNORE_UNUSED,
->>   			RK2928_CLKGATE_CON(2), 12, GFLAGS),
->>   
->>   	COMPOSITE(0, "hsadc_src", mux_pll_src_gpll_cpll_p, 0,
->>
->
->
->
-Regards,
+!ret
 
-Alex
-
+> +                       if (trylock_page(page)) {
+> +                               swap_slot_free_notify(page);
+> +                               unlock_page(page);
+> +                       }
+>
+> -               count_vm_event(PSWPIN);
+> -               goto out;
+> +                       count_vm_event(PSWPIN);
+> +                       goto out;
+> +               }
+>         }
+>
+>         ret = 0;
+> --
+> 2.27.0
+>
