@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4C6229BBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D7E229BC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732633AbgGVPrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        id S1732888AbgGVPuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726717AbgGVPrP (ORCPT
+        with ESMTP id S1727778AbgGVPuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:47:15 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BF5C0619DC;
-        Wed, 22 Jul 2020 08:47:14 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a8so2021556edy.1;
-        Wed, 22 Jul 2020 08:47:14 -0700 (PDT)
+        Wed, 22 Jul 2020 11:50:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7426C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:50:20 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id h7so2409418qkk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:50:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HoVUwkD/CbiG5/MELncVn64RYUZvFJVClzUVyeNxr7M=;
-        b=jE/wvq2Q7DTuw3xPwzOgwmtTwSpZfjrNYA9x3yVk3+2T2eZUI/GEgnLpFbxI7Oys1M
-         UV9a7dxVhM8s44FwUkVvBzxdfz0k++qzn1KZCGRDyHgV/bi8uUfwkUl7n/njVt5USEzp
-         koIaslLr1+G4INekfMHW9X9OEMNNUC/96hRiys7d64trF8Y2VlxoGrz5kp1cQDtwkkDC
-         IACBthdVY/UuorfPqXW3COp/2ZOi0p7OXVZjqDycs6bxKPoUb880KG37PEk20CBA38gM
-         WiTrUjRruZEca5HkHPTOF4H0F3lCG4LWfW48bf6wjMQO4FFNj9m55HAwnHQcHUUPQ2tT
-         dhKQ==
+        bh=FbZpQKjkyVWA5idi3w+btcCrZiLttKv+UA9Wn+yjyV0=;
+        b=OBleOo+TpJlNHgO3Hupf36nyBJkcwDDKREwPcTAtj6Sp2D5PjGq5CvkBZSLh7t0ptU
+         TYUv4+DllNHf7bn3Rh1p34Ffb8mU63zP0IIi9Ai2qGwBI3Qrv07OVzkOkL05OQ1rbeFR
+         9oBCEv+aVCb98tGVAtAEHt5/ZY8dADMil0LVidWEPfbhtXdHA965EUvmMKGsuXdontIb
+         plNtHfvt1rTUVyFJRXM/R++7bl/E3CKm13FQ4u8VO8jOMskk/G1ilzLFdZp225CLN0B8
+         +XbqihxsVQqSYOFAuzVAqzg25leFXoVIL9Zu2oV1pzHbi08PdZv63INm2RU2vKOOhiIz
+         VzzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HoVUwkD/CbiG5/MELncVn64RYUZvFJVClzUVyeNxr7M=;
-        b=TepTsI4lgwLGPajU+52RFFt0Bah1V6CuMwmbShiZafF5iWy4VgfqSaAsMW4FfzTJ12
-         vnRZs/M7vZ6qBoc4JzDV5IhtCOlkNkDKNnt7xiICQJVsTytUmmImamDmqLPYIVE/tvzz
-         ypqS6pYqFwcrsO0jfx9palannGdKFUrKEE9/rAEeT3fhug9T5iPAwoPs5US+OLNXpRh8
-         wU759yiVVQHAFhuUYlmuFyVqY+TUIGEHcD5bvBH0IQHlSrkYIBsQ6OStCDnFOZfE/Fsm
-         L9aPIX5FrPFbfBAHPEPDa+EFwt1weTo4jOpan38uLoNBkFvy6u/MveELyc18cuthWnjm
-         h98g==
-X-Gm-Message-State: AOAM530rsz3ucdbBK5sHVetF5q7GbaxDkGnmeV/QsGWN/A9O1H1dsJ0e
-        2K8fhYtHsDmexuD3j8053+KmLyVK4ZhBJPmT6Z0=
-X-Google-Smtp-Source: ABdhPJxosJN11zDQSjXmhENnAY8a/xTlojpLCi063iaBnlxh58oOjashgy9Fq9WU5WMvUzog9st58umRz18yVM4p8bo=
-X-Received: by 2002:a50:cd1a:: with SMTP id z26mr117686edi.120.1595432832953;
- Wed, 22 Jul 2020 08:47:12 -0700 (PDT)
+        bh=FbZpQKjkyVWA5idi3w+btcCrZiLttKv+UA9Wn+yjyV0=;
+        b=fxLHXm3yZ5fFlG76IRKtpU2o6/au7nTcf5sR0bc9PVXDrjEUHOmPsaYn4LfAWDUfMp
+         4WmciVksw9LRTxJ6vgkhtYmG2U2NMKEWzjqW8dV6ghLmn5hCZLXVLy8iDcKezhcYvYAG
+         cSoami0xMJ/fadp4TJG79WVzEfuk+VuUDMJ9uKcW8vs8rcBR7tslT0537OVjCeX8E5sN
+         HOwGtPPlGerOOAQpR7eMRABI1kuIT41DPifWavbPN5UKW/SfasJswtT1vqOA70z3UMOS
+         +DkiA1P6EnF+jie1SLLCSjuBbt++J/gvkw8srIE3N8+WwuZX/Pq4feZcCiO2Y/kjdmsv
+         bPLA==
+X-Gm-Message-State: AOAM531hNLuCymJAErsGEX7d78KLjIFu9WkeqZ9SJcpIdnM/LDFclStk
+        GJ4A4+j9cFCfsGzpYUoOFRZQl96d
+X-Google-Smtp-Source: ABdhPJwZNilzGv4ZKlTw9+1gZBbdUAf9PIZUXB5bz1Uyc+fh4Dls82j3PcJBRGrW3lPEI1p1PKtENQ==
+X-Received: by 2002:a37:9347:: with SMTP id v68mr567052qkd.281.1595433019094;
+        Wed, 22 Jul 2020 08:50:19 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id a8sm35205qth.69.2020.07.22.08.50.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 08:50:17 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id g6so1235544ybo.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:50:17 -0700 (PDT)
+X-Received: by 2002:a25:cc4e:: with SMTP id l75mr52192685ybf.165.1595433016973;
+ Wed, 22 Jul 2020 08:50:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu> <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu> <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
- <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
-In-Reply-To: <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 22 Jul 2020 08:47:49 -0700
-Message-ID: <CAF6AEGsOZshgBUnUKUF_hOLNHmvrvsDwPzX24-RKos6MZEeusg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
+References: <87wo2vwxq6.fsf@cloudflare.com> <20200722144212.27106-1-kuniyu@amazon.co.jp>
+ <87v9ifwq2p.fsf@cloudflare.com> <CA+FuTScto+Z_qgFxJBzhPUNEruAvKLSTL7-0AnyP-M6Gon_e5Q@mail.gmail.com>
+ <87tuxzwp0v.fsf@cloudflare.com>
+In-Reply-To: <87tuxzwp0v.fsf@cloudflare.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 22 Jul 2020 11:49:40 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSdQWKFam0KwCg_REZdhNB6+BOwAHL00eRgrJ2FwPDRjcA@mail.gmail.com>
+Message-ID: <CA+FuTSdQWKFam0KwCg_REZdhNB6+BOwAHL00eRgrJ2FwPDRjcA@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 10:30 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Wed, Jul 22, 2020 at 11:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> On 21-07-20, 07:28, Rob Clark wrote:
-> > With your ack, I can add the patch the dev_pm_opp_set_bw patch to my
-> > tree and merge it via msm-next -> drm-next -> linus
+> On Wed, Jul 22, 2020 at 05:05 PM CEST, Willem de Bruijn wrote:
+> > On Wed, Jul 22, 2020 at 11:02 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >>
+> >> On Wed, Jul 22, 2020 at 04:42 PM CEST, Kuniyuki Iwashima wrote:
+> >> > Can I submit a patch to net tree that rewrites udp[46]_lib_lookup2() to
+> >> > use only 'result' ?
+> >>
+> >> Feel free. That should make the conflict resolution even easier later
+> >> on.
+> >
+> > Thanks for the detailed analysis, Jakub.
+> >
+> > Would it be easier to fix this wholly in bpf-next, by introducing
+> > reuseport_result there?
 >
-> I wanted to send it via my tree, but its okay. Pick this patch from
-> linux-next and add my Ack, I will drop it after that.
+> Did you mean replicating the Kuniyuki fix in bpf-next, or just
+> introducing the intermediate 'reuseport_result' var?
 >
-> a8351c12c6c7 OPP: Add and export helper to set bandwidth
+> I'm assuming the former, so that the conflict resolving later on will
+> reduce to selecting everything from bpf-next side.
 
-Thanks, I'll do that
+Indeed. Since you are already adding a patch to bpf-next to move the
+reuseport_has_conns check back. At the same time, it can introduce
+reuseport_result:
 
->
-> > Otherwise I can send a second later pull req that adds the final patch
-> > after has rebased to 5.9-rc1 (by which point the opp next tree will
-> > have presumably been merged
->
-> The PM stuff gets pushed fairly early and so I was asking you to
-> rebase just on my tree, so you could have sent the pull request right
-> after the PM tree landed there instead of waiting for rc1.
+                if (score > badness) {
+                        reuseport_result = lookup_reuseport(net, sk,
+skb, saddr, sport, daddr, hnum);
+                        if (reuseport_result && !reuseport_has_conns(sk, false))
+                                return reuseport_result;
 
-I guess I should have explained that my tree gets pulled first into
-drm-next, which then gets pulled by Linus.
+                        result = reuseport_result ? : sk;
+                        badness = score;
+                }
 
-BR,
--R
+> TBH, I don't what is the preferred way to handle it. Perhaps DaveM or
+> Alexei/Daniel can say what would make their life easiest?
 
-> But its fine now.
->
-> --
-> viresh
+Good point.
+
+With the above, there still remains a merge conflict, of course. But
+then we can take bpf-next as is, so I think it would save a separate
+patch to net. But not sure whether that helps anything. It does add an
+unnecessary variable.
