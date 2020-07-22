@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F96229441
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FE5229412
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731193AbgGVJAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726807AbgGVJAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:00:20 -0400
-Received: from localhost (p54b33083.dip0.t-ipconnect.de [84.179.48.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 046F7206F5;
-        Wed, 22 Jul 2020 09:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595408419;
-        bh=Yi6AS996K0DfjW15vZXqu8ki28iyEoRT+iHhuz3j7+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XUnleD7LHqvGtxq+wPCwjAtfLU8iE/aJVtLD7hmQ39Twa13AoyiA6X9P9DH8aRvig
-         Ul47e9yAZJjJif8/IKCkkcS2OPTJRA4qNIm2JMLgdp7xNCZOP95Xxlx1IASlozmoD9
-         JhxmS+9oHSqRdukmWAbnCWt0oYHCWFBdZRrFrfwY=
-Date:   Wed, 22 Jul 2020 11:00:17 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 02/20] arm64: dts: renesas: r8a774e1: Add PCIe device
- nodes
-Message-ID: <20200722090017.GG1030@ninjato>
-References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200722085849.GF1030@ninjato>
+        id S1730856AbgGVIxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 04:53:53 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:45061 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726892AbgGVIxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 04:53:53 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 06M8rcie010699
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Wed, 22 Jul 2020 01:53:38 -0700 (PDT)
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 22 Jul 2020 01:53:37 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm/dmapool.c: add lock protect in dma_pool_destroy
+Date:   Wed, 22 Jul 2020 17:05:16 +0800
+Message-ID: <20200722090516.28829-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VACxsDaSTfeluoxK"
-Content-Disposition: inline
-In-Reply-To: <20200722085849.GF1030@ninjato>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
---VACxsDaSTfeluoxK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When traversing "pool->page" linked list, to prevent possible
+other path operations this list, causing it to be destroyed, we
+should add lock protect for this list in dma_pool_destroy func.
 
-On Wed, Jul 22, 2020 at 10:58:49AM +0200, Wolfram Sang wrote:
-> On Thu, Jul 16, 2020 at 06:18:17PM +0100, Lad Prabhakar wrote:
-> > Add PCIe{0,1} device nodes for R8A774E1 SoC.
-> >=20
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.ren=
-esas.com>
->=20
-> Hmm, doesn't apply on top of 5.8-rc6 for me. Is there a branch to pull
-> for easier review?
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+---
+ mm/dmapool.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-My fault, I missed the first series. Please note such dependencies in
-the cover letter.
+diff --git a/mm/dmapool.c b/mm/dmapool.c
+index f9fb9bbd733e..f7375b25af6c 100644
+--- a/mm/dmapool.c
++++ b/mm/dmapool.c
+@@ -267,6 +267,9 @@ static void pool_free_page(struct dma_pool *pool, struct dma_page *page)
+ void dma_pool_destroy(struct dma_pool *pool)
+ {
+ 	bool empty = false;
++	LIST_HEAD(discard);
++	struct dma_page *page,*h;
++	unsigned long flags;
+ 
+ 	if (unlikely(!pool))
+ 		return;
+@@ -281,8 +284,8 @@ void dma_pool_destroy(struct dma_pool *pool)
+ 		device_remove_file(pool->dev, &dev_attr_pools);
+ 	mutex_unlock(&pools_reg_lock);
+ 
++	spin_lock_irqsave(&pool->lock, flags);
+ 	while (!list_empty(&pool->page_list)) {
+-		struct dma_page *page;
+ 		page = list_entry(pool->page_list.next,
+ 				  struct dma_page, page_list);
+ 		if (is_page_busy(page)) {
+@@ -297,8 +300,12 @@ void dma_pool_destroy(struct dma_pool *pool)
+ 			list_del(&page->page_list);
+ 			kfree(page);
+ 		} else
+-			pool_free_page(pool, page);
++			list_move(&page->page_list, &discard);
+ 	}
++	spin_unlock_irqrestore(&pool->lock, flags);
++
++	list_for_each_entry_safe(page, h, &discard, page_list)
++		pool_free_page(pool, page);
+ 
+ 	kfree(pool);
+ }
+-- 
+2.26.2
 
-
---VACxsDaSTfeluoxK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8YACEACgkQFA3kzBSg
-KbYt3A//Xgag8bMPdab8inAJPDV9Tk6V4XS9gbC6IgjEgp3oqU1d3BHkhJWG/+D+
-2IyT2/QPM8/BjxYbDxFO2S259nZfkTEzzdfUa9oqFmv9cMugPgx++I2Pd/JQWCRt
-5+gCNoNna6ra3Jst7ACmZvRoD2KAehRkC1j9+XHvVJzfSMZp9AE5vW4QiD3/jclN
-beLqBzsQgKS9kTC9cCL4FQElaqj8yHoilinNXYt9EzHbMxWS7Zx0pvs0Eoxi2TKK
-gs8pAC6y0Rcw6FlNzTT9wJyN/su4auribb+rQVK9DG5E5CMPKFyrHRWQU3Wjp8db
-lHDZsu0+k7xxNS5IdQRr8FsZJuocTX0XU1v2CHBbSyncBYrKCrbWKCCDYcJ4Bnk6
-q+7Zo6YnyeaZkSQXy7wumFwS4aqnGoqIImjIUtmfhSXhOQ/L6C7AHqMpkdB1yy/m
-re40qlmZLVc3R+o427vgcUxyU0vrY61qTRn1jtNuIQVGRJj8TXKw4P9QW4AvZYNC
-1BseDJS3W4q98/itkFRudLcXakyLYDRZmL22OLTSMpHPpmneH5bE9DzITvJZHMAO
-EDkoJbb9L0RN77Tw0b+M/1xX4jPBwq9/9BFBZgGROZC14zoPkhbsc51QwZPF9OPS
-dgRl9yHu/5nI1RmWbEIaeD0C+c+Pgzlfy09oCI4kHLxQJ1DIaWQ=
-=O7WM
------END PGP SIGNATURE-----
-
---VACxsDaSTfeluoxK--
