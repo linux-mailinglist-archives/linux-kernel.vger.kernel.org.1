@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755912295AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7222295B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732000AbgGVKI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        id S1732078AbgGVKIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731763AbgGVKIT (ORCPT
+        with ESMTP id S1731874AbgGVKIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:19 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DA3C0619DE
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:19 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id q5so1311673wru.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:19 -0700 (PDT)
+        Wed, 22 Jul 2020 06:08:20 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D220C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:20 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f18so1420617wml.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Btc0g5x84xxnafSkEaCj9XqLxAIyY2p5cpnuhdTuhb0=;
-        b=ErqMyEJUREbiw53rbZz/8AVYs2B+ZLfxstvCL67hKDuFCai1+OxL5vF7kGs639VPQk
-         y1+snnyo09vSGwyT0OLAl7StW8zCuN/n2J8HULQs7T86xGm4jCdwEMJDNDvpq/zmWDOk
-         I+DqXFPDNU1qgknu6G31IhUqjGk62In0XT11SlaFQPNOAP5cS10UNLGmCtkoE2kyPoi2
-         Pr5DuNkOkwrfGX4sFgjFk5XzsHw13L4ES67CKizqZpfyfuStuqNoU6R7kkfH5SEJBaQI
-         3NVnRHn6KFKRtk5VdxARugjlkWdbkSNTAYcJ1SsFBM69jfVOChAnCgmQ3EfmzPw+tWjX
-         egmA==
+        bh=IPqVkhoPQMGtJz5QnInc3kyvwMHoALnTgv8DPA8SEPA=;
+        b=ZynLCgVShjLt4ArByw5I7KjT7c79vyiAc/nH0pmOKK9JjjnXHOQ3/GvsmaAr+oivgf
+         44EIHxLAJCF6fZ1wOJPI6Q3uNRA+godDY8yIR+dOezqDv/z3hY5aQgYsVB6Ng5FjwwiG
+         h9IInPRrjeVR+8/R1lAO0m7a3FGYhrZhe1+ripUORtvx3mm8SExK3R3+QbDus8lj8ZbY
+         usWdKZI6vLUBXl/W1m07TefDqITe8OIzcPxdjM5Hli8MZupGhKiyEaNJgXnq+2KJyv3G
+         PtO4ifoec0YfomfeoFPWN5AcIOzgTgDde8UE9TvneKblgIpUbfJtkRYY/DYGceFSrYn3
+         0+BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Btc0g5x84xxnafSkEaCj9XqLxAIyY2p5cpnuhdTuhb0=;
-        b=Vw+fLa2LqDjIqtaxzht4sSEgCEKOdDyTHaOVGYTqyyMew+FoukeXofXNJrH097d+JR
-         P4FrJ4wT9bWuo3+z8u+Oxe0LCiBfIFGvhNJuhjXjXNCqpzCabaSSS3JrsT84LuVxGHA+
-         sHjDAnQ5d0HRtLRuQ0um81qqX4+VMTX99lv1u77DTWdOEY2mPzJwBUvj9mcK0r2cLI4j
-         9pA9nIH8+ejCoYqrAqp5nKnSieP+e7WK2fDvBWlFRt/VVXTojnuEY1s0lFWt8YYsYmbt
-         vEtX6qTOhm0QPmoOklI0q80EnFkFsL0N1c/sdF5LMSAKPPPcTPzAb4SN9fHWGrpTYeEr
-         8Pdg==
-X-Gm-Message-State: AOAM533zEdbd0PY9JycmRxjUa8kNk+haEJ32aUU6Kz7h0/n3uACHIM1+
-        6CClUN9mC0BgybqvGQVFCQNmZQ==
-X-Google-Smtp-Source: ABdhPJz8zKglWWc2vlh6Bm7ka33YAunUiFuw+0mrl4YxSZ5wXKZQ+kNwk/rcQt/1XPC/GOe4CucZcA==
-X-Received: by 2002:adf:a299:: with SMTP id s25mr16235958wra.106.1595412498194;
-        Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
+        bh=IPqVkhoPQMGtJz5QnInc3kyvwMHoALnTgv8DPA8SEPA=;
+        b=pOiIkj+Xr5RGjeRsUXuvp63vkiMLJmCSZ83U1ExjVgaMwnFYe+XSJh79O44THKW6BN
+         Ok/Lu8A0bjlpSErnvyvQsiC6/GIAADS4BGlK4l0uLiueLXxQhpY0bQjfoG9vXFREpzHw
+         gQ2EspW0iX7Z0Xhrx+qdj2Gn2ELuVaJb+6PccJvMPpqEDm0ckCSLjdsLEVzH0zjsQemO
+         LjqZz9Be0IqJzMvr01skkTe1EOvq/SJACnaVEiIdM+svHB3/2ETUILR2PvglnY3TXVi4
+         qxv/IT6geAVFlMjXTMbSs4Z5w2uM3ZF57aICz93q1O6bvu0yiCXjJnWOJH3dWGWikK+h
+         ZTRg==
+X-Gm-Message-State: AOAM531KKm9P7fiAGEZ9XJ4tziGSDmq85w1wINznRPjNcXOSNk6UsoH0
+        tNCOlYypSW5GxRqA/nvTI0PYIw==
+X-Google-Smtp-Source: ABdhPJyxouP5sUGkwCmSxKsZGINPP2IMG8Qw9hwSgCyNGQeoUKB1ENOO7Js546unG0PRg3fYvsLWQw==
+X-Received: by 2002:a1c:449:: with SMTP id 70mr7485506wme.149.1595412499230;
+        Wed, 22 Jul 2020 03:08:19 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.17
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:18 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 07/14] nvmem: core: add support to auto devid
-Date:   Wed, 22 Jul 2020 11:06:58 +0100
-Message-Id: <20200722100705.7772-8-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 08/14] nvmem: qfprom: use NVMEM_DEVID_AUTO for multiple instances
+Date:   Wed, 22 Jul 2020 11:06:59 +0100
+Message-Id: <20200722100705.7772-9-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
@@ -66,61 +66,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For nvmem providers which have multiple instances, it is required
-to suffix the provider name with proper id, so that they do not
-confict for the same name. Currently the core does not handle
-this case properly eventhough core already has logic to generate the id.
+There could be multiple qfprom devices on some SoCs.  For example, on
+MSM8939, qfprom@58000 holds efuse bits for Core Power Reduction (CPR),
+and qfprom@5c000 holds bits for TSENS.  Registering multiple nvmem
+devices with the same id results in the following failure on the second
+device.
 
-This patch add new devid type NVMEM_DEVID_AUTO for providers to be
-able to allow core to assign id and append it to provier name.
+[    1.682731] sysfs: cannot create duplicate filename /bus/nvmem/devices/qfprom0
+[    1.685889] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.19.107-00567-g11c887ce2838-dirty #334
+[    1.693191] Hardware name: Square, Inc. T2 Devkit (DT)
+[    1.701610] Call trace:
+[    1.706673]  dump_backtrace+0x0/0x158
+[    1.708987]  show_stack+0x14/0x20
+[    1.712810]  dump_stack+0x98/0xbc
+[    1.716114]  sysfs_warn_dup+0x60/0x78
+[    1.719401]  sysfs_do_create_link_sd.isra.0+0xdc/0xe8
+[    1.723047]  sysfs_create_link+0x20/0x40
+[    1.728088]  bus_add_device+0x68/0x130
+[    1.732083]  device_add+0x3f8/0x628
+[    1.735639]  nvmem_register.part.4+0x150/0x348
+[    1.739018]  devm_nvmem_register+0x4c/0xa8
+[    1.743532]  qfprom_probe+0x94/0xb8
+[    1.747615]  platform_drv_probe+0x50/0xa0
+[    1.750998]  really_probe+0x1b8/0x298
+[    1.755164]  driver_probe_device+0x58/0x100
+[    1.758810]  __driver_attach+0xe0/0xe8
+[    1.762802]  bus_for_each_dev+0x74/0xc8
+[    1.766622]  driver_attach+0x20/0x28
+[    1.770354]  bus_add_driver+0x1ac/0x218
+[    1.774175]  driver_register+0x60/0x110
+[    1.777734]  __platform_driver_register+0x40/0x48
+[    1.781570]  qfprom_driver_init+0x18/0x20
+[    1.786416]  do_one_initcall+0x5c/0x178
+[    1.790418]  kernel_init_freeable+0x198/0x244
+[    1.794062]  kernel_init+0x10/0x108
+[    1.798567]  ret_from_fork+0x10/0x18
+[    1.802084] qcom,qfprom: probe of 5c000.qfprom failed with error -17
+
+Fix this issue by using NVMEM_DEVID_AUTO.
 
 Reported-by: Shawn Guo <shawn.guo@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Tested-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- drivers/nvmem/core.c           | 10 ++++++++--
- include/linux/nvmem-provider.h |  3 +++
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ drivers/nvmem/qfprom.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index d6bacc878500..6cd3edb2eaf6 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -635,12 +635,18 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (!config->no_of_node)
- 		nvmem->dev.of_node = config->dev->of_node;
- 
--	if (config->id == -1 && config->name) {
-+	switch (config->id) {
-+	case NVMEM_DEVID_NONE:
- 		dev_set_name(&nvmem->dev, "%s", config->name);
--	} else {
-+		break;
-+	case NVMEM_DEVID_AUTO:
-+		dev_set_name(&nvmem->dev, "%s%d", config->name, nvmem->id);
-+		break;
-+	default:
- 		dev_set_name(&nvmem->dev, "%s%d",
- 			     config->name ? : "nvmem",
- 			     config->name ? config->id : nvmem->id);
-+		break;
- 	}
- 
- 	nvmem->read_only = device_property_present(config->dev, "read-only") ||
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index 6d6f8e5d24c9..06409a6c40bc 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -27,6 +27,9 @@ enum nvmem_type {
- 	NVMEM_TYPE_BATTERY_BACKED,
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 8a91717600be..8b425f8d847d 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -31,6 +31,7 @@ static struct nvmem_config econfig = {
+ 	.name = "qfprom",
+ 	.stride = 1,
+ 	.word_size = 1,
++	.id = NVMEM_DEVID_AUTO,
+ 	.reg_read = qfprom_reg_read,
  };
  
-+#define NVMEM_DEVID_NONE	(-1)
-+#define NVMEM_DEVID_AUTO	(-2)
-+
- /**
-  * struct nvmem_config - NVMEM device configuration
-  *
 -- 
 2.21.0
 
