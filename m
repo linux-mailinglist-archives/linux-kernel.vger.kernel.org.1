@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DF0229EE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4F8229EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731663AbgGVSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
+        id S1728315AbgGVSFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726907AbgGVSE3 (ORCPT
+        with ESMTP id S1726736AbgGVSFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:04:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236ADC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CMMHY0mGrSS0LIPSa86C/P5gTx9E8xNlElv3H254r/Y=; b=hkW41v1dZGPXp3JpYDiAnmZM7x
-        ZjLtYMCIG9CeT6hkLnYFS7YBZt/vgnic8P9UVkqooMc8IuSeSFTEowFUIxWWgNuF4wgUSq+dzh+j4
-        SngfppWE6/AolYAeyZz1F9L3dUfG8RXgY3+8eA143q+IY32ex5yKNMJ+rpxorDqWHEbs1OtL+m+69
-        IGxAeOfxxvpg/iAoEFbF0eUkG0l0W1siBSDRporQIY8hNbR7Mhn8VPaH2ySK+hTHkPyYONgOVcLjn
-        it4zZLfXECP6ZzYftwlMS9oJsKEyXx3VRenvKKxiG4ddyM5K6x1D5qj1+w1J7ieSyN3cb+hbwGsO6
-        s8TXNMXQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyJ6P-0008RR-S5; Wed, 22 Jul 2020 18:04:25 +0000
-Date:   Wed, 22 Jul 2020 19:04:25 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: swap: do not wait for lock_page() in
- unuse_pte_range()
-Message-ID: <20200722180425.GP15516@casper.infradead.org>
-References: <20200722174436.GB841369@xps-13>
+        Wed, 22 Jul 2020 14:05:21 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A320BC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:05:21 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id a12so3495850ion.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cVSOAr+v/VvKv7oBGJFtEwzmAS9LhwcEPp/HmrDGSwk=;
+        b=G3bRtQXhKCdgHIbaTa6lCuh/2pbvz5Gdn9Hn2r8Sg0G1TiUfxSyZmhutHiv7Dl3bdc
+         VARKFIW1StT1Z79bk68SnTf6NDKk34qJPcATktcM7ALdR4+OwY7o8q3y+lH2P8QpPCXa
+         S/oJ3kYOoEzQkHLwCXRQZ6QGFdNSyTC7NMbNsTWBzr15velMTRIfwiIgFPMS4pC7f4xE
+         x8KiLiCFFxYmc1MPJKR3/Baua6x/e/5SSqIyzE0quqz5NQvEson0t3OYGle70l0XBqxb
+         x2kI2P9DuE7TfYldFmLe4Ut8G3GhVVctC73jkz1pYVbwEJu8Yiuwby8GoXGfby//XdcO
+         VrVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cVSOAr+v/VvKv7oBGJFtEwzmAS9LhwcEPp/HmrDGSwk=;
+        b=uH+ec1mDcbBkNgALD7+bL2bldN1qpN6BVi4oWKmCiKq9zG3mahG/FMrkfrlzRoCOjl
+         bfrPJ++MXEjumDDw3Mk3IIp3dEzhlEUHmG3TaNXSx7KUZaa4U0CgJwLDT+jd6wpFZTTW
+         cvtaqCf6nQ3hQxCA0fnkSobUxl01umGoitGlOBwiTLIaCUL0/SU7AN1c3WSmt5CtN3qZ
+         7ubkCYU3SA9BAa4s+lbEYMMuFI1VHwDzkFRTR4GWdv+6MxVAYdyotWKkcyfF8j/flwYe
+         8uvgxJABMKYoEZoAGjbEkfv+nH/unt1HI4RYtUimAVIH2yuQe2RZXHaCR+DqUcb6Vx8u
+         urWQ==
+X-Gm-Message-State: AOAM533z35XYFAjd0Zk63xfkCGSpMgTkNanrvv0KPBhT1k6Zr0dlfaGT
+        hZ52VdxEgLNnYqtkw/EEQzWB3mh9UQq55tv0f8Q=
+X-Google-Smtp-Source: ABdhPJy02q+wzBdts5HVQ/QfSzD9eccXZA7S+3nqlaV8UjBTyZM8P9YVmOLW9Zeqdi1EmHKcDNTCbuZh5mygGOUPeK8=
+X-Received: by 2002:a6b:bf85:: with SMTP id p127mr965612iof.37.1595441120963;
+ Wed, 22 Jul 2020 11:05:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722174436.GB841369@xps-13>
+References: <bug-208655-6666@https.bugzilla.kernel.org/> <87h7tz306w.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87h7tz306w.fsf@nanos.tec.linutronix.de>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Wed, 22 Jul 2020 11:04:44 -0700
+Message-ID: <CAMe9rOrER7Mg_YvzuqguS-GCyP-bD2hogWeo+OMXm7F6JXQUDQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/dumpstack: Dump user space code correctly again
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 07:44:36PM +0200, Andrea Righi wrote:
-> Waiting for lock_page() with mm->mmap_sem held in unuse_pte_range() can
-> lead to stalls while running swapoff (i.e., not being able to ssh into
-> the system, inability to execute simple commands like 'ps', etc.).
-> 
-> Replace lock_page() with trylock_page() and release mm->mmap_sem if we
-> fail to lock it, giving other tasks a chance to continue and prevent
-> the stall.
+On Wed, Jul 22, 2020 at 10:54 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Subject: x86/dumpstack: Dump user space code correctly again
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Wed, 22 Jul 2020 10:39:54 +0200
+>
+> H.J. reported that post 5.7 a segfault of a user space task does not longer
+> dump the Code bytes when /proc/sys/debug/exception-trace is enabled. It
+> prints 'Code: Bad RIP value.' instead.
+>
+> This was broken by a recent change which made probe_kernel_read() reject
+> non-kernel addresses.
+>
+> Update show_opcodes() so it retrieves user space opcodes via
+> copy_from_user_nmi().
+>
+> Fixes: 98a23609b103 ("maccess: always use strict semantics for probe_kernel_read")
+> Reported-by: H.J. Lu <hjl.tools@gmail.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/dumpstack.c |   27 +++++++++++++++++----------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
+>
+> --- a/arch/x86/kernel/dumpstack.c
+> +++ b/arch/x86/kernel/dumpstack.c
+> @@ -71,6 +71,22 @@ static void printk_stack_address(unsigne
+>         printk("%s %s%pB\n", log_lvl, reliable ? "" : "? ", (void *)address);
+>  }
+>
+> +static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
+> +                    unsigned int nbytes)
+> +{
+> +       if (!user_mode(regs))
+> +               return copy_from_kernel_nofault(buf, (u8 *)src, nbytes);
+> +
+> +       /*
+> +        * Make sure userspace isn't trying to trick us into dumping kernel
+> +        * memory by pointing the userspace instruction pointer at it.
+> +        */
+> +       if (__chk_range_not_ok(src, nbytes, TASK_SIZE_MAX))
+> +               return -EINVAL;
+> +
+> +       return copy_from_user_nmi(buf, (void __user *)src, nbytes);
+> +}
+> +
+>  /*
+>   * There are a couple of reasons for the 2/3rd prologue, courtesy of Linus:
+>   *
+> @@ -97,17 +113,8 @@ void show_opcodes(struct pt_regs *regs,
+>  #define OPCODE_BUFSIZE (PROLOGUE_SIZE + 1 + EPILOGUE_SIZE)
+>         u8 opcodes[OPCODE_BUFSIZE];
+>         unsigned long prologue = regs->ip - PROLOGUE_SIZE;
+> -       bool bad_ip;
+> -
+> -       /*
+> -        * Make sure userspace isn't trying to trick us into dumping kernel
+> -        * memory by pointing the userspace instruction pointer at it.
+> -        */
+> -       bad_ip = user_mode(regs) &&
+> -               __chk_range_not_ok(prologue, OPCODE_BUFSIZE, TASK_SIZE_MAX);
+>
+> -       if (bad_ip || copy_from_kernel_nofault(opcodes, (u8 *)prologue,
+> -                                       OPCODE_BUFSIZE)) {
+> +       if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+>                 printk("%sCode: Bad RIP value.\n", loglvl);
+>         } else {
+>                 printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
 
-I think you've removed the warning at the expense of turning a stall
-into a potential livelock.
+Add a kerel self test?
 
-> @@ -1977,7 +1977,11 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  			return -ENOMEM;
->  		}
->  
-> -		lock_page(page);
-> +		if (!trylock_page(page)) {
-> +			ret = -EAGAIN;
-> +			put_page(page);
-> +			goto out;
-> +		}
-
-If you look at the patterns we have elsewhere in the MM for doing
-this kind of thing (eg truncate_inode_pages_range()), we iterate over the
-entire range, take care of the easy cases, then go back and deal with the
-hard cases later.
-
-So that would argue for skipping any page that we can't trylock, but
-continue over at least the VMA, and quite possibly the entire MM until
-we're convinced that we have unused all of the required pages.
-
-Another thing we could do is drop the MM semaphore _here_, sleep on this
-page until it's unlocked, then go around again.
-
-		if (!trylock_page(page)) {
-			mmap_read_unlock(mm);
-			lock_page(page);
-			unlock_page(page);
-			put_page(page);
-			ret = -EAGAIN;
-			goto out;
-		}
-
-(I haven't checked the call paths; maybe you can't do this because
-sometimes it's called with the mmap sem held for write)
-
-Also, if we're trying to scale this better, there are some fun
-workloads where readers block writers who block subsequent readers
-and we shouldn't wait for I/O in swapin_readahead().  See patches like
-6b4c9f4469819a0c1a38a0a4541337e0f9bf6c11 for more on this kind of thing.
+-- 
+H.J.
