@@ -2,379 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF85722A27A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72BE22A283
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733070AbgGVWjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 18:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733039AbgGVWjJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 18:39:09 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE95C0619E2;
-        Wed, 22 Jul 2020 15:39:08 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u185so2035419pfu.1;
-        Wed, 22 Jul 2020 15:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BHshCalt4OMpzpgm5pG7X6ddzCe31OEWzs6OlsIqweY=;
-        b=blOFuuB0vyXTXcahUZFXq+AHeuCa2sHVekIr8WIgRPbskhj4qJIeNgStJ8JtPYCaQN
-         nVCkfuEQeeikZmfPGI0flpgTGCbxxUEUEBRm44BsWGIK/TuVO4MwfYi2TpNQtQ2OU17d
-         Vp9a1+kGtA+JhPTLiUAXaVm6LpGPrQGb74GJPn/uDpNinKwRT9D8lcDv3QdnYpYEJVg1
-         ROOh63u2lP3usRIpC6GbKjAMZ6GcpjOIfshYrvn82mWIbsTg2n2bYXE/s2X2ffTiafBA
-         flVj1YuVchC9WNt6WMRLEIyuwBlkZ4clgyY5YZr7Zl8yS/Q/SnvzYHzH0JfwrbZhZiEK
-         LgNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BHshCalt4OMpzpgm5pG7X6ddzCe31OEWzs6OlsIqweY=;
-        b=fZhm3eGrI7Ecp6N+TRv1Ojll1gFtIM//tIHAGPxUI16nmFSjzcOrn13HMDQZjdW9o2
-         tZIk2EaWLfdvbcLm/gyxLHAB1FUVyFwjCP8fXGfHFWWCtKwfvP7eSvjmp7272Fo/V7mZ
-         g7TbTrKSjEzEw8eovCC35qlBDyBOzE6yZEVMz9voSGuUGTqzciYEuEY8D5y+T1Y5r0hG
-         rGxaLqbFfe8ftdV2GNTTNA6YVgE5MF31Nm9eODXZEJDxlzsTnLLZlPg64CSBiU9E3mL0
-         qjxa/0LISIBOc7BzwkU0RHR5CIbn50DWx8FWr1dojU6xwPFaqZA4e0aFTqW5NnHQPFp/
-         Rd/Q==
-X-Gm-Message-State: AOAM5304SYbHoRzt1x58Jb0oprYADMNcds9RLTia4TYgcvalYkgNHjkh
-        o916OCi4Nx8Fv3Y6IDrgG+Q=
-X-Google-Smtp-Source: ABdhPJz9xiY9s9hzN2tpzoHKXa/YbwtEP3UMfMGhuGDkTSEdVrA00qvMmWE2bCl7UgYnehJwbrUENQ==
-X-Received: by 2002:a62:e712:: with SMTP id s18mr1603605pfh.224.1595457548420;
-        Wed, 22 Jul 2020 15:39:08 -0700 (PDT)
-Received: from localhost.localdomain ([131.107.159.194])
-        by smtp.gmail.com with ESMTPSA id r70sm625760pfc.109.2020.07.22.15.39.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 15:39:08 -0700 (PDT)
-From:   Andres Beltran <lkmlabelt@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikelley@microsoft.com, parri.andrea@gmail.com,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v6 3/3] hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening
-Date:   Wed, 22 Jul 2020 18:39:04 -0400
-Message-Id: <20200722223904.2801-4-lkmlabelt@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200722223904.2801-1-lkmlabelt@gmail.com>
-References: <20200722223904.2801-1-lkmlabelt@gmail.com>
+        id S1733107AbgGVWkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 18:40:10 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6667 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726841AbgGVWkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 18:40:09 -0400
+IronPort-SDR: zzPEE8sM5bIWwcq/IpHOL1JpgfrOfQmsUukG0oaewqxJGC/pjCgztcWVuZcDsH5gHYiP6juIW0
+ 7IAU4eCj0dmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="130507861"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="130507861"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 15:40:08 -0700
+IronPort-SDR: +ln7UjrmUKdtuFRJC/pq0DsbH8SdOOHBbsVqQlRd/UdpQgpIWFSKF6BXWfihPRduUiW2aG4TEL
+ JzZAoV68vbaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="284375256"
+Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
+  by orsmga003.jf.intel.com with ESMTP; 22 Jul 2020 15:40:08 -0700
+Received: from lcsmsx603.ger.corp.intel.com (10.109.210.12) by
+ FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 22 Jul 2020 15:40:07 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX603.ger.corp.intel.com (10.109.210.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 23 Jul 2020 01:40:05 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Thu, 23 Jul 2020 01:40:05 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: RE: [PATCH v2] mei: Avoid the use of one-element arrays
+Thread-Topic: [PATCH v2] mei: Avoid the use of one-element arrays
+Thread-Index: AQHWWidOxN4pAYMiq02OyqLfgDEhOKkTxNMAgAA6qQD//9a8AIAAX8xA
+Date:   Wed, 22 Jul 2020 22:40:05 +0000
+Message-ID: <071940a8c76c4652b4fd58195719c471@intel.com>
+References: <20200714214516.GA1040@embeddedor>
+ <5198b29f-2e62-4910-4a4d-52c7991915c5@embeddedor.com>
+ <3cac21c8798b48bdb412a5504126489f@intel.com>
+ <b79bbb51-50e4-6437-b485-eaecdb3fa18e@embeddedor.com>
+In-Reply-To: <b79bbb51-50e4-6437-b485-eaecdb3fa18e@embeddedor.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, pointers to guest memory are passed to Hyper-V as
-transaction IDs in netvsc. In the face of errors or malicious
-behavior in Hyper-V, netvsc should not expose or trust the transaction
-IDs returned by Hyper-V to be valid guest memory addresses. Instead,
-use small integers generated by vmbus_requestor as requests
-(transaction) IDs.
-
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Tested-by: Andrea Parri <parri.andrea@gmail.com>
-Link: https://lore.kernel.org/r/20200701001221.2540-4-lkmlabelt@gmail.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
-Changes in v2:
-        - Add casts to unsigned long to fix warnings on 32bit.
-        - Use an inline function to get the requestor size.
-
- drivers/net/hyperv/hyperv_net.h   | 13 +++++
- drivers/net/hyperv/netvsc.c       | 79 +++++++++++++++++++++++++------
- drivers/net/hyperv/rndis_filter.c |  1 +
- include/linux/hyperv.h            |  1 +
- 4 files changed, 80 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
-index abda736e7c7d..f43b614f2345 100644
---- a/drivers/net/hyperv/hyperv_net.h
-+++ b/drivers/net/hyperv/hyperv_net.h
-@@ -847,6 +847,19 @@ struct nvsp_message {
- 
- #define NETVSC_XDP_HDRM 256
- 
-+#define NETVSC_MIN_OUT_MSG_SIZE (sizeof(struct vmpacket_descriptor) + \
-+				 sizeof(struct nvsp_message))
-+#define NETVSC_MIN_IN_MSG_SIZE sizeof(struct vmpacket_descriptor)
-+
-+/* Estimated requestor size:
-+ * out_ring_size/min_out_msg_size + in_ring_size/min_in_msg_size
-+ */
-+static inline u32 netvsc_rqstor_size(unsigned long ringbytes)
-+{
-+	return ringbytes / NETVSC_MIN_OUT_MSG_SIZE +
-+	       ringbytes / NETVSC_MIN_IN_MSG_SIZE;
-+}
-+
- struct multi_send_data {
- 	struct sk_buff *skb; /* skb containing the pkt */
- 	struct hv_netvsc_packet *pkt; /* netvsc pkt pending */
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 41f5cf0bb997..79b907a29433 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -50,7 +50,7 @@ void netvsc_switch_datapath(struct net_device *ndev, bool vf)
- 
- 	vmbus_sendpacket(dev->channel, init_pkt,
- 			       sizeof(struct nvsp_message),
--			       (unsigned long)init_pkt,
-+			       VMBUS_RQST_ID_NO_RESPONSE,
- 			       VM_PKT_DATA_INBAND, 0);
- }
- 
-@@ -163,7 +163,7 @@ static void netvsc_revoke_recv_buf(struct hv_device *device,
- 		ret = vmbus_sendpacket(device->channel,
- 				       revoke_packet,
- 				       sizeof(struct nvsp_message),
--				       (unsigned long)revoke_packet,
-+				       VMBUS_RQST_ID_NO_RESPONSE,
- 				       VM_PKT_DATA_INBAND, 0);
- 		/* If the failure is because the channel is rescinded;
- 		 * ignore the failure since we cannot send on a rescinded
-@@ -213,7 +213,7 @@ static void netvsc_revoke_send_buf(struct hv_device *device,
- 		ret = vmbus_sendpacket(device->channel,
- 				       revoke_packet,
- 				       sizeof(struct nvsp_message),
--				       (unsigned long)revoke_packet,
-+				       VMBUS_RQST_ID_NO_RESPONSE,
- 				       VM_PKT_DATA_INBAND, 0);
- 
- 		/* If the failure is because the channel is rescinded;
-@@ -304,6 +304,7 @@ static int netvsc_init_buf(struct hv_device *device,
- 	unsigned int buf_size;
- 	size_t map_words;
- 	int ret = 0;
-+	u64 rqst_id;
- 
- 	/* Get receive buffer area. */
- 	buf_size = device_info->recv_sections * device_info->recv_section_size;
-@@ -350,13 +351,22 @@ static int netvsc_init_buf(struct hv_device *device,
- 
- 	trace_nvsp_send(ndev, init_packet);
- 
-+	rqst_id = vmbus_next_request_id(&device->channel->requestor,
-+					(unsigned long)init_packet);
-+	if (rqst_id == VMBUS_RQST_ERROR) {
-+		netdev_err(ndev, "No request id available\n");
-+		goto cleanup;
-+	}
-+
- 	/* Send the gpadl notification request */
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 			       sizeof(struct nvsp_message),
--			       (unsigned long)init_packet,
-+			       rqst_id,
- 			       VM_PKT_DATA_INBAND,
- 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
- 	if (ret != 0) {
-+		/* Reclaim request ID to avoid leak of IDs */
-+		vmbus_request_addr(&device->channel->requestor, rqst_id);
- 		netdev_err(ndev,
- 			"unable to send receive buffer's gpadl to netvsp\n");
- 		goto cleanup;
-@@ -432,13 +442,22 @@ static int netvsc_init_buf(struct hv_device *device,
- 
- 	trace_nvsp_send(ndev, init_packet);
- 
-+	rqst_id = vmbus_next_request_id(&device->channel->requestor,
-+					(unsigned long)init_packet);
-+	if (rqst_id == VMBUS_RQST_ERROR) {
-+		netdev_err(ndev, "No request id available\n");
-+		goto cleanup;
-+	}
-+
- 	/* Send the gpadl notification request */
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 			       sizeof(struct nvsp_message),
--			       (unsigned long)init_packet,
-+			       rqst_id,
- 			       VM_PKT_DATA_INBAND,
- 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
- 	if (ret != 0) {
-+		/* Reclaim request ID to avoid leak of IDs */
-+		vmbus_request_addr(&device->channel->requestor, rqst_id);
- 		netdev_err(ndev,
- 			   "unable to send send buffer's gpadl to netvsp\n");
- 		goto cleanup;
-@@ -496,6 +515,7 @@ static int negotiate_nvsp_ver(struct hv_device *device,
- {
- 	struct net_device *ndev = hv_get_drvdata(device);
- 	int ret;
-+	u64 rqst_id;
- 
- 	memset(init_packet, 0, sizeof(struct nvsp_message));
- 	init_packet->hdr.msg_type = NVSP_MSG_TYPE_INIT;
-@@ -503,15 +523,25 @@ static int negotiate_nvsp_ver(struct hv_device *device,
- 	init_packet->msg.init_msg.init.max_protocol_ver = nvsp_ver;
- 	trace_nvsp_send(ndev, init_packet);
- 
-+	rqst_id = vmbus_next_request_id(&device->channel->requestor,
-+					(unsigned long)init_packet);
-+	if (rqst_id == VMBUS_RQST_ERROR) {
-+		netdev_err(ndev, "No request id available\n");
-+		return -EAGAIN;
-+	}
-+
- 	/* Send the init request */
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 			       sizeof(struct nvsp_message),
--			       (unsigned long)init_packet,
-+			       rqst_id,
- 			       VM_PKT_DATA_INBAND,
- 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
- 
--	if (ret != 0)
-+	if (ret != 0) {
-+		/* Reclaim request ID to avoid leak of IDs */
-+		vmbus_request_addr(&device->channel->requestor, rqst_id);
- 		return ret;
-+	}
- 
- 	wait_for_completion(&net_device->channel_init_wait);
- 
-@@ -542,7 +572,7 @@ static int negotiate_nvsp_ver(struct hv_device *device,
- 
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 				sizeof(struct nvsp_message),
--				(unsigned long)init_packet,
-+				VMBUS_RQST_ID_NO_RESPONSE,
- 				VM_PKT_DATA_INBAND, 0);
- 
- 	return ret;
-@@ -599,7 +629,7 @@ static int netvsc_connect_vsp(struct hv_device *device,
- 	/* Send the init request */
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 				sizeof(struct nvsp_message),
--				(unsigned long)init_packet,
-+				VMBUS_RQST_ID_NO_RESPONSE,
- 				VM_PKT_DATA_INBAND, 0);
- 	if (ret != 0)
- 		goto cleanup;
-@@ -680,10 +710,19 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
- 				    const struct vmpacket_descriptor *desc,
- 				    int budget)
- {
--	struct sk_buff *skb = (struct sk_buff *)(unsigned long)desc->trans_id;
-+	struct sk_buff *skb;
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
- 	u16 q_idx = 0;
- 	int queue_sends;
-+	u64 cmd_rqst;
-+
-+	cmd_rqst = vmbus_request_addr(&channel->requestor, (u64)desc->trans_id);
-+	if (cmd_rqst == VMBUS_RQST_ERROR) {
-+		netdev_err(ndev, "Incorrect transaction id\n");
-+		return;
-+	}
-+
-+	skb = (struct sk_buff *)(unsigned long)cmd_rqst;
- 
- 	/* Notify the layer above us */
- 	if (likely(skb)) {
-@@ -822,7 +861,7 @@ static inline int netvsc_send_pkt(
- 	struct net_device *ndev = hv_get_drvdata(device);
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
- 	struct netdev_queue *txq = netdev_get_tx_queue(ndev, packet->q_idx);
--	u64 req_id;
-+	u64 rqst_id;
- 	int ret;
- 	u32 ring_avail = hv_get_avail_to_write_percent(&out_channel->outbound);
- 
-@@ -838,13 +877,19 @@ static inline int netvsc_send_pkt(
- 	else
- 		rpkt->send_buf_section_size = packet->total_data_buflen;
- 
--	req_id = (ulong)skb;
- 
- 	if (out_channel->rescind)
- 		return -ENODEV;
- 
- 	trace_nvsp_send_pkt(ndev, out_channel, rpkt);
- 
-+	rqst_id = vmbus_next_request_id(&out_channel->requestor,
-+					(unsigned long)skb);
-+	if (rqst_id == VMBUS_RQST_ERROR) {
-+		ret = -EAGAIN;
-+		goto ret_check;
-+	}
-+
- 	if (packet->page_buf_cnt) {
- 		if (packet->cp_partial)
- 			pb += packet->rmsg_pgcnt;
-@@ -852,14 +897,15 @@ static inline int netvsc_send_pkt(
- 		ret = vmbus_sendpacket_pagebuffer(out_channel,
- 						  pb, packet->page_buf_cnt,
- 						  &nvmsg, sizeof(nvmsg),
--						  req_id);
-+						  rqst_id);
- 	} else {
- 		ret = vmbus_sendpacket(out_channel,
- 				       &nvmsg, sizeof(nvmsg),
--				       req_id, VM_PKT_DATA_INBAND,
-+				       rqst_id, VM_PKT_DATA_INBAND,
- 				       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
- 	}
- 
-+ret_check:
- 	if (ret == 0) {
- 		atomic_inc_return(&nvchan->queue_sends);
- 
-@@ -868,9 +914,13 @@ static inline int netvsc_send_pkt(
- 			ndev_ctx->eth_stats.stop_queue++;
- 		}
- 	} else if (ret == -EAGAIN) {
-+		/* Reclaim request ID to avoid leak of IDs */
-+		vmbus_request_addr(&out_channel->requestor, rqst_id);
- 		netif_tx_stop_queue(txq);
- 		ndev_ctx->eth_stats.stop_queue++;
- 	} else {
-+		/* Reclaim request ID to avoid leak of IDs */
-+		vmbus_request_addr(&out_channel->requestor, rqst_id);
- 		netdev_err(ndev,
- 			   "Unable to send packet pages %u len %u, ret %d\n",
- 			   packet->page_buf_cnt, packet->total_data_buflen,
-@@ -1422,6 +1472,7 @@ struct netvsc_device *netvsc_device_add(struct hv_device *device,
- 		       netvsc_poll, NAPI_POLL_WEIGHT);
- 
- 	/* Open the channel */
-+	device->channel->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(device->channel, netvsc_ring_bytes,
- 			 netvsc_ring_bytes,  NULL, 0,
- 			 netvsc_channel_cb, net_device->chan_table);
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index b81ceba38218..10489ba44a09 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -1114,6 +1114,7 @@ static void netvsc_sc_open(struct vmbus_channel *new_sc)
- 	/* Set the channel before opening.*/
- 	nvchan->channel = new_sc;
- 
-+	new_sc->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(new_sc, netvsc_ring_bytes,
- 			 netvsc_ring_bytes, NULL, 0,
- 			 netvsc_channel_cb, nvchan);
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index c509d20ab7db..d8194924983d 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -730,6 +730,7 @@ struct vmbus_requestor {
- };
- 
- #define VMBUS_RQST_ERROR U64_MAX
-+#define VMBUS_RQST_ID_NO_RESPONSE (U64_MAX - 1)
- 
- struct vmbus_device {
- 	u16  dev_type;
--- 
-2.25.1
-
+PiANCj4gSGkgVG9tYXMsDQo+IA0KPiBQbGVhc2UsIHNlZSBteSBjb21tZW50cyBiZWxvdy4uLg0K
+PiANCj4gT24gNy8yMi8yMCAxNDowNCwgV2lua2xlciwgVG9tYXMgd3JvdGU6DQo+ID4NCj4gPj4N
+Cj4gPj4gSGkgYWxsLA0KPiA+Pg0KPiA+PiBGcmllbmRseSBwaW5nOiB3aG8gY2FuIHRha2UgdGhp
+cz8gOikNCj4gPj4NCj4gPj4gVGhhbmtzDQo+ID4+IC0tDQo+ID4+IEd1c3Rhdm8NCj4gPj4NCj4g
+Pj4gT24gNy8xNC8yMCAxNjo0NSwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToNCj4gPj4+IE9u
+ZS1lbGVtZW50IGFycmF5cyBhcmUgYmVpbmcgZGVwcmVjYXRlZFsxXS4gUmVwbGFjZSB0aGUgb25l
+LWVsZW1lbnQNCj4gPj4+IGFycmF5cyB3aXRoIGEgc2ltcGxlIHZhbHVlIHR5cGUgdTggcmVzZXJ2
+ZWQsIG9uY2UgdGhpcyBpcyBqdXN0IGENCj4gPj4+IHBsYWNlaG9sZGVyIGZvciBhbGlnbm1lbnQu
+DQo+ID4+Pg0KPiA+Pj4gQWxzbywgd2hpbGUgdGhlcmUsIHVzZSB0aGUgcHJlZmVycmVkIGZvcm0g
+Zm9yIHBhc3NpbmcgYSBzaXplIG9mIGEgc3RydWN0Lg0KPiA+Pj4gVGhlIGFsdGVybmF0aXZlIGZv
+cm0gd2hlcmUgc3RydWN0IG5hbWUgaXMgc3BlbGxlZCBvdXQgaHVydHMNCj4gPj4+IHJlYWRhYmls
+aXR5IGFuZCBpbnRyb2R1Y2VzIGFuIG9wcG9ydHVuaXR5IGZvciBhIGJ1ZyB3aGVuIHRoZQ0KPiA+
+Pj4gdmFyaWFibGUgdHlwZSBpcyBjaGFuZ2VkIGJ1dCB0aGUgY29ycmVzcG9uZGluZyBzaXplb2Yg
+dGhhdCBpcyBwYXNzZWQNCj4gPj4+IGFzIGFyZ3VtZW50IGlzDQo+ID4+IG5vdC4NCj4gPj4+DQo+
+ID4+PiBbMV0gaHR0cHM6Ly9naXRodWIuY29tL0tTUFAvbGludXgvaXNzdWVzLzc5DQo+ID4+Pg0K
+PiA+Pj4gU2lnbmVkLW9mZi1ieTogR3VzdGF2byBBLiBSLiBTaWx2YSA8Z3VzdGF2b2Fyc0BrZXJu
+ZWwub3JnPg0KPiA+Pj4gLS0tDQo+ID4+PiBDaGFuZ2VzIGluIHYyOg0KPiA+Pj4gIC0gVXNlIGEg
+bW9yZSBjb25jaXNlIGNoYW5nZWxvZyB0ZXh0Lg0KPiA+Pj4NCj4gPj4+ICBkcml2ZXJzL21pc2Mv
+bWVpL2hibS5jIHwgNCArKy0tDQo+ID4+PiAgZHJpdmVycy9taXNjL21laS9ody5oICB8IDYgKysr
+LS0tDQo+ID4+PiAgMiBmaWxlcyBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25z
+KC0pDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9tZWkvaGJtLmMgYi9k
+cml2ZXJzL21pc2MvbWVpL2hibS5jIGluZGV4DQo+ID4+PiBhNDQwOTRjZGJjMzYuLmYwMjBkNTU5
+NDE1NCAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvbWlzYy9tZWkvaGJtLmMNCj4gPj4+ICsr
+KyBiL2RyaXZlcnMvbWlzYy9tZWkvaGJtLmMNCj4gPj4+IEBAIC00MDgsMTQgKzQwOCwxNCBAQCBz
+dGF0aWMgaW50IG1laV9oYm1fYWRkX2NsX3Jlc3Aoc3RydWN0DQo+ID4+PiBtZWlfZGV2aWNlICpk
+ZXYsIHU4IGFkZHIsIHU4IHN0YXR1cykgIHsNCj4gPj4+ICAJc3RydWN0IG1laV9tc2dfaGRyIG1l
+aV9oZHI7DQo+ID4+PiAgCXN0cnVjdCBoYm1fYWRkX2NsaWVudF9yZXNwb25zZSByZXNwOw0KPiA+
+Pj4gLQljb25zdCBzaXplX3QgbGVuID0gc2l6ZW9mKHN0cnVjdCBoYm1fYWRkX2NsaWVudF9yZXNw
+b25zZSk7DQo+ID4+PiArCWNvbnN0IHNpemVfdCBsZW4gPSBzaXplb2YocmVzcCk7DQo+ID4+PiAg
+CWludCByZXQ7DQo+ID4+Pg0KPiA+Pj4gIAlkZXZfZGJnKGRldi0+ZGV2LCAiYWRkaW5nIGNsaWVu
+dCByZXNwb25zZVxuIik7DQo+ID4+Pg0KPiA+Pj4gIAltZWlfaGJtX2hkcigmbWVpX2hkciwgbGVu
+KTsNCj4gPj4+DQo+ID4+PiAtCW1lbXNldCgmcmVzcCwgMCwgc2l6ZW9mKHN0cnVjdCBoYm1fYWRk
+X2NsaWVudF9yZXNwb25zZSkpOw0KPiA+Pj4gKwltZW1zZXQoJnJlc3AsIDAsIGxlbik7DQo+ID4+
+PiAgCXJlc3AuaGJtX2NtZCA9IE1FSV9IQk1fQUREX0NMSUVOVF9SRVNfQ01EOw0KPiA+Pj4gIAly
+ZXNwLm1lX2FkZHIgPSBhZGRyOw0KPiA+Pj4gIAlyZXNwLnN0YXR1cyAgPSBzdGF0dXM7DQo+ID4N
+Cj4gPiBUaGlzIHNob3VsZCBiZSBwcm9iYWJseSBpbiBhIGRpZmZlcmVudCBwYXRjaCBpdCdzIG5v
+dCByZWxhdGVkIHRvIHRoZSBzZWNvbmQNCj4gcGFydC4NCg0KDQpGcmFua2x5IEkgd2lsbCBwb3N0
+IG90aGVyIHZlcnNpb24gb2YgdGhpcyB0aGF0IGNsZWFucyB0aGUgd2hvbGUgZmlsZS4gDQoNCj4g
+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9tZWkvaHcuaCBiL2RyaXZlcnMvbWlz
+Yy9tZWkvaHcuaCBpbmRleA0KPiA+Pj4gYjFhOGQ1ZWM4OGIzLi44YzAyOTdmMGU3ZjMgMTAwNjQ0
+DQo+ID4+PiAtLS0gYS9kcml2ZXJzL21pc2MvbWVpL2h3LmgNCj4gPj4+ICsrKyBiL2RyaXZlcnMv
+bWlzYy9tZWkvaHcuaA0KPiA+IEkgaGF2ZSBzZWNvbmQgdGhvdWdodHMgb2YgdGhpcyBwYXJ0IGFz
+IGFsbCByZXNlcnZlZCBmaWVsZHMgaW4gdGhpcw0KPiA+IGZpbGUgYXJlIG9mIGZvcm0gdTggcmVz
+ZXJ2ZWRbWF0sIHNvIHdlIHdpbGwgbG9zZSB0aGF0IHVuaWZvcm1pdHkgd2l0aA0KPiA+IHRoaXMg
+Y2hhbmdlLCB5b3UgaGF2ZSB0byBsb29rIGF0IHRoZSBmaWxlIGFzIHdob2xlIG5vdCBqdXN0IGF0
+IHRoZSBwYXRjaC4gIFNvIEkNCj4gcHJlZmVyIHdlIGRyb3AgdGhhdCBwYXJ0IG9mIHRoZSBwYXRj
+aC4NCj4gPg0KPiANCj4gVGhpcyBpcyBhY3R1YWxseSB0aGUgbWFpbiBwb2ludCBvZiB0aGlzIHBh
+dGNoOiB0aGUgcmVtb3ZhbCBvZiBvbmUtZWxlbWVudA0KPiBhcnJheXMuDQo+IEFuZCB5ZWFoLCBl
+dmVyeSBwbGFjZSBpbiB0aGUga2VybmVsIHRoYXQgdXNlcyB0aGUgZm9ybSB0aGF0IHlvdSBtZW50
+aW9uIHdpbGwNCj4gc2VlIGl0J3MgdW5pZm9ybWl0eSBzbGlnaHRseSBtb2RpZmllZCwgYW5kIHRo
+YXQncyBmb3IgYSBnb29kIGNhdXNlOiB0aGUgcmVtb3ZhbA0KPiBvZiBvbmUtZWxlbWVudCBhcnJh
+eXMsIHNvIHdlIGNhbiBlbmFibGUgYm91bmRzIGNoZWNraW5nLg0KDQpJIHdhcyBnb2luZyBvdmVy
+IGh0dHBzOi8vZ2l0aHViLmNvbS9LU1BQL2xpbnV4L2lzc3Vlcy83OSwgSSdtIG5vdCBzdXJlIHRo
+aXMgYWxsIHJlbGF0ZWQgIHRvIGZsZXhpYmxlIGFycmF5cywNCnRob3NlIGFyZSBqdXN0IHJlc2Vy
+dmVkIHN0cnVjdCBtZW1iZXJzLiBTbyBiZWNhdXNlIGl0J3MgaGFyZCB0byBpZGVudGlmeSBhIGxl
+Z2l0aW1hdGUgdXNhZ2Ugb2Ygc2luZ2xlIGVsZW1lbnQgYXJyYXlzDQp3ZSBhcmUgZ29pbmcgdG8g
+a2lsbCB0aGVtIGFsbD8gSXQncyBtb3JlIGVzdGhldGljIC8gcmVhZGFiaWxpdHkgaXNzdWUgaGVy
+ZSBidXQgdGhlcmUgbWlnaHQgYmUgc29tZSBsZWdpdCB1c2UgY2FzZSBmb3Igb25lIGVsZW1lbnQg
+YXJyYXksIG5vPw0KDQoNCj4gDQo+IFRoYW5rcw0KPiAtLQ0KPiBHdXN0YXZvDQo+IA0KPiA+Pj4g
+QEAgLTM0NiwxMyArMzQ2LDEzIEBAIHN0cnVjdCBoYm1fYWRkX2NsaWVudF9yZXF1ZXN0IHsNCj4g
+Pj4+ICAgKiBAaGJtX2NtZDogYnVzIG1lc3NhZ2UgY29tbWFuZCBoZWFkZXINCj4gPj4+ICAgKiBA
+bWVfYWRkcjogYWRkcmVzcyBvZiB0aGUgY2xpZW50IGluIE1FDQo+ID4+PiAgICogQHN0YXR1czog
+aWYgSEJNU19TVUNDRVNTIHRoZW4gdGhlIGNsaWVudCBjYW4gbm93IGFjY2VwdA0KPiBjb25uZWN0
+aW9ucy4NCj4gPj4+IC0gKiBAcmVzZXJ2ZWQ6IHJlc2VydmVkDQo+ID4+PiArICogQHJlc2VydmVk
+OiByZXNlcnZlZCBmb3IgYWxpZ25tZW50Lg0KPiA+Pj4gICAqLw0KPiA+Pj4gIHN0cnVjdCBoYm1f
+YWRkX2NsaWVudF9yZXNwb25zZSB7DQo+ID4+PiAgCXU4IGhibV9jbWQ7DQo+ID4+PiAgCXU4IG1l
+X2FkZHI7DQo+ID4+PiAgCXU4IHN0YXR1czsNCj4gPj4+IC0JdTggcmVzZXJ2ZWRbMV07DQo+ID4+
+PiArCXU4IHJlc2VydmVkOw0KPiA+Pj4gIH0gX19wYWNrZWQ7DQo+ID4+Pg0KPiA+Pj4gIC8qKg0K
+PiA+Pj4gQEAgLTQ2MSw3ICs0NjEsNyBAQCBzdHJ1Y3QgaGJtX25vdGlmaWNhdGlvbiB7DQo+ID4+
+PiAgCXU4IGhibV9jbWQ7DQo+ID4+PiAgCXU4IG1lX2FkZHI7DQo+ID4+PiAgCXU4IGhvc3RfYWRk
+cjsNCj4gPj4+IC0JdTggcmVzZXJ2ZWRbMV07DQo+ID4+PiArCXU4IHJlc2VydmVkOw0KPiA+Pj4g
+IH0gX19wYWNrZWQ7DQo+ID4+Pg0KPiA+Pj4gIC8qKg0KPiA+Pj4NCg==
