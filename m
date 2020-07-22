@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318B22296D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE002296D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgGVLBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 07:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730054AbgGVLBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:01:44 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B269C0619E1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 04:01:43 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id 88so1477638wrh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 04:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=niAmRUGsg4kxR596xiqQAVaMYD9d+SGcGWnDYDntXxM=;
-        b=r94Bx+p3fcIDdAUsi8ATLuebYYefpEfjtAfalUhzc8pUWLe7DYZlGToUERmUT6175v
-         ridcQ7TDaWP5Jou4y5JCHVow5LoJaJmJTCGsqXpB1OrI5UBftKfAYaVYfwzURR66u/H9
-         iHci+7rpt+mdko5bdHcESZMNj4ARx6gtgIhfZZ/o0auMSlQPxuV4B2FlB+9MMh7yl9Iv
-         nBI5Anaw9Q7+OmR8XNlS06NTmtjbZTzwh5i4lOJra4g19ge0YzKw0ZZOzzm/YUG6QVwU
-         8Am9GunVPEw14N3o7HFV6CuCO0QWUc6s/ie+Uy5RY9m5EjGvqPB07L4KQv75NEShn5qI
-         N7IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=niAmRUGsg4kxR596xiqQAVaMYD9d+SGcGWnDYDntXxM=;
-        b=ubRlqjO5XAM9XzkZHTy0FyJTabC0MzBG5egzRWC5/njAH1qSp2MKk45hl/ArmCJhcB
-         MJnOlxHmNqa93PHsCUnCk99WaQjbnCobR3gQo1pLZ1cNLXuBH/lVdU5D1lA79pjcZJr1
-         em3PajzxngYvdvVOmR2C7wLqkxUBlLA20zxp+sDb7KN4XuHPrmDB8UCe3Sla+xZFuBl/
-         7avTPTVTJju3DlU4RI+A2UO5d4NbIkN6NhIhahG71YEzfJ5IS52GhVDMrsFjiI1dpjcB
-         mzB0FiycWyo7IvGylySp1DyKtbgPhXHObdZv870AWsYjue1/8c/z4JrN8Nfn8qbxwwip
-         3+pw==
-X-Gm-Message-State: AOAM5329nxg4KMj6zmvsP9M+AeOokcoxuGI24O0NNFMaiTFPU+2K548M
-        QiWjMF6BaM2VzB2+SUxNHqV3qQ==
-X-Google-Smtp-Source: ABdhPJxDV2Vmpdiz+h/u+9NMFx3xGKLE7lckZbCG8ZfyTR6oMuWNipVN11Zb3mzDpjoxhrGwzS6DbQ==
-X-Received: by 2002:a5d:4a0d:: with SMTP id m13mr13001479wrq.12.1595415702339;
-        Wed, 22 Jul 2020 04:01:42 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id y6sm41256164wrr.74.2020.07.22.04.01.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Jul 2020 04:01:41 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org
-Cc:     saravanak@google.com, mdtipton@codeaurora.org,
-        okukatla@codeaurora.org, bjorn.andersson@linaro.org,
-        vincent.guittot@linaro.org, georgi.djakov@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] interconnect: qcom: Use icc_sync_state in sdm845 and osm-3l drivers
-Date:   Wed, 22 Jul 2020 14:01:39 +0300
-Message-Id: <20200722110139.24778-3-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200722110139.24778-1-georgi.djakov@linaro.org>
-References: <20200722110139.24778-1-georgi.djakov@linaro.org>
+        id S1730826AbgGVLBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 07:01:52 -0400
+Received: from mga06.intel.com ([134.134.136.31]:11667 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727060AbgGVLBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 07:01:51 -0400
+IronPort-SDR: UReT7caanMw9IHtcaEd87zqu8/s3REOF84lWI53fpCuoQVCNlXJL3/49A7S4nPHAfoKh9ra8S4
+ vuCkb262bJfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="211850855"
+X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
+   d="scan'208";a="211850855"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 04:01:50 -0700
+IronPort-SDR: fZ6SHTvlHEVgZkFC8IVm371dDSplTZvMaC1Ev2OyawvRSN3MATnVwd7nbi0DVmj583oEBWGavv
+ /7Iw3ESiI8tQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
+   d="scan'208";a="487951806"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006.fm.intel.com with ESMTP; 22 Jul 2020 04:01:46 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jyCVO-003F9Z-48; Wed, 22 Jul 2020 14:01:46 +0300
+Date:   Wed, 22 Jul 2020 14:01:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rjw@rjwysocki.net,
+        helgaas@kernel.org, bp@alien8.de, james.morse@arm.com,
+        lenb@kernel.org, tony.luck@intel.com, dan.carpenter@oracle.com,
+        zhangliguang@linux.alibaba.com, wangkefeng.wang@huawei.com,
+        jroedel@suse.de, linuxarm@huawei.com, yangyicong@hisilicon.com,
+        jonathan.cameron@huawei.com, tanxiaofei@huawei.com
+Subject: Re: [PATCH v13 1/2] ACPI / APEI: Add a notifier chain for unknown
+ (vendor) CPER records
+Message-ID: <20200722110146.GW3703480@smile.fi.intel.com>
+References: <20200722103952.1009-1-shiju.jose@huawei.com>
+ <20200722103952.1009-2-shiju.jose@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722103952.1009-2-shiju.jose@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lowering the bandwidth on the bus might have negative consequences if
-it's done before all consumers had a chance to cast their vote. Let's
-return the maximum amount of bandwidth as initial value. This bandwidth
-level would be maintained until all consumers have probed.
+On Wed, Jul 22, 2020 at 11:39:51AM +0100, Shiju Jose wrote:
+> CPER records describing a firmware-first error are identified by GUID.
+> The ghes driver currently logs, but ignores any unknown CPER records.
+> This prevents describing errors that can't be represented by a standard
+> entry, that would otherwise allow a driver to recover from an error.
+> The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of
+> version 2.8).
+> 
+> Add a notifier chain for these non-standard/vendor-records. Callers
+> must identify their type of records by GUID.
+> 
+> Record data is copied to memory from the ghes_estatus_pool to allow
+> us to keep it until after the notifier has run.
+> 
+> Co-developed-by: James Morse <james.morse@arm.com>
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/interconnect/qcom/osm-l3.c | 3 +++
- drivers/interconnect/qcom/sdm845.c | 3 +++
- 2 files changed, 6 insertions(+)
+Co-developed-by: is going _in conjunction with_ SoB tag which is missing here.
 
-diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-index 96fb9ff5ff2e..54aff6273af1 100644
---- a/drivers/interconnect/qcom/osm-l3.c
-+++ b/drivers/interconnect/qcom/osm-l3.c
-@@ -236,6 +236,8 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
- 
- 		node->name = qnodes[i]->name;
- 		node->data = qnodes[i];
-+		node->init_avg = INT_MAX;
-+		node->init_peak = INT_MAX;
- 		icc_node_add(node, provider);
- 
- 		for (j = 0; j < qnodes[i]->num_links; j++)
-@@ -268,6 +270,7 @@ static struct platform_driver osm_l3_driver = {
- 	.driver = {
- 		.name = "osm-l3",
- 		.of_match_table = osm_l3_of_match,
-+		.sync_state = icc_sync_state,
- 	},
- };
- module_platform_driver(osm_l3_driver);
-diff --git a/drivers/interconnect/qcom/sdm845.c b/drivers/interconnect/qcom/sdm845.c
-index f6c7b969520d..c04775820f15 100644
---- a/drivers/interconnect/qcom/sdm845.c
-+++ b/drivers/interconnect/qcom/sdm845.c
-@@ -503,6 +503,8 @@ static int qnoc_probe(struct platform_device *pdev)
- 
- 		node->name = qnodes[i]->name;
- 		node->data = qnodes[i];
-+		node->init_avg = INT_MAX;
-+		node->init_peak = INT_MAX;
- 		icc_node_add(node, provider);
- 
- 		for (j = 0; j < qnodes[i]->num_links; j++)
-@@ -559,6 +561,7 @@ static struct platform_driver qnoc_driver = {
- 	.driver = {
- 		.name = "qnoc-sdm845",
- 		.of_match_table = qnoc_of_match,
-+		.sync_state = icc_sync_state,
- 	},
- };
- module_platform_driver(qnoc_driver);
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
