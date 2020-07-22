@@ -2,66 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100F3228DA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5F3228DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731735AbgGVBaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 21:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S1731672AbgGVBcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 21:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgGVBaX (ORCPT
+        with ESMTP id S1728001AbgGVBcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 21:30:23 -0400
+        Tue, 21 Jul 2020 21:32:08 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAA9C061794;
-        Tue, 21 Jul 2020 18:30:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EF2C061794;
+        Tue, 21 Jul 2020 18:32:08 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E8D8111DB315F;
-        Tue, 21 Jul 2020 18:13:37 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 18:30:22 -0700 (PDT)
-Message-Id: <20200721.183022.1464053417235565089.davem@davemloft.net>
-To:     xie.he.0141@gmail.com
-Cc:     kuba@kernel.org, edumazet@google.com, ms@dev.tdt.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-x25@vger.kernel.org
-Subject: Re: [PATCH v2] drivers/net/wan/x25_asy: Fix to make it work
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3F67511DB315F;
+        Tue, 21 Jul 2020 18:15:23 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 18:32:07 -0700 (PDT)
+Message-Id: <20200721.183207.2040938284749662736.davem@davemloft.net>
+To:     wanghai38@huawei.com
+Cc:     hayashi.kunihiko@socionext.com, kuba@kernel.org,
+        p.zabel@pengutronix.de, yamada.masahiro@socionext.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: ethernet: ave: Fix error returns in ave_init
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200716234433.6490-1-xie.he.0141@gmail.com>
-References: <20200716234433.6490-1-xie.he.0141@gmail.com>
+In-Reply-To: <20200717025049.43027-1-wanghai38@huawei.com>
+References: <20200717025049.43027-1-wanghai38@huawei.com>
 X-Mailer: Mew version 6.8 on Emacs 26.3
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 Jul 2020 18:13:38 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 Jul 2020 18:15:23 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
-Date: Thu, 16 Jul 2020 16:44:33 -0700
+From: Wang Hai <wanghai38@huawei.com>
+Date: Fri, 17 Jul 2020 10:50:49 +0800
 
-> This driver is not working because of problems of its receiving code.
-> This patch fixes it to make it work.
+> When regmap_update_bits failed in ave_init(), calls of the functions
+> reset_control_assert() and clk_disable_unprepare() were missed.
+> Add goto out_reset_assert to do this.
 > 
-> When the driver receives an LAPB frame, it should first pass the frame
-> to the LAPB module to process. After processing, the LAPB module passes
-> the data (the packet) back to the driver, the driver should then add a
-> one-byte pseudo header and pass the data to upper layers.
-> 
-> The changes to the "x25_asy_bump" function and the
-> "x25_asy_data_indication" function are to correctly implement this
-> procedure.
-> 
-> Also, the "x25_asy_unesc" function ignores any frame that is shorter
-> than 3 bytes. However the shortest frames are 2-byte long. So we need
-> to change it to allow 2-byte frames to pass.
-> 
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> Fixes: 57878f2f4697 ("net: ethernet: ave: add support for phy-mode setting of system controller")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-Applied, thank you.
+Applied.
