@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7302297E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABFD2297E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731985AbgGVMJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
+        id S1730676AbgGVMIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731563AbgGVMJN (ORCPT
+        with ESMTP id S1726161AbgGVMIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:09:13 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB49EC0619DE
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:09:12 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y3so1666474wrl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:09:12 -0700 (PDT)
+        Wed, 22 Jul 2020 08:08:55 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4397CC0619DC;
+        Wed, 22 Jul 2020 05:08:55 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id f5so904014ybq.2;
+        Wed, 22 Jul 2020 05:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tqHxcywQyVz1wfQvBGx3vpEtZ8YqD1CPktgmCd8zLdc=;
-        b=gnuS6aH1Z4+o6kdQgqoa7jvwbtLsfXA0ZmIQoHVWFjcQCBaB72XsvvMy+iiGTDr7FR
-         eZWTN6R+9wO8Vzt+lAXECEneA6FaZoBbjMb+5XruTj2zqJ+vUxX8E9A2KBdlDFpriudM
-         TV2OnwnG+XnlNHojz2MN6h49JUtWDs714yEYfBccT9OpZ/3Q0CGegDDWUcdvukrF+rWt
-         9wCHhPBFCCoNzk4u/31jInctoCb5e7vlmaTrSE4XxKeP8+CvMSFcnof+BUGFfZkvjOdZ
-         NGAVlCBCxc14B1kpyLLfdsOIds3mFz2Y4oXpIrpx93QZmrxvI+p4kKnM8diRhr1QXqce
-         p0uA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HvC8ad5rjg2IunVWJE+2JRXHYjvknY0W00tjjNXhDJw=;
+        b=JaGepEyO3/2Mwq94HzcA/vVuWypbWebAAaQXRw9lKQHh5De4jugvGiBWMrc+zSLUkd
+         ckk88dfn6mxXeOdhZwfhUE6jh3DWtMWRBKLrghZL3UGeXNRs8WqSa1OKWwI4WGH6NOTb
+         92zopyuLWTf473z1oLesR4sDrd1hM8tKWv3SMG9KB/rytQePVPw0V9fOkVZItcD695jX
+         YEY7cZDmZdg13vlqEZMUL6cz0Tu3pkASqh2H5afkq3ywJTa3/r0Jf2n/n0mTQdcqSVrk
+         nmQ8TZC/+ZVmHTrW5SkCMV2m/3AvCWJZLs5SjpxO24INcplGPa8w3YZgRK1SJMdiyeof
+         Rssg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tqHxcywQyVz1wfQvBGx3vpEtZ8YqD1CPktgmCd8zLdc=;
-        b=gqMAoTukT1z5ggtTXhVgttBytep8H1h1ebpfQJUiDz06YzAEx17v3ryT0rza29gDgS
-         X8AvzuBpe3h4EGiG1Cpho85t9yV8nWFNwqPr7N8kCP7U+ryuLiQxI9JrJcpf/sXq/8hF
-         OUYdH2Rtyezi7dpkjBGZai3lluAauXS3izOXG3YrjYPPHWSUuuHxjs1a8TZSQOunFHPg
-         gRF0CSvCHCxheYL8nS2UpbG3Op1gpZDqQ1IfUJg9TnFxd7l2j8sYmK8iW9S0q6zwSLpq
-         CsbZ8r2Rzjy649rGhkx7/YiGTL2YlI7IoKFa8uozHWKwJGtfBtLziRXVFR1dGaxJatnf
-         ykcg==
-X-Gm-Message-State: AOAM532WM/gxmS3wjZszkmfXcZKNm2dwMBpWEIJjdlMCbOqulRy+IzTA
-        UrtHqQsYtlxRUhfLtsq5ZGv/aA==
-X-Google-Smtp-Source: ABdhPJyEIrrWfWDnGxTltj2DTpGuaDacNmpFZhftR7gDW78DkgWP3WGw2p75qhnhfmYpYtGiWYlZvg==
-X-Received: by 2002:adf:e48f:: with SMTP id i15mr29109610wrm.327.1595419751422;
-        Wed, 22 Jul 2020 05:09:11 -0700 (PDT)
-Received: from localhost.localdomain (172.red-80-27-177.dynamicip.rima-tde.net. [80.27.177.172])
-        by smtp.gmail.com with ESMTPSA id o7sm28003296wrv.50.2020.07.22.05.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 05:09:09 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, linux-omap@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] gpio: omap: improve coding style for pin config flags
-Date:   Wed, 22 Jul 2020 14:07:56 +0200
-Message-Id: <20200722120755.230741-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HvC8ad5rjg2IunVWJE+2JRXHYjvknY0W00tjjNXhDJw=;
+        b=DqNnbVLwt4sDji2Oq1v+1nzx6tWmRWBlXOLH4rL0XhJtg9VbjqXkkcNKWc8Q56V3v9
+         Rrca1q7+zrCBUNTpoSk5cnYV0TaHsayHgZIeXAHn+Xy7pxYm6HhQPF4c8/brpk9ci69X
+         LTrLTy7326RlPDLz2ebz/4yrGYd5BeDEgWuQ+0VKwlRAw4+CuR2+J8EwpLLm9okuJZEn
+         wyi3ff17HawJpWCSE4oDqZd8hK5OAVYFiN3+CAh9c8XBDmsTSgCAKqTp5LLQt6Jhl1Y0
+         Ywb5HcUl0co3wGYV5RedV5Nsc1VAu84t5yV7WFjrcQMo2XOtDVeWV7dRnYQ5o7xChWd1
+         G/UQ==
+X-Gm-Message-State: AOAM531gBx2x63nDplwatWBihFKmyrHis5llJBgIlr2MTSi4ujCdhKI5
+        CEGmdKWL11KDvi+E247pg9aMYeZ6EpVP6/R8ggbktw==
+X-Google-Smtp-Source: ABdhPJzo3VlRwf2J2i7juNCAZtOnMfYT9zz3p+Vj9hGzOA6DM0cDjbQXztJqjBGHakszFwdlxoHjU6TdGGLJQ/I0CK0=
+X-Received: by 2002:a25:6806:: with SMTP id d6mr46157046ybc.124.1595419734592;
+ Wed, 22 Jul 2020 05:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200722083737.8820-1-jon.lin@rock-chips.com>
+In-Reply-To: <20200722083737.8820-1-jon.lin@rock-chips.com>
+From:   Emil Renner Berthing <emil.renner.berthing@gmail.com>
+Date:   Wed, 22 Jul 2020 14:08:43 +0200
+Message-ID: <CANBLGcxZ+ps5TNzrHNHyjUZvSTrVQOHaqvB5H3tZVOow5z0aLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] spi: rockchip: Config spi rx dma burst size depend
+ on xfer length
+To:     Jon Lin <jon.lin@rock-chips.com>
+Cc:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi@vger.kernel.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the handling of pin config flags from if/else to switch
-statement to make the code more readable and cleaner.
+On Wed, 22 Jul 2020 at 10:41, Jon Lin <jon.lin@rock-chips.com> wrote:
+>
+> The burst length can be adjusted according to the transmission
+> length to improve the transmission rate
+>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 
-Suggested-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- drivers/gpio/gpio-omap.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+For the whole series you can add
+Reviewed-by: Emil Renner Berthing <kernel@esmil.dk>
+Tested-by: Emil Renner Berthing <kernel@esmil.dk>
 
-diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-index e0eada82178c..7fbe0c9e1fc1 100644
---- a/drivers/gpio/gpio-omap.c
-+++ b/drivers/gpio/gpio-omap.c
-@@ -899,13 +899,18 @@ static int omap_gpio_set_config(struct gpio_chip *chip, unsigned offset,
- 	u32 debounce;
- 	int ret = -ENOTSUPP;
- 
--	if ((pinconf_to_config_param(config) == PIN_CONFIG_BIAS_DISABLE) ||
--	    (pinconf_to_config_param(config) == PIN_CONFIG_BIAS_PULL_UP) ||
--	    (pinconf_to_config_param(config) == PIN_CONFIG_BIAS_PULL_DOWN)) {
-+	switch (pinconf_to_config_param(config)) {
-+	case PIN_CONFIG_BIAS_DISABLE:
-+	case PIN_CONFIG_BIAS_PULL_UP:
-+	case PIN_CONFIG_BIAS_PULL_DOWN:
- 		ret = gpiochip_generic_config(chip, offset, config);
--	} else if (pinconf_to_config_param(config) == PIN_CONFIG_INPUT_DEBOUNCE) {
-+		break;
-+	case PIN_CONFIG_INPUT_DEBOUNCE:
- 		debounce = pinconf_to_config_argument(config);
- 		ret = omap_gpio_debounce(chip, offset, debounce);
-+		break;
-+	default:
-+		break;
- 	}
- 
- 	return ret;
--- 
-2.25.1
-
+> ---
+>  drivers/spi/spi-rockchip.c | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+> index 9b8a5e1233c0..63593a5b87fa 100644
+> --- a/drivers/spi/spi-rockchip.c
+> +++ b/drivers/spi/spi-rockchip.c
+> @@ -384,6 +384,19 @@ static void rockchip_spi_dma_txcb(void *data)
+>         spi_finalize_current_transfer(ctlr);
+>  }
+>
+> +static u32 rockchip_spi_calc_burst_size(u32 data_len)
+> +{
+> +       u32 i;
+> +
+> +       /* burst size: 1, 2, 4, 8 */
+> +       for (i = 1; i < 8; i <<= 1) {
+> +               if (data_len & i)
+> +                       break;
+> +       }
+> +
+> +       return i;
+> +}
+> +
+>  static int rockchip_spi_prepare_dma(struct rockchip_spi *rs,
+>                 struct spi_controller *ctlr, struct spi_transfer *xfer)
+>  {
+> @@ -397,7 +410,8 @@ static int rockchip_spi_prepare_dma(struct rockchip_spi *rs,
+>                         .direction = DMA_DEV_TO_MEM,
+>                         .src_addr = rs->dma_addr_rx,
+>                         .src_addr_width = rs->n_bytes,
+> -                       .src_maxburst = 1,
+> +                       .src_maxburst = rockchip_spi_calc_burst_size(xfer->len /
+> +                                                                    rs->n_bytes),
+>                 };
+>
+>                 dmaengine_slave_config(ctlr->dma_rx, &rxconf);
+> @@ -525,7 +539,8 @@ static void rockchip_spi_config(struct rockchip_spi *rs,
+>                 writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
+>
+>         writel_relaxed(rs->fifo_len / 2, rs->regs + ROCKCHIP_SPI_DMATDLR);
+> -       writel_relaxed(0, rs->regs + ROCKCHIP_SPI_DMARDLR);
+> +       writel_relaxed(rockchip_spi_calc_burst_size(xfer->len / rs->n_bytes) - 1,
+> +                      rs->regs + ROCKCHIP_SPI_DMARDLR);
+>         writel_relaxed(dmacr, rs->regs + ROCKCHIP_SPI_DMACR);
+>
+>         /* the hardware only supports an even clock divisor, so
+> --
+> 2.17.1
+>
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
