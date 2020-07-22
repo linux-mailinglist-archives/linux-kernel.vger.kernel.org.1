@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E542293FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBF5229403
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731128AbgGVIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 04:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728911AbgGVIvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:51:05 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECC1C0619DC;
-        Wed, 22 Jul 2020 01:51:05 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z3so812407pfn.12;
-        Wed, 22 Jul 2020 01:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e3OT5w6u3rxG/3iZ+MykAHqpmEMoLtEmtYfcFs2OdbA=;
-        b=lcLf9txTrjt7hKVxP5gHCuyjkEz9RmBIC+LvPgKzvRZtnViz4NLCU3lgBmESF6zSjc
-         twIU4avgtOsb4uzfw/cV1b45Ua8JmLeshTj82RnoEUUjxtLgNRG6aMLi3AAfOwptrda4
-         G9mAphyqrGUDorRoYnQYEsm3QHhGkO3u1bnmADdhMeik3sp4FMM5jzojAEjucUmeErg/
-         euMtXXkvYwV7auGAhJ9WPNDR0Wzcv/XFJ+tPA5rXnKgiyd8iv9wR157pAL+f/s7g5u2A
-         p1E+0QX5TAM7MeInLS5d0nuLTtJkOgAyg/jds9ZS/+P6aTfL33oMH6DMytNz6FztY0/2
-         AizA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e3OT5w6u3rxG/3iZ+MykAHqpmEMoLtEmtYfcFs2OdbA=;
-        b=cb5fZJEwW9fnvcPWrn8hHfxwG+MicK1m8zdj225DIvDQKh6r8kNb+ptEgKS6LZnAks
-         GU66ydJAhk+FsnDAsH/eT5aiGg1I/Z+x+dsy86PMHoPj9Uj0V+BvVsWy8doDicWG2YSF
-         cIQxcXNCDKNakd2Eso9YcFDsfEAjh7ay1q5eQNXohVLEfmWh94asHJS2Wd+6jvycqXrR
-         JGrptZE1ee9WX3CTXcv7auqOh/xIYtk91K7+1o9Rz84z+FLWzNJXWCyEVwCdgCjagaOP
-         1ZpbcEm9rHV/1CHN4G/Hvx1QbqDUw0hErCoUUppzYy6ZD/foz+MN8Shr33XBVC/p8QSh
-         vg/w==
-X-Gm-Message-State: AOAM5310DpcC5rThI4W4LDhMw2hRKmBidf6AV8KbUHfZWweuGp6t4zVy
-        Vp9Z61Di6u1edf2437r8u4w6N1fAcc50g7sBGag=
-X-Google-Smtp-Source: ABdhPJwk8TMBoOfP/mmDUdNAvHRR4uQdqWvutrkzEuwfNgqWTzOS/6FZqp9RGt9Ld4mrxIwr7V5Ox0PodZaH1uJk7tI=
-X-Received: by 2002:a62:7657:: with SMTP id r84mr26903497pfc.130.1595407864704;
- Wed, 22 Jul 2020 01:51:04 -0700 (PDT)
+        id S1731180AbgGVIvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 04:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728911AbgGVIvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 04:51:10 -0400
+Received: from localhost (p54b33083.dip0.t-ipconnect.de [84.179.48.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADA222077D;
+        Wed, 22 Jul 2020 08:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595407869;
+        bh=5VKULX8ADgA7+H2EigrTRpvSe/lUy15QaMOU+A/CI+Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TvDvcjfKa+vjcCeAISmgjEW+fYRbaGUNquFQgXGpLqYmkm80KFOgCerMuWLycm+ZV
+         k+xSZ1nc9noBosM5GPDDzmj/H5F/WzdPyL7Fa7ImHzdKh1VwobjPGB8fKtAb24Isis
+         RGJsyWPulH2eYURc982loSrrzS5yw8NYtlevcruY=
+Date:   Wed, 22 Jul 2020 10:51:06 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH 01/20] dt-bindings: pci: rcar-pci: Add device tree
+ support for r8a774e1
+Message-ID: <20200722085106.GE1030@ninjato>
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-References: <20200721222851.2075891-1-drew@beagleboard.org> <CAHp75Vd35n0=hB-K3WjUXD3HPNt6F=MHNafNY55NGfb5ahvLSA@mail.gmail.com>
-In-Reply-To: <CAHp75Vd35n0=hB-K3WjUXD3HPNt6F=MHNafNY55NGfb5ahvLSA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 22 Jul 2020 11:50:50 +0300
-Message-ID: <CAHp75VeXiir4BYFTd3YrseExnLPg4MfD69koTkqf4_TKp7dsBQ@mail.gmail.com>
-Subject: Re: [PATCH v4] pinctrl: core: print gpio in pins debugfs file
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Rgf3q3z9SdmXC6oT"
+Content-Disposition: inline
+In-Reply-To: <1594919915-5225-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 11:48 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Wed, Jul 22, 2020 at 1:29 AM Drew Fustini <drew@beagleboard.org> wrote:
-> >
-> > If there is a gpio range mapping for the pin, then print out the gpio
-> > chip and line index for the pin in the debugfs 'pins' file with the
-> > format: "[line-index]:[gpio-label]"
-> >
-> > Here is an example output on the BeagleBoard.org PocketBeagle (AM3358):
-> > /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pins
-> >
-> > pin 25 (PIN25) 25:gpio-32-63 44e10864 00000037 pinctrl-single
-> > pin 26 (PIN26) 26:gpio-32-63 44e10868 00000037 pinctrl-single
-> > pin 27 (PIN27) 27:gpio-32-63 44e1086c 00000037 pinctrl-single
-> > pin 28 (PIN28) 0:N/A 44e10870 00000036 pinctrl-single
-> > pin 29 (PIN29) 0:N/A 44e10874 00000006 pinctrl-single
 
-Though one more nit, I have just realized, perhaps '0:?' would be
-better, because GPIO library uses '?' in cases of unknown labels or
-so.
-I guess no need to resend (but if you wish you may do, with my tag
-included) and we may wait for Linus and Bart to comment.
+--Rgf3q3z9SdmXC6oT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > pin 30 (PIN30) 28:gpio-32-63 44e10878 00000027 pinctrl-single
-> > pin 31 (PIN31) 29:gpio-32-63 44e1087c 00000037 pinctrl-single
-> > pin 32 (PIN32) 30:gpio-32-63 44e10880 00000037 pinctrl-single
-> > pin 33 (PIN33) 31:gpio-32-63 44e10884 00000037 pinctrl-single
-> > pin 34 (PIN34) 0:gpio-64-95 44e10888 00000037 pinctrl-single
-> > pin 35 (PIN35) 1:gpio-64-95 44e1088c 00000037 pinctrl-single
-> >
->
-> This variant looks good enough to me, thanks! FWIW,
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+On Thu, Jul 16, 2020 at 06:18:16PM +0100, Lad Prabhakar wrote:
+> Add PCIe support for the RZ/G2H (a.k.a. R8A774E1).
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renes=
+as.com>
+
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+--Rgf3q3z9SdmXC6oT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8X/foACgkQFA3kzBSg
+KbYBWQ/8DnQbj6fqdgDpJjxoGMvRlAGRmD/LQyLgeNZDawpLA777Z4SwPpfHuyXH
+tJy/aVjlLezk3AtfaxG87wUrwymDi3qmcjOQ/7F0exSRseGNXLrM3jYw37cH0zxr
+Qcf3G48YkoHNFOTk4HYO9q5UYEhMtZOZnOBNOopox1cRy8glrR7nxNSfDhxpZVZs
+dL3kgz14gDgBt14Oz4NgFWQ1iggFHB0TazeOr7a9r3NF/JazPQ1y4fmlTgPz1DWA
+2yEE2P27ev+KZ4uqtwueghMFgzAnE8lJax8giRAltuS1QCe7D2i6hV9yyvc+aOV+
+ci8xl7FHxyHeIDtRCfyp5Dfl0ud+vg0ewbD8aFe5lYW37rG3/8NJ/UShQKjJj2mT
+YU1ne29hQ19sH1WUpAIKfGum2Ps7VZ/Bjgv4pHiAM4siayrkgAE7uRAI0vEFj6do
+drNmWmySFFGx/sbjYQGdnvZfvGmUk3Y4t3VHNW5NhPk17gxMMht2iUeU4JJCurhR
+/BE5wVtwfdArEeoMTvjTCyE0oZOGrCmpngp9i53vFvgTpU9vjzuKmPYatnBG7jiN
+ctixKPeb4U9KoEMN1p1VnATLvLlBCxKi+blTVO06005x3kMkck3bMD6ZAfb0/ztg
+30sT5P11NP9Za8s2A/TwTV6Nm2IBR4tMW+t1sJLCuSdR5X7RJJk=
+=FHkP
+-----END PGP SIGNATURE-----
+
+--Rgf3q3z9SdmXC6oT--
