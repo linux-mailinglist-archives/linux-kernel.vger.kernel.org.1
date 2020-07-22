@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7292C229F4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA93229F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731557AbgGVSeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:34:24 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:47246 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726666AbgGVSeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:34:23 -0400
-Received: from x2f7fa19.dyn.telefonica.de ([2.247.250.25] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jyJZM-0005FO-8n; Wed, 22 Jul 2020 20:34:20 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        William Wu <william.wu@rock-chips.com>
-Subject: Re: [PATCH v3] ARM: dts: rockchip: Add usb host0 ohci node for rk3288
-Date:   Wed, 22 Jul 2020 20:34:18 +0200
-Message-ID: <8444056.acRTkLjuym@phil>
-In-Reply-To: <20200720105846.367776-1-jagan@amarulasolutions.com>
-References: <20200720105846.367776-1-jagan@amarulasolutions.com>
+        id S1732177AbgGVSg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgGVSg1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 14:36:27 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF9DC0619DC;
+        Wed, 22 Jul 2020 11:36:27 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 247A0BDF0B;
+        Wed, 22 Jul 2020 18:36:21 +0000 (UTC)
+Subject: Re: [PATCH for v5.9] mfd: Replace HTTP links with HTTPS ones
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh@kernel.org>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, tony@atomide.com, devicetree@vger.kernel.org
+References: <20200719195613.61458-1-grandmaster@al2klimov.de>
+ <20200721161028.GA389086@bogus> <20200722065429.GI621928@dell>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <df4b92a2-0c19-ca0e-7967-4ec059196835@al2klimov.de>
+Date:   Wed, 22 Jul 2020 20:36:19 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200722065429.GI621928@dell>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +
+X-Spam-Level: *
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jaganm
 
-Am Montag, 20. Juli 2020, 12:58:46 CEST schrieb Jagan Teki:
-> rk3288 and rk3288w have a usb host0 ohci controller.
+
+Am 22.07.20 um 08:54 schrieb Lee Jones:
+> On Tue, 21 Jul 2020, Rob Herring wrote:
 > 
-> Although rk3288 ohci doesn't actually work on hardware, but
-> rk3288w ohci can work well.
+>> On Sun, 19 Jul 2020 21:56:13 +0200, Alexander A. Klimov wrote:
+>>> Rationale:
+>>> Reduces attack surface on kernel devs opening the links for MITM
+>>> as HTTPS traffic is much harder to manipulate.
+>>>
+>>> Deterministic algorithm:
+>>> For each file:
+>>>    If not .svg:
+>>>      For each line:
+>>>        If doesn't contain `\bxmlns\b`:
+>>>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>>> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>>>              If both the HTTP and HTTPS versions
+>>>              return 200 OK and serve the same content:
+>>>                Replace HTTP with HTTPS.
+>>>
+>>> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+>>> ---
+>>>   Continuing my work started at 93431e0607e5.
+>>>   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>>>   (Actually letting a shell for loop submit all this stuff for me.)
 > 
-> So add usb host0 ohci node in rk3288 dtsi and the quirk in
-> ohci platform driver will disable ohci on rk3288.
+> I'm guessing something went wrong with your submission, as Rob's reply
+> is the first time I saw this patch.  Did your bot send it to me?
+Yes,
+https://lore.kernel.org/lkml/20200719195613.61458-1-grandmaster@al2klimov.de/
 
-If I remember the discussion correctly, we expect the board dts
-or the bootloader to enable the ohci, right?
-So that block go away ... just making sure, I don't remember
-untrue stuff ;-)
-
-
-Heiko
-
-
-> Cc: William Wu <william.wu@rock-chips.com>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v3:
-> - none
 > 
->  arch/arm/boot/dts/rk3288.dtsi | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+> You really should be fully reviewing anything that gets sent to the
+> MLs.  "Sorry, I didn't send it, my bot did" is not an acceptable
+> excuse for inadequacies.
+See this as an excuse for not stopping sending on demand (if any), not 
+for invalid To:.
+Whoever's (not) in To: of auto-submitted patches would also (not) be 
+there on manual submission because the bot just emulates myself:
+
+
+➜  linux git:(master) cat submit.sh
+#!/bin/bash
+set -exo pipefail
+
+if [ "$(perl scripts/get_maintainer.pl --nogit{,-fallback} --nol "$1" 
+|wc -l)" -eq 0 ]; then
+         GCP=--git-chief-penguins
+else
+         GCP=''
+fi
+
+git send-email --confirm=never "--to=$(
+         perl scripts/get_maintainer.pl $GCP --norolestats "$1" |\
+         perl -pe 'if (/<(.+?)>/) { $_ = "$1\n" }' |\
+         tr \\n , |\
+         perl -pe 's/,$//'
+)" "$@"
+
 > 
-> diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
-> index 0cd88774db95..f0774d9afb67 100644
-> --- a/arch/arm/boot/dts/rk3288.dtsi
-> +++ b/arch/arm/boot/dts/rk3288.dtsi
-> @@ -614,7 +614,16 @@ usb_host0_ehci: usb@ff500000 {
->  		status = "disabled";
->  	};
->  
-> -	/* NOTE: ohci@ff520000 doesn't actually work on hardware */
-> +	/* NOTE: doesn't work on RK3288, but fixed on RK3288W */
-> +	usb_host0_ohci: usb@ff520000 {
-> +		compatible = "generic-ohci";
-> +		reg = <0x0 0xff520000 0x0 0x100>;
-> +		interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&cru HCLK_USBHOST0>;
-> +		phys = <&usbphy1>;
-> +		phy-names = "usb";
-> +		status = "disabled";
-> +	};
->  
->  	usb_host1: usb@ff540000 {
->  		compatible = "rockchip,rk3288-usb", "rockchip,rk3066-usb",
+>>>   If there are any URLs to be removed completely
+>>>   or at least not (just) HTTPSified:
+>>>   Just clearly say so and I'll *undo my change*.
+>>>   See also: https://lkml.org/lkml/2020/6/27/64
+>>>
+>>>   If there are any valid, but yet not changed URLs:
+>>>   See: https://lkml.org/lkml/2020/6/26/837
+>>>
+>>>   If you apply the patch, please let me know.
+>>>
+>>>   Sorry again to all maintainers who complained about subject lines.
+>>>   Now I realized that you want an actually perfect prefixes,
+>>>   not just subsystem ones.
+>>>   I tried my best...
+>>>   And yes, *I could* (at least half-)automate it.
+>>>   Impossible is nothing! :)
+>>>
+>>>
+>>>   Documentation/devicetree/bindings/mfd/twl-family.txt | 2 +-
+>>>   drivers/mfd/hi6421-pmic-core.c                       | 2 +-
+>>>   drivers/mfd/lp873x.c                                 | 2 +-
+>>>   drivers/mfd/lp87565.c                                | 2 +-
+>>>   drivers/mfd/omap-usb-host.c                          | 2 +-
+>>>   drivers/mfd/omap-usb-tll.c                           | 2 +-
+>>>   drivers/mfd/smsc-ece1099.c                           | 2 +-
+>>>   drivers/mfd/ti_am335x_tscadc.c                       | 2 +-
+>>>   drivers/mfd/tps65086.c                               | 2 +-
+>>>   drivers/mfd/tps65217.c                               | 2 +-
+>>>   drivers/mfd/tps65218.c                               | 2 +-
+>>>   drivers/mfd/tps65912-core.c                          | 2 +-
+>>>   drivers/mfd/tps65912-i2c.c                           | 2 +-
+>>>   drivers/mfd/tps65912-spi.c                           | 2 +-
+>>>   include/linux/mfd/hi6421-pmic.h                      | 2 +-
+>>>   include/linux/mfd/lp873x.h                           | 2 +-
+>>>   include/linux/mfd/lp87565.h                          | 2 +-
+>>>   include/linux/mfd/ti_am335x_tscadc.h                 | 2 +-
+>>>   include/linux/mfd/tps65086.h                         | 2 +-
+>>>   include/linux/mfd/tps65217.h                         | 2 +-
+>>>   include/linux/mfd/tps65218.h                         | 2 +-
+>>>   include/linux/mfd/tps65912.h                         | 2 +-
+>>>   22 files changed, 22 insertions(+), 22 deletions(-)
+>>>
+>>
+>> Acked-by: Rob Herring <robh@kernel.org>
 > 
-
-
-
-
