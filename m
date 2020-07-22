@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E7D2299E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBCF2299E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731994AbgGVOOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 10:14:47 -0400
-Received: from mga18.intel.com ([134.134.136.126]:23142 "EHLO mga18.intel.com"
+        id S1732404AbgGVORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 10:17:02 -0400
+Received: from verein.lst.de ([213.95.11.211]:56504 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgGVOOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 10:14:44 -0400
-IronPort-SDR: 6/HXe+MVhu6kwAKLQWfrR5xAI7WRAbXsBvTMAjdu8nU4yymFw2A/3ktVfzYCZZE7A8eVxuh441
- lOka8tv552+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="137836566"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="137836566"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 07:14:43 -0700
-IronPort-SDR: TwU9st3SfjJIJdrXID4JCICd1AGfD3MEjEoDRt2kGhUOWFppOiRoiZZlCdP4IBZp2KJGOwsr29
- QQ+GKE1V5eyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="432390891"
-Received: from tthayer-hp-z620.an.intel.com (HELO [10.122.105.146]) ([10.122.105.146])
-  by orsmga004.jf.intel.com with ESMTP; 22 Jul 2020 07:14:42 -0700
-Reply-To: thor.thayer@linux.intel.com
-Subject: Re: [PATCH] MAINTAINERS: altera: change maintainer for Altera drivers
-To:     Greg KH <gregkh@linuxfoundation.org>, richard.gong@linux.intel.com
-Cc:     mchehab+huawei@kernel.org, davem@davemloft.net, robh@kernel.org,
-        linux-kernel@vger.kernel.org, Richard Gong <richard.gong@intel.com>
-References: <1595426980-32062-1-git-send-email-richard.gong@linux.intel.com>
- <20200722140831.GB3755463@kroah.com>
-From:   Thor Thayer <thor.thayer@linux.intel.com>
-Message-ID: <de3709c8-e341-3f11-e182-721d596bf563@linux.intel.com>
-Date:   Wed, 22 Jul 2020 09:14:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728351AbgGVORC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 10:17:02 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 96A4168B05; Wed, 22 Jul 2020 16:16:58 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 16:16:58 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        will@kernel.org, ganapatrao.kulkarni@cavium.com,
+        catalin.marinas@arm.com, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Steve Capper <steve.capper@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v3 1/2] dma-direct: provide the ability to reserve
+ per-numa CMA
+Message-ID: <20200722141658.GA17658@lst.de>
+References: <20200628111251.19108-1-song.bao.hua@hisilicon.com> <20200628111251.19108-2-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200722140831.GB3755463@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200628111251.19108-2-song.bao.hua@hisilicon.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/20 9:08 AM, Greg KH wrote:
-> On Wed, Jul 22, 2020 at 09:09:40AM -0500, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> Thor is moving to a new position and I will take over the maintainership.
->> Add myself as maintainer for 3 Altera drivers below:
->> 1. Altera I2C driver
->> 2. Altera System Manager driver
->> 3. Altera System Resource driver
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> 
-> No ack from Thor?
-> 
-> :(
-> 
-I was too slow... :)
+On Sun, Jun 28, 2020 at 11:12:50PM +1200, Barry Song wrote:
+> This is useful for at least two scenarios:
+> 1. ARM64 smmu will get memory from local numa node, it can save its
+> command queues and page tables locally. Tests show it can decrease
+> dma_unmap latency at lot. For example, without this patch, smmu on
+> node2 will get memory from node0 by calling dma_alloc_coherent(),
+> typically, it has to wait for more than 560ns for the completion of
+> CMD_SYNC in an empty command queue; with this patch, it needs 240ns
+> only.
+> 2. when we set iommu passthrough, drivers will get memory from CMA,
+> local memory means much less latency.
 
-Acked-by: Thor Thayer <thor.thayer@linux.intel.com>
+I really don't like the config options.  With the boot parameters
+you can always hardcode that in CONFIG_CMDLINE anyway.
