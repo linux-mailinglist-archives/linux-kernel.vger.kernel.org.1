@@ -2,109 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDB4229F3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AF7229F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732095AbgGVS2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgGVS2J (ORCPT
+        id S1732184AbgGVSWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:22:48 -0400
+Received: from gateway33.websitewelcome.com ([192.185.145.221]:34461 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729816AbgGVSWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:28:09 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F8FC0619DC;
-        Wed, 22 Jul 2020 11:28:09 -0700 (PDT)
+        Wed, 22 Jul 2020 14:22:44 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id C0DC414472A
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:22:01 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id yJNRjz4bcwgQAyJNRj0z4j; Wed, 22 Jul 2020 13:22:01 -0500
+X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=OYSn/KpUWZQ4nMms7wrSLpPiy3w6Iv2nJw1LBl+3jF0=; b=lW5+R6aRaWcL9XzKxeo7g5Hful
-        WB3kf8WqLPpb61zWFBlp7UgSv7qpIOeGa48lURbXLzeLUsAifWGG+HFuqixLg88RFHNQU0lq+bs/H
-        3PzfQDfTGsTByGAh8tILgch4vOdKZDJENn8NKjnX0nqCrnRJNCC+VofhJPLMlfjkJW7/uWH+1lHud
-        jSAxkZtocZ/eaqN7pNp3RILjxqQ3tc/1TUZtHI1B7SvLNuhzGPsv730DR+KbCNSKR8Xw0j2G/b4EB
-        ONOnnHLQ9PNAUV8QUjQAPaxaXRqWnjt+OxdEfbV9evkI7uK//nHt4CDmfoFo/X+RtDijYKwKhf28W
-        AP/sr27g==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyJSb-0001BB-Ve; Wed, 22 Jul 2020 18:27:22 +0000
-Subject: Re: [PATCH 2/2] crypto: Ingenic: Add hardware RNG for Ingenic JZ4780
- and X1000.
-To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, arnd@arndb.de,
-        gregkh@linuxfoundation.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, robh+dt@kernel.org
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, hadar.gat@arm.com,
-        prasannatsmkumar@gmail.com, krzk@kernel.org, masahiroy@kernel.org,
-        xuzaibo@huawei.com, daniel.thompson@linaro.org,
-        tmaimon77@gmail.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-References: <20200722164007.77655-1-zhouyanjie@wanyeetech.com>
- <20200722164007.77655-3-zhouyanjie@wanyeetech.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <779949c8-8b1a-52ed-f695-7006f0045d7e@infradead.org>
-Date:   Wed, 22 Jul 2020 11:27:14 -0700
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=M+MTFjItVYn5UUzFiz+lCPyYWBp1BfGnxiJ0Tf+VoJo=; b=m2jMMNXauRO4tOZfMdfUX5gkNr
+        e4kPwVmHXgmkQqLqYhQ+CzOCbGJdRNUPBdK8SMuHYAxV/3RqZLxUcExEl8JElVtZUL7vb1/ffkAzQ
+        mkKzhMS+eCM6m2KBQenQ7X6P5jO32zMudmkcJdgCLYMFLXKR3rO0AHNp3jy0zUJ3JXOzbMKyXVHxh
+        Z2oQMzKxsltt06mvZQvgpjcJvB+THVYPqvzXv8YWQ2Cdia5dSnHovl2tgmO4qp6XSqT21fI2uwN+3
+        DlHT52Rz7bkb9Fi1HMeZ0WO9l7TzwPToSQt+5QQ3MVgRXnH/g/NCc9OtkW2Nyw0qdt9JwSbpSb2Yx
+        uTVTBLMA==;
+Received: from [201.162.161.253] (port=39420 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jyJNQ-000X1c-I9; Wed, 22 Jul 2020 13:22:00 -0500
+Subject: Re: [PATCH][next] wil6210: Avoid the use of one-element array
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Maya Erez <merez@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200715215755.GA21716@embeddedor>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <80fe7b75-a324-9af1-38a9-ee259b886d7e@embeddedor.com>
+Date:   Wed, 22 Jul 2020 13:27:40 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200722164007.77655-3-zhouyanjie@wanyeetech.com>
+In-Reply-To: <20200715215755.GA21716@embeddedor>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.161.253
+X-Source-L: No
+X-Exim-ID: 1jyJNQ-000X1c-I9
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [201.162.161.253]:39420
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 18
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/20 9:40 AM, 周琰杰 (Zhou Yanjie) wrote:
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 0ad17efc96df..fcb06027cd88 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -257,6 +257,21 @@ config HW_RANDOM_IMX_RNGC
+Hi all,
+
+Friendly ping: who can take this? :)
+
+Thanks
+--
+Gustavo
+
+On 7/15/20 16:57, Gustavo A. R. Silva wrote:
+> One-element arrays are being deprecated[1]. Replace the one-element
+> array with a simple value type 'u8 reserved'[2], once this is just
+> a placeholder for alignment.
+> 
+> [1] https://github.com/KSPP/linux/issues/79
+> [2] https://github.com/KSPP/linux/issues/86
+> 
+> Tested-by: kernel test robot <lkp@intel.com>
+> Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/0-day/wil6210-20200715.md
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/net/wireless/ath/wil6210/wmi.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+> index 9affa4525609..beb53cac329b 100644
+> --- a/drivers/net/wireless/ath/wil6210/wmi.h
+> +++ b/drivers/net/wireless/ath/wil6210/wmi.h
+> @@ -3086,7 +3086,7 @@ struct wmi_scheduling_scheme_event {
+>  	/* wmi_sched_scheme_failure_type */
+>  	u8 failure_type;
+>  	/* alignment to 32b */
+> -	u8 reserved[1];
+> +	u8 reserved;
+>  } __packed;
 >  
->  	  If unsure, say Y.
->  
-> +config HW_RANDOM_INGENIC_RNG
-> +	tristate "Ingenic Random Number Generator support"
-> +	depends on HW_RANDOM
-> +	depends on MACH_JZ4780 || MACH_X1000
-> +	default HW_RANDOM
-> +	---help---
-
-Just use:
-	help
-here. See this for why:
-
-commit 8f268881d7d278047b00eed54bbb9288dbd6ab23
-Author: Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue Dec 17 20:51:51 2019 +0900
-
-    kconfig: remove ---help--- from documentation
-    
-    Since commit 84af7a6194e4 ("checkpatch: kconfig: prefer 'help' over
-    '---help---'"), scripts/checkpatch.pl warns the use of ---help---.
-    
-    Kconfig still supports ---help---, but new code should avoid using it.
-    Let's stop advertising it in documentation.
-
-> +	  This driver provides kernel-side support for the Random Number Generator
-> +	  hardware found in ingenic JZ4780 and X1000 SoC. MIPS Creator CI20 uses
-> +	  JZ4780 SoC, YSH & ATIL CU1000-Neo uses X1000 SoC.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called ingenic-rng.
-> +
-> +	  If unsure, say Y.
-> +
->  config HW_RANDOM_NOMADIK
->  	tristate "ST-Ericsson Nomadik Random Number Generator support"
->  	depends on ARCH_NOMADIK
-
-thanks.
--- 
-~Randy
-
+>  /* WMI_RS_CFG_CMDID - deprecated */
+> 
