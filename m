@@ -2,141 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDBC22A2B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E3022A2BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733059AbgGVWxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 18:53:07 -0400
-Received: from mail-eopbgr680052.outbound.protection.outlook.com ([40.107.68.52]:15239
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726447AbgGVWxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 18:53:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gGdOG/zS6p49x+bqoKMNQnW/oSAUng1DZmJLEoS7KNq01O1GKoTaysV4aRM1hw3M5BsZPI/xPsICumTepdSRlKi/ICN7E4NlMoV03f2J48RRP4HGEHI61dYUwcGc0MGwAxCY9hY3MTM05a3Elh4VH7FqB+STdF62escsl9BttUKtUh/4HSSLqaMDkChDf7HJslWw9HcRV7TkrLhTEKHr3eXIkNZ1Og21Q75xYlW0/hiviJOvNfd9iJboyEifG+iQWVKyGJvnKsBoDWyOcCOyUEv5z6gJHVLz3QHyjWDfAf0tq4gTVfSWrfzHxZWTWUg3T2owFW5ivLIn1XfQ4d46ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U9dmnQYw+8OpAG19bu3lH7k1jhjV2eiNtRJFcHo/Qog=;
- b=iJenZH3qltnrsMjCbR3xYrgG/Tn0Yigx92e9kkHM5OR78wq0fxMcOvKVGHUiKmazR5420qE9wN13kU15NE8N2gAkfYBIecSm4UF/TvtYstApKzOM0ly4SU5CWxXy82GiWHEnq9FTBJhdEtBqWBzjpIdYL9xgJVYzMmdSrGU8DE7Dylk/ZAUPFQ0lIFy+r7aG92DWZsyc1o/T9It/TiESzVYh4sLJjelKWySfVc4g3/eR2kkd6hBLbCb4z64guLPjjxK/AVrMiJHdwoUYjB+UkI+wONnUjcTkfJt56+ZToXbE5T7dXsWrPBAanhogtY04U26UszlF+35HMv7jWiKhBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U9dmnQYw+8OpAG19bu3lH7k1jhjV2eiNtRJFcHo/Qog=;
- b=TpH3Bfin/8blXGWjnzWaX6T89G/VxAsJaP+vsLsvXbEBoOR0UpdFd1NJGHgq/kLDpKtOzKEQXQIGs2sQ9Baav8GwsepzLx7c0MCpXyiyPJkjpNDkzI/Q+gJRy02jckoSh2Fa4Nv2gTASSlDD+foOHwp/n5P5GzQu+u4W8RBCVkc=
-Received: from BL0PR05MB7186.namprd05.prod.outlook.com (2603:10b6:208:1ca::14)
- by MN2PR05MB6223.namprd05.prod.outlook.com (2603:10b6:208:cb::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.14; Wed, 22 Jul
- 2020 22:53:02 +0000
-Received: from BL0PR05MB7186.namprd05.prod.outlook.com
- ([fe80::885a:c376:7d71:ca6c]) by BL0PR05MB7186.namprd05.prod.outlook.com
- ([fe80::885a:c376:7d71:ca6c%7]) with mapi id 15.20.3216.015; Wed, 22 Jul 2020
- 22:53:02 +0000
-From:   Mike Stunes <mstunes@vmware.com>
-To:     Joerg Roedel <jroedel@suse.de>
-CC:     Joerg Roedel <joro@8bytes.org>, "x86@kernel.org" <x86@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v4 51/75] x86/sev-es: Handle MMIO events
-Thread-Topic: [PATCH v4 51/75] x86/sev-es: Handle MMIO events
-Thread-Index: AQHWWdfdDTzyqLev5U6Jd/iJZ+m0yKkSkJaAgAC5dQCAAPf4gA==
-Date:   Wed, 22 Jul 2020 22:53:02 +0000
-Message-ID: <7020C1D2-5900-4AD8-ADCD-04A571DF2EA7@vmware.com>
-References: <20200714120917.11253-1-joro@8bytes.org>
- <20200714120917.11253-52-joro@8bytes.org>
- <40D5C698-1ED2-4CCE-9C1D-07620A021A6A@vmware.com>
- <20200722080530.GH6132@suse.de>
-In-Reply-To: <20200722080530.GH6132@suse.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [2601:600:9e7f:eac1:5dd4:d88d:97ba:df70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e460f2fa-e052-453e-f566-08d82e91fd2e
-x-ms-traffictypediagnostic: MN2PR05MB6223:
-x-microsoft-antispam-prvs: <MN2PR05MB62231424E28051203B419606C8790@MN2PR05MB6223.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FJBsnX6kJyDU3Y1u1t4Q/Z0U2cdQ+tE/uPwgEKfnDnQW7g/fJJQArtlhVG39aa6hk/cpvvyhCyPi7uknAkcb4s7fxsVPh8PlejNBOX8m0/3Pt6MQ8lkrq+E9xC1LYuFANTCW5nI4/pbFtH/f1DvFAJHTTg19MCRtMwWBogodAs6cw3vsAb0Uvt1T+RiYte5mulsc0dcwvz6JMYlXw7dxUHTLopBTamHAe5V3tEF53qZcf8VTpiXwxhJALgT432TimrVgMiD6U+WGsGvitM3oEi4lbzHaCzuBpr7ZodvJn0/hxf3b/fmn9A/4Zq6Z1hXu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR05MB7186.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(366004)(396003)(376002)(39860400002)(6506007)(53546011)(316002)(478600001)(5660300002)(186003)(4326008)(33656002)(54906003)(71200400001)(6512007)(86362001)(6486002)(6916009)(66446008)(64756008)(66476007)(76116006)(91956017)(66946007)(2616005)(66556008)(8676002)(8936002)(36756003)(2906002)(7416002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: BX8HZnpKozFGz6+j+Nv9OGmWz6sRZ9nhQIWR73Yn+HPGeSdH8c/zEP/1FP6f6+1qJM51bedK+k8vEKQ13U2Aeh8XPZBtsqfbtIK3khSOhnQH27q8l9izMnj1IJlBDYuaD9uiTC2e6mmVElBPtcQ611Sahd0WQcyFHWDe1zVjqzqFNGeni0RrzUhmcBlkp2zpONnv8y5Q5Hd6RW2kdK/kRrxONeu71lO3fYegfRinsaZDO/28IDA/l3XKxQ9LdCiZ4nYBoUnPW05h74++cBc9Zofq7aGzNYRe4V+LLDfnv857Z+l3AdLkQNttylOE/Yi+/7FKzD+j9QC0HYSUfeS/7a8vUENr8kG60IKV0cugiRr8sj5lxr9vjNEa3FcrEtAKjTDu0dGfOdhQA3dVX3h2n/xIfL/mg5cQ62yEvtwjNSSo7HVQrp1vfZ3S4QNKRL8gY6OvhOgEP3MOf9FNVyMQeQ2ei3/zqINEulLlPizv/2WRDfRBt5lYicyMJGJPZiX0+bE17ymijyfrjzphZJNvqL970xDxReibySb3PHDne3VY2mRLjkaiFHn4Vai2e7Xl
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <51B15EE8EF8CB4429AD15694F86720A0@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1732542AbgGVW6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 18:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgGVW6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 18:58:52 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977E6C0619DC;
+        Wed, 22 Jul 2020 15:58:51 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id f12so4235256eja.9;
+        Wed, 22 Jul 2020 15:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GeyuJAq2Ee6JuyxFY1udlGW2zzmyn23uQocNW0VtTD8=;
+        b=IOJzfHT53iwUNn/wgLRW2GaQFGrviODURnIcE4W884Nk5F3hZfGHJ6J7j02NAM2Yqr
+         b0ayDW4M//p534DILrtOKJh6AUuSKtnBDAyR/rmHfPa8hDr6Yg3mJT+KEHyBrZyOb8Tz
+         CLPwMIQDwmwjh1axasI6RHnkLHpHYE0gsrKYfo/Z5FwgoXHTdDgSWF0w6ZFcS79upyG4
+         JUcQoc+XdF74OlO7laWLpl9iffBSGKnfWfAVRyzWFaAdg/FLtnYbwn5BSaHwlbOEOHqG
+         YaPNAz06vbU9CihJGNeOSFhPXw8xPvNvWYS4pyEEKeOdMTomH+7Mg+6uJdb6Pl5FZ4Y6
+         T3bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GeyuJAq2Ee6JuyxFY1udlGW2zzmyn23uQocNW0VtTD8=;
+        b=fYq6hyJ3PFef9lNK2CsZPw9hkPlasBWj10DbaZcaP0byfy66TSMmnTgiye0QDTdtBN
+         CURzZj1OmZZjQ/dLzvE6wyLzEC8Z6xwCiGFRgDpe5/bqkXY6B6GFv16zO5rjqRKChwJY
+         eqCRCRgeftkm9ZDzki3lTJKJunJRXYu8Gb3LMzWx9rTf7dtLsMHp2KircQM1vLfmOeqe
+         e7qt+R9gxEL7prEtkboDKVvEdkHHqgxDhwJ4Pp4xJCjEBlJn47bPnGQSwcNFV+1B1hq1
+         oH6Rvi3Fhe7xAhXZsJ/HXF0tEPQOPmzAMdGiM7FtStoxEH7X6+oINDSgWJdgjSomP0CZ
+         zzSA==
+X-Gm-Message-State: AOAM531xJG/KNCt88uS3g30t2X+jx/Rf3dqTVCavJO0nXOgEqyjF2tvO
+        R5WBdFpyZ2TFCamTM5lkVHk=
+X-Google-Smtp-Source: ABdhPJwGr/SYpELv2Sz9/cU7nM97V9MhLV/YzpgSG+Tqxra54AFuTmhtudfhYHE3Wt+Fp3B2evkbGw==
+X-Received: by 2002:a17:906:c285:: with SMTP id r5mr1684222ejz.153.1595458730038;
+        Wed, 22 Jul 2020 15:58:50 -0700 (PDT)
+Received: from skbuf ([188.25.219.134])
+        by smtp.gmail.com with ESMTPSA id s18sm717489ejm.16.2020.07.22.15.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 15:58:49 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 01:58:47 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jonathan McDowell <noodles@earth.li>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Matthew Hagan <mnhagan88@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] net: dsa: qca8k: Add 802.1q VLAN support
+Message-ID: <20200722225847.ssuxebcwr3fr5fh7@skbuf>
+References: <20200721171624.GK23489@earth.li>
+ <1bf941f5-fdb3-3d9b-627a-a0464787b0ab@gmail.com>
+ <20200722193850.GM23489@earth.li>
+ <77c136d0-c183-ebb5-5954-647e08c8ec18@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR05MB7186.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e460f2fa-e052-453e-f566-08d82e91fd2e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 22:53:02.4380
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HTtqvKlqcRvzATVHtDlriYmOt+qVgFVaMGyimPTeeYYd4cI3NrmyHVeOFOB3TJgShq7dYCIRQilLvE+RfZPzng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6223
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <77c136d0-c183-ebb5-5954-647e08c8ec18@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 22, 2020 at 03:36:38PM -0700, Florian Fainelli wrote:
+> On 7/22/20 12:38 PM, Jonathan McDowell wrote:
+> > On Tue, Jul 21, 2020 at 10:26:07AM -0700, Florian Fainelli wrote:
+> >> On 7/21/20 10:16 AM, Jonathan McDowell wrote:
+> >>> This adds full 802.1q VLAN support to the qca8k, allowing the use of
+> >>> vlan_filtering and more complicated bridging setups than allowed by
+> >>> basic port VLAN support.
+> >>>
+> >>> Tested with a number of untagged ports with separate VLANs and then a
+> >>> trunk port with all the VLANs tagged on it.
+> >>
+> >> This looks good to me at first glance, at least not seeing obvious
+> >> issue, however below are a few questions:
+> > 
+> > Thanks for the comments.
+> > 
+> >> - vid == 0 appears to be unsupported according to your port_vlan_prepare
+> >> callback, is this really the case, or is it more a case of VID 0 should
+> >> be pvid untagged, which is what dsa_slave_vlan_rx_add_vid() would
+> >> attempt to program
+> > 
+> > I don't quite follow you here. VID 0 doesn't appear to be supported by
+> > the hardware (and several other DSA drivers don't seem to like it
+> > either), hence the check; I'm not clear if there's something alternate I
+> > should be doing in that case instead?
+> 
+> Is it really that the hardware does not support it, or is it that it was
+> not tried or poorly handled before? If the switch supports programming
+> the VID 0 entry as PVID egress untagged, which is what
+> dsa_slave_vlan_rx_add_vid() requests, then this is great, because you
+> have almost nothing to do.
+> 
+> If not, what you are doing is definitively okay, because you have a
+> port_bridge_join that ensures that the port matrix gets configured
+> correctly for bridging, if that was not supported we would be in trouble.
 
+Things added by dsa_slave_vlan_rx_add_vid() are definitely not "pvid
+untagged", they are installed with flags=0 which means "non-pvid,
+egress-tagged", aka a simple vlan with tagged ingress and egress.
 
-> On Jul 22, 2020, at 1:05 AM, Joerg Roedel <jroedel@suse.de> wrote:
->=20
-> Hmm, I have a theory ...
->=20
-> On Tue, Jul 21, 2020 at 09:01:44PM +0000, Mike Stunes wrote:
->> If I remove the call to probe_roms from setup_arch, or remove the calls =
-to romchecksum from probe_roms, this kernel boots normally.
->>=20
->> Please let me know of other tests I should run or data that I can collec=
-t. Thanks!
->=20
-> ... can you please try the attached diff?
->=20
-> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-> index 251d0aabc55a..e1fea7a38019 100644
-> --- a/arch/x86/kernel/sev-es.c
-> +++ b/arch/x86/kernel/sev-es.c
-> @@ -389,7 +389,8 @@ static bool vc_slow_virt_to_phys(struct ghcb *ghcb, s=
-truct es_em_ctxt *ctxt,
-> 	pgd_t *pgd;
-> 	pte_t *pte;
->=20
-> -	pgd =3D pgd_offset(current->active_mm, va);
-> +	pgd =3D __va(read_cr3_pa());
-> +	pgd =3D &pgd[pgd_index(va)];
-> 	pte =3D lookup_address_in_pgd(pgd, va, &level);
-> 	if (!pte) {
-> 		ctxt->fi.vector     =3D X86_TRAP_PF;
+The case of VLAN 0 is special because according to 802.1Q it is "not a
+VLAN", but simply a way to transmit the other stuff in a VLAN header,
+namely a class of service (VLAN PCP). The VLAN ID should not be used for
+segregation of forwarding domains, should not be assigned as port-based
+VLAN to untagged traffic (from what I recall from the 802.1Q standard)
+and should always be sent as egress-tagged.
 
-Thanks Joerg! With that change in place, this kernel boots normally. What w=
-as the problem?
+The purpose of the code in the 8021q module that is adding VLAN 0 to our
+RX filter is clear:
 
+commit ad1afb00393915a51c21b1ae8704562bf036855f
+Author: Pedro Garcia <pedro.netdev@dondevamos.com>
+Date:   Sun Jul 18 15:38:44 2010 -0700
+
+    vlan_dev: VLAN 0 should be treated as "no vlan tag" (802.1p packet)
+
+    - Without the 8021q module loaded in the kernel, all 802.1p packets
+    (VLAN 0 but QoS tagging) are silently discarded (as expected, as
+    the protocol is not loaded).
+
+    - Without this patch in 8021q module, these packets are forwarded to
+    the module, but they are discarded also if VLAN 0 is not configured,
+    which should not be the default behaviour, as VLAN 0 is not really
+    a VLANed packet but a 802.1p packet. Defining VLAN 0 makes it almost
+    impossible to communicate with mixed 802.1p and non 802.1p devices on
+    the same network due to arp table issues.
+
+    - Changed logic to skip vlan specific code in vlan_skb_recv if VLAN
+    is 0 and we have not defined a VLAN with ID 0, but we accept the
+    packet with the encapsulated proto and pass it later to netif_rx.
+
+    - In the vlan device event handler, added some logic to add VLAN 0
+    to HW filter in devices that support it (this prevented any traffic
+    in VLAN 0 to reach the stack in e1000e with HW filter under 2.6.35,
+    and probably also with other HW filtered cards, so we fix it here).
+
+    - In the vlan unregister logic, prevent the elimination of VLAN 0
+    in devices with HW filter.
+
+    - The default behaviour is to ignore the VLAN 0 tagging and accept
+    the packet as if it was not tagged, but we can still define a
+    VLAN 0 if desired (so it is backwards compatible).
+
+    Signed-off-by: Pedro Garcia <pedro.netdev@dondevamos.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+So maybe it's worth checking what is your switch's behavior with regard
+to VLAN 0. If it already does what's supposed to, then you might just as
+well stop fighting the system and silently accept the configuration
+while not doing anything.  As Russell implied, the bridge can't add a
+VLAN of 0. It is just the 8021q module that does it.  The fact that we
+have the same callbacks being used for both in DSA is merely an artefact
+of implementation.
+
+> 
+> > 
+> >> - since we have a qca8k_port_bridge_join() callback which programs the
+> >> port lookup control register, putting all ports by default in VID==1
+> >> does not break per-port isolation between non-bridged and bridged ports,
+> >> right?
+> > 
+> > VLAN_MODE_NONE (set when we don't have VLAN filtering enabled)
+> > configures us for port filtering, ignoring the VLAN info, so I think
+> > we're good here.
+> 
+> OK, good, so just to be sure, there is no cross talk between non-bridged
+> ports and bridged ports even when VLAN filtering is not enabled on the
+> bridge, right?
+> -- 
+> Florian
+
+Thanks,
+-Vladimir
