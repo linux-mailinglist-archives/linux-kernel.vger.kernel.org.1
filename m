@@ -2,137 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8D1229727
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98A9229733
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbgGVLIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 07:08:22 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47574 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726599AbgGVLIW (ORCPT
+        id S1726559AbgGVLMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 07:12:23 -0400
+Received: from sonic304-9.consmr.mail.bf2.yahoo.com ([74.6.128.32]:34539 "EHLO
+        sonic304-9.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726028AbgGVLMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:08:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595416100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I+s91G7/3YaWvofNQl3jYEEEmAS3FwXQUuV6BeKXMpI=;
-        b=eozjfHKCkgpCE0w4M0xtlspbCrYTxr2hJKBuMX4uMGGmHKJxQ1jcAViL9rRIrbs46nf4NP
-        dbIhYhb69ucrzMQ2lvTDxmF4hJZ0qvzKiNFSX0AUVR8f0eNIE1oOP/zDhjTS0hNCcxv6Mz
-        KkXOTc++WByrS1qT6AUNlAOrGt8vSxg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-GuygH6u4PZ-IUkhxS8mhpw-1; Wed, 22 Jul 2020 07:08:16 -0400
-X-MC-Unique: GuygH6u4PZ-IUkhxS8mhpw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F4A9800C64;
-        Wed, 22 Jul 2020 11:08:14 +0000 (UTC)
-Received: from krava (unknown [10.40.194.40])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C7F556931A;
-        Wed, 22 Jul 2020 11:08:11 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 13:08:10 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH v2] perf evsel: Don't set
- sample_regs_intr/sample_regs_user for dummy event
-Message-ID: <20200722110810.GD981884@krava>
-References: <20200720010013.18238-1-yao.jin@linux.intel.com>
- <20200720091748.GH760733@krava>
- <af1da971-5c60-4c17-e5d9-01430c928592@linux.intel.com>
+        Wed, 22 Jul 2020 07:12:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595416341; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=VQCndyh4808w+2KY6wYD/nswAKOvu5rMF85LInQHfuWCYBj9tifOVPvBnSQJJF59413vHCqGFyJUyMoIjLhL+tyq6a5dhuQAH1j4MJQ/YHoiVu18tEKKAMR468olIEOmtn2VxIcf3H9cAmaCthIc93TPDlnW1ESsLoJ5l4PjCjizBfVqgnlpa7hk6gpubmvK2As29LjS4arxEm0eThsTU+wLUGvKD1QKkAAfGoFt97TgltpXOugYZhFw4uGdDqConjUJjPdgdfRLGHl4x9jlnJl6TWX5BpW0yrihEiguoaEIRm0pAGovpsFNMg/QVyjyNUjLp6zWPVo2FCVna8newQ==
+X-YMail-OSG: l1pOd6IVM1nsVjwOlPJUZiiTB2yi3uZ44vAEf.nA1PQmaZW58vQBfuTkXzdcnqB
+ OCfx50_zJ7YFDXPLBuddY3KpOvDDwZAMQtamxwM_0ua4znjuXmKMSTUHoch4FWIFivvjJCOkDYVe
+ w_O3lsnT_w4JoD6Dn.Jy1I4Op5sbMQQyVmcu649yIG9ovApHjuBd4FNA59tlui8bbos.6vFzq.CR
+ s0Xto3FpXhNhRyuX4VQiFl3SftrT_Ge4yJinBn_6Bg5pUVZtWfGbDc0lrvcGEItg6GyfWDKCVmm0
+ .SFicjpsqRkgnCq0gziRsEIgDoU9wocHLGFyX9GDD3a7BsJjy1ofPyhY3szBszogEqGtiXFCv37j
+ zOkvHrEYrLTZqayRyYrMlIbKbS3NSWUdeaq2Jm7oGeuL_AP_5Wpex7nBiU1Gcu5NnJspe094uOtJ
+ 3G1Bcf8yERP1uQO9ePCrKiPoNa1LyXUVvi4wVCR2fY_HXlgCsHdu3EmDUIlV8bJELs_2tDVqMt1n
+ 2K3UYng1HOwOa60dFuQWBsOJvqWSfz21k60pyLqF98Eegsdi0mFQ9GW3DjNdoSXYhd0UejswK3zF
+ igvJZhK1DHeDxqtG1daPYQmBdsB3a5ZGGAOtb7j_JWy9eSk5VoFphaaj2rnjVhm8bsZ7s.AtobH.
+ lxwgJjgTKlM5y81rH.IUemJ.7dQIqmtzA3rruMqgPwl7NYAm7MUnB4XAfzCYH3RkNntDMkAmYn5b
+ XxVrHI6HHrNLnKYUTZmR6LVVfFL_2bDigGe.M3aEd815HBNQ4JSVwP1d9a.n1kqmLva28QslFtfp
+ z6BfMoqzkpm.hNqdtBcEbMUOYLy0xK.ZDZefaI7iQ1RS720jQmmQ7ZSckYQZ2j06cvJUalArFVVa
+ _KNysDfmhNdLVUOd5rZsO4C58uf_lPzQ3g1isNdL3RaeQaee1Kxpla5e1ag3mmGAgETytbAC89p4
+ gBynEE2Xwt.2SojOaeWtejiHl.ckj8Kmgf.MjcEWc7Xn86HrV_6zrnvfXd1GKMnrGMWXVlLQcFW0
+ 7E4RnNI_Ly1mfMIjMoswDsive92kPIogK78G8OOlhg.IbHczfd0gAnVAIaPb6waP.6r2p0DpEv0v
+ Zp6i7k90RpryXl4V4m0145O8jBAQQCgIHQs2aIksm86Tgd6m4mIA8hpd.6RPbo39gBTuUAaB6yAQ
+ ok0Sl3hJTGH_wCu2g7deS5S8ujPdI0SaT7C15uGuPGM7B6fI0w39RyZbS4yQaCX.SRCZ2JnDdNJ9
+ V08Olo5qnWhZklhky9AdmjtETo__FkD1PSzNOcgJMOr6YTaoKvwEy4gd34KsgICZlLjz6zLgRyco
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.bf2.yahoo.com with HTTP; Wed, 22 Jul 2020 11:12:21 +0000
+Date:   Wed, 22 Jul 2020 11:12:17 +0000 (UTC)
+From:   Ms Lisa Hugh <lisa.hugh111@gmail.com>
+Reply-To: ms.lisahugh000@gmail.com
+Message-ID: <1026966467.3792122.1595416337794@mail.yahoo.com>
+Subject: BUSINESS MASSAGE FROM(Ms Lisa hugh).
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af1da971-5c60-4c17-e5d9-01430c928592@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1026966467.3792122.1595416337794.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 01:00:03PM +0800, Jin, Yao wrote:
 
-SNIP
 
-> > > 
-> > > If we use -IXMM0, the attr>sample_regs_intr will be set with
-> > > PERF_REG_EXTENDED_MASK bit.
-> > > 
-> > > It doesn't make sense to set attr->sample_regs_intr for a
-> > > software dummy event.
-> > > 
-> > > This patch adds dummy event checking before setting
-> > > attr->sample_regs_intr and attr->sample_regs_user.
-> > > 
-> > > After:
-> > >    # ./perf record -e cycles:p -IXMM0 -a -- sleep 1
-> > >    [ perf record: Woken up 1 times to write data ]
-> > >    [ perf record: Captured and wrote 0.413 MB perf.data (45 samples) ]
-> > > 
-> > >   v2:
-> > >   ---
-> > >   Rebase to perf/core
-> > > 
-> > > Fixes: 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis")
-> > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > > ---
-> > >   tools/perf/util/evsel.c | 6 ++++--
-> > >   1 file changed, 4 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > > index 9aa51a65593d..11794d3b7879 100644
-> > > --- a/tools/perf/util/evsel.c
-> > > +++ b/tools/perf/util/evsel.c
-> > > @@ -1014,12 +1014,14 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
-> > >   	if (callchain && callchain->enabled && !evsel->no_aux_samples)
-> > >   		evsel__config_callchain(evsel, opts, callchain);
-> > > -	if (opts->sample_intr_regs && !evsel->no_aux_samples) {
-> > > +	if (opts->sample_intr_regs && !evsel->no_aux_samples &&
-> > > +	    !evsel__is_dummy_event(evsel)) {
-> > 
-> > hum, I thought it'd look something like this:
-> > 
-> >    if (opts->sample_intr_regs && (!evsel->no_aux_samples || !evsel__is_dummy_event(evsel))
-> > 
-> > but I'm not sure how no_aux_samples flag works exactly.. so it might be
-> > correct.. just making sure ;-)
-> > 
-> > cc-ing Adrian
-> > 
-> > jirka
-> > 
-> > 
-> 
-> no_aux_samples is set to false by default and it's only set to true by pt, right?
-> 
-> So most of the time, !evsel->no_aux_samples is always true.
-> 
-> if (opts->sample_intr_regs && (!evsel->no_aux_samples || !evsel__is_dummy_event(evsel)) {
-> 	attr->sample_regs_intr = opts->sample_intr_regs;
-> 	evsel__set_sample_bit(evsel, REGS_INTR);
-> }
-> 
-> So even if the evsel is dummy event, the condition check is true. :(
-> 
-> Or maybe I misunderstand anything?
+Dear Friend,
 
-I was just curious, because I did not follow the no_aux_samples
-usage in detail.. so how about a case where:
+I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
 
-   evsel->no_aux_samples == true and evsel__is_dummy_event(evsel) = false
+Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
 
-then the original condition will be false for non dummy event
+I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
 
-  (opts->sample_intr_regs && !evsel->no_aux_samples && !evsel__is_dummy_event(evsel))
+Note/ 50% for you why 50% for me after success of the transfer to your bank account.
 
-is that ok?
+Below information is what i need from you so will can be reaching each other
 
-jirka
+1)Full name ...
+2)Private telephone number...
+3)Age...
+4)Nationality...
+5)Occupation ...
 
+
+Thanks.
+
+Ms Lisa hugh.
