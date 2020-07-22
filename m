@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FE5229412
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EAA22944B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730856AbgGVIxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 04:53:53 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:45061 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgGVIxx (ORCPT
+        id S1731217AbgGVJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730189AbgGVJAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:53:53 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 06M8rcie010699
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 01:53:38 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 22 Jul 2020 01:53:37 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mm/dmapool.c: add lock protect in dma_pool_destroy
-Date:   Wed, 22 Jul 2020 17:05:16 +0800
-Message-ID: <20200722090516.28829-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 22 Jul 2020 05:00:52 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D31C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:00:52 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id gc15so2607841pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HeJFPP0igl7ucLvw13yGaRspBn89FalzpCYxP/ySa+U=;
+        b=o+3rLH0vwsDC9Oi3Q50ZpevG3jnNOBflXdtW+rK6eqk/fPTzaYXZrUx4WjIVxSt7fI
+         4wf138LnoK//Jx/+mfCgrJWMYatTOR8dghdLI0Q1gINrl/BU3+hqOZ/tadbirmP/if0J
+         fQtQ6YgsXuxKEvM8tvfdpeCzpEBgw/vNotbzHkkWaufNiu4LtIn8QQD+NcY+uOajEoVa
+         m/kHJotYlKk8FvhoK+ZXVlDzXl1HqaNnOtcy50ZYkM3yjygqnwqGpL7n/lNF7MEzVzvA
+         /CxxviS89MshTSmT8c+o9zLCg9xveoLsbuIiBiQcXpU+F7ZVUuDWjJEEuaf+x6dO5tQb
+         fNxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=HeJFPP0igl7ucLvw13yGaRspBn89FalzpCYxP/ySa+U=;
+        b=UxODaC08boMl2GD17rW/MmMmg79nUc07sdFxH8MBlhUgK1cIFbP1tTlKI2GQJFRzAU
+         BwX1S22B4tL8sRrw4fmZ4pwpxY6Aan505g28MHZagG1ZD7Z4OKxwNRJo2ZRQwMObedWX
+         CTukUTBWgAsAUccppBYw9vaC/QZ7K96XkjWNtc7qZrzv5LKGgvGy0TfFI/HQ9+/E32qS
+         ACa5/J92FtvYRzVm2J4fU5LDFPya7Mna4smu/GOOb0e2aZFoHuQTXGKrq7dZPQBZenVc
+         zA4L1dls+XfYLkSosrpsg/CyT46a+O+JoKJ7cI0Ffpzxmpd7K5QJk4HoB+3bR1j1ngUJ
+         uWOw==
+X-Gm-Message-State: AOAM533zmKb92PV+IoqjEg2rwrR1nWDXTkBAjC0DJbf5WQOEnOmHwLfZ
+        RKJBFN9LowBcSTR9Wf4WViU=
+X-Google-Smtp-Source: ABdhPJyRAVWCtdDAaK9Vn98PaP4I9Lj/ivxP2G6XCiOitEIGND6TVYdH88Kut01lmMqc/5phmaICTw==
+X-Received: by 2002:a17:902:8490:: with SMTP id c16mr25199141plo.153.1595408452207;
+        Wed, 22 Jul 2020 02:00:52 -0700 (PDT)
+Received: from localhost.localdomain ([45.124.203.15])
+        by smtp.gmail.com with ESMTPSA id 4sm19645167pgk.68.2020.07.22.02.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 02:00:51 -0700 (PDT)
+From:   Joel Stanley <joel@jms.id.au>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <bbrezillon@kernel.org>
+Cc:     =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi-nor: Remove unused spi-nor.o rule
+Date:   Wed, 22 Jul 2020 18:12:41 +0930
+Message-Id: <20200722084241.193470-1-joel@jms.id.au>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+In "mtd: spi-nor: Prepare core / manufacturer code split" the file was
+refactored into seperate files, so the rule is no longer required.
 
-When traversing "pool->page" linked list, to prevent possible
-other path operations this list, causing it to be destroyed, we
-should add lock protect for this list in dma_pool_destroy func.
-
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+Fixes: a0900d0195d2 ("mtd: spi-nor: Prepare core / manufacturer code split")
+Reported-by: Cédric Le Goater <clg@kaod.org>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 ---
- mm/dmapool.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/mm/dmapool.c b/mm/dmapool.c
-index f9fb9bbd733e..f7375b25af6c 100644
---- a/mm/dmapool.c
-+++ b/mm/dmapool.c
-@@ -267,6 +267,9 @@ static void pool_free_page(struct dma_pool *pool, struct dma_page *page)
- void dma_pool_destroy(struct dma_pool *pool)
- {
- 	bool empty = false;
-+	LIST_HEAD(discard);
-+	struct dma_page *page,*h;
-+	unsigned long flags;
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 653923896205..2ede5ef79b01 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -17,6 +17,5 @@ spi-nor-objs			+= sst.o
+ spi-nor-objs			+= winbond.o
+ spi-nor-objs			+= xilinx.o
+ spi-nor-objs			+= xmc.o
+-obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
  
- 	if (unlikely(!pool))
- 		return;
-@@ -281,8 +284,8 @@ void dma_pool_destroy(struct dma_pool *pool)
- 		device_remove_file(pool->dev, &dev_attr_pools);
- 	mutex_unlock(&pools_reg_lock);
- 
-+	spin_lock_irqsave(&pool->lock, flags);
- 	while (!list_empty(&pool->page_list)) {
--		struct dma_page *page;
- 		page = list_entry(pool->page_list.next,
- 				  struct dma_page, page_list);
- 		if (is_page_busy(page)) {
-@@ -297,8 +300,12 @@ void dma_pool_destroy(struct dma_pool *pool)
- 			list_del(&page->page_list);
- 			kfree(page);
- 		} else
--			pool_free_page(pool, page);
-+			list_move(&page->page_list, &discard);
- 	}
-+	spin_unlock_irqrestore(&pool->lock, flags);
-+
-+	list_for_each_entry_safe(page, h, &discard, page_list)
-+		pool_free_page(pool, page);
- 
- 	kfree(pool);
- }
+ obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
 -- 
-2.26.2
+2.27.0
 
