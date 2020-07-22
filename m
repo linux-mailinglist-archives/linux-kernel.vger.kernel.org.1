@@ -2,148 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA93229F53
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D73229F57
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbgGVSg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgGVSg1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:36:27 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF9DC0619DC;
-        Wed, 22 Jul 2020 11:36:27 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 247A0BDF0B;
-        Wed, 22 Jul 2020 18:36:21 +0000 (UTC)
-Subject: Re: [PATCH for v5.9] mfd: Replace HTTP links with HTTPS ones
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh@kernel.org>
-Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, tony@atomide.com, devicetree@vger.kernel.org
-References: <20200719195613.61458-1-grandmaster@al2klimov.de>
- <20200721161028.GA389086@bogus> <20200722065429.GI621928@dell>
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Message-ID: <df4b92a2-0c19-ca0e-7967-4ec059196835@al2klimov.de>
-Date:   Wed, 22 Jul 2020 20:36:19 +0200
+        id S1732304AbgGVSkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:40:05 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:47304 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726535AbgGVSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 14:40:05 -0400
+Received: from x2f7fa19.dyn.telefonica.de ([2.247.250.25] helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1jyJes-0005Ha-2r; Wed, 22 Jul 2020 20:40:02 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Subject: Re: [PATCH 1/3] arm64: dts: rockchip: Mark rock-pi-4 as rock-pi-4a dts
+Date:   Wed, 22 Jul 2020 20:40:00 +0200
+Message-ID: <2191096.Ll8P9v0SIb@phil>
+In-Reply-To: <20200720105531.367671-1-jagan@amarulasolutions.com>
+References: <20200720105531.367671-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-In-Reply-To: <20200722065429.GI621928@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +
-X-Spam-Level: *
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jagan,
 
-
-Am 22.07.20 um 08:54 schrieb Lee Jones:
-> On Tue, 21 Jul 2020, Rob Herring wrote:
+Am Montag, 20. Juli 2020, 12:55:29 CEST schrieb Jagan Teki:
+> Rock PI 4 has 3 variants of hardware platforms called
+> RockPI 4A, 4B, and 4C.
 > 
->> On Sun, 19 Jul 2020 21:56:13 +0200, Alexander A. Klimov wrote:
->>> Rationale:
->>> Reduces attack surface on kernel devs opening the links for MITM
->>> as HTTPS traffic is much harder to manipulate.
->>>
->>> Deterministic algorithm:
->>> For each file:
->>>    If not .svg:
->>>      For each line:
->>>        If doesn't contain `\bxmlns\b`:
->>>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->>> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->>>              If both the HTTP and HTTPS versions
->>>              return 200 OK and serve the same content:
->>>                Replace HTTP with HTTPS.
->>>
->>> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
->>> ---
->>>   Continuing my work started at 93431e0607e5.
->>>   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->>>   (Actually letting a shell for loop submit all this stuff for me.)
+> - Rock PI 4A has no Wif/BT.
+> - Rock PI 4B has AP6256 Wifi/BT, PoE.
+> - Rock PI 4C has AP6256 Wifi/BT, PoE, miniDP, USB Host enable
+>   GPIO pin change compared to 4B, 4C
 > 
-> I'm guessing something went wrong with your submission, as Rob's reply
-> is the first time I saw this patch.  Did your bot send it to me?
-Yes,
-https://lore.kernel.org/lkml/20200719195613.61458-1-grandmaster@al2klimov.de/
-
+> So move common nodes, properties into dtsi file and include
+> on respective variant dts files.
 > 
-> You really should be fully reviewing anything that gets sent to the
-> MLs.  "Sorry, I didn't send it, my bot did" is not an acceptable
-> excuse for inadequacies.
-See this as an excuse for not stopping sending on demand (if any), not 
-for invalid To:.
-Whoever's (not) in To: of auto-submitted patches would also (not) be 
-there on manual submission because the bot just emulates myself:
-
-
-➜  linux git:(master) cat submit.sh
-#!/bin/bash
-set -exo pipefail
-
-if [ "$(perl scripts/get_maintainer.pl --nogit{,-fallback} --nol "$1" 
-|wc -l)" -eq 0 ]; then
-         GCP=--git-chief-penguins
-else
-         GCP=''
-fi
-
-git send-email --confirm=never "--to=$(
-         perl scripts/get_maintainer.pl $GCP --norolestats "$1" |\
-         perl -pe 'if (/<(.+?)>/) { $_ = "$1\n" }' |\
-         tr \\n , |\
-         perl -pe 's/,$//'
-)" "$@"
-
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/Makefile               |  2 +-
+>  .../{rk3399-rock-pi-4.dts => rk3399-rock-pi-4.dtsi} |  3 ---
+>  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts  | 13 +++++++++++++
+>  3 files changed, 14 insertions(+), 4 deletions(-)
+>  rename arch/arm64/boot/dts/rockchip/{rk3399-rock-pi-4.dts => rk3399-rock-pi-4.dtsi} (99%)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
 > 
->>>   If there are any URLs to be removed completely
->>>   or at least not (just) HTTPSified:
->>>   Just clearly say so and I'll *undo my change*.
->>>   See also: https://lkml.org/lkml/2020/6/27/64
->>>
->>>   If there are any valid, but yet not changed URLs:
->>>   See: https://lkml.org/lkml/2020/6/26/837
->>>
->>>   If you apply the patch, please let me know.
->>>
->>>   Sorry again to all maintainers who complained about subject lines.
->>>   Now I realized that you want an actually perfect prefixes,
->>>   not just subsystem ones.
->>>   I tried my best...
->>>   And yes, *I could* (at least half-)automate it.
->>>   Impossible is nothing! :)
->>>
->>>
->>>   Documentation/devicetree/bindings/mfd/twl-family.txt | 2 +-
->>>   drivers/mfd/hi6421-pmic-core.c                       | 2 +-
->>>   drivers/mfd/lp873x.c                                 | 2 +-
->>>   drivers/mfd/lp87565.c                                | 2 +-
->>>   drivers/mfd/omap-usb-host.c                          | 2 +-
->>>   drivers/mfd/omap-usb-tll.c                           | 2 +-
->>>   drivers/mfd/smsc-ece1099.c                           | 2 +-
->>>   drivers/mfd/ti_am335x_tscadc.c                       | 2 +-
->>>   drivers/mfd/tps65086.c                               | 2 +-
->>>   drivers/mfd/tps65217.c                               | 2 +-
->>>   drivers/mfd/tps65218.c                               | 2 +-
->>>   drivers/mfd/tps65912-core.c                          | 2 +-
->>>   drivers/mfd/tps65912-i2c.c                           | 2 +-
->>>   drivers/mfd/tps65912-spi.c                           | 2 +-
->>>   include/linux/mfd/hi6421-pmic.h                      | 2 +-
->>>   include/linux/mfd/lp873x.h                           | 2 +-
->>>   include/linux/mfd/lp87565.h                          | 2 +-
->>>   include/linux/mfd/ti_am335x_tscadc.h                 | 2 +-
->>>   include/linux/mfd/tps65086.h                         | 2 +-
->>>   include/linux/mfd/tps65217.h                         | 2 +-
->>>   include/linux/mfd/tps65218.h                         | 2 +-
->>>   include/linux/mfd/tps65912.h                         | 2 +-
->>>   22 files changed, 22 insertions(+), 22 deletions(-)
->>>
->>
->> Acked-by: Rob Herring <robh@kernel.org>
-> 
+> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+> index b87b1f773083..42f9e1861461 100644
+> --- a/arch/arm64/boot/dts/rockchip/Makefile
+> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+> @@ -33,7 +33,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-pinebook-pro.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-puma-haikou.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc-mezzanine.dtb
+> -dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4.dtb
+> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4a.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock960.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64-v2.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64.dtb
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> similarity index 99%
+> rename from arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
+> rename to arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> index 3923ec01ef66..c39334b139cc 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> @@ -11,9 +11,6 @@
+>  #include "rk3399-opp.dtsi"
+>  
+>  / {
+> -	model = "Radxa ROCK Pi 4";
+> -	compatible = "radxa,rockpi4", "rockchip,rk3399";
+> -
+>  	chosen {
+>  		stdout-path = "serial2:1500000n8";
+>  	};
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
+> new file mode 100644
+> index 000000000000..d96dd3ebd3e0
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2019 Akash Gajjar <Akash_Gajjar@mentor.com>
+> + * Copyright (c) 2019 Pragnesh Patel <Pragnesh_Patel@mentor.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "rk3399-rock-pi-4.dtsi"
+> +
+> +/ {
+> +	model = "Radxa ROCK Pi 4A";
+> +	compatible = "radxa,rockpi4", "rockchip,rk3399";
+
+please add a new compatible for the board variants, so ideally we'd get
+something like:
+
+	compatible = "radxa,rockpi4a", "radxa,rockpi4", "rockchip,rk3399";
+
+Same for the other 2 board variants + adding them to the binding doc.
+
+Thanks
+Heiko
+
+
+
+
