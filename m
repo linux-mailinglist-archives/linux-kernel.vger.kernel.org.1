@@ -2,204 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24403229E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BE2229E70
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732398AbgGVRYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732022AbgGVRYq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:24:46 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2F3C0619E1;
-        Wed, 22 Jul 2020 10:24:46 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id d18so2245518edv.6;
-        Wed, 22 Jul 2020 10:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IwiK0U+Dhjv5R+D7L68/33/y00cq8SjNmUGfjDZfVnI=;
-        b=d0fnGmpqyawQ6ZYxmbsWP6gl4hH8VZ6oUxfyea9jfSgAlL1mLymyW1fokoRJvAxg+H
-         nlvajnhjmIzmBmnwyvX5fIjTcEWEPB4zIn0sYqns8vUqTWhFpX9fkQV21VFg7foAKeJm
-         KLb48FjP3k9d5Q6Bq0GxgeCjC04cq0vnYj/KDJP94v7UEGtsQdSIaLDi3vOQlC5aVhEV
-         qFj9sYBIjqlkHNfabEpR2Yp6ukw/GsWQfMrQHeUwKFlbmgdWiKpyQMmbC2CWDrSEVp+M
-         zMyn/VPPsXBwVsmG+3TBI6HR3KTrdmUNyXEaSut29/0TdDxDrCyqwPa9oGLlBijDxvnA
-         omsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IwiK0U+Dhjv5R+D7L68/33/y00cq8SjNmUGfjDZfVnI=;
-        b=E5mu/xmy1omN0iNebeoETrWOREbhgh7iW7QIvrAHMElxpWM3o/g0SNIXJVRASDaMsP
-         mXHMpgVuvVVOqwQxifRlG5Uu+yzeIrhUtocLsmZZPNJgaD8NZkgWWb8+aeacs/RHeUsq
-         7lcw6fQ4UmNBkW6gWVmH7dDMlsk5gC9OOiOwsYIY2TX0zfdM5sTxDcwgAZUpTQOoA6OM
-         yilwWYfqn41qEj2YQhyXH09k4UCg1fmqxBMZm7F/+Z3g/pQheSWlLGLg/JMRSB7MFTrx
-         JOo8guWORMpbVyU1enZKITCyArVURmsv9vvSINarXekWlE1h6TzaaBXLZWhX2/mys5Pt
-         VC+w==
-X-Gm-Message-State: AOAM5307h4zdTF33Y9aBDiX5Mw0QEcvquW7XltEfmtaxCoKPHaO7gFTk
-        H+pAIW8p0qvg1RJw5KZt79I=
-X-Google-Smtp-Source: ABdhPJwN32en1tjwVds6TL6SW0e/xdD/1wt15akze77kDflk28RHrFyCzGDTRIFEKftNULw8jz/XBQ==
-X-Received: by 2002:a50:d55b:: with SMTP id f27mr514751edj.312.1595438684854;
-        Wed, 22 Jul 2020 10:24:44 -0700 (PDT)
-Received: from localhost.localdomain ([188.25.219.134])
-        by smtp.gmail.com with ESMTPSA id bt26sm311517edb.17.2020.07.22.10.24.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 10:24:44 -0700 (PDT)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, mpe@ellerman.id.au,
-        devicetree@vger.kernel.org
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, madalin.bucur@oss.nxp.com,
-        radu-andrei.bulie@nxp.com, fido_max@inbox.ru
-Subject: [PATCH devicetree 4/4] powerpc: dts: t1040rdb: add ports for Seville Ethernet switch
-Date:   Wed, 22 Jul 2020 20:24:22 +0300
-Message-Id: <20200722172422.2590489-5-olteanv@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200722172422.2590489-1-olteanv@gmail.com>
-References: <20200722172422.2590489-1-olteanv@gmail.com>
+        id S1730344AbgGVRYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:24:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726980AbgGVRYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 13:24:38 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80ABB20781;
+        Wed, 22 Jul 2020 17:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595438677;
+        bh=tq+JUZsj5AqgXnL2XBkXkqSDwpXEWCNQo14xO0Bbgj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S5ChkHzt67oS2+SLJyglBpw/aN+89aBu7menAe4zmmAVi7hKqKWd6Q6BpqDcuecrA
+         xAkc3/rd7plKxLa20B65NfjxuDhMhu3/K/8iRv9sTNGtiYtaIP7s3ikBc7maCZb6Vo
+         zgZE6HPk6INDytsvNyyIcPTU8PiNHsHgW8nVjgM4=
+Date:   Wed, 22 Jul 2020 10:24:37 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [PATCH 1/2] f2fs: add sysfs symbolic link to kobject with volume
+ name
+Message-ID: <20200722172437.GH3912099@google.com>
+References: <20200719054409.3050516-1-daeho43@gmail.com>
+ <20200719151640.GA301791@kroah.com>
+ <20200722164356.GA3912099@google.com>
+ <20200722170602.GA440171@kroah.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200722170602.GA440171@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the network interface names for the switch ports and hook them up
-to the 2 QSGMII PHYs that are onboard.
+On 07/22, Greg KH wrote:
+> On Wed, Jul 22, 2020 at 09:43:56AM -0700, Jaegeuk Kim wrote:
+> > On 07/19, Greg KH wrote:
+> > > On Sun, Jul 19, 2020 at 02:44:08PM +0900, Daeho Jeong wrote:
+> > > > From: Daeho Jeong <daehojeong@google.com>
+> > > > 
+> > > > Added a symbolic link directory pointing to its device name
+> > > > directory using the volume name of the partition in sysfs.
+> > > > (i.e., /sys/fs/f2fs/vol_#x -> /sys/fs/f2fs/sda1)
+> > > 
+> > > No, please no.
+> > > 
+> > > That is already created today for you in /dev/disk/  The kernel does not
+> > > need to do this again.
+> > > 
+> > > If your distro/system/whatever does not provide you with /dev/disk/ and
+> > > all of the symlinks in there, then work with your distro/system/whatever
+> > > to do so.
+> > 
+> > I don't get the point, since /dev/disk points device node, not any sysfs entry.
+> > Do you mean we need to create symlink to /sys/fs/f2fs/dm-X in /dev/disk?
+> 
+> Huh, no!  It's all done for you today automagically by userspace:
+> 
+> $ tree /dev/disk/by-label/
+> /dev/disk/by-label/
+> ├── boot -> ../../sda1
+> ├── fast_disk -> ../../md0
+> ├── root -> ../../sda2
+> └── stuff -> ../../dm-0
+> 
+> Look on your laptop/desktop/server today for those, there's lots of
+> symlinks in /dev/disk/
 
-A conscious decision was taken to go along with the numbers that are
-written on the front panel of the board and not with the hardware
-numbers of the switch chip ports. The 2 are shifted by 4.
+What I mean is "creating symlink from *userspace*", but the concern is
+"/dev/" looks like being used for device nodes only, not sysfs.
 
-Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
----
- arch/powerpc/boot/dts/fsl/t1040rdb.dts | 111 +++++++++++++++++++++++++
- 1 file changed, 111 insertions(+)
+> 
+> > > Again, no need to do this on a per-filesystem-basis when we already have
+> > > this around for all filesystems, and have had it for 15+ years now.
+> > 
+> > Could you point out where we can get this? And, the label support depends
+> > on per-filesystem design. I'm not sure how this can be generic enough.
+> 
+> Userspace knows how to read labels on a per-filesystem-basis and does so
+> just fine.  That's how it creates those symlinks, no kernel support is
+> needed.
+> 
+> This has been implemented for 15+ years now, it's not a new thing...
+> 
+> Now if your embedded system doesn't support it, that's the userspace of
+> that system's fault, it's not the kernel's fault at all.  Go fix your
+> userspace if you want those things.
 
-diff --git a/arch/powerpc/boot/dts/fsl/t1040rdb.dts b/arch/powerpc/boot/dts/fsl/t1040rdb.dts
-index 40d7126dbe90..28ee06a1706d 100644
---- a/arch/powerpc/boot/dts/fsl/t1040rdb.dts
-+++ b/arch/powerpc/boot/dts/fsl/t1040rdb.dts
-@@ -75,4 +75,115 @@ &mdio0 {
- 	phy_sgmii_2: ethernet-phy@3 {
- 		reg = <0x3>;
- 	};
-+
-+	/* VSC8514 QSGMII PHY */
-+	phy_qsgmii_0: ethernet-phy@4 {
-+		reg = <0x4>;
-+	};
-+
-+	phy_qsgmii_1: ethernet-phy@5 {
-+		reg = <0x5>;
-+	};
-+
-+	phy_qsgmii_2: ethernet-phy@6 {
-+		reg = <0x6>;
-+	};
-+
-+	phy_qsgmii_3: ethernet-phy@7 {
-+		reg = <0x7>;
-+	};
-+
-+	/* VSC8514 QSGMII PHY */
-+	phy_qsgmii_4: ethernet-phy@8 {
-+		reg = <0x8>;
-+	};
-+
-+	phy_qsgmii_5: ethernet-phy@9 {
-+		reg = <0x9>;
-+	};
-+
-+	phy_qsgmii_6: ethernet-phy@a {
-+		reg = <0xa>;
-+	};
-+
-+	phy_qsgmii_7: ethernet-phy@b {
-+		reg = <0xb>;
-+	};
-+};
-+
-+&seville_port0 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_0>;
-+	phy-mode = "qsgmii";
-+	/* ETH4 written on chassis */
-+	label = "swp4";
-+	status = "okay";
-+};
-+
-+&seville_port1 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_1>;
-+	phy-mode = "qsgmii";
-+	/* ETH5 written on chassis */
-+	label = "swp5";
-+	status = "okay";
-+};
-+
-+&seville_port2 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_2>;
-+	phy-mode = "qsgmii";
-+	/* ETH6 written on chassis */
-+	label = "swp6";
-+	status = "okay";
-+};
-+
-+&seville_port3 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_3>;
-+	phy-mode = "qsgmii";
-+	/* ETH7 written on chassis */
-+	label = "swp7";
-+	status = "okay";
-+};
-+
-+&seville_port4 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_4>;
-+	phy-mode = "qsgmii";
-+	/* ETH8 written on chassis */
-+	label = "swp8";
-+	status = "okay";
-+};
-+
-+&seville_port5 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_5>;
-+	phy-mode = "qsgmii";
-+	/* ETH9 written on chassis */
-+	label = "swp9";
-+	status = "okay";
-+};
-+
-+&seville_port6 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_6>;
-+	phy-mode = "qsgmii";
-+	/* ETH10 written on chassis */
-+	label = "swp10";
-+	status = "okay";
-+};
-+
-+&seville_port7 {
-+	managed = "in-band-status";
-+	phy-handle = <&phy_qsgmii_7>;
-+	phy-mode = "qsgmii";
-+	/* ETH11 written on chassis */
-+	label = "swp11";
-+	status = "okay";
-+};
-+
-+&seville_port8 {
-+	ethernet = <&enet0>;
-+	status = "okay";
- };
--- 
-2.25.1
+I'm not talking about whose fault tho. :) By any chance, could you please
+suggest a good location to create a symlink for this sysfs entry?
 
+> 
+> thanks,
+> 
+> greg k-h
