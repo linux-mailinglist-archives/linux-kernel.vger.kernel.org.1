@@ -2,64 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B9422A054
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A758222A057
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732498AbgGVT4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 15:56:09 -0400
-Received: from smtprelay0243.hostedemail.com ([216.40.44.243]:39194 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726525AbgGVT4J (ORCPT
+        id S1732675AbgGVT4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 15:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732579AbgGVT4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 15:56:09 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 7C27781EB13E;
-        Wed, 22 Jul 2020 19:56:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3866:3867:3872:3873:4321:4385:4605:5007:6117:6119:7875:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12294:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:30012:30034:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: event76_220415b26f38
-X-Filterd-Recvd-Size: 1602
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 22 Jul 2020 19:56:07 +0000 (UTC)
-Message-ID: <1e38634d0f1c94eaaa2c9312ffe112734029a316.camel@perches.com>
-Subject: Re: [PATCH] staging: octeon: Indent with tabs instead of spaces
-From:   Joe Perches <joe@perches.com>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 22 Jul 2020 12:56:06 -0700
-In-Reply-To: <20200722171950.GA6176@PKL-UANJUM-LT.pkl.mentorg.com>
-References: <20200722171950.GA6176@PKL-UANJUM-LT.pkl.mentorg.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Wed, 22 Jul 2020 15:56:16 -0400
+Received: from forward500j.mail.yandex.net (forward500j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBAEC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 12:56:16 -0700 (PDT)
+Received: from mxback9o.mail.yandex.net (mxback9o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::23])
+        by forward500j.mail.yandex.net (Yandex) with ESMTP id 246C511C227C;
+        Wed, 22 Jul 2020 22:56:11 +0300 (MSK)
+Received: from localhost (localhost [::1])
+        by mxback9o.mail.yandex.net (mxback/Yandex) with ESMTP id cbnxin5iPL-u9tmBmaW;
+        Wed, 22 Jul 2020 22:56:10 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1595447770;
+        bh=51dZ5riF3qblmz8Y/RJtrYTONRe/tmikNrjShw4rWno=;
+        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
+        b=uaLM44uplP0AxVu4L/bUfvwwH2o/zPjXO7HryFy/6fGfPBrmA/eCH8S9mMU0/t/ai
+         5p/4ykLOzsS0EPGgrkpCFklTzgE8RBzfhUHBR2BjJ7Ibgiuw2idVu7fZI5Ts5aQD17
+         Ba1N2kV60UFu0PnfMakNpFdW3KQf7FK1PsY8fiTw=
+Authentication-Results: mxback9o.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by sas8-da6d7485e0c7.qloud-c.yandex.net with HTTP;
+        Wed, 22 Jul 2020 22:56:09 +0300
+From:   Evgeny Novikov <novikov@ispras.ru>
+Envelope-From: eugenenovikov@yandex.ru
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
+In-Reply-To: <20200722141741.GA1310843@rowland.harvard.edu>
+References: <20200721201558.20069-1-novikov@ispras.ru> <20200722141741.GA1310843@rowland.harvard.edu>
+Subject: Re: [PATCH] usb: gadget: net2280: fix memory leak on probe error handling paths
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Wed, 22 Jul 2020 22:56:09 +0300
+Message-Id: <2097231595446720@mail.yandex.ru>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-22 at 22:19 +0500, Muhammad Usama Anjum wrote:
-> Remove a coding style error. It makes code more readable.
-[]
-> diff --git a/drivers/staging/octeon/ethernet-defines.h b/drivers/staging/octeon/ethernet-defines.h
-[]
-> @@ -27,14 +27,14 @@
->  #define REUSE_SKBUFFS_WITHOUT_FREE  1
->  #endif
->  
-> -#define USE_ASYNC_IOBDMA            (CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE > 0)
-> +#define USE_ASYNC_IOBDMA		(CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE > 0)
->  
->  /* Maximum number of SKBs to try to free per xmit packet. */
-> -#define MAX_OUT_QUEUE_DEPTH 1000
-> +#define MAX_OUT_QUEUE_DEPTH		1000
->  
->  #define FAU_TOTAL_TX_TO_CLEAN (CVMX_FAU_REG_END - sizeof(u32))
+Hi Alan,
 
-If you really like alignment to tabstop,
-why not align FAU_TOTAL_TX_TO_CLEAN too?
+I have neither an appropriate hardware nor an experience to deal with issues that you mentioned. Our framework does not allow to detect them as well at the moment. At last, it seems that rather many drivers can suffer from these issues. So, it would be much better if somebody else will suggest necessary fixes and test them carefully.
 
+BTW, you have already discussed the race within net2280_remove() with my colleague about 3 years ago. But you did not achieve a consensus at that time and no fixes were made after all.
 
+Anyway, one can consider both issues independently on the one fixed by the patch.
+
+-- 
+Evgeny Novikov
+Linux Verification Center, ISP RAS
+http://linuxtesting.org
+
+22.07.2020, 17:17, "Alan Stern" <stern@rowland.harvard.edu>:
+> On Tue, Jul 21, 2020 at 11:15:58PM +0300, Evgeny Novikov wrote:
+>>  Driver does not release memory for device on error handling paths in
+>>  net2280_probe() when gadget_release() is not registered yet.
+>>
+>>  The patch fixes the bug like in other similar drivers.
+>>
+>>  Found by Linux Driver Verification project (linuxtesting.org).
+>>
+>>  Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+>>  ---
+>>   drivers/usb/gadget/udc/net2280.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>>  diff --git a/drivers/usb/gadget/udc/net2280.c b/drivers/usb/gadget/udc/net2280.c
+>>  index 5eff85eeaa5a..d5fe071b2db2 100644
+>>  --- a/drivers/usb/gadget/udc/net2280.c
+>>  +++ b/drivers/usb/gadget/udc/net2280.c
+>>  @@ -3781,8 +3781,10 @@ static int net2280_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>           return 0;
+>>
+>>   done:
+>>  - if (dev)
+>>  + if (dev) {
+>>                   net2280_remove(pdev);
+>>  + kfree(dev);
+>>  + }
+>>           return retval;
+>>   }
+>
+> This patch seems to be the tip of an iceberg. Following through its
+> implications led to a couple of discoveries.
+>
+> usb_del_gadget_udc() calls device_unregister(&gadget->dev). Once this
+> call returns, gadget has to be regarded as a stale pointer. But the
+> very next line of code does:
+>
+>         memset(&gadget->dev, 0x00, sizeof(gadget->dev));
+>
+> for no apparent reason. I'm amazed this hasn't caused problems already.
+> Is there any justification for keeping this memset? It's hard to
+> imagine that it does any good.
+>
+> Similarly, net2280_remove() calls usb_del_gadget_udc(&dev->gadget) at
+> its start, and so dev must be a stale pointer for the entire remainder
+> of the routine. But it gets used repeatedly. Surely we ought to have
+> a device_get() and device_put() in there.
+>
+> Alan Stern
