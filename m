@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870F22297E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E2C2297EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732121AbgGVMJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:09:33 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51102 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731563AbgGVMJc (ORCPT
+        id S1732156AbgGVMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:10:31 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1821 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726462AbgGVMKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:09:32 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E8F8C1C0BDA; Wed, 22 Jul 2020 14:09:30 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 14:09:30 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 066/133] regmap: debugfs: Dont sleep while atomic
- for fast_io regmaps
-Message-ID: <20200722120930.GB25691@duo.ucw.cz>
-References: <20200720152803.732195882@linuxfoundation.org>
- <20200720152806.931980695@linuxfoundation.org>
+        Wed, 22 Jul 2020 08:10:30 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MC2OTE002090;
+        Wed, 22 Jul 2020 14:09:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=vmdNwJ2HewNJLb/ngps5jILq7qbplk1hGoHXd/4wx9c=;
+ b=eVIhmJTFr0bJmK4xQaclpzupG/RzTS98PjSvZWg1AYKan2EwyZHAKFAUT64zwIq1v7+Y
+ fRhyDNJjSSbzUCTsDVyvqv6G46Ad9m1r2BYKO45XWiB4qQ8JswNJxbreqBCRXRH0IL8D
+ H7emYCy1txezRsja1aQ+XNgXqgmL8ju+eeKe+viEO927B4/YrudVtC/V8lhkOAIEZ73d
+ 3FGHuRqsdpP7oww5oaevtuPtWNuvL5fX23UY7f2XPqWLqzs3iAoy9135b3Mv9hcCZCEf
+ GLGosXeitedlugT4a9E7rlB1vHTWAl25OUPtDfi3Nn2DHOjh54+RbyW4bHRhWstt9iOU 9w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32cux0ejnt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 14:09:57 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1DE34100034;
+        Wed, 22 Jul 2020 14:09:53 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D95252AF323;
+        Wed, 22 Jul 2020 14:09:52 +0200 (CEST)
+Received: from [10.48.0.224] (10.75.127.46) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Jul
+ 2020 14:09:52 +0200
+Subject: Re: [Linux-stm32] [PATCH v3 3/3] ARM: dts: stm32: add initial support
+ for stm32mp157-odyssey board
+To:     Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-kernel@vger.kernel.org>, Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>
+References: <20200721185317.208722-1-marcin.sloniewski@gmail.com>
+ <20200721185317.208722-3-marcin.sloniewski@gmail.com>
+From:   Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <73077407-e008-1ae2-266d-1045a73620ba@st.com>
+Date:   Wed, 22 Jul 2020 14:09:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
-Content-Disposition: inline
-In-Reply-To: <20200720152806.931980695@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200721185317.208722-3-marcin.sloniewski@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_05:2020-07-22,2020-07-22 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Marcin,
 
---BwCQnh7xodEAoBMC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/21/20 8:53 PM, Marcin Sloniewski wrote:
+> +&sdmmc2 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a>;
+> +	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_a>;
+> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_a>;
+> +	non-removable;
+> +	no-sd;
+> +	no-sdio;
+> +	st,neg-edge;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&v3v3>;
+> +	vqmmc-supply = <&v3v3>;
+> +	mmc-ddr-3_3v;
+> +	status = "okay";
+> +};
 
-Hi!
+Based on the pins muxed, 8 data lines are configured, but the bus width 
+is set to 4. What is the reason of not setting this property to 8?
 
-> From: Douglas Anderson <dianders@chromium.org>
->=20
-> [ Upstream commit 299632e54b2e692d2830af84be51172480dc1e26 ]
->
-
-> +	err =3D kstrtobool_from_user(user_buf, count, &new_val);
-> +	/* Ignore malforned data like debugfs_write_file_bool() */
-
-> +	err =3D kstrtobool_from_user(user_buf, count, &new_val);
-> +	/* Ignore malforned data like debugfs_write_file_bool() */
-
-I guess that should be "malformed" in both cases.
-
-Plus it would not be bad to share code between those two functions, as
-they are pretty much identical...
-
-Best regards,
-								Pavel
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---BwCQnh7xodEAoBMC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxgsegAKCRAw5/Bqldv6
-8jjKAJ9XM6BGEO5Sp5iv5rUAtHF9vjKwNACfY5+7HjeXDBXVMTH1O0t9/AmYp20=
-=XYw2
------END PGP SIGNATURE-----
-
---BwCQnh7xodEAoBMC--
+Regards,
+Christophe Kerello.
