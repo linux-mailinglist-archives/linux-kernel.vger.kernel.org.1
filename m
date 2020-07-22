@@ -2,170 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC9222A34C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF26222A353
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733207AbgGVXtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 19:49:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728607AbgGVXtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 19:49:18 -0400
-Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99E9320825;
-        Wed, 22 Jul 2020 23:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595461757;
-        bh=1IS+O/7YryqIBEkm5nkaKs05nC51c/pf8nsRFWQ6LdE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=FrgmIjvmA70VVMfZFUF0EKllD6JAd0T3wuzJkEXkBHd9mk68R94zOTAVb1VshR80o
-         VoedozueZTQ79QnhYsBQuIWbKhzLCmG3xMwCZYv104TVVJWpntgJlkPZ9kXSd1yIxs
-         xBrz8+QmXgyh1brARc/h9Lq6CDqDU8ZD0/QxaBss=
-Date:   Wed, 22 Jul 2020 16:49:16 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Anchal Agarwal <anchalag@amazon.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        x86@kernel.org, jgross@suse.com, linux-pm@vger.kernel.org,
-        linux-mm@kvack.org, kamatam@amazon.com, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
-        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
-        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dwmw@amazon.co.uk, benh@kernel.crashing.org
-Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend
- mode
-In-Reply-To: <20200722180229.GA32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-Message-ID: <alpine.DEB.2.21.2007221645430.17562@sstabellini-ThinkPad-T480s>
-References: <cover.1593665947.git.anchalag@amazon.com> <20200702182136.GA3511@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com> <50298859-0d0e-6eb0-029b-30df2a4ecd63@oracle.com> <20200715204943.GB17938@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com> <20200717191009.GA3387@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com> <5464f384-d4b4-73f0-d39e-60ba9800d804@oracle.com> <20200721000348.GA19610@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <408d3ce9-2510-2950-d28d-fdfe8ee41a54@oracle.com> <alpine.DEB.2.21.2007211640500.17562@sstabellini-ThinkPad-T480s> <20200722180229.GA32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1733074AbgGVXxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 19:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728914AbgGVXxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 19:53:01 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB82BC0619DC;
+        Wed, 22 Jul 2020 16:53:00 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u5so2081917pfn.7;
+        Wed, 22 Jul 2020 16:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B5mk9djHDrhZQjRnYy8xg8m6WI9FXyZZZHr/dT2BIYU=;
+        b=jKEmnc6qdbr+pSxMexbN5/0ydyb9jmmb/CtnBEhEA6/eA8yB2kplXzQeuADuMg7/87
+         Ek6zng6kNQoOoiYeCj5Y1eQQTI8+BCpDgzHZZIVD1sEcEt/YC06S2tGS9cngJLnPoNu9
+         xSugmrcuZoAoK06D4TFrGc8dOGA40S6+mWjILrpBVH2qYi+7d5EUq1a4xrc8AktEXwAp
+         o4Zu4cDUf/xx9pPZSdtRmbliiw2e+4mo3HMh30a433vZkkoQQwThsF9QVadXKym+qBmc
+         OJ66r0NoqGT8zzwUvDMMgtsyEz5NirAh4WIyE6fJ9PTz13Wjy4I9M5sE68SwNJe5WE0W
+         qeeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=B5mk9djHDrhZQjRnYy8xg8m6WI9FXyZZZHr/dT2BIYU=;
+        b=kmDf24++PSJNnXHpqz83F6g83CEVp/d963MiIqCA4IBpFDohNP3U46xqRY18l28b9F
+         6HKHbKpTyhwkrF1tklMOucJaI0/nwTWxuG4oW8EWguZCb25sdBsaUR+iaDUEFMV9y3tg
+         WIEHYq7OBIfZmyt1BYbDUFdj2SiZw31e0+sf8UIB0YJTOZg/RNTVuQWClvzsrOU4ce8Y
+         m7UDH+3j1cg/yjlkvFAJtuckz4MSfUEwN/qosU9FvRenOipWgzsfxYfkiXxuHzUrwkEa
+         tdRljoLe/OKccsfypJqhZuU0JCq60FEoHG3nhzmtCLmqophtl+AbtJEFcsmrFzFaIZUz
+         ysJg==
+X-Gm-Message-State: AOAM532cAEs4Tv/ahKrsjip2iskbAjR8Zxe6FaSbO3wH15leq/ErZ8gc
+        bxboWOGiyg2TgKUD6LpGj7VvhWyi
+X-Google-Smtp-Source: ABdhPJy0DBSEwvu2CNfFxKmkCKvY0Jp7Icur6ZIHGZjTOF/DjMn54r4Cgx6ficLJcfcPRByIL3WlZw==
+X-Received: by 2002:a62:8ccb:: with SMTP id m194mr1870232pfd.36.1595461980003;
+        Wed, 22 Jul 2020 16:53:00 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d9sm698919pfd.133.2020.07.22.16.52.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 16:52:58 -0700 (PDT)
+Subject: Re: [PATCH] sh: add missing EXPORT_SYMBOL() for __delay
+To:     Rich Felker <dalias@libc.org>
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <87wob2clos.wl-kuninori.morimoto.gx@renesas.com>
+ <20200722023840.GA55317@roeck-us.net>
+ <20200722225239.GX14669@brightrain.aerifal.cx>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <fa0456c9-cef0-45e7-59d7-ad652734b1d5@roeck-us.net>
+Date:   Wed, 22 Jul 2020 16:52:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1520963972-1595461757=:17562"
+In-Reply-To: <20200722225239.GX14669@brightrain.aerifal.cx>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Rich,
 
---8323329-1520963972-1595461757=:17562
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+On 7/22/20 3:52 PM, Rich Felker wrote:
+> On Tue, Jul 21, 2020 at 07:38:40PM -0700, Guenter Roeck wrote:
+>> On Thu, Dec 12, 2019 at 11:38:43AM +0900, Kuninori Morimoto wrote:
+>>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>
+>>> __delay() is used from kernel module.
+>>> We need EXPORT_SYMBOL(), otherwise we will get compile error.
+>>>
+>>> ERROR: "__delay" [drivers/net/phy/mdio-cavium.ko] undefined!
+>>>
+>>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>
+>> I must admit that this patch completely baffles me. __delay was
+>> already exported, only elsewhere in the file. With this patch
+>> in place, it is exported twice, and all sh builds in -next fail
+>> with
+>>
+>> In file included from include/linux/linkage.h:7,
+>>                  from arch/sh/include/asm/bug.h:5,
+>>                  from include/linux/bug.h:5,
+>>                  from include/linux/thread_info.h:12,
+>>                  from include/asm-generic/current.h:5,
+>>                  from ./arch/sh/include/generated/asm/current.h:1,
+>>                  from include/linux/sched.h:12,
+>>                  from arch/sh/lib/delay.c:8:
+>> include/linux/export.h:67:36: error: redefinition of '__ksymtab___delay'
+>>
+>> Guenter
+>>
+>>> ---
+>>>  arch/sh/lib/delay.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/sh/lib/delay.c b/arch/sh/lib/delay.c
+>>> index dad8e6a..540e670 100644
+>>> --- a/arch/sh/lib/delay.c
+>>> +++ b/arch/sh/lib/delay.c
+>>> @@ -29,6 +29,7 @@ void __delay(unsigned long loops)
+>>>  		: "0" (loops)
+>>>  		: "t");
+>>>  }
+>>> +EXPORT_SYMBOL(__delay);
+>>>  
+>>>  inline void __const_udelay(unsigned long xloops)
+>>>  {
+> 
+> I presently have a revert of this commit in queue for next. If it's
+> sufficiently breaking (and especially if there are other regressions
+> that need to be fixed, see the pmd_free thing) I could try to get it
+> in for 5.8 still but that's getting a bit late.
+> 
 
-On Wed, 22 Jul 2020, Anchal Agarwal wrote:
-> On Tue, Jul 21, 2020 at 05:18:34PM -0700, Stefano Stabellini wrote:
-> > On Tue, 21 Jul 2020, Boris Ostrovsky wrote:
-> > > >>>>>> +static int xen_setup_pm_notifier(void)
-> > > >>>>>> +{
-> > > >>>>>> +     if (!xen_hvm_domain())
-> > > >>>>>> +             return -ENODEV;
-> > > >>>>>>
-> > > >>>>>> I forgot --- what did we decide about non-x86 (i.e. ARM)?
-> > > >>>>> It would be great to support that however, its  out of
-> > > >>>>> scope for this patch set.
-> > > >>>>> I’ll be happy to discuss it separately.
-> > > >>>>
-> > > >>>> I wasn't implying that this *should* work on ARM but rather whether this
-> > > >>>> will break ARM somehow (because xen_hvm_domain() is true there).
-> > > >>>>
-> > > >>>>
-> > > >>> Ok makes sense. TBH, I haven't tested this part of code on ARM and the series
-> > > >>> was only support x86 guests hibernation.
-> > > >>> Moreover, this notifier is there to distinguish between 2 PM
-> > > >>> events PM SUSPEND and PM hibernation. Now since we only care about PM
-> > > >>> HIBERNATION I may just remove this code and rely on "SHUTDOWN_SUSPEND" state.
-> > > >>> However, I may have to fix other patches in the series where this check may
-> > > >>> appear and cater it only for x86 right?
-> > > >>
-> > > >>
-> > > >> I don't know what would happen if ARM guest tries to handle hibernation
-> > > >> callbacks. The only ones that you are introducing are in block and net
-> > > >> fronts and that's arch-independent.
-> > > >>
-> > > >>
-> > > >> You do add a bunch of x86-specific code though (syscore ops), would
-> > > >> something similar be needed for ARM?
-> > > >>
-> > > >>
-> > > > I don't expect this to work out of the box on ARM. To start with something
-> > > > similar will be needed for ARM too.
-> > > > We may still want to keep the driver code as-is.
-> > > >
-> > > > I understand the concern here wrt ARM, however, currently the support is only
-> > > > proposed for x86 guests here and similar work could be carried out for ARM.
-> > > > Also, if regular hibernation works correctly on arm, then all is needed is to
-> > > > fix Xen side of things.
-> > > >
-> > > > I am not sure what could be done to achieve any assurances on arm side as far as
-> > > > this series is concerned.
-> > 
-> > Just to clarify: new features don't need to work on ARM or cause any
-> > addition efforts to you to make them work on ARM. The patch series only
-> > needs not to break existing code paths (on ARM and any other platforms).
-> > It should also not make it overly difficult to implement the ARM side of
-> > things (if there is one) at some point in the future.
-> > 
-> > FYI drivers/xen/manage.c is compiled and working on ARM today, however
-> > Xen suspend/resume is not supported. I don't know for sure if
-> > guest-initiated hibernation works because I have not tested it.
-> > 
-> > 
-> > 
-> > > If you are not sure what the effects are (or sure that it won't work) on
-> > > ARM then I'd add IS_ENABLED(CONFIG_X86) check, i.e.
-> > >
-> > >
-> > > if (!IS_ENABLED(CONFIG_X86) || !xen_hvm_domain())
-> > >       return -ENODEV;
-> > 
-> > That is a good principle to have and thanks for suggesting it. However,
-> > in this specific case there is nothing in this patch that doesn't work
-> > on ARM. From an ARM perspective I think we should enable it and
-> > &xen_pm_notifier_block should be registered.
-> > 
-> This question is for Boris, I think you we decided to get rid of the notifier
-> in V3 as all we need  to check is SHUTDOWN_SUSPEND state which sounds plausible
-> to me. So this check may go away. It may still be needed for sycore_ops
-> callbacks registration.
-> > Given that all guests are HVM guests on ARM, it should work fine as is.
-> > 
-> > 
-> > I gave a quick look at the rest of the series and everything looks fine
-> > to me from an ARM perspective. I cannot imaging that the new freeze,
-> > thaw, and restore callbacks for net and block are going to cause any
-> > trouble on ARM. The two main x86-specific functions are
-> > xen_syscore_suspend/resume and they look trivial to implement on ARM (in
-> > the sense that they are likely going to look exactly the same.)
-> > 
-> Yes but for now since things are not tested I will put this
-> !IS_ENABLED(CONFIG_X86) on syscore_ops calls registration part just to be safe
-> and not break anything.
-> > 
-> > One question for Anchal: what's going to happen if you trigger a
-> > hibernation, you have the new callbacks, but you are missing
-> > xen_syscore_suspend/resume?
-> > 
-> > Is it any worse than not having the new freeze, thaw and restore
-> > callbacks at all and try to do a hibernation?
-> If callbacks are not there, I don't expect hibernation to work correctly.
-> These callbacks takes care of xen primitives like shared_info_page,
-> grant table, sched clock, runstate time which are important to save the correct
-> state of the guest and bring it back up. Other patches in the series, adds all
-> the logic to these syscore callbacks. Freeze/thaw/restore are just there for at driver
-> level.
+The patch in mainline is ok. It appears that it has been applied
+again in -next.
 
-I meant the other way around :-)  Let me rephrase the question.
+"git log --oneline v5.7.. arch/sh/lib/delay.c" on top of next-20200721
+reports:
 
-Do you think that implementing freeze/thaw/restore at the driver level
-without having xen_syscore_suspend/resume can potentially make things
-worse compared to not having freeze/thaw/restore at the driver level at
-all?
---8323329-1520963972-1595461757=:17562--
+ee0e4f15dfd4 (origin/akpm) sh: add missing EXPORT_SYMBOL() for __delay
+d1f56f318d23 sh: add missing EXPORT_SYMBOL() for __delay
+
+Maybe it just needs to be dropped from the akpm tree in -next ?
+
+Thanks,
+Guenter
