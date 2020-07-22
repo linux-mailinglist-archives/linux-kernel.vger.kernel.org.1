@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB039228E6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84515228E70
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731926AbgGVDKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 23:10:07 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40202 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731846AbgGVDKE (ORCPT
+        id S1731949AbgGVDKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 23:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731846AbgGVDKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 23:10:04 -0400
-X-UUID: 379cd92399f143e0ae3f53da5b26cedd-20200722
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=gYjjWtbM06UrnIUXAoV37Admxh7IQJxjUUwdhGjMeJg=;
-        b=hiyF7EPc/GYvjYG4Xyos52/VB9YE9bU/nwP4LvkYLiPjqcH9fUEs4YtWHBXQX/9BljyoXfsR3uRV1Pm/z6WJ/XyEfSNRiYO7a1ZzXD1g6o3Js1vrZNtZcq96yi31m+x6J+z3g8HejTUUYtEKj+3ht4C1BsQ6GbrT8zCcz8WKUMo=;
-X-UUID: 379cd92399f143e0ae3f53da5b26cedd-20200722
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1439621916; Wed, 22 Jul 2020 11:10:01 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 22 Jul 2020 11:09:58 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Jul 2020 11:09:58 +0800
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     YueHaibing <yuehaibing@huawei.com>,
-        mtk01761 <wendell.lin@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>, <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        Hanks Chen <hanks.chen@mediatek.com>
-Subject: [PATCH v2 2/2] clk: mediatek: remove UART3 clock support
-Date:   Wed, 22 Jul 2020 11:09:57 +0800
-Message-ID: <1595387397-13110-3-git-send-email-hanks.chen@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1595387397-13110-1-git-send-email-hanks.chen@mediatek.com>
-References: <1595387397-13110-1-git-send-email-hanks.chen@mediatek.com>
+        Tue, 21 Jul 2020 23:10:17 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C306C061794;
+        Tue, 21 Jul 2020 20:10:17 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id o22so426163pjw.2;
+        Tue, 21 Jul 2020 20:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2gBvT+YIZWph6R5sz1Mzm8EtE/EDwKEAunOqRTotXyo=;
+        b=q9RN/uqnI7m54W20WphAIPLxv7ob4CoSESjI6zwgl1jN1JoSJoH6jay7n6BGHS/UVs
+         lyQibjJ0DoG1nI57ZndSvSpC3HQ190VTua9p7vZKR2uwzzq60lhrGegRyWv8Stpri2e/
+         xLJesIQYH/A1bok2VBt0m2U7rn0/eDsDV36bg/arKrAEBXj7cc3xAtpXmSGtZnyOTZ3H
+         Rt+XSKPXmUv30IU9KqagydgRTz8IRM4fLWvGVtUYFePc30GuvvrbKYSvQjLJOe7shlP4
+         qIWcF9QHSo+w4jDOS3rIATUbqEigYlM/0XgQ4C2rljFpPb1Qv/J/yy7W/h0pqhgI9meS
+         4vpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2gBvT+YIZWph6R5sz1Mzm8EtE/EDwKEAunOqRTotXyo=;
+        b=TaaAFouU3z8wLJYnYwgE2ZV8VujebS75lvS6mRSZIjKzFlTFZu1U8LTOl+1olR4Ovt
+         igKHpqhfVObYTLjO+l1BvmPJa02x+M6NMSk7YO1FZdmcFWqDOGIb5Vo8++Pag9JUuYCQ
+         AEz0kryLIosNMAE8eK9PJm7bYWNlKU4Lqad/8oZjXTGKz7k2P/Aac7OmqSO7k0QgWNsb
+         gpAQ4k451Ev3ypCP73zZofP3o3IdWCsHdQ092i7eqleA+xIwpxwE6TWfTvUme9Kz5Qgy
+         U6AhelxMrrlcUPR52Hc60BXZ0D0AmJ8IRE4ulQjH3Ds05DxqDvob2Lt1ijayZdYKFVtw
+         cIeg==
+X-Gm-Message-State: AOAM531jxUnuTCImPk2ev2mStBatVkAInrcgjATMwsLTq06vTvp92mTb
+        hZzNULxLwOokW+ETilzDoyGdvYqUV2+zK0cWTZe07A==
+X-Google-Smtp-Source: ABdhPJyv2GHk8TN/MZSFEiPFxK0gKt1FYX4Jq8haDv8r/hp4UrmdePuIrNMYy/LdEBZgWIs/FlAKNbdCmV1xeuCwCyM=
+X-Received: by 2002:a17:90a:e48:: with SMTP id p8mr7807430pja.210.1595387416843;
+ Tue, 21 Jul 2020 20:10:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 716ADB503DD77DC1833F55A87B5C4DDD780824AAED33BBDB982B89D486A7B68C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200716234433.6490-1-xie.he.0141@gmail.com> <20200721.183022.1464053417235565089.davem@davemloft.net>
+In-Reply-To: <20200721.183022.1464053417235565089.davem@davemloft.net>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Tue, 21 Jul 2020 20:10:05 -0700
+Message-ID: <CAJht_EN8NNrCbN9B+_Axn=cPk7hXtE8nL8_h=UnRvqjJWNf0Bw@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/net/wan/x25_asy: Fix to make it work
+To:     David Miller <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Martin Schiller <ms@dev.tdt.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Linux X25 <linux-x25@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q0xLX0lORlJBX1VBUlQzIGlzIGEgZHVtbXkgY2xrIGludGVyZmFjZSwNCml0IGhhcyBubyBlZmZl
-Y3Qgb24gdGhlIG9wZXJhdGlvbiBvZiB0aGUgcmVhZC93cml0ZSBpbnN0cnVjdGlvbi4NCg0KU2ln
-bmVkLW9mZi1ieTogSGFua3MgQ2hlbiA8aGFua3MuY2hlbkBtZWRpYXRlay5jb20+DQotLS0NCiBk
-cml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ2Nzc5LmMgfCAyIC0tDQogMSBmaWxlIGNoYW5nZWQs
-IDIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGst
-bXQ2Nzc5LmMgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ2Nzc5LmMNCmluZGV4IDk3NjZj
-Y2NmNTg0NC4uNzVmMjIzNTQ4NmJlIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsv
-Y2xrLW10Njc3OS5jDQorKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ2Nzc5LmMNCkBA
-IC05MjMsOCArOTIzLDYgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZ2F0ZSBpbmZyYV9jbGtz
-W10gPSB7DQogCQkgICAgInVhcnRfc2VsIiwgMjMpLA0KIAlHQVRFX0lORlJBMChDTEtfSU5GUkFf
-VUFSVDIsICJpbmZyYV91YXJ0MiIsDQogCQkgICAgInVhcnRfc2VsIiwgMjQpLA0KLQlHQVRFX0lO
-RlJBMChDTEtfSU5GUkFfVUFSVDMsICJpbmZyYV91YXJ0MyIsDQotCQkgICAgInVhcnRfc2VsIiwg
-MjUpLA0KIAlHQVRFX0lORlJBMChDTEtfSU5GUkFfR0NFXzI2TSwgImluZnJhX2djZV8yNm0iLA0K
-IAkJICAgICJheGlfc2VsIiwgMjcpLA0KIAlHQVRFX0lORlJBMChDTEtfSU5GUkFfQ1FfRE1BX0ZQ
-QywgImluZnJhX2NxZG1hX2ZwYyIsDQotLSANCjIuMTguMA0K
+On Tue, Jul 21, 2020 at 6:30 PM -0700
+David Miller <davem@davemloft.net> wrote:
+>
+> Applied, thank you.
 
+Thank you so much, David!
