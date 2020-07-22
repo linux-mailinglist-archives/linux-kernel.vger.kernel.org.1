@@ -2,181 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A66229F70
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B831229F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732546AbgGVSpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:45:02 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58310 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732477AbgGVSo6 (ORCPT
+        id S1732349AbgGVSnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:43:37 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:35024 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727060AbgGVSng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:44:58 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06MIZKKM026699
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:44:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=d0xYJy4huNGUNES1TTj69vv7d4p2DHeoXRNFx3PPv5Y=;
- b=Dm/PtylhpZr08bwf/6FCst3gAj7N2C69vXQ7/G/jZjfK8pWJevKIj95HiH0lZLVbL75J
- Sofz+0U5i+qUPB2MwCViD7pDOpKC7VG5wb0mnx3gKLc+kHgHl+KathYYWuJDkIVEPZjA
- H8vzVZMEt30lkVIuygVJB5MdQ0Zrek1LPWY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 32esdjgkbq-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:44:57 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 11:44:54 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 6627D62E5043; Wed, 22 Jul 2020 11:42:29 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 4/4] selftests/bpf: add get_stackid_cannot_attach
-Date:   Wed, 22 Jul 2020 11:42:10 -0700
-Message-ID: <20200722184210.4078256-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200722184210.4078256-1-songliubraving@fb.com>
-References: <20200722184210.4078256-1-songliubraving@fb.com>
+        Wed, 22 Jul 2020 14:43:36 -0400
+Received: by mail-qk1-f193.google.com with SMTP id 11so3035916qkn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:43:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RZMnAY2w7Gsu1RJzqgpSuPL6qVRoQpQhZZvqs4rgs2Q=;
+        b=TTwSlw5jTkbU53PqRn1vDcGw2FqezkmcQxUSWwDVmP40ERvNl9L3BgV6P7+WiiPfrF
+         yT3Pk0eLVe5o9ZatJrnXpZTETf5ChW8plGQzOEzsAgAhsJXfUYlPcoABhUw1U4J+foJX
+         Xb9k1Itcgj8vLhCaKCHq9CXDCe7qoSC+colhTOCyA2JF9w2Gk/IY5NMHkRfZV/Xon/sM
+         Z7YlGMcxvVdmiM7rHdUEcXO4K3sT2nldcRqSLdyjlDNVf+3XHjLphjp/4yo351aLeD1t
+         iiVTHuTeZLrLPU7QPoUOsOgVQrCPr0bLfuNj+Nb4ItASoT8X5Zo7uAjy1mlaOpTUk3wc
+         cPZg==
+X-Gm-Message-State: AOAM532U+44sb8hn6VGa6MCCkzQoLilEyBd+hdjNAA28FbTYpwkH0BA9
+        SV5gE8Urtn/QJUOWczEwGw5YLzfM
+X-Google-Smtp-Source: ABdhPJzRUy/X3SaFV5EFn6YWvEy9RBAmXeflzoksCOu90tF4XY0cwCsVJSerfna6N59ZebO3dsxEyA==
+X-Received: by 2002:a37:a746:: with SMTP id q67mr1425580qke.93.1595443415651;
+        Wed, 22 Jul 2020 11:43:35 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id b2sm547488qkf.122.2020.07.22.11.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 11:43:35 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/build: Move max-page-size option to LDFLAGS_vmlinux
+Date:   Wed, 22 Jul 2020 14:43:34 -0400
+Message-Id: <20200722184334.3785418-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_10:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- malwarescore=0 spamscore=0 adultscore=0 impostorscore=0 phishscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220119
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This test confirms that BPF program that calls bpf_get_stackid() cannot
-attach to perf_event with precise_ip > 0 but not PERF_SAMPLE_CALLCHAIN;
-and cannot attach if the perf_event has exclude_callchain_kernel.
+This option is only required for vmlinux on 64-bit, to enforce 2MiB
+alignment, so set it in LDFLAGS_vmlinux instead of KBUILD_LDFLAGS. Also
+drop the ld-option check: this option was added in binutils-2.18 and all
+the other places that use it already don't have the check.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
+This reduces the size of the intermediate ELF files
+arch/x86/boot/setup.elf and arch/x86/realmode/rm/realmode.elf by about
+2MiB each. The binary versions are unchanged.
+
+Move the LDFLAGS settings to all be together and just after CFLAGS
+settings are done.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- .../prog_tests/get_stackid_cannot_attach.c    | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/get_stackid_ca=
-nnot_attach.c
+ arch/x86/Makefile | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_stackid_cannot_at=
-tach.c b/tools/testing/selftests/bpf/prog_tests/get_stackid_cannot_attach=
-.c
-new file mode 100644
-index 0000000000000..f13149d279bc9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/get_stackid_cannot_attach.c
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <test_progs.h>
-+#include "test_stacktrace_build_id.skel.h"
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 00e378de8bc0..1e634d7ee6eb 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -47,10 +47,6 @@ export REALMODE_CFLAGS
+ # e.g.: obj-y += foo_$(BITS).o
+ export BITS
+ 
+-ifdef CONFIG_X86_NEED_RELOCS
+-        LDFLAGS_vmlinux := --emit-relocs --discard-none
+-endif
+-
+ #
+ # Prevent GCC from generating any FP code by mistake.
+ #
+@@ -177,17 +173,6 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
+ 	KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args,)
+ endif
+ 
+-KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
+-
+-#
+-# The 64-bit kernel must be aligned to 2MB.  Pass -z max-page-size=0x200000 to
+-# the linker to force 2MB page size regardless of the default page size used
+-# by the linker.
+-#
+-ifdef CONFIG_X86_64
+-KBUILD_LDFLAGS += $(call ld-option, -z max-page-size=0x200000)
+-endif
+-
+ # Workaround for a gcc prelease that unfortunately was shipped in a suse release
+ KBUILD_CFLAGS += -Wno-sign-compare
+ #
+@@ -207,6 +192,23 @@ ifdef CONFIG_RETPOLINE
+   endif
+ endif
+ 
++KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
 +
-+void test_get_stackid_cannot_attach(void)
-+{
-+	struct perf_event_attr attr =3D {
-+		/* .type =3D PERF_TYPE_SOFTWARE, */
-+		.type =3D PERF_TYPE_HARDWARE,
-+		.config =3D PERF_COUNT_HW_CPU_CYCLES,
-+		.precise_ip =3D 1,
-+		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK,
-+		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
-+			PERF_SAMPLE_BRANCH_NO_FLAGS |
-+			PERF_SAMPLE_BRANCH_NO_CYCLES |
-+			PERF_SAMPLE_BRANCH_CALL_STACK,
-+		.sample_period =3D 5000,
-+		.size =3D sizeof(struct perf_event_attr),
-+	};
-+	struct test_stacktrace_build_id *skel;
-+	__u32 duration =3D 0;
-+	int pmu_fd, err;
++ifdef CONFIG_X86_NEED_RELOCS
++LDFLAGS_vmlinux := --emit-relocs --discard-none
++else
++LDFLAGS_vmlinux :=
++endif
 +
-+	skel =3D test_stacktrace_build_id__open();
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+		return;
++#
++# The 64-bit kernel must be aligned to 2MB.  Pass -z max-page-size=0x200000 to
++# the linker to force 2MB page size regardless of the default page size used
++# by the linker.
++#
++ifdef CONFIG_X86_64
++LDFLAGS_vmlinux += -z max-page-size=0x200000
++endif
 +
-+	/* override program type */
-+	bpf_program__set_perf_event(skel->progs.oncpu);
-+
-+	err =3D test_stacktrace_build_id__load(skel);
-+	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-+		goto cleanup;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+	if (pmu_fd < 0 && errno =3D=3D ENOENT) {
-+		printf("%s:SKIP:cannot open PERF_COUNT_HW_CPU_CYCLES with precise_ip >=
- 0\n",
-+		       __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
-+		  pmu_fd, errno))
-+		goto cleanup;
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	CHECK(!IS_ERR(skel->links.oncpu), "attach_perf_event_no_callchain",
-+	      "should have failed\n");
-+	close(pmu_fd);
-+
-+	/* add PERF_SAMPLE_CALLCHAIN, attach should succeed */
-+	attr.sample_type |=3D PERF_SAMPLE_CALLCHAIN;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
-+		  pmu_fd, errno))
-+		goto cleanup;
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event_callchain",
-+	      "err: %ld\n", PTR_ERR(skel->links.oncpu));
-+	close(pmu_fd);
-+
-+	/* add exclude_callchain_kernel, attach should fail */
-+	attr.exclude_callchain_kernel =3D 1;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
-+		  pmu_fd, errno))
-+		goto cleanup;
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	CHECK(!IS_ERR(skel->links.oncpu), "attach_perf_event_exclude_callchain_=
-kernel",
-+	      "should have failed\n");
-+	close(pmu_fd);
-+
-+cleanup:
-+	test_stacktrace_build_id__destroy(skel);
-+}
---=20
-2.24.1
+ archscripts: scripts_basic
+ 	$(Q)$(MAKE) $(build)=arch/x86/tools relocs
+ 
+-- 
+2.26.2
 
