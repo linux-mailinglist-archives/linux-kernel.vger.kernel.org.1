@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F16229990
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8DB229994
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732466AbgGVNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbgGVNst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:48:49 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF17A2065D;
-        Wed, 22 Jul 2020 13:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595425729;
-        bh=UVmbuLKopkN2E3NVwRVE/SS4uLAvidcAX3P5wvIaRiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2cNJj3xXCHuNZIQ2dmW2I79gpY8nouuA60DzCwNP1JoRpuOLnGoXD6yfs3bKqff6x
-         +jaT+OAZgrFzi5aPdaMHVbOSW8vxIh2VlKWgjnqGKibGgnKjLAhPslR4loWk92icm8
-         whUh6QG6tqb76QCyS4SaIqQ6vGqIDHoZONQwTbUE=
-Date:   Wed, 22 Jul 2020 09:48:47 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH AUTOSEL 4.4 7/9] ALSA: hda/hdmi: fix failures at PCM open
- on Intel ICL and later
-Message-ID: <20200722134847.GC406581@sasha-vm>
-References: <20200714144024.4036118-1-sashal@kernel.org>
- <20200714144024.4036118-7-sashal@kernel.org>
- <alpine.DEB.2.22.394.2007151332320.3186@eliteleevi.tm.intel.com>
+        id S1732241AbgGVNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:52:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48686 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726425AbgGVNwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 09:52:25 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595425943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8h8jDnKHO+X8h3JJZpGFDff1DSLLwv2lsjn5ygW/YYg=;
+        b=o41t8+Ug405t9avNdafVT++MNKlB2qIbBnr+C9yPyGblCnphGXOq3LcsCWgz2FNkpSfqjj
+        GMQ9GYaFCYOl+KNUqYJYaYsFH79+T2OmdOvd5QDA+sX1hnJ/s22QI3105YtNtdM/8gFxwd
+        leyYa7hhqCMxTlO8YlerILYfgwZKuisGXXQO/q5ZFN8UzTzPiEAaKp1Jna1QCloeUEKXYF
+        FzpUM5gys7rxayoymjwa2zX7lsYc252ETLAJm5phgTQHc/Koj/afLsw3z0qX6UVN4f/YPR
+        kVjvn2vDukpQrkS9CYCqXiAzw2GgqgCXtq69HBI+hXdcbxENiZJt8ieXQuRblA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595425943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8h8jDnKHO+X8h3JJZpGFDff1DSLLwv2lsjn5ygW/YYg=;
+        b=bs7XmMqG2TRpVSN1AGdk/wewXlRhia7REr1ECA5sar/tlqs/5qiq1HlfUYfd6by3CPIdfj
+        eZ36ubC+VODG49Dw==
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     jbaron@akamai.com, mingo@redhat.com, kernel@axis.com,
+        corbet@lwn.net, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH] dynamic debug: allow printing to trace event
+In-Reply-To: <20200721173045.540ae500@oasis.local.home>
+References: <20200721141105.16034-1-vincent.whitchurch@axis.com> <20200721173045.540ae500@oasis.local.home>
+Date:   Wed, 22 Jul 2020 15:58:22 +0206
+Message-ID: <87eep3zmg9.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2007151332320.3186@eliteleevi.tm.intel.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 01:52:05PM +0300, Kai Vehmanen wrote:
->Hi Sasha,
->
->On Tue, 14 Jul 2020, Sasha Levin wrote:
->
->> From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
->>
->> [ Upstream commit 56275036d8185f92eceac7479d48b858ee3dab84 ]
->>
->> When HDMI PCM devices are opened in a specific order, with at least one
->> HDMI/DP receiver connected, ALSA PCM open fails to -EBUSY on the
->> connected monitor, on recent Intel platforms (ICL/JSL and newer). While
->
->we don't have Ice Lake hardware support in the HDA HDMI codec driver in
->any 4.x stable trees (only in 5.1+), so this patch will not help on those
->and can be dropped.
+On 2020-07-21, Steven Rostedt <rostedt@goodmis.org> wrote:
+>> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+>> index 321437bbf87d..9f6d8867af7c 100644
+>> --- a/lib/dynamic_debug.c
+>> +++ b/lib/dynamic_debug.c
+[..]
+>> +static void dynamic_printk(unsigned int flags, const char *fmt, ...)
+>> +{
+>> +	if (flags & _DPRINTK_FLAGS_TRACE) {
+>> +		va_list args;
+>> +
+>> +		va_start(args, fmt);
+>> +		/*
+>> +		 * All callers include the KERN_DEBUG prefix to keep the
+>> +		 * vprintk case simple; strip it out for tracing.
+>> +		 */
+>> +		dynamic_trace(fmt + strlen(KERN_DEBUG), args);
 
-Will do, thank you.
+Do we really need a separate tracing event for this? Why not just:
 
--- 
-Thanks,
-Sasha
+                ftrace_vprintk(fmt + strlen(KERN_DEBUG), args);
+
+John Ogness
