@@ -2,130 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2608229B7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7DF229BA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732927AbgGVPcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:32:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56658 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732633AbgGVPce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:32:34 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MFWJW0106191;
-        Wed, 22 Jul 2020 10:32:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595431939;
-        bh=AtFpbFN/pk3H2W7tsZe1q1Dl9Qhx5ZausPpl8TMz2w4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZLz2fct8efECUaMkbqEZ/vsjTCwf2rKjyyoTe2xPaiPZESLnrFWDNjzUezeSeq5OE
-         0gzBDObVCO3ablUW7T3zbp2xEcBRqbqLLKIy1gFJEoYikrYpvd5zJksEgvNaWKo8R0
-         5u9mz3BiPg4Wcd3C1CVp9gczt0dgJCHOXmhgnSko=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MFWJA5066435
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 10:32:19 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Jul 2020 10:32:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Jul 2020 10:32:18 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MFWIZX046694;
-        Wed, 22 Jul 2020 10:32:18 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>,
-        <marek.behun@nic.cz>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v32 6/6] ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
-Date:   Wed, 22 Jul 2020 10:31:46 -0500
-Message-ID: <20200722153146.8767-7-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200722153146.8767-1-dmurphy@ti.com>
-References: <20200722153146.8767-1-dmurphy@ti.com>
+        id S1732912AbgGVPjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:39:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:8030 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727985AbgGVPjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 11:39:24 -0400
+IronPort-SDR: KNR6T1adjXyaJ6aOV2EgKtOsS/OISF3vfEr7vAhRKCy+XAk/J1PMdgaAiuNn6yzm+JMpDmJ18C
+ AavDTXt+ffAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="129920849"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="129920849"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 08:39:23 -0700
+IronPort-SDR: MsNqFHz8q1bHKMvZOTP2vEUpscZSheDN/J+yc70nwRaOKUgxioD6xzDP091iR7B1Lx0PSL6GGL
+ RlIS4wosbJoQ==
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="272042508"
+Received: from asinghi-mobl2.amr.corp.intel.com (HELO [10.255.231.54]) ([10.255.231.54])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 08:39:22 -0700
+Subject: Re: [PATCH v2 8/9] ASoC: qdsp6-dai: add gapless support
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+        vkoul@kernel.org
+References: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
+ <20200721165306.29082-9-srinivas.kandagatla@linaro.org>
+ <868d9768-a4c4-71c1-28fd-ca0e2f6564bf@linux.intel.com>
+ <eadfd218-be93-0dc9-df94-a64ea494c6bf@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d572887f-8550-89dd-02f0-986ef081bf40@linux.intel.com>
+Date:   Wed, 22 Jul 2020 10:31:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <eadfd218-be93-0dc9-df94-a64ea494c6bf@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the reg property to each channel node.  This update is
-to accommodate the multicolor framework.  In addition to the
-accommodation this allows the LEDs to be placed on any channel
-and allow designs to skip channels as opposed to requiring
-sequential order.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Pavel Machek <pavel@ucw.cz>
----
- arch/arm/boot/dts/ste-href.dtsi | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/ste-href.dtsi b/arch/arm/boot/dts/ste-href.dtsi
-index 33e3b0b3c53d..ff47cbf6ed3b 100644
---- a/arch/arm/boot/dts/ste-href.dtsi
-+++ b/arch/arm/boot/dts/ste-href.dtsi
-@@ -58,16 +58,21 @@ lp5521@33 {
- 				reg = <0x33>;
- 				label = "lp5521_pri";
- 				clock-mode = /bits/ 8 <2>;
--				chan0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				chan@0 {
-+					reg = <0>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 					linux,default-trigger = "heartbeat";
- 				};
--				chan1 {
-+				chan@1 {
-+					reg = <1>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan2 {
-+				chan@2 {
-+					reg = <2>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
-@@ -77,15 +82,20 @@ lp5521@34 {
- 				reg = <0x34>;
- 				label = "lp5521_sec";
- 				clock-mode = /bits/ 8 <2>;
--				chan0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				chan@0 {
-+					reg = <0>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan1 {
-+				chan@1 {
-+					reg = <1>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan2 {
-+				chan@2 {
-+					reg = <2>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--- 
-2.27.0
 
+>>> @@ -917,6 +1018,14 @@ static int q6asm_dai_compr_trigger(struct 
+>>> snd_soc_component *component,
+>>>           ret = q6asm_cmd_nowait(prtd->audio_client, prtd->stream_id,
+>>>                          CMD_PAUSE);
+>>>           break;
+>>> +    case SND_COMPR_TRIGGER_NEXT_TRACK:
+>>> +        prtd->next_track = true;
+>>> +        prtd->next_track_stream_id = (prtd->stream_id == 1 ? 2 : 1);
+>>
+>> it's rather odd, the initialization above uses next_track_stream_id = 0?
+> 
+> Vaild stream ids start from 1, So we are toggling this between 1 and 2.
+> So when we set next_track_stream_id to 0, that means we have opened the 
+> new next stream id and is set to prtd->stream_id. This logic is to 
+> ensure that we are not going to open next stream id twice!
+
+ok, adding a comment would be good to show this was intentional and not 
+a mistake.
