@@ -2,132 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED671229A58
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7342229A6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732708AbgGVOkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 10:40:42 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48442 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732657AbgGVOkb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 10:40:31 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MEeQSd111116;
-        Wed, 22 Jul 2020 09:40:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595428826;
-        bh=DIxOOQwIi12wLQSGUItZsPXBRsZgdqTGMtvo+XZ3cO0=;
-        h=From:To:Subject:Date:In-Reply-To:References;
-        b=HNIL8ZlzDxm7H3H1awpXNdTzi5TO+oUo172vVcxxsVGIU1G5Z3v4J34r9uALBIxOn
-         WoOML6D8gA86X6jj7HidLdotXPDxIOH6pTw2Byw8ZZDTXAnOtZii3CsGWQxJk3g+C9
-         bxfyvaJniIQJePPFc8wBeGvFGhvGkG0VR9U1Cqs4=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MEeQSC073594
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 09:40:26 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Jul 2020 09:40:26 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Jul 2020 09:40:26 -0500
-Received: from uda0868495.fios-router.home (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MEeMLF043940;
-        Wed, 22 Jul 2020 09:40:26 -0500
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
-        <vinicius.gomes@intel.com>
-Subject: [net-next v5 PATCH 7/7] net: prp: enhance debugfs to display PRP info
-Date:   Wed, 22 Jul 2020 10:40:22 -0400
-Message-ID: <20200722144022.15746-8-m-karicheri2@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200722144022.15746-1-m-karicheri2@ti.com>
-References: <20200722144022.15746-1-m-karicheri2@ti.com>
+        id S1732769AbgGVOm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 10:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730973AbgGVOm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 10:42:27 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98ABD20787;
+        Wed, 22 Jul 2020 14:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595428946;
+        bh=wk9uc9EFeU1U4bZjuLI5oT7Ft4gFDxjC68gV7uHyIQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R1rLrUiJOsu7Jts6Z0NU9U/t9UkTln7Iy+U9KrDK4pWNWUGAJ3q+e/6imP0mGETbl
+         KFjcPQUz+kR+c2XAyWPDQZrrACYdPKJSvD481tqUPAxzo8O59XknINk5F662atu6LQ
+         fnV85N6Mm7FSf8goxWEiQoE62PMEWGgIyV5Bky2U=
+Received: by mail-oo1-f41.google.com with SMTP id t6so461467ooh.4;
+        Wed, 22 Jul 2020 07:42:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532K0Qx8WkH6nCpjDJvsoK4lUjZ5KzLGdhkgtiPX7NefUMPfauT0
+        /u/ht0drKVN6n2Ow0ipQftk93ZwuwX+EcVXkyA==
+X-Google-Smtp-Source: ABdhPJyQP1ZRMVJKJdH4QnM2k+ib1BqJI5c0CwiJkic3VdGrn99f7M/qMgn52dXNwA8FzcQBsfsiYcZtAdhuSLxTl7A=
+X-Received: by 2002:a4a:9c0f:: with SMTP id y15mr254900ooj.81.1595428945904;
+ Wed, 22 Jul 2020 07:42:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200622075956.171058-1-bjorn.andersson@linaro.org>
+ <20200622075956.171058-2-bjorn.andersson@linaro.org> <CAL_JsqKW+R=rygii7N69o28h5780qx645RhPXGQZ4jw3kHadhw@mail.gmail.com>
+ <20200722044615.GR388985@builder.lan>
+In-Reply-To: <20200722044615.GR388985@builder.lan>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 22 Jul 2020 08:42:08 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLa9GBtbgN6aL7AQ=A6V-YRtPgYqh6XgM2kpx532+r4Gg@mail.gmail.com>
+Message-ID: <CAL_JsqLa9GBtbgN6aL7AQ=A6V-YRtPgYqh6XgM2kpx532+r4Gg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: hwlock: qcom: Migrate binding to YAML
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print PRP specific information from node table as part of debugfs
-node table display. Also display the node as DAN-H or DAN-P depending
-on the info from node table.
+On Tue, Jul 21, 2020 at 10:48 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 21 Jul 08:13 PDT 2020, Rob Herring wrote:
+>
+> > On Mon, Jun 22, 2020 at 1:59 AM Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > Migrate the Qualcomm TCSR mutex binding to YAML to allow validation.
+> > >
+> > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > ---
+> > >
+> > > Changes since v1:
+> > > - Actually remove the old binding doc
+> > >
+> > >  .../bindings/hwlock/qcom-hwspinlock.txt       | 39 --------------
+> > >  .../bindings/hwlock/qcom-hwspinlock.yaml      | 51 +++++++++++++++++++
+> > >  2 files changed, 51 insertions(+), 39 deletions(-)
+> > >  delete mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.txt
+> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+> >
+> > [...]
+> >
+> > > diff --git a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+> > > new file mode 100644
+> > > index 000000000000..71e63b52edd5
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+> > > @@ -0,0 +1,51 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/hwlock/qcom-hwspinlock.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm Hardware Mutex Block
+> > > +
+> > > +maintainers:
+> > > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > +
+> > > +description:
+> > > +  The hardware block provides mutexes utilized between different processors on
+> > > +  the SoC as part of the communication protocol used by these processors.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - qcom,sfpb-mutex
+> > > +      - qcom,tcsr-mutex
+> > > +
+> > > +  '#hwlock-cells':
+> > > +    const: 1
+> > > +
+> > > +  syscon:
+> > > +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
+> > > +    description:
+> > > +      Should be a triple of phandle referencing the TCSR mutex syscon, offset
+> > > +      of first mutex within the syscon and stride between each mutex.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - '#hwlock-cells'
+> > > +  - syscon
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +        tcsr_mutex_block: syscon@fd484000 {
+> > > +                compatible = "syscon";
+> >
+> > 'syscon' alone now generates warnings. Can you drop this node or add a
+> > specific compatible.
+> >
+>
+> In the binding examples or in the dts files as well?
 
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
----
- net/hsr/hsr_debugfs.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+Both, but only the examples need to be warning free at this point. So
+just dropping the node in the example is enough and you can solve this
+for dts files later if you wish.
 
-diff --git a/net/hsr/hsr_debugfs.c b/net/hsr/hsr_debugfs.c
-index c1932c0a15be..3b6f675bd55a 100644
---- a/net/hsr/hsr_debugfs.c
-+++ b/net/hsr/hsr_debugfs.c
-@@ -24,7 +24,7 @@ static struct dentry *hsr_debugfs_root_dir;
- 
- static void print_mac_address(struct seq_file *sfp, unsigned char *mac)
- {
--	seq_printf(sfp, "%02x:%02x:%02x:%02x:%02x:%02x:",
-+	seq_printf(sfp, "%02x:%02x:%02x:%02x:%02x:%02x ",
- 		   mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
- }
- 
-@@ -35,20 +35,32 @@ hsr_node_table_show(struct seq_file *sfp, void *data)
- 	struct hsr_priv *priv = (struct hsr_priv *)sfp->private;
- 	struct hsr_node *node;
- 
--	seq_puts(sfp, "Node Table entries\n");
--	seq_puts(sfp, "MAC-Address-A,   MAC-Address-B, time_in[A], ");
--	seq_puts(sfp, "time_in[B], Address-B port\n");
-+	seq_printf(sfp, "Node Table entries for (%s) device\n",
-+		   (priv->prot_version == PRP_V1 ? "PRP" : "HSR"));
-+	seq_puts(sfp, "MAC-Address-A,    MAC-Address-B,    time_in[A], ");
-+	seq_puts(sfp, "time_in[B], Address-B port, ");
-+	if (priv->prot_version == PRP_V1)
-+		seq_puts(sfp, "SAN-A, SAN-B, DAN-P\n");
-+	else
-+		seq_puts(sfp, "DAN-H\n");
-+
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(node, &priv->node_db, mac_list) {
- 		/* skip self node */
- 		if (hsr_addr_is_self(priv, node->macaddress_A))
- 			continue;
- 		print_mac_address(sfp, &node->macaddress_A[0]);
--		seq_puts(sfp, " ");
- 		print_mac_address(sfp, &node->macaddress_B[0]);
--		seq_printf(sfp, "0x%lx, ", node->time_in[HSR_PT_SLAVE_A]);
--		seq_printf(sfp, "0x%lx ", node->time_in[HSR_PT_SLAVE_B]);
--		seq_printf(sfp, "0x%x\n", node->addr_B_port);
-+		seq_printf(sfp, "%10lx, ", node->time_in[HSR_PT_SLAVE_A]);
-+		seq_printf(sfp, "%10lx, ", node->time_in[HSR_PT_SLAVE_B]);
-+		seq_printf(sfp, "%14x, ", node->addr_B_port);
-+
-+		if (priv->prot_version == PRP_V1)
-+			seq_printf(sfp, "%5x, %5x, %5x\n",
-+				   node->san_a, node->san_b,
-+				   (node->san_a == 0 && node->san_b == 0));
-+		else
-+			seq_printf(sfp, "%5x\n", 1);
- 	}
- 	rcu_read_unlock();
- 	return 0;
-@@ -57,7 +69,8 @@ hsr_node_table_show(struct seq_file *sfp, void *data)
- /* hsr_node_table_open - Open the node_table file
-  *
-  * Description:
-- * This routine opens a debugfs file node_table of specific hsr device
-+ * This routine opens a debugfs file node_table of specific hsr
-+ * or prp device
-  */
- static int
- hsr_node_table_open(struct inode *inode, struct file *filp)
--- 
-2.17.1
+> The hardware block here is named "TCSR_MUTEX", so the natural compatible
+> to add here would be "qcom,tcsr-mutex", but that already has a meaning -
+> and the syscon node here doesn't carry all required properties...
 
+So you have 2 nodes pointing to the same h/w? Also a no-no...
+
+> Should we perhaps just remove the split model (syscon and
+> qcom,tcsr-mutex as different nodes) from the example and dts files?
+> (While maintaining backwards compatibility in the binding and driver)
+>
+> For the platforms where we have other drivers that needs to poke in this
+> syscon it seems to work fine to say:
+>         compatible = "qcom,tcsr-mutex", "syscon";
+
+Yes. 'syscon' just means automagically create a regmap.
+
+Rob
