@@ -2,179 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645F822A18D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 23:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A33A22A196
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 23:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730353AbgGVVvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 17:51:05 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:13680 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726462AbgGVVvE (ORCPT
+        id S1731267AbgGVVwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 17:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgGVVwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 17:51:04 -0400
-Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MLmUpp000634;
-        Wed, 22 Jul 2020 21:50:51 GMT
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0a-002e3701.pphosted.com with ESMTP id 32dv36qj3b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 21:50:51 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 09B3C76;
-        Wed, 22 Jul 2020 21:50:50 +0000 (UTC)
-Received: from anatevka.americas.hpqcorp.net (anatevka.americas.hpqcorp.net [10.33.237.3])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 5C2594A;
-        Wed, 22 Jul 2020 21:50:48 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 15:50:48 -0600
-From:   Jerry Hoemann <jerry.hoemann@hpe.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Kairui Song <kasong@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>, jroedel@suse.de,
-        Myron Stowe <myron.stowe@redhat.com>,
-        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Wright <rwright@hpe.com>, Dave Young <dyoung@redhat.com>,
-        Khalid Aziz <khalid@gonehiking.org>
-Subject: Re: [RFC PATCH] PCI, kdump: Clear bus master bit upon shutdown in
- kdump kernel
-Message-ID: <20200722215048.GL220876@anatevka.americas.hpqcorp.net>
-References: <CACPcB9cpEX-uYeTp7DVEXtwDRWBCTVoPCB4dxPbyq1sDeixP_w@mail.gmail.com>
- <20200722152123.GA1278089@bjorn-Precision-5520>
+        Wed, 22 Jul 2020 17:52:25 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349F6C0619E1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 14:52:25 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s189so1991672pgc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 14:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UhpBIu+fLyut9dkZQ1QoXg5xvF8Rpu4aR+akPmAgts0=;
+        b=RLTODLA/Lv2X1LiEJMRsgc8cNZLE9C5T132aE7qQLBOXWc8QuVmBhxMkDZyIs4ILA1
+         Rc/qAJhNpeW5X/DMkTMJ8N4C40LEwItk2SehAFqOQJ/H+BLOwqxlh/P0cZ66Z3J40TG3
+         T04R6lhah09KRP3L9AA+zZ6zzlrvfFamkFCWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UhpBIu+fLyut9dkZQ1QoXg5xvF8Rpu4aR+akPmAgts0=;
+        b=I4UcVRtEdxp2ONrWmj2XCta1d8VTLa2USgPw8tud6rn2oeWWIQcmP2Gb21UVLDx8cP
+         OXb21yu8YmiNlLnTv83dYtqo0C1ST3USvHEAw+WK/i9tn05alCUSoK96D5SbgBSVzWnJ
+         3rHUSa1HMsF7w07klH5RQdPGwVwzVaBrMNJpf1lmoAaSQUJ34wNGnQ1571FIdGTSPXr5
+         C1/hdLVfvmDJKGkrhhw/caxQwNjyrGCav60ltM0bfYlIqkwzNh7XJe+M8vQ+EYs497ka
+         8vDn22/IIci99kj4a+pRKKbXww3ddO82mDfDyV0FzqZmaPsd7t2DfCin+yyCFhEAZPSd
+         zLuQ==
+X-Gm-Message-State: AOAM533PI5NjaEFHUm0ZIfGteOmlmPORmorAooO0UM1jz0rVKF8lPsqu
+        VnotHOwMmYy23eqoaTv1guK/Ng==
+X-Google-Smtp-Source: ABdhPJwxx7XnDDEsAXreWtClyszsrsNFCBByut9XE2cHvwjdxXzfOxKQE/tmd47A0ziamdP54HnVxQ==
+X-Received: by 2002:a62:8096:: with SMTP id j144mr1533250pfd.78.1595454744632;
+        Wed, 22 Jul 2020 14:52:24 -0700 (PDT)
+Received: from google.com ([2620:15c:202:1:8edc:d4ff:fe53:350d])
+        by smtp.gmail.com with ESMTPSA id m17sm570134pfo.182.2020.07.22.14.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 14:52:23 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 14:52:20 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Aseda Aboagye <aaboagye@chromium.org>
+Subject: Re: [PATCH v2 4/4] platform/chrome: cros_ec_proto: Convert EC error
+ codes to Linux error codes
+Message-ID: <20200722215220.GA2137556@google.com>
+References: <20200720202243.180230-1-linux@roeck-us.net>
+ <20200720202243.180230-5-linux@roeck-us.net>
+ <401aec54-ff21-7e0f-85dc-e32435df2672@collabora.com>
+ <20200721142320.GA20067@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200722152123.GA1278089@bjorn-Precision-5520>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_16:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- spamscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- lowpriorityscore=0 suspectscore=1 mlxscore=0 impostorscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007220136
+In-Reply-To: <20200721142320.GA20067@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 10:21:23AM -0500, Bjorn Helgaas wrote:
-> On Wed, Jul 22, 2020 at 10:52:26PM +0800, Kairui Song wrote:
-> > On Fri, Mar 6, 2020 at 5:38 PM Baoquan He <bhe@redhat.com> wrote:
-> > > On 03/04/20 at 08:53pm, Deepa Dinamani wrote:
-> > > > On Wed, Mar 4, 2020 at 7:53 PM Baoquan He <bhe@redhat.com> wrote:
-> > > > > On 03/03/20 at 01:01pm, Deepa Dinamani wrote:
-> > > > > > I looked at this some more. Looks like we do not clear irqs
-> > > > > > when we do a kexec reboot. And, the bootup code maintains
-> > > > > > the same table for the kexec-ed kernel. I'm looking at the
-> > > > > > following code in
-> > > > >
-> > > > > I guess you are talking about kdump reboot here, right? Kexec
-> > > > > and kdump boot take the similar mechanism, but differ a
-> > > > > little.
-> > > >
-> > > > Right I meant kdump kernel here. And, clearly the
-> > > > is_kdump_kernel() case below.
-> > > >
-> > > > > > intel_irq_remapping.c:
-> > > > > >
-> > > > > >         if (ir_pre_enabled(iommu)) {
-> > > > > >                 if (!is_kdump_kernel()) {
-> > > > > >                         pr_warn("IRQ remapping was enabled on %s but
-> > > > > > we are not in kdump mode\n",
-> > > > > >                                 iommu->name);
-> > > > > >                         clear_ir_pre_enabled(iommu);
-> > > > > >                         iommu_disable_irq_remapping(iommu);
-> > > > > >                 } else if (iommu_load_old_irte(iommu))
-> > > > >
-> > > > > Here, it's for kdump kernel to copy old ir table from 1st kernel.
-> > > >
-> > > > Correct.
-> > > >
-> > > > > >                         pr_err("Failed to copy IR table for %s from
-> > > > > > previous kernel\n",
-> > > > > >                                iommu->name);
-> > > > > >                 else
-> > > > > >                         pr_info("Copied IR table for %s from previous kernel\n",
-> > > > > >                                 iommu->name);
-> > > > > >         }
-> > > > > >
-> > > > > > Would cleaning the interrupts(like in the non kdump path
-> > > > > > above) just before shutdown help here? This should clear the
-> > > > > > interrupts enabled for all the devices in the current
-> > > > > > kernel. So when kdump kernel starts, it starts clean. This
-> > > > > > should probably help block out the interrupts from a device
-> > > > > > that does not have a driver.
-> > > > >
-> > > > > I think stopping those devices out of control from continue
-> > > > > sending interrupts is a good idea. While not sure if only
-> > > > > clearing the interrupt will be enough. Those devices which
-> > > > > will be initialized by their driver will brake, but devices
-> > > > > which drivers are not loaded into kdump kernel may continue
-> > > > > acting. Even though interrupts are cleaning at this time, the
-> > > > > on-flight DMA could continue triggerring interrupt since the
-> > > > > ir table and iopage table are rebuilt.
-> > > >
-> > > > This should be handled by the IOMMU, right? And, hence you are
-> > > > getting UR. This seems like the correct execution flow to me.
-> > >
-> > > Sorry for late reply.
-> > > Yes, this is initializing IOMMU device.
-> > >
-> > > > Anyway, you could just test this theory by removing the
-> > > > is_kdump_kernel() check above and see if it solves your problem.
-> > > > Obviously, check the VT-d spec to figure out the exact sequence to
-> > > > turn off the IR.
-> > >
-> > > OK, I will talk to Kairui and get a machine to test it. Thanks for your
-> > > nice idea, if you have a draft patch, we are happy to test it.
-> > >
-> > > > Note that the device that is causing the problem here is a legit
-> > > > device. We want to have interrupts from devices we don't know about
-> > > > blocked anyway because we can have compromised firmware/ devices that
-> > > > could cause a DoS attack. So blocking the unwanted interrupts seems
-> > > > like the right thing to do here.
-> > >
-> > > Kairui said it's a device which driver is not loaded in kdump kernel
-> > > because it's not needed by kdump. We try to only load kernel modules
-> > > which are needed, e.g one device is the dump target, its driver has to
-> > > be loaded in. In this case, the device is more like a out of control
-> > > device to kdump kernel.
-> > 
-> > Hi Bao, Deepa, sorry for this very late response. The test machine was
-> > not available for sometime, and I restarted to work on this problem.
-> > 
-> > For the workaround mention by Deepa (by remote the is_kdump_kernel()
-> > check), it didn't work, the machine still hangs upon shutdown.
-> > The devices that were left in an unknown state and sending interrupt
-> > could be a problem, but it's irrelevant to this hanging problem.
-> > 
-> > I think I didn't make one thing clear, The PCI UR error never arrives
-> > in kernel, it's the iLo BMC on that HPE machine caught the error, and
-> > send kernel an NMI. kernel is panicked by NMI, I'm still trying to
-> > figure out why the NMI hanged kernel, even with panic=-1,
-> > panic_on_io_nmi, panic_on_unknown_nmi all set. But if we can avoid the
-> > NMI by shutdown the devices in right order, that's also a solution.
++ drinkcat, aseda
+
+On Tue, Jul 21, 2020 at 07:23:20AM -0700, Guenter Roeck wrote:
+> On Tue, Jul 21, 2020 at 01:29:01PM +0200, Enric Balletbo i Serra wrote:
+> > On 20/7/20 22:22, Guenter Roeck wrote:
+> > > +	[EC_RES_INVALID_HEADER_VERSION] = -EBADMSG,
 > 
-> I'm not sure how much sympathy to have for this situation.  A PCIe UR
-> is fatal for the transaction and maybe even the device, but from the
-> overall system point of view, it *should* be a recoverable error and
-> we shouldn't panic.
-> 
-> Errors like that should be reported via the normal AER or ACPI/APEI
-> mechanisms.  It sounds like in this case, the platform has decided
-> these aren't enough and it is trying to force a reboot?  If this is
-> "special" platform behavior, I'm not sure how much we need to cater
-> for it.
-> 
+> Any idea for EC_RES_INVALID_HEADER_VERSION ? I am not entirely happy
+> with -EBADMSG: the error is distinctly different to CRC errors.
+> EPROTONOSUPPORT as well, maybe, or something else ?
 
-Are these AER errors the type processed by the GHES code?
+FWIW, these (INVALID_HEADER_VERSION, INVALID_HEADER_CRC,
+INVALID_DATA_CRC) aren't actually used on any firmware yet. This has
+been open forever:
+https://crbug.com/787159
+Added here:
+https://chromium-review.googlesource.com/c/chromiumos/platform/ec/+/780452/
 
-I'll note that RedHat runs their crash kernel with:  hest_disable.
-So, the ghes code is disabled in the crash kernel.
+Unfortunately, the linked design doc (still in draft) is not public.
 
+My understanding is that while they're not all exactly the same (CRC is
+different than the others), they are all still supposed to represent
+"corrupt request [from the Application Processor]". EBADMSG seems good
+enough to me.
 
--- 
+Brian
 
------------------------------------------------------------------------------
-Jerry Hoemann                  Software Engineer   Hewlett Packard Enterprise
------------------------------------------------------------------------------
+P.S. for those added late -- you can grab the whole thread from here:
+https://lore.kernel.org/lkml/20200720202243.180230-1-linux@roeck-us.net/
+or in mbox form:
+https://lore.kernel.org/lkml/20200720202243.180230-1-linux@roeck-us.net/t.mbox.gz
