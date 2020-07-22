@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E524322996C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E791A229970
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732556AbgGVNou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:44:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60722 "EHLO mail.kernel.org"
+        id S1732572AbgGVNo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:44:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732544AbgGVNos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:44:48 -0400
+        id S1732519AbgGVNo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 09:44:58 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 349E62071A;
-        Wed, 22 Jul 2020 13:44:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68C3F20729;
+        Wed, 22 Jul 2020 13:44:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595425487;
-        bh=laniH5UgS3DrsXSeVguJDybYLw25gKEKrpalctaeV8A=;
+        s=default; t=1595425497;
+        bh=pVSFwe9WAZVAYOyGMf4RoJKSgLIxFtnJSZePlHiqGrc=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=JtEvPKKk9ePwlbsUXe8JIGCNQffTKaHbDfykpD21/3zHX3D3gT0MMTXMr7SBk5bpS
-         wQdGbvtpZT0xMqxLYHHRwk4cEyamAcnmxybYuGW04ts+28PbaXmStFP1+WQDJF+09F
-         EUmnIcSkI84ICarie4DxC6YUhrDV+O44MfHCfpHw=
-Date:   Wed, 22 Jul 2020 14:44:34 +0100
+        b=aj7wifMJfNbiBNwUUX2VmkAaWR0SwxE8gSVwzMPBjgS5ZE4GhOYPkj9XdYQb458W4
+         ODeEz2ALjG7X0k65ysMGcjDZLAQLG6ZABxg5JxU8MYfDcIN6crzhCU68m9wgXhqJ/T
+         02VWjAHj/4iK9Hx8i+f5FtUjURcJxAH8Nxe6AC8g=
+Date:   Wed, 22 Jul 2020 14:44:44 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, shifu0704@thundersoft.com,
-        nikita.yoush@cogentembedded.com, rikard.falkeborn@gmail.com,
-        devicetree@vger.kernel.org, yuehaibing@huawei.com,
-        kuninori.morimoto.gx@renesas.com, corbet@lwn.net,
-        cychiang@chromium.org, l.stach@pengutronix.de,
-        dinghao.liu@zju.edu.cn, jbrunet@baylibre.com, perex@perex.cz,
-        dmurphy@ti.com, linux-doc@vger.kernel.org, afd@ti.com,
-        robh+dt@kernel.org, lkp@intel.com,
-        pankaj.laxminarayan.bharadiya@intel.com, colin.king@canonical.com,
-        tiwai@suse.com, "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        alsa-devel@alsa-project.org, keescook@chromium.org,
-        tzungbi@google.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20200719153822.59788-1-grandmaster@al2klimov.de>
-References: <20200719153822.59788-1-grandmaster@al2klimov.de>
-Subject: Re: [PATCH for v5.9] ASoC: Replace HTTP links with HTTPS ones
-Message-Id: <159542547441.19620.12700618394214218697.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc:     festevam@gmail.com, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, shengjiu.wang@nxp.com
+In-Reply-To: <20200720072046.8152-1-daniel.baluta@oss.nxp.com>
+References: <20200720072046.8152-1-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH 0/7] SOF IMX fixes
+Message-Id: <159542547441.19620.1737685462805157717.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Jul 2020 17:38:22 +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+On Mon, 20 Jul 2020 10:20:39 +0300, Daniel Baluta wrote:
+> This patchseries contains a couple of SOF IMX fixes
+> found during our first IMX SOF release.
 > 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
+> Daniel Baluta (7):
+>   ASoC: SOF: define INFO_ flags in dsp_ops for imx8
+>   ASoC: SOF: imx: Use ARRAY_SIZE instead of hardcoded value
+>   ASoC: SOF: imx8: Fix ESAI DAI driver name for i.MX8/iMX8X
+>   ASoC: SOF: imx8m: Fix SAI DAI driver for i.MX8M
+>   ASoC: SOF: imx8: Add SAI dai driver for i.MX/i.MX8X
+>   ASoC: SOF: topology: Update SAI config bclk/fsync rate
+>   ASoC: SOF: pcm: Update rate/channels for SAI/ESAI DAIs
+> 
+> [...]
 
 Applied to
 
@@ -68,8 +59,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Replace HTTP links with HTTPS ones
-      commit: 5856d8bd308f9467cefa65d04e184a56a3977559
+[1/7] ASoC: SOF: define INFO_ flags in dsp_ops for imx8
+      commit: 45b7262174dcc2ca62e23220219eee1462dcada9
+[2/7] ASoC: SOF: imx: Use ARRAY_SIZE instead of hardcoded value
+      commit: beaa7bd10dce348b033aff3f466ab1a78b33fed3
+[3/7] ASoC: SOF: imx8: Fix ESAI DAI driver name for i.MX8/iMX8X
+      commit: bcba2c9d62f391cd2cd6acb7f658d47bfb10e8b9
+[4/7] ASoC: SOF: imx8m: Fix SAI DAI driver for i.MX8M
+      commit: f23a8e9402f899e3555ac8aff3d3d050adafe39e
+[5/7] ASoC: SOF: imx8: Add SAI dai driver for i.MX/i.MX8X
+      commit: 68f56f618c3fbc4b1af0428f715f952cdada7a54
+[6/7] ASoC: SOF: topology: Update SAI config bclk/fsync rate
+      commit: 72bb9564fd97cd4f6dec88c8363acc3ab642673f
+[7/7] ASoC: SOF: pcm: Update rate/channels for SAI/ESAI DAIs
+      commit: 51b0243aefaa554ca57817562da8eb269280d4ae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
