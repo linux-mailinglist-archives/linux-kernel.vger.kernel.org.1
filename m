@@ -2,115 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4291E229FE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722F722A00D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbgGVTKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 15:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732575AbgGVTKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 15:10:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A34E204EA;
-        Wed, 22 Jul 2020 19:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595445021;
-        bh=+t3jY0IpTJCIfsWEdsuY3x3kM796R1C8EohXWaLiw9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ebBukWMp5zxK6NJqb9nkijuy9EKOVU5lqYjUPomAlvOI+/ju8xrtyp6vOWZjcZpDT
-         c3Qz1bSqDg5ljLRcS6+tBZHWGkz/PHcnaOAakmgFGT0PzLBBNPrFLqsBY6kA45UDdL
-         0yg53bLhy0ZvdZ5lnTPO56hUnUzhVcNbGyDroYiA=
-Date:   Wed, 22 Jul 2020 21:10:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [PATCH 1/2] f2fs: add sysfs symbolic link to kobject with volume
- name
-Message-ID: <20200722191026.GA583549@kroah.com>
-References: <20200719054409.3050516-1-daeho43@gmail.com>
- <20200719151640.GA301791@kroah.com>
- <20200722164356.GA3912099@google.com>
- <20200722170602.GA440171@kroah.com>
- <20200722172437.GH3912099@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200722172437.GH3912099@google.com>
+        id S1732724AbgGVTTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 15:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732647AbgGVTTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 15:19:51 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B2EC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 12:19:50 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f7so2980964wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 12:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=2EIBszTzyv/AfyhPfuCemZqatYVBUAPBlZr4NfJGxfU=;
+        b=V9iKhNrR2kb/bKZjFyD/LsNBZM007bp0nAQTEnzJfU1Qd6DHFLG0zbKlc/0G32RuOd
+         l7OueXPFFx81C+FPgvaXcuSq6OeGTU5R5xlmwfj9SRwtkU53JpCjV4pPZBwsUiYYveYH
+         yl/kaUL3zPSyghUMu7H02RV5Mw+lD9UtgUI8Q+VJ9UQJjLDk46Ma19iVCIfWxLVyGdmJ
+         ZFv0mPbfpsnBeICG9JgCUsjWwmfCxmcLkyKC/fJ4U0h+i47hWFW3VBGZpymUJRkPalvu
+         u3mhRQNSq7nbitzVqEv0bEbw9zLvkQeLm4Wr9OexhBIGXYS68+j5crDR4h1KaVORkpzk
+         h7/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2EIBszTzyv/AfyhPfuCemZqatYVBUAPBlZr4NfJGxfU=;
+        b=kGm9kZqU0duww7ONHjPHJZ8RKs2BwTz1Pd/O7IcwLE0tprX5XUmMRYQYWL4cH+nLCg
+         5SxGBwuDPSznfWf4BiAI15oEGxmjAr3pQ10cqXMKEyPafEsTirwReiTYYOcP+boeTkyN
+         VhcQF3sYvahJo8OeRKq33n69O4suN4emsVabVIsPmpUneZsnqEOus02ZAj8FlqaGFQca
+         wOVBGYUuscel0xUHVkinPBgIlaHPUoHRtG2JrXvlyZv1LEMZqaS7DQJ08nd14c9iYbbu
+         xKtlw9rH+qYHpOmDR7zG/yyySJQLxIUaZEFJ6U+lfphsNKt1ykG7K0DzakFI94dhHQf8
+         w+lA==
+X-Gm-Message-State: AOAM531LVsNvq1SIQD1cRpbcAZcIm1tEIXYsmqefJyMT49BQ3lPo8lPn
+        0jyBFT7wxO6ErsONDtLr2OSo4g==
+X-Google-Smtp-Source: ABdhPJzVSzxp+nOgsuQpcv3GywMo830t1O68SbsZon5tHTziAr565LFeRX8mDBnnsLJyOgDVKr9mAQ==
+X-Received: by 2002:adf:db86:: with SMTP id u6mr908211wri.27.1595445589526;
+        Wed, 22 Jul 2020 12:19:49 -0700 (PDT)
+Received: from localhost.localdomain (126.red-83-36-179.dynamicip.rima-tde.net. [83.36.179.126])
+        by smtp.gmail.com with ESMTPSA id n189sm671825wmf.38.2020.07.22.12.19.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 12:19:49 -0700 (PDT)
+From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
+To:     jorge@foundries.io, jens.wiklander@linaro.org,
+        sumit.garg@linaro.org
+Cc:     ricardo@foundries.io, mike@foundries.io, tee-dev@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCHv5] drivers: optee: allow op-tee to access devices on the i2c bus
+Date:   Wed, 22 Jul 2020 21:19:45 +0200
+Message-Id: <20200722191945.15157-1-jorge@foundries.io>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 10:24:37AM -0700, Jaegeuk Kim wrote:
-> On 07/22, Greg KH wrote:
-> > On Wed, Jul 22, 2020 at 09:43:56AM -0700, Jaegeuk Kim wrote:
-> > > On 07/19, Greg KH wrote:
-> > > > On Sun, Jul 19, 2020 at 02:44:08PM +0900, Daeho Jeong wrote:
-> > > > > From: Daeho Jeong <daehojeong@google.com>
-> > > > > 
-> > > > > Added a symbolic link directory pointing to its device name
-> > > > > directory using the volume name of the partition in sysfs.
-> > > > > (i.e., /sys/fs/f2fs/vol_#x -> /sys/fs/f2fs/sda1)
-> > > > 
-> > > > No, please no.
-> > > > 
-> > > > That is already created today for you in /dev/disk/  The kernel does not
-> > > > need to do this again.
-> > > > 
-> > > > If your distro/system/whatever does not provide you with /dev/disk/ and
-> > > > all of the symlinks in there, then work with your distro/system/whatever
-> > > > to do so.
-> > > 
-> > > I don't get the point, since /dev/disk points device node, not any sysfs entry.
-> > > Do you mean we need to create symlink to /sys/fs/f2fs/dm-X in /dev/disk?
-> > 
-> > Huh, no!  It's all done for you today automagically by userspace:
-> > 
-> > $ tree /dev/disk/by-label/
-> > /dev/disk/by-label/
-> > ├── boot -> ../../sda1
-> > ├── fast_disk -> ../../md0
-> > ├── root -> ../../sda2
-> > └── stuff -> ../../dm-0
-> > 
-> > Look on your laptop/desktop/server today for those, there's lots of
-> > symlinks in /dev/disk/
-> 
-> What I mean is "creating symlink from *userspace*", but the concern is
-> "/dev/" looks like being used for device nodes only, not sysfs.
+Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+control this type of cryptographic devices it needs coordinated access
+to the bus, so collisions and RUNTIME_PM dont get in the way.
 
-That is correct, that is what /dev/ is for, not sysfs.
+This trampoline driver allow OP-TEE to access them.
 
-> > > > Again, no need to do this on a per-filesystem-basis when we already have
-> > > > this around for all filesystems, and have had it for 15+ years now.
-> > > 
-> > > Could you point out where we can get this? And, the label support depends
-> > > on per-filesystem design. I'm not sure how this can be generic enough.
-> > 
-> > Userspace knows how to read labels on a per-filesystem-basis and does so
-> > just fine.  That's how it creates those symlinks, no kernel support is
-> > needed.
-> > 
-> > This has been implemented for 15+ years now, it's not a new thing...
-> > 
-> > Now if your embedded system doesn't support it, that's the userspace of
-> > that system's fault, it's not the kernel's fault at all.  Go fix your
-> > userspace if you want those things.
-> 
-> I'm not talking about whose fault tho. :) By any chance, could you please
-> suggest a good location to create a symlink for this sysfs entry?
+Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+---
+ v5: arrange includes alphabetically 
+ v4: removed unecessary extra line in optee_msg.h
+ v3: use from/to msg param to support all types of memory
+     modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER id
+     
+ drivers/tee/optee/optee_msg.h | 16 +++++++
+ drivers/tee/optee/rpc.c       | 80 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 96 insertions(+)
 
-There is no need for such a sysfs entry, that's what I am trying to say.
-Userspace already has all of the needed information here, do not try to
-add filesystem-specific stuff like this, unless you somehow are going to
-do it for all filesystems :)
+diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+index 795bc19ae17a..14b580f55356 100644
+--- a/drivers/tee/optee/optee_msg.h
++++ b/drivers/tee/optee/optee_msg.h
+@@ -419,4 +419,20 @@ struct optee_msg_arg {
+  */
+ #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+ 
++/*
++ * Access a device on an i2c bus
++ *
++ * [in]  param[0].u.value.a		mode: RD(0), WR(1)
++ * [in]  param[0].u.value.b		i2c adapter
++ * [in]  param[0].u.value.c		i2c chip
++ *
++ * [in/out] memref[1]			buffer to exchange the transfer data
++ *					with the secure world
++ *
++ * [out]  param[0].u.value.a		bytes transferred by the driver
++ */
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
++
+ #endif /* _OPTEE_MSG_H */
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index b4ade54d1f28..df6250418235 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/i2c.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
+ #include "optee_private.h"
+@@ -49,6 +50,82 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+ 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ }
+ 
++static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
++					     struct optee_msg_arg *arg)
++{
++	struct i2c_client client;
++	struct tee_param *params;
++	uint32_t type;
++	int i, ret;
++	size_t len;
++	char *buf;
++	uint32_t attr[] = {
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
++	};
++
++	if (arg->num_params != ARRAY_SIZE(attr)) {
++		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++		return;
++	}
++
++	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
++			       GFP_KERNEL);
++	if (!params) {
++		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
++		return;
++	}
++
++	if (optee_from_msg_param(params, arg->num_params, arg->params))
++		goto bad;
++
++	for (i = 0; i < arg->num_params; i++) {
++		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
++		if (type != attr[i])
++			goto bad;
++	}
++
++	client.addr = params[0].u.value.c;
++	client.adapter = i2c_get_adapter(params[0].u.value.b);
++	if (!client.adapter)
++		goto bad;
++
++	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
++
++	buf = params[1].u.memref.shm->kaddr;
++	len = params[1].u.memref.size;
++
++	switch (params[0].u.value.a) {
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
++		ret = i2c_master_recv(&client, buf, len);
++		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
++		ret = i2c_master_send(&client, buf, len);
++		break;
++	default:
++		i2c_put_adapter(client.adapter);
++		goto bad;
++	}
++
++	if (ret >= 0) {
++		params[2].u.value.a = ret;
++		arg->ret = TEEC_SUCCESS;
++	} else {
++		arg->ret = TEEC_ERROR_COMMUNICATION;
++	}
++
++	if (optee_to_msg_param(arg->params, arg->num_params, params))
++		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++
++	i2c_put_adapter(client.adapter);
++	kfree(params);
++	return;
++bad:
++	kfree(params);
++	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++}
++
+ static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+ {
+ 	struct wq_entry *w;
+@@ -382,6 +459,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+ 	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+ 		handle_rpc_func_cmd_shm_free(ctx, arg);
+ 		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
++		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
++		break;
+ 	default:
+ 		handle_rpc_supp_cmd(ctx, arg);
+ 	}
+-- 
+2.17.1
 
-thanks,
-
-gregt k-h
