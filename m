@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705E422996F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91578229969
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732563AbgGVNo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:44:57 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:56891 "EHLO
+        id S1732545AbgGVNos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:44:48 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:56907 "EHLO
         esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732519AbgGVNon (ORCPT
+        with ESMTP id S1732528AbgGVNop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:44:43 -0400
+        Wed, 22 Jul 2020 09:44:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595425482; x=1626961482;
+  t=1595425485; x=1626961485;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=AZqakvsW2eY/rh4CY+P6S9cbwQSN2N9lnmvXsIkmBcE=;
-  b=fiHFW9K/WfuVumcBWKHYHiGIflMHxgrn5B1rgVBPP4JaqSnFKMzi79A5
-   NWbhGwzviJmq5/B8PKcaua42AVUFIY9ZUifw7gQUGWHUC8Y+lE7Rm23j4
-   I/Ov1zmsLppxUoN0ysKP5u01KTVYaOqy4PVz1pNAr9Vx6kT4H1aPNO7lJ
-   bkUStDOcFjvKysxo6hCwzKU6XOL4lcA36nlJh9euFRAe0oxXrI+qXX6t8
-   MDS8YejIsa9Nybae7bmNi5LMjzeMy+rCkDmaaF+46L59J6YkTEWC5DPQ+
-   /dcnCn3x+6LNfcuGfcvoSkVs9qDk5LBWAeJwhIM0f45+VYg1nv9Ytmhj1
+  bh=AQ4wWOdIKVge/cPSYMb3D9ty6S2PPK3wNKVv4CCqRH8=;
+  b=nlLzWBUDRwgIDh8+POxeg543AT3HANGaEFx4nLx7x+TJIkFukrdgBvka
+   dMK/Ic91FNsK556fW7yeot43WYbVP8FZSKz+yBiOzh6Q9ES7vSxvxn8pF
+   dqba0m2USMAwDO1es+WNEenvvstdQP5cxyfXVu0Ksy7QMc0CWf5nrJtDQ
+   GgCyCGbbjQgM+senwEXoTwpnH53YYsGDmgueSKzV+oFGXQmxFVjpHobPJ
+   Qh/HJxiF1VHSATMBWe8ayOqTai8Tc6P96YujjXrAYyPaUjSlJKPdtk5XQ
+   jBLa3kG3zOLPqX0jXZtodiZvijOHOcs/4WU+v2HCIGxPqfpl6QbaHG2Yb
    g==;
-IronPort-SDR: d41XxWmnb0xhsPys09rpdMOC4O+Jcu8EfT3soG7xYWIeBA6Ib9gYeYcR0KJrx+hwKtylfxRBRf
- KEZMGuxs2iyud6GwWflKSW2KpfUEGOpwB5+twSUPCeB5rdSJBHNX+hFbD0UvPJsL17tCGEAC5i
- ulg5Tdhh74wplsnYRiAMqHPa04oOTvuEinxRHGvbDwMBJa4Skl+KThi3vh0ayxmeRnog0B9In0
- 7lKtBD3zKO4u4JTRlhDG8MVIdVnv2pwDsSxK1Fia3jsETTyWLEBVVSyXYOhgFB9LFBwxSlgrzY
- L9Q=
+IronPort-SDR: i+HSXrkki1DPvbMVjDVRBXRvxME0nWWWV776wU6w/EzuTmJ2XRr9NT6vx54gRpARLB6RHVJZ1L
+ UtH8q8aqNmsUR8tlu3aHyJ15q8zW49rvXA4rxYQ/XxY5aaJDiRn703LPXhasKYM84kcij/fZLN
+ eK0kk4LWYtTqHLa7r5N4NFL6AfGcbmCkCdU6DzqFjDiYkzRI76LlUyODkaETEWN3ICRQ9IIlXW
+ z/SmAMbYSUJzCl3xGL/0ykT68CBngqoPRDg9qo+c+3IP+MkDB/+Rug6tROcMBOy+jClfilgyz3
+ BzU=
 X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="82819500"
+   d="scan'208";a="82819506"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 06:44:41 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 06:44:44 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 06:44:41 -0700
+ 15.1.1979.3; Wed, 22 Jul 2020 06:44:44 -0700
 Received: from cristi-P53.amer.actel.com (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 06:43:59 -0700
+ 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 06:44:02 -0700
 From:   <cristian.birsan@microchip.com>
 To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Cristian Birsan <cristian.birsan@microchip.com>
-Subject: [PATCH v3 5/6] usb: gadget: udc: atmel: update endpoint allocation for sam9x60
-Date:   Wed, 22 Jul 2020 16:44:20 +0300
-Message-ID: <20200722134421.190741-6-cristian.birsan@microchip.com>
+Subject: [PATCH v3 6/6] ARM: dts: at91: sam9x60ek: enable usb device
+Date:   Wed, 22 Jul 2020 16:44:21 +0300
+Message-ID: <20200722134421.190741-7-cristian.birsan@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200722134421.190741-1-cristian.birsan@microchip.com>
 References: <20200722134421.190741-1-cristian.birsan@microchip.com>
@@ -65,111 +65,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Cristian Birsan <cristian.birsan@microchip.com>
 
-The DPRAM memory from the USB High Speed Device Port (UDPHS) hardware
-block was increased. This patch updates the endpoint allocation for sam9x60
-to take advantage of this larger memory. At the same time the
-constraint to allocate the endpoints in order was lifted. To handle old
-and new hardware in the same driver the ep_prealloc was added.
+Enable usb device for sam9x60ek board.
 
 Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
 ---
- drivers/usb/gadget/udc/atmel_usba_udc.c | 20 +++++++++++++++++---
- drivers/usb/gadget/udc/atmel_usba_udc.h |  2 ++
- 2 files changed, 19 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/at91-sam9x60ek.dts | 13 +++++++++++++
+ arch/arm/boot/dts/sam9x60.dtsi       | 14 ++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
-index 843ba525d277..8015b99f6b5c 100644
---- a/drivers/usb/gadget/udc/atmel_usba_udc.c
-+++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
-@@ -1061,12 +1061,14 @@ static struct usb_ep *atmel_usba_match_ep(struct usb_gadget *gadget,
+diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
+index a5f5718c711a..984cf596dfe9 100644
+--- a/arch/arm/boot/dts/at91-sam9x60ek.dts
++++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+@@ -559,6 +559,12 @@ pinctrl_key_gpio_default: pinctrl_key_gpio {
+ 			atmel,pins = <AT91_PIOD 18 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
+ 		};
+ 	};
++
++	usb0 {
++		pinctrl_usba_vbus: usba_vbus {
++			atmel,pins = <AT91_PIOB 16 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
++		};
++	};
+ }; /* pinctrl */
  
- 		case USB_ENDPOINT_XFER_ISOC:
- 			ep->fifo_size = 1024;
--			ep->nr_banks = 2;
-+			if (ep->udc->ep_prealloc)
-+				ep->nr_banks = 2;
- 			break;
- 
- 		case USB_ENDPOINT_XFER_BULK:
- 			ep->fifo_size = 512;
--			ep->nr_banks = 1;
-+			if (ep->udc->ep_prealloc)
-+				ep->nr_banks = 1;
- 			break;
- 
- 		case USB_ENDPOINT_XFER_INT:
-@@ -1076,7 +1078,8 @@ static struct usb_ep *atmel_usba_match_ep(struct usb_gadget *gadget,
- 			else
- 				ep->fifo_size =
- 				    roundup_pow_of_two(le16_to_cpu(desc->wMaxPacketSize));
--			ep->nr_banks = 1;
-+			if (ep->udc->ep_prealloc)
-+				ep->nr_banks = 1;
- 			break;
- 		}
- 
-@@ -2087,23 +2090,33 @@ static const struct usba_udc_config udc_at91sam9rl_cfg = {
- 	.errata = &at91sam9rl_errata,
- 	.config = ep_config_sam9,
- 	.num_ep = ARRAY_SIZE(ep_config_sam9),
-+	.ep_prealloc = true,
+ &pmc {
+@@ -657,6 +663,13 @@ timer1: timer@1 {
+ 	};
  };
  
- static const struct usba_udc_config udc_at91sam9g45_cfg = {
- 	.errata = &at91sam9g45_errata,
- 	.config = ep_config_sam9,
- 	.num_ep = ARRAY_SIZE(ep_config_sam9),
-+	.ep_prealloc = true,
- };
- 
- static const struct usba_udc_config udc_sama5d3_cfg = {
- 	.config = ep_config_sama5,
- 	.num_ep = ARRAY_SIZE(ep_config_sama5),
-+	.ep_prealloc = true,
++&usb0 {
++	atmel,vbus-gpio = <&pioB 16 GPIO_ACTIVE_HIGH>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usba_vbus>;
++	status = "okay";
 +};
 +
-+static const struct usba_udc_config udc_sam9x60_cfg = {
-+	.num_ep = ARRAY_SIZE(ep_config_sam9),
-+	.config = ep_config_sam9,
-+	.ep_prealloc = false,
- };
+ &usb1 {
+ 	num-ports = <3>;
+ 	atmel,vbus-gpio = <0
+diff --git a/arch/arm/boot/dts/sam9x60.dtsi b/arch/arm/boot/dts/sam9x60.dtsi
+index 6763423d64b8..ef0ef8625f25 100644
+--- a/arch/arm/boot/dts/sam9x60.dtsi
++++ b/arch/arm/boot/dts/sam9x60.dtsi
+@@ -69,6 +69,20 @@ ahb {
+ 		#size-cells = <1>;
+ 		ranges;
  
- static const struct of_device_id atmel_udc_dt_ids[] = {
- 	{ .compatible = "atmel,at91sam9rl-udc", .data = &udc_at91sam9rl_cfg },
- 	{ .compatible = "atmel,at91sam9g45-udc", .data = &udc_at91sam9g45_cfg },
- 	{ .compatible = "atmel,sama5d3-udc", .data = &udc_sama5d3_cfg },
-+	{ .compatible = "microchip,sam9x60-udc", .data = &udc_sam9x60_cfg },
- 	{ /* sentinel */ }
- };
- 
-@@ -2131,6 +2144,7 @@ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
- 		return ERR_PTR(-EINVAL);
- 
- 	udc_config = match->data;
-+	udc->ep_prealloc = udc_config->ep_prealloc;
- 	udc->errata = udc_config->errata;
- 	if (udc->errata) {
- 		pp = of_find_matching_node_and_match(NULL, atmel_pmc_dt_ids,
-diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.h b/drivers/usb/gadget/udc/atmel_usba_udc.h
-index a9bf655eb513..620472f218bc 100644
---- a/drivers/usb/gadget/udc/atmel_usba_udc.h
-+++ b/drivers/usb/gadget/udc/atmel_usba_udc.h
-@@ -317,6 +317,7 @@ struct usba_udc_config {
- 	const struct usba_udc_errata *errata;
- 	const struct usba_ep_config *config;
- 	const int num_ep;
-+	const bool ep_prealloc;
- };
- 
- struct usba_udc {
-@@ -343,6 +344,7 @@ struct usba_udc {
- 	bool bias_pulse_needed;
- 	bool clocked;
- 	bool suspended;
-+	bool ep_prealloc;
- 
- 	u16 devstatus;
- 
++		usb0: gadget@500000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			compatible = "microchip,sam9x60-udc";
++			reg = <0x00500000 0x100000
++				0xf803c000 0x400>;
++			interrupts = <23 IRQ_TYPE_LEVEL_HIGH 2>;
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 23>, <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			clock-names = "pclk", "hclk";
++			assigned-clocks = <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			assigned-clock-rates = <480000000>;
++			status = "disabled";
++		};
++
+ 		usb1: ohci@600000 {
+ 			compatible = "atmel,at91rm9200-ohci", "usb-ohci";
+ 			reg = <0x00600000 0x100000>;
 -- 
 2.25.1
 
