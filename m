@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CB9229239
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A359822923B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgGVHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:39:02 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:35864 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730175AbgGVHi6 (ORCPT
+        id S1730457AbgGVHjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:39:04 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:35036 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730296AbgGVHjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:38:58 -0400
+        Wed, 22 Jul 2020 03:39:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595403539; x=1626939539;
+  t=1595403542; x=1626939542;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=HbI5cF3OYMyGbFK5qPGOxrEwnelSO1uMUt0DzfCXgCA=;
-  b=x+CkIQDhKMsj2bm6pG5Au/OLZwgDvj+XmY/+poNE2S8hdFN7w/QKAA5e
-   qHI/8uoCaVd3myjTzV7Cq7wBPHALi+K32/8dh4sGTzruJo6D7dQEw/71Y
-   w2qrOpZJ0j3aSPq9O8u+2Mmt1dHI4IDDQusNxUt4nKntgiCkH/OG0mqtn
-   lcKW4yA4foQvP74IgnwgBtKM1wrQNk59pCGxGxV5ghTopUDXf6v7aZVXH
-   Btr9y9ABKpfxNYOPqMZTEIcDQr+zZg1Y5Vg4CI9qRr9PDu9mOrQXOK/6i
-   bTpFhvCrOzm4o8XvFk4B53QFENIoodDi3vfNpbs9ggqhcaUwnmrRmcjhf
-   Q==;
-IronPort-SDR: AwrrQIxW8b0dUrRmQtOUyrDOI6upapy2dBYI+xdzDv46tVoPWYgOayqCCsWRbM94xLEsJSPEpI
- 2djw56oQ4JtQ7Jejodvl3j4JUp+JUhQpjiL/JFX8O4FnhIWvvoIks6oz+/enkBtCNkRFQBE4ix
- O2/7E+I2509nSog0PK9uanW3J1sGtUoRgKW+bLY+0oQxwHV+L4qHlHmIRRWEIa3ZZ//iiGS4Q4
- ENFeLKSeglnrJ0IW4Ed5tKmjmCwSbpTUE/tic7mvyxnWcLF70SSFz5sR1btZNIPAs8c0SFcFik
- uPo=
+  bh=R+uFFyYA7jlvJSdHYMkGV8OUFOabhODqF7Yvyb39l44=;
+  b=ZPFeMx1zxH3drG+r2cHudXG/qrvsPZEGDejlSy8aYxnQgknG7RpAcw1j
+   rOBw9oVm4MD0lhfHX1dO5hekU1u9/Dut5dSBsfJFvjbbTz7lnRjEc18EC
+   D+yXbUNvjRh80dmj/cLTo7aFuh2I5MDFsT9shRB0jnsMpL7ClKPfId1YB
+   4UaM5mYMTjH23Dqd2CxkX9NhYvXkx3phbTdjggY8CVAWDzaAEDhAjMPl9
+   GhOiuYRPa9kbvklnbnpEt2tKZNHABn7CkVjQXkSUFsPQsGW1Rf8S3Mypt
+   a37g0TNfZABbu6h8lQOVkdEU28YDFoy6chVg0GR06fHOjwvReEA/TSMQK
+   w==;
+IronPort-SDR: bphNlZQWXoljoD0TKXO3B/cr+yO3qcdVFBWe07iuLAQ+tJefaEtvx9Wx3rwQZOBnMZdCDpJ4mi
+ EsklkZFN0B1rGX91XvTpOMdUAdc8q4GV/6vWGGvSPIm+KlOhzsfj5470KYNaftN+CiO8FBb8I5
+ Do/7u4kG/7EnMOFlVFidiUpz874q0RGlHCWERVO8Ic1lf5bdqkPiZXZB32HJdVb67AfD4HMySR
+ c80/cZiJZK0Ybf7KPFgasRelDFPr9N6tLg7ksxtolFRuXD2W8kptu3Ek9YlHSwO2eM9Uw9GZ1n
+ Ivo=
 X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
-   d="scan'208";a="84153148"
+   d="scan'208";a="20120823"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:38:59 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:00 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 00:38:19 -0700
+ 15.1.1979.3; Wed, 22 Jul 2020 00:38:22 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:38:54 -0700
+ 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:38:57 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         "Claudiu Beznea" <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 07/18] clk: at91: sam9x60: fix main rc oscillator frequency
-Date:   Wed, 22 Jul 2020 10:38:15 +0300
-Message-ID: <1595403506-8209-8-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 08/18] clk: at91: sckc: register slow_rc with accuracy option
+Date:   Wed, 22 Jul 2020 10:38:16 +0300
+Message-ID: <1595403506-8209-9-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
@@ -62,29 +62,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Main RC oscillator frequency is 12MHz according to datasheet
-(chapter 27.2).
+Chapter 57.7.5 of SAM9X60 datasheet specifies that the maximum drift of
+this oscillator is +- 3KHz. Use that value and the formula at [1]
+or the calculator at [2] to compute the PPB value.
 
-Fixes: 01e2113de9a52 ("clk: at91: add sam9x60 pmc driver")
+[1] https://www.everythingrf.com/rf-calculators/ppm-to-hz-calculator
+[2] https://www.changpuak.ch/electronics/ppm_to_Hz_converter.php
+
+Fixes: 04bcc4275e601 ("clk: at91: sckc: add support for SAM9X60")
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com
 ---
- drivers/clk/at91/sam9x60.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/at91/sckc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
-index 633891b98d43..c8703d2a0886 100644
---- a/drivers/clk/at91/sam9x60.c
-+++ b/drivers/clk/at91/sam9x60.c
-@@ -189,7 +189,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
- 	if (!sam9x60_pmc)
+diff --git a/drivers/clk/at91/sckc.c b/drivers/clk/at91/sckc.c
+index 15dc4cd86d76..2d65770d8665 100644
+--- a/drivers/clk/at91/sckc.c
++++ b/drivers/clk/at91/sckc.c
+@@ -471,8 +471,9 @@ static void __init of_sam9x60_sckc_setup(struct device_node *np)
+ 	if (!regbase)
  		return;
  
--	hw = at91_clk_register_main_rc_osc(regmap, "main_rc_osc", 24000000,
-+	hw = at91_clk_register_main_rc_osc(regmap, "main_rc_osc", 12000000,
- 					   50000000);
- 	if (IS_ERR(hw))
- 		goto err_free;
+-	slow_rc = clk_hw_register_fixed_rate(NULL, parent_names[0], NULL, 0,
+-					     32768);
++	slow_rc = clk_hw_register_fixed_rate_with_accuracy(NULL, parent_names[0],
++							   NULL, 0, 32768,
++							   93750000);
+ 	if (IS_ERR(slow_rc))
+ 		return;
+ 
 -- 
 2.7.4
 
