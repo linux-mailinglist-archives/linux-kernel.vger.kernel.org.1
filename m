@@ -2,165 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5607228F47
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A990228F34
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgGVElF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 00:41:05 -0400
-Received: from mail.jv-coder.de ([5.9.79.73]:57448 "EHLO mail.jv-coder.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgGVElE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 00:41:04 -0400
-X-Greylist: delayed 609 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Jul 2020 00:41:03 EDT
-Received: from [192.168.178.40] (unknown [188.192.1.13])
-        by mail.jv-coder.de (Postfix) with ESMTPSA id 76A089F9A0;
-        Wed, 22 Jul 2020 04:30:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
-        t=1595392253; bh=JX25Z7miF33xQKsoIB4LHrNzRi+FKRC5QwlnvDzVD1c=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version;
-        b=jsPTxW6Bl4cctZsYDUab/u/Bzlau4D3SjfEhwjdqurR3kOGScNANmWrtjPxb/OJ5N
-         GD/djUzvh1nDYq16r8ux66Jv3v/aR0NwWhuaKzxn0sMcvdb7HZlHhkR/NFzkO3f9c9
-         lX48qRRwcWkKZXuxej39XPZI6dW82XBOy42sF34I=
-Subject: Re: [BUG RT] dump-capture kernel not executed for panic in interrupt
- context
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Joerg Vehlow <joerg.vehlow@aox-tech.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Huang Ying <ying.huang@intel.com>
-References: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
- <20200528084614.0c949e8d@gandalf.local.home>
-From:   Joerg Vehlow <lkml@jv-coder.de>
-Message-ID: <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de>
-Date:   Wed, 22 Jul 2020 06:30:53 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726820AbgGVEdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 00:33:25 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:17006 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725790AbgGVEdY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 00:33:24 -0400
+X-UUID: e7ccb6d02e4644b7bf103154b1467f43-20200722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=H9+Xagm11TvrRWxbyALKrMjkxXywyXQNawOGwoyEQ7E=;
+        b=ZndOA8YKgYFjM4TETAPdzj73Be2G2GAq6urLeVMLeVw/tGx9DX0lt9adM8CstHViMFXrwe9wOW2piPdUIH8PmHlqZVvnfYwv9gHxZS3HbYYShdbqWyNdt+1hFK1/1IsUALbyS53+99o5e/QV5P/BawYIo/U8oB2jr/eM/IjNy+w=;
+X-UUID: e7ccb6d02e4644b7bf103154b1467f43-20200722
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 514251515; Wed, 22 Jul 2020 12:33:19 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Jul 2020 12:33:05 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 12:33:05 +0800
+Message-ID: <1595392386.10996.1.camel@mtksdaap41>
+Subject: Re: [PATCH 3/3] soc: mediatek: pwrap: add pwrap driver for
+ MT6873/8192 SoCs
+From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Argus Lin <argus.lin@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Date:   Wed, 22 Jul 2020 12:33:06 +0800
+In-Reply-To: <e80b2e38-1324-a038-5647-6f595381ba47@gmail.com>
+References: <1594720432-19586-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1594720432-19586-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <e80b2e38-1324-a038-5647-6f595381ba47@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200528084614.0c949e8d@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=4.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,HELO_MISC_IP,NICE_REPLY_A,RCVD_IN_PBL,
-        RCVD_IN_SORBS_DUL,RDNS_NONE autolearn=no autolearn_force=no
-        version=3.4.4
-X-Spam-Level: ****
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.jv-coder.de
+X-TM-SNTS-SMTP: 46BA3841AF452073B5F6F01FB82066505059B1E882F9A8BBE0A5884CFB3224812000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
-
-it's been two month now and no reaction from you. Maybe you did not see 
-this mail from Steven.
-Please look at this issue.
-
-Greets,
-
-Jörg
-
-On 5/28/2020 2:46 PM, Steven Rostedt wrote:
-> Hi Joerg,
->
-> This does look like Andrew's commit (from 2008) is buggy (and this is a
-> mainline bug, not an RT one). (top posting this so Andrew knows to look
-> further ;-)
->
-> On Thu, 28 May 2020 13:41:08 +0200
-> Joerg Vehlow <lkml@jv-coder.de> wrote:
->
->> Hi,
->>
->> I think I found a bug in the kernel with rt patches (or maybe even without).
->> This applies to all kernels propably starting at 2.6.27.
->>
->> When a kernel panic is triggered from an interrupt handler, the dump-capture
->> kernel is not started, instead the system acts as if it was not installed.
->> The reason for this is, that panic calls __crash_kexec, which is protected
->> by a mutex. On an rt kernel this mutex is an rt mutex and when trylock
->> is called
->> on an rt mutex, the first check is whether the current kthread is in an
->> nmi or
->> irq handler. If it is, the function just returns 0 -> locking failed.
->>
->> According to rt_mutex_trylock documentation, it is not allowed to call this
->> function from an irq handler, but panic can be called from everywhere
->> and thus
->> rt_mutex_trylock can be called from everywhere. Actually even
->> mutex_trylock has
->> the comment, that it is not supposed to be used from interrupt context,
->> but it
->> still locks the mutex. I guess this could also be a bug in the non-rt
->> kernel.
->>
->> I found this problem using a test module, that triggers the softlock
->> detection.
->> It is a pretty simple module, that creates a kthread, that disables
->> preemption,
->> spins 60 seconds in an endless loop and then reenables preemption and
->> terminates
->> the thread. This reliably triggers the softlock detection and if
->> kernel.softlockup_panic=0, the system resumes perfectly fine afterwards. If
->> kernel.softlockup_panic=1 I would expect the dump-capture kernel to be
->> executed,
->> but it is not due to the bug (without rt patches it works), instead the
->> panic
->> function is executed until the end to the endless loop.
->>
->>
->> A stacktrace captured at the trylock call inside kexec_code looks like this:
->> #0  __rt_mutex_trylock (lock=0xffffffff81701aa0 <kexec_mutex>) at
->> /usr/src/kernel/kernel/locking/rtmutex.c:2110
->> #1  0xffffffff8087601a in _mutex_trylock (lock=<optimised out>) at
->> /usr/src/kernel/kernel/locking/mutex-rt.c:185
->> #2  0xffffffff803022a0 in __crash_kexec (regs=0x0 <irq_stack_union>) at
->> /usr/src/kernel/kernel/kexec_core.c:941
->> #3  0xffffffff8027af59 in panic (fmt=0xffffffff80fa3d66 "softlockup:
->> hung tasks") at /usr/src/kernel/kernel/panic.c:198
->> #4  0xffffffff80325b6d in watchdog_timer_fn (hrtimer=<optimised out>) at
->> /usr/src/kernel/kernel/watchdog.c:464
->> #5  0xffffffff802e6b90 in __run_hrtimer (flags=<optimised out>,
->> now=<optimised out>, timer=<optimised out>, base=<optimised out>,
->> cpu_base=<optimised out>) at /usr/src/kernel/kernel/time/hrtimer.c:1417
->> #6  __hrtimer_run_queues (cpu_base=0xffff88807db1c000, now=<optimised
->> out>, flags=<optimised out>, active_mask=<optimised out>) at
->> /usr/src/kernel/kernel/time/hrtimer.c:1479
->> #7  0xffffffff802e7704 in hrtimer_interrupt (dev=<optimised out>) at
->> /usr/src/kernel/kernel/time/hrtimer.c:1539
->> #8  0xffffffff80a020f2 in local_apic_timer_interrupt () at
->> /usr/src/kernel/arch/x86/kernel/apic/apic.c:1067
->> #9  smp_apic_timer_interrupt (regs=<optimised out>) at
->> /usr/src/kernel/arch/x86/kernel/apic/apic.c:1092
->> #10 0xffffffff80a015df in apic_timer_interrupt () at
->> /usr/src/kernel/arch/x86/entry/entry_64.S:909
->>
->>
->> Obviously and as expected the panic was triggered in the context of the apic
->> interrupt. So in_irq() is true and trylock fails.
->>
->>
->> About 12 years ago this was not implemented using a mutex, but using xchg.
->> See: 8c5a1cf0ad3ac5fcdf51314a63b16a440870f6a2
-> Yes, that commit is wrong, because mutex_trylock() is not to be taken in
-> interrupt context, where crash_kexec() looks like it can be called.
->
-> Unless back then crash_kexec() wasn't called in interrupt context, then the
-> commit that calls it from that combined with this commit is the issue.
->
-> -- Steve
->
->>
->> Since my knowledege about mutexes inside the kernel is very limited, I
->> do not
->> know how this can be fixed and whether it should be fixed in the rt
->> patches or
->> if this really is a bug in mainline kernel (because trylock is also not
->> allowed
->> to be used in interrupt handlers.
->>
->>
->> Jörg
+SGksDQoNCk9uIFdlZCwgMjAyMC0wNy0yMiBhdCAwMDo1MSArMDIwMCwgTWF0dGhpYXMgQnJ1Z2dl
+ciB3cm90ZToNCj4gDQo+IE9uIDE0LzA3LzIwMjAgMTE6NTMsIEhzaW4tSHNpdW5nIFdhbmcgd3Jv
+dGU6DQo+ID4gTVQ2ODczLzgxOTIgYXJlIGhpZ2hseSBpbnRlZ3JhdGVkIFNvQ3MgYW5kIHVzZSBQ
+TUlDX01UNjM1OSBmb3INCj4gPiBwb3dlciBtYW5hZ2VtZW50LiBUaGlzIHBhdGNoIGFkZHMgcHdy
+YXAgbWFzdGVyIGRyaXZlciB0bw0KPiA+IGFjY2VzcyBQTUlDX01UNjM1OS4NCj4gPiANCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBIc2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVr
+LmNvbT4NCj4gPiAtLS0NCj4gPiAgIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbWljLXdyYXAu
+YyB8IDk4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiA+ICAgMSBmaWxl
+IGNoYW5nZWQsIDg3IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMgYi9kcml2ZXJz
+L3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMNCj4gPiBpbmRleCBjODk3MjA1Li42ZTdmNzk2
+ZiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMN
+Cj4gPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMNCj4gPiBAQCAt
+MjQsMTEgKzI0LDEzIEBADQo+ID4gICAjZGVmaW5lIFBXUkFQX01UODEzNV9CUklER0VfV0RUX1NS
+Q19FTgkJMHg1NA0KPiA+ICAgDQo+ID4gICAvKiBtYWNybyBmb3Igd3JhcHBlciBzdGF0dXMgKi8N
+Cj4gPiArI2RlZmluZSBQV1JBUF9HRVRfU1dJTkZfMl9GU00oeCkJKCgoeCkgPj4gMSkgJiAweDAw
+MDAwMDA3KQ0KPiA+ICAgI2RlZmluZSBQV1JBUF9HRVRfV0FDU19SREFUQSh4KQkJKCgoeCkgPj4g
+MCkgJiAweDAwMDBmZmZmKQ0KPiA+ICAgI2RlZmluZSBQV1JBUF9HRVRfV0FDU19GU00oeCkJCSgo
+KHgpID4+IDE2KSAmIDB4MDAwMDAwMDcpDQo+ID4gICAjZGVmaW5lIFBXUkFQX0dFVF9XQUNTX1JF
+USh4KQkJKCgoeCkgPj4gMTkpICYgMHgwMDAwMDAwMSkNCj4gPiAgICNkZWZpbmUgUFdSQVBfU1RB
+VEVfU1lOQ19JRExFMAkJQklUKDIwKQ0KPiA+ICAgI2RlZmluZSBQV1JBUF9TVEFURV9JTklUX0RP
+TkUwCQlCSVQoMjEpDQo+ID4gKyNkZWZpbmUgUFdSQVBfU1RBVEVfSU5JVF9ET05FMQkJQklUKDE1
+KQ0KPiA+ICAgDQo+ID4gICAvKiBtYWNybyBmb3IgV0FDUyBGU00gKi8NCj4gPiAgICNkZWZpbmUg
+UFdSQVBfV0FDU19GU01fSURMRQkJMHgwMA0KPiA+IEBAIC03NCw2ICs3Niw3IEBADQo+ID4gICAj
+ZGVmaW5lIFBXUkFQX0NBUF9EQ00JCUJJVCgyKQ0KPiA+ICAgI2RlZmluZSBQV1JBUF9DQVBfSU5U
+MV9FTglCSVQoMykNCj4gPiAgICNkZWZpbmUgUFdSQVBfQ0FQX1dEVF9TUkMxCUJJVCg0KQ0KPiA+
+ICsjZGVmaW5lIFBXUkFQX0NBUF9BUkIJCUJJVCg1KQ0KPiANCj4gVGhpcyBjb21taXQgc2hvdWxk
+IGJlIHR3byBwYXRjaGVzIChhdCBsZWFzdCkuIE9uZSBhZGRpbmcgUFdSQVBfQ0FQX0FSQiBhbmQg
+dGhlbiANCj4gYW5vdGhlciBvbmUgYWRkaW5nIE1UNjg3MyBzdXBwb3J0Lg0KPiANCj4gUmVnYXJk
+cywNCj4gTWF0dGhpYXMNCj4gDQoNClRoYW5rcyBmb3IgdGhlIGNvbW1lbnQuIEkgd2lsbCB1cGRh
+dGUgaXQgaW4gbmV4dCBwYXRjaC4NCg0KPiA+ICAgDQo+ID4gICAvKiBkZWZpbmVzIGZvciBzbGF2
+ZSBkZXZpY2Ugd3JhcHBlciByZWdpc3RlcnMgKi8NCj4gPiAgIGVudW0gZGV3X3JlZ3Mgew0KPiA+
+IEBAIC0zNDgsNiArMzUxLDEwIEBAIGVudW0gcHdyYXBfcmVncyB7DQoNCltEZWxldGVdDQoNCg==
 
