@@ -2,266 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085B4229B32
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BCD229B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732787AbgGVPTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgGVPTg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:19:36 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E53DC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:36 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o8so2276123wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+UCvHRw9cSV1ire+wDJVVQA4haGd1GB0XoiKtbgnmTo=;
-        b=mPWd+SgyIoM4lyYru9jltmu9xCLYTsfHwP43ZhqSTI3HRTjtBVPedMh8cO5+wfljZV
-         Lxf8H6NT28UcH94uOz8FUO607ECu/zMFF/MPHa8vrnE8y+FANxATLTHXGsAo+2bA5GJI
-         cNMGYH4iiHh3SM6/WdmeRgWdXbviPJlZXdBWNDTq7kD1YGxqEZnCuL5rIt4hSHLdaJhk
-         4qChsu+0TuRImEAJ38wFhHF9zH9+OXOqNL7agZKc8njCEfIi1Q2qEJVdMQt/bpiNZNyJ
-         +WJ5UGOG+bSeyuor+0i9DY+OTy+2kXU5EdPO8R5SQuOMOTN+D4hMhFlYXzMS/vMK+mib
-         6Thg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+UCvHRw9cSV1ire+wDJVVQA4haGd1GB0XoiKtbgnmTo=;
-        b=ri5JaKrLQ8+ASbX3rWYZKecaX5GVpRCAvl+FTJ0SIoBMqIzw4hVR6zU7qeQWXU7a/I
-         mdv3MnmUJlVzhikauWvWz6K372S5mJXTjPeBJOGgTMFFUtJ1Ws6ouC5HV2TvWW3o2q2q
-         eY1Y0XOkRTG2L5Ej8xv89JPmsSA/KHBh4sm1ID84ofKaZMatQxYxaswEwE5qZ0ccCvSi
-         JiqlNX/X2J7QeLvc4f2X9rcCwFZrCYsSNwa6sORC3KQEKTGNagUW4f8Opvb7GqAm1I/n
-         QgrsIFrFUp4DUByXQm5ivkaWAhwHEfh17uhWYkJSynkyz/ZH4WKyrYgQxUs9AkLkCQpd
-         LJRQ==
-X-Gm-Message-State: AOAM53135Y9beYfrdB9tYyrRRbVU6fhT0R4VQs4vuBq4g5McloIQqvjF
-        cNHuNeccX/4P9ytwIFDuYH8=
-X-Google-Smtp-Source: ABdhPJx4/91ssZDs9aLL0SlkfQcoKpepKepjDLz8KCMepuSrTFan2YjNbDmCoVfqBl8wRK0twYrstg==
-X-Received: by 2002:a7b:cf10:: with SMTP id l16mr140355wmg.93.1595431174874;
-        Wed, 22 Jul 2020 08:19:34 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.122.158])
-        by smtp.gmail.com with ESMTPSA id u20sm13204wmc.42.2020.07.22.08.19.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 08:19:34 -0700 (PDT)
-Subject: Re: [PATCH v3] iommu/mediatek: check 4GB mode by reading infracfg
-To:     Miles Chen <miles.chen@mediatek.com>,
-        Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com, Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200722141925.14861-1-miles.chen@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <eb36fb32-9a90-2b63-bdc2-506c02a5cb07@gmail.com>
-Date:   Wed, 22 Jul 2020 17:19:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1732679AbgGVPV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727778AbgGVPV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 11:21:27 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B19362068F;
+        Wed, 22 Jul 2020 15:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595431286;
+        bh=MX48ABVUqy2xeiw9Zt3yJcZFN+gSzmjiN7Ad2W9zbaM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fgY5qr4gCXXFoH05PL/Habl6oLCj8rFfPmXFImau3YiAZ4FNfOk3vPDdmUxiLgm9L
+         nsVnNX1tAa9jFJXKPyPMoZu8Nx/XL3fMSXOjrOy1PWWjTKSeTxzZkQxV3C1N1fRfqr
+         SWoQMYmLuiebIcXHfXkevGW1bkQzj+4MEpUb+V50=
+Date:   Wed, 22 Jul 2020 10:21:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kairui Song <kasong@redhat.com>
+Cc:     Baoquan He <bhe@redhat.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>, jroedel@suse.de,
+        Myron Stowe <myron.stowe@redhat.com>,
+        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Wright <rwright@hpe.com>,
+        Jerry Hoemann <jerry.hoemann@hpe.com>,
+        Dave Young <dyoung@redhat.com>,
+        Khalid Aziz <khalid@gonehiking.org>
+Subject: Re: [RFC PATCH] PCI, kdump: Clear bus master bit upon shutdown in
+ kdump kernel
+Message-ID: <20200722152123.GA1278089@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20200722141925.14861-1-miles.chen@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPcB9cpEX-uYeTp7DVEXtwDRWBCTVoPCB4dxPbyq1sDeixP_w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/07/2020 16:19, Miles Chen wrote:
-> In previous discussion [1] and [2], we found that it is risky to
-> use max_pfn or totalram_pages to tell if 4GB mode is enabled.
+On Wed, Jul 22, 2020 at 10:52:26PM +0800, Kairui Song wrote:
+> On Fri, Mar 6, 2020 at 5:38 PM Baoquan He <bhe@redhat.com> wrote:
+> > On 03/04/20 at 08:53pm, Deepa Dinamani wrote:
+> > > On Wed, Mar 4, 2020 at 7:53 PM Baoquan He <bhe@redhat.com> wrote:
+> > > > On 03/03/20 at 01:01pm, Deepa Dinamani wrote:
+> > > > > I looked at this some more. Looks like we do not clear irqs
+> > > > > when we do a kexec reboot. And, the bootup code maintains
+> > > > > the same table for the kexec-ed kernel. I'm looking at the
+> > > > > following code in
+> > > >
+> > > > I guess you are talking about kdump reboot here, right? Kexec
+> > > > and kdump boot take the similar mechanism, but differ a
+> > > > little.
+> > >
+> > > Right I meant kdump kernel here. And, clearly the
+> > > is_kdump_kernel() case below.
+> > >
+> > > > > intel_irq_remapping.c:
+> > > > >
+> > > > >         if (ir_pre_enabled(iommu)) {
+> > > > >                 if (!is_kdump_kernel()) {
+> > > > >                         pr_warn("IRQ remapping was enabled on %s but
+> > > > > we are not in kdump mode\n",
+> > > > >                                 iommu->name);
+> > > > >                         clear_ir_pre_enabled(iommu);
+> > > > >                         iommu_disable_irq_remapping(iommu);
+> > > > >                 } else if (iommu_load_old_irte(iommu))
+> > > >
+> > > > Here, it's for kdump kernel to copy old ir table from 1st kernel.
+> > >
+> > > Correct.
+> > >
+> > > > >                         pr_err("Failed to copy IR table for %s from
+> > > > > previous kernel\n",
+> > > > >                                iommu->name);
+> > > > >                 else
+> > > > >                         pr_info("Copied IR table for %s from previous kernel\n",
+> > > > >                                 iommu->name);
+> > > > >         }
+> > > > >
+> > > > > Would cleaning the interrupts(like in the non kdump path
+> > > > > above) just before shutdown help here? This should clear the
+> > > > > interrupts enabled for all the devices in the current
+> > > > > kernel. So when kdump kernel starts, it starts clean. This
+> > > > > should probably help block out the interrupts from a device
+> > > > > that does not have a driver.
+> > > >
+> > > > I think stopping those devices out of control from continue
+> > > > sending interrupts is a good idea. While not sure if only
+> > > > clearing the interrupt will be enough. Those devices which
+> > > > will be initialized by their driver will brake, but devices
+> > > > which drivers are not loaded into kdump kernel may continue
+> > > > acting. Even though interrupts are cleaning at this time, the
+> > > > on-flight DMA could continue triggerring interrupt since the
+> > > > ir table and iopage table are rebuilt.
+> > >
+> > > This should be handled by the IOMMU, right? And, hence you are
+> > > getting UR. This seems like the correct execution flow to me.
+> >
+> > Sorry for late reply.
+> > Yes, this is initializing IOMMU device.
+> >
+> > > Anyway, you could just test this theory by removing the
+> > > is_kdump_kernel() check above and see if it solves your problem.
+> > > Obviously, check the VT-d spec to figure out the exact sequence to
+> > > turn off the IR.
+> >
+> > OK, I will talk to Kairui and get a machine to test it. Thanks for your
+> > nice idea, if you have a draft patch, we are happy to test it.
+> >
+> > > Note that the device that is causing the problem here is a legit
+> > > device. We want to have interrupts from devices we don't know about
+> > > blocked anyway because we can have compromised firmware/ devices that
+> > > could cause a DoS attack. So blocking the unwanted interrupts seems
+> > > like the right thing to do here.
+> >
+> > Kairui said it's a device which driver is not loaded in kdump kernel
+> > because it's not needed by kdump. We try to only load kernel modules
+> > which are needed, e.g one device is the dump target, its driver has to
+> > be loaded in. In this case, the device is more like a out of control
+> > device to kdump kernel.
 > 
-> Check 4GB mode by reading infracfg register, remove the usage
-> of the un-exported symbol max_pfn.
+> Hi Bao, Deepa, sorry for this very late response. The test machine was
+> not available for sometime, and I restarted to work on this problem.
 > 
-> This is a step towards building mtk_iommu as a kernel module.
+> For the workaround mention by Deepa (by remote the is_kdump_kernel()
+> check), it didn't work, the machine still hangs upon shutdown.
+> The devices that were left in an unknown state and sending interrupt
+> could be a problem, but it's irrelevant to this hanging problem.
 > 
-> ---
+> I think I didn't make one thing clear, The PCI UR error never arrives
+> in kernel, it's the iLo BMC on that HPE machine caught the error, and
+> send kernel an NMI. kernel is panicked by NMI, I'm still trying to
+> figure out why the NMI hanged kernel, even with panic=-1,
+> panic_on_io_nmi, panic_on_unknown_nmi all set. But if we can avoid the
+> NMI by shutdown the devices in right order, that's also a solution.
 
-That's wrong. The commit message would be cut after this '---' so we would loose 
-the Cc and Signed-of-by tags.
+I'm not sure how much sympathy to have for this situation.  A PCIe UR
+is fatal for the transaction and maybe even the device, but from the
+overall system point of view, it *should* be a recoverable error and
+we shouldn't panic.
 
-> 
-> Change since v2:
-> - determine compatible string by m4u_plat
-> - rebase to next-20200720
-> - add "---"
-> 
-> Change since v1:
-> - remove the phandle usage, search for infracfg instead [3]
-> - use infracfg instead of infracfg_regmap
-> - move infracfg definitaions to linux/soc/mediatek/infracfg.h
-> - update enable_4GB only when has_4gb_mode
-> 
-> [1] https://lkml.org/lkml/2020/6/3/733
-> [2] https://lkml.org/lkml/2020/6/4/136
+Errors like that should be reported via the normal AER or ACPI/APEI
+mechanisms.  It sounds like in this case, the platform has decided
+these aren't enough and it is trying to force a reboot?  If this is
+"special" platform behavior, I'm not sure how much we need to cater
+for it.
 
-I think using links to lore.kernel.org would make sure that the URL does not 
-change over time. As the commit log will stay there for ever, but who konws what 
-happens with lkml.org
-
-> [3] https://lkml.org/lkml/2020/7/15/1147
-> 
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Yong Wu <yong.wu@mediatek.com>
-> Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
-
-The formating should look like this:
-In previous discussion [1] and [2], we found that it is risky to
-use max_pfn or totalram_pages to tell if 4GB mode is enabled.
-
-Check 4GB mode by reading infracfg register, remove the usage
-of the un-exported symbol max_pfn.
-
-This is a step towards building mtk_iommu as a kernel module.
-
-[1] https://lkml.org/lkml/2020/6/3/733
-[2] https://lkml.org/lkml/2020/6/4/136
-
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Yong Wu <yong.wu@mediatek.com>
-Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
----
-
-Change since v2:
-- determine compatible string by m4u_plat
-- rebase to next-20200720
-- add "---"
-
-Change since v1:
-- remove the phandle usage, search for infracfg instead 
-https://lkml.org/lkml/2020/7/15/1147
-- use infracfg instead of infracfg_regmap
-- move infracfg definitaions to linux/soc/mediatek/infracfg.h
-- update enable_4GB only when has_4gb_mode
-
-
-
-> ---
->   drivers/iommu/mtk_iommu.c             | 34 +++++++++++++++++++++++----
->   include/linux/soc/mediatek/infracfg.h |  3 +++
->   2 files changed, 32 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 59e5a62a34db..9ec666168822 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -3,7 +3,6 @@
->    * Copyright (c) 2015-2016 MediaTek Inc.
->    * Author: Yong Wu <yong.wu@mediatek.com>
->    */
-> -#include <linux/memblock.h>
->   #include <linux/bug.h>
->   #include <linux/clk.h>
->   #include <linux/component.h>
-> @@ -15,13 +14,16 @@
->   #include <linux/iommu.h>
->   #include <linux/iopoll.h>
->   #include <linux/list.h>
-> +#include <linux/mfd/syscon.h>
->   #include <linux/of_address.h>
->   #include <linux/of_iommu.h>
->   #include <linux/of_irq.h>
->   #include <linux/of_platform.h>
->   #include <linux/platform_device.h>
-> +#include <linux/regmap.h>
->   #include <linux/slab.h>
->   #include <linux/spinlock.h>
-> +#include <linux/soc/mediatek/infracfg.h>
->   #include <asm/barrier.h>
->   #include <soc/mediatek/smi.h>
->   
-> @@ -640,8 +642,11 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->   	struct resource         *res;
->   	resource_size_t		ioaddr;
->   	struct component_match  *match = NULL;
-> +	struct regmap		*infracfg;
->   	void                    *protect;
->   	int                     i, larb_nr, ret;
-> +	u32			val;
-> +	char                    *p;
->   
->   	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->   	if (!data)
-> @@ -655,10 +660,29 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->   		return -ENOMEM;
->   	data->protect_base = ALIGN(virt_to_phys(protect), MTK_PROTECT_PA_ALIGN);
->   
-> -	/* Whether the current dram is over 4GB */
-> -	data->enable_4GB = !!(max_pfn > (BIT_ULL(32) >> PAGE_SHIFT));
-> -	if (!MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE))
-> -		data->enable_4GB = false;
-> +	data->enable_4GB = false;
-> +	if (MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE)) {
-> +		switch (data->plat_data->m4u_plat) {
-> +		case M4U_MT2712:
-> +			p = "mediatek,mt2712-infracfg";
-> +			break;
-> +		case M4U_MT8173:
-> +			p = "mediatek,mt8173-infracfg";
-> +			break;
-> +		default:
-> +			p = NULL;
-> +		}
-> +
-> +		infracfg = syscon_regmap_lookup_by_compatible(p);
-
-	if (MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE)) {
-		switch (data->plat_data->m4u_plat) {
-		case M4U_MT2712:
-			infracfg = syscon_regmap_lookup_by_compatible("mediatek,mt2712-infracfg");
-			break;
-		case M4U_MT8173:
-			infracfg = syscon_regmap_lookup_by_compatible("mediatek,mt8173-infracfg");
-			break;
-		default:
-			infracfg = -ENODEV;
-		}
-> +
-> +		if (IS_ERR(infracfg))
-> +			return PTR_ERR(infracfg);
-> +
-> +		ret = regmap_read(infracfg, REG_INFRA_MISC, &val);
-> +		if (ret)
-> +			return ret;
-> +		data->enable_4GB = !!(val & F_DDR_4GB_SUPPORT_EN);
-> +	}
->   
->   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->   	data->base = devm_ioremap_resource(dev, res);
-> diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
-> index fd25f0148566..233463d789c6 100644
-> --- a/include/linux/soc/mediatek/infracfg.h
-> +++ b/include/linux/soc/mediatek/infracfg.h
-> @@ -32,6 +32,9 @@
->   #define MT7622_TOP_AXI_PROT_EN_WB		(BIT(2) | BIT(6) | \
->   						 BIT(7) | BIT(8))
->   
-> +#define REG_INFRA_MISC				0xf00
-> +#define F_DDR_4GB_SUPPORT_EN			BIT(13)
-> +
->   int mtk_infracfg_set_bus_protection(struct regmap *infracfg, u32 mask,
->   		bool reg_update);
->   int mtk_infracfg_clear_bus_protection(struct regmap *infracfg, u32 mask,
-> 
+Bjorn
