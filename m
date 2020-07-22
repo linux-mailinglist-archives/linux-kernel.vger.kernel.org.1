@@ -2,171 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822642297D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7302297E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730561AbgGVMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S1731985AbgGVMJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgGVMFG (ORCPT
+        with ESMTP id S1731563AbgGVMJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:05:06 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFBDC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:05:06 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id p14so1323189wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:05:06 -0700 (PDT)
+        Wed, 22 Jul 2020 08:09:13 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB49EC0619DE
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:09:12 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id y3so1666474wrl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:09:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6GWvDSxKVzDi/s6ITFiKMMMFly/c7KlombXtQhBuv00=;
-        b=XK91tgsj7Qt9gpsgpfpN0lC0LQJxFMqVPeVpO4Fq0eR7g4/ysEl3MrZ+/Re4ap3N0u
-         F59alOWc3+V8dAKPb6Ssg9Bu1+flnbYxXlnfu60fSmvFNKfL7xZPDz6poqyQjGY86A+A
-         /kiRUrZPCe+PdYq4RMrUh8+jBa7CHZ3k25wHQ=
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tqHxcywQyVz1wfQvBGx3vpEtZ8YqD1CPktgmCd8zLdc=;
+        b=gnuS6aH1Z4+o6kdQgqoa7jvwbtLsfXA0ZmIQoHVWFjcQCBaB72XsvvMy+iiGTDr7FR
+         eZWTN6R+9wO8Vzt+lAXECEneA6FaZoBbjMb+5XruTj2zqJ+vUxX8E9A2KBdlDFpriudM
+         TV2OnwnG+XnlNHojz2MN6h49JUtWDs714yEYfBccT9OpZ/3Q0CGegDDWUcdvukrF+rWt
+         9wCHhPBFCCoNzk4u/31jInctoCb5e7vlmaTrSE4XxKeP8+CvMSFcnof+BUGFfZkvjOdZ
+         NGAVlCBCxc14B1kpyLLfdsOIds3mFz2Y4oXpIrpx93QZmrxvI+p4kKnM8diRhr1QXqce
+         p0uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=6GWvDSxKVzDi/s6ITFiKMMMFly/c7KlombXtQhBuv00=;
-        b=tzNf/GvvTKN6OiSNhNRSicPkhTJ1nSH/ROX+KVckZUfnvjt/2ScgJUIVNuPPiWmPhp
-         xwtCvDbWmckbEdSRRLd2FGQPOjCst155rYWCUSWBy4rNvyOSDgtzgcjTSxlr0+e/716+
-         S2Lq/h4+0+SGiNkJtVQHs4dwW3Z95c2Qf/Hf0Yk8mfazill4jFEa79EkjHTEuEaRYXEg
-         TkThWBBN52at4A+bjorKiwQElBo11/zstSGvf4trtG8hZnY2JltNv58lYQf91TUsvv1b
-         2Deb2VvuCBgXwH04P50731YZdL6ybNg9khWahKXRRKJl/q6uQIQxpIjTQoMgqtNsluZk
-         av5g==
-X-Gm-Message-State: AOAM532PBd+VkmVn0Ukt+FBWRMVhsWxlbm1P8FI35VYV/+UDI616mtO1
-        IBUQ4gP5YqtyhzrqITY3eemA7w==
-X-Google-Smtp-Source: ABdhPJw5teh0kJ9n0kFgkPZpHVeCcGwgwrxpfLIchalSpl0s28bTMzTBwfbXFw7tqdEFaPT82mXzvQ==
-X-Received: by 2002:a1c:ac81:: with SMTP id v123mr8021449wme.159.1595419505356;
-        Wed, 22 Jul 2020 05:05:05 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y77sm7920297wmd.36.2020.07.22.05.05.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tqHxcywQyVz1wfQvBGx3vpEtZ8YqD1CPktgmCd8zLdc=;
+        b=gqMAoTukT1z5ggtTXhVgttBytep8H1h1ebpfQJUiDz06YzAEx17v3ryT0rza29gDgS
+         X8AvzuBpe3h4EGiG1Cpho85t9yV8nWFNwqPr7N8kCP7U+ryuLiQxI9JrJcpf/sXq/8hF
+         OUYdH2Rtyezi7dpkjBGZai3lluAauXS3izOXG3YrjYPPHWSUuuHxjs1a8TZSQOunFHPg
+         gRF0CSvCHCxheYL8nS2UpbG3Op1gpZDqQ1IfUJg9TnFxd7l2j8sYmK8iW9S0q6zwSLpq
+         CsbZ8r2Rzjy649rGhkx7/YiGTL2YlI7IoKFa8uozHWKwJGtfBtLziRXVFR1dGaxJatnf
+         ykcg==
+X-Gm-Message-State: AOAM532WM/gxmS3wjZszkmfXcZKNm2dwMBpWEIJjdlMCbOqulRy+IzTA
+        UrtHqQsYtlxRUhfLtsq5ZGv/aA==
+X-Google-Smtp-Source: ABdhPJyEIrrWfWDnGxTltj2DTpGuaDacNmpFZhftR7gDW78DkgWP3WGw2p75qhnhfmYpYtGiWYlZvg==
+X-Received: by 2002:adf:e48f:: with SMTP id i15mr29109610wrm.327.1595419751422;
+        Wed, 22 Jul 2020 05:09:11 -0700 (PDT)
+Received: from localhost.localdomain (172.red-80-27-177.dynamicip.rima-tde.net. [80.27.177.172])
+        by smtp.gmail.com with ESMTPSA id o7sm28003296wrv.50.2020.07.22.05.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 05:05:04 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 14:05:02 +0200
-From:   daniel@ffwll.ch
-Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-usp@googlegroups.com, twoerner@gmail.com
-Subject: Re: [PATCH] drm/vkms: add missing drm_crtc_vblank_put to the get/put
- pair on flush
-Message-ID: <20200722120502.GK6419@phenom.ffwll.local>
-Mail-Followup-To: Melissa Wen <melissa.srw@gmail.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-usp@googlegroups.com, twoerner@gmail.com
-References: <20200722110411.ebkv6knvc6mzw5uf@smtp.gmail.com>
+        Wed, 22 Jul 2020 05:09:09 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, linux-omap@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH] gpio: omap: improve coding style for pin config flags
+Date:   Wed, 22 Jul 2020 14:07:56 +0200
+Message-Id: <20200722120755.230741-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722110411.ebkv6knvc6mzw5uf@smtp.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 08:04:11AM -0300, Melissa Wen wrote:
-> This patch adds a missing drm_crtc_vblank_put op to the pair
-> drm_crtc_vblank_get/put (inc/decrement counter to guarantee vblanks).
-> 
-> It clears the execution of the following kms_cursor_crc subtests:
-> 1. pipe-A-cursor-[size,alpha-opaque, NxN-(on-screen, off-screen, sliding,
->    random, fast-moving])] - successful when running individually.
-> 2. pipe-A-cursor-dpms passes again
-> 3. pipe-A-cursor-suspend also passes
-> 
-> The issue was initially tracked in the sequential execution of IGT
-> kms_cursor_crc subtest: when running the test sequence or one of its
-> subtests twice, the odd execs complete and the pairs get stuck in an
-> endless wait. In the IGT code, calling a wait_for_vblank before the start
-> of CRC capture prevented the busy-wait. But the problem persisted in the
-> pipe-A-cursor-dpms and -suspend subtests.
-> 
-> Checking the history, the pipe-A-cursor-dpms subtest was successful when,
-> in vkms_atomic_commit_tail, instead of using the flip_done op, it used
-> wait_for_vblanks. Another way to prevent blocking was wait_one_vblank when
-> enabling crtc. However, in both cases, pipe-A-cursor-suspend persisted
-> blocking in the 2nd start of CRC capture, which may indicate that
-> something got stuck in the step of CRC setup. Indeed, wait_one_vblank in
-> the crc setup was able to sync things and free all kms_cursor_crc
-> subtests.
-> 
-> Tracing and comparing a clean run with a blocked one:
-> - in a clean one, vkms_crtc_atomic_flush enables vblanks;
-> - when blocked, only in next op, vkms_crtc_atomic_enable, the vblanks
-> started. Moreover, a series of vkms_vblank_simulate flow out until
-> disabling vblanks.
-> Also watching the steps of vkms_crtc_atomic_flush, when the very first
-> drm_crtc_vblank_get returned an error, the subtest crashed. On the other
-> hand, when vblank_get succeeded, the subtest completed. Finally, checking
-> the flush steps: it increases counter to hold a vblank reference (get),
-> but there isn't a op to decreased it and release vblanks (put).
-> 
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
-> Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_crtc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-> index ac85e17428f8..a99d6b4a92dd 100644
-> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> @@ -246,6 +246,7 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
->  
->  		spin_unlock(&crtc->dev->event_lock);
->  
-> +		drm_crtc_vblank_put(crtc);
+Change the handling of pin config flags from if/else to switch
+statement to make the code more readable and cleaner.
 
-Uh so I reviewed this a bit more carefully now, and I dont think this is
-the correct bugfix. From the kerneldoc of drm_crtc_arm_vblank_event():
+Suggested-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+---
+ drivers/gpio/gpio-omap.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
- * Caller must hold a vblank reference for the event @e acquired by a
- * drm_crtc_vblank_get(), which will be dropped when the next vblank arrives.
-
-So when we call drm_crtc_arm_vblank_event then the vblank_put gets called
-for us. And that's the only case where we successfully acquired a vblank
-interrupt reference since on failure of drm_crtc_vblank_get (0 indicates
-success for that function, failure negative error number) we directly send
-out the event.
-
-So something else fishy is going on, and now I'm totally confused why this
-even happens.
-
-We also have a pile of WARN_ON checks in drm_crtc_vblank_put to make sure
-we don't underflow the refcount, so it's also not that I think (except if
-this patch creates more WARNING backtraces).
-
-But clearly it changes behaviour somehow ... can you try to figure out
-what changes? Maybe print out the vblank->refcount at various points in
-the driver, and maybe also trace when exactly the fake vkms vblank hrtimer
-is enabled/disabled ...
-
-I'm totally confused about what's going on here now.
--Daniel
-
->  		crtc->state->event = NULL;
->  	}
->  
-> -- 
-> 2.27.0
-> 
-
+diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
+index e0eada82178c..7fbe0c9e1fc1 100644
+--- a/drivers/gpio/gpio-omap.c
++++ b/drivers/gpio/gpio-omap.c
+@@ -899,13 +899,18 @@ static int omap_gpio_set_config(struct gpio_chip *chip, unsigned offset,
+ 	u32 debounce;
+ 	int ret = -ENOTSUPP;
+ 
+-	if ((pinconf_to_config_param(config) == PIN_CONFIG_BIAS_DISABLE) ||
+-	    (pinconf_to_config_param(config) == PIN_CONFIG_BIAS_PULL_UP) ||
+-	    (pinconf_to_config_param(config) == PIN_CONFIG_BIAS_PULL_DOWN)) {
++	switch (pinconf_to_config_param(config)) {
++	case PIN_CONFIG_BIAS_DISABLE:
++	case PIN_CONFIG_BIAS_PULL_UP:
++	case PIN_CONFIG_BIAS_PULL_DOWN:
+ 		ret = gpiochip_generic_config(chip, offset, config);
+-	} else if (pinconf_to_config_param(config) == PIN_CONFIG_INPUT_DEBOUNCE) {
++		break;
++	case PIN_CONFIG_INPUT_DEBOUNCE:
+ 		debounce = pinconf_to_config_argument(config);
+ 		ret = omap_gpio_debounce(chip, offset, debounce);
++		break;
++	default:
++		break;
+ 	}
+ 
+ 	return ret;
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.25.1
+
