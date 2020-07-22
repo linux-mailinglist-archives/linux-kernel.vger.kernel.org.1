@@ -2,127 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FA7229399
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5D32293AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgGVIee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 04:34:34 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:46944 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgGVIed (ORCPT
+        id S1730951AbgGVIfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 04:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgGVIfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:34:33 -0400
-Received: by mail-lj1-f194.google.com with SMTP id h19so1543930ljg.13;
-        Wed, 22 Jul 2020 01:34:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a320Kl5LlLOAYjeoIoCSr52bpOgO1xg6oWW0y+XyzMw=;
-        b=RW1QO2AgljyDHzHWSrSy+PzOsrEwS//NpMR/UWp20giKm3iN/75GmdEpAtwGJg0GV2
-         uHoabgJtLA9ajOttFxUoPv9BtSAoHDJE/RdjEPvT29Qj23c1/9Q63cbSMabCg620zvM6
-         rOtq+mp7+o5pqVX9AehRGhxtuF8cEVZp5qSLy/yWilBTLxrhDQe9W8Xi6ACUOx2olD5k
-         kVicebcX1KEuXl9uWsjHSq7PWOReXlbfmgufXQk4C6c8PZtGFq0zVlUH6xgWajZLrjyZ
-         5pOoUV6UDPTzXUqvoxoBuynPaZv57p6CdxNqiwEeCSI9fHLax87pL1vlLWjcsUaKSgLp
-         v8zw==
-X-Gm-Message-State: AOAM531BK8oQ2k7QGi8tzYUK3w2O88X+Lz7tJMBc5BDlwE1jGnGYf4rw
-        TV8iYuV3hunhpqzh01hcRbRSBwZY
-X-Google-Smtp-Source: ABdhPJyZVBEFI0bvjliXucRioA69zALGxm9a2TuCL16DZpKu64loQwYwFw8ndfYgVc8LlaM47TwOeA==
-X-Received: by 2002:a2e:9d86:: with SMTP id c6mr14184500ljj.418.1595406870872;
-        Wed, 22 Jul 2020 01:34:30 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id c27sm7530646lfm.56.2020.07.22.01.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 01:34:29 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1jyACn-0005S2-4r; Wed, 22 Jul 2020 10:34:25 +0200
-Date:   Wed, 22 Jul 2020 10:34:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        kernel@pengutronix.de, Jiri Slaby <jslaby@suse.com>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v7 3/3] leds: trigger: implement a tty trigger
-Message-ID: <20200722083425.GF3634@localhost>
-References: <20200707165958.16522-1-u.kleine-koenig@pengutronix.de>
- <20200707165958.16522-4-u.kleine-koenig@pengutronix.de>
- <20200714071355.GY3453@localhost>
- <20200721194815.mmkqccrkbgrly4xz@pengutronix.de>
+        Wed, 22 Jul 2020 04:35:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79B9C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 01:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QXhlms6z6mxKbNYRQIXcoIbNJvyasfs3bwxG1SAtCHY=; b=wJuHu3zBGTBJWVpH84hmH3QULB
+        sF9PokLfw576QGSDpqeNsJnOSiRFKn0szcBhv8AzHEHCYsnTxaUeYScpWhjGH0RVIsvaH/Ov8LU8W
+        hcjszoijhfvuv2cZf9KDYvm3Cxoils83GCCe+jnJJkbwrvFTxN/MP30/LFoFCfowzx7ANr3tZlcFr
+        mADX8unsGsivvdGlIlYRPMQ+oaSqZ5RjIa8L01bCOa8RZkLc7pUzMK6mJNiJdTKsdpDu2doeZI98R
+        rjX28t8UaC5aGNmRJu9Svj0RODMMQPgvnZGeFLAyo7Ylg2gyBRA6mIGX7UfLzYbQnl2jiJGeuHAP3
+        0UfBvw9A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyADx-0003gp-IC; Wed, 22 Jul 2020 08:35:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 34A023060F3;
+        Wed, 22 Jul 2020 10:35:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1C1D3203DE799; Wed, 22 Jul 2020 10:35:33 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 10:35:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, luto@amacapital.net, axboe@kernel.dk,
+        keescook@chromium.org, torvalds@linux-foundation.org,
+        jannh@google.com, will@kernel.org, hch@lst.de, npiggin@gmail.com,
+        mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v3] mm: Fix kthread_use_mm() vs TLB invalidate
+Message-ID: <20200722083533.GK10769@hirez.programming.kicks-ass.net>
+References: <20200721154106.GE10769@hirez.programming.kicks-ass.net>
+ <20200721140623.4e8ecc6ef5d5ff42115d68fc@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="CblX+4bnyfN0pR09"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721194815.mmkqccrkbgrly4xz@pengutronix.de>
+In-Reply-To: <20200721140623.4e8ecc6ef5d5ff42115d68fc@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 02:06:23PM -0700, Andrew Morton wrote:
+> On Tue, 21 Jul 2020 17:41:06 +0200 Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > 
+> > For SMP systems using IPI based TLB invalidation, looking at
+> > current->active_mm is entirely reasonable. This then presents the
+> > following race condition:
+> > 
+> > 
+> >   CPU0			CPU1
+> > 
+> >   flush_tlb_mm(mm)	use_mm(mm)
+> >     <send-IPI>
+> > 			  tsk->active_mm = mm;
+> > 			  <IPI>
+> > 			    if (tsk->active_mm == mm)
+> > 			      // flush TLBs
+> > 			  </IPI>
+> > 			  switch_mm(old_mm,mm,tsk);
+> > 
+> > 
+> > Where it is possible the IPI flushed the TLBs for @old_mm, not @mm,
+> > because the IPI lands before we actually switched.
+> > 
+> > Avoid this by disabling IRQs across changing ->active_mm and
+> > switch_mm().
+> > 
+> > [ There are all sorts of reasons this might be harmless for various
+> > architecture specific reasons, but best not leave the door open at
+> > all. ]
+> 
+> Can we give the -stable maintainers (and others) more explanation of
+> why they might choose to merge this?
 
---CblX+4bnyfN0pR09
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Like so then?
 
-On Tue, Jul 21, 2020 at 09:48:15PM +0200, Uwe Kleine-K=F6nig wrote:
-> Hello Johan,
->=20
-> On Tue, Jul 14, 2020 at 09:13:55AM +0200, Johan Hovold wrote:
-> > On Tue, Jul 07, 2020 at 06:59:58PM +0200, Uwe Kleine-K=F6nig wrote:
-> > > +	while (firstrun ||
-> > > +	       icount.rx !=3D trigger_data->rx ||
-> > > +	       icount.tx !=3D trigger_data->tx) {
-> > > +
-> > > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
-> > > +
-> > > +		msleep(100);
-> > > +
-> > > +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-> > > +
-> > > +		trigger_data->rx =3D icount.rx;
-> > > +		trigger_data->tx =3D icount.tx;
-> > > +		firstrun =3D false;
-> > > +
-> > > +		ret =3D tty_get_icount(trigger_data->tty, &icount);
-> > > +		if (ret)
-> > > +			return;
-> > > +	}
-> >=20
-> > Haven't looked at the latest proposal in detail, but this looks broken
-> > as you can potentially loop indefinitely in a worker thread, and with no
-> > way to stop the trigger (delayed work).
->=20
-> I don't think that potentially looping indefinitely is a problem, but
-> indeed it should drop the lock during each iteration. Will think about
-> how to adapt.
+---
+Subject: mm: Fix kthread_use_mm() vs TLB invalidate
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Tue, 11 Feb 2020 10:25:19 +0100
 
-You musn't queue work that can run for long on the global shared
-workqueue as it affects flushing:
+For SMP systems using IPI based TLB invalidation, looking at
+current->active_mm is entirely reasonable. This then presents the
+following race condition:
 
-	* system_wq is the one used by schedule[_delayed]_work[_on]().
-	* Multi-CPU multi-threaded.  There are users which expect relatively
-	* short queue flush time.  Don't queue works which can run for too
-	* long.
 
-Work that potentially run indefinitely is an absolute no-no. :)
+  CPU0			CPU1
 
-Johan
+  flush_tlb_mm(mm)	use_mm(mm)
+    <send-IPI>
+			  tsk->active_mm = mm;
+			  <IPI>
+			    if (tsk->active_mm == mm)
+			      // flush TLBs
+			  </IPI>
+			  switch_mm(old_mm,mm,tsk);
 
---CblX+4bnyfN0pR09
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Where it is possible the IPI flushed the TLBs for @old_mm, not @mm,
+because the IPI lands before we actually switched.
 
-iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCXxf6DgAKCRALxc3C7H1l
-CAKdAPwMLuzL36R91UerEvnH4zUtKfNS5jRfm18tpgXYHJMHygEArxfQACvPs6nx
-njUDzVBzoW1/YxY47dCsqRZ4zne/JAQ=
-=E/KR
------END PGP SIGNATURE-----
+Avoid this by disabling IRQs across changing ->active_mm and
+switch_mm().
 
---CblX+4bnyfN0pR09--
+Of the (SMP) architectures that have IPI based TLB invalidate:
+
+  Alpha    - checks active_mm
+  ARC      - ASID specific
+  IA64     - checks active_mm
+  MIPS     - ASID specific flush
+  OpenRISC - shoots down world
+  PARISC   - shoots down world
+  SH       - ASID specific
+  SPARC    - ASID specific
+  x86      - N/A
+  xtensa   - checks active_mm
+
+So at the very least Alpha, IA64 and Xtensa are suspect.
+
+On top of this, for scheduler consistency we need at least preemption
+disabled across changing tsk->mm and doing switch_mm(), which is
+currently provided by task_lock(), but that's not sufficient for
+PREEMPT_RT.
+
+Reported-by: Andy Lutomirski <luto@amacapital.net>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@kernel.org
+---
+ kernel/kthread.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -1241,13 +1241,20 @@ void kthread_use_mm(struct mm_struct *mm
+ 	WARN_ON_ONCE(tsk->mm);
+ 
+ 	task_lock(tsk);
++	/*
++	 * Serialize the tsk->mm store and switch_mm() against TLB invalidation
++	 * IPIs. Also make sure we're non-preemptible on PREEMPT_RT to not race
++	 * against the scheduler writing to these variables.
++	 */
++	local_irq_disable();
+ 	active_mm = tsk->active_mm;
+ 	if (active_mm != mm) {
+ 		mmgrab(mm);
+ 		tsk->active_mm = mm;
+ 	}
+ 	tsk->mm = mm;
+-	switch_mm(active_mm, mm, tsk);
++	switch_mm_irqs_off(active_mm, mm, tsk);
++	local_irq_enable();
+ 	task_unlock(tsk);
+ #ifdef finish_arch_post_lock_switch
+ 	finish_arch_post_lock_switch();
+@@ -1276,9 +1283,11 @@ void kthread_unuse_mm(struct mm_struct *
+ 
+ 	task_lock(tsk);
+ 	sync_mm_rss(mm);
++	local_irq_disable();
+ 	tsk->mm = NULL;
+ 	/* active_mm is still 'mm' */
+ 	enter_lazy_tlb(mm, tsk);
++	local_irq_enable();
+ 	task_unlock(tsk);
+ }
+ EXPORT_SYMBOL_GPL(kthread_unuse_mm);
