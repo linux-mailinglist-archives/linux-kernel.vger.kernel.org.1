@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52026228D7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA22B228D7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731852AbgGVBS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 21:18:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36956 "EHLO mail.kernel.org"
+        id S1731842AbgGVBSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 21:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731632AbgGVBRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731633AbgGVBRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 21:17:55 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA27B22C9C;
-        Wed, 22 Jul 2020 01:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05DC5208E4;
+        Wed, 22 Jul 2020 01:17:55 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OL-005sBy-Q1; Tue, 21 Jul 2020 21:17:53 -0400
-Message-ID: <20200722011753.688153525@goodmis.org>
+        id 1jy3OL-005sCU-UU; Tue, 21 Jul 2020 21:17:53 -0400
+Message-ID: <20200722011753.827936853@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:37 -0400
+Date:   Tue, 21 Jul 2020 21:16:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 09/23 v3] tools lib traceevent: Add more SVM exit reasons
+Subject: [PATCH 10/23 v3] tools lib traceevent: Add offset option for function plugin
 References: <20200722011628.925541477@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +38,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Exceptions require individual decoding (only feasible intercepts
-listed), XSETBV was missing and the AVIC brought in two new exit codes.
+When the offset option is set for the function plugin enabled, it will
+display the offset of the functions along with their names.  This helps in
+finding exactly where a function was called by its parent.
 
-Link: http://lkml.kernel.org/r/5741D822.3030203@web.de
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-10-tz.stoyanov@gmail.com
+ trace-cmd report -O parent -O offset
+[..]
+        rcuc/163-1330  [163]   740.653251: function: _raw_spin_lock+0x0  <-- rcu_cpu_kthread+0x4d8
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+Link: http://lore.kernel.org/linux-trace-devel/20200702174950.123454-2-tz.stoyanov@gmail.com
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 [ Ported from trace-cmd.git ]
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/plugins/plugin_kvm.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ .../lib/traceevent/plugins/plugin_function.c  | 24 +++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/plugins/plugin_kvm.c b/tools/lib/traceevent/plugins/plugin_kvm.c
-index c8e623065a7e..768c658f5904 100644
---- a/tools/lib/traceevent/plugins/plugin_kvm.c
-+++ b/tools/lib/traceevent/plugins/plugin_kvm.c
-@@ -155,7 +155,23 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
- 	_ER(EXIT_WRITE_DR5,	0x035)		\
- 	_ER(EXIT_WRITE_DR6,	0x036)		\
- 	_ER(EXIT_WRITE_DR7,	0x037)		\
--	_ER(EXIT_EXCP_BASE,     0x040)		\
-+	_ER(EXIT_EXCP_DE,	0x040)		\
-+	_ER(EXIT_EXCP_DB,	0x041)		\
-+	_ER(EXIT_EXCP_BP,	0x043)		\
-+	_ER(EXIT_EXCP_OF,	0x044)		\
-+	_ER(EXIT_EXCP_BR,	0x045)		\
-+	_ER(EXIT_EXCP_UD,	0x046)		\
-+	_ER(EXIT_EXCP_NM,	0x047)		\
-+	_ER(EXIT_EXCP_DF,	0x048)		\
-+	_ER(EXIT_EXCP_TS,	0x04a)		\
-+	_ER(EXIT_EXCP_NP,	0x04b)		\
-+	_ER(EXIT_EXCP_SS,	0x04c)		\
-+	_ER(EXIT_EXCP_GP,	0x04d)		\
-+	_ER(EXIT_EXCP_PF,	0x04e)		\
-+	_ER(EXIT_EXCP_MF,	0x050)		\
-+	_ER(EXIT_EXCP_AC,	0x051)		\
-+	_ER(EXIT_EXCP_MC,	0x052)		\
-+	_ER(EXIT_EXCP_XF,	0x053)		\
- 	_ER(EXIT_INTR,		0x060)		\
- 	_ER(EXIT_NMI,		0x061)		\
- 	_ER(EXIT_SMI,		0x062)		\
-@@ -201,7 +217,10 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
- 	_ER(EXIT_MONITOR,	0x08a)		\
- 	_ER(EXIT_MWAIT,		0x08b)		\
- 	_ER(EXIT_MWAIT_COND,	0x08c)		\
--	_ER(EXIT_NPF,		0x400)		\
-+	_ER(EXIT_XSETBV,	0x08d)		\
-+	_ER(EXIT_NPF, 		0x400)		\
-+	_ER(EXIT_AVIC_INCOMPLETE_IPI,		0x401)	\
-+	_ER(EXIT_AVIC_UNACCELERATED_ACCESS,	0x402)	\
- 	_ER(EXIT_ERR,		-1)
+diff --git a/tools/lib/traceevent/plugins/plugin_function.c b/tools/lib/traceevent/plugins/plugin_function.c
+index 7770fcb78e0f..cafddd6be983 100644
+--- a/tools/lib/traceevent/plugins/plugin_function.c
++++ b/tools/lib/traceevent/plugins/plugin_function.c
+@@ -49,6 +49,13 @@ struct tep_plugin_option plugin_options[] =
+ 		"Try to show function call indents, based on parents",
+ 		.set = 1,
+ 	},
++	{
++		.name = "offset",
++		.plugin_alias = "ftrace",
++		.description =
++		"Show function names as well as their offsets",
++		.set = 0,
++	},
+ 	{
+ 		.name = NULL,
+ 	}
+@@ -56,6 +63,7 @@ struct tep_plugin_option plugin_options[] =
  
- #define _ER(reason, val)	{ #reason, val },
+ static struct tep_plugin_option *ftrace_parent = &plugin_options[0];
+ static struct tep_plugin_option *ftrace_indent = &plugin_options[1];
++static struct tep_plugin_option *ftrace_offset = &plugin_options[2];
+ 
+ static void add_child(struct func_stack *stack, const char *child, int pos)
+ {
+@@ -123,6 +131,18 @@ static int add_and_get_index(const char *parent, const char *child, int cpu)
+ 	return 0;
+ }
+ 
++static void show_function(struct trace_seq *s, struct tep_handle *tep,
++			  const char *func, unsigned long long function)
++{
++	unsigned long long offset;
++
++	trace_seq_printf(s, "%s", func);
++	if (ftrace_offset->set) {
++		offset = tep_find_function_address(tep, function);
++		trace_seq_printf(s, "+0x%x ", (int)(function - offset));
++	}
++}
++
+ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 			    struct tep_event *event, void *context)
+ {
+@@ -149,14 +169,14 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 	trace_seq_printf(s, "%*s", index*3, "");
+ 
+ 	if (func)
+-		trace_seq_printf(s, "%s", func);
++		show_function(s, tep, func, function);
+ 	else
+ 		trace_seq_printf(s, "0x%llx", function);
+ 
+ 	if (ftrace_parent->set) {
+ 		trace_seq_printf(s, " <-- ");
+ 		if (parent)
+-			trace_seq_printf(s, "%s", parent);
++			show_function(s, tep, parent, pfunction);
+ 		else
+ 			trace_seq_printf(s, "0x%llx", pfunction);
+ 	}
 -- 
 2.26.2
 
