@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204242295A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EAD2295B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731879AbgGVKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
+        id S1730120AbgGVKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731342AbgGVKIO (ORCPT
+        with ESMTP id S1731763AbgGVKIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:14 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD319C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so1294786wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:13 -0700 (PDT)
+        Wed, 22 Jul 2020 06:08:15 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B61C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f7so1330476wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IgrMyzpm2qTOF6KQzko+Yr8RR9uR6bR44PpctbroAdQ=;
-        b=WsVM4w8YjDYhkQgj5FWERfZIZ5M2LkmlvbMvLJLd97uLrLIU9H3ZXhi7MeTiBKA5Zb
-         Z3RxrcIviPTT9gXPWV0a9rAprxrvZ+1d6GdvlU1qBYUNyfgT8QoCc84hVbgwPUrUYmAb
-         ODH0sKQtgq63s/kaTzMQl+kR4AM0c8mBV+v949hWMYmXy60ljNX9R8Q5FSt6WJPYL/x6
-         EECphUI1cgQSaMXWYjef0LedH+HyNIT6jXOQEFm1LSOhM+EOYxyNzaKc24Wi3p5Qb5lF
-         RvzyYzw/hMpCja4uVDg/gQrSrU5bImYZ4KWQCUEkP3zMGHK2N0YOBhte+waFKk4aO/k7
-         EtNg==
+        bh=Cu4LuhlpDSlOofMxjxPFDlq0CYY7PcSEJrvgG99XiXI=;
+        b=LbAzfFVwG/XsAHQVg8oeOO4psiqnVJNvkQHUAgJEXWxkIpgsE/xDov9QiJVRqjYaxF
+         ufJFFMOWxrDOq4w5m5HIMyCuWBvO3WAfJ/shYa8ntf6AcFMRZnkJrdYlcZpm+Fkagxz/
+         3hW9Sx1r74abqiW7IO3OwEHpFGWCyi6t4wDzWxOug1cisMpXEa+0aq48FjD7Wsi6tcbQ
+         42POuqiLwtKsO3NySJl6lN80KnYr3eKr1EynkoBvwTIoBGR0UF3eQgxr6kNY1ZzzbrhC
+         lfUUGTKazDwfuA7SHl4PeDwT9xSYljzqE+/otNVj35ytFTz08kiKIwtpD+pUhtNBeh/K
+         wShQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IgrMyzpm2qTOF6KQzko+Yr8RR9uR6bR44PpctbroAdQ=;
-        b=IVYmO6S1ydgjAIOpBS/ROxn0b9PgupZe0cqaA+bcISLDpfll49KjQ3CVJiA9wXqYig
-         f12GT8p7DYWp/MIBoSFmbeUhqmKpNnEIPfxvHLF6/Yk3L7ISC6EIrkgxCnXncF9vn1T6
-         MgV9RUbuv984iPTGKcoSK/0Z+UaO8BqIwTVkRSg9inPnlTkyyVXaUEgF65C2G63nwqON
-         JMrPjSTgbjdKwix2hQeUUP6vZ8X+PANwEHNNvidkpMnwxiAN+R6v6AsqJbDp9Jq8u/d9
-         JiiM7mUyJ1HVIplFgztMZmC6kfVwh1/SzYbZg980zEGBXiM7HCn3XKXa64J5cRDnZe1v
-         J0CQ==
-X-Gm-Message-State: AOAM533z7D7wiTL8VHx+C0bbgZaoLPkUCS42U0n1lf1ObhQFldQA7Huk
-        eiCquasNF0+uEkXu4nmxZtzFsY0kaM8=
-X-Google-Smtp-Source: ABdhPJxgZPCk8QS16626UJw3+D7N6dbD9raXG/JiAEAp5lsVfXCjZ8MOjfbQ5LQXIM3dBfmLVOQq5w==
-X-Received: by 2002:adf:e4cc:: with SMTP id v12mr31807588wrm.92.1595412492652;
-        Wed, 22 Jul 2020 03:08:12 -0700 (PDT)
+        bh=Cu4LuhlpDSlOofMxjxPFDlq0CYY7PcSEJrvgG99XiXI=;
+        b=j36ZOe6DIixcMEc2Fni8CIGK1MdTwhTa/BqP6gLGmLie7+cXqGrSIBANAZ7yxTEBGP
+         RodQCAfcc2oEAd1/ZzNHsFUDOp1af6yKWyZBAaru/Qb2yPBb48vg5qDEkWQZ3Q/XidtK
+         ZwIKI2NYYfPcPqtBlxLv35NpKURY8ET4aVr6ofebc0HcD7b1pgehA/4ft1EQVZAn+wcn
+         HiapyV/+pwV1DYc7CySB8GXQtYx1qYsY5CQlEp2AejcgsQZBdOIjikE36uGWbSqjyeMA
+         Ybrj+8QYGM76PeIqB5Wx76RAUDOChzPsItnubQ9yjJECqSfmBQ6OYkgrhf+fTHvQP/gQ
+         nzqw==
+X-Gm-Message-State: AOAM532ekzC/Q1QLYpXx/A1i5f7RmqXz1JKSGN6Qa4EafVgZ3TEK9Mgz
+        7H95ZYj+0PmrIpwUqhuXE2i9EQ==
+X-Google-Smtp-Source: ABdhPJxvTlEfPd/pLtSnllPeSFiUbCsUIeP+kIhePDLcvtH7uxUJ7uII40gwpw8PiVo9izQJq3j02A==
+X-Received: by 2002:adf:94c3:: with SMTP id 61mr19611860wrr.289.1595412493892;
+        Wed, 22 Jul 2020 03:08:13 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.11
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:12 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:13 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+Cc:     linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Ravi Kumar Bokka <rbokka@codeaurora.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 02/14] MAINTAINERS: Add git tree for NVMEM FRAMEWORK
-Date:   Wed, 22 Jul 2020 11:06:53 +0100
-Message-Id: <20200722100705.7772-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 03/14] nvmem: Enforce nvmem stride in the sysfs interface
+Date:   Wed, 22 Jul 2020 11:06:54 +0100
+Message-Id: <20200722100705.7772-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
@@ -65,29 +67,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Douglas Anderson <dianders@chromium.org>
 
-There is no git tree for NVMEM FRAMEWORK in MAINTAINERS, it is not
-convinent to rebase, add it.
+The 'struct nvmem_config' has a stride attribute that specifies the
+needed alignment for accesses into the nvmem.  This is used in
+nvmem_cell_info_to_nvmem_cell() but not in the sysfs read/write
+functions.  If the alignment is important in one place it's important
+everywhere, so let's add enforcement.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+For now we'll consider it totally invalid to access with the wrong
+alignment.  We could relax this in the read case where we could just
+read some extra bytes and throw them away.  Relaxing it in the write
+case seems harder (and less safe?) since we'd have to read some data
+first and then write it back.  To keep it symmetric we'll just
+disallow it in both cases.
+
+Reported-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
+Tested-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvmem/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68f21d46614c..83078661cd2b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12260,6 +12260,7 @@ F:	drivers/nvme/target/
- NVMEM FRAMEWORK
- M:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
- S:	Maintained
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/srini/nvmem.git
- F:	Documentation/ABI/stable/sysfs-bus-nvmem
- F:	Documentation/devicetree/bindings/nvmem/
- F:	drivers/nvmem/
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 927eb5f6003f..fc480d636be2 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -135,6 +135,9 @@ static ssize_t bin_attr_nvmem_read(struct file *filp, struct kobject *kobj,
+ 	if (pos >= nvmem->size)
+ 		return 0;
+ 
++	if (!IS_ALIGNED(pos, nvmem->stride))
++		return -EINVAL;
++
+ 	if (count < nvmem->word_size)
+ 		return -EINVAL;
+ 
+@@ -172,6 +175,9 @@ static ssize_t bin_attr_nvmem_write(struct file *filp, struct kobject *kobj,
+ 	if (pos >= nvmem->size)
+ 		return -EFBIG;
+ 
++	if (!IS_ALIGNED(pos, nvmem->stride))
++		return -EINVAL;
++
+ 	if (count < nvmem->word_size)
+ 		return -EINVAL;
+ 
 -- 
 2.21.0
 
