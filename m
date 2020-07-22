@@ -2,161 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7595229065
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 08:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B162E22906E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 08:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgGVGSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 02:18:33 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:24625 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgGVGSa (ORCPT
+        id S1728626AbgGVGVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 02:21:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24068 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727929AbgGVGVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 02:18:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595398709; x=1626934709;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=2dsFN6rE3tnZuCcuYxrjtpok8dH9telNTAhkDSWt4YI=;
-  b=Gndpur7ioBrblLjl5ktf9lh9gwmOBXUeyu9+zS6YtBsz76/g1RABpkIw
-   FRuAKzGb4U7mZQNOHlvbN1m3//W30/ebsT5MCyeNuKYzcPNOzB9A2a9Aq
-   EteYZ04HBwAgfzNEVKGnYLAYzMq5QAOAQk4Uui1rUXB1DxTNuo2178Cm9
-   O0r7ChJV8egcy0W6Nz+frFzYO7Uxgrsly8QxTSWs3eVu769EedxkK9Nop
-   OeV9fw/diidfBXdLbnQHCvxKy+d3WJH4BhqhbxFBSguCm638NbEbZb4mT
-   moBHYJMrk7i7ahfabgBSUMq0HY/h4FrMkkH/uQgxLZP5p97I6xLhJTuFV
-   w==;
-IronPort-SDR: SN4Ic9BX/T63KRXBdwLcJna4GNCP8DxHgdcubD4g9fS0pqEJnX9BZEBPLBMx3/E1ogzT15sFOS
- afxdIvscw8j0LOSTTi+J1p9O3kZD0k6r7t6PCVGN3c4ooI++uJeKCpEzOJKBykI6sa8weH7159
- 1mom3c8FNUVWP0ADCHD9K/BgnVHEl3F6tRSWOJLsRc2ZamWrEEG7o1x1nsjBvo8MD4Lf/UtNoF
- WkZylAQGFs6xuUb6o1V9NRhHQhaYFZlkFJ2PvwahHMv024ILAnLQuFrsko3KtpFx3sPloIsvg5
- 64g=
-X-IronPort-AV: E=Sophos;i="5.75,381,1589212800"; 
-   d="scan'208";a="252371238"
-Received: from mail-cys01nam02lp2057.outbound.protection.outlook.com (HELO NAM02-CY1-obe.outbound.protection.outlook.com) ([104.47.37.57])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Jul 2020 14:18:27 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UN+g3wzxvsQ0TXTV5Ef10gjnLMvDh128nvwSeDRpHrABDYH1pCPaY66azueMWFg94d0yI6pXjqSBasTfeOUX754vlOxq6FuS+cr0I2c4VlWWZbV7mGdKTFy76+5R7fHsmZFDBaeB2t8g3xJt/0JXAveUtOIcOecwV+ebjNS9lhSB5IjRSKsEx8+YWoWNIWiaxuMUUEmqs8DITKyAiIJgsBuWujPPKsGoC1EBUyEPbUKxxdF0uyMS4saEjOKNfNlZ9ixozA3F5yd7YUYy2cmaDV7bjC5qt2T8T5pUz9HoPAlt2Y9kC+W3UevJvnGTrhcbb6CnyU/7zD/PDROSDCRSBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMP/SMzTQvVTrtjvmJu9THr+z34jJFPaS7iLe9nwMCY=;
- b=jIVNkKnGVqnEaZzt7tmq0tlppeXkPAvcjkoVZluZXeBPqXlNjYSYCuNE4s66CPdCbiylI6LqYQOR4iAI5PDZY16gajJn7q5DpkjltPkyruW10mBNVSGH6zjq9tg/Wop9NTiDQa/OQlI4Fgs4EXgfD3ehKw4vuKiPlnzmXiySOUmPtTRY8Pd8bf/7e0Cw8G0ESCCZvTowUIRQAvj9FMdWFLIk96t5e5HBFw5HGM9L0fqWViXucLROo5gvRoG47rx94yVEOgGHUJdHadKbxC+uq10m2HjynT/XxM9YBX16LWU5uIcYaZGM0D25YykrezlgRfPK/hF2DlgQEsxHFJ22KA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMP/SMzTQvVTrtjvmJu9THr+z34jJFPaS7iLe9nwMCY=;
- b=l/OLusLpBGebZxeZ193rBqbpRJYz7KWN7sPF9t+iUAZcyNljI9C1MBixeEiQsfEkD/WjleC+/CXDxZ0Y6blgxWKQXxF7k6V+3QvRR8rgdNvEF2UxxFCfjFmzF2de5Vla2vGlHG3tWk+Qv8yUJdJI/2Z4azxHQfPAVcQnWYPfFsU=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB5360.namprd04.prod.outlook.com (2603:10b6:805:100::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.23; Wed, 22 Jul
- 2020 06:18:22 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2%4]) with mapi id 15.20.3195.026; Wed, 22 Jul 2020
- 06:18:21 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        'Sang-yoon Oh' <sangyoon.oh@samsung.com>,
-        'Sung-Jun Park' <sungjun07.park@samsung.com>,
-        'yongmyung lee' <ymhungry.lee@samsung.com>,
-        'Jinyoung CHOI' <j-young.choi@samsung.com>,
-        'Adel Choi' <adel.choi@samsung.com>,
-        'BoRam Shin' <boram.shin@samsung.com>
-Subject: RE: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-Thread-Topic: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-Thread-Index: AQHWWQGynHMGu/0fRkiVvG9Dpk1z6KkJaD4AgAHaWnCAAzipQIAEkbxrgAAf1kA=
-Date:   Wed, 22 Jul 2020 06:18:21 +0000
-Message-ID: <SN6PR04MB4640A603AE3973E5738ED3DEFC790@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
-        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
-        <077301d65b0d$24d79920$6e86cb60$@samsung.com>
-        <SN6PR04MB4640A5A8C71A51DB45968DAFFC7C0@SN6PR04MB4640.namprd04.prod.outlook.com>
-        <SN6PR04MB4640A85E665E20D709885E16FC7A0@SN6PR04MB4640.namprd04.prod.outlook.com>
- <yq1tuy0fag7.fsf@ca-mkp.ca.oracle.com>
-In-Reply-To: <yq1tuy0fag7.fsf@ca-mkp.ca.oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9581f586-0000-4fc9-306a-08d82e0708c4
-x-ms-traffictypediagnostic: SN6PR04MB5360:
-x-microsoft-antispam-prvs: <SN6PR04MB536048AE2964DB2EEC44610FFC790@SN6PR04MB5360.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:370;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AtVOlreoNk3cI5OLA0H3xtdEbm6m7ZnDUnMWR+rT99sCxo8+/myWorL4tx4KErYyM9g+HrwAfh88wwaOoZnXYLxj4hSIWXSg50z26CJXE6eNoguAUxv1+EqiYI2SVrW3wSYnE1lHZBSW4TfgWmFAB3yUMa004gYw9Q/l9BoJ3MuVehR1yOcbY5xIl4Re4Bt6ET72fCg6KcsOrZ/8NMXQaoclwbjBSqa5s0Xn0ZbRa9wSrm8KN8eh47WYsyBl0sDNJK+vOyGKlLc/N+3EIAUw9w2ee3nGwayLc7dPLbEKsP9nMPxrIbAi68d300bVPbMDnr+3IdVZl/8lhQHDqhr9/Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(39860400002)(346002)(366004)(136003)(316002)(8936002)(8676002)(6506007)(4326008)(7696005)(2906002)(186003)(7416002)(478600001)(26005)(54906003)(6916009)(86362001)(52536014)(5660300002)(55016002)(83380400001)(33656002)(76116006)(66946007)(66476007)(66556008)(64756008)(66446008)(9686003)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: wZi1e9U7ACfUn+/+9De/YDWZ9hx3/mNwqGylPlAvRxm4FFWze6gyEUiIKtGrjIIiXzq5A5BI38+3JwWLu9Q0h5cAcGBJrMlJk/ofLvN8xq3Kv37l/oqskXDaEnVlO1SurTGcPOi7WOYjXkalwxUz8hYr8tAGpSZRp0J6F7zrJasKDZ3i+nzwzCol/bNywfC3gy+AK1Nm2IF/kxjnR2k+UU5NWPTHPYWjY38bkaZGd0Eh0vnMhlVT1ZGLZa4CTamRWDzu7oPEtVmF6450oy6IL/aFPutdXF8SYvJLsZvqtwthMwr0uJ2ynIT/edLyOFOb1fYLzL8IQeKxqE9a6mnqOP6rZQlt49gIkczwMIEB5qvSjwgRrKapKjtySq7Uq9VMTI5cCJZWNIa9n/hzGx2woJoaWvo3+FsNl0HTUkyJZ0SjfxZzoPtWFUEYeCviQ1MY5bSTQlfWNvuLSdiCtzwFV/66yFmaD1AMImOMfxo+72s=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 22 Jul 2020 02:21:33 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06M61rdi161127;
+        Wed, 22 Jul 2020 02:21:23 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1vrf16h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 02:21:23 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06M6GvGL012016;
+        Wed, 22 Jul 2020 02:21:23 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1vrf16a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 02:21:23 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06M6K4cL030774;
+        Wed, 22 Jul 2020 06:21:22 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma04dal.us.ibm.com with ESMTP id 32d5dq7qcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 06:21:22 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06M6LKCD33030484
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 06:21:20 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E228C6A04F;
+        Wed, 22 Jul 2020 06:21:19 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2FA306A04D;
+        Wed, 22 Jul 2020 06:21:19 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.82.72])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Jul 2020 06:21:19 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id A1BEA2E48D7; Wed, 22 Jul 2020 11:51:14 +0530 (IST)
+Date:   Wed, 22 Jul 2020 11:51:14 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <michaele@au1.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Piggin <npiggin@au1.ibm.com>,
+        Oliver OHalloran <oliveroh@au1.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@linux.ibm.com>,
+        Anton Blanchard <anton@au1.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v2 05/10] powerpc/smp: Dont assume l2-cache to be
+ superset of sibling
+Message-ID: <20200722062114.GD31038@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200721113814.32284-1-srikar@linux.vnet.ibm.com>
+ <20200721113814.32284-6-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4640.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9581f586-0000-4fc9-306a-08d82e0708c4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 06:18:21.8000
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MeMUVYvh0Y8wPLIKWG3Li8HVMtHV2o16TVVzOl3uOWzuroMu4wcDc8hFMlVY4WM2TGacn0zT9EYcXCS+PYE9YQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5360
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721113814.32284-6-srikar@linux.vnet.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_02:2020-07-22,2020-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 priorityscore=1501 adultscore=0 mlxscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220040
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Avri,
->=20
-> > Martin - Can we move forward with this one?
->=20
->   CHECK   drivers/scsi/ufs/ufshcd-pltfrm.c
-> drivers/scsi/ufs/ufsfeature.c:90:20: warning: symbol 'ufshpb_dev_type' wa=
-s
-> not declared. Should it be static?
-> drivers/scsi/ufs/ufsfeature.c:104:17: warning: symbol 'ufsf_bus_type' was=
- not
-> declared. Should it be static?
->   CC [M]  drivers/scsi/ufs/ufsfeature.o
->   CC [M]  drivers/scsi/ufs/ufs_bsg.o
->   CC [M]  drivers/scsi/ufs/ufs-sysfs.o
-> drivers/scsi/ufs/ufshpb.c:18:14: warning: symbol 'ufshpb_host_map_kbytes'
-> was not declared. Should it be static?
-> drivers/scsi/ufs/ufshpb.c:793:28: warning: mixing different enum types:
-> drivers/scsi/ufs/ufshpb.c:793:28:    unsigned int enum HPB_RGN_STATE
-> drivers/scsi/ufs/ufshpb.c:793:28:    unsigned int enum HPB_SRGN_STATE
->   CC [M]  drivers/scsi/ufs/ufshcd.o
-> drivers/scsi/ufs/ufshpb.c:1026:31: warning: context imbalance in
-> 'ufshpb_run_active_subregion_list' - different lock contexts for basic bl=
-ock
+Hi Srikar,
 
-Martin - Thanks.
+On Tue, Jul 21, 2020 at 05:08:09PM +0530, Srikar Dronamraju wrote:
+> Current code assumes that cpumask of cpus sharing a l2-cache mask will
+> always be a superset of cpu_sibling_mask.
+> 
+> Lets stop that assumption. cpu_l2_cache_mask is a superset of
+> cpu_sibling_mask if and only if shared_caches is set.
+> 
+> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Michael Ellerman <michaele@au1.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Nick Piggin <npiggin@au1.ibm.com>
+> Cc: Oliver OHalloran <oliveroh@au1.ibm.com>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Michael Neuling <mikey@linux.ibm.com>
+> Cc: Anton Blanchard <anton@au1.ibm.com>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+> Cc: Jordan Niethe <jniethe5@gmail.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+> Changelog v1 -> v2:
+> powerpc/smp: Dont assume l2-cache to be superset of sibling
+> 	Set cpumask after verifying l2-cache. (Gautham)
+> 
+>  arch/powerpc/kernel/smp.c | 28 +++++++++++++++-------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index 72f16dc0cb26..57468877499a 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -1196,6 +1196,7 @@ static bool update_mask_by_l2(int cpu, struct cpumask *(*mask_fn)(int))
+>  	if (!l2_cache)
+>  		return false;
+> 
+> +	cpumask_set_cpu(cpu, mask_fn(cpu));
 
-Daejun - please run Sparse as well, not just checkpatch to eliminate those =
-warnings.
 
-Thanks,
-Avri
+Ok, we need to do this because "cpu" is not yet set in the
+cpu_online_mask. Prior to your patch the "cpu" was getting set in
+cpu_l2_cache_map(cpu) as a side-effect of the code that is removed in
+the patch.
+
+
+>  	for_each_cpu(i, cpu_online_mask) {
+>  		/*
+>  		 * when updating the marks the current CPU has not been marked
+> @@ -1278,29 +1279,30 @@ static void add_cpu_to_masks(int cpu)
+>  	 * add it to it's own thread sibling mask.
+>  	 */
+>  	cpumask_set_cpu(cpu, cpu_sibling_mask(cpu));
+> +	cpumask_set_cpu(cpu, cpu_core_mask(cpu));
+> 
+>  	for (i = first_thread; i < first_thread + threads_per_core; i++)
+>  		if (cpu_online(i))
+>  			set_cpus_related(i, cpu, cpu_sibling_mask);
+> 
+>  	add_cpu_to_smallcore_masks(cpu);
+> -	/*
+> -	 * Copy the thread sibling mask into the cache sibling mask
+> -	 * and mark any CPUs that share an L2 with this CPU.
+> -	 */
+> -	for_each_cpu(i, cpu_sibling_mask(cpu))
+> -		set_cpus_related(cpu, i, cpu_l2_cache_mask);
+>  	update_mask_by_l2(cpu, cpu_l2_cache_mask);
+> 
+> -	/*
+> -	 * Copy the cache sibling mask into core sibling mask and mark
+> -	 * any CPUs on the same chip as this CPU.
+> -	 */
+> -	for_each_cpu(i, cpu_l2_cache_mask(cpu))
+> -		set_cpus_related(cpu, i, cpu_core_mask);
+> +	if (pkg_id == -1) {
+
+I suppose this "if" condition is an optimization, since if pkg_id != -1,
+we anyway set these CPUs in the cpu_core_mask below.
+
+However...
+
+> +		struct cpumask *(*mask)(int) = cpu_sibling_mask;
+> +
+> +		/*
+> +		 * Copy the sibling mask into core sibling mask and
+> +		 * mark any CPUs on the same chip as this CPU.
+> +		 */
+> +		if (shared_caches)
+> +			mask = cpu_l2_cache_mask;
+> +
+> +		for_each_cpu(i, mask(cpu))
+> +			set_cpus_related(cpu, i, cpu_core_mask);
+> 
+> -	if (pkg_id == -1)
+>  		return;
+> +	}
+
+
+... since "cpu" is not yet set in the cpu_online_mask, do we not miss setting
+"cpu" in the cpu_core_mask(cpu) in the for-loop below ?
+
+
+> 
+>  	for_each_cpu(i, cpu_online_mask)
+>  		if (get_physical_package_id(i) == pkg_id)
+
+
+Before this patch it was unconditionally getting set in
+cpu_core_mask(cpu) because of the fact that it was set in
+cpu_l2_cache_mask(cpu) and we were unconditionally setting all the
+CPUs in cpu_l2_cache_mask(cpu) in cpu_core_mask(cpu).
+
+What am I missing ?
+
+> -- 
+> 2.17.1
+>
+
+--
+Thanks and Regards
+gautham.
