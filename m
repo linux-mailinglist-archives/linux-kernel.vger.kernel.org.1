@@ -2,229 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF716229EE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CA0229EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731528AbgGVSDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730111AbgGVSDd (ORCPT
+        id S1726349AbgGVSC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:02:26 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:43732 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbgGVSCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:03:33 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6C9C0619E1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:03:33 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u185so1707404pfu.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yWcfktADb3uPJbFkIiNC/fq9uZOsRANKyg7Yhrbd3tg=;
-        b=XMpS/yfUE5QvKTqgqHXr498QBJt1LtXUBTlBwABMTYg0Endz9kTZGsNVoItzCCJ8JZ
-         kBCM5saOtYxBLzG65jr1vE+X4/UzMu73f/A1NH+keySUjedHG6c6BI2LlBufsNrhATxN
-         bVH3baDqsU8Nh8OwoeDBGNIQ54aggROKqB9px+29u7Cy+lea4Oy56Z/axz1FhQ42Fgvq
-         +7ca24D4Qcfr83XGHgalFULZ9om5Fbfwf3QHAIAJB1cGJtn2M8oicM3DTaYflPkkDvWA
-         ClceWQu4Ql4Ons+Ct9bcqc602uKrNDtogEo0tlJaIvxjU9ZCUCDBz6Fkpmw0a+exYJUm
-         FN7A==
+        Wed, 22 Jul 2020 14:02:24 -0400
+Received: by mail-il1-f198.google.com with SMTP id y13so1628193ila.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:02:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yWcfktADb3uPJbFkIiNC/fq9uZOsRANKyg7Yhrbd3tg=;
-        b=EaP+xjHkNbspw3d4EVkZY42ttZkgO3sTKI5jPgdqwkapbKrSA6c9Vy6Hj1l4ILfjKL
-         rPjnKgoDVQ9aKllbFDZ9n3BGoOLHmaP3gXSiCjjauP1a+AlztQesGDHYUZ1ESIHIoWn5
-         UTT+DWIaQT/dlB4Qcm6olvmkjQOVh3e+7cjmYNiBmdhGl+LRR3sMV6ScYv9FMQMtgAVx
-         OEY4wbo9XkZDwc83Y3mqOxl0+3uipYu1Os+fkTMSiLP7XZ49dk7iXa76E95EMHl4qxx7
-         Rf2FB3SLEQmsuqiX7y7yrDitPVq/1PLlZoVJpu34/JRVOsD46qtYLS3RYQRQvbtBpegH
-         1Iuw==
-X-Gm-Message-State: AOAM530GdkiB5GDr9SXU0qYGEBB6arZoVPxIPRbkY1uzORfQviQhPDln
-        P6Blz6Au7NCnRJ2zjcD7Xb3iOg==
-X-Google-Smtp-Source: ABdhPJw4CCh/JqUryfanhVXNO34PrKWEi7bBLUJ8EKXba3fX0MsU9Wcj2adh+VkHowSyvD3Dk78D3Q==
-X-Received: by 2002:a63:c509:: with SMTP id f9mr920841pgd.144.1595441012822;
-        Wed, 22 Jul 2020 11:03:32 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id w9sm341994pja.39.2020.07.22.11.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 11:03:32 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 11:01:39 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Siddharth Gupta <sidgup@codeaurora.org>, agross@kernel.org,
-        ohad@wizery.com, corbet@lwn.net, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] remoteproc: Add remoteproc character device
- interface
-Message-ID: <20200722180139.GA3700915@builder.lan>
-References: <1594148870-27276-1-git-send-email-sidgup@codeaurora.org>
- <1594148870-27276-2-git-send-email-sidgup@codeaurora.org>
- <20200715201839.GA3204081@xps15>
- <20200715215149.GA3267350@xps15>
- <81d7514c-727e-b4dc-e4ac-74a25966ccaf@codeaurora.org>
- <20200721205635.GM2922385@builder.lan>
- <20200722171841.GA1268891@xps15>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2T5Kb68mks66WlbHOKiIVPF5/NI+LFYplKLylfQLPMg=;
+        b=fu60e40gn0xgqw/CwnSTum1fGV0ktI3o1+sW8JUCH1xKzy8H7jxFobClH0GzQvwoVd
+         IkfFDlsKnpDf7k3joYaiB2znjSGv29v4QPjIOPEpjpWFtPn1gyyQ3kIsdwLzS6Sj/XV2
+         S4y+zB/jpKCMFArv6QMs1DhV4MdPtCEsEJSesPyRoVZrvURAfjvmxOLtG+C/8fubhzNi
+         TZUIOBhy/MpSjqrlBFOasIJfI7LfYiReIjLDC73GTpMrlmkbDm2AjSSfVFNUpUbYGVD6
+         lhJIb0Nvxkj6FXuIcQHeGl9ZFv3v2WeAof1xanyebLN/HKYQRYczpo+4L3bvw/qrfrH5
+         s2Vw==
+X-Gm-Message-State: AOAM533H19EgVtF9Q2YO6SiOkSipeUx+8khn9LyZGXyr2xqX+9+u+t/x
+        Z79bn52iO4dAFFaY6ykHSw2k8wg8G+9KMOy8ug17aDz6vC0r
+X-Google-Smtp-Source: ABdhPJxBpQkG+vJCJ7627aQSU3pC+nNz5XSZHtWNWQHjaysn3Ccg/u8PLQpKeRvINe5LYicdb9S4dYRlUKJ5VJkNepM8IQrCHDyA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722171841.GA1268891@xps15>
+X-Received: by 2002:a6b:f911:: with SMTP id j17mr930937iog.96.1595440943469;
+ Wed, 22 Jul 2020 11:02:23 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 11:02:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b217d105ab0b8ae4@google.com>
+Subject: INFO: rcu detected stall in seq_read (2)
+From:   syzbot <syzbot+c28b5fee66fd3b7f766e@syzkaller.appspotmail.com>
+To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, corbet@lwn.net,
+        davem@davemloft.net, fweisbec@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
+        mingo@kernel.org, netdev@vger.kernel.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vasundhara-v.volam@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22 Jul 10:18 PDT 2020, Mathieu Poirier wrote:
+Hello,
 
-> On Tue, Jul 21, 2020 at 01:56:35PM -0700, Bjorn Andersson wrote:
-> > On Tue 21 Jul 12:16 PDT 2020, Siddharth Gupta wrote:
-> > > On 7/15/2020 2:51 PM, Mathieu Poirier wrote:
-> > > > On Wed, Jul 15, 2020 at 02:18:39PM -0600, Mathieu Poirier wrote:
-> > > > > On Tue, Jul 07, 2020 at 12:07:49PM -0700, Siddharth Gupta wrote:
-> > [..]
-> > > > > > diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-> > [..]
-> > > > > > +int rproc_char_device_add(struct rproc *rproc)
-> > > > > > +{
-> > > > > > +	int ret;
-> > > > > > +	dev_t cdevt;
-> > > > > > +
-> > > > > > +	cdev_init(&rproc->char_dev, &rproc_fops);
-> > > > > > +	rproc->char_dev.owner = THIS_MODULE;
-> > > > > > +
-> > > > > > +	cdevt = MKDEV(rproc_major, rproc->index);
-> > > > > > +	ret = cdev_add(&rproc->char_dev, cdevt, 1);
-> > > > Trying this patchset on my side gave me the following splat[1].  After finding
-> > > > the root case I can't understand how you haven't see it on your side when you
-> > > > tested the feature.
-> > > > 
-> > > > [1]. https://pastebin.com/aYTUUCdQ
-> > 
-> > Mathieu, I've looked at this back and forth. Afaict this implies that
-> > rproc_major is still 0. Could it be that either alloc_chrdev_region()
-> > failed or somehow has yet to be called when you hit this point?
-> 
-> That is exacly what I thought when I first stumbled on this but instrumenting
-> the code showed otherwise.
-> 
-> After function rproc_init_cdev() has been called @rproc_major contains the
-> dynamically allocated major number in the upper 12 bits and the base minor
-> number in the lower 20 bits.
-> 
+syzbot found the following issue on:
 
-Ahh, alloc_chrdev_region() actually returns the dev_t, not the major.
-Too bad that we all name this variable "major" to maximize the
-confusion.
+HEAD commit:    4fa640dc Merge tag 'vfio-v5.8-rc7' of git://github.com/awi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=145cac30900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
+dashboard link: https://syzkaller.appspot.com/bug?extid=c28b5fee66fd3b7f766e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e23ac8900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1198c440900000
 
-> In rproc_char_device_add() we find this line:
-> 
->         cdevt = MKDEV(rproc_major, rproc->index);
-> 
-> Macro MKDEV() builds a device number by shifting @rproc_major by 20 bits to the
-> left and OR'ing that with @rproc->index.  But the device's major number is
-> already occupying the upper 12bits, so shifthing another 20 bits to the left
-> makes the major portion of the device number '0'.  That is causing cdev_add() to
-> complain bitterly.
-> 
-> The right way to do this is:
-> 
->         cdevt = MKDEV(MAJOR(rproc_major), rproc->index);
-> 
+The issue was bisected to:
 
-Agreed (and let's continue naming it rproc_major, in line with all other
-drivers - now I know better).
+commit 53e233ea2fa9fa7e2405e95070981f327d90e519
+Author: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Date:   Thu Oct 4 05:43:52 2018 +0000
 
-Thanks,
-Bjorn
+    devlink: Add Documentation/networking/devlink-params-bnxt.txt
 
-> Once I found the problem I thought about 32/64 bit issues.  Since Siddharth is
-> using a 64bit application processor shifting another 20 bits would still have
-> yielded a non-zero value.  But that can't be since dev_t is a u32 in
-> linux/types.h.
-> 
-> As such I can't see how it is possible to not hit that problem on a 64bit
-> platform.
-> 
-> > 
-> > > Hey Mathieu,
-> > > 
-> > > We aren't able to reproduce the error that you are seeing, the splat is
-> > > coming
-> > > from the check for whiteout device[1] - which shouldn't happen because of
-> > > the
-> > > find_dynamic_major call[2], right?
-> > > 
-> > > We are successfully seeing all our character device files and able to
-> > > successfully boot remoteprocs. From what I read and understood about
-> > > whiteout
-> > > devices they will be hidden in the fs.
-> > > 
-> > > Could you provide more details about your configuration and testing?
-> > > 
-> > > [1]: https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L486
-> > > <https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L123>
-> > > [2]: https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L123
-> > > 
-> > > <https://github.com/torvalds/linux/blob/master/fs/char_dev.c#L486>
-> > > > > > +	if (ret < 0)
-> > > > > > +		goto out;
-> > > > > > +
-> > > > > > +	rproc->dev.devt = cdevt;
-> > > > > > +out:
-> > > > > > +	return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +void rproc_char_device_remove(struct rproc *rproc)
-> > > > > > +{
-> > > > > > +	__unregister_chrdev(rproc_major, rproc->index, 1, "remoteproc");
-> > > > > > +}
-> > > > > > +
-> > > > > > +void __init rproc_init_cdev(void)
-> > > > > > +{
-> > > > > > +	int ret;
-> > > > > > +
-> > > > > > +	ret = alloc_chrdev_region(&rproc_major, 0, NUM_RPROC_DEVICES, "remoteproc");
-> > > > > > +	if (ret < 0)
-> > > > > > +		pr_err("Failed to alloc rproc_cdev region, err %d\n", ret);
-> > > > > > +}
-> > > > > > +
-> > > > > > +void __exit rproc_exit_cdev(void)
-> > > > > > +{
-> > > > > > +	unregister_chrdev_region(MKDEV(rproc_major, 0), NUM_RPROC_DEVICES);
-> > > > > Please go back to the comment I made on this during my last review and respin.
-> > > > After digging in the code while debugging the above problem, I don't see how
-> > > > unregistering the chrdev region the way it is done here would have worked.
-> > > Since this is compiled statically and not built as a module, we will never
-> > > exercise the code path, so I will remove it in the next patchset.
-> > > 
-> > 
-> > You're right Siddharth, since we changed CONFIG_REMOTEPROC to bool it's no longer
-> > possible to hit remoteproc_exit(), so you can omit this function
-> > entirely. (And we should clean up the rest of that as well)
-> > 
-> > [..]
-> > > > > > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> > [..]
-> > > > > > @@ -488,6 +489,8 @@ struct rproc_dump_segment {
-> > > > > >    * @auto_boot: flag to indicate if remote processor should be auto-started
-> > > > > >    * @dump_segments: list of segments in the firmware
-> > > > > >    * @nb_vdev: number of vdev currently handled by rproc
-> > > > > > + * @char_dev: character device of the rproc
-> > > > > > + * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
-> > > > > >    */
-> > > > > >   struct rproc {
-> > > > > >   	struct list_head node;
-> > > > > > @@ -523,6 +526,8 @@ struct rproc {
-> > > > > >   	int nb_vdev;
-> > > > > >   	u8 elf_class;
-> > > > > >   	u16 elf_machine;
-> > > > > > +	struct cdev char_dev;
-> > 
-> > As stated privately, I assumed based on this name that this is a struct
-> > device related to that character device. So please rename this cdev to
-> > save me from doing this mistake again.
-> > 
-> > Thanks,
-> > Bjorn
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e22b94900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e22b94900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13e22b94900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c28b5fee66fd3b7f766e@syzkaller.appspotmail.com
+Fixes: 53e233ea2fa9 ("devlink: Add Documentation/networking/devlink-params-bnxt.txt")
+
+hrtimer: interrupt took 6305559 ns
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	1-...!: (1 GPs behind) idle=91e/1/0x4000000000000000 softirq=10105/10107 fqs=1 
+	(t=18319 jiffies g=8905 q=457)
+NMI backtrace for cpu 1
+CPU: 1 PID: 4008 Comm: systemd-journal Not tainted 5.8.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
+ nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x194/0x1cf kernel/rcu/tree_stall.h:320
+ print_cpu_stall kernel/rcu/tree_stall.h:553 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:627 [inline]
+ rcu_pending kernel/rcu/tree.c:3489 [inline]
+ rcu_sched_clock_irq.cold+0x5b3/0xccc kernel/rcu/tree.c:2504
+ update_process_times+0x25/0x60 kernel/time/timer.c:1737
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:176
+ tick_sched_timer+0x108/0x290 kernel/time/tick-sched.c:1320
+ __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
+ __hrtimer_run_queues+0x1d5/0xfc0 kernel/time/hrtimer.c:1584
+ hrtimer_interrupt+0x32a/0x930 kernel/time/hrtimer.c:1646
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x142/0x5e0 arch/x86/kernel/apic/apic.c:1097
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ sysvec_apic_timer_interrupt+0xe0/0x120 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:585
+RIP: 0010:format_decode+0x0/0xad0 lib/vsprintf.c:2329
+Code: c7 c7 10 05 af 8a be 10 00 00 00 e8 5a c3 46 00 48 c7 c7 20 78 0d 8a e9 6e f2 e2 fd 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 <41> 57 41 56 41 55 41 54 55 48 89 f5 53 48 bb 00 00 00 00 00 fc ff
+RSP: 0018:ffffc90001077a10 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff83b0a497
+RDX: ffff888093224040 RSI: ffffc90001077a80 RDI: ffffffff884e6293
+RBP: ffffffff884e6293 R08: 0000000000000001 R09: ffff8880952a63d1
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880952a63d2
+R13: ffffffff884e6293 R14: 0000000000000025 R15: ffffc90001077b30
+ vsnprintf+0x155/0x14f0 lib/vsprintf.c:2572
+ seq_vprintf fs/seq_file.c:379 [inline]
+ seq_printf+0x195/0x240 fs/seq_file.c:394
+ proc_pid_status+0x1c6d/0x24b0 fs/proc/array.c:424
+ proc_single_show+0x116/0x1e0 fs/proc/base.c:766
+ seq_read+0x432/0x1070 fs/seq_file.c:208
+ vfs_read+0x1df/0x520 fs/read_write.c:479
+ ksys_read+0x12d/0x250 fs/read_write.c:607
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0fc43d9910
+Code: Bad RIP value.
+RSP: 002b:00007ffdcb193978 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 000055b1476b96f0 RCX: 00007f0fc43d9910
+RDX: 0000000000000800 RSI: 000055b1476b8b00 RDI: 0000000000000013
+RBP: 00007f0fc4694440 R08: 00007f0fc4697fc8 R09: 0000000000000410
+R10: 000055b1476b96f0 R11: 0000000000000246 R12: 0000000000000800
+R13: 0000000000000d68 R14: 000055b1476b8b00 R15: 00007f0fc4693900
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
