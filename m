@@ -2,255 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD84229002
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E4E229009
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgGVFnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 01:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
+        id S1728041AbgGVFpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 01:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgGVFnV (ORCPT
+        with ESMTP id S1727988AbgGVFpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:43:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFADDC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:43:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 124so1219873ybb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:43:21 -0700 (PDT)
+        Wed, 22 Jul 2020 01:45:18 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D575C0619DC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:45:18 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z3so577345pfn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RH1b8CqfaUtf0lENEBZXL4UmvaK8XhlmPiXzra6AL6E=;
-        b=h/SIt0W6GnYy7DzEnHllHEnhs7frlpA4jxCt8DwR1Ea2yfiC4axjAF2isQx7VI0+To
-         kA7M8Fdp+rB9YiJv0dm41DdfxlMOQn5/Vh5jZryiVTZ+Lqzhv4SR4xNPH7E/Q0y/H819
-         tIT8cKWIMpW7+aNHXEt9fiSOLmxK/5WKruVPBSgTfcGm7sphMTNt6ByaLg/t76kQQMzG
-         buWFadRLTERIqimYceYsuA7Ixg6O9B+QPko8VcjeKwCIvbForvNb0J3tRoNulYT2/b8b
-         de+8nvyEflAVJHLwV1/uukN4DReOXethUBjD39wqjTP07cPnfnojq83ngUCe8CVHtX6i
-         HsHQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HjveECGjE3OoKFqTWNIsemnU4Ra081f5febv5hO4Ml8=;
+        b=EGqj1zBx1inUAM3XI9KoZrVm+Npz0rN892Sx/ndQFEAMwXFJXlb7tKvSIwdL9jBdSy
+         yR3D3wtxizHeqV6S4pTMowuDA8It3LU25FqQ2WnpC0CFjL21KLbYg+9eIRIAQGX8houw
+         JuzbOsO8npSZzv66JkpaziXuq3KbYKhu/uNmUbrwqkc//bYcUw/VeHmQ3yvUQQYlMIWY
+         MG/4Prb43I3DEtnv24zrljKT1ZBHqRs5+aWlcwTbp4F3z0hNG3ckYBUdck+oam3eUJsV
+         6qsM2nQZCOp9jOdZ3LTmZrnl1/NjE6PDf8fT1DpPRIX49pxAECN5uD4s+PXl7zyN0Bp+
+         /1cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RH1b8CqfaUtf0lENEBZXL4UmvaK8XhlmPiXzra6AL6E=;
-        b=R0LILd5PJxnNrYC5pLv7Zbm80ORafiauqbphalbFEwPOa+o8CioZX4xt7Oa8CQ1U4s
-         8dWmtbdE0I2eVe8H9DhP/wg5G2tp7FPgghUb0lNB+4pVazVgD2xoTPnVUSlzFTZBYxvz
-         PpjfZzlPgN+nL0S8d2qLFHbBmaOJIlwzw/IGpgWrYCGbnjKPJfKOFUgJtmhwtpgN5O0k
-         8/1TcPHjFgvPV96ditfy/bsOuFpTLRaEevxgPReq5qgBIDi4x1+z4F8kQfUGbDVISrs7
-         g9IyePPWusqVdZ7AN5Xzr4cgo6NqNE1O1hG7k4vpJ5iN9e3vkmH/hav0l7lub5lKBRFn
-         7rtg==
-X-Gm-Message-State: AOAM5315o8DL2ETz8NXPg8l7m//JfzK7VxLR2vFicbN6UIGeZ7fmTGZR
-        O3/rj1Jl2QIbaRkOKsuLHekNrCz9TM7F
-X-Google-Smtp-Source: ABdhPJzgpysByI+Klyxrvc3KRFzpECTww/sm5FBXvRkap/u7ghFv0EuUocQzv0aODK8ZgTxZL1dk1Wib8xjE
-X-Received: by 2002:a25:a089:: with SMTP id y9mr51593597ybh.106.1595396600840;
- Tue, 21 Jul 2020 22:43:20 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 22:43:14 -0700
-Message-Id: <20200722054314.2103880-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [RFC PATCH] bpftool btf: Add prefix option to dump C
-From:   Ian Rogers <irogers@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HjveECGjE3OoKFqTWNIsemnU4Ra081f5febv5hO4Ml8=;
+        b=nuV26HFsaETRjSulyxDhYkByf2Wf6UdwSeo2fbGqFow9ZuugBYZhB73DJs2IdpYMqc
+         JrIGc7dHYMGoTXTbRcb8BYf4WaoYboGh3wgPpHnoLj1Xv0yBkj5uEk0x96ADHlfOYQJI
+         imbxAhhjaKBziIUAiNQ8pNuvGpUHHOIk1VVa/qBMtjKi9AkB2oXtbPYK1CbGijcAK2le
+         YHrxsJrIetzw+u8t3z42aix9RNLhgeNUuyzw7uGPT/1bPS035w8yzdtC04EMc9PkXkAh
+         LzJgPmyOsFvENlm/Lp6lJPQH3h1Dc6zyRCrL1Xb6UkmuRMDS1/YkGSqEPIO31fXr3uj3
+         Xv4Q==
+X-Gm-Message-State: AOAM530BFgKbzWHgx5gGjxH5x9I506F3IRQhDC46QDs960w7kifrkwEo
+        46zNb7ngO659ekhl9/Vu3ulNCQ==
+X-Google-Smtp-Source: ABdhPJwPzhH3TEWEpcvxEX8aRBA3QMLWIri07NH/ccuSeJUtj3rZsXy4xWDOjyQTuRScl0pXwyQqIg==
+X-Received: by 2002:a63:6e0e:: with SMTP id j14mr24503833pgc.384.1595396717768;
+        Tue, 21 Jul 2020 22:45:17 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id mv6sm4869305pjb.57.2020.07.21.22.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 22:45:17 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 22:45:14 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Jian Cai <jiancai@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        stable <stable@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang
+ cross compilation
+Message-ID: <20200722054514.q5fg5dbduq5skwlg@google.com>
+References: <20200721173125.1273884-1-maskray@google.com>
+ <CAK7LNARjOjr2wSD_iM6yNSZpSGEWrkZZuWKCgCqOrYcA29+LBA@mail.gmail.com>
+ <20200722001424.qor3up6357jjsbia@google.com>
+ <CAK7LNAQtqdTi49cYL0zVWdqPV2QEsgN+2AACALumanu9L=OuGg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQtqdTi49cYL0zVWdqPV2QEsgN+2AACALumanu9L=OuGg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When bpftool dumps types and enum members into a header file for
-inclusion the names match those in the original source. If the same
-header file needs to be included in the original source and the bpf
-program, the names of structs, unions, typedefs and enum members will
-have naming collisions.
+On 2020-07-22, Masahiro Yamada wrote:
+>On Wed, Jul 22, 2020 at 9:14 AM Fangrui Song <maskray@google.com> wrote:
+>>
+>> On 2020-07-22, Masahiro Yamada wrote:
+>> >On Wed, Jul 22, 2020 at 2:31 AM 'Fangrui Song' via Clang Built Linux
+>> ><clang-built-linux@googlegroups.com> wrote:
+>> >>
+>> >> When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
+>> >> $(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-elfedit,
+>> >> GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
+>> >> /usr/bin/ and Clang as of 11 will search for both
+>> >> $(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
+>> >>
+>> >> GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
+>> >> $(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
+>> >> $(prefix)aarch64-linux-gnu/$needle rarely contains executables.
+>> >>
+>> >> To better model how GCC's -B/--prefix takes in effect in practice, newer
+>> >> Clang (since
+>> >> https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90)
+>> >> only searches for $(prefix)$needle. Currently it will find /usr/bin/as
+>> >> instead of /usr/bin/aarch64-linux-gnu-as.
+>> >>
+>> >> Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)
+>> >> (/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
+>> >> appropriate cross compiling GNU as (when -no-integrated-as is in
+>> >> effect).
+>> >>
+>> >> Cc: stable@vger.kernel.org
+>> >> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+>> >> Signed-off-by: Fangrui Song <maskray@google.com>
+>> >> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>> >> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+>> >> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>> >> Link: https://github.com/ClangBuiltLinux/linux/issues/1099
+>> >> ---
+>> >> Changes in v2:
+>> >> * Updated description to add tags and the llvm-project commit link.
+>> >> * Fixed a typo.
+>> >>
+>> >> Changes in v3:
+>> >> * Add Cc: stable@vger.kernel.org
+>> >> ---
+>> >>  Makefile | 2 +-
+>> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/Makefile b/Makefile
+>> >> index 0b5f8538bde5..3ac83e375b61 100644
+>> >> --- a/Makefile
+>> >> +++ b/Makefile
+>> >> @@ -567,7 +567,7 @@ ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
+>> >>  ifneq ($(CROSS_COMPILE),)
+>> >>  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>> >>  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+>> >> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)
+>> >> +CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)
+>> >
+>> >
+>> >
+>> >CROSS_COMPILE may contain the directory path
+>> >to the cross toolchains.
+>> >
+>> >
+>> >For example, I use aarch64-linux-gnu-*
+>> >installed in
+>> >/home/masahiro/tools/aarch64-linaro-7.5/bin
+>> >
+>> >
+>> >
+>> >Basically, there are two ways to use it.
+>> >
+>> >[1]
+>> >PATH=$PATH:/home/masahiro/tools/aarch64-linaro-7.5/bin
+>> >CROSS_COMPILE=aarch64-linux-gnu-
+>> >
+>> >
+>> >[2]
+>> >Without setting PATH,
+>> >CROSS_COMPILE=~/tools/aarch64-linaro-7.5/bin/aarch64-linux-gnu-
+>> >
+>> >
+>> >
+>> >I usually do [2] (and so does intel's 0day bot).
+>> >
+>> >
+>> >
+>> >This patch works for the use-case [1]
+>> >but if I do [2], --prefix is set to a strange path:
+>> >
+>> >--prefix=/home/masahiro/tools/aarch64-linaro-7.5/bin//home/masahiro/tools/aarch64-linaro-7.5/bin/aarch64-linux-gnu-
+>>
+>> Thanks. I did not know the use-case [2].
+>> This explains why there is a `$(notdir ...)` in
+>> `CLANG_FLAGS     += --target=$(notdir $(CROSS_COMPILE:%-=%))`
+>>
+>>
+>> >
+>> >
+>> >Interestingly, the build is still successful.
+>> >Presumably Clang searches for more paths
+>> >when $(prefix)$needle is not found ?
+>>
+>> The priority order is:
+>>
+>> -B(--prefix), COMPILER_PATH, detected gcc-cross paths
+>>
+>> (In GCC, -B paths get prepended to the COMPILER_PATH list. Clang<=11 incorrectly
+>> adds -B to the COMPILER_PATH list. I have fixed it for 12.0.0)
+>>
+>> If -B fails, the detected gcc-cross paths may still be able to find
+>> /usr/bin/aarch64-linux-gnu-
+>>
+>> For example, on my machine (a variant of Debian testing), Clang finds
+>> $(realpath
+>> /usr/lib/gcc-cross/aarch64-linux-gnu/9/../../../../aarch64-linux-gnu/bin/as),
+>> which is /usr/bin/aarch64-linux-gnu-as
+>>
+>> >
+>> >I applied your patch and added -v option
+>> >to see which assembler was internally invoked:
+>> >
+>> > "/home/masahiro/tools/aarch64-linaro-7.5/lib/gcc/aarch64-linux-gnu/7.5.0/../../../../aarch64-linux-gnu/bin/as"
+>> >-EL -I ./arch/arm64/include -I ./arch/arm64/include/generated -I
+>> >./include -I ./arch/arm64/include/uapi -I
+>> >./arch/arm64/include/generated/uapi -I ./include/uapi -I
+>> >./include/generated/uapi -o kernel/smp.o /tmp/smp-2ec2c7.s
+>> >
+>> >
+>> >Ok, it looks like Clang found an alternative path
+>> >to the correct 'as'.
+>> >
+>> >
+>> >
+>> >
+>> >But, to keep the original behavior for both [1] and [2],
+>> >how about this?
+>> >
+>> >CLANG_FLAGS += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+>> >
+>> >
+>> >
+>> >Then, I can get this:
+>> >
+>> > "/home/masahiro/tools/aarch64-linaro-7.5/bin/aarch64-linux-gnu-as"
+>> >-EL -I ./arch/arm64/include -I ./arch/arm64/include/generated -I
+>> >./include -I ./arch/arm64/include/uapi -I
+>> >./arch/arm64/include/generated/uapi -I ./include/uapi -I
+>> >./include/generated/uapi -o kernel/smp.o /tmp/smp-16d76f.s
+>>
+>> This looks good.
+>>
+>> Agreed that `--prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))` should work for both [1] and [2].
+>>
+>> Shall I send a v4? Or you are kind enough that you'll just add your Signed-off-by: tag
+>> and fix that for me? :)
+>>
+>
+>I fixed it up and applied to linux-kbuild/fixes.
+>Thanks.
 
-To avoid these collisions an approach is to redeclare the header file
-types and enum members, which leads to duplication and possible
-inconsistencies. Another approach is to use preprocessor macros
-to rename conflicting names, but this can be cumbersome if there are
-many conflicts.
+Thanks!
 
-This patch adds a prefix option for the dumped names. Use of this option
-can avoid name conflicts and compile time errors.
+The description 'Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE)'
+should probably be fixed to say '$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))'
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- .../bpf/bpftool/Documentation/bpftool-btf.rst |  7 ++++++-
- tools/bpf/bpftool/btf.c                       | 18 ++++++++++++++---
- tools/lib/bpf/btf.h                           |  1 +
- tools/lib/bpf/btf_dump.c                      | 20 +++++++++++++------
- 4 files changed, 36 insertions(+), 10 deletions(-)
+>While I am here, could you teach me a bit more?
+>
+>
+>The top Makefile sets the following option as well:
+>
+>CLANG_GCC_TC    := --gcc-toolchain=$(GCC_TOOLCHAIN)
+>
+>
+>
+>I checked the manual:
+>https://clang.llvm.org/docs/ClangCommandLineReference.html
+>
+>
+>  -B<dir>, --prefix <arg>, --prefix=<arg>
+>  Add <dir> to search path for binaries and object files used implicitly
+>
+>  --gcc-toolchain=<arg>, -gcc-toolchain <arg>
+>  Use the gcc toolchain at the given directory
+>
+>
+>
+>
+>It is not clear to me
+>how they work differently when
+>clang searches for toolchains.
+>
+>
+>
+>
+>If I delete --gcc-toolchain from the top Makefile,
+>clang fails to link standalone programs
+>because it wrongly invokes /usr/bin/ld
+>instead of aarch64-linux-gnu-ld.
+>
+>
+>Does Clang search for gnu assembler
+>based on --prefix option?
+>
+>And, searches for a linker
+>based on --gcc-toolchain ?
+>
+>
+>
+>-- 
+>Best Regards
+>Masahiro Yamada
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index 896f4c6c2870..85d66bc69634 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -20,7 +20,7 @@ BTF COMMANDS
- =============
- 
- |	**bpftool** **btf** { **show** | **list** } [**id** *BTF_ID*]
--|	**bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*]
-+|	**bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*] [**prefix** *PREFIX*]
- |	**bpftool** **btf help**
- |
- |	*BTF_SRC* := { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{**key** | **value** | **kv** | **all**}] | **file** *FILE* }
-@@ -66,6 +66,11 @@ DESCRIPTION
- 		  output format. Raw (**raw**) or C-syntax (**c**) output
- 		  formats are supported.
- 
-+		  With the C-syntax format the **prefix** option can
-+                  be used to prefix all identifiers and enum members
-+                  with *PREFIX*. This is useful to avoid naming
-+                  collisions.
-+
- 	**bpftool btf help**
- 		  Print short help message.
- 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index fc9bc7a23db6..6a428636fa6f 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -379,12 +379,15 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
- }
- 
- static int dump_btf_c(const struct btf *btf,
--		      __u32 *root_type_ids, int root_type_cnt)
-+		      __u32 *root_type_ids, int root_type_cnt, const char *name_prefix)
- {
- 	struct btf_dump *d;
- 	int err = 0, i;
-+	struct btf_dump_opts opts = {
-+		.name_prefix = name_prefix,
-+	};
- 
--	d = btf_dump__new(btf, NULL, NULL, btf_dump_printf);
-+	d = btf_dump__new(btf, NULL, &opts, btf_dump_printf);
- 	if (IS_ERR(d))
- 		return PTR_ERR(d);
- 
-@@ -478,6 +481,7 @@ static int do_dump(int argc, char **argv)
- 	bool dump_c = false;
- 	__u32 btf_id = -1;
- 	const char *src;
-+	const char *c_prefix = NULL;
- 	int fd = -1;
- 	int err;
- 
-@@ -583,6 +587,14 @@ static int do_dump(int argc, char **argv)
- 				goto done;
- 			}
- 			NEXT_ARG();
-+		} else if (is_prefix(*argv, "prefix")) {
-+			NEXT_ARG();
-+			if (argc < 1 || !*argv) {
-+				p_err("expecting value for 'prefix' option\n");
-+				goto done;
-+			}
-+			c_prefix = *argv;
-+			NEXT_ARG();
- 		} else {
- 			p_err("unrecognized option: '%s'", *argv);
- 			goto done;
-@@ -608,7 +620,7 @@ static int do_dump(int argc, char **argv)
- 			err = -ENOTSUP;
- 			goto done;
- 		}
--		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
-+		err = dump_btf_c(btf, root_type_ids, root_type_cnt, c_prefix);
- 	} else {
- 		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
- 	}
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 491c7b41ffdc..fea4baab00bd 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -117,6 +117,7 @@ struct btf_dump;
- 
- struct btf_dump_opts {
- 	void *ctx;
-+	const char *name_prefix;
- };
- 
- typedef void (*btf_dump_printf_fn_t)(void *ctx, const char *fmt, va_list args);
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index e1c344504cae..baf2b4d82e1e 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -138,6 +138,7 @@ struct btf_dump *btf_dump__new(const struct btf *btf,
- 	d->btf_ext = btf_ext;
- 	d->printf_fn = printf_fn;
- 	d->opts.ctx = opts ? opts->ctx : NULL;
-+	d->opts.name_prefix = opts ? opts->name_prefix : NULL;
- 
- 	d->type_names = hashmap__new(str_hash_fn, str_equal_fn, NULL);
- 	if (IS_ERR(d->type_names)) {
-@@ -903,6 +904,7 @@ static void btf_dump_emit_enum_def(struct btf_dump *d, __u32 id,
- 	const struct btf_enum *v = btf_enum(t);
- 	__u16 vlen = btf_vlen(t);
- 	const char *name;
-+	const char *name_prefix = d->opts.name_prefix;
- 	size_t dup_cnt;
- 	int i;
- 
-@@ -912,17 +914,19 @@ static void btf_dump_emit_enum_def(struct btf_dump *d, __u32 id,
- 
- 	if (vlen) {
- 		btf_dump_printf(d, " {");
-+		if (!name_prefix)
-+			name_prefix = "";
- 		for (i = 0; i < vlen; i++, v++) {
- 			name = btf_name_of(d, v->name_off);
- 			/* enumerators share namespace with typedef idents */
- 			dup_cnt = btf_dump_name_dups(d, d->ident_names, name);
- 			if (dup_cnt > 1) {
--				btf_dump_printf(d, "\n%s%s___%zu = %u,",
--						pfx(lvl + 1), name, dup_cnt,
-+				btf_dump_printf(d, "\n%s%s%s___%zu = %u,",
-+						pfx(lvl + 1), name_prefix, name, dup_cnt,
- 						(__u32)v->val);
- 			} else {
--				btf_dump_printf(d, "\n%s%s = %u,",
--						pfx(lvl + 1), name,
-+				btf_dump_printf(d, "\n%s%s%s = %u,",
-+						pfx(lvl + 1), name_prefix, name,
- 						(__u32)v->val);
- 			}
- 		}
-@@ -1360,6 +1364,7 @@ static const char *btf_dump_resolve_name(struct btf_dump *d, __u32 id,
- 	const struct btf_type *t = btf__type_by_id(d->btf, id);
- 	const char *orig_name = btf_name_of(d, t->name_off);
- 	const char **cached_name = &d->cached_names[id];
-+	const char *prefix = d->opts.name_prefix;
- 	size_t dup_cnt;
- 
- 	if (t->name_off == 0)
-@@ -1369,11 +1374,14 @@ static const char *btf_dump_resolve_name(struct btf_dump *d, __u32 id,
- 		return *cached_name ? *cached_name : orig_name;
- 
- 	dup_cnt = btf_dump_name_dups(d, name_map, orig_name);
--	if (dup_cnt > 1) {
-+	if (dup_cnt > 1 || prefix) {
- 		const size_t max_len = 256;
- 		char new_name[max_len];
- 
--		snprintf(new_name, max_len, "%s___%zu", orig_name, dup_cnt);
-+		if (dup_cnt > 1)
-+			snprintf(new_name, max_len, "%s%s___%zu", prefix, orig_name, dup_cnt);
-+		else
-+			snprintf(new_name, max_len, "%s%s", prefix, orig_name);
- 		*cached_name = strdup(new_name);
- 	}
- 
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
+While GCC seems to encourage distributions to apply various environment
+settings, Clang encourages downstream users to contribute their
+configurations to the upstream clangDriver library... So, clang works
+seemingly on many operating systems and many distributions without much
+additional customization, but the host/target environment detection code
+is very messy.
 
+Freestanding builds (if you use integrated assembler/LLD) do not need --gcc-toolchain.
+
+-fhosted builds need --gcc-toolchain to reuse libstdc++ include paths
+and runtime libraries (crt1.o libgcc.a libgcc_s.so.1 etc).
+I think on most Linux distributions, with distribution shipped GCC
+packages, the only meaningful value is --gcc-toolchain=/usr
+
+Clang will find 'lib' or 'lib64' under --gcc-toolchain= (e.g. /usr/lib),
+then locate common cross-compiling GCC installations (e.g. /usr/lib +
+gcc-cross/aarch-linux-gnu (Debian uses gcc-cross/), or just /usr/lib +
+gcc/aarch-linux-gnu). You can see that with an incorrect --gcc-toolchain=/ (or some other arbitrary path):
+(https://github.com/llvm/llvm-project/blob/master/clang/lib/Driver/ToolChains/Gnu.cpp#L1903 )
+
+* `clang -v` does not print `Found candidate GCC installation: `
+* There is no libstdc++ search path in `#include <...> search starts here:` for a C++ compile
+* In the linking stage, ld reports a number of issues like 'cannot find crt1.o'
+
+When --gcc-toolchain is not specified, in many cases Clang can guess the
+correct value (usually /usr). So clang++ --target=aarch64-linux-gnu works just fine.
+
+(As you can see from the code, the code --gcc-toolchain= is tangled with
+environment detection, which is ugly: specifying a wrong --gcc-toolchain= can remove a lot of file stats...
+You can find that the number of syscalls changes with different --gcc-toolchain: `strace -fe file clang`)
+
+External programs like 'as' and 'ld' use the bin/ directory somewhere
+relative to the GCC installation directory (they are appended to getProgramPaths).
+clang::driver::Driver::GetProgramPath locates these programs.
+https://github.com/llvm/llvm-project/blob/master/clang/lib/Driver/ToolChains/Gnu.cpp#L1903
+As you see from the code, -B and COMPILER_PATH take precedence over
+getProgramPaths.
+You can print the 'programs' path with `clang --print-search-dirs [--target=...] [-B...] [--gcc-toolchain=...]`
+Latest clang will be closer to GCC.
