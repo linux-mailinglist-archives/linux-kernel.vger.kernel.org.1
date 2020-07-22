@@ -2,369 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8B622936E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A785229374
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbgGVI1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 04:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgGVI1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:27:32 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79DDC0619DF
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 01:27:31 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e8so1598846ljb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 01:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=61HrId0S+vKH9AhKqEPMXDXVBKVaiTCAQAIzcmrLOI0=;
-        b=jCxONF1IsQDXBqv8BxRXic4Pjgw2vzzOVx9liKokTZcewYEcAbNngi4mqvDcFFK8zO
-         ofjOTGjcgj8KDtcVVyqX4YhVWrRCAZeX5KbT+V4Tnlr3Zb3rPH3vQZmDSRm8nJzVsgM7
-         CUAfNcoluKyD2Oe5s7eV2iComiQfpxMxePTECGEaU3x7HiR4mYhLo+Vr21eTMVql12jz
-         aMXDWzN4gQa+Ic635Vu4MA3a5vp9IKHZB1YO1j5qirUNH6LSwHW+qDdmbRiGjRzv/ngD
-         Md4w9Y9zlo9ODhGk25MeZ/EYqMQwfahDzJuyIuTJs45yVy1pjdzU9gbsX3SbTzK6wtmn
-         Y/4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=61HrId0S+vKH9AhKqEPMXDXVBKVaiTCAQAIzcmrLOI0=;
-        b=MTZkWryPpdSZkQTf8IeTiZjxKUgV0OcdkOJdpBhy5rWYFC4qdRFVpo5vxmHPvPQpAi
-         sds8O1TscmRfZeEsdpaYejbF9YJ+aWVuDjkSYLvvTeNilqSvsiAzziI0t6yVagtD1bTO
-         aWztZtpPlXx31nOAmAf4cM8tUSSkDf4V1nL1L6s3rBO9trSWitHR8fMAcrcW4J17OFj8
-         93SXpZwQU2ikMMTpNp0udNYAHMTbiAUrBkx/3UolcGlBNkEm7Zkd1pQn7zxRqrlrVLe8
-         esqv7/fias/3FJ1CDZK22MHcNew/BqBHEJI6DbgftmPNwfOm4B7fEp97jUYWvagd+aPO
-         4Pcw==
-X-Gm-Message-State: AOAM531I8lu4iOO+AIeGpDHetUnYqw4oNOSBKT79mzc53P8c7eNpADFE
-        i2ffw/FUQPv+uFpT50NiebXuWg==
-X-Google-Smtp-Source: ABdhPJzfBLgpxr27VEStYDLmMcDtT0e/7WIXHkIptcv6wN9LXv3efvOn/xbweWarVr/ok8RF6BHerQ==
-X-Received: by 2002:a2e:760f:: with SMTP id r15mr13902715ljc.275.1595406450160;
-        Wed, 22 Jul 2020 01:27:30 -0700 (PDT)
-Received: from [192.168.1.12] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id d22sm6717050lfs.26.2020.07.22.01.27.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 01:27:29 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] media: venus: core: Add support for opp
- tables/perf voting
-To:     Rajendra Nayak <rnayak@codeaurora.org>, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org
-References: <1595228842-9826-1-git-send-email-rnayak@codeaurora.org>
- <1595228842-9826-3-git-send-email-rnayak@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <840e20b6-186f-14c2-b0f0-fac7b61f1c50@linaro.org>
-Date:   Wed, 22 Jul 2020 11:27:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730105AbgGVI1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 04:27:47 -0400
+Received: from www.zeus03.de ([194.117.254.33]:57302 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729946AbgGVI1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 04:27:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=qdG6mhdWKXD9kVvZoeSiOdfJPckl
+        iQGrKRssgfMT+QY=; b=XraB9ZxC64QvvgTxkuC0nPYJzqoO6I5l+d0p054/zGex
+        95oJ5KHEgrbYvZHbr3TnRteemHgJuLwgIxQU5t1C+WL0Mon0lC9OZM9XPE2jV61A
+        Rh16m3UOk/1q/P1BzmAlC3ITOeZOxcGoa0NmszwLpW/jzGSDpgiU5bMHsiLRjQ8=
+Received: (qmail 2972779 invoked from network); 22 Jul 2020 10:27:42 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Jul 2020 10:27:42 +0200
+X-UD-Smtp-Session: l3s3148p1@k7F8gwOr1tQgAwDPXwY8AL9PxqFiRnVq
+Date:   Wed, 22 Jul 2020 10:27:39 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     kishon@ti.com, vkoul@kernel.org, geert+renesas@glider.be,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] phy: renesas: rcar-gen3-usb2: move irq
+ registration to init
+Message-ID: <20200722082738.GA1030@ninjato>
+References: <1594986297-12434-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1594986297-12434-2-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <1595228842-9826-3-git-send-email-rnayak@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Content-Disposition: inline
+In-Reply-To: <1594986297-12434-2-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajendra,
 
-Thanks for the patch!
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry for last minute comments.
+On Fri, Jul 17, 2020 at 08:44:56PM +0900, Yoshihiro Shimoda wrote:
+> If CONFIG_DEBUG_SHIRQ was enabled, r8a77951-salvator-xs could boot
 
-On 7/20/20 10:07 AM, Rajendra Nayak wrote:
-> Add support to add OPP tables and perf voting on the OPP powerdomain.
-> This is needed so venus votes on the corresponding performance state
-> for the OPP powerdomain along with setting the core clock rate.
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->  drivers/media/platform/qcom/venus/core.c       | 43 +++++++++++++++++---
->  drivers/media/platform/qcom/venus/core.h       |  5 +++
->  drivers/media/platform/qcom/venus/pm_helpers.c | 54 ++++++++++++++++++++++++--
->  3 files changed, 92 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 203c653..b9f61a6 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -12,6 +12,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <media/videobuf2-v4l2.h>
->  #include <media/v4l2-mem2mem.h>
-> @@ -216,21 +217,37 @@ static int venus_probe(struct platform_device *pdev)
->  	if (!core->pm_ops)
->  		return -ENODEV;
->  
-> +	core->opp_table = dev_pm_opp_set_clkname(dev, "core");
-> +	if (IS_ERR(core->opp_table))
-> +		return PTR_ERR(core->opp_table);
-> +
-> +	if (core->res->opp_pmdomain) {
-> +		ret = dev_pm_opp_of_add_table(dev);
-> +		if (!ret) {
-> +			core->has_opp_table = true;
-> +		} else if (ret != -ENODEV) {
-> +			dev_err(dev, "invalid OPP table in device tree\n");
-> +			return ret;
-> +		}
-> +	}
-> +
+"could not boot"
 
-Can we move those dev_pm_opp_xxx invocations into pm_ops->core_get where
-the other pmdomains are? The pm_ops abstarction is created exactly for
-such pm and clks manipulations.
+> correctly. If we appended "earlycon keep_bootcon" to the kernel
+> command like, we could get kernel log like below.
+>=20
+>     SError Interrupt on CPU0, code 0xbf000002 -- SError
+>     CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc3-salvator-x-00505-=
+g6c843129e6faaf01 #785
+>     Hardware name: Renesas Salvator-X 2nd version board based on r8a77951=
+ (DT)
+>     pstate: 60400085 (nZCv daIf +PAN -UAO BTYPE=3D--)
+>     pc : rcar_gen3_phy_usb2_irq+0x14/0x54
+>     lr : free_irq+0xf4/0x27c
+>=20
+> This means free_irq() calls the interrupt handler while PM runtime
+> is not getting if DEBUG_SHIRQ is enabled and rcar_gen3_phy_usb2_probe()
+> failed. To fix the issue, move the irq registration place to
+> rcar_gen3_phy_usb2_init() which is ready to handle the interrupts.
+>=20
+> Note that after the commit 549b6b55b005 ("phy: renesas: rcar-gen3-usb2:
+> enable/disable independent irqs") which is merged into v5.2, since this
+> driver creates multiple phy instances, needs to check whether one of
+> phy instances is initialized. However, if we backport this patch to v5.1
+> or less, we don't need to check it because such kernel have single
+> phy instance.
+>=20
+> Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Fixes: 9f391c574efc ("phy: rcar-gen3-usb2: add runtime ID/VBUS pin detect=
+ion")
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
->  	if (core->pm_ops->core_get) {
->  		ret = core->pm_ops->core_get(dev);
->  		if (ret)
-> -			return ret;
-> +			goto err_opp_cleanup;
->  	}
->  
->  	ret = dma_set_mask_and_coherent(dev, core->res->dma_mask);
->  	if (ret)
-> -		return ret;
-> +		goto err_opp_cleanup;
->  
->  	if (!dev->dma_parms) {
->  		dev->dma_parms = devm_kzalloc(dev, sizeof(*dev->dma_parms),
->  					      GFP_KERNEL);
-> -		if (!dev->dma_parms)
-> -			return -ENOMEM;
-> +		if (!dev->dma_parms) {
-> +			ret = -ENOMEM;
-> +			goto err_opp_cleanup;
-> +		}
->  	}
->  	dma_set_max_seg_size(dev, DMA_BIT_MASK(32));
->  
-> @@ -242,11 +259,11 @@ static int venus_probe(struct platform_device *pdev)
->  					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
->  					"venus", core);
->  	if (ret)
-> -		return ret;
-> +		goto err_opp_cleanup;
->  
->  	ret = hfi_create(core, &venus_core_ops);
->  	if (ret)
-> -		return ret;
-> +		goto err_opp_cleanup;
->  
->  	pm_runtime_enable(dev);
->  
-> @@ -302,6 +319,10 @@ static int venus_probe(struct platform_device *pdev)
->  	pm_runtime_set_suspended(dev);
->  	pm_runtime_disable(dev);
->  	hfi_destroy(core);
-> +err_opp_cleanup:
-> +	if (core->has_opp_table)
-> +		dev_pm_opp_of_remove_table(dev);
-> +	dev_pm_opp_put_clkname(core->opp_table);
+Yeah, makes my boards boot with CONFIG_DEBUG_SHIRQ!
 
-this also belongs to pm_ops->core_put but it is missing in the .probe
-error path.
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-+	if (core->pm_ops->core_put)
-+		core->pm_ops->core_put(dev);
 
-above addition should be separate patch I guess.
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  	return ret;
->  }
->  
-> @@ -326,6 +347,10 @@ static int venus_remove(struct platform_device *pdev)
->  	pm_runtime_put_sync(dev);
->  	pm_runtime_disable(dev);
->  
-> +	if (core->has_opp_table)
-> +		dev_pm_opp_of_remove_table(dev);
-> +	dev_pm_opp_put_clkname(core->opp_table);
-> +
+-----BEGIN PGP SIGNATURE-----
 
-those also should be moved to core_put
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8X+HcACgkQFA3kzBSg
+KbZETRAAl7dF5VEdTxe1lDE0sOfYgIaIhGPjpbmQnpQAgMjtmaWRh17dRsqY8mMO
+NkJn2sAJx+kCoMfJM7S2dXFKEKLAU5RDYfqacBNJsaz059wabq/Vt2hCV/gQhYmM
+5ScB0UpZ8V3rNVr/Y8vZKxzvnxprjn7yp94ZY1IfPPjaiuz7Oxw1p5FI4X7RuRrW
+et+bwSUK9R8EDejID8knGMlFWcy3VSl63XDpAZ1moZMF9BvOKIh+/Yip2J/F6mD9
+zJbujJ5HLgJnGs3uxuFH7q+3TDM8K+s91bkMGcvJa0JJ8EZRwafcqd70moIdz/nS
+s/hE1Ebicn/2Li/B+WQxM7MrvL0YUTcbGywTqPculK1ZdEmQ+z2mEuHy6LIGcRW3
+o//D3/rKaABo9lQskK2Go6czF72HX0ypjJMfnFs0XMSMCqiOxULwWx62RN9x7j70
+kUDpD47f4QTC440Kh8JsFFJxMW08Oi3ba2o2d9cAXF9rNB9FBdFO7MIEiE+AQfo/
+IikqAPf7z8jc/+6SjvlvNf75EvJ1OtlTitRtEXKkm9KbRAdL/xonJgjHGY9Jz3rp
+iWSoLFKu/pIT++ObJ30fRtNogOO+l+K6XlJNYv8MEJs8BHDSiCEe6D7T/lojD9bX
+QXTbOYXTe7GKSmjYYjzr1NZwVoeHN/QvZq8YZWpcAgCIVrrvBJ0=
+=GT6K
+-----END PGP SIGNATURE-----
 
->  	if (pm_ops->core_put)
->  		pm_ops->core_put(dev);
->  
-> @@ -355,6 +380,10 @@ static __maybe_unused int venus_runtime_suspend(struct device *dev)
->  	if (ret)
->  		return ret;
->  
-> +	/* Drop the performance state vote */
-> +	if (core->opp_pmdomain)
-> +		dev_pm_opp_set_rate(dev, 0);
-> +
-
-move this in core_power(OFF)
-
->  	if (pm_ops->core_power)
->  		ret = pm_ops->core_power(dev, POWER_OFF);
->  
-> @@ -520,6 +549,7 @@ static const struct venus_resources sdm845_res_v2 = {
->  	.vcodec_clks_num = 2,
->  	.vcodec_pmdomains = { "venus", "vcodec0", "vcodec1" },
->  	.vcodec_pmdomains_num = 3,
-> +	.opp_pmdomain = (const char *[]) { "cx", NULL },
->  	.vcodec_num = 2,
->  	.max_load = 3110400,	/* 4096x2160@90 */
->  	.hfi_version = HFI_VERSION_4XX,
-> @@ -565,6 +595,7 @@ static const struct venus_resources sc7180_res = {
->  	.vcodec_clks_num = 2,
->  	.vcodec_pmdomains = { "venus", "vcodec0" },
->  	.vcodec_pmdomains_num = 2,
-> +	.opp_pmdomain = (const char *[]) { "cx", NULL },
->  	.vcodec_num = 1,
->  	.hfi_version = HFI_VERSION_4XX,
->  	.vmem_id = VIDC_RESOURCE_NONE,
-> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> index 7118612..b0cc544 100644
-> --- a/drivers/media/platform/qcom/venus/core.h
-> +++ b/drivers/media/platform/qcom/venus/core.h
-> @@ -62,6 +62,7 @@ struct venus_resources {
->  	unsigned int vcodec_clks_num;
->  	const char * const vcodec_pmdomains[VIDC_PMDOMAINS_NUM_MAX];
->  	unsigned int vcodec_pmdomains_num;
-> +	const char **opp_pmdomain;
->  	unsigned int vcodec_num;
->  	enum hfi_version hfi_version;
->  	u32 max_load;
-> @@ -145,8 +146,12 @@ struct venus_core {
->  	struct clk *vcodec1_clks[VIDC_VCODEC_CLKS_NUM_MAX];
->  	struct icc_path *video_path;
->  	struct icc_path *cpucfg_path;
-> +	struct opp_table *opp_table;
-> +	bool has_opp_table;
->  	struct device_link *pd_dl_venus;
->  	struct device *pmdomains[VIDC_PMDOMAINS_NUM_MAX];
-> +	struct device_link *opp_dl_venus;
-> +	struct device *opp_pmdomain;
->  	struct video_device *vdev_dec;
->  	struct video_device *vdev_enc;
->  	struct v4l2_device v4l2_dev;
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-> index abf9315..4149ab8 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-> @@ -9,6 +9,7 @@
->  #include <linux/iopoll.h>
->  #include <linux/kernel.h>
->  #include <linux/pm_domain.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/types.h>
->  #include <media/v4l2-mem2mem.h>
-> @@ -66,10 +67,9 @@ static void core_clks_disable(struct venus_core *core)
->  
->  static int core_clks_set_rate(struct venus_core *core, unsigned long freq)
->  {
-> -	struct clk *clk = core->clks[0];
->  	int ret;
->  
-> -	ret = clk_set_rate(clk, freq);
-> +	ret = dev_pm_opp_set_rate(core->dev, freq);
->  	if (ret)
->  		return ret;
->  
-> @@ -740,13 +740,16 @@ static int venc_power_v4(struct device *dev, int on)
->  
->  static int vcodec_domains_get(struct device *dev)
->  {
-> +	int ret;
-> +	struct opp_table *opp_table;
-> +	struct device **opp_virt_dev;
->  	struct venus_core *core = dev_get_drvdata(dev);
->  	const struct venus_resources *res = core->res;
->  	struct device *pd;
->  	unsigned int i;
->  
->  	if (!res->vcodec_pmdomains_num)
-> -		return -ENODEV;
-> +		goto skip_pmdomains;
->  
->  	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
->  		pd = dev_pm_domain_attach_by_name(dev,
-> @@ -763,7 +766,41 @@ static int vcodec_domains_get(struct device *dev)
->  	if (!core->pd_dl_venus)
->  		return -ENODEV;
->  
-> +skip_pmdomains:
-> +	if (!core->has_opp_table)
-> +		return 0;
-> +
-> +	/* Attach the power domain for setting performance state */
-> +	opp_table = dev_pm_opp_attach_genpd(dev, res->opp_pmdomain, &opp_virt_dev);
-> +	if (IS_ERR(opp_table)) {
-> +		ret = PTR_ERR(opp_table);
-> +		goto opp_attach_err;
-> +	}
-> +
-> +	core->opp_pmdomain = *opp_virt_dev;
-> +	core->opp_dl_venus = device_link_add(dev, core->opp_pmdomain,
-> +					     DL_FLAG_RPM_ACTIVE |
-> +					     DL_FLAG_PM_RUNTIME |
-> +					     DL_FLAG_STATELESS);
-> +	if (!core->opp_dl_venus) {
-> +		ret = -ENODEV;
-> +		goto opp_dl_add_err;
-> +	}
-> +
->  	return 0;
-> +
-> +opp_dl_add_err:
-> +	dev_pm_domain_detach(core->opp_pmdomain, true);
-> +opp_attach_err:
-> +	if (core->pd_dl_venus) {
-> +		device_link_del(core->pd_dl_venus);
-> +		for (i = 0; i < res->vcodec_pmdomains_num; i++) {
-> +			if (IS_ERR_OR_NULL(core->pmdomains[i]))
-> +				continue;
-> +			dev_pm_domain_detach(core->pmdomains[i], true);
-> +		}
-> +	}
-> +	return ret;
->  }
->  
->  static void vcodec_domains_put(struct device *dev)
-> @@ -773,7 +810,7 @@ static void vcodec_domains_put(struct device *dev)
->  	unsigned int i;
->  
->  	if (!res->vcodec_pmdomains_num)
-> -		return;
-> +		goto skip_pmdomains;
->  
->  	if (core->pd_dl_venus)
->  		device_link_del(core->pd_dl_venus);
-> @@ -783,6 +820,15 @@ static void vcodec_domains_put(struct device *dev)
->  			continue;
->  		dev_pm_domain_detach(core->pmdomains[i], true);
->  	}
-> +
-> +skip_pmdomains:
-> +	if (!core->has_opp_table)
-> +		return;
-> +
-> +	if (core->opp_dl_venus)
-> +		device_link_del(core->opp_dl_venus);
-> +
-> +	dev_pm_domain_detach(core->opp_pmdomain, true);
->  }
->  
->  static int core_get_v4(struct device *dev)
-> 
-
--- 
-regards,
-Stan
+--1yeeQ81UyVL57Vl7--
