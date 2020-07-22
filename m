@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E12228DF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CB7228E34
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731754AbgGVCWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 22:22:15 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:41780 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731595AbgGVCWP (ORCPT
+        id S1731808AbgGVCab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 22:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731595AbgGVCaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 22:22:15 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06M2LIGX018560
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 21 Jul 2020 21:21:25 -0500
-Message-ID: <bb461dde0df3eaf0bed949eebf0657b227431bb3.camel@kernel.crashing.org>
-Subject: Re: [PATCH v5 1/4] riscv: Move kernel mapping to vmalloc zone
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     alex@ghiti.fr, mpe@ellerman.id.au, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>, zong.li@sifive.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-mm@kvack.org
-Date:   Wed, 22 Jul 2020 12:21:16 +1000
-In-Reply-To: <mhng-cd9a74ea-2edf-47e4-aade-b090f1a069f1@palmerdabbelt-glaptop1>
-References: <mhng-cd9a74ea-2edf-47e4-aade-b090f1a069f1@palmerdabbelt-glaptop1>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 21 Jul 2020 22:30:30 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A4C061794;
+        Tue, 21 Jul 2020 19:30:30 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x9so234463plr.2;
+        Tue, 21 Jul 2020 19:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=bZoAGO9UqMb9k2aaOxBapyIOFUbeVrqhQVyeMVxo/y4=;
+        b=bnQdt9ATSyUz5zZQXojiCtoKBhvzXBgHsCIH9YPlNsXvOyQrsb9ItQrhig+MOj+jRk
+         /aAZqNu++8a5NwgKC3uZPLBkeCvrlMX+/17F0twjfaH42ncxcMEZa0IJKYIbsRpEXPnY
+         OmUl+j8hCP5Xvg0xExlAV4rNLiOqTj37sV2d1qIE+j7e9RxF3EbbHpFyN6aqOOSIKCSS
+         +PPbQn8g5uWcbYebKGrxPlSx5znMhmwnSPeeDzf8bGF8gvAIiWeO2K3KIUHdmi8b1HaV
+         /6X4MAAvN2qssDqtSRlWGx7SI9wuzvNi/WsdNlBy1K/+i1jS6WBiiBEJsx0tVtHIcBH+
+         hWIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=bZoAGO9UqMb9k2aaOxBapyIOFUbeVrqhQVyeMVxo/y4=;
+        b=sBH7Pd4mskXoiz67B+5JNT4NPPpDg/8UW5R7f4vkfkKyIyR3S+0XrYelphnB+ttUV8
+         UnjyIEvy6Y0hwg8nIuOpu1NUUdrPubXl1wWC9C8jvTRnKbGqt/uzNf8cCfU1ZCnLPp/J
+         PRC4RsSl5v7z42Nc9468W9PZS+HKDt0kDBspH0JbUGoCU2Qeu3hHf2Wri0LSP1iF5G9K
+         Xi0hEvAT+cneP/f1JkfJo1JTBqtdyFxzy4ymDa23g1aibwpQVsjN4cdSQFNThhvaC/EH
+         rtElZhf9ckouMi7/Tm6Vqu+EkNtIy1ooxGT5TcWOuXcbY29Gv6ZrAvBOaAxMy0rf2tYE
+         jwyQ==
+X-Gm-Message-State: AOAM533FcUGveB9qpG6Vq2jV5q67BU/TmgvjolHpsYTsaH868yiN6qtc
+        As4NjkfJsAdl6M4NFM4swAA=
+X-Google-Smtp-Source: ABdhPJxdK2VUwuHMvp/Evo2Q/AsH/cbwz8vMbbEvYgZ8PkK3LXjNHTM+w46TivUSTnMCFqBjTw3LdA==
+X-Received: by 2002:a17:90a:72c7:: with SMTP id l7mr8213239pjk.34.1595385029794;
+        Tue, 21 Jul 2020 19:30:29 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p187sm20053969pfb.22.2020.07.21.19.30.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 Jul 2020 19:30:28 -0700 (PDT)
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>
+Subject: [PATCH -next] scsi: lpfc: Add dependency on CPU_FREQ
+Date:   Tue, 21 Jul 2020 19:30:27 -0700
+Message-Id: <20200722023027.36866-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-21 at 16:48 -0700, Palmer Dabbelt wrote:
-> > Why ? Branch distance limits ? You can't use trampolines ?
-> 
-> Nothing fundamental, it's just that we don't have a large code model in the C
-> compiler.  As a result all the global symbols are resolved as 32-bit
-> PC-relative accesses.  We could fix this with a fast large code model, but then
-> the kernel would need to relax global symbol references in modules and we don't
-> even do that for the simple code models we have now.  FWIW, some of the
-> proposed large code models are essentially just split-PLT/GOT and therefor
-> don't require relaxation, but at that point we're essentially PIC until we
-> have more that 2GiB of kernel text -- and even then, we keep all the
-> performance issues.
+Since commit 317aeb83c92b ("scsi: lpfc: Add blk_io_poll support for
+latency improvment"), the lpfc driver depends on CPUFREQ. Without it,
+builds fail with
 
-My memory might be out of date but I *think* we do it on powerpc
-without going to a large code model, but just having the in-kernel
-linker insert trampolines.
+drivers/scsi/lpfc/lpfc_sli.c: In function 'lpfc_init_idle_stat_hb':
+drivers/scsi/lpfc/lpfc_sli.c:7329:26: error:
+	implicit declaration of function 'get_cpu_idle_time'
 
-Cheers,
-Ben.
+Add the missing dependency.
 
+Fixes: 317aeb83c92b ("scsi: lpfc: Add blk_io_poll support for latency improvment")
+Cc: Dick Kennedy <dick.kennedy@broadcom.com>
+Cc: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/scsi/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index 571473a58f98..701b61ec76ee 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -1154,6 +1154,7 @@ source "drivers/scsi/qedf/Kconfig"
+ config SCSI_LPFC
+ 	tristate "Emulex LightPulse Fibre Channel Support"
+ 	depends on PCI && SCSI
++	depends on CPU_FREQ
+ 	depends on SCSI_FC_ATTRS
+ 	depends on NVME_TARGET_FC || NVME_TARGET_FC=n
+ 	depends on NVME_FC || NVME_FC=n
+-- 
+2.17.1
 
