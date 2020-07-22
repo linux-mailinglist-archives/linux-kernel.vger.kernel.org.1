@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AA22295AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458BD2295B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732029AbgGVKI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        id S1732065AbgGVKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731951AbgGVKIY (ORCPT
+        with ESMTP id S1731953AbgGVKIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Jul 2020 06:08:24 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072E6C0619DC
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E45C0619DE
         for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:24 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c80so1397033wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:23 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so1330996wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uGHjmL78xvZIJz6OG/invG6MWZVVGuSqNB1aBqUNcyQ=;
-        b=iQndCQjZM1UzNasxrkSkMyWJuTg0Jw/tz8bhdkbykHPY28ToyCgX8VCDAKHcdJUjrg
-         ZVN65NTQw3tV8i8iajPSEfHHsQg1IWlaghHMGZeI8IAtn4QxMpV5lztYaidTrepqlFCY
-         /I4CZsoau3UE/qYqbtgOFPWVZ6OBtU7MLfDtAqID706Lj9cV95zzDNLcSUbHAfye0eXa
-         q2V4XQQdanpq9RSfBmBEuaum53xnR0rFH4j3rQ6mcYkXSTI4CGFwl8qmW4L8Jsdhz/4p
-         epxLTdAZRdJQNYAmVgRnyPSSHQmiq/0QqvozsPwNaSpwnN9e3JIBh8c9O3UcKk9UD6UP
-         W4Hw==
+        bh=zRapNjxrqB1uxO6NAkm6u+cvOE2/riL4mk73jGOU64M=;
+        b=ZthWRfFfDpWJeCimrfGmrOQruVkFndaV1M+Jv4Wfb4BQvPg1veV3wn9zlMGiigcGw4
+         uOWHgveyl0J4F+1oD3dD25H85gAYSqfZs9a0tVwWrAvg1hG0PcdKbU5bFkZFmQCxRF1o
+         xkaZ4Fg8SpoZPK2VHGdiXJknyiOgstQbGi6vxM8gtcwOgkbtustzQfXc9rMj0GkLNzHU
+         A45yrjChbsm5GR4BjibhhDqWULnPHkn8nTAstOARMf80cinyx5/DkuTWG4Ak7mVFFmAk
+         1ncKgRsP3WkmGeZiKT7LZpvmP5vjkQqOaxVGeZEWyCeKmJ9A2lsNNQtTJ61sn0Gh4gqF
+         zWKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uGHjmL78xvZIJz6OG/invG6MWZVVGuSqNB1aBqUNcyQ=;
-        b=DuTJk8MzYj3NC9h2iSigarqJCq9/mzjClOXZ5/VkpZIUcLJ5g+WmEAjucdYxZfnaKf
-         nGWrzcO4gPtGzocBywJdeGq68+YdxcwsuhdA2vvFZvJI1usuohxkd+y/QkrNjqiV0jnu
-         Dg1W4HlNzSVtnJrzYZwatWJ1Gr69cgp5AlVuh3Tn+acWE/R54TPTczJ68L5oXpkCmuLh
-         n11VYJPYK276Y68TUnW6rplNcGB8F3hgTmMzuQ23Yq2gZz/vMH0SthXZAdDAVHLzPuzU
-         Hxvka1O4ZCFRoKGI4aKqq8zJww+hBmBt7074uhOoV9A0qDv3SpOtQS+BbAa+XJj/6LpF
-         5cJg==
-X-Gm-Message-State: AOAM530uGiTgS2tIS1sJUVm1e3ugfSayB/gHrRqncNVad1mDb3qjdtkZ
-        Ku3ECtlZfzzcbG1HY+DvaHDB3Q==
-X-Google-Smtp-Source: ABdhPJxue4SgVAqGd6aSykrAYsc5VyYHjD6mZBd79aqf2kA8sX7BxOAPEtW8rMD4jMckanuPOTrGXg==
-X-Received: by 2002:a7b:c257:: with SMTP id b23mr1702526wmj.164.1595412501405;
-        Wed, 22 Jul 2020 03:08:21 -0700 (PDT)
+        bh=zRapNjxrqB1uxO6NAkm6u+cvOE2/riL4mk73jGOU64M=;
+        b=H2S9ubr3WjOMOTPl7Ycl62Wuk9X4I4sabF1Gk/hrgznqt/jU2v/k6eIACtRj5BkNY1
+         SjslLZPmEkF6qNd86wb8j372Movs9ZxFxSRZnPOXazGPvNIh9pmorDtUrVAIKG8VAEzM
+         u3nxZp73o56Fnb2Hlo0pxTxAHAb41dNfz8Jc2Kyuda9yGhvhI+elUsjLEv/aPZuhjWET
+         lzWeOz+u5w4i91Rr2bup6wwkzM5pWwo1a36iGP22x1k288q2k/oMy3gCwBmMxh/4vy+D
+         H6Zlm2nHS2YDspY1xzEDovC6PGSiCdSqZ7FN8azrnRllqjBi0P+8AcUcI/+HEpvWxunk
+         LeaA==
+X-Gm-Message-State: AOAM531PWAZMDHXNmR/UtNHbnUZPl3hsd0EkhXNvL54iC07zUzpZ38MG
+        iyA1RIysTnf78IWcEuSS3efCiw==
+X-Google-Smtp-Source: ABdhPJxjbxLtfdabF9DWFtFZJGKcOnmhOl6csNV1FwIgXjxKQzB2X5YaFYaVybNJY4SBbYATESN9iQ==
+X-Received: by 2002:adf:ec04:: with SMTP id x4mr12905440wrn.28.1595412502795;
+        Wed, 22 Jul 2020 03:08:22 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.20
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:20 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:21 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         Ravi Kumar Bokka <rbokka@codeaurora.org>,
         Douglas Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 10/14] dt-bindings: nvmem: Add properties needed for blowing fuses
-Date:   Wed, 22 Jul 2020 11:07:01 +0100
-Message-Id: <20200722100705.7772-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 11/14] nvmem: qfprom: Add fuse blowing support
+Date:   Wed, 22 Jul 2020 11:07:02 +0100
+Message-Id: <20200722100705.7772-12-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
@@ -70,89 +69,384 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ravi Kumar Bokka <rbokka@codeaurora.org>
 
-On some systems it's possible to actually blow the fuses in the qfprom
-from the kernel.  Add properties to support that.
+This patch adds support for blowing fuses to the qfprom driver if the
+required properties are defined in the device tree.
 
-NOTE: Whether this is possible depends on the BIOS settings and
-whether the kernel has permissions here, so not all boards will be
-able to blow fuses in the kernel.
-
+[Srini: Fixed merge conflict with AUTO ID]
 Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/nvmem/qcom,qfprom.yaml           | 50 ++++++++++++++++++-
- 1 file changed, 48 insertions(+), 2 deletions(-)
+ drivers/nvmem/qfprom.c | 316 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 304 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-index 39f97c1c83a4..d10a0cf91ba7 100644
---- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-@@ -17,8 +17,27 @@ properties:
-     const: qcom,qfprom
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 8b425f8d847d..5e9e60e2e591 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -3,58 +3,350 @@
+  * Copyright (C) 2015 Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+  */
  
-   reg:
--    items:
--      - description: The corrected region.
-+    # If the QFPROM is read-only OS image then only the corrected region
-+    # needs to be provided.  If the QFPROM is writable then all 4 regions
-+    # must be provided.
-+    oneOf:
-+      - items:
-+          - description: The corrected region.
-+      - items:
-+          - description: The corrected region.
-+          - description: The raw region.
-+          - description: The config region.
-+          - description: The security control region.
++#include <linux/clk.h>
+ #include <linux/device.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+-#include <linux/io.h>
+ #include <linux/nvmem-provider.h>
+ #include <linux/platform_device.h>
++#include <linux/regulator/consumer.h>
 +
-+  # Clock must be provided if QFPROM is writable from the OS image.
-+  clocks:
-+    maxItems: 1
-+  clock-names:
-+    const: core
++/* Blow timer clock frequency in Mhz */
++#define QFPROM_BLOW_TIMER_OFFSET 0x03c
 +
-+  # Supply reference must be provided if QFPROM is writable from the OS image.
-+  vcc-supply:
-+    description: Our power supply.
++/* Amount of time required to hold charge to blow fuse in micro-seconds */
++#define QFPROM_FUSE_BLOW_POLL_US	100
++#define QFPROM_FUSE_BLOW_TIMEOUT_US	1000
++
++#define QFPROM_BLOW_STATUS_OFFSET	0x048
++#define QFPROM_BLOW_STATUS_BUSY		0x1
++#define QFPROM_BLOW_STATUS_READY	0x0
++
++#define QFPROM_ACCEL_OFFSET		0x044
++
++#define QFPROM_VERSION_OFFSET		0x0
++#define QFPROM_MAJOR_VERSION_SHIFT	28
++#define QFPROM_MAJOR_VERSION_MASK	GENMASK(31, QFPROM_MAJOR_VERSION_SHIFT)
++#define QFPROM_MINOR_VERSION_SHIFT	16
++#define QFPROM_MINOR_VERSION_MASK	GENMASK(27, QFPROM_MINOR_VERSION_SHIFT)
++
++static bool read_raw_data;
++module_param(read_raw_data, bool, 0644);
++MODULE_PARM_DESC(read_raw_data, "Read raw instead of corrected data");
  
-   # Needed if any child nodes are present.
-   "#address-cells":
-@@ -31,6 +50,33 @@ required:
-    - reg
++/**
++ * struct qfprom_soc_data - config that varies from SoC to SoC.
++ *
++ * @accel_value:             Should contain qfprom accel value.
++ * @qfprom_blow_timer_value: The timer value of qfprom when doing efuse blow.
++ * @qfprom_blow_set_freq:    The frequency required to set when we start the
++ *                           fuse blowing.
++ */
++struct qfprom_soc_data {
++	u32 accel_value;
++	u32 qfprom_blow_timer_value;
++	u32 qfprom_blow_set_freq;
++};
++
++/**
++ * struct qfprom_priv - structure holding qfprom attributes
++ *
++ * @qfpraw:       iomapped memory space for qfprom-efuse raw address space.
++ * @qfpconf:      iomapped memory space for qfprom-efuse configuration address
++ *                space.
++ * @qfpcorrected: iomapped memory space for qfprom corrected address space.
++ * @qfpsecurity:  iomapped memory space for qfprom security control space.
++ * @dev:          qfprom device structure.
++ * @secclk:       Clock supply.
++ * @vcc:          Regulator supply.
++ * @soc_data:     Data that for things that varies from SoC to SoC.
++ */
+ struct qfprom_priv {
+-	void __iomem *base;
++	void __iomem *qfpraw;
++	void __iomem *qfpconf;
++	void __iomem *qfpcorrected;
++	void __iomem *qfpsecurity;
++	struct device *dev;
++	struct clk *secclk;
++	struct regulator *vcc;
++	const struct qfprom_soc_data *soc_data;
++};
++
++/**
++ * struct qfprom_touched_values - saved values to restore after blowing
++ *
++ * @clk_rate: The rate the clock was at before blowing.
++ * @accel_val: The value of the accel reg before blowing.
++ * @timer_val: The value of the timer before blowing.
++ */
++struct qfprom_touched_values {
++	unsigned long clk_rate;
++	u32 accel_val;
++	u32 timer_val;
+ };
  
- examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
++/**
++ * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
++ * @priv: Our driver data.
++ * @old:  The data that was stashed from before fuse blowing.
++ *
++ * Resets the value of the blow timer, accel register and the clock
++ * and voltage settings.
++ *
++ * Prints messages if there are errors but doesn't return an error code
++ * since there's not much we can do upon failure.
++ */
++static void qfprom_disable_fuse_blowing(const struct qfprom_priv *priv,
++					const struct qfprom_touched_values *old)
++{
++	int ret;
 +
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
++	ret = regulator_disable(priv->vcc);
++	if (ret)
++		dev_warn(priv->dev, "Failed to disable regulator (ignoring)\n");
 +
-+      efuse@784000 {
-+        compatible = "qcom,qfprom";
-+        reg = <0 0x00784000 0 0x8ff>,
-+              <0 0x00780000 0 0x7a0>,
-+              <0 0x00782000 0 0x100>,
-+              <0 0x00786000 0 0x1fff>;
-+        clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
-+        clock-names = "core";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
++	ret = clk_set_rate(priv->secclk, old->clk_rate);
++	if (ret)
++		dev_warn(priv->dev,
++			 "Failed to set clock rate for disable (ignoring)\n");
 +
-+        vcc-supply = <&vreg_l11a_1p8>;
++	clk_disable_unprepare(priv->secclk);
 +
-+        hstx-trim-primary@25b {
-+          reg = <0x25b 0x1>;
-+          bits = <1 3>;
-+        };
-+      };
-+    };
++	writel(old->timer_val, priv->qfpconf + QFPROM_BLOW_TIMER_OFFSET);
++	writel(old->accel_val, priv->qfpconf + QFPROM_ACCEL_OFFSET);
++}
 +
-   - |
-     soc {
-       #address-cells = <2>;
++/**
++ * qfprom_enable_fuse_blowing() - Enable fuse blowing.
++ * @priv: Our driver data.
++ * @old:  We'll stash stuff here to use when disabling.
++ *
++ * Sets the value of the blow timer, accel register and the clock
++ * and voltage settings.
++ *
++ * Prints messages if there are errors so caller doesn't need to.
++ *
++ * Return: 0 or -err.
++ */
++static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
++				      struct qfprom_touched_values *old)
++{
++	int ret;
++
++	ret = clk_prepare_enable(priv->secclk);
++	if (ret) {
++		dev_err(priv->dev, "Failed to enable clock\n");
++		return ret;
++	}
++
++	old->clk_rate = clk_get_rate(priv->secclk);
++	ret = clk_set_rate(priv->secclk, priv->soc_data->qfprom_blow_set_freq);
++	if (ret) {
++		dev_err(priv->dev, "Failed to set clock rate for enable\n");
++		goto err_clk_prepared;
++	}
++
++	ret = regulator_enable(priv->vcc);
++	if (ret) {
++		dev_err(priv->dev, "Failed to enable regulator\n");
++		goto err_clk_rate_set;
++	}
++
++	old->timer_val = readl(priv->qfpconf + QFPROM_BLOW_TIMER_OFFSET);
++	old->accel_val = readl(priv->qfpconf + QFPROM_ACCEL_OFFSET);
++	writel(priv->soc_data->qfprom_blow_timer_value,
++	       priv->qfpconf + QFPROM_BLOW_TIMER_OFFSET);
++	writel(priv->soc_data->accel_value,
++	       priv->qfpconf + QFPROM_ACCEL_OFFSET);
++
++	return 0;
++
++err_clk_rate_set:
++	clk_set_rate(priv->secclk, old->clk_rate);
++err_clk_prepared:
++	clk_disable_unprepare(priv->secclk);
++	return ret;
++}
++
++/**
++ * qfprom_efuse_reg_write() - Write to fuses.
++ * @context: Our driver data.
++ * @reg:     The offset to write at.
++ * @_val:    Pointer to data to write.
++ * @bytes:   The number of bytes to write.
++ *
++ * Writes to fuses.  WARNING: THIS IS PERMANENT.
++ *
++ * Return: 0 or -err.
++ */
++static int qfprom_reg_write(void *context, unsigned int reg, void *_val,
++			    size_t bytes)
++{
++	struct qfprom_priv *priv = context;
++	struct qfprom_touched_values old;
++	int words = bytes / 4;
++	u32 *value = _val;
++	u32 blow_status;
++	int ret;
++	int i;
++
++	dev_dbg(priv->dev,
++		"Writing to raw qfprom region : %#010x of size: %zu\n",
++		reg, bytes);
++
++	/*
++	 * The hardware only allows us to write word at a time, but we can
++	 * read byte at a time.  Until the nvmem framework allows a separate
++	 * word_size and stride for reading vs. writing, we'll enforce here.
++	 */
++	if (bytes % 4) {
++		dev_err(priv->dev,
++			"%zu is not an integral number of words\n", bytes);
++		return -EINVAL;
++	}
++	if (reg % 4) {
++		dev_err(priv->dev,
++			"Invalid offset: %#x.  Must be word aligned\n", reg);
++		return -EINVAL;
++	}
++
++	ret = qfprom_enable_fuse_blowing(priv, &old);
++	if (ret)
++		return ret;
++
++	ret = readl_relaxed_poll_timeout(
++		priv->qfpconf + QFPROM_BLOW_STATUS_OFFSET,
++		blow_status, blow_status == QFPROM_BLOW_STATUS_READY,
++		QFPROM_FUSE_BLOW_POLL_US, QFPROM_FUSE_BLOW_TIMEOUT_US);
++
++	if (ret) {
++		dev_err(priv->dev,
++			"Timeout waiting for initial ready; aborting.\n");
++		goto exit_enabled_fuse_blowing;
++	}
++
++	for (i = 0; i < words; i++)
++		writel(value[i], priv->qfpraw + reg + (i * 4));
++
++	ret = readl_relaxed_poll_timeout(
++		priv->qfpconf + QFPROM_BLOW_STATUS_OFFSET,
++		blow_status, blow_status == QFPROM_BLOW_STATUS_READY,
++		QFPROM_FUSE_BLOW_POLL_US, QFPROM_FUSE_BLOW_TIMEOUT_US);
++
++	/* Give an error, but not much we can do in this case */
++	if (ret)
++		dev_err(priv->dev, "Timeout waiting for finish.\n");
++
++exit_enabled_fuse_blowing:
++	qfprom_disable_fuse_blowing(priv, &old);
++
++	return ret;
++}
++
+ static int qfprom_reg_read(void *context,
+ 			unsigned int reg, void *_val, size_t bytes)
+ {
+ 	struct qfprom_priv *priv = context;
+ 	u8 *val = _val;
+ 	int i = 0, words = bytes;
++	void __iomem *base = priv->qfpcorrected;
++
++	if (read_raw_data && priv->qfpraw)
++		base = priv->qfpraw;
+ 
+ 	while (words--)
+-		*val++ = readb(priv->base + reg + i++);
++		*val++ = readb(base + reg + i++);
+ 
+ 	return 0;
+ }
+ 
+-static struct nvmem_config econfig = {
+-	.name = "qfprom",
+-	.stride = 1,
+-	.word_size = 1,
+-	.id = NVMEM_DEVID_AUTO,
+-	.reg_read = qfprom_reg_read,
++static const struct qfprom_soc_data qfprom_7_8_data = {
++	.accel_value = 0xD10,
++	.qfprom_blow_timer_value = 25,
++	.qfprom_blow_set_freq = 4800000,
+ };
+ 
+ static int qfprom_probe(struct platform_device *pdev)
+ {
++	struct nvmem_config econfig = {
++		.name = "qfprom",
++		.stride = 1,
++		.word_size = 1,
++		.id = NVMEM_DEVID_AUTO,
++		.reg_read = qfprom_reg_read,
++	};
+ 	struct device *dev = &pdev->dev;
+ 	struct resource *res;
+ 	struct nvmem_device *nvmem;
+ 	struct qfprom_priv *priv;
++	int ret;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
++	/* The corrected section is always provided */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	priv->base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(priv->base))
+-		return PTR_ERR(priv->base);
++	priv->qfpcorrected = devm_ioremap_resource(dev, res);
++	if (IS_ERR(priv->qfpcorrected))
++		return PTR_ERR(priv->qfpcorrected);
+ 
+ 	econfig.size = resource_size(res);
+ 	econfig.dev = dev;
+ 	econfig.priv = priv;
+ 
++	priv->dev = dev;
++
++	/*
++	 * If more than one region is provided then the OS has the ability
++	 * to write.
++	 */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (res) {
++		u32 version;
++		int major_version, minor_version;
++
++		priv->qfpraw = devm_ioremap_resource(dev, res);
++		if (IS_ERR(priv->qfpraw))
++			return PTR_ERR(priv->qfpraw);
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
++		priv->qfpconf = devm_ioremap_resource(dev, res);
++		if (IS_ERR(priv->qfpconf))
++			return PTR_ERR(priv->qfpconf);
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 3);
++		priv->qfpsecurity = devm_ioremap_resource(dev, res);
++		if (IS_ERR(priv->qfpsecurity))
++			return PTR_ERR(priv->qfpsecurity);
++
++		version = readl(priv->qfpsecurity + QFPROM_VERSION_OFFSET);
++		major_version = (version & QFPROM_MAJOR_VERSION_MASK) >>
++				QFPROM_MAJOR_VERSION_SHIFT;
++		minor_version = (version & QFPROM_MINOR_VERSION_MASK) >>
++				QFPROM_MINOR_VERSION_SHIFT;
++
++		if (major_version == 7 && minor_version == 8)
++			priv->soc_data = &qfprom_7_8_data;
++
++		priv->vcc = devm_regulator_get(&pdev->dev, "vcc");
++		if (IS_ERR(priv->vcc))
++			return PTR_ERR(priv->vcc);
++
++		priv->secclk = devm_clk_get(dev, "core");
++		if (IS_ERR(priv->secclk)) {
++			ret = PTR_ERR(priv->secclk);
++			if (ret != -EPROBE_DEFER)
++				dev_err(dev, "Error getting clock: %d\n", ret);
++			return ret;
++		}
++
++		/* Only enable writing if we have SoC data. */
++		if (priv->soc_data)
++			econfig.reg_write = qfprom_reg_write;
++	}
++
+ 	nvmem = devm_nvmem_register(dev, &econfig);
+ 
+ 	return PTR_ERR_OR_ZERO(nvmem);
 -- 
 2.21.0
 
