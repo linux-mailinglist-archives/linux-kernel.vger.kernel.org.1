@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEDB2295AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990622295A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732049AbgGVKIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732010AbgGVKI2 (ORCPT
+        id S1730931AbgGVKHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:07:45 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:53379 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726153AbgGVKHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B9EC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:27 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 17so1430965wmo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9gY9Xz1b3hxtJwHsxB5opm7y/1T5Sf2OUR7Nr1mwtjs=;
-        b=dU63nrG8GxOtfLcB/9q/SoMW237Sgf2oDNEAJ4G9kBmTWhK/l4eNxP5IVohk9oA554
-         3Rg5em++QvjT3ihAV+6fBNf36USInKU8hog7ZyzD2TbVheqFI00Y0Aap6y2+TSNRV1Zw
-         UaH59eJn4StncCzGD5h63tvJNINr3heiI04XN0Z3WSojSv2b0suSJmplx9A2GLA4gJaq
-         FheaCZc4Hdbj8tGOzEEmH5AzJV4/Q784WdibgehpGUCA4ReRbWD4NKme202MMjlmxO7B
-         I3hSNiqn2iJFuUcI33IH0QpcPuNV6qOJAHYzVXs4CKtp1DqDbRFlL0qrZ2vw29+zb6gX
-         DNJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9gY9Xz1b3hxtJwHsxB5opm7y/1T5Sf2OUR7Nr1mwtjs=;
-        b=r2S8D0jHSDNYOk+66+9uydMpc0bMsW/NFz7d8ONKLPHI1wrIC2eK6gzcNOLzQL7+jP
-         MHZudcbeKg/Ltyeb1w3885EcB8f/Ky8ylfdCH33LlBf/drlI/aAo+gDpaOZ5y4Y+7Cyk
-         I7vND/pb/TJrDl0m9SpLlWB+0YvJGs2JIetZbfOEKPy3YYAL9zpwyL/m5Xdqup4BuuNS
-         qwA70a63Xz8I8cnreBQhmINfUDQUkCGNbzn9Qz3mL8D2CoO9OkaKD9ruSmayWcWL3k19
-         8yjZS1rDBEawmCc2YJsCaKFDT3zx7oS+pD0Dn1KCxldViy5UOd1O0x/pq/TnwA0qnS3T
-         z6Xg==
-X-Gm-Message-State: AOAM533MVKRIEYMJICWP4zkJtiz438ywxbQM7AzomE0YN5C6EIlPCS1f
-        /eosZ1oQs6p4hPSBA/1vu9eiBw==
-X-Google-Smtp-Source: ABdhPJwPBcg2OXIW9gKUFMZ4tq+/d9mc63cIXd6nJyJgTC/kVTlH98ykPtimCKP1IEmYSHE0+y/chQ==
-X-Received: by 2002:a05:600c:20d3:: with SMTP id y19mr8384930wmm.10.1595412506655;
-        Wed, 22 Jul 2020 03:08:26 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:26 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 14/14] nvmem: qcom-spmi-sdam: Enable multiple devices
-Date:   Wed, 22 Jul 2020 11:07:05 +0100
-Message-Id: <20200722100705.7772-15-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
-References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
+        Wed, 22 Jul 2020 06:07:44 -0400
+X-UUID: 173e8a484fba49b2a7d3d912af0f09fb-20200722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=hpw2HAjj+VZcqiXE9JCKu3K69kU6aLIL+g4N7qmAH6w=;
+        b=mRHGFzuKX9VZw96ff4c5f+9dfqcbnhKnypVjEdvx0T5KV1k4oP6RFw4kVncj2pVoQda4IKsJ4OtFALdk1eJSyo3oHZuseqxJn9ceDA0E8IyOvEUUdbneUyiDDTuvxZkOJm8pOuqHExboSGjjCc+KLfEUz+uKS4Or1vsw62KCgvU=;
+X-UUID: 173e8a484fba49b2a7d3d912af0f09fb-20200722
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 365314642; Wed, 22 Jul 2020 18:07:39 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Jul 2020 18:07:36 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 18:07:36 +0800
+Message-ID: <1595412457.27178.36.camel@mtkswgap22>
+Subject: Re: [PATCH v3] scsi: ufs: Cleanup completed request without
+ interrupt notification
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+CC:     Avri Altman <Avri.Altman@wdc.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Date:   Wed, 22 Jul 2020 18:07:37 +0800
+In-Reply-To: <912623e8-5915-8380-f39a-fac7b5868a6d@acm.org>
+References: <20200706132113.21096-1-stanley.chu@mediatek.com>
+         <3d509c4b-d66d-2a4a-5fbd-a50a0610ad31@acm.org>
+         <1594607245.22878.8.camel@mtkswgap22>
+         <SN6PR04MB46409838AE9D4BD63797E26DFC600@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <912623e8-5915-8380-f39a-fac7b5868a6d@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guru Das Srinagesh <gurus@codeaurora.org>
-
-Using pdev->id as the nvmem's config ID (which, by default, is
-NVMEM_DEVID_NONE) prevents multiple instances of this driver from
-probing because of the following error:
-
-  sysfs: cannot create duplicate filename '/bus/nvmem/devices/spmi_sdam'
-
-Use NVMEM_DEVID_AUTO as the NVMEM config ID to fix the issue.
-
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/nvmem/qcom-spmi-sdam.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sdam.c
-index 8682cda448d6..a72704cd0468 100644
---- a/drivers/nvmem/qcom-spmi-sdam.c
-+++ b/drivers/nvmem/qcom-spmi-sdam.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (c) 2017 The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2017, 2020 The Linux Foundation. All rights reserved.
-  */
- 
- #include <linux/device.h>
-@@ -141,7 +141,7 @@ static int sdam_probe(struct platform_device *pdev)
- 
- 	sdam->sdam_config.dev = &pdev->dev;
- 	sdam->sdam_config.name = "spmi_sdam";
--	sdam->sdam_config.id = pdev->id;
-+	sdam->sdam_config.id = NVMEM_DEVID_AUTO;
- 	sdam->sdam_config.owner = THIS_MODULE,
- 	sdam->sdam_config.stride = 1;
- 	sdam->sdam_config.word_size = 1;
--- 
-2.21.0
+SGkgQmFydCwgQXZyaSwNCg0KT24gVHVlLCAyMDIwLTA3LTE0IGF0IDIxOjAwIC0wNzAwLCBCYXJ0
+IFZhbiBBc3NjaGUgd3JvdGU6DQo+IE9uIDIwMjAtMDctMTMgMDE6MTAsIEF2cmkgQWx0bWFuIHdy
+b3RlOg0KPiA+IEFydGlmaWNpYWxseSBpbmplY3RpbmcgZXJyb3JzIGlzIGEgdmVyeSBjb21tb24g
+dmFsaWRhdGlvbiBtZWNoYW5pc20sDQo+ID4gUHJvdmlkZWQgdGhhdCB5b3UgYXJlIG5vdCBicmVh
+a2luZyBhbnl0aGluZyBvZiB0aGUgdXBwZXItbGF5ZXJzLA0KPiA+IFdoaWNoIEkgZG9uJ3QgdGhp
+bmsgeW91IGFyZSBkb2luZy4NCj4gDQoNCkFzIHRoZSBjb25jZXJucyBvZiBiZWxvdyBxdWVzdGlv
+bnMsDQoNCiJzY3NpIHRpbWVvdXQgaXMgMzBzZWMgLSBkbyB5b3UgZXhwZWN0IGFuIGludGVycnVw
+dCB0byBhcnJpdmUgYWZ0ZXINCnRoYXQ/Ig0KDQpBY3R1YWxseSBpbiBteSB0ZXN0IHNjZW5hcmlv
+LCB0aGUgZmxvdyB3b3JrcyB3ZWxsIHdpdGhvdXQgcmUtY2hlY2tpbmcNCiJvdXRzdGFuZGluZ19y
+ZXFzIiBpbiAiY2xlYW51cCIgc2VjdGlvbiBpbiB1ZnNoY2RfYWJvcnQoKSwgc28gSSB3b3VsZA0K
+cmVtb3ZlIHRoaXMgY2hlY2tpbmcgZmlyc3QgYW5kIHJlc2VuZCB0aGlzIGZpeCAod2l0aCByZWZp
+bmVkIGNvbW1pdA0KbWVzc2FnZSBhY2NvcmRpbmcgdG8gYmxrLW1xLCBub3QgbGVnYWN5IGJsayku
+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3UNCmhhdmUgYW55IHN1Z2dlc3Rpb25zLg0KDQo+IEhp
+IEF2cmksDQo+IA0KPiBNeSBjb25jZXJuIGlzIHRoYXQgdGhlIGNvZGUgdGhhdCBpcyBiZWluZyBh
+ZGRlZCBpbiB0aGUgYWJvcnQgaGFuZGxlcg0KPiBzb29uZXIgb3IgbGF0ZXIgd2lsbCBldm9sdmUg
+aW50byBhIGR1cGxpY2F0ZSBvZiB0aGUgcmVndWxhciBjb21wbGV0aW9uDQo+IHBhdGguIFdvdWxk
+bid0IGl0IGJlIGJldHRlciB0byBwb2xsIGZvciBjb21wbGV0aW9ucyBmcm9tIHRoZSB0aW1lb3V0
+DQo+IGhhbmRsZXIgYnkgY2FsbGluZyB1ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkgaW5zdGVh
+ZCBvZiBkdXBsaWNhdGluZw0KPiB0aGF0IGZ1bmN0aW9uPw0KPiANCg0KVGhlIGR1cGxpY2F0ZWQg
+Y2FsbHMgb2YgY2xlYW51cCBqb2Igd291bGQgYmUgYXMgYmVsb3csDQoNCnNjc2lfZG1hX3VubWFw
+KGNtZCk7DQpoYmEtPmxyYlt0YWddLmNtZCA9IE5VTEw7DQp1ZnNoY2Rfb3V0c3RhbmRpbmdfcmVx
+X2NsZWFyKGhiYSwgdGFnKTsNCg0KQXMgeW91ciBzdWdnZXN0aW9ucywgYWJvdmUgY2FsbHMgY291
+bGQgYmUgcmUtZmFjdG9yZWQgYnV0IHRoZSB0aGlyZCBjYWxsDQppbiBfX3Vmc2hjZF90cmFuc2Zl
+cl9yZXFfY29tcGwoKSB3b3VsZCBiZSBtb3JlIGVmZmljaWVudCBieQ0KDQpoYmEtPm91dHN0YW5k
+aW5nX3JlcXMgXj0gY29tcGxldGVkX3JlcXM7DQoNCmZvciBhbGwgaGFuZGxlZCByZXF1ZXN0cyBp
+biBpbnRlcnJ1cHQgaGFuZGxlci4NCg0KDQpIZXJlIHdlIGNvdWxkIG5vdCBkaXJlY3RseSB1c2Ug
+InVmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoKSIgb3IgaXRzDQppbm5lciBmdW5jdGlvbiAiX191
+ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkiIHNpbmNlIGF0IGxlYXN0DQpzY3NpX2RvbmUoKSBp
+cyBub3QgcmVxdWlyZWQgaW4gdWZzaGNkX2Fib3J0KCkgYmVjYXVzZSB0aGUgY29tcGxldGlvbg0K
+ZmxvdyB3aWxsIGJlIGhhbmRsZWQgYnkgU0NTSSBlcnJvciBoYW5kbGVyLCBub3QgdWZzaGNkX2Fi
+b3J0KCkgaXRzZWxmLg0KDQo+ID4+PiBJbiBzZWN0aW9uIDcuMi4zIG9mIHRoZSBVRlMgc3BlY2lm
+aWNhdGlvbiBJIGZvdW5kIHRoZSBmb2xsb3dpbmcgYWJvdXQgaG93DQo+ID4+PiB0byBwcm9jZXNz
+IHJlcXVlc3QgY29tcGxldGlvbnM6ICJTb2Z0d2FyZSBkZXRlcm1pbmVzIGlmIG5ldyBUUnMgaGF2
+ZQ0KPiA+Pj4gY29tcGxldGVkIHNpbmNlIHN0ZXAgIzIsIGJ5IHJlcGVhdGluZyBvbmUgb2YgdGhl
+IHR3byBtZXRob2RzIGRlc2NyaWJlZCBpbg0KPiA+Pj4gc3RlcCAjMi4gSWYgbmV3IFRScyBoYXZl
+IGNvbXBsZXRlZCwgc29mdHdhcmUgcmVwZWF0cyB0aGUgc2VxdWVuY2UgZnJvbQ0KPiA+Pj4gc3Rl
+cCAjMy4iIElzIHN1Y2ggYSBsb29wIHBlcmhhcHMgbWlzc2luZyBmcm9tIHRoZSBMaW51eCBVRlMg
+ZHJpdmVyPw0KPiA+DQo+ID4gQ291bGQgbm90IGZpbmQgdGhhdCBjaXRhdGlvbi4NCj4gPiBXaGF0
+IHZlcnNpb24gb2YgdGhlIHNwZWMgYXJlIHlvdSB1c2luZz8NCj4gDQo+IFRoYXQgcXVvdGUgY29t
+ZXMgZnJvbSB0aGUgZm9sbG93aW5nIGRvY3VtZW50OiAiVW5pdmVyc2FsIEZsYXNoIFN0b3JhZ2UN
+Cj4gSG9zdCBDb250cm9sbGVyIEludGVyZmFjZSAoVUZTSENJKTsgVmVyc2lvbiAyLjE7IEpFU0Qy
+MjNDOyAoUmV2aXNpb24gb2YNCj4gSkVTRDIyM0IsIFNlcHRlbWJlciAyMDEzKTsgTUFSQ0ggMjAx
+NiIuDQoNCkFib3ZlIGRlc2NyaXB0aW9uIGhhcyBhbHJlYWR5IGJlIGltcGxlbWVudGVkIGluIHVm
+c2hjZF9pbnRyKCkgYW5kDQp1ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkuIEJ1dCB0aGlzIGxv
+b3AgY2Fubm90IHNhdmUgIm1pc3NpbmcNCmludGVycnVwdCIganVzdCBsaWtlIHRoaXMgaW5qZWN0
+ZWQgZXJyb3IgY2FzZS4NCg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0K
 
